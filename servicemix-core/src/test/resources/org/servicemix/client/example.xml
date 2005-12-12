@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.org/config/1.0" 
+	   xmlns:foo="http://servicemix.org/cheese/">
+
+  <!-- the JBI container -->
+  <sm:container id="jbi">
+    <sm:activationSpecs>
+
+      <sm:activationSpec componentName="receiver" service="foo:receiver">
+      	<sm:component>
+        	<bean class="org.servicemix.tck.ReceiverComponent" />
+        </sm:component>
+      </sm:activationSpec>
+
+      <!-- output using a POJO -->
+      <sm:activationSpec componentName="myService" service="foo:myService">
+      	<sm:component>
+            <bean class="org.servicemix.components.util.MockServiceComponent">
+  			  <property xmlns="" name="responseProperties">
+			    <map>
+				  <entry key="foo" value="hello"/>
+				  <entry key="someList">
+				    <list>
+					  <value type="java.lang.Integer">1</value>
+					  <value type="java.lang.Integer">2</value>
+					  <value type="java.lang.Integer">3</value>
+				    </list>
+				  </entry>
+			    </map>
+			  </property>
+		      <property xmlns="" name="responseXml">
+			    <value><![CDATA[ <hello/> ]]></value>
+			  </property>
+            </bean>
+        </sm:component>
+      </sm:activationSpec>
+
+    </sm:activationSpecs>
+  </sm:container>
+
+
+  <!-- START SNIPPET: client -->
+  <bean id="client" class="org.servicemix.client.DefaultServiceMixClient">
+    <constructor-arg ref="jbi" />
+  </bean>
+  <!-- END SNIPPET: client -->
+
+  <!-- lets hardwire this client to talk to instances of a service by default -->
+  <!-- START SNIPPET: clientroute -->
+  <bean id="clientWithRouting" class="org.servicemix.client.DefaultServiceMixClient">
+    <constructor-arg ref="jbi" />
+    <constructor-arg>
+      <sm:activationSpec destinationService="foo:receiver"/>
+    </constructor-arg>
+  </bean>
+  <!-- END SNIPPET: clientroute -->
+
+
+  <bean id="clientWithXStream" class="org.servicemix.client.DefaultServiceMixClient">
+    <constructor-arg ref="jbi" />
+    <constructor-arg>
+      <!-- lets hardwire this client to talk to instances of a service by default -->
+      <sm:activationSpec>
+        <property name="marshaler">
+          <bean class="org.servicemix.components.util.xstream.XStreamMarshaler" />
+        </property>
+      </sm:activationSpec>
+    </constructor-arg>
+  </bean>
+
+</beans>

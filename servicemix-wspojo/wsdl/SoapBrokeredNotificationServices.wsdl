@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="Service-Consumer"
+  targetNamespace="http://servicemix.org/wspojo/notification/"
+  xmlns:tns="http://servicemix.org/wspojo/notification/"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns:wsa="http://schemas.xmlsoap.org/ws/2003/03/addressing"
+  xmlns:wsp="http://schemas.xmlsoap.org/ws/2002/12/policy"
+  xmlns:wsnt="http://docs.oasis-open.org/wsn/2004/06/wsn-WS-BaseNotification-1.2-draft-01.xsd"
+  xmlns:wsntw="http://docs.oasis-open.org/wsn/2004/06/wsn-WS-BaseNotification-1.2-draft-01.wsdl"
+  xmlns:wsbn="http://docs.oasis-open.org/wsn/2004/06/wsn-WS-BrokeredNotification-1.2-draft-01.xsd"
+  xmlns:wsbnw="http://docs.oasis-open.org/wsn/2004/06/wsn-WS-BrokeredNotification-1.2-draft-01.wsdl"
+  xmlns:wsrp="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties-1.2-draft-01.xsd"
+  xmlns:wsrpw="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties-1.2-draft-01.wsdl"
+  xmlns:wsbf="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-BaseFaults-1.2-draft-01.xsd"
+  xmlns:wsrl="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceLifetime-1.2-draft-01.xsd"
+  xmlns:wsrlw="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceLifetime-1.2-draft-01.wsdl">
+  <wsdl:import
+    namespace="http://docs.oasis-open.org/wsn/2004/06/wsn-WS-BrokeredNotification-1.2-draft-01.wsdl"
+    location="WS-BrokeredNotification-1_2-Draft_01.wsdl">
+  </wsdl:import>
+  <wsdl:types>
+    <xsd:schema
+      targetNamespace="http://docs.oasis-open.org/wsn/2004/06/wsn-WS-BrokeredNotification-1.2-draft-01.xsd"
+      elementFormDefault="qualified">
+
+      <xsd:include
+        schemaLocation="WS-BrokeredNotification-1_2-Draft_01.xsd" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:binding name="NotificationBrokerSOAP"
+    type="wsbnw:NotificationBroker">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"
+      style="document" />
+    <wsdl:operation name="Notify">
+      <soap:operation
+        soapAction="http://servicemix.org/wspojo/notification/Notify" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="GetResourceProperty">
+      <soap:operation
+        soapAction="http://servicemix.org/wspojo/notification/GetResourceProperty" />
+      <wsdl:input name="GetResourcePropertyRequest">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetResourcePropertyResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ResourceUnknownFault">
+        <soap:fault use="literal" name="ResourceUnknownFault" />
+      </wsdl:fault>
+      <wsdl:fault name="InvalidResourcePropertyQNameFault">
+        <soap:fault use="literal"
+          name="InvalidResourcePropertyQNameFault" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="Subscribe">
+      <soap:operation
+        soapAction="http://servicemix.org/wspojo/notification/Subscribe" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ResourceUnknownFault">
+        <soap:fault use="literal" name="ResourceUnknownFault" />
+      </wsdl:fault>
+      <wsdl:fault name="SubscribeCreationFailedFault">
+        <soap:fault use="literal" name="SubscribeCreationFailedFault" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentMessage">
+      <soap:operation
+        soapAction="http://servicemix.org/wspojo/notification/GetCurrentMessage" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ResourceUnknownFault">
+        <soap:fault use="literal" name="ResourceUnknownFault" />
+      </wsdl:fault>
+      <wsdl:fault name="InvalidTopicExpressionFault">
+        <soap:fault use="literal" name="InvalidTopicExpressionFault" />
+      </wsdl:fault>
+      <wsdl:fault name="TopicNotSupportedFault">
+        <soap:fault use="literal" name="TopicNotSupportedFault" />
+      </wsdl:fault>
+      <wsdl:fault name="NoCurrentMessageOnTopicFault">
+        <soap:fault use="literal" name="NoCurrentMessageOnTopicFault" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterPublisher">
+      <soap:operation
+        soapAction="http://servicemix.org/wspojo/notification/RegisterPublisher" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ResourceUnknownFault">
+        <soap:fault use="literal" name="ResourceUnknownFault" />
+      </wsdl:fault>
+      <wsdl:fault name="InvalidTopicExpressionFault">
+        <soap:fault use="literal" name="InvalidTopicExpressionFault" />
+      </wsdl:fault>
+      <wsdl:fault name="TopicNotSupportedFault">
+        <soap:fault use="literal" name="TopicNotSupportedFault" />
+      </wsdl:fault>
+      <wsdl:fault name="PublisherRegistrationFailedFault">
+        <soap:fault use="literal"
+          name="PublisherRegistrationFailedFault" />
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="PublisherRegistrationManagerSOAP"
+    type="wsbnw:PublisherRegistrationManager">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"
+      style="document" />
+    <wsdl:operation name="Destroy">
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ResourceUnknownFault">
+        <soap:fault use="literal" name="ResourceUnknownFault" />
+      </wsdl:fault>
+      <wsdl:fault name="ResourceNotDestroyedFault">
+        <soap:fault use="literal" name="ResourceNotDestroyedFault" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SetTerminationTime">
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ResourceUnknownFault">
+        <soap:fault use="literal" name="ResourceUnknownFault" />
+      </wsdl:fault>
+      <wsdl:fault name="UnableToSetTerminationTimeFault">
+        <soap:fault use="literal"
+          name="UnableToSetTerminationTimeFault" />
+      </wsdl:fault>
+      <wsdl:fault name="TerminationTimeChangeRejectedFault">
+        <soap:fault use="literal"
+          name="TerminationTimeChangeRejectedFault" />
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="NotificationBrokerService">
+    <wsdl:port name="SOAP" binding="tns:NotificationBrokerSOAP">
+      <soap:address location="http://www.example.org/" />
+    </wsdl:port>
+  </wsdl:service>
+  <wsdl:service name="PublisherRegistrationManagerService">
+    <wsdl:port name="PublisherRegistrationManagerSOAP"
+      binding="tns:PublisherRegistrationManagerSOAP">
+      <soap:address location="http://www.example.org/" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

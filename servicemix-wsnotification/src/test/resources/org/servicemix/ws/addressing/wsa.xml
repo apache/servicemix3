@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<foo
+        xmlns:wsa='http://schemas.xmlsoap.org/ws/2003/03/addressing'
+        xmlns:ncex='http://www.consumer.org/RefProp'>
+  <wsa:Action>
+    http://docs.oasis-open.org/wsn/2004/06/WS-BaseNotification/Notify
+  </wsa:Action>
+  <wsa:MessageID>
+    uuid:d7c5726b-de29-4313-b4d4-b3425b200839
+  </wsa:MessageID>
+  <wsa:ReplyTo>
+    <wsa:Address>http://www.example.com/MyEventSink</wsa:Address>
+  </wsa:ReplyTo>
+
+  <wsa:To>
+    http://www.consumer.org/ConsumerEndpoint
+  </wsa:To>
+  <ncex:NCResourceDisambiguator>
+    uuid:9fef5fec-6dc3-44a2-ba32-8680cace43f9
+  </ncex:NCResourceDisambiguator>
+</foo>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:ant="jelly:ant">
+	<preGoal name="java:compile">
+	</preGoal>
+
+	<!--  Quick testing goal -->
+	<goal name="mytest" prereqs="dist">
+		<!-- TODO: Put something here -->
+	</goal>
+	
+	<!-- Include the conversion of APT docs, as per Maven2 -->
+	<preGoal name="xdoc:jelly-transform">
+		<attainGoal name="apt:generate" />
+	</preGoal>
+</project>

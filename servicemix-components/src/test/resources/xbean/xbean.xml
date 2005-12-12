@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:x="java://org.servicemix.components.xbean">
+
+  <classpath>
+    <location>SpringLoaderTest.jar</location>
+  </classpath>
+
+  <x:EndpointSpec
+  				xmlns:foo="http://foo.bar.com"
+  				serviceName="foo:myService"
+  				endpointName="myEndpoint">
+  	<pojo>
+  		<bean class="TestClass"/>
+  	</pojo>
+  </x:EndpointSpec>
+
+</beans>

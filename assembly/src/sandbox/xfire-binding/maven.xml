@@ -1,0 +1,18 @@
+<project default="war:war"
+    xmlns:j="jelly:core">
+
+  <goal name="webserver" prereqs="war:war"
+    description="Runs an embedded webserver">
+
+    <j:set var="url" value="target/servicemix-xfire-example"/>
+
+    <echo>Running a web server with webapp = ${url}</echo>
+    <java classname="org.activemq.tool.WebServer" fork="yes">
+      <classpath refid="maven.dependency.classpath"/>
+      <jvmarg value="-server"/>
+      <arg value="${url}"/>
+      <sysproperty key="org.apache.commons.logging.simplelog.defaultlog" value="debug"/>
+    </java>
+  </goal>
+
+</project>

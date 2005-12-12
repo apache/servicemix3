@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- START SNIPPET: servicemix -->
+<beans xmlns:my="http://servicemix.org/demo/"
+	xmlns:sm="http://servicemix.org/config/1.0">
+
+  <sm:serviceunit id="jbi">
+    <sm:activationSpecs>
+      
+      <sm:activationSpec service="my:echo">
+        <sm:component>
+          <bean class="org.servicemix.components.util.EchoComponent" />
+	    </sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec service="my:chained">
+        <sm:component>
+          <bean class="org.servicemix.components.util.ChainedComponent">
+            <property name="services">
+              <list>
+			    <bean class="javax.xml.namespace.QName">
+				  <constructor-arg value="http://servicemix.org/demo/" />
+				  <constructor-arg value="echo" />
+			    </bean>
+              </list>
+            </property>
+          </bean>
+	    </sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec service="my:trace">
+        <sm:component>
+          <bean class="org.servicemix.components.util.TraceComponent" />
+        </sm:component>
+        <sm:subscriptions>
+          <sm:subscriptionSpec service="my:chained"/>
+        </sm:subscriptions>
+      </sm:activationSpec>
+      
+    </sm:activationSpecs>
+  </sm:serviceunit>
+      
+</beans>
+<!-- END SNIPPET: servicemix -->

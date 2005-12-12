@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="default"
+  xmlns:j="jelly:core"
+  xmlns:u="jelly:util"
+  xmlns:ant="jelly:ant"
+  xmlns:maven="jelly:maven">
+
+  <goal name="default" prereqs="plugin:repository-install, plugin:install-now"/>
+
+  <goal name="nightly" prereqs="clean, plugin:repository-install, plugin:install-now, plugin:repository-deploy"/>
+
+</project>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<j:whitespace xmlns:j="jelly:core" xmlns:util="jelly:util" xmlns:x="jelly:xml"
+	xmlns:ant="jelly:ant" xmlns="dummy" trim="true">
+  <x:element URI="http://java.sun.com/xml/ns/jbi" name="jbi">
+		<x:attribute name="xmlns" trim="true">http://java.sun.com/xml/ns/jbi</x:attribute>
+    <x:attribute name="xmlns:xsi" trim="true">http://www.w3.org/2001/XMLSchema-instance</x:attribute>
+    <x:attribute name="xsi:schemaLocation" trim="true">http://java.sun.com/xml/ns/jbi ../jbi.xsd</x:attribute>
+    <x:attribute name="version" trim="true">1.0</x:attribute>
+    
+    <service-assembly>
+      <identification>
+        <name>${maven.jbi.sa.ident.name}</name>
+        <description>${maven.jbi.sa.ident.description}</description>
+      </identification>
+      <service-unit>
+        <identification>
+          <name>${maven.jbi.su.ident.name}</name>
+          <description>${maven.jbi.su.ident.description}</description>
+        </identification>
+        <target>
+          <artifacts-zip>${maven.jbi.su.final.name}</artifacts-zip>
+          <component-name>${maven.jbi.su.component}</component-name>
+        </target>
+      </service-unit>
+    </service-assembly>
+  
+  </x:element> 	
+</j:whitespace>

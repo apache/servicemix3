@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.org/config/1.0" 
+	   xmlns:foo="http://servicemix.org/cheese/">
+
+  <!-- the JBI container -->
+  <sm:container id="jbi">
+    <sm:activationSpecs>
+
+      <!-- START SNIPPET: xpath -->
+      <sm:activationSpec componentName="simpleMailSenderWithExpressions" service="foo:simpleMailSenderWithExpressions">
+        <sm:component><bean class="org.servicemix.components.email.SimpleMailSender">
+          <property name="sender" ref="javaMailSender"/>
+
+          <property name="marshaler">
+            <bean class="org.servicemix.components.email.SimpleMailMarshaler">
+              <property name="from">
+                <bean class="org.servicemix.expression.JaxenStringXPathExpression">
+                  <constructor-arg value="/person/email"/>
+                </bean>
+              </property>
+              <property name="to">
+                <bean class="org.servicemix.expression.JaxenStringXPathExpression">
+                  <constructor-arg value="/person/accountant/email"/>
+                </bean>
+              </property>
+              <property name="subject">
+                <bean class="org.servicemix.expression.ConstantExpression">
+                  <constructor-arg value="Drink a beer"/>
+                </bean>
+              </property>
+              <property name="text">
+                <bean class="org.servicemix.expression.JaxenStringXPathExpression">
+                  <constructor-arg value="concat('Hello there ', /person/name, ' how are you today?')"/>
+                </bean>
+              </property>
+            </bean>
+          </property>
+        </bean></sm:component>
+      </sm:activationSpec>
+      <!-- END SNIPPET: xpath -->
+
+      <!-- START SNIPPET: simpleExpr -->
+      <sm:activationSpec componentName="simpleMailSenderWithPropertyExpressions" service="foo:simpleMailSenderWithPropertyExpressions">
+        <sm:component><bean class="org.servicemix.components.email.SimpleMailSender">
+          <property name="sender" ref="javaMailSender"/>
+
+          <property name="marshaler">
+            <bean class="org.servicemix.components.email.SimpleMailMarshaler">
+              <property name="from">
+                <bean class="org.servicemix.expression.PropertyExpression">
+                  <constructor-arg value="from"/>
+                </bean>
+              </property>
+              <property name="to">
+                <bean class="org.servicemix.expression.PropertyExpression">
+                  <constructor-arg value="to"/>
+                </bean>
+              </property>
+              <property name="subject">
+                <bean class="org.servicemix.expression.ConstantExpression">
+                  <constructor-arg value="Subject came from expression"/>
+                </bean>
+              </property>
+              <property name="text">
+                <bean class="org.servicemix.expression.PropertyExpression">
+                  <constructor-arg value="text"/>
+                </bean>
+              </property>
+            </bean>
+          </property>
+        </bean></sm:component>
+      </sm:activationSpec>
+      <!-- END SNIPPET: simpleExpr -->
+
+    </sm:activationSpecs>
+  </sm:container>
+
+  <bean id="client" class="org.servicemix.client.DefaultServiceMixClient">
+    <constructor-arg ref="jbi"/>
+  </bean>
+
+  <!-- a testing mail sender -->
+  <bean id="javaMailSender" class="org.servicemix.components.email.StubJavaMailSender"/>
+</beans>

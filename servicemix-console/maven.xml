@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project default="default"
+    xmlns:ant="jelly:ant">
+
+  <goal name="default" prereqs="war:install"/>
+
+  <goal name="nightly" prereqs="clean, war:install, war:deploy"/>
+
+</project>

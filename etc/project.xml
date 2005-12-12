@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <pomVersion>3</pomVersion>
+  <name>ServiceMix</name>
+  <id>servicemix</id>
+  <groupId>servicemix</groupId>
+  <currentVersion>2.1-SNAPSHOT</currentVersion>
+
+  <organization>
+    <name>LogicBlaze, Inc.</name>
+    <url>http://logicblaze.com</url>
+    <logo>http://logicblaze.com/images/logo.jpg</logo>
+  </organization>
+
+  <inceptionYear>2005</inceptionYear>
+
+  <package>org.servicemix</package>
+  <packageGroups>
+    <packageGroup>
+      <title>ServiceMix Core APIs</title>
+      <packages>org.servicemix</packages>
+    </packageGroup>
+    <packageGroup>
+      <title>JBI Client API</title>
+      <packages>org.servicemix.client</packages>
+    </packageGroup>
+    <packageGroup>
+      <title>JBI Components</title>
+      <packages>org.servicemix.components.*</packages>
+    </packageGroup>
+    <packageGroup>
+      <title>JBI Container</title>
+      <packages>org.servicemix.jbi.container</packages>
+    </packageGroup>
+    <packageGroup>
+      <title>Normalized Message Router</title>
+      <packages>org.servicemix.jbi.nmr</packages>
+    </packageGroup>
+    <packageGroup>
+      <title>Message Router Dispatching</title>
+      <packages>org.servicemix.jbi.nmr.flow.*</packages>
+    </packageGroup>
+    <packageGroup>
+      <title>Normalized Message Service implemenation</title>
+      <packages>org.servicemix.jbi.messaging</packages>
+    </packageGroup>
+    <packageGroup>
+      <title>Endpoint resolving and choosing strategies</title>
+      <packages>org.servicemix.jbi.resolver</packages>
+    </packageGroup>
+    <packageGroup>
+      <title>JAXP utilities</title>
+      <packages>org.servicemix.jbi.jaxp</packages>
+    </packageGroup>
+    <packageGroup>
+      <title>JBI Container implementation</title>
+      <packages>org.servicemix.jbi:org.servicemix.jbi.*</packages>
+    </packageGroup>
+  </packageGroups>
+
+  <shortDescription>ServiceMix is an open source ESB</shortDescription>
+
+  <gumpRepositoryId>servicemix</gumpRepositoryId>
+
+  <description>
+    ServiceMix is an open source ESB based on the Java Business
+    Integration framework - JSR-208
+  </description>
+
+  <url>http://www.servicemix.org/</url>
+  <issueTrackingUrl>http://jira.logicblaze.com/browse/SM</issueTrackingUrl>
+
+  <siteAddress>beaver.codehaus.org</siteAddress>
+  <siteDirectory>/home/projects/servicemix/public_html/maven/${pom.artifactId}</siteDirectory>
+  <distributionDirectory>/home/projects/servicemix/dist</distributionDirectory>
+
+  <repository>
+    <connection>scm:svn:svn://svn.servicemix.org/servicemix/scm/servicemix/trunk</connection>
+    <developerConnection>scm:svn:svn+ssh://svn.servicemix.org/servicemix/scm/servicemix/trunk</developerConnection>
+    <url>http://svn.servicemix.codehaus.org/trunk/</url>
+  </repository>
+
+  <mailingLists>
+    <mailingList>
+      <name>ServiceMix Developer List</name>
+      <subscribe>dev-subscribe@servicemix.codehaus.org</subscribe>
+      <unsubscribe>dev-unsubscribe@servicemix.codehaus.org</unsubscribe>
+      <!--
+      <archive>http://archive.servicemix.codehaus.org/dev/</archive>
+      -->
+      <archive>http://dir.gmane.org/gmane.comp.java.servicemix.devel</archive>
+    </mailingList>
+    <mailingList>
+      <name>ServiceMix User List</name>
+      <subscribe>user-subscribe@servicemix.codehaus.org</subscribe>
+      <unsubscribe>user-unsubscribe@servicemix.codehaus.org</unsubscribe>
+      <!--
+      <archive>http://archive.servicemix.codehaus.org/user/</archive>
+      -->
+      <archive>http://dir.gmane.org/gmane.comp.java.servicemix.user</archive>
+    </mailingList>
+    <mailingList>
+      <name>ServiceMix SCM List</name>
+      <subscribe>scm-subscribe@servicemix.codehaus.org</subscribe>
+      <unsubscribe>scm-unsubscribe@servicemix.codehaus.org</unsubscribe>
+      <archive>http://archive.servicemix.codehaus.org/scm/</archive>
+    </mailingList>
+  </mailingLists>
+
+
+  <versions>
+    <version>
+      <id>1.0-M1</id>
+      <name>1.0-M1</name>
+      <tag>SERVICEMIX_1_0_M1</tag>
+    </version>
+    <version>
+      <id>1.0-M2</id>
+      <name>1.0-M2</name>
+      <tag>SERVICEMIX_1_0_M2</tag>
+    </version>
+    <version>
+      <id>1.0</id>
+      <name>1.0</name>
+      <tag>SERVICEMIX_1_0</tag>
+    </version>
+    <version>
+      <id>1.0.1</id>
+      <name>1.0.1</name>
+      <tag>SERVICEMIX_1_0_1</tag>
+    </version>
+    <version>
+      <id>1.1</id>
+      <name>1.1</name>
+      <tag>SERVICEMIX_1_1</tag>
+    </version>
+    <version>
+      <id>2.0</id>
+      <name>2.0</name>
+      <tag>SERVICEMIX_2_0</tag>
+    </version>
+    <version>
+      <id>2.0.1</id>
+      <name>2.0.1</name>
+      <tag>SERVICEMIX_2_0_1</tag>
+    </version>
+  </versions>
+  <branches>
+  </branches>
+
+  <developers>
+    <developer>
+      <name>Rob Davies</name>
+      <id>rajdavies</id>
+      <email>rajdavies@gmail.com</email>
+      <organization>Exist Labs</organization>
+    </developer>
+    <developer>
+      <name>James Strachan</name>
+      <id>jstrachan</id>
+      <email>jstrachan@logicblaze.com</email>
+      <organization>LogicBlaze</organization>
+    </developer>
+    <developer>
+      <name>Hiram Chirino</name>
+      <id>chirino</id>
+      <email>hiram@logicblaze.com</email>
+      <organization>LogicBlaze</organization>
+    </developer>
+    <developer>
+      <name>Dan Diephouse</name>
+      <id>dandiep</id>
+      <email>dandiep@codehaus.org</email>
+    </developer>
+    <developer>
+      <name>Philip Dodds</name>
+      <id>pdodds</id>
+      <email>pdodds@unity-systems.com</email>
+      <organization>Unity Systems</organization>
+    </developer>
+    <developer>
+      <name>Jonas Lim</name>
+      <id>jlim</id>
+      <email>jlim@exist.com</email>
+    </developer>
+    <developer>
+      <name>Fritz Oconer</name>
+      <id>foconer</id>
+      <email>foconer@exist.com</email>
+    </developer>
+    <developer>
+      <name>Joseph Gapuz</name>
+      <id>jgapuz</id>
+      <email>jgapuz@exist.com</email>
+    </developer>
+    <developer>
+      <name>Patrick Villacorta</name>
+      <id>pvillacorta</id>
+      <email>pvillacorta@exist.com</email>
+    </developer>
+    <developer>
+      <name>Darwin Flores</name>
+      <id>dflores</id>
+      <email>dflores@exist.com</email>
+    </developer>
+    <developer>
+      <name>Merwin Yap</name>
+      <id>myap</id>
+      <email>myap@exist.com</email>
+    </developer>
+    <developer>
+      <name>Guillaume Nodet</name>
+      <id>gnt</id>
+      <email>gnodet@logicblaze.com</email>
+      <organization>LogicBlaze</organization>
+    </developer>
+  </developers>
+
+  <contributors>
+    <contributor>
+      <name>George Gastaldi</name>
+    </contributor>
+  </contributors>
+
+  <dependencies>
+  </dependencies>
+
+  <build>
+    <nagEmailAddress>scm@servicemix.codehaus.org</nagEmailAddress>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
+
+    <integrationUnitTestSourceDirectory/>
+    <aspectSourceDirectory/>
+
+    <unitTest>
+      <resources>
+        <resource>
+            <directory>src/test/resources</directory>
+          <includes>
+            <include>**/*</include>
+          </includes>
+        </resource>
+      </resources>
+      <includes>
+        <include>**/*Test.*</include>
+      </includes>
+      <excludes>
+        <!--  exclude abstract tests -->
+        <exclude>**/Abstract*Test.*</exclude>
+      </excludes>
+    </unitTest>
+
+    <resources>
+      <resource>
+          <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
+
+  <reports>
+    <report>maven-jdepend-plugin</report>
+    <report>maven-checkstyle-plugin</report>
+    <report>maven-simian-plugin</report>
+    <report>maven-faq-plugin</report>
+    <report>maven-changes-plugin</report>
+
+    <!-- clover seems to break the CI tool
+      <report>maven-cobertura-plugin</report>
+    -->
+    <report>maven-changelog-plugin</report>
+    <report>maven-file-activity-plugin</report>
+    <report>maven-developer-activity-plugin</report>
+    <report>maven-javadoc-plugin</report>
+    <report>maven-jxr-plugin</report>
+    <report>maven-junit-report-plugin</report>
+    <report>maven-tasklist-plugin</report>
+    <report>maven-pmd-plugin</report>
+
+  </reports>
+  
+</project>

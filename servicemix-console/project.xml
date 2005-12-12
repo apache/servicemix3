@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE project>
+<project>
+    <pomVersion>3</pomVersion>
+    <extend>${basedir}/../etc/project.xml</extend>
+
+    <name>ServiceMix :: Console</name>
+    <id>servicemix-console</id>
+    <shortDescription>ServiceMix Console</shortDescription>
+    <description>ServiceMix Console</description>
+  
+    <package>org.servicemix.console</package>
+    <packageGroups>
+      <packageGroup>
+        <title>ServiceMix Console</title>
+        <packages>org.servicemix.console</packages>
+      </packageGroup>
+    </packageGroups>
+ 
+    <!-- ============ -->
+    <!-- Dependencies -->
+    <!-- ============ -->
+    <dependencies>
+    
+      <dependency>
+        <groupId>servicemix</groupId>
+        <artifactId>servicemix-jbi</artifactId>
+        <version>${pom.currentVersion}</version>
+        <properties>
+          <eclipse.dependency>true</eclipse.dependency>
+                <war.bundle>true</war.bundle>
+        </properties>
+      </dependency>
+      <dependency>
+        <groupId>servicemix</groupId>
+        <artifactId>servicemix-core</artifactId>
+        <version>${pom.currentVersion}</version>
+        <properties>
+          <eclipse.dependency>true</eclipse.dependency>
+                <war.bundle>true</war.bundle>
+        </properties>
+      </dependency>
+      <dependency>
+        <groupId>springframework</groupId>
+        <artifactId>spring</artifactId>
+        <version>${spring_version}</version>
+        <properties>
+          <war.bundle>true</war.bundle>
+        </properties>
+      </dependency>
+    <dependency>
+      <id>geronimo-spec+jta</id>
+      <version>${geronimo_spec_jta_version}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>geronimo-spec</groupId>
+      <artifactId>geronimo-spec-activation</artifactId>
+      <version>${geronimo_spec_activation_version}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>backport-util-concurrent</groupId>
+      <artifactId>backport-util-concurrent</artifactId>
+      <version>${backport_util_concurrent_version}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>${commons_logging_version}</version>
+      <url>http://jakarta.apache.org/commons/logging/</url>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+        <dependency>
+            <groupId>javax.portlet</groupId>
+            <artifactId>portlet-api</artifactId>
+            <version>${portlet_api_version}</version>
+            <properties>
+                <war.bundle>false</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pluto</groupId>
+            <artifactId>pluto</artifactId>
+            <version>${pluto_version}</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+         </dependency>
+        <dependency>
+            <groupId>org.apache.pluto</groupId>
+            <artifactId>pluto-portal</artifactId>
+            <version>${pluto_version}</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+         </dependency>
+        <dependency>
+            <groupId>org.apache.pluto</groupId>
+            <artifactId>pluto-descriptors</artifactId>
+            <version>${pluto_version}</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+         </dependency>
+
+        <dependency>
+            <groupId>commons-el</groupId>
+            <artifactId>commons-el</artifactId>
+            <version>${commons_el_version}</version>
+            <url>http://jakarta.apache.org/commons/el/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>       
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>${jstl_version}</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>       
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <version>${standard_taglibs_version}</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>        
+        <dependency>
+            <groupId>castor</groupId>
+            <artifactId>castor</artifactId>
+            <version>${castor_version}</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>geronimo-spec</groupId>
+            <artifactId>geronimo-spec-j2ee-connector</artifactId>
+            <version>${geronimo_spec_j2ee_connector_version}</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+                
+    </dependencies>  
+
+</project>

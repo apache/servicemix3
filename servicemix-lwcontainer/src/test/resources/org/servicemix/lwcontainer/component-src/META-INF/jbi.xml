@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- START SNIPPET: jbi -->
+<jbi xmlns="http://java.sun.com/xml/ns/jbi" 
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+     xsi:schemaLocation="http://java.sun.com/xml/ns/jbi" 
+     version="1.0">
+
+  <component type="service-engine">
+    <identification>
+      <name>servicemix-component</name>
+      <description>A ServiceMix Component that can be used to deploy servicemix.xml artifacts.</description>
+    </identification>
+    <component-class-name>org.servicemix.components.servicemix.ServiceMixComponent</component-class-name>
+    <component-class-path/>
+  </component>
+
+</jbi>
+<!-- END SNIPPET: jbi -->

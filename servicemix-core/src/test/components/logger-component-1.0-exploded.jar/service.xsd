@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sun.com/ns/jbi/engines/transformation/deploy/service-config" targetNamespace="http://www.sun.com/ns/jbi/engines/transformation/deploy/service-config" elementFormDefault="qualified">
+	<xsd:complexType name="qnameType">
+		<xsd:sequence>
+			<xsd:element name="namespace-uri" type="xsd:anyURI"/>
+			<xsd:element name="local-part" type="xsd:NCName"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="service-list">
+		<xsd:complexType>
+			<xsd:sequence>
+				<!-- Service Metadata Information -->
+				<xsd:element name="service">
+					<xsd:complexType>
+						<xsd:sequence>
+							<!-- Service NAme in QName format -->
+							<xsd:element name="service-name" type="qnameType"/>
+							<!-- endpoint-name Name of the Jbi local endpoint for this service -->
+							<xsd:element name="endpoint-name" type="xsd:string"/>
+							<!-- service-description Service Description -->
+							<xsd:element name="service-description" type="xsd:string" minOccurs="0"/>
+							<!-- create-cache - Whether to catche the xml stylesheet or not.-->
+							<xsd:element name="create-cache" type="xsd:string"/>
+							<!-- service-id - Unique ID representing this service.-->
+							<xsd:element name="service-id" type="xsd:string"/>
+							<!-- Elements for Non XML data parsing -->
+							<!-- column-separator - This is the column separator for non XML data. It should be a character generally not found in
+						  the input data. The default value can be a semi colon (;)-->
+							<xsd:element name="column-separator" type="xsd:string" default=";" minOccurs="0"/>
+							<!-- first-row-col-headers - This element decides if the first row in the input data should be trated asColumn Headers. -->
+							<xsd:element name="first-row-col-headers" type="xsd:string" minOccurs="0"/>
+							<!-- column-headers  Optional element. If present denotes that following column headers should be used for input data. -->
+							<xsd:element name="column-headers" minOccurs="0">
+								<xsd:complexType>
+									<xsd:sequence>
+										<!-- column-header Name of the column -->
+										<xsd:element name="column-header" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

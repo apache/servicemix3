@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://xbean.org/schemas/spring/1.0"
+	   xmlns:spring="http://xbean.org/schemas/spring/1.0"
+	   xmlns:sm="http://servicemix.org/config/1.0" 
+	   xmlns:foo="http://servicemix.org/cheese/">
+
+  <!-- the JBI container -->
+  <sm:container spring:id="jbi" flowName="st">
+    <sm:activationSpecs>
+
+      <!-- chaining router -->
+      <sm:activationSpec componentName="receiver" service="foo:receiver">
+      	<sm:component>
+	        <bean class="org.servicemix.components.groovy.GroovyComponent">
+        		<property name="scriptText">
+          			<value><![CDATA[
+
+println "Called with inbound message $inMessage"
+
+// lets output some message properties
+def me1 = deliveryChannel.createExchangeFactoryForService(new javax.xml.namespace.QName("http://servicemix.org/cheese/", "service1")).createInOutExchange()
+def in1 = me1.createMessage()
+in1.bodyText = inMessage.bodyText
+me1.setMessage(in1, "in")
+deliveryChannel.sendSync(me1)
+println "Received: " + me1.getMessage("out").bodyText
+
+// lets output some message properties
+def me2 = deliveryChannel.createExchangeFactoryForService(new javax.xml.namespace.QName("http://servicemix.org/cheese/", "service2")).createInOutExchange()
+def in2 = me2.createMessage()
+in2.bodyText = me1.getMessage("out").bodyText
+me2.setMessage(in2, "in")
+deliveryChannel.sendSync(me2)
+println "Received: " + me2.getMessage("out").bodyText
+
+// lets output some non-xml body
+outMessage.bodyText = me2.getMessage("out").bodyText
+
+            		]]></value>
+            	</property>
+            </bean>
+        </sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec componentName="service1"
+        service="foo:service1">
+        <sm:component>
+          <bean class="org.servicemix.components.groovy.GroovyComponent">
+            <property name="scriptText">
+              <value>
+                <![CDATA[
+
+// lets output some message properties
+println "In Service1"
+def txt = inMessage.bodyText
+println "Content: " + txt
+
+// lets output some non-xml body
+outMessage.bodyText = txt.replace("world", "<service1>world</service1>")
+                ]]>
+              </value>
+            </property>
+          </bean>
+        </sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec componentName="service2"
+        service="foo:service2">
+        <sm:component>
+          <bean class="org.servicemix.components.groovy.GroovyComponent">
+            <property name="scriptText">
+              <value>
+                <![CDATA[
+
+// lets output some message properties
+println "In Service2"
+def txt = inMessage.bodyText
+println "Content: " + txt
+
+// lets output some non-xml body
+outMessage.bodyText = """
+<service2>
+  <![CDATA[
+     $txt
+  ]""" + """]>
+</service2>
+"""
+                ]]>
+              </value>
+            </property>
+          </bean>
+        </sm:component>
+      </sm:activationSpec>
+
+    </sm:activationSpecs>
+  </sm:container>
+
+
+  <!-- START SNIPPET: client -->
+  <bean id="client" class="org.servicemix.client.DefaultServiceMixClient">
+    <constructor-arg ref="jbi" />
+  </bean>
+  <!-- END SNIPPET: client -->
+
+  <!-- lets hardwire this client to talk to instances of a service by default -->
+  <!-- START SNIPPET: clientroute -->
+  <bean id="clientWithRouting" class="org.servicemix.client.DefaultServiceMixClient">
+    <constructor-arg ref="jbi" />
+    <constructor-arg>
+      <sm:activationSpec destinationService="foo:receiver"/>
+    </constructor-arg>
+  </bean>
+  <!-- END SNIPPET: clientroute -->
+
+
+</beans>

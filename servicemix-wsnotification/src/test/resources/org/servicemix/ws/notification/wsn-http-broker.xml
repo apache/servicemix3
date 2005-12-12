@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.org/config/1.0" 
+       xmlns:jsr181="http://servicemix.org/jsr181/1.0"
+       xmlns:demo="http://servicemix.org/demo"
+       xmlns:wsn="http://docs.oasis-open.org/wsn/2004/06/wsn-WS-BrokeredNotification-1.2-draft-01.wsdl">
+
+  <!-- the JBI container -->
+  <sm:container id="jbi" embedded="true" monitorInstallationDirectory="false" flowName="st">
+    <sm:activationSpecs>
+
+      <sm:activationSpec service="demo:brokerInOut" destinationService="wsn:JBINotificationBroker">
+        <sm:component><bean class="org.servicemix.components.http.HttpSoapConnector">
+          <property name="host" value="localhost"/>
+          <property name="port" value="8912"/>
+          <property name="defaultInOut" value="true"/>
+        </bean></sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec service="demo:brokerInOnly" destinationService="wsn:JBINotificationBroker">
+        <sm:component><bean class="org.servicemix.components.http.HttpSoapConnector">
+          <property name="host" value="localhost"/>
+          <property name="port" value="8911"/>
+          <property name="defaultInOut" value="false"/>
+        </bean></sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec service="demo:subscriber">
+        <sm:component><bean class="org.servicemix.components.http.HttpSoapInvoker">
+          <property name="url" value="http://localhost:8913"/>
+          <property name="defaultInOut" value="false"/>
+        </bean></sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec>
+        <sm:component>
+          <jsr181:component>
+            <jsr181:endpoints>
+              <jsr181:endpoint>
+                <jsr181:pojo>
+                  <bean class="org.servicemix.ws.notification.JBINotificationBroker">
+                    <constructor-arg>
+                      <bean class="org.activemq.ActiveMQConnectionFactory">
+                        <property name="brokerURL" value="vm://localhost"/>
+                        <property name="useEmbeddedBroker" value="true"/>
+                        <property name="brokerXmlConfig" value="broker-vmpersistence.xml"/>
+                      </bean>
+                    </constructor-arg>
+                  </bean>
+                </jsr181:pojo>
+              </jsr181:endpoint>
+            </jsr181:endpoints>
+          </jsr181:component>
+        </sm:component>
+      </sm:activationSpec>
+      
+    </sm:activationSpecs>
+  </sm:container>
+
+</beans>

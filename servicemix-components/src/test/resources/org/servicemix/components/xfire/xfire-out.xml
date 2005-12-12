@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.org/config/1.0" 
+	   xmlns:xfire="http://xfire.components.servicemix.org">
+
+  <!-- the JBI container -->
+  <sm:container id="jbi">
+    <sm:activationSpecs>
+      <sm:activationSpec componentName="sender" endpoint="sender" service="xfire:sender" destinationService="xfire:OneWayService">
+        <sm:component><bean class="org.servicemix.tck.SenderComponent"/></sm:component>
+      </sm:activationSpec>
+
+      <!-- START SNIPPET: xfire -->
+      <sm:activationSpec componentName="binding" service="xfire:OneWayService">
+        <sm:component><bean class="org.servicemix.components.xfire.XFireOutBinding">
+          <property name="xfire" ref="xfire"/>
+        </bean></sm:component>
+      </sm:activationSpec>
+      <!-- END SNIPPET: xfire -->
+    </sm:activationSpecs>
+  </sm:container>
+
+  <!-- The Service Bean -->
+  <bean id="xfireReceiverService" class="org.servicemix.components.xfire.OneWayService" singleton="true"/>
+
+  <bean id="client" class="org.servicemix.client.DefaultServiceMixClient">
+    <constructor-arg ref="jbi"/>
+  </bean>
+  
+  <bean id="messageServiceFactory" 
+        class="org.codehaus.xfire.service.binding.ObjectServiceFactory"
+        singleton="true">
+    <constructor-arg index="0">
+        <ref bean="xfire.transportManager"/>
+    </constructor-arg>
+    <constructor-arg index="1">
+        <ref bean="xfire.aegisBindingProvider"/>
+    </constructor-arg>
+    <property name="voidOneWay" value="true"/>
+    <property name="style" value="message"/>
+  </bean>
+  
+  <bean name="OneWayService" class="org.codehaus.xfire.spring.ServiceBean">
+    <property name="service" ref="xfireReceiverService"/>
+    <property name="serviceFactory" ref="messageServiceFactory"/>
+    <property name="xfire" ref="xfire"/>
+  </bean>
+
+</beans>
+
+
+

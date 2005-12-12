@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<j:whitespace xmlns:j="jelly:core" xmlns:util="jelly:util" xmlns:x="jelly:xml"
+	xmlns:ant="jelly:ant" xmlns="dummy" trim="true">
+  <x:element URI="http://java.sun.com/xml/ns/jbi" name="jbi">
+		<x:attribute name="xmlns" trim="true">http://java.sun.com/xml/ns/jbi</x:attribute>
+    <x:attribute name="xmlns:xsi" trim="true">http://www.w3.org/2001/XMLSchema-instance</x:attribute>
+    <x:attribute name="xsi:schemaLocation" trim="true">http://java.sun.com/xml/ns/jbi ../jbi.xsd</x:attribute>
+    <x:attribute name="version" trim="true">1.0</x:attribute>
+    
+    <component type="${jbi.component.type}">
+        <identification>
+            <name>${pom.artifactId}</name>
+            <description>${pom.description}</description>
+        </identification>
+        <j:set var="componentName" value="${jbi.component.class.name}"/>
+        <j:set var="componentJar" value="lib/${maven.final.name}.jar"/>
+        <j:if test="${componentName!=null}">
+          <component-class-name description="Component Implementation" >${componentName}</component-class-name>
+          <component-class-path>
+			      <path-element>${componentJar}</path-element>        
+	          <j:forEach var="lib" items="${pom.artifacts}">
+       			  <j:set var="dep" value="${lib.dependency}"/> 
+	        	  <j:if test="${dep.getProperty('jbi.bundle')=='true'}">   
+					      <j:set var="libname" value="lib/${lib.file.name}"/>
+	              <path-element>${libname}</path-element>
+              </j:if>
+            </j:forEach>
+          </component-class-path>
+        </j:if>
+        <j:set var="bootstrapName" value="${jbi.bootstrap.class.name}"/>
+        <j:if test="${bootstrapName!=null}">
+          <bootstrap-class-name>${bootstrapName}</bootstrap-class-name>
+          <bootstrap-class-path>
+			      <path-element>${componentJar}</path-element>   
+	          <j:forEach var="lib" items="${pom.artifacts}">
+       			  <j:set var="dep" value="${lib.dependency}"/> 
+	        	  <j:if test="${dep.getProperty('jbi.bundle')=='true' &amp;&amp; dep.getProperty('jbi.bootstrap')=='true'}">   
+					      <j:set var="libname" value="lib/${lib.file.name}"/>
+	              <path-element>${libname}</path-element>
+              </j:if>
+            </j:forEach>
+          </bootstrap-class-path>
+        </j:if>           
+    </component>
+	  <util:file var="servicesFile" name="${jbi.merge.directory}/services.xml"/>
+    <j:if test="${servicesFile.exists()}">
+     <util:loadText file="${servicesFile}" var="services"/>
+     ${services}
+    </j:if>     
+  </x:element> 	
+</j:whitespace>

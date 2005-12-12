@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="Service-RM" targetNamespace="http://servicemix.org/wspojo/rm/"
+  xmlns:tns="http://servicemix.org/wspojo/rm/"
+  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+  xmlns:rm="http://schemas.xmlsoap.org/ws/2005/02/rm"
+  xmlns:rmw="http://schemas.xmlsoap.org/ws/2005/02/rm/wsdl"
+  >
+  <wsdl:import namespace="http://schemas.xmlsoap.org/ws/2005/02/rm/wsdl"
+    location="ws-rm.wsdl">
+  </wsdl:import>
+  <wsdl:types>
+    <xs:schema>
+      <xs:import namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" schemaLocation="http://schemas.xmlsoap.org/ws/2005/02/rm/wsrm.xsd"/>
+      <xs:import namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" schemaLocation="http://schemas.xmlsoap.org/ws/2005/02/rm/wsrm.xsd"/>
+      <xs:import namespace="http://schemas.xmlsoap.org/ws/2005/02/rm/policy" schemaLocation="http://schemas.xmlsoap.org/ws/2005/02/rm/wsrm-policy.xsd"/>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:binding name="SequenceAbstractSOAP"
+    type="rmw:SequenceAbsractPortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"
+      style="document" />
+    <wsdl:operation name="CreateSequence">
+      <soap:operation />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TerminateSequence">
+      <soap:operation />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SequenceAbstractService">
+    <wsdl:port name="SOAP" binding="tns:SequenceAbstractSOAP">
+         <soap:address location="http://www.example.org/" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

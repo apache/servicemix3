@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="urlMap">
+            <map>
+                <entry key="/Echo11Service">
+                    <ref bean="echo11"/>
+                </entry>
+                <entry key="/Echo12Service">
+                    <ref bean="echo12"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+    <!-- Declare a parent bean with all properties common to both services -->
+    <bean id="echoParent" class="org.codehaus.xfire.spring.XFireExporter" abstract="true">
+        <property name="serviceFactory">
+            <ref bean="xfire.serviceFactory"/>
+        </property>
+        <property name="xfire">
+            <ref bean="xfire"/>
+        </property>
+        <property name="service">
+            <ref bean="echo"/>
+        </property>
+        <property name="serviceInterface">
+            <value>org.codehaus.xfire.spring.example.Echo</value>
+        </property>
+    </bean>
+    <!-- By default, the XFireExporter exposes services as SOAP v1.1 wrapped/literal -->
+    <bean id="echo11" parent="echoParent">
+    </bean>
+    <!-- Here is an example of a Soap v1.2 service -->
+    <bean id="echo12" parent="echoParent">
+        <property name="soapVersion">
+            <bean class="org.codehaus.xfire.soap.Soap12"/>
+        </property>
+    </bean>
+</beans>

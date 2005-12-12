@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://xbean.org/schemas/spring/1.0" 
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	   xmlns:sm="http://servicemix.org/config/1.0"
+	   xmlns:lb="http://servicemix.org/demos/loan-broker"
+	   xsi:schemaLocation="http://xbean.org/schemas/spring/1.0 ../../conf/spring-beans.xsd 
+	                       http://servicemix.org/config/1.0 ../../conf/servicemix.xsd">
+	                       
+	<sm:container id="jbi"
+	              monitorInstallationDirectory="true"
+	              createMBeanServer="true"
+	              useMBeanServer="true"
+                dumpStats="true" 
+                statsInterval="10">
+		<sm:activationSpecs>
+		
+		  <!-- In/out binding -->
+		  <sm:activationSpec componentName="loanBrokerJmsBinding"
+		                     destinationService="lb:loan-broker">
+		    <sm:component>
+		      <bean class="org.servicemix.components.jms.JmsServiceComponent">
+		        <property name="template">
+		          <bean class="org.springframework.jms.core.JmsTemplate">
+		            <property name="connectionFactory" ref="jmsFactory" />
+					<property name="defaultDestinationName" value="demo.org.servicemix.source" />
+					<property name="pubSubDomain" value="false" />
+		          </bean>
+		        </property>
+		      </bean>
+		    </sm:component>
+		  </sm:activationSpec>
+		
+		  <!-- Loan broker component -->
+		  <sm:activationSpec componentName="loanBroker" 
+                             service="lb:loan-broker">
+		    <sm:component>
+		      <bean class="loanbroker.LoanBroker" />
+		    </sm:component>
+		  </sm:activationSpec>
+		  
+		  <!-- Credit Agency -->
+		  <sm:activationSpec componentName="creditAgency"
+		                     service="lb:credit-agency">
+		    <sm:component>
+		      <bean class="loanbroker.CreditAgency" />
+		    </sm:component>
+		  </sm:activationSpec>
+		  
+		  <!-- Lender Gateway -->
+		  <sm:activationSpec componentName="lenderGateway"
+		                     service="lb:lender-gateway">
+		    <sm:component>
+		      <bean class="loanbroker.LenderGateway" />
+		    </sm:component>
+		  </sm:activationSpec>
+		  
+		  <!-- Banks -->
+		  <sm:activationSpec componentName="bank1" service="lb:bank1">
+		    <sm:component><bean class="loanbroker.Bank" /></sm:component>
+		  </sm:activationSpec>
+		  <sm:activationSpec componentName="bank2" service="lb:bank2">
+		    <sm:component><bean class="loanbroker.Bank" /></sm:component>
+		  </sm:activationSpec>
+		  <sm:activationSpec componentName="bank3" service="lb:bank3">
+		    <sm:component><bean class="loanbroker.Bank" /></sm:component>
+		  </sm:activationSpec>
+		  <sm:activationSpec componentName="bank4" service="lb:bank4">
+		    <sm:component><bean class="loanbroker.Bank" /></sm:component>
+		  </sm:activationSpec>
+		  <sm:activationSpec componentName="bank5" service="lb:bank5">
+		    <sm:component><bean class="loanbroker.Bank" /></sm:component>
+		  </sm:activationSpec>
+		  
+		</sm:activationSpecs>
+	</sm:container>                
+	                       
+	<bean id="transactionContextManager" class="org.jencks.factory.TransactionContextManagerFactoryBean"/>
+	<bean id="transactionManager" class="org.jencks.factory.GeronimoTransactionManagerFactoryBean" />
+
+	<bean id="jmsFactory" class="org.activemq.pool.PooledConnectionFactory">
+		<property name="connectionFactory">
+			<bean class="org.activemq.ActiveMQConnectionFactory">
+				<property name="brokerURL" value="reliable:(tcp://localhost:61616)" />
+			</bean>
+		</property>
+	</bean>
+
+</beans>

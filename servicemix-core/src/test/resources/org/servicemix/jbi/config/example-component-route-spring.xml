@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+  <!-- the JBI container -->
+  <bean id="jbi" class="org.servicemix.jbi.container.SpringJBIContainer">
+    <property name="activationSpecs">
+      <list>
+        <bean class="org.servicemix.jbi.container.ActivationSpec">
+          <property name="id" value="sender"/>
+          <property name="endpoint" value="sender"/>
+          <property name="service" ref="senderServiceName"/>
+          <property name="component">
+            <bean class="org.servicemix.tck.SenderComponent">
+              <property name="resolver">
+                <bean class="org.servicemix.jbi.resolver.ServiceNameEndpointResolver">
+                  <property name="serviceName" ref="pipelineServiceName"/>
+                </bean>
+              </property>
+            </bean>
+          </property>
+        </bean>
+
+        <bean class="org.servicemix.jbi.container.ActivationSpec">
+          <property name="id" value="transformer"/>
+          <property name="endpoint" value="transformer"/>
+          <property name="service" ref="transformerServiceName"/>
+          <property name="component">
+            <!-- the transformation -->
+            <bean class="org.servicemix.components.util.MockServiceComponent">
+  			  <property xmlns="" name="responseProperties">
+			    <map>
+				  <entry key="foo" value="hello"/>
+				  <entry key="someList">
+				    <list>
+					  <value type="java.lang.Integer">1</value>
+					  <value type="java.lang.Integer">2</value>
+					  <value type="java.lang.Integer">3</value>
+				    </list>
+				  </entry>
+			    </map>
+			  </property>
+		      <property xmlns="" name="responseXml">
+			    <value><![CDATA[ <hello/> ]]></value>
+			  </property>
+            </bean>
+          </property>
+        </bean>
+
+        <bean class="org.servicemix.jbi.container.ActivationSpec">
+          <property name="id" value="receiver"/>
+          <property name="service" ref="receiverServiceName"/>
+          <property name="endpoint" value="receiver"/>
+
+          <!-- no need to specify service on this POJO as it is hard coded -->
+          <property name="component">
+            <bean class="org.servicemix.tck.ReceiverComponent"/>
+          </property>
+        </bean>
+
+        <bean class="org.servicemix.jbi.container.ActivationSpec">
+          <property name="id" value="pipeline"/>
+          <property name="endpoint" value="pipeline"/>
+          <property name="service" ref="pipelineServiceName"/>
+          <property name="component">
+            <bean class="org.servicemix.components.util.PipelineComponent">
+              <property name="requestResponseServiceName" ref="transformerServiceName"/>
+              <property name="outputEndpointServiceName" ref="receiverServiceName"/>
+            </bean>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <!-- QNames - would be nice to have an easier way of doing this -->
+  <bean id="senderServiceName" class="javax.xml.namespace.QName">
+    <constructor-arg value="http://servicemix.org/cheese/"/>
+    <constructor-arg value="sender"/>
+  </bean>
+
+  <bean id="pipelineServiceName" class="javax.xml.namespace.QName">
+    <constructor-arg value="http://servicemix.org/cheese/"/>
+    <constructor-arg value="pipeline"/>
+  </bean>
+
+  <bean id="transformerServiceName" class="javax.xml.namespace.QName">
+    <constructor-arg value="http://servicemix.org/cheese/"/>
+    <constructor-arg value="transformer"/>
+  </bean>
+
+  <bean id="receiverServiceName" class="javax.xml.namespace.QName">
+    <constructor-arg value="http://servicemix.org/cheese/"/>
+    <constructor-arg value="receiver"/>
+  </bean>
+</beans>

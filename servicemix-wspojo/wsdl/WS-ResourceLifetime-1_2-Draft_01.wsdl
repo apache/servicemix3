@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+
+<wsdl:definitions
+   name="WS-ResourceLifetime"
+   targetNamespace="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceLifetime-1.2-draft-01.wsdl"
+   xmlns="http://schemas.xmlsoap.org/wsdl/"
+   xmlns:wsa="http://schemas.xmlsoap.org/ws/2003/03/addressing"
+   xmlns:wsbf="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-BaseFaults-1.2-draft-01.xsd"
+   xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+   xmlns:wsrl="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceLifetime-1.2-draft-01.xsd"
+   xmlns:wsrlw="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceLifetime-1.2-draft-01.wsdl"
+   xmlns:wsrp="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties-1.2-draft-01.xsd"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+   <wsdl:types>
+      <xsd:schema
+         xmlns="http://www.w3.org/2001/XMLSchema"
+         targetNamespace="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceLifetime-1.2-draft-01.xsd"
+         elementFormDefault="qualified">
+         
+         <xsd:include schemaLocation="WS-ResourceLifetime-1_2-Draft_01.xsd"/>
+         
+         <xsd:import namespace="http://schemas.xmlsoap.org/ws/2003/03/addressing" 
+                     schemaLocation="WS-Addressing-2003_03.xsd"/>
+         
+         <xsd:import namespace="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-BaseFaults-1.2-draft-01.xsd"
+                     schemaLocation="WS-BaseFaults-1_2-Draft_01.xsd"/>
+                     
+         <!-- ==== Resource Properties for ScheduledResourceTermination ==== -->
+         <xsd:element name="ScheduledResourceTerminationRP">
+            <xsd:complexType>
+               <xsd:sequence>
+                  <xsd:element maxOccurs="1" minOccurs="1" ref="wsrl:CurrentTime"/>
+                  <xsd:element maxOccurs="1" minOccurs="1" ref="wsrl:TerminationTime"/>
+               </xsd:sequence>
+            </xsd:complexType>
+         </xsd:element>
+         <!-- ====== Message Types for ImmediateResourceTermination  ======= -->
+         <xsd:element name="Destroy">
+            <xsd:complexType/>
+         </xsd:element>
+         <xsd:element name="DestroyResponse">
+            <xsd:complexType/>
+         </xsd:element>
+         
+         <xsd:complexType name="ResourceUnknownFaultType">
+            <xsd:complexContent>
+               <xsd:extension base="wsbf:BaseFaultType"/>
+            </xsd:complexContent>
+         </xsd:complexType>
+         <xsd:element name="ResourceUnknownFault" type="wsrl:ResourceUnknownFaultType"/>
+         
+         <xsd:complexType name="ResourceNotDestroyedFaultType">
+            <xsd:complexContent>
+               <xsd:extension base="wsbf:BaseFaultType"/>
+            </xsd:complexContent>
+         </xsd:complexType>
+         <xsd:element
+            name="ResourceNotDestroyedFault"
+            type="wsrl:ResourceNotDestroyedFaultType"/>
+         
+         <!-- ====== Message Types for ScheduledResourceTermination  ======= -->
+         <xsd:element name="SetTerminationTime">
+            <xsd:complexType>
+               <xsd:sequence>
+                  <xsd:element
+                     name="RequestedTerminationTime"
+                     nillable="true"
+                     type="xsd:dateTime"/>
+               </xsd:sequence>
+            </xsd:complexType>
+         </xsd:element>
+         <xsd:element name="SetTerminationTimeResponse">
+            <xsd:complexType>
+               <xsd:sequence>
+                  <xsd:element name="NewTerminationTime" nillable="true" type="xsd:dateTime"/>
+                  <xsd:element name="CurrentTime" type="xsd:dateTime"/>
+               </xsd:sequence>
+            </xsd:complexType>
+         </xsd:element>
+         <xsd:complexType name="UnableToSetTerminationTimeFaultType">
+            <xsd:complexContent>
+               <xsd:extension base="wsbf:BaseFaultType"/>
+            </xsd:complexContent>
+         </xsd:complexType>
+         <xsd:element
+            name="UnableToSetTerminationTimeFault"
+            type="wsrl:UnableToSetTerminationTimeFaultType"/>
+         <xsd:complexType name="TerminationTimeChangeRejectedFaultType">
+            <xsd:complexContent>
+               <xsd:extension base="wsbf:BaseFaultType"/>
+            </xsd:complexContent>
+         </xsd:complexType>
+         <xsd:element
+            name="TerminationTimeChangeRejectedFault"
+            type="wsrl:TerminationTimeChangeRejectedFaultType"/>
+      </xsd:schema>
+   </wsdl:types>
+   <wsdl:message name="DestroyResponse">
+      <wsdl:part element="wsrl:DestroyResponse" name="DestroyResponse"/>
+   </wsdl:message>
+   <wsdl:message name="SetTerminationTimeRequest">
+      <wsdl:part element="wsrl:SetTerminationTime" name="SetTerminationTimeRequest"/>
+   </wsdl:message>
+   <wsdl:message name="ResourceUnknownFault">
+      <wsdl:part element="wsrl:ResourceUnknownFault" name="ResourceUnknownFault"/>
+   </wsdl:message>
+   <wsdl:message name="DestroyRequest">
+      <wsdl:part element="wsrl:Destroy" name="DestroyRequest"/>
+   </wsdl:message>
+   <wsdl:message name="UnableToSetTerminationTimeFault">
+      <wsdl:part
+         element="wsrl:UnableToSetTerminationTimeFault"
+         name="UnableToSetTerminationTimeFault"/>
+   </wsdl:message>
+   <wsdl:message name="SetTerminationTimeResponse">
+      <wsdl:part
+         element="wsrl:SetTerminationTimeResponse"
+         name="SetTerminationTimeResponse"/>
+   </wsdl:message>
+   <wsdl:message name="ResourceNotDestroyedFault">
+      <wsdl:part
+         element="wsrl:ResourceNotDestroyedFault"
+         name="ResourceNotDestroyedFault"/>
+   </wsdl:message>
+   <wsdl:message name="TerminationTimeChangeRejectedFault">
+      <wsdl:part
+         element="wsrl:TerminationTimeChangeRejectedFault"
+         name="TerminationTimeChangeRejectedFault"/>
+   </wsdl:message>
+   
+   <wsdl:portType name="ScheduledResourceTermination" wsrp:ResourceProperties="wsrl:ScheduledResourceTerminationRP">
+      <wsdl:operation name="SetTerminationTime">
+         <wsdl:input message="wsrlw:SetTerminationTimeRequest"/>
+         <wsdl:output message="wsrlw:SetTerminationTimeResponse"/>
+         <wsdl:fault
+            message="wsrlw:UnableToSetTerminationTimeFault"
+            name="UnableToSetTerminationTimeFault"/>
+         <wsdl:fault message="wsrlw:ResourceUnknownFault" name="ResourceUnknownFault"/>
+         <wsdl:fault
+            message="wsrlw:TerminationTimeChangeRejectedFault"
+            name="TerminationTimeChangeRejectedFault"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   
+   <wsdl:portType name="ImmediateResourceTermination">
+      <wsdl:operation name="Destroy">
+         <wsdl:input message="wsrlw:DestroyRequest"/>
+         <wsdl:output message="wsrlw:DestroyResponse"/>
+         <wsdl:fault
+            message="wsrlw:ResourceNotDestroyedFault"
+            name="ResourceNotDestroyedFault"/>
+         <wsdl:fault message="wsrlw:ResourceUnknownFault" name="ResourceUnknownFault"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   
+</wsdl:definitions>

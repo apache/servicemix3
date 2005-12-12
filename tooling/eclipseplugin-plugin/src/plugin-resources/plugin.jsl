@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<j:whitespace xmlns:j="jelly:core" xmlns:util="jelly:util"
+	xmlns:ant="jelly:ant" xmlns="dummy" trim="true">
+	<![CDATA[
+        <?eclipse version="3.0"?>      
+]]>
+	<plugin id="${eclipsepluginname}" name="${pom.name}"
+		version="${pom.currentVersion}"
+		provider-name="${pom.organization.name}">
+		<runtime>
+			<ant:copy
+						file="${maven.build.dir}/${maven.final.name}.jar"
+						todir="${destination}/lib" />
+			<library name="lib/${maven.final.name}.jar">
+				<export name="*" />
+			</library>			
+			<j:forEach var="lib" items="${pom.artifacts}">			
+					<ant:copy
+						file="${pom.getDependencyPath(lib.dependency.getId())}"
+						todir="${destination}/lib" />
+					<library name="lib/${lib.file.name}">
+						<export name="*" />
+						<packages prefixes="*" />
+					</library>				
+			</j:forEach>
+		</runtime>		
+	</plugin>
+</j:whitespace>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<pomVersion>3</pomVersion>
+	<name>ServiceMix Installer</name>
+	<id>servicemix-installer</id>
+	<currentVersion>1.0</currentVersion>
+	<shortDescription>ServiceMix NSIS Installer</shortDescription>
+	<description>ServiceMix NSIS Installer</description>
+
+	<dependencies>
+		<!-- 
+			
+			TODO: Change this dependency and put all the necessary files for it to work
+			
+		<dependency>
+			<groupId>servicemix</groupId>
+			<artifactId>assembly</artifactId>
+			<version>2.0.2</version>
+		</dependency>
+		 -->
+	</dependencies>
+</project>

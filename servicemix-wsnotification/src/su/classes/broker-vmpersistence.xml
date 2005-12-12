@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC  "-//ACTIVEMQ//DTD//EN" "http://activemq.org/dtd/activemq.dtd">
+<beans>
+
+  <!-- ==================================================================== -->
+  <!-- ActiveMQ Broker Configuration -->
+  <!-- ==================================================================== -->
+  <broker>
+    <connector>
+      <serverTransport uri="vm://localhost"/>
+    </connector>
+    <persistence>
+      <vmPersistence/>
+    </persistence>
+  </broker>
+</beans>

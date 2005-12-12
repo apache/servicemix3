@@ -1,0 +1,8 @@
+<project default="default"
+    xmlns:j="jelly:core"
+    xmlns:u="jelly:util"
+    xmlns:ant="jelly:ant"
+    xmlns:util="jelly:util"
+    xmlns:artifact="artifact">
+
+</project>

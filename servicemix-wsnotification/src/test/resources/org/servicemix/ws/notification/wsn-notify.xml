@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<Notify
+	xmlns="http://docs.oasis-open.org/wsn/2004/06/wsn-WS-BaseNotification-1.2-draft-01.xsd"
+	xmlns:wsrf="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties-1.2-draft-01.xsd">
+	<NotificationMessage>
+		<Topic
+			Dialect="http://www.ibm.com/xmlns/stdwip/web-services/WSTopics/TopicExpression/simple">
+			npex:SomeTopic
+		</Topic>
+		<Message>
+			<wsrf:GetResourceProperty xmlns:test="test">
+				test:test
+			</wsrf:GetResourceProperty>
+		</Message>
+	</NotificationMessage>
+</Notify>

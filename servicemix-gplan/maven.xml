@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project default="default">
+
+  <goal name="default" prereqs="car:install"/>
+
+  <goal name="nightly" prereqs="clean, car:install, car:deploy"/>
+  
+  <goal name="distribute">
+    <attainGoal name="car:distribute"/>
+  </goal>
+    
+</project>

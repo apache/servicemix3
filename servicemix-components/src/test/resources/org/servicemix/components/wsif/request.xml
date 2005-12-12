@@ -1,0 +1,5 @@
+<!-- START SNIPPET: request -->
+<ca:checkAvailabilityRequest xmlns:ca="http://xml.apache.org/axis/wsif/samples/jms/ServiceAvailability">
+10505
+</ca:checkAvailabilityRequest>
+<!-- END SNIPPET: request -->

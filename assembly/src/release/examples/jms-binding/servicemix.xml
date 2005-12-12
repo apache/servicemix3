@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://xbean.org/schemas/spring/1.0"
+	xmlns:spring="http://xbean.org/schemas/spring/1.0"
+	xmlns:sm="http://servicemix.org/config/1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xbean.org/schemas/spring/1.0 ../../conf/spring-beans.xsd
+	                    http://servicemix.org/config/1.0 ../../conf/servicemix.xsd"
+    xmlns:my="http://servicemix.org/demo/">
+    
+  <!-- the JBI container -->
+  <sm:container spring:id="jbi"
+  		useMBeanServer="true"
+  		createMBeanServer="true"
+  		dumpStats="true"
+  		statsInterval="10"
+  		transactionManager="#transactionManager">
+  		
+  	<sm:activationSpecs>
+  	
+        <!-- Subscribe to a JMS destination -->
+  		<sm:activationSpec componentName="inputReceiver" 	
+  						   service="my:inputReceiver"
+  						   destinationService="my:outputSender">
+  		  <sm:component>
+  		    <bean xmlns="http://xbean.org/schemas/spring/1.0"
+  		          class="org.servicemix.components.jms.JmsInUsingJCABinding">
+        <property name="jcaContainer" ref="jencks"/>
+        <property name="activationSpec">
+          <bean class="org.activemq.ra.ActiveMQActivationSpec">
+            <property name="destination" value="demo.org.servicemix.source"/>
+            <property name="destinationType" value="javax.jms.Topic"/>
+          </bean>
+        </property>
+  		    </bean>
+  		  </sm:component>
+  		</sm:activationSpec>
+  		
+      <!-- Publish the result to a JMS destination -->
+  		<sm:activationSpec componentName="outputSender" 	
+  						   service="my:outputSender">
+  		  <sm:component>
+  		    <bean xmlns="http://xbean.org/schemas/spring/1.0"
+  		          class="org.servicemix.components.jms.JmsSenderComponent">
+        <property name="template">
+          <bean class="org.springframework.jms.core.JmsTemplate">
+            <property name="connectionFactory">
+              <ref local="jmsFactory"/>
+            </property>
+            <property name="defaultDestinationName" value="demo.org.servicemix.result"/>
+            <property name="pubSubDomain" value="true"/>
+          </bean>
+        </property>
+  		    </bean>
+  		  </sm:component>
+  		</sm:activationSpec>
+  		
+  	</sm:activationSpecs>
+  </sm:container>
+
+
+  <!-- the JCA container -->
+  <bean id="jencks" class="org.jencks.JCAContainer" singleton="true">
+
+    <!-- lets use the default configuration of work manager and transaction manager-->
+    <property name="bootstrapContext">
+      <bean class="org.jencks.factory.BootstrapContextFactoryBean">
+        <property name="threadPoolSize" value="25"/>
+      </bean>
+    </property>
+
+    <!-- the JCA Resource Adapter -->
+    <property name="resourceAdapter">
+      <bean id="activeMQResourceAdapter" class="org.activemq.ra.ActiveMQResourceAdapter" singleton="true">
+        <property name="serverUrl" value="tcp://localhost:61616"/>
+      </bean>
+    </property>
+  </bean>
+
+  <!-- message broker -->
+  <bean id="broker" class="org.activemq.spring.BrokerFactoryBean">
+     <property name="config" value="classpath:activemq.xml"/>
+   </bean>
+
+	<bean id="transactionContextManager" class="org.jencks.factory.TransactionContextManagerFactoryBean"/>
+	<bean id="transactionManager" class="org.jencks.factory.GeronimoTransactionManagerFactoryBean" />
+
+  <bean id="jmsFactory" class="org.activemq.pool.PooledConnectionFactory">
+    <property name="connectionFactory">
+      <bean class="org.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL">
+          <value>tcp://localhost:61616</value>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+</beans>

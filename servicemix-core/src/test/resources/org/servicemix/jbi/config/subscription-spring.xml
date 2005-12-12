@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:foo="http://servicemix.org/cheese/">
+
+  <!-- the JBI container -->
+  <bean id="jbi"
+    class="org.servicemix.jbi.container.SpringJBIContainer">
+    <property name="activationSpecs">
+      <list>
+        <bean class="org.servicemix.jbi.container.ActivationSpec">
+          <property name="id" value="receiver" />
+          <property name="service" ref="receiverServiceName" />
+
+          <property name="component">
+            <bean class="org.servicemix.tck.ReceiverComponent" />
+          </property>
+
+          <property name="subscriptions">
+            <list>
+              <bean name="subscription"
+                class="org.servicemix.jbi.container.SubscriptionSpec">
+                <property name="service" ref="producerServiceName" />
+              </bean>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+
+  <bean id="receiverServiceName" class="javax.xml.namespace.QName">
+    <constructor-arg value="http://servicemix.org/cheese/" />
+    <constructor-arg value="receiver" />
+  </bean>
+
+  <bean id="producerServiceName" class="javax.xml.namespace.QName">
+    <constructor-arg value="http://servicemix.org/cheese/" />
+    <constructor-arg value="producer" />
+  </bean>
+</beans>

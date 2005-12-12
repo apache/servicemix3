@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://xbean.org/schemas/spring/1.0"
+	xmlns:spring="http://xbean.org/schemas/spring/1.0"
+	xmlns:sm="http://servicemix.org/config/1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xbean.org/schemas/spring/1.0 ../../conf/spring-beans.xsd
+	                    http://servicemix.org/config/1.0 ../../conf/servicemix.xsd"
+	xmlns:my="http://servicemix.org/demo/">
+
+	<!-- the JBI container -->
+	<sm:container spring:id="jbi" useMBeanServer="true"
+		createMBeanServer="true" dumpStats="true" statsInterval="10">
+
+		<sm:activationSpecs>
+
+			<!-- lets kick off a timer  every 5 seconds -->
+			<sm:activationSpec componentName="timer" service="my:timer"
+				destinationService="my:trace">
+				<sm:component>
+					<bean xmlns="http://xbean.org/schemas/spring/1.0"
+						class="org.servicemix.components.quartz.QuartzComponent">
+						<property name="triggers">
+							<map>
+								<entry>
+									<key>
+										<bean class="org.quartz.SimpleTrigger">
+											<property name="repeatInterval" value="5000" />
+											<property name="repeatCount" value="-1" />
+										</bean>
+									</key>
+									<bean
+										class="org.quartz.JobDetail">
+										<property name="name" value="My Example Job" />
+										<property name="group" value="ServiceMix" />
+									</bean>
+								</entry>
+							</map>
+						</property>
+					</bean>
+				</sm:component>
+			</sm:activationSpec>
+
+
+			<!-- Route the event to a trace component that just outputs the event to the console -->
+			<sm:activationSpec componentName="trace" service="my:trace">
+				<sm:component>
+					<bean xmlns="http://xbean.org/schemas/spring/1.0"
+						class="org.servicemix.components.util.TraceComponent" />
+				</sm:component>
+			</sm:activationSpec>
+
+		</sm:activationSpecs>
+	</sm:container>
+
+</beans>

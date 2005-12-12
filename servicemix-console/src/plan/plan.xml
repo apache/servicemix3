@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://geronimo.apache.org/xml/ns/j2ee/web/jetty-1.0"
+      configId="servicemix/servicemix-console/2.1-SNAPSHOT/car"
+    >
+  <dep:import xmlns:dep="http://geronimo.apache.org/xml/ns/deployment-1.0">
+    <dep:groupId>geronimo</dep:groupId>
+    <dep:type>car</dep:type>
+    <dep:artifactId>j2ee-server</dep:artifactId>
+    <dep:version>1.0-SNAPSHOT</dep:version>
+  </dep:import>
+  <dep:dependency xmlns:dep="http://geronimo.apache.org/xml/ns/deployment-1.0">
+    <dep:groupId>portlet-api</dep:groupId>
+    <dep:artifactId>portlet-api</dep:artifactId>
+    <dep:version>1.0</dep:version>
+  </dep:dependency>
+  <dep:dependency xmlns:dep="http://geronimo.apache.org/xml/ns/deployment-1.0">
+    <dep:groupId>org.apache.pluto</dep:groupId>
+    <dep:artifactId>pluto</dep:artifactId>
+    <dep:version>1.0.1</dep:version>
+  </dep:dependency>
+    <context-root>/servicemix-console</context-root>
+    <context-priority-classloader>false</context-priority-classloader>
+</web-app>

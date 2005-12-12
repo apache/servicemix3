@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<wsnt:Subscribe
+        xmlns:wsa="http://schemas.xmlsoap.org/ws/2003/03/addressing"
+        xmlns:wsp="http://schemas.xmlsoap.org/ws/2002/12/policy"
+        xmlns:wsnt="http://docs.oasis-open.org/wsn/2004/06/wsn-WS-BaseNotification-1.2-draft-01.xsd"
+       	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://docs.oasis-open.org/wsn/2004/06/wsn-WS-BaseNotification-1.2-draft-01.xsd http://docs.oasis-open.org/wsn/2004/06/wsn-WS-BaseNotification-1.2-draft-01.xsd
+	                        http://schemas.xmlsoap.org/ws/2002/12/policy http://schemas.xmlsoap org/ws/2002/12/policy
+	                        http://schemas.xmlsoap.org/ws/2003/03/addressing http://schemas.xmlsoap.org/ws/2003/03/addressing">
+
+  <wsnt:ConsumerReference xmlns:ncex="http://www.consumer.org/RefProp">
+  	<wsa:ServiceName xmlns:sm="http://jaxws.components.servicemix.org/">
+  		sm:Consumer
+  	</wsa:ServiceName>
+  </wsnt:ConsumerReference>
+  <wsnt:TopicExpression dialect="http://www.ibm.com/xmlns/stdwip/web-services/WSTopics/TopicExpression/simple">
+    npex:SomeTopic</wsnt:TopicExpression>
+  <wsnt:UseNotify>true</wsnt:UseNotify>
+  <wsnt:InitialTerminationTime>2003-12-25T00:00:00.00000Z</wsnt:InitialTerminationTime>
+</wsnt:Subscribe>

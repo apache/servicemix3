@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <pomVersion>3</pomVersion>
+    <extend>${basedir}/../etc/project.xml</extend>
+
+    <name>ServiceMix :: Core</name>
+    <id>servicemix-core</id>
+
+
+    <dependencies>
+
+        <dependency>
+            <id>servicemix+jbi</id>
+            <version>${pom.currentVersion}</version>
+            <properties>
+                <eclipse.dependency>true</eclipse.dependency>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>mx4j</groupId>
+            <artifactId>mx4j</artifactId>
+            <version>${mx4j_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mx4j</groupId>
+            <artifactId>mx4j-remote</artifactId>
+            <version>${mx4j_remote_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mx4j</groupId>
+            <artifactId>mx4j-tools</artifactId>
+            <version>${mx4j_tools_version}</version>
+        </dependency>
+
+        <!--For remote management tasks-->
+
+        <dependency>
+            <id>ant</id>
+            <version>${ant_version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>${commons_logging_version}</version>
+            <url>http://jakarta.apache.org/commons/logging/</url>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j_version}</version>
+        </dependency>
+
+        <dependency>
+            <id>lucene</id>
+            <version>${lucene_version}</version>
+        </dependency>
+
+        <dependency>
+            <id>concurrent</id>
+            <version>${concurrent_version}</version>
+        </dependency>
+
+        <dependency>
+            <id>backport-util-concurrent</id>
+            <version>${backport_util_concurrent_version}</version>
+        </dependency>
+
+        <dependency>
+            <id>wsdl4j</id>
+            <version>${wsdl4j_version}</version>
+        </dependency>
+
+        <dependency>
+            <id>commons-beanutils</id>
+            <version>${commons_beanutils_version}</version>
+        </dependency>
+
+
+        <!-- for DOM, SAX, StAX and XPath support -->
+        <dependency>
+            <groupId>servicemix</groupId>
+            <artifactId>jaxp</artifactId>
+            <version>${jaxp_version}</version>
+        </dependency>
+
+        <dependency>
+            <id>stax+api</id>
+            <version>${stax_api_version}</version>
+        </dependency>
+
+        <dependency>
+            <id>jaxen</id>
+            <version>${jaxen_version}</version>
+        </dependency>
+
+        <!-- possible StAX implementations: START -->
+
+        <!-- fast implementation of StAX -->
+        <dependency>
+            <groupId>woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+            <version>${woodstox_version}</version>
+        </dependency>
+
+
+        <!-- possible StAX implementations: END -->
+
+
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>${xercesImpl_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xmlParserAPIs</artifactId>
+            <version>${xerces_version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>${xml_apis_version}</version>
+        </dependency>
+
+        <!-- mostly included for some DOM/SAX tools we could maybe replace with JAXP versions -->
+        <dependency>
+            <id>xalan</id>
+            <version>${xalan_version}</version>
+        </dependency>
+
+
+        <!-- for spring integration -->
+        <dependency>
+            <groupId>springframework</groupId>
+            <artifactId>spring</artifactId>
+            <version>${spring_version}</version>
+        </dependency>
+
+
+        <!-- utility library for adapting StAX to SAX and JAXP Source -->
+        <dependency>
+            <id>stax-utils</id>
+            <version>${stax_utils_version}</version>
+        </dependency>
+
+
+        <!-- J2EE JARs -->
+        <dependency>
+            <id>geronimo-spec+jms</id>
+            <version>${geronimo_spec_jms_version}</version>
+        </dependency>
+        <dependency>
+            <id>geronimo-spec+servlet</id>
+            <version>${geronimo_spec_servlet_version}</version>
+        </dependency>
+        <dependency>
+            <id>geronimo-spec+jta</id>
+            <version>${geronimo_spec_jta_version}</version>
+        </dependency>
+        <dependency>
+            <id>geronimo-spec+j2ee-management</id>
+            <version>${geronimo_spec_j2ee_management_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>geronimo-spec</groupId>
+            <artifactId>geronimo-spec-j2ee-connector</artifactId>
+            <version>${geronimo_spec_j2ee_connector_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>geronimo-spec</groupId>
+            <artifactId>geronimo-spec-activation</artifactId>
+            <version>${geronimo_spec_activation_version}</version>
+        </dependency>
+
+
+        <!--  for custom XML parsing -->
+        <dependency>
+            <groupId>org.xbean</groupId>
+            <artifactId>xbean-spring</artifactId>
+            <version>${xbean_version}</version>
+            <url>http://www.xbean.org</url>
+        </dependency>
+        <dependency>
+            <groupId>annogen</groupId>
+            <artifactId>annogen</artifactId>
+            <version>${annogen_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>qdox</groupId>
+            <artifactId>qdox</artifactId>
+            <version>${qdox_version}</version>
+        </dependency>
+
+        <!-- JCA container and transaction manaqer -->
+        <dependency>
+            <id>jencks+all</id>
+            <version>${jencks_version}</version>
+        </dependency>
+
+        <dependency>
+            <id>lingo</id>
+            <version>${lingo_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>xmlbeans</groupId>
+            <artifactId>xmlpublic</artifactId>
+            <version>${xmlbeans_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>xmlbeans</groupId>
+            <artifactId>xbean</artifactId>
+            <version>${xmlbeans_version}</version>
+        </dependency>
+
+
+        <!-- default JMS provider used for implementation -->
+
+
+        <!--  for ActiveMQ 3.x -->
+        <dependency>
+            <id>activemq</id>
+            <version>${activemq_version}</version>
+        </dependency>
+        <dependency>
+            <id>activemq+ra</id>
+            <version>${activemq_version}</version>
+        </dependency>
+
+        <!-- For clustering services -->
+        <dependency>
+            <id>activecluster</id>
+            <version>${activecluster_version}</version>
+        </dependency>
+
+
+        <!-- for XStream component -->
+        <!-- optional jars for XStream marshalling -->
+        <dependency>
+            <id>xstream</id>
+            <version>${xstream_version}</version>
+        </dependency>
+
+        <!--
+          || Dependencies for running test cases
+        -->
+
+        <!-- for pooling JMS and other resources -->
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>${commons_collections_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-pool</groupId>
+            <artifactId>commons-pool</artifactId>
+            <version>${commons_pool_version}</version>
+        </dependency>
+
+        <!-- optional used for in-web container testing -->
+        <dependency>
+            <groupId>jetty</groupId>
+            <artifactId>org.mortbay.jetty</artifactId>
+            <version>${org.mortbay.jetty_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>tomcat</groupId>
+            <artifactId>jasper-compiler-jdt</artifactId>
+            <version>${jasper_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>tomcat</groupId>
+            <artifactId>jasper-compiler</artifactId>
+            <version>${jasper_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>tomcat</groupId>
+            <artifactId>jasper-runtime</artifactId>
+            <version>${jasper_version}</version>
+        </dependency>
+
+
+        <!-- default database for ActiveMQ -->
+        <!-- To create Pooled DataSources for the JDBC message store -->
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>${commons_dbcp_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>${derby_version}</version>
+        </dependency>
+
+        <!-- JNDI provider for binary release -->
+        <dependency>
+            <groupId>simple-jndi</groupId>
+            <artifactId>simple-jndi</artifactId>
+            <version>${simple_jndi_version}</version>
+        </dependency>
+
+        <!-- for unit test cases -->
+        <dependency>
+            <id>junit</id>
+            <version>${junit_version}</version>
+        </dependency>
+
+        <!-- example database for testing -->
+        <dependency>
+            <id>hsqldb</id>
+            <version>${hsqldb_version}</version>
+        </dependency>
+        <dependency>
+            <id>axion</id>
+            <version>${axion_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-primitives</groupId>
+            <artifactId>commons-primitives</artifactId>
+            <version>${commons_primitives_version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>servicemix</groupId>
+            <artifactId>DdlUtils</artifactId>
+            <version>${ddlutils_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>${commons_lang_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-betwixt</groupId>
+            <artifactId>commons-betwixt</artifactId>
+            <version>${commons_betwixt_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-digester</groupId>
+            <artifactId>commons-digester</artifactId>
+            <version>${commons_digester_version}</version>
+        </dependency>
+
+ 	    <dependency>
+	        <groupId>easymock</groupId>
+	        <artifactId>easymock</artifactId>
+	        <version>${easymock_version}</version>
+	     </dependency>
+
+    </dependencies>
+
+    <build>
+        <unitTest>
+            <resources>
+                <resource>
+                    <directory>src/test/resources</directory>
+                    <includes>
+                        <include>**/*.properties</include>
+                        <include>**/*.x*</include>
+                        <include>**/*.wsdl</include>
+                        <include>**/*.zip</include>
+                    </includes>
+                </resource>
+                <resource>
+                    <directory>src/test/components</directory>
+                    <includes>
+                        <include>**/*.jar</include>
+                        <include>**/*.x*</include>
+                        <include>**/*.zip</include>
+                    </includes>
+                </resource>
+                <resource>
+                    <directory>src/test/assemblies</directory>
+                    <includes>
+                        <include>**/*.jar</include>
+                        <include>**/*.zip</include>
+                    </includes>
+                </resource>
+            </resources>
+            <includes>
+                <include>**/*Test.*</include>
+            </includes>
+            <excludes>
+                <!--  exclude abstract tests -->                
+                <exclude>**/Abstract*Test.*</exclude>
+								
+                <!-- fails on some platforms due to ActiveCluster issue -->                
+                <exclude>**/ClusterFlow*.*</exclude> 
+                <exclude>**/JmsFlow*.*</exclude>
+                
+                <exclude>**/JcaFlowPersistentTest.*</exclude>                           
+                				
+                <!-- test cases hangs
+                <exclude>**/SimpleClusterSendSyncTest.*</exclude>
+                --> 
+
+                <!-- fails in some linux platform due to missing lib libXp.so.6 -->
+                <exclude>**/ServiceMixComponentTest.*</exclude>
+                <exclude>**/ExplodedComponentInstallationTest.*</exclude>
+                <exclude>**/ComponentInstallationTest.*</exclude>
+                <exclude>**/ComponentAssemblyInstallationTest.*</exclude>
+                <exclude>**/DeploymentTest.*</exclude>
+                
+            </excludes>
+        </unitTest>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>target/generated</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+    </build>
+
+</project>

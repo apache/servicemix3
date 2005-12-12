@@ -1,0 +1,7 @@
+<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
+ <env:Body>
+  <m:receive xmlns:m="http://xfire.components.servicemix.org">
+   <m:in0>Yo Yo</m:in0>
+  </m:receive>
+ </env:Body>
+</env:Envelope>

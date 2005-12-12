@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<wse:Subscribe
+        xmlns:wse='http://schemas.xmlsoap.org/ws/2004/08/eventing'
+        xmlns:wsa='http://schemas.xmlsoap.org/ws/2004/08/addressing'
+        xmlns:ew='http://www.example.com/warnings'>
+  <wse:Delivery>
+    <wse:NotifyTo>
+      <wsa:Address>
+        http://www.example.com/MyEventSink/OnStormWarning
+      </wsa:Address>
+      <wsa:ReferenceProperties>
+        <ew:MySubscription>2597</ew:MySubscription>
+      </wsa:ReferenceProperties>
+    </wse:NotifyTo>
+  </wse:Delivery>
+</wse:Subscribe>

@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2004 The Apache Software Foundation
+    Copyright 2004 Hiram Chirino
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<project default="default"
+    xmlns:j="jelly:core"
+    xmlns:u="jelly:util"
+    xmlns:ant="jelly:ant"
+    xmlns:util="jelly:util"
+    xmlns:artifact="artifact"
+    >
+
+    <!-- ================= -->
+    <!-- Global Properties -->
+    <!-- ================= -->
+
+    <!-- Determine what the top-level project root is -->
+    <j:set var="project.root" value="${pom.parentBasedir().getParentFile().getCanonicalFile()}"/>
+
+    <!-- ==================== -->
+    <!-- Default Global Goals -->
+    <!-- ==================== -->
+    <goal name="nightly" prereqs="clean, jar:install, jar:deploy, dist:deploy"/>
+    
+    <goal name="default" prereqs="jar:install, dist:build-bin"/>
+    
+    <goal name="prepare"
+        prereqs="dist:prepare-bin-filesystem"/>
+
+
+    <preGoal name="jar:jar">
+
+        <ant:mkdir dir="${maven.build.dir}/timestamps"/>
+        <!-- Unpack all the composite ServiceMix modules into the classes dir -->
+        <j:forEach var="artifact" items="${pom.artifacts}">
+            <j:set var="dependency" value="${artifact.dependency}"/>
+            <j:if test="${dependency.getProperty('servicemix.module') == 'true'}">
+                <u:file var="file" name="${artifact.path}"/>
+                <j:if test="${file.exists()}" >
+                   <j:set var="uptodateFile" value="${maven.build.dir}/timestamps/${artifact.name}.ts"/>
+                   <j:set var="uptodatePropName" value="tests.uptodate"/>
+                   <j:remove var="${uptodatePropName}"/>
+                   <ant:uptodate property="${uptodatePropName}" targetfile="${uptodateFile}" srcfile="${artifact.path}"/>
+                   <j:if test="${context.getVariable(uptodatePropName) != 'true'}">
+                      <unjar dest="${maven.build.dir}/classes" src="${artifact.path}"/>       
+                      <touch file="${uptodateFile}"/>
+                   </j:if>         
+                </j:if>       
+            </j:if>
+        </j:forEach>
+
+    </preGoal>
+
+    <goal name="rebuild">
+        <attainGoal name="clean"/>
+        <attainGoal name="default"/>
+    </goal>
+
+ <goal
+    name="dist:prepare-bin-filesystem"
+    prereqs="jar:install"
+    description="Builds the binary distribution file system.">
+    
+    <!--
+    This is the directory where everything is copied to so that it can
+    be archived.
+    -->
+    
+    <ant:delete dir="${maven.dist.bin.assembly.dir}"/>
+    <ant:mkdir dir="${maven.dist.bin.assembly.dir}"/>
+    <ant:mkdir dir="${maven.build.dir}/unjar"/>
+
+    <ant:echo>
+      +-------------------------------------------------------+
+      | C R E A T I N G  B I N A R Y  D I S T R I B U T I O N |
+      +-------------------------------------------------------+
+    </ant:echo>
+
+
+
+    <!-- Copy in distribution files -->
+    <ant:copy todir="${maven.dist.bin.assembly.dir}">
+        <ant:fileset dir="src/release"/>
+    </ant:copy>
+    <ant:fixcrlf srcdir="${maven.dist.bin.assembly.dir}/bin" eol="crlf" eof="doc" includes="*.bat"/>
+    <ant:fixcrlf srcdir="${maven.dist.bin.assembly.dir}/bin" eol="lf" eof="unix" includes="*" excludes="*.bat"/>
+    <ant:chmod perm="ugo+rx">
+      <ant:fileset dir="${maven.dist.bin.assembly.dir}/bin">
+          <ant:include name="servicemix"/>
+      </ant:fileset>
+    </ant:chmod>
+
+    <ant:jar destfile="${maven.dist.bin.assembly.dir}/bin/run.jar" basedir="${maven.build.dir}/classes">
+      <ant:include name="org/activemq/broker/Main*.class"/>
+      <ant:manifest>
+        <ant:attribute name="Main-Class" value="org.activemq.broker.Main"/>
+      </ant:manifest>
+    </ant:jar>
+    <ant:copy todir="${maven.dist.bin.assembly.dir/conf}">
+        <ant:fileset dir="${maven.build.dir}/classes" includes="**/activemq.dtd"/>
+    </ant:copy>
+
+    <!--
+    <ant:unjar src="${maven.repo.local}/${pom.groupId}/jars/activemq-core-${pom.currentVersion}.jar"
+        dest="${maven.build.dir}/unjar">
+        <ant:patternset>
+            <ant:include name="**/activemq.dtd"/>
+        </ant:patternset>
+    </ant:unjar>
+    <ant:copy todir="${maven.dist.bin.assembly.dir}/conf" flatten="true">
+        <ant:fileset dir="${maven.build.dir}/unjar" includes="**/activemq.dtd"/>
+    </ant:copy>
+    -->
+
+    <ant:copy todir="${maven.dist.bin.assembly.dir}" file="${maven.repo.local}/${pom.groupId}/jars/${pom.groupId}-${pom.currentVersion}.jar"/>
+
+    <!-- Copy  the runtime dependencies into lib and create a classpath for the server.jar file -->
+    <j:set var="libDir" value="${maven.dist.bin.assembly.dir}/lib"/>
+    <j:set var="optionalDir" value="${maven.dist.bin.assembly.dir}/lib/optional"/>
+    <ant:mkdir dir="${libDir}"/>
+    <ant:mkdir dir="${optionalDir}"/>
+
+    <j:forEach var="artifact" items="${pom.artifacts}">
+        <j:set var="dependency" value="${artifact.dependency}"/>
+        <j:if test="${dependency.getProperty('lib') == 'true'}">
+            <ant:copy todir="${libDir}" file="${artifact.path}"/>
+            <j:set var="classpath" value="${classpath} ../lib/${artifact.name}"/>
+        </j:if>
+    </j:forEach>
+
+    <j:forEach var="artifact" items="${pom.artifacts}">
+        <j:set var="dependency" value="${artifact.dependency}"/>
+        <echo>${artifact.path} ${dependency.getProperty('optional') == 'true'}</echo>
+    </j:forEach>
+
+    <j:forEach var="artifact" items="${pom.artifacts}">
+        <j:set var="dependency" value="${artifact.dependency}"/>
+        <echo>${artifact.path}</echo>
+        <j:if test="${dependency.getProperty('optional') == 'true'}">
+            <ant:copy todir="${optionalDir}" file="${artifact.path}"/>
+            <j:if test="${dependency.extension == 'jar'}">           
+               <j:set var="classpath" value="${classpath} ../lib/optional/${artifact.name}"/>
+            </j:if>
+            <j:if test="${dependency.extension == 'rar'}">    
+               <ant:unzip src="${artifact.path}" dest="${optionalDir}">
+                  <ant:patternset>
+                     <include name="${dependency.artifactId}*.jar"/>
+                  </ant:patternset>
+               </ant:unzip>               
+            </j:if>
+        </j:if>
+    </j:forEach>
+
+    <ant:echo message="${project.root}"/>
+    <ant:copy todir="${maven.dist.bin.assembly.dir}">
+       <fileset dir="${project.root}" includes="*.txt,STATUS"/>
+    </ant:copy>
+
+    <!-- Copy documentation -->
+
+    <j:set var="docsDest" value="${project.root}/servicemix-core/target/docs"/>
+    <ant:copy todir="${maven.dist.bin.assembly.dir}">
+      <ant:fileset dir="${docsDest}">
+        <ant:include name="**"/>
+      </ant:fileset>
+    </ant:copy>    
+
+  </goal>
+  
+  <goal name="confluence">
+		<ant:get src="http://docs.codehaus.org/spaces/doexportspace.action?key=SM&amp;type=TYPE_HTML&amp;os_username=xexporter&amp;os_password=xfire" dest="${maven.build.dir}/${pom.artifactId}-${pom.currentVersion}-manual.zip"/>
+		<ant:unzip src="${maven.build.dir}/${pom.artifactId}-${pom.currentVersion}-manual.zip" dest="${maven.build.dir}/manual"/>
+		<ant:copy toDir="${maven.build.dir}/dist/manual">
+			<fileset dir="${maven.build.dir}/manual/SM" includes="**/*" excludes="**/.*,**/CVS"/>
+		</ant:copy>
+  </goal>
+
+  <goal
+    name="dist:prepare-src-filesystem"
+    description="Builds the source distribution file system.">
+
+    <!-- S O U R C E  D I S T R I B U T I O N -->
+
+    <ant:delete dir="${maven.dist.src.assembly.dir}" />
+    <ant:mkdir dir="${maven.dist.src.assembly.dir}" />
+
+    <ant:echo>
+      +-------------------------------------------------------+
+      | C R E A T I N G  S O U R C E  D I S T R I B U T I O N |
+      +-------------------------------------------------------+
+    </ant:echo>
+
+    <ant:copy todir="${maven.dist.src.assembly.dir}">
+      <ant:fileset dir="${project.root}">
+         <ant:exclude name="**/target/**"/>
+     <ant:exclude name="**/CVS/**"/>
+     <ant:exclude name="**/.*/**"/>
+     <ant:exclude name="**/junit*.properties"/>
+     <ant:exclude name="**/*~"/>
+     <ant:exclude name="**/*.bak"/>
+      </ant:fileset>
+    </ant:copy>
+
+    <ant:available property="maven.dist.build.xml.avail" file="${basedir}/build.xml"/>
+
+    <j:choose>
+      <j:when test="${maven.dist.build.xml.avail}">
+        <ant:copy todir="${maven.dist.src.assembly.dir}" file="${basedir}/build.xml"/>
+      </j:when>
+      <j:otherwise>
+        <j:if test="${sourcesPresent == 'true'}">
+          <attainGoal name="ant:generate-build"/>
+          <ant:move 
+            file="${basedir}/build.xml"
+            tofile="${maven.dist.src.assembly.dir}/build.xml"/>
+        </j:if>
+      </j:otherwise>
+    </j:choose>
+
+    <!-- Copy Source -->
+    <util:available file="${maven.src.dir}">
+      <ant:copy todir="${maven.dist.src.assembly.dir}/src">
+        <ant:fileset dir="${maven.src.dir}" />
+      </ant:copy>
+    </util:available>
+  </goal>
+    
+</project>

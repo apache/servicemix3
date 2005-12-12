@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- START SNIPPET: example -->
+<beans xmlns:sm="http://servicemix.org/config/1.0" 
+	   xmlns:foo="http://servicemix.org/cheese/">
+
+  <sm:container id="jbi">
+    <sm:activationSpecs>
+
+      <sm:activationSpec componentName="receiver" service="foo:receiver">
+      	<sm:component><bean class="org.servicemix.components.pojo.PojoReceiver"/></sm:component>
+     </sm:activationSpec>
+
+    </sm:activationSpecs>
+  </sm:container>
+
+
+  <bean id="sender" class="org.servicemix.components.pojo.PojoSender">
+    <property name="client">
+
+      <!-- lets configure a ServiceMix client which is bound to the required service  -->
+      <bean class="org.servicemix.client.DefaultServiceMixClient">
+        <constructor-arg ref="jbi"/>
+        <constructor-arg>
+          <sm:activationSpec destinationService="foo:receiver" />
+        </constructor-arg>
+      </bean>
+    </property>
+  </bean>
+
+</beans>
+<!-- END SNIPPET: example -->

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.org/config/1.0" 
+       xmlns:jsr181="http://servicemix.org/jsr181/1.0">
+
+  <!-- the JBI container -->
+  <sm:container id="jbi" embedded="true" monitorInstallationDirectory="false">
+    <sm:activationSpecs>
+
+      <!-- output using a POJO -->
+      <sm:activationSpec>
+        <sm:component>
+          <jsr181:component>
+            <jsr181:endpoints>
+              <jsr181:endpoint>
+                <jsr181:pojo>
+                  <bean class="org.servicemix.ws.notification.JBINotificationBroker">
+                    <constructor-arg>
+                      <bean class="org.activemq.ActiveMQConnectionFactory">
+                        <property name="brokerURL" value="vm://localhost"/>
+                        <property name="useEmbeddedBroker" value="true"/>
+                        <property name="brokerXmlConfig" value="broker-vmpersistence.xml"/>
+                      </bean>
+                    </constructor-arg>
+                  </bean>
+                </jsr181:pojo>
+              </jsr181:endpoint>
+            </jsr181:endpoints>
+          </jsr181:component>
+        </sm:component>
+      </sm:activationSpec>
+      
+      <sm:activationSpec componentName="consumer" service="foo:Consumer">
+        <sm:component>
+          <bean class="org.servicemix.ws.notification.MyReceiver" />
+        </sm:component>
+      </sm:activationSpec>
+      
+    </sm:activationSpecs>
+  </sm:container>
+
+  <bean id="client" class="org.servicemix.client.DefaultServiceMixClient">
+    <constructor-arg ref="jbi"/>
+  </bean>
+
+</beans>

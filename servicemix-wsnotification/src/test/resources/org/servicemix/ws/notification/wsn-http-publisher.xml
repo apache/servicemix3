@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.org/config/1.0" 
+       xmlns:jsr181="http://servicemix.org/jsr181/1.0"
+       xmlns:demo="http://servicemix.org/demo"
+       xmlns:wsn="http://notification.ws.servicemix.org">
+
+  <!-- the JBI container -->
+  <sm:container id="jbi" embedded="true" monitorInstallationDirectory="false" flowName="st">
+    <sm:activationSpecs>
+
+      <sm:activationSpec service="demo:broker">
+        <sm:component><bean class="org.servicemix.components.http.HttpSoapInvoker">
+          <property name="url" value="http://localhost:8911"/>
+          <property name="defaultInOut" value="false"/>
+        </bean></sm:component>
+      </sm:activationSpec>
+
+    </sm:activationSpecs>
+  </sm:container>
+
+</beans>

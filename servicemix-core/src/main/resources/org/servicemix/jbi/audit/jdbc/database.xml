@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<database name="JDBCAudit">
+  <table name="SM_AUDIT">
+    <column name="ID"
+            type="VARCHAR"
+            primaryKey="true"
+            required="true" />
+    <column name="EXCHANGE"
+            type="BLOB" />
+  </table>
+</database>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://xbean.org/schemas/spring/1.0"
+	xmlns:spring="http://xbean.org/schemas/spring/1.0"
+	xmlns:sm="http://servicemix.org/config/1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xbean.org/schemas/spring/1.0 ../../conf/spring-beans.xsd
+	                    http://servicemix.org/config/1.0 ../../conf/servicemix.xsd"
+	xmlns:my="http://servicemix.org/demo/">
+
+	<!-- the JBI container -->
+	<sm:container spring:id="jbi" useMBeanServer="true"
+		createMBeanServer="true" dumpStats="true" statsInterval="10">
+
+		<sm:activationSpecs>
+
+      <!-- START SNIPPET: rss -->
+      <!-- lets poll for updates to news sites -->
+      <sm:activationSpec componentName="rss" service="my:rss" destinationService="my:trace">
+      	<sm:component>
+      		<bean xmlns="http://xbean.org/schemas/spring/1.0"
+      		      class="org.servicemix.components.rss.RssPollingComponent">
+        <property name="outputType" value="rss_2.0"/>
+        <property name="period" value="5000"/>
+        <property name="lastPolledDate">
+          <value>2005/aug/10</value>
+        </property>
+
+
+        <property name="urlStrings">
+          <list>
+            <value>http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml</value>
+            <value>http://rss.cnn.com/rss/cnn_topstories.rss</value>
+          </list>
+        </property>
+      		</bean>
+      	</sm:component>
+      </sm:activationSpec>
+      <!-- END SNIPPET: rss -->
+
+      <!-- Route the event to a trace component that just outputs the event to the console -->
+			<sm:activationSpec componentName="trace" service="my:trace">
+				<sm:component>
+					<bean xmlns="http://xbean.org/schemas/spring/1.0"
+						class="org.servicemix.components.util.StreamWriterComponent" />
+				</sm:component>
+			</sm:activationSpec>
+    </sm:activationSpecs>
+  </sm:container>
+
+
+  <!-- Custom editor for the Date variable lastPolledDate so we can see immediate output -->
+  <bean id="customEditorConfigurer"
+        class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+    <property name="customEditors">
+      <map>
+
+        <entry key="java.util.Date">
+          <bean class="org.springframework.beans.propertyeditors.CustomDateEditor">
+            <constructor-arg index="0">
+              <bean class="java.text.SimpleDateFormat">
+                <constructor-arg>
+                  <value>yyyy/MMM/dd</value>
+                </constructor-arg>
+              </bean>
+            </constructor-arg>
+            <constructor-arg index="1">
+              <value>true</value>
+            </constructor-arg>
+          </bean>
+        </entry>
+
+      </map>
+    </property>
+  </bean>
+
+
+</beans>

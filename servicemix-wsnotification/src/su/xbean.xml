@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<j:whitespace xmlns:j="jelly:core" xmlns:util="jelly:util" xmlns:x="jelly:xml"
+	xmlns:ant="jelly:ant" xmlns="dummy" trim="true"
+  xmlns:jsr181="http://servicemix.org/jsr181/1.0">
+  
+  <x:element name="beans">
+		<x:attribute name="xmlns:jsr181" trim="true">http://servicemix.org/jsr181/1.0</x:attribute>
+
+    <classpath>
+      <j:set var="componentJar" value="lib/${maven.final.name}.jar"/>
+      <location>classes</location>
+      <location>${componentJar}</location>        
+      <j:forEach var="lib" items="${pom.artifacts}">
+  		  <j:set var="dep" value="${lib.dependency}"/> 
+    	  <j:if test="${dep.getProperty('jbi.su.bundle')=='true'}">   
+  	      <j:set var="libname" value="lib/${lib.file.name}"/>
+          <location>${libname}</location>
+        </j:if>
+      </j:forEach>
+    </classpath>
+  
+  	<jsr181:endpoint annotations="java5" type-mapping="jaxb2">
+  		<jsr181:pojo>
+  			<bean class="org.servicemix.ws.notification.JBINotificationBroker">
+  				<constructor-arg>
+  					<bean class="org.activemq.ActiveMQConnectionFactory">
+  						<property name="brokerURL" value="vm://localhost" />
+  						<property name="useEmbeddedBroker" value="true" />
+  						<property name="brokerXmlConfig" value="classpath:broker-vmpersistence.xml" />
+  					</bean>
+  				</constructor-arg>
+  			</bean>
+  		</jsr181:pojo>
+  	</jsr181:endpoint>
+	
+  </x:element> 	
+</j:whitespace>

@@ -1,0 +1,66 @@
+<project default="default" xmlns:j="jelly:core" xmlns:ant="jelly:ant" xmlns:maven="jelly:maven">
+
+  <preGoal name="java:compile">
+    <attainGoal name="jaxws:compile"/>
+  </preGoal>
+
+  <goal name="jaxws:compile" prereqs="setclasspath" description="generate JAX-WS POJOS from WSDL">
+
+    <mkdir dir="${jaxws.compiled.java.dir}"/>
+    <mkdir dir="${jaxws.compiled.classes.dir}"/>
+
+    <wsimport
+            fork="true"
+            debug="${debug}"
+            verbose="${verbose}"
+            keep="${keep}"
+            sourcedestdir="${jaxws.compiled.java.dir}"
+            destdir="${jaxws.compiled.classes.dir}"
+            wsdl="${wsdl.home}/SoapRMServices.wsdl">
+      <!--
+      <binding dir="${etc.home}" includes="${server.binding}"/>
+      -->
+    </wsimport>
+    <wsimport
+            fork="true"
+            debug="${debug}"
+            verbose="${verbose}"
+            keep="${keep}"
+            sourcedestdir="${jaxws.compiled.java.dir}"
+            destdir="${jaxws.compiled.classes.dir}"
+            wsdl="${wsdl.home}/SoapBrokeredNotificationServices.wsdl">
+      <!--
+      <binding dir="${etc.home}" includes="${server.binding}"/>
+      -->
+    </wsimport>
+    <wsimport
+            fork="true"
+            debug="${debug}"
+            verbose="${verbose}"
+            keep="${keep}"
+            sourcedestdir="${jaxws.compiled.java.dir}"
+            destdir="${jaxws.compiled.classes.dir}"
+            wsdl="${wsdl.home}/SoapBaseNotificationServices.wsdl">
+      <!--
+      <binding dir="${etc.home}" includes="${server.binding}"/>
+      -->
+    </wsimport>
+
+  </goal>
+
+  <goal name="setclasspath">
+  
+    <taskdef name="wsimport" classname="com.sun.tools.ws.ant.WsImport">
+      <classpath refid="maven.dependency.classpath"/>
+    </taskdef>
+
+    <taskdef name="wsgen" classname="com.sun.tools.ws.ant.WsGen">
+      <classpath refid="maven.dependency.classpath"/>
+    </taskdef>
+
+    <taskdef name="apt" classname="com.sun.tools.ws.ant.Apt">
+      <classpath refid="maven.dependency.classpath"/>
+    </taskdef>
+  </goal>
+
+</project>

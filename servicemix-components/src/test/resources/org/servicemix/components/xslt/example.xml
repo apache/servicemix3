@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.org/config/1.0" 
+	   xmlns:foo="http://servicemix.org/cheese/">
+
+  <!-- the JBI container -->
+  <sm:container id="jbi">
+    <sm:activationSpecs>
+
+      <!-- START SNIPPET: send -->
+      <sm:activationSpec componentName="myJmsSender" service="foo:myJmsSender">
+        <sm:component><bean class="org.servicemix.components.jms.JmsSenderComponent">
+          <property name="template">
+            <bean class="org.springframework.jms.core.JmsTemplate">
+              <property name="connectionFactory">
+                <ref local="jmsFactory"/>
+              </property>
+              <property name="defaultDestinationName" value="test.org.servicemix.components.xslt.source"/>
+              <property name="pubSubDomain" value="true"/>
+            </bean>
+          </property>
+        </bean></sm:component>
+      </sm:activationSpec>
+      <!-- END SNIPPET: send -->
+
+      <!-- lets subscribe, transform and republish -->
+      <!-- START SNIPPET: receive -->
+      <sm:activationSpec componentName="myJmsReceiver" service="foo:myJmsReceiver" destinationService="foo:transformer">
+        <sm:component><bean class="org.servicemix.components.jms.JmsReceiverComponent">
+          <property name="template">
+            <bean class="org.springframework.jms.core.JmsTemplate">
+              <property name="connectionFactory">
+                <ref local="jmsFactory"/>
+              </property>
+              <property name="defaultDestinationName" value="test.org.servicemix.components.xslt.source"/>
+              <property name="pubSubDomain" value="true"/>
+            </bean>
+          </property>
+        </bean></sm:component>
+      </sm:activationSpec>
+      <!-- END SNIPPET: receive -->
+
+      <!-- START SNIPPET: xslt -->
+      <sm:activationSpec componentName="transformer" service="foo:transformer" destinationService="foo:transformedSender">
+        <sm:component><bean class="org.servicemix.components.xslt.XsltComponent">
+          <property name="xsltResource" value="classpath:org/servicemix/components/xslt/transform.xsl"/>
+        </bean></sm:component>
+      </sm:activationSpec>
+      <!-- END SNIPPET: xslt -->
+
+
+      <sm:activationSpec componentName="transformedSender" service="foo:transformedSender">
+        <sm:component><bean class="org.servicemix.components.jms.JmsSenderComponent">
+          <property name="template">
+            <bean class="org.springframework.jms.core.JmsTemplate">
+              <property name="connectionFactory">
+                <ref local="jmsFactory"/>
+              </property>
+              <property name="defaultDestinationName" value="test.org.servicemix.components.xslt.result"/>
+              <property name="pubSubDomain" value="true"/>
+            </bean>
+          </property>
+        </bean></sm:component>
+      </sm:activationSpec>
+
+
+      <!-- ultimate endpoint -->
+      <sm:activationSpec componentName="resultReader" service="foo:resultReader" destinationService="foo:receiver">
+        <sm:component><bean class="org.servicemix.components.jms.JmsReceiverComponent">
+          <property name="template">
+            <bean class="org.springframework.jms.core.JmsTemplate">
+              <property name="connectionFactory">
+                <ref local="jmsFactory"/>
+              </property>
+              <property name="defaultDestinationName" value="test.org.servicemix.components.xslt.result"/>
+              <property name="pubSubDomain" value="true"/>
+            </bean>
+          </property>
+        </bean></sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec componentName="receiver" service="foo:receiver" endpoint="receiver">
+        <sm:component><bean class="org.servicemix.tck.ReceiverComponent"/></sm:component>
+      </sm:activationSpec>
+
+
+      <!-- just to test that we are sending messages, lets trace the messages we receive -->
+      <!-- START SNIPPET: log -->
+      <sm:activationSpec componentName="jmsTrace" service="foo:jmsTrace" destinationService="foo:trace">
+        <sm:component><bean class="org.servicemix.components.jms.JmsReceiverComponent">
+          <property name="template">
+            <bean class="org.springframework.jms.core.JmsTemplate">
+              <property name="connectionFactory">
+                <ref local="jmsFactory"/>
+              </property>
+              <property name="defaultDestinationName" value="test.org.servicemix.components.xslt.result"/>
+              <property name="pubSubDomain" value="true"/>
+            </bean>
+          </property>
+        </bean></sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec componentName="jmsTrace" service="foo:trace">
+        <sm:component><bean class="org.servicemix.components.util.TraceComponent"/></sm:component>
+      </sm:activationSpec>
+      <!-- END SNIPPET: log -->
+    </sm:activationSpecs>
+  </sm:container>
+
+  <bean id="client" class="org.servicemix.client.DefaultServiceMixClient">
+    <constructor-arg ref="jbi"/>
+  </bean>
+
+  <bean id="jmsFactory" class="org.activemq.pool.PooledConnectionFactory">
+    <property name="connectionFactory">
+      <bean class="org.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="vm://localhost"/>
+      </bean>
+    </property>
+  </bean>
+
+</beans>

@@ -1,0 +1,7 @@
+<!-- START SNIPPET: request -->
+<ns1:getQuote xmlns:ns1="urn:xmethods-delayed-quotes" xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" xmlns:se="http://schemas.xmlsoap.org/soap/envelope/" se:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+
+  <symbol xsi:type="xsd:string">SUNW</symbol>
+
+</ns1:getQuote>
+<!-- END SNIPPET: request -->

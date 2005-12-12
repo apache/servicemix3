@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<portal>
+
+    <fragment name="navigation" class="org.apache.pluto.portalImpl.aggregation.navigation.TabNavigation">
+    </fragment>
+
+    <fragment name="servicemix" type="page">
+        <navigation>
+            <title>ServiceMix</title>
+            <description>Holds all settings about the ServiceMix JBI Container</description>
+        </navigation>
+
+        <fragment name="container" type="page">
+            <navigation>
+                <title>Container</title>
+                <description>Shows various information on ServiceMix</description>
+            </navigation>
+
+            <fragment name="row1" type="row">
+                <fragment name="col1" type="column">
+                    <fragment name="p1" type="portlet">
+                        <property name="portlet" value="1.1"/>
+                    </fragment>
+                    <fragment name="p2" type="portlet">
+                        <property name="portlet" value="1.2"/>
+                    </fragment>
+                </fragment>
+            </fragment>
+        </fragment>
+
+    </fragment>
+</portal>

@@ -1,0 +1,13 @@
+target
+bin
+ActiveMQ
+testWDR
+testWDIR
+test-classes
+rootDir
+classes
+servicemix.iws
+servicemix.ipr
+servicemix.iml
+.project
+.classpath

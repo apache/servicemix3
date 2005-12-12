@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.org/config/1.0" 
+	   xmlns:foo="http://servicemix.org/cheese/">
+
+  <!-- the JBI container -->
+  <sm:container id="jbi">
+    <sm:activationSpecs>
+    
+      <!-- START SNIPPET: inOnly -->
+      <sm:activationSpec componentName="proxyCounter"
+            endpoint="proxyCounter" 
+            service="foo:proxyCounter" 
+            destinationService="foo:reflectionCounter">
+        <sm:component><bean class="org.servicemix.components.reflection.ProxyInOnlyBinding">
+          <property name="target" ref="counter"/>
+        </bean></sm:component>
+      </sm:activationSpec>
+      <!-- END SNIPPET: inOnly -->
+
+      <sm:activationSpec componentName="trace"
+                 service="foo:trace" 
+                 endpoint="trace">
+        <sm:component><bean class="org.servicemix.components.groovy.GroovyComponent">
+          <property name="disableOutput" value="true"/>
+          <property name="scriptText">
+            <value>
+              <![CDATA[
+println "Received message $inMessage.properties.method"
+              ]]>
+            </value>
+          </property>
+        </bean></sm:component>
+      </sm:activationSpec>
+
+      <!-- START SNIPPET: out -->
+      <sm:activationSpec componentName="reflectionCounter"
+                 service="foo:reflectionCounter" 
+                 endpoint="reflectionCounter">
+        <sm:component><bean class="org.servicemix.components.reflection.ReflectionOutBinding">
+          <property name="target" ref="counter"/>
+        </bean></sm:component>
+      </sm:activationSpec>
+      <!-- END SNIPPET: out -->
+
+    </sm:activationSpecs>
+  </sm:container>
+
+  <bean id="counter" class="org.servicemix.components.reflection.SimpleCounter"/>
+  
+</beans>

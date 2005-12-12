@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.org/config/1.0" 
+	   xmlns:foo="http://servicemix.org/cheese/">
+
+  <!-- the JBI container -->
+  <sm:container id="jbi">
+    <sm:activationSpecs>
+
+      <!-- START SNIPPET: drools -->
+      <sm:activationSpec componentName="droolsRouter" 
+      					 service="foo:droolsRouter">
+      	<sm:component><bean class="org.servicemix.components.drools.DroolsComponent">
+          <property name="ruleBaseResource" value="classpath:org/servicemix/components/drools/jbi-rules-forward.xml" />
+        </bean></sm:component>
+      </sm:activationSpec>
+      <!-- END SNIPPET: drools -->
+
+      <sm:activationSpec componentName="receiver" 
+      					 service="foo:receiver">
+      	<sm:component><bean class="org.servicemix.tck.ReceiverComponent"/></sm:component>
+      </sm:activationSpec>
+    </sm:activationSpecs>
+  </sm:container>
+
+  <bean id="client" class="org.servicemix.client.DefaultServiceMixClient">
+    <constructor-arg ref="jbi"/>
+  </bean>
+</beans>

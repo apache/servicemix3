@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+
+<beans xmlns="http://xbean.org/schemas/spring/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns:sm="http://servicemix.org/config/1.0" 
+xmlns:foo="http://www.habuma.com/foo" 
+xsi:schemaLocation="http://xbean.org/schemas/spring/1.0 
+conf/spring-beans.xsd 
+http://servicemix.org/config/1.0 
+conf/servicemix.xsd"> 
+
+  <sm:container id="jbi" name ="service" flowName="cluster"> 
+    <sm:activationSpecs> 
+      <sm:activationSpec componentName="pingService" 
+service="foo:pingService"> 
+        <sm:component> 
+          <bean class="org.servicemix.jbi.nmr.flow.jms.PingService"/> 
+        </sm:component> 
+      </sm:activationSpec> 
+    </sm:activationSpecs> 
+  </sm:container> 
+</beans> 
