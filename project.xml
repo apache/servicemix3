@@ -159,6 +159,12 @@
       <email>dandiep@codehaus.org</email>
     </developer>
     <developer>
+        <name>Bruce Snyder</name>
+        <id>bsnyder</id>
+        <email>bsnyder@apache.org</email>
+        <organization>LogicBlaze</email>
+    <developer>
+    <developer>
       <name>Philip Dodds</name>
       <id>pdodds</id>
       <email>pdodds@unity-systems.com</email>
