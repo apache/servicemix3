@@ -626,39 +626,6 @@
       </properties>
     </dependency>
 
-    <dependency>
-      <groupId>servicemix</groupId>
-      <artifactId>ojdbc14</artifactId>
-      <jar>${oracle_ojdbc14_jar}</jar>
-      <properties>
-        <optional>true</optional>
-      </properties>
-    </dependency>
-    <dependency>
-      <groupId>servicemix</groupId>
-      <artifactId>oraclexsql</artifactId>
-      <jar>${oracle_oraclexsql_jar}</jar>
-      <properties>
-        <optional>true</optional>
-      </properties>
-    </dependency>
-    <dependency>
-      <groupId>servicemix</groupId>
-      <artifactId>xmlparserv2</artifactId>
-      <jar>${oracle_xmlparserv2_jar}</jar>
-      <properties>
-        <optional>true</optional>
-      </properties>
-    </dependency>
-    <dependency>
-      <groupId>servicemix</groupId>
-      <artifactId>xsu12</artifactId>
-      <jar>${oracle_xsu12_jar}</jar>
-      <properties>
-        <optional>true</optional>
-      </properties>
-    </dependency>
-
     <!-- JAX-WS component dependencies -->
     <dependency>
       <groupId>servicemix</groupId>
