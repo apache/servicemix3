@@ -21,7 +21,7 @@ import EDU.oswego.cs.dl.util.concurrent.Slot;
 
 import org.activemq.ActiveMQConnection;
 import org.activemq.ActiveMQConnectionFactory;
-import org.activemq.message.ActiveMQTopic;
+import org.activemq.command.ActiveMQTopic;
 import org.oasis_open.docs.wsn._2004._06.wsn_ws_basenotification_1_2_draft_01.NotificationMessageHolderType;
 import org.servicemix.wspojo.notification.NotificationConsumer;
 import org.xmlsoap.schemas.ws._2003._03.addressing.EndpointReferenceType;

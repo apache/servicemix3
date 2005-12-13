@@ -18,9 +18,10 @@
 package org.servicemix.ws.notification;
 
 import org.activemq.ActiveMQConnection;
-import org.activemq.advisories.ProducerDemandAdvisor;
-import org.activemq.advisories.ProducerDemandEvent;
-import org.activemq.advisories.ProducerDemandListener;
+import org.activemq.advisory.ConsumerEventSource;
+import org.activemq.advisory.ConsumerEvent;
+import org.activemq.advisory.ConsumerListener;
+import org.activemq.util.JMSExceptionSupport;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oasis_open.docs.wsn._2004._06.wsn_ws_basenotification_1_2_draft_01.GetCurrentMessage;
@@ -65,7 +66,7 @@ public class ActiveMQPublisherRegistration {
     private EndpointReferenceType endpointReference;
     private EndpointReferenceType publisherReference;
     private Topic topic;
-    private ProducerDemandAdvisor advisor;
+    private ConsumerEventSource advisor;
     private Boolean useNotify;
     private QueryExpressionType precondition;
     private QueryExpressionType selector;
@@ -150,18 +151,23 @@ public class ActiveMQPublisherRegistration {
 
     public void start() throws JMSException {
         if (demand) {
-            advisor = new ProducerDemandAdvisor(connection, topic);
-            advisor.setDemandListener(new ProducerDemandListener() {
-                public void onEvent(ProducerDemandEvent event) {
+            advisor = new ConsumerEventSource(connection, topic);
+            advisor.setConsumerListener(new ConsumerListener() {
+                public void onConsumerEvent(ConsumerEvent event) {
                     try {
-                        fireDemandChangeEvent(event.isInDemand());
+                        fireDemandChangeEvent(event.getConsumerCount() == 0);
                     }
                     catch (Exception e) {
                         log.error("Failed to perform on demand subscription: " + e, e);
                     }
                 }
             });
-            advisor.start();
+            try {
+                advisor.start();
+            }
+            catch (Exception e) {
+                throw JMSExceptionSupport.create(e);
+            }
         }
     }
 
@@ -301,7 +307,12 @@ public class ActiveMQPublisherRegistration {
 
     public void stop() throws JMSException {
         if (advisor != null) {
-            advisor.stop();
+            try {
+                advisor.stop();
+            }
+            catch (Exception e) {
+                throw JMSExceptionSupport.create(e);
+            }
             advisor = null;
         }
     }

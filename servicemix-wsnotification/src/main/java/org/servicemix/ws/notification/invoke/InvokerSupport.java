@@ -17,7 +17,7 @@
  **/
 package org.servicemix.ws.notification.invoke;
 
-import org.activemq.message.ActiveMQTopic;
+import org.activemq.command.ActiveMQTopic;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oasis_open.docs.wsn._2004._06.wsn_ws_basenotification_1_2_draft_01.TopicExpressionType;

@@ -20,7 +20,7 @@ package org.servicemix.ws.notification;
 
 import org.activemq.ActiveMQConnection;
 import org.activemq.ActiveMQMessageConsumer;
-import org.activemq.service.Service;
+import org.activemq.Service;
 import org.oasis_open.docs.wsn._2004._06.wsn_ws_basenotification_1_2_draft_01.TopicExpressionType;
 import org.oasis_open.docs.wsrf._2004._06.wsrf_ws_resourceproperties_1_2_draft_01.GetResourcePropertyResponse;
 import org.oasis_open.docs.wsrf._2004._06.wsrf_ws_resourceproperties_1_2_draft_01.QueryExpressionType;
@@ -49,8 +49,7 @@ public class ActiveMQSubscription implements Service {
     private XMLGregorianCalendar terminationTime;
     private MessageListener dispatcher;
 
-    public ActiveMQSubscription(ActiveMQConnection connection, EndpointReferenceType consumerReference,
-            TopicExpressionConverter topicConverter) {
+    public ActiveMQSubscription(ActiveMQConnection connection, EndpointReferenceType consumerReference, TopicExpressionConverter topicConverter) {
         this.connection = connection;
         this.consumerReference = consumerReference;
         this.topicConverter = topicConverter;
@@ -62,8 +61,7 @@ public class ActiveMQSubscription implements Service {
                 throw new IllegalArgumentException("Must specify a dispatcher");
             }
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            consumer = (ActiveMQMessageConsumer) session.createConsumer(
-                    topicConverter.toActiveMQTopic(topicExpression), toJMSSelector(selector));
+            consumer = (ActiveMQMessageConsumer) session.createConsumer(topicConverter.toActiveMQTopic(topicExpression), toJMSSelector(selector));
             consumer.setMessageListener(dispatcher);
         }
         consumer.start();

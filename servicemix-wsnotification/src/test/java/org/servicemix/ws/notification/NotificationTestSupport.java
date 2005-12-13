@@ -17,7 +17,7 @@
  **/
 package org.servicemix.ws.notification;
 
-import org.activemq.message.ActiveMQTopic;
+import org.activemq.command.ActiveMQTopic;
 import org.oasis_open.docs.wsn._2004._06.wsn_ws_basenotification_1_2_draft_01.NotificationMessageHolderType;
 import org.oasis_open.docs.wsn._2004._06.wsn_ws_basenotification_1_2_draft_01.TopicExpressionType;
 import org.oasis_open.docs.wsrf._2004._06.wsrf_ws_resourceproperties_1_2_draft_01.QueryExpressionType;

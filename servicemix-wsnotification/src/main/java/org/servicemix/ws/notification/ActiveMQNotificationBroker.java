@@ -19,7 +19,7 @@ package org.servicemix.ws.notification;
 
 import org.activemq.ActiveMQConnection;
 import org.activemq.ActiveMQConnectionFactory;
-import org.activemq.message.ActiveMQTopic;
+import org.activemq.command.ActiveMQTopic;
 import org.oasis_open.docs.wsn._2004._06.wsn_ws_basenotification_1_2_draft_01.GetCurrentMessage;
 import org.oasis_open.docs.wsn._2004._06.wsn_ws_basenotification_1_2_draft_01.GetCurrentMessageResponse;
 import org.oasis_open.docs.wsn._2004._06.wsn_ws_basenotification_1_2_draft_01.NotificationMessageHolderType;
