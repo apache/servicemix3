@@ -17,7 +17,7 @@
  **/
 package org.servicemix.web.jmx;
 
-import org.activemq.service.Service;
+import org.activemq.Service;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
