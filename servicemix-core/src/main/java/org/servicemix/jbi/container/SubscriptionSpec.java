@@ -117,42 +117,39 @@ public class SubscriptionSpec implements Serializable {
     public boolean matches(Registry registry, MessageExchangeImpl exchange) {
         boolean result = false;
 
-        if (filter != null) {
-            result = filter.matches(exchange);
-        }
-        else {
-            ExchangePacket packet = exchange.getPacket();
-            ComponentNameSpace sourceId = packet.getSourceId();
-            if (sourceId != null) {
-                // get the list of services
-                if (service != null) {
-                    ServiceEndpoint[] ses = registry.getEndpointsForService(service);
-                    if (ses != null) {
-                        for (int i = 0; i < ses.length; i++) {
-                            InternalEndpoint se = (InternalEndpoint) ses[i];
-                            if (se.getComponentNameSpace() != null && se.getComponentNameSpace().equals(sourceId)) {
-                                result = true;
-                                break;
-                            }
+        ExchangePacket packet = exchange.getPacket();
+        ComponentNameSpace sourceId = packet.getSourceId();
+        if (sourceId != null) {
+            // get the list of services
+            if (service != null) {
+                ServiceEndpoint[] ses = registry.getEndpointsForService(service);
+                if (ses != null) {
+                    for (int i = 0; i < ses.length; i++) {
+                        InternalEndpoint se = (InternalEndpoint) ses[i];
+                        if (se.getComponentNameSpace() != null && se.getComponentNameSpace().equals(sourceId)) {
+                            result = true;
+                            break;
                         }
                     }
                 }
-                if (result && interfaceName != null) {
-                    ServiceEndpoint[] ses = registry.getEndpoints(interfaceName);
-                    if (ses != null) {
-                        result = false;
-                        for (int i = 0; i < ses.length; i++) {
-                            InternalEndpoint se = (InternalEndpoint) ses[i];
-                            if (se.getComponentNameSpace() != null && se.getComponentNameSpace().equals(sourceId)) {
-                                result = true;
-                                break;
-                            }
+            }
+            if (result && interfaceName != null) {
+                ServiceEndpoint[] ses = registry.getEndpoints(interfaceName);
+                if (ses != null) {
+                    result = false;
+                    for (int i = 0; i < ses.length; i++) {
+                        InternalEndpoint se = (InternalEndpoint) ses[i];
+                        if (se.getComponentNameSpace() != null && se.getComponentNameSpace().equals(sourceId)) {
+                            result = true;
+                            break;
                         }
                     }
                 }
-
             }
 
+        }
+        if (result && filter != null) {
+            result = filter.matches(exchange);
         }
         return result;
     }
