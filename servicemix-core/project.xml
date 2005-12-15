@@ -393,6 +393,7 @@
                 <exclude>**/JmsFlow*.*</exclude>
                 
                 <exclude>**/JcaFlow*.*</exclude>                           
+                <exclude>**/JCAFlow*.*</exclude>                           
                 				
                 <!-- test cases hangs
                 <exclude>**/SimpleClusterSendSyncTest.*</exclude>
