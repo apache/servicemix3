@@ -392,7 +392,7 @@
                 <exclude>**/ClusterFlow*.*</exclude> 
                 <exclude>**/JmsFlow*.*</exclude>
                 
-                <exclude>**/JcaFlowPersistentTest.*</exclude>                           
+                <exclude>**/JcaFlow*.*</exclude>                           
                 				
                 <!-- test cases hangs
                 <exclude>**/SimpleClusterSendSyncTest.*</exclude>
