@@ -72,7 +72,7 @@ public class XStreamMarshaler extends DefaultMarshaler {
         if (content != null) {
             if (content instanceof StreamSource) {
                 StreamSource source = (StreamSource) content;
-                return getXStream().fromXML(source.getReader(), source.getSystemId());
+                return getXStream().fromXML(source.getReader());
             }
             Document document = null;
             if (content instanceof DOMSource) {
