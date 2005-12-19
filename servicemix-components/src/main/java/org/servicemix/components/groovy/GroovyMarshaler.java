@@ -18,7 +18,7 @@
 package org.servicemix.components.groovy;
 
 import org.servicemix.jbi.messaging.DefaultMarshaler;
-import org.servicemix.jbi.messaging.Marshaler;
+import org.servicemix.jbi.messaging.PojoMarshaler;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
@@ -27,7 +27,7 @@ import javax.jbi.messaging.MessagingException;
 import groovy.lang.GString;
 
 /**
- * A {@link Marshaler} capable of handling <a href="http://groovy.codehaus.org/">Groovy</a>
+ * A {@link PojoMarshaler} capable of handling <a href="http://groovy.codehaus.org/">Groovy</a>
  * specific types.
  *
  * @version $Revision$

@@ -21,7 +21,7 @@ import org.mule.impl.MuleMessage;
 import org.mule.umo.UMOEvent;
 import org.mule.umo.UMOMessage;
 import org.servicemix.components.util.MarshalerSupport;
-import org.servicemix.jbi.messaging.Marshaler;
+import org.servicemix.jbi.messaging.PojoMarshaler;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
@@ -48,7 +48,7 @@ public class MuleMarshaler extends MarshalerSupport {
         message.setProperty("org.servicemix.mule.event", event);
 
         Object body = event.getMessage().getPayload();
-        message.setProperty(Marshaler.BODY, body);
+        message.setProperty(PojoMarshaler.BODY, body);
     }
 
     /**
