@@ -572,7 +572,8 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         // this is the answer, so update the syncState and notify the waiter
         // Here, we don't need to put the message in the queue
         MessageExchangeImpl theOriginal = (MessageExchangeImpl) exchangesById.get(me.getExchangeId());
-        if (theOriginal != null && theOriginal.getSyncState() == MessageExchangeImpl.SYNC_STATE_SYNC_SENT) {
+        if (theOriginal != null && theOriginal.getSyncState() == MessageExchangeImpl.SYNC_STATE_SYNC_SENT &&
+        	theOriginal.getRole() == me.getRole()) {
             suspendTx(theOriginal);
             synchronized (theOriginal) {
                 theOriginal.copyFrom(me);
