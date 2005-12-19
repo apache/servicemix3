@@ -91,7 +91,7 @@
   <goal name="assembly:goal" prereqs="init">
     <maven:reactor
       basedir="."
-      includes="modules/assembly/project.xml"
+      includes="assembly/project.xml"
       goals="${goal}"
       ignoreFailures="false"
       />
