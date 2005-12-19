@@ -224,7 +224,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable 
         setContent(new StringSource(xml));
     }
 
-    public  Marshaler getMarshaler() {
+    public  PojoMarshaler getMarshaler() {
         return exchange.getMarshaler();
     }
 

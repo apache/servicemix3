@@ -23,7 +23,7 @@ import org.servicemix.JavaSource;
 import org.servicemix.jbi.FaultException;
 import org.servicemix.jbi.NotInitialisedYetException;
 import org.servicemix.jbi.management.BaseLifeCycle;
-import org.servicemix.jbi.messaging.Marshaler;
+import org.servicemix.jbi.messaging.PojoMarshaler;
 import org.servicemix.jbi.messaging.NormalizedMessageImpl;
 
 import javax.jbi.JBIException;
@@ -111,7 +111,7 @@ public abstract class PojoSupport extends BaseLifeCycle implements ComponentLife
         if (message instanceof NormalizedMessageImpl) {
             return ((NormalizedMessageImpl) message).getBody();
         }
-        return message.getProperty(Marshaler.BODY);
+        return message.getProperty(PojoMarshaler.BODY);
     }
 
     /**
@@ -131,7 +131,7 @@ public abstract class PojoSupport extends BaseLifeCycle implements ComponentLife
             ((NormalizedMessageImpl) message).setBody(body);
         }
         else {
-            message.setProperty(Marshaler.BODY, body);
+            message.setProperty(PojoMarshaler.BODY, body);
         }
     }
 

@@ -24,14 +24,15 @@ import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 
 /**
- * A plugin strategy which marshals an Object into and out of a JBI message
+ * A plugin strategy which marshals an Object into and out of a JBI message.
+ * This interface is used by the ServiceMixClient to marshal POJOs into and out of JBI messages.
  *
  * @version $Revision$
  */
-public interface Marshaler {
+public interface PojoMarshaler {
 
     /**
-     * The key on the message to store the message body which cannot be marshalled into or out of XML easily
+     * The key on the message to store the message body which cannot be marshaled into or out of XML easily
      * or to provide a cache of the object representation of the object.
      */
     String BODY = "org.servicemix.body";

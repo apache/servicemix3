@@ -259,7 +259,7 @@ public class MessageExchangeFactoryImpl implements MessageExchangeFactory {
         }
         
         exchange.setSourceContext(getContext());
-        Marshaler marshaler = getContext().getActivationSpec().getMarshaler();
+        PojoMarshaler marshaler = getContext().getActivationSpec().getMarshaler();
         if (marshaler != null) {
             exchange.setMarshaler(marshaler);
         }

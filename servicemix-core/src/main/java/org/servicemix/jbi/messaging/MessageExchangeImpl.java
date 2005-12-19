@@ -76,7 +76,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     
     protected ComponentContextImpl sourceContext;
     protected ExchangePacket packet;
-    protected Marshaler marshaler;
+    protected PojoMarshaler marshaler;
     protected int state;
     protected int syncState = SYNC_STATE_ASYNC;
     protected int[][] states;
@@ -516,14 +516,14 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     }
 
 
-    public synchronized Marshaler getMarshaler() {
+    public synchronized PojoMarshaler getMarshaler() {
         if (marshaler == null) {
             marshaler = new DefaultMarshaler();
         }
         return marshaler;
     }
 
-    public void setMarshaler(Marshaler marshaler) {
+    public void setMarshaler(PojoMarshaler marshaler) {
         this.marshaler = marshaler;
     }
 

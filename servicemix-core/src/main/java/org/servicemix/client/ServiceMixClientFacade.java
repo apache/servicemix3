@@ -23,7 +23,7 @@ import org.servicemix.jbi.NoOutMessageAvailableException;
 import org.servicemix.jbi.container.ActivationSpec;
 import org.servicemix.jbi.container.JBIContainer;
 import org.servicemix.jbi.messaging.DefaultMarshaler;
-import org.servicemix.jbi.messaging.Marshaler;
+import org.servicemix.jbi.messaging.PojoMarshaler;
 import org.servicemix.jbi.resolver.EndpointFilter;
 import org.servicemix.jbi.resolver.EndpointResolver;
 import org.servicemix.jbi.resolver.ExternalInterfaceNameEndpointResolver;
@@ -62,7 +62,7 @@ public class ServiceMixClientFacade implements ServiceMixClient {
 
     private ComponentContext context;
     private EndpointFilter filter = NullEndpointFilter.getInstance();
-    private Marshaler marshaler = new DefaultMarshaler();
+    private PojoMarshaler marshaler = new DefaultMarshaler();
     private MessageExchangeFactory exchangeFactory;
 
     public ServiceMixClientFacade(ComponentContext context) {
@@ -292,7 +292,7 @@ public class ServiceMixClientFacade implements ServiceMixClient {
         this.filter = filter;
     }
 
-    public Marshaler getMarshaler() {
+    public PojoMarshaler getMarshaler() {
         return marshaler;
     }
 
@@ -302,7 +302,7 @@ public class ServiceMixClientFacade implements ServiceMixClient {
      *
      * @param marshaler
      */
-    public void setMarshaler(Marshaler marshaler) {
+    public void setMarshaler(PojoMarshaler marshaler) {
         this.marshaler = marshaler;
     }
 

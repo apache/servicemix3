@@ -20,6 +20,9 @@ package org.servicemix.components.util;
 import org.servicemix.jbi.jaxp.SourceTransformer;
 
 /**
+ * A useful base class for some kind of marshaler to and from JBI NormalizedMessage instances to
+ * some kind of underlying transport or protocol.
+ * 
  * @version $Revision$
  */
 public class MarshalerSupport {

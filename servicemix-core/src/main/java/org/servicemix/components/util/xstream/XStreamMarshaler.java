@@ -25,7 +25,7 @@ import org.logicblaze.lingo.LingoInvocation;
 import org.servicemix.jbi.jaxp.SourceTransformer;
 import org.servicemix.jbi.jaxp.StringSource;
 import org.servicemix.jbi.messaging.DefaultMarshaler;
-import org.servicemix.jbi.messaging.Marshaler;
+import org.servicemix.jbi.messaging.PojoMarshaler;
 import org.w3c.dom.Document;
 
 import javax.jbi.messaging.MessageExchange;
@@ -39,7 +39,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 /**
- * A {@link Marshaler} for <a href="http://xStream.codehaus.org/">XStream</a> which
+ * A {@link PojoMarshaler} for <a href="http://xStream.codehaus.org/">XStream</a> which
  * streams the object to an a W3C DOM Document so that other components can access
  * the XML without an extra parse.
  *

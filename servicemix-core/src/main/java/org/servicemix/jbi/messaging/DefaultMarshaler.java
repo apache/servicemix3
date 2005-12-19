@@ -27,24 +27,24 @@ import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 
 /**
- * Default implementation of {@link Marshaler} which will pass through String
+ * Default implementation of {@link PojoMarshaler} which will pass through String
  * objects as XML content, DOM objects or Stream objects, otherwise the payload
  * is stored in a message property.
  * 
  * @version $Revision$
  */
-public class DefaultMarshaler implements Marshaler {
+public class DefaultMarshaler implements PojoMarshaler {
 
-    private Marshaler parent;
+    private PojoMarshaler parent;
 
     public DefaultMarshaler() {
     }
 
-    public DefaultMarshaler(Marshaler parent) {
+    public DefaultMarshaler(PojoMarshaler parent) {
         this.parent = parent;
     }
 
-    public Marshaler getParent() {
+    public PojoMarshaler getParent() {
         return parent;
     }
 

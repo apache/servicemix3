@@ -17,7 +17,7 @@
  **/
 package org.servicemix.jbi.container;
 
-import org.servicemix.jbi.messaging.Marshaler;
+import org.servicemix.jbi.messaging.PojoMarshaler;
 import org.servicemix.jbi.resolver.EndpointChooser;
 import org.servicemix.jbi.resolver.EndpointResolver;
 import org.servicemix.jbi.resolver.InterfaceNameEndpointResolver;
@@ -53,7 +53,7 @@ public class ActivationSpec implements Serializable {
     private QName destinationInterface;
     private QName destinationOperation;
     private String destinationEndpoint;
-    private transient Marshaler marshaler;
+    private transient PojoMarshaler marshaler;
     private SubscriptionSpec[] subscriptions = {};
     private boolean failIfNoDestinationEndpoint = true;
     private Boolean persistent;
@@ -231,11 +231,11 @@ public class ActivationSpec implements Serializable {
         this.destinationEndpoint = destinationEndpoint;
     }
 
-    public Marshaler getMarshaler() {
+    public PojoMarshaler getMarshaler() {
         return marshaler;
     }
 
-    public void setMarshaler(Marshaler marshaler) {
+    public void setMarshaler(PojoMarshaler marshaler) {
         this.marshaler = marshaler;
     }
 
