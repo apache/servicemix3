@@ -17,23 +17,23 @@
  **/
 package org.servicemix.jbi.resolver;
 
-import org.servicemix.jbi.NoServiceEndpointAvailableException;
-
 import javax.jbi.JBIException;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
+import org.servicemix.jbi.NoServiceAvailableException;
+
 /**
  * Resolves the endpoint using the service name and endpoint name to resolve the {@link ServiceEndpoint}
  *
  * @version $Revision$
  */
-public class ServiceAndEndpointNameResolver implements EndpointResolver {
+public class ServiceAndEndpointNameResolver extends EndpointResolverSupport {
+	
     private QName serviceName;
     private String endpointName;
-    private boolean failIfUnavailable = true;
 
     public ServiceAndEndpointNameResolver() {
     }
@@ -41,17 +41,6 @@ public class ServiceAndEndpointNameResolver implements EndpointResolver {
     public ServiceAndEndpointNameResolver(QName serviceName, String endpointName) {
         this.serviceName = serviceName;
         this.endpointName = endpointName;
-    }
-
-    public ServiceEndpoint resolveEndpoint(ComponentContext context, MessageExchange exchange, EndpointFilter filter) throws JBIException {
-        ServiceEndpoint endpoint = context.getEndpoint(serviceName, endpointName);
-        if (!filter.evaluate(endpoint, exchange)) {
-            endpoint = null;
-        }
-        if (endpoint == null && failIfUnavailable) {
-            throw new NoServiceEndpointAvailableException(serviceName, endpointName);
-        }
-        return endpoint;
     }
 
     public ServiceEndpoint[] resolveAvailableEndpoints(ComponentContext context, MessageExchange exchange) throws JBIException {
@@ -64,6 +53,8 @@ public class ServiceAndEndpointNameResolver implements EndpointResolver {
         }
     }
 
+    // Properties
+    //-------------------------------------------------------------------------
     public QName getServiceName() {
         return serviceName;
     }
@@ -80,11 +71,9 @@ public class ServiceAndEndpointNameResolver implements EndpointResolver {
         this.endpointName = endpointName;
     }
 
-    public boolean isFailIfUnavailable() {
-        return failIfUnavailable;
-    }
-
-    public void setFailIfUnavailable(boolean failIfUnavailable) {
-        this.failIfUnavailable = failIfUnavailable;
+    // Implementation methods
+    //-------------------------------------------------------------------------
+    protected JBIException createServiceUnavailableException() {
+        return new NoServiceAvailableException(serviceName);
     }
 }
