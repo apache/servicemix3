@@ -33,20 +33,20 @@ import java.io.IOException;
  */
 public class UninstallAssemblyTask extends JbiTask {
     private static final Log log = LogFactory.getLog(UninstallComponentTask.class);
-    private String assemblyName; //assemblyName to uninstall
+    private String name; //assembly name to uninstall
 
     /**
      * @return Returns the assemblyName.
      */
-    public String getAssemblyName() {
-        return assemblyName;
+    public String getName() {
+        return name;
     }
 
     /**
-     * @param assemblyName The assemblyName to set.
+     * @param name The assembly name to set.
      */
-    public void setAssemblyName(String assemblyName) {
-        this.assemblyName = assemblyName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -55,12 +55,12 @@ public class UninstallAssemblyTask extends JbiTask {
      * @throws BuildException
      */
     public void execute() throws BuildException {
-        if (assemblyName == null) {
+        if (name == null) {
             throw new BuildException("null assemblyName");
         }
         try {
             DeploymentServiceMBean is = getDeploymentService();
-            is.undeploy(assemblyName);
+            is.undeploy(name);
         }
         catch (IOException e) {
             log.error("Caught an exception uninstalling the assembly", e);

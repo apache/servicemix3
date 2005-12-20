@@ -32,20 +32,20 @@ import java.io.IOException;
  */
 public class ShutDownComponentTask extends JbiTask {
     private static final Log log = LogFactory.getLog(ShutDownComponentTask.class);
-    private String componentName;
+    private String name;
 
     /**
      * @return Returns the componentName.
      */
-    public String getComponentName() {
-        return componentName;
+    public String getName() {
+        return name;
     }
 
     /**
-     * @param componentName The componentName to set.
+     * @param name The component name to set.
      */
-    public void setComponentName(String componentName) {
-        this.componentName = componentName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -54,12 +54,12 @@ public class ShutDownComponentTask extends JbiTask {
      * @throws BuildException
      */
     public void execute() throws BuildException {
-        if (componentName == null) {
+        if (name == null) {
             throw new BuildException("null componentName");
         }
         try {
             ManagementContextMBean is = getManagementContext();
-            is.shutDownComponent(componentName);
+            is.shutDownComponent(name);
         }
         catch (IOException e) {
             log.error("Caught an exception shutting down component", e);

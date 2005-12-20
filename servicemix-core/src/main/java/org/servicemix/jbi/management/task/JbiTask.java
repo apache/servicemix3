@@ -48,13 +48,13 @@ import java.net.MalformedURLException;
 public abstract class JbiTask extends Task {
     private static final Log log = LogFactory.getLog(JbiTask.class);
     private String serverProtocol = "rmi";
-    private String namingHost = "localhost";
+    private String host = "localhost";
     private String containerName = JBIContainer.DEFAULT_NAME;
     private String jmxDomainName = ManagementContext.DEFAULT_DOMAIN;
-    private int namingPort = 1099;
+    private int port = 1099;
     private String jndiPath = null;
     private String username;
-    private String passwd;
+    private String password;
     private JMXConnector jmxConnector;
     
     
@@ -69,7 +69,7 @@ public abstract class JbiTask extends Task {
         }
         try {
             url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://" 
-                    + namingHost + ":" + namingPort + jndiPath);
+                    + host + ":" + port + jndiPath);
         }
         catch (MalformedURLException e) {
             log.error("error creating serviceURL: ",e);
@@ -206,26 +206,26 @@ public abstract class JbiTask extends Task {
     /**
      * @return Returns the namingHost.
      */
-    public String getNamingHost() {
-        return namingHost;
+    public String getHost() {
+        return host;
     }
     /**
-     * @param namingHost The namingHost to set.
+     * @param host The namingHost to set.
      */
-    public void setNamingHost(String namingHost) {
-        this.namingHost = namingHost;
+    public void setHost(String host) {
+        this.host = host;
     }
     /**
      * @return Returns the namingPort.
      */
-    public int getNamingPort() {
-        return namingPort;
+    public int getPort() {
+        return port;
     }
     /**
-     * @param namingPort The namingPort to set.
+     * @param port The namingPort to set.
      */
-    public void setNamingPort(int namingPort) {
-        this.namingPort = namingPort;
+    public void setPort(int port) {
+        this.port = port;
     }
     
     /**
@@ -244,15 +244,15 @@ public abstract class JbiTask extends Task {
     /**
      * @return Returns the passwd.
      */
-    public String getPasswd() {
-        return passwd;
+    public String getPassword() {
+        return password;
     }
 
     /**
-     * @param passwd The passwd to set.
+     * @param password The passwd to set.
      */
-    public void setPasswd(String passwd) {
-        this.passwd = passwd;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     /**

@@ -33,20 +33,20 @@ import java.io.IOException;
  */
 public class StopAssemblyTask extends JbiTask {
     private static final Log log = LogFactory.getLog(StopAssemblyTask.class);
-    private String assemblyName; //assemblyName 
+    private String name; //assembly name to stop.
 
     /**
-     * @return Returns the assemblyName.
+     * @return Returns the assembly name.
      */
-    public String getAssemblyName() {
-        return assemblyName;
+    public String getName() {
+        return name;
     }
 
     /**
-     * @param assemblyName The assemblyName to set.
+     * @param name The assembly name to set.
      */
-    public void setAssemblyName(String assemblyName) {
-        this.assemblyName = assemblyName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -55,12 +55,12 @@ public class StopAssemblyTask extends JbiTask {
      * @throws BuildException
      */
     public void execute() throws BuildException {
-        if (assemblyName == null) {
+        if (name == null) {
             throw new BuildException("null assemblyName");
         }
         try {
             DeploymentServiceMBean is = getDeploymentService();
-            is.stop(getAssemblyName());
+            is.stop(getName());
         }
         catch (IOException e) {
             log.error("Caught an exception stopping assembly", e);

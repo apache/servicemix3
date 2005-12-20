@@ -31,19 +31,19 @@ import java.io.IOException;
  */
 public class InstallSharedLibraryTask extends JbiTask {
     private static final Log log = LogFactory.getLog(InstallSharedLibraryTask.class);
-    private String sharedLibURI; //sharedLibURI to install
+    private String file; //shared library URI to install
     
     /**
-     * @return Returns the sharedLibURI.
+     * @return Returns the file.
      */
-    public String getSharedLibURI() {
-        return sharedLibURI;
+    public String getFile() {
+        return file;
     }
     /**
-     * @param sharedLibURI The sharedLibURI to set.
+     * @param file The shared library URI to set.
      */
-    public void setSharedLibURI(String sharedLibURI) {
-        this.sharedLibURI = sharedLibURI;
+    public void setFile(String file) {
+        this.file = file;
     }
     
     /**
@@ -51,20 +51,20 @@ public class InstallSharedLibraryTask extends JbiTask {
      * @throws BuildException
      */
     public void execute() throws BuildException{
-        if (sharedLibURI == null){
-            throw new BuildException("null sharedLibURI - sharedLibURI should be an archive");
+        if (file == null){
+            throw new BuildException("null file - file should be an archive");
         }
-        if (sharedLibURI.endsWith(".zip") || sharedLibURI.endsWith(".jar")){
+        if (file.endsWith(".zip") || file.endsWith(".jar")){
             try {
                 FrameworkInstallationService is = getInstallationService();
-                is.installSharedLibrary(sharedLibURI);
+                is.installSharedLibrary(file);
             }
             catch (IOException e) {
                 log.error("Caught an exception getting the installation service",e);
                 throw new BuildException(e);
             }
         }else {
-            throw new BuildException("sharedLibURI: " + sharedLibURI + " is not an archive");
+            throw new BuildException("file: " + file + " is not an archive");
         }
     }
 }

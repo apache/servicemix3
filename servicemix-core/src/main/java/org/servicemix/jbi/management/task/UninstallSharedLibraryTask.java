@@ -32,20 +32,20 @@ import java.io.IOException;
  */
 public class UninstallSharedLibraryTask extends JbiTask {
     private static final Log log = LogFactory.getLog(UninstallSharedLibraryTask.class);
-    private String sharedLibName; //sharedLibName to uninstall
+    private String name; //shared Library name to uninstall
 
     /**
-     * @return Returns the sharedLibName.
+     * @return Returns the name.
      */
-    public String getSharedLibName() {
-        return sharedLibName;
+    public String getName() {
+        return name;
     }
 
     /**
-     * @param sharedLibName The sharedLibName to set.
+     * @param name The name to set.
      */
-    public void setSharedLibName(String sharedLibName) {
-        this.sharedLibName = sharedLibName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -54,12 +54,12 @@ public class UninstallSharedLibraryTask extends JbiTask {
      * @throws BuildException
      */
     public void execute() throws BuildException {
-        if (sharedLibName == null) {
-            throw new BuildException("null sharedLibName - sharedLibName should be an archive");
+        if (name == null) {
+            throw new BuildException("null name - name should be an archive");
         }
         try {
             FrameworkInstallationService is = getInstallationService();
-            is.uninstallSharedLibrary(sharedLibName);
+            is.uninstallSharedLibrary(name);
         }
         catch (IOException e) {
             log.error("Caught an exception getting the installation service", e);

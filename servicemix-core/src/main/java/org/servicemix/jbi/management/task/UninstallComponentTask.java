@@ -32,21 +32,21 @@ import java.io.IOException;
  */
 public class UninstallComponentTask extends JbiTask {
     private static final Log log = LogFactory.getLog(UninstallComponentTask.class);
-    private String componentName; //componentName to uninstall
+    private String name; //component name to uninstall
     private boolean delete;
 
     /**
-     * @return Returns the componentName.
+     * @return Returns the component name.
      */
-    public String getComponentName() {
-        return componentName;
+    public String getName() {
+        return name;
     }
 
     /**
-     * @param componentName The componentName to set.
+     * @param name The component name to set.
      */
-    public void setComponentName(String componentName) {
-        this.componentName = componentName;
+    public void setName(String name) {
+        this.name = name;
     }
     
     /**
@@ -68,12 +68,12 @@ public class UninstallComponentTask extends JbiTask {
      * @throws BuildException
      */
     public void execute() throws BuildException {
-        if (componentName == null) {
+        if (name == null) {
             throw new BuildException("null componentName");
         }
         try {
             FrameworkInstallationService is = getInstallationService();
-            is.unloadInstaller(componentName, delete);
+            is.unloadInstaller(name, delete);
         }
         catch (IOException e) {
             log.error("Caught an exception getting the installation service", e);
