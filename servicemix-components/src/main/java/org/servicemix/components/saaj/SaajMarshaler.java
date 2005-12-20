@@ -20,6 +20,7 @@ package org.servicemix.components.saaj;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.servicemix.jbi.jaxp.SourceTransformer;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 
 import javax.activation.DataHandler;
@@ -58,6 +59,17 @@ public class SaajMarshaler {
         SOAPPart soapPart = soapMessage.getSOAPPart();
         SOAPBody soapBody = soapPart.getEnvelope().getBody();
         SOAPElement elem = (SOAPElement) soapBody.getChildElements().next();
+        
+        for (SOAPElement parent = elem.getParentElement(); parent != null; parent = parent.getParentElement()) {
+        	for (int i = 0; i < parent.getAttributes().getLength(); i++) {
+        		Attr att = (Attr) parent.getAttributes().item(i);
+        		if (att.getName().startsWith("xmlns:") && 
+        			elem.getAttributeNodeNS(att.getNamespaceURI(), att.getLocalName()) == null) {
+        			elem.setAttributeNS(att.getNamespaceURI(), att.getName(), att.getValue());
+        		}
+        	}
+        }
+        
         normalizedMessage.setContent(new DOMSource(elem));
 
         addNmsAttachments(normalizedMessage, soapMessage);
