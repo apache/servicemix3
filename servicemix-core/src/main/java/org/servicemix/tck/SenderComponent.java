@@ -39,6 +39,7 @@ public class SenderComponent extends ComponentSupport implements Sender {
     public static final String ENDPOINT = "sender";
 
     private EndpointResolver resolver;
+    private String message = "<s12:Envelope xmlns:s12='http://www.w3.org/2003/05/soap-envelope'><s12:Body> <foo>Hello!</foo> </s12:Body></s12:Envelope>";
 
     public SenderComponent() {
         super(SERVICE, ENDPOINT);
@@ -75,8 +76,7 @@ public class SenderComponent extends ComponentSupport implements Sender {
 
             exchange.setInMessage(message);
             // lets set the XML as a byte[], String or DOM etc
-            String xml = "<s12:Envelope xmlns:s12='http://www.w3.org/2003/05/soap-envelope'><s12:Body> <foo>Hello!</foo> </s12:Body></s12:Envelope>";
-            message.setContent(new StringSource(xml));
+            message.setContent(new StringSource(this.message));
             if (sync) {
             	boolean result = context.getDeliveryChannel().sendSync(exchange, 1000);
                 if (!result) {
@@ -87,5 +87,13 @@ public class SenderComponent extends ComponentSupport implements Sender {
             }
         }
     }
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
 
 }
