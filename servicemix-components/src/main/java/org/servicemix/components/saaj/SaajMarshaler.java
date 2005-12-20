@@ -29,12 +29,15 @@ import javax.xml.soap.AttachmentPart;
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.MimeHeader;
 import javax.xml.soap.SOAPBody;
+import javax.xml.soap.SOAPElement;
 import javax.xml.soap.SOAPEnvelope;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
@@ -53,7 +56,9 @@ public class SaajMarshaler {
         addNmsProperties(normalizedMessage, soapMessage);
 
         SOAPPart soapPart = soapMessage.getSOAPPart();
-        normalizedMessage.setContent(soapPart.getContent());
+        SOAPBody soapBody = soapPart.getEnvelope().getBody();
+        SOAPElement elem = (SOAPElement) soapBody.getChildElements().next();
+        normalizedMessage.setContent(new DOMSource(elem));
 
         addNmsAttachments(normalizedMessage, soapMessage);
     }
