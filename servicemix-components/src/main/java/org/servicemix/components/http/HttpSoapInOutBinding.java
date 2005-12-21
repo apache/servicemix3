@@ -87,6 +87,7 @@ public class HttpSoapInOutBinding extends ComponentSupport implements
             throw new XFireFault("Invalid source.", XFireFault.SENDER);
         }
         try {
+            XFireServletController.getResponse().setHeader("SOAPAction", "");
             DeliveryChannel channel = getDeliveryChannel();
             MessageExchangeFactory factory = channel.createExchangeFactory();
             InOnly exchange = factory.createInOnlyExchange();
@@ -105,6 +106,7 @@ public class HttpSoapInOutBinding extends ComponentSupport implements
             throw new XFireFault("Invalid source.", XFireFault.SENDER);
         }
         try {
+            XFireServletController.getResponse().setHeader("SOAPAction", "");
             DeliveryChannel channel = getDeliveryChannel();
             MessageExchangeFactory factory = channel.createExchangeFactory();
             InOut exchange = factory.createInOutExchange();
