@@ -46,7 +46,6 @@ public class JmsReceiverComponent extends JmsInBinding implements InitializingBe
             throw new IllegalArgumentException("Must have a template set");
         }
         connectionFactory = template.getConnectionFactory();
-//PS Fix: START
         /*
          * Component code did not work for JMS 1.02 compliant provider because uses APIs
          * that did not exist in JMS 1.02 : ConnectionFactory.createConnection,
@@ -68,14 +67,13 @@ public class JmsReceiverComponent extends JmsInBinding implements InitializingBe
             connection = connectionFactory.createConnection();
             session = connection.createSession(template.isSessionTransacted(), template.getSessionAcknowledgeMode());
         }
-//PS Fix: END
 
         Destination defaultDestination = template.getDefaultDestination();
         if (defaultDestination == null) {
             defaultDestination = template.getDestinationResolver().resolveDestinationName(session, template.getDefaultDestinationName(),
                     template.isPubSubDomain());
         }
-//PS Fix: START
+
         /*
          * Component code did not work for JMS 1.02 compliant provider because uses APIs
          * that did not exist in JMS 1.02: Session.createConsumer
@@ -91,27 +89,12 @@ public class JmsReceiverComponent extends JmsInBinding implements InitializingBe
         } else { // JMS 1.1 style
             consumer = session.createConsumer(defaultDestination, selector);
         }
-//PS Fix: END
+
         consumer.setMessageListener(this);
         connection.start();
     }
 
     public void destroy() throws Exception {
-//PS Fix: START
-        /*
-        if (consumer != null) {
-            consumer.close();
-            consumer = null;
-        }
-        if (session != null) {
-            session.close();
-            session = null;
-        }
-        if (connection != null) {
-            connection.close();
-            connection = null;
-        }
-        */
         try {
             if (connection != null) {
                 connection.close();
@@ -125,7 +108,6 @@ public class JmsReceiverComponent extends JmsInBinding implements InitializingBe
             session = null;
             consumer = null;
         }
-//PS Fix: END
     }
 
     public JmsTemplate getTemplate() {
