@@ -119,7 +119,6 @@ public abstract class BaseComponent implements Component {
      * @see javax.jbi.component.Component#resolveEndpointReference(org.w3c.dom.DocumentFragment)
      */
     public ServiceEndpoint resolveEndpointReference(DocumentFragment epr) {
-        // TODO Auto-generated method stub
         return null;
     }
     
