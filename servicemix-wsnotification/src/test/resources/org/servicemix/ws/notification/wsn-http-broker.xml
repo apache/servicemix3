@@ -40,9 +40,7 @@
                   <bean class="org.servicemix.ws.notification.JBINotificationBroker">
                     <constructor-arg>
                       <bean class="org.activemq.ActiveMQConnectionFactory">
-                        <property name="brokerURL" value="vm://localhost"/>
-                        <property name="useEmbeddedBroker" value="true"/>
-                        <property name="brokerXmlConfig" value="broker-vmpersistence.xml"/>
+                        <property name="brokerURL" value="vm://localhost?broker.persistent=false"/>
                       </bean>
                     </constructor-arg>
                   </bean>
