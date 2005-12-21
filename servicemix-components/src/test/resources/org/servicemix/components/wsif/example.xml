@@ -3,7 +3,7 @@
 	   xmlns:foo="http://servicemix.org/cheese/">
 
   <!-- ActiveMQ message broker -->
-  <bean id="broker" class="org.activemq.spring.BrokerFactoryBean">
+  <bean id="broker" class="org.activemq.xbean.BrokerFactoryBean">
     <property name="config" value="classpath:org/servicemix/components/wsif/broker.xml"/>
   </bean>
 

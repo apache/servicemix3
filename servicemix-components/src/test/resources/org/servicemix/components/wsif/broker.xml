@@ -1,26 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC  "-//ACTIVEMQ//DTD//EN" "http://activemq.org/dtd/activemq.dtd">
-<beans>
+<beans xmlns="http://activemq.org/config/1.0">
 
-  <!-- ==================================================================== -->
-  <!-- ActiveMQ Broker Configuration -->
-  <!-- ==================================================================== -->
-  <broker>
-    <connector>
-      <tcpServerTransport uri="tcp://localhost:61626" backlog="1000" useAsyncSend="true" maxOutstandingMessages="50"/>
-    </connector>
+  <broker persistent="false">
 
-    <persistence>
-      <!-- you can point this to a different datasource -->
-      <jdbcPersistence dataSourceRef="axion-ds"/>
-    </persistence>
+    <transportConnectors>
+      <transportConnector uri="tcp://localhost:61626" />
+    </transportConnectors>
+
   </broker>
 
-  <!-- A simple in memory Axion Datasource for testing -->
-
-  <bean name="axion-ds" class="org.axiondb.jdbc.AxionDataSource" autowire="constructor">
-    <constructor-arg>
-      <value>jdbc:axiondb:activemq-ramdb</value>
-    </constructor-arg>
-  </bean>
 </beans>
