@@ -584,6 +584,9 @@
         
         <!-- Disable, as the external web service that is invoked seems down -->
         <exclude>**/HttpSoapTest.*</exclude>
+        
+        <!-- Disable until org.activemq.pool works -->
+        <exclude>**/TransformComponentTest.*</exclude>
 
       </excludes>
     </unitTest>
