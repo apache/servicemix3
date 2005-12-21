@@ -21,6 +21,7 @@ import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.xml.soap.MimeHeaders;
 import javax.xml.soap.SOAPConnection;
 import javax.xml.soap.SOAPConnectionFactory;
 import javax.xml.soap.SOAPException;
@@ -45,6 +46,7 @@ public class SaajBinding extends ComponentSupport implements MessageExchangeList
     private SaajMarshaler marshaler = new SaajMarshaler();
     private SOAPConnectionFactory connectionFactory;
     private Object soapEndpoint;
+    private String soapAction;
 
 
     public SOAPConnectionFactory getConnectionFactory() throws SOAPException {
@@ -86,6 +88,14 @@ public class SaajBinding extends ComponentSupport implements MessageExchangeList
             connection = getConnectionFactory().createConnection();
 
             SOAPMessage inMessage = marshaler.createSOAPMessage(exchange.getMessage("in"));
+            if (soapAction != null) {
+				MimeHeaders mh = inMessage.getMimeHeaders();
+				if (mh.getHeader("SOAPAction") == null) {
+					mh.addHeader("SOAPAction", "\"" + soapAction + "\"");
+					inMessage.saveChanges();
+				}
+			}
+            
             SOAPMessage response = connection.call(inMessage, soapEndpoint);
 
             NormalizedMessage outMessage = exchange.createMessage();
@@ -117,5 +127,18 @@ public class SaajBinding extends ComponentSupport implements MessageExchangeList
         return getConnectionFactory().createConnection();
     }
 
-
+    /**
+	 * @return Returns the soapAction.
+	 */
+	public String getSoapAction() {
+		return soapAction;
+	}
+ 
+	/**
+	 * @param soapAction
+	 *            The soapAction to set.
+	 */
+	public void setSoapAction(String soapAction) {
+		this.soapAction = soapAction;
+	}
 }
