@@ -42,7 +42,7 @@ public class InstallComponentTaskTest extends JbiTaskSupport {
         URL url = getClass().getClassLoader().getResource("org/servicemix/jbi/installation/testarchive.jar");
         if (url != null) {
             String file = url.getFile();
-            installComponentTask.setArchivePath(file);
+            installComponentTask.setFile(file);
             installComponentTask.init();
             installComponentTask.execute();
             File testFile = new File(rootDir, container.getName() + File.separator + "components" + File.separator
