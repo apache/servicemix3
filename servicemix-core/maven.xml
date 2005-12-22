@@ -40,10 +40,6 @@
     <attainGoal name="site"/>
   </goal>
   
-  <goal name="default" prereqs="jar:install, javadoc:api"/>
-  
-  <goal name="javadoc:api">
-    <attainGoal name="javadoc:install"/>
-  </goal> 
-  
+  <goal name="default" prereqs="jar:install"/>
+
 </project>
