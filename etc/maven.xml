@@ -15,6 +15,7 @@
   <goal name="nightly" prereqs="clean, jar:install, jar:deploy"/>
 
   <postGoal name="clean:clean">
+    <delete failonerror="false" dir="activemq-data"/>
     <delete failonerror="false" dir="ActiveMQ"/>
     <delete failonerror="false" dir="ServiceMixWDir"/>
     <delete failonerror="false" dir="rootDir"/>
