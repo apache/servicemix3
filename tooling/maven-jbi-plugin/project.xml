@@ -20,7 +20,7 @@
     <pomVersion>3</pomVersion>
     <extend>${basedir}/../../etc/project.xml</extend>
 
-	<name>Maven JBI Plugin</name>
+	<name>ServiceMix :: Maven JBI Plugin</name>
 	<id>maven-jbi-plugin</id>
 	<description>JBI Plugin for Maven</description>
 	<shortDescription>JBI Plugin for Maven</shortDescription>
