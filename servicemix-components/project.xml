@@ -421,7 +421,7 @@
 
     <!-- for XFire component -->
     <dependency>
-      <groupId>xfire</groupId>
+      <groupId>servicemix</groupId>
       <artifactId>xfire-all</artifactId>
       <version>${xfire_version}</version>
     </dependency>
