@@ -22,11 +22,6 @@ goto :EOF
 
 rem # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-set DEFAULT_JAVA_OPTS=-server -Xmx512M -Dderby.system.home="%SERVICEMIX_HOME%\var" -Dderby.storage.fileSyncTransactionLog=true 
-set CLASSPATH="%CLASSPATH%;%SERVICEMIX_HOME%\conf"
-set DEFAULT_JAVA_DEBUG_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005
-
-rem Setup Servicemix Home
 if not "%SERVICEMIX_HOME%" == "" (
     call :warn Ignoring predefined value for SERVICEMIX_HOME
 )
@@ -35,6 +30,13 @@ if not exist "%SERVICEMIX_HOME%" (
     call :warn SERVICEMIX_HOME is not valid: %SERVICEMIX_HOME%
     goto END
 )
+
+set LOCAL_CLASSPATH="%CLASSPATH%"
+set DEFAULT_JAVA_OPTS=-server -Xmx512M -Dderby.system.home="%SERVICEMIX_HOME%\var" -Dderby.storage.fileSyncTransactionLog=true 
+set CLASSPATH="%LOCAL_CLASSPATH%;%SERVICEMIX_HOME%\conf"
+set DEFAULT_JAVA_DEBUG_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005
+
+rem Setup Servicemix Home
 if exist "%SERVICEMIX_HOME%\conf\servicemix-rc.cmd" call %SERVICEMIX_HOME%\conf\servicemix-rc.cmd
 if exist "%HOME%\servicemix-rc.cmd" call %HOME%\servicemix-rc.cmd
 
