@@ -59,6 +59,15 @@ public class StAXSourceTransformer extends SourceTransformer {
             return new StAXSource(reader);
         }
     }
+    
+    public XMLStreamReader toXMLStreamReader(Source source) throws XMLStreamException, TransformerException {
+        XMLInputFactory factory = getInputFactory();
+        try {
+        	return factory.createXMLStreamReader(source);
+        } catch (XMLStreamException e) {
+        	return factory.createXMLStreamReader(toReaderFromSource(source));
+        }
+    }
 
     public DOMSource toDOMSource(Source source) throws ParserConfigurationException, IOException, SAXException, TransformerException {
         DOMSource answer = super.toDOMSource(source);

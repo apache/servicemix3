@@ -46,6 +46,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 
@@ -203,6 +204,15 @@ public class SourceTransformer {
         inputSource.setPublicId(source.getPublicId());
         return new SAXSource(inputSource);
     }
+	
+	public Reader toReaderFromSource(Source src) throws TransformerException {
+		StreamSource stSrc = toStreamSource(src);
+		Reader r = stSrc.getReader();
+		if (r == null) {
+			r = new InputStreamReader(stSrc.getInputStream());
+		}
+		return r;
+	}
 
     public DOMSource toDOMSourceFromStream(StreamSource source) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilder builder = createDocumentBuilder();
@@ -231,11 +241,15 @@ public class SourceTransformer {
     }
 
     public DOMSource toDOMSourceFromSAX(SAXSource source) throws IOException, SAXException, ParserConfigurationException {
+        return new DOMSource(toDOMNodeFromSAX(source));
+    }
+    
+    public Node toDOMNodeFromSAX(SAXSource source) throws ParserConfigurationException, IOException, SAXException {
         SAX2DOM converter = new SAX2DOM(createDocument());
         XMLReader xmlReader = source.getXMLReader();
         xmlReader.setContentHandler(converter);
         xmlReader.parse(source.getInputSource());
-        return new DOMSource(converter.getDOM());
+        return converter.getDOM();
     }
 
 
