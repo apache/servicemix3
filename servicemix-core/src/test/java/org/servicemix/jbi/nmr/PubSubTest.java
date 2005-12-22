@@ -1,15 +1,10 @@
 package org.servicemix.jbi.nmr;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.servicemix.components.util.EchoComponent;
 import org.servicemix.jbi.container.ActivationSpec;
 import org.servicemix.jbi.container.JBIContainer;
 import org.servicemix.jbi.container.SubscriptionSpec;
