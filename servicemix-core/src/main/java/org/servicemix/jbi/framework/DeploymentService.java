@@ -26,6 +26,7 @@ import javax.jbi.component.ServiceUnitManager;
 import javax.jbi.management.DeploymentException;
 import javax.jbi.management.DeploymentServiceMBean;
 import javax.management.JMException;
+import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanOperationInfo;
 import javax.xml.namespace.QName;
 import org.apache.commons.logging.Log;
@@ -39,6 +40,7 @@ import org.servicemix.jbi.deployment.Provider;
 import org.servicemix.jbi.deployment.ServiceAssembly;
 import org.servicemix.jbi.deployment.ServiceUnit;
 import org.servicemix.jbi.deployment.Target;
+import org.servicemix.jbi.management.AttributeInfoHelper;
 import org.servicemix.jbi.management.BaseLifeCycle;
 import org.servicemix.jbi.management.OperationInfoHelper;
 import org.servicemix.jbi.management.ParameterHelper;
@@ -555,6 +557,19 @@ public class DeploymentService extends BaseLifeCycle implements DeploymentServic
         result.append("</component-task-result>");
         return result.toString();
     }
+    
+    
+    /**
+     * Get an array of MBeanAttributeInfo
+     * 
+     * @return array of AttributeInfos
+     * @throws JMException
+     */
+    public MBeanAttributeInfo[] getAttributeInfos() throws JMException {
+        AttributeInfoHelper helper = new AttributeInfoHelper();
+        helper.addAttribute(getObjectToManage(), "deployedServiceAssemblies", "list of deployed SAs");
+        return AttributeInfoHelper.join(super.getAttributeInfos(), helper.getAttributeInfos());
+    }
 
     /**
      * Get an array of MBeanOperationInfo
@@ -571,7 +586,6 @@ public class DeploymentService extends BaseLifeCycle implements DeploymentServic
         ph = helper.addOperation(getObjectToManage(), "getDeployedServiceUnitList", 1,
                 "list of SU's currently deployed");
         ph.setDescription(0, "componentName", "Component name");
-        helper.addOperation(getObjectToManage(), "getDeployedServiceAssemblies", "list of deployed SAs");
         ph = helper.addOperation(getObjectToManage(), "getServiceAssemblyDescriptor", 1, "Get descriptor for a SA");
         ph.setDescription(0, "saName", "SA name");
         ph = helper.addOperation(getObjectToManage(), "getDeployedServiceAssembliesForComponent", 1,

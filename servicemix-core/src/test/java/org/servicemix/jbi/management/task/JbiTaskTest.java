@@ -59,6 +59,7 @@ public class JbiTaskTest extends JbiTaskSupport {
     public void testGetDeploymentService() throws Exception {
         DeploymentServiceMBean mbean = jbiTask.getDeploymentService();
         assertNotNull(mbean);
+        mbean.getDeployedServiceAssemblies();
     }
     
     public void testGetManagementContext() throws Exception {
