@@ -170,15 +170,17 @@
        <fileset dir="${project.root}" includes="*.txt,STATUS"/>
     </ant:copy>
 
-    <!-- Copy documentation -->
-
-    <j:set var="docsDest" value="${project.root}/servicemix-core/target/docs"/>
-    <ant:copy todir="${maven.dist.bin.assembly.dir}">
-      <ant:fileset dir="${docsDest}">
-        <ant:include name="**"/>
-      </ant:fileset>
-    </ant:copy>    
-
+    <!-- Copy java api documentation -->
+    <u:file var="file" name="${project.root}/servicemix-core/target/docs/apidocs"/> 
+    <j:if test="${file.exists()}">
+      <j:set var="docsDest" value="${project.root}/servicemix-core/target/docs/apidocs"/>
+      <ant:mkdir dir="${maven.dist.bin.assembly.dir}/docs"/>
+      <ant:copy todir="${maven.dist.bin.assembly.dir}/docs">
+        <ant:fileset dir="${docsDest}">
+          <ant:include name="**"/>
+        </ant:fileset>
+      </ant:copy>    
+    </j:if>
   </goal>
   
   <goal name="confluence">
