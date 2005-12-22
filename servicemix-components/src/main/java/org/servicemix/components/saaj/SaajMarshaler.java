@@ -54,7 +54,16 @@ public class SaajMarshaler {
     private MessageFactory messageFactory;
 
     public void toNMS(NormalizedMessage normalizedMessage, SOAPMessage soapMessage) throws MessagingException, SOAPException {
-        addNmsProperties(normalizedMessage, soapMessage);
+
+        if (log.isDebugEnabled()) {
+        	try {
+	            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+	            soapMessage.writeTo(buffer);
+	            log.debug(new String(buffer.toByteArray()));
+        	} catch (Exception e) { }
+        }
+        
+    	addNmsProperties(normalizedMessage, soapMessage);
 
         SOAPPart soapPart = soapMessage.getSOAPPart();
         SOAPBody soapBody = soapPart.getEnvelope().getBody();
@@ -68,6 +77,12 @@ public class SaajMarshaler {
         			elem.setAttributeNS(att.getNamespaceURI(), att.getName(), att.getValue());
         		}
         	}
+        }
+        
+        if (log.isDebugEnabled()) {
+        	try {
+        		log.debug(transformer.toString(elem));
+        	} catch (Exception e) { }
         }
         
         normalizedMessage.setContent(new DOMSource(elem));

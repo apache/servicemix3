@@ -44,9 +44,9 @@ public class HttpSoapClientMarshaler extends HttpClientMarshaler {
         String response = method.getResponseBodyAsString();
         Node node = sourceTransformer.toDOMNode(new StringSource(response));
         CachedXPathAPI cachedXPathAPI = new CachedXPathAPI();
-        NodeIterator iterator = cachedXPathAPI.selectNodeIterator(node, "/*/*[local-name()='Body']");
+        NodeIterator iterator = cachedXPathAPI.selectNodeIterator(node, "/*/*[local-name()='Body']/*");
         Node root = iterator.nextNode();
-        normalizedMessage.setContent(new DOMSource(root.getFirstChild()));
+        normalizedMessage.setContent(new DOMSource(root));
     }
 
     public void fromNMS(PostMethod method, MessageExchange exchange, NormalizedMessage normalizedMessage) throws Exception {

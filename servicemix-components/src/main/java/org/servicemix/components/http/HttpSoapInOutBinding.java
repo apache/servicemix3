@@ -55,6 +55,7 @@ public class HttpSoapInOutBinding extends ComponentSupport implements
     protected XFireServletController controller;
     protected Service service;
     protected boolean defaultInOut = true;
+    protected String soapAction = "\"\"";
 
     public HttpSoapInOutBinding() {
     }
@@ -87,7 +88,9 @@ public class HttpSoapInOutBinding extends ComponentSupport implements
             throw new XFireFault("Invalid source.", XFireFault.SENDER);
         }
         try {
-            XFireServletController.getResponse().setHeader("SOAPAction", "\"\"");
+        	if (soapAction != null) {
+        		XFireServletController.getResponse().setHeader("SOAPAction", soapAction);
+        	}
             DeliveryChannel channel = getDeliveryChannel();
             MessageExchangeFactory factory = channel.createExchangeFactory();
             InOnly exchange = factory.createInOnlyExchange();
@@ -106,7 +109,9 @@ public class HttpSoapInOutBinding extends ComponentSupport implements
             throw new XFireFault("Invalid source.", XFireFault.SENDER);
         }
         try {
-            XFireServletController.getResponse().setHeader("SOAPAction", "");
+        	if (soapAction != null) {
+        		XFireServletController.getResponse().setHeader("SOAPAction", soapAction);
+        	}
             DeliveryChannel channel = getDeliveryChannel();
             MessageExchangeFactory factory = channel.createExchangeFactory();
             InOut exchange = factory.createInOutExchange();
@@ -198,5 +203,13 @@ public class HttpSoapInOutBinding extends ComponentSupport implements
     public void setDefaultInOut(boolean defaultInOut) {
         this.defaultInOut = defaultInOut;
     }
+
+	public String getSoapAction() {
+		return soapAction;
+	}
+
+	public void setSoapAction(String soapAction) {
+		this.soapAction = soapAction;
+	}
 
 }

@@ -99,7 +99,7 @@
         </bean></sm:component>
       </sm:activationSpec>
 
-      <sm:activationSpec componentName="jmsTrace" service="foo:trace">
+      <sm:activationSpec componentName="trace" service="foo:trace">
         <sm:component><bean class="org.servicemix.components.util.TraceComponent"/></sm:component>
       </sm:activationSpec>
       <!-- END SNIPPET: log -->
