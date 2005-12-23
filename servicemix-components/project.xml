@@ -576,6 +576,7 @@
         <exclude>**/XFireOutBindingTest.*</exclude>
         <exclude>**/XFireBindingTest.*</exclude>
         <exclude>**/ReflectionBindingTest.*</exclude>
+        <exclude>**/JmsBindingTest.*</exclude>
         
         <!--  Disable until geronimo javamail handles mime multipart -->
         <exclude>**/HttpSoapAttachmentsTest.*</exclude>
