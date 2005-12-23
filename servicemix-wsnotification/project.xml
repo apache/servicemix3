@@ -196,6 +196,11 @@
       <version>${xfire_version}</version>
     </dependency>
     <dependency>
+      <groupId>servicemix</groupId>
+      <artifactId>xfire-jaxws</artifactId>
+      <version>${xfire_jaxws_version}</version>
+    </dependency>
+    <dependency>
       <groupId>jdom</groupId>
       <artifactId>jdom</artifactId>
       <version>${jdom_version}</version>
@@ -236,6 +241,10 @@
     <dependency>
       <id>xalan</id>
       <version>${xalan_version}</version>
+    </dependency>
+    <dependency>
+      <id>log4j</id>
+      <version>${log4j_version}</version>
     </dependency>
     
     <!-- optional ActiveSOAP component -->
