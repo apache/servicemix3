@@ -17,49 +17,60 @@
   <prerequisites>
     <maven>2.0</maven>
   </prerequisites>
+  <inceptionYear>2005</inceptionYear>
   <issueManagement>
-    <system></system>
+    <system>jira</system>
     <url>http://jira.logicblaze.com/browse/SM</url>
   </issueManagement>
-  <inceptionYear>2005</inceptionYear>
+  <ciManagement>
+    <system>continuum</system>
+    <notifiers>
+      <notifier>
+        <type>mail</type>
+        <configuration>
+          <address>servicemix-commits@geronimo.apache.org</address>
+        </configuration>
+      </notifier>
+      <notifier>
+        <type>irc</type>
+        <configuration>
+          <host>irc.codehaus.org</host>
+          <port>6667</port>
+          <channel>#servicemix</channel>        
+        </configuration>
+      </notifier>
+    </notifiers>
+  </ciManagement>
   <mailingLists>
     <mailingList>
       <name>ServiceMix Developer List</name>
-      <subscribe>dev-subscribe@servicemix.codehaus.org</subscribe>
-      <unsubscribe>
-        dev-unsubscribe@servicemix.codehaus.org
-      </unsubscribe>
-      <post></post>
-      <archive>
-        http://dir.gmane.org/gmane.comp.java.servicemix.devel
-      </archive>
-      <otherArchives></otherArchives>
+      <subscribe>servicemix-dev-subscribe@geronimo.apache.org</subscribe>
+      <unsubscribe>servicemix-dev-unsubscribe@geronimo.apache.org</unsubscribe>
+      <post>servicemix-dev@geronimo.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-dev/</archive>
+      <otherArchives>
+        <archive>http://dir.gmane.org/gmane.comp.java.servicemix.devel</archive>
+      </otherArchives>
     </mailingList>
     <mailingList>
       <name>ServiceMix User List</name>
-      <subscribe>
-        user-subscribe@servicemix.codehaus.org
-      </subscribe>
-      <unsubscribe>
-        user-unsubscribe@servicemix.codehaus.org
-      </unsubscribe>
-      <post></post>
-      <archive>
-        http://dir.gmane.org/gmane.comp.java.servicemix.user
-      </archive>
-      <otherArchives></otherArchives>
+      <subscribe>servicemix-users-subscribe@geronimo.apache.org</subscribe>
+      <unsubscribe>servicemix-users-unsubscribe@geronimo.apache.org</unsubscribe>
+      <post>servicemix-users@geronimo.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-users/</archive>
+      <otherArchives>
+        <archive>http://dir.gmane.org/gmane.comp.java.servicemix.user</archive>
+      </otherArchives>
     </mailingList>
     <mailingList>
       <name>ServiceMix SCM List</name>
-      <subscribe>scm-subscribe@servicemix.codehaus.org</subscribe>
-      <unsubscribe>
-        scm-unsubscribe@servicemix.codehaus.org
-      </unsubscribe>
-      <post></post>
-      <archive>
-        http://archive.servicemix.codehaus.org/scm/
-      </archive>
-      <otherArchives></otherArchives>
+      <subscribe>servicemix-commits-subscribe@geronimo.apache.org</subscribe>
+      <unsubscribe>servicemix-commits-unsubscribe@geronimo.apache.org</unsubscribe>
+      <post>servicemix-commits@geronimo.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-commits/</archive>
+      <otherArchives>
+        <archive>http://archive.servicemix.codehaus.org/scm/</archive>
+      </otherArchives>
     </mailingList>
   </mailingLists>
   <developers>
@@ -151,16 +162,16 @@
   </licenses>
   <scm>
     <connection>
-      scm:svn:svn://svn.servicemix.org/servicemix/scm/trunk/
+      https://svn.apache.org/viewcvs.cgi/incubator/servicemix/trunk
     </connection>
     <developerConnection>
-      scm:svn:svn+ssh://svn.servicemix.org/servicemix/scm/servicemix/trunk
+      scm:svn:https://svn.apache.org/viewcvs.cgi/incubator/servicemix/trunk
     </developerConnection>
-    <url>http://svn.servicemix.codehaus.org/trunk/</url>
+    <url>http://svn.apache.org/viewcvs.cgi/incubator/servicemix/trunk</url>
   </scm>
   <organization>
-    <name>LogicBlaze, Inc.</name>
-    <url>http://www.logicblaze.com</url>
+    <name>Apache Software Foundation</name>
+    <url>http://www.apache.org</url>
   </organization>
   <modules>
     <module>servicemix-jbi</module>
