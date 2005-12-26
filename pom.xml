@@ -161,9 +161,9 @@
       </license>
   </licenses>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/viewcvs.cgi/incubator/servicemix/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/viewcvs.cgi/incubator/servicemix/trunk</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/incubator/servicemix/trunk</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/servicemix/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/servicemix/trunk</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/incubator/servicemix/trunk/</url>
   </scm>
   <organization>
     <name>Apache Software Foundation</name>
