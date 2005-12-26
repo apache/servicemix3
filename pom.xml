@@ -161,7 +161,7 @@
       </license>
   </licenses>
   <scm>
-    <connection>scm:svn:https://svn.apache.org/viewcvs.cgi/incubator/servicemix/trunk</connection>
+    <connection>scm:svn:http://svn.apache.org/viewcvs.cgi/incubator/servicemix/trunk</connection>
     <developerConnection>scm:svn:https://svn.apache.org/viewcvs.cgi/incubator/servicemix/trunk</developerConnection>
     <url>http://svn.apache.org/viewcvs.cgi/incubator/servicemix/trunk</url>
   </scm>
