@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.org/config/1.0" 
+	   xmlns:foo="http://servicemix.org/cheese/">
+
+  <!-- ActiveMQ message broker -->
+  <bean id="broker" class="org.activemq.xbean.BrokerFactoryBean">
+    <property name="config" value="classpath:org/servicemix/components/wsif/broker.xml"/>
+  </bean>
+
+  <!-- JCA container -->
+  <bean id="jencks" class="org.jencks.JCAContainer">
+
+    <!-- lets use the default configuration of work manager and transaction manager-->
+    <property name="bootstrapContext">
+      <bean class="org.jencks.factory.BootstrapContextFactoryBean">
+        <property name="threadPoolSize" value="25"/>
+      </bean>
+    </property>
+
+
+    <!-- the JCA Resource Adapter -->
+    <property name="resourceAdapter">
+      <bean id="activeMQResourceAdapter" class="org.activemq.ra.ActiveMQResourceAdapter">
+        <property name="serverUrl" value="tcp://localhost:61626"/>
+      </bean>
+    </property>
+  </bean>
+
+  <!-- JBI container -->
+  <sm:container id="jbi">
+    <sm:activationSpecs>
+      <!-- START SNIPPET: wsif -->
+      <sm:activationSpec componentName="checkAvailability" service="foo:checkAvailability">
+        <sm:component><bean class="org.apache.servicemix.components.wsif.WSIFBinding">
+          <property name="definitionResource" value="classpath:org/servicemix/components/wsif/service.wsdl"/>
+        </bean></sm:component>
+      </sm:activationSpec>
+      <!-- END SNIPPET: wsif -->
+    </sm:activationSpecs>
+  </sm:container>
+
+
+  <!--
+    || an inbound message connector using a stateless, thread safe MessageListener
+    -->
+  <bean id="inboundMessageA" class="org.jencks.JCAConnector">
+
+	<property name="jcaContainer" ref="jencks" />
+
+    <!-- subscription details -->
+    <property name="activationSpec">
+      <bean class="org.activemq.ra.ActiveMQActivationSpec">
+        <property name="destination" value="test.org.apache.servicemix.example.wsif"/>
+        <property name="destinationType" value="javax.jms.Queue"/>
+      </bean>
+    </property>
+
+    <property name="ref" value="jmsService"/>
+  </bean>
+
+  <bean id="jmsService" class="org.apache.servicemix.components.wsif.SampleServiceMessageListener">
+    <property name="template">
+      <bean class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory">
+          <ref local="jmsFactory"/>
+        </property>
+        <property name="defaultDestinationName" value="test.org.apache.servicemix.example.wsif"/>
+        <property name="pubSubDomain" value="false"/>
+      </bean>
+    </property>
+  </bean>
+
+
+  <bean id="jmsFactory" class="org.activemq.pool.PooledConnectionFactory">
+    <property name="connectionFactory">
+      <bean class="org.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://localhost:61626"/>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="client" class="org.apache.servicemix.client.DefaultServiceMixClient">
+
+    <constructor-arg ref="jbi"/>
+    <constructor-arg>
+      <!-- lets hardwire this client to talk to instances of a service by default -->
+      <sm:activationSpec destinationService="foo:checkAvailability"/>
+    </constructor-arg>
+  </bean>
+
+</beans>

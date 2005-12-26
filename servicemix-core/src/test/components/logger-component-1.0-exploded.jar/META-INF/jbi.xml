@@ -6,7 +6,7 @@
       <name>logger-component</name>
       <description>An example of a Logger JBI componet that can be configured through a service assembly to consume messages and dump them to the log</description>
     </identification>
-    <component-class-name description="Component Implementation">org.servicemix.component.logger.LoggerComponent</component-class-name>
+    <component-class-name description="Component Implementation">org.apache.servicemix.component.logger.LoggerComponent</component-class-name>
     <component-class-path>
       <path-element>lib/logger-component-1.0.jar</path-element>
     </component-class-path>

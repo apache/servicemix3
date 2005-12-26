@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.org/config/1.0" 
+	   xmlns:foo="http://servicemix.org/cheese/">
+
+  <sm:container id="jbi">
+    <sm:activationSpecs>
+
+      <sm:activationSpec componentName="sender" service="foo:sender" endpoint="sender" 
+      					 destinationService="foo:receiver" destinationEndpoint="receiver">
+        <sm:component><bean class="org.apache.servicemix.tck.SenderComponent"/></sm:component>
+      </sm:activationSpec>
+        
+
+      <sm:activationSpec componentName="receiver" service="foo:receiver" endpoint="receiver">
+        <sm:component><bean class="org.apache.servicemix.components.script.ScriptComponent">
+          <property name="scriptEngineName" value="groovy"/>
+          <property name="disableOutput" value="true"/>
+          <property name="scriptText">
+            <value>
+import org.apache.servicemix.components.script.ScriptTest
+
+System.out.println """
+Groovy script evaluated with the following variables
+context: context
+deliveryChannel: $deliveryChannel
+exchange: $exchange
+inMessage: inMessage
+"""
+
+// lets output some values
+def result = [1, 2, 3]
+ScriptTest.setResult(result)
+            </value>
+          </property>
+        </bean></sm:component>
+      </sm:activationSpec>
+    </sm:activationSpecs>
+  </sm:container>
+
+</beans>

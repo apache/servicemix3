@@ -1,0 +1,23 @@
+<!-- START SNIPPET: drools -->
+<rule-set name="cheese rules"
+  xmlns="http://drools.org/rules"
+  xmlns:java="http://drools.org/semantics/java">
+
+  <application-data identifier="jbi">org.apache.servicemix.components.drools.JbiHelper</application-data>
+  <application-data identifier="context">javax.jbi.component.ComponentContext</application-data>
+  <application-data identifier="deliveryChannel">javax.jbi.messaging.DeliveryChannel</application-data>
+
+  <rule name="Ignore 2 message">
+
+    <parameter identifier="exchange">
+      <class>javax.jbi.messaging.MessageExchange</class>
+    </parameter>
+    <java:condition>"2".equals(exchange.getMessage("in").getProperty("idText")) == false</java:condition>
+    <java:consequence>
+        // lets try send a message
+        jbi.forwardToService("http://servicemix.org/cheese/", "receiver");
+    </java:consequence>
+  </rule>
+
+</rule-set>
+<!-- END SNIPPET: drools -->

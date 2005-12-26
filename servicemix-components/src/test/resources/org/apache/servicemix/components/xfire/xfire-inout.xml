@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.org/config/1.0" 
+	   xmlns:xfire="http://xfire.components.servicemix.org">
+
+  <!-- the JBI container -->
+  <sm:container id="jbi">
+    <sm:activationSpecs>
+      <sm:activationSpec componentName="sender" service="xfire:sender" destinationService="xfire:OneWayService">
+        <sm:component><bean class="org.apache.servicemix.tck.SenderComponent"/></sm:component>
+      </sm:activationSpec>
+
+      <!-- START SNIPPET: xfire -->
+      <sm:activationSpec componentName="binding" service="xfire:Echo">
+        <sm:component><bean class="org.apache.servicemix.components.xfire.XFireBinding">
+          <property name="xfire" ref="xfire"/>
+        </bean></sm:component>
+      </sm:activationSpec>
+      <!-- END SNIPPET: xfire -->
+    </sm:activationSpecs>
+  </sm:container>
+  
+  <!-- The Service Bean -->
+  <bean id="xfireReceiverService" class="org.apache.servicemix.components.xfire.Echo" singleton="true"/>
+  
+  <bean id="client" class="org.apache.servicemix.client.DefaultServiceMixClient">
+    <constructor-arg ref="jbi"/>
+  </bean>
+ 
+  <bean name="Echo" class="org.codehaus.xfire.spring.ServiceBean">
+    <property name="serviceBean" ref="xfireReceiverService"/>
+    <property name="serviceFactory" ref="xfire.serviceFactory"/>
+    <property name="xfire" ref="xfire"/>
+  </bean>
+</beans>

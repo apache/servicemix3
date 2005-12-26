@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns:x="java://org.servicemix.components.xbean">
+<beans xmlns:x="java://org.apache.servicemix.components.xbean">
 
   <classpath>
     <location>SpringLoaderTest.jar</location>

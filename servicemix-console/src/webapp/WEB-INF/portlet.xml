@@ -10,7 +10,7 @@
         <portlet-name>JBIContainer</portlet-name>
         <display-name>JBI Container Portlet</display-name>
 
-        <portlet-class>org.servicemix.console.JBIContainerPortlet</portlet-class>
+        <portlet-class>org.apache.servicemix.console.JBIContainerPortlet</portlet-class>
 
         <expiration-cache>-1</expiration-cache>
 
@@ -33,7 +33,7 @@
         <portlet-name>JBIAudit</portlet-name>
         <display-name>JBI Audit Portlet</display-name>
 
-        <portlet-class>org.servicemix.console.JBIAuditPortlet</portlet-class>
+        <portlet-class>org.apache.servicemix.console.JBIAuditPortlet</portlet-class>
 
         <expiration-cache>-1</expiration-cache>
 

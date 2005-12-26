@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.org/config/1.0"
+	   xmlns:foo="http://servicemix.org/cheese/">
+
+	<!-- the JBI container -->
+	<container id="jbi" xmlns="http://servicemix.org/config/1.0">
+		<activationSpecs>
+
+			<activationSpec componentName="sender" service="foo:sender" endpoint="sender">
+				<component>
+					<SenderComponent xmlns="java://org.apache.servicemix.tck">
+						<resolver>
+							<bean xmlns="" class="org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver">
+								<property name="serviceName" value="foo:pipeline" />
+							</bean>
+						</resolver>
+					</SenderComponent>
+				</component>
+			</activationSpec>
+
+			<activationSpec componentName="transformer" service="foo:transformer">
+				<component>
+					<MockServiceComponent xmlns="java://org.apache.servicemix.components.util">
+						<property xmlns="" name="responseProperties">
+							<map>
+								<entry key="foo" value="hello"/>
+								<entry key="someList">
+									<list>
+										<value type="java.lang.Integer">1</value>
+										<value type="java.lang.Integer">2</value>
+										<value type="java.lang.Integer">3</value>
+									</list>
+								</entry>
+							</map>
+						</property>
+						<property xmlns="" name="responseXml">
+							<value><![CDATA[ <hello/> ]]></value>
+						</property>
+					</MockServiceComponent>
+				</component>
+			</activationSpec>
+
+			<activationSpec componentName="receiver" service="foo:receiver" endpoint="receiver">
+				<component>
+					<bean xmlns="" class="org.apache.servicemix.tck.ReceiverComponent" />
+				</component>
+			</activationSpec>
+
+			<activationSpec componentName="pipeline" service="foo:pipeline" endpoint="pipeline">
+				<component>
+					<bean xmlns="" class="org.apache.servicemix.components.util.PipelineComponent">
+						<property name="requestResponseServiceName" value="foo:transformer" />
+						<property name="outputEndpointServiceName" value="foo:receiver" />
+					</bean>
+				</component>
+			</activationSpec>
+
+		</activationSpecs>
+	</container>
+
+</beans>

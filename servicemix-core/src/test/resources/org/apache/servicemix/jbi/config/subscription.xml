@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.org/config/1.0" 
+	   xmlns:foo="http://servicemix.org/cheese/">
+
+  <!-- the JBI container -->
+  <sm:container id="jbi">
+    <sm:activationSpecs>
+
+      <sm:activationSpec componentName="receiver" service="foo:receiver">
+        <sm:component><bean class="org.apache.servicemix.tck.ReceiverComponent"/></sm:component>
+        <sm:subscriptions>
+          <sm:subscriptionSpec service="foo:producer"/>
+        </sm:subscriptions>
+      </sm:activationSpec>
+    </sm:activationSpecs>
+  </sm:container>
+
+
+</beans>

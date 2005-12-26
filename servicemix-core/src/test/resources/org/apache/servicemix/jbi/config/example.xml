@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.org/config/1.0" 
+	   xmlns:foo="http://servicemix.org/cheese/">
+
+  <!-- the JBI container -->
+  <sm:container id="jbi">
+    <sm:activationSpecs>
+
+      <sm:activationSpec componentName="sender" 
+      					 service="foo:sender" 
+      					 endpoint="sender" 
+      					 interfaceName="foo:senderInterface" 
+      					 operation="foo:doSomething"
+      					 destinationService="foo:transformer" 
+      					 destinationEndpoint="transformer">
+      	<sm:component><bean class="org.apache.servicemix.tck.SenderComponent" /></sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec componentName="transformer" 
+      					 service="foo:transformer" 
+      					 endpoint="transformer" 
+      					 destinationService="foo:receiver" 
+      					 destinationEndpoint="receiver">
+      	<sm:component>
+		  <MockServiceComponent xmlns="java://org.apache.servicemix.components.util">
+			<property xmlns="" name="responseProperties">
+			  <map>
+				<entry key="foo" value="hello"/>
+				<entry key="someList">
+				  <list>
+					<value type="java.lang.Integer">1</value>
+					<value type="java.lang.Integer">2</value>
+					<value type="java.lang.Integer">3</value>
+				  </list>
+				</entry>
+			  </map>
+			</property>
+		    <property xmlns="" name="responseXml">
+			  <value><![CDATA[ <hello/> ]]></value>
+			</property>
+		  </MockServiceComponent>
+        </sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec componentName="receiver" 
+      					 service="foo:receiver" 
+      					 endpoint="receiver">
+      	<sm:component><bean class="org.apache.servicemix.tck.ReceiverComponent"/></sm:component>
+     </sm:activationSpec>
+    </sm:activationSpecs>
+  </sm:container>
+
+</beans>

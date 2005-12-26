@@ -4,13 +4,13 @@
   xmlns="http://maven.apache.org/POM/4.0.0">
   
   <parent>
-    <groupId>servicemix</groupId>
+    <groupId>org.apache.servicemix</groupId>
     <artifactId>servicemix</artifactId>
-    <version>2.1-SNAPSHOT</version>
+    <version>3.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>servicemix</groupId>
+  <groupId>org.apache.servicemix</groupId>
   <artifactId>servicemix-components</artifactId>
   <packaging>jar</packaging>
   <name>ServiceMix :: Components</name>
@@ -255,14 +255,6 @@
       <groupId>servicemix</groupId>
       <artifactId>jsr-223</artifactId>
     </dependency>
-    <!--dependency>
-      <groupId>servicemix</groupId>
-      <artifactId>ojdbc14</artifactId>
-    </dependency-->
-    <dependency>
-      <groupId>servicemix</groupId>
-      <artifactId>oraclexsql</artifactId>
-    </dependency>
     <dependency>
       <groupId>servicemix</groupId>
       <artifactId>saaj-api</artifactId>
@@ -272,11 +264,11 @@
       <artifactId>saaj-impl</artifactId>
     </dependency>
     <dependency>
-      <groupId>servicemix</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>servicemix</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-jbi</artifactId>
     </dependency>
     <dependency>
@@ -287,14 +279,6 @@
       <groupId>servicemix</groupId>
       <artifactId>wsif-j2c</artifactId>
     </dependency>
-    <dependency>
-      <groupId>servicemix</groupId>
-      <artifactId>xmlparserv2</artifactId>
-    </dependency>
-    <!--dependency>
-      <groupId>servicemix</groupId>
-      <artifactId>xsu12</artifactId>
-    </dependency-->
     <dependency>
       <groupId>simple-jndi</groupId>
       <artifactId>simple-jndi</artifactId>
@@ -344,7 +328,7 @@
       <artifactId>xmlParserAPIs</artifactId>
     </dependency>
     <dependency>
-      <groupId>xfire</groupId>
+      <groupId>servicemix</groupId>
       <artifactId>xfire-all</artifactId>
     </dependency>
     <dependency>
@@ -363,9 +347,5 @@
       <groupId>xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
-    <!--dependency>
-      <groupId>yom</groupId>
-      <artifactId>yom</artifactId>
-    </dependency-->
   </dependencies>
 </project>

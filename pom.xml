@@ -4,18 +4,18 @@
   xmlns="http://maven.apache.org/POM/4.0.0">
   
   <modelVersion>4.0.0</modelVersion>
-  <groupId>servicemix</groupId>
+  <groupId>org.apache.servicemix</groupId>
   <artifactId>servicemix</artifactId>
   <packaging>pom</packaging>
   <name>ServiceMix</name>
-  <version>2.1-SNAPSHOT</version>
+  <version>3.0-SNAPSHOT</version>
   <description>
     ServiceMix is an open source ESB based on the Java Business
     Integration framework - JSR-208
   </description>
   <url>http://www.servicemix.org/</url>
   <prerequisites>
-    <maven>2.0-beta</maven>
+    <maven>2.0</maven>
   </prerequisites>
   <issueManagement>
     <system></system>
@@ -170,7 +170,10 @@
     <module>servicemix-console</module>
     <module>servicemix-gbean</module>
     <module>servicemix-jms</module>
-    <!--module>servicemix-jsr181</module-->
+    <module>servicemix-jsr181</module>
+    <module>servicemix-http</module>
+    <module>servicemix-wsn2005</module>
+    <module>servicemix-lwcontainer</module>
   </modules>
   <repositories>
     <repository>
@@ -201,65 +204,65 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix-jbi</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix-core</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix-components</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix-common</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix-console</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix-gbean</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix-jms</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix-jsr181</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix-wspojo</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix-wsnotification</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix-wsrm</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>servicemix</groupId>
@@ -275,16 +278,6 @@
         <groupId>servicemix</groupId>
         <artifactId>jsr-223</artifactId>
         <version>1.0-pr</version>
-      </dependency>
-      <!--dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>ojdbc14</artifactId>
-        <version></version>
-      </dependency-->
-      <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>oraclexsql</artifactId>
-        <version>20051201</version>
       </dependency>
       <dependency>
         <groupId>servicemix</groupId>
@@ -308,16 +301,6 @@
         <artifactId>wsif-j2c</artifactId>
         <version>2.0.1_IB3</version>
       </dependency>
-      <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>xmlparserv2</artifactId>
-        <version>20051201</version>
-      </dependency>
-      <!--dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>xsu12</artifactId>
-        <version></version>
-      </dependency-->
       <dependency>
         <groupId>servicemix</groupId>
         <artifactId>http</artifactId>
@@ -973,7 +956,7 @@
       <dependency>
         <groupId>wsdl4j</groupId>
         <artifactId>wsdl4j</artifactId>
-        <version>1.5.1</version>
+        <version>1.5.2</version>
       </dependency>
       <dependency>
         <groupId>xalan</groupId>
@@ -1006,14 +989,14 @@
         <version>20051114</version>
       </dependency>
       <dependency>
-        <groupId>xfire</groupId>
+        <groupId>servicemix</groupId>
         <artifactId>xfire-all</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0-20051222</version>
       </dependency>
       <dependency>
-        <groupId>xfire</groupId>
+        <groupId>servicemix</groupId>
         <artifactId>xfire-jaxws</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0-20051222</version>
       </dependency>
       <dependency>
         <groupId>xml-apis</groupId>
@@ -1054,6 +1037,11 @@
         <groupId>yom</groupId>
         <artifactId>yom</artifactId>
         <version>1.0-alpha-2</version>
+      </dependency>
+      <dependency>
+        <groupId>ws-commons</groupId>
+        <artifactId>XmlSchema</artifactId>
+        <version>SNAPSHOT</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

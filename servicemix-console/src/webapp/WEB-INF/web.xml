@@ -19,7 +19,7 @@
     <servlet-class>org.apache.pluto.core.PortletServlet</servlet-class>
     <init-param>
       <param-name>portlet-class</param-name>
-      <param-value>org.servicemix.console.JBIContainerPortlet</param-value>
+      <param-value>org.apache.servicemix.console.JBIContainerPortlet</param-value>
     </init-param>
     <init-param>
       <param-name>portlet-guid</param-name>
@@ -33,7 +33,7 @@
     <servlet-class>org.apache.pluto.core.PortletServlet</servlet-class>
     <init-param>
       <param-name>portlet-class</param-name>
-      <param-value>org.servicemix.console.JBIAuditPortlet</param-value>
+      <param-value>org.apache.servicemix.console.JBIAuditPortlet</param-value>
     </init-param>
     <init-param>
       <param-name>portlet-guid</param-name>
