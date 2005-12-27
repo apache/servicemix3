@@ -13,10 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Copyright 2005 RAJD Consultancy Ltd. All rights reserved.
- */
-
 package org.apache.servicemix.components.util;
 
 import org.apache.servicemix.jbi.NoInMessageAvailableException;
