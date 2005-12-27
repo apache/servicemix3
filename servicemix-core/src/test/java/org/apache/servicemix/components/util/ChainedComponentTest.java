@@ -15,7 +15,7 @@
  */
 package org.apache.servicemix.components.util;
 
-import org.apache.servicemix.examples.SpringTestSupport;
+import org.apache.servicemix.examples.AbstractSpringTestSupport;
 import org.apache.servicemix.jbi.config.DebugClassPathXmlApplicationContext;
 import org.apache.servicemix.tck.MessageList;
 import org.springframework.context.support.AbstractXmlApplicationContext;
@@ -25,7 +25,7 @@ import javax.jbi.messaging.NormalizedMessage;
 import java.util.Iterator;
 
 
-public class ChainedComponentTest extends SpringTestSupport {
+public class ChainedComponentTest extends AbstractSpringTestSupport {
 
     public void testSendingAndReceivingMessagesUsingSpring() throws Exception {
         super.testSendingAndReceivingMessagesUsingSpring();

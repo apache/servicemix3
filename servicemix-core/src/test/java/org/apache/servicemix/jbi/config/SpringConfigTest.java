@@ -17,13 +17,13 @@
  **/
 package org.apache.servicemix.jbi.config;
 
-import org.apache.servicemix.examples.SpringTestSupport;
+import org.apache.servicemix.examples.AbstractSpringTestSupport;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
  * @version $Revision$
  */
-public class SpringConfigTest extends SpringTestSupport {
+public class SpringConfigTest extends AbstractSpringTestSupport {
 
     public void testSendingAndReceivingMessagesUsingSpring() throws Exception {
         // don't do anything as we're not initialized

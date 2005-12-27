@@ -15,14 +15,14 @@
  */
 package org.apache.servicemix.jbi.config;
 
-import org.apache.servicemix.examples.SpringTestSupport;
+import org.apache.servicemix.examples.AbstractSpringTestSupport;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
  * @version $Revision$
  */
-public class ComponentRouteTest extends SpringTestSupport {
+public class ComponentRouteTest extends AbstractSpringTestSupport {
 
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/jbi/config/example-component-route.xml");

@@ -32,7 +32,7 @@ import junit.framework.TestCase;
  *
  * @version $Revision$
  */
-public abstract class SpringTestSupport extends TestCase {
+public abstract class AbstractSpringTestSupport extends TestCase {
     protected SpringJBIContainer jbi;
     protected AbstractXmlApplicationContext context;
     protected int messageCount = 1;
