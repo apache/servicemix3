@@ -157,7 +157,7 @@ public abstract class PollingComponentSupport extends ComponentSupport implement
 	        try {
 	            // lets run the work inside the JCA worker pools to ensure
 	            // the threads are setup correctly when we actually do stuff
-	            getWorkManager().scheduleWork(PollingComponentSupport.this);
+	            getWorkManager().doWork(PollingComponentSupport.this);
 	        }
 	        catch (Throwable e) {
 	            log.error("Failed to schedule work: " + e, e);

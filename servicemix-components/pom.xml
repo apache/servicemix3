@@ -146,6 +146,10 @@
       <artifactId>geronimo-connector</artifactId>
     </dependency>
     <dependency>
+      <groupId>geronimo</groupId>
+      <artifactId>geronimo-activation</artifactId>
+    </dependency>
+    <dependency>
       <groupId>geronimo-spec</groupId>
       <artifactId>geronimo-spec-j2ee-management</artifactId>
     </dependency>
@@ -366,4 +370,32 @@
       <artifactId>xstream</artifactId>
     </dependency>
   </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*Test*</include>
+                    </includes>
+                    <excludes>
+                        <!--  exclude abstract tests -->
+                        <exclude>**/Abstract*Test.*</exclude>
+                        
+                        <!--  Need external resources -->
+                        <exclude>**/Jabber*.*</exclude>
+                        <exclude>**/FTP*.*</exclude>
+                        
+                        <!--  These ones can not work, need rewrite -->
+                        <exclude>**/JmsOverJcaWithFullXATest.*</exclude>
+                        
+                        <!-- enable when geronimo has support for attachments -->
+                        <exclude>**/HttpSoapAttachmentsTest.*</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

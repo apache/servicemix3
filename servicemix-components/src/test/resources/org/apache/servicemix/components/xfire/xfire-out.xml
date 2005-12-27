@@ -40,7 +40,7 @@
   </bean>
   
   <bean name="OneWayService" class="org.codehaus.xfire.spring.ServiceBean">
-    <property name="service" ref="xfireReceiverService"/>
+    <property name="serviceBean" ref="xfireReceiverService"/>
     <property name="serviceFactory" ref="messageServiceFactory"/>
     <property name="xfire" ref="xfire"/>
   </bean>

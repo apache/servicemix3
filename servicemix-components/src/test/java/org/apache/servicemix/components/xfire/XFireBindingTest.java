@@ -26,7 +26,7 @@ public class XFireBindingTest extends TestSupport {
 
     public void testSendingAndReceivingMessagesUsingSpring() throws Exception {
         Object answer = requestServiceWithFileRequest(new QName("http://xfire.components.servicemix.org", "Echo"),
-                "/org/servicemix/components/xfire/echo.xml");
+                "/org/apache/servicemix/components/xfire/echo.xml");
         assertTrue("Shoud return a DOM Node: " + answer, answer instanceof Node);
         Node node = (Node) answer;
         System.out.println(transformer.toString(node));

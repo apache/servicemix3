@@ -5,8 +5,8 @@
   <!--
   || ActiveMQ Broker
   -->
-  <bean id="broker" class="org.activemq.spring.BrokerFactoryBean" singleton="true">
-    <property name="config" value="classpath:org/servicemix/components/jca/broker.xml"/>
+  <bean id="broker" class="org.activemq.xbean.BrokerFactoryBean" singleton="true">
+    <property name="config" value="classpath:org/apache/servicemix/components/jca/broker.xml"/>
   </bean>
 
   <!-- START SNIPPET: jca -->

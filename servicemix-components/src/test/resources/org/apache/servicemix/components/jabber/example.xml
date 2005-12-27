@@ -3,8 +3,8 @@
 	   xmlns:foo="http://servicemix.org/cheese/">
 
   <!-- lets run an embedded broker -->
-  <bean id="broker" class="org.activemq.spring.BrokerFactoryBean">
-    <property name="config" value="classpath:org/servicemix/components/jabber/broker.xml"/>
+  <bean id="broker" class="org.activemq.xbean.BrokerFactoryBean">
+    <property name="config" value="classpath:org/apache/servicemix/components/jabber/broker.xml"/>
   </bean>
 
   <!-- the JBI container -->

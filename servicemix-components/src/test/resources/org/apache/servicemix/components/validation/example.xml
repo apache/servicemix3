@@ -9,7 +9,7 @@
       <!-- START SNIPPET: example -->
       <sm:activationSpec componentName="myService" service="foo:myService" endpoint="myService" destinationService="foo:myServiceImpl">
         <sm:component><bean class="org.apache.servicemix.components.validation.ValidateComponent">
-          <property name="schemaResource" value="classpath:org/servicemix/components/validation/schema.xsd"/>
+          <property name="schemaResource" value="classpath:org/apache/servicemix/components/validation/schema.xsd"/>
         </bean></sm:component>
       </sm:activationSpec>
       <!-- END SNIPPET: example -->

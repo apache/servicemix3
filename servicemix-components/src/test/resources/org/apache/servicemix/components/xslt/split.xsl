@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- START SNIPPET: example -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:jbi="xalan://org.servicemix.components.xslt.XalanExtension"
+                xmlns:jbi="xalan://org.apache.servicemix.components.xslt.XalanExtension"
                 extension-element-prefixes="jbi"
                 xmlns:foo="http://servicemix.org/cheese/" version="1.0">
 

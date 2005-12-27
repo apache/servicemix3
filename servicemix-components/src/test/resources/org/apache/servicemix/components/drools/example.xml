@@ -10,7 +10,7 @@
       <sm:activationSpec componentName="droolsRouter" 
       					 service="foo:droolsRouter">
       	<sm:component><bean class="org.apache.servicemix.components.drools.DroolsComponent">
-        	<property name="ruleBaseResource" value="classpath:org/servicemix/components/drools/rulebase.xml" />
+        	<property name="ruleBaseResource" value="classpath:org/apache/servicemix/components/drools/rulebase.xml" />
         </bean></sm:component>
       </sm:activationSpec>
       <!-- END SNIPPET: drools -->

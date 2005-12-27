@@ -42,7 +42,7 @@
       <!-- START SNIPPET: xslt -->
       <sm:activationSpec componentName="transformer" service="foo:transformer" destinationService="foo:transformedSender">
         <sm:component><bean class="org.apache.servicemix.components.xslt.XsltComponent">
-          <property name="xsltResource" value="classpath:org/servicemix/components/xslt/transform.xsl"/>
+          <property name="xsltResource" value="classpath:org/apache/servicemix/components/xslt/transform.xsl"/>
         </bean></sm:component>
       </sm:activationSpec>
       <!-- END SNIPPET: xslt -->
@@ -113,7 +113,7 @@
   <bean id="jmsFactory" class="org.activemq.pool.PooledConnectionFactory">
     <property name="connectionFactory">
       <bean class="org.activemq.ActiveMQConnectionFactory">
-        <property name="brokerURL" value="vm://localhost"/>
+        <property name="brokerURL" value="vm://localhost?broker.persistent=false"/>
       </bean>
     </property>
   </bean>

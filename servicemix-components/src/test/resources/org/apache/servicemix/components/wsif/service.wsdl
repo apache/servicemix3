@@ -47,7 +47,7 @@
 
       <!-- ActiveMQ configuration -->
       <jms:address destinationStyle="queue"
-        jndiDestinationName="dynamicQueues/test.org.servicemix.example.wsif"
+        jndiDestinationName="dynamicQueues/test.org.apache.servicemix.example.wsif"
         jndiConnectionFactoryName="ConnectionFactory"
         initialContextFactory="org.activemq.jndi.ActiveMQInitialContextFactory"
         jndiProviderURL="tcp://localhost:61626"/>

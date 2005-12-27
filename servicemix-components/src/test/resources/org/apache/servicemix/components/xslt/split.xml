@@ -9,7 +9,7 @@
       <!-- START SNIPPET: xslt -->
       <sm:activationSpec componentName="transformer" service="foo:transformer">
         <sm:component><bean class="org.apache.servicemix.components.xslt.XsltComponent">
-          <property name="xsltResource" value="classpath:org/servicemix/components/xslt/split.xsl"/>
+          <property name="xsltResource" value="classpath:org/apache/servicemix/components/xslt/split.xsl"/>
 
           <!-- lets disable automatic output of the result of the transform; only if we perform
               an invoke in the XSLT will we invoke another endpoint -->

@@ -30,8 +30,8 @@ import org.xbean.spring.context.ClassPathXmlApplicationContext;
 public class FileTest extends TestSupport {
 
 	protected void setUp() throws Exception {
-		super.setUp();
 		FileUtil.deleteFile(new File("target/test-data/file"));
+		super.setUp();
 	}
 	
     public void testSendMessagesToFileSystemThenPoollThem() throws Exception {

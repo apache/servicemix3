@@ -1,5 +1,5 @@
-<!-- START SNIPPET: example -->
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- START SNIPPET: example -->
 <n:getQuoteResponse xmlns:n="urn:xmethods-delayed-quotes" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Result xsi:type="xsd:float">3.67</Result>
 </n:getQuoteResponse>

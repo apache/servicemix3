@@ -629,6 +629,11 @@
       </dependency>
       <dependency>
         <groupId>geronimo</groupId>
+        <artifactId>geronimo-activation</artifactId>
+        <version>1.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>geronimo</groupId>
         <artifactId>geronimo-common</artifactId>
         <version>1.0-SNAPSHOT</version>
       </dependency>

@@ -2,7 +2,7 @@
 <beans xmlns:sm="http://servicemix.org/config/1.0" 
 	   xmlns:foo="http://servicemix.org/cheese/">
 
-  <sm:container id="jbi">
+  <sm:container id="jbi" flowName="st">
     <sm:activationSpecs>
 
       <sm:activationSpec componentName="sender" service="foo:sender" endpoint="sender" 
@@ -21,7 +21,7 @@ import org.apache.servicemix.components.script.ScriptTest
 
 System.out.println """
 Groovy script evaluated with the following variables
-context: context
+context: $context
 deliveryChannel: $deliveryChannel
 exchange: $exchange
 inMessage: inMessage

@@ -1,4 +1,4 @@
-connector=org.servicemix.components.mule.JBIConnector
+connector=org.apache.servicemix.components.mule.JBIConnector
 dispatcher.factory=org.mule.providers.jbi.JBIMessageDispatcherFactory
 message.receiver=org.mule.providers.jbi.JBIMessageReceiver
 message.adapter=org.mule.providers.jbi.JBIMessageAdapter
