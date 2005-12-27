@@ -96,19 +96,21 @@
       <id>rajdavies</id>
       <name>Rob Davies</name>
       <email>rajdavies@gmail.com</email>
-      <organization>rajdavies</organization>
+      <organization>Exist Labs</organization>
     </developer>
     <developer>
       <id>jstrachan</id>
       <name>James Strachan</name>
       <email>jstrachan@logicblaze.com</email>
-      <organization>jstrachan</organization>
+      <organization>LogicBlaze</organization>
+      <organizationUrl>http://www.logicblaze.com/</organizationUrl>
     </developer>
     <developer>
       <id>chirino</id>
       <name>Hiram Chirino</name>
       <email>hiram@logicblaze.com</email>
-      <organization>chirino</organization>
+      <organization>LogicBlaze</organization>
+      <organizationUrl>http://www.logicblaze.com/</organizationUrl>
     </developer>
     <developer>
       <id>dandiep</id>
@@ -120,55 +122,57 @@
       <id>pdodds</id>
       <name>Philip Dodds</name>
       <email>pdodds@unity-systems.com</email>
-      <organization>pdodds</organization>
+      <organization>Unity Systems</organization>
     </developer>
     <developer>
       <id>jlim</id>
       <name>Jonas Lim</name>
       <email>jlim@exist.com</email>
-      <organization>jlim</organization>
+      <organization>Exist Labs</organization>
     </developer>
     <developer>
       <id>foconer</id>
       <name>Fritz Oconer</name>
       <email>foconer@exist.com</email>
-      <organization>foconer</organization>
-        </developer>
+      <organization>Exist Labs</organization>
+    </developer>
     <developer>
       <id>jgapuz</id>
       <name>Joseph Gapuz</name>
       <email>jgapuz@exist.com</email>
-      <organization>jgapuz</organization>
+      <organization>Exist Labs</organization>
     </developer>
     <developer>
       <id>pvillacorta</id>
       <name>Patrick Villacorta</name>
       <email>pvillacorta@exist.com</email>
-      <organization>pvillacorta</organization>
+      <organization>Exist Labs</organization>
     </developer>
     <developer>
       <id>dflores</id>
       <name>Darwin Flores</name>
       <email>dflores@exist.com</email>
-      <organization>dflores</organization>
+      <organization>Exist Labs</organization>
     </developer>
     <developer>
       <id>myap</id>
       <name>Merwin Yap</name>
       <email>myap@exist.com</email>
-      <organization>myap</organization>
+      <organization>Exist Labs</organization>
     </developer>
     <developer>
       <id>gnt</id>
       <name>Guillaume Nodet</name>
       <email>gnodet@logicblaze.com</email>
-      <organization>gnt</organization>
+      <organization>LogicBlaze</organization>
+      <organizationUrl>http://www.logicblaze.com/</organizationUrl>
+      <timezone>+1</timezone>
     </developer>
     <developer>
       <id>gastaldi</id>
       <name>George Gastaldi</name>
       <email>george@neogrid.com.br</email>
-      <organization>gastaldi</organization>
+      <organization>Datasul B2B</organization>
     </developer>
   </developers>
   <licenses>
@@ -737,6 +741,11 @@
         <groupId>geronimo-spec</groupId>
         <artifactId>geronimo-spec-servlet</artifactId>
         <version>2.4-rc4</version>
+      </dependency>
+      <dependency>
+        <groupId>geronimo-spec</groupId>
+        <artifactId>geronimo-spec-qname</artifactId>
+        <version>1.1-rc4</version>
       </dependency>
       <dependency>
         <groupId>groovy</groupId>
