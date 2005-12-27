@@ -241,13 +241,6 @@
             </resource>
         </resources>
         <testResources>
-             <testResource>
-                <!-- duplicate from resouces ??? -->
-                <directory>target/generated</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </testResource>
             <testResource>
                 <directory>src/test/resources</directory>
                 <includes>
@@ -281,11 +274,29 @@
             </testResource>
         </testResources>
         <plugins>
+            <!--
+            <plugin>
+                <groupId>org.xbean</groupId>
+                <artifactId>xbean-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                <configuration>
+                   <namespace>http://servicemix.org/config/1.0</namespace>
+                   <destFile>target/servicemix.xsd</destFile>
+                </configuration>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>process-classes</phase>
+                        <phase>generate-resources</phase>
                         <configuration>
                             <tasks>
                                 <taskdef classname="org.xbean.spring.generator.MappingGeneratorTask" name="mapping">
