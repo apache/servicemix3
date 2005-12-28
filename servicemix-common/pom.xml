@@ -60,8 +60,8 @@
             <artifactId>mx4j</artifactId>
         </dependency>
         <dependency>
-            <groupId>servicemix</groupId>
-            <artifactId>jaxp</artifactId>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
         </dependency>
         <dependency>
             <groupId>wsdl4j</groupId>

@@ -271,10 +271,6 @@
     </dependency>
     <dependency>
       <groupId>servicemix</groupId>
-      <artifactId>jaxp</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>servicemix</groupId>
       <artifactId>jsr-223</artifactId>
     </dependency>
     <dependency>
