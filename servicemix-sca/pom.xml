@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005 The Apache Software Foundation
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!-- $Rev: 359503 $ $Date: 2005-12-28 13:56:03 +0100 (mer., 28 déc. 2005) $ -->
+<project 
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns="http://maven.apache.org/POM/4.0.0">
+    
+    <parent>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>servicemix</artifactId>
+        <version>3.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.servicemix</groupId>
+    <artifactId>servicemix-sca</artifactId>
+    <packaging>jar</packaging>
+    <name>ServiceMix :: SCA Service Engine</name>
+    <description>SCA service engine</description>
+    <dependencies>
+    
+        <dependency>
+            <groupId>org.apache.servicemix</groupId>
+            <artifactId>servicemix-common</artifactId>
+        </dependency>
+        <dependency>
+        	<groupId>org.eclipse.emf</groupId>
+        	<artifactId>commonj-sdo</artifactId>
+        	<version>2.1.0</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.eclipse.emf</groupId>
+        	<artifactId>ecore</artifactId>
+        	<version>2.1.0</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.eclipse.emf</groupId>
+        	<artifactId>common</artifactId>
+        	<version>2.1.0</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.eclipse.emf</groupId>
+        	<artifactId>ecore-sdo</artifactId>
+        	<version>2.1.1</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.eclipse.emf</groupId>
+        	<artifactId>ecore-change</artifactId>
+        	<version>2.1.0</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.eclipse.emf</groupId>
+        	<artifactId>ecore-xmi</artifactId>
+        	<version>2.1.0</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.eclipse.wst</groupId>
+        	<artifactId>wsdl</artifactId>
+        	<version>1.0.0</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.eclipse</groupId>
+        	<artifactId>xsd</artifactId>
+        	<version>2.1.1</version>
+        </dependency>
+        <dependency>
+        	<groupId>servicemix</groupId>
+        	<artifactId>tuscany-common</artifactId>
+        	<version>SNAPSHOT</version>
+        </dependency>
+        <dependency>
+        	<groupId>servicemix</groupId>
+        	<artifactId>tuscany-container-java</artifactId>
+        	<version>SNAPSHOT</version>
+        </dependency>
+        <dependency>
+        	<groupId>servicemix</groupId>
+        	<artifactId>tuscany-core</artifactId>
+        	<version>SNAPSHOT</version>
+        </dependency>
+        <dependency>
+        	<groupId>servicemix</groupId>
+        	<artifactId>tuscany-model</artifactId>
+        	<version>SNAPSHOT</version>
+        </dependency>
+        <dependency>
+        	<groupId>servicemix</groupId>
+        	<artifactId>sca-api</artifactId>
+        	<version>SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+        	<groupId>junit</groupId>
+        	<artifactId>junit</artifactId>
+        	<scope>test</scope>
+        </dependency>
+        <dependency>
+        	<groupId>org.apache.servicemix</groupId>
+        	<artifactId>servicemix-core</artifactId>
+        	<scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>target/generated</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+             </plugin>
+        </plugins>
+    </build>
+    
+</project>
