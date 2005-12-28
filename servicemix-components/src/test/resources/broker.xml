@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://activemq.org/config/1.0">
+
+  <broker persistent="false">
+
+    <transportConnectors>
+      <transportConnector uri="tcp://localhost:61626" />
+    </transportConnectors>
+
+  </broker>
+
+</beans>

@@ -2,7 +2,7 @@
 <beans xmlns:foo="http://servicemix.org/cheese/">
 
   <!-- the JBI container -->
-  <container id="jbi" xmlns="http://servicemix.org/config/1.0">
+  <container id="jbi" xmlns="http://servicemix.org/config/1.0" embedded="true">
     <activationSpecs>
 
       <!-- START SNIPPET: cache -->

@@ -2,8 +2,12 @@
 <beans xmlns:sm="http://servicemix.org/config/1.0" 
 	   xmlns:foo="http://servicemix.org/cheese/">
 
+  <bean id="broker" class="org.activemq.xbean.BrokerFactoryBean" singleton="true">
+    <property name="config" value="classpath:broker.xml"/>
+  </bean>
+
   <!-- the JBI container -->
-  <sm:container id="jbi">
+  <sm:container id="jbi" depends-on="broker" embedded="true">
     <sm:activationSpecs>
 
       <sm:activationSpec componentName="myJmsSender" service="foo:myJmsSender">
@@ -82,9 +86,7 @@ log.info "Received message $inMessage with body: $inMessage.bodyText"
   <bean id="jmsFactory" class="org.activemq.pool.PooledConnectionFactory">
     <property name="connectionFactory">
       <bean class="org.activemq.ActiveMQConnectionFactory">
-        <property name="brokerURL">
-          <value>vm://localhost</value>
-        </property>
+        <property name="brokerURL" value="tcp://localhost:61626" />
       </bean>
     </property>
   </bean>

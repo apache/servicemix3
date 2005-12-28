@@ -4,7 +4,7 @@
 
   <!-- ActiveMQ message broker -->
   <bean id="broker" class="org.activemq.xbean.BrokerFactoryBean">
-    <property name="config" value="classpath:org/apache/servicemix/components/wsif/broker.xml"/>
+    <property name="config" value="classpath:broker.xml"/>
   </bean>
 
   <!-- JCA container -->
@@ -27,7 +27,7 @@
   </bean>
 
   <!-- JBI container -->
-  <sm:container id="jbi">
+  <sm:container id="jbi" embedded="true">
     <sm:activationSpecs>
       <!-- START SNIPPET: wsif -->
       <sm:activationSpec componentName="checkAvailability" service="foo:checkAvailability">

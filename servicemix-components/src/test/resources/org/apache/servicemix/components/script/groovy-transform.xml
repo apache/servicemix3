@@ -12,6 +12,7 @@
         <value>receiver</value>
       </list>
     </property>
+    <property name="embedded" value="true"/>
   </bean>
 
   <!-- components within the JBI container -->

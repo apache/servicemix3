@@ -3,7 +3,7 @@
 	   xmlns:foo="http://servicemix.org/cheese/">
 
   <!-- the JBI container -->
-  <sm:container id="jbi">
+  <sm:container id="jbi" embedded="true">
     <sm:activationSpecs>
       <!-- START SNIPPET: saaj -->
       <sm:activationSpec componentName="stockQuote" service="foo:stockQuote" endpoint="stockQuote">

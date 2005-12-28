@@ -5,7 +5,7 @@
 	   xmlns:foo="http://servicemix.org/cheese/">
 
   <!-- the JBI container -->
-  <sm:container spring:id="jbi" flowName="st">
+  <sm:container spring:id="jbi" flowName="st" embedded="true">
     <sm:activationSpecs>
 
       <!-- chaining router -->

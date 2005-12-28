@@ -15,9 +15,6 @@
  */
 package org.apache.servicemix.components.pojo;
 
-import org.apache.servicemix.MessageExchangeListener;
-import org.apache.servicemix.tck.MessageList;
-
 import javax.jbi.JBIException;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.component.ComponentLifeCycle;
@@ -28,12 +25,19 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.management.ObjectName;
 import javax.xml.namespace.QName;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.MessageExchangeListener;
+import org.apache.servicemix.tck.MessageList;
+
 /**
  * @version $Revision$
  */
 
 // START SNIPPET: receive 
 public class MyReceiver implements ComponentLifeCycle, MessageExchangeListener {
+	private static final Log log = LogFactory.getLog(MyReceiver.class);
+	
     private ComponentContext context;
     private ObjectName extensionMBeanName;
     private MessageList messageList = new MessageList();
@@ -64,7 +68,7 @@ public class MyReceiver implements ComponentLifeCycle, MessageExchangeListener {
     // MessageExchangeListener interface
     //-------------------------------------------------------------------------
     public void onMessageExchange(MessageExchange exchange) throws MessagingException {
-        System.out.println("Received message " + exchange);
+        log.info("Received message " + exchange);
         NormalizedMessage message = exchange.getMessage("in");
         getMessageList().addMessage(message);
         exchange.setStatus(ExchangeStatus.DONE);

@@ -104,7 +104,11 @@
 
         <dependency>
             <groupId>springframework</groupId>
-            <artifactId>spring</artifactId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>springframework</groupId>
+            <artifactId>spring-context</artifactId>
         </dependency>
 
         <dependency>
@@ -176,10 +180,6 @@
             <artifactId>stax-utils</artifactId>
         </dependency>
         <dependency>
-            <groupId>lingo</groupId>
-            <artifactId>lingo</artifactId>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
@@ -197,6 +197,11 @@
             <groupId>xmlbeans</groupId>
             <artifactId>xbean</artifactId>
             <version>2.0.0</version>
+        </dependency>
+        
+        <dependency>
+        	<groupId>lingo</groupId>
+        	<artifactId>lingo</artifactId>
         </dependency>
 
         <dependency>
@@ -305,8 +310,8 @@
                                         <path refid="maven.dependency.classpath"></path>
                                     </classpath>
                                 </taskdef>
-                                <mapping destFile="target/servicemix.xsd" namespace="http://servicemix.org/config/1.0"
-                                    srcdir="src/main/java" metaInfDir="target/generated/"/>
+                                <mapping destFile="${basedir}/target/servicemix.xsd" namespace="http://servicemix.org/config/1.0"
+                                    srcdir="${basedir}/src/main/java" metaInfDir="${basedir}/target/generated/"/>
                             </tasks>
                         </configuration>
                         <goals>

@@ -3,7 +3,7 @@
 <beans xmlns:sm="http://servicemix.org/config/1.0" 
 	   xmlns:foo="http://servicemix.org/cheese/">
 
-  <sm:container id="jbi">
+  <sm:container id="jbi" embedded="true">
     <sm:activationSpecs>
 
       <sm:activationSpec componentName="receiver" service="foo:receiver">

@@ -3,7 +3,7 @@
 	   xmlns:xfire="http://xfire.components.servicemix.org">
 
   <!-- the JBI container -->
-  <sm:container id="jbi">
+  <sm:container id="jbi" embedded="true">
     <sm:activationSpecs>
       <sm:activationSpec componentName="sender" endpoint="sender" service="xfire:sender" destinationService="xfire:OneWayService">
         <sm:component><bean class="org.apache.servicemix.tck.SenderComponent"/></sm:component>

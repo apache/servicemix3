@@ -18,6 +18,9 @@ package org.apache.servicemix.tck;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +32,9 @@ import junit.framework.Assert;
  * @version $Revision$
  */
 public class MessageList extends Assert {
+	
+	private static final Log log = LogFactory.getLog(MessageList.class); 
+	
     private List messages = new ArrayList();
     private Object semaphore;
 
@@ -79,7 +85,7 @@ public class MessageList extends Assert {
 
 
     public void waitForMessagesToArrive(int messageCount) {
-        System.out.println("Waiting for message to arrive");
+        log.info("Waiting for message to arrive");
 
         long start = System.currentTimeMillis();
 
@@ -93,12 +99,12 @@ public class MessageList extends Assert {
                 }
             }
             catch (InterruptedException e) {
-                System.out.println("Caught: " + e);
+            	log.info("Caught: " + e);
             }
         }
         long end = System.currentTimeMillis() - start;
 
-        System.out.println("End of wait for " + end + " millis");
+        log.info("End of wait for " + end + " millis");
     }
 
 

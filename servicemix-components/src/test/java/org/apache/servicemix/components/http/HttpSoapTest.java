@@ -56,6 +56,7 @@ public class HttpSoapTest extends TestCase {
         container.setMonitorInstallationDirectory(false);
         container.setUseMBeanServer(false);
         container.setCreateMBeanServer(false);
+        container.setEmbedded(true);
         container.init();
         container.start();
     }

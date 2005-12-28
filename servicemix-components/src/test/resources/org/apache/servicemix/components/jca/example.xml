@@ -7,7 +7,7 @@
   || ActiveMQ Broker
   -->
   <bean id="broker" class="org.activemq.xbean.BrokerFactoryBean" singleton="true">
-    <property name="config" value="classpath:org/apache/servicemix/components/jca/broker.xml"/>
+    <property name="config" value="classpath:broker.xml"/>
   </bean>
 
   <!-- START SNIPPET: jca -->
@@ -31,7 +31,7 @@
   <!-- END SNIPPET: jca -->
 
   <!-- the JBI container -->
-  <sm:container id="jbi">
+  <sm:container id="jbi" depends-on="broker" embedded="true">
     <sm:activationSpecs>
 
       <sm:activationSpec componentName="myJmsSender" service="foo:myJmsSender">

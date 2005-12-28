@@ -4,7 +4,7 @@
 	   xmlns:foo="http://servicemix.org/demo/pipeline/">
 
   <!-- the JBI container and its components -->
-  <sm:container id="jbi">
+  <sm:container id="jbi" embedded="true">
     <sm:activationSpecs>
 
       <sm:activationSpec componentName="myJmsReceiver" service="foo:myJmsReceiver" destinationService="foo:transformer">

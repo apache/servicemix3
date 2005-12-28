@@ -307,7 +307,11 @@
     </dependency>
     <dependency>
       <groupId>springframework</groupId>
-      <artifactId>spring</artifactId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>springframework</groupId>
+      <artifactId>spring-beans</artifactId>
     </dependency>
     <dependency>
       <groupId>stax</groupId>
@@ -390,6 +394,9 @@
                         
                         <!--  These ones can not work, need rewrite -->
                         <exclude>**/JmsOverJcaWithFullXATest.*</exclude>
+                        
+                        <!--  exclude until amq4 stable -->
+                        <exclude>**/JmsOverJca*.*</exclude>
                         
                         <!-- enable when geronimo has support for attachments -->
                         <exclude>**/HttpSoapAttachmentsTest.*</exclude>
