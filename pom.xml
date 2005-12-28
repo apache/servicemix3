@@ -48,6 +48,7 @@
         <configuration>
           <address>servicemix-commits@geronimo.apache.org</address>
         </configuration>
+        <sendOnSuccess>false</sendOnSuccess>
       </notifier>
       <notifier>
         <type>irc</type>
@@ -56,6 +57,7 @@
           <port>6667</port>
           <channel>#servicemix</channel>        
         </configuration>
+        <sendOnSuccess>false</sendOnSuccess>
       </notifier>
     </notifiers>
   </ciManagement>
