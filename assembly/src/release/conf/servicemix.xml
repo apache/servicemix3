@@ -1,36 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://xbean.org/schemas/spring/1.0"
-	xmlns:spring="http://xbean.org/schemas/spring/1.0"
-	xmlns:sm="http://servicemix.org/config/1.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://xbean.org/schemas/spring/1.0 spring-beans.xsd
-	                    http://servicemix.org/config/1.0 servicemix.xsd">
-
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0">
 
   <!-- the JBI container -->
-	<!-- the JBI container -->
-	<sm:container spring:id="jbi" 
-          rootDir="../wdir" 
-          useMBeanServer="true"
-		  createMBeanServer="true" 
-          installationDirPath="../install"
-          deploymentDirPath="../deploy"
-		  monitorInstallationDirectory="true" 
-          dumpStats="true"
-		  statsInterval="10" 
-		  flowName="seda"
-          transactionManager="#transactionManager">
+  <sm:container id="jbi" 
+                rootDir="../wdir" 
+                useMBeanServer="true"
+                createMBeanServer="true" 
+                installationDirPath="../install"
+                deploymentDirPath="../deploy"
+		            monitorInstallationDirectory="true" 
+                dumpStats="true"
+		            statsInterval="10" 
+		            flowName="seda"
+                transactionManager="#transactionManager">
 
-		<sm:activationSpecs>
+    <sm:activationSpecs>
 		
-		</sm:activationSpecs>
-	</sm:container>
+    </sm:activationSpecs>
+  </sm:container>
 
   <bean id="transactionContextManager" class="org.jencks.factory.TransactionContextManagerFactoryBean"/>
   <bean id="transactionManager" class="org.jencks.factory.GeronimoTransactionManagerFactoryBean" />
 
   <!-- message broker -->
-  <bean id="broker" class="org.activemq.spring.BrokerFactoryBean">
+  <bean id="broker" class="org.activemq.xbean.BrokerFactoryBean">
      <property name="config" value="classpath:activemq.xml"/>
   </bean>
 
