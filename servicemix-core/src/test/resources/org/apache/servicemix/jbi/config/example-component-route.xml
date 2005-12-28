@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns:sm="http://servicemix.org/config/1.0"
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
 	   xmlns:foo="http://servicemix.org/cheese/">
 
 	<!-- the JBI container -->
-	<container id="jbi" xmlns="http://servicemix.org/config/1.0">
+	<container id="jbi" xmlns="http://servicemix.apache.org/config/1.0">
 		<activationSpecs>
 
 			<activationSpec componentName="sender" service="foo:sender" endpoint="sender">

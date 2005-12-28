@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://xbean.org/schemas/spring/1.0"
 	   xmlns:spring="http://xbean.org/schemas/spring/1.0"
-	   xmlns:sm="http://servicemix.org/config/1.0" 
+	   xmlns:sm="http://servicemix.apache.org/config/1.0" 
 	   xmlns:foo="http://servicemix.org/cheese/">
 
   <!-- the JBI container -->

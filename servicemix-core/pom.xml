@@ -287,7 +287,7 @@
                     <execution>
                         <phase>process-classes</phase>
                 <configuration>
-                   <namespace>http://servicemix.org/config/1.0</namespace>
+                   <namespace>http://servicemix.apache.org/config/1.0</namespace>
                    <destFile>target/servicemix.xsd</destFile>
                 </configuration>
                         <goals>
@@ -310,7 +310,7 @@
                                         <path refid="maven.dependency.classpath"></path>
                                     </classpath>
                                 </taskdef>
-                                <mapping destFile="${basedir}/target/servicemix.xsd" namespace="http://servicemix.org/config/1.0"
+                                <mapping destFile="${basedir}/target/servicemix.xsd" namespace="http://servicemix.apache.org/config/1.0"
                                     srcdir="${basedir}/src/main/java" metaInfDir="${basedir}/target/generated/"/>
                             </tasks>
                         </configuration>

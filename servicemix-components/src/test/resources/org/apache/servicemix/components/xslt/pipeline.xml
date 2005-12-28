@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- START SNIPPET: pipeline -->
-<beans xmlns:sm="http://servicemix.org/config/1.0" 
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
 	   xmlns:foo="http://servicemix.org/demo/pipeline/">
 
   <!-- the JBI container and its components -->

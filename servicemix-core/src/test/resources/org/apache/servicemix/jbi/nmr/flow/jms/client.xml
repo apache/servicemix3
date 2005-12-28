@@ -2,10 +2,10 @@
 
 <beans xmlns="http://xbean.org/schemas/spring/1.0" 
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xmlns:sm="http://servicemix.org/config/1.0" 
+xmlns:sm="http://servicemix.apache.org/config/1.0" 
 xsi:schemaLocation="http://xbean.org/schemas/spring/1.0 
 conf/spring-beans.xsd 
-http://servicemix.org/config/1.0 
+http://servicemix.apache.org/config/1.0 
 conf/servicemix.xsd"> 
 
   <sm:container id="jbi" 
