@@ -6,14 +6,7 @@
       </formats>
       <fileSets>
         <fileSet>
-          <includes>
-            <include>README*</include>
-            <include>LICENSE*</include>
-            <include>NOTICE*</include>
-          </includes>
-        </fileSet>
-        <fileSet>
-          <directory>src/release</directory>
+          <directory>src/main/release</directory>
           <outputDirectory></outputDirectory>
         </fileSet>
       </fileSets>

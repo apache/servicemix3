@@ -205,6 +205,7 @@
     <module>servicemix-http</module>
     <module>servicemix-wsn2005</module>
     <module>servicemix-lwcontainer</module>
+    <module>assembly</module>
   </modules>
   <repositories>
     <repository>
@@ -1110,4 +1111,14 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>

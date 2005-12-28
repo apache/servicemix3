@@ -27,7 +27,6 @@
     </parent>
     
     <artifactId>servicemix-assembly</artifactId>
-    <packaging>jar</packaging>
     <name>Servicemix :: Assembly</name>
     
     <dependencies>
@@ -68,7 +67,7 @@
                 <goal>assembly</goal>
               </goals>
               <configuration>
-                <descriptor>src/descriptors/bin.xml</descriptor>
+                <descriptor>src/main/assembly/bin.xml</descriptor>
               </configuration>
             </execution>
           </executions>
