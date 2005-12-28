@@ -28,7 +28,7 @@
           <property name="component">
             <!-- the transformation -->
             <bean class="org.apache.servicemix.components.util.MockServiceComponent">
-  			  <property xmlns="" name="responseProperties">
+  			  <property name="responseProperties">
 			    <map>
 				  <entry key="foo" value="hello"/>
 				  <entry key="someList">
@@ -40,7 +40,7 @@
 				  </entry>
 			    </map>
 			  </property>
-		      <property xmlns="" name="responseXml">
+		      <property name="responseXml">
 			    <value><![CDATA[ <hello/> ]]></value>
 			  </property>
             </bean>
