@@ -30,9 +30,12 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
 
 import org.apache.servicemix.components.util.ComponentSupport;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.codehaus.xfire.DefaultXFire;
 import org.codehaus.xfire.MessageContext;
 import org.codehaus.xfire.XFire;
@@ -45,6 +48,7 @@ import org.codehaus.xfire.service.binding.BeanInvoker;
 import org.codehaus.xfire.service.binding.ObjectServiceFactory;
 import org.codehaus.xfire.soap.SoapConstants;
 import org.codehaus.xfire.transport.http.XFireServletController;
+import org.xml.sax.SAXException;
 
 public class HttpSoapInOutBinding extends ComponentSupport implements
         HttpBinding {
@@ -54,6 +58,7 @@ public class HttpSoapInOutBinding extends ComponentSupport implements
     protected Service service;
     protected boolean defaultInOut = true;
     protected String soapAction = "\"\"";
+    protected SourceTransformer transformer;
 
     public HttpSoapInOutBinding() {
     }
@@ -74,6 +79,7 @@ public class HttpSoapInOutBinding extends ComponentSupport implements
         }
         xfire.getServiceRegistry().register(service);
         controller = new Controller(xfire);
+        transformer = new SourceTransformer();
     }
     
     public void process(HttpServletRequest request, HttpServletResponse response)
@@ -137,10 +143,13 @@ public class HttpSoapInOutBinding extends ComponentSupport implements
             Source src = exchange.getOutMessage().getContent();
             exchange.setStatus(ExchangeStatus.DONE);
             channel.send(exchange);
+            src = transformer.toDOMSource(src);
             return src;
-        } catch (JBIException e) {
+        } catch (XFireFault e) {
+            throw e;
+        } catch (Exception e) {
             throw new XFireFault(e);
-        }
+		}
     }
     
     protected void populateExchange(MessageExchange exchange, Source src, MessageContext ctx) throws JBIException {

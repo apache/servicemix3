@@ -23,29 +23,44 @@ import java.net.URLConnection;
 
 import javax.xml.messaging.URLEndpoint;
 import javax.xml.namespace.QName;
+import javax.xml.transform.TransformerException;
 
 import junit.framework.TestCase;
 
-import org.apache.servicemix.components.http.HttpSoapConnector;
+import org.activemq.broker.BrokerService;
+import org.activemq.xbean.BrokerFactoryBean;
 import org.apache.servicemix.components.saaj.SaajBinding;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.servicemix.jbi.util.FileUtil;
+import org.apache.xpath.CachedXPathAPI;
+import org.springframework.core.io.ClassPathResource;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.traversal.NodeIterator;
 
 public class HttpSoapAndSaajTest extends TestCase {
     
     private static final int PORT = 7012;
 
     protected JBIContainer container;
+	protected BrokerService broker;
     
     protected void setUp() throws Exception {
+        BrokerFactoryBean bfb = new BrokerFactoryBean(new ClassPathResource("broker.xml"));
+        bfb.afterPropertiesSet();
+        broker = bfb.getBroker();
+        broker.start();
         container = new JBIContainer();
         container.setMonitorInstallationDirectory(false);
         container.setUseMBeanServer(false);
         container.setCreateMBeanServer(false);
         container.setEmbedded(true);
+        container.setFlowName("jms?jmsURL=tcp://localhost:61626");
         container.init();
         container.start();
     }
@@ -53,6 +68,9 @@ public class HttpSoapAndSaajTest extends TestCase {
     protected void tearDown() throws Exception {
         if (container != null) {
             container.shutDown();
+        }
+        if (broker != null) {
+        	broker.stop();
         }
     }
     
@@ -85,7 +103,29 @@ public class HttpSoapAndSaajTest extends TestCase {
         System.out.println(baos.toString());
         
         // Check xml validity
-        new SourceTransformer().toDOMNode(new StringSource(baos.toString()));
+        Node node = new SourceTransformer().toDOMNode(new StringSource(baos.toString()));
+        
+        String text = textValueOfXPath(node, "//Result").trim();
+
+        System.out.println("Found price: " + text);
+
+        assertTrue("price text should not be empty", text.length() > 0);
     }
 
+    protected String textValueOfXPath(Node node, String xpath) throws TransformerException {
+        CachedXPathAPI cachedXPathAPI = new CachedXPathAPI();
+        NodeIterator iterator = cachedXPathAPI.selectNodeIterator(node, xpath);
+        Node root = iterator.nextNode();
+        if (root instanceof Element) {
+            Element element = (Element) root;
+            if (element == null) {
+                return "";
+            }
+            String text = DOMUtil.getElementText(element);
+            return text;
+        }
+        else {
+            return root.getNodeValue();
+        }
+    }
 }

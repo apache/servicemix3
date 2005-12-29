@@ -24,6 +24,7 @@ import org.w3c.dom.Document;
 import javax.activation.DataHandler;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.xml.XMLConstants;
 import javax.xml.soap.AttachmentPart;
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.MimeHeader;
@@ -68,11 +69,12 @@ public class SaajMarshaler {
         SOAPElement elem = (SOAPElement) soapBody.getChildElements().next();
         
         for (SOAPElement parent = elem.getParentElement(); parent != null; parent = parent.getParentElement()) {
-        	for (int i = 0; i < parent.getAttributes().getLength(); i++) {
-        		Attr att = (Attr) parent.getAttributes().item(i);
-        		if (att.getName().startsWith("xmlns:") && 
-        			elem.getAttributeNodeNS(att.getNamespaceURI(), att.getLocalName()) == null) {
-        			elem.setAttributeNS(att.getNamespaceURI(), att.getName(), att.getValue());
+        	for (Iterator itNs = parent.getNamespacePrefixes(); itNs.hasNext();) {
+        		String prefix = (String) itNs.next();
+        		String nsuri = parent.getNamespaceURI(prefix);
+        		if (elem.getAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, prefix) == null) {
+	        		elem.addNamespaceDeclaration(prefix, nsuri);
+	        		elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE + ":" + prefix, nsuri);
         		}
         	}
         }
