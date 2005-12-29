@@ -18,7 +18,6 @@ package org.apache.servicemix.components.saaj;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 
 import javax.activation.DataHandler;
