@@ -23,6 +23,7 @@ import java.net.URLConnection;
 
 import javax.xml.messaging.URLEndpoint;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerException;
 
 import junit.framework.TestCase;
@@ -30,14 +31,18 @@ import junit.framework.TestCase;
 import org.activemq.broker.BrokerService;
 import org.activemq.xbean.BrokerFactoryBean;
 import org.apache.servicemix.components.saaj.SaajBinding;
+import org.apache.servicemix.components.util.MockServiceComponent;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.servicemix.jbi.util.FileUtil;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
 import org.apache.xpath.CachedXPathAPI;
 import org.springframework.core.io.ClassPathResource;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
@@ -45,6 +50,7 @@ import org.w3c.dom.traversal.NodeIterator;
 public class HttpSoapAndSaajTest extends TestCase {
     
     private static final int PORT = 7012;
+    private static final int PORT_WS = 7013;
 
     protected JBIContainer container;
 	protected BrokerService broker;
@@ -77,7 +83,7 @@ public class HttpSoapAndSaajTest extends TestCase {
         ActivationSpec as = new ActivationSpec();
         as.setId("saaj");
         SaajBinding saaj = new SaajBinding();
-        saaj.setSoapEndpoint(new URLEndpoint("http://64.124.140.30/soap")); 
+        saaj.setSoapEndpoint(new URLEndpoint("http://localhost:" + PORT_WS)); 
         as.setComponent(saaj);
         as.setService(new QName("saaj"));
         container.activateComponent(as);
@@ -86,6 +92,20 @@ public class HttpSoapAndSaajTest extends TestCase {
         as.setId("xfireBinding");
         as.setComponent(new HttpSoapConnector(null, PORT, true));
         as.setDestinationService(new QName("saaj"));
+        container.activateComponent(as);
+        
+        as = new ActivationSpec();
+        as.setId("webservice");
+        as.setComponent(new HttpConnector(null, PORT_WS));
+        as.setDestinationService(new QName("mock"));
+        container.activateComponent(as);
+        
+        as = new ActivationSpec();
+        as.setId("mock");
+        MockServiceComponent mock = new MockServiceComponent();
+        mock.setResponseResource(new ClassPathResource("soap-response.xml", getClass()));
+        as.setComponent(mock);
+        as.setService(new QName("mock"));
         container.activateComponent(as);
 
         URLConnection connection = new URL("http://localhost:" + PORT).openConnection();
@@ -99,16 +119,25 @@ public class HttpSoapAndSaajTest extends TestCase {
         InputStream is = connection.getInputStream();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         FileUtil.copyInputStream(is, baos);
-        System.out.println(baos.toString());
         
         // Check xml validity
         Node node = new SourceTransformer().toDOMNode(new StringSource(baos.toString()));
+
+        OutputFormat format = new OutputFormat((Document) node);
+        format.setLineWidth(65);
+        format.setIndenting(true);
+        format.setIndent(2);
+        XMLSerializer serializer = new XMLSerializer(System.err, format);
+        System.err.println();
+        serializer.serialize((Document) node);
         
-        String text = textValueOfXPath(node, "//Result").trim();
-
-        System.out.println("Found price: " + text);
-
-        assertTrue("price text should not be empty", text.length() > 0);
+        CachedXPathAPI cachedXPathAPI = new CachedXPathAPI();
+        NodeIterator iterator = cachedXPathAPI.selectNodeIterator(node, "//*[local-name() = 'userId']");
+        Element root = (Element) iterator.nextNode();
+        QName qname = DOMUtil.createQName(root, root.getAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "type"));
+        assertEquals("http://www.w3.org/2001/XMLSchema", qname.getNamespaceURI());
+        assertEquals("string", qname.getLocalPart());
+        
     }
 
     protected String textValueOfXPath(Node node, String xpath) throws TransformerException {
