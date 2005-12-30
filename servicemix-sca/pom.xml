@@ -71,12 +71,12 @@
         	<version>2.1.0</version>
         </dependency>
         <dependency>
-        	<groupId>org.eclipse.wst</groupId>
+        	<groupId>org.eclipse.wtp</groupId>
         	<artifactId>wsdl</artifactId>
         	<version>1.0.0</version>
         </dependency>
         <dependency>
-        	<groupId>org.eclipse</groupId>
+        	<groupId>org.eclipse.xsd</groupId>
         	<artifactId>xsd</artifactId>
         	<version>2.1.1</version>
         </dependency>
@@ -104,6 +104,16 @@
         	<groupId>servicemix</groupId>
         	<artifactId>sca-api</artifactId>
         	<version>SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>servicemix</groupId>
+          <artifactId>jaxb-api</artifactId>
+          <version>20051215</version>
+        </dependency>
+        <dependency>
+          <groupId>servicemix</groupId>
+          <artifactId>jaxb-impl</artifactId>
+          <version>20051215</version>
         </dependency>
         
         <dependency>

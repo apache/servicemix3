@@ -205,6 +205,7 @@
     <module>servicemix-http</module>
     <module>servicemix-wsn2005</module>
     <module>servicemix-lwcontainer</module>
+    <module>servicemix-sca</module>
     <module>assembly</module>
   </modules>
   <repositories>
