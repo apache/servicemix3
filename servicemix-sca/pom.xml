@@ -31,7 +31,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.servicemix</groupId>
     <artifactId>servicemix-sca</artifactId>
-    <packaging>jar</packaging>
+    <packaging>jbi-component</packaging>
     <name>ServiceMix :: SCA Service Engine</name>
     <description>SCA service engine</description>
     <dependencies>
@@ -153,6 +153,15 @@
                     <target>1.5</target>
                 </configuration>
              </plugin>
+           <plugin>
+                <groupId>org.apache.servicemix.plugins</groupId>
+                <artifactId>maven2-jbi-plugin</artifactId>
+                <configuration>
+                   <type>service-engine</type>
+                   <bootstrap>org.apache.servicemix.sca.ScaBootstrap</bootstrap>
+                   <component>org.apache.servicemix.sca.ScaComponent</component>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     
