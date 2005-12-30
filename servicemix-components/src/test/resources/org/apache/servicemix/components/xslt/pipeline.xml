@@ -44,9 +44,9 @@
     </sm:activationSpecs>
   </sm:container>
 
-  <bean id="jmsFactory" class="org.activemq.pool.PooledConnectionFactory">
+  <bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
     <property name="connectionFactory">
-      <bean class="org.activemq.ActiveMQConnectionFactory">
+      <bean class="org.apache.activemq.ActiveMQConnectionFactory">
         <property name="brokerURL" value="vm://localhost?broker.persistent=false"/>
       </bean>
     </property>

@@ -15,6 +15,8 @@
  */
 package org.apache.servicemix.jbi.servicedesc;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.servicedesc.EndpointReferenceBuilder;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
@@ -26,6 +28,8 @@ import junit.framework.TestCase;
 
 public class EndpointReferenceBuilderTest extends TestCase {
 
+	private static final Log log = LogFactory.getLog(EndpointReferenceBuilderTest.class);
+	
     /*
      * Test method for 'org.apache.servicemix.jbi.servicedesc.EndpointReferenceBuilder.getReference(ServiceEndpoint)'
      */
@@ -33,7 +37,7 @@ public class EndpointReferenceBuilderTest extends TestCase {
         InternalEndpoint endpoint = new InternalEndpoint(null, "myEndpoint", new QName("http://foo.bar.com", "myService"));
         DocumentFragment df = EndpointReferenceBuilder.getReference(endpoint);
         assertNotNull(df);
-        System.out.println(new SourceTransformer().toString(df));
+        log.info(new SourceTransformer().toString(df));
     }
 
 }

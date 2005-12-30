@@ -19,13 +19,13 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
 
-import org.activemq.ActiveMQConnection;
-import org.activemq.ActiveMQConnectionFactory;
-import org.activemq.advisory.AdvisorySupport;
-import org.activemq.command.ActiveMQDestination;
-import org.activemq.command.ConsumerId;
-import org.activemq.command.ConsumerInfo;
-import org.activemq.command.RemoveInfo;
+import org.apache.activemq.ActiveMQConnection;
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.advisory.AdvisorySupport;
+import org.apache.activemq.command.ActiveMQDestination;
+import org.apache.activemq.command.ConsumerId;
+import org.apache.activemq.command.ConsumerInfo;
+import org.apache.activemq.command.RemoveInfo;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

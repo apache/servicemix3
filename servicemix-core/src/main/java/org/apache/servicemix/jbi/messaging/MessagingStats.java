@@ -15,10 +15,10 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
-import org.activemq.management.CountStatisticImpl;
-import org.activemq.management.StatsImpl;
-import org.activemq.management.TimeStatisticImpl;
-import org.activemq.util.IndentPrinter;
+import org.apache.activemq.management.CountStatisticImpl;
+import org.apache.activemq.management.StatsImpl;
+import org.apache.activemq.management.TimeStatisticImpl;
+import org.apache.activemq.util.IndentPrinter;
 
 /**
  * Basic J2EE stats for the messaging in the NMR

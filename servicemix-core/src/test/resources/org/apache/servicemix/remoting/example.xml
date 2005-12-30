@@ -33,11 +33,11 @@
  
  
  <!-- JMS ConnectionFactory to use -->
-  <bean id="jmsFactory" class="org.activemq.ActiveMQConnectionFactory">
+  <bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
     <property name="brokerURL" value="vm://localhost"/>
   </bean>
 
-  <bean id="exampleDestination" class="org.activemq.command.ActiveMQQueue">
+  <bean id="exampleDestination" class="org.apache.activemq.command.ActiveMQQueue">
     <constructor-arg index="0" value="test.org.logicblaze.lingo.example"/>
   </bean>
 

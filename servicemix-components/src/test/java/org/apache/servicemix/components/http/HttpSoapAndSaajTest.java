@@ -28,8 +28,8 @@ import javax.xml.transform.TransformerException;
 
 import junit.framework.TestCase;
 
-import org.activemq.broker.BrokerService;
-import org.activemq.xbean.BrokerFactoryBean;
+import org.apache.activemq.broker.BrokerService;
+import org.apache.activemq.xbean.BrokerFactoryBean;
 import org.apache.servicemix.components.saaj.SaajBinding;
 import org.apache.servicemix.components.util.MockServiceComponent;
 import org.apache.servicemix.jbi.container.ActivationSpec;

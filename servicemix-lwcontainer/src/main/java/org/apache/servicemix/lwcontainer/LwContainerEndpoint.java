@@ -19,7 +19,7 @@ import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.MessageExchange.Role;
 import javax.xml.namespace.QName;
 
-import org.activemq.util.IdGenerator;
+import org.apache.activemq.util.IdGenerator;
 import org.apache.servicemix.common.Endpoint;
 import org.apache.servicemix.common.ExchangeProcessor;
 import org.apache.servicemix.jbi.container.ActivationSpec;

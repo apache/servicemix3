@@ -652,14 +652,31 @@ public class ManagementContext extends BaseLifeCycle implements ManagementContex
                         connectorServer = JMXConnectorServerFactory.newJMXConnectorServer(url, null, result);
                         connectorServer.start();
                     }
+                    /*
+                    // Now, make sure a registry is loaded
+                    try {
+                        LocateRegistry.createRegistry(namingPort);
+                    }
+                    catch (Throwable t) {
+                        // proably exists already
+                        log.debug("Failed to create local registry", t);
+                    }
+                    // Create and start the RMIConnectorServer
+                    JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:" + namingPort
+                            + jndiPath);
+                    connectorServer = JMXConnectorServerFactory.newJMXConnectorServer(url, null, result);
+                    connectorServer.start();
+                    */
                 }
             }
             catch (NoClassDefFoundError e) {
                 log.error("Could not load MBeanServer", e);
             }
+            /*
             catch (JMException e) {
                 log.error("Could not start the remote: JMX ConnectorServer", e);
             }
+            */
             catch (MalformedURLException e) {
                 log.error("Bad URL:", e);
             }

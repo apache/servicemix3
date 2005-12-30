@@ -15,8 +15,8 @@
  */
 package org.apache.servicemix.jbi.nmr.flow.jca;
 
-import org.activemq.broker.BrokerService;
-import org.activemq.xbean.BrokerFactoryBean;
+import org.apache.activemq.broker.BrokerService;
+import org.apache.activemq.xbean.BrokerFactoryBean;
 import org.apache.geronimo.transaction.ExtendedTransactionManager;
 import org.apache.geronimo.transaction.context.TransactionContextManager;
 import org.apache.servicemix.jbi.RuntimeJBIException;

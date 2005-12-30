@@ -20,10 +20,11 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import javax.jbi.JBIException;
 import org.activeio.FactoryFinder;
-import org.activemq.util.IntrospectionSupport;
-import org.activemq.util.URISupport;
+import org.apache.activemq.util.IntrospectionSupport;
+import org.apache.activemq.util.URISupport;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 /**
  * Find a Flow by Name
  * 

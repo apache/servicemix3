@@ -87,9 +87,9 @@ public class AsyncReceiverPojo implements ComponentLifeCycle, Receiver, Runnable
         while (running) {
             try {
                 DeliveryChannel deliveryChannel = context.getDeliveryChannel();
-                System.out.println("about to do an accept on deliveryChannel: " + deliveryChannel);
+                log.info("about to do an accept on deliveryChannel: " + deliveryChannel);
                 MessageExchange messageExchange = deliveryChannel.accept();
-                System.out.println("received me: " + messageExchange);
+                log.info("received me: " + messageExchange);
                 onMessageExchange(messageExchange);
             }
             catch (MessagingException e) {

@@ -15,9 +15,6 @@
  */
 package org.apache.servicemix.jbi.management;
 
-import org.apache.servicemix.jbi.container.JBIContainer;
-import org.apache.servicemix.jbi.management.ManagementContext;
-
 import javax.jbi.management.AdminServiceMBean;
 import javax.management.MBeanServerConnection;
 import javax.management.MBeanServerInvocationHandler;
@@ -28,14 +25,27 @@ import javax.management.remote.JMXServiceURL;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.container.JBIContainer;
+
 /**
  * ManagementContextTest
  */
 public class AdminServiceTest extends TestCase {
-    JBIContainer container;
+    
+	private Log log = LogFactory.getLog(getClass());
+	
+	private JBIContainer container;
 
+    // The host, port and path where the rmiregistry runs.
+	private String namingHost = "localhost";
+	private int namingPort = 1982;
+	private String jndiPath = "/" + JBIContainer.DEFAULT_NAME + "JMX";
+    
     protected void setUp() throws Exception {
     	container = new JBIContainer();
+    	container.setRmiPort(namingPort);
     	container.setCreateMBeanServer(true);
     	container.init();
     }
@@ -45,10 +55,6 @@ public class AdminServiceTest extends TestCase {
     }
 
     public void testAdminService() throws Exception {
-        // The host, port and path where the rmiregistry runs.
-        String namingHost = "localhost";
-        int namingPort = 1099;
-        String jndiPath = "/" + JBIContainer.DEFAULT_NAME + "JMX";
         // The address of the connector server
         JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://"
                 + namingHost + ":" + namingPort + jndiPath);
@@ -63,8 +69,8 @@ public class AdminServiceTest extends TestCase {
         		AdminServiceMBean.class, true);
         AdminServiceMBean asm = (AdminServiceMBean) proxy;
 
-        System.out.println(asm.getBindingComponents()); 
-        System.out.println(asm.getComponentByName("toto")); 
+        log.info(asm.getBindingComponents()); 
+        log.info(asm.getComponentByName("toto")); 
     }
     
     protected  ObjectName getObjectName (Class systemClass){

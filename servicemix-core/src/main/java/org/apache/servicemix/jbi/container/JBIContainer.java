@@ -42,7 +42,7 @@ import javax.resource.spi.work.WorkManager;
 import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
 
-import org.activemq.util.IdGenerator;
+import org.apache.activemq.util.IdGenerator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.JbiConstants;

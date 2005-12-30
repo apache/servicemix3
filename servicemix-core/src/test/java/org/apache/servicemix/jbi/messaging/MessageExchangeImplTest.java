@@ -15,6 +15,8 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.BytesSource;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
@@ -34,6 +36,8 @@ import junit.framework.TestCase;
 
 public class MessageExchangeImplTest extends TestCase {
     
+	private static final Log log = LogFactory.getLog(MessageExchangeImplTest.class);
+	
     protected void testSerializeDeserialize(Source src) throws Exception {
         MessageExchange me = new InOnlyImpl("exchangeId");
         me.setProperty("myProp", "myValue");
@@ -63,7 +67,7 @@ public class MessageExchangeImplTest extends TestCase {
         assertNotNull(outSrc);
         String outStr = new SourceTransformer().toString(outSrc);
         assertNotNull(outStr);
-        System.out.println(outStr);
+        log.info(outStr);
     }
 
     

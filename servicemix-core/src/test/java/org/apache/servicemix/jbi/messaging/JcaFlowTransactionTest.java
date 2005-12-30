@@ -15,8 +15,8 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
-import org.activemq.broker.BrokerService;
-import org.activemq.xbean.BrokerFactoryBean;
+import org.apache.activemq.broker.BrokerService;
+import org.apache.activemq.xbean.BrokerFactoryBean;
 import org.apache.servicemix.jbi.nmr.flow.Flow;
 import org.apache.servicemix.jbi.nmr.flow.jca.JCAFlow;
 import org.springframework.core.io.ClassPathResource;

@@ -15,6 +15,8 @@
  */
 package org.apache.servicemix.jbi.management;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.JBIContainer;
 
 import javax.management.Attribute;
@@ -36,13 +38,21 @@ import junit.framework.TestCase;
  * ManagementContextTest
  */
 public class ManagementAttributesTest extends TestCase {
-    JBIContainer container;
 
+	private Log log = LogFactory.getLog(getClass());
+	
+	private JBIContainer container;
+
+    // The host, port and path where the rmiregistry runs.
+	private String namingHost = "localhost";
+	private int namingPort = 1982;
+	private String jndiPath = "/" + JBIContainer.DEFAULT_NAME + "JMX";
+    
     protected void setUp() throws Exception {
-        container = new JBIContainer();
-        container.setCreateMBeanServer(true);
-        container.init();
-        container.start();
+    	container = new JBIContainer();
+    	container.setRmiPort(namingPort);
+    	container.setCreateMBeanServer(true);
+    	container.init();
     }
     
     protected void tearDown() throws Exception {
@@ -50,15 +60,6 @@ public class ManagementAttributesTest extends TestCase {
     }
 
     public void testRemote() throws Exception {
-        //      The JMXConnectorServer protocol, in this case is RMI.
-        String serverProtocol = "rmi";
-        // The RMI server's host: this is actually ignored by JSR 160
-        // since this information is stored in the RMI stub.
-        
-        // The host, port and path where the rmiregistry runs.
-        String namingHost = "localhost";
-        int namingPort = 1099;
-        String jndiPath = "/" + JBIContainer.DEFAULT_NAME + "JMX";
         // The address of the connector server
         JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://"
                 + namingHost + ":" + namingPort + jndiPath);
@@ -68,25 +69,25 @@ public class ManagementAttributesTest extends TestCase {
         // connector server is bound to
         MBeanServerConnection connection = connector.getMBeanServerConnection();
         
-        System.out.println(connection.getMBeanCount());
+        log.info(connection.getMBeanCount());
 
 
         Set set = connection.queryNames(new ObjectName(connection.getDefaultDomain() + ":*"), null);
         for (Iterator iter = set.iterator(); iter.hasNext();) {
             ObjectName name = (ObjectName)iter.next();
-            System.out.println(name.toString());
+            log.info(name.toString());
             MBeanInfo info = connection.getMBeanInfo(name);
             MBeanAttributeInfo[] mia = info.getAttributes();
             String[] attrNames = new String[mia.length];
             for (int i = 0; i < mia.length; i++) {
                 attrNames[i] = mia[i].getName();
-                System.out.println("attr " + mia[i].getName() + " " + mia[i].getType() + " " + connection.getAttribute(name,mia[i].getName()));
+                log.info("attr " + mia[i].getName() + " " + mia[i].getType() + " " + connection.getAttribute(name,mia[i].getName()));
             }
 
             AttributeList attributeList = (AttributeList) connection.getAttributes(name,attrNames);
             for (int i = 0; i < attributeList.size(); i++) {
                 Attribute attribute = (Attribute) attributeList.get(i);
-                System.out.println("bulk " + attribute.getName() + " " + attribute.getValue() + " " + attribute.toString());
+                log.info("bulk " + attribute.getName() + " " + attribute.getValue() + " " + attribute.toString());
             }
 
         }
