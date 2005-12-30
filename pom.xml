@@ -1107,6 +1107,18 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.servicemix.plugins</groupId>
+          <artifactId>maven2-jbi-plugin</artifactId>
+          <version>1.0-SNAPSHOT</version>
+          <extensions>true</extensions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
   <reporting>
     <plugins>
       <plugin>
