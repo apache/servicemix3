@@ -17,8 +17,8 @@
  **/
 import edu.emory.mathcs.backport.java.util.concurrent.CountDownLatch;
 
-import org.activemq.ActiveMQConnectionFactory;
-import org.activemq.message.ActiveMQQueue;
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.geronimo.connector.work.GeronimoWorkManager;
 import org.apache.geronimo.transaction.ExtendedTransactionManager;
 import org.apache.geronimo.transaction.context.TransactionContextManager;

@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://xbean.org/schemas/spring/1.0"
-	xmlns:spring="http://xbean.org/schemas/spring/1.0"
-	xmlns:sm="http://servicemix.org/config/1.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://xbean.org/schemas/spring/1.0 ../../conf/spring-beans.xsd
-	                    http://servicemix.org/config/1.0 ../../conf/servicemix.xsd"
-    xmlns:foo="http://servicemix.org/demo/">
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+       xmlns:foo="http://servicemix.org/demo/">
     
   <!-- the JBI container -->
-  <sm:container spring:id="jbi"
+  <sm:container id="jbi"
   		useMBeanServer="true"
   		createMBeanServer="true"
   		dumpStats="true"
@@ -22,10 +17,9 @@
   						   endpoint="httpReceiver"
   						   destinationService="foo:stockQuote">
   		  <sm:component>
-  		    <bean xmlns="http://xbean.org/schemas/spring/1.0"
-  		          class="org.servicemix.components.http.HttpConnector">
-			<property name="host" value="localhost"/>
-			<property name="port" value="8912"/>
+  		    <bean class="org.apache.servicemix.components.http.HttpConnector">
+			      <property name="host" value="localhost"/>
+			      <property name="port" value="8912"/>
   		    </bean>
   		  </sm:component>
   		</sm:activationSpec>
@@ -35,13 +29,12 @@
   						   service="foo:stockQuote"
   						   endpoint="stockQuote">
   		  <sm:component>
-  		    <bean xmlns="http://xbean.org/schemas/spring/1.0"
-  		          class="org.servicemix.components.saaj.SaajBinding">
-			<property name="soapEndpoint">
-				<bean class="javax.xml.messaging.URLEndpoint">
-					<constructor-arg value="http://64.124.140.30/soap"/>
-				</bean>
-			</property>
+  		    <bean class="org.apache.servicemix.components.saaj.SaajBinding">
+			      <property name="soapEndpoint">
+				      <bean class="javax.xml.messaging.URLEndpoint">
+					      <constructor-arg value="http://64.124.140.30/soap"/>
+				      </bean>
+			      </property>
   		    </bean>
   		  </sm:component>
   		</sm:activationSpec>

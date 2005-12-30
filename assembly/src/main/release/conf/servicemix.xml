@@ -3,11 +3,11 @@
 
   <!-- the JBI container -->
   <sm:container id="jbi" 
-                rootDir="../wdir" 
+                rootDir="./wdir" 
                 useMBeanServer="true"
                 createMBeanServer="true" 
-                installationDirPath="../install"
-                deploymentDirPath="../deploy"
+                installationDirPath="./install"
+                deploymentDirPath="./deploy"
 		            monitorInstallationDirectory="true" 
                 dumpStats="true"
 		            statsInterval="10" 
@@ -23,13 +23,13 @@
   <bean id="transactionManager" class="org.jencks.factory.GeronimoTransactionManagerFactoryBean" />
 
   <!-- message broker -->
-  <bean id="broker" class="org.activemq.xbean.BrokerFactoryBean">
+  <bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean">
      <property name="config" value="classpath:activemq.xml"/>
   </bean>
 
-  <bean id="jmsFactory" class="org.activemq.pool.PooledConnectionFactory">
+  <bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
     <property name="connectionFactory">
-      <bean class="org.activemq.ActiveMQConnectionFactory">
+      <bean class="org.apache.activemq.ActiveMQConnectionFactory">
         <property name="brokerURL" value="tcp://localhost:61616"/>
       </bean>
     </property>

@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://xbean.org/schemas/spring/1.0"
-	xmlns:spring="http://xbean.org/schemas/spring/1.0"
-	xmlns:sm="http://servicemix.org/config/1.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://xbean.org/schemas/spring/1.0 ../../conf/spring-beans.xsd
-	                    http://servicemix.org/config/1.0 ../../conf/servicemix.xsd"
-	xmlns:my="http://servicemix.org/demo/">
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+	     xmlns:my="http://servicemix.apache.org/demo/">
 
 	<!-- the JBI container -->
-	<sm:container spring:id="jbi" useMBeanServer="true"
+	<sm:container id="jbi" useMBeanServer="true"
 		createMBeanServer="true" dumpStats="true" statsInterval="10">
 
 		<sm:activationSpecs>
@@ -17,8 +12,7 @@
       <!-- lets poll for updates to news sites -->
       <sm:activationSpec componentName="rss" service="my:rss" destinationService="my:trace">
       	<sm:component>
-      		<bean xmlns="http://xbean.org/schemas/spring/1.0"
-      		      class="org.servicemix.components.rss.RssPollingComponent">
+      		<bean class="org.apache.servicemix.components.rss.RssPollingComponent">
         <property name="outputType" value="rss_2.0"/>
         <property name="period" value="5000"/>
         <property name="lastPolledDate">
@@ -40,8 +34,7 @@
       <!-- Route the event to a trace component that just outputs the event to the console -->
 			<sm:activationSpec componentName="trace" service="my:trace">
 				<sm:component>
-					<bean xmlns="http://xbean.org/schemas/spring/1.0"
-						class="org.servicemix.components.util.StreamWriterComponent" />
+					<bean class="org.apache.servicemix.components.util.StreamWriterComponent" />
 				</sm:component>
 			</sm:activationSpec>
     </sm:activationSpecs>

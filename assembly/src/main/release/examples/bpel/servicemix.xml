@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://xbean.org/schemas/spring/1.0"
 	xmlns:spring="http://xbean.org/schemas/spring/1.0"
-	xmlns:sm="http://servicemix.org/config/1.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://xbean.org/schemas/spring/1.0 ../../conf/spring-beans.xsd
-	                    http://servicemix.org/config/1.0 ../../conf/servicemix.xsd"
+	xmlns:sm="http://servicemix.apache.org/config/1.0"
 	xmlns:pxe="uri:fivesight.com/examples/AsyncProcessJBI">
 
 	<!-- the JBI container -->
@@ -27,7 +24,7 @@
 				destinationEndpoint="ProcessPORT" destinationOperation="Run">
 				<sm:component>
 					<bean
-						class="org.servicemix.components.jms.JmsServiceComponent"
+						class="org.apache.servicemix.components.jms.JmsServiceComponent"
 						depends-on="broker">
 						<property name="template">
 							<bean
@@ -69,7 +66,7 @@
 	</bean>
 
 	<!-- message broker -->
-	<bean id="broker" class="org.activemq.spring.BrokerFactoryBean">
+	<bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean">
 		<property name="config" value="classpath:activemq.xml" />
 	</bean>
 
@@ -77,9 +74,9 @@
 	<bean id="transactionManager" class="org.jencks.factory.GeronimoTransactionManagerFactoryBean" />
 
 	<bean id="jmsFactory"
-		class="org.activemq.pool.PooledConnectionFactory">
+		class="org.apache.activemq.pool.PooledConnectionFactory">
 		<property name="connectionFactory">
-			<bean class="org.activemq.ActiveMQConnectionFactory">
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
 				<property name="brokerURL">
 					<value>tcp://localhost:61616</value>
 				</property>

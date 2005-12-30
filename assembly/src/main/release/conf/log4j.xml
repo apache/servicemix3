@@ -24,8 +24,8 @@
         <level value="WARN"/>
     </logger>
 
-    <logger name="org.servicemix">
-        <level value="DEBUG"/>
+    <logger name="org.apache.servicemix">
+        <level value="INFO"/>
     </logger>
 
     <root>

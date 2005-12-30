@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://xbean.org/schemas/spring/1.0" 
-	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	   xmlns:sm="http://servicemix.org/config/1.0"
-	   xmlns:lb="http://servicemix.org/demos/loan-broker"
-	   xsi:schemaLocation="http://xbean.org/schemas/spring/1.0 ../../conf/spring-beans.xsd 
-	                       http://servicemix.org/config/1.0 ../../conf/servicemix.xsd">
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+	     xmlns:lb="http://servicemix.apache.org/demos/loan-broker">
 	                       
 	<sm:container id="jbi"
 	              monitorInstallationDirectory="true"
@@ -18,7 +14,7 @@
 		  <sm:activationSpec componentName="loanBrokerJmsBinding"
 		                     destinationService="lb:loan-broker">
 		    <sm:component>
-		      <bean class="org.servicemix.components.jms.JmsServiceComponent">
+		      <bean class="org.apache.servicemix.components.jms.JmsServiceComponent">
 		        <property name="template">
 		          <bean class="org.springframework.jms.core.JmsTemplate">
 		            <property name="connectionFactory" ref="jmsFactory" />
@@ -77,9 +73,9 @@
 	<bean id="transactionContextManager" class="org.jencks.factory.TransactionContextManagerFactoryBean"/>
 	<bean id="transactionManager" class="org.jencks.factory.GeronimoTransactionManagerFactoryBean" />
 
-	<bean id="jmsFactory" class="org.activemq.pool.PooledConnectionFactory">
+	<bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
 		<property name="connectionFactory">
-			<bean class="org.activemq.ActiveMQConnectionFactory">
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
 				<property name="brokerURL" value="reliable:(tcp://localhost:61616)" />
 			</bean>
 		</property>

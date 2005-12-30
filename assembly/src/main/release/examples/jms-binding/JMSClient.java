@@ -25,8 +25,8 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-import org.activemq.ActiveMQConnectionFactory;
-import org.activemq.message.ActiveMQTopic;
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.command.ActiveMQTopic;
 
 
 /**

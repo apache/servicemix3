@@ -21,8 +21,8 @@ import EDU.oswego.cs.dl.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.servicemix.MessageExchangeListener;
-import org.servicemix.components.util.ComponentSupport;
+import org.apache.servicemix.MessageExchangeListener;
+import org.apache.servicemix.components.util.ComponentSupport;
 
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOut;

@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://xbean.org/schemas/spring/1.0"
 	xmlns:spring="http://xbean.org/schemas/spring/1.0"
-	xmlns:sm="http://servicemix.org/config/1.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://xbean.org/schemas/spring/1.0 ../../conf/spring-beans.xsd
-	                    http://servicemix.org/config/1.0 ../../conf/servicemix.xsd"
-	xmlns:my="http://servicemix.org/demo/">
+	xmlns:sm="http://servicemix.apache.org/config/1.0"
+	xmlns:my="http://servicemix.apache.org/demo/">
 
 
 	<!-- the JBI container -->
-	<sm:container spring:id="jbi" rootDir="../wdir" useMBeanServer="true"
-		createMBeanServer="true" installationDirPath="../install"
+	<sm:container spring:id="jbi" rootDir="./wdir" useMBeanServer="true"
+		createMBeanServer="true" installationDirPath="./install"
 		monitorInstallationDirectory="true" dumpStats="true"
 		statsInterval="10" transactionManager="#transactionManager">
 
@@ -21,7 +18,7 @@
 				destinationService="my:inputSender">
 				<sm:component>
 					<bean xmlns="http://xbean.org/schemas/spring/1.0"
-						class="org.servicemix.components.quartz.QuartzComponent">
+						class="org.apache.servicemix.components.quartz.QuartzComponent">
 						<property name="triggers">
 							<map>
 								<entry>
@@ -52,7 +49,7 @@
 				service="my:inputSender">
 				<sm:component>
 					<bean xmlns="http://xbean.org/schemas/spring/1.0"
-						class="org.servicemix.components.jms.JmsSenderComponent">
+						class="org.apache.servicemix.components.jms.JmsSenderComponent">
 						<property name="template">
 							<bean
 								class="org.springframework.jms.core.JmsTemplate">
@@ -75,11 +72,11 @@
 				service="my:inputReceiver" destinationService="my:outputSender">
 				<sm:component>
 					<bean xmlns="http://xbean.org/schemas/spring/1.0"
-						class="org.servicemix.components.jms.JmsInUsingJCABinding">
+						class="org.apache.servicemix.components.jms.JmsInUsingJCABinding">
 						<property name="jcaContainer" ref="jencks" />
 						<property name="activationSpec">
 							<bean
-								class="org.activemq.ra.ActiveMQActivationSpec">
+								class="org.apache.activemq.ra.ActiveMQActivationSpec">
 								<property name="destination"
 									value="demo.org.servicemix.source" />
 								<property name="destinationType"
@@ -95,7 +92,7 @@
 				service="my:outputSender">
 				<sm:component>
 					<bean xmlns="http://xbean.org/schemas/spring/1.0"
-						class="org.servicemix.components.jms.JmsSenderComponent">
+						class="org.apache.servicemix.components.jms.JmsSenderComponent">
 						<property name="template">
 							<bean
 								class="org.springframework.jms.core.JmsTemplate">
@@ -118,11 +115,11 @@
 				service="my:jmsTrace" destinationService="my:trace">
 				<sm:component>
 					<bean xmlns="http://xbean.org/schemas/spring/1.0"
-						class="org.servicemix.components.jms.JmsInUsingJCABinding">
+						class="org.apache.servicemix.components.jms.JmsInUsingJCABinding">
 						<property name="jcaContainer" ref="jencks" />
 						<property name="activationSpec">
 							<bean
-								class="org.activemq.ra.ActiveMQActivationSpec">
+								class="org.apache.activemq.ra.ActiveMQActivationSpec">
 								<property name="destination"
 									value="demo.org.servicemix.result" />
 								<property name="destinationType"
@@ -137,7 +134,7 @@
 				service="my:trace">
 				<sm:component>
 					<bean xmlns="http://xbean.org/schemas/spring/1.0"
-						class="org.servicemix.components.util.TraceComponent" />
+						class="org.apache.servicemix.components.util.TraceComponent" />
 				</sm:component>
 			</sm:activationSpec>
 		</sm:activationSpecs>
@@ -159,7 +156,7 @@
 		<!-- the JCA Resource Adapter -->
 		<property name="resourceAdapter">
 			<bean id="activeMQResourceAdapter"
-				class="org.activemq.ra.ActiveMQResourceAdapter" singleton="true">
+				class="org.apache.activemq.ra.ActiveMQResourceAdapter" singleton="true">
 				<property name="serverUrl"
 					value="tcp://localhost:61616" />
 			</bean>
@@ -167,7 +164,7 @@
 	</bean>
 
 	<!-- message broker -->
-	<bean id="broker" class="org.activemq.spring.BrokerFactoryBean">
+	<bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean">
 		<property name="config" value="classpath:activemq.xml" />
 	</bean>
 
@@ -177,9 +174,9 @@
 		class="org.jencks.factory.GeronimoTransactionManagerFactoryBean" />
 
 	<bean id="jmsFactory"
-		class="org.activemq.pool.PooledConnectionFactory">
+		class="org.apache.activemq.pool.PooledConnectionFactory">
 		<property name="connectionFactory">
-			<bean class="org.activemq.ActiveMQConnectionFactory">
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
 				<property name="brokerURL">
 					<value>tcp://localhost:61616</value>
 				</property>

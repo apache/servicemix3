@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://xbean.org/schemas/spring/1.0"
-	xmlns:spring="http://xbean.org/schemas/spring/1.0"
-	xmlns:sm="http://servicemix.org/config/1.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://xbean.org/schemas/spring/1.0 ../../conf/spring-beans.xsd
-	                    http://servicemix.org/config/1.0 ../../conf/servicemix.xsd"
-	xmlns:foo="http://servicemix.org/demo/">
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+	     xmlns:foo="http://servicemix.apache.org/demo/">
 
 	<!-- the JBI container -->
-	<sm:container spring:id="jbi" useMBeanServer="true"
+	<sm:container id="jbi" useMBeanServer="true"
 		createMBeanServer="true" dumpStats="true" statsInterval="10">
 
     <sm:activationSpecs>
@@ -16,8 +11,7 @@
       <!-- Look for files in the inbox directory -->
       <sm:activationSpec componentName="filePoller" service="foo:filePoller" destinationService="foo:receiver">
       	<sm:component>
-      		<bean xmlns="http://xbean.org/schemas/spring/1.0"
-         		class="org.servicemix.components.vfs.FilePoller">
+      		<bean class="org.apache.servicemix.components.vfs.FilePoller">
         		<property name="workManager" ref="workManager"/>
         		<property name="path" value="file://C:/tmp/servicemix-inbox"/>
         		<property name="period" value="1000"/>
@@ -28,13 +22,12 @@
       <!-- Write files to the outbox directory -->
       <sm:activationSpec componentName="fileSender" service="foo:receiver">
       	<sm:component>
-      		<bean xmlns="http://xbean.org/schemas/spring/1.0"
-         		class="org.servicemix.components.vfs.FileWriter">
+      		<bean class="org.apache.servicemix.components.vfs.FileWriter">
 		        <property name="path" value="file://C:/tmp/servicemix-outbox"/>
 		        <property name="marshaler">
-		           <bean class="org.servicemix.components.util.DefaultFileMarshaler">
+		           <bean class="org.apache.servicemix.components.util.DefaultFileMarshaler">
 		              <property name="fileName">
-		                  <bean class="org.servicemix.expression.JaxenStringXPathExpression">
+		                  <bean class="org.apache.servicemix.expression.JaxenStringXPathExpression">
 		                     <constructor-arg value="concat('sample_', /sample/@id, '.xml')"/>
 		                  </bean>
 		              </property>

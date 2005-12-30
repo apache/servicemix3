@@ -19,7 +19,7 @@ package loanbroker;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.servicemix.components.util.TransformComponentSupport;
+import org.apache.servicemix.components.util.TransformComponentSupport;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
