@@ -15,6 +15,8 @@
  */
 package org.apache.servicemix.sca.bigbank.account;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.AccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -22,38 +24,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(AccessType.FIELD)
-@XmlType(name = "", propOrder = { "accountNumber", "accountType", "balance" })
-@XmlRootElement(name = "AccountSummary")
-public class AccountSummary {
+@XmlType(name = "", propOrder = { "accountSummaries" })
+@XmlRootElement(name = "AccountReportResponse")
+public class AccountReportResponse {
 
-	@XmlElement(name = "AccountNumber")
-	private String accountNumber;
-	@XmlElement(name = "AccountType")
-	private String accountType;
-	@XmlElement(name = "Balance")
-	private float balance;
+	@XmlElement(name = "AccountSummaries")
+	private List<AccountSummary> accountSummaries;
 	
-	public AccountSummary() {
+	public List<AccountSummary> getAccountSummaries() {
+		return accountSummaries;
 	}
-	
-	public String getAccountNumber() {
-		return accountNumber;
-	}
-	public void setAccountNumber(String accountNumber) {
-		this.accountNumber = accountNumber;
-	}
-	public String getAccountType() {
-		return accountType;
-	}
-	public void setAccountType(String accountType) {
-		this.accountType = accountType;
-	}
-	public float getBalance() {
-		return balance;
-	}
-	public void setBalance(float balance) {
-		this.balance = balance;
-	}
+
+	public void setAccountSummaries(List<AccountSummary> accountSummaries) {
+		this.accountSummaries = accountSummaries;
+	} 
 	
 }
-

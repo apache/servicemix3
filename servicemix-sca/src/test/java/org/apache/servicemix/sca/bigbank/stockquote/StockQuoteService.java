@@ -20,7 +20,7 @@ import org.osoa.sca.annotations.Remotable;
 @Remotable
 public interface StockQuoteService {
 
-    public float getQuote(String symbol);
+    public StockQuoteResponse getQuote(StockQuoteRequest stockQuote);
 }
 
  

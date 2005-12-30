@@ -15,10 +15,14 @@
  */
 package org.apache.servicemix.sca;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.net.URL;
 
 import javax.naming.InitialContext;
+import javax.xml.bind.JAXBContext;
+import javax.xml.namespace.QName;
+import javax.xml.transform.Source;
 
 import junit.framework.TestCase;
 
@@ -33,13 +37,21 @@ import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.Module;
 import org.osoa.sca.CurrentModuleContext;
 import org.osoa.sca.ModuleContext;
+import org.apache.servicemix.client.DefaultServiceMixClient;
+import org.apache.servicemix.client.ServiceMixClient;
+import org.apache.servicemix.components.util.MockServiceComponent;
+import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver;
 import org.apache.servicemix.sca.ScaComponent;
 import org.apache.servicemix.sca.bigbank.account.AccountService;
+import org.apache.servicemix.sca.bigbank.stockquote.StockQuoteResponse;
 
 public class ScaComponentTest extends TestCase {
 
-    private static Log logger =  LogFactory.getLog(ScaComponentTest.class);
+    private static Log log =  LogFactory.getLog(ScaComponentTest.class);
     
     protected JBIContainer container;
     
@@ -63,6 +75,19 @@ public class ScaComponentTest extends TestCase {
         ScaComponent component = new ScaComponent();
         container.activateComponent(component, "JSR181Component");
 
+        MockServiceComponent mock = new MockServiceComponent();
+        mock.setService(new QName("StockQuoteService"));
+        mock.setEndpoint("Mock");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        StockQuoteResponse r = new StockQuoteResponse();
+        r.setResult(8.23f);
+        JAXBContext.newInstance(StockQuoteResponse.class).createMarshaller().marshal(r, baos);
+        mock.setResponseXml(baos.toString());
+        ActivationSpec as = new ActivationSpec();
+        as.setInterfaceName(new QName("http://www.quickstockquote.com/StockQuoteService", "StockQuoteServiceJBI"));
+        as.setComponent(mock);
+        container.activateComponent(as);
+        
         // Start container
         container.start();
         
@@ -70,6 +95,13 @@ public class ScaComponentTest extends TestCase {
         component.getServiceUnitManager().deploy("su", getServiceUnitPath("org/apache/servicemix/sca/bigbank"));
         component.getServiceUnitManager().init("su", getServiceUnitPath("org/apache/servicemix/sca/bigbank"));
         component.getServiceUnitManager().start("su");
+        
+        ServiceMixClient client = new DefaultServiceMixClient(container);
+        Source req = new StringSource("<AccountReportRequest><CustomerID>id</CustomerID></AccountReportRequest>");
+        Source rep = (Source) client.request(new ServiceNameEndpointResolver(
+        										new QName("http://www.bigbank.com/AccountService/", "AccountService")),
+        			   						 null, null, req);
+        log.info(new SourceTransformer().toString(rep));
     }
      
     protected String getServiceUnitPath(String name) {
@@ -79,28 +111,4 @@ public class ScaComponentTest extends TestCase {
         return path.getAbsolutePath();
     }
     
-    public static final void main(String[] args) throws Exception {
-
-        //Obtain Tuscany runtime
-        TuscanyRuntime tuscany = new TuscanyRuntime("hello", null);
-
-        tuscany.start(); //Start the runtime.
-
-        //Obtain SCA module context.
-        ModuleContext moduleContext = CurrentModuleContext.getContext();
-        TuscanyModuleComponentContext tModuleContext = (TuscanyModuleComponentContext) moduleContext; 
-        Module module = tModuleContext.getModuleComponent().getModuleImplementation();
-        for (EntryPoint entryPoint : module.getEntryPoints()) {
-            ConfiguredReference referenceValue = entryPoint.getConfiguredReference();
-            ConfiguredService targetServiceEndpoint = referenceValue.getConfiguredServices().get(0);
-        	ProxyFactory proxyFactory = (ProxyFactory) targetServiceEndpoint.getProxyFactory();
-            Object proxy = proxyFactory.createProxy();
-            AccountService svc = (AccountService) proxy;
-            svc.getAccountReport("customer");
-		}
-        
-        tuscany.stop();
-    }
-	
-	
 }

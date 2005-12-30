@@ -17,19 +17,17 @@ package org.apache.servicemix.sca;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Iterator;
-import java.util.Map;
 
-import javax.jbi.messaging.MessageExchange.Role;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
 import javax.wsdl.factory.WSDLFactory;
 import javax.xml.namespace.QName;
 
+import org.apache.servicemix.common.ServiceUnit;
 import org.apache.tuscany.common.resource.loader.ResourceLoader;
 import org.apache.tuscany.common.resource.loader.ResourceLoaderFactory;
 import org.apache.tuscany.core.runtime.EventContext;
@@ -50,11 +48,16 @@ import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 import org.apache.tuscany.model.types.wsdl.WSDLTypeHelper;
 import org.osoa.sca.model.Binding;
 import org.osoa.sca.model.JbiBinding;
-import org.apache.servicemix.common.ServiceUnit;
 import org.w3c.dom.Document;
 
 public class ScaServiceUnit extends ServiceUnit {
 
+	protected static final ThreadLocal<ScaServiceUnit> SERVICE_UNIT = new ThreadLocal<ScaServiceUnit>();
+	
+	public static ScaServiceUnit getCurrentScaServiceUnit() {
+		return SERVICE_UNIT.get();
+	}
+	
 	protected TuscanyWebAppRuntime tuscanyRuntime;
 	protected ClassLoader classLoader;
 	
@@ -148,6 +151,32 @@ public class ScaServiceUnit extends ServiceUnit {
 
 	public TuscanyWebAppRuntime getTuscanyRuntime() {
 		return tuscanyRuntime;
+	}
+
+	@Override
+	public void start() throws Exception {
+		tuscanyRuntime.start();
+		try {
+			SERVICE_UNIT.set(this);
+			tuscanyRuntime.getModuleComponentContext().start();
+			tuscanyRuntime.getModuleComponentContext().fireEvent(EventContext.MODULE_START, null);
+		} finally {
+			tuscanyRuntime.stop();
+			SERVICE_UNIT.set(null);
+		}
+		super.start();
+	}
+
+	@Override
+	public void stop() throws Exception {
+		super.stop();
+		tuscanyRuntime.start();
+		try {
+			tuscanyRuntime.getModuleComponentContext().fireEvent(EventContext.MODULE_STOP, null);
+			tuscanyRuntime.getModuleComponentContext().stop();
+		} finally {
+			tuscanyRuntime.stop();
+		}
 	}
 
 }

@@ -25,26 +25,39 @@
     <wsdl:types>
         <xsd:schema targetNamespace="http://www.bigbank.com/AccountService/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
-            <xsd:element name="customerID" type="xsd:string"/>
-            <xsd:element name="getAccountReportResponse" type="tns:AccountReport"/>
-
-            <xsd:complexType name="AccountReport">
+			<xsd:element name="getAccountReportRequest" type="tns:AccountReportRequest"/>
+            <xsd:complexType name="AccountReportRequest">
                 <xsd:sequence>
-                    <xsd:element name="accountSummary" type="tns:AccountSummary" maxOccurs="unbounded"/>
+            		<xsd:element name="CustomerID" type="xsd:string"/>
                 </xsd:sequence>
+            </xsd:complexType>
+            
+            <xsd:element name="getAccountReportResponse" type="tns:AccountReportResponse"/>
+
+            <xsd:complexType name="AccountReportResponse">
+            	<xsd:sequence>
+            		<xsd:element name="AccountSummaries">
+            			<xsd:complexType>
+            				<xsd:sequence>
+            			<xsd:element name="AccountSummary"
+            				type="tns:AccountSummary" maxOccurs="unbounded" minOccurs="0"/>
+            					</xsd:sequence>
+            			</xsd:complexType>
+            		</xsd:element>
+            	</xsd:sequence>
             </xsd:complexType>
             <xsd:complexType name="AccountSummary">
                 <xsd:sequence>
-                    <xsd:element name="accountNumber" type="xsd:string"/>
-                    <xsd:element name="accountType" type="xsd:string"/>
-                    <xsd:element name="balance" type="xsd:float"/>
+                    <xsd:element name="AccountNumber" type="xsd:string"/>
+                    <xsd:element name="AccountType" type="xsd:string"/>
+                    <xsd:element name="Balance" type="xsd:float"/>
                 </xsd:sequence>
             </xsd:complexType>
 
         </xsd:schema>
     </wsdl:types>
     <wsdl:message name="getAccountReportRequest">
-        <wsdl:part element="tns:customerID" name="getAccountReportRequest"/>
+        <wsdl:part element="tns:getAccountReportRequest" name="getAccountReportRequest"/>
     </wsdl:message>
     <wsdl:message name="getAccountReportResponse">
         <wsdl:part element="tns:getAccountReportResponse" name="getAccountReportResponse"/>
