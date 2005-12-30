@@ -60,17 +60,9 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <executions>
-            <execution>
-              <phase>install</phase>
-              <goals>
-                <goal>assembly</goal>
-              </goals>
-              <configuration>
-                <descriptor>src/main/assembly/bin.xml</descriptor>
-              </configuration>
-            </execution>
-          </executions>
+          <configuration>
+            <descriptor>src/main/assembly/bin.xml</descriptor>
+          </configuration>
         </plugin>
       </plugins>
     </build>
