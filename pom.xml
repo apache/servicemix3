@@ -36,10 +36,12 @@
     <maven>2.0</maven>
   </prerequisites>
   <inceptionYear>2005</inceptionYear>
+  
   <issueManagement>
     <system>jira</system>
     <url>http://jira.logicblaze.com/browse/SM</url>
   </issueManagement>
+  
   <ciManagement>
     <system>continuum</system>
     <notifiers>
@@ -61,6 +63,7 @@
       </notifier>
     </notifiers>
   </ciManagement>
+  
   <mailingLists>
     <mailingList>
       <name>ServiceMix Developer List</name>
@@ -93,6 +96,7 @@
       </otherArchives>
     </mailingList>
   </mailingLists>
+  
   <developers>
     <developer>
       <id>rajdavies</id>
@@ -177,6 +181,7 @@
       <organization>Datasul B2B</organization>
     </developer>
   </developers>
+  
   <licenses>
       <license>
         <name>The Apache Software License, Version 2.0</name>
@@ -184,15 +189,18 @@
         <distribution>repo</distribution>
       </license>
   </licenses>
+  
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/servicemix/trunk</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/servicemix/trunk</developerConnection>
     <url>http://svn.apache.org/viewcvs.cgi/incubator/servicemix/trunk/</url>
   </scm>
+  
   <organization>
     <name>Apache Software Foundation</name>
     <url>http://www.apache.org</url>
   </organization>
+  
   <modules>
     <module>servicemix-jbi</module>
     <module>servicemix-core</module>
@@ -208,6 +216,20 @@
     <module>servicemix-sca</module>
     <module>servicemix-assembly</module>
   </modules>
+  
+  <pluginRepositories>
+    <pluginRepository>
+      <id>snapshots</id>
+      <name>Maven Central Plugins Development Repository</name>
+      <url>http://snapshots.maven.codehaus.org/maven2</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>servicemix-snapshots</id>
+      <name>ServiceMix Snapshots Repository</name>
+      <url>http://servicemix.org/m2-snapshots</url>
+    </pluginRepository>
+  </pluginRepositories>
+  
   <repositories>
     <repository>
       <snapshots>
@@ -237,6 +259,16 @@
       <layout>legacy</layout>
     </repository>
   </repositories>
+  
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -1110,15 +1142,50 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  
   <distributionManagement>
-      <repository>
-        <id>ssh-repository</id>
-        <url>scpexe://dist.codehaus.org/</url>
-      </repository>
+    <repository>
+      <id>servicemix-repository</id>
+      <url>scpexe://dist.codehaus.org/</url>
+    </repository>
+    
+    <snapshotRepository>
+      <id>servicemix-snapshots</id>
+      <name>ServiceMix Central Development Repository</name>
+      <url>scpexe://servicemix.org/home/projects/servicemix/dist-m2-snapshot</url>
+    </snapshotRepository>
+    
+    <site>
+      <id>servicemix-website</id>
+      <url>scpexe://servicemix.org/home/projects/xbean/public_html/maven/</url>
+    </site>
   </distributionManagement>
+  
   <build>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-external</artifactId>
+        <version>1.0-alpha-6-SNAPSHOT</version>
+      </extension>
+    </extensions>
     <pluginManagement>
       <plugins>
+      <plugin>
+        <artifactId>maven-one-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>install-maven-one-repository</goal>
+              <goal>deploy-maven-one-repository</goal>
+            </goals>
+            <configuration>
+              <remoteRepositoryId>servicemix-maven1</remoteRepositoryId>
+              <remoteRepositoryUrl>scpexe://servicemix.org/dist</remoteRepositoryUrl>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
         <plugin>
           <groupId>org.apache.servicemix.plugins</groupId>
           <artifactId>maven2-jbi-plugin</artifactId>
@@ -1127,13 +1194,6 @@
         </plugin>
       </plugins>
     </pluginManagement>
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ssh-external</artifactId>
-        <version>1.0-alpha-5</version>
-      </extension>
-    </extensions>
   </build>
   <reporting>
     <plugins>
