@@ -1110,6 +1110,12 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  <distributionManagement>
+      <repository>
+        <id>ssh-repository</id>
+        <url>scpexe://dist.codehaus.org/</url>
+      </repository>
+  </distributionManagement>
   <build>
     <pluginManagement>
       <plugins>
@@ -1121,6 +1127,13 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-external</artifactId>
+        <version>1.0-alpha-5</version>
+      </extension>
+    </extensions>
   </build>
   <reporting>
     <plugins>
