@@ -214,6 +214,9 @@
       <name>Codehaus Repository</name>
       <url>http://dist.codehaus.org</url>
       <layout>legacy</layout>
+      <snapshot>
+        <enabled>true</enabled>
+      </snapshot>
     </repository>
     <!--repository>
       <id>ibiblio</id>
