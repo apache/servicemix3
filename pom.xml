@@ -240,7 +240,7 @@
       <name>Ibiblio Repository</name>
       <url>http://www.ibiblio.org/maven</url>
       <layout>legacy</layout>
-    </repository-->
+    </repository -->
     <repository>
       <id>central</id>
       <name>Maven Repository Switchboard</name>
