@@ -15,13 +15,36 @@
  */
 package org.apache.servicemix.jbi.nmr.flow.jca;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
-import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
+import javax.jbi.JBIException;
+import javax.jbi.messaging.MessagingException;
+import javax.jbi.messaging.MessageExchange.Role;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.DeliveryMode;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
+import javax.jms.MessageProducer;
+import javax.jms.ObjectMessage;
+import javax.jms.Session;
+import javax.jms.Topic;
+import javax.resource.spi.BootstrapContext;
+import javax.resource.spi.ConnectionManager;
+import javax.resource.spi.ResourceAdapter;
+import javax.resource.spi.ResourceAdapterInternalException;
+import javax.transaction.SystemException;
+import javax.transaction.TransactionManager;
 
 import org.apache.activemq.advisory.AdvisorySupport;
 import org.apache.activemq.command.ActiveMQDestination;
+import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTopic;
 import org.apache.activemq.command.ConsumerId;
 import org.apache.activemq.command.ConsumerInfo;
@@ -48,32 +71,10 @@ import org.apache.servicemix.jbi.nmr.flow.AbstractFlow;
 import org.jencks.JCAConnector;
 import org.jencks.SingletonEndpointFactory;
 import org.jencks.factory.ConnectionManagerFactoryBean;
-import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.core.MessageCreator;
 
-import javax.jbi.JBIException;
-import javax.jbi.messaging.MessagingException;
-import javax.jbi.messaging.MessageExchange.Role;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.DeliveryMode;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageListener;
-import javax.jms.ObjectMessage;
-import javax.jms.Session;
-import javax.jms.Topic;
-import javax.resource.spi.BootstrapContext;
-import javax.resource.spi.ConnectionManager;
-import javax.resource.spi.ResourceAdapter;
-import javax.resource.spi.ResourceAdapterInternalException;
-import javax.transaction.SystemException;
-import javax.transaction.TransactionManager;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
+import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Use for message routing among a network of containers. All routing/registration happens automatically.
@@ -98,8 +99,6 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
     private Set subscriberSet=new CopyOnWriteArraySet();
     private TransactionContextManager transactionContextManager;
     private ConnectionManager connectionManager;
-    private JmsTemplate jmsTemplate;
-    private JmsTemplate jmsPersistentTemplate;
     private BootstrapContext bootstrapContext;
     private ResourceAdapter resourceAdapter;
     private JCAConnector containerConnector;
@@ -244,11 +243,7 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
         	// Outbound connector
         	ActiveMQManagedConnectionFactory mcf = new ActiveMQManagedConnectionFactory();
         	mcf.setResourceAdapter(resourceAdapter);
-        	ConnectionFactory cf = (ConnectionFactory) mcf.createConnectionFactory(getConnectionManager());
-        	jmsTemplate = new JmsTemplate(cf);
-        	jmsTemplate.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-        	jmsPersistentTemplate = new JmsTemplate(cf);
-        	jmsPersistentTemplate.setDeliveryMode(DeliveryMode.PERSISTENT);
+        	connectionFactory = (ConnectionFactory) mcf.createConnectionFactory(getConnectionManager());
         	
         	// Inbound broadcast
         	ac = new ActiveMQActivationSpec();
@@ -393,12 +388,8 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
                 }
             }
             // broadcast change to the network
-            log.info("broadcast to internal JMS network: "+event);
-            jmsTemplate.send(broadcastTopic,new MessageCreator(){
-                public Message createMessage(Session session) throws JMSException{
-                    return session.createObjectMessage(event);
-                }
-            });
+            log.info("broadcast to internal JMS network: " + event);
+            sendJmsMessage(broadcastTopic, event, false, false);
         }catch(Exception e){
             log.error("failed to broadcast to the internal JMS network: "+event,e);
         }
@@ -431,18 +422,13 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
         	}
             try {
                 final String componentName = cc.getComponentNameSpace().getName();
-                JmsTemplate jt = isPersistent(me) ? jmsPersistentTemplate : jmsTemplate;
-                String destination = "";
+                String destination;
                 if (me.getRole() == Role.PROVIDER){
                     destination = INBOUND_PREFIX + componentName;
                 }else {
                     destination = INBOUND_PREFIX + id.getContainerName();
                 }
-                jt.send(destination, new MessageCreator() {
-					public Message createMessage(Session session) throws JMSException {
-	                    return session.createObjectMessage(me);
-					}
-				});
+                sendJmsMessage(new ActiveMQQueue(destination), me, isPersistent(me), me.isTransacted());
             } catch (Exception e) {
                 log.error("Failed to send exchange: " + me + " internal JMS Network", e);
                 throw new MessagingException(e);
@@ -631,5 +617,18 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
     
     public String toString(){
         return broker.getContainerName() + " JCAFlow";
+    }
+    
+    private void sendJmsMessage(Destination dest, Serializable object, boolean persistent, boolean transacted) throws JMSException {
+    	Connection connection = connectionFactory.createConnection();
+    	try {
+    		Session session = connection.createSession(transacted, transacted ? Session.SESSION_TRANSACTED : Session.AUTO_ACKNOWLEDGE);
+    		ObjectMessage msg = session.createObjectMessage(object);
+    		MessageProducer producer = session.createProducer(dest);
+    		producer.setDeliveryMode(persistent ? DeliveryMode.PERSISTENT : DeliveryMode.NON_PERSISTENT);
+    		producer.send(msg);
+    	} finally {
+    		connection.close();
+    	}
     }
 }

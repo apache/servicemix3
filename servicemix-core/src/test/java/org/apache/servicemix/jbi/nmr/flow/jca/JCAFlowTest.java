@@ -104,7 +104,7 @@ public class JCAFlowTest extends TestCase {
         broker.stop();
     }
     
-    public void XtestInOnly() throws Exception {
+    public void testInOnly() throws Exception {
         final SenderComponent sender = new SenderComponent();
         final ReceiverComponent receiver =  new ReceiverComponent();
         sender.setResolver(new ServiceNameEndpointResolver(ReceiverComponent.SERVICE));
@@ -119,7 +119,7 @@ public class JCAFlowTest extends TestCase {
         receiver.getMessageList().assertMessagesReceived(NUM_MESSAGES);
     }
     
-    public void XtestTxInOnly() throws Exception {
+    public void testTxInOnly() throws Exception {
         final SenderComponent sender = new SenderComponent();
         final ReceiverComponent receiver =  new ReceiverComponent();
         sender.setResolver(new ServiceNameEndpointResolver(ReceiverComponent.SERVICE));
@@ -178,8 +178,6 @@ public class JCAFlowTest extends TestCase {
         
         sender.sendMessages(NUM_MESSAGES);
         Thread.sleep(3000);
-        System.out.println("REC1 =" + receiver1.getMessageList().getMessageCount());
-        System.out.println("REC2 =" + receiver2.getMessageList().getMessageCount());
         assertTrue(receiver1.getMessageList().hasReceivedMessage());
         assertFalse(receiver2.getMessageList().hasReceivedMessage());
         receiver1.getMessageList().flushMessages();
