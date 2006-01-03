@@ -52,7 +52,7 @@
         </configuration>
         <sendOnSuccess>false</sendOnSuccess>
       </notifier>
-      <!--notifier>
+      <!-- notifier>
         <type>irc</type>
         <configuration>
           <host>irc.codehaus.org</host>
