@@ -138,7 +138,7 @@
     </developer>
     <developer>
       <id>foconer</id>
-      <name>Fritz Oconer</name>
+      <name>Frederick Oconer</name>
       <email>foconer@exist.com</email>
       <organization>Exist Labs</organization>
     </developer>
@@ -183,11 +183,11 @@
   </developers>
   
   <licenses>
-      <license>
-        <name>The Apache Software License, Version 2.0</name>
-        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        <distribution>repo</distribution>
-      </license>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
   </licenses>
   
   <scm>
@@ -248,11 +248,20 @@
       <!--layout>legacy</layout-->
     </repository>
     <repository>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>maven2-snapshots</id>
+      <name>Maven Repository Snapshots</name>
+      <url>http://snapshots.maven.codehaus.org/maven2</url>
+      <!--layout>legacy</layout-->
+    </repository>
+    <repository>
       <id>apache</id>
       <name>Apache Repository</name>
       <url>http://cvs.apache.org/repository</url>
       <layout>legacy</layout>
-    </repository>
+    </repository>    
   </repositories>
   
   <dependencies>
