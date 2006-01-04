@@ -16,7 +16,7 @@
     limitations under the License.
 -->
 <!-- $Rev$ $Date$ -->
-<model xsi:defaultSchemaLocation="http://maven.apache.org/maven-v4_0_0.xsd">
+	<model xsi:defaultSchemaLocation="http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -114,6 +114,15 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-dao</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>activecluster</groupId>
@@ -165,7 +174,7 @@
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
+            <artifactId>commons-beanutils-core</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
@@ -352,10 +361,10 @@
                         <exclude>**/ComponentAssemblyInstallationTest.*</exclude>
                         <exclude>**/DeploymentTest.*</exclude>
                         
-                        <!-- Succeed in Eclipse, but fail with maven, why ? -->
+                        <!-- Succeed in Eclipse, but fail with maven, why ? 
                         <exclude>**/AdminServiceTest.*</exclude>
                         <exclude>**/ManagementAttributesTest.*</exclude>
-                        <exclude>**/ManagementContextTest.*</exclude>
+                        <exclude>**/ManagementContextTest.*</exclude>-->
                     </excludes>
                 </configuration>
             </plugin>

@@ -91,7 +91,7 @@
     </dependency>
     <dependency>
       <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils</artifactId>
+      <artifactId>commons-beanutils-core</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
@@ -179,7 +179,7 @@
     </dependency>
     <dependency>
       <groupId>groovy</groupId>
-      <artifactId>groovy-all</artifactId>
+      <artifactId>groovy-all-1.0-jsr</artifactId>
     </dependency>
     <dependency>
       <groupId>hsqldb</groupId>
@@ -346,8 +346,8 @@
       <artifactId>xercesImpl</artifactId>
     </dependency>
     <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xmlParserAPIs</artifactId>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
     </dependency>
     <dependency>
       <groupId>servicemix</groupId>
