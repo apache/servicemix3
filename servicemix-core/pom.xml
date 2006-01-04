@@ -123,6 +123,11 @@
             <artifactId>spring-dao</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-remoting</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>activecluster</groupId>
@@ -362,9 +367,11 @@
                         <exclude>**/DeploymentTest.*</exclude>
                         
                         <!-- Succeed in Eclipse, but fail with maven, why ? 
+                             This may be realted to activemq jmx stuff
+                          -->
                         <exclude>**/AdminServiceTest.*</exclude>
                         <exclude>**/ManagementAttributesTest.*</exclude>
-                        <exclude>**/ManagementContextTest.*</exclude>-->
+                        <exclude>**/ManagementContextTest.*</exclude>
                     </excludes>
                 </configuration>
             </plugin>
