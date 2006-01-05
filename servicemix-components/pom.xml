@@ -402,7 +402,7 @@
                         <!--  exclude until amq4 stable -->
                         <exclude>**/JmsOverJca*.*</exclude>
                         
-                        <!-- enable when geronimo has support for attachments -->
+                        <!-- enable when GERONIMO-1419 is solved -->
                         <exclude>**/HttpSoapAttachmentsTest.*</exclude>
                     </excludes>
                 </configuration>
