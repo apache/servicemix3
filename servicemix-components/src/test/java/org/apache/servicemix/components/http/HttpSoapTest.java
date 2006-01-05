@@ -33,13 +33,20 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.servicemix.components.http.HttpSoapClientMarshaler;
 import org.apache.servicemix.components.http.HttpSoapConnector;
 import org.apache.servicemix.components.util.EchoComponent;
+import org.apache.servicemix.components.util.MockServiceComponent;
 import org.apache.servicemix.components.util.TraceComponent;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.InOnlyImpl;
+import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.servicemix.jbi.util.FileUtil;
+import org.apache.xpath.CachedXPathAPI;
+import org.springframework.core.io.ClassPathResource;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.traversal.NodeIterator;
 
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
@@ -135,6 +142,57 @@ public class HttpSoapTest extends TestCase {
         marshaler.toNMS(in, method);
         
         System.out.println(new SourceTransformer().toString(in.getContent()));
+    }
+    
+    public void testMarshalerNamespaces() throws Exception {
+        ActivationSpec as = new ActivationSpec();
+        as.setId("mock");
+        MockServiceComponent mock = new MockServiceComponent();
+        mock.setResponseResource(new ClassPathResource("org/apache/servicemix/components/http/soap-response.xml"));
+        as.setComponent(mock);
+        as.setService(new QName("mock"));
+        container.activateComponent(as);
+        
+        as = new ActivationSpec();
+        as.setId("http");
+        as.setDestinationService(new QName("mock"));
+        HttpConnector http = new HttpConnector();
+        http.setPort(8100);
+        as.setComponent(http);
+        container.activateComponent(as);
+
+        String url = "http://localhost:8100";
+        HttpSoapClientMarshaler marshaler = new HttpSoapClientMarshaler();
+        PostMethod method = new PostMethod(url);
+        method.addRequestHeader("Content-Type", "text/xml");
+        method.addRequestHeader("SOAPAction", "urn:xmethods-delayed-quotes#getQuote");
+        
+        InOnly exchange = new InOnlyImpl("id");
+        NormalizedMessage in = exchange.createMessage();
+        exchange.setInMessage(in);
+        in.setContent(new StringSource("<?xml version='1.0'?><ns1:getQuote xmlns:ns1='urn:xmethods-delayed-quotes' xmlns:xsi='http://www.w3.org/1999/XMLSchema-instance' xmlns:se='http://schemas.xmlsoap.org/soap/envelope/' se:encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'><symbol xsi:type='xsd:string'>SUNW</symbol></ns1:getQuote>"));
+        marshaler.fromNMS(method, exchange, in);
+        System.out.println(((StringRequestEntity) method.getRequestEntity()).getContent());
+
+        HttpClient httpClient = new HttpClient();
+        httpClient.executeMethod(method);
+        System.out.println(method.getResponseBodyAsString());
+        
+        exchange = new InOnlyImpl("id");
+        in = exchange.createMessage();
+        exchange.setInMessage(in);
+        marshaler.toNMS(in, method);
+        
+
+        Node node = new SourceTransformer().toDOMNode(new SourceTransformer().toStreamSource(in.getContent()));
+        System.out.println(new SourceTransformer().toString(node));
+        
+        CachedXPathAPI cachedXPathAPI = new CachedXPathAPI();
+        NodeIterator iterator = cachedXPathAPI.selectNodeIterator(node, "//*[local-name() = 'userId']");
+        Element root = (Element) iterator.nextNode();
+        QName qname = DOMUtil.createQName(root, root.getAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "type"));
+        assertEquals("http://www.w3.org/2001/XMLSchema", qname.getNamespaceURI());
+        assertEquals("string", qname.getLocalPart());
     }
 
 }

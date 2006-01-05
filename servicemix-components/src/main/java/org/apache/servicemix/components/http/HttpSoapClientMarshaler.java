@@ -24,8 +24,10 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.xpath.CachedXPathAPI;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
 
@@ -44,7 +46,29 @@ public class HttpSoapClientMarshaler extends HttpClientMarshaler {
         CachedXPathAPI cachedXPathAPI = new CachedXPathAPI();
         NodeIterator iterator = cachedXPathAPI.selectNodeIterator(node, "/*/*[local-name()='Body']/*");
         Node root = iterator.nextNode();
-        normalizedMessage.setContent(new DOMSource(root));
+        if (root instanceof Element == false) {
+        	throw new IllegalStateException("Could not find body content");
+        }
+        Element element = (Element) root;
+        
+        // Copy embedded namespaces from the envelope into the body root
+        for (Node parent = element.getParentNode(); parent != null; parent = parent.getParentNode()) {
+            NamedNodeMap attributes = parent.getAttributes();
+            if (attributes != null) {
+                for (int i = 0; i < attributes.getLength(); i++) {
+                    Attr att = (Attr) attributes.item(i);
+                    if (att.getName().startsWith("xmlns:")
+                            && element.getAttributes().getNamedItemNS(att.getNamespaceURI(),
+                                    att.getLocalName()) == null) {
+                    	element.setAttributeNS(att.getNamespaceURI(),
+                                    att.getName(),
+                                    att.getValue());
+                    }
+                }
+            }
+        }
+        
+        normalizedMessage.setContent(new DOMSource(element));
     }
 
     public void fromNMS(PostMethod method, MessageExchange exchange, NormalizedMessage normalizedMessage) throws Exception {
