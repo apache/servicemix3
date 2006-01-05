@@ -1,0 +1,12 @@
+<!-- This is where we are able to declare the ins and outs of the Service
+ 	  as consumes and provides elements,  the service-names and endpoints
+ 	  will be used to activate the JBI endpoints,  and we can use the 
+ 	  interface-name to determine which one we want to call and also which
+ 	  bean is going to receive the actual JBI exchange -->
+<!-- 
+<services binding-component="false"
+	xmlns:logger="http://tempuri.org/logger.wsdl">
+	<provides interface-name="logger:log"
+		service-name="logger:example"/>
+</services>
+->

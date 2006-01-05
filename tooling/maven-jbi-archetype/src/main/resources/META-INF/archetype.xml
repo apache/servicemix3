@@ -1,0 +1,9 @@
+<archetype>
+  <id>maven-archetype-jbi</id>
+  <resources>
+    <resource>src/main/java/App.java</resource>
+    <resource>src/test/java/AppTest.java</resource>
+    <resource>src/main/merge/services.xml</resource>
+    <resource>src/main/jbi/META-INF/jbi-spring.xml</resource>
+  </resources>
+</archetype>
