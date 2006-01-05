@@ -18,7 +18,9 @@ package org.apache.servicemix.components.saaj;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 
 import javax.activation.DataHandler;
 import javax.jbi.messaging.MessagingException;
@@ -65,9 +67,32 @@ public class SaajMarshaler {
 
         SOAPPart soapPart = soapMessage.getSOAPPart();
         SOAPBody soapBody = soapPart.getEnvelope().getBody();
-        SOAPElement elem = (SOAPElement) soapBody.getChildElements().next();
+        SOAPElement elem = null;
+        for (Iterator it = soapBody.getChildElements(); it.hasNext();) {
+        	Object child =  it.next();
+        	if (child instanceof SOAPElement) {
+        		elem = (SOAPElement) child;
+        		break;
+        	}
+        }
+        if (elem == null) {
+        	throw new IllegalStateException("Could not find any element in soap body");
+        }
         
         for (SOAPElement parent = elem.getParentElement(); parent != null; parent = parent.getParentElement()) {
+        	// The following code works with sun saaj implementation
+		    NamedNodeMap attributes = parent.getAttributes();
+		    if (attributes != null) {
+		        for (int i = 0; i < attributes.getLength(); i++) {
+		            Attr att = (Attr) parent.getAttributes().item(i);
+		            if (att.getName().startsWith(XMLConstants.XMLNS_ATTRIBUTE + ":")
+		                    && elem.getAttributeNodeNS(att.getNamespaceURI(), att.getLocalName()) == null) {
+		        		elem.addNamespaceDeclaration(att.getName().substring(XMLConstants.XMLNS_ATTRIBUTE.length() + 1), att.getValue());
+		                elem.setAttributeNS(att.getNamespaceURI(), att.getName(), att.getValue());
+		            }
+		        }
+		    }
+		    // The following code works with axis saaj implementation
         	for (Iterator itNs = parent.getNamespacePrefixes(); itNs.hasNext();) {
         		String prefix = (String) itNs.next();
         		String nsuri = parent.getNamespaceURI(prefix);
@@ -76,7 +101,7 @@ public class SaajMarshaler {
 	        		elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE + ":" + prefix, nsuri);
         		}
         	}
-        }
+		}
         
         if (log.isDebugEnabled()) {
         	try {
