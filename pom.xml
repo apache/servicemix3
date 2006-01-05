@@ -227,25 +227,9 @@
   
   <repositories>
     <repository>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <id>codehaus</id>
-      <name>Codehaus Repository</name>
-      <url>http://dist.codehaus.org</url>
-      <layout>legacy</layout>
-    </repository>
-    <!--repository>
-      <id>ibiblio</id>
-      <name>Ibiblio Repository</name>
-      <url>http://www.ibiblio.org/maven</url>
-      <layout>legacy</layout>
-    </repository -->
-    <repository>
       <id>central</id>
       <name>Maven Repository Switchboard</name>
       <url>http://repo1.maven.org/maven2</url>
-      <!--layout>legacy</layout-->
     </repository>
     <repository>
       <snapshots>
@@ -254,7 +238,14 @@
       <id>maven2-snapshots</id>
       <name>Maven Repository Snapshots</name>
       <url>http://snapshots.maven.codehaus.org/maven2</url>
-      <!--layout>legacy</layout-->
+    </repository>
+    <repository>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>servicemix-m2-repo</id>
+      <name>Servicemix Maven2 Repository</name>
+      <url>http://servicemix.org/m2-repo</url>
     </repository>
     <repository>
       <id>apache</id>
@@ -266,10 +257,10 @@
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
-      <id>servicemix-m2-repo</id>
-      <name>Servicemix Maven2 Repository</name>
-      <url>http://servicemix.org/m2-repo</url>
-      <!--layout>legacy</layout-->
+      <id>codehaus</id>
+      <name>Codehaus Repository</name>
+      <url>http://dist.codehaus.org</url>
+      <layout>legacy</layout>
     </repository>
   </repositories>
   
