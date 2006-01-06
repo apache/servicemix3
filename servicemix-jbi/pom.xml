@@ -10,12 +10,12 @@
   <name>ServiceMix :: JBI</name>
   <dependencies>
     <dependency>
-      <groupId>geronimo-spec</groupId>
-      <artifactId>geronimo-spec-activation</artifactId>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-activation_1.0.2_spec</artifactId>
     </dependency>
     <dependency>
-      <groupId>geronimo-spec</groupId>
-      <artifactId>geronimo-spec-qname</artifactId>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-qname_1.1_spec</artifactId>
     </dependency>
     <dependency>
       <groupId>mx4j</groupId>
