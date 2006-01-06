@@ -217,6 +217,18 @@
     <module>servicemix-assembly</module>
   </modules>
   
+  <profiles>
+      <profile>
+        <id>jdk1.5</id>
+        <activation>
+          <jdk>1.5</jdk>
+        </activation>
+        <modules>
+          <module>servicemix-sca</module>
+        </modules>
+      </profile>
+  </profiles>
+  
   <pluginRepositories>
     <pluginRepository>
       <id>servicemix-snapshots</id>
