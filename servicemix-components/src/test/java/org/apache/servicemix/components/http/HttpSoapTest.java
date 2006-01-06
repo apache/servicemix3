@@ -42,6 +42,7 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.InOnlyImpl;
 import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.servicemix.jbi.util.FileUtil;
+import org.apache.servicemix.tck.ReceiverComponent;
 import org.apache.xpath.CachedXPathAPI;
 import org.springframework.core.io.ClassPathResource;
 import org.w3c.dom.Element;
@@ -185,6 +186,46 @@ public class HttpSoapTest extends TestCase {
         
 
         Node node = new SourceTransformer().toDOMNode(new SourceTransformer().toStreamSource(in.getContent()));
+        System.out.println(new SourceTransformer().toString(node));
+        
+        CachedXPathAPI cachedXPathAPI = new CachedXPathAPI();
+        NodeIterator iterator = cachedXPathAPI.selectNodeIterator(node, "//*[local-name() = 'userId']");
+        Element root = (Element) iterator.nextNode();
+        QName qname = DOMUtil.createQName(root, root.getAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "type"));
+        assertEquals("http://www.w3.org/2001/XMLSchema", qname.getNamespaceURI());
+        assertEquals("string", qname.getLocalPart());
+    }
+    
+    public void testNamespaces() throws Exception {
+        ActivationSpec as = new ActivationSpec();
+        as.setId("receiver");
+        ReceiverComponent receiver = new ReceiverComponent();
+        as.setComponent(receiver);
+        as.setService(new QName("receiver"));
+        container.activateComponent(as);
+        
+        as = new ActivationSpec();
+        as.setId("http");
+        as.setDestinationService(new QName("receiver"));
+        HttpSoapConnector http = new HttpSoapConnector();
+        http.setDefaultInOut(false);
+        http.setPort(8100);
+        as.setComponent(http);
+        container.activateComponent(as);
+
+        URLConnection connection = new URL("http://localhost:8100").openConnection();
+        connection.setDoOutput(true);
+        connection.setDoInput(true);
+        OutputStream os = connection.getOutputStream();
+        // Post the request file.
+        InputStream fis = getClass().getResourceAsStream("soap-response.xml");
+        FileUtil.copyInputStream(fis, os);
+        connection.getInputStream();
+        
+        receiver.getMessageList().assertMessagesReceived(1);
+        NormalizedMessage msg = (NormalizedMessage) receiver.getMessageList().flushMessages().get(0);
+
+        Node node = new SourceTransformer().toDOMNode(new SourceTransformer().toStreamSource(msg.getContent()));
         System.out.println(new SourceTransformer().toString(node));
         
         CachedXPathAPI cachedXPathAPI = new CachedXPathAPI();

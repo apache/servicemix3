@@ -17,6 +17,8 @@ package org.apache.servicemix.components.http;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.jbi.JBIException;
 import javax.jbi.component.ComponentContext;
@@ -30,7 +32,9 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
 
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
@@ -45,7 +49,13 @@ import org.codehaus.xfire.service.Service;
 import org.codehaus.xfire.service.binding.BeanInvoker;
 import org.codehaus.xfire.service.binding.ObjectServiceFactory;
 import org.codehaus.xfire.soap.SoapConstants;
+import org.codehaus.xfire.soap.handler.ReadHeadersHandler;
 import org.codehaus.xfire.transport.http.XFireServletController;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 public class HttpSoapInOutBinding extends ComponentSupport implements
         HttpBinding {
@@ -100,7 +110,9 @@ public class HttpSoapInOutBinding extends ComponentSupport implements
             if (!result) {
                 throw new XFireFault("Error sending exchange", XFireFault.SENDER);
             }
-        } catch (JBIException e) {
+        } catch (XFireFault e) {
+            throw e;
+        } catch (Exception e) {
             throw new XFireFault(e);
         }
     }
@@ -149,10 +161,35 @@ public class HttpSoapInOutBinding extends ComponentSupport implements
 		}
     }
     
-    protected void populateExchange(MessageExchange exchange, Source src, MessageContext ctx) throws JBIException {
+    protected void populateExchange(MessageExchange exchange, Source src, MessageContext ctx) throws Exception {
         // TODO: Retrieve properties
         NormalizedMessage inMessage = exchange.createMessage();
-        inMessage.setContent(src);
+        // Add removed namespace declarations from the parents
+        Map namespaces = (Map) ctx.getProperty(ReadHeadersHandler.DECLARED_NAMESPACES);
+        Node node = transformer.toDOMNode(src);
+        Element element;
+        if (node instanceof Element) {
+        	element = (Element) node;
+        } else if (node instanceof Document) {
+        	element = ((Document) node).getDocumentElement();
+        } else {
+        	throw new UnsupportedOperationException("Unable to handle nodes of type " + node.getNodeType());
+        }
+        // Copy embedded namespaces from the envelope into the body root
+        for (Iterator it = namespaces.entrySet().iterator(); it.hasNext();) {
+        	Entry entry = (Entry) it.next();
+            if (element.getAttributes().getNamedItemNS(
+            		XMLConstants.XMLNS_ATTRIBUTE_NS_URI, 
+            		(String) entry.getKey()) == null) {
+            	element.setAttributeNS(
+            			XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
+            			XMLConstants.XMLNS_ATTRIBUTE + ":" + (String) entry.getKey(),
+            			(String) entry.getValue());
+            }
+        }
+        // Set the source
+        inMessage.setContent(new DOMSource(element));
+        // Retrieve attachments
         Attachments attachments = (Attachments) ctx.getProperty(Attachments.ATTACHMENTS_KEY);
         if (attachments != null) {
             for (Iterator it = attachments.getParts(); it.hasNext();) {
