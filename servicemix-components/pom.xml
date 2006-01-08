@@ -34,6 +34,151 @@
   <name>ServiceMix :: Components</name>
   <dependencies>
     <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-vfs</groupId>
+      <artifactId>commons-vfs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-net</groupId>
+      <artifactId>commons-net</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.dependencies</groupId>
+      <artifactId>xfire-all</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.dependencies</groupId>
+      <artifactId>wsif</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.dependencies</groupId>
+      <artifactId>wsif-j2c</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-servlet_2.4_spec</artifactId>
+    </dependency>
+    
+    <!-- Drools dependencies -->
+    <dependency>
+      <groupId>drools</groupId>
+      <artifactId>drools-all-jdk1.4</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>janino</groupId>
+      <artifactId>janino</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>antlr</groupId>
+      <artifactId>antlr</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-javamail_1.3.1_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-saaj_1.1_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jaxrpc_1.1_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>groovy</groupId>
+      <artifactId>groovy-all-1.0-jsr</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>quartz</groupId>
+      <artifactId>quartz</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>rome</groupId>
+      <artifactId>rome</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jetty</groupId>
+      <artifactId>org.mortbay.jetty</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.dependencies</groupId>
+      <artifactId>smack</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.dependencies</groupId>
+      <artifactId>smackx</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>activesoap</groupId>
+      <artifactId>activesoap</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>groovy</groupId>
+      <artifactId>groovy-all-1.0-jsr</artifactId>
+    </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix.dependencies</groupId>
+        <artifactId>jsr-223</artifactId>
+      </dependency>
+    <dependency>
+      <groupId>jdom</groupId>
+      <artifactId>jdom</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.servicemix.dependencies</groupId>
+      <artifactId>wsif</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.servicemix.dependencies</groupId>
+      <artifactId>wsif-j2c</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>wsdl4j</groupId>
+      <artifactId>wsdl4j</artifactId>
+    </dependency>
+    
+    
+    <dependency>
+      <groupId>httpunit</groupId>
+      <artifactId>httpunit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis-jaxrpc</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.java.dev.saaj</groupId>
+      <artifactId>saaj-impl</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+ 
+    <!--
+    <dependency>
       <groupId>activecluster</groupId>
       <artifactId>activecluster</artifactId>
     </dependency>
@@ -138,10 +283,6 @@
       <artifactId>concurrent</artifactId>
     </dependency>
     <dependency>
-      <groupId>drools</groupId>
-      <artifactId>drools-all-jdk1.4</artifactId>
-    </dependency>
-    <dependency>
       <groupId>geronimo</groupId>
       <artifactId>geronimo-connector</artifactId>
     </dependency>
@@ -168,10 +309,6 @@
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.geronimo.specs</groupId>
-      <artifactId>geronimo-javamail_1.3.1_spec</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
@@ -234,10 +371,6 @@
       <artifactId>mx4j-remote</artifactId>
     </dependency>
     <dependency>
-      <groupId>mx4j</groupId>
-      <artifactId>mx4j-tools</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.derby</groupId>
       <artifactId>derby</artifactId>
     </dependency>
@@ -280,10 +413,6 @@
     <dependency>
       <groupId>servicemix</groupId>
       <artifactId>saaj-impl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.servicemix</groupId>
-      <artifactId>servicemix-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix</groupId>
@@ -377,6 +506,7 @@
       <groupId>xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
+    -->
   </dependencies>
 
     <build>

@@ -49,13 +49,13 @@
             <artifactId>servicemix-core</artifactId>
             <scope>provided</scope>
         </dependency>
-
+<!--
         <dependency>
-            <groupId>servicemix</groupId>
+            <groupId>org.apache.servicemix.dependencies</groupId>
             <artifactId>xfire-all</artifactId>
         </dependency>
         <dependency>
-            <groupId>servicemix</groupId>
+            <groupId>org.apache.servicemix.dependencies</groupId>
             <artifactId>xfire-jaxws</artifactId>
         </dependency>
         <dependency>
@@ -85,7 +85,6 @@
         <dependency>
             <groupId>commons-attributes</groupId>
             <artifactId>commons-attributes-plugin</artifactId>
-            <!--type>plugin</type-->
         </dependency>
         <dependency>
             <groupId>backport175</groupId>
@@ -116,6 +115,7 @@
             <artifactId>log4j</artifactId>
             <scope>test</scope>
         </dependency>
+        -->
     </dependencies>
 
     <build>

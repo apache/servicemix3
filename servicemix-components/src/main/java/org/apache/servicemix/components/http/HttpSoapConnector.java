@@ -104,7 +104,9 @@ public class HttpSoapConnector extends HttpSoapInOutBinding {
 	 */
 	public void stop() throws JBIException {
 		try {
-			server.stop();
+		  if (server != null) {
+			  server.stop();
+			}
 		} catch (InterruptedException e) {
 			throw new JBIException("Stop failed: " + e, e);
 		}

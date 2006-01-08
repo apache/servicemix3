@@ -33,9 +33,6 @@ import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.codehaus.xfire.exchange.OutMessage;
 
-import com.ctc.wstx.stax.WstxInputFactory;
-import com.ctc.wstx.stax.WstxOutputFactory;
-
 /**
  * @version $Revision$
  */
@@ -46,8 +43,8 @@ public class XMarshaler {
     
     public XMarshaler()
     {
-        outputFactory = new WstxOutputFactory();
-        inputFactory = new WstxInputFactory();
+        outputFactory = XMLOutputFactory.newInstance();
+        inputFactory = XMLInputFactory.newInstance();
     }
 
     public void setContent(NormalizedMessage message, String xml) throws MessagingException {

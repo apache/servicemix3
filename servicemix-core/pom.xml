@@ -40,23 +40,35 @@
             <artifactId>servicemix-jbi</artifactId>
         </dependency>
         <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+        <dependency>
             <groupId>xml-apis</groupId>
             <artifactId>xml-apis</artifactId>
         </dependency>
-
+      <dependency>
+        <groupId>geronimo</groupId>
+        <artifactId>geronimo-connector</artifactId>
+        </dependency>
+      <dependency>
+        <groupId>geronimo</groupId>
+        <artifactId>geronimo-transaction</artifactId>
+        </dependency>
+        
         <dependency>
-            <groupId>activemq</groupId>
-            <artifactId>activemq</artifactId>
+            <groupId>org.apache.servicemix.dependencies</groupId>
+            <artifactId>activeio</artifactId>
         </dependency>
         <dependency>
-            <groupId>activemq</groupId>
+            <groupId>org.apache.servicemix.dependencies</groupId>
+            <artifactId>activemq-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.dependencies</groupId>
             <artifactId>activemq-ra</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>concurrent</groupId>
-            <artifactId>concurrent</artifactId>
-        </dependency>
         <dependency>
             <groupId>backport-util-concurrent</groupId>
             <artifactId>backport-util-concurrent</artifactId>
@@ -112,25 +124,7 @@
 
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-dao</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-remoting</artifactId>
-            <scope>test</scope>
+            <artifactId>spring</artifactId>
         </dependency>
 
         <dependency>
@@ -146,17 +140,13 @@
             <groupId>mx4j</groupId>
             <artifactId>mx4j-remote</artifactId>
         </dependency>
-        <dependency>
-            <groupId>mx4j</groupId>
-            <artifactId>mx4j-tools</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>ant</groupId>
             <artifactId>ant</artifactId>
         </dependency>
         <dependency>
-            <groupId>jencks</groupId>
+            <groupId>org.apache.servicemix.dependencies</groupId>
             <artifactId>jencks</artifactId>
         </dependency>
         <dependency>
@@ -195,8 +185,12 @@
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
         </dependency>
+    <dependency>
+      <groupId>woodstox</groupId>
+      <artifactId>wstx-asl</artifactId>
+    </dependency>
         <dependency>
-            <groupId>stax-utils</groupId>
+            <groupId>net.java.dev.stax-utils</groupId>
             <artifactId>stax-utils</artifactId>
         </dependency>
         <dependency>
