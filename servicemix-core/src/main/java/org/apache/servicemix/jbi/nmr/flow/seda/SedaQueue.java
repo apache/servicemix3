@@ -217,7 +217,7 @@ public class SedaQueue extends BaseLifeCycle implements Work {
                                 flow.doRouting(me);
                             }
                             catch (Throwable e) {
-                                log.error(this + " Gor error processing " + me, e);
+                                log.error(this + " got error processing " + me, e);
                             }
                         }
                         
