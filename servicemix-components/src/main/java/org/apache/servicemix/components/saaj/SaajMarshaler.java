@@ -20,12 +20,16 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 import javax.activation.DataHandler;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.XMLConstants;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.AttachmentPart;
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.MimeHeader;
@@ -36,7 +40,6 @@ import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 
 import java.io.ByteArrayOutputStream;
@@ -114,7 +117,7 @@ public class SaajMarshaler {
         addNmsAttachments(normalizedMessage, soapMessage);
     }
 
-    public SOAPMessage createSOAPMessage(NormalizedMessage normalizedMessage) throws SOAPException, IOException, TransformerException {
+    public SOAPMessage createSOAPMessage(NormalizedMessage normalizedMessage) throws SOAPException, IOException, TransformerException, MessagingException, ParserConfigurationException, SAXException {
         SOAPMessage soapMessage = getMessageFactory().createMessage();
 
         addSoapProperties(soapMessage, normalizedMessage);
@@ -124,9 +127,21 @@ public class SaajMarshaler {
         SOAPBody body = envelope.getBody();
 
         // lets turn the payload into a DOM Node to avoid blatting over the envelope
-        DOMResult result = new DOMResult(null);
-        transformer.toResult(normalizedMessage.getContent(), result);
-        Document document = (Document) result.getNode();
+        // Do not use DOMResult to transform as namespaces are lost (why ?)
+        //DOMResult result = new DOMResult(null);
+        //transformer.toResult(normalizedMessage.getContent(), result);
+        //Document document = (Document) result.getNode();
+        Node node = transformer.toDOMNode(normalizedMessage);
+        Document document = null;
+        if (node instanceof Document) {
+        	document = (Document) node;
+        } else if (node instanceof Element) {
+        	document = transformer.createDocument();
+        	document.appendChild(node.cloneNode(true));
+        } else {
+        	throw new TransformerException("Could not create Document from Source");
+        }
+        
         body.addDocument(document);
 
         addSoapAttachments(soapMessage, normalizedMessage);
