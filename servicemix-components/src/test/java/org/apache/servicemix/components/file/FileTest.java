@@ -41,6 +41,6 @@ public class FileTest extends TestSupport {
     }
 
     protected AbstractXmlApplicationContext createBeanFactory() {
-        return new ClassPathXmlApplicationContext("org/apache/servicemix/components/file/binary-example.xml");
+        return new ClassPathXmlApplicationContext("org/apache/servicemix/components/file/example.xml");
     }
 }
