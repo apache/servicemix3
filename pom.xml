@@ -211,9 +211,9 @@
     <module>servicemix-jms</module>
     <module>servicemix-jsr181</module>
     <module>servicemix-http</module>
-    <module>servicemix-wsn2005</module>
+    <!-- module>servicemix-wsn2005</module -->
     <module>servicemix-lwcontainer</module>
-    <module>servicemix-sca</module>
+    <!-- module>servicemix-sca</module -->
     <module>servicemix-assembly</module>
   </modules>
   
@@ -225,6 +225,7 @@
         </activation>
         <modules>
           <module>servicemix-sca</module>
+          <module>servicemix-wsn2005</module>
         </modules>
       </profile>
   </profiles>
