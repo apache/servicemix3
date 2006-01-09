@@ -25,7 +25,6 @@ import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.xml.transform.TransformerException;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -124,7 +123,10 @@ public class FileWriter extends OutBinding {
         catch (IOException e) {
             throw new MessagingException(e);
         }
-        catch (TransformerException e) {
+        catch (MessagingException e) {
+        	throw e;
+        }
+        catch (JBIException e) {
             throw new MessagingException(e);
         }
         finally {

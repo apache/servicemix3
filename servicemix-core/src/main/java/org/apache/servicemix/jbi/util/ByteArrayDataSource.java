@@ -24,11 +24,9 @@ import javax.activation.DataSource;
 
 /**
  * Byte array DataSource for Mail and message attachments 
-
  * @author George Gastaldi
- * @since 2.1
+ * @since 3.0
  */
-
 public class ByteArrayDataSource implements DataSource {
     private byte[] data;
     private String type;

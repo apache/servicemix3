@@ -19,7 +19,6 @@ import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.xml.transform.TransformerException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,7 +40,7 @@ public interface FileMarshaler {
      * @param in       the input stream
      * @param name     the name of the file, URI or URL
      */
-    void readMessage(MessageExchange exchange, NormalizedMessage message, InputStream in, String name) throws IOException, JBIException;
+    void readMessage(MessageExchange exchange, NormalizedMessage message, InputStream in, String path) throws IOException, JBIException;
 
     /**
      * Creates a output file name for the given exchange when reading an inbound
@@ -59,7 +58,7 @@ public interface FileMarshaler {
      * @param exchange the inbound message exchange
      * @param message the inbound message
      * @param out the output stream to write to
-     * @param name
+     * @param path
      */ 
-    void writeMessage(MessageExchange exchange, NormalizedMessage message, OutputStream out, String name) throws MessagingException, TransformerException;
+    void writeMessage(MessageExchange exchange, NormalizedMessage message, OutputStream out, String path) throws IOException, JBIException;
 }

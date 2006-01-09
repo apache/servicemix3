@@ -31,6 +31,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
@@ -46,6 +47,7 @@ import java.io.OutputStreamWriter;
 public class DefaultFileMarshaler extends MarshalerSupport implements FileMarshaler {
 
     public static final String FILE_NAME_PROPERTY = "org.apache.servicemix.file.name";
+    public static final String FILE_PATH_PROPERTY = "org.apache.servicemix.file.path";
     public static final String FILE_CONTENT = "org.apache.servicemix.file.content";
 
     protected static final PropertyExpression FILE_NAME_EXPRESSION = new PropertyExpression(FILE_NAME_PROPERTY);
@@ -54,23 +56,24 @@ public class DefaultFileMarshaler extends MarshalerSupport implements FileMarsha
     private Expression fileName = FILE_NAME_EXPRESSION;
     private Expression content = FILE_CONTENT_EXPRESSION;
 
-    public void readMessage(MessageExchange exchange, NormalizedMessage message, InputStream in, String name) throws IOException, JBIException {
-        message.setContent(new StreamSource(in, name));
-        message.setProperty(FILE_NAME_PROPERTY, name);
+    public void readMessage(MessageExchange exchange, NormalizedMessage message, InputStream in, String path) throws IOException, JBIException {
+        message.setContent(new StreamSource(in, path));
+        message.setProperty(FILE_NAME_PROPERTY, new File(path).getName());
+        message.setProperty(FILE_PATH_PROPERTY, path);
     }
 
     public String getOutputName(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
         return asString(fileName.evaluate(exchange, message));
     }
 
-    public void writeMessage(MessageExchange exchange, NormalizedMessage message, OutputStream out, String name) throws MessagingException, TransformerException {
+    public void writeMessage(MessageExchange exchange, NormalizedMessage message, OutputStream out, String path) throws IOException, JBIException {
         try {
             Object value = content.evaluate(exchange, message);
             if (value != null) {
                 writeValue(value, out);
             }
             else {
-                writeMessageContent(exchange, message, out, name);
+                writeMessageContent(exchange, message, out, path);
             }
         }
         catch (IOException e) {
@@ -127,7 +130,7 @@ public class DefaultFileMarshaler extends MarshalerSupport implements FileMarsha
      * @param out     the destination of the output
      * @param name    the name of the output resource (file, uri, url)
      */
-    protected void writeMessageContent(MessageExchange exchange, NormalizedMessage message, OutputStream out, String name) throws MessagingException, TransformerException {
+    protected void writeMessageContent(MessageExchange exchange, NormalizedMessage message, OutputStream out, String path) throws MessagingException {
         Source content = null;
         Node document = (Node) message.getProperty(SourceTransformer.CONTENT_DOCUMENT_PROPERTY);
         if (document != null) {
@@ -139,6 +142,10 @@ public class DefaultFileMarshaler extends MarshalerSupport implements FileMarsha
         if (content == null) {
             throw new NoMessageContentAvailableException(exchange);
         }
-        getTransformer().toResult(content, new StreamResult(out));
+        try {
+        	getTransformer().toResult(content, new StreamResult(out));
+        } catch (TransformerException e) {
+        	throw new MessagingException(e);
+        }
     }
 }
