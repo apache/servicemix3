@@ -22,8 +22,8 @@ import javax.jms.Session;
 import javax.jms.TopicConnection;
 import javax.jms.TopicRequestor;
 import javax.jms.TopicSession;
-import org.activemq.ActiveMQConnectionFactory;
-import org.activemq.message.ActiveMQTopic;
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.command.ActiveMQTopic;
 
 /**
  * @version $Revision$
