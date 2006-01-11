@@ -16,6 +16,7 @@
 package org.apache.servicemix.components.http;
 
 import javax.jbi.JBIException;
+import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchangeFactory;
@@ -57,6 +58,13 @@ public class HttpInOutBinding extends HttpBindingSupport {
             exchange.setInMessage(inMessage);
             boolean result = getDeliveryChannel().sendSync(exchange);
             if (result) {
+            	if (exchange.getStatus() == ExchangeStatus.ERROR) {
+            		if (exchange.getError() != null) {
+            			throw new ServletException(exchange.getError());
+            		} else {
+            			throw new ServletException("Exchange status is ERROR");
+            		}
+            	}
                 getMarshaler().toResponse(exchange, exchange.getOutMessage(), response);
             }
             done(exchange);
