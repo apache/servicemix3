@@ -78,11 +78,18 @@
     </j:forEach>
   </goal>
   
-  <goal name="build" prereqs="default"/>  
+  <!-- =========================================================== -->
+  <!-- goal used to build subprojects -->
+  <!-- =========================================================== -->
+  
+  <!-- execute goal "build" on all subprojects --> 
   <goal name="default" prereqs="init">
-    <j:set var="goal" value="clean, jar:install"/>
+    <j:set var="goal" value="build"/>
     <attainGoal name="multiproject:goal"/>
   </goal>
+  
+  <!-- subprojects default goal -->
+  <goal name="build" prereqs="clean, jar:install"/>
   
   <goal name="rebuild" prereqs="clean,default"/>
   <goal name="rebuild-all">
@@ -90,7 +97,82 @@
     <attainGoal name="clean-repo"/>
     <attainGoal name="default"/>
   </goal>  
-
+  
+  <!-- execute test goal on subprojects -->
+  <goal name="test" prereqs="init">
+    <j:set var="goal" value="test"/>
+    <attainGoal name="multiproject:goal"/>
+  </goal>
+  
+  <goal name="convert-snapshots-auto">
+    <j:set var="goal" value="convert-snapshots-auto"/>
+    <attainGoal name="multiproject:goal"/>
+  </goal>
+  
+  <goal name="rebuild-dist-bin">
+    <attainGoal name="rebuild-all"/>
+    <attainGoal name="dist:build-bin"/>
+  </goal>
+  
+  <goal name="rebuild-it-all">
+    <attainGoal name="rebuild-all"/>
+    <attainGoal name="dist:build-bin"/>
+    <attainGoal name="site"/>
+  </goal>
+    
+  <goal name="temp-site">
+    <attainGoal name="init"/>
+    <attainGoal name="multiproject:create-nav"/>
+    <attainGoal name="multiproject:create-overview-page"/>
+    <attainGoal name="site"/>
+  </goal>
+  
+  <goal name="reports:site">
+    <attainGoal name="site"/>
+  </goal>
+  
+  <goal name="servicemix:site">
+    <attainGoal name="multiproject:site"/>
+  </goal>
+  
+  <!-- =========================================================== -->
+  <!-- Clean related goals -->
+  <!-- =========================================================== -->
+    
+  <goal name="clean" prereqs="init">
+    <u:tokenize var="directories" delim=",">${modules.directories}</u:tokenize>
+    <ant:delete dir="${basedir}/target"/>
+    <j:forEach var="directory" items="${directories}">
+        <ant:echo>+----------------------------------------</ant:echo>
+        <ant:echo>| Cleaning: ${directory} </ant:echo>
+        <ant:echo>+----------------------------------------</ant:echo>
+        <ant:delete dir="${directory}/target"/>
+        <ant:delete quiet="false" failonerror="false">
+          <ant:fileset dir="${directory}">
+            <ant:include name="maven.log"/>
+            <ant:include name="velocity.log*"/>
+            <ant:include name="junit*.properties"/>
+          </ant:fileset>
+        </ant:delete>
+        <ant:echo></ant:echo>
+      </j:forEach>
+  </goal>
+  
+  <goal name="clean-repo" prereqs="init">
+      <ant:echo>+----------------------------------------</ant:echo>
+      <ant:echo>| Cleaning: repo </ant:echo>
+      <ant:echo>+----------------------------------------</ant:echo>
+      <ant:delete quiet="false">
+        <ant:fileset dir="${maven.repo.local}/servicemix">
+          <ant:include name="**/servicemix*.*"/>
+        </ant:fileset>
+      </ant:delete>
+  </goal>
+      
+  <!-- =========================================================== -->
+  <!-- Assembly related goals -->
+  <!-- =========================================================== -->  
+  
   <goal name="assembly:goal" prereqs="init">
     <maven:reactor
       basedir="."
@@ -100,64 +182,60 @@
       />
   </goal>
   
+  <goal name="dist:build-bin" prereqs="init">
+      <j:set var="goal" value="dist:build-bin"/>
+      <attainGoal name="assembly:goal"/>
+  </goal>
+  
+  
+  <!-- =========================================================== -->
+  <!-- intellij and eclipse goal -->
+  <!-- =========================================================== --> 
+  
+  <goal name="eclipse" prereqs="init">
+      <j:set var="goal" value="eclipse"/>
+      <attainGoal name="multiproject:goal"/>
+  </goal>
+  
+  <goal name="intellij" prereqs="idea"/>
+    <goal name="idea" prereqs="init">
+    <attainGoal name="idea:multiproject"/>
+  </goal>
+  
+  <postGoal name="eclipse">
+    <touch file="${maven.repo.local}/servicemix/jars/${pom.artifactId}-${pom.currentVersion}.jar"/>
+  </postGoal>
+  
+  
+  <!-- =========================================================== -->
+  <!-- deploy and nightly build goals -->
+  <!-- =========================================================== -->   
+
   <goal name="nightly" prereqs="init">
      <j:set var="goal" value="nightly"/>
      <attainGoal name="multiproject:goal"/>
   </goal>
-
-  <goal name="dist:build-bin" prereqs="init">
-    <j:set var="goal" value="dist:build-bin"/>
-    <attainGoal name="assembly:goal"/>
+  
+  <goal name="nightly-build" description="create a snapshot build and deploys it to the website">
+    
+      <echo>Cleaning the directory</echo>
+      <attainGoal name="clean"/>
+  
+      <echo>Compiling the codes</echo>
+      <attainGoal name="default"/>
+  
+      <echo>Building the bin and src bundle </echo>
+      <attainGoal name="dist:build"/>
+  
+      <echo>Creating deploy "site" </echo>
+      <attainGoal name="site:deploy"/>
+  
   </goal>
-
+  
+  <!-- goal that will deploy the distribution in the assembly -->
   <goal name="dist:deploy" prereqs="init">
     <j:set var="goal" value="dist:deploy"/>
     <attainGoal name="assembly:goal"/>
-  </goal>
-
-  <goal name="clean" prereqs="init">
-    <u:tokenize var="directories" delim=",">${modules.directories}</u:tokenize>
-    <ant:delete dir="${basedir}/target"/>
-    <j:forEach var="directory" items="${directories}">
-      <ant:echo>+----------------------------------------</ant:echo>
-      <ant:echo>| Cleaning: ${directory} </ant:echo>
-      <ant:echo>+----------------------------------------</ant:echo>
-      <ant:delete dir="${directory}/target"/>
-      <ant:delete quiet="false" failonerror="false">
-        <ant:fileset dir="${directory}">
-          <ant:include name="maven.log"/>
-          <ant:include name="velocity.log*"/>
-          <ant:include name="junit*.properties"/>
-        </ant:fileset>
-      </ant:delete>
-      <ant:echo></ant:echo>
-    </j:forEach>
-  </goal>
-
-  <goal name="clean-repo" prereqs="init">
-    <ant:echo>+----------------------------------------</ant:echo>
-    <ant:echo>| Cleaning: repo </ant:echo>
-    <ant:echo>+----------------------------------------</ant:echo>
-    <ant:delete quiet="false">
-      <ant:fileset dir="${maven.repo.local}/servicemix">
-        <ant:include name="**/servicemix*.*"/>
-      </ant:fileset>
-    </ant:delete>
-  </goal>
-
-  <goal name="test" prereqs="init">
-    <j:set var="goal" value="test"/>
-    <attainGoal name="multiproject:goal"/>
-  </goal>
-
-  <goal name="eclipse" prereqs="init">
-    <j:set var="goal" value="eclipse"/>
-    <attainGoal name="multiproject:goal"/>
-  </goal>
-
-  <goal name="intellij" prereqs="idea"/>
-  <goal name="idea" prereqs="init">
-    <attainGoal name="idea:multiproject"/>
   </goal>
 
   <goal name="jar:deploy" prereqs="init">
@@ -173,16 +251,7 @@
   <goal name="install">
     <attainGoal name="multiproject:install"/>
   </goal>
-
-  <goal name="servicemix:site">
-    <attainGoal name="multiproject:site"/>
-  </goal>
-
-  <goal name="convert-snapshots-auto">
-    <j:set var="goal" value="convert-snapshots-auto"/>
-    <attainGoal name="multiproject:goal"/>
-  </goal>
-
+   
   <goal name="dc">
     <attain>
       <attainGoal name="clean"/>
@@ -191,59 +260,5 @@
       <attainGoal name="dist:deploy"/>
     </attain>
   </goal>
-
-  <goal name="rebuild-dist-bin">
-    <attainGoal name="rebuild-all"/>
-    <attainGoal name="dist:build-bin"/>
-  </goal>
-
-  <goal name="rebuild-it-all">
-    <attainGoal name="rebuild-all"/>
-    <attainGoal name="dist:build-bin"/>
-    <attainGoal name="site"/>
-  </goal>
   
-  <goal name="temp-site">
-    <attainGoal name="init"/>
-    <attainGoal name="multiproject:create-nav"/>
-    <attainGoal name="multiproject:create-overview-page"/>
-    <attainGoal name="site"/>
-  </goal>
-
-
-  <goal name="nightly-build" description="create a snapshot build and deploys it to the website">
-  
-    <echo>Cleaning the directory</echo>
-    <attainGoal name="clean"/>
-
-    <echo>Compiling the codes</echo>
-    <attainGoal name="default"/>
-
-    <echo>Building the bin and src bundle </echo>
-    <attainGoal name="dist:build"/>
-
-    <echo>Creating deploy "site" </echo>
-    <attainGoal name="site:deploy"/>
-
-  </goal>
-
-  <goal name="reports:site">
-      <attainGoal name="site"/>
-  </goal>
-  
-  <!-- Post Goals -->
-  
-  <postGoal name="clean:clean">
-      <delete failonerror="false" dir="ActiveMQ"/>
-      <delete failonerror="false" dir="ServiceMixWDir"/>
-      <delete failonerror="false" dir="rootDir"/>
-      <delete failonerror="false" dir="testWDIR"/>
-      <delete failonerror="false" dir="testWDR"/>
-  </postGoal>
-  
-  <postGoal name="eclipse">
-      <touch file="${maven.repo.local}/servicemix/jars/${pom.artifactId}-${pom.currentVersion}.jar"/>
-  </postGoal>
-
-
 </project>
