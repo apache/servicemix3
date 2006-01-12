@@ -21,7 +21,7 @@
   <pomVersion>3</pomVersion>
   <name>ServiceMix</name>
   <id>servicemix</id>
-  <groupId>servicemix</groupId>
+  <groupId>org.apache.servicemix</groupId>
   <currentVersion>3.0-SNAPSHOT</currentVersion>
 
   <organization>
@@ -77,7 +77,6 @@
   </packageGroups>
 
   <shortDescription>ServiceMix is an open source ESB</shortDescription>
-
   <gumpRepositoryId>servicemix</gumpRepositoryId>
 
   <description>
