@@ -36,7 +36,8 @@
   <dependencies>
 
     <dependency>
-      <id>geronimo-spec+activation</id>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-activation_1.0.2_spec</artifactId>
       <version>${geronimo_spec_activation_version}</version>
     </dependency>
 
