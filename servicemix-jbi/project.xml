@@ -20,7 +20,7 @@
 
 <project>
   <pomVersion>3</pomVersion>
-  <extend>${basedir}/../project.xml</extend>
+  <extend>../project.xml</extend>
   
   <name>ServiceMix :: JBI</name>
   <id>servicemix-jbi</id>
