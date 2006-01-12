@@ -32,47 +32,47 @@
 
   <inceptionYear>2006</inceptionYear>
 
-  <package>org.servicemix</package>
+  <package>org.apache.servicemix</package>
   <packageGroups>
     <packageGroup>
       <title>ServiceMix Core APIs</title>
-      <packages>org.servicemix</packages>
+      <packages>org.apache.servicemix</packages>
     </packageGroup>
     <packageGroup>
       <title>JBI Client API</title>
-      <packages>org.servicemix.client</packages>
+      <packages>org.apache.servicemix.client</packages>
     </packageGroup>
     <packageGroup>
       <title>JBI Components</title>
-      <packages>org.servicemix.components.*</packages>
+      <packages>org.apache.servicemix.components.*</packages>
     </packageGroup>
     <packageGroup>
       <title>JBI Container</title>
-      <packages>org.servicemix.jbi.container</packages>
+      <packages>org.apache.servicemix.jbi.container</packages>
     </packageGroup>
     <packageGroup>
       <title>Normalized Message Router</title>
-      <packages>org.servicemix.jbi.nmr</packages>
+      <packages>org.apache.servicemix.jbi.nmr</packages>
     </packageGroup>
     <packageGroup>
       <title>Message Router Dispatching</title>
-      <packages>org.servicemix.jbi.nmr.flow.*</packages>
+      <packages>org.apache.servicemix.jbi.nmr.flow.*</packages>
     </packageGroup>
     <packageGroup>
       <title>Normalized Message Service implementation</title>
-      <packages>org.servicemix.jbi.messaging</packages>
+      <packages>org.apache.servicemix.jbi.messaging</packages>
     </packageGroup>
     <packageGroup>
       <title>Endpoint resolving and choosing strategies</title>
-      <packages>org.servicemix.jbi.resolver</packages>
+      <packages>org.apache.servicemix.jbi.resolver</packages>
     </packageGroup>
     <packageGroup>
       <title>JAXP utilities</title>
-      <packages>org.servicemix.jbi.jaxp</packages>
+      <packages>org.apache.servicemix.jbi.jaxp</packages>
     </packageGroup>
     <packageGroup>
       <title>JBI Container implementation</title>
-      <packages>org.servicemix.jbi:org.servicemix.jbi.*</packages>
+      <packages>org.apache.servicemix.jbi:org.apache.servicemix.jbi.*</packages>
     </packageGroup>
   </packageGroups>
 
@@ -112,9 +112,6 @@
       <name>ServiceMix User List</name>
       <subscribe>servicemix-users-subscribe@geronimo.apache.org</subscribe>
       <unsubscribe>servicemix-users-unsubscribe@geronimo.apache.org</unsubscribe>
-      <!--
-      <archive>http://archive.servicemix.codehaus.org/user/</archive>
-      -->
       <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-dev/</archive>
     </mailingList>
     <mailingList>
