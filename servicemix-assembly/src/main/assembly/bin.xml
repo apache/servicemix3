@@ -1,23 +1,26 @@
 <assembly>
-      <id>bin</id>
-      <formats>
+    <id>bin</id>
+    <formats>
         <format>tar.gz</format>
+        <format>tar.bz2</format>
         <format>zip</format>
-      </formats>
-      <fileSets>
-        <fileSet>
-          <directory>src/main/release</directory>
-          <outputDirectory></outputDirectory>
-        </fileSet>
-      </fileSets>
-      <dependencySets>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <dependencySets>
         <dependencySet>
-          <outputDirectory>lib</outputDirectory>
+          <outputDirectory>/lib</outputDirectory>
+          <unpack>false</unpack>
+          <scope>compile</scope>
+        </dependencySet>
+        <dependencySet>
+          <outputDirectory>/lib</outputDirectory>
+          <unpack>false</unpack>
           <scope>runtime</scope>
         </dependencySet>
         <dependencySet>
-          <outputDirectory>lib/optional</outputDirectory>
+          <outputDirectory>/lib/optional</outputDirectory>
+          <unpack>false</unpack>
           <scope>optional</scope>
         </dependencySet>
-      </dependencySets>
-    </assembly>
+    </dependencySets>
+</assembly>
