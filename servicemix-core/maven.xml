@@ -1,0 +1,49 @@
+<project default="default"
+    xmlns:j="jelly:core"
+    xmlns:u="jelly:util"
+    xmlns:ant="jelly:ant"
+    xmlns:util="jelly:util"
+    xmlns:artifact="artifact">
+
+  <postGoal name="java:compile">
+    <attainGoal name="xbean:generate" />
+  </postGoal>
+  
+  <goal name="setclasspath" prereqs="java:compile, test:compile">
+    <path id="test.classpath">
+      <pathelement path="${maven.build.dest}"/>
+      <pathelement path="target/classes"/>
+      <pathelement path="target/test-classes"/>
+      <path refid="maven.dependency.classpath"/>
+    </path>
+  </goal>
+  
+  <goal name="xbean:generate" description="Generates the XBean XSD, documentation and META-INF/services files.">
+    <path id="test.classpath">
+      <pathelement path="${maven.build.dest}" />
+      <pathelement path="${basedir}/target/classes" />
+      <pathelement path="${basedir}/target/test-classes" />
+      <path refid="maven.dependency.classpath" />
+    </path>
+
+    <taskdef name="xsdGenerate" classname="org.xbean.spring.generator.MappingGeneratorTask">
+      <classpath refid="test.classpath" />
+    </taskdef>
+    <xsdGenerate destFile="${basedir}/target/servicemix-${pom.currentVersion}.xsd" namespace="http://servicemix.org/config/1.0"
+    		classpathref="test.classpath" srcdir="${basedir}/src/main/java"  metaInfDir="${basedir}/target/generated/"/>
+  	<copy file="${basedir}/target/servicemix-${pom.currentVersion}.xsd" todir="${basedir}/target/generated/"/>
+  	<copy file="${basedir}/target/servicemix-${pom.currentVersion}.xsd" todir="${basedir}/../xdocs"/>    
+        <copy file="${basedir}/target/servicemix-${pom.currentVersion}.xsd.html" todir="${basedir}/../xdocs"/>
+  </goal>
+  
+  <goal name="reports:site">
+    <attainGoal name="site"/>
+  </goal>
+  
+  <goal name="default" prereqs="jar:install, javadoc:api"/>
+  
+  <goal name="javadoc:api">
+    <attainGoal name="javadoc:install"/>
+  </goal> 
+  
+</project>
