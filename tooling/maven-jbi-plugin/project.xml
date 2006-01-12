@@ -16,9 +16,10 @@
 	* limitations under the License.
 	*/
 -->
+
 <project>
     <pomVersion>3</pomVersion>
-    <extend>${basedir}/../../etc/project.xml</extend>
+    <extend>../../project.xml</extend>
 
 	<name>ServiceMix :: Maven JBI Plugin</name>
 	<id>maven-jbi-plugin</id>
