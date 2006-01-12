@@ -28,11 +28,11 @@
     <shortDescription>Common components library</shortDescription>
     <description>Common library for binding component and service engines</description>
   
-    <package>org.servicemix.common</package>
+    <package>org.apache.servicemix.common</package>
     <packageGroups>
       <packageGroup>
         <title>Common components library</title>
-        <packages>org.servicemix.common</packages>
+        <packages>org.apache.servicemix.common</packages>
       </packageGroup>
     </packageGroups>
  
@@ -42,24 +42,25 @@
     <dependencies>
     
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix-jbi</artifactId>
         <version>${pom.currentVersion}</version>
         <properties>
           <eclipse.dependency>true</eclipse.dependency>
         </properties>
       </dependency>
+      
+      <!-- J2EE JARs -->
       <dependency>
-        <groupId>geronimo-spec</groupId>
-        <artifactId>geronimo-spec-j2ee-connector</artifactId>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
         <version>${geronimo_spec_j2ee_connector_version}</version>
       </dependency>
       <dependency>
-        <groupId>geronimo-spec</groupId>
-        <artifactId>geronimo-spec-jta</artifactId>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
         <version>${geronimo_spec_jta_version}</version>
-      </dependency>
-      
+      </dependency>      
 
       <dependency>
         <groupId>commons-logging</groupId>
@@ -110,7 +111,6 @@
         <artifactId>spring</artifactId>
         <version>${spring_version}</version>
       </dependency>
-
 
     </dependencies>  
 
