@@ -19,13 +19,13 @@
 -->
 
 <project default="default"
-  xmlns:j="jelly:core"
-  xmlns:u="jelly:util"
-  xmlns:ant="jelly:ant"
-  xmlns:maven="jelly:maven">
+         xmlns:j="jelly:core"
+         xmlns:u="jelly:util"
+         xmlns:ant="jelly:ant"
+         xmlns:maven="jelly:maven">
 
   <goal name="init">
-		<j:set var="x" value="${servicemix.jdk14}"/>
+    <j:set var="x" value="${servicemix.jdk14}"/>
     <j:if test="${x == true}">
       <j:set var="modules" value="servicemix-jbi,servicemix-core,servicemix-components,servicemix-common,servicemix-console,servicemix-gbean,servicemix-jms,servicemix-jsr181,servicemix-http,servicemix-lwcontainer"/>
         <ant:echo><![CDATA[
@@ -35,7 +35,6 @@
 * Your are running a build without Java 5 modules.         *
 ************************************************************
         ]]></ant:echo>
-        
     </j:if>
   
     <ant:fileScanner var="scanner">
@@ -79,19 +78,20 @@
   </goal>
   
   <!-- =========================================================== -->
-  <!-- goal used to build subprojects -->
+  <!-- Goal used to build subprojects                              -->
+  <!-- Note: Subprojects extends from /etc/ directory              -->
   <!-- =========================================================== -->
   
-  <!-- execute goal "build" on all subprojects --> 
+  <!-- Execute default goal on subprojects. -->
   <goal name="default" prereqs="init">
-    <j:set var="goal" value="build"/>
+    <j:set var="goal" value="default"/>
     <attainGoal name="multiproject:goal"/>
   </goal>
   
-  <!-- subprojects default goal -->
-  <goal name="build" prereqs="clean, jar:install"/>
+  <!-- Option, will only execute the default goal. -->
+  <goal name="build" prereqs="default"/>
   
-  <goal name="rebuild" prereqs="clean,default"/>
+  <goal name="rebuild" prereqs="clean, default"/>
   <goal name="rebuild-all">
     <attainGoal name="clean"/>
     <attainGoal name="clean-repo"/>
@@ -178,8 +178,7 @@
       basedir="."
       includes="servicemix-assembly/project.xml"
       goals="${goal}"
-      ignoreFailures="false"
-      />
+      ignoreFailures="false"/>
   </goal>
   
   <goal name="dist:build-bin" prereqs="init">
@@ -201,11 +200,6 @@
     <goal name="idea" prereqs="init">
     <attainGoal name="idea:multiproject"/>
   </goal>
-  
-  <postGoal name="eclipse">
-    <touch file="${maven.repo.local}/servicemix/jars/${pom.artifactId}-${pom.currentVersion}.jar"/>
-  </postGoal>
-  
   
   <!-- =========================================================== -->
   <!-- deploy and nightly build goals -->
@@ -232,17 +226,19 @@
   
   </goal>
   
-  <!-- goal that will deploy the distribution in the assembly -->
+  <!-- Goal that will deploy the distribution in the assembly -->
   <goal name="dist:deploy" prereqs="init">
     <j:set var="goal" value="dist:deploy"/>
     <attainGoal name="assembly:goal"/>
   </goal>
-
+  
+  <!-- Goal that will deploy the created jar files of the subprojects -->
   <goal name="jar:deploy" prereqs="init">
     <j:set var="goal" value="jar:deploy"/>
     <attainGoal name="multiproject:goal"/>
   </goal>
-
+  
+  <!-- Goal that will deploy the subprojects' created site -->
   <goal name="site:deploy" prereqs="init">
     <j:set var="goal" value="site:deploy"/>
     <attainGoal name="multiproject:goal"/>
@@ -251,7 +247,7 @@
   <goal name="install">
     <attainGoal name="multiproject:install"/>
   </goal>
-   
+    
   <goal name="dc">
     <attain>
       <attainGoal name="clean"/>
