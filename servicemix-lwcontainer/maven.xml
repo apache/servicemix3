@@ -21,12 +21,8 @@
     xmlns:ant="jelly:ant">
 
   <!-- redefined "build" goal from parent pom -->
-  <goal name="build" prereqs="clean, jar:install, jbi:install"/>
+  <goal name="default" prereqs="clean, jar:install, jbi:install"/>
             
-  <goal name="default">
-    <attainGoal name="build"/>
-  </goal> 
-
   <goal name="nightly" prereqs="clean, jar:install, jbi:install, jar:deploy, jbi:deploy"/>
 
 </project>
