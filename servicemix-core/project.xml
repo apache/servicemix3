@@ -19,7 +19,7 @@
 
 <project>
     <pomVersion>3</pomVersion>
-    <extend>../project.xml</extend>
+    <extend>${basedir}/../etc/project.xml</extend>
 
     <name>ServiceMix :: Core</name>
     <id>servicemix-core</id>
@@ -343,7 +343,7 @@
             <artifactId>commons-primitives</artifactId>
             <version>${commons_primitives_version}</version>
         </dependency>
-
+        
         <dependency>
             <groupId>servicemix</groupId>
             <artifactId>DdlUtils</artifactId>
@@ -364,12 +364,11 @@
             <artifactId>commons-digester</artifactId>
             <version>${commons_digester_version}</version>
         </dependency>
-
- 	    <dependency>
-	        <groupId>easymock</groupId>
-	        <artifactId>easymock</artifactId>
-	        <version>${easymock_version}</version>
-	     </dependency>
+ 	<dependency>
+	    <groupId>easymock</groupId>
+	    <artifactId>easymock</artifactId>
+	    <version>${easymock_version}</version>
+	</dependency>
 
     </dependencies>
 
