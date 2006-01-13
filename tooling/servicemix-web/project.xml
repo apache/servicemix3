@@ -27,15 +27,16 @@
   <dependencies>
 
     <dependency>
-      <groupId>geronimo-spec</groupId>
-      <artifactId>geronimo-spec-servlet</artifactId>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-servlet_2.4_spec</artifactId>
       <version>${geronimo_spec_servlet_version}</version>
       <properties>
         <war.bundle>false</war.bundle>
       </properties>
     </dependency>
     <dependency>
-      <id>geronimo-spec+jms</id>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jms_1.1_spec</artifactId>
       <version>${geronimo_spec_jms_version}</version>
       <properties>
         <war.bundle>true</war.bundle>
@@ -51,7 +52,8 @@
       </properties>
     </dependency>
     <dependency>
-      <id>activemq+ra</id>
+      <groupId>activemq</groupId>
+      <artifactId>activemq-ra</artifactId>
       <version>${activemq_version}</version>
       <properties>
         <war.bundle>true</war.bundle>
@@ -66,7 +68,7 @@
       </properties>
     </dependency>
     <dependency>
-      <groupId>servicemix</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix</artifactId>
       <version>${pom.currentVersion}</version>
       <properties>
