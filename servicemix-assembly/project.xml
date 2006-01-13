@@ -24,12 +24,8 @@
   <extend>${basedir}/../etc/project.xml</extend>
   
   <name>ServiceMix</name>
-  <id>servicemix</id>
-  <groupId>servicemix</groupId>
-  <currentVersion>3.0-SNAPSHOT</currentVersion>
-
-  <name>ServiceMix :: Assembly</name>
-  <id>servicemix</id>
+  <id>servicemix</id>   
+  
   <shortDescription>ServiceMix Assembly</shortDescription>
   <description>ServiceMix Assembly creates a ServiceMix distribution</description>
 
@@ -307,7 +303,7 @@
       </properties>
     </dependency>
 
-    <!--  for ActiveMQ 3.x -->
+    <!--  for ActiveMQ 4.x -->
     <dependency>
       <id>activemq</id>
       <version>${activemq_version}</version>
