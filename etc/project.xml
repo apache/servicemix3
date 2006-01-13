@@ -4,7 +4,7 @@
   <pomVersion>3</pomVersion>
   <name>ServiceMix</name>
   <id>servicemix</id>
-  <groupId>servicemix</groupId>
+  <groupId>org.apache.servicemix</groupId>
   <currentVersion>3.0-SNAPSHOT</currentVersion>
 
   <organization>
@@ -15,7 +15,7 @@
 
   <inceptionYear>2005</inceptionYear>
 
-  <package>org.servicemix</package>
+  <package>org.apache.servicemix</package>
   <packageGroups>
     <packageGroup>
       <title>ServiceMix Core APIs</title>
