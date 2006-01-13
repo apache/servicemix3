@@ -38,12 +38,8 @@
     <goal name="nightly" prereqs="clean, jar:install, jar:deploy, dist:deploy"/>
     
     <!-- redefined "build" goal from parent pom -->
-    <goal name="build" prereqs="jar:install, dist:build-bin"/>
-              
-    <goal name="default">
-      <attainGoal name="build"/>
-    </goal> 
-    
+    <goal name="default" prereqs="jar:install, dist:build-bin"/>
+       
     <goal name="prepare"
           prereqs="dist:prepare-bin-filesystem"/>
 
@@ -126,7 +122,7 @@
     </ant:copy>
     -->
 
-    <ant:copy todir="${maven.dist.bin.assembly.dir}" file="${maven.repo.local}/${pom.groupId}/jars/${pom.groupId}-${pom.currentVersion}.jar"/>
+    <ant:copy todir="${maven.dist.bin.assembly.dir}" file="${maven.repo.local}/${pom.groupId}/jars/${pom.artifactId}-${pom.currentVersion}.jar"/>
 
     <!-- Copy  the runtime dependencies into lib and create a classpath for the server.jar file -->
     <j:set var="libDir" value="${maven.dist.bin.assembly.dir}/lib"/>
