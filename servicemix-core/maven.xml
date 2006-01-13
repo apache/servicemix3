@@ -19,11 +19,11 @@
 -->
 
 <project default="default"
-    xmlns:j="jelly:core"
-    xmlns:u="jelly:util"
-    xmlns:ant="jelly:ant"
-    xmlns:util="jelly:util"
-    xmlns:artifact="artifact">
+         xmlns:j="jelly:core"
+         xmlns:u="jelly:util"
+         xmlns:ant="jelly:ant"
+         xmlns:util="jelly:util"
+         xmlns:artifact="artifact">
 
   <postGoal name="java:compile">
     <attainGoal name="xbean:generate" />
@@ -49,25 +49,21 @@
     <taskdef name="xsdGenerate" classname="org.xbean.spring.generator.MappingGeneratorTask">
       <classpath refid="test.classpath" />
     </taskdef>
-    <xsdGenerate destFile="${basedir}/target/servicemix-${pom.currentVersion}.xsd" namespace="http://servicemix.org/config/1.0"
-    		classpathref="test.classpath" srcdir="${basedir}/src/main/java"  metaInfDir="${basedir}/target/generated/"/>
-  	<copy file="${basedir}/target/servicemix-${pom.currentVersion}.xsd" todir="${basedir}/target/generated/"/>
-  	<copy file="${basedir}/target/servicemix-${pom.currentVersion}.xsd" todir="${basedir}/../xdocs"/>    
-        <copy file="${basedir}/target/servicemix-${pom.currentVersion}.xsd.html" todir="${basedir}/../xdocs"/>
+    
+    <xsdGenerate destFile="${basedir}/target/servicemix-${pom.currentVersion}.xsd" 
+                 namespace="http://servicemix.org/config/1.0"
+    		 classpathref="test.classpath" srcdir="${basedir}/src/main/java"  
+    		 metaInfDir="${basedir}/target/generated/"/>
+    
+    <copy file="${basedir}/target/servicemix-${pom.currentVersion}.xsd" 
+          todir="${basedir}/target/generated/"/>
+    
+    <copy file="${basedir}/target/servicemix-${pom.currentVersion}.xsd" 
+          todir="${basedir}/../xdocs"/>    
+    
+    <copy file="${basedir}/target/servicemix-${pom.currentVersion}.xsd.html" 
+          todir="${basedir}/../xdocs"/>
+  
   </goal>
-  
-  <!-- goal "build" is inherited from parent pom -->
-  <goal name="default">
-    <attainGoal name="build"/>
-  </goal>
-  
-  <postGoal name="clean:clean">
-    <delete failonerror="false" dir="ActiveMQ"/>
-    <delete failonerror="false" dir="ServiceMixWDir"/>
-    <delete failonerror="false" dir="rootDir"/>
-    <delete failonerror="false" dir="testWDIR"/>
-    <delete failonerror="false" dir="testWDR"/>
-    <delete failonerror="false" dir="testWDR"/>
-  </postGoal>
-  
+
 </project>
