@@ -20,9 +20,6 @@
 
 <project default="default" xmlns:ant="jelly:ant">
     
-    <!-- goal "build" is inherited from parent pom -->
-    <goal name="default">
-      <attainGoal name="build"/>
-    </goal>
+    <!-- default goal is defined in /etc/ -->
 
 </project>
