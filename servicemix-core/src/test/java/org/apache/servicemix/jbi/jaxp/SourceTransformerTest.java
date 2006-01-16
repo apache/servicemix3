@@ -15,16 +15,14 @@
  */
 package org.apache.servicemix.jbi.jaxp;
 
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.xbean.spring.context.impl.QNameHelper;
-
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
+
+import org.apache.servicemix.jbi.util.DOMUtil;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public class SourceTransformerTest extends TestCase {
 
@@ -41,7 +39,7 @@ public class SourceTransformerTest extends TestCase {
         assertTrue(node instanceof Document);
         Document doc = (Document) node;
         Element e = (Element) doc.getDocumentElement().getFirstChild();
-        QName q = QNameHelper.createQName(e, e.getFirstChild().getNodeValue());
+        QName q = DOMUtil.createQName(e, e.getFirstChild().getNodeValue());
         assertEquals("http://foo.bar.com", q.getNamespaceURI());
     }
 

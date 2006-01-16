@@ -25,6 +25,8 @@ public interface JbiConstants {
     
     String SECURITY_SUBJECT = "javax.jbi.security.subject";
     
+    String SOAP_HEADERS = "org.apache.servicemix.soap.headers";
+    
 	String PERSISTENT_PROPERTY_NAME = "org.apache.servicemix.persistent";
     
     String DATESTAMP_PROPERTY_NAME = "org.apache.servicemix.datestamp";

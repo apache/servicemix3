@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<test firstAtt="toto" secondAtt="titit" xmlns:u="uri:test3">
+  <u:hello>world</u:hello>
+  <!-- A comment -->
+  <child xmlns="uri:test" atr1="val1" xmlns:t="uri:test2" t:atr2="val2">
+    <child2> t i u </child2>
+    <child3 xmlns=""/>
+  </child>
+</test>
