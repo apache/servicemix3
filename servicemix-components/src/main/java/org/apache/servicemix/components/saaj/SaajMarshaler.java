@@ -137,7 +137,7 @@ public class SaajMarshaler {
         	document = (Document) node;
         } else if (node instanceof Element) {
         	document = transformer.createDocument();
-        	document.appendChild(node.cloneNode(true));
+        	document.appendChild(document.importNode(node,true));
         } else {
         	throw new TransformerException("Could not create Document from Source");
         }
