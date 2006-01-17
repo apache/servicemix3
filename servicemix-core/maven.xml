@@ -51,7 +51,7 @@
     </taskdef>
     
     <xsdGenerate destFile="${basedir}/target/servicemix-${pom.currentVersion}.xsd" 
-                 namespace="http://servicemix.org/config/1.0"
+                 namespace="http://servicemix.apache.org/config/1.0"
     		 classpathref="test.classpath" srcdir="${basedir}/src/main/java"  
     		 metaInfDir="${basedir}/target/generated/"/>
     
