@@ -347,7 +347,7 @@
         
         <dependency>
             <groupId>servicemix</groupId>
-            <artifactId>DdlUtils</artifactId>
+            <artifactId>ddlutils</artifactId>
             <version>${ddlutils_version}</version>
         </dependency>
         <dependency>
