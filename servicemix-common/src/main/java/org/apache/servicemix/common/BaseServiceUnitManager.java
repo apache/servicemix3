@@ -21,6 +21,15 @@ import javax.jbi.component.ServiceUnitManager;
 import javax.jbi.management.DeploymentException;
 import javax.jbi.management.LifeCycleMBean;
 
+/**
+ * A simple service unit manager.
+ * This service unit manager uses {@link Deployer} objects
+ * to handle different type of service units.
+ * 
+ * @author Guillaume Nodet
+ * @version $Revision$
+ * @since 3.0
+ */
 public class BaseServiceUnitManager implements ServiceUnitManager {
 
     protected final transient Log logger;
@@ -222,6 +231,13 @@ public class BaseServiceUnitManager implements ServiceUnitManager {
     }
 
     protected void doUndeploy(ServiceUnit su) throws Exception {
+        for (int i = 0; i < deployers.length; i++) {
+            if (deployers[i].canDeploy(su.getName(), su.getRootPath())) {
+                deployers[i].undeploy(su);
+                return;
+            }
+        }
+        throw failure("undeploy", "Unable to find suitable deployer for Service Unit '" + su.getName() + "'", null);
     }
     
     protected DeploymentException failure(String task, String info, Exception e) throws DeploymentException {

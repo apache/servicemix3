@@ -29,6 +29,13 @@ import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.resource.spi.work.WorkManager;
 
+/**
+ * Base class for a component.
+ * 
+ * @author Guillaume Nodet
+ * @version $Revision$
+ * @since 3.0
+ */
 public abstract class BaseComponent implements Component {
 
     protected final transient Log logger = LogFactory.getLog(getClass());
@@ -120,10 +127,25 @@ public abstract class BaseComponent implements Component {
         return null;
     }
     
+    /**
+     * Create the life cycle object.
+     * Derived classes should override this method to be able to
+     * use a custom life cycle implementation.
+     * 
+     * @return a life cycle object
+     */
     protected BaseLifeCycle createLifeCycle() {
         return new BaseLifeCycle(this);
     }
 
+    /**
+     * Create the service unit manager.
+     * Derived classes should override this method and return a 
+     * BaseServiceUnitManager so that the component is able to 
+     * handle service unit deployment.
+     * 
+     * @return a service unit manager
+     */
     protected BaseServiceUnitManager createServiceUnitManager() {
         return null;
     }

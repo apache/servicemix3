@@ -17,12 +17,41 @@ package org.apache.servicemix.common;
 
 import javax.jbi.management.DeploymentException;
 
+/**
+ * A deployer is responsible for handling one type of artifact deployment.
+ * 
+ * @author Guillaume Nodet
+ * @version $Revision$
+ * @since 3.0
+ */
 public interface Deployer {
 
+	/**
+	 * Check if this deployer is able to handle a given artifact.
+	 * 
+	 * @param serviceUnitName the name of the service unit 
+	 * @param serviceUnitRootPath the path of the exploded service unit
+	 * @return <code>true</code> if this deployer can handle the given artifact
+	 */
     boolean canDeploy(String serviceUnitName, 
-                       String serviceUnitRootPath);
+                      String serviceUnitRootPath);
     
+    /**
+     * Actually deploys the given service unit and build a ServiceUnit object
+     * that contains endpoints.
+     * 
+	 * @param serviceUnitName the name of the service unit 
+	 * @param serviceUnitRootPath the path of the exploded service unit
+     * @return a service unit containing endpoints
+     * @throws DeploymentException if an error occurs
+     */
     ServiceUnit deploy(String serviceUnitName, 
                        String serviceUnitRootPath) throws DeploymentException;
+
+    /**
+     * Undeploys the given service unit.
+     * @param su the service unit to undeploy
+     */
+	void undeploy(ServiceUnit su) throws DeploymentException;
     
 }

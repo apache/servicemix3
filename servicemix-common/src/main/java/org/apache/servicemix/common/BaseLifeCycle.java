@@ -39,6 +39,14 @@ import org.apache.commons.logging.Log;
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * Base class for life cycle management of components.
+ * This class may be used as is.
+ * 
+ * @author Guillaume Nodet
+ * @version $Revision$
+ * @since 3.0
+ */
 public class BaseLifeCycle implements ComponentLifeCycle {
 
     protected final transient Log logger;

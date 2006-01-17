@@ -24,6 +24,13 @@ import javax.jbi.component.InstallationContext;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+/**
+ * Base class for components bootstrap.
+ * 
+ * @author Guillaume Nodet
+ * @version $Revision$
+ * @since 3.0
+ */
 public class BaseBootstrap implements Bootstrap {
 
     protected final transient Log logger = LogFactory.getLog(getClass());

@@ -19,6 +19,13 @@ import org.apache.commons.logging.Log;
 
 import javax.jbi.management.DeploymentException;
 
+/**
+ * Base classes for custom artifacts deployers.
+ * 
+ * @author Guillaume Nodet
+ * @version $Revision$
+ * @since 3.0
+ */
 public abstract class AbstractDeployer implements Deployer {
 
     protected final transient Log logger;
@@ -39,6 +46,9 @@ public abstract class AbstractDeployer implements Deployer {
         msg.setMessage(info);
         msg.setException(e);
         return new DeploymentException(ManagementSupport.createComponentMessage(msg));
+    }
+    
+    public void undeploy(ServiceUnit su) throws DeploymentException {
     }
     
 }
