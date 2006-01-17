@@ -468,7 +468,7 @@
     <!-- Groovy -->
     <dependency>
       <groupId>groovy</groupId>
-      <artifactId>groovy-all</artifactId>
+      <artifactId>groovy-all-1.0-jsr</artifactId>
       <version>${groovy_version}</version>
       <properties>
         <lib>true</lib>
@@ -741,7 +741,7 @@
     
     <dependency>
       <groupId>servicemix</groupId>
-      <artifactId>DdlUtils</artifactId>
+      <artifactId>ddlutils</artifactId>
       <version>${ddlutils_version}</version>
       <properties>
         <lib>true</lib>
