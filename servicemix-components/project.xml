@@ -427,7 +427,7 @@
 
     <dependency>
       <groupId>groovy</groupId>
-      <artifactId>groovy-all</artifactId>
+      <artifactId>groovy-all-1.0-jsr</artifactId>
       <version>${groovy_version}</version>
     </dependency>
 
