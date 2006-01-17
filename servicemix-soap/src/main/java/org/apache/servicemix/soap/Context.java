@@ -26,7 +26,6 @@ import java.util.Map;
  */
 public class Context {
 
-	public static final String EXCHANGE_MEP = "org.apache.servicemix.ExchangeMep";
 	public static final String SOAP_MESSAGE = "org.apache.servicemix.SoapMessage";
 	public static final String INTERFACE = "org.apache.servicemix.Interface";
 	public static final String OPERATION = "org.apache.servicemix.Operation";
