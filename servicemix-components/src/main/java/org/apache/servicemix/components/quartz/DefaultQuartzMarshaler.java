@@ -38,20 +38,17 @@ import org.w3c.dom.Element;
  * @version $Revision$
  */
 public class DefaultQuartzMarshaler extends MarshalerSupport implements QuartzMarshaler {
-    public static final String CONTEXT_KEY = "org.apache.servicemix.quartz.context";
-    public static final String DETAIL_KEY = "org.apache.servicemix.quartz.detail";
 
     public void populateNormalizedMessage(NormalizedMessage message, JobExecutionContext context) throws JobExecutionException, MessagingException {
-        message.setProperty(CONTEXT_KEY, context);
         JobDetail detail = context.getJobDetail();
-        message.setProperty(DETAIL_KEY, detail);
-
         JobDataMap dataMap = detail.getJobDataMap();
         for (Iterator iter = dataMap.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iter.next();
             String key = (String) entry.getKey();
-            Object value = entry.getValue();
-            message.setProperty(key, value);
+            if (!key.equals(QuartzComponent.COMPONENT_KEY)) {
+	            Object value = entry.getValue();
+	            message.setProperty(key, value);
+            }
         }
 
         try {

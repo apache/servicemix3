@@ -59,7 +59,8 @@ public class JmsMarshaler {
         }
 
         // lets add the message to the NMS
-        normalizedMessage.setProperty("org.apache.servicemix.jms.message", message);
+        // Fix SM-178 : the message exchange is not serializable
+        //normalizedMessage.setProperty("org.apache.servicemix.jms.message", message);
     }
 
     public Message createMessage(NormalizedMessage normalizedMessage, Session session) throws JMSException, TransformerException {
