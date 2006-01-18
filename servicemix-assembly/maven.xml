@@ -103,7 +103,7 @@
     <ant:jar destfile="${maven.dist.bin.assembly.dir}/bin/run.jar" basedir="${maven.build.dir}/classes">
       <ant:include name="org/activemq/broker/Main*.class"/>
       <ant:manifest>
-        <ant:attribute name="Main-Class" value="org.activemq.broker.Main"/>
+        <ant:attribute name="Main-Class" value="org.apache.activemq.broker.Main"/>
       </ant:manifest>
     </ant:jar>
     <ant:copy todir="${maven.dist.bin.assembly.dir/conf}">
