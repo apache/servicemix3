@@ -223,16 +223,14 @@ public class FileUtil {
                         if (!file.getName().equals(".") && !file.getName().equals("..")) {
                             if (file.isDirectory()) {
                                 result &= deleteFile(file);
+                            } else {
+                            	result &= file.delete();
                             }
-                            result &= file.delete();
                         }
                     }
                 }
             }
             result &= fileToDelete.delete();
-            if (fileToDelete.exists()) {
-                fileToDelete.delete();
-            }
         }
         return result;
     }
