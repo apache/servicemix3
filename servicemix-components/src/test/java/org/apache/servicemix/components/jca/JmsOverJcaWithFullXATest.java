@@ -29,7 +29,8 @@ public class JmsOverJcaWithFullXATest extends TestSupport {
     public void testSendMessagesToJmsThenOutofJmsToReceiver() throws Exception {
         QName service = new QName("http://servicemix.org/cheese/", "myJmsSender");
 
-        assertSendAndReceiveMessages(service);
+        sendMessages(service, messageCount, false);
+        assertMessagesReceived(messageCount);
     }
 
     protected AbstractXmlApplicationContext createBeanFactory() {

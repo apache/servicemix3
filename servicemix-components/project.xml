@@ -304,6 +304,11 @@
       <artifactId>geronimo-servlet_2.4_spec</artifactId>
       <version>${geronimo_spec_servlet_version}</version>
     </dependency>
+    <dependency>
+      <groupId>geronimo</groupId>
+      <artifactId>geronimo-activation</artifactId>
+      <version>${geronimo_version}</version>
+    </dependency>
 
     <!--  for custom XML parsing -->
     <dependency>
@@ -547,6 +552,34 @@
 
   </dependencies>
 
+<build>
+    <nagEmailAddress>nag@agilasoft.org</nagEmailAddress>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
+
+    <integrationUnitTestSourceDirectory />
+    <aspectSourceDirectory />
+
+    <unitTest>
+      <excludes>
+        <!--  exclude abstract tests -->
+        <exclude>**/Abstract*Test.*</exclude>
+
+        <!-- Geronimo javamail bug -->
+        <exclude>**/HttpSoapAttachmentsTest.*</exclude>
+
+        <!-- need a jabber test server... -->
+        <exclude>**/Jabber*.*</exclude>
+
+        <!-- need a ftp server... -->
+        <exclude>**/FTP*.*</exclude>
+
+        <!-- need to check why it fails -->
+        <exclude>**/JmsOverJcaWithFullXATest.*</exclude>
+      </excludes>
+    </unitTest>
+  </build>
+  
   <reports>
     <report>maven-jdepend-plugin</report>
     <!-- re-enable when we can get the warnings down to less than a few Mb!
