@@ -106,6 +106,12 @@
       <artifactId>stax-utils</artifactId>
       <version>${stax_utils_version}</version>
     </dependency>
+    <dependency>
+      <groupId>wsdl4j</groupId>
+      <artifactId>wsdl4j</artifactId>
+      <version>${wsdl4j_version}</version>
+    </dependency>
+    
       
     </dependencies>  
 
