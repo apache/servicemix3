@@ -12,11 +12,11 @@
     WAR deployment unit for ServiceMix
   </shortDescription>
 
-  <package>org.servicemix.web</package>
+  <package>org.apache.servicemix.web</package>
   <packageGroups>
     <packageGroup>
       <title>WAR deployment unit for ServiceMix</title>
-      <packages>org.servicemix.web</packages>
+      <packages>org.apache.servicemix.web</packages>
     </packageGroup>
   </packageGroups>
 
