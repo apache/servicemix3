@@ -8,7 +8,7 @@
 
     <echo>Running the Web Application</echo>
 
-    <java classname="org.servicemix.web.JettyServer" fork="yes" maxmemory="100M">
+    <java classname="org.apache.servicemix.web.JettyServer" fork="yes" maxmemory="100M">
       <classpath refid="test.classpath"/>
       <sysproperty key="derby.system.home" value="target/derby"/>
       <sysproperty key="derby.storage.fileSyncTransactionLog" value="true"/>
