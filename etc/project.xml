@@ -19,43 +19,43 @@
   <packageGroups>
     <packageGroup>
       <title>ServiceMix Core APIs</title>
-      <packages>org.servicemix</packages>
+      <packages>org.apache.servicemix</packages>
     </packageGroup>
     <packageGroup>
       <title>JBI Client API</title>
-      <packages>org.servicemix.client</packages>
+      <packages>org.apache.servicemix.client</packages>
     </packageGroup>
     <packageGroup>
       <title>JBI Components</title>
-      <packages>org.servicemix.components.*</packages>
+      <packages>org.apache.servicemix.components.*</packages>
     </packageGroup>
     <packageGroup>
       <title>JBI Container</title>
-      <packages>org.servicemix.jbi.container</packages>
+      <packages>org.apache.servicemix.jbi.container</packages>
     </packageGroup>
     <packageGroup>
       <title>Normalized Message Router</title>
-      <packages>org.servicemix.jbi.nmr</packages>
+      <packages>org.apache.servicemix.jbi.nmr</packages>
     </packageGroup>
     <packageGroup>
       <title>Message Router Dispatching</title>
-      <packages>org.servicemix.jbi.nmr.flow.*</packages>
+      <packages>org.apache.servicemix.jbi.nmr.flow.*</packages>
     </packageGroup>
     <packageGroup>
       <title>Normalized Message Service implemenation</title>
-      <packages>org.servicemix.jbi.messaging</packages>
+      <packages>org.apache.servicemix.jbi.messaging</packages>
     </packageGroup>
     <packageGroup>
       <title>Endpoint resolving and choosing strategies</title>
-      <packages>org.servicemix.jbi.resolver</packages>
+      <packages>org.apache.servicemix.jbi.resolver</packages>
     </packageGroup>
     <packageGroup>
       <title>JAXP utilities</title>
-      <packages>org.servicemix.jbi.jaxp</packages>
+      <packages>org.apache.servicemix.jbi.jaxp</packages>
     </packageGroup>
     <packageGroup>
       <title>JBI Container implementation</title>
-      <packages>org.servicemix.jbi:org.servicemix.jbi.*</packages>
+      <packages>org.apache.servicemix.jbi:org.servicemix.jbi.*</packages>
     </packageGroup>
   </packageGroups>
 
@@ -76,35 +76,35 @@
   <distributionDirectory>/home/projects/servicemix/dist</distributionDirectory>
 
   <repository>
-    <connection>scm:svn:svn://svn.servicemix.org/servicemix/scm/servicemix/trunk</connection>
-    <developerConnection>scm:svn:svn+ssh://svn.servicemix.org/servicemix/scm/servicemix/trunk</developerConnection>
-    <url>http://svn.servicemix.codehaus.org/trunk/</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/servicemix/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/servicemix/trunk</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/incubator/servicemix/trunk/</url>
   </repository>
 
   <mailingLists>
     <mailingList>
       <name>ServiceMix Developer List</name>
-      <subscribe>dev-subscribe@servicemix.codehaus.org</subscribe>
-      <unsubscribe>dev-unsubscribe@servicemix.codehaus.org</unsubscribe>
+      <subscribe>servicemix-dev-subscribe@geronimo.apache.org</subscribe>
+      <unsubscribe>servicemix-dev-unsubscribe@geronimo.apache.org</unsubscribe>
       <!--
       <archive>http://archive.servicemix.codehaus.org/dev/</archive>
       -->
-      <archive>http://dir.gmane.org/gmane.comp.java.servicemix.devel</archive>
+      <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-dev/</archive>
     </mailingList>
     <mailingList>
       <name>ServiceMix User List</name>
-      <subscribe>user-subscribe@servicemix.codehaus.org</subscribe>
-      <unsubscribe>user-unsubscribe@servicemix.codehaus.org</unsubscribe>
+      <subscribe>servicemix-users-subscribe@geronimo.apache.org</subscribe>
+      <unsubscribe>servicemix-users-unsubscribe@geronimo.apache.org</unsubscribe>
       <!--
       <archive>http://archive.servicemix.codehaus.org/user/</archive>
       -->
-      <archive>http://dir.gmane.org/gmane.comp.java.servicemix.user</archive>
+      <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-users/</archive>
     </mailingList>
     <mailingList>
       <name>ServiceMix SCM List</name>
-      <subscribe>scm-subscribe@servicemix.codehaus.org</subscribe>
-      <unsubscribe>scm-unsubscribe@servicemix.codehaus.org</unsubscribe>
-      <archive>http://archive.servicemix.codehaus.org/scm/</archive>
+      <subscribe>servicemix-commits-subscribe@geronimo.apache.org</subscribe>
+      <unsubscribe>servicemix-commits-unsubscribe@geronimo.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-commits/</archive>
     </mailingList>
   </mailingLists>
 
