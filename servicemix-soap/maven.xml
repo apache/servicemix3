@@ -20,8 +20,8 @@
 <project default="default" xmlns:ant="jelly:ant">
 
   <!-- redefined "build" goal from parent to create a war instead -->
-  <goal name="default" prereqs="war:install"/>
+  <goal name="default" prereqs="jar:install"/>
   
-  <goal name="nightly" prereqs="clean, war:install, war:deploy"/>
+  <goal name="nightly" prereqs="clean, jar:install, jar:deploy"/>
 
 </project>
