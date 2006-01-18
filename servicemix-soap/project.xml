@@ -102,7 +102,7 @@
       <version>${woodstox_version}</version>
     </dependency>
     <dependency>
-      <groupId>stax-utils</groupId>
+      <groupId>servicemix</groupId>
       <artifactId>stax-utils</artifactId>
       <version>${stax_utils_version}</version>
     </dependency>
