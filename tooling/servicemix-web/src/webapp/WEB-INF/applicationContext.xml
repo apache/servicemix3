@@ -22,14 +22,14 @@
       <!--  an example HTTP binding for use by the SpringBindingServlet  -->
       <!-- START SNIPPET: http -->
       <sm:activationSpec componentName="httpBinding" service="foo:httpBinding" destinationService="foo:echo">
-        <sm:component><bean class="org.servicemix.components.http.HttpInOutBinding" /></sm:component>
+        <sm:component><bean class="org.apache.servicemix.components.http.HttpInOutBinding" /></sm:component>
       </sm:activationSpec>
       <!-- END SNIPPET: http -->
 
       <!--  a simple Echo service to test InOut message exchanges using HTTP-->
       <sm:activationSpec componentName="echo" service="foo:echo" >
         <sm:component>
-          <bean class="org.servicemix.components.HelloWorldComponent">
+          <bean class="org.apache.servicemix.components.HelloWorldComponent">
             <property name="property" value="name"/>
           </bean>
         </sm:component>
@@ -38,7 +38,7 @@
       <!-- lets kick off a timer to send messages on an input destination topic -->
       <sm:activationSpec componentName="timer" service="my:timer" destinationService="my:inputSender">
         <sm:component>
-          <bean class="org.servicemix.components.quartz.QuartzComponent">
+          <bean class="org.apache.servicemix.components.quartz.QuartzComponent">
         <property name="triggers">
           <map>
             <entry>
@@ -61,13 +61,13 @@
       
       <sm:activationSpec componentName="inputSender" service="my:inputSender">
         <sm:component>
-          <bean class="org.servicemix.components.jms.JmsSenderComponent">
+          <bean class="org.apache.servicemix.components.jms.JmsSenderComponent">
         <property name="template">
           <bean class="org.springframework.jms.core.JmsTemplate">
             <property name="connectionFactory">
               <ref local="jmsFactory"/>
             </property>
-            <property name="defaultDestinationName" value="demo.org.servicemix.source"/>
+            <property name="defaultDestinationName" value="demo.org.apache.servicemix.source"/>
             <property name="pubSubDomain" value="true"/>
           </bean>
         </property>
@@ -79,11 +79,11 @@
       <!-- lets subscribe and republish on a different JMS destination - i.e. make a JMS bridge -->
       <sm:activationSpec componentName="inputReceiver" service="my:inputReceiver" destinationService="my:outputSender">
         <sm:component>
-          <bean class="org.servicemix.components.jms.JmsInUsingJCABinding">
+          <bean class="org.apache.servicemix.components.jms.JmsInUsingJCABinding">
         <property name="jcaContainer" ref="jencks"/>
         <property name="activationSpec">
-          <bean class="org.activemq.ra.ActiveMQActivationSpec">
-            <property name="destination" value="demo.org.servicemix.source"/>
+          <bean class="org.apache.activemq.ra.ActiveMQActivationSpec">
+            <property name="destination" value="demo.org.apache.servicemix.source"/>
             <property name="destinationType" value="javax.jms.Topic"/>
           </bean>
         </property>
@@ -94,13 +94,13 @@
 
       <sm:activationSpec componentName="outputSender" service="my:outputSender">
         <sm:component>
-          <bean class="org.servicemix.components.jms.JmsSenderComponent">
+          <bean class="org.apache.servicemix.components.jms.JmsSenderComponent">
         <property name="template">
           <bean class="org.springframework.jms.core.JmsTemplate">
             <property name="connectionFactory">
               <ref local="jmsFactory"/>
             </property>
-            <property name="defaultDestinationName" value="demo.org.servicemix.result"/>
+            <property name="defaultDestinationName" value="demo.org.apache.servicemix.result"/>
             <property name="pubSubDomain" value="true"/>
           </bean>
         </property>
@@ -112,11 +112,11 @@
       <!-- just to demonstrate that we are sending messages, lets trace the messages we receive -->
       <sm:activationSpec componentName="jmsTrace" service="my:jmsTrace" destinationService="my:trace">
         <sm:component>
-          <bean class="org.servicemix.components.jms.JmsInUsingJCABinding">
+          <bean class="org.apache.servicemix.components.jms.JmsInUsingJCABinding">
         <property name="jcaContainer" ref="jencks"/>
         <property name="activationSpec">
-          <bean class="org.activemq.ra.ActiveMQActivationSpec">
-            <property name="destination" value="demo.org.servicemix.result"/>
+          <bean class="org.apache.activemq.ra.ActiveMQActivationSpec">
+            <property name="destination" value="demo.org.apache.servicemix.result"/>
             <property name="destinationType" value="javax.jms.Topic"/>
           </bean>
         </property>
@@ -126,7 +126,7 @@
 
       <sm:activationSpec componentName="trace" service="my:trace">
         <sm:component>
-          <bean class="org.servicemix.components.util.TraceComponent"/>
+          <bean class="org.apache.servicemix.components.util.TraceComponent"/>
         </sm:component>
       </sm:activationSpec>
     </sm:activationSpecs>
@@ -145,7 +145,7 @@
 
     <!-- the JCA Resource Adapter -->
     <property name="resourceAdapter">
-      <bean id="activeMQResourceAdapter" class="org.activemq.ra.ActiveMQResourceAdapter" singleton="true">
+      <bean id="activeMQResourceAdapter" class="org.apache.activemq.ra.ActiveMQResourceAdapter" singleton="true">
         <property name="serverUrl" value="tcp://localhost:61636"/>
       </bean>
     </property>
@@ -154,22 +154,22 @@
   <!-- message broker -->
   
   <!--  ActiveMQ 3.x  -->
-  <bean id="broker" class="org.activemq.spring.BrokerFactoryBean">
+  <bean id="broker" class="org.apache.activemq.spring.BrokerFactoryBean">
      <property name="config" value="/WEB-INF/activemq.xml"/>
    </bean>
   
   <!--  ActiveMQ 4.x  -->
   <!-- 
-  <bean id="broker" class="org.activemq.broker.BrokerService" init-method="start">
+  <bean id="broker" class="org.apache.activemq.broker.BrokerService" init-method="start">
     <property name="transportConnectorURIs" value="tcp://localhost:61636"/>
   </bean>
    -->
   
   <bean id="transactionManager" class="org.jencks.factory.TransactionManagerFactoryBean"/>
 
-  <bean id="jmsFactory" class="org.activemq.pool.PooledConnectionFactory">
+  <bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
     <property name="connectionFactory">
-      <bean class="org.activemq.ActiveMQConnectionFactory">
+      <bean class="org.apache.activemq.ActiveMQConnectionFactory">
         <constructor-arg value="tcp://localhost:61636"/>
       </bean>
     </property>
