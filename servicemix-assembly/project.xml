@@ -23,7 +23,7 @@
   <pomVersion>3</pomVersion>
   <extend>${basedir}/../etc/project.xml</extend>
   
-  <name>ServiceMix</name>
+  <name>ServiceMix :: Assembly</name>
   <id>servicemix</id>   
   
   <shortDescription>ServiceMix Assembly</shortDescription>
