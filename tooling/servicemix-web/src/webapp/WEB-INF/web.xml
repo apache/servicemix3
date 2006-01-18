@@ -27,7 +27,7 @@
   <!-- the main JMX servlet -->
   <servlet>
     <servlet-name>JMXServlet</servlet-name>
-    <servlet-class>org.servicemix.web.jmx.JMXServlet</servlet-class>
+    <servlet-class>org.apache.servicemix.web.jmx.JMXServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
 
@@ -37,7 +37,7 @@
   <servlet>
     <servlet-name>BindingServlet</servlet-name>
     <servlet-class>
-      org.servicemix.components.http.SpringBindingServlet
+      org.apache.servicemix.components.http.SpringBindingServlet
     </servlet-class>
     <init-param>
       <param-name>endpoint</param-name>
