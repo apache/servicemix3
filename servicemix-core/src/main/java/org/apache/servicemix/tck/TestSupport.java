@@ -59,13 +59,17 @@ public abstract class TestSupport extends SpringTestSupport {
         assertMessagesReceived(messageCount);
     }
 
+    protected void sendMessages(QName service, int messageCount) throws Exception {
+    	sendMessages(service, messageCount, true);
+    }
+    
     /**
      * Sends the given number of messages to the given service
      *
      * @param service
      * @throws javax.jbi.messaging.MessagingException
      */
-    protected void sendMessages(QName service, int messageCount) throws Exception {
+    protected void sendMessages(QName service, int messageCount, boolean sync) throws Exception {
         for (int i = 1; i <= messageCount; i++) {
             InOnly exchange = client.createInOnlyExchange();
 
@@ -76,7 +80,11 @@ public abstract class TestSupport extends SpringTestSupport {
             message.setContent(new StringSource(createMessageXmlText(i)));
 
             exchange.setService(service);
-            client.sendSync(exchange);
+            if (sync) {
+            	client.sendSync(exchange);
+            } else {
+            	client.send(exchange);
+            }
 
             // lets assert that we have no failure
             Exception error = exchange.getError();
