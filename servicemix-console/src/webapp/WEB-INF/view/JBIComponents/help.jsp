@@ -1,0 +1,1 @@
+<p>This portlet allows the user to view the jbi components state.

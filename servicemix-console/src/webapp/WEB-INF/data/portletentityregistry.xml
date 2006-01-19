@@ -8,5 +8,8 @@
         <portlet id="2">
             <definition-id>servicemix-console.JBIAudit</definition-id>
         </portlet>
+        <portlet id="3">
+            <definition-id>servicemix-console.JBIComponents</definition-id>
+        </portlet>
     </application>
 </portlet-entity-registry>
