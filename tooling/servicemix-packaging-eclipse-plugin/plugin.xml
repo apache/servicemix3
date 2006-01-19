@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>	
+    <extension point="org.eclipse.ui.editors">
+    <editor default="true" name="JBI Component Deployer" extensions="jbi" icon="bob.gif" class="org.apache.servicemix.packaging.DeployerEditor" id="com.unity.jbi.deployer.DeployerEditor">
+      <contentTypeBinding contentTypeId="JBIDeploymentContentType">
+      </contentTypeBinding>
+    </editor>
+  </extension>
+  <extension point="org.eclipse.ui.preferencePages">
+    <page name="Registered JBI Components" class="org.apache.servicemix.packaging.preferences.JbiComponentPreferences" id="JBIComponentPreferences">
+    </page>
+  </extension>
+</plugin>
