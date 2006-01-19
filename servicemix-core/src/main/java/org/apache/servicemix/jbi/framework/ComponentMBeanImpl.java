@@ -19,8 +19,6 @@ import javax.jbi.JBIException;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanOperationInfo;
-import javax.management.MBeanRegistration;
-import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
@@ -30,7 +28,7 @@ import org.apache.servicemix.jbi.management.OperationInfoHelper;
 /**
  * Defines basic statistics on the Component
  */
-public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean,MBeanRegistration {
+public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean {
     private LocalComponentConnector connector;
     private ObjectName objectName;
        
@@ -291,26 +289,6 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean,
     }
     
     /**
-     * MBean Registration implementation
-     */
-    
-   public ObjectName preRegister(MBeanServer mbs,ObjectName on){
-       if(on != null){ //double registrations can occur - the 2nd can be null
-           this.objectName = on;
-       }
-       return on;
-   }
-
-   public void postRegister(Boolean done) {
-   }
-
-   public void preDeregister() throws Exception {
-   }
-
-   public void postDeregister() {
-   }
-    
-    /**
      * Get an array of MBeanAttributeInfo
      * 
      * @return array of AttributeInfos
@@ -342,5 +320,9 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean,
         helper.addOperation(getObjectToManage(), "reset", "reset statistic counters");
         return OperationInfoHelper.join(super.getOperationInfos(),helper.getOperationInfos());
     }
+
+	public void setObjectName(ObjectName objectName) {
+		this.objectName = objectName;
+	}
 
 }

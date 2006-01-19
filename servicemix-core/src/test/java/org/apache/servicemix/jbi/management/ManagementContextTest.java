@@ -17,6 +17,7 @@ package org.apache.servicemix.jbi.management;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.components.util.EchoComponent;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.management.ManagementContext;
 
@@ -44,16 +45,25 @@ public class ManagementContextTest extends TestCase {
 	private String jndiPath = "/" + JBIContainer.DEFAULT_NAME + "JMX";
     
 	private ManagementContext context;
+	private JBIContainer container;
 
     protected void setUp() throws Exception {
+    	container = new JBIContainer();
+    	container.setCreateMBeanServer(true);
+    	container.setRmiPort(namingPort);
+    	container.init();
+    	container.start();
+    	context = container.getManagementContext();
+    	/*
         context = new ManagementContext();
         context.setCreateMBeanServer(true);
         context.setNamingPort(namingPort);
-        context.init(new JBIContainer(), null);
+        context.init(container, null);
+        */
     }
     
     protected void tearDown() throws Exception {
-        context.shutDown();
+    	container.shutDown();
     }
 
     public void testRemote() throws Exception {
@@ -87,6 +97,19 @@ public class ManagementContextTest extends TestCase {
         mc.stop();
         log.info("STATE = " + mc.getCurrentState());
         mc.shutDown();
+    }
+    
+    public void testComponent() throws Exception {
+    	ObjectName[] names = context.getEngineComponents();
+    	assertEquals(1, names.length);
+    	EchoComponent echo = new EchoComponent();
+    	container.activateComponent(echo, "echo");
+    	names = context.getEngineComponents();
+    	assertNotNull(names);
+    	assertEquals(2, names.length);
+    	assertEquals(LifeCycleMBean.RUNNING, echo.getCurrentState());
+    	context.stopComponent("echo");
+    	assertEquals(LifeCycleMBean.STOPPED, echo.getCurrentState());
     }
     
 }

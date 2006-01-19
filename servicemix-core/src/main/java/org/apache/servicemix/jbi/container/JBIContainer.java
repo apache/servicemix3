@@ -915,6 +915,7 @@ public class JBIContainer extends BaseLifeCycle {
             result = managementContext.createObjectName(lcc.getComponentMBean());
             try {
                 managementContext.registerMBean(result, lcc.getComponentMBean(), ComponentMBean.class);
+                lcc.getComponentMBean().setObjectName(result);
             }
             catch (JMException e) {
                 throw new JBIException(e);

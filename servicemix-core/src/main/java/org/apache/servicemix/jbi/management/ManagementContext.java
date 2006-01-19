@@ -470,7 +470,7 @@ public class ManagementContext extends BaseLifeCycle implements ManagementContex
                 beanServer.unregisterMBean(name);
             }
             beanServer.registerMBean(mbean, name);
-            beanMap.put(resource, name);
+            beanMap.put(name, resource);
         }
     }
 
@@ -575,13 +575,7 @@ public class ManagementContext extends BaseLifeCycle implements ManagementContex
         try {
             if (name != null && beanServer != null && beanServer.isRegistered(name)) {
                 beanServer.unregisterMBean(name);
-                for (Iterator i = beanMap.entrySet().iterator();i.hasNext();) {
-                    Map.Entry entry = (Map.Entry) i.next();
-                    if (entry.getValue().equals(name)) {
-                        beanMap.remove(entry.getKey());
-                        break;
-                    }
-                }
+                beanMap.remove(name);
             }
         } catch (JMException e) {
             throw new JBIException("Could not unregister mbean", e);
@@ -595,13 +589,13 @@ public class ManagementContext extends BaseLifeCycle implements ManagementContex
      * @throws JMException
      */
     public void unregisterMBean(Object bean) throws JBIException {
-        try {
-            ObjectName name = (ObjectName) beanMap.remove(bean);
-            if (name != null && beanServer != null) {
-                beanServer.unregisterMBean(name);
+        for (Iterator i = beanMap.entrySet().iterator();i.hasNext();) {
+            Map.Entry entry = (Map.Entry) i.next();
+            if (entry.getValue() == bean) {
+            	ObjectName name = (ObjectName) entry.getKey();
+            	unregisterMBean(name);
+                break;
             }
-        } catch (JMException e) {
-            throw new JBIException("Could not unregister mbean", e);
         }
     }
 
