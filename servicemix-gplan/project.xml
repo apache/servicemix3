@@ -158,7 +158,7 @@
 			</properties>
 		</dependency>
 		<dependency>
-			<groupId>activemq</groupId>
+			<groupId>incubator-activemq</groupId>
 			<artifactId>activemq-core</artifactId>
 			<version>${activemq_version}</version>
 			<properties>
