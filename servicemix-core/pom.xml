@@ -61,11 +61,11 @@
             <artifactId>activeio</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.servicemix.dependencies</groupId>
+            <groupId>incubator-activemq</groupId>
             <artifactId>activemq-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.servicemix.dependencies</groupId>
+            <groupId>incubator-activemq</groupId>
             <artifactId>activemq-ra</artifactId>
         </dependency>
 
