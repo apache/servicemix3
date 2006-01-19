@@ -4,13 +4,13 @@
     xmlns="http://maven.apache.org/POM/4.0.0">
 
     <parent>
-        <groupId>servicemix</groupId>
+        <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>servicemix</groupId>
+    <groupId>org.apache.servicemix</groupId>
     <artifactId>servicemix-web</artifactId>
     <packaging>war</packaging>
     <name>ServiceMix :: Web</name>
@@ -39,20 +39,20 @@
             <artifactId>geronimo-jms_1.1_spec</artifactId>
         </dependency>
         <dependency>
-            <groupId>activemq</groupId>
+            <groupId>incubator-activemq</groupId>
             <artifactId>activemq</artifactId>
         </dependency>
         <dependency>
-            <groupId>activemq</groupId>
+            <groupId>incubator-activemq</groupId>
             <artifactId>activemq-ra</artifactId>
         </dependency>
         <dependency>
-            <groupId>activemq</groupId>
+            <groupId>incubator-activemq</groupId>
             <artifactId>activemq-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>servicemix</groupId>
-            <artifactId>servicemix</artifactId>
+            <groupId>org.apache.servicemix</groupId>
+            <artifactId>servicemix-core</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
@@ -71,7 +71,7 @@
             <artifactId>xbean-spring</artifactId>
         </dependency>
         <dependency>
-            <groupId>jencks</groupId>
+            <groupId>org.apache.servicemix.dependencies</groupId>
             <artifactId>jencks</artifactId>
         </dependency>
         <dependency>
