@@ -44,7 +44,7 @@
     </dependency>
 
     <dependency>
-      <groupId>activemq</groupId>
+      <groupId>incubator-activemq</groupId>
       <artifactId>activemq</artifactId>
       <version>${activemq_version}</version>
       <properties>
@@ -52,7 +52,7 @@
       </properties>
     </dependency>
     <dependency>
-      <groupId>activemq</groupId>
+      <groupId>incubator-activemq</groupId>
       <artifactId>activemq-ra</artifactId>
       <version>${activemq_version}</version>
       <properties>
@@ -60,7 +60,7 @@
       </properties>
     </dependency>
     <dependency>
-      <groupId>activemq</groupId>
+      <groupId>incubator-activemq</groupId>
       <artifactId>activemq-web</artifactId>
       <version>${activemq_version}</version>
       <properties>
