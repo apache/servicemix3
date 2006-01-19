@@ -72,6 +72,9 @@
         <groupId>org.apache.geronimo.specs</groupId>
         <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
         <version>${geronimo_spec_jta_version}</version>
+        <properties>
+          <war.bundle>true</war.bundle>
+        </properties>
       </dependency>
       <dependency>
         <groupId>org.apache.geronimo.specs</groupId>
@@ -112,7 +115,7 @@
          <artifactId>portlet-api</artifactId>
          <version>${portlet_api_version}</version>
          <properties>
-           <war.bundle>false</war.bundle>
+           <war.bundle>true</war.bundle>
          </properties>
       </dependency>
       <dependency>
@@ -135,6 +138,14 @@
          <groupId>org.apache.pluto</groupId>
          <artifactId>pluto-descriptors</artifactId>
          <version>${pluto_version}</version>
+         <properties>
+           <war.bundle>true</war.bundle>
+         </properties>
+       </dependency>
+       <dependency>
+         <groupId>xerces</groupId>
+         <artifactId>xercesImpl</artifactId>
+         <version>${xercesImpl_version}</version>
          <properties>
            <war.bundle>true</war.bundle>
          </properties>
