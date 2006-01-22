@@ -16,10 +16,6 @@
 package org.apache.servicemix.jbi.util;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 
 import junit.framework.TestCase;
 
@@ -43,6 +39,11 @@ public class FileUtilTest extends TestCase {
 		assertFalse(f.exists());
 	}
 	
+	/*
+	 * This test only works on windows, as
+	 * writing to a file does not prevent its 
+	 * deletion on unix systems.
+	 *
 	public void testDeleteLockedFile() throws Exception {
 		File f = new File(WORKDIR, "test.txt");
 		assertFalse(f.exists());
@@ -61,6 +62,7 @@ public class FileUtilTest extends TestCase {
 		assertTrue(FileUtil.deleteFile(f));
 		assertFalse(f.exists());
 	}
+	*/
 	
 	public void testDeleteDir() throws Exception {
 		File f = new File(WORKDIR, "testdir");
@@ -73,6 +75,11 @@ public class FileUtilTest extends TestCase {
 		assertFalse(f.exists());
 	}
 	
+	/*
+	 * This test only works on windows, as
+	 * writing to a file does not prevent its 
+	 * deletion on unix systems.
+	 *
 	public void testDeleteDirWithLockedFile() throws Exception {
 		File f = new File(WORKDIR, "testdir");
 		assertFalse(f.exists());
@@ -104,5 +111,6 @@ public class FileUtilTest extends TestCase {
 		assertTrue(FileUtil.deleteFile(f));
 		assertFalse(f.exists());
 	}
+	*/
 	
 }
