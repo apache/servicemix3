@@ -141,32 +141,21 @@ public class FilePoller extends PollingComponentSupport {
     }
 
     protected void pollFileOrDirectory(File fileOrDirectory) throws WorkException {
-        if (log.isDebugEnabled()) {
-            log.debug("Polling " + fileOrDirectory);
-        }
-        File[] files = null;
-        if (fileOrDirectory.isDirectory()) {
-            if (filter != null) {
-                files = fileOrDirectory.listFiles(filter);
-            }
-            else {
-                files = fileOrDirectory.listFiles();
-            }
+    	pollFileOrDirectory(fileOrDirectory, true);
+    }
+    
+    protected void pollFileOrDirectory(File fileOrDirectory, boolean processDir) throws WorkException {
+        if (!fileOrDirectory.isDirectory()) {
+            pollFile(fileOrDirectory); // process the file
+        } else if (processDir) {
+            log.debug("Polling directory " + fileOrDirectory);
+            File[] files = fileOrDirectory.listFiles(getFilter());
             for (int i = 0; i < files.length; i++) {
-                File aFile = files[i];
-                if (aFile.isDirectory()) {
-                    if (isRecursive()) {
-                        pollFileOrDirectory(aFile);
-                    }
-                }
-                else {
-                    pollFile(aFile);
-                }
+                pollFileOrDirectory(files[i], isRecursive()); // self-recursion
             }
-        }
-        else {
-            pollFile(fileOrDirectory);
-        }
+        } else {
+            log.debug("Skipping directory " + fileOrDirectory);
+        } 
     }
 
     protected void pollFile(final File aFile) throws WorkException {
