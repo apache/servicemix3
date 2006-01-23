@@ -186,7 +186,7 @@ public class SoapMessageMarshalerTest extends TestCase {
         Element root = (Element) iterator.nextNode(); 
         assertEquals(new QName("http://schemas.xmlsoap.org/ws/2003/03/addressing", "ServiceName"), 
         		     new QName(root.getNamespaceURI(), root.getLocalName()));
-        QName qname = DOMUtil.createQName(root, root.getTextContent()); 
+        QName qname = DOMUtil.createQName(root, DOMUtil.getElementText(root)); 
         assertEquals(new QName("uri:test", "MyConsumerService"), qname); 
 	}
 	
