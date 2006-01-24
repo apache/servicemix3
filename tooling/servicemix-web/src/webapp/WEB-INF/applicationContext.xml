@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://xbean.org/schemas/spring/1.0"
-	xmlns:spring="http://xbean.org/schemas/spring/1.0"
-	xmlns:sm="http://servicemix.org/config/1.0"
-	xmlns:my="http://servicemix.org/demo/"
-  xmlns:foo="http://servicemix.org/demo/">
+	xmlns:sm="http://servicemix.apache.org/config/1.0"
+	xmlns:my="http://servicemix.apache.org/demo/"
+  xmlns:foo="http://servicemix.apache.org/demo/">
 
   <!-- the JBI container -->
-  <sm:container spring:id="jbi"
+  <sm:container id="jbi"
       rootDir="../wdir"
       useMBeanServer="true"
 		  createMBeanServer="true" 
@@ -154,7 +153,7 @@
   <!-- message broker -->
   
   <!--  ActiveMQ 3.x  -->
-  <bean id="broker" class="org.apache.activemq.spring.BrokerFactoryBean">
+  <bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean">
      <property name="config" value="/WEB-INF/activemq.xml"/>
    </bean>
   
