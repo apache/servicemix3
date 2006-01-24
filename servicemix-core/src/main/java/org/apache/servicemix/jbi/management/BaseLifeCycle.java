@@ -29,7 +29,7 @@ import javax.management.MBeanOperationInfo;
  * @version $Revision$
  */
 public abstract class BaseLifeCycle implements LifeCycleMBean, MBeanInfoProvider {
-    public static final String INITIALIZED = "initialized";
+    public static final String INITIALIZED = "Initialized";
     protected String currentState = LifeCycleMBean.UNKNOWN;
     protected PropertyChangeListener listener;
     

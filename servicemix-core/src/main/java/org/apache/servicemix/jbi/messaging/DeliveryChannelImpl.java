@@ -332,10 +332,26 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                 intervalCount++;
             }
             
+            // Update stats
             long currentTime = System.currentTimeMillis();
-            messagingStats.getOutboundExchanges().increment();
-            messagingStats.getOutboundExchangeRate().addTime(currentTime - lastSendTime);
+            if (container.isNotifyStatistics()) {
+                long oldCount = messagingStats.getOutboundExchanges().getCount();
+                messagingStats.getOutboundExchanges().increment();
+                componentConnector.getComponentMBean().firePropertyChanged(
+                        "outboundExchangeCount",
+                        new Long(oldCount),
+                        new Long(messagingStats.getOutboundExchanges().getCount()));
+                double oldRate = messagingStats.getOutboundExchangeRate().getAverageTime();
+                messagingStats.getOutboundExchangeRate().addTime(currentTime - lastSendTime);
+                componentConnector.getComponentMBean().firePropertyChanged("outboundExchangeRate",
+                        new Double(oldRate),
+                        new Double(messagingStats.getOutboundExchangeRate().getAverageTime()));
+            } else {
+                messagingStats.getOutboundExchanges().increment();
+                messagingStats.getOutboundExchangeRate().addTime(currentTime - lastSendTime);
+            }
             lastSendTime = currentTime;
+            
             if (messageExchange.getRole() == Role.CONSUMER) {
                 messageExchange.setSourceId(componentConnector.getComponentNameSpace());
             }
@@ -560,9 +576,25 @@ public class DeliveryChannelImpl implements DeliveryChannel {
      */
     public void processInBound(MessageExchangeImpl me) throws MessagingException {
         checkNotClosed();
+
+        // Update stats
         long currentTime = System.currentTimeMillis();
-        messagingStats.getInboundExchanges().increment();
-        messagingStats.getInboundExchangeRate().addTime(currentTime - lastReceiveTime);
+        if (container.isNotifyStatistics()) {
+            long oldCount = messagingStats.getInboundExchanges().getCount();
+            messagingStats.getInboundExchanges().increment();
+            componentConnector.getComponentMBean().firePropertyChanged(
+                    "inboundExchangeCount",
+                    new Long(oldCount),
+                    new Long(messagingStats.getInboundExchanges().getCount()));
+            double oldRate = messagingStats.getInboundExchangeRate().getAverageTime();
+            messagingStats.getInboundExchangeRate().addTime(currentTime - lastReceiveTime);
+            componentConnector.getComponentMBean().firePropertyChanged("inboundExchangeRate",
+                    new Double(oldRate),
+                    new Double(messagingStats.getInboundExchangeRate().getAverageTime()));
+        } else {
+            messagingStats.getInboundExchanges().increment();
+            messagingStats.getInboundExchangeRate().addTime(currentTime - lastReceiveTime);
+        }
         lastReceiveTime = currentTime;
 
         // If the message has been sent synchronously

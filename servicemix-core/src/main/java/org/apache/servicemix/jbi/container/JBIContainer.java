@@ -104,6 +104,7 @@ public class JBIContainer extends BaseLifeCycle {
     protected boolean persistent = false;
     protected List listeners = new CopyOnWriteArrayList();
     protected boolean embedded = false;
+    protected boolean notifyStatistics = false;
 
     /**
      * Default Constructor
@@ -1072,5 +1073,19 @@ public class JBIContainer extends BaseLifeCycle {
 
     public int getRmiPort() {
     	return getManagementContext().getNamingPort();
+    }
+
+    /**
+     * @return Returns the notifyStatistics.
+     */
+    public boolean isNotifyStatistics() {
+        return notifyStatistics;
+    }
+
+    /**
+     * @param notifyStatistics The notifyStatistics to set.
+     */
+    public void setNotifyStatistics(boolean notifyStatistics) {
+        this.notifyStatistics = notifyStatistics;
     }
 }

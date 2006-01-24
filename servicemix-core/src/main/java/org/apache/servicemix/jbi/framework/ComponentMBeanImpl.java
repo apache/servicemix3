@@ -324,5 +324,10 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
 	public void setObjectName(ObjectName objectName) {
 		this.objectName = objectName;
 	}
+    
+    public void firePropertyChanged(String name, Object oldValue, Object newValue) {
+        super.firePropertyChanged(name, oldValue, newValue);
+    }
+
 
 }
