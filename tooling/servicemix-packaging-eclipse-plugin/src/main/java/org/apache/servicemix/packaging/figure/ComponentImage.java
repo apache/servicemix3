@@ -38,7 +38,7 @@ public class ComponentImage extends ImageFigure {
 		if (component instanceof ComponentBased) {
 			Image image = ((ComponentBased) component).getComponentArtifact()
 					.getStoppedImage(
-							((ComponentBased) component).getComponentUuid());
+							((ComponentBased) component).getComponentUuid());			
 			setImage(image);
 		}
 	}

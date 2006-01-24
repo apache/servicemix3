@@ -262,9 +262,7 @@ public abstract class AbstractComponentEditPart extends
 					|| AbstractConnectableService.SERVICENAME_PROP.equals(prop)) {
 				refreshVisuals();
 			} else if (AbstractConnectableService.SOURCE_CONNECTIONS_PROP
-					.equals(prop)) {
-				System.out.println("Refreshing source connections :"
-						+ getSourceConnections().size());
+					.equals(prop)) {				
 				refreshSourceConnections();
 			} else if (AbstractConnectableService.TARGET_CONNECTIONS_PROP
 					.equals(prop)) {

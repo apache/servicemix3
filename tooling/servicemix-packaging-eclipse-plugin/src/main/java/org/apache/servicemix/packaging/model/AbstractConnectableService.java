@@ -75,8 +75,7 @@ public abstract class AbstractConnectableService extends AbstractComponent
 		}
 	}
 
-	public void refreshConnections() {
-		System.out.println("refreshing " + this);
+	public void refreshConnections() {		
 		firePropertyChange(SERVICENAME_PROP, null, null);
 	}
 

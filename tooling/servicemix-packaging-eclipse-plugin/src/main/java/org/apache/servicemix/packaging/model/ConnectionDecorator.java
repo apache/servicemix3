@@ -48,8 +48,7 @@ public class ConnectionDecorator implements PropertyChangeListener {
 
 	}
 
-	private void retargetConnections() {
-		System.out.println("Retargetting connections : " + component);
+	private void retargetConnections() {		
 		for (Connection connection : component.getSourceConnections()) {
 			component.removeConnection(connection);
 		}

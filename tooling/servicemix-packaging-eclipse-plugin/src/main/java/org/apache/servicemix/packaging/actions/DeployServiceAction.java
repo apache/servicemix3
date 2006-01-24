@@ -91,14 +91,12 @@ public class DeployServiceAction extends Action {
 
 			// Deploy the services
 			for (AbstractComponent component : components) {
-				if (component instanceof BindingComponent) {
-					System.out.println("Deploying binding component");
+				if (component instanceof BindingComponent) {					
 					((BindingComponent) component).getComponentArtifact()
 							.getDeploymentEngine().deployBindingComponent(
 									editor.getProject(),
 									(BindingComponent) component);
 				} else if (component instanceof ServiceAssembly) {
-					System.out.println("Deploying service assembly");
 					((ServiceAssembly) component).getComponentArtifact()
 							.getDeploymentEngine().deployServiceAssembly(
 									editor.getProject(),

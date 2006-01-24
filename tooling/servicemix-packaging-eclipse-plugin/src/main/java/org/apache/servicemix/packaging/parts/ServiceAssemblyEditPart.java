@@ -74,8 +74,7 @@ public class ServiceAssemblyEditPart extends AbstractComponentEditPart
 		super.propertyChange(evt);
 		if (evt.getPropertyName().equals(ServiceAssembly.NAME_PROP)) {
 			refreshVisuals();
-		} else if (evt.getPropertyName().equals(ServiceAssembly.ADDCHILD_PROP)) {
-			System.out.println("Refreshing visuals and children");
+		} else if (evt.getPropertyName().equals(ServiceAssembly.ADDCHILD_PROP)) {			
 			this.refresh();
 		}
 	}
