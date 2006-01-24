@@ -15,15 +15,12 @@
  */
 package org.apache.servicemix.components.jmx;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.components.util.ComponentSupport;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-
 import javax.jbi.JBIException;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.management.DeploymentException;
 import javax.jbi.messaging.InOnly;
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.management.MBeanServer;
 import javax.management.Notification;
@@ -31,12 +28,20 @@ import javax.management.NotificationListener;
 import javax.management.ObjectName;
 import javax.management.monitor.CounterMonitor;
 import javax.xml.transform.Source;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.MessageExchangeListener;
+import org.apache.servicemix.components.util.ComponentSupport;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+
 /**
  * A JMX Counter Monitor as a Component to enable firing notifications
  * 
  * @version $Revision$
  */
-public class CounterMonitorComponent extends ComponentSupport implements NotificationListener{
+public class CounterMonitorComponent extends ComponentSupport implements NotificationListener, MessageExchangeListener {
+    
     private static final Log log = LogFactory.getLog(ComponentSupport.class);
     private String name;
     private ObjectName ourName;
@@ -54,29 +59,30 @@ public class CounterMonitorComponent extends ComponentSupport implements Notific
      * @param cc
      * @throws JBIException
      */
-    public void init(ComponentContext cc) throws JBIException{
+    public void init(ComponentContext cc) throws JBIException {
         super.init(cc);
         validate();
-        if(mbeanServer == null){
+        if (mbeanServer == null) {
             mbeanServer = cc.getMBeanServer();
         }
-        try{
+        try {
             ObjectName observedName = new ObjectName(observedObjectName);
-            if(name == null){
+            if (name == null) {
                 String type = observedName.getKeyProperty("type");
-                type = type != null?type:"UNKNOWN";
-                name = mbeanServer.getDefaultDomain() + ":type=CounterMonitior_" + type;
+                type = type != null ? type : "UNKNOWN";
+                name = mbeanServer.getDefaultDomain() + ":type=CounterMonitor_" + type;
             }
             ourName = new ObjectName(name);
+            counterMonitor.setNotify(true);
             counterMonitor.addObservedObject(observedName);
             counterMonitor.setObservedAttribute(attributeName);
             counterMonitor.setGranularityPeriod(granularityPeriod);
             counterMonitor.setDifferenceMode(false);
             counterMonitor.setInitThreshold(threshold);
             counterMonitor.setOffset(offset);
-            mbeanServer.registerMBean(cc,ourName);
-            mbeanServer.addNotificationListener(ourName,this,null,new Object());
-        }catch(Exception e){
+            mbeanServer.registerMBean(counterMonitor, ourName);
+            mbeanServer.addNotificationListener(ourName, this, null, new Object());
+        } catch (Exception e) {
             throw new DeploymentException(e);
         }
     }
@@ -87,7 +93,7 @@ public class CounterMonitorComponent extends ComponentSupport implements Notific
      * @exception javax.jbi.JBIException
      *                if the item fails to start.
      */
-    public void start() throws javax.jbi.JBIException{
+    public void start() throws javax.jbi.JBIException {
         super.start();
         counterMonitor.start();
     }
@@ -98,7 +104,7 @@ public class CounterMonitorComponent extends ComponentSupport implements Notific
      * @exception javax.jbi.JBIException
      *                if the item fails to stop.
      */
-    public void stop() throws javax.jbi.JBIException{
+    public void stop() throws javax.jbi.JBIException {
         counterMonitor.stop();
         super.stop();
     }
@@ -109,12 +115,12 @@ public class CounterMonitorComponent extends ComponentSupport implements Notific
      * @exception javax.jbi.JBIException
      *                if the item fails to shut down.
      */
-    public void shutDown() throws javax.jbi.JBIException{
+    public void shutDown() throws javax.jbi.JBIException {
         stop();
-        if(ourName != null && mbeanServer != null){
+        if (ourName != null && mbeanServer != null) {
             try{
                 mbeanServer.removeNotificationListener(ourName,this);
-            }catch(Exception e){
+            } catch(Exception e) {
                 throw new JBIException(e);
             }
         }
@@ -125,14 +131,14 @@ public class CounterMonitorComponent extends ComponentSupport implements Notific
     /**
      * @see javax.management.NotificationListener#handleNotification(javax.management.Notification, java.lang.Object)
      */
-    public void handleNotification(Notification notification,Object arg1){
+    public void handleNotification(Notification notification,Object arg1) {
         try {
             Source source = new StringSource(notification.getMessage());
             InOnly exchange = getExchangeFactory().createInOnlyExchange();
             NormalizedMessage message = exchange.createMessage();
             message.setContent(source);
             exchange.setInMessage(message);
-            done(exchange);
+            send(exchange);
         }
         catch (Exception e) {
             log.error("Failed to send Notification message to the NMR");
@@ -140,17 +146,17 @@ public class CounterMonitorComponent extends ComponentSupport implements Notific
         
     }
 
-    protected void validate() throws JBIException{
-        if(observedObjectName == null){
+    protected void validate() throws JBIException {
+        if (observedObjectName == null) {
             throw new DeploymentException("observedObjectName is null");
         }
-        if(attributeName == null){
+        if (attributeName == null) {
             throw new DeploymentException("attributeName is null");
         }
-        if(threshold == null){
+        if (threshold == null) {
             throw new DeploymentException("threshold is null");
         }
-        if(offset == null){
+        if (offset == null) {
             throw new DeploymentException("offset is null");
         }
     }
@@ -158,112 +164,117 @@ public class CounterMonitorComponent extends ComponentSupport implements Notific
     /**
      * @return Returns the attributeName.
      */
-    public String getAttributeName(){
+    public String getAttributeName() {
         return attributeName;
     }
 
     /**
-     * @param attributeName The attributeName to set.
+     * @param attributeName
+     *            The attributeName to set.
      */
-    public void setAttributeName(String attributeName){
+    public void setAttributeName(String attributeName) {
         this.attributeName = attributeName;
     }
 
     /**
      * @return Returns the counterMonitor.
      */
-    public CounterMonitor getCounterMonitor(){
+    public CounterMonitor getCounterMonitor() {
         return counterMonitor;
     }
 
     /**
      * @param counterMonitor The counterMonitor to set.
      */
-    public void setCounterMonitor(CounterMonitor counterMonitor){
+    public void setCounterMonitor(CounterMonitor counterMonitor) {
         this.counterMonitor = counterMonitor;
     }
 
     /**
      * @return Returns the granularityPeriod.
      */
-    public long getGranularityPeriod(){
+    public long getGranularityPeriod() {
         return granularityPeriod;
     }
 
     /**
      * @param granularityPeriod The granularityPeriod to set.
      */
-    public void setGranularityPeriod(long granularityPeriod){
+    public void setGranularityPeriod(long granularityPeriod) {
         this.granularityPeriod = granularityPeriod;
     }
 
     /**
      * @return Returns the mbeanServer.
      */
-    public MBeanServer getMbeanServer(){
+    public MBeanServer getMbeanServer() {
         return mbeanServer;
     }
 
     /**
      * @param mbeanServer The mbeanServer to set.
      */
-    public void setMbeanServer(MBeanServer mbeanServer){
+    public void setMbeanServer(MBeanServer mbeanServer) {
         this.mbeanServer = mbeanServer;
     }
 
     /**
      * @return Returns the name.
      */
-    public String getName(){
+    public String getName() {
         return name;
     }
 
     /**
      * @param name The name to set.
      */
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
     /**
      * @return Returns the observedObjectName.
      */
-    public String getObservedObjectName(){
+    public String getObservedObjectName() {
         return observedObjectName;
     }
 
     /**
      * @param observedObjectName The observedObjectName to set.
      */
-    public void setObservedObjectName(String observedObjectName){
+    public void setObservedObjectName(String observedObjectName) {
         this.observedObjectName = observedObjectName;
     }
 
     /**
      * @return Returns the offset.
      */
-    public Number getOffset(){
+    public Number getOffset() {
         return offset;
     }
 
     /**
      * @param offset The offset to set.
      */
-    public void setOffset(Number offset){
+    public void setOffset(Number offset) {
         this.offset = offset;
     }
 
     /**
      * @return Returns the threshold.
      */
-    public Number getThreshold(){
+    public Number getThreshold() {
         return threshold;
     }
 
     /**
      * @param threshold The threshold to set.
      */
-    public void setThreshold(Number threshold){
+    public void setThreshold(Number threshold) {
         this.threshold = threshold;
+    }
+
+    public void onMessageExchange(MessageExchange exchange) throws MessagingException {
+        // We can only receive acks, so do nothing
     }
 }
