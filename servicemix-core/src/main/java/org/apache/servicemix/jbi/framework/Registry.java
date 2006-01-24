@@ -613,6 +613,16 @@ public class Registry extends BaseLifeCycle {
     }
     
     /**
+     * Restore a service assembly to its previous state
+     * @param serviceAssemblyName
+     * @return status
+     * @throws DeploymentException
+     */
+    public String restoreServiceAssembly(String serviceAssemblyName) throws DeploymentException {
+    	return serviceAssemblyRegistry.restore(serviceAssemblyName);
+    }
+    
+    /**
      * Stop a ServiceAssembly
      * @param serviceAssemblyName
      * @return status

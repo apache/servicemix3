@@ -176,7 +176,7 @@ public class InstallerMBeanImpl  implements InstallerMBean {
      */
     public void uninstall() throws javax.jbi.JBIException {
         if (!installed) {
-            throw new DeploymentException("Component is already installed");
+            throw new DeploymentException("Component is not installed");
         }
         if (bootstrap != null){
             bootstrap.onUninstall();

@@ -316,6 +316,20 @@ public class JBIContainer extends BaseLifeCycle {
     public void setStatsInterval(int statsInterval) {
         environmentContext.setStatsInterval(statsInterval);
     }
+    
+    /**
+     * @return Returns the monitorInterval (in secs).
+     */
+    public int getMonitorInterval() {
+    	return autoDeployService.getMonitorInterval();
+    }
+    
+    /**
+     * @param monitorInterval The monitorInterval to set (in secs).
+     */
+    public void setMonitorInterval(int monitorInterval) {
+    	autoDeployService.setMonitorInterval(monitorInterval);
+    }
 
     /**
      * @return Returns the dumpStats.
@@ -361,27 +375,6 @@ public class JBIContainer extends BaseLifeCycle {
     public AutoDeploymentService getAutoDeploymentService() {
         return autoDeployService;
     }
-    
-    /**
-     * Will update a Component/ServiceAssembly/SharedLibrary in the archive
-     * 
-     * @param location - location of the archive
-     * @param autoStart - automatically start the Component/ServiceAssembly
-     * @throws DeploymentException 
-     */
-    public void updateArchive(String location,boolean autoStart) throws DeploymentException{
-        autoDeployService.updateArchive(location, autoStart);
-    }
-    
-    /**
-     * Remove the Component/ServiceAssembly/SharedLibrary in the archive
-     * @param location - location of the archive
-     * @throws DeploymentException
-     */
-    public void removeArchive(String location) throws DeploymentException{
-        autoDeployService.removeArchive(location);
-    }
-    
     
     /**
      * light weight initialization - default values for mbeanSErver, TransactionManager etc are null
@@ -689,15 +682,13 @@ public class JBIContainer extends BaseLifeCycle {
     public void deactivateComponent(String id) throws JBIException {
         ComponentNameSpace cns = new ComponentNameSpace(name, id, id);
         Component component = registry.getComponent(cns);
-        if (component != null) {
-            LocalComponentConnector lcc = registry.getLocalComponentConnector(cns);
-            if (lcc != null) {
-                environmentContext.unreregister(lcc, true);
-                managementContext.unregisterMBean(lcc.getMbeanName());
-            }
+        LocalComponentConnector lcc = registry.getLocalComponentConnector(cns);
+        if (component != null && lcc != null) {
+        	lcc.getComponentMBean().shutDown();
+        	managementContext.unregisterMBean(lcc.getMbeanName());
             registry.deregisterComponent(component);
+            environmentContext.unreregister(lcc, true);
             log.info("Deactivating component for name: " + id + " component: " + component);
-            lcc.getComponentMBean().shutDown();
         }
         else {
             throw new JBIException("Could not find Component with id " + id);

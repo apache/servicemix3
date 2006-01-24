@@ -23,9 +23,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -58,22 +60,23 @@ import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
  * @version $Revision$
  */
 public class AutoDeploymentService extends BaseLifeCycle{
-    private static final Log log=LogFactory.getLog(AutoDeploymentService.class);
-    private static final String MONITOR_STATE_FILE=".state.xml";
+	
+    private static final Log log = LogFactory.getLog(AutoDeploymentService.class);
+    private static final String MONITOR_STATE_FILE = ".state.xml";
     private JBIContainer container;
     private EnvironmentContext environmentContext;
-    protected static final String DESCRIPTOR_FILE="META-INF/jbi.xml";
+    protected static final String DESCRIPTOR_FILE = "META-INF/jbi.xml";
     private DeploymentService deploymentService;
     private InstallationService installationService;
-    private boolean monitorInstallationDirectory=true;
-    private boolean monitorDeploymentDirectory=true;
-    private int monitorInterval=10;
-    private AtomicBoolean started=new AtomicBoolean(false);
+    private boolean monitorInstallationDirectory = true;
+    private boolean monitorDeploymentDirectory = true;
+    private int monitorInterval = 10;
+    private AtomicBoolean started = new AtomicBoolean(false);
     private Timer statsTimer;
     private TimerTask timerTask;
-    private Map pendingSAs=new ConcurrentHashMap();
-    private Map installFileMap=null;
-    private Map deployFileMap=null;
+    private Map pendingSAs = new ConcurrentHashMap();
+    private Map installFileMap = null;
+    private Map deployFileMap = null;
 
     /**
      * @return a description of this
@@ -191,52 +194,73 @@ public class AutoDeploymentService extends BaseLifeCycle{
      * @param autoStart
      * @throws DeploymentException
      */
-    public void updateArchive(String location,boolean autoStart) throws DeploymentException{
+    public void updateArchive(String location, ArchiveEntry entry, boolean autoStart) throws DeploymentException{
         File tmp=AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(),location);
         Descriptor root=AutoDeploymentService.buildDescriptor(tmp);
-        if(root!=null){
+        if (root != null) {
             try{
                 container.getBroker().suspend();
-                if(root.getComponent()!=null){
-                    String componentName=root.getComponent().getIdentification().getName();
+                if (root.getComponent() != null) {
+                	String componentName = root.getComponent().getIdentification().getName();
+                	entry.type = "component";
+                	entry.name = componentName; 
                     log.info("Uninstalling Component: "+componentName);
-                    installationService.unloadInstaller(componentName,true);
-                    installationService.install(tmp,root,autoStart);
-                    autoDeployServiceSA(componentName);
-                }else if(root.getSharedLibrary()!=null){
-                    installationService.doInstallSharedLibrary(tmp,root.getSharedLibrary());
-                }else if(root.getServiceAssembly()!=null){
-                    ServiceAssembly sa=root.getServiceAssembly();
-                    String name=sa.getIdentification().getName();
-                    try{
-                        if(deploymentService.isSaDeployed(name)){
+                    installationService.unloadInstaller(componentName, true);
+                    installationService.install(tmp, root, autoStart);
+                    checkPendingSAs();
+                } else if (root.getSharedLibrary() != null) {
+                	String libraryName = root.getSharedLibrary().getIdentification().getName();
+                	entry.type = "component";
+                	entry.name = libraryName; 
+                    installationService.doInstallSharedLibrary(tmp, root.getSharedLibrary());
+                } else if (root.getServiceAssembly() != null) {
+                    ServiceAssembly sa = root.getServiceAssembly();
+                    String name = sa.getIdentification().getName();
+                	entry.type = "assembly";
+                	entry.name = name; 
+                    try {
+                        if (deploymentService.isSaDeployed(name)) {
                             deploymentService.shutDown(name);
                             deploymentService.undeploy(name);
                             deploymentService.deploy(tmp,sa);
-                            if(autoStart){
+                            if (autoStart) {
                                 deploymentService.start(name);
                             }
-                        }else{
-                            // see if Component is installed
-                            String componentName=deploymentService.getComponentName(sa);
-                            if(container.getRegistry().isLocalComponentRegistered(componentName)){
-                                deploymentService.deploy(tmp,sa);
-                                if(autoStart){
+                        } else {
+                            // see if components are installed
+                            entry.componentNames = deploymentService.getComponentNames(sa);
+                            String missings = null;
+                            boolean canDeploy = true;
+                            for (Iterator it = entry.componentNames.iterator(); it.hasNext();) {
+                            	String componentName = (String) it.next();
+                            	if (!container.getRegistry().isLocalComponentRegistered(componentName)) {
+                            		canDeploy = false;
+                            		if (missings != null) {
+                            			missings += ", " + componentName;
+                            		} else {
+                            			missings = componentName;
+                            		}
+                            	}
+                            }
+                            if (canDeploy) {
+                                deploymentService.deploy(tmp, sa);
+                                if (autoStart){
                                     deploymentService.start(name);
                                 }
-                            }else{
-                                log.info("No Component named "+componentName+" exists yet - adding ServiceAssembly "
-                                                +name+" to pending list");
-                                pendingSAs.put(componentName,tmp);
+                            } else {
+                            	entry.pending = true;
+                                log.info("Components " + missings + " are not installed yet - adding ServiceAssembly "
+                                                + name + " to pending list");
+                                pendingSAs.put(tmp, entry);
                             }
                         }
-                    }catch(Exception e){
+                    } catch (Exception e) {
                         String errStr="Failed to update Service Assembly: "+name;
                         log.error(errStr,e);
                         throw new DeploymentException(errStr,e);
                     }
                 }
-            }finally{
+            } finally {
                 container.getBroker().resume();
             }
         }
@@ -248,43 +272,33 @@ public class AutoDeploymentService extends BaseLifeCycle{
      * @param location
      * @throws DeploymentException
      */
-    public void removeArchive(String location) throws DeploymentException{
-        log.info("Attempting to remove archive at: "+location);
-        File tmp=AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(),location);
-        Descriptor root=AutoDeploymentService.buildDescriptor(tmp);
-        if(root!=null){
-            try{
-                container.getBroker().suspend();
-                if(root.getComponent()!=null){
-                    String componentName=root.getComponent().getIdentification().getName();
-                    log.info("Uninstalling Component: "+componentName);
-                    installationService.unloadInstaller(componentName,true);
-                }
-                if(root.getSharedLibrary()!=null){
-                    String name=root.getSharedLibrary().getIdentification().getName();
-                    log.info("removing shared library: "+name);
-                    installationService.uninstallSharedLibrary(name);
-                }
-                if(root.getServiceAssembly()!=null){
-                    ServiceAssembly sa=root.getServiceAssembly();
-                    String name=sa.getIdentification().getName();
-                    log.info("removing service assembly "+name);
-                    try{
-                        if(deploymentService.isSaDeployed(name)){
-                            deploymentService.shutDown(name);
-                            deploymentService.undeploy(name);
-                        }
-                    }catch(Exception e){
-                        String errStr="Failed to update Service Assembly: "+name;
-                        log.error(errStr,e);
-                        throw new DeploymentException(errStr,e);
-                    }
-                }
-            }finally{
-                container.getBroker().resume();
+    public void removeArchive(ArchiveEntry entry) throws DeploymentException{
+        log.info("Attempting to remove archive at: " + entry.location);
+       try{
+            container.getBroker().suspend();
+            if ("component".equals(entry.type)) {
+                log.info("Uninstalling component: " + entry.name);
+                installationService.unloadInstaller(entry.name,true);
+            } 
+            if ("library".equals(entry.type)) {
+                log.info("Removing shared library: " + entry.name);
+                installationService.uninstallSharedLibrary(entry.name);
             }
-        }else{
-            throw new DeploymentException("remove archive  cannot find descriptor for "+location);
+            if ("assembly".equals(entry.type)) {
+                log.info("Removing service assembly " + entry.name);
+                try{
+                    if(deploymentService.isSaDeployed(entry.name)){
+                        deploymentService.shutDown(entry.name);
+                        deploymentService.undeploy(entry.name);
+                    }
+                } catch(Exception e) {
+                    String errStr="Failed to update service assembly: "+ entry.name;
+                    log.error(errStr,e);
+                    throw new DeploymentException(errStr,e);
+                }
+            }
+        } finally {
+            container.getBroker().resume();
         }
     }
 
@@ -293,30 +307,42 @@ public class AutoDeploymentService extends BaseLifeCycle{
      * 
      * @param componentName
      */
-    private void autoDeployServiceSA(String componentName){
-        File tmpDir=(File) pendingSAs.remove(componentName);
-        if(tmpDir!=null){
-            try{
-                Descriptor root=AutoDeploymentService.buildDescriptor(tmpDir);
-                if(root!=null){
-                    ServiceAssembly sa=root.getServiceAssembly();
-                    if(sa!=null&&sa.getIdentification()!=null){
-                        String name=sa.getIdentification().getName();
-                        log.info("auto deploying Service Assembly: "+name);
-                        if(!deploymentService.isSaDeployed(name)){
-                            deploymentService.deploy(tmpDir,sa);
-                            deploymentService.start(name);
-                        }
-                    }else{
-                        log.warn("Could not find ServiceAssembly in descriptor from "+tmpDir);
-                    }
-                }else{
-                    log.warn("Failed to build descriptor from "+tmpDir);
-                }
-            }catch(Exception e){
-                log.error("Failed to deploy service assembly to "+componentName,e);
+    private void checkPendingSAs() {
+    	Set deployedSas = new HashSet();
+    	for (Iterator it = pendingSAs.entrySet().iterator(); it.hasNext();) {
+    		Map.Entry me = (Map.Entry) it.next();
+    		ArchiveEntry entry = (ArchiveEntry) me.getValue();
+            boolean canDeploy = true;
+            for (Iterator it2 = entry.componentNames.iterator(); it2.hasNext();) {
+            	String componentName = (String) it2.next();
+            	if (!container.getRegistry().isLocalComponentRegistered(componentName)) {
+            		canDeploy = false;
+            		break;
+            	}
             }
-        }
+            if (canDeploy) {
+                File tmp = (File) me.getKey();
+                deployedSas.add(tmp);
+                try {
+	                Descriptor root = AutoDeploymentService.buildDescriptor(tmp);
+	                deploymentService.deploy(tmp, root.getServiceAssembly());
+	                deploymentService.start(root.getServiceAssembly().getIdentification().getName());
+                } catch (Exception e) {
+                    String errStr = "Failed to update Service Assembly: " + tmp.getName();
+                    log.error(errStr, e);
+                }
+            }
+    	}
+    	if (!deployedSas.isEmpty()) {
+    		// Remove SA from pending SAs
+	    	for (Iterator it = deployedSas.iterator(); it.hasNext();) {
+	    		ArchiveEntry entry = (ArchiveEntry) pendingSAs.remove(it.next());
+	    		entry.pending = false;
+	    	}
+	    	// Store new state
+	    	persistState(environmentContext.getDeploymentDir(), deployFileMap);
+	    	persistState(environmentContext.getInstallationDir(), installFileMap);
+    	}
     }
 
     /**
@@ -474,16 +500,19 @@ public class AutoDeploymentService extends BaseLifeCycle{
                     final File file=files[i];
                     tmpList.add(file.getName());
                     if(file.getPath().endsWith(".jar")||file.getPath().endsWith(".zip")){
-                        Date lastModified=(Date) fileMap.get(file.getName());
-                        if(lastModified==null||file.lastModified()>lastModified.getTime()){
+                        ArchiveEntry lastEntry = (ArchiveEntry) fileMap.get(file.getName());
+                        if(lastEntry == null || file.lastModified() > lastEntry.lastModified.getTime()){
                             try{
+                            	final ArchiveEntry entry = new ArchiveEntry();
+                            	entry.location = file.getName();
+                            	entry.lastModified = new Date(file.lastModified());
+                            	fileMap.put(file.getName(), entry);
                                 container.getWorkManager().doWork(new Work(){
                                     public void run(){
                                         log.info("Directory: "+root.getName()+": Archive changed: processing "
                                                         +file.getName()+" ...");
                                         try{
-                                            updateArchive(file.getAbsolutePath(),true);
-                                            fileMap.put(file.getName(),new Date(file.lastModified()));
+                                            updateArchive(file.getAbsolutePath(), entry, true);
                                         }catch(Exception e){
                                             log.warn("Directory: "+root.getName()+": Automatic install of "+file
                                                             +" failed",e);
@@ -508,16 +537,16 @@ public class AutoDeploymentService extends BaseLifeCycle{
             for(Iterator i=map.keySet().iterator();i.hasNext();){
                 String location=i.next().toString();
                 if(!tmpList.contains(location)){
-                    fileMap.remove(location);
+                    ArchiveEntry entry = (ArchiveEntry) fileMap.remove(location);
                     try{
                         log.info("Location "+location+" no longer exists - removing ...");
-                        removeArchive(location);
-                    }catch(DeploymentException e){
+                        removeArchive(entry);
+                    } catch (DeploymentException e) {
                         log.error("Failed to removeArchive: "+location,e);
                     }
                 }
             }
-            if (map.equals(fileMap)){
+            if (!map.equals(fileMap)){
                 persistState(root, fileMap);
             }
         }
@@ -548,19 +577,43 @@ public class AutoDeploymentService extends BaseLifeCycle{
     }
 
     private void initializeFileMaps(){
-        if(isMonitorInstallationDirectory()  && !container.isEmbedded()){
-            try{
+        if (isMonitorInstallationDirectory() && !container.isEmbedded()) {
+            try {
                 installFileMap=readState(environmentContext.getInstallationDir());
-            }catch(Exception e){
-                log.error("Failed to read installed state",e);
+                removePendingEntries(installFileMap);
+            } catch (Exception e) {
+                log.error("Failed to read installed state", e);
             }
         }
-        if(isMonitorDeploymentDirectory() && !container.isEmbedded()){
-            try{
+        if (isMonitorDeploymentDirectory() && !container.isEmbedded()) {
+            try {
                 deployFileMap=readState(environmentContext.getDeploymentDir());
-            }catch(Exception e){
-                log.error("Failed to read deployed state",e);
+                removePendingEntries(deployFileMap);
+            } catch (Exception e) {
+                log.error("Failed to read deployed state", e);
             }
         }
+    }
+    
+    private void removePendingEntries(Map map) {
+        Set pendings = new HashSet();
+        for (Iterator it = map.entrySet().iterator(); it.hasNext();) {
+        	Map.Entry e = (Map.Entry) it.next();
+        	if (((ArchiveEntry) e.getValue()).pending) {
+        		pendings.add(e.getKey());
+        	}
+        }
+        for (Iterator it = pendings.iterator(); it.hasNext();) {
+        	map.remove(it.next());
+        }
+    }
+    
+    public static class ArchiveEntry {
+    	public String location;
+    	public Date lastModified;
+    	public String type;
+    	public String name;
+    	public boolean pending;
+    	public transient Set componentNames;
     }
 }

@@ -30,14 +30,15 @@ import org.apache.servicemix.jbi.util.XmlPersistenceSupport;
  * 
  * @version $Revision$
  */
-class ServiceAssemblyLifeCycle{
-    private static final Log log=LogFactory.getLog(ServiceAssemblyLifeCycle.class);
-    static final String UNKOWN="Unknown";
-    static final String STARTED=DeploymentServiceMBean.STARTED;
-    static final String SHUTDOWN=DeploymentServiceMBean.SHUTDOWN;
-    static final String STOPPED=DeploymentServiceMBean.STOPPED;
+class ServiceAssemblyLifeCycle {
+	
+    private static final Log log = LogFactory.getLog(ServiceAssemblyLifeCycle.class);
+    static final String UNKNOWN = "Unknown";
+    static final String STARTED = DeploymentServiceMBean.STARTED;
+    static final String SHUTDOWN = DeploymentServiceMBean.SHUTDOWN;
+    static final String STOPPED = DeploymentServiceMBean.STOPPED;
     private ServiceAssembly serviceAssembly;
-    private String currentState=SHUTDOWN;
+    private String currentState = SHUTDOWN;
     private File stateFile;
 
     /**
@@ -80,7 +81,7 @@ class ServiceAssemblyLifeCycle{
     }
 
     boolean isShutDown(){
-        return currentState==null||currentState.equals(UNKOWN)||currentState.equals(SHUTDOWN);
+        return currentState==null||currentState.equals(UNKNOWN)||currentState.equals(SHUTDOWN);
     }
 
     boolean isStopped(){
@@ -129,14 +130,15 @@ class ServiceAssemblyLifeCycle{
     /**
      * get the current running state from disk
      */
-    void getRunningStateFromStore(){
-        try{
+    String getRunningStateFromStore() {
+        try {
             if(stateFile.exists()){
                 Properties props = (Properties) XmlPersistenceSupport.read(stateFile);
-                currentState = props.getProperty("state",SHUTDOWN);
+                return props.getProperty("state", SHUTDOWN);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             log.error("Failed to read current running state for ServiceAssembly: "+getName(),e);
         }
+        return null;
     }
 }

@@ -17,12 +17,15 @@ package org.apache.servicemix.jbi.framework;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
 import javax.jbi.component.ComponentLifeCycle;
+import javax.jbi.component.ServiceUnitManager;
 import javax.jbi.management.LifeCycleMBean;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.ObjectName;
@@ -38,15 +41,17 @@ import org.apache.servicemix.jbi.util.XmlPersistenceSupport;
  * @version $Revision$
  */
 public class LocalComponentConnector extends ComponentConnector{
-    private static final Log log=LogFactory.getLog(LocalComponentConnector.class);
+    private static final Log log = LogFactory.getLog(LocalComponentConnector.class);
     private Component component;
     private ComponentLifeCycle lifeCycle;
+    private ServiceUnitManager suManager;
     private ComponentContextImpl context;
     private ActivationSpec activationSpec;
     private DeliveryChannelImpl deliveryChannel;
     private ObjectName extendedMBeanName;
     private ComponentMBeanImpl componentMBean;
     private boolean pojo;
+    private Map serviceUnits;
 
     /**
      * Default Constructor
@@ -73,7 +78,8 @@ public class LocalComponentConnector extends ComponentConnector{
         packet.setDescription(description);
         packet.setBinding(binding);
         packet.setService(service);
-        this.componentMBean=new ComponentMBeanImpl(this);
+        this.componentMBean = new ComponentMBeanImpl(this);
+        this.serviceUnits = new HashMap();
     }
 
     /**
@@ -253,67 +259,79 @@ public class LocalComponentConnector extends ComponentConnector{
         return lifeCycle;
     }
     
+    public ServiceUnitManager getServiceUnitManager() {
+    	if (suManager == null) {
+    		suManager = component.getServiceUnitManager();
+    	}
+    	return suManager;
+    }
+    
     /**
      * write the current running state of the Component to disk
      */
-     void writeRunningState(){
-        if(!isPojo()){
-            String componentName=getComponentNameSpace().getName();
-            if(componentMBean!=null){
-                try{
-                    String currentState = componentMBean.getCurrentState();
-                    File stateFile = context.getContainer().getEnvironmentContext().getComponentStateFile(componentName);
-                    Properties props = new Properties();
-                    props.setProperty("state", currentState);
-                    XmlPersistenceSupport.write(stateFile, props);
-                }catch(IOException e){
-                    log.error("Failed to write current running state for Component: "+componentName,e);
-                }
-            }else{
-                log.warn("No componentMBean available for Component: "+componentName);
-            }
-        }
-    }
+     void writeRunningState() {
+		if (!isPojo()) {
+			String componentName = getComponentNameSpace().getName();
+			if (componentMBean != null) {
+				try {
+					String currentState = componentMBean.getCurrentState();
+					File stateFile = context.getContainer()
+							.getEnvironmentContext().getComponentStateFile(
+									componentName);
+					Properties props = new Properties();
+					props.setProperty("state", currentState);
+					XmlPersistenceSupport.write(stateFile, props);
+				} catch (IOException e) {
+					log.error("Failed to write current running state for Component: "
+									+ componentName, e);
+				}
+			} else {
+				log.warn("No componentMBean available for Component: "
+						+ componentName);
+			}
+		}
+	}
 
     /**
-     * Read the last running state from disk and set the component to this state
-     * 
-     * @throws JBIException
-     */
+	 * Read the last running state from disk and set the component to this state
+	 * 
+	 * @throws JBIException
+	 */
     void setRunningStateFromStore() throws JBIException{
-        if(!isPojo()){
-            String componentName=getComponentNameSpace().getName();
-            String runningState=getRunningStateFromStore();
-            log.info("Setting running state for Component: "+componentName+" to "+runningState);
-            if(runningState!=null&&componentMBean!=null){
-                if(runningState.equals(LifeCycleMBean.RUNNING)){
-                    componentMBean.doStart();
-                }
-                else if(runningState.equals(LifeCycleMBean.STOPPED)){
-                    componentMBean.doStart();
-                    componentMBean.doStop();
-                }else if(runningState.equals(LifeCycleMBean.SHUTDOWN)){
-                    componentMBean.doShutDown();
-                }
-            }
-        }
+        if (!isPojo()) {
+			String componentName = getComponentNameSpace().getName();
+			String runningState = getRunningStateFromStore();
+			log.info("Setting running state for Component: " + componentName
+					+ " to " + runningState);
+			if (runningState != null && componentMBean != null) {
+				if (runningState.equals(LifeCycleMBean.RUNNING)) {
+					componentMBean.doStart();
+				} else if (runningState.equals(LifeCycleMBean.STOPPED)) {
+					componentMBean.doStart();
+					componentMBean.doStop();
+				} else if (runningState.equals(LifeCycleMBean.SHUTDOWN)) {
+					componentMBean.doShutDown();
+				}
+			}
+		}
     }
 
     /**
-     * @return the current running state from disk
-     */
+	 * @return the current running state from disk
+	 */
     String getRunningStateFromStore(){
-        String result=LifeCycleMBean.UNKNOWN;
-        if(componentMBean!=null){
-            String componentName=getComponentNameSpace().getName();          
-            try{
-                File stateFile = context.getContainer().getEnvironmentContext().getComponentStateFile(componentName);
-                Properties props = (Properties) XmlPersistenceSupport.read(stateFile);
-                result = props.getProperty("state",result);
-            }catch(Exception e){
-                log.error("Failed to read running state for Component: "+componentName,e);
-            }
-        }
-        return result;
+        String result = LifeCycleMBean.UNKNOWN;
+		if (componentMBean != null) {
+			String componentName = getComponentNameSpace().getName();
+			try {
+				File stateFile = context.getContainer().getEnvironmentContext().getComponentStateFile(componentName);
+				Properties props = (Properties) XmlPersistenceSupport.read(stateFile);
+				result = props.getProperty("state", result);
+			} catch (Exception e) {
+				log.error("Failed to read running state for Component: "
+						+ componentName, e);
+			}
+		}
+		return result;
     }
 }

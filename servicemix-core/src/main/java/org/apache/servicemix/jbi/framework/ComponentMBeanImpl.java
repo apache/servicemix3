@@ -134,8 +134,8 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      */
     public void doStop() throws javax.jbi.JBIException {
         if (isUnknown() || isRunning()){
-        connector.getLifeCycle().stop();
-        super.stop();
+	        connector.getLifeCycle().stop();
+	        super.stop();
         }
         
     }

@@ -16,6 +16,9 @@
 package org.apache.servicemix.jbi.framework;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
 import javax.jbi.component.ServiceUnitManager;
@@ -25,6 +28,7 @@ import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanOperationInfo;
 import javax.xml.namespace.QName;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.EnvironmentContext;
@@ -301,12 +305,15 @@ public class DeploymentService extends BaseLifeCycle implements DeploymentServic
         return container.getRegistry().getServiceAssemblyState(serviceAssemblyName);
     }
 
-    protected String getComponentName(ServiceAssembly sa) {
-        String result = "";
+    protected Set getComponentNames(ServiceAssembly sa) {
+        Set names = null;
         if (sa.getServiceUnits() != null && sa.getServiceUnits().length > 0) {
-            result = sa.getServiceUnits()[0].getTarget().getComponentName();
+        	names = new HashSet();
+        	for (int i = 0; i < sa.getServiceUnits().length; i++) {
+        		names.add(sa.getServiceUnits()[i].getTarget().getComponentName());
+        	}
         }
-        return result;
+        return names;
     }
 
     protected String deployServiceUnit(File location, ServiceUnit su) throws DeploymentException {
@@ -337,7 +344,7 @@ public class DeploymentService extends BaseLifeCycle implements DeploymentServic
                 ServiceUnitManager sum = component.getServiceUnitManager();
                 if (sum != null) {
                     result = sum.deploy(name, targetDir.getAbsolutePath());
-                    sum.init(name, targetDir.getAbsolutePath());
+                    //sum.init(name, targetDir.getAbsolutePath());
                     // register active endpoints
                 }
                 else {
@@ -393,67 +400,26 @@ public class DeploymentService extends BaseLifeCycle implements DeploymentServic
         if (top != null && top.exists() && top.isDirectory()) {
             File[] files = top.listFiles();
             if (files != null) {
-                for (int i = 0;i < files.length;i++) {
+            	// Initialize all assemblies
+                for (int i = 0; i < files.length; i++) {
                     if (files[i].isDirectory()) {
                         String assemblyName = files[i].getName();
                         log.info("initializing assembly " + assemblyName);
                         try {
-                        File assemblyDir = environmentContext.getSARootDirectory(assemblyName);
-                        Descriptor root = AutoDeploymentService.buildDescriptor(assemblyDir);
-                        if (root != null) {
-                            ServiceAssembly sa = root.getServiceAssembly();
-                            if (sa != null && sa.getIdentification() != null) {
-                                initSA(sa);
-                                sa.setState(DeploymentServiceMBean.STARTED);
-                                container.getRegistry().registerServiceAssembly(sa);
-                                buildConnections(sa);
-                                
-                            }
-                        }
-                        }catch(Exception e){
+                        	File assemblyDir = environmentContext.getSARootDirectory(assemblyName);
+	                        Descriptor root = AutoDeploymentService.buildDescriptor(assemblyDir);
+	                        if (root != null) {
+	                            ServiceAssembly sa = root.getServiceAssembly();
+	                            if (sa != null && sa.getIdentification() != null) {
+	                                container.getRegistry().registerServiceAssembly(sa);
+	                                buildConnections(sa);
+	                                container.getRegistry().restoreServiceAssembly(assemblyName);
+	                            }
+	                        }
+                        } catch(Exception e) {
                             log.error("Failed to initialized service assembly: " + assemblyName,e);
                         }
                     }
-                }
-            }
-        }
-    }
-
-    protected void initSA(ServiceAssembly sa) throws DeploymentException {
-        if (sa != null) {
-            ServiceUnit[] sus = sa.getServiceUnits();
-            if (sus != null) {
-                for (int i = 0;i < sus.length;i++) {
-                    ServiceUnit su = sus[i];
-                    String name = su.getIdentification().getName();
-                    Target target = su.getTarget();
-                    String componentName = target.getComponentName();
-                    try {
-                        File targetDir = environmentContext.getServiceUnitDirectory(componentName, name);
-                        // now get the component and give it a SA
-                        Component component = container.getComponent(componentName);
-                        if (component != null) {
-                            ServiceUnitManager sum = component.getServiceUnitManager();
-                            if (sum != null) {
-                                sum.deploy(name, targetDir.getAbsolutePath());
-                                sum.init(name, targetDir.getAbsolutePath());
-                                sum.start(name);
-                            }
-                            else {
-                                FileUtil.deleteFile(targetDir);
-                                throw new DeploymentException("Component " + componentName
-                                        + " doesn't have a ServiceUnitManager");
-                            }
-                        }
-                        else {
-                            FileUtil.deleteFile(targetDir);
-                            throw new DeploymentException("Component " + componentName + " doesn't exist");
-                        }
-                    }
-                    catch (IOException e) {
-                        throw new DeploymentException(e);
-                    }
-                    log.info("Deployed ServiceUnit " + name + " to Component: " + componentName);
                 }
             }
         }

@@ -15,29 +15,15 @@
  */
 package org.apache.servicemix.jbi.installation;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.container.JBIContainer;
-import org.apache.servicemix.jbi.util.FileUtil;
-import org.easymock.MockControl;
-
 import javax.jbi.component.Bootstrap;
 import javax.jbi.component.Component;
 import javax.jbi.component.ComponentLifeCycle;
-import javax.jbi.management.AdminServiceMBean;
-import javax.jbi.management.InstallationServiceMBean;
 import javax.jbi.management.InstallerMBean;
 import javax.jbi.management.LifeCycleMBean;
 import javax.management.MBeanServerInvocationHandler;
 import javax.management.ObjectName;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.util.jar.JarOutputStream;
-import java.util.zip.ZipEntry;
-
-import junit.framework.TestCase;
+import org.easymock.MockControl;
 
 
 /**
@@ -45,72 +31,7 @@ import junit.framework.TestCase;
  * JbiTaskTest
  * @version $Revision$
  */
-public class InstallationTest extends TestCase {
-    
-    private static Log logger = LogFactory.getLog(InstallationTest.class);
-    
-    protected JBIContainer container;
-   
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-    
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        try {
-            shutdownContainer();
-        } catch (Exception e) {
-            logger.info("Error shutting down container", e);
-        }
-    }
-    
-    protected void startContainer(boolean clean) throws Exception {
-        shutdownContainer();
-        if (clean) {
-            FileUtil.deleteFile(new File("testWDR"));
-        }
-        container = new JBIContainer();
-        container.setCreateMBeanServer(true);
-        container.setMonitorInstallationDirectory(false);
-        container.setRootDir("testWDR");
-        container.init();
-        container.start();
-    }
-    
-    protected void shutdownContainer() throws Exception {
-        if (container != null) {
-            container.shutDown();
-        }
-    }
-    
-    protected File createInstallerArchive(String jbi) throws Exception {
-        InputStream is = getClass().getResourceAsStream(jbi + "-jbi.xml");
-        File jar = File.createTempFile("jbi", "zip");
-        JarOutputStream jos = new JarOutputStream(new FileOutputStream(jar));
-        jos.putNextEntry(new ZipEntry("META-INF/jbi.xml"));
-        byte[] buffer = new byte[is.available()];
-        is.read(buffer);
-        jos.write(buffer);
-        jos.closeEntry();
-        jos.close();
-        is.close();
-        return jar;
-    }
-    
-    protected InstallationServiceMBean getInstallationService() throws Exception {
-        return container.getInstallationService();
-    }
-    
-    protected AdminServiceMBean getAdminService() throws Exception {
-        return container.getManagementContext();
-    }
-    
+public class InstallationTest extends AbstractManagementTest {
     
     /**
      * Installer should not be persistent across restart

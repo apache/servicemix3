@@ -115,6 +115,7 @@ public class ServiceAssemblyRegistry {
         try{
             File stateFile=registry.getEnvironmentContext().getServiceAssemblyStateFile(saName);
             ServiceAssemblyLifeCycle salc=new ServiceAssemblyLifeCycle(sa,stateFile);
+            init(salc);
             if(!serviceAssembilies.containsKey(saName)){
                 serviceAssembilies.put(saName,salc);
                 result=true;
@@ -164,7 +165,7 @@ public class ServiceAssemblyRegistry {
      * @throws DeploymentException
      */
     public String start(String name) throws DeploymentException{
-        String result=ServiceAssemblyLifeCycle.UNKOWN;
+        String result=ServiceAssemblyLifeCycle.UNKNOWN;
         ServiceAssemblyLifeCycle salc=(ServiceAssemblyLifeCycle) serviceAssembilies.get(name);
         if(salc!=null){
             result=start(salc);
@@ -173,18 +174,57 @@ public class ServiceAssemblyRegistry {
         return result;
     }
     
-    protected String start(ServiceAssemblyLifeCycle salc) throws DeploymentException{
-        String result = ServiceAssemblyLifeCycle.UNKOWN;
+    public String restore(String name) throws DeploymentException {
+        String result = ServiceAssemblyLifeCycle.UNKNOWN;
+        ServiceAssemblyLifeCycle salc = (ServiceAssemblyLifeCycle) serviceAssembilies.get(name);
+        if (salc != null) {
+        	result = salc.getRunningStateFromStore();
+        	if (ServiceAssemblyLifeCycle.STARTED.equals(result)) {
+        		start(salc);
+        	} else if (ServiceAssemblyLifeCycle.SHUTDOWN.equals(result)) {
+        		shutDown(salc);
+        	}
+        }
+        return result;
+    }
+    
+    void init(ServiceAssemblyLifeCycle salc) throws DeploymentException{
         if (salc != null) {
             ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
             if (sus != null) {
                 for (int i = 0;i < sus.length;i++) {
+                	String suName = sus[i].getIdentification().getName();
                     String componentName = sus[i].getTarget().getComponentName();
                     Component component = registry.getComponent(componentName);
                     if (component != null) {
                         ServiceUnitManager sum = component.getServiceUnitManager();
                         if (sum != null) {
-                            sum.start(sus[i].getIdentification().getName());
+                            try {
+	                            File targetDir = registry.getEnvironmentContext().getServiceUnitDirectory(componentName, suName);
+	                            sum.init(suName, targetDir.getAbsolutePath());
+                            } catch (IOException e) {
+                            	throw new DeploymentException(e);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    String start(ServiceAssemblyLifeCycle salc) throws DeploymentException{
+        String result = ServiceAssemblyLifeCycle.UNKNOWN;
+        if (salc != null) {
+            ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
+            if (sus != null) {
+                for (int i = 0;i < sus.length;i++) {
+                	String suName = sus[i].getIdentification().getName();
+                    String componentName = sus[i].getTarget().getComponentName();
+                    Component component = registry.getComponent(componentName);
+                    if (component != null) {
+                        ServiceUnitManager sum = component.getServiceUnitManager();
+                        if (sum != null) {
+                            sum.start(suName);
                         }
                     }
                 }
@@ -204,7 +244,7 @@ public class ServiceAssemblyRegistry {
      * @throws DeploymentException 
      */
     public String stop(String name) throws DeploymentException{
-        String result=ServiceAssemblyLifeCycle.UNKOWN;
+        String result=ServiceAssemblyLifeCycle.UNKNOWN;
         ServiceAssemblyLifeCycle salc=(ServiceAssemblyLifeCycle) serviceAssembilies.get(name);
         if(salc!=null){
             result=stop(salc);
@@ -214,7 +254,7 @@ public class ServiceAssemblyRegistry {
     }
     
     String stop(ServiceAssemblyLifeCycle salc) throws DeploymentException {
-        String result = ServiceAssemblyLifeCycle.UNKOWN;
+        String result = ServiceAssemblyLifeCycle.UNKNOWN;
         if (salc != null) {
             ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
             if (sus != null) {
@@ -244,7 +284,7 @@ public class ServiceAssemblyRegistry {
     * @throws DeploymentException 
     */
     public String shutDown(String name) throws DeploymentException{
-        String result=ServiceAssemblyLifeCycle.UNKOWN;
+        String result=ServiceAssemblyLifeCycle.UNKNOWN;
         ServiceAssemblyLifeCycle salc=(ServiceAssemblyLifeCycle) serviceAssembilies.get(name);
         if(salc!=null){
             result=shutDown(salc);
@@ -254,7 +294,7 @@ public class ServiceAssemblyRegistry {
     }
     
     String shutDown(ServiceAssemblyLifeCycle salc) throws DeploymentException {
-        String result = ServiceAssemblyLifeCycle.UNKOWN;
+        String result = ServiceAssemblyLifeCycle.UNKNOWN;
         if (salc != null) {
             ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
             if (sus != null) {
