@@ -17,8 +17,6 @@ package org.apache.servicemix.jbi.framework;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -35,12 +33,14 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.messaging.DeliveryChannelImpl;
 import org.apache.servicemix.jbi.util.XmlPersistenceSupport;
+
 /**
- * ComponentConnector is used internally for message routing
+ * ComponentConnector is used internally for message routing.
  * 
  * @version $Revision$
  */
-public class LocalComponentConnector extends ComponentConnector{
+public class LocalComponentConnector extends ComponentConnector {
+
     private static final Log log = LogFactory.getLog(LocalComponentConnector.class);
     private Component component;
     private ComponentLifeCycle lifeCycle;
@@ -51,12 +51,11 @@ public class LocalComponentConnector extends ComponentConnector{
     private ObjectName extendedMBeanName;
     private ComponentMBeanImpl componentMBean;
     private boolean pojo;
-    private Map serviceUnits;
 
     /**
      * Default Constructor
      */
-    public LocalComponentConnector(){
+    public LocalComponentConnector() {
         super();
     }
 
@@ -70,22 +69,21 @@ public class LocalComponentConnector extends ComponentConnector{
      * @param binding
      * @param service
      */
-    public LocalComponentConnector(ComponentNameSpace name,String description,Component component,
-                    DeliveryChannelImpl dc,boolean binding,boolean service){
+    public LocalComponentConnector(ComponentNameSpace name, String description, Component component,
+            DeliveryChannelImpl dc, boolean binding, boolean service) {
         super(name);
-        this.component=component;
-        this.deliveryChannel=dc;
+        this.component = component;
+        this.deliveryChannel = dc;
         packet.setDescription(description);
         packet.setBinding(binding);
         packet.setService(service);
         this.componentMBean = new ComponentMBeanImpl(this);
-        this.serviceUnits = new HashMap();
     }
 
     /**
      * @return true if the Component is local to the Container
      */
-    public boolean isLocal(){
+    public boolean isLocal() {
         return true;
     }
 
@@ -94,7 +92,7 @@ public class LocalComponentConnector extends ComponentConnector{
      * 
      * @return the Context
      */
-    public ComponentContextImpl getContext(){
+    public ComponentContextImpl getContext() {
         return context;
     }
 
@@ -103,8 +101,8 @@ public class LocalComponentConnector extends ComponentConnector{
      * 
      * @param context
      */
-    public void setContext(ComponentContextImpl context){
-        this.context=context;
+    public void setContext(ComponentContextImpl context) {
+        this.context = context;
     }
 
     /**
@@ -112,7 +110,7 @@ public class LocalComponentConnector extends ComponentConnector{
      * 
      * @param endpoint
      */
-    public void addActiveEndpoint(ServiceEndpoint endpoint){
+    public void addActiveEndpoint(ServiceEndpoint endpoint) {
         packet.addActiveEndpoint(endpoint);
     }
 
@@ -121,7 +119,7 @@ public class LocalComponentConnector extends ComponentConnector{
      * 
      * @param endpoint
      */
-    public void removeActiveEndpoint(ServiceEndpoint endpoint){
+    public void removeActiveEndpoint(ServiceEndpoint endpoint) {
         packet.removeActiveEndpoint(endpoint);
     }
 
@@ -130,7 +128,7 @@ public class LocalComponentConnector extends ComponentConnector{
      * 
      * @param endpoint
      */
-    public void addExternalActiveEndpoint(ServiceEndpoint endpoint){
+    public void addExternalActiveEndpoint(ServiceEndpoint endpoint) {
         packet.addExternalActiveEndpoint(endpoint);
     }
 
@@ -139,7 +137,7 @@ public class LocalComponentConnector extends ComponentConnector{
      * 
      * @param endpoint
      */
-    public void removeExternalActiveEndpoint(ServiceEndpoint endpoint){
+    public void removeExternalActiveEndpoint(ServiceEndpoint endpoint) {
         packet.removeExternalActiveEndpoint(endpoint);
     }
 
@@ -148,14 +146,14 @@ public class LocalComponentConnector extends ComponentConnector{
      * 
      * @return the activated endpoint Set
      */
-    public Set getExternalActiveEndpoints(){
+    public Set getExternalActiveEndpoints() {
         return packet.getExternalActiveEndpoints();
     }
 
     /**
      * @return Returns the component.
      */
-    public Component getComponent(){
+    public Component getComponent() {
         return component;
     }
 
@@ -163,14 +161,14 @@ public class LocalComponentConnector extends ComponentConnector{
      * @param component
      *            The component to set.
      */
-    public void setComponent(Component component){
-        this.component=component;
+    public void setComponent(Component component) {
+        this.component = component;
     }
 
     /**
      * @return Returns the deliveryChannel.
      */
-    public DeliveryChannelImpl getDeliveryChannel(){
+    public DeliveryChannelImpl getDeliveryChannel() {
         return deliveryChannel;
     }
 
@@ -178,14 +176,14 @@ public class LocalComponentConnector extends ComponentConnector{
      * @param deliveryChannel
      *            The deliveryChannel to set.
      */
-    public void setDeliveryChannel(DeliveryChannelImpl deliveryChannel){
-        this.deliveryChannel=deliveryChannel;
+    public void setDeliveryChannel(DeliveryChannelImpl deliveryChannel) {
+        this.deliveryChannel = deliveryChannel;
     }
 
     /**
      * @return the ActivateionSpec
      */
-    public ActivationSpec getActivationSpec(){
+    public ActivationSpec getActivationSpec() {
         return activationSpec;
     }
 
@@ -194,28 +192,28 @@ public class LocalComponentConnector extends ComponentConnector{
      * 
      * @param activationSpec
      */
-    public void setActivationSpec(ActivationSpec activationSpec){
-        this.activationSpec=activationSpec;
+    public void setActivationSpec(ActivationSpec activationSpec) {
+        this.activationSpec = activationSpec;
     }
 
     /**
      * @return Returns the mbeanName.
      */
-    public ObjectName getMbeanName(){
+    public ObjectName getMbeanName() {
         return componentMBean.getObjectName();
     }
 
     /**
      * @return Returns the ComponentMBean
      */
-    public ComponentMBeanImpl getComponentMBean(){
+    public ComponentMBeanImpl getComponentMBean() {
         return componentMBean;
     }
 
     /**
      * @return Returns the extendedMBeanName.
      */
-    public ObjectName getExtendedMBeanName(){
+    public ObjectName getExtendedMBeanName() {
         return extendedMBeanName;
     }
 
@@ -223,16 +221,17 @@ public class LocalComponentConnector extends ComponentConnector{
      * @param extendedMBeanName
      *            The extendedMBeanName to set.
      */
-    public void setExtendedMBeanName(ObjectName extendedMBeanName){
-        this.extendedMBeanName=extendedMBeanName;
+    public void setExtendedMBeanName(ObjectName extendedMBeanName) {
+        this.extendedMBeanName = extendedMBeanName;
     }
-    
+
     /**
      * Initialize the Component
+     * 
      * @throws JBIException
      */
-    public void init() throws JBIException{
-        if (context != null && component != null){
+    public void init() throws JBIException {
+        if (context != null && component != null) {
             getLifeCycle().init(context);
         }
     }
@@ -240,7 +239,7 @@ public class LocalComponentConnector extends ComponentConnector{
     /**
      * @return Returns the pojo.
      */
-    public boolean isPojo(){
+    public boolean isPojo() {
         return pojo;
     }
 
@@ -248,90 +247,85 @@ public class LocalComponentConnector extends ComponentConnector{
      * @param pojo
      *            The pojo to set.
      */
-    public void setPojo(boolean pojo){
-        this.pojo=pojo;
+    public void setPojo(boolean pojo) {
+        this.pojo = pojo;
     }
-    
+
     public ComponentLifeCycle getLifeCycle() {
         if (lifeCycle == null) {
             lifeCycle = component.getLifeCycle();
         }
         return lifeCycle;
     }
-    
+
     public ServiceUnitManager getServiceUnitManager() {
-    	if (suManager == null) {
-    		suManager = component.getServiceUnitManager();
-    	}
-    	return suManager;
+        if (suManager == null) {
+            suManager = component.getServiceUnitManager();
+        }
+        return suManager;
     }
-    
+
     /**
      * write the current running state of the Component to disk
      */
-     void writeRunningState() {
-		if (!isPojo()) {
-			String componentName = getComponentNameSpace().getName();
-			if (componentMBean != null) {
-				try {
-					String currentState = componentMBean.getCurrentState();
-					File stateFile = context.getContainer()
-							.getEnvironmentContext().getComponentStateFile(
-									componentName);
-					Properties props = new Properties();
-					props.setProperty("state", currentState);
-					XmlPersistenceSupport.write(stateFile, props);
-				} catch (IOException e) {
-					log.error("Failed to write current running state for Component: "
-									+ componentName, e);
-				}
-			} else {
-				log.warn("No componentMBean available for Component: "
-						+ componentName);
-			}
-		}
-	}
-
-    /**
-	 * Read the last running state from disk and set the component to this state
-	 * 
-	 * @throws JBIException
-	 */
-    void setRunningStateFromStore() throws JBIException{
+    void writeRunningState() {
         if (!isPojo()) {
-			String componentName = getComponentNameSpace().getName();
-			String runningState = getRunningStateFromStore();
-			log.info("Setting running state for Component: " + componentName
-					+ " to " + runningState);
-			if (runningState != null && componentMBean != null) {
-				if (runningState.equals(LifeCycleMBean.RUNNING)) {
-					componentMBean.doStart();
-				} else if (runningState.equals(LifeCycleMBean.STOPPED)) {
-					componentMBean.doStart();
-					componentMBean.doStop();
-				} else if (runningState.equals(LifeCycleMBean.SHUTDOWN)) {
-					componentMBean.doShutDown();
-				}
-			}
-		}
+            String componentName = getComponentNameSpace().getName();
+            if (componentMBean != null) {
+                try {
+                    String currentState = componentMBean.getCurrentState();
+                    File stateFile = context.getContainer().getEnvironmentContext()
+                            .getComponentStateFile(componentName);
+                    Properties props = new Properties();
+                    props.setProperty("state", currentState);
+                    XmlPersistenceSupport.write(stateFile, props);
+                } catch (IOException e) {
+                    log.error("Failed to write current running state for Component: " + componentName, e);
+                }
+            } else {
+                log.warn("No componentMBean available for Component: " + componentName);
+            }
+        }
     }
 
     /**
-	 * @return the current running state from disk
-	 */
-    String getRunningStateFromStore(){
+     * Read the last running state from disk and set the component to this state
+     * 
+     * @throws JBIException
+     */
+    void setRunningStateFromStore() throws JBIException {
+        if (!isPojo()) {
+            String componentName = getComponentNameSpace().getName();
+            String runningState = getRunningStateFromStore();
+            log.info("Setting running state for Component: " + componentName + " to " + runningState);
+            if (runningState != null && componentMBean != null) {
+                if (runningState.equals(LifeCycleMBean.RUNNING)) {
+                    componentMBean.doStart();
+                } else if (runningState.equals(LifeCycleMBean.STOPPED)) {
+                    componentMBean.doStart();
+                    componentMBean.doStop();
+                } else if (runningState.equals(LifeCycleMBean.SHUTDOWN)) {
+                    componentMBean.doShutDown();
+                }
+            }
+        }
+    }
+
+    /**
+     * @return the current running state from disk
+     */
+    String getRunningStateFromStore() {
         String result = LifeCycleMBean.UNKNOWN;
-		if (componentMBean != null) {
-			String componentName = getComponentNameSpace().getName();
-			try {
-				File stateFile = context.getContainer().getEnvironmentContext().getComponentStateFile(componentName);
-				Properties props = (Properties) XmlPersistenceSupport.read(stateFile);
-				result = props.getProperty("state", result);
-			} catch (Exception e) {
-				log.error("Failed to read running state for Component: "
-						+ componentName, e);
-			}
-		}
-		return result;
+        if (componentMBean != null) {
+            String componentName = getComponentNameSpace().getName();
+            try {
+                File stateFile = context.getContainer().getEnvironmentContext().getComponentStateFile(componentName);
+                Properties props = (Properties) XmlPersistenceSupport.read(stateFile);
+                result = props.getProperty("state", result);
+            } catch (Exception e) {
+                log.error("Failed to read running state for Component: " + componentName, e);
+            }
+        }
+        return result;
     }
 }
