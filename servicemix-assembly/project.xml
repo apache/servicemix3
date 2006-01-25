@@ -35,7 +35,7 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
+      <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-jbi</artifactId>
       <version>${pom.currentVersion}</version>
       <properties>
@@ -45,7 +45,7 @@
     </dependency>
     
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
+      <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-core</artifactId>
       <version>${pom.currentVersion}</version>
       <properties>
@@ -55,7 +55,7 @@
     </dependency>
     
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
+      <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-components</artifactId>
       <version>${pom.currentVersion}</version>
       <properties>
@@ -65,7 +65,7 @@
     </dependency>
     
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
+      <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-common</artifactId>
       <version>${pom.currentVersion}</version>
       <properties>
@@ -74,7 +74,7 @@
       </properties>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
+      <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-jms</artifactId>
       <version>${pom.currentVersion}</version>
       <properties>
@@ -82,7 +82,7 @@
       </properties>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
+      <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-jsr181</artifactId>
       <version>${pom.currentVersion}</version>
       <properties>
@@ -90,7 +90,7 @@
       </properties>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
+      <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-wsn2005</artifactId>
       <version>${pom.currentVersion}</version>
       <properties>
@@ -305,14 +305,16 @@
 
     <!--  for ActiveMQ 4.x -->
     <dependency>
-      <id>activemq</id>
+      <groupId>incubator-activemq</groupId>
+      <artifactId>activemq</artifactId>
       <version>${activemq_version}</version>
       <properties>
         <lib>true</lib>
       </properties>
     </dependency>
     <dependency>
-      <id>activemq+ra</id>
+      <groupId>incubator-activemq</groupId>
+      <artifactId>activemq-ra</artifactId>
       <version>${activemq_version}</version>
       <properties>
         <lib>true</lib>
