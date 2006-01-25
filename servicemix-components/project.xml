@@ -28,7 +28,7 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
+      <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-jbi</artifactId>
       <version>${pom.currentVersion}</version>
       <properties>
@@ -36,7 +36,7 @@
       </properties>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
+      <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-core</artifactId>
       <version>${pom.currentVersion}</version>
       <properties>
@@ -353,11 +353,13 @@
 
     <!-- default JMS provider used for implementation -->
     <dependency>
-      <id>activemq</id>
+      <groupId>incubator-activemq</groupId>
+      <artifactId>activemq</artifactId>
       <version>${activemq_version}</version>
     </dependency>
     <dependency>
-      <id>activemq+ra</id>
+      <groupId>incubator-activemq</groupId>
+      <artifactId>activemq-ra</artifactId>
       <version>${activemq_version}</version>
     </dependency>
 
@@ -553,7 +555,7 @@
   </dependencies>
 
 <build>
-    <nagEmailAddress>nag@agilasoft.org</nagEmailAddress>
+    <nagEmailAddress>servicemix-dev-subscribe@geronimo.apache.org</nagEmailAddress>
     <sourceDirectory>src/main/java</sourceDirectory>
     <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
 
