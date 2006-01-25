@@ -541,6 +541,9 @@ public class ManagementContext extends BaseLifeCycle implements ManagementContex
     public void registerSystemService(BaseLifeCycle service, Class type, Class implementationType, String name) throws JBIException {
         String tmp = jmxDomainName + ":" + "type=" + type.getName() + ",name=" + name;
         try {
+            if (log.isDebugEnabled()) {
+                log.debug("Registering system service: class=" + implementationType.getName() + ", name=" + tmp);
+            }
             ObjectName objName = new ObjectName(tmp);
             registerMBean(objName, service, implementationType, service.getDescription());
             systemServices.put(name, objName);
@@ -609,9 +612,19 @@ public class ManagementContext extends BaseLifeCycle implements ManagementContex
                 // lets piggy back on another MBeanServer - we could be in an appserver!
                 List list = MBeanServerFactory.findMBeanServer(null);
                 if (list != null && list.size() > 0) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Found " + list.size() + " mbean servers. Getting the first one");
+                    } 
                     result = (MBeanServer) list.get(0);
+                } else {
+                    if (log.isDebugEnabled()) {
+                        log.debug("No mbean server found");
+                    } 
                 }
                 if (result == null && createMBeanServer) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Creating mbean server");
+                    } 
                     result = MBeanServerFactory.createMBeanServer(jmxDomainName);
                     locallyCreateMBeanServer = true;
                     // Register and start the rmiregistry MBean, needed by JSR 160 RMIConnectorServer
@@ -680,6 +693,10 @@ public class ManagementContext extends BaseLifeCycle implements ManagementContex
             catch (Throwable e) {
                 // probably don't have access to system properties
                 log.error("Failed to initialize MBeanServer", e);
+            }
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug("Not using jmx: useMBeanServer is false");
             }
         }
         return result;
