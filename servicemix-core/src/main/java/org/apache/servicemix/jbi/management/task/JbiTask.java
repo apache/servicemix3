@@ -157,13 +157,12 @@ public abstract class JbiTask extends Task {
      * @throws IOException
      */
     public ManagementContextMBean getManagementContext() throws IOException{
-        ObjectName objectName = getObjectName(AdminServiceMBean.class);
+        ObjectName objectName = getObjectName(ManagementContext.class);
         
         return (ManagementContextMBean) MBeanServerInvocationHandler.newProxyInstance(jmxConnector.getMBeanServerConnection(), objectName,
                 ManagementContextMBean.class, true);
     }
-    
-    
+
     /**
      * @return Returns the containerName.
      */
