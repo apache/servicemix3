@@ -42,7 +42,7 @@
     <dependencies>
     
       <dependency>
-        <groupId>org.apache.servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-jbi</artifactId>
         <version>${pom.currentVersion}</version>
         <properties>
