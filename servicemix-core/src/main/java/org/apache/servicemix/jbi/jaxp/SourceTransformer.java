@@ -24,6 +24,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
@@ -245,6 +246,9 @@ public class SourceTransformer {
     public Node toDOMNodeFromSAX(SAXSource source) throws ParserConfigurationException, IOException, SAXException {
         SAX2DOM converter = new SAX2DOM(createDocument());
         XMLReader xmlReader = source.getXMLReader();
+        if (xmlReader == null) {
+            xmlReader = XMLReaderFactory.createXMLReader();
+        }
         xmlReader.setContentHandler(converter);
         xmlReader.parse(source.getInputSource());
         return converter.getDOM();

@@ -28,6 +28,7 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
 import java.io.IOException;
@@ -57,10 +58,11 @@ public class CopyTransformer implements MessageTransformer {
         copyProperties(from, to);
 
         Source content = from.getContent();
-        if (content instanceof StreamSource && 
-        	!(content instanceof StringSource) &&
-        	!(content instanceof BytesSource) &&
-        	!(content instanceof ResourceSource)) {
+        if ((content instanceof StreamSource ||
+             content instanceof SAXSource) &&
+            !(content instanceof StringSource) &&
+            !(content instanceof BytesSource) &&
+            !(content instanceof ResourceSource)) {
             // lets avoid stream open exceptions by using a temporary format
             try {
                 content = sourceTransformer.toDOMSource(from);
