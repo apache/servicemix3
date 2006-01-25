@@ -26,5 +26,12 @@
 
   <goal name="default" prereqs="plugin:repository-install, plugin:install-now"/>
   <goal name="nightly" prereqs="clean, plugin:repository-install, plugin:install-now, plugin:repository-deploy"/>
+  
+  <!-- Executed when calling multiproject:deploy from root -->
+  <goal name="plugin:deploy" 
+          description="Deploys javadoc binary" prereqs="javadoc:install">
+            
+          <attainGoal name="plugin:repository-deploy"/>
+  </goal>
 
 </project>
