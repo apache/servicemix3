@@ -1,18 +1,28 @@
 <project name="jms-binding" default="run" basedir=".">
 
-  <property name="class.dir" value="classes"/>
+  <property name="build.dir" value="build"/>
+  <property name="comp.build.dir" value="${build.dir}/components"/>
+  <property name="client.build.dir" value="${build.dir}/client"/>
+  
+  <property name="src.dir" value="src"/>
+  <property name="comp.src.dir" value="${src.dir}/components"/>
+  <property name="client.src.dir" value="${src.dir}/client"/>
+  <property name="su.src.dir" value="${src.dir}/su"/>
+  <property name="sa.src.dir" value="${src.dir}/sa"/>
 
   <target name="clean">
     <delete dir="target" quiet="true"/>
-    <delete dir="${class.dir}" quiet="true"/>
+    <delete dir="${build.dir}" quiet="true"/>
   </target>
 
   <target name="init">
-    <mkdir dir="${class.dir}"/>
-    <mkdir dir="src/ddl"/>
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${comp.build.dir}"/>
+    <mkdir dir="${client.build.dir}"/>
 
     <path id="javac.classpath">
-      <pathelement path="${class.dir}"/>
+      <pathelement path="${comp.build.dir}"/>
+      <pathelement path="${client.build.dir}"/>
       <pathelement path="../../conf"/>
       <fileset dir="../../lib">
         <include name="**/*.jar"/>
@@ -23,20 +33,49 @@
     </path>
   </target>
 
-  <target name="compile" depends="init" description="Compile all Java">
-    <javac srcdir="src" destdir="${class.dir}" debug="on" source="1.4" target="1.4">
+  <target name="build-components" depends="init" description="Build components">
+    <javac srcdir="${comp.src.dir}" destdir="${comp.build.dir}" debug="on" source="1.4" target="1.4">
       <classpath refid="javac.classpath"/>
     </javac>
   </target>
+  
+  <target name="build-su" depends="build-components" description="Build the service unit">
+    <zip destfile="${build.dir}/loanbroker-su.zip">
+      <fileset dir="${comp.build.dir}"/>
+      <fileset dir="${su.src.dir}"/>
+    </zip>
+  </target>
 
-  <target name="run" depends="compile" description="Runs the example client">
+  <target name="build-sa" depends="build-su" description="Build the service assembly">
+    <zip destfile="${build.dir}/loanbroker-sa.zip">
+      <fileset dir="${build.dir}" includes="loanbroker-su.zip"/>
+      <fileset dir="${sa.src.dir}"/>
+    </zip>
+  </target>
+  
+  <target name="setup" depends="build-sa" description="Setup servicemix">
+    <mkdir dir="install"/>
+    <mkdir dir="deploy"/>
+    <copy todir="install">
+      <fileset dir="../../components" includes="*lwcontainer*"/>
+    </copy>
+    <copy file="${build.dir}/loanbroker-sa.zip" todir="deploy"/>
+  </target>
+
+  <target name="build-client" depends="init" description="Build components">
+    <javac srcdir="${client.src.dir}" destdir="${client.build.dir}" debug="on" source="1.4" target="1.4">
+      <classpath refid="javac.classpath"/>
+    </javac>
+  </target>
+  
+  <target name="run" depends="build-client" description="Runs the example client">
     <echo>Running exsample client</echo>
     <java classname="JMSClient" fork="yes" maxmemory="100M">
       <classpath refid="javac.classpath"/>
     </java>
   </target>
 	
-  <target name="run-loop" depends="compile" description="Runs the example client">
+  <target name="run-loop" depends="build-client" description="Runs the example client">
     <echo>Running exsample client</echo>
     <java classname="JMSClient" fork="yes" maxmemory="100M">
       <classpath refid="javac.classpath"/>

@@ -6,8 +6,7 @@ The client and components are built and run from source using Ant, http://ant.ap
 
 To start the servicemix server using the sample configuration, you must enter the following commands:
 
-ant compile
-set CLASSPATH=classes
+ant setup
 ../../bin/servicemix servicemix.xml
 
 This will start the loan broker component.

@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:sm="http://servicemix.apache.org/config/1.0"
-	     xmlns:lb="http://servicemix.apache.org/demos/loan-broker">
-	                       
-	<sm:container id="jbi"
-	              monitorInstallationDirectory="true"
-	              createMBeanServer="true"
-	              useMBeanServer="true"
-                dumpStats="true" 
-                statsInterval="10">
+	     xmlns:lb="http://servicemix.org/demos/loan-broker">
+	                     
+  <classpath>
+    <location>.</location>
+  </classpath>
+                         
+	<sm:serviceunit id="jbi">
 		<sm:activationSpecs>
 		
 		  <!-- In/out binding -->
@@ -68,15 +67,12 @@
 		  </sm:activationSpec>
 		  
 		</sm:activationSpecs>
-	</sm:container>                
+	</sm:serviceunit>                
 	                       
-	<bean id="transactionContextManager" class="org.jencks.factory.TransactionContextManagerFactoryBean"/>
-	<bean id="transactionManager" class="org.jencks.factory.GeronimoTransactionManagerFactoryBean" />
-
 	<bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
 		<property name="connectionFactory">
 			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
-				<property name="brokerURL" value="reliable:(tcp://localhost:61616)" />
+				<property name="brokerURL" value="tcp://localhost:61616" />
 			</bean>
 		</property>
 	</bean>
