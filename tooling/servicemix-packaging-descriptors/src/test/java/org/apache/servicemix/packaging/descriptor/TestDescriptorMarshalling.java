@@ -19,12 +19,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.servicemix.packaging.descriptor.Assets;
-import org.apache.servicemix.packaging.descriptor.Component;
-import org.apache.servicemix.packaging.descriptor.Components;
-import org.apache.servicemix.packaging.descriptor.EmbeddedArtifact;
-import org.apache.servicemix.packaging.descriptor.Parameter;
-
 import junit.framework.TestCase;
 
 public class TestDescriptorMarshalling extends TestCase {
@@ -54,6 +48,13 @@ public class TestDescriptorMarshalling extends TestCase {
 		assertEquals(1, component.getAssets().getConnection().size());
 		assertEquals("destinationService", component.getAssets()
 				.getConnection().get(0).getName());
+
+		assertNotNull(component.getServiceUnit());
+		assertNotNull(component.getServiceUnit().getAssets());
+		assertNotNull(component.getServiceUnit().getAssets()
+				.getEmbeddedArtifact().get(0));
+		assertEquals("Service Unit Definition", component.getServiceUnit()
+				.getAssets().getEmbeddedArtifact().get(0).getDescription());
 		System.out.println(components);
 	}
 

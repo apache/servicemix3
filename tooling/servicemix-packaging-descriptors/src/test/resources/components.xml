@@ -15,5 +15,13 @@
 			<connection defaultDestination="true"
 				name="destinationService" description="Default destination" mep="robustInOnly" />
 		</assets>
+		<serviceUnit>
+			<assets>
+				<embeddedArtifact extension="*.xml"
+					description="Service Unit Definition" />
+				<connection default="true" name="Destination service"
+					mep="robustInOnly" />
+			</assets>
+		</serviceUnit>
 	</component>
 </components>
