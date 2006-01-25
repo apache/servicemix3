@@ -15,6 +15,7 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+    
 -->
 
 <!DOCTYPE project>
@@ -41,7 +42,7 @@
     <dependencies>
     
       <dependency>
-        <groupId>org.apache.servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-jbi</artifactId>
         <version>${pom.currentVersion}</version>
         <properties>
@@ -50,7 +51,7 @@
         </properties>
       </dependency>
       <dependency>
-        <groupId>org.apache.servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-core</artifactId>
         <version>${pom.currentVersion}</version>
         <properties>
