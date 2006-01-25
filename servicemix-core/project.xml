@@ -15,6 +15,7 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+    
 -->
 
 <project>
@@ -26,7 +27,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.servicemix</groupId>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>servicemix-jbi</artifactId>
             <version>${pom.currentVersion}</version>
             <properties>
@@ -244,11 +245,13 @@
 
         <!--  for ActiveMQ 4.x -->
         <dependency>
-            <id>activemq</id>
+            <groupId>incubator-activemq</groupId>
+	    <artifactId>activemq</artifactId>
             <version>${activemq_version}</version>
         </dependency>
         <dependency>
-            <id>activemq+ra</id>
+            <groupId>incubator-activemq</groupId>
+	    <artifactId>activemq-ra</artifactId>
             <version>${activemq_version}</version>
         </dependency>
 
