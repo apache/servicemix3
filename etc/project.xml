@@ -304,7 +304,10 @@
     <report>maven-javadoc-plugin</report>
     <report>maven-jxr-plugin</report>
     <report>maven-junit-report-plugin</report>
+    <!-- When enabled, a java.lang.IncompatibleClassChangeError is thrown due
+        to changes in qdox
     <report>maven-tasklist-plugin</report>
+    -->
     <report>maven-pmd-plugin</report>
 
   </reports>

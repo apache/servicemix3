@@ -5,9 +5,13 @@ This project makes use of the Maven tool...
 
 http://maven.apache.org/
 
-to build itself. Please download 2.0 onwards,
+to build itself. Please download maven 1.x,
 install it as per the instructions on Maven's site and then type
 
-  mvn install
+  maven
+
+Maven will download ServiceMix dependencies from global repositories.
+You may experience failures due to timeouts accessing these repositories.
+In such cases, retry until all dependencies have been sucessfully downloaded.
 
 Enjoy!
