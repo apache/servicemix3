@@ -19,15 +19,20 @@
 
 <project>
   <pomVersion>3</pomVersion>
+    
+  <!-- ============== -->
+  <!-- Identification -->
+  <!-- ============== -->
+  
   <name>ServiceMix</name>
   <id>servicemix</id>
-  <groupId>org.apache.servicemix</groupId>
+  <groupId>incubator-servicemix</groupId>
   <currentVersion>3.0-SNAPSHOT</currentVersion>
-
+  
   <organization>
-    <name>LogicBlaze, Inc.</name>
-    <url>http://logicblaze.com</url>
-    <logo>http://logicblaze.com/images/logo.jpg</logo>
+    <name>Apache Software Foundation</name>
+    <url>http://geronimo.apache.org.apache.servicemix</url>
+    <logo>http://geronimo.apache.org/images/geronimo-logo.png</logo>
   </organization>
 
   <inceptionYear>2006</inceptionYear>
@@ -90,6 +95,12 @@
   <siteAddress>beaver.codehaus.org</siteAddress>
   <siteDirectory>/home/projects/servicemix/public_html/maven/${pom.artifactId}</siteDirectory>
   <distributionDirectory>/home/projects/servicemix/dist</distributionDirectory>
+  
+  <!-- Used for artifact deployment -->
+  <siteAddress>geronimo.apache.org</siteAddress>
+  <siteDirectory>/www/geronimo.apache.org.apache.servicemix/${pom.artifactId}</siteDirectory>
+  <distributionSite>geronimo.apache.org</distributionSite>
+  <distributionDirectory>/www/geronimo.apache.org/builds</distributionDirectory>
 
   <repository>
     <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/servicemix/trunk/</connection>
