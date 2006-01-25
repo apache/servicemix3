@@ -18,6 +18,7 @@ package org.apache.servicemix.packaging.parts;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.servicemix.packaging.descriptor.Component;
 import org.apache.servicemix.packaging.figure.ServiceUnitFigure;
 import org.apache.servicemix.packaging.model.AbstractComponent;
 import org.apache.servicemix.packaging.model.ComponentBased;
@@ -31,8 +32,7 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
-
-import org.apache.servicemix.packaging.descriptor.Component;
+import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 /**
  * The GEF edit part for a service unit
@@ -101,10 +101,11 @@ public class ServiceUnitEditPart extends AbstractComponentEditPart implements
 	public IPropertyDescriptor[] getPropertyDescriptors() {
 		if (descriptors == null) {
 			descriptors = new LinkedList<IPropertyDescriptor>();
+			descriptors.add(new TextPropertyDescriptor(getModel(),
+					"Service unit name"));
 			descriptors.add(new QNamePropertyDescriptor(
 					((ServiceUnit) getModel()).getServiceName(),
 					"Service name", null));
-
 			if ((getComponentDescriptor().getServiceUnit() != null)
 					&& (getComponentDescriptor().getServiceUnit().getAssets() != null)) {
 				descriptors.addAll(AssetDescriptorFactory.getDescriptors(
@@ -116,8 +117,11 @@ public class ServiceUnitEditPart extends AbstractComponentEditPart implements
 	}
 
 	public Object getPropertyValue(Object arg0) {
-		return getPropertyFromAssets(arg0, ((ServiceUnit) getModel())
-				.getStoredAssets());
+		if (arg0 instanceof ServiceUnit) {
+			return ((ServiceUnit) arg0).getServiceUnitName();
+		} else
+			return getPropertyFromAssets(arg0, ((ServiceUnit) getModel())
+					.getStoredAssets());
 	}
 
 	public boolean isPropertySet(Object arg0) {
@@ -138,8 +142,11 @@ public class ServiceUnitEditPart extends AbstractComponentEditPart implements
 	}
 
 	public void setPropertyValue(Object arg0, Object arg1) {
-		setPropertyFromAssets(arg0, arg1, ((ServiceUnit) getModel())
-				.getStoredAssets());
+		if (arg0 instanceof ServiceUnit) {
+			((ServiceUnit) arg0).setServiceUnitName((String) arg1);
+		} else
+			setPropertyFromAssets(arg0, arg1, ((ServiceUnit) getModel())
+					.getStoredAssets());
 		((AbstractComponent) getModel()).updated();
 	}
 }

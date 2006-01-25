@@ -34,6 +34,7 @@ public class ServiceAssemblyDescriptorWriter {
 		XMLWriter writer = new PrettyPrintXMLWriter(w, "UTF-8", null);
 		writer.startElement("jbi");
 		writer.addAttribute("xmlns", "http://java.sun.com/xml/ns/jbi");
+
 		writer.addAttribute("version", "1.0");
 
 		writer.startElement("service-assembly");
@@ -47,13 +48,13 @@ public class ServiceAssemblyDescriptorWriter {
 		// writer.writeText(assembly.getDescription());
 		writer.endElement();
 
+		writer.endElement();
+
 		for (ServiceUnit unit : assembly.getServiceUnit()) {
 			writer.startElement("service-unit");
 			writer.startElement("identification");
 			writer.startElement("name");
-			writer.addAttribute("xmlns:ns1", unit.getServiceName()
-					.getNamespaceURI());
-			writer.writeText("ns1:" + unit.getServiceName().getLocalPart());
+			writer.writeText(unit.getServiceUnitName());
 			writer.endElement();
 			writer.startElement("description");
 			// writer.writeText(unit.getDescription());
@@ -62,18 +63,18 @@ public class ServiceAssemblyDescriptorWriter {
 
 			writer.startElement("target");
 			writer.startElement("artifacts-zip");
-			writer.writeText(unit.getServiceName().getLocalPart() + ".zip");
+			writer.writeText(unit.getServiceUnitName() + ".zip");
 			writer.endElement();
 
 			writer.startElement("component-name");
-			writer.writeText(assembly.getName());
+			writer.writeText(assembly.getComponentArtifact()
+					.getComponentDefinitionByUuid(assembly.getComponentUuid())
+					.getName());
 			writer.endElement();
 
 			writer.endElement();
 			writer.endElement();
 		}
-
-		writer.endElement();
 		writer.endElement();
 		writer.endElement();
 	}

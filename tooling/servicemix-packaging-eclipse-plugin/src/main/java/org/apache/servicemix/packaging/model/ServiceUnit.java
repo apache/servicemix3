@@ -15,6 +15,7 @@
  */
 package org.apache.servicemix.packaging.model;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.servicemix.packaging.ComponentArtifact;
@@ -32,6 +33,8 @@ public class ServiceUnit extends AbstractConnectableService implements
 
 	public ServiceAssembly parentAssembly;
 
+	private String serviceUnitName = "serviceUnit";
+
 	public ComponentArtifact getComponentArtifact() {
 		return ((ServiceAssembly) getParentModelElement())
 				.getComponentArtifact();
@@ -42,8 +45,17 @@ public class ServiceUnit extends AbstractConnectableService implements
 		return ((ServiceAssembly) getParentModelElement()).getComponentUuid();
 	}
 
+	@XmlAttribute
+	public String getServiceUnitName() {
+		return serviceUnitName;
+	}
+
 	public void setComponentUuid(String serviceUuid) {
 		// ignore?
+	}
+
+	public void setServiceUnitName(String serviceUnitName) {
+		this.serviceUnitName = serviceUnitName;
 	}
 
 }

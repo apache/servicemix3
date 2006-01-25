@@ -19,6 +19,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.servicemix.packaging.descriptor.Component;
 import org.apache.servicemix.packaging.figure.ServiceAssemblyFigure;
 import org.apache.servicemix.packaging.model.AbstractComponent;
 import org.apache.servicemix.packaging.model.ComponentBased;
@@ -31,11 +32,10 @@ import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
-
-import org.apache.servicemix.packaging.descriptor.Component;
+import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 /**
- * The GEF edit part of a service 
+ * The GEF edit part of a service
  * 
  * @author <a href="mailto:philip.dodds@gmail.com">Philip Dodds </a>
  * 
@@ -74,7 +74,7 @@ public class ServiceAssemblyEditPart extends AbstractComponentEditPart
 		super.propertyChange(evt);
 		if (evt.getPropertyName().equals(ServiceAssembly.NAME_PROP)) {
 			refreshVisuals();
-		} else if (evt.getPropertyName().equals(ServiceAssembly.ADDCHILD_PROP)) {			
+		} else if (evt.getPropertyName().equals(ServiceAssembly.ADDCHILD_PROP)) {
 			this.refresh();
 		}
 	}
@@ -118,6 +118,8 @@ public class ServiceAssemblyEditPart extends AbstractComponentEditPart
 	public IPropertyDescriptor[] getPropertyDescriptors() {
 		if (descriptors == null) {
 			descriptors = new LinkedList<IPropertyDescriptor>();
+			descriptors.add(new TextPropertyDescriptor(getModel(),
+					"Service assembly name"));
 			if (getComponentDescriptor().getAssets() != null) {
 				descriptors.addAll(AssetDescriptorFactory.getDescriptors(
 						getComponentDescriptor().getAssets(),
@@ -129,8 +131,11 @@ public class ServiceAssemblyEditPart extends AbstractComponentEditPart
 	}
 
 	public Object getPropertyValue(Object arg0) {
-		return getPropertyFromAssets(arg0, ((ServiceAssembly) getModel())
-				.getStoredAssets());
+		if (arg0 instanceof ServiceAssembly) {
+			return ((ServiceAssembly) arg0).getName();
+		} else
+			return getPropertyFromAssets(arg0, ((ServiceAssembly) getModel())
+					.getStoredAssets());
 	}
 
 	public boolean isPropertySet(Object arg0) {
@@ -142,8 +147,11 @@ public class ServiceAssemblyEditPart extends AbstractComponentEditPart
 	}
 
 	public void setPropertyValue(Object arg0, Object arg1) {
-		setPropertyFromAssets(arg0, arg1, ((ServiceAssembly) getModel())
-				.getStoredAssets());
+		if (arg0 instanceof ServiceAssembly) {
+			((ServiceAssembly) arg0).setName((String) arg1);
+		} else
+			setPropertyFromAssets(arg0, arg1, ((ServiceAssembly) getModel())
+					.getStoredAssets());
 		((AbstractComponent) getModel()).updated();
 	}
 

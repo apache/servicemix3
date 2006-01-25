@@ -76,7 +76,7 @@ public class ServiceAssemblyDeployer extends AbstractDeployer {
 		}
 		suZip.close();
 
-		out.putNextEntry(new ZipEntry(unit.getServiceName().getLocalPart()
+		out.putNextEntry(new ZipEntry(unit.getServiceUnitName()
 				+ ".zip"));
 		out.write(bytesOut.toByteArray());
 		out.closeEntry();

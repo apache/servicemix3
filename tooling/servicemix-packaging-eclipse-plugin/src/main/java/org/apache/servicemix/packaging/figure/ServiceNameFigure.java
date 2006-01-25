@@ -18,6 +18,7 @@ package org.apache.servicemix.packaging.figure;
 import org.apache.servicemix.packaging.model.AbstractConnectableService;
 import org.apache.servicemix.packaging.model.BindingComponent;
 import org.apache.servicemix.packaging.model.ComponentBased;
+import org.apache.servicemix.packaging.model.ServiceUnit;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.PositionConstants;
@@ -87,6 +88,8 @@ public class ServiceNameFigure extends Figure {
 			description.append(")");
 
 			componentName.setText(description.toString());
+		} else if (service instanceof ServiceUnit) {
+			componentName.setText(((ServiceUnit) service).getServiceUnitName());
 		}
 	}
 

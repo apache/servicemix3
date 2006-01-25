@@ -76,7 +76,7 @@ public class ServiceAssemblyNameFigure extends Figure {
 			description.append(")");
 
 			componentName.setText(description.toString());
-		}
+		} 
 	}
 
 	public Dimension getPreferredSize(int wHint, int hHint) {
