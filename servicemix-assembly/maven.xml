@@ -125,39 +125,31 @@
     <ant:copy todir="${maven.dist.bin.assembly.dir}" file="${maven.repo.local}/${pom.groupId}/jars/${pom.artifactId}-${pom.currentVersion}.jar"/>
 
     <!-- Copy  the runtime dependencies into lib and create a classpath for the server.jar file -->
+    <j:set var="compDir" value="${maven.dist.bin.assembly.dir}/components"/>
     <j:set var="libDir" value="${maven.dist.bin.assembly.dir}/lib"/>
     <j:set var="optionalDir" value="${maven.dist.bin.assembly.dir}/lib/optional"/>
     <ant:mkdir dir="${libDir}"/>
     <ant:mkdir dir="${optionalDir}"/>
+    <ant:mkdir dir="${compDir}"/>
 
     <j:forEach var="artifact" items="${pom.artifacts}">
         <j:set var="dependency" value="${artifact.dependency}"/>
         <j:if test="${dependency.getProperty('lib') == 'true'}">
             <ant:copy todir="${libDir}" file="${artifact.path}"/>
-            <j:set var="classpath" value="${classpath} ../lib/${artifact.name}"/>
         </j:if>
     </j:forEach>
 
     <j:forEach var="artifact" items="${pom.artifacts}">
         <j:set var="dependency" value="${artifact.dependency}"/>
-        <echo>${artifact.path} ${dependency.getProperty('optional') == 'true'}</echo>
+        <j:if test="${dependency.getProperty('component') == 'true'}">
+            <ant:copy todir="${compDir}" file="${artifact.path}"/>
+        </j:if>
     </j:forEach>
 
     <j:forEach var="artifact" items="${pom.artifacts}">
         <j:set var="dependency" value="${artifact.dependency}"/>
-        <echo>${artifact.path}</echo>
         <j:if test="${dependency.getProperty('optional') == 'true'}">
             <ant:copy todir="${optionalDir}" file="${artifact.path}"/>
-            <j:if test="${dependency.extension == 'jar'}">           
-               <j:set var="classpath" value="${classpath} ../lib/optional/${artifact.name}"/>
-            </j:if>
-            <j:if test="${dependency.extension == 'rar'}">    
-               <ant:unzip src="${artifact.path}" dest="${optionalDir}">
-                  <ant:patternset>
-                     <include name="${dependency.artifactId}*.jar"/>
-                  </ant:patternset>
-               </ant:unzip>               
-            </j:if>
         </j:if>
     </j:forEach>
 

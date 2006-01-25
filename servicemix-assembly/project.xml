@@ -66,35 +66,52 @@
     
     <dependency>
       <groupId>${pom.groupId}</groupId>
-      <artifactId>servicemix-common</artifactId>
+      <artifactId>servicemix-jms</artifactId>
       <version>${pom.currentVersion}</version>
+      <type>zip</type>
       <properties>
-        <servicemix.module>true</servicemix.module>
         <eclipse.dependency>true</eclipse.dependency>
+        <component>true</component>
       </properties>
     </dependency>
     <dependency>
       <groupId>${pom.groupId}</groupId>
-      <artifactId>servicemix-jms</artifactId>
+      <artifactId>servicemix-http</artifactId>
+      <type>zip</type>
       <version>${pom.currentVersion}</version>
       <properties>
         <eclipse.dependency>true</eclipse.dependency>
+        <component>true</component>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-lwcontainer</artifactId>
+      <version>${pom.currentVersion}</version>
+      <type>zip</type>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+        <component>true</component>
       </properties>
     </dependency>
     <dependency>
       <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-jsr181</artifactId>
       <version>${pom.currentVersion}</version>
+      <type>zip</type>
       <properties>
         <eclipse.dependency>true</eclipse.dependency>
+        <component>true</component>
       </properties>
     </dependency>
     <dependency>
       <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-wsn2005</artifactId>
       <version>${pom.currentVersion}</version>
+      <type>zip</type>
       <properties>
         <eclipse.dependency>true</eclipse.dependency>
+        <component>true</component>
       </properties>
     </dependency>
     
