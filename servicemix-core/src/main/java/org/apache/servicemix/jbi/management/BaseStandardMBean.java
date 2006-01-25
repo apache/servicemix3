@@ -309,7 +309,11 @@ public class BaseStandardMBean extends StandardMBean
             throw new ReflectionException(e);
         }
         catch (InvocationTargetException e) {
-            throw new ReflectionException(e);
+            if (e.getTargetException() instanceof Exception) {
+                throw new ReflectionException((Exception) e.getTargetException());
+            } else {
+                throw new ReflectionException(e);
+            }
         }
     }
 
