@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="." default="help" name="servicemix-ant-task">
+<description>
+This ant script contains the Servicemix ant tasks and the targets and properties.
+</description>
+
+    <!-- default value for the location of the Servicemix task definitions file -->
+    <property name="servicemix.taskdefs" location="servicemix_ant_taskdef.properties"/>
+    
+        
+    <!-- Servicemix ant task definitions  -->
+    <taskdef file="${servicemix.taskdefs}">
+        <classpath id="servicemix.classpath">            
+            <fileset dir="../../lib/optional">
+                <include name="**/*.jar"/>
+            </fileset>            
+            <fileset dir="../../lib">
+                <include name="**/*.jar"/>
+            </fileset>
+            <fileset dir="../..">
+                <include name="**/*.jar"/>
+            </fileset>
+        </classpath>
+    </taskdef>
+    
+    
+    <!-- properties used as attribute values for Servicemix Ant Task. 
+         command line args can override the values. -->
+        
+    <!-- default username. -->
+    <property name="sm.username" value="" />
+    
+    <!-- default password -->
+    <property name="sm.password" value="" />
+    
+    <!-- default host.-->
+    <property name="sm.host" value="localhost" />
+    
+    <!-- default port. -->
+    <property name="sm.port" value="1099" />
+    
+    
+    <!-- Command Line Argumants can override the following values. -->
+     
+    <!-- Test property files -->
+    <property name="sm.install.file" value="" />
+    <property name="sm.component.name" value="" />
+    <property name="sm.shared.library.name" value="" />
+    <property name="sm.deploy.file" value="" />
+    <property name="sm.service.assembly.name" value="" />
+    
+          
+     <!-- Ant Task Targets -->
+     
+     <!-- install-component task -->
+     <target name="install-component" description="Installs service engine or binding component with installation parameters.">
+         <echo message=" Installing a service engine or binding component."/>
+         <echo message="    host=${sm.host}" />
+         <echo message="    port=${sm.port}" />
+         <echo message="    file=${sm.install.file}" />
+         
+         <install-component-task 
+             username="${sm.username}" 
+             password="${sm.password}"
+             host="${sm.host}"
+             file="${sm.install.file}"/>  
+      </target>
+     
+     <!-- uninstall-component task -->
+     <target name="uninstall-component" description="Uninstalls service engine or binding component.">
+         <echo message="    uninstall-component" />
+         <echo message="    Uninstalling a Service Engine or Binding Component." />
+         <echo message="    host=${sm.host}" />
+         <echo message="    port=${sm.port}" />
+         <echo message="    name=${sm.component.name}" />
+         <uninstall-component-task
+             username="${sm.username}" 
+             password="${sm.password}"
+             host="${sm.host}"
+             name="${sm.component.name}"
+         />
+         
+     </target>
+     
+     <!-- install-shared-library -->
+     <target name="install-shared-library" description="Installs shared library.">
+        <echo message=" install-shared-library" />
+        <echo message="    Installs a shared library in Servicemix." />
+        <echo message="    host=${sm.host}" />
+        <echo message="    port=${sm.port}" />
+        <echo message="    file=${sm.install.file}" /> 
+        
+        <install-shared-library-task
+            username="${sm.username}" 
+            password="${sm.password}"
+            host="${sm.host}"
+            file="${sm.install.file}"
+        />
+     </target>
+     
+     <!-- uninstall-shared-library -->
+     <target name="uninstall-shared-library" description="Uninstalls shared library.">
+         <echo message=" uninstall-shared-library" />
+         <echo message=" Uninstall a previously installed shared library in Servicemix." />
+         <echo message="    host=${sm.host}" />
+         <echo message="    port=${sm.port}" />
+         <echo message="    name=${sm.shared.library.name}" />
+         
+         <uninstall-shared-library-task
+            username="${sm.username}" 
+            password="${sm.password}"
+            host="${sm.host}"
+            name="${sm.shared.library.name}"    
+        />
+         
+     </target>
+
+     <!-- start-component -->
+     <target name="start-component" description="starts a particular Servicemix component, service-engine or binding component.">
+         <echo message=" start-component" />
+         <echo message=" starts a particular component (service engine or binding component) in Servicemix" />
+         <echo message="    host=${sm.host}" />
+         <echo message="    port=${sm.port}" />
+         <echo message="    name=${sm.component.name}" />
+         
+         <start-component-task
+            username="${sm.username}" 
+            password="${sm.password}"
+            host="${sm.host}"
+            name="${sm.component.name}"        
+        />
+     
+     </target>
+     
+     <!-- stop-component -->
+     <target name="stop-component" description="stops a particular Servicemix component, service engine or binding component.">
+         <echo message=" stop-component" />
+         <echo message=" stops a particular component (service engine or binding component) in Servicemix" />
+         <echo message="    host=${sm.host}" />
+         <echo message="    port=${sm.port}" />
+         <echo message="    name=${sm.component.name}" />
+         
+         <stop-component-task
+            username="${sm.username}" 
+            password="${sm.password}"
+            host="${sm.host}"
+            name="${sm.component.name}"            
+         />
+          
+     </target>
+     
+     <!-- shutdown-component -->
+     <target name="shutdown-component" description="shut downs a particular Servicemix component.">
+         <echo message=" shut-down-component" />
+         <echo message=" shuts down a particular component (service engine or binding component) in Servicemix" />
+         <echo message="    host=${sm.host}" />
+         <echo message="    port=${sm.port}" />
+         <echo message="    name=${sm.component.name}" />
+         
+         <shutdown-component-task
+             username="${sm.username}" 
+             password="${sm.password}"
+             host="${sm.host}"
+             name="${sm.component.name}"                
+         />
+     </target>
+     
+     <!-- deploy-service-assembly -->
+     <target name="deploy-service-assembly" description="deploys service assembly in Servicemix.">
+         <echo message=" deploy-assembly" />
+         <echo message=" deploys a service assembly in Servicemix." />
+         <echo message="    host=${sm.host}" />
+         <echo message="    port=${sm.port}" />
+         <echo message="    file=${sm.deploy.file}" />
+         
+         <install-assembly-task
+             username="${sm.username}" 
+             password="${sm.password}"
+             host="${sm.host}"
+             file="${sm.deploy.file}"                    
+         />
+     </target>
+     
+     <!-- undeploy-service-assembly -->
+     <target name="undeploy-service-assembly" description="undeploys a previously deployed service assembly in Servicemix.">
+         <echo message=" undeploy-assembly" />
+         <echo message=" undeploys a previously deployed service assembly in Sericemix."/>
+         <echo message="    host=${sm.host}" />
+         <echo message="    port=${sm.port}" />
+         <echo message="    name=${sm.service.assembly.name}" />
+         
+         <uninstall-assembly-task
+             username="${sm.username}" 
+             password="${sm.password}"
+             host="${sm.host}"
+             name="${sm.service.assembly.name}"                        
+         />
+     
+     </target>
+     
+     <!-- start-service-assembly -->
+     <target name="start-service-assembly" description="starts a particular service assembly in Servicemix.">
+         <echo message=" start-assembly" />
+         <echo message=" starts a particular service assembly in Servicemix." />
+         <echo message="    host=${sm.host}" />
+         <echo message="    port=${sm.port}" />
+         <echo message="    name=${sm.service.assembly.name}" />
+         
+         <start-assembly-task
+             username="${sm.username}" 
+             password="${sm.password}"
+             host="${sm.host}"
+             name="${sm.service.assembly.name}"                            
+         />
+         
+     </target>
+     
+     <!-- stop-service-assembly -->
+     <target name="stop-service-assembly" description="stops a particular service assembly in Servicemix.">
+         <echo message=" shutdown-assembly" />
+         <echo message=" stops a particular service assembly in Servicemix." />
+         <echo message="    host=${sm.host}" />
+         <echo message="    port=${sm.port}" />
+         <echo message="    name=${sm.service.assembly.name}" /> 
+
+         <stop-assembly-task
+             username="${sm.username}" 
+             password="${sm.password}"
+             host="${sm.host}"
+             name="${sm.service.assembly.name}"                                
+         />     
+     </target>
+     
+     <!-- shutdown-service-assembly -->
+     <target name="shutdown-service-assembly" description="shuts down a particular service assembly in Servicemix.">
+         <echo message=" shutdown-assembly" />
+         <echo message=" shuts down a particular service assembly in Servicemix." />
+         <echo message="    host=${sm.host}" />
+         <echo message="    port=${sm.port}" />
+         <echo message="    name=${sm.service.assembly.name}" /> 
+
+         <shutdown-assembly-task
+             username="${sm.username}" 
+             password="${sm.password}"
+             host="${sm.host}"
+             name="${sm.service.assembly.name}"                                    
+         />
+     
+     </target>
+     
+     <!-- list-service-engines -->
+     <target name="list-service-engines" description="prints information about all of the Service Engines in Servicemix.">
+         <echo message=" list-service-engines" />
+         <echo message=" Prints information about all of the Service Engines in Servicemix." />
+         <echo message="    host=${sm.host}" />
+         <echo message="    port=${sm.port}" />
+
+         <list-engines-task
+             username="${sm.username}" 
+             password="${sm.password}"
+             host="${sm.host}"
+         />
+     
+     </target>
+     
+     <!-- list-binding-components -->
+     <target name="list-binding-components" description="prints information about all of the Binding Components in Servicemix.">
+         <echo message=" list-binding-components" />
+         <echo message=" Prints information about the binding components installed in servicemix." />
+         <echo message="    host=${sm.host}" />
+         <echo message="    port=${sm.port}" />
+    
+         <list-component-task
+             username="${sm.username}" 
+             password="${sm.password}"
+             host="${sm.host}"
+         />        
+     
+     </target>
+     
+     <!-- list-shared-libraries -->
+     <target name="list-shared-libraries" description="prints information about all of the Shared Libraries installed in Servicemix.">
+         <echo message=" list-shared-libraries" />
+         <echo message=" Prints information about all shared libraries installed in Servicemix." />
+         <echo message="    host=${sm.host}" />
+         <echo message="    port=${sm.port}" />
+
+         <list-libraries-task
+             username="${sm.username}" 
+             password="${sm.password}"
+             host="${sm.host}"
+      />     
+      </target>
+     
+     <!-- list-assemblies -->
+     <target name="deployed-assemblies" description="list deployed Service Assemblies in Servicemix.">
+         <echo message=" deployed-assemblies" />
+         <echo message=" list deployed Service Assemblies in Servicemix." />
+         <echo message="    host=${sm.host}" />
+         <echo message="    port=${sm.port}" />
+
+         <deployed-assemblies-task
+             username="${sm.username}" 
+             password="${sm.password}"
+             host="${sm.host}"
+         />
+     
+     </target>
+
+     <!-- deployed-serviceunits -->
+     <target name="deployed-serviceunits" description="List deployed service units for a Component.">
+         <echo message=" deployed-serviceunits" />
+         <echo message=" List deployed service units for a Component." />
+         <echo message="    host=${sm.host}" />
+         <echo message="    port=${sm.port}" />
+         <echo message="    componentname=${sm.component.name}" />         
+
+         <deployed-serviceunits-task
+             username="${sm.username}" 
+             password="${sm.password}"
+             host="${sm.host}"
+             componentName="${sm.component.name}"
+         />
+     
+     </target>
+     
+     
+     <!-- Help/Usage target -->
+    <target name="help" description="Description of commands and their parameters.">
+    <echo>         
+    Servicemix Ant Task Help.
+    ==========================================================
+    Usage : ant -f &lt;fullpath&gt;/jbi_admin.xml [options] [target]
+    options: -D&lt;property&gt;=&lt;value&gt; use value for given property
+    
+    Targets Available:
+    ----------------------------------------------------------
+    target : install-component 
+       - Use to install service engine or binding component.
+
+    options :
+        sm.username       : Servicemix user name.
+        sm.password       : Servicemix password.
+        sm.host           : host name where Servicemix is running.
+        sm.port           : port where Servicemix is listening.
+        sm.install.file   : file path for installing service engine or binding component.
+
+    Example :
+     ant -f servicemix-admin.xml -Dsm.install.file=testarchive.jar install-component-task
+     
+    ----------------------------------------------------------
+    target : uninstall-component 
+        - use to uninstall service engine or binding component.
+    
+    options :        
+        sm.username       : Servicemix user name.
+        sm.password       : Servicemix password.
+        sm.host           : host name where Servicemix is running.
+        sm.port           : port where Servicemix is listening.
+        sm.component.name : name of service engine or binding component to uninstall.
+    
+    Example :
+    ant -f servicemix-admin.xml -Dsm.component.name=testarchive uninstall-component
+
+    ----------------------------------------------------------
+    target : install-shared-library 
+        - installs shared library to Servicemix.
+    
+    options :        
+        sm.username       : Servicemix user name.
+        sm.password       : Servicemix password.
+        sm.host           : host name where Servicemix is running.
+        sm.port           : port where Servicemix is listening.
+        sm.install.file   : zip file path for installing shared library installation file.
+    
+    Example :
+    ant -f servicemix-admin.xml -Dsm.install.file=/dir/sharedlib.zip install-shared-library  
+                
+    ----------------------------------------------------------
+    target : uninstall-shared-library 
+        - uninstalls shared library to Servicemix.
+    
+    options :        
+        sm.username            : Servicemix user name.
+        sm.password            : Servicemix password.
+        sm.host                : host name where Servicemix is running.
+        sm.port                : port where Servicemix is listening.
+        sm.shared.library.name : uninstall shared library, given name.
+    
+    Example :
+    ant -f servicemix-admin.xml -Dsm.shared.library.name=sharedlibname uninstall-shared-library  
+                
+    ----------------------------------------------------------
+    target : start-component 
+        - starts service engine or binding component in Servcemix.
+    
+    options :        
+        sm.username        : Servicemix user name.
+        sm.password        : Servicemix password.
+        sm.host            : host name where Servicemix is running.
+        sm.port            : port where Servicemix is listening.
+        sm.component.name  : component name, service engine or binding component to start.
+    
+    Example :
+    ant -f servicemix-admin.xml -Dsm.component.name=componentname start-component  
+
+    ----------------------------------------------------------
+    target : stop-component 
+        - stop service engine or binding component in Servicemix.
+    
+    options :        
+        sm.username        : Servicemix user name.
+        sm.password        : Servicemix password.
+        sm.host            : host name where Servicemix is running.
+        sm.port            : port where Servicemix is listening.
+        sm.component.name  : component name, service engine or binding component to stop.
+    
+    Example :
+    ant -f servicemix-admin.xml -Dsm.component.name=componentname stop-component  
+
+    ----------------------------------------------------------
+    target : shutdown-component 
+        - shutdown service engine or binding component in Servicemix.
+    
+    options :        
+        sm.username        : Servicemix user name.
+        sm.password        : Servicemix password.
+        sm.host            : host name where Servicemix is running.
+        sm.port            : port where Servicemix is listening.
+        sm.component.name  : component name, service engine or binding component to shutdown.
+    
+    Example :
+    ant -f servicemix-admin.xml -Dsm.component.name=componentname shutdown-component  
+
+    ----------------------------------------------------------
+    target : deploy-service-assembly 
+        - deploys a service assembly into Servicemix.
+    
+    options :        
+        sm.username        : Servicemix user name.
+        sm.password        : Servicemix password.
+        sm.host            : host name where Servicemix is running.
+        sm.port            : port where Servicemix is listening.
+        sm.deploy.file     : fully qualified service assembly file path.
+    
+    Example :
+    ant -f servicemix-admin.xml -Dsm.deploy.file deploy-service-assembly  
+
+    ----------------------------------------------------------
+    target : undeploy-service-assembly 
+        - undeploys a service assembly from Servicemix.
+    
+    options :        
+        sm.username        : Servicemix user name.
+        sm.password        : Servicemix password.
+        sm.host            : host name where Servicemix is running.
+        sm.port            : port where Servicemix is listening.
+        sm.service.assembly.name  : service assembly name previously deployed. 
+    
+    Example :
+    ant -f servicemix-admin.xml -Dsm.service.assembly.name undeploy-service-assemply  
+
+    ----------------------------------------------------------
+    target : start-service-assembly 
+        - starts a service assembly in Servicemix.
+    
+    options :        
+        sm.username        : Servicemix user name.
+        sm.password        : Servicemix password.
+        sm.host            : host name where Servicemix is running.
+        sm.port            : port where Servicemix is listening.
+        sm.service.assembly.name : service assembly name to start.
+    
+    Example :
+    ant -f servicemix-admin.xml -Dsm.service.assembly.name start-service-assemply  
+
+    ----------------------------------------------------------
+    target : stop-service-assembly 
+        - stops service assembly in Servicemix.
+    
+    options :        
+        sm.username        : Servicemix user name.
+        sm.password        : Servicemix password.
+        sm.host            : host name where Servicemix is running.
+        sm.port            : port where Servicemix is listening.
+        sm.service.assembly.name : service assembly name to stop.
+    
+    Example :
+    ant -f servicemix-admin.xml -Dsm.service.assembly.name stop-service-assemply  
+
+    ----------------------------------------------------------
+    target : shutdown-service-assembly 
+        - shutdowns service assembly in Servicemix.
+    
+    options :        
+        sm.username        : Servicemix user name.
+        sm.password        : Servicemix password.
+        sm.host            : host name where Servicemix is running.
+        sm.port            : port where Servicemix is listening.
+        sm.service.assembly.name : service assembly name to shutdown.
+    
+    Example :
+    ant -f servicemix-admin.xml -Dsm.service.assembly.name shutdown-service-assemply  
+
+    ----------------------------------------------------------
+    target : list-service-engines 
+        - Prints the information about all the service engine in Servicemix.
+    
+    options :        
+        sm.username        : Servicemix user name.
+        sm.password        : Servicemix password.
+        sm.host            : host name where Servicemix is running.
+        sm.port            : port where Servicemix is listening.
+    
+    Example :
+    ant -f servicemix-admin.xml list-service-engines  
+
+    ----------------------------------------------------------
+    target : list-binding-components 
+        - Prints the information about all binding components in Servicemix.
+    
+    options :        
+        sm.username        : Servicemix user name.
+        sm.password        : Servicemix password.
+        sm.host            : host name where Servicemix is running.
+        sm.port            : port where Servicemix is listening.
+    
+    Example :
+    ant -f servicemix-admin.xml list-binding-components  
+
+    ----------------------------------------------------------
+    target : list-shared-libraries 
+        - Prints the information all about the shared library in Servicemix.
+    
+    options :        
+        sm.username        : Servicemix user name.
+        sm.password        : Servicemix password.
+        sm.host            : host name where Servicemix is running.
+        sm.port            : port where Servicemix is listening.
+    
+    Example :
+    ant -f servicemix-admin.xml list-shared-libraries  
+
+    ----------------------------------------------------------
+    target : deployed-assemblies 
+        - list deployed Service Assemblies in Servicemix.
+    
+    options :        
+        sm.username        : Servicemix user name.
+        sm.password        : Servicemix password.
+        sm.host            : host name where Servicemix is running.
+        sm.port            : port where Servicemix is listening.
+    
+    Example :
+    ant -f servicemix-admin.xml deployed-assemblies  
+
+    ----------------------------------------------------------
+    target : deployed-serviceunits 
+        - List deployed service units for a Component.
+    
+    options :        
+        sm.username        : Servicemix user name.
+        sm.password        : Servicemix password.
+        sm.host            : host name where Servicemix is running.
+        sm.port            : port where Servicemix is listening.
+        sm.component.name  : component name. 
+    
+    Example :
+    ant -f servicemix-admin.xml deployed-serviceunits  
+
+    </echo>
+    </target>
+
+
+</project>
