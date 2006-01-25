@@ -4,7 +4,7 @@
 
   <!-- lets run an embedded broker -->
   <bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean">
-    <property name="config" value="classpath:broker.xml"/>
+    <property name="config" value="classpath:org/apache/servicemix/components/jabber/broker.xml"/>
   </bean>
 
   <!-- the JBI container -->
@@ -13,7 +13,7 @@
       <sm:activationSpec componentName="myJabberSender" service="foo:myJabberSender">
         <sm:component><bean class="org.apache.servicemix.components.jabber.JabberChatSender">
           <property name="host" value="localhost"/>
-          <property name="port" value="61626"/>
+          <property name="port" value="6222"/>
           <property name="login" value="false"/>
           <property name="participant" value="test2@servicemix.org"/>
         </bean></sm:component>
