@@ -31,13 +31,63 @@
   
   <organization>
     <name>Apache Software Foundation</name>
-    <url>http://geronimo.apache.org.apache.servicemix</url>
-    <logo>http://geronimo.apache.org/images/geronimo-logo.png</logo>
+    <url>http://incubator.apache.org/activemq</url>
+    <logo>http://incubator.apache.org/images/apache-incubator-logo.png</logo>
   </organization>
 
-  <inceptionYear>2006</inceptionYear>
+  <inceptionYear>2005</inceptionYear>
 
   <package>org.apache.servicemix</package>
+  <logo>http://www.logicblaze.com/images/logos/products/ServiceMix/ServiceMix_logo_150.jpg</logo>
+  <description>
+    ServiceMix is an open source ESB based on the Java Business
+    Integration framework - JSR-208
+  </description>
+  <shortDescription>ServiceMix is an open source ESB</shortDescription>
+
+  <url>http://www.servicemix.org/</url>
+  <issueTrackingUrl>http://jira.logicblaze.com/browse/SM</issueTrackingUrl>
+
+  <siteAddress>http://incubator.apache.org/activemq</siteAddress>
+  <siteDirectory />
+  <distributionDirectory />
+  
+  <!-- Used for artifact deployment -->
+  <siteAddress>geronimo.apache.org</siteAddress>
+  <siteDirectory>/www/geronimo.apache.org.apache.servicemix/${pom.artifactId}</siteDirectory>
+  <distributionSite>geronimo.apache.org</distributionSite>
+  <distributionDirectory>/www/geronimo.apache.org/builds</distributionDirectory>
+
+  <repository>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/servicemix/trunk/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/servicemix/trunk/</developerConnection>
+    <url>https://svn.apache.org/repos/asf/incubator/servicemix/trunk/</url>
+  </repository>
+
+  <mailingLists>
+    <mailingList>
+      <name>ServiceMix Developer List</name>
+      <subscribe>servicemix-dev-subscribe@geronimo.apache.org</subscribe>
+      <unsubscribe>servicemix-dev-unsubscribe@geronimo.apache.org</unsubscribe>
+      <!--
+      <archive>http://dir.gmane.org/gmane.comp.java.servicemix.devel</archive>
+      -->
+      <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-dev/</archive>
+    </mailingList>
+    <mailingList>
+      <name>ServiceMix User List</name>
+      <subscribe>servicemix-users-subscribe@geronimo.apache.org</subscribe>
+      <unsubscribe>servicemix-users-unsubscribe@geronimo.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-dev/</archive>
+    </mailingList>
+    <mailingList>
+      <name>ServiceMix SCM List</name>
+      <subscribe>servicemix-commits-subscribe@geronimo.apache.org</subscribe>
+      <unsubscribe>servicemix-commits-unsubscribe@geronimo.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-commits/</archive>
+    </mailingList>
+  </mailingLists>
+
   <packageGroups>
     <packageGroup>
       <title>ServiceMix Core APIs</title>
@@ -81,57 +131,7 @@
     </packageGroup>
   </packageGroups>
 
-  <shortDescription>ServiceMix is an open source ESB</shortDescription>
   <gumpRepositoryId>servicemix</gumpRepositoryId>
-
-  <description>
-    ServiceMix is an open source ESB based on the Java Business
-    Integration framework - JSR-208
-  </description>
-
-  <url>http://www.servicemix.org/</url>
-  <issueTrackingUrl>http://jira.logicblaze.com/browse/SM</issueTrackingUrl>
-
-  <siteAddress>beaver.codehaus.org</siteAddress>
-  <siteDirectory>/home/projects/servicemix/public_html/maven/${pom.artifactId}</siteDirectory>
-  <distributionDirectory>/home/projects/servicemix/dist</distributionDirectory>
-  
-  <!-- Used for artifact deployment -->
-  <siteAddress>geronimo.apache.org</siteAddress>
-  <siteDirectory>/www/geronimo.apache.org.apache.servicemix/${pom.artifactId}</siteDirectory>
-  <distributionSite>geronimo.apache.org</distributionSite>
-  <distributionDirectory>/www/geronimo.apache.org/builds</distributionDirectory>
-
-  <repository>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/servicemix/trunk/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/servicemix/trunk/</developerConnection>
-    <url>https://svn.apache.org/repos/asf/incubator/servicemix/trunk/</url>
-  </repository>
-
-  <mailingLists>
-    <mailingList>
-      <name>ServiceMix Developer List</name>
-      <subscribe>servicemix-dev-subscribe@geronimo.apache.org</subscribe>
-      <unsubscribe>servicemix-dev-unsubscribe@geronimo.apache.org</unsubscribe>
-      <!--
-      <archive>http://dir.gmane.org/gmane.comp.java.servicemix.devel</archive>
-      -->
-      <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-dev/</archive>
-    </mailingList>
-    <mailingList>
-      <name>ServiceMix User List</name>
-      <subscribe>servicemix-users-subscribe@geronimo.apache.org</subscribe>
-      <unsubscribe>servicemix-users-unsubscribe@geronimo.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-dev/</archive>
-    </mailingList>
-    <mailingList>
-      <name>ServiceMix SCM List</name>
-      <subscribe>servicemix-commits-subscribe@geronimo.apache.org</subscribe>
-      <unsubscribe>servicemix-commits-unsubscribe@geronimo.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-commits/</archive>
-    </mailingList>
-  </mailingLists>
-
 
   <versions>
     <version>
@@ -289,24 +289,22 @@
   </build>
 
   <reports>
-    <report>maven-jdepend-plugin</report>
-    <report>maven-checkstyle-plugin</report>
-    <report>maven-simian-plugin</report>
-    <report>maven-faq-plugin</report>
+    <report>maven-changelog-plugin</report>
     <report>maven-changes-plugin</report>
-
+    <report>maven-checkstyle-plugin</report>
     <!-- clover seems to break the CI tool
       <report>maven-cobertura-plugin</report>
     -->
-    <report>maven-changelog-plugin</report>
-    <report>maven-file-activity-plugin</report>
     <report>maven-developer-activity-plugin</report>
+    <report>maven-faq-plugin</report>
+    <report>maven-file-activity-plugin</report>
     <report>maven-javadoc-plugin</report>
-    <report>maven-jxr-plugin</report>
+    <report>maven-jdepend-plugin</report>
     <report>maven-junit-report-plugin</report>
-    <report>maven-tasklist-plugin</report>
+    <report>maven-jxr-plugin</report>
     <report>maven-pmd-plugin</report>
-
+    <report>maven-simian-plugin</report>
+    <report>maven-tasklist-plugin</report>
   </reports>
   
 </project>
