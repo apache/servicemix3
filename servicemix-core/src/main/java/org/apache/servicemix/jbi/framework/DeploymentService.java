@@ -68,10 +68,14 @@ public class DeploymentService extends BaseLifeCycle implements DeploymentServic
     public void init(JBIContainer container) throws JBIException {
         this.container = container;
         this.environmentContext = container.getEnvironmentContext();
-        buildState();
         container.getManagementContext().registerSystemService(this, DeploymentServiceMBean.class);
     }
 
+    public void start() throws javax.jbi.JBIException {
+        buildState();
+        super.start();
+    }
+    
     public void shutDown() throws JBIException {
         super.shutDown();
         container.getManagementContext().unregisterMBean(this);
