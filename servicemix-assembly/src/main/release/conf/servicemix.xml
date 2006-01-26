@@ -4,14 +4,12 @@
   <!-- the JBI container -->
   <sm:container id="jbi" 
                 rootDir="./wdir" 
-                useMBeanServer="true"
-                createMBeanServer="true" 
+                MBeanServer="#mbeanServer"
                 installationDirPath="./install"
                 deploymentDirPath="./deploy"
-		            monitorInstallationDirectory="true" 
                 dumpStats="true"
-		            statsInterval="10" 
-		            flowName="seda"
+                statsInterval="10" 
+                flowName="seda"
                 transactionManager="#transactionManager">
 
     <sm:activationSpecs>
@@ -22,8 +20,24 @@
   <bean id="transactionContextManager" class="org.jencks.factory.TransactionContextManagerFactoryBean"/>
   <bean id="transactionManager" class="org.jencks.factory.GeronimoTransactionManagerFactoryBean" />
 
+  <!-- JMX server and connector -->
+  <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean"/>
+  <bean id="registry" class="mx4j.tools.naming.NamingService" init-method="start">
+    <property name="port" value="1099"/>
+  </bean>
+  <bean id="serverConnector" class="org.springframework.jmx.support.ConnectorServerFactoryBean" depends-on="registry">
+    <property name="objectName" value="connector:name=rmi"/>
+    <property name="serviceUrl" value="service:jmx:rmi:///jndi/rmi://localhost:1099/defaultJBIJMX"/>
+    <property name="threaded" value="true"/>
+    <property name="daemon" value="true"/>
+    <property name="environment">
+      <map>
+      </map>
+    </property>
+  </bean>
+
   <!-- message broker -->
-  <bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean">
+  <bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean" depends-on="mbeanServer">
      <property name="config" value="classpath:activemq.xml"/>
   </bean>
 

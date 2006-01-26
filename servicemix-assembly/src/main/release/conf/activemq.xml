@@ -1,7 +1,7 @@
 <!-- START SNIPPET: xbean -->
 <beans xmlns="http://activemq.org/config/1.0">
   
-  <broker useJmx="false">
+  <broker useJmx="true">
 
     <persistenceAdapter>
       <journaledJDBC journalLogFiles="5" dataDirectory="./data"/>
