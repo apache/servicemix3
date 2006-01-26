@@ -38,10 +38,17 @@ public class BaseServiceUnitManager implements ServiceUnitManager {
     
     protected Deployer[] deployers;
     
+    protected boolean persistent;
+    
     public BaseServiceUnitManager(BaseComponent component, Deployer[] deployers) {
+        this(component, deployers, false);
+    }
+
+    public BaseServiceUnitManager(BaseComponent component, Deployer[] deployers, boolean persistent) {
         this.component = component;
         this.logger = component.logger;
         this.deployers = deployers;
+        this.persistent = persistent;
     }
     
     /* (non-Javadoc)
@@ -95,7 +102,15 @@ public class BaseServiceUnitManager implements ServiceUnitManager {
                 throw new IllegalArgumentException("serviceUnitName should be non null and non empty");
             }
             if (getServiceUnit(serviceUnitName) == null) {
-                throw failure("init", "Service Unit '" + serviceUnitName + "' is not deployed", null);
+                if (!persistent) {
+                    ServiceUnit su = doDeploy(serviceUnitName, serviceUnitRootPath);
+                    if (su == null) {
+                        throw failure("deploy", "Unable to find suitable deployer for Service Unit '" + serviceUnitName + "'", null);
+                    }
+                    component.getRegistry().registerServiceUnit(su);
+                } else {
+                    throw failure("init", "Service Unit '" + serviceUnitName + "' is not deployed", null);
+                }
             }
             doInit(serviceUnitName, serviceUnitRootPath);
             if (logger.isDebugEnabled()) {
