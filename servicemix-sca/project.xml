@@ -38,118 +38,296 @@
   <siteDirectory>/home/projects/servicemix/public_html/maven/sca</siteDirectory>
 
   <dependencies>
+
+      <dependency>
+        <groupId>${pom.groupId}</groupId>
+        <artifactId>maven-jbi-plugin</artifactId>
+        <version>${pom.currentVersion}</version>
+        <type>plugin</type>
+      </dependency>
+    
+      <!-- JBI bundled dependencies -->
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
+      <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-common</artifactId>
       <version>${pom.currentVersion}</version>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+        <jbi.bundle>true</jbi.bundle>
+        <jbi.bootstrap>true</jbi.bootstrap>
+      </properties>
     </dependency>
     <dependency>
-       <groupId>org.apache.servicemix</groupId>
-       <artifactId>servicemix-core</artifactId>
-       <version>${pom.currentVersion}</version>
-       <scope>provided</scope>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-core</artifactId>
+      <version>${pom.currentVersion}</version>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+      </properties>
     </dependency>
     <dependency>
-       <groupId>org.apache.servicemix</groupId>
-       <artifactId>servicemix-jbi</artifactId>
-       <version>${pom.currentVersion}</version>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-jbi</artifactId>
+      <version>${pom.currentVersion}</version>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+      </properties>
     </dependency>
     <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>commonj-sdo</artifactId>
       <version>${eclipse_emf_version}</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
     </dependency>
     <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>ecore</artifactId>
       <version>${eclipse_emf_version}</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
     </dependency>
     <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>common</artifactId>
       <version>${eclipse_emf_version}</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
     </dependency>
     <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>ecore-sdo</artifactId>
       <version>2.1.1</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
     </dependency>
     <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>ecore-change</artifactId>
       <version>${eclipse_emf_version}</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
     </dependency>
     <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>ecore-xmi</artifactId>
       <version>${eclipse_emf_version}</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
     </dependency>
     <dependency>
       <groupId>org.eclipse.wtp</groupId>
       <artifactId>wsdl</artifactId>
       <version>${eclipse_wtp_version}</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
     </dependency>
     <dependency>
       <groupId>org.eclipse.xsd</groupId>
       <artifactId>xsd</artifactId>
       <version>${eclipse_xsd_version}</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
     </dependency>
     <dependency>
       <groupId>servicemix</groupId>
       <artifactId>tuscany-common</artifactId>
       <version>dev-200512</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
     </dependency>
     <dependency>
       <groupId>servicemix</groupId>
       <artifactId>tuscany-container-java</artifactId>
       <version>dev-200512</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
     </dependency>
     <dependency>
       <groupId>servicemix</groupId>
       <artifactId>tuscany-core</artifactId>
       <version>dev-200512</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
     </dependency>
     <dependency>
       <groupId>servicemix</groupId>
       <artifactId>tuscany-model</artifactId>
       <version>dev-200512</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
     </dependency>
     <dependency>
       <groupId>servicemix</groupId>
       <artifactId>sca-api</artifactId>
       <version>dev-200512</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
     </dependency>
     <dependency>
       <groupId>servicemix</groupId>
       <artifactId>jaxb-impl</artifactId>
       <version>${jaxb_version}</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit_version}</version>
-      <scope>test</scope>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>${commons_logging_version}</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+        <jbi.bootstrap>true</jbi.bootstrap>
+      </properties>
     </dependency>
     <dependency>
       <groupId>wsdl4j</groupId>
       <artifactId>wsdl4j</artifactId>
       <version>${wsdl4j_version}</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
     </dependency>
     <dependency>
       <groupId>servicemix</groupId>
       <artifactId>jaxb-api</artifactId>
       <version>${jaxb_version}</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
     </dependency>
     <dependency>
       <groupId>stax</groupId>
       <artifactId>stax-api</artifactId>
       <version>${stax_api_version}</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
     </dependency>
+
+      <!-- Provided dependencies -->
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
+        <version>${geronimo_spec_j2ee_connector_version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
+        <version>${geronimo_spec_jta_version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${pom.groupId}</groupId>
+        <artifactId>servicemix-jbi</artifactId>
+        <version>${pom.currentVersion}</version>
+        <properties>
+          <eclipse.dependency>true</eclipse.dependency>
+        </properties>
+      </dependency>
+      <dependency>
+        <groupId>mx4j</groupId>
+        <artifactId>mx4j</artifactId>
+        <version>${mx4j_version}</version>
+      </dependency>
+      <dependency>
+        <groupId>mx4j</groupId>
+        <artifactId>mx4j-remote</artifactId>
+        <version>${mx4j_version}</version>
+      </dependency>
+      <dependency>
+        <groupId>xfire</groupId>
+        <artifactId>XmlSchema</artifactId>
+        <version>${xfire_xmlschema_version}</version>
+      </dependency>
+
+      <!-- Testing only -->
+      <dependency>
+        <groupId>${pom.groupId}</groupId>
+        <artifactId>servicemix-core</artifactId>
+        <version>${pom.currentVersion}</version>
+        <properties>
+          <eclipse.dependency>true</eclipse.dependency>
+        </properties>
+      </dependency>
+      <dependency>
+        <groupId>${pom.groupId}</groupId>
+        <artifactId>servicemix-components</artifactId>
+        <version>${pom.currentVersion}</version>
+        <properties>
+          <eclipse.dependency>true</eclipse.dependency>
+        </properties>
+      </dependency>
+      <dependency>
+        <groupId>springframework</groupId>
+        <artifactId>spring</artifactId>
+        <version>${spring_version}</version>
+      </dependency>
+      <dependency>
+        <groupId>incubator-activemq</groupId>
+        <artifactId>activemq</artifactId>
+        <version>${activemq_version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jencks</groupId>
+        <artifactId>jencks-all</artifactId>
+        <version>${jencks_version}</version>
+      </dependency>
+      <dependency>
+        <groupId>concurrent</groupId>
+        <artifactId>concurrent</artifactId>
+        <version>${concurrent_version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils</artifactId>
+        <version>${commons_beanutils_version}</version>
+      </dependency>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>${log4j_version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-activation_1.0.2_spec</artifactId>
+        <version>${geronimo_spec_activation_version}</version>
+      </dependency>
+      <dependency>
+        <groupId>annogen</groupId>
+        <artifactId>annogen</artifactId>
+        <version>${annogen_version}</version>
+        <properties>
+          <scope>compile</scope>
+        </properties>
+      </dependency>
+      <dependency>
+        <groupId>qdox</groupId>
+        <artifactId>qdox</artifactId>
+        <version>${qdox_version}</version>
+        <properties>
+          <scope>compile</scope>
+        </properties>
+      </dependency>
+      <dependency>
+        <groupId>beehive</groupId>
+        <artifactId>wsm</artifactId>
+        <version>${beehive_wsm_version}</version>
+        <url>http://incubator.apache.org/beehive/</url>
+      </dependency>
   </dependencies>
 
   <build>

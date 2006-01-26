@@ -31,14 +31,14 @@ import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 /**
  * @author delfinoj
  */
-public class AssemblyLoaderTestCase extends TestCase {
+public class AssemblyLoaderTest extends TestCase {
 
     private AssemblyModelContext modelContext;
 
     /**
      *
      */
-    public AssemblyLoaderTestCase() {
+    public AssemblyLoaderTest() {
         super();
     }
 
