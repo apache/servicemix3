@@ -1,7 +1,7 @@
 <project default="default" xmlns:j="jelly:core" xmlns:ant="jelly:ant" xmlns:maven="jelly:maven">
 
   <!-- we want the code to be built as a jar not a war -->
-  <goal name="default" prereqs="jar:install"/>
+  <goal name="default" prereqs="war"/>
     
   <goal name="run" prereqs="setclasspath"
     description="Runs the Web Application in an embedded Jetty server">

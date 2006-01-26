@@ -2,8 +2,8 @@
 <!DOCTYPE project>
 <project>
   <pomVersion>3</pomVersion>
-  <extend>${basedir}/../../etc/project.xml</extend>
-
+  <groupId>incubator-servicemix</groupId>
+  <currentVersion>3.0-SNAPSHOT</currentVersion>
   <name>ServiceMix :: Web</name>
   <id>servicemix-web</id>
 
@@ -112,13 +112,6 @@
     <dependency>
       <id>jencks+all</id>
       <version>${jencks_version}</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    <dependency>
-      <id>backport-util-concurrent</id>
-      <version>${backport_util_concurrent_version}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>

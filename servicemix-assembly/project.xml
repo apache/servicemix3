@@ -86,6 +86,16 @@
     </dependency>
     <dependency>
       <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-sca</artifactId>
+      <type>zip</type>
+      <version>${pom.currentVersion}</version>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+        <component>true</component>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-lwcontainer</artifactId>
       <version>${pom.currentVersion}</version>
       <type>zip</type>
