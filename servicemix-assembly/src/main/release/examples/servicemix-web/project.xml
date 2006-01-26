@@ -68,7 +68,7 @@
       </properties>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
+      <groupId>incubator-servicemix</groupId>
       <artifactId>servicemix</artifactId>
       <version>${pom.currentVersion}</version>
       <properties>
