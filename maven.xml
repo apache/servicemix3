@@ -27,7 +27,7 @@
   <goal name="init">
     <j:set var="x" value="${servicemix.jdk14}"/>
     <j:if test="${x == true}">
-      <j:set var="modules" value="servicemix-jbi,servicemix-core,servicemix-components,servicemix-common,servicemix-console,servicemix-gbean,servicemix-jms,servicemix-jsr181,servicemix-http,servicemix-lwcontainer"/>
+      <j:set var="modules" value="servicemix-jbi,servicemix-core,servicemix-components,servicemix-common,servicemix-console,servicemix-soap,servicemix-gbean,servicemix-jms,servicemix-jsr181,servicemix-http,servicemix-lwcontainer"/>
         <ant:echo><![CDATA[
 ************************************************************
 * WARNING!                                                 *
