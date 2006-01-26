@@ -565,13 +565,6 @@
       </properties>
     </dependency>
     <dependency>
-      <id>commons-dbcp</id>
-      <version>${commons_dbcp_version}</version>
-      <properties>
-        <optional>true</optional>
-      </properties>
-    </dependency>
-    <dependency>
       <id>commons-discovery</id>
       <version>${commons_discovery_version}</version>
       <properties>
@@ -714,14 +707,6 @@
     <dependency>
       <groupId>servicemix</groupId>
       <artifactId>saaj-impl</artifactId>
-      <version>${jaxws_rt_version}</version>
-      <properties>
-        <optional>true</optional>
-      </properties>
-    </dependency>
-    <dependency>
-      <groupId>servicemix</groupId>
-      <artifactId>jsr181-api</artifactId>
       <version>${jaxws_rt_version}</version>
       <properties>
         <optional>true</optional>

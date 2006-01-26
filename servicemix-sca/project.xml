@@ -58,22 +58,6 @@
       </properties>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
-      <artifactId>servicemix-core</artifactId>
-      <version>${pom.currentVersion}</version>
-      <properties>
-        <eclipse.dependency>true</eclipse.dependency>
-      </properties>
-    </dependency>
-    <dependency>
-      <groupId>${pom.groupId}</groupId>
-      <artifactId>servicemix-jbi</artifactId>
-      <version>${pom.currentVersion}</version>
-      <properties>
-        <eclipse.dependency>true</eclipse.dependency>
-      </properties>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>commonj-sdo</artifactId>
       <version>${eclipse_emf_version}</version>
@@ -220,6 +204,14 @@
     </dependency>
 
       <!-- Provided dependencies -->
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-core</artifactId>
+      <version>${pom.currentVersion}</version>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+      </properties>
+    </dependency>
       <dependency>
         <groupId>org.apache.geronimo.specs</groupId>
         <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
@@ -255,14 +247,6 @@
       </dependency>
 
       <!-- Testing only -->
-      <dependency>
-        <groupId>${pom.groupId}</groupId>
-        <artifactId>servicemix-core</artifactId>
-        <version>${pom.currentVersion}</version>
-        <properties>
-          <eclipse.dependency>true</eclipse.dependency>
-        </properties>
-      </dependency>
       <dependency>
         <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-components</artifactId>
@@ -318,6 +302,14 @@
         <groupId>qdox</groupId>
         <artifactId>qdox</artifactId>
         <version>${qdox_version}</version>
+        <properties>
+          <scope>compile</scope>
+        </properties>
+      </dependency>
+      <dependency>
+        <groupId>org.xbean</groupId>
+        <artifactId>xbean-spring</artifactId>
+        <version>${xbean_version}</version>
         <properties>
           <scope>compile</scope>
         </properties>

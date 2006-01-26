@@ -44,6 +44,14 @@ import org.apache.tuscany.model.types.InterfaceType;
 import org.apache.tuscany.model.types.OperationType;
 import org.apache.tuscany.model.types.java.JavaOperationType;
 
+/**
+ * 
+ * @author gnodet
+ * @version $Revision: 366467 $
+ * @org.xbean.XBean element="endpoint"
+ *                  description="A sca endpoint"
+ * 
+ */
 public class ScaEndpoint extends Endpoint implements ExchangeProcessor {
 
     protected ServiceEndpoint activated;
