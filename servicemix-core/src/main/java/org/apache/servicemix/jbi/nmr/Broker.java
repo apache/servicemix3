@@ -15,6 +15,19 @@
  */
 package org.apache.servicemix.jbi.nmr;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.jbi.JBIException;
+import javax.jbi.component.Component;
+import javax.jbi.messaging.MessagingException;
+import javax.jbi.messaging.MessageExchange.Role;
+import javax.jbi.servicedesc.ServiceEndpoint;
+import javax.management.JMException;
+import javax.management.MBeanOperationInfo;
+import javax.resource.spi.work.WorkManager;
+import javax.xml.namespace.QName;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.ActivationSpec;
@@ -23,7 +36,7 @@ import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 import org.apache.servicemix.jbi.framework.ComponentNameSpace;
 import org.apache.servicemix.jbi.framework.LocalComponentConnector;
 import org.apache.servicemix.jbi.framework.Registry;
-import org.apache.servicemix.jbi.management.BaseLifeCycle;
+import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.management.ManagementContext;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
@@ -39,26 +52,12 @@ import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
 import org.apache.servicemix.jbi.servicedesc.ExternalEndpoint;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 
-import javax.jbi.JBIException;
-import javax.jbi.component.Component;
-import javax.jbi.management.LifeCycleMBean;
-import javax.jbi.messaging.MessagingException;
-import javax.jbi.messaging.MessageExchange.Role;
-import javax.jbi.servicedesc.ServiceEndpoint;
-import javax.management.JMException;
-import javax.management.MBeanOperationInfo;
-import javax.resource.spi.work.WorkManager;
-import javax.xml.namespace.QName;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * The Broker handles Nomalised Message Routing within ServiceMix
  * 
  * @version $Revision$
  */
-public class Broker extends BaseLifeCycle {
+public class Broker extends BaseSystemService implements BrokerMBean {
     private JBIContainer container;
     private Registry registry;
     private String flowName = "seda";
@@ -136,7 +135,7 @@ public class Broker extends BaseLifeCycle {
         if (flow != subscriptionManager.getFlow()) {
         	subscriptionManager.getFlow().init(this, "subscription");
         }
-        container.getManagementContext().registerSystemService(this, LifeCycleMBean.class);
+        container.getManagementContext().registerSystemService(this, BrokerMBean.class);
     }
 
     /**

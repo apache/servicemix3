@@ -15,7 +15,20 @@
  */
 package org.apache.servicemix.jbi.framework;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.Map;
+
+import javax.jbi.JBIException;
+import javax.jbi.management.DeploymentException;
+import javax.jbi.management.InstallerMBean;
+import javax.management.JMException;
+import javax.management.MBeanOperationInfo;
+import javax.management.ObjectName;
+import javax.resource.spi.work.Work;
+import javax.resource.spi.work.WorkException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.ComponentEnvironment;
@@ -27,30 +40,19 @@ import org.apache.servicemix.jbi.deployment.Descriptor;
 import org.apache.servicemix.jbi.deployment.InstallationDescriptorExtension;
 import org.apache.servicemix.jbi.deployment.SharedLibrary;
 import org.apache.servicemix.jbi.deployment.SharedLibraryList;
-import org.apache.servicemix.jbi.management.BaseLifeCycle;
+import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.management.ManagementContext;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
 import org.apache.servicemix.jbi.management.ParameterHelper;
 import org.apache.servicemix.jbi.util.FileUtil;
 
-import javax.jbi.JBIException;
-import javax.jbi.management.DeploymentException;
-import javax.jbi.management.InstallerMBean;
-import javax.management.JMException;
-import javax.management.MBeanOperationInfo;
-import javax.management.ObjectName;
-import javax.resource.spi.work.Work;
-import javax.resource.spi.work.WorkException;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.Map;
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 /**
  * Installation Service - installs/uninstalls archives
  * 
  * @version $Revision$
  */
-public class InstallationService extends BaseLifeCycle implements FrameworkInstallationService{
+public class InstallationService extends BaseSystemService implements FrameworkInstallationService{
     private static final Log log=LogFactory.getLog(InstallationService.class);
     private JBIContainer container;
     private EnvironmentContext environmentContext;
@@ -173,7 +175,7 @@ public class InstallationService extends BaseLifeCycle implements FrameworkInsta
                         componentClassName, bootstrapLoader,
                         bootstrapClassName, true);
                 // create an MBean for the installer
-                ObjectName objectName = managementContext.createCustomComponentMBeanName(InstallerMBean.class.getName(), name);
+                ObjectName objectName = managementContext.createCustomComponentMBeanName("Installer", name);
                 installer.setObjectName(objectName);
                 managementContext.registerMBean(objectName, installer,
                         InstallerMBean.class,
@@ -479,7 +481,7 @@ public class InstallationService extends BaseLifeCycle implements FrameworkInsta
             result=new InstallerMBeanImpl(container,installationContext,componentClassLoader,componentClassName,
                             bootstrapLoader,bootstrapClassName, false);
             // create an MBean for the installer
-            ObjectName objectName=managementContext.createCustomComponentMBeanName(InstallerMBean.class.getName(),name);
+            ObjectName objectName = managementContext.createCustomComponentMBeanName("Installer", name);
             result.setObjectName(objectName);
             managementContext.registerMBean(objectName,result,InstallerMBean.class,
                             "standard installation controls for a Component");

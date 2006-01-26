@@ -25,7 +25,6 @@ import javax.jbi.JBIException;
 import javax.jbi.component.Component;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.management.DeploymentException;
-import javax.jbi.management.LifeCycleMBean;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.ObjectName;
 import javax.xml.namespace.QName;
@@ -35,7 +34,7 @@ import org.apache.servicemix.jbi.container.EnvironmentContext;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.container.SubscriptionSpec;
 import org.apache.servicemix.jbi.deployment.ServiceAssembly;
-import org.apache.servicemix.jbi.management.BaseLifeCycle;
+import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.messaging.DeliveryChannelImpl;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
@@ -49,7 +48,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
  * 
  * @version $Revision$
  */
-public class Registry extends BaseLifeCycle {
+public class Registry extends BaseSystemService implements RegistryMBean {
     
     private JBIContainer container;
     private ComponentRegistry componentRegistry;
@@ -87,7 +86,7 @@ public class Registry extends BaseLifeCycle {
         this.container = container;
         this.componentRegistry.setContainerName(container.getName());
         this.subscriptionRegistry.init(this);
-        container.getManagementContext().registerSystemService(this, LifeCycleMBean.class);
+        container.getManagementContext().registerSystemService(this, RegistryMBean.class);
     }
 
     /**

@@ -33,7 +33,6 @@ import java.util.TimerTask;
 
 import javax.jbi.JBIException;
 import javax.jbi.management.DeploymentException;
-import javax.jbi.management.LifeCycleMBean;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.resource.spi.work.Work;
@@ -47,7 +46,7 @@ import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.deployment.Descriptor;
 import org.apache.servicemix.jbi.deployment.ServiceAssembly;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
-import org.apache.servicemix.jbi.management.BaseLifeCycle;
+import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.servicemix.jbi.util.XmlPersistenceSupport;
 import org.xbean.spring.context.FileSystemXmlApplicationContext;
@@ -59,7 +58,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
  * 
  * @version $Revision$
  */
-public class AutoDeploymentService extends BaseLifeCycle{
+public class AutoDeploymentService extends BaseSystemService implements AutoDeploymentServiceMBean {
 	
     private static final Log log = LogFactory.getLog(AutoDeploymentService.class);
     private static final String MONITOR_STATE_FILE = ".state.xml";
@@ -169,7 +168,7 @@ public class AutoDeploymentService extends BaseLifeCycle{
         }
         
         initializeFileMaps();
-        container.getManagementContext().registerSystemService(this,LifeCycleMBean.class);
+        container.getManagementContext().registerSystemService(this, AutoDeploymentServiceMBean.class);
     }
 
     /**

@@ -41,7 +41,7 @@ import org.apache.servicemix.jbi.deployment.ServiceAssembly;
 import org.apache.servicemix.jbi.deployment.ServiceUnit;
 import org.apache.servicemix.jbi.deployment.Target;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
-import org.apache.servicemix.jbi.management.BaseLifeCycle;
+import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
 import org.apache.servicemix.jbi.management.ParameterHelper;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
@@ -52,7 +52,7 @@ import org.apache.servicemix.jbi.util.FileUtil;
  * 
  * @version $Revision$
  */
-public class DeploymentService extends BaseLifeCycle implements DeploymentServiceMBean {
+public class DeploymentService extends BaseSystemService implements DeploymentServiceMBean {
     private static final Log log = LogFactory.getLog(DeploymentService.class);
     private JBIContainer container;
     private EnvironmentContext environmentContext;

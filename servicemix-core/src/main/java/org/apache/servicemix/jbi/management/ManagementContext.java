@@ -49,7 +49,7 @@ import java.util.Map;
  * 
  * @version $Revision$
  */
-public class ManagementContext extends BaseLifeCycle implements ManagementContextMBean {
+public class ManagementContext extends BaseSystemService implements ManagementContextMBean {
     /**
      * Default servicemix domain
      */
@@ -402,8 +402,8 @@ public class ManagementContext extends BaseLifeCycle implements ManagementContex
     public ObjectName createObjectName(MBeanInfoProvider provider) {
         ObjectName result = null;
         try {
-            String tmp = jmxDomainName + ":" + "type="
-                    + (provider.getClass().getName() + ",name=" + getRelativeName(provider));
+            String tmp = jmxDomainName + ":container=" + container.getName() + ",type="
+                    + sanitizeString(provider.getType()) + ",name=" + sanitizeString(provider.getName());
             result = new ObjectName(tmp);
         }
         catch (MalformedObjectNameException e) {
@@ -413,16 +413,6 @@ public class ManagementContext extends BaseLifeCycle implements ManagementContex
             throw new RuntimeException(error);
         }
         return result;
-    }
-
-    /**
-     * Get a qualified name
-     * 
-     * @param provider
-     * @return the name
-     */
-    public String getRelativeName(MBeanInfoProvider provider) {
-        return sanitizeString(container.getName() + "." + provider.getName());
     }
 
     /**
@@ -480,12 +470,11 @@ public class ManagementContext extends BaseLifeCycle implements ManagementContex
      * 
      * @param domainName
      * @param containerName
-     * @param theClass
+     * @param interfaceType
      * @return the ObjectName
      */
-    public static ObjectName getSystemObjectName(String domainName, String containerName, Class theClass) {
-        String tmp = domainName + ":" + "type=" + theClass.getName() + ",name="
-                + getRelativeName(containerName, theClass);
+    public static ObjectName getSystemObjectName(String domainName, String containerName, Class interfaceType) {
+        String tmp = domainName + ":container=" + containerName + ",type=SystemService,name=" + getSystemServiceName(interfaceType); 
         ObjectName result = null;
         try {
             result = new ObjectName(tmp);
@@ -501,8 +490,17 @@ public class ManagementContext extends BaseLifeCycle implements ManagementContex
         return result;
     }
     
+    public static String getSystemServiceName(Class interfaceType) {
+        String name = interfaceType.getName();
+        name = name.substring(name.lastIndexOf('.') + 1);
+        if (name.endsWith("MBean")) {
+            name = name.substring(0, name.length() - 5);
+        }
+        return name;
+    }
+    
     public static ObjectName getContainerObjectName(String domainName, String containerName) {
-        String tmp = domainName + ":" + "type=" + JBIContainer.class.getName() + ",name=" + containerName;
+        String tmp = domainName + ":" + "type=Container,name=" + containerName;
         ObjectName result = null;
         try {
             result = new ObjectName(tmp);
@@ -518,34 +516,24 @@ public class ManagementContext extends BaseLifeCycle implements ManagementContex
         return result;
     }
 
-    private static String getRelativeName(String containerName, Class theClass) {
-        String name = theClass.getName();
-        int index = name.lastIndexOf(".");
-        if (index >= 0 && (index + 1) < name.length()) {
-            name = name.substring(index + 1);
-        }
-        return containerName + "." + name;
-    }
-
     /**
      * Register a System service
      * 
      * @param service
-     * @param implementationType
+     * @param interfaceType
      * @throws JBIException
      */
-    public void registerSystemService(BaseLifeCycle service, Class implementationType) throws JBIException {
-        registerSystemService(service, implementationType, getRelativeName(service));
-    }
-
-    public void registerSystemService(BaseLifeCycle service, Class type, Class implementationType, String name) throws JBIException {
-        String tmp = jmxDomainName + ":" + "type=" + type.getName() + ",name=" + name;
+    public void registerSystemService(BaseSystemService service, Class interfaceType) throws JBIException {
         try {
-            if (log.isDebugEnabled()) {
-                log.debug("Registering system service: class=" + implementationType.getName() + ", name=" + tmp);
+            String name = service.getName();
+            if (systemServices.containsKey(name)) {
+                throw new JBIException("A system service for the name " + name + " is already registered");
             }
-            ObjectName objName = new ObjectName(tmp);
-            registerMBean(objName, service, implementationType, service.getDescription());
+            ObjectName objName = createObjectName(service);
+            if (log.isDebugEnabled()) {
+                log.debug("Registering system service: " + objName);
+            }
+            registerMBean(objName, service, interfaceType, service.getDescription());
             systemServices.put(name, objName);
         }
         catch (MalformedObjectNameException e) {
@@ -554,18 +542,6 @@ public class ManagementContext extends BaseLifeCycle implements ManagementContex
         catch (JMException e) {
             throw new JBIException(e);
         }
-    }
-
-    /**
-     * Register a System service
-     * 
-     * @param service
-     * @param implementationType
-     * @param name
-     * @throws JBIException
-     */
-    public void registerSystemService(BaseLifeCycle service, Class implementationType, String name) throws JBIException {
-        registerSystemService(service, service.getClass(), implementationType, name);
     }
 
     /**

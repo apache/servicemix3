@@ -15,10 +15,6 @@
  */
 package org.apache.servicemix.jbi.framework;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.container.JBIContainer;
-
 import javax.jbi.JBIException;
 import javax.jbi.component.Bootstrap;
 import javax.jbi.component.Component;
@@ -26,13 +22,17 @@ import javax.jbi.management.DeploymentException;
 import javax.jbi.management.InstallerMBean;
 import javax.management.ObjectName;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.container.JBIContainer;
+
 /**
  * InstallerMBean defines standard installation and uninstallation controls for Binding Components and Service Engines.
  * Binding Components and Service Engines.
  * 
  * @version $Revision$
  */
-public class InstallerMBeanImpl  implements InstallerMBean {
+public class InstallerMBeanImpl implements InstallerMBean {
     private static final Log log = LogFactory.getLog(InstallerMBeanImpl.class);
     private InstallationContextImpl context;
     private Bootstrap bootstrap;
@@ -225,4 +225,5 @@ public class InstallerMBeanImpl  implements InstallerMBean {
 	public String getComponentClassName() {
 		return componentClassName;
 	}
+
 }

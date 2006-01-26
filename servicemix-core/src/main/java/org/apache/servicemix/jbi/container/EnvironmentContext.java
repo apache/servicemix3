@@ -15,21 +15,6 @@
  */
 package org.apache.servicemix.jbi.container;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.framework.LocalComponentConnector;
-import org.apache.servicemix.jbi.management.AttributeInfoHelper;
-import org.apache.servicemix.jbi.management.BaseLifeCycle;
-import org.apache.servicemix.jbi.util.*;
-
-import javax.jbi.JBIException;
-import javax.jbi.management.LifeCycleMBean;
-import javax.management.JMException;
-import javax.management.MBeanAttributeInfo;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
@@ -37,12 +22,27 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.jbi.JBIException;
+import javax.management.JMException;
+import javax.management.MBeanAttributeInfo;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.framework.LocalComponentConnector;
+import org.apache.servicemix.jbi.management.AttributeInfoHelper;
+import org.apache.servicemix.jbi.management.BaseSystemService;
+import org.apache.servicemix.jbi.util.FileUtil;
+import org.apache.servicemix.jbi.util.FileVersionUtil;
+
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Holder for environment infomation
  * 
  * @version $Revision$
  */
-public class EnvironmentContext extends BaseLifeCycle {
+public class EnvironmentContext extends BaseSystemService implements EnvironmentContextMBean {
     private static final Log log = LogFactory.getLog(EnvironmentContext.class);
 
     private File jbiRootDir;
@@ -156,7 +156,7 @@ public class EnvironmentContext extends BaseLifeCycle {
         this.container = container;
         jbiRootDir = new File(rootDirPath, container.getName());
         buildDirectoryStructure();
-        container.getManagementContext().registerSystemService(this, LifeCycleMBean.class);
+        container.getManagementContext().registerSystemService(this, EnvironmentContextMBean.class);
     }
 
     /**
@@ -273,7 +273,7 @@ public class EnvironmentContext extends BaseLifeCycle {
      * @throws JBIException
      */
     public ComponentEnvironment registerComponent(ComponentEnvironment result,
-			                                      LocalComponentConnector connector) throws JBIException {
+                                                  LocalComponentConnector connector) throws JBIException {
         if (result == null) {
             result = new ComponentEnvironment();
         }
@@ -293,28 +293,28 @@ public class EnvironmentContext extends BaseLifeCycle {
                 throw new JBIException(e);
             }
         }
-		result.setLocalConnector(connector);
-		envMap.put(connector, result);
-		return result;
+        result.setLocalConnector(connector);
+        envMap.put(connector, result);
+        return result;
 	}
 
     /**
-	 * Get root directory for a Component
-	 * 
-	 * @param componentName
-	 * @return directory for deployment/workspace etc
-	 * @throws IOException
-	 */
-    public File getComponentRootDirectory(String componentName) throws IOException{
-        if(getComponentsDir()==null){
+     * Get root directory for a Component
+     * 
+     * @param componentName
+     * @return directory for deployment/workspace etc
+     * @throws IOException
+     */
+    public File getComponentRootDirectory(String componentName) throws IOException {
+        if (getComponentsDir() == null) {
             return null;
         }
-        File result=FileUtil.getDirectoryPath(getComponentsDir(),componentName);
+        File result = FileUtil.getDirectoryPath(getComponentsDir(), componentName);
         // get the version directory
-        result=FileVersionUtil.getLatestVersionDirectory(result);
+        result = FileVersionUtil.getLatestVersionDirectory(result);
         return result;
     }
-    
+
     /**
      * Create root directory for a Component
      * 
@@ -322,18 +322,16 @@ public class EnvironmentContext extends BaseLifeCycle {
      * @return directory for deployment/workspace etc
      * @throws IOException
      */
-    public File createComponentRootDirectory(String componentName) throws IOException{
-        if(getComponentsDir()==null){
+    public File createComponentRootDirectory(String componentName) throws IOException {
+        if (getComponentsDir() == null) {
             return null;
         }
-        File result=FileUtil.getDirectoryPath(getComponentsDir(),componentName);
+        File result = FileUtil.getDirectoryPath(getComponentsDir(), componentName);
         // get the version directory
-        result=FileVersionUtil.createNewVersionDirectory(result);
+        result = FileVersionUtil.createNewVersionDirectory(result);
         return result;
     }
     
-    
-
     /**
      * Create installation directory for a Component
      * 

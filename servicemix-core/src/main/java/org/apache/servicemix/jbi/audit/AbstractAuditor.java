@@ -15,20 +15,20 @@
  */
 package org.apache.servicemix.jbi.audit;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.MessageExchangeListener;
-import org.apache.servicemix.jbi.container.JBIContainer;
-import org.apache.servicemix.jbi.management.AttributeInfoHelper;
-import org.apache.servicemix.jbi.management.BaseLifeCycle;
-import org.apache.servicemix.jbi.management.OperationInfoHelper;
-import org.apache.servicemix.jbi.management.ParameterHelper;
-
 import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanOperationInfo;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.MessageExchangeListener;
+import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.management.AttributeInfoHelper;
+import org.apache.servicemix.jbi.management.BaseSystemService;
+import org.apache.servicemix.jbi.management.OperationInfoHelper;
+import org.apache.servicemix.jbi.management.ParameterHelper;
 
 /**
  * Base class for ServiceMix auditors implementations.
@@ -37,7 +37,7 @@ import javax.management.MBeanOperationInfo;
  * @since 2.1
  * @version $Revision$
  */
-public abstract class AbstractAuditor extends BaseLifeCycle implements AuditorMBean, MessageExchangeListener {
+public abstract class AbstractAuditor extends BaseSystemService implements AuditorMBean, MessageExchangeListener {
 
     protected final Log log = LogFactory.getLog(getClass());
     
@@ -207,18 +207,21 @@ public abstract class AbstractAuditor extends BaseLifeCycle implements AuditorMB
     }
 
 	/**
-	 * Test if Auditor should be included as a container listener
-	 * @return Returns the addToContainer.
-	 */
-	public boolean isAsContainerListener() {
-		return asContainerListener;
-	}
+     * Test if Auditor should be included as a container listener
+     * 
+     * @return Returns the addToContainer.
+     */
+    public boolean isAsContainerListener() {
+        return asContainerListener;
+    }
 
-	/**
-	 * Set if Auditor should be included as a container listener.
-	 * @param addToContainer The addToContainer to set.
-	 */
-	public void setAsContainerListener(boolean addToContainer) {
-		this.asContainerListener = addToContainer;
-	}
+    /**
+     * Set if Auditor should be included as a container listener.
+     * 
+     * @param addToContainer
+     *            The addToContainer to set.
+     */
+    public void setAsContainerListener(boolean addToContainer) {
+        this.asContainerListener = addToContainer;
+    }
 }

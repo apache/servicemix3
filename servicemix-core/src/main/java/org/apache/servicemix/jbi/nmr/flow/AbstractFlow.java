@@ -217,4 +217,24 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
         return subType;
     }
 
+    /**
+     * Get the type of the item
+     * @return the type
+     */
+    public String getType() {
+        return "Flow";
+    }
+    
+    /**
+     * Get the name of the item
+     * @return the name
+     */
+    public String getName() {
+        String name = super.getName();
+        if (name.endsWith("Flow")) {
+            name = name.substring(0, name.length() - 4);
+        }
+        return name;
+    }
+    
 }

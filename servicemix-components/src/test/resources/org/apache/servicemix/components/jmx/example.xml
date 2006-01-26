@@ -20,7 +20,7 @@
                  		 destinationService="foo:receiver">
         <sm:component>
          	<bean class="org.apache.servicemix.components.jmx.CounterMonitorComponent">
-          		<property name="observedObjectName" value="org.apache.servicemix:type=org.apache.servicemix.jbi.framework.ComponentMBeanImpl,name=defaultJBI.trace"/>
+          		<property name="observedObjectName" value="org.apache.servicemix:type=Component,name=trace,container=defaultJBI"/>
           		<property name="attributeName" value="inboundExchangeCount" />
           		<property name="threshold">
           		  <bean class="java.lang.Long">

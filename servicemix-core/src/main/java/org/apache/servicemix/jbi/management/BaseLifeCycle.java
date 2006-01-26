@@ -47,6 +47,18 @@ public abstract class BaseLifeCycle implements LifeCycleMBean, MBeanInfoProvider
         return name;
     }
     
+    /**
+     * Get the type of the item
+     * @return the type
+     */
+    public String getType() {
+        String name = getClass().getName();
+        int index = name.lastIndexOf(".");
+        if (index >= 0 && (index+1) < name.length()) {
+            name = name.substring(index+1);
+        }
+        return name;
+    }
     
     /**
      * set state to initialized

@@ -64,7 +64,11 @@ public class SedaQueue extends BaseLifeCycle implements Work {
      * @return name
      */
     public String getName() {
-        return "SedaQueue." + name.getName();
+        return name.getName();
+    }
+
+    public String getType() {
+        return "SedaQueue";
     }
 
     /**

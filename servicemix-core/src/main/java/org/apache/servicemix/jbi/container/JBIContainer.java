@@ -411,7 +411,12 @@ public class JBIContainer extends BaseLifeCycle {
             autoDeployService.init(this);
            
             // register self with the ManagementContext
-            managementContext.registerSystemService(this, JBIContainer.class, LifeCycleMBean.class, getName());
+            try {
+                managementContext.registerMBean(ManagementContext.getContainerObjectName(managementContext.getJmxDomainName(), getName()), 
+                                                this, LifeCycleMBean.class);
+            } catch (JMException e) {
+                throw new JBIException(e);
+            }
             log.info("ServiceMix JBI Container (http://servicemix.org/) name: " + getName() + " running version: "
                     + EnvironmentContext.getVersion());
         }

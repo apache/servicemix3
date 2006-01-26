@@ -67,6 +67,14 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
     }
     
     /**
+     * Get the type of the item
+     * @return the type
+     */
+    public String getType() {
+        return "Component";
+    }
+    
+   /**
      * Get the Description of the item
      * @return the description
      */
