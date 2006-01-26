@@ -27,6 +27,12 @@ import org.mortbay.jetty.servlet.ServletHandler;
 
 public class HttpSoapConnector extends HttpSoapInOutBinding {
 	private SocketListener listener;
+	
+	/**
+	 * The maximum number of threads for the Jetty SocketListener. It's set 
+	 * to 256 by default to match the default value in Jetty. 
+	 */
+	private int maxThreads = 256;
 
 	private Server server;
 
@@ -72,6 +78,7 @@ public class HttpSoapConnector extends HttpSoapInOutBinding {
 		}
 		try {
 			listener.setHost(host);
+			listener.setMaxThreads(getMaxThreads());
 		} catch (UnknownHostException e) {
 			throw new JBIException("init failed", e);
 		}
@@ -143,5 +150,13 @@ public class HttpSoapConnector extends HttpSoapInOutBinding {
 
 	public void setHost(String host) {
 		this.host = host;
+	}
+
+	public int getMaxThreads() {
+		return maxThreads;
+	}
+
+	public void setMaxThreads(int maxThreads) {
+		this.maxThreads = maxThreads;
 	}
 }

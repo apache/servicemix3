@@ -235,5 +235,18 @@ public class HttpSoapTest extends TestCase {
         assertEquals("http://www.w3.org/2001/XMLSchema", qname.getNamespaceURI());
         assertEquals("string", qname.getLocalPart());
     }
+    
+    public void testMaxThreadsForJettySocketListener()
+        throws Exception {
+    		int maxThreads = 512;
+    		
+    		HttpSoapConnector httpSoap = new HttpSoapConnector();
+    		httpSoap.setMaxThreads(maxThreads);
+    		assertEquals("The maxThreads value on the HttpSoapConnector is not correct!", maxThreads, httpSoap.getMaxThreads());
+    		
+    		HttpConnector http = new HttpConnector();
+    		http.setMaxThreads(maxThreads);
+    		assertEquals("The maxThreads value on the HttpConnector is not correct!", maxThreads, http.getMaxThreads());
+    }
 
 }

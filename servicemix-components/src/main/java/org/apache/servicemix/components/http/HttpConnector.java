@@ -31,6 +31,13 @@ import java.net.UnknownHostException;
  */
 public class HttpConnector extends HttpInOutBinding {
     private SocketListener listener = new SocketListener();
+    
+	/**
+	 * The maximum number of threads for the Jetty SocketListener. It's set 
+	 * to 256 by default to match the default value in Jetty. 
+	 */
+	private int maxThreads = 256;
+
     private Server server;
     private String host;
     private int port;
@@ -72,6 +79,7 @@ public class HttpConnector extends HttpInOutBinding {
         }
         try {
             listener.setHost(host);
+            listener.setMaxThreads(getMaxThreads());
         }
         catch (UnknownHostException e) {
             throw new JBIException("init failed", e);
@@ -145,4 +153,12 @@ public class HttpConnector extends HttpInOutBinding {
     public void setHost(String host) {
         this.host = host;
     }
+
+	public int getMaxThreads() {
+		return maxThreads;
+	}
+
+	public void setMaxThreads(int maxThreads) {
+		this.maxThreads = maxThreads;
+	}
 }
