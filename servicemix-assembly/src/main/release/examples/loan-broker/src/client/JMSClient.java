@@ -58,8 +58,12 @@ public class JMSClient implements Work {
         if (args.length == 0) {
             new JMSClient().run();
         } else {
-            GeronimoWorkManager wm = createWorkManager(30);
             int nb = Integer.parseInt(args[0]);
+            int th = 30;
+            if (args.length > 1) {
+                th = Integer.parseInt(args[1]);
+            }
+            GeronimoWorkManager wm = createWorkManager(th);
             latch = new CountDownLatch(nb);
             for (int i = 0; i < nb; i++) {
                 wm.scheduleWork(new JMSClient());

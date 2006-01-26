@@ -35,7 +35,7 @@ public class Bank extends TransformComponentSupport {
         out.setProperty(Constants.PROPERTY_RATE, new Double(rate));
         // Sleep some time
         try {
-            Thread.sleep((int) (Math.random() * 10) * 100);
+            Thread.sleep((int) (Math.random() * 10) * 10);
         } catch (InterruptedException e) {
             // Discard
         }
