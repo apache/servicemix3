@@ -27,7 +27,9 @@
   <goal name="nightly" prereqs="clean, jbi:install, jbi:deploy"/>
   
   <postGoal name="java:compile">
+    <!--
     <attainGoal name="xbean:generate" />
+    -->
   </postGoal>
          
   <goal name="xbean:generate" description="Generates the XBean XSD, documentation and META-INF/services files.">

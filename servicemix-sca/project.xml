@@ -332,12 +332,14 @@
           <include>**/*</include>
         </includes>
       </resource>
+      <!--
       <resource>
         <directory>target/generated</directory>
         <includes>
           <include>**/*</include>
         </includes>
       </resource>
+      -->
     </resources>
   </build>
 
