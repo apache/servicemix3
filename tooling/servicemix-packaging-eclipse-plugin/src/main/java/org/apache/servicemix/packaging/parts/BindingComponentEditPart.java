@@ -46,18 +46,7 @@ public class BindingComponentEditPart extends AbstractComponentEditPart
 		BindingComponentFigure newFigure = new BindingComponentFigure(
 				(BindingComponent) getModel());
 		return newFigure;
-	}
-
-	private IPropertyDescriptor[] getArray(List<IPropertyDescriptor> descriptors) {
-		IPropertyDescriptor[] array = new IPropertyDescriptor[descriptors
-				.size()];
-		int pos = 0;
-		for (IPropertyDescriptor descriptor : descriptors) {
-			array[pos] = descriptor;
-			pos++;
-		}
-		return array;
-	}
+	}	
 
 	private Component getComponentDescriptor() {
 		Component component = null;

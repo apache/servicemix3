@@ -36,7 +36,9 @@ public class DeploymentDiagram extends ModelElement {
 
 	private static final long serialVersionUID = 1;
 
-	private String path = "c:\temp";
+	private String deployPath = "/apps/servicemix-3.0/deploy";
+
+	private String installPath = "/apps/servicemix-3.0/install";
 
 	private List<AbstractComponent> services = new ArrayList<AbstractComponent>();
 
@@ -54,8 +56,12 @@ public class DeploymentDiagram extends ModelElement {
 		return services;
 	}
 
-	public String getPath() {
-		return path;
+	public String getDeployPath() {
+		return deployPath;
+	}
+
+	public String getInstallPath() {
+		return installPath;
 	}
 
 	public List<AbstractComponent> getService() {
@@ -70,8 +76,12 @@ public class DeploymentDiagram extends ModelElement {
 		return false;
 	}
 
-	public void setPath(String path) {
-		this.path = path;
+	public void setDeployPath(String deployPath) {
+		this.deployPath = deployPath;
+	}
+
+	public void setInstallPath(String installPath) {
+		this.installPath = installPath;
 	}
 
 	public void setService(List<AbstractComponent> services) {

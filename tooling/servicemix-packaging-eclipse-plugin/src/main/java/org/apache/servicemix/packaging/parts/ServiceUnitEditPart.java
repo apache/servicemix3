@@ -68,17 +68,6 @@ public class ServiceUnitEditPart extends AbstractComponentEditPart implements
 		super.refreshVisuals();
 	}
 
-	private IPropertyDescriptor[] getArray(List<IPropertyDescriptor> descriptors) {
-		IPropertyDescriptor[] array = new IPropertyDescriptor[descriptors
-				.size()];
-		int pos = 0;
-		for (IPropertyDescriptor descriptor : descriptors) {
-			array[pos] = descriptor;
-			pos++;
-		}
-		return array;
-	}
-
 	private Component getComponentDescriptor() {
 		Component component = null;
 		if (getModel() instanceof ComponentBased) {

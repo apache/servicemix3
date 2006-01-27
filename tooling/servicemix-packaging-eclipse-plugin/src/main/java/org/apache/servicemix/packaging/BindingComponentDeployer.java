@@ -41,8 +41,8 @@ public class BindingComponentDeployer extends AbstractDeployer {
 		try {
 			String fileName = "/" + component.getServiceName().getLocalPart()
 					+ "-bc.zip";
-			out = new ZipOutputStream(new FileOutputStream(getDeploymentDir()
-					+ fileName));
+			out = new ZipOutputStream(new FileOutputStream(
+					getDeploymentDir(component) + fileName));
 			injectComponentFiles(out, component.getComponentUuid());
 			injectEmbeddedArtifacts(component.getStoredAssets(), out, project);
 			injectStoredAssets(component.getStoredAssets(), out);

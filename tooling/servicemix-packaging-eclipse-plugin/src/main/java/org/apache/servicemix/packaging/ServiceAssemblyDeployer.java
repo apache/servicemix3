@@ -44,8 +44,8 @@ public class ServiceAssemblyDeployer extends AbstractDeployer {
 		ZipOutputStream out = null;
 		try {
 			String fileName = "/" + assembly.getName() + "-sa.zip";
-			out = new ZipOutputStream(new FileOutputStream(getDeploymentDir()
-					+ fileName));
+			out = new ZipOutputStream(new FileOutputStream(
+					getDeploymentDir(assembly) + fileName));
 
 			injectServiceAssemblyDescriptor(assembly, out);
 			injectStoredAssets(assembly.getStoredAssets(), out);
@@ -76,8 +76,7 @@ public class ServiceAssemblyDeployer extends AbstractDeployer {
 		}
 		suZip.close();
 
-		out.putNextEntry(new ZipEntry(unit.getServiceUnitName()
-				+ ".zip"));
+		out.putNextEntry(new ZipEntry(unit.getServiceUnitName() + ".zip"));
 		out.write(bytesOut.toByteArray());
 		out.closeEntry();
 

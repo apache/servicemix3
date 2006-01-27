@@ -11,4 +11,16 @@
     <page name="Registered JBI Components" class="org.apache.servicemix.packaging.preferences.JbiComponentPreferences" id="JBIComponentPreferences">
     </page>
   </extension>
+  <extension
+        point="org.eclipse.ui.newWizards">
+     <category
+           id="org.apache.servicemix.packaging"
+           name="Java Business Integration"/>
+     <wizard
+           category="org.apache.servicemix.packaging"
+           class="org.apache.servicemix.packaging.wizards.NewDeploymentWizard"
+           icon="icons/sample.gif"
+           id="org.apache.servicemix.packaging.wizards.NewDeploymentWizard"
+           name="Deployment"/>
+  </extension>
 </plugin>

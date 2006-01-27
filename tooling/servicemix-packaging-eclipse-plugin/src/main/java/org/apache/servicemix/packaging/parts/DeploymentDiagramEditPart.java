@@ -17,6 +17,7 @@ package org.apache.servicemix.packaging.parts;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.servicemix.packaging.model.AbstractComponent;
@@ -39,11 +40,13 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.requests.CreateRequest;
+import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.eclipse.ui.views.properties.IPropertySource;
+import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 /**
  * The GEF edit part for a deployment diagram
@@ -51,8 +54,12 @@ import org.eclipse.gef.requests.CreateRequest;
  * @author <a href="mailto:philip.dodds@gmail.com">Philip Dodds </a>
  * 
  */
-public class DeploymentDiagramEditPart extends AbstractGraphicalEditPart
-		implements PropertyChangeListener {
+public class DeploymentDiagramEditPart extends AbstractGraphicalEditPart2
+		implements PropertyChangeListener, IPropertySource {
+
+	private static final String DEPLOY_PATH = "deployPath";
+
+	private static final String INSTALL_PATH = "installPath";
 
 	private static class ShapesXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
@@ -138,12 +145,38 @@ public class DeploymentDiagramEditPart extends AbstractGraphicalEditPart
 		return (DeploymentDiagram) getModel();
 	}
 
+	public Object getEditableValue() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	protected List getModelChildren() {
 		return getCastedModel().getChildren();
 	}
 
 	public IProject getProject() {
 		return project;
+	}
+
+	public IPropertyDescriptor[] getPropertyDescriptors() {
+		List<IPropertyDescriptor> descriptors = new ArrayList<IPropertyDescriptor>();
+		descriptors
+				.add(new TextPropertyDescriptor(INSTALL_PATH, "Install path"));
+		descriptors.add(new TextPropertyDescriptor(DEPLOY_PATH, "Deploy path"));
+		return getArray(descriptors);
+	}
+
+	public Object getPropertyValue(Object arg0) {
+		if (DEPLOY_PATH.equals(arg0))
+			return ((DeploymentDiagram) getModel()).getDeployPath();
+		else if (INSTALL_PATH.equals(arg0))
+			return ((DeploymentDiagram) getModel()).getInstallPath();
+		return null;
+	}
+
+	public boolean isPropertySet(Object arg0) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
@@ -154,8 +187,20 @@ public class DeploymentDiagramEditPart extends AbstractGraphicalEditPart
 		}
 	}
 
+	public void resetPropertyValue(Object arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
 	public void setProject(IProject project) {
 		this.project = project;
+	}
+
+	public void setPropertyValue(Object arg0, Object arg1) {
+		if (DEPLOY_PATH.equals(arg0))
+			((DeploymentDiagram) getModel()).setDeployPath((String) arg1);
+		else if (INSTALL_PATH.equals(arg0))
+			((DeploymentDiagram) getModel()).setInstallPath((String) arg1);
 	}
 
 }

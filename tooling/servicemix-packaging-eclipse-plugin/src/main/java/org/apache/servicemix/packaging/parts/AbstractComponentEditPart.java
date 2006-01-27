@@ -23,6 +23,13 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.apache.servicemix.packaging.ComponentArtifact;
+import org.apache.servicemix.packaging.assets.ArtifactReference;
+import org.apache.servicemix.packaging.assets.ParameterValue;
+import org.apache.servicemix.packaging.assets.ResourceReference;
+import org.apache.servicemix.packaging.assets.StoredAssets;
+import org.apache.servicemix.packaging.descriptor.Connection;
+import org.apache.servicemix.packaging.descriptor.EmbeddedArtifact;
+import org.apache.servicemix.packaging.descriptor.Parameter;
 import org.apache.servicemix.packaging.model.AbstractComponent;
 import org.apache.servicemix.packaging.model.AbstractConnectableService;
 import org.apache.servicemix.packaging.model.ComponentBased;
@@ -38,15 +45,6 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
-import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-
-import org.apache.servicemix.packaging.assets.ArtifactReference;
-import org.apache.servicemix.packaging.assets.ParameterValue;
-import org.apache.servicemix.packaging.assets.ResourceReference;
-import org.apache.servicemix.packaging.assets.StoredAssets;
-import org.apache.servicemix.packaging.descriptor.Connection;
-import org.apache.servicemix.packaging.descriptor.EmbeddedArtifact;
-import org.apache.servicemix.packaging.descriptor.Parameter;
 
 /**
  * The abstract implementation for a JBI component edit part (GEF)
@@ -55,7 +53,7 @@ import org.apache.servicemix.packaging.descriptor.Parameter;
  * 
  */
 public abstract class AbstractComponentEditPart extends
-		AbstractGraphicalEditPart implements PropertyChangeListener,
+		AbstractGraphicalEditPart2 implements PropertyChangeListener,
 		NodeEditPart {
 
 	protected ConnectionAnchor anchor;
@@ -65,12 +63,11 @@ public abstract class AbstractComponentEditPart extends
 			super.activate();
 			((ModelElement) getModel()).addPropertyChangeListener(this);
 		}
-
 	}
 
 	protected void setPropertyFromAssets(Object arg0, Object arg1,
-			StoredAssets assets) {		
-		
+			StoredAssets assets) {
+
 		if (arg0 instanceof Parameter) {
 			Parameter parameter = (Parameter) arg0;
 			String value = (String) arg1;
@@ -180,7 +177,7 @@ public abstract class AbstractComponentEditPart extends
 			((ModelElement) getModel()).removePropertyChangeListener(this);
 		}
 	}
-	
+
 	protected ConnectionAnchor getConnectionAnchor() {
 		if (anchor == null) {
 			anchor = new ChopboxAnchor(getFigure());
@@ -262,7 +259,7 @@ public abstract class AbstractComponentEditPart extends
 					|| AbstractConnectableService.SERVICENAME_PROP.equals(prop)) {
 				refreshVisuals();
 			} else if (AbstractConnectableService.SOURCE_CONNECTIONS_PROP
-					.equals(prop)) {				
+					.equals(prop)) {
 				refreshSourceConnections();
 			} else if (AbstractConnectableService.TARGET_CONNECTIONS_PROP
 					.equals(prop)) {

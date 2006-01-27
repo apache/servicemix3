@@ -26,6 +26,9 @@ import javax.xml.bind.Marshaller;
 
 import org.apache.servicemix.packaging.assets.ArtifactReference;
 import org.apache.servicemix.packaging.assets.StoredAssets;
+import org.apache.servicemix.packaging.model.AbstractComponent;
+import org.apache.servicemix.packaging.model.DeploymentDiagram;
+import org.apache.servicemix.packaging.model.ModelElement;
 import org.eclipse.core.resources.IProject;
 
 /**
@@ -43,8 +46,24 @@ public abstract class AbstractDeployer {
 		return artifact;
 	}
 
-	public String getDeploymentDir() {
-		return "d:/";
+	public String getDeploymentDir(ModelElement component) {
+		if (component instanceof DeploymentDiagram)
+			return ((DeploymentDiagram) component).getDeployPath();
+		else if (component instanceof AbstractComponent) {
+			return getDeploymentDir(((AbstractComponent) component)
+					.getParentModelElement());
+		}
+		return null;
+	}
+
+	public String getInstallPath(ModelElement component) {
+		if (component instanceof DeploymentDiagram)
+			return ((DeploymentDiagram) component).getInstallPath();
+		else if (component instanceof AbstractComponent) {
+			return getDeploymentDir(((AbstractComponent) component)
+					.getParentModelElement());
+		}
+		return null;
 	}
 
 	protected void injectComponentFiles(ZipOutputStream out,
