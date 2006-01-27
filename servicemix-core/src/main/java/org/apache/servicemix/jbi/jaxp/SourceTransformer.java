@@ -163,57 +163,56 @@ public class SourceTransformer {
             return null;
         }
     }
-    
+
     public StreamSource toStreamSource(Source source) throws TransformerException {
-    	if (source instanceof StreamSource) {
-    		return (StreamSource) source;
-    	} else if (source instanceof DOMSource) {
+        if (source instanceof StreamSource) {
+            return (StreamSource) source;
+        } else if (source instanceof DOMSource) {
             return toStreamSourceFromDOM((DOMSource) source);
-        }
-        else if (source instanceof SAXSource) {
+        } else if (source instanceof SAXSource) {
             return toStreamSourceFromSAX((SAXSource) source);
-        }
-        else {
+        } else {
             return null;
         }
     }
 
     public StreamSource toStreamSourceFromSAX(SAXSource source) throws TransformerException {
-		InputSource inputSource = source.getInputSource();
-		if (inputSource != null) {
-			if (inputSource.getByteStream() != null) {
-				return new StreamSource(inputSource.getByteStream());
-			}
-			if (inputSource.getCharacterStream() != null) {
-				return new StreamSource(inputSource.getCharacterStream());
-			}
-		}
-		String result = toString(source);
-		return new StreamSource(new ByteArrayInputStream(result.getBytes()));
-	}
+        InputSource inputSource = source.getInputSource();
+        if (inputSource != null) {
+            if (inputSource.getByteStream() != null) {
+                return new StreamSource(inputSource.getByteStream());
+            }
+            if (inputSource.getCharacterStream() != null) {
+                return new StreamSource(inputSource.getCharacterStream());
+            }
+        }
+        String result = toString(source);
+        return new StreamSource(new ByteArrayInputStream(result.getBytes()));
+    }
 
 	public StreamSource toStreamSourceFromDOM(DOMSource source) throws TransformerException {
-		String result = toString(source);
-		return new StreamSource(new ByteArrayInputStream(result.getBytes()));
-	}
+        String result = toString(source);
+        return new StreamSource(new ByteArrayInputStream(result.getBytes()));
+    }
 
-	public SAXSource toSAXSourceFromStream(StreamSource source) {
+    public SAXSource toSAXSourceFromStream(StreamSource source) {
         InputSource inputSource = new InputSource(source.getInputStream());
         inputSource.setSystemId(source.getSystemId());
         inputSource.setPublicId(source.getPublicId());
         return new SAXSource(inputSource);
     }
-	
-	public Reader toReaderFromSource(Source src) throws TransformerException {
-		StreamSource stSrc = toStreamSource(src);
-		Reader r = stSrc.getReader();
-		if (r == null) {
-			r = new InputStreamReader(stSrc.getInputStream());
-		}
-		return r;
-	}
 
-    public DOMSource toDOMSourceFromStream(StreamSource source) throws ParserConfigurationException, IOException, SAXException {
+    public Reader toReaderFromSource(Source src) throws TransformerException {
+        StreamSource stSrc = toStreamSource(src);
+        Reader r = stSrc.getReader();
+        if (r == null) {
+            r = new InputStreamReader(stSrc.getInputStream());
+        }
+        return r;
+    }
+
+    public DOMSource toDOMSourceFromStream(StreamSource source) throws ParserConfigurationException, IOException,
+            SAXException {
         DocumentBuilder builder = createDocumentBuilder();
         String systemId = source.getSystemId();
         Document document = null;
@@ -242,16 +241,27 @@ public class SourceTransformer {
     public DOMSource toDOMSourceFromSAX(SAXSource source) throws IOException, SAXException, ParserConfigurationException {
         return new DOMSource(toDOMNodeFromSAX(source));
     }
-    
+
     public Node toDOMNodeFromSAX(SAXSource source) throws ParserConfigurationException, IOException, SAXException {
         SAX2DOM converter = new SAX2DOM(createDocument());
         XMLReader xmlReader = source.getXMLReader();
         if (xmlReader == null) {
-            xmlReader = XMLReaderFactory.createXMLReader();
+            xmlReader = createXMLReader();
         }
         xmlReader.setContentHandler(converter);
         xmlReader.parse(source.getInputSource());
         return converter.getDOM();
+    }
+
+    private XMLReader createXMLReader() throws SAXException {
+        // In JDK 1.4, the xml reader factory does not look for META-INF services
+        // If the org.xml.sax.driver system property is not defined, and exception will be thrown.
+        // In these cases, default to xerces parser
+        try {
+            return XMLReaderFactory.createXMLReader();
+        } catch (Exception e) {
+            return XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
+        }
     }
 
 

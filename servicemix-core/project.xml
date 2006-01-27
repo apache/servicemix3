@@ -132,11 +132,6 @@
             <artifactId>xercesImpl</artifactId>
             <version>${xercesImpl_version}</version>
         </dependency>
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xmlParserAPIs</artifactId>
-            <version>${xerces_version}</version>
-        </dependency>
 
         <dependency>
             <groupId>xml-apis</groupId>

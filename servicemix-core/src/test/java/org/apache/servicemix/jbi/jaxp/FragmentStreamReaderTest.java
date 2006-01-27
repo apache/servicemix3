@@ -40,10 +40,11 @@ public class FragmentStreamReaderTest extends TestCase {
 	public void testStaxSource() throws Exception {
 		InputStream is = getClass().getResourceAsStream("test.xml");
 		XMLStreamReader xsr = XMLInputFactory.newInstance().createXMLStreamReader(is);
+        xsr = new ExtendedXMLStreamReader(xsr);
 		xsr.nextTag();
-		log.info(xsr.getLocalName());
+		log.info(xsr.getName());
 		xsr.nextTag();
-		log.info(xsr.getLocalName());
+		log.info(xsr.getName());
 		XMLStreamReader fsr = new FragmentStreamReader(xsr);
 		StaxSource ss = new StaxSource(fsr);
         StringWriter buffer = new StringWriter();
