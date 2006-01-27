@@ -81,7 +81,7 @@ public class StaxSource extends SAXSource implements XMLReader {
                     String qname = prefix != null && prefix.length() > 0 ? prefix + ":" + localName : localName;
                     contentHandler.endElement(uri, localName, qname);
                     for (int i = 0; i < streamReader.getNamespaceCount(); i++) {
-                        contentHandler.endPrefixMapping(streamReader.getNamespaceURI(i));
+                        //contentHandler.endPrefixMapping(streamReader.getNamespaceURI(i));
                     }
                     break;
                 }
@@ -94,13 +94,10 @@ public class StaxSource extends SAXSource implements XMLReader {
                 case XMLStreamConstants.START_DOCUMENT:
                     break;
                 case XMLStreamConstants.START_ELEMENT: {
-                    // Do not use startPrefixMapping
-                    // See comment in getAttributes
-                    // for (int i = 0; i < streamReader.getNamespaceCount();
-                    // i++) {
-                    // contentHandler.startPrefixMapping(streamReader.getNamespacePrefix(i),
-                    // streamReader.getNamespaceURI(i));
-                    // }
+                    for (int i = 0; i < streamReader.getNamespaceCount(); i++) {
+                        //contentHandler.startPrefixMapping(streamReader.getNamespacePrefix(i),
+                        //                                  streamReader.getNamespaceURI(i));
+                    }
                     String uri = streamReader.getNamespaceURI();
                     String localName = streamReader.getLocalName();
                     String prefix = streamReader.getPrefix();
@@ -136,10 +133,17 @@ public class StaxSource extends SAXSource implements XMLReader {
             String uri = streamReader.getNamespaceURI(i);
             // Default namespace
             if (prefix == null || prefix.length() == 0) {
-                attrs.addAttribute("", XMLConstants.XMLNS_ATTRIBUTE, XMLConstants.XMLNS_ATTRIBUTE, "CDATA", uri);
+                attrs.addAttribute(null, 
+                                   null, 
+                                   XMLConstants.XMLNS_ATTRIBUTE, 
+                                   "CDATA", 
+                                   uri);
             } else {
-                attrs.addAttribute(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, prefix, XMLConstants.XMLNS_ATTRIBUTE + ":"
-                        + prefix, "CDATA", uri);
+                attrs.addAttribute(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, 
+                                   prefix, 
+                                   XMLConstants.XMLNS_ATTRIBUTE + ":" + prefix, 
+                                   "CDATA", 
+                                   uri);
             }
         }
         for (int i = 0; i < streamReader.getAttributeCount(); i++) {

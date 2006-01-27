@@ -24,6 +24,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
@@ -36,22 +37,41 @@ import junit.framework.TestCase;
 
 public class StaxSourceTest extends TestCase {
 
-	private static final Log log = LogFactory.getLog(StaxSourceTest.class);
-	
-	public void testStaxSource() throws Exception {
-		InputStream is = getClass().getResourceAsStream("test.xml");
-		XMLStreamReader xsr = XMLInputFactory.newInstance().createXMLStreamReader(is);
-		StaxSource ss = new StaxSource(xsr);
+    private static final Log log = LogFactory.getLog(StaxSourceTest.class);
+
+    public void testStaxSourceOnStream() throws Exception {
+        InputStream is = getClass().getResourceAsStream("test.xml");
+        XMLStreamReader xsr = XMLInputFactory.newInstance().createXMLStreamReader(is);
+        StaxSource ss = new StaxSource(xsr);
         StringWriter buffer = new StringWriter();
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.transform(ss, new StreamResult(buffer));
         log.info(buffer.toString());
-        DocumentBuilderFactory dbf =DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
-		Document doc = dbf.newDocumentBuilder().parse(new ByteArrayInputStream(buffer.toString().getBytes()));
-		StringWriter buffer2 = new StringWriter();
+        Document doc = dbf.newDocumentBuilder().parse(new ByteArrayInputStream(buffer.toString().getBytes()));
+        StringWriter buffer2 = new StringWriter();
         transformer.transform(new DOMSource(doc), new StreamResult(buffer2));
         log.info(buffer2.toString());
-	}
-	
+    }
+
+    public void testStaxSourceOnDOM() throws Exception {
+        InputStream is = getClass().getResourceAsStream("test.xml");
+        XMLStreamReader xsr = XMLInputFactory.newInstance().createXMLStreamReader(is);
+        StaxSource ss = new StaxSource(xsr);
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        DOMResult result = new DOMResult();
+        transformer.transform(ss, result);
+        assertNotNull(result.getNode());
+    }
+
+    public void testStaxToDOM() throws Exception {
+        InputStream is = getClass().getResourceAsStream("test.xml");
+        XMLStreamReader xsr = XMLInputFactory.newInstance().createXMLStreamReader(is);
+        StaxSource ss = new StaxSource(xsr);
+        DOMSource src = new SourceTransformer().toDOMSource(ss);
+        assertNotNull(src);
+        assertNotNull(src.getNode());
+    }
+
 }
