@@ -52,7 +52,7 @@ public class DeploymentEngine {
 
 	public void deployServiceAssembly(IProject project, ServiceAssembly assembly) {
 		try {
-			assemblyDeployer.deploy(project, assembly);
+			assemblyDeployer.deploy(project, assembly, true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

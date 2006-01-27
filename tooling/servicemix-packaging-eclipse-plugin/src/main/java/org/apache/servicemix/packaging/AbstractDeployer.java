@@ -15,6 +15,7 @@
  */
 package org.apache.servicemix.packaging;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -47,23 +48,32 @@ public abstract class AbstractDeployer {
 	}
 
 	public String getDeploymentDir(ModelElement component) {
+		String path = null;
 		if (component instanceof DeploymentDiagram)
-			return ((DeploymentDiagram) component).getDeployPath();
+			path = ((DeploymentDiagram) component).getDeployPath();
 		else if (component instanceof AbstractComponent) {
-			return getDeploymentDir(((AbstractComponent) component)
+			path = getDeploymentDir(((AbstractComponent) component)
 					.getParentModelElement());
 		}
-		return null;
+		if (path != null)
+			new File(path).mkdirs();
+
+		return path;
 	}
 
 	public String getInstallPath(ModelElement component) {
+		String path = null;
 		if (component instanceof DeploymentDiagram)
-			return ((DeploymentDiagram) component).getInstallPath();
+			path = ((DeploymentDiagram) component).getInstallPath();
 		else if (component instanceof AbstractComponent) {
-			return getDeploymentDir(((AbstractComponent) component)
+			path = getInstallPath(((AbstractComponent) component)
 					.getParentModelElement());
 		}
-		return null;
+
+		if (path != null)
+			new File(path).mkdirs();
+
+		return path;
 	}
 
 	protected void injectComponentFiles(ZipOutputStream out,

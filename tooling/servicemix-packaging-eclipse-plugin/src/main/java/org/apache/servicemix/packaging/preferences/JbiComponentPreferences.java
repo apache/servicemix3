@@ -219,18 +219,18 @@ public class JbiComponentPreferences extends PreferencePage implements
 			ITableLabelProvider {
 		public String getColumnText(Object obj, int index) {
 			if (obj instanceof Component) {
-				Component service = (Component) obj;
+				Component component = (Component) obj;
 				switch (index) {
 				case 0:
-					return service.getName();
+					return component.getName();
 				case 1:
-					return getArtifactForService(service).getArchivePath();
+					return getArtifactForComponent(component).getArchivePath();
 				}
 			}
 			return obj.toString();
 		}
 
-		private ComponentArtifact getArtifactForService(
+		private ComponentArtifact getArtifactForComponent(
 				Component serviceToLookup) {
 			for (ComponentArtifact artifact : ComponentArtifactFactory
 					.getComponentArtifacts()) {
