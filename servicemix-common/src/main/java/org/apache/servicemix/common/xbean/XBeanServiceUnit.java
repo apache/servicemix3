@@ -17,12 +17,16 @@ package org.apache.servicemix.common.xbean;
 
 import org.apache.servicemix.common.ServiceUnit;
 import org.xbean.kernel.Kernel;
+import org.xbean.kernel.ServiceName;
+import org.xbean.kernel.ServiceNotFoundException;
+import org.xbean.server.spring.configuration.SpringConfigurationServiceFactory;
 
 import javax.jbi.JBIException;
 
 public class XBeanServiceUnit extends ServiceUnit {
 
     private Kernel kernel;
+    private ServiceName configuration;
 
     /**
      * @return Returns the kernel.
@@ -38,12 +42,32 @@ public class XBeanServiceUnit extends ServiceUnit {
         this.kernel = kernel;
     }
 
+    public ServiceName getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(ServiceName configuration) {
+        this.configuration = configuration;
+    }
+    
     /* (non-Javadoc)
      * @see org.apache.servicemix.common.ServiceUnit#shutDown()
      */
     public void shutDown() throws JBIException {
-        kernel.destroy();
+        if (kernel != null) {
+            kernel.destroy();
+        }
         super.shutDown();
+    }
+    
+    public ClassLoader getConfigurationClassLoader() throws ServiceNotFoundException {
+        if (kernel != null) {
+            Object o = kernel.getServiceFactory(configuration);
+            SpringConfigurationServiceFactory scsf = (SpringConfigurationServiceFactory) o;
+            return scsf.getApplicationContext().getClassLoader();
+        } else {
+            return Thread.currentThread().getContextClassLoader();
+        }
     }
     
 }

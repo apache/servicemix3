@@ -24,7 +24,6 @@ import org.xbean.kernel.Kernel;
 import org.xbean.kernel.KernelFactory;
 import org.xbean.kernel.ServiceName;
 import org.xbean.server.repository.FileSystemRepository;
-import org.xbean.server.spring.configuration.ClassLoaderXmlPreprocessor;
 import org.xbean.server.spring.loader.SpringLoader;
 
 import javax.jbi.management.DeploymentException;
@@ -68,6 +67,7 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
             su.setName(serviceUnitName);
             su.setRootPath(serviceUnitRootPath);
             // Load configuration
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
             FileSystemRepository repository = new FileSystemRepository(new File(serviceUnitRootPath));
             ClassLoaderXmlPreprocessor classLoaderXmlPreprocessor = new ClassLoaderXmlPreprocessor(repository);
             List xmlPreprocessors = Collections.singletonList(classLoaderXmlPreprocessor);
@@ -77,6 +77,7 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
             springLoader.setXmlPreprocessors(xmlPreprocessors);
             ServiceName configurationName = springLoader.load(getXBeanFile());
             kernel.startService(configurationName);
+            su.setConfiguration(configurationName);
             // Retrieve endpoints
             List services = getServices(kernel);
             if (services == null || services.size() == 0) {
