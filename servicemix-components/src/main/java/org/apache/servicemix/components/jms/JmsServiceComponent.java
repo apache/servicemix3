@@ -154,7 +154,7 @@ public class JmsServiceComponent extends ComponentSupport implements MessageList
      * 
      * @return the Marshaller
      */
-    public JmsMarshaler getMarshaller() {
+    public JmsMarshaler getMarshaler() {
         return marshaler;
     }
 
@@ -163,7 +163,7 @@ public class JmsServiceComponent extends ComponentSupport implements MessageList
      * 
      * @param marshaler
      */
-    public void setMarshaller(JmsMarshaler marshaler) {
+    public void setMarshaler(JmsMarshaler marshaler) {
         this.marshaler = marshaler;
     }
 

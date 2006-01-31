@@ -54,11 +54,11 @@ public class JmsSenderComponent extends OutBinding {
         this.template = template;
     }
 
-    public JmsMarshaler getMarshaller() {
+    public JmsMarshaler getMarshaler() {
         return marshaler;
     }
 
-    public void setMarshaller(JmsMarshaler marshaler) {
+    public void setMarshaler(JmsMarshaler marshaler) {
         this.marshaler = marshaler;
     }
 
