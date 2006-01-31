@@ -15,18 +15,20 @@
  */
 package org.apache.servicemix.components.http;
 
-import java.net.UnknownHostException;
-
 import javax.jbi.JBIException;
 import javax.jbi.component.ComponentContext;
 
-import org.mortbay.http.HttpContext;
-import org.mortbay.http.SocketListener;
+import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
+import org.mortbay.jetty.bio.SocketConnector;
+import org.mortbay.jetty.handler.ContextHandler;
 import org.mortbay.jetty.servlet.ServletHandler;
+import org.mortbay.jetty.servlet.ServletHolder;
+import org.mortbay.jetty.servlet.ServletMapping;
+import org.mortbay.thread.BoundedThreadPool;
 
 public class HttpSoapConnector extends HttpSoapInOutBinding {
-	private SocketListener listener;
+    private Connector listener = new SocketConnector();
 	
 	/**
 	 * The maximum number of threads for the Jetty SocketListener. It's set 
@@ -60,7 +62,7 @@ public class HttpSoapConnector extends HttpSoapInOutBinding {
 	 *
 	 * @param listener
 	 */
-	public HttpSoapConnector(SocketListener listener) {
+	public HttpSoapConnector(Connector listener) {
 		this.listener = listener;
 	}
 
@@ -74,16 +76,14 @@ public class HttpSoapConnector extends HttpSoapInOutBinding {
 		super.init(cc);
 		//should set all ports etc here - from the naming context I guess ?
 		if (listener == null) {
-			listener = new SocketListener();
+			listener = new SocketConnector();
 		}
-		try {
-			listener.setHost(host);
-			listener.setMaxThreads(getMaxThreads());
-		} catch (UnknownHostException e) {
-			throw new JBIException("init failed", e);
-		}
+		listener.setHost(host);
 		listener.setPort(port);
 		server = new Server();
+        BoundedThreadPool btp = new BoundedThreadPool();
+        btp.setMaxThreads(getMaxThreads());
+        server.setThreadPool(btp);
 	}
 
 	/**
@@ -92,32 +92,41 @@ public class HttpSoapConnector extends HttpSoapInOutBinding {
 	 * @throws JBIException
 	 */
 	public void start() throws JBIException {
-		server.addListener(listener);
-		HttpContext context = server.addContext("/");
-		ServletHandler handler = new ServletHandler();
-		handler.addServlet("jbiServlet", "/*", BindingServlet.class
-				.getName());
-		context.addHandler(handler);
-		try {
-			context.setAttribute("binding", this);
-			server.start();
-		} catch (Exception e) {
-			throw new JBIException("Start failed: " + e, e);
-		}
+        server.setConnectors(new Connector[] { listener });
+        ContextHandler context = new ContextHandler();
+        context.setContextPath("/");
+        ServletHolder holder = new ServletHolder();
+        holder.setName("jbiServlet");
+        holder.setClassName(BindingServlet.class.getName());
+        ServletHandler handler = new ServletHandler();
+        handler.setServlets(new ServletHolder[] { holder });
+        ServletMapping mapping = new ServletMapping();
+        mapping.setServletName("jbiServlet");
+        mapping.setPathSpec("/*");
+        handler.setServletMappings(new ServletMapping[] { mapping });
+        context.setHandler(handler);
+        server.setHandler(context);
+        context.setAttribute("binding", this);
+        try {
+            server.start();
+        }
+        catch (Exception e) {
+            throw new JBIException("Start failed: " + e, e);
+        }
 	}
 
 	/**
 	 * stop
 	 */
 	public void stop() throws JBIException {
-		try {
-		  if (server != null) {
-			  server.stop();
-			}
-		} catch (InterruptedException e) {
-			throw new JBIException("Stop failed: " + e, e);
-		}
-	}
+        try {
+            if (server != null) {
+                server.stop();
+            }
+        } catch (Exception e) {
+            throw new JBIException("Stop failed: " + e, e);
+        }
+    }
 
 	/**
 	 * shutdown

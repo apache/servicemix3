@@ -55,11 +55,10 @@ import com.meterware.httpunit.WebResponse;
 
 public class HttpSoapTest extends TestCase {
     
-    private static final int PORT = 7012;
-
     protected JBIContainer container;
     
     protected void setUp() throws Exception {
+        System.setProperty("DEBUG", "true");
         container = new JBIContainer();
         container.setMonitorInstallationDirectory(false);
         container.setUseMBeanServer(false);
@@ -76,6 +75,7 @@ public class HttpSoapTest extends TestCase {
     }
     
     public void testInOut() throws Exception {
+        int PORT = 7012;
         ActivationSpec as = new ActivationSpec();
         as.setId("echo");
         as.setComponent(new EchoComponent());
@@ -86,7 +86,7 @@ public class HttpSoapTest extends TestCase {
         as.setComponent(new HttpSoapConnector(null, PORT, true));
         as.setDestinationService(new QName("echo"));
         container.activateComponent(as);
-
+        
         URLConnection connection = new URL("http://localhost:" + PORT).openConnection();
         connection.setDoOutput(true);
         connection.setDoInput(true);
@@ -102,6 +102,7 @@ public class HttpSoapTest extends TestCase {
     }
 
     public void testInOnly() throws Exception {
+        int PORT = 7013;
         ActivationSpec as = new ActivationSpec();
         as.setId("trace");
         as.setComponent(new TraceComponent());
@@ -118,7 +119,7 @@ public class HttpSoapTest extends TestCase {
         WebResponse response = new WebConversation().getResponse(req);
         System.out.println(response.getText());
     }
-    
+
     public void testMarhaler() throws Exception {
         String url = "http://64.124.140.30/soap";
         HttpSoapClientMarshaler marshaler = new HttpSoapClientMarshaler();

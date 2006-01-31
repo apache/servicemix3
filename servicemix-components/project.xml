@@ -492,8 +492,8 @@
     <!-- optional used for in-web container testing -->
     <dependency>
       <groupId>jetty</groupId>
-      <artifactId>org.mortbay.jetty</artifactId>
-      <version>${org.mortbay.jetty_version}</version>
+      <artifactId>jetty</artifactId>
+      <version>${jetty_version}</version>
     </dependency>
     <dependency>
       <groupId>tomcat</groupId>

@@ -101,4 +101,12 @@ public class HttpInvoker extends TransformComponentSupport implements MessageExc
     public void setDefaultInOut(boolean defaultInOut) {
         this.defaultInOut = defaultInOut;
     }
+
+    public HttpClientMarshaler getMarshaler() {
+        return marshaler;
+    }
+
+    public void setMarshaler(HttpClientMarshaler marshaler) {
+        this.marshaler = marshaler;
+    }
 }

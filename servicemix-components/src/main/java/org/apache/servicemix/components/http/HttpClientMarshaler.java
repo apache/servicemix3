@@ -17,6 +17,7 @@ package org.apache.servicemix.components.http;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
@@ -24,7 +25,9 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.stream.StreamSource;
 
 import java.util.Iterator;
 
@@ -35,18 +38,44 @@ import java.util.Iterator;
  */
 public class HttpClientMarshaler {
 
-    protected SourceTransformer sourceTransformer = new SourceTransformer();
+    protected SourceTransformer sourceTransformer;
+    private boolean streaming;
+    
+    public HttpClientMarshaler() {
+        this(false);
+    }
+    
+    public HttpClientMarshaler(boolean streaming) {
+        this.sourceTransformer = new SourceTransformer();
+        this.streaming = streaming;
+    }
 
     public void toNMS(NormalizedMessage normalizedMessage, HttpMethod method) throws Exception {
         addNmsProperties(normalizedMessage, method);
-
-        normalizedMessage.setContent(new StringSource(method.getResponseBodyAsString()));
+        if (streaming) {
+            normalizedMessage.setContent(new StreamSource(method.getResponseBodyAsStream()));
+        } else {
+            normalizedMessage.setContent(new StringSource(method.getResponseBodyAsString()));
+        }
     }
 
     public void fromNMS(PostMethod method, MessageExchange exchange, NormalizedMessage normalizedMessage) throws Exception, TransformerException {
         addHttpHeaders(method, exchange);
-        String text = sourceTransformer.toString(normalizedMessage.getContent());
-        method.setRequestEntity(new StringRequestEntity(text));
+        if (streaming) {
+            method.setContentChunked(true);
+            Source src = normalizedMessage.getContent();
+            if (src instanceof StreamSource && ((StreamSource) src).getInputStream() != null) {
+                method.setRequestEntity(new InputStreamRequestEntity(
+                        ((StreamSource) src).getInputStream(), -1));
+            } else {
+                String text = sourceTransformer.toString(normalizedMessage.getContent());
+                method.setRequestEntity(new StringRequestEntity(text));
+                
+            }
+        } else {
+            String text = sourceTransformer.toString(normalizedMessage.getContent());
+            method.setRequestEntity(new StringRequestEntity(text));
+        }
     }
 
     protected void addHttpHeaders(HttpMethod method, MessageExchange exchange) {

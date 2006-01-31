@@ -86,8 +86,8 @@
     
     <dependency>
       <groupId>jetty</groupId>
-      <artifactId>org.mortbay.jetty</artifactId>
-      <version>${org.mortbay.jetty_version}</version>
+      <artifactId>jetty</artifactId>
+      <version>${jetty_version}</version>
       <properties>
         <war.bundle>false</war.bundle>
       </properties>
