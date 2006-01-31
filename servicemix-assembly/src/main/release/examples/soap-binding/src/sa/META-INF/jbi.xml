@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jbi xmlns="http://java.sun.com/xml/ns/jbi" version="1.0">
+     
+   <service-assembly>
+     <identification>
+       <name>soap-demo</name>
+       <description>Soap demo</description>
+     </identification>
+     <service-unit>
+       <identification>
+         <name>engine-su</name>
+         <description>Contains the service</description>
+       </identification>
+       <target>
+         <artifacts-zip>engine-su.zip</artifacts-zip>
+         <component-name>servicemix-jsr181</component-name>
+       </target>
+     </service-unit>
+     <service-unit>
+       <identification>
+         <name>binding-su</name>
+         <description>Contains the binding</description>
+       </identification>
+       <target>
+         <artifacts-zip>binding-su.zip</artifacts-zip>
+         <component-name>servicemix-http</component-name>
+       </target>
+     </service-unit>
+    </service-assembly>
+    
+</jbi>
