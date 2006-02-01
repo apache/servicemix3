@@ -52,22 +52,18 @@ public class SimpleClusterSendSyncTest extends TestCase {
         super.tearDown();
     }
 
-    public void testSendSync() {
-        try {
-            ApplicationContext ctx = new ClassPathXmlApplicationContext("org/apache/servicemix/jbi/nmr/flow/jms/client.xml");
-            ServiceMixClient client = (ServiceMixClient) ctx.getBean("client");
-            Thread.sleep(5000);
-            InOut exchange = client.createInOutExchange();
-            exchange.setService(new QName("http://www.habuma.com/foo", "pingService"));
-            NormalizedMessage in = exchange.getInMessage();
-            in.setContent(new StringSource("<ping>Pinging you</ping>"));
-            System.out.println("SENDING; exchange.status=" + exchange.getStatus());
-            client.sendSync(exchange);
-            assertNotNull(exchange.getOutMessage());
-            System.out.println("GOT RESPONSE; exchange.out=" + new SourceTransformer().toString(exchange.getOutMessage().getContent()));
-            client.done(exchange);
-        } catch (Exception e) {
-            System.out.println("Could not connect to Service: " + e);
-        }
+    public void testSendSync() throws Exception {
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("org/apache/servicemix/jbi/nmr/flow/jms/client.xml");
+        ServiceMixClient client = (ServiceMixClient) ctx.getBean("client");
+        Thread.sleep(500);
+        InOut exchange = client.createInOutExchange();
+        exchange.setService(new QName("http://www.habuma.com/foo", "pingService"));
+        NormalizedMessage in = exchange.getInMessage();
+        in.setContent(new StringSource("<ping>Pinging you</ping>"));
+        System.out.println("SENDING; exchange.status=" + exchange.getStatus());
+        client.sendSync(exchange);
+        assertNotNull(exchange.getOutMessage());
+        System.out.println("GOT RESPONSE; exchange.out=" + new SourceTransformer().toString(exchange.getOutMessage().getContent()));
+        client.done(exchange);
     }
 }

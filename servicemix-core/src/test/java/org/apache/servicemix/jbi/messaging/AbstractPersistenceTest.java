@@ -41,7 +41,7 @@ import java.util.Map;
 public abstract class AbstractPersistenceTest extends AbstractTransactionTest {
 
     protected JBIContainer createJbiContainer(String name) throws Exception {
-    	JBIContainer container = new JBIContainer();
+        JBIContainer container = new JBIContainer();
         container.setTransactionManager(tm);
         container.setName(name);
         container.setFlow(createFlow());
@@ -51,68 +51,67 @@ public abstract class AbstractPersistenceTest extends AbstractTransactionTest {
         container.start();
         return container;
     }
-    
+
     protected void runSimpleTest(final boolean syncSend, final boolean syncReceive) throws Exception {
-        //final int numMessages = 1;
+        // final int numMessages = 1;
         final int numMessages = NUM_MESSAGES;
         final SenderComponent sender = new SenderComponent();
         sender.setResolver(new ServiceNameEndpointResolver(ReceiverComponent.SERVICE));
         final Receiver receiver;
         final Map delivered = new ConcurrentHashMap();
         if (syncReceive) {
-        	receiver = new ReceiverComponent() {
-        	    public void onMessageExchange(MessageExchange exchange) throws MessagingException {
-        	    	try {
-        	    		if (delivered.get(exchange.getExchangeId()) == null) {
-        	    		    System.err.println("Message delivery rolled back: " + exchange.getExchangeId());
-	        	    		delivered.put(exchange.getExchangeId(), Boolean.TRUE);
-        	    			tm.setRollbackOnly();
-        	    			done(exchange);
-	        	    	} else {
-	        	    	    System.err.println("Message delivery accepted: " + exchange.getExchangeId());
-	        	    		super.onMessageExchange(exchange);
-	        	    	}
-    	    		} catch (Exception e) {
-    	    			throw new MessagingException(e);
-    	    		}
-        	    }
-        	};
+            receiver = new ReceiverComponent() {
+                public void onMessageExchange(MessageExchange exchange) throws MessagingException {
+                    try {
+                        if (delivered.get(exchange.getExchangeId()) == null) {
+                            System.err.println("Message delivery rolled back: " + exchange.getExchangeId());
+                            delivered.put(exchange.getExchangeId(), Boolean.TRUE);
+                            tm.setRollbackOnly();
+                        } else {
+                            System.err.println("Message delivery accepted: " + exchange.getExchangeId());
+                            super.onMessageExchange(exchange);
+                        }
+                    } catch (Exception e) {
+                        throw new MessagingException(e);
+                    }
+                }
+            };
         } else {
-        	receiver = new AsyncReceiverPojo() {
-        	    public void onMessageExchange(MessageExchange exchange) throws MessagingException {
-        	    	try {
-        	    		if (delivered.get(exchange.getExchangeId()) == null) {
-        	    		    System.err.println("Message delivery rolled back: " + exchange.getExchangeId());
-        	    		    delivered.put(exchange.getExchangeId(), Boolean.TRUE);
-        	    			tm.setRollbackOnly();
-        	    	        exchange.setStatus(ExchangeStatus.DONE);
-        	    	        getContext().getDeliveryChannel().send(exchange);
-	        	    	} else {
-	        	    	    System.err.println("Message delivery accepted: " + exchange.getExchangeId());
-	        	    		super.onMessageExchange(exchange);
-	        	    	}
-    	    		} catch (Exception e) {
-    	    			throw new MessagingException(e);
-    	    		}
-        	    }
-        	};
+            receiver = new AsyncReceiverPojo() {
+                public void onMessageExchange(MessageExchange exchange) throws MessagingException {
+                    try {
+                        if (delivered.get(exchange.getExchangeId()) == null) {
+                            System.err.println("Message delivery rolled back: " + exchange.getExchangeId());
+                            delivered.put(exchange.getExchangeId(), Boolean.TRUE);
+                            tm.setRollbackOnly();
+                            exchange.setStatus(ExchangeStatus.DONE);
+                            getContext().getDeliveryChannel().send(exchange);
+                        } else {
+                            System.err.println("Message delivery accepted: " + exchange.getExchangeId());
+                            super.onMessageExchange(exchange);
+                        }
+                    } catch (Exception e) {
+                        throw new MessagingException(e);
+                    }
+                }
+            };
         }
 
         senderContainer.activateComponent(new ActivationSpec("sender", sender));
         senderContainer.activateComponent(new ActivationSpec("receiver", receiver));
-        
+
         tt.execute(new TransactionCallback() {
-	  		public Object doInTransaction(TransactionStatus status) {
+            public Object doInTransaction(TransactionStatus status) {
                 try {
                     sender.sendMessages(numMessages, syncSend);
                 } catch (JBIException e) {
                     throw new RuntimeJBIException(e);
                 }
-	  			return null;
-	  		}
+                return null;
+            }
         });
-		//sender.sendMessages(NUM_MESSAGES, syncSend);
+        //sender.sendMessages(NUM_MESSAGES, syncSend);
         receiver.getMessageList().assertMessagesReceived(numMessages);
     }
-    
+
 }

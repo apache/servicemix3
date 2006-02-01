@@ -54,28 +54,43 @@ public class MultipleJMSFlowTest extends TestCase {
             containers[i].init();
         }
         long t0 = System.currentTimeMillis();
+        printNodes(containers);
         for (int i = 0; i < containers.length; i++) {
             containers[i].start();
+            printNodes(containers);
         }
         long t1 = System.currentTimeMillis();
         System.err.println(t1 - t0);
         for (int i = 0; i < containers.length; i++) {
             containers[i].stop();
+            printNodes(containers);
         }
         for (int i = 0; i < containers.length; i++) {
             containers[i].start();
+            printNodes(containers);
         }
         for (int i = 0; i < containers.length; i++) {
             containers[i].stop();
+            printNodes(containers);
         }
         for (int i = 0; i < containers.length; i++) {
             containers[i].shutDown();
+            printNodes(containers);
         }
+    }
+    
+    protected void printNodes(JBIContainer[] containers) {
+        String msg = "Nodes: ";
+        for (int j = 0; j < containers.length; j++) {
+            if (j > 0) msg += ", ";
+            msg += ((JMSFlow) containers[j].getFlow()).numberInNetwork();
+        }
+        System.err.println(msg);
     }
     
     protected Flow createFlow() {
         JMSFlow flow = new JMSFlow();
-        flow.setJmsURL("tcp://localhost:61216");
+        //flow.setJmsURL("tcp://localhost:61216");
         return flow;
     }
     

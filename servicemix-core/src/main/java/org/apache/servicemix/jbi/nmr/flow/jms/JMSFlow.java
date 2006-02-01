@@ -23,6 +23,7 @@ import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.advisory.AdvisorySupport;
 import org.apache.activemq.command.ActiveMQDestination;
+import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ConsumerId;
 import org.apache.activemq.command.ConsumerInfo;
 import org.apache.activemq.command.RemoveInfo;
@@ -250,6 +251,11 @@ public class JMSFlow extends AbstractFlow implements MessageListener, ComponentP
         if (started.compareAndSet(true, false)) {
             log.info(broker.getContainerName() + ": Stopping jms flow");
             super.stop();
+            for (Iterator it = subscriberSet.iterator(); it.hasNext();) {
+                String id = (String) it.next();
+                removeAllPackets(id);
+            }
+            subscriberSet.clear();
             try {
                 advisoryConsumer.close();
                 broadcastConsumer.close();
@@ -349,6 +355,9 @@ public class JMSFlow extends AbstractFlow implements MessageListener, ComponentP
         ComponentNameSpace id=me.getRole()==Role.PROVIDER?me.getDestinationId():me.getSourceId();
         ComponentConnector cc=broker.getRegistry().getComponentConnector(id);
         if(cc!=null){
+            if (me.isTransacted() && me.getMirror().getSyncState() != MessageExchangeImpl.SYNC_STATE_ASYNC) {
+                throw new IllegalStateException("transacted sendSync can not be used on jca flow with external components");
+            }
             // let ActiveMQ do the routing ...
             try{
                 String componentName=cc.getComponentNameSpace().getName();
@@ -376,8 +385,11 @@ public class JMSFlow extends AbstractFlow implements MessageListener, ComponentP
      * @param message
      */
     public void onMessage(Message message) {
+        if (!started.get() || message == null) {
+            return;
+        }
         try {
-            if (started.get() && message != null && message instanceof ObjectMessage) {
+            if (message instanceof ObjectMessage) {
                 ObjectMessage objMsg = (ObjectMessage) message;
                 Object obj = objMsg.getObject();
                 if (obj != null) {
@@ -403,22 +415,23 @@ public class JMSFlow extends AbstractFlow implements MessageListener, ComponentP
                                 }
                             }
                         });
-                    }else if(obj instanceof ConsumerInfo){
-                        ConsumerInfo info=(ConsumerInfo) obj;
-                        subscriberSet.add(info.getConsumerId().getConnectionId());
-                        if(started.get()){
-                            for(Iterator i=broker.getRegistry().getLocalComponentConnectors().iterator();i.hasNext();){
-                                LocalComponentConnector lcc=(LocalComponentConnector) i.next();
-                                ComponentPacket packet=lcc.getPacket();
-                                ComponentPacketEvent cpe=new ComponentPacketEvent(packet,ComponentPacketEvent.ACTIVATED);
-                                onEvent(cpe);
-                            }
-                        }
-                    }else if(obj instanceof RemoveInfo){
-                        ConsumerId id=(ConsumerId) ((RemoveInfo) obj).getObjectId();
-                        subscriberSet.remove(id.getConnectionId());
-                        removeAllPackets(id.getConnectionId());
                     }
+                }
+            } else if (message instanceof ActiveMQMessage) {
+                Object obj = ((ActiveMQMessage) message).getDataStructure();
+                if(obj instanceof ConsumerInfo){
+                    ConsumerInfo info=(ConsumerInfo) obj;
+                    subscriberSet.add(info.getConsumerId().getConnectionId());
+                    for(Iterator i=broker.getRegistry().getLocalComponentConnectors().iterator();i.hasNext();){
+                        LocalComponentConnector lcc=(LocalComponentConnector) i.next();
+                        ComponentPacket packet=lcc.getPacket();
+                        ComponentPacketEvent cpe=new ComponentPacketEvent(packet,ComponentPacketEvent.ACTIVATED);
+                        onEvent(cpe);
+                    }
+                }else if(obj instanceof RemoveInfo){
+                    ConsumerId id=(ConsumerId) ((RemoveInfo) obj).getObjectId();
+                    subscriberSet.remove(id.getConnectionId());
+                    removeAllPackets(id.getConnectionId());
                 }
             }
         }

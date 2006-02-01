@@ -44,6 +44,7 @@ import javax.transaction.TransactionManager;
 
 import org.apache.activemq.advisory.AdvisorySupport;
 import org.apache.activemq.command.ActiveMQDestination;
+import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTopic;
 import org.apache.activemq.command.ConsumerId;
@@ -444,8 +445,11 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
      * @param message
      */
     public void onMessage(Message message) {
+        if (message == null) {
+            return;
+        }
         try {
-            if (message != null && message instanceof ObjectMessage) {
+            if (message instanceof ObjectMessage) {
                 ObjectMessage objMsg = (ObjectMessage) message;
                 Object obj = objMsg.getObject();
                 if (obj != null) {
@@ -461,23 +465,26 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
                             me.setTransactionContext(tm.getTransaction());
                         }
                         super.doRouting(me);
-                    }else if(obj instanceof ConsumerInfo){
-                        ConsumerInfo info=(ConsumerInfo) obj;
-                        subscriberSet.add(info.getConsumerId().getConnectionId());
-                        if(started.get()){
-                            for(Iterator i=broker.getRegistry().getLocalComponentConnectors().iterator();i.hasNext();){
-                                LocalComponentConnector lcc=(LocalComponentConnector) i.next();
-                                ComponentPacket packet=lcc.getPacket();
-                                ComponentPacketEvent cpe=new ComponentPacketEvent(packet,ComponentPacketEvent.ACTIVATED);
-                                onEvent(cpe);
-                            }
-                        }
-                    }else if(obj instanceof RemoveInfo){
-                        ConsumerId id=(ConsumerId) ((RemoveInfo) obj).getObjectId();
-                        subscriberSet.remove(id.getConnectionId());
-                        removeAllPackets(id.getConnectionId());
                     }
                 }
+            } else if (message instanceof ActiveMQMessage) {
+                Object obj = ((ActiveMQMessage) message).getDataStructure();
+                if(obj instanceof ConsumerInfo){
+                    ConsumerInfo info=(ConsumerInfo) obj;
+                    subscriberSet.add(info.getConsumerId().getConnectionId());
+                    if(started.get()){
+                        for(Iterator i=broker.getRegistry().getLocalComponentConnectors().iterator();i.hasNext();){
+                            LocalComponentConnector lcc=(LocalComponentConnector) i.next();
+                            ComponentPacket packet=lcc.getPacket();
+                            ComponentPacketEvent cpe=new ComponentPacketEvent(packet,ComponentPacketEvent.ACTIVATED);
+                            onEvent(cpe);
+                        }
+                    }
+                }else if(obj instanceof RemoveInfo){
+                    ConsumerId id=(ConsumerId) ((RemoveInfo) obj).getObjectId();
+                    subscriberSet.remove(id.getConnectionId());
+                    removeAllPackets(id.getConnectionId());
+                }            
             }
         }
         catch (JMSException jmsEx) {
