@@ -49,7 +49,7 @@ public class DOMUtil {
         NodeList nodeList = element.getChildNodes();
         for (int i = 0, size = nodeList.getLength(); i < size; i++) {
             Node node = nodeList.item(i);
-            if (node.getNodeType() == Node.TEXT_NODE) {
+            if (node.getNodeType() == Node.TEXT_NODE || node.getNodeType() == Node.CDATA_SECTION_NODE) {
                 buffer.append(node.getNodeValue());
             }
         }
