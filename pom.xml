@@ -281,6 +281,15 @@
       <url>http://dist.codehaus.org</url>
       <layout>legacy</layout>
     </repository>
+    <repository>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>logicblaze</id>
+      <name>Codehaus Repository</name>
+      <url>http://repo.logicblaze.com/maven1</url>
+      <layout>legacy</layout>
+    </repository>
   </repositories>
   
   <dependencies>
@@ -1030,8 +1039,8 @@
       </dependency>
       <dependency>
         <groupId>jetty</groupId>
-        <artifactId>org.mortbay.jetty</artifactId>
-        <version>5.1.9</version>
+        <artifactId>jetty</artifactId>
+        <version>6.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>jgroups</groupId>
