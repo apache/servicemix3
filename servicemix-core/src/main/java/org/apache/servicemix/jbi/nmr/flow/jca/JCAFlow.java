@@ -45,6 +45,7 @@ import javax.transaction.TransactionManager;
 import org.apache.activemq.advisory.AdvisorySupport;
 import org.apache.activemq.command.ActiveMQDestination;
 import org.apache.activemq.command.ActiveMQMessage;
+import org.apache.activemq.command.ActiveMQObjectMessage;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTopic;
 import org.apache.activemq.command.ConsumerId;
@@ -459,6 +460,10 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
                         processInBoundPacket(containerName, event);
                     }
                     else if (obj instanceof MessageExchangeImpl) {
+                        // Hack for redelivery: AMQ is too optimized and the object is the same upon redelivery
+                        // so that there are side effect (the exchange state may have been modified)
+                        // See http://jira.activemq.org/jira/browse/AMQ-519
+                        obj = ((ActiveMQObjectMessage) ((ActiveMQObjectMessage) message).copy()).getObject();
                         MessageExchangeImpl me = (MessageExchangeImpl) obj;
                         TransactionManager tm = (TransactionManager) getTransactionManager();
                         if (tm != null) {
