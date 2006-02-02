@@ -23,8 +23,8 @@
   xmlns:artifact="artifact">
 
   <!-- redefined "default" goal from parent pom -->
-  <goal name="default" prereqs="jar:install, jbi:install"/>  
-  <goal name="nightly" prereqs="clean, jbi:install, jbi:deploy"/>
+  <goal name="default" prereqs="clean, jar:install, jbi:install"/>  
+  <goal name="nightly" prereqs="clean, jar:install, jbi:install, jar:deploy, jbi:deploy"/>
   
   <postGoal name="java:compile">
     <!--
@@ -50,14 +50,5 @@
   	<copy file="${basedir}/target/servicemix-sca-${pom.currentVersion}.xsd" todir="${basedir}/../xdocs"/>    
     <copy file="${basedir}/target/servicemix-sca-${pom.currentVersion}.xsd.html" todir="${basedir}/../xdocs"/>
   </goal>
-  
-  <!-- Uploads the installer to the dist repository after deploying the jar binary -->
-  <postGoal name="jar:deploy">
-      <artifact:deploy
-        artifact="${basedir}/target/${pom.artifactId}-installer-${pom.currentVersion}.zip"
-        type="zip"
-        project="${pom}"
-      />
-  </postGoal>
 
 </project>
