@@ -60,8 +60,8 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
     private String namingHost = "localhost";
     private String containerName = JBIContainer.DEFAULT_NAME;
     private String jmxDomainName = ManagementContext.DEFAULT_DOMAIN;
-    private int namingPort = 1099;
-    private String jndiPath = null;
+    private int namingPort = ManagementContext.DEFAULT_CONNECTOR_PORT;
+    private String jndiPath = ManagementContext.DEFAULT_CONNECTOR_PATH;
 
     /**
      * Get the JMXServiceURL - built from the protocol used and host names
@@ -69,9 +69,6 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
      */
     public JMXServiceURL getServiceURL(){
         JMXServiceURL url = null;
-        if (jndiPath == null){
-           jndiPath =  "/" + containerName+ "JMX";
-        }
         try {
             url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://" + namingHost + ":" + namingPort + jndiPath);
         }
