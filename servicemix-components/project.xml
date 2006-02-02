@@ -353,20 +353,19 @@
 
     <!-- default JMS provider used for implementation -->
     <dependency>
+      <groupId>activeio</groupId>
+      <artifactId>activeio</artifactId>
+      <version>${activeio_version}</version>
+    </dependency>
+    <dependency>
       <groupId>incubator-activemq</groupId>
-      <artifactId>activemq</artifactId>
+      <artifactId>activemq-core</artifactId>
       <version>${activemq_version}</version>
     </dependency>
     <dependency>
       <groupId>incubator-activemq</groupId>
       <artifactId>activemq-ra</artifactId>
       <version>${activemq_version}</version>
-    </dependency>
-
-    <!-- For clustering services -->
-    <dependency>
-      <id>activecluster</id>
-      <version>${activecluster_version}</version>
     </dependency>
 
     <!-- Jabber component -->
@@ -518,11 +517,6 @@
       <groupId>commons-dbcp</groupId>
       <artifactId>commons-dbcp</artifactId>
       <version>${commons_dbcp_version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.derby</groupId>
-      <artifactId>derby</artifactId>
-      <version>${derby_version}</version>
     </dependency>
 
     <!-- JNDI provider for binary release -->
