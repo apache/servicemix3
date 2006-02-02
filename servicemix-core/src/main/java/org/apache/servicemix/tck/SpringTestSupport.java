@@ -100,8 +100,10 @@ public abstract class SpringTestSupport extends TestCase {
             String text = DOMUtil.getElementText(element);
             return text;
         }
-        else {
+        else if (root != null) {
             return root.getNodeValue();
+        } else {
+            return null;
         }
     }
 

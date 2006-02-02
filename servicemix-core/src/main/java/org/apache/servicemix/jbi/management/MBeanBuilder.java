@@ -19,6 +19,8 @@ import javax.management.DynamicMBean;
 import javax.management.JMException;
 import javax.management.StandardMBean;
 
+import edu.emory.mathcs.backport.java.util.concurrent.ExecutorService;
+
 /**
  * Builds a DynamicMBean wrappers for existing objects
  * 
@@ -33,16 +35,22 @@ class MBeanBuilder {
      * @param theObject
      * @param interfaceMBean
      * @param description
+     * @param executorService 
      * @return the MBean wrapper
      * @throws JMException
      */
-    static DynamicMBean buildStandardMBean(Object theObject, Class interfaceMBean, String description) throws JMException {
+    static DynamicMBean buildStandardMBean(Object theObject, Class interfaceMBean, String description, ExecutorService executorService) throws JMException {
         DynamicMBean result = null;
         if (theObject != null) {
             if (theObject instanceof MBeanInfoProvider) {
                 MBeanInfoProvider info = (MBeanInfoProvider) theObject;
-                result = new BaseStandardMBean(info.getObjectToManage(),interfaceMBean, description, info.getAttributeInfos(), info
-                        .getOperationInfos());
+                result = new BaseStandardMBean(
+                        info.getObjectToManage(),
+                        interfaceMBean, 
+                        description, 
+                        info.getAttributeInfos(), 
+                        info.getOperationInfos(),
+                        executorService);
                 info.setPropertyChangeListener((BaseStandardMBean)result);
             }
             else {

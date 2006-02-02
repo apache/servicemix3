@@ -47,6 +47,12 @@ public abstract class AbstractSpringTestSupport extends TestCase {
         assertNotNull("JBI Container not found in spring!", jbi);
 
     }
+    
+    protected void tearDown() throws Exception {
+        if (context != null) {
+            context.close();
+        }
+    }
 
     protected abstract AbstractXmlApplicationContext createBeanFactory();
 

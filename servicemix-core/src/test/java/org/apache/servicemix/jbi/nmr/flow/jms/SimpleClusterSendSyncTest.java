@@ -25,7 +25,6 @@ import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.xbean.spring.context.ClassPathXmlApplicationContext;
 
@@ -34,36 +33,38 @@ import org.xbean.spring.context.ClassPathXmlApplicationContext;
  */
 public class SimpleClusterSendSyncTest extends TestCase {
     protected SpringJBIContainer jbi;
+    protected AbstractXmlApplicationContext context;
 
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
-        super.setUp();
-        AbstractXmlApplicationContext context = new ClassPathXmlApplicationContext("org/apache/servicemix/jbi/nmr/flow/jms/broker.xml");
+        context = new ClassPathXmlApplicationContext("org/apache/servicemix/jbi/nmr/flow/jms/broker.xml");
         jbi = (SpringJBIContainer) context.getBean("jbi");
-        jbi.init();
-        jbi.start();
         assertNotNull("JBI Container not found in spring!", jbi);
 
     }
 
     protected void tearDown() throws Exception {
-        super.tearDown();
+        context.close();
     }
 
     public void testSendSync() throws Exception {
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("org/apache/servicemix/jbi/nmr/flow/jms/client.xml");
-        ServiceMixClient client = (ServiceMixClient) ctx.getBean("client");
-        Thread.sleep(500);
-        InOut exchange = client.createInOutExchange();
-        exchange.setService(new QName("http://www.habuma.com/foo", "pingService"));
-        NormalizedMessage in = exchange.getInMessage();
-        in.setContent(new StringSource("<ping>Pinging you</ping>"));
-        System.out.println("SENDING; exchange.status=" + exchange.getStatus());
-        client.sendSync(exchange);
-        assertNotNull(exchange.getOutMessage());
-        System.out.println("GOT RESPONSE; exchange.out=" + new SourceTransformer().toString(exchange.getOutMessage().getContent()));
-        client.done(exchange);
+        AbstractXmlApplicationContext ctx = new ClassPathXmlApplicationContext("org/apache/servicemix/jbi/nmr/flow/jms/client.xml");
+        try {
+            ServiceMixClient client = (ServiceMixClient) ctx.getBean("client");
+            Thread.sleep(2000);
+            InOut exchange = client.createInOutExchange();
+            exchange.setService(new QName("http://www.habuma.com/foo", "pingService"));
+            NormalizedMessage in = exchange.getInMessage();
+            in.setContent(new StringSource("<ping>Pinging you</ping>"));
+            System.out.println("SENDING; exchange.status=" + exchange.getStatus());
+            client.sendSync(exchange);
+            assertNotNull(exchange.getOutMessage());
+            System.out.println("GOT RESPONSE; exchange.out=" + new SourceTransformer().toString(exchange.getOutMessage().getContent()));
+            client.done(exchange);
+        } finally {
+            ctx.close();
+        }
     }
 }

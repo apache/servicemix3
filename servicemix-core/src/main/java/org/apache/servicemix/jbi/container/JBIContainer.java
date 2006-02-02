@@ -45,6 +45,7 @@ import javax.xml.namespace.QName;
 import org.apache.activemq.util.IdGenerator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.geronimo.connector.work.GeronimoWorkManager;
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.components.util.ComponentAdaptor;
@@ -100,12 +101,13 @@ public class JBIContainer extends BaseLifeCycle {
     protected AutoDeploymentService autoDeployService = new AutoDeploymentService();
     protected Registry registry = new Registry();
     protected WorkManager workManager;
+    protected boolean isWorkManagerCreated;
     protected boolean autoEnlistInTransaction = false;
     protected boolean persistent = false;
     protected List listeners = new CopyOnWriteArrayList();
     protected boolean embedded = false;
     protected boolean notifyStatistics = false;
-
+    
     /**
      * Default Constructor
      */
@@ -386,6 +388,7 @@ public class JBIContainer extends BaseLifeCycle {
         if (containerInitialized.compareAndSet(false, true)) {
             if (this.workManager == null) {
                 this.workManager = createWorkManager();
+                this.isWorkManagerCreated = true;
             }
             if (this.namingContext == null) {
                 try {
@@ -477,6 +480,13 @@ public class JBIContainer extends BaseLifeCycle {
             super.shutDown();
             managementContext.unregisterMBean(this);
             managementContext.shutDown();
+            if (isWorkManagerCreated && workManager instanceof GeronimoWorkManager) {
+                try {
+                    ((GeronimoWorkManager) workManager).doStop();
+                } catch (Exception e) {
+                    throw new JBIException("Could not stop workManager", e);
+                }
+            }
         }
     }
 

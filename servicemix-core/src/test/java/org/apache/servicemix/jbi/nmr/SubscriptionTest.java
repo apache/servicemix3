@@ -86,6 +86,7 @@ public class SubscriptionTest extends TestCase {
 	private void runTest(String flowName, String subscriptionFlowName, boolean sync) throws Exception {
 		JBIContainer container = new JBIContainer();
 		try {
+            container.setEmbedded(true);
 			container.getBroker().setFlow(FlowProvider.getFlow(flowName));
 			if (subscriptionFlowName != null) {
 				container.getBroker().getSubscriptionManager().setFlow(FlowProvider.getFlow(subscriptionFlowName));

@@ -32,6 +32,8 @@ import org.apache.servicemix.jbi.container.EnvironmentContext;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+import edu.emory.mathcs.backport.java.util.concurrent.ExecutorService;
+import edu.emory.mathcs.backport.java.util.concurrent.Executors;
 
 /**
  * Management Context applied to a ServiceMix container
@@ -50,6 +52,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     private Map beanMap = new ConcurrentHashMap();
     protected Map systemServices = new ConcurrentHashMap();
     private MBeanServerContext mbeanServerContext = new MBeanServerContext();
+    private ExecutorService executors;
 
     /**
      * Default Constructor
@@ -140,6 +143,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         }catch(IOException e){
            log.error("Failed to start mbeanServerContext",e);
         }
+        this.executors = Executors.newCachedThreadPool();
         registerSystemService(this, ManagementContextMBean.class);
     }
 
@@ -182,6 +186,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         }catch(IOException e){
             log.debug("Failed to shutdown mbeanServerContext cleanly",e);
         }
+        executors.shutdown();
     }
 
     /**
@@ -397,7 +402,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     public void registerMBean(ObjectName name, Object resource, Class interfaceMBean, String description)
             throws JMException {
         if (mbeanServerContext.getMBeanServer() != null) {
-            Object mbean = MBeanBuilder.buildStandardMBean(resource, interfaceMBean, description);
+            Object mbean = MBeanBuilder.buildStandardMBean(resource, interfaceMBean, description, executors);
             if (mbeanServerContext.getMBeanServer().isRegistered(name)) {
                 mbeanServerContext.getMBeanServer().unregisterMBean(name);
             }

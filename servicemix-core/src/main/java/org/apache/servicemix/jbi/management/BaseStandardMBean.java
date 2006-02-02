@@ -16,7 +16,6 @@
 package org.apache.servicemix.jbi.management;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ExecutorService;
-import edu.emory.mathcs.backport.java.util.concurrent.Executors;
 
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.beanutils.PropertyUtilsBean;
@@ -89,16 +88,17 @@ public class BaseStandardMBean extends StandardMBean
      * @param description
      * @param attrs
      * @param ops
+     * @param executorService2 
      * @throws ReflectionException
      * @throws NotCompliantMBeanException
      */
     public BaseStandardMBean(Object object, Class interfaceMBean, String description, MBeanAttributeInfo[] attrs,
-            MBeanOperationInfo[] ops) throws ReflectionException, NotCompliantMBeanException {
+            MBeanOperationInfo[] ops, ExecutorService executorService) throws ReflectionException, NotCompliantMBeanException {
         super(object, interfaceMBean);
         this.attributeInfos = attrs;
         buildAttributes(object, this.attributeInfos);
         this.beanInfo = new MBeanInfo(object.getClass().getName(), description, attrs, null, ops, getNotificationInfo());
-        this.executorService = Executors.newCachedThreadPool(); 
+        this.executorService = executorService; 
     }
 
     /**
@@ -355,7 +355,6 @@ public class BaseStandardMBean extends StandardMBean
      * Called after removal from the MBeanServer
      */
     public void postDeregister() {
-        executorService.shutdown();
     }
 
     /**

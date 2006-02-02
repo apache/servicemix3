@@ -36,6 +36,7 @@ public class JdbcAuditorTest extends TestCase {
 
     private DataSource dataSource;
     private Connection connection;
+    private JBIContainer jbi;
     
     
     protected void setUp() throws Exception {
@@ -44,25 +45,30 @@ public class JdbcAuditorTest extends TestCase {
         ds.setUser("sa");
         dataSource = ds;
         connection = dataSource.getConnection();
+        jbi = new JBIContainer();
     }
     
     protected void tearDown() throws Exception {
-        connection.close();
+        if (jbi != null) {
+            jbi.shutDown();
+        }
+        if (connection != null) {
+            connection.close();
+        }
     }
     
     
     public void testInsertUpdate() throws Exception {
-        JBIContainer container = new JBIContainer();
-        container.setFlowName("st");
-        container.init();
-        container.start();
+        jbi.setFlowName("st");
+        jbi.init();
+        jbi.start();
         SenderComponent sender = new SenderComponent();
         ReceiverComponent receiver = new ReceiverComponent();
-        container.activateComponent(sender, "sender");
-        container.activateComponent(receiver, "receiver");
+        jbi.activateComponent(sender, "sender");
+        jbi.activateComponent(receiver, "receiver");
         
         JdbcAuditor auditor = new JdbcAuditor();
-        auditor.setContainer(container);
+        auditor.setContainer(jbi);
         auditor.setDataSource(dataSource);
         auditor.afterPropertiesSet();
         
