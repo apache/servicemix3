@@ -21,6 +21,6 @@ package org.apache.servicemix.jbi.management;
  * 
  * @version $Revision: 372580 $
  */
- class MBeanServerContext extends org.apache.activemq.broker.jmx.ManagementContext  {
+class MBeanServerContext extends org.apache.activemq.broker.jmx.ManagementContext  {
     
 }
