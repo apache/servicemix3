@@ -250,13 +250,6 @@
             <version>${activemq_version}</version>
         </dependency>
 
-        <!-- For clustering services -->
-        <dependency>
-            <id>activecluster</id>
-            <version>${activecluster_version}</version>
-        </dependency>
-
-
         <!-- for XStream component -->
         <!-- optional jars for XStream marshalling -->
         <dependency>
