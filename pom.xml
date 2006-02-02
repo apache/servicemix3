@@ -29,7 +29,7 @@
   <version>3.0-SNAPSHOT</version>
   <description>
     ServiceMix is an open source ESB based on the Java Business
-    Integration framework - JSR-208
+    Integration framework - JSR-208 
   </description>
   <url>http://www.servicemix.org/</url>
   <prerequisites>
