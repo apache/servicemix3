@@ -82,8 +82,13 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
         }
         platform = PlatformFactory.createNewPlatformInstance(dataSource);
         InputStream is = getClass().getResourceAsStream(DATABASE_MODEL);
+        if (is == null) {
+            throw new IllegalArgumentException("Could not find database model on classpath: " + DATABASE_MODEL);
+        }
         try {
-            database = new DatabaseIO().read(new InputStreamReader(is));
+            DatabaseIO dataReader = new DatabaseIO();
+            dataReader.setValidateXml(false);
+            database = dataReader.read(new InputStreamReader(is));
         } finally {
             is.close();
         }
