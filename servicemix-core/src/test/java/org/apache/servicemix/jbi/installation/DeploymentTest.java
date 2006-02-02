@@ -152,6 +152,19 @@ public class DeploymentTest extends AbstractManagementTest {
         assertEquals(DeploymentServiceMBean.STARTED, getDeploymentService().getState("sa"));
         // check mocks
         verify();
+        
+        // Clean shutdown
+        reset();
+        component.getLifeCycle();
+        componentMock.setReturnValue(lifecycle, MockControl.ONE_OR_MORE);
+        component.getServiceUnitManager();
+        componentMock.setReturnValue(manager, MockControl.ONE_OR_MORE);
+        lifecycle.stop();
+        lifecycle.shutDown();
+        //manager.stop("su");
+        manager.shutDown("su");
+        replay();
+        shutdownContainer();
     }
 
 	/**
@@ -244,6 +257,19 @@ public class DeploymentTest extends AbstractManagementTest {
         startContainer(false);
         // check mocks
         verify();
+        
+        // Clean shutdown
+        reset();
+        component.getLifeCycle();
+        componentMock.setReturnValue(lifecycle, MockControl.ONE_OR_MORE);
+        component.getServiceUnitManager();
+        componentMock.setReturnValue(manager, MockControl.ONE_OR_MORE);
+        lifecycle.stop();
+        lifecycle.shutDown();
+        //manager.stop("su");
+        manager.shutDown("su");
+        replay();
+        shutdownContainer();
     }
 
 	/**
@@ -348,13 +374,24 @@ public class DeploymentTest extends AbstractManagementTest {
         managerMock.setMatcher(MockControl.ALWAYS_MATCHER);
         manager.start("su");
         managerMock.setMatcher(MockControl.ALWAYS_MATCHER);
-        manager.start("su");
-        managerMock.setMatcher(MockControl.ALWAYS_MATCHER);
         replay();
         // start container
         startContainer(false);
         // check mocks
         verify();
+        
+        // Clean shutdown
+        reset();
+        component.getLifeCycle();
+        componentMock.setReturnValue(lifecycle, MockControl.ONE_OR_MORE);
+        component.getServiceUnitManager();
+        componentMock.setReturnValue(manager, MockControl.ONE_OR_MORE);
+        lifecycle.stop();
+        lifecycle.shutDown();
+        //manager.stop("su");
+        manager.shutDown("su");
+        replay();
+        shutdownContainer();
     }
 
 }

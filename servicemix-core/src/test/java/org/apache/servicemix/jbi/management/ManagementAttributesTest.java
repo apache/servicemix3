@@ -45,8 +45,8 @@ public class ManagementAttributesTest extends TestCase {
 
     // The host, port and path where the rmiregistry runs.
 	private String namingHost = "localhost";
-	private int namingPort = 1982;
-	private String jndiPath = "/" + JBIContainer.DEFAULT_NAME + "JMX";
+	private int namingPort = ManagementContext.DEFAULT_CONNECTOR_PORT;
+	private String jndiPath = ManagementContext.DEFAULT_CONNECTOR_PATH;
     
     protected void setUp() throws Exception {
     	container = new JBIContainer();
