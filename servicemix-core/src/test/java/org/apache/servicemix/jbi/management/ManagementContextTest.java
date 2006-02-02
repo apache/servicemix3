@@ -42,7 +42,7 @@ public class ManagementContextTest extends TestCase {
     // The host, port and path where the rmiregistry runs.
 	private String namingHost = "localhost";
 	private int namingPort = 1982;
-	private String jndiPath = "/" + JBIContainer.DEFAULT_NAME + "JMX";
+	private String jndiPath = ManagementContext.DEFAULT_CONNECTOR_PATH;
     
 	private ManagementContext context;
 	private JBIContainer container;

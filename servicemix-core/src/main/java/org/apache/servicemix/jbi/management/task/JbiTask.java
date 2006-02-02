@@ -48,8 +48,8 @@ public abstract class JbiTask extends Task {
     private String host = "localhost";
     private String containerName = JBIContainer.DEFAULT_NAME;
     private String jmxDomainName = ManagementContext.DEFAULT_DOMAIN;
-    private int port = 1099;
-    private String jndiPath = null;
+    private int port = ManagementContext.DEFAULT_CONNECTOR_PORT;
+    private String jndiPath = ManagementContext.DEFAULT_CONNECTOR_PATH;
     private String username;
     private String password;
     private JMXConnector jmxConnector;
@@ -61,9 +61,6 @@ public abstract class JbiTask extends Task {
      */
     public JMXServiceURL getServiceURL(){
         JMXServiceURL url = null;
-        if (jndiPath == null){
-           jndiPath =  "/" + containerName+ "JMX";
-        }
         try {
             url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://" 
                     + host + ":" + port + jndiPath);
