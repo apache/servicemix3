@@ -32,7 +32,6 @@ public class ReflectionBindingTest extends TestCase {
     private SpringJBIContainer jbi;
 
     public void testSendMessagesToJmsThenOutofJmsToReceiver() throws Exception {
-        
         Counter counter = (Counter) ((ProxyInOnlyBinding)jbi.getBean("proxyCounter")).createProxy();        
         for (int i = 1; i <= messageCount; i++) {
             counter.increment();
@@ -45,8 +44,13 @@ public class ReflectionBindingTest extends TestCase {
 
     protected void setUp() throws Exception {
         context = createBeanFactory();
-
         jbi = (SpringJBIContainer) getBean("jbi");
+    }
+    
+    protected void tearDown() throws Exception {
+        if (context != null) {
+            context.close();
+        }
     }
 
     protected Object getBean(String name) {
