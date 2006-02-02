@@ -413,9 +413,9 @@
                 <exclude>**/JcaFlowPersistentTest.*</exclude>
                 <exclude>**/JcaFlowTransactionTest.*</exclude>                          
                 				
-                <!-- test cases hangs
+                <!-- test cases hangs -->
                 <exclude>**/SimpleClusterSendSyncTest.*</exclude>
-                --> 
+                
 
                 <!-- fails in some linux platform due to missing lib libXp.so.6 -->
                 <exclude>**/ServiceMixComponentTest.*</exclude>
