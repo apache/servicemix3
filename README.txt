@@ -14,4 +14,8 @@ Maven will download ServiceMix dependencies from global repositories.
 You may experience failures due to timeouts accessing these repositories.
 In such cases, retry until all dependencies have been sucessfully downloaded.
 
+You may run into path name length limitation if you try to build ServiceMix
+under Windows using Cygwin.  In these cases, you should move the source 
+directory higher in the file system tree.
+
 Enjoy!
