@@ -55,6 +55,8 @@ import java.sql.Statement;
  * To minimize overhead, the exchange serialized is the undelying
  * {@link org.apache.servicemix.jbi.messaging.ExchangePacket}.
  * 
+ * @org.xbean.XBean element="jdbcAuditor" description="The Auditor of message exchanges to a JDBC database"
+ * 
  * @author Guillaume Nodet (gnt)
  * @version $Revision$
  * @since 2.1
