@@ -591,7 +591,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         AttributeInfoHelper helper = new AttributeInfoHelper();
         helper.addAttribute(getObjectToManage(), "dumpStats", "Periodically dump Component statistics");
         helper.addAttribute(getObjectToManage(), "statsInterval", "Interval (secs) before dumping statistics");
-        return helper.getAttributeInfos();
+        return AttributeInfoHelper.join(super.getAttributeInfos(), helper.getAttributeInfos());
     }
 
 
