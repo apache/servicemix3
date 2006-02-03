@@ -114,7 +114,9 @@ public class InternalEndpoint extends AbstractServiceEndpoint {
         boolean result = false;
         if (obj != null && obj instanceof InternalEndpoint){
             InternalEndpoint other = (InternalEndpoint)obj;
-            result = other.getComponentNameSpace().equals(this.getComponentNameSpace()) && other.endpointName.equals(this.endpointName);
+            result = other.getComponentNameSpace().equals(this.getComponentNameSpace()) && 
+                     other.serviceName.equals(this.serviceName);
+                     other.endpointName.equals(this.endpointName);
         }
         return result;
     }
@@ -124,7 +126,9 @@ public class InternalEndpoint extends AbstractServiceEndpoint {
      * @return has code
      */
     public int hashCode() {
-        return getComponentNameSpace().hashCode() ^ endpointName.hashCode();
+        return getComponentNameSpace().hashCode() ^
+               serviceName.hashCode() ^
+               endpointName.hashCode() ;
     }
     
     /**
