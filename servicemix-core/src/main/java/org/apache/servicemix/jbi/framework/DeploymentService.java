@@ -160,21 +160,26 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
      * @throws Exception if compelete undeployment fails.
      */
     public String undeploy(String saName) throws Exception {
-        String result = null;
-        ServiceAssembly sa = container.getRegistry().getServiceAssembly(saName);
-        if (sa != null) {
-            container.getRegistry().unregisterServiceAssembly(sa);
-            String assemblyName = sa.getIdentification().getName();
-            File saDirectory = environmentContext.getSARootDirectory(assemblyName);
-            ServiceUnit[] sus = sa.getServiceUnits();
-            if (sus != null) {
-                for (int i = 0;i < sus.length;i++) {
-                    undeployServiceUnit(sus[i]);
+        try {
+            String result = null;
+            ServiceAssembly sa = container.getRegistry().getServiceAssembly(saName);
+            if (sa != null) {
+                container.getRegistry().unregisterServiceAssembly(sa);
+                String assemblyName = sa.getIdentification().getName();
+                File saDirectory = environmentContext.getSARootDirectory(assemblyName);
+                ServiceUnit[] sus = sa.getServiceUnits();
+                if (sus != null) {
+                    for (int i = 0;i < sus.length;i++) {
+                        undeployServiceUnit(sus[i]);
+                    }
                 }
+                FileUtil.deleteFile(saDirectory);
             }
-            FileUtil.deleteFile(saDirectory);
+            return result;
+        } catch (Exception e) {
+            log.info("Unable to undeploy assembly", e);
+            throw e;
         }
-        return result;
     }
 
     /**
@@ -183,8 +188,13 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
      * @param componentName name of the component.
      * @return List of deployed ASA Ids.
      */
-    public String[] getDeployedServiceUnitList(String componentName)  {
-        return container.getRegistry().getSADeployedServiceUnitList(componentName);
+    public String[] getDeployedServiceUnitList(String componentName) throws Exception {
+        try {
+            return container.getRegistry().getSADeployedServiceUnitList(componentName);
+        } catch (Exception e) {
+            log.info("Unable to get deployed service unit list", e);
+            throw e;
+        }
     }
 
     /**
@@ -192,8 +202,13 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
      * 
      * @return list of Service Assembly Name's.
      */
-    public String[] getDeployedServiceAssemblies()  {
-        return container.getRegistry().getDeployedServiceAssemblies();
+    public String[] getDeployedServiceAssemblies() throws Exception {
+        try {
+            return container.getRegistry().getDeployedServiceAssemblies();
+        } catch (Exception e) {
+            log.info("Unable to get deployed service assemblies", e);
+            throw e;
+        }
     }
 
     /**
@@ -202,9 +217,14 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
      * @param saName name of the service assembly.
      * @return descriptor of the Service Assembly.
      */
-    public String getServiceAssemblyDescriptor(String saName)  {
-        ServiceAssembly sa =  container.getRegistry().getServiceAssembly(saName);
-        return sa != null ? sa.getIdentification().getDescription() : "";
+    public String getServiceAssemblyDescriptor(String saName) throws Exception {
+        try {
+            ServiceAssembly sa =  container.getRegistry().getServiceAssembly(saName);
+            return sa != null ? sa.getIdentification().getDescription() : "";
+        } catch (Exception e) {
+            log.info("Error in getServiceAssemblyDescriptor", e);
+            throw e;
+        }
     }
 
     /**
@@ -225,7 +245,12 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
      * @throws Exception if unable to retrieve service assembly list.
      */
     public String[] getDeployedServiceAssembliesForComponent(String componentName) throws Exception {
-        return container.getRegistry().getDeployedServiceAssembliesForComponent(componentName);
+        try {
+            return container.getRegistry().getDeployedServiceAssembliesForComponent(componentName);
+        } catch (Exception e) {
+            log.info("Error in getDeployedServiceAssembliesForComponent", e);
+            throw e;
+        }
     }
 
     /**
@@ -236,7 +261,12 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
      * @throws Exception if unable to retrieve component list.
      */
     public String[] getComponentsForDeployedServiceAssembly(String saName) throws Exception {
-        return container.getRegistry().getComponentsForDeployedServiceAssembly(saName);
+        try {
+            return container.getRegistry().getComponentsForDeployedServiceAssembly(saName);
+        } catch (Exception e) {
+            log.info("Error in getComponentsForDeployedServiceAssembly", e);
+            throw e;
+        }
     }
 
     /**
@@ -248,7 +278,12 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
      * @throws Exception if unable to return status of service unit.
      */
     public boolean isDeployedServiceUnit(String componentName, String suName) throws Exception {
-        return container.getRegistry().isSADeployedServiceUnit(componentName, suName);
+        try {
+            return container.getRegistry().isSADeployedServiceUnit(componentName, suName);
+        } catch (Exception e) {
+            log.info("Error in isSADeployedServiceUnit", e);
+            throw e;
+        }
     }
 
     /**
@@ -271,7 +306,12 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
      * @throws Exception if operation fails.
      */
     public String start(String serviceAssemblyName) throws Exception {
-        return container.getRegistry().startServiceAssembly(serviceAssemblyName);
+        try {
+            return container.getRegistry().startServiceAssembly(serviceAssemblyName);
+        } catch (Exception e) {
+            log.info("Error in start", e);
+            throw e;
+        }
     }
     
     
@@ -284,7 +324,12 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
      * @throws Exception if operation fails.
      */
     public String stop(String serviceAssemblyName) throws Exception {
-        return container.getRegistry().stopServiceAssembly(serviceAssemblyName);
+        try {
+            return container.getRegistry().stopServiceAssembly(serviceAssemblyName);
+        } catch (Exception e) {
+            log.info("Error in stop", e);
+            throw e;
+        }
     }
 
     /**
@@ -295,7 +340,12 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
      * @throws Exception if operation fails.
      */
     public String shutDown(String serviceAssemblyName) throws Exception {
-        return container.getRegistry().shutDownServiceAssembly(serviceAssemblyName);
+        try {
+            return container.getRegistry().shutDownServiceAssembly(serviceAssemblyName);
+        } catch (Exception e) {
+            log.info("Error in shutDown", e);
+            throw e;
+        }
     }
 
     /**
@@ -306,7 +356,12 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
      * @throws Exception if operation fails.
      */
     public String getState(String serviceAssemblyName) throws Exception {
-        return container.getRegistry().getServiceAssemblyState(serviceAssemblyName);
+        try {
+            return container.getRegistry().getServiceAssemblyState(serviceAssemblyName);
+        } catch (Exception e) {
+            log.info("Error in getState", e);
+            throw e;
+        }
     }
 
     protected Set getComponentNames(ServiceAssembly sa) {

@@ -309,9 +309,9 @@ public class ServiceAssemblyRegistry {
                     }
                 }
             }
-            salc.stop();
+            salc.shutDown();
             result = salc.getCurrentState();
-            log.info("Stopped Service Assembly: " + salc.getName());
+            log.info("Shutdown Service Assembly: " + salc.getName());
         }
         return result;
     }
