@@ -1,5 +1,5 @@
 <project xmlns:ant="jelly:ant" xmlns:jelly="jelly:core">	
-  <goal name="eclipseplugin:generate" prereqs="jar:jar" description="Generates a eclipse plugin">  		  	  
+  <goal name="eclipseplugin:parsePluginXml" prereqs="jar:jar" description="Generates a eclipse plugin">  		  	  
   	<jelly:if test="${pom.package != ''}">
   		<echo>Using the package name as plugin name ${pom.package}</echo>
   		<jelly:set var="eclipsepluginname" value="${pom.package}-${pom.currentVersion}"/>
@@ -16,5 +16,38 @@
 			outputMode="xml" xmlns="dummy" escapeText="false">
 			<jelly:import file="${eclipseplugin.template}" inherit="true" />
 		</jelly:file>
+  </goal>
+  
+  <goal name="eclipseplugin:generateManifest">
+  <jelly:set var="includedLibs" value=""/>
+    <jelly:set var="referencedPlugins" value=""/>
+   <jelly:forEach var="lib" items="${pom.artifacts}">   			
+   			<jelly:if test="${!lib.file.name.startsWith('org.eclipse')}">
+	   			<jelly:set var="includedLibs" value="${includedLibs}target/${lib.file.name},"/>
+	   			<ant:copy
+				file="${pom.getDependencyPath(lib.dependency.getId())}"
+				todir="${basedir}/target" />   				
+   			</jelly:if>	
+			<jelly:if test="${lib.file.name.startsWith('org.eclipse')}">
+	   			<jelly:set var="referencedPlugins" value="${referencedPlugins}${lib.dependency.getArtifactId()};visibility:=reexport,"/>   				
+   			</jelly:if>   					
+			<ant:copy
+				file="${pom.getDependencyPath(lib.dependency.getId())}"
+				todir="${basedir}/target" />
+	</jelly:forEach>
+  	<jelly:file name="${basedir}/META-INF/MANIFEST.MF" omitXmlDeclaration="true"><![CDATA[
+     Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ${pom.name}
+Bundle-SymbolicName: org.apache.servicemix.packaging.plugin; singleton:=true
+Bundle-Version: ${pom.currentVersion}
+Bundle-ClassPath: ${includedLibs}
+ ${maven.final.name}
+Bundle-Activator: org.apache.servicemix.packaging.DeployerPlugin
+Bundle-Vendor: ${pom.organisation.name}
+Bundle-Localization: plugin
+Export-Package: .
+Require-Bundle: ${referencedPlugins}
+Eclipse-AutoStart: true]]></jelly:file>
   </goal>
 </project>

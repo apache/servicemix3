@@ -1,7 +1,7 @@
 <project>
 	<pomVersion>3</pomVersion>
-	<artifactId>eclipseplugin-plugin</artifactId>
-	<groupId>eclipse</groupId>
+	<artifactId>maven-eclipse-plugin-plugin</artifactId>
+	<groupId>servicemix</groupId>
 	<name>Eclipse Plugin Generating Plugin</name>
 	<currentVersion>0.1</currentVersion>
 	<inceptionYear>2005</inceptionYear>
@@ -17,8 +17,7 @@
 		<developer>
 			<name>Philip Dodds</name>
 			<id>pdodds</id>
-			<email>pdodds@unity-systems.com</email>
-			<organization>Unity Systems</organization>
+			<email>philip.dodds@gmail.com</email>			
 			<timezone>0</timezone>
 		</developer>
 	</developers>	
