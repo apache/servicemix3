@@ -27,7 +27,7 @@
   </bean>
   <bean id="serverConnector" class="org.springframework.jmx.support.ConnectorServerFactoryBean" depends-on="registry">
     <property name="objectName" value="connector:name=rmi"/>
-    <property name="serviceUrl" value="service:jmx:rmi:///jndi/rmi://localhost:1099/defaultJBIJMX"/>
+    <property name="serviceUrl" value="service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi"/>
     <property name="threaded" value="true"/>
     <property name="daemon" value="true"/>
     <property name="environment">
