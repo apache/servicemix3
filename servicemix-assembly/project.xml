@@ -439,6 +439,15 @@
         <optional>true</optional>
       </properties>
     </dependency>
+    <!-- enable jetty to log to on top of commons-logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jcl</artifactId>
+      <version>${slf4j_jcl_version}</version>
+      <properties>
+        <optional>true</optional>
+      </properties>
+    </dependency>
     <dependency>
       <groupId>tomcat</groupId>
       <artifactId>jasper-compiler-jdt</artifactId>
