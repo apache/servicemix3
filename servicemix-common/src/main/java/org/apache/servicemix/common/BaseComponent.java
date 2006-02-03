@@ -159,6 +159,9 @@ public abstract class BaseComponent implements Component {
     }
     
     public String getComponentName() {
+        if (getComponentContext() == null) {
+            return "Component (" + getClass().getName() + ") not yet initialized";
+        }
         return getComponentContext().getComponentName();
     }
     
