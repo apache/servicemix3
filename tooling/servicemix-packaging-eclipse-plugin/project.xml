@@ -39,7 +39,7 @@
 			<version>${pom.currentVersion}</version>
 		</dependency>
 		<dependency>
-			<groupId>servicemix</groupId>
+			<groupId>incubator-servicemix</groupId>
 			<artifactId>servicemix-packaging-descriptors</artifactId>
 			<version>${pom.currentVersion}</version>
 		</dependency>		
