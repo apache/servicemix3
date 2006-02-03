@@ -81,13 +81,21 @@
   <!-- Goal used to build subprojects                              -->
   <!-- Note: Subprojects extends from /etc/ directory              -->
   <!-- =========================================================== -->
-  
+
   <!-- Execute default goal on subprojects. -->
   <goal name="default" prereqs="init">
     <j:set var="goal" value="default"/>
     <attainGoal name="multiproject:goal"/>
   </goal>
-  
+
+  <!-- Build failure reports: initial file creation and data-->  
+  <preGoal name="default">
+    <j:set var="generateBuildReports" value="${buildreport.generate}"/>
+    <j:if test="${generateBuildReports == 'true'}">
+      <attainGoal name="build-failure-report:init-report"/>
+    </j:if>
+  </preGoal> 
+
   <!-- Option, will only execute the default goal. -->
   <goal name="build" prereqs="default"/>
   

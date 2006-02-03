@@ -41,4 +41,36 @@
     <delete failonerror="false" dir="testWDIR"/>
     <delete failonerror="false" dir="testWDR"/>
   </postGoal>
+    <j:set var="project.root" value="${pom.parentBasedir().getParentFile().getCanonicalFile()}"/>
+
+    <!-- Build failure reports: initialize compile result to fail -->
+    <preGoal name="java:compile">
+        <j:set var="generateBuildReports" value="${buildreport.generate}"/>
+        <j:if test="${generateBuildReports == 'true'}">
+            <attainGoal name="build-failure-report:set-compile-fail"/>
+        </j:if>
+    </preGoal>
+    <!-- Build failure reports: initialize test result to fail -->
+    <preGoal name="test:test">
+        <j:if test="${generateBuildReports == 'true'}">
+            <attainGoal name="build-failure-report:set-test-fail"/>
+        </j:if>
+    </preGoal>
+    <!-- Build failure reports: ignore failures so test failures can be checked 
+    (postGoal not run if tests fail) -->
+    <j:if test="${generateBuildReports == 'true'}">
+        <j:set var="maven.test.failure.ignore" value="true"/>
+    </j:if>
+    <!-- Build failure reports: write test results. Set build to success if no 
+    test failures -->
+    <postGoal name="test:test">
+        <j:if test="${generateBuildReports == 'true'}">
+            <attainGoal name="build-failure-report:set-test-results"/>
+	    <!-- Build failure reports: manually fail since failures are ignored
+            -->
+            <j:if test="${maven.test.failure}">
+                <fail message="There were test failures."/>
+            </j:if>
+        </j:if>
+    </postGoal> 
 </project>
