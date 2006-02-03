@@ -90,7 +90,7 @@ public class MultipleJMSFlowTest extends TestCase {
     
     protected Flow createFlow() {
         JMSFlow flow = new JMSFlow();
-        //flow.setJmsURL("tcp://localhost:61216");
+        flow.setJmsURL("tcp://localhost:61216");
         return flow;
     }
     
