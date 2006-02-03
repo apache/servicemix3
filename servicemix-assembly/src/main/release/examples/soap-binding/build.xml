@@ -71,25 +71,4 @@
     <copy file="${build.dir}/soap-demo-sa.zip" todir="deploy"/>
   </target>
 
-  <target name="build-client" depends="init" description="Build components">
-    <javac srcdir="${client.src.dir}" destdir="${client.build.dir}" debug="on" source="1.4" target="1.4">
-      <classpath refid="javac.classpath"/>
-    </javac>
-  </target>
-  
-  <target name="run" depends="build-client" description="Runs the example client">
-    <echo>Running exsample client</echo>
-    <java classname="JMSClient" fork="yes" maxmemory="100M">
-      <classpath refid="javac.classpath"/>
-    </java>
-  </target>
-	
-  <target name="run-loop" depends="build-client" description="Runs the example client">
-    <echo>Running exsample client</echo>
-    <java classname="JMSClient" fork="yes" maxmemory="100M">
-      <classpath refid="javac.classpath"/>
-      <arg value="100000"/>
-    </java>
-  </target>
-	
 </project>

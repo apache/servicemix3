@@ -25,6 +25,7 @@ function getHTTPObject() {
   /* on essaie de créer l'objet si ce n'est pas déjà fait */
   if (!xmlhttp && typeof XMLHttpRequest != 'undefined') {
      try {
+        netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
         xmlhttp = new XMLHttpRequest();
      } catch (e) {
         xmlhttp = false;
@@ -45,16 +46,18 @@ function getHTTPObject() {
 
 function send() {
   var xmlhttp = getHTTPObject();
+  if (!xmlhttp) {
+    alert('cound not create XMLHttpRequest object');
+    return;
+  }
   var request = document.getElementById("request");
-  //alert(request.value);
   var response = document.getElementById("response");
-  //alert(xmlhttp);
-  xmlhttp.open("POST", "http://localhost:8192/Service/", true);
-  //alert('sending');
-  //xmlhttp.setRequestHeader("")
+  try {
+    xmlhttp.open("POST", "http://localhost:8192/Service/", true);
+  } catch (e) {
+    alert('error opening');
+  }
   xmlhttp.send(request.value);
-  //alert(response.value);
-  //response.value = xmlhttp.responseText;
 }
 
 </script>
