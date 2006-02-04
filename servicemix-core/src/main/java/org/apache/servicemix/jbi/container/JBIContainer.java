@@ -61,6 +61,7 @@ import org.apache.servicemix.jbi.framework.DeploymentService;
 import org.apache.servicemix.jbi.framework.InstallationService;
 import org.apache.servicemix.jbi.framework.LocalComponentConnector;
 import org.apache.servicemix.jbi.framework.Registry;
+import org.apache.servicemix.jbi.framework.AdminCommandsService;
 import org.apache.servicemix.jbi.management.BaseLifeCycle;
 import org.apache.servicemix.jbi.management.ManagementContext;
 import org.apache.servicemix.jbi.messaging.DeliveryChannelImpl;
@@ -99,6 +100,7 @@ public class JBIContainer extends BaseLifeCycle {
     protected InstallationService installationService = new InstallationService();
     protected DeploymentService deploymentService = new DeploymentService();
     protected AutoDeploymentService autoDeployService = new AutoDeploymentService();
+    protected AdminCommandsService adminCommandsService = new AdminCommandsService();
     protected Registry registry = new Registry();
     protected WorkManager workManager;
     protected boolean isWorkManagerCreated;
@@ -378,7 +380,16 @@ public class JBIContainer extends BaseLifeCycle {
     public AutoDeploymentService getAutoDeploymentService() {
         return autoDeployService;
     }
-    
+
+    /**
+     *
+     * @return the AdminCommandsService
+     */
+    public AdminCommandsService getAdminCommandsService() {
+        return adminCommandsService;
+    }
+
+
     /**
      * light weight initialization - default values for mbeanSErver, TransactionManager etc are null
      *
@@ -412,7 +423,8 @@ public class JBIContainer extends BaseLifeCycle {
             installationService.init(this);
             deploymentService.init(this);
             autoDeployService.init(this);
-           
+            adminCommandsService.init(this);
+
             // register self with the ManagementContext
             try {
                 managementContext.registerMBean(ManagementContext.getContainerObjectName(managementContext.getJmxDomainName(), getName()), 
@@ -440,6 +452,7 @@ public class JBIContainer extends BaseLifeCycle {
             installationService.start();
             deploymentService.start();
             autoDeployService.start();
+            adminCommandsService.start();
             super.start();
         }
     }
@@ -459,6 +472,7 @@ public class JBIContainer extends BaseLifeCycle {
             installationService.stop();
             deploymentService.stop();
             autoDeployService.stop();
+            adminCommandsService.stop();
             super.stop();
         }
     }
@@ -476,7 +490,8 @@ public class JBIContainer extends BaseLifeCycle {
             environmentContext.shutDown();
             installationService.shutDown();
             deploymentService.shutDown();
-            // shutdown the management context last, because it will close the mbean server 
+            adminCommandsService.shutDown();
+            // shutdown the management context last, because it will close the mbean server
             super.shutDown();
             managementContext.unregisterMBean(this);
             managementContext.shutDown();
