@@ -15,154 +15,292 @@
  */
 package org.apache.servicemix.jbi.framework;
 
+import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.management.BaseSystemService;
+import org.apache.servicemix.jbi.management.OperationInfoHelper;
+import org.apache.servicemix.jbi.management.ParameterHelper;
+
+import javax.jbi.JBIException;
+import javax.jbi.management.DeploymentException;
+import javax.management.MBeanOperationInfo;
+import javax.management.JMException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
-
-import javax.jbi.JBIException;
-import javax.jbi.management.DeploymentException;
-
-import org.apache.servicemix.jbi.container.JBIContainer;
-import org.apache.servicemix.jbi.management.BaseSystemService;
 
 public class AdminCommandsService extends BaseSystemService implements AdminCommandsServiceMBean {
-
     private JBIContainer container;
-    
+
+    /**
+     * @return a description of this
+     */
+    public String getDescription() {
+        return "Admin Commands Service";
+    }
+
     /**
      * Initialize the Service
-     * 
+     *
      * @param container
-     * @throws JBIException 
+     * @throws JBIException
      * @throws DeploymentException
      */
     public void init(JBIContainer container) throws JBIException {
         this.container = container;
         container.getManagementContext().registerSystemService(this, AdminCommandsServiceMBean.class);
     }
-    
-    public String installComponent(String installJarURL, Properties props) {
-        // TODO Auto-generated method stub
-        return null;
+
+    public void start() throws javax.jbi.JBIException {
+        super.start();
     }
 
-    public String uninstallComponent(String componentName) {
-        // TODO Auto-generated method stub
-        return null;
+    public void shutDown() throws JBIException {
+        super.shutDown();
+        container.getManagementContext().unregisterMBean(this);
     }
 
-    public String installSharedLibrary(String installJarURL) {
-        return container.getInstallationService().installSharedLibrary(installJarURL);
-    }
-
-    /* (non-Javadoc)
-     * @see org.servicemix.jbi.framework.AdminCommandsServiceMBean#uninstallSharedLibrary(java.lang.String)
+    /**
+     * Install a JBI component (a Service Engine or Binding Component)
+     *
+     * @param file
+     * @return
      */
-    public String uninstallSharedLibrary(String sharedLibraryName) {
-        boolean success = container.getInstallationService().uninstallSharedLibrary(sharedLibraryName);
-        if (success) {
-            return success("uninstallSharedLibrary", sharedLibraryName);
-        } else {
-            return failure("uninstallSharedLibrary", sharedLibraryName, "Failed", null);
+    public String installComponent(String file) throws Exception {
+        try {
+            container.getInstallationService().install(file);
+            return success("installComponent", file);
+
+        } catch (DeploymentException e) {
+            throw new RuntimeException(failure("installComponent", file, null, e));
+        } catch (Exception e) {
+            throw new RuntimeException(failure("installComponent", file, null, e));
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.servicemix.jbi.framework.AdminCommandsServiceMBean#startComponent(java.lang.String)
+    /**
+     * Uninstalls a previously install JBI Component (a Service Engine or Binding Component)
+     *
+     * @param name
+     * @return
      */
-    public String startComponent(String componentName) {
+    public String uninstallComponent(String name) throws Exception {
+        boolean success = container.getInstallationService().unloadInstaller(name, true);
+        if (success) {
+            return success("uninstallComponent", name);
+        } else {
+            return failure("uninstallComponent", name, "Failed", null);
+        }
+    }
+
+    /**
+     * Installs a Shared Library.
+     *
+     * @param file
+     * @return
+     */
+    public String installSharedLibrary(String file) throws Exception {
+        return container.getInstallationService().installSharedLibrary(file);
+    }
+
+    /**
+     * Uninstalls a previously installed Shared Library.
+     *
+     * @param name
+     * @return
+     */
+    public String uninstallSharedLibrary(String name) throws Exception {
+        boolean success = container.getInstallationService().uninstallSharedLibrary(name);
+        if (success) {
+            return success("uninstallSharedLibrary", name);
+        } else {
+            return failure("uninstallSharedLibrary", name, "Failed", null);
+        }
+    }
+
+    /**
+     * Starts a particular Component (Service Engine or Binding Component).
+     *
+     * @param name
+     * @return
+     */
+    public String startComponent(String name) throws Exception {
         try {
-            ComponentNameSpace cns = new ComponentNameSpace(container.getName(), componentName, componentName);
+            ComponentNameSpace cns = new ComponentNameSpace(container.getName(), name, name);
             LocalComponentConnector lcc = container.getRegistry().getLocalComponentConnector(cns);
             if (lcc == null) {
-                throw new JBIException("Component " + componentName + " not found");
+                throw new JBIException("Component " + name + " not found");
             }
             lcc.getComponentMBean().start();
-            return success("startComponent", componentName);
+            return success("startComponent", name);
         } catch (JBIException e) {
-            throw new RuntimeException(failure("startComponent", componentName, null, e));
+            throw new RuntimeException(failure("startComponent", name, null, e));
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.servicemix.jbi.framework.AdminCommandsServiceMBean#stopComponent(java.lang.String)
+    /**
+     * Stops a particular Component (Service Engine or Binding Component).
+     *
+     * @param name
+     * @return
      */
-    public String stopComponent(String componentName) {
+    public String stopComponent(String name) throws Exception {
         try {
-            ComponentNameSpace cns = new ComponentNameSpace(container.getName(), componentName, componentName);
+            ComponentNameSpace cns = new ComponentNameSpace(container.getName(), name, name);
             LocalComponentConnector lcc = container.getRegistry().getLocalComponentConnector(cns);
             if (lcc == null) {
-                throw new JBIException("Component " + componentName + " not found");
+                throw new JBIException("Component " + name + " not found");
             }
             lcc.getComponentMBean().stop();
-            return success("stopComponent", componentName);
+            return success("stopComponent", name);
         } catch (JBIException e) {
-            throw new RuntimeException(failure("stopComponent", componentName, null, e));
+            throw new RuntimeException(failure("stopComponent", name, null, e));
         }
     }
 
-    public String shutdownComponent(String componentName, boolean force) {
+    /**
+     * Shuts down a particular Component.
+     *
+     * @param name
+     * @return
+     */
+    public String shutdownComponent(String name) throws Exception {
         try {
-            ComponentNameSpace cns = new ComponentNameSpace(container.getName(), componentName, componentName);
+            ComponentNameSpace cns = new ComponentNameSpace(container.getName(), name, name);
             LocalComponentConnector lcc = container.getRegistry().getLocalComponentConnector(cns);
             if (lcc == null) {
-                throw new JBIException("Component " + componentName + " not found");
+                throw new JBIException("Component " + name + " not found");
             }
             lcc.getComponentMBean().shutDown();
-            return success("shutdownComponent", componentName);
+            return success("shutdownComponent", name);
         } catch (JBIException e) {
-            throw new RuntimeException(failure("shutdownComponent", componentName, null, e));
+            throw new RuntimeException(failure("shutdownComponent", name, null, e));
         }
-     }
-
-    public String deployServiceAssembly(String installJarURL) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
-    public String undeployServiceAssembly(String serviceAssemblyName) {
-        // TODO Auto-generated method stub
-        return null;
+    /**
+     * Deploys a Service Assembly.
+     *
+     * @param file
+     * @return
+     */
+    public String deployServiceAssembly(String file) throws Exception {
+        try {
+            container.getDeploymentService().deploy(file);
+            return success("installComponent", file);
+
+        } catch (Exception e) {
+            throw new RuntimeException(failure("deployServiceAssembly", file, null, e));
+        }
     }
 
-    public String startServiceAssembly(String serviceAssemblyName) {
-        // TODO Auto-generated method stub
-        return null;
+    /**
+     * Undeploys a previously deployed service assembly.
+     *
+     * @param name
+     * @return
+     */
+    public String undeployServiceAssembly(String name) throws Exception {
+        try {
+            container.getDeploymentService().undeploy(name);
+            return success("undeployServiceAssembly", name);
+
+        } catch (Exception e) {
+            throw new RuntimeException(failure("undeployServiceAssembly", name, null, e));
+        }
     }
 
-    public String stopServiceAssembly(String serviceAssemblyName) {
-        // TODO Auto-generated method stub
-        return null;
+    /**
+     * Starts a service assembly.
+     *
+     * @param name
+     * @return
+     */
+    public String startServiceAssembly(String name) throws Exception {
+        try {
+            container.getDeploymentService().start(name);
+            return success("startServiceAssembly", name);
+
+        } catch (Exception e) {
+            throw new RuntimeException(failure("startServiceAssembly", name, null, e));
+        }
     }
 
-    public String shutdownServiceAssembly(String serviceAssemblyName) {
-        // TODO Auto-generated method stub
-        return null;
+    /**
+     * Stops a particular service assembly.
+     *
+     * @param name
+     * @return
+     */
+    public String stopServiceAssembly(String name) throws Exception {
+        try {
+            container.getDeploymentService().stop(name);
+            return success("stopServiceAssembly", name);
+
+        } catch (Exception e) {
+            throw new RuntimeException(failure("stopServiceAssembly", name, null, e));
+        }
     }
 
-    public String listComponents(boolean serviceEngines, boolean bindingComponents, String state, String sharedLibraryName, String serviceAssemblyName) {
+    /**
+     * Shuts down a particular service assembly.
+     *
+     * @param name
+     * @return
+     */
+    public String shutdownServiceAssembly(String name) throws Exception {
+        try {
+            container.getDeploymentService().shutDown(name);
+            return success("shutdownServiceAssembly", name);
+
+        } catch (Exception e) {
+            throw new RuntimeException(failure("shutdownServiceAssembly", name, null, e));
+        }
+    }
+
+    /**
+     * Prints information about all components (Service Engine or Binding Component) installed
+     *
+     * @param serviceEngines
+     * @param bindingComponents
+     * @param state
+     * @param sharedLibraryName
+     * @param serviceAssemblyName
+     * @return
+     */
+    public String listComponents(boolean serviceEngines, boolean bindingComponents, String state, String sharedLibraryName, String serviceAssemblyName) throws Exception {
         Collection connectors = container.getRegistry().getLocalComponentConnectors();
         List components = new ArrayList();
         for (Iterator iter = connectors.iterator(); iter.hasNext();) {
             LocalComponentConnector lcc = (LocalComponentConnector) iter.next();
+
             // If we want SE, and it is not one, skip
-            if (serviceEngines && !lcc.isService()) {
+            if (!serviceEngines && !lcc.isService()) {
                 continue;
             }
             // If we want BC, and it is not one, skip
-            if (bindingComponents && !lcc.isBinding()) {
+            if (!bindingComponents && !lcc.isBinding()) {
                 continue;
             }
             // Check status
-            if (state != null && !state.equals(lcc.getComponentMBean().getCurrentState())) {
+            if (state != null && state.length() > 0 && !state.equals(lcc.getComponentMBean().getCurrentState())) {
+                System.out.println("state passed");
                 continue;
             }
-            // TODO: Check shared library
-            // TODO: Check deployed service assembly
+
+            // Check shared library
+            if (sharedLibraryName != null && sharedLibraryName.length() > 0 && !container.getInstallationService().containsSharedLibrary(sharedLibraryName)) {
+                continue;
+            }
+
+            // Check deployed service assembly
+            if (serviceAssemblyName != null && serviceAssemblyName.length() > 0 && !container.getDeploymentService().isSaDeployed(serviceAssemblyName)) {
+                continue;
+            }
+
             components.add(lcc);
         }
+
         StringBuffer buffer = new StringBuffer();
         buffer.append("<?xml version='1.0'?>\n");
         buffer.append("<component-info-list xmlns='http://java.sun.com/xml/ns/jbi/component-info-list' version='1.0'>\n");
@@ -175,7 +313,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
                 buffer.append(" type='binding-component'");
             }
             buffer.append(" name='" + lcc.getComponentNameSpace().getName() + "'");
-            buffer.append(" state='" + lcc.getComponentMBean().getCurrentState() + "'");
+            buffer.append(" state='" + lcc.getComponentMBean().getCurrentState() + "'>");
             if (lcc.getPacket().getDescription() != null) {
                 buffer.append("\t\t<description>");
                 buffer.append(lcc.getPacket().getDescription());
@@ -187,21 +325,71 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
         return buffer.toString();
     }
 
-    public String listSharedLibraries(String componentName) {
+    /**
+     * Prints information about shared libraries installed.
+     *
+     * @param componentName
+     * @param sharedLibraryName
+     * @return
+     */
+    public String listSharedLibraries(String componentName, String sharedLibraryName) throws Exception {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public String listServiceAssemblies(String state, String componentName) {
-        // TODO Auto-generated method stub
-        return null;
+    /**
+     * Prints information about service assemblies deployed.
+     *
+     * @param state
+     * @param componentName
+     * @param serviceAssemblyName
+     * @return
+     */
+    public String listServiceAssemblies(String state, String componentName, String serviceAssemblyName) throws Exception {
+        String[] result = null;
+        if (null != serviceAssemblyName && serviceAssemblyName.length() > 0) {
+            result = container.getRegistry().getComponentsForDeployedServiceAssembly(serviceAssemblyName);
+        } else if (null != componentName && componentName.length() > 0) {
+            result = container.getRegistry().getDeployedServiceAssembliesForComponent(componentName);
+        } else {
+            result = container.getRegistry().getDeployedServiceAssemblies();
+        }
+
+        List components = new ArrayList();
+        for (int i = 0; i < result.length; i++) {
+            // Check status
+            if (state != null && state.length() > 0 && !state.equals(container.getRegistry().getServiceAssemblyState(result[i]))) {
+                continue;
+            }
+            components.add(result[i]);
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("<?xml version='1.0'?>\n");
+        buffer.append("<service-assembly-info-list xmlns='http://java.sun.com/xml/ns/jbi/component-info-list' version='1.0'>\n");
+        for (Iterator iter = components.iterator(); iter.hasNext();) {
+            String name = (String) iter.next();
+
+            buffer.append("\t<service-assembly-info");
+            buffer.append(" name='" + name + "'");
+            buffer.append(" state='" + container.getRegistry().getServiceAssemblyState(name) + "'/>");
+            buffer.append(" <description>" + container.getRegistry().getDescription() + "</description>");
+            buffer.append("\t</service-assembly-info>\n");
+
+            String[] serviceUnitList = container.getRegistry().getSADeployedServiceUnitList(name);
+            for (int i = 0; i < serviceUnitList.length; i++) {
+                buffer.append("\t<service-unit-info");
+                buffer.append(" name='" + serviceUnitList[i] + "'");
+                buffer.append(" state='" + container.getRegistry().getServiceAssemblyState(serviceUnitList[i]) + "'/>");
+                buffer.append("\t</service-unit-info");
+            }
+        }
+        buffer.append("</service-assembly-info-list>");
+
+        return buffer.toString();
     }
 
-    public String getDescription() {
-        return "Admin Commands Service";
-    }
-
-    protected String failure(String task, String componentName, String info, Exception e) {
+    public String failure(String task, String componentName, String info, Exception e) {
         ManagementSupport.Message msg = new ManagementSupport.Message();
         msg.setComponent(componentName);
         msg.setTask(task);
@@ -212,7 +400,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
         return ManagementSupport.createComponentMessage(msg);
     }
 
-    protected String success(String task, String componentName) {
+    public String success(String task, String componentName) {
         ManagementSupport.Message msg = new ManagementSupport.Message();
         msg.setComponent(componentName);
         msg.setTask(task);
@@ -220,5 +408,62 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
         // TODO: change the generated xml
         return ManagementSupport.createComponentMessage(msg);
     }
-    
+
+    public MBeanOperationInfo[] getOperationInfos() throws JMException {
+        OperationInfoHelper helper = new OperationInfoHelper();
+        ParameterHelper ph = helper.addOperation(getObjectToManage(), "installComponent",1, "install a component");
+        ph.setDescription(0, "file", "location of JBI Component to install");
+
+        ph = helper.addOperation(getObjectToManage(), "uninstallComponent", 1, "uninstall a component");
+        ph.setDescription(0, "name", "component name to uninstall");
+
+        ph = helper.addOperation(getObjectToManage(), "installSharedLibrary", 1, "install a shared library");
+        ph.setDescription(0, "file", "location of shared library to install");
+
+        ph = helper.addOperation(getObjectToManage(), "uninstallSharedLibrary", 1, "uninstall a shared library");
+        ph.setDescription(0, "name", "name of shared library to uninstall");
+
+        ph = helper.addOperation(getObjectToManage(), "startComponent", 1, "start a component");
+        ph.setDescription(0, "name", "name of component to start");
+
+        ph = helper.addOperation(getObjectToManage(), "stopComponent", 1, "stop a component");
+        ph.setDescription(0, "name", "name of component to stop");
+
+        ph = helper.addOperation(getObjectToManage(), "shutdownComponent", 1, "shutdown a component");
+        ph.setDescription(0, "name", "name of component to shutdown");
+
+        ph = helper.addOperation(getObjectToManage(), "deployServiceAssembly", 1, "deploy a service assembly");
+        ph.setDescription(0, "file", "location of service assembly to deploy");
+
+        ph = helper.addOperation(getObjectToManage(), "undeployServiceAssembly", 1, "undeploy a service assembly");
+        ph.setDescription(0, "name", "name of service assembly to undeploy");
+
+        ph = helper.addOperation(getObjectToManage(), "startServiceAssembly", 1, "start a service assembly");
+        ph.setDescription(0, "name", "name of service assembly to start");
+
+        ph = helper.addOperation(getObjectToManage(), "stopServiceAssembly", 1, "stop a service assembly");
+        ph.setDescription(0, "name", "name of service assembly to stop");
+
+        ph = helper.addOperation(getObjectToManage(), "shutdownServiceAssembly", "shutdown a service assembly");
+        ph.setDescription(0, "name", "name of service assembly to shutdown");
+
+        ph = helper.addOperation(getObjectToManage(), "listComponents", 1, "list components installed");
+        ph.setDescription(0, "serviceEngines", "if true will list service engines");
+        ph.setDescription(1, "bindingComponents", "if true will list binding components");
+        ph.setDescription(2, "state", "component state to list, if null will list all");
+        ph.setDescription(3, "sharedLibraryName", "shared library name to list");
+        ph.setDescription(4, "serviceAssemblyName", "service assembly name to list");
+
+        ph = helper.addOperation(getObjectToManage(), "listSharedLibraries", 1, "list shared library");
+        ph.setDescription(0, "componentName", "component name");
+        ph.setDescription(1, "sharedLibraryName", "shared library name");
+
+        ph = helper.addOperation(getObjectToManage(), "listServiceAssemblies", 1, "list service assemblies");
+        ph.setDescription(0, "state", "service assembly state to list");
+        ph.setDescription(1, "componentName", "component name");
+        ph.setDescription(2, "serviceAssemblyName", "service assembly name");
+
+        return OperationInfoHelper.join(super.getOperationInfos(), helper.getOperationInfos());
+    }
+
 }

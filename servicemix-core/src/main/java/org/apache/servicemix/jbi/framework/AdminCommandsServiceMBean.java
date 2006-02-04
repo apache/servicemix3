@@ -21,42 +21,42 @@ import java.util.Properties;
 
 /**
  * Provides a simple interface to access ServiceMix administration commands.
- * 
+ *
  * @version $Revision: 657 $
  */
 public interface AdminCommandsServiceMBean extends LifeCycleMBean {
 
-    String installComponent(String installJarURL, Properties props);
-    
-    String uninstallComponent(String componentName);
-    
-    String installSharedLibrary(String installJarURL);
-    
-    String uninstallSharedLibrary(String sharedLibraryName);
-    
-    String startComponent(String componentName);
-    
-    String stopComponent(String componentName);
-    
-    String shutdownComponent(String componentName, boolean force);
-    
-    String deployServiceAssembly(String installJarURL);
-    
-    String undeployServiceAssembly(String serviceAssemblyName);
-    
-    String startServiceAssembly(String serviceAssemblyName);
-    
-    String stopServiceAssembly(String serviceAssemblyName);
-    
-    String shutdownServiceAssembly(String serviceAssemblyName);
-    
-    String listComponents(boolean serviceEngines, 
+    String installComponent(String file) throws Exception;
+
+    String uninstallComponent(String name) throws Exception;
+
+    String installSharedLibrary(String file) throws Exception;
+
+    String uninstallSharedLibrary(String name) throws Exception;
+
+    String startComponent(String name) throws Exception;
+
+    String stopComponent(String name) throws Exception;
+
+    String shutdownComponent(String name) throws Exception;
+
+    String deployServiceAssembly(String file) throws Exception;
+
+    String undeployServiceAssembly(String name) throws Exception;
+
+    String startServiceAssembly(String name) throws Exception;
+
+    String stopServiceAssembly(String name) throws Exception;
+
+    String shutdownServiceAssembly(String name) throws Exception;
+
+    String listComponents(boolean serviceEngines,
                           boolean bindingComponents,
                           String state,
                           String sharedLibraryName,
-                          String serviceAssemblyName);
-    
-    String listSharedLibraries(String componentName);
-    
-    String listServiceAssemblies(String state, String componentName);
+                          String serviceAssemblyName) throws Exception;
+
+    String listSharedLibraries(String componentName, String sharedLibraryName) throws Exception;
+
+    String listServiceAssemblies(String state, String componentName, String serviceAssemblyName) throws Exception;
 }
