@@ -17,6 +17,7 @@ package org.apache.servicemix.jbi.framework;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Set;
 
@@ -28,9 +29,11 @@ import javax.jbi.management.LifeCycleMBean;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.ObjectName;
 
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.ActivationSpec;
+import org.apache.servicemix.jbi.management.ManagementContext;
 import org.apache.servicemix.jbi.messaging.DeliveryChannelImpl;
 import org.apache.servicemix.jbi.util.XmlPersistenceSupport;
 
@@ -50,6 +53,7 @@ public class LocalComponentConnector extends ComponentConnector {
     private DeliveryChannelImpl deliveryChannel;
     private ObjectName extendedMBeanName;
     private ComponentMBeanImpl componentMBean;
+    private ComponentStatsMBeanImpl componentStatsMBean;
     private boolean pojo;
 
     /**
@@ -78,6 +82,42 @@ public class LocalComponentConnector extends ComponentConnector {
         packet.setBinding(binding);
         packet.setService(service);
         this.componentMBean = new ComponentMBeanImpl(this);
+        this.componentStatsMBean = new ComponentStatsMBeanImpl(this);
+    }
+    
+    
+    /**
+     * Register the MBeans for this Component
+     * @param context
+     * @return ObjectName
+     * @throws JBIException
+     */
+    public ObjectName registerMBeans(ManagementContext context) throws JBIException{
+        try{
+            ObjectName result=context.createObjectName(componentMBean);
+            context.registerMBean(result,componentMBean,ComponentMBean.class);
+            componentMBean.setObjectName(result);
+            Hashtable props = context.createObjectNameProps(componentStatsMBean);
+            props.put("stats","true");
+            ObjectName objName=context.createObjectName(props);
+            context.registerMBean(objName,componentStatsMBean,ComponentStatsMBean.class);
+            componentStatsMBean.setObjectName(objName);
+            return result;
+        }catch(Exception e){
+            String errorStr="Failed to register MBeans";
+            log.error(errorStr,e);
+            throw new JBIException(errorStr,e);
+        }
+    }
+    
+    /**
+     * Unregister Component MBeans
+     * @param context
+     * @throws JBIException
+     */
+    public void unregisterMbeans(ManagementContext context) throws JBIException{
+        context.unregisterMBean(componentMBean.getObjectName());
+        context.unregisterMBean(componentStatsMBean.getObjectName());
     }
 
     /**
@@ -209,6 +249,20 @@ public class LocalComponentConnector extends ComponentConnector {
     public ComponentMBeanImpl getComponentMBean() {
         return componentMBean;
     }
+    
+    /**
+    * @return Returns the stats mbeanName.
+    */
+   public ObjectName getStatsMbeanName() {
+       return componentStatsMBean.getObjectName();
+   }
+
+   /**
+    * @return Returns the ComponentMBean
+    */
+   public ComponentStatsMBeanImpl getComponentStatsMBean() {
+       return componentStatsMBean;
+   }
 
     /**
      * @return Returns the extendedMBeanName.

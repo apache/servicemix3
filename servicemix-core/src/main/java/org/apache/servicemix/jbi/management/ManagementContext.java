@@ -17,6 +17,7 @@ package org.apache.servicemix.jbi.management;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import javax.jbi.JBIException;
@@ -340,6 +341,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         return mbeanServerContext.createCustomComponentMBeanName(type, name);
     }
 
+    
     /**
      * Create an ObjectName
      * 
@@ -349,9 +351,8 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     public ObjectName createObjectName(MBeanInfoProvider provider) {
         ObjectName result = null;
         try {
-            String tmp = mbeanServerContext.getJmxDomainName() + ":container=" + container.getName() + ",type="
-                    + sanitizeString(provider.getType()) + ",name=" + sanitizeString(provider.getName());
-            result = new ObjectName(tmp);
+            Hashtable tmp = createObjectNameProps(provider);
+            result = new ObjectName(getJmxDomainName(),tmp);
         }
         catch (MalformedObjectNameException e) {
             // shouldn't happen
@@ -359,6 +360,79 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
             log.error(error, e);
             throw new RuntimeException(error);
         }
+        return result;
+    }
+    
+    /**
+     * Create an ObjectName
+     * @param name 
+     * 
+     * @return the ObjectName
+     */
+    public ObjectName createObjectName(String name) {
+        ObjectName result = null;
+        try {
+            result = new ObjectName(name);
+        }
+        catch (MalformedObjectNameException e) {
+            // shouldn't happen
+            String error = "Could not create ObjectName for " + name;
+            log.error(error, e);
+            throw new RuntimeException(error);
+        }
+        return result;
+    }
+    
+    /**
+     * Create an ObjectName
+     * @param domain 
+     * 
+     * @return the ObjectName
+     */
+    public ObjectName createObjectName(String domain,Hashtable props) {
+        ObjectName result = null;
+        try {
+            result = new ObjectName(domain,props);
+        }
+        catch (MalformedObjectNameException e) {
+            // shouldn't happen
+            String error = "Could not create ObjectName for " + props;
+            log.error(error, e);
+            throw new RuntimeException(error);
+        }
+        return result;
+    }
+    
+    /**
+     * Create an ObjectName
+     * @param domain 
+     * 
+     * @return the ObjectName
+     */
+    public ObjectName createObjectName(Hashtable props) {
+        ObjectName result = null;
+        try {
+            result = new ObjectName(getJmxDomainName(),props);
+        }
+        catch (MalformedObjectNameException e) {
+            // shouldn't happen
+            String error = "Could not create ObjectName for " + props;
+            log.error(error, e);
+            throw new RuntimeException(error);
+        }
+        return result;
+    }
+    /**
+     * Create a String used to create an ObjectName
+     * 
+     * @param provider
+     * @return the ObjectName
+     */
+    public Hashtable createObjectNameProps(MBeanInfoProvider provider){
+        Hashtable result = new Hashtable();
+        result.put("container",container.getName());
+        result.put("type",sanitizeString(provider.getType()));
+        result.put("name",sanitizeString(provider.getName()));
         return result;
     }
 

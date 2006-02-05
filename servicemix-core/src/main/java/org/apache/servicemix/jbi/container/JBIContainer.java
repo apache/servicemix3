@@ -716,7 +716,7 @@ public class JBIContainer extends BaseLifeCycle {
         LocalComponentConnector lcc = registry.getLocalComponentConnector(cns);
         if (component != null && lcc != null) {
         	lcc.getComponentMBean().shutDown();
-        	managementContext.unregisterMBean(lcc.getMbeanName());
+        	lcc.unregisterMbeans(managementContext);
             registry.deregisterComponent(component);
             environmentContext.unreregister(lcc, true);
             log.info("Deactivating component for name: " + id + " component: " + component);
@@ -934,14 +934,7 @@ public class JBIContainer extends BaseLifeCycle {
             } else {
                 lcc.getComponentMBean().setCurrentState(LifeCycleMBean.SHUTDOWN);
             }
-            result = managementContext.createObjectName(lcc.getComponentMBean());
-            try {
-                managementContext.registerMBean(result, lcc.getComponentMBean(), ComponentMBean.class);
-                lcc.getComponentMBean().setObjectName(result);
-            }
-            catch (JMException e) {
-                throw new JBIException(e);
-            }
+            result = lcc.registerMBeans(managementContext);
         }
         return result;
     }
