@@ -158,6 +158,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      * @exception javax.jbi.JBIException if the item fails to shut down.
      */
     public void doShutDown() throws javax.jbi.JBIException {
+        doStop();
         // Transition from UNKNOWN to SHUTDOWN is done at installation time
         // In this case or if the component is already shut down, do nothing
         if (!getCurrentState().equals(UNKNOWN) && !getCurrentState().equals(SHUTDOWN)) {

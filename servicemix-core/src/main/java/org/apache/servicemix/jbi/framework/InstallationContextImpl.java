@@ -112,7 +112,7 @@ public class InstallationContextImpl implements InstallationContext {
      * 
      * @return Return the install root
      */
-    public File getinstallRootAsDir(){
+    public File getInstallRootAsDir(){
         return installRoot;
     }
 

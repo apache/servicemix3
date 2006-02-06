@@ -62,6 +62,7 @@ public class InstallationService extends BaseSystemService implements FrameworkI
     private ManagementContext managementContext;
     private ClassLoaderService classLoaderService=new ClassLoaderService();
     private Map installers=new ConcurrentHashMap();
+    private Map nonLoadedInstallers = new ConcurrentHashMap();
 
     /**
      * Get Description
@@ -129,66 +130,70 @@ public class InstallationService extends BaseSystemService implements FrameworkI
     public ObjectName loadInstaller(String aComponentName) {
         InstallerMBeanImpl installer = (InstallerMBeanImpl) installers.get(aComponentName);
         if (installer == null) {
-            LocalComponentConnector cnn = container.getLocalComponentConnector(aComponentName);
-            if (cnn == null) {
-                throw new RuntimeException("Could not find Component : " + aComponentName);
-            }
-            try {
-                ComponentContextImpl context = cnn.getContext();
-                File installationDir = environmentContext.getInstallationDirectory(aComponentName);
-                Descriptor root = AutoDeploymentService.buildDescriptor(installationDir);
-                Component descriptor = root.getComponent();
-
-                String name = descriptor.getIdentification().getName();
-                InstallationContextImpl installationContext = new InstallationContextImpl();
-                installationContext.setInstall(false);
-                installationContext.setComponentName(name);
-                installationContext.setComponentDescription(descriptor.getIdentification().getDescription());
-                installationContext.setInstallRoot(installationDir);
-                installationContext.setComponentClassName(descriptor.getComponentClassName());
-                ClassPath cp = descriptor.getComponentClassPath();
-                if (cp != null) {
-                    installationContext.setClassPathElements(cp.getPathElements());
+            installer = (InstallerMBeanImpl) nonLoadedInstallers.get(aComponentName);
+            if (installer != null) {
+                try {
+                    // create an MBean for the installer
+                    ObjectName objectName = managementContext.createCustomComponentMBeanName("Installer", aComponentName);
+                    installer.setObjectName(objectName);
+                    managementContext.registerMBean(objectName, installer,
+                            InstallerMBean.class,
+                            "standard installation controls for a Component");
+                } catch (Exception e) {
+                    throw new RuntimeException("Could not load installer", e);
                 }
-                // now build the ComponentContext
-                installationContext.setContext(context);
-                InstallationDescriptorExtension desc = descriptor.getDescriptorExtension();
-                if (desc != null) {
-                    installationContext.setDescriptorExtension(desc.getDescriptorExtension());
-                }
-                installationContext.setBinding(descriptor.isBindingComponent());
-                installationContext.setEngine(descriptor.isServiceEngine());
-                // now we must initialize the boot strap class
-                String bootstrapClassName = descriptor.getBootstrapClassName();
-                ClassPath bootStrapClassPath = descriptor.getBootstrapClassPath();
-                InstallationClassLoader bootstrapLoader = null;
-                if (bootstrapClassName != null && bootstrapClassName.length() > 0) {
-                    boolean parentFirst = descriptor.isBootstrapClassLoaderDelegationParentFirst();
-                    bootstrapLoader = classLoaderService.buildClassLoader(
-                            installationDir, bootStrapClassPath.getPathElements(), parentFirst);
-                }
-                SharedLibraryList[] lists = descriptor.getSharedLibraries();
-                String componentClassName = descriptor.getComponentClassName();
-                ClassPath componentClassPath = descriptor.getComponentClassPath();
-                boolean parentFirst = descriptor.isComponentClassLoaderDelegationParentFirst();
-                ClassLoader componentClassLoader = classLoaderService.buildClassLoader(installationDir, componentClassPath
-                                .getPathElements(), parentFirst, lists);
-                installer = new InstallerMBeanImpl(container,
-                        installationContext, componentClassLoader,
-                        componentClassName, bootstrapLoader,
-                        bootstrapClassName, true);
-                // create an MBean for the installer
-                ObjectName objectName = managementContext.createCustomComponentMBeanName("Installer", name);
-                installer.setObjectName(objectName);
-                managementContext.registerMBean(objectName, installer,
-                        InstallerMBean.class,
-                        "standard installation controls for a Component");
-            } catch (Exception e) {
-                throw new RuntimeException("Could not load installer", e);
+                return installer.getObjectName();
             }
         }
-        ObjectName result = installer.getObjectName();
-        return result;
+        return null;
+    }
+    
+    private InstallerMBeanImpl createInstaller(String componentName) throws IOException, DeploymentException {
+        File installationDir = environmentContext.getInstallationDirectory(componentName);
+        Descriptor root = AutoDeploymentService.buildDescriptor(installationDir);
+        Component descriptor = root.getComponent();
+
+        String name = descriptor.getIdentification().getName();
+        InstallationContextImpl installationContext = new InstallationContextImpl();
+        installationContext.setInstall(false);
+        installationContext.setComponentName(name);
+        installationContext.setComponentDescription(descriptor.getIdentification().getDescription());
+        installationContext.setInstallRoot(installationDir);
+        installationContext.setComponentClassName(descriptor.getComponentClassName());
+        ClassPath cp = descriptor.getComponentClassPath();
+        if (cp != null) {
+            installationContext.setClassPathElements(cp.getPathElements());
+        }
+        // now build the ComponentContext
+        File componentRoot = environmentContext.getComponentRootDirectory(componentName);
+        ComponentContextImpl context = buildComponentContext(componentRoot, componentName);
+        installationContext.setContext(context);
+        InstallationDescriptorExtension desc = descriptor.getDescriptorExtension();
+        if (desc != null) {
+            installationContext.setDescriptorExtension(desc.getDescriptorExtension());
+        }
+        installationContext.setBinding(descriptor.isBindingComponent());
+        installationContext.setEngine(descriptor.isServiceEngine());
+        // now we must initialize the boot strap class
+        String bootstrapClassName = descriptor.getBootstrapClassName();
+        ClassPath bootStrapClassPath = descriptor.getBootstrapClassPath();
+        InstallationClassLoader bootstrapLoader = null;
+        if (bootstrapClassName != null && bootstrapClassName.length() > 0) {
+            boolean parentFirst = descriptor.isBootstrapClassLoaderDelegationParentFirst();
+            bootstrapLoader = classLoaderService.buildClassLoader(
+                    installationDir, bootStrapClassPath.getPathElements(), parentFirst);
+        }
+        SharedLibraryList[] lists = descriptor.getSharedLibraries();
+        String componentClassName = descriptor.getComponentClassName();
+        ClassPath componentClassPath = descriptor.getComponentClassPath();
+        boolean parentFirst = descriptor.isComponentClassLoaderDelegationParentFirst();
+        ClassLoader componentClassLoader = classLoaderService.buildClassLoader(installationDir, componentClassPath
+                        .getPathElements(), parentFirst, lists);
+        InstallerMBeanImpl installer = new InstallerMBeanImpl(container,
+                installationContext, componentClassLoader,
+                componentClassName, bootstrapLoader,
+                bootstrapClassName, true);
+        return installer;
     }
 
     /**
@@ -200,22 +205,24 @@ public class InstallationService extends BaseSystemService implements FrameworkI
      *            true if the component is to be deleted as well.
      * @return - true if the operation was successful, otherwise false.
      */
-    public boolean unloadInstaller(String componentName,boolean isToBeDeleted){
+    public boolean unloadInstaller(String componentName, boolean isToBeDeleted){
         boolean result=false;
-        try{
+        try {
             container.getBroker().suspend();
-            InstallerMBeanImpl installer=(InstallerMBeanImpl) installers.remove(componentName);
-            result=installer!=null;
-            if(result){
+            InstallerMBeanImpl installer = (InstallerMBeanImpl) installers.remove(componentName);
+            result = installer != null;
+            if(result) {
                 container.getManagementContext().unregisterMBean(installer);
-                if(isToBeDeleted){
+                if (isToBeDeleted) {
                     installer.uninstall();
+                } else {
+                    nonLoadedInstallers.put(componentName, installer);
                 }
             }
-        }catch(JBIException e){
-            String errStr="problem shutting down Component: "+componentName;
-            log.error(errStr,e);
-        }finally{
+        } catch(JBIException e) {
+            String errStr = "problem shutting down Component: " + componentName;
+            log.error(errStr, e);
+        } finally {
             container.getBroker().resume();
         }
         return result;
@@ -608,35 +615,10 @@ public class InstallationService extends BaseSystemService implements FrameworkI
     protected void buildComponent(File componentDirectory)
             throws DeploymentException {
         try {
-            File installationDirectory = environmentContext
-                    .getInstallationDirectory(componentDirectory.getName());
-            if (installationDirectory != null && installationDirectory.exists()) {
-                Descriptor root = AutoDeploymentService
-                        .buildDescriptor(installationDirectory);
-                if (root != null) {
-                    Component descriptor = root.getComponent();
-                    if (descriptor != null) {
-                        String componentName = descriptor.getIdentification().getName();
-                        File componentRoot = environmentContext.getComponentRootDirectory(componentName);
-                        ComponentContextImpl context = buildComponentContext(componentRoot, componentName);
-                        ClassLoader componentClassLoader = classLoaderService.buildClassLoader(installationDirectory,
-                                descriptor.getComponentClassPath().getPathElements(),
-                                descriptor.isComponentClassLoaderDelegationParentFirst(), 
-                                descriptor.getSharedLibraries());
-                        Class componentClass = componentClassLoader.loadClass(descriptor.getComponentClassName());
-                        if (componentClass != null) {
-                            Object component = componentClass.newInstance();
-                            container.activateComponent(installationDirectory,
-                                    (javax.jbi.component.Component) component, descriptor.getIdentification().getDescription(), context,
-                                    descriptor.isBindingComponent(), descriptor.isServiceEngine());
-                        } else {
-                            String err = "component class " + descriptor.getComponentClassName() + " not found";
-                            log.error(err);
-                            throw new DeploymentException(err);
-                        }
-                    }
-                }
-            }
+            String componentName = componentDirectory.getName();
+            InstallerMBeanImpl installer = createInstaller(componentName); 
+            installer.activateComponent();
+            nonLoadedInstallers.put(componentName, installer);
         } catch (Throwable e) {
             log.error("Failed to deploy component: "
                     + componentDirectory.getName(), e);

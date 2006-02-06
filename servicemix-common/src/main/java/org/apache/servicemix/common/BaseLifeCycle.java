@@ -126,7 +126,13 @@ public class BaseLifeCycle implements ComponentLifeCycle {
             }
         }
         // Obtain or create the work manager
-        this.workManager = findWorkManager();
+        // When using the WorkManager from ServiceMix,
+        // some class loader problems can appear when
+        // trying to uninstall the components.
+        // Some threads owned by the work manager have a 
+        // security context referencing the component class loader
+        // so that every loaded classes are locked
+        //this.workManager = findWorkManager();
         if (this.workManager == null) {
             this.workManagerCreated = true;
             this.workManager = createWorkManager();

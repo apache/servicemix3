@@ -471,15 +471,10 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @param connector
      * @param doDelete true if component is to be deleted
      */
-    public void unreregister(LocalComponentConnector connector, boolean doDelete) {
+    public void unreregister(LocalComponentConnector connector) {
         ComponentEnvironment ce = (ComponentEnvironment) envMap.remove(connector);
         if (ce != null) {
             ce.close();
-        }
-        if (doDelete) {
-            //remove Component directory structure
-            String name = connector.getComponentNameSpace().getName();
-            removeComponentRootDirectory(name);
         }
     }
 

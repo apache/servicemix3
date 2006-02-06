@@ -573,6 +573,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     public void unregisterMBean(ObjectName name) throws JBIException {
         try{
             mbeanServerContext.unregisterMBean(name);
+            beanMap.remove(name);
         }catch(JMException e){
             log.error("Failed to unregister mbean: " + name,e);
             throw new JBIException(e);

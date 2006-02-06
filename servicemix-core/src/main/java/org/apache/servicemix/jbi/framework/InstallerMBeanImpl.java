@@ -131,15 +131,24 @@ public class InstallerMBeanImpl implements InstallerMBean {
         }
         ObjectName result = null;
         try {
+            result = activateComponent();
+            installed = true;
+        } finally {
+            if (bootstrap != null) {
+                bootstrap.cleanUp();
+            }
+        }
+        return result;
+    }
+    
+    public ObjectName activateComponent() throws JBIException {
+        ObjectName result = null;
+        try {
             Class componentClass = componentClassLoader.loadClass(context.getComponentClassName());
             if (componentClass != null){
                 Component component = (Component) componentClass.newInstance();
-                result = container.activateComponent(context.getinstallRootAsDir(), component,context.getComponentDescription(),(ComponentContextImpl) context.getContext(), context
+                result = container.activateComponent(context.getInstallRootAsDir(), component, context.getComponentDescription(),(ComponentContextImpl) context.getContext(), context
                         .isBinding(), context.isEngine());
-                installed = true;
-                if (bootstrap != null) {
-                    bootstrap.cleanUp();
-                }
             }
             else {
                 String err = "component class " + context.getComponentClassName() + " not found";
@@ -181,11 +190,20 @@ public class InstallerMBeanImpl implements InstallerMBean {
         if (bootstrap != null){
             bootstrap.onUninstall();
         }
-        container.deactivateComponent(context.getComponentName());
+        String componentName = context.getComponentName();
+        container.deactivateComponent(componentName);
         installed = false;
         if (bootstrap != null){
             bootstrap.cleanUp();
         }
+        ClassLoaderUtil.destroy(componentClassLoader);
+        ClassLoaderUtil.destroy(bootstrapClassLoader);
+        componentClassLoader = null;
+        bootstrapClassLoader = null;
+        bootstrap = null;
+        context = null;
+        System.gc();
+        container.getEnvironmentContext().removeComponentRootDirectory(componentName);
     }
 
     /**

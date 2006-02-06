@@ -283,7 +283,13 @@ public class LocalComponentConnector extends ComponentConnector {
      */
     public void init() throws JBIException {
         if (context != null && component != null) {
-            getLifeCycle().init(context);
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(getLifeCycle().getClass().getClassLoader());
+                getLifeCycle().init(context);
+            } finally {
+                Thread.currentThread().setContextClassLoader(loader);
+            }
         }
     }
 

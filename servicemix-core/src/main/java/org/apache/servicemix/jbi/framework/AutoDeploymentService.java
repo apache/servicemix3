@@ -263,6 +263,9 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             container.getBroker().suspend();
             if ("component".equals(entry.type)) {
                 log.info("Uninstalling component: " + entry.name);
+                // Ensure installer is loaded
+                installationService.loadInstaller(entry.name);
+                // Uninstall and delete component
                 installationService.unloadInstaller(entry.name,true);
             } 
             if ("library".equals(entry.type)) {
