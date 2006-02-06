@@ -649,7 +649,15 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     public String getServiceAssemblyState(String serviceAssemblyName){
         return serviceAssemblyRegistry.getState(serviceAssemblyName);
     }
-    
+
+    /**
+     * Get the lifecycle description of a service assembly
+     * @param serviceAssemblyName
+     * @return
+     */
+    public String getServiceAssemblyDesc(String serviceAssemblyName) {
+        return serviceAssemblyRegistry.getDescription(serviceAssemblyName);
+    }
     
     /**
      * Register a service assembly
@@ -696,6 +704,17 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      */
     public String[] getSADeployedServiceUnitList(String componentName)  {
         return serviceAssemblyRegistry.getDeployedServiceUnitList(componentName);
+    }
+
+    /**
+     * Returns the service unit description.
+     *
+     * @param componentName
+     * @param deployedServiceUnit
+     * @return SA deployed service unit description.
+     */
+    public String getSADeployedServiceUnitDesc(String componentName, String deployedServiceUnit) {
+        return serviceAssemblyRegistry.getSADeployedServiceUnitDesc(componentName, deployedServiceUnit);
     }
 
     /**

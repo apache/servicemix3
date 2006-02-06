@@ -332,6 +332,21 @@ public class ServiceAssemblyRegistry {
    }
    
    /**
+    * Get the current description of the named service assembly
+    *
+    * @param name
+    * @return the description
+    */
+   public String getDescription(String name) {
+       String result = null;
+       ServiceAssemblyLifeCycle salc = (ServiceAssemblyLifeCycle) serviceAssembilies.get(name);
+       if (salc != null) {
+           result = salc.getDescription();
+       }       
+       return result;
+   }
+
+   /**
     * Returns a list of Service Units that are currently deployed to the given component.
     * 
     * @param componentName name of the component.
@@ -354,6 +369,31 @@ public class ServiceAssemblyRegistry {
        }
        result = new String[tmpList.size()];
        tmpList.toArray(result);
+       return result;
+   }
+
+   /**
+    * Returns the description of SA deployed service unit.
+    *
+    * @param componentName
+    * @param deployedServiceUnit
+    * @return
+    */
+   public String getSADeployedServiceUnitDesc(String componentName, String deployedServiceUnit) {
+       String result = null;
+       ServiceAssemblyLifeCycle salc = (ServiceAssemblyLifeCycle) serviceAssembilies;
+       ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
+       if (sus != null) {
+           for (int i = 0;i < sus.length;i++) {
+               if (sus[i].getTarget().getComponentName().equals(componentName)) {
+                   if (sus[i].getIdentification().getName().equals(deployedServiceUnit)) {
+                       result = sus[i].getIdentification().getDescription();
+                       break;
+                   }
+               }
+           }
+       }
+
        return result;
    }
 

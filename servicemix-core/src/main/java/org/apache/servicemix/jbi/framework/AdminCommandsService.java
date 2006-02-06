@@ -348,7 +348,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
     public String listServiceAssemblies(String state, String componentName, String serviceAssemblyName) throws Exception {
         String[] result = null;
         if (null != serviceAssemblyName && serviceAssemblyName.length() > 0) {
-            result = container.getRegistry().getComponentsForDeployedServiceAssembly(serviceAssemblyName);
+            result = new String[]{serviceAssemblyName};
         } else if (null != componentName && componentName.length() > 0) {
             result = container.getRegistry().getDeployedServiceAssembliesForComponent(componentName);
         } else {
@@ -373,14 +373,14 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
             buffer.append("\t<service-assembly-info");
             buffer.append(" name='" + name + "'");
             buffer.append(" state='" + container.getRegistry().getServiceAssemblyState(name) + "'/>");
-            buffer.append(" <description>" + container.getRegistry().getDescription() + "</description>");
+            buffer.append(" <description>" + container.getRegistry().getServiceAssemblyDesc(name) + "</description>");
             buffer.append("\t</service-assembly-info>\n");
 
             String[] serviceUnitList = container.getRegistry().getSADeployedServiceUnitList(name);
             for (int i = 0; i < serviceUnitList.length; i++) {
                 buffer.append("\t<service-unit-info");
                 buffer.append(" name='" + serviceUnitList[i] + "'");
-                buffer.append(" state='" + container.getRegistry().getServiceAssemblyState(serviceUnitList[i]) + "'/>");
+                buffer.append(" state='" + container.getRegistry().getSADeployedServiceUnitDesc(name, serviceUnitList[i]) + "/>");
                 buffer.append("\t</service-unit-info");
             }
         }

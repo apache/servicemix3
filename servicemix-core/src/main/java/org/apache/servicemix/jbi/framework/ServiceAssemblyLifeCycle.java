@@ -100,6 +100,14 @@ class ServiceAssemblyLifeCycle {
     }
 
     /**
+     *
+     * @return the description of the ServiceAssembly
+     */
+    String getDescription() {
+        return serviceAssembly.getIdentification().getDescription();
+    }
+
+    /**
      * @return the ServiceAssembly
      */
     ServiceAssembly getServiceAssembly(){
