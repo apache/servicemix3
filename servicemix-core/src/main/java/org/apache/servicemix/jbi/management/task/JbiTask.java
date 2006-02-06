@@ -18,6 +18,7 @@ package org.apache.servicemix.jbi.management.task;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.apache.servicemix.jbi.framework.DeploymentService;
 import org.apache.servicemix.jbi.framework.FrameworkInstallationService;
 import org.apache.servicemix.jbi.framework.InstallationService;
@@ -26,7 +27,6 @@ import org.apache.servicemix.jbi.management.ManagementContextMBean;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
-import javax.jbi.management.AdminServiceMBean;
 import javax.jbi.management.DeploymentServiceMBean;
 import javax.management.MBeanServerInvocationHandler;
 import javax.management.ObjectName;
@@ -133,6 +133,18 @@ public abstract class JbiTask extends Task {
         
         return (FrameworkInstallationService) MBeanServerInvocationHandler.newProxyInstance(jmxConnector.getMBeanServerConnection(), objectName,
                 FrameworkInstallationService.class, true);
+    }
+    
+    /**
+     * Get the AdminCommandsService
+     * @return the main administration service MBean
+     * @throws IOException
+     */
+    public AdminCommandsServiceMBean getAdminCommandsService() throws IOException{
+        ObjectName objectName = getObjectName(AdminCommandsServiceMBean.class);
+        
+        return (AdminCommandsServiceMBean) MBeanServerInvocationHandler.newProxyInstance(jmxConnector.getMBeanServerConnection(), objectName,
+                AdminCommandsServiceMBean.class, true);
     }
     
     /**
