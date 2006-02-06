@@ -17,9 +17,11 @@ package org.apache.servicemix.jbi.framework;
 
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
+import javax.management.MBeanOperationInfo;
 import javax.management.ObjectName;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseLifeCycle;
+import org.apache.servicemix.jbi.management.OperationInfoHelper;
 
 /**
  * Defines basic statistics on the Component
@@ -143,7 +145,17 @@ public class ComponentStatsMBeanImpl  extends BaseLifeCycle implements Component
         helper.addAttribute(getObjectToManage(), "outboundExchangeCount", "count of outbound exchanges");
         helper.addAttribute(getObjectToManage(), "inboundExchangeRate", "rate of inbound exchanges/sec");
         helper.addAttribute(getObjectToManage(), "outboundExchangeRate", "rate of outbound exchanges/sec");
-        return AttributeInfoHelper.join(super.getAttributeInfos(),helper.getAttributeInfos());
+        return helper.getAttributeInfos();
+    }
+    
+    /**
+     * Get an array of MBeanOperationInfo
+     * 
+     * @return array of OperationInfos
+     */
+    public MBeanOperationInfo[] getOperationInfos() {
+        OperationInfoHelper helper = new OperationInfoHelper();
+        return helper.getOperationInfos();
     }
 
 

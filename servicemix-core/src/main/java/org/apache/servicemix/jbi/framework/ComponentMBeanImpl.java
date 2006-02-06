@@ -301,6 +301,12 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
     }
     
     /**
+     * @return the ObjectName for the stats MBean for this Component - or null if it doesn't exist
+     */
+    public ObjectName getStatsMBeanName(){
+        return connector.getStatsMbeanName();
+    }
+    /**
      * Get an array of MBeanAttributeInfo
      * 
      * @return array of AttributeInfos
