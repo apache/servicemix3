@@ -18,13 +18,17 @@ package org.apache.servicemix.jbi.framework;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.jbi.JBIException;
 import javax.jbi.management.DeploymentException;
 import javax.jbi.management.InstallerMBean;
+import javax.management.Attribute;
 import javax.management.JMException;
 import javax.management.MBeanOperationInfo;
+import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.resource.spi.work.Work;
 import javax.resource.spi.work.WorkException;
@@ -286,8 +290,12 @@ public class InstallationService extends BaseSystemService implements FrameworkI
      * @param location
      * @throws DeploymentException
      */
-    public void install(String location) throws DeploymentException{
+    public void install(String location) throws DeploymentException {
         install(location,false);
+    }
+
+    public void install(String location, Properties props) throws DeploymentException {
+        install(location, props, false);
     }
 
     /**
@@ -297,12 +305,16 @@ public class InstallationService extends BaseSystemService implements FrameworkI
      * @param autoStart
      * @throws DeploymentException
      */
-    public void install(String location,boolean autoStart) throws DeploymentException{
+    public void install(String location, boolean autoStart) throws DeploymentException {
+        install(location, null, autoStart);
+    }
+    
+    public void install(String location, Properties props, boolean autoStart) throws DeploymentException {
         File tmpDir=AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(),location);
         if(tmpDir!=null){
             Descriptor root=AutoDeploymentService.buildDescriptor(tmpDir);
             if(root!=null){
-                install(tmpDir,root,autoStart);
+                install(tmpDir, props, root, autoStart);
             }else{
                 log.error("Could not find Descriptor from: "+location);
             }
@@ -319,18 +331,39 @@ public class InstallationService extends BaseSystemService implements FrameworkI
      * @param autoStart
      * @throws DeploymentException
      */
-    protected void install(File tmpDir,Descriptor root,boolean autoStart) throws DeploymentException{
-        if(root.getComponent()!=null){
-            String componentName=root.getComponent().getIdentification().getName();
-            if(!installers.containsKey(componentName)){
-                InstallerMBeanImpl installer=doInstallArchive(tmpDir,root);
-                if(installer!=null){
-                    try{
+    protected void install(File tmpDir, Descriptor root, boolean autoStart) throws DeploymentException {
+        install(tmpDir, null, root, autoStart);
+    }
+
+    protected void install(File tmpDir, Properties props, Descriptor root, boolean autoStart) throws DeploymentException {
+        if (root.getComponent() != null) {
+            String componentName = root.getComponent().getIdentification().getName();
+            if (!installers.containsKey(componentName)) {
+                InstallerMBeanImpl installer = doInstallArchive(tmpDir,root);
+                if (installer != null) {
+                    try {
+                        if (props != null && props.size() > 0) {
+                            ObjectName on = installer.getInstallerConfigurationMBean();
+                            if (on == null ) {
+                                log.warn("Could not find installation configuration MBean. Installation properties will be ignored.");
+                            } else {
+                                MBeanServer mbs = managementContext.getMBeanServer();
+                                for (Iterator it = props.keySet().iterator(); it.hasNext();) {
+                                    String key = (String) it.next();
+                                    String val = props.getProperty(key);
+                                    try {
+                                        mbs.setAttribute(on, new Attribute(key, val));
+                                    } catch (JMException e) {
+                                        throw new DeploymentException("Could not set installation property: (" + key + " = " + val, e);
+                                    }
+                                }
+                            }
+                        }
                         installer.install();
-                    }catch(JBIException e){
+                    } catch(JBIException e) {
                         throw new DeploymentException(e);
                     }
-                    if(autoStart){
+                    if (autoStart) {
                         try{
                             ComponentNameSpace cns=new ComponentNameSpace(container.getName(),componentName,
                                             componentName);

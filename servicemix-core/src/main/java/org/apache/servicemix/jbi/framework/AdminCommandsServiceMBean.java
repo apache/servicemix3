@@ -28,6 +28,8 @@ public interface AdminCommandsServiceMBean extends LifeCycleMBean {
 
     String installComponent(String file) throws Exception;
 
+    String installComponent(String file, Properties properties) throws Exception;
+
     String uninstallComponent(String name) throws Exception;
 
     String installSharedLibrary(String file) throws Exception;

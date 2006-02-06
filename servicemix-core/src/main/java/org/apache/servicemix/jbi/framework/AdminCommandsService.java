@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 public class AdminCommandsService extends BaseSystemService implements AdminCommandsServiceMBean {
     private JBIContainer container;
@@ -50,6 +51,17 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
      * @return
      */
     public String installComponent(String file) throws Exception {
+        return installComponent(file, null);
+    }
+    
+    /**
+     * Install a JBI component (a Service Engine or Binding Component)
+     *
+     * @param file jbi component archive to install
+     * @param props installation properties
+     * @return
+     */
+    public String installComponent(String file, Properties props) throws Exception {
         try {
             container.getInstallationService().install(file);
             return success("installComponent", file);
