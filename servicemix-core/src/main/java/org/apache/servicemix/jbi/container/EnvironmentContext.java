@@ -58,7 +58,6 @@ public class EnvironmentContext extends BaseSystemService implements Environment
     private boolean dumpStats = false;
     private Timer statsTimer;
     private TimerTask timerTask;
-    private JBIContainer container;
 
 
     /**
@@ -153,10 +152,13 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @exception javax.jbi.JBIException if the root directory informed could not be created or it is not a directory
      */
     public void init(JBIContainer container, String rootDirPath) throws JBIException {
-        this.container = container;
+        super.init(container);
         jbiRootDir = new File(rootDirPath, container.getName());
         buildDirectoryStructure();
-        container.getManagementContext().registerSystemService(this, EnvironmentContextMBean.class);
+    }
+
+    protected Class getServiceMBean() {
+        return EnvironmentContextMBean.class;
     }
 
     /**

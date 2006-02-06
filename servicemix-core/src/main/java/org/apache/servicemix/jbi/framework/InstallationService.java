@@ -54,7 +54,6 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  */
 public class InstallationService extends BaseSystemService implements FrameworkInstallationService{
     private static final Log log=LogFactory.getLog(InstallationService.class);
-    private JBIContainer container;
     private EnvironmentContext environmentContext;
     private ManagementContext managementContext;
     private ClassLoaderService classLoaderService=new ClassLoaderService();
@@ -270,12 +269,15 @@ public class InstallationService extends BaseSystemService implements FrameworkI
      * @throws JBIException
      * @throws DeploymentException
      */
-    public void init(JBIContainer container) throws JBIException{
-        this.container=container;
-        this.environmentContext=container.getEnvironmentContext();
-        this.managementContext=container.getManagementContext();
+    public void init(JBIContainer container) throws JBIException {
+        super.init(container);
+        this.environmentContext = container.getEnvironmentContext();
+        this.managementContext = container.getManagementContext();
         buildState();
-        container.getManagementContext().registerSystemService(this,FrameworkInstallationService.class);
+    }
+    
+    protected Class getServiceMBean() {
+        return FrameworkInstallationService.class;
     }
 
     /**
@@ -621,8 +623,4 @@ public class InstallationService extends BaseSystemService implements FrameworkI
         return context;
     }
 
-    public void shutDown() throws JBIException{
-        super.shutDown();
-        container.getManagementContext().unregisterMBean(this);
-    }
 }

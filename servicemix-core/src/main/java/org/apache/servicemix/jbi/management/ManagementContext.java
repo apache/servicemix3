@@ -49,7 +49,6 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     public static final String DEFAULT_CONNECTOR_PATH = "/jmxrmi";
     public static final int DEFAULT_CONNECTOR_PORT = 1099;
     private final static Log log = LogFactory.getLog(ManagementContext.class);
-    private JBIContainer container;
     private Map beanMap = new ConcurrentHashMap();
     protected Map systemServices = new ConcurrentHashMap();
     private MBeanServerContext mbeanServerContext = new MBeanServerContext();
@@ -136,7 +135,6 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     
      */
     public void init(JBIContainer container, MBeanServer server) throws JBIException  {
-        this.container = container;
         //TODO - when activemq is up to date
         //mbeanServerContext.setMBeanServer(server);
         try{
@@ -145,7 +143,11 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
            log.error("Failed to start mbeanServerContext",e);
         }
         this.executors = Executors.newCachedThreadPool();
-        registerSystemService(this, ManagementContextMBean.class);
+        super.init(container);
+    }
+    
+    protected Class getServiceMBean() {
+        return ManagementContextMBean.class;
     }
 
     /**

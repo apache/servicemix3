@@ -41,7 +41,6 @@ public abstract class AbstractAuditor extends BaseSystemService implements Audit
 
     protected final Log log = LogFactory.getLog(getClass());
     
-    protected JBIContainer container;
     private boolean asContainerListener = true;
 
     public JBIContainer getContainer() {
@@ -50,6 +49,10 @@ public abstract class AbstractAuditor extends BaseSystemService implements Audit
 
     public void setContainer(JBIContainer container) {
         this.container = container;
+    }
+    
+    protected Class getServiceMBean() {
+        return AuditorMBean.class;
     }
 
     /* (non-Javadoc)

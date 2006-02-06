@@ -53,8 +53,8 @@ import org.apache.servicemix.jbi.util.FileUtil;
  * @version $Revision$
  */
 public class DeploymentService extends BaseSystemService implements DeploymentServiceMBean {
+    
     private static final Log log = LogFactory.getLog(DeploymentService.class);
-    private JBIContainer container;
     private EnvironmentContext environmentContext;
     
 
@@ -66,19 +66,17 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
      * @throws DeploymentException
      */
     public void init(JBIContainer container) throws JBIException {
-        this.container = container;
+        super.init(container);
         this.environmentContext = container.getEnvironmentContext();
-        container.getManagementContext().registerSystemService(this, DeploymentServiceMBean.class);
+    }
+    
+    protected Class getServiceMBean() {
+        return DeploymentServiceMBean.class;
     }
 
     public void start() throws javax.jbi.JBIException {
         buildState();
         super.start();
-    }
-    
-    public void shutDown() throws JBIException {
-        super.shutDown();
-        container.getManagementContext().unregisterMBean(this);
     }
     
     /**

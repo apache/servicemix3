@@ -15,8 +15,14 @@
  */
 package org.apache.servicemix.jbi.management;
 
+import javax.jbi.JBIException;
+
+import org.apache.servicemix.jbi.container.JBIContainer;
+
 public abstract class BaseSystemService extends BaseLifeCycle {
 
+    protected JBIContainer container;
+    
     /**
      * Get the name of the item
      * @return the name
@@ -36,6 +42,22 @@ public abstract class BaseSystemService extends BaseLifeCycle {
      */
    public String getType() {
         return "SystemService";
-    }
+   }
+   
+   public void init(JBIContainer container) throws JBIException {
+       this.container = container;
+       container.getManagementContext().registerSystemService(this, getServiceMBean());
 
+   }
+   
+   public void shutDown() throws JBIException {
+       stop();
+       super.shutDown();
+       if (container != null && container.getManagementContext() != null) {
+           container.getManagementContext().unregisterMBean(this);
+       }
+   }
+   
+   protected abstract Class getServiceMBean();
+   
 }

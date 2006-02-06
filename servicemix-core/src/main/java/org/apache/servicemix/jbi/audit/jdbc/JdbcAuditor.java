@@ -92,14 +92,11 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
         } finally {
             is.close();
         }
+        platform.createTables(database, false, true);
+        init(getContainer());
         start();
-        container.getManagementContext().registerSystemService(this, AuditorMBean.class);
     }
 
-    public void doStart() throws javax.jbi.JBIException {
-        platform.createTables(database, false, true);
-    }
-    
     public void onMessageExchange(MessageExchange exchange) throws MessagingException {
         if (exchange instanceof MessageExchangeImpl == false) {
             throw new IllegalArgumentException("exchange should be a MessageExchangeImpl");

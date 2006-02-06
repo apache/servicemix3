@@ -55,7 +55,6 @@ import org.apache.servicemix.components.util.PojoLifecycleAdaptor;
 import org.apache.servicemix.components.util.PojoSupport;
 import org.apache.servicemix.jbi.framework.AutoDeploymentService;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
-import org.apache.servicemix.jbi.framework.ComponentMBean;
 import org.apache.servicemix.jbi.framework.ComponentNameSpace;
 import org.apache.servicemix.jbi.framework.DeploymentService;
 import org.apache.servicemix.jbi.framework.InstallationService;

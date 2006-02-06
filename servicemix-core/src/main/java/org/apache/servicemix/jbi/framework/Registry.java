@@ -50,7 +50,6 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
  */
 public class Registry extends BaseSystemService implements RegistryMBean {
     
-    private JBIContainer container;
     private ComponentRegistry componentRegistry;
     private EndpointRegistry endpointRegistry;
     private SubscriptionRegistry subscriptionRegistry;
@@ -83,10 +82,13 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @throws JBIException
      */
     public void init(JBIContainer container) throws JBIException {
-        this.container = container;
+        super.init(container);
         this.componentRegistry.setContainerName(container.getName());
         this.subscriptionRegistry.init(this);
-        container.getManagementContext().registerSystemService(this, RegistryMBean.class);
+    }
+    
+    protected Class getServiceMBean() {
+        return RegistryMBean.class;
     }
 
     /**

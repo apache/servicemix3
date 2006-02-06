@@ -61,9 +61,6 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
 		// register self with the management context
         ObjectName objectName = broker.getManagementContext().createObjectName(this);
         try {
-        	if (subType != null) {
-        		objectName = new ObjectName(objectName + ",subtype=" + subType);
-        	}
             broker.getManagementContext().registerMBean(objectName, this, LifeCycleMBean.class);
         }
         catch (JMException e) {

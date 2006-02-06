@@ -58,7 +58,7 @@ import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
  * @version $Revision$
  */
 public class Broker extends BaseSystemService implements BrokerMBean {
-    private JBIContainer container;
+
     private Registry registry;
     private String flowName = "seda";
     private String subscriptionFlowName = null;
@@ -116,8 +116,8 @@ public class Broker extends BaseSystemService implements BrokerMBean {
      * @param container
      * @throws JBIException
      */
-    public void init(JBIContainer container) throws JBIException{
-        this.container = container;
+    public void init(JBIContainer container) throws JBIException {
+        super.init(container);
         this.workManager = container.getWorkManager();
         this.registry = container.getRegistry();
         if(this.flow == null){
@@ -133,9 +133,12 @@ public class Broker extends BaseSystemService implements BrokerMBean {
     	}
     	subscriptionManager.init(this, registry);
         if (flow != subscriptionManager.getFlow()) {
-        	subscriptionManager.getFlow().init(this, "subscription");
+        	subscriptionManager.getFlow().init(this, "Subscription");
         }
-        container.getManagementContext().registerSystemService(this, BrokerMBean.class);
+    }
+    
+    protected Class getServiceMBean() {
+        return BrokerMBean.class;
     }
 
     /**

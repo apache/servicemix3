@@ -38,26 +38,9 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
     public String getDescription() {
         return "Admin Commands Service";
     }
-
-    /**
-     * Initialize the Service
-     *
-     * @param container
-     * @throws JBIException
-     * @throws DeploymentException
-     */
-    public void init(JBIContainer container) throws JBIException {
-        this.container = container;
-        container.getManagementContext().registerSystemService(this, AdminCommandsServiceMBean.class);
-    }
-
-    public void start() throws javax.jbi.JBIException {
-        super.start();
-    }
-
-    public void shutDown() throws JBIException {
-        super.shutDown();
-        container.getManagementContext().unregisterMBean(this);
+    
+    protected Class getServiceMBean() {
+        return AdminCommandsServiceMBean.class;
     }
 
     /**

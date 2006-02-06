@@ -62,7 +62,6 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
 	
     private static final Log log = LogFactory.getLog(AutoDeploymentService.class);
     private static final String MONITOR_STATE_FILE = ".state.xml";
-    private JBIContainer container;
     private EnvironmentContext environmentContext;
     protected static final String DESCRIPTOR_FILE = "META-INF/jbi.xml";
     private DeploymentService deploymentService;
@@ -157,8 +156,8 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
      * @param container
      * @throws JBIException
      */
-    public void init(JBIContainer container) throws JBIException{
-        this.container=container;
+    public void init(JBIContainer container) throws JBIException {
+        super.init(container);
         this.environmentContext=container.getEnvironmentContext();
         this.installationService=container.getInstallationService();
         this.deploymentService=container.getDeploymentService();
@@ -166,24 +165,11 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
         if(environmentContext.getTmpDir()!=null){
             FileUtil.deleteFile(environmentContext.getTmpDir());
         }
-        
         initializeFileMaps();
-        container.getManagementContext().registerSystemService(this, AutoDeploymentServiceMBean.class);
     }
-
-    /**
-     * Shut down the item. The releases resources, preparatory to uninstallation.
-     * 
-     * @exception javax.jbi.JBIException
-     *                if the item fails to shut down.
-     */
-    public void shutDown() throws javax.jbi.JBIException{
-        super.shutDown();
-        stop();
-        if(statsTimer!=null){
-            statsTimer.cancel();
-        }
-        container.getManagementContext().unregisterMBean(this);
+    
+    protected Class getServiceMBean() {
+        return AutoDeploymentServiceMBean.class;
     }
 
     /**
