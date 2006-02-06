@@ -17,8 +17,8 @@ package org.apache.servicemix.jbi.management;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.jbi.JBIException;
 import javax.management.JMException;
@@ -338,7 +338,12 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * @return the JMX ObjectName of the MBean, or <code>null</code> if <code>customName</code> is invalid.
      */
     public ObjectName createCustomComponentMBeanName(String type, String name) {
-        return mbeanServerContext.createCustomComponentMBeanName(type, name);
+        Map result = new LinkedHashMap();
+        result.put("container", container.getName());
+        result.put("type", "Component");
+        result.put("name", sanitizeString(name));
+        result.put("subtype", sanitizeString(type));
+        return createObjectName(result);
     }
 
     
@@ -349,18 +354,8 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * @return the ObjectName
      */
     public ObjectName createObjectName(MBeanInfoProvider provider) {
-        ObjectName result = null;
-        try {
-            Hashtable tmp = createObjectNameProps(provider);
-            result = new ObjectName(getJmxDomainName(),tmp);
-        }
-        catch (MalformedObjectNameException e) {
-            // shouldn't happen
-            String error = "Could not create ObjectName for " + provider.getClass() + ", " + provider.getName();
-            log.error(error, e);
-            throw new RuntimeException(error);
-        }
-        return result;
+        Map props = createObjectNameProps(provider);
+        return createObjectName(props);
     }
     
     /**
@@ -389,10 +384,20 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * 
      * @return the ObjectName
      */
-    public ObjectName createObjectName(String domain,Hashtable props) {
+    public ObjectName createObjectName(String domain, Map props) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(domain).append(':');
+        int i = 0;
+        for (Iterator it = props.entrySet().iterator(); it.hasNext();) {
+            Map.Entry entry = (Map.Entry) it.next();
+            if (i++ > 0) {
+                sb.append(",");
+            }
+            sb.append(entry.getKey()).append("=").append(entry.getValue());
+        }
         ObjectName result = null;
         try {
-            result = new ObjectName(domain,props);
+            result = new ObjectName(sb.toString());
         }
         catch (MalformedObjectNameException e) {
             // shouldn't happen
@@ -409,30 +414,24 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * 
      * @return the ObjectName
      */
-    public ObjectName createObjectName(Hashtable props) {
-        ObjectName result = null;
-        try {
-            result = new ObjectName(getJmxDomainName(),props);
-        }
-        catch (MalformedObjectNameException e) {
-            // shouldn't happen
-            String error = "Could not create ObjectName for " + props;
-            log.error(error, e);
-            throw new RuntimeException(error);
-        }
-        return result;
+    public ObjectName createObjectName(Map props) {
+        return createObjectName(getJmxDomainName(), props);
     }
+    
     /**
      * Create a String used to create an ObjectName
      * 
      * @param provider
      * @return the ObjectName
      */
-    public Hashtable createObjectNameProps(MBeanInfoProvider provider){
-        Hashtable result = new Hashtable();
-        result.put("container",container.getName());
-        result.put("type",sanitizeString(provider.getType()));
-        result.put("name",sanitizeString(provider.getName()));
+    public Map createObjectNameProps(MBeanInfoProvider provider){
+        Map result = new LinkedHashMap();
+        result.put("container", container.getName());
+        result.put("type", sanitizeString(provider.getType()));
+        result.put("name", sanitizeString(provider.getName()));
+        if (provider.getSubType() != null) {
+            result.put("subtype", sanitizeString(provider.getSubType()));
+        }
         return result;
     }
 

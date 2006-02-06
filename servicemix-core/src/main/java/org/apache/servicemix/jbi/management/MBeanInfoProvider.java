@@ -62,6 +62,12 @@ public interface MBeanInfoProvider {
     public String getType();
     
     /**
+     * Get the type of this mbean
+     * @return the type
+     */
+    public String getSubType();
+    
+    /**
      * Get the Description of the item
      * @return the description
      */

@@ -17,7 +17,6 @@ package org.apache.servicemix.jbi.framework;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Set;
 
@@ -94,13 +93,11 @@ public class LocalComponentConnector extends ComponentConnector {
      */
     public ObjectName registerMBeans(ManagementContext context) throws JBIException{
         try{
-            ObjectName result=context.createObjectName(componentMBean);
-            context.registerMBean(result,componentMBean,ComponentMBean.class);
+            ObjectName result = context.createObjectName(componentMBean);
+            context.registerMBean(result, componentMBean, ComponentMBean.class);
             componentMBean.setObjectName(result);
-            Hashtable props = context.createObjectNameProps(componentStatsMBean);
-            props.put("stats","true");
-            ObjectName objName=context.createObjectName(props);
-            context.registerMBean(objName,componentStatsMBean,ComponentStatsMBean.class);
+            ObjectName objName = context.createObjectName(componentStatsMBean);
+            context.registerMBean(objName, componentStatsMBean, ComponentStatsMBean.class);
             componentStatsMBean.setObjectName(objName);
             return result;
         }catch(Exception e){

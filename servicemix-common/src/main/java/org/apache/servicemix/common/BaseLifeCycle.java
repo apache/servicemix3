@@ -84,7 +84,7 @@ public class BaseLifeCycle implements ComponentLifeCycle {
     }
     
     protected ObjectName createExtensionMBeanName() throws Exception {
-        return this.context.getMBeanNames().createCustomComponentMBeanName("extension");
+        return this.context.getMBeanNames().createCustomComponentMBeanName("Configuration");
     }
 
     /* (non-Javadoc)

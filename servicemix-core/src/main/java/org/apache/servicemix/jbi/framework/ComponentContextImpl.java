@@ -219,7 +219,7 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      * @return the JMX ObjectName of the MBean, or <code>null</code> if <code>customName</code> is invalid.
      */
     public ObjectName createCustomComponentMBeanName(String customName) {
-        return container.getManagementContext().createCustomComponentMBeanName(componentName.getName(), customName);
+        return container.getManagementContext().createCustomComponentMBeanName(customName, componentName.getName());
     }
 
     /**

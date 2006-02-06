@@ -53,7 +53,19 @@ public class ComponentStatsMBeanImpl  extends BaseLifeCycle implements Component
      * @return the type
      */
     public String getType() {
-        return "ComponentStats";
+        return "Component";
+    }
+    
+    public String getSubType() {
+        return "Statistics";
+    }
+    
+    /**
+     * Get the name of the item
+     * @return the name
+     */
+    public String getName(){
+        return connector.getComponentNameSpace().getName();
     }
     
    /**

@@ -60,6 +60,10 @@ public abstract class BaseLifeCycle implements LifeCycleMBean, MBeanInfoProvider
         return name;
     }
     
+    public String getSubType() {
+        return null;
+    }
+    
     /**
      * set state to initialized
      * @throws JBIException 
