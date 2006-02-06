@@ -11,7 +11,7 @@ You can use ServiceMix in Java SE or a Java EE application server.
 
 Incubation Disclaimer
 =====================
-ActiveMQ is an effort undergoing incubation at the Apache Software Foundation (ASF), sponsored by the Geronimo PMC. 
+ServiceMix is an effort undergoing incubation at the Apache Software Foundation (ASF), sponsored by the Geronimo PMC. 
 Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, 
 communications, and decision making process have stabilized in a manner consistent with other successful ASF projects. 
 
