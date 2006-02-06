@@ -1,35 +1,16 @@
 <project xmlns:ant="jelly:ant" xmlns:jelly="jelly:core">	
-  <goal name="eclipseplugin:parsePluginXml" prereqs="jar:jar" description="Generates a eclipse plugin">  		  	  
-  	<jelly:if test="${pom.package != ''}">
-  		<echo>Using the package name as plugin name ${pom.package}</echo>
-  		<jelly:set var="eclipsepluginname" value="${pom.package}-${pom.currentVersion}"/>
-  	</jelly:if>
-  	<jelly:if test="${eclipsepluginname == null}">
-			<echo>Using the project artifact name as plugin name ${pom.name}</echo>  	
-  		<jelly:set var="eclipsepluginname" value="${pom.artifactId}-${pom.currentVersion}"/>
-  	</jelly:if>
-  	<echo>Plugin name will be ${eclipsepluginname}</echo>
-  	
-  	<jelly:set var="destination" value="${eclipseplugin.output.dir}/${eclipsepluginname}"/>
-  	<ant:mkdir dir="${destination}"/>				
-  	<jelly:file name="${destination}/plugin.xml" prettyPrint="true"
-			outputMode="xml" xmlns="dummy" escapeText="false">
-			<jelly:import file="${eclipseplugin.template}" inherit="true" />
-		</jelly:file>
-  </goal>
-  
   <goal name="eclipseplugin:generateManifest">
   <jelly:set var="includedLibs" value=""/>
-    <jelly:set var="referencedPlugins" value=""/>
-   <jelly:forEach var="lib" items="${pom.artifacts}">   			
-   			<jelly:if test="${!lib.file.name.startsWith('org.eclipse')}">
-	   			<jelly:set var="includedLibs" value="${includedLibs}target/${lib.file.name},"/>
+  <jelly:set var="referencedPlugins" value=""/>
+  <jelly:forEach var="lib" items="${pom.artifacts}">   			
+   	<jelly:if test="${!lib.file.name.startsWith('org.eclipse')}">
+	   			<jelly:set var="includedLibs" value="${includedLibs}target/${lib.file.name},&#10; "/>
 	   			<ant:copy
 				file="${pom.getDependencyPath(lib.dependency.getId())}"
 				todir="${basedir}/target" />   				
    			</jelly:if>	
 			<jelly:if test="${lib.file.name.startsWith('org.eclipse')}">
-	   			<jelly:set var="referencedPlugins" value="${referencedPlugins}${lib.dependency.getArtifactId()};visibility:=reexport,"/>   				
+	   			<jelly:set var="referencedPlugins" value="${referencedPlugins}${lib.dependency.getArtifactId()};visibility:=reexport,&#10; "/>   				
    			</jelly:if>   					
 			<ant:copy
 				file="${pom.getDependencyPath(lib.dependency.getId())}"
@@ -41,8 +22,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: ${pom.name}
 Bundle-SymbolicName: org.apache.servicemix.packaging.plugin; singleton:=true
 Bundle-Version: ${pom.currentVersion}
-Bundle-ClassPath: ${includedLibs}
- ${maven.final.name}
+Bundle-ClassPath: ${includedLibs}${maven.final.name}.jar
 Bundle-Activator: org.apache.servicemix.packaging.DeployerPlugin
 Bundle-Vendor: ${pom.organisation.name}
 Bundle-Localization: plugin
