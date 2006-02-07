@@ -30,9 +30,10 @@ import org.eclipse.core.resources.IProject;
  * 
  */
 public class BindingComponentDeployer extends AbstractDeployer {
+	
 
 	public BindingComponentDeployer(ComponentArtifact artifact) {
-		setArtifact(artifact);
+		setArtifact(artifact);		
 	}
 
 	public void deploy(IProject project, BindingComponent component)

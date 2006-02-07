@@ -16,15 +16,16 @@
 	* limitations under the License.
 	*/
 -->
-
 <project>
-    <pomVersion>3</pomVersion>
-    <extend>${basedir}/../../etc/project.xml</extend>
+	<pomVersion>3</pomVersion>
+	<extend>${basedir}/../../etc/project.xml</extend>
 
 	<name>ServiceMix :: Packaging Eclipse Plugin</name>
 	<id>servicemix-packaging-eclipse-plugin</id>
 	<description>Extension Packaging Descriptors for JBI</description>
-	<shortDescription>Extension Packaging Descriptors for JBI</shortDescription>
+	<shortDescription>
+		Extension Packaging Descriptors for JBI
+	</shortDescription>
 
 	<dependencies>
 		<!--  ServiceMix -->
@@ -42,207 +43,207 @@
 			<groupId>incubator-servicemix</groupId>
 			<artifactId>servicemix-packaging-descriptors</artifactId>
 			<version>${pom.currentVersion}</version>
-		</dependency>		
-		
+		</dependency>
+
 		<dependency>
-      <groupId>servicemix</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <version>${jaxws_rt_version}</version>         
-    </dependency>
-    <dependency>
-      <groupId>servicemix</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <version>${jaxws_rt_version}</version>
-    </dependency>
-    <dependency>
-      <id>stax+api</id>
-      <version>${stax_api_version}</version>
-    </dependency>
-    
-    <!-- Plexus (for XMLWriter) -->
+			<groupId>servicemix</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>${jaxws_rt_version}</version>
+		</dependency>
+		<dependency>
+			<groupId>servicemix</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>${jaxws_rt_version}</version>
+		</dependency>
+		<dependency>
+			<id>stax+api</id>
+			<version>${stax_api_version}</version>
+		</dependency>
+
+		<!-- Plexus (for XMLWriter) -->
 		<dependency>
 			<groupId>org.codehaus.plexus</groupId>
 			<artifactId>plexus-utils</artifactId>
 			<version>1.0.5</version>
 		</dependency>
 
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.4</version>
+		</dependency>
+
 		<!-- Eclipse libraries -->
 		<dependency>
-				<artifactId>org.eclipse.text</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.gef</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.draw2d</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.ui.views</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.ui</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.help</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.core.resources</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.ui.ide</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.ui.forms</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.jface.text</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.ui.editors</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>
-					org.eclipse.ui.workbench.texteditor
-				</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.jface</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.ui.workbench</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.core.runtime</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.osgi</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.swt</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.ui.workbench</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.osgi</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.swt.win32.win32.x86</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.core.commands</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.wst.xml.core</artifactId>
-				<groupId>servicemix</groupId>
-				<version>0.7.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.wst.xml.ui</artifactId>
-				<groupId>servicemix</groupId>
-				<version>0.7.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.wst.sse.core</artifactId>
-				<groupId>servicemix</groupId>
-				<version>0.7.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.wst.sse.ui</artifactId>
-				<groupId>servicemix</groupId>
-				<version>0.7.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>
-					org.eclipse.wst.common.uriresolver
-				</artifactId>
-				<groupId>servicemix</groupId>
-				<version>0.7.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>
-					org.eclipse.wst.common.frameworks
-				</artifactId>
-				<groupId>servicemix</groupId>
-				<version>0.7.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.wst.dtd.core</artifactId>
-				<groupId>servicemix</groupId>
-				<version>0.7.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.wst.validation</artifactId>
-				<groupId>servicemix</groupId>
-				<version>0.7.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.wst.common.ui</artifactId>
-				<groupId>servicemix</groupId>
-				<version>0.7.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.emf.common</artifactId>
-				<groupId>servicemix</groupId>
-				<version>2.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.emf.ecore</artifactId>
-				<groupId>servicemix</groupId>
-				<version>2.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-				<groupId>servicemix</groupId>
-				<version>2.1.0</version>
-			</dependency>
-			<dependency>
-				<artifactId>org.eclipse.ui.intro</artifactId>
-				<groupId>servicemix</groupId>
-				<version>3.1.0</version>
-			</dependency>
+			<artifactId>org.eclipse.text</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.gef</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.draw2d</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.ui.views</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.ui</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.help</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.core.resources</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.ui.ide</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.ui.forms</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.jface.text</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.ui.editors</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.ui.workbench.texteditor</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.jface</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.ui.workbench</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.core.runtime</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.osgi</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.swt</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.ui.workbench</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.osgi</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.swt.win32.win32.x86</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.core.commands</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.wst.xml.core</artifactId>
+			<groupId>servicemix</groupId>
+			<version>0.7.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.wst.xml.ui</artifactId>
+			<groupId>servicemix</groupId>
+			<version>0.7.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.wst.sse.core</artifactId>
+			<groupId>servicemix</groupId>
+			<version>0.7.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.wst.sse.ui</artifactId>
+			<groupId>servicemix</groupId>
+			<version>0.7.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.wst.common.uriresolver</artifactId>
+			<groupId>servicemix</groupId>
+			<version>0.7.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.wst.common.frameworks</artifactId>
+			<groupId>servicemix</groupId>
+			<version>0.7.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.wst.dtd.core</artifactId>
+			<groupId>servicemix</groupId>
+			<version>0.7.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.wst.validation</artifactId>
+			<groupId>servicemix</groupId>
+			<version>0.7.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.wst.common.ui</artifactId>
+			<groupId>servicemix</groupId>
+			<version>0.7.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.emf.common</artifactId>
+			<groupId>servicemix</groupId>
+			<version>2.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.emf.ecore</artifactId>
+			<groupId>servicemix</groupId>
+			<version>2.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+			<groupId>servicemix</groupId>
+			<version>2.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.eclipse.ui.intro</artifactId>
+			<groupId>servicemix</groupId>
+			<version>3.1.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>
@@ -256,6 +257,6 @@
 				</includes>
 				<filtering>false</filtering>
 			</resource>
-		</resources>		
+		</resources>
 	</build>
 </project>

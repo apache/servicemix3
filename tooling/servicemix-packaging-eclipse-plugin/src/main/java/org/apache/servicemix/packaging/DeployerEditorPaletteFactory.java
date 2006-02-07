@@ -108,7 +108,7 @@ public class DeployerEditorPaletteFactory {
 										.getComponentImage(component
 												.getComponentUuid()));
 					CombinedTemplateCreationEntry componentCreationEntry = new CombinedTemplateCreationEntry(
-							component.getName(), component.getDescription(),
+							component.getDescription(), component.getDescription(),
 							Component.class, new ComponentCreationFactory(
 									editor, component.getComponentUuid(),
 									component.getType()), imageDescriptor,
@@ -138,7 +138,7 @@ public class DeployerEditorPaletteFactory {
 										.getComponentImage(component
 												.getComponentUuid()));
 					CombinedTemplateCreationEntry componentCreationEntry = new CombinedTemplateCreationEntry(
-							component.getName(), component.getDescription(),
+							component.getDescription(), component.getDescription(),
 							Component.class, new ComponentCreationFactory(
 									editor, component.getComponentUuid(),
 									component.getType()), imageDescriptor,

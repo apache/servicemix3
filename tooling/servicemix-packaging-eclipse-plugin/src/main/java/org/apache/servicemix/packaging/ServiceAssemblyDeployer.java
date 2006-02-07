@@ -116,6 +116,7 @@ public class ServiceAssemblyDeployer extends AbstractDeployer {
 		if (unit.getStoredAssets() != null) {
 			injectEmbeddedArtifacts(unit.getStoredAssets(), suZip, project);
 			injectStoredAssets(unit.getStoredAssets(), suZip);
+			injectParametersAsProperties(unit, suZip);
 		}
 		suZip.close();
 
@@ -131,6 +132,16 @@ public class ServiceAssemblyDeployer extends AbstractDeployer {
 		ServiceAssemblyDescriptorWriter writer = new ServiceAssemblyDescriptorWriter();
 		writer.write(stringWriter, assembly);
 		out.putNextEntry(new ZipEntry("META-INF/jbi.xml"));
+		out.write(stringWriter.toString().getBytes());
+		out.closeEntry();
+	}
+
+	private void injectParametersAsProperties(ServiceUnit unit,
+			ZipOutputStream out) throws Exception {
+		StringWriter stringWriter = new StringWriter();
+		AssetPropertiesWriter writer = new AssetPropertiesWriter();
+		writer.write(stringWriter, unit);
+		out.putNextEntry(new ZipEntry("servicemix.properties"));
 		out.write(stringWriter.toString().getBytes());
 		out.closeEntry();
 	}

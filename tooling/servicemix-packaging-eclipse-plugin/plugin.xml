@@ -2,7 +2,7 @@
 <?eclipse version="3.0"?>
 <plugin>	
     <extension point="org.eclipse.ui.editors">
-    <editor default="true" name="JBI Component Deployer" extensions="jbi" icon="bob.gif" class="org.apache.servicemix.packaging.DeployerEditor" id="com.unity.jbi.deployer.DeployerEditor">
+    <editor default="true" name="JBI Component Deployer" extensions="jbi" icon="icons/deployment.gif" class="org.apache.servicemix.packaging.DeployerEditor" id="com.unity.jbi.deployer.DeployerEditor">
       <contentTypeBinding contentTypeId="JBIDeploymentContentType">
       </contentTypeBinding>
     </editor>

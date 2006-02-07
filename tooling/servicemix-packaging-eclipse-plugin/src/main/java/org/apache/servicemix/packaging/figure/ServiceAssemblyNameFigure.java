@@ -68,7 +68,7 @@ public class ServiceAssemblyNameFigure extends Figure {
 			ComponentBased componentBase = (ComponentBased) serviceAssembly;
 			description.append(componentBase.getComponentArtifact()
 					.getComponentDefinitionByUuid(
-							componentBase.getComponentUuid()).getName());
+							componentBase.getComponentUuid()).getDescription());
 			description.append(" (");
 			description.append(componentBase.getComponentArtifact()
 					.getComponentDefinitionByUuid(
@@ -76,7 +76,7 @@ public class ServiceAssemblyNameFigure extends Figure {
 			description.append(")");
 
 			componentName.setText(description.toString());
-		} 
+		}
 	}
 
 	public Dimension getPreferredSize(int wHint, int hHint) {
