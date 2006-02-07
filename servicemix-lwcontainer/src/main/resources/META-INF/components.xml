@@ -8,7 +8,7 @@
 		<serviceUnit>
 			<assets>
 				<embeddedArtifact extension="xml"
-					description="ServiceMix Definition" />
+					description="ServiceMix Definition" name="servicemix.xml" />
 				<connection default="true" name="defaultDestination" description="Default destination" />
 			</assets>
 		</serviceUnit>
