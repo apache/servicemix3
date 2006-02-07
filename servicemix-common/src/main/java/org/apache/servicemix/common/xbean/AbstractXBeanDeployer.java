@@ -15,23 +15,25 @@
  */
 package org.apache.servicemix.common.xbean;
 
+import java.io.File;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.jbi.management.DeploymentException;
+
 import org.apache.servicemix.common.AbstractDeployer;
 import org.apache.servicemix.common.BaseComponent;
 import org.apache.servicemix.common.Endpoint;
 import org.apache.servicemix.common.EndpointSupport;
 import org.apache.servicemix.common.ServiceUnit;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
+import org.springframework.core.io.FileSystemResource;
 import org.xbean.kernel.Kernel;
 import org.xbean.kernel.KernelFactory;
 import org.xbean.kernel.ServiceName;
 import org.xbean.server.repository.FileSystemRepository;
 import org.xbean.server.spring.loader.SpringLoader;
-
-import javax.jbi.management.DeploymentException;
-
-import java.io.File;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 public class AbstractXBeanDeployer extends AbstractDeployer {
 
@@ -75,6 +77,17 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
             springLoader.setKernel(kernel);
             springLoader.setBaseDir(new File(serviceUnitRootPath));
             springLoader.setXmlPreprocessors(xmlPreprocessors);
+            
+            PropertyPlaceholderConfigurer propertyPlaceholder = new PropertyPlaceholderConfigurer();
+			FileSystemResource propertiesFile = new FileSystemResource(
+					new File(serviceUnitRootPath) + "/" + getXBeanFile()
+							+ ".properties");
+			if (propertiesFile.getFile().exists()) {				
+				propertyPlaceholder.setLocation(propertiesFile);
+				springLoader.setBeanFactoryPostProcessors(Collections
+						.singletonList(propertyPlaceholder));
+			} 
+			
             ServiceName configurationName = springLoader.load(getXBeanFile());
             kernel.startService(configurationName);
             su.setConfiguration(configurationName);
