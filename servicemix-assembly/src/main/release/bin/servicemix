@@ -5,6 +5,18 @@
 
 DIRNAME=`dirname $0`
 PROGNAME=`basename $0`
+#
+# Check/Set up some easily accessible MIN/MAX params for JVM mem usage
+#
+
+if [ "x$JAVA_MIN_MEM" = "x" ]; then
+    export JAVA_MIN_MEM=128M
+fi
+         
+if [ "x$JAVA_MAX_MEM" = "x" ]; then
+    export JAVA_MAX_MEM=512M
+fi
+
 
 warn() {
     echo "${PROGNAME}: $*"
@@ -26,6 +38,7 @@ detectOS() {
     # OS specific support (must be 'true' or 'false').
     cygwin=false;
     darwin=false;
+    aix=false;
     case "`uname`" in
         CYGWIN*)
             cygwin=true
@@ -34,7 +47,16 @@ detectOS() {
         Darwin*)
             darwin=true
             ;;
+        AIX*)
+            aix=true
+            ;;
     esac
+    # For AIX, set an environment variable
+    if $aix; then
+         export LDR_CNTRL=MAXDATA=0xB0000000@DSA
+         export IBM_JAVA_HEAPDUMP_TEXT=true
+         echo $LDR_CNTRL                           
+    fi
 }
 
 unlimitFD() {
@@ -53,6 +75,7 @@ unlimitFD() {
             fi
             
             ulimit -n $MAX_FD
+            echo "ulimit -n" `ulimit -n`
             if [ $? -ne 0 ]; then
                 warn "Could not set maximum file descriptor limit: $MAX_FD"
             fi
@@ -106,6 +129,17 @@ locateJava() {
     fi
 }
 
+detectJVM() {
+   echo "`$JAVA -version`"
+   # This service should call `java -version`, 
+   # read stdout, and look for hints
+   if $JAVA -version 2>&1 | grep "^IBM" ; then
+       JVM_VENDOR="IBM"
+   else
+       JVM_VENDOR="SUN"
+   fi
+   echo "JVM vendor is $JVM_VENDOR"
+}
 setupDebugOptions() {
     if [ "x$JAVA_OPTS" = "x" ]; then
         JAVA_OPTS="$DEFAULT_JAVA_OPTS"
@@ -125,7 +159,17 @@ setupDebugOptions() {
 }
 
 setupDefaults() {
-    DEFAULT_JAVA_OPTS="-server -Xmx512M -Dderby.system.home=$SERVICEMIX_HOME/var -Dderby.storage.fileSyncTransactionLog=true"
+    DEFAULT_JAVA_OPTS="-Xms$JAVA_MIN_MEM -Xmx$JAVA_MAX_MEM -Dderby.system.home=$SERVICEMIX_HOME/var -Dderby.storage.fileSyncTransactionLog=true"
+
+    #Set the JVM_VENDOR specific JVM flags
+    if [ "$JVM_VENDOR" = "SUN" ]; then
+        DEFAULT_JAVA_OPTS="-server $DEFAULT_JAVA_OPTS"
+    elif [ "$JVM_VENDOR" = "IBM" ]; then
+        DEFAULT_JAVA_OPTS="-Xverify:none $DEFAULT_JAVA_OPTS"
+        if $aix; then
+            DEFAULT_JAVA_OPTS="-Xlp $DEFAULT_JAVA_OPTS"
+        fi
+    fi
     # Add the conf directory so it picks up the Log4J config
     CLASSPATH="$CLASSPATH:$SERVICEMIX_HOME/conf"
     DEFAULT_JAVA_DEBUG_OPTS="-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"
@@ -186,6 +230,8 @@ init() {
     # Locate the Java VM to execute
     locateJava
     
+    # Determine the JVM vendor
+    detectJVM
     # Setup default options
     setupDefaults
     
@@ -200,6 +246,10 @@ init() {
 }
 
 run() {
+    # Compensate for funky hot-deploy issues
+    rm -rf ../wdir
+    touch ../install/*.zip
+    touch ../deploy/*.zip
     # For Cygwin, switch paths to Windows format before running java
     if $cygwin; then
         SERVICEMIX_HOME=`cygpath --path --windows "$SERVICEMIX_HOME"`
@@ -209,6 +259,16 @@ run() {
     fi
     
     # Execute the Java Virtual Machine
+    echo $JAVA \
+        $JAVA_OPTS \
+        $SERVICEMIX_OPTS \
+        -classpath "$CLASSPATH" \
+        -Dclassworlds.conf="$CLASSWORLDS_CONF" \
+        -Dservicemix.home="$SERVICEMIX_HOME" \
+        -Dcygwin.user.home="$CYGHOME" \
+        -Djava.endorsed.dirs="$SERVICEMIX_HOME/lib/endorsed" \
+        org.codehaus.classworlds.Launcher \
+        "$@"        
     exec $JAVA \
         $JAVA_OPTS \
         $SERVICEMIX_OPTS \
@@ -218,7 +278,7 @@ run() {
         -Dcygwin.user.home="$CYGHOME" \
         -Djava.endorsed.dirs="$SERVICEMIX_HOME/lib/endorsed" \
         org.codehaus.classworlds.Launcher \
-        "$@"
+        "$@"      
 }
 
 main() {
