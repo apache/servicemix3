@@ -616,9 +616,16 @@ public class InstallationService extends BaseSystemService implements FrameworkI
             throws DeploymentException {
         try {
             String componentName = componentDirectory.getName();
-            InstallerMBeanImpl installer = createInstaller(componentName); 
-            installer.activateComponent();
-            nonLoadedInstallers.put(componentName, installer);
+            File stateFile = container.getEnvironmentContext().getComponentStateFile(componentName);
+            if (!stateFile.exists()) {
+                // An installer has been created but the component has not been installed
+                // So remove it
+                FileUtil.deleteFile(componentDirectory);
+            } else {
+                InstallerMBeanImpl installer = createInstaller(componentName); 
+                installer.activateComponent();
+                nonLoadedInstallers.put(componentName, installer);
+            }
         } catch (Throwable e) {
             log.error("Failed to deploy component: "
                     + componentDirectory.getName(), e);

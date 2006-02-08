@@ -337,8 +337,6 @@ public class InstallationTest extends AbstractManagementTest {
 
         // configure bootstrap
         bootstrapMock.reset();
-        bootstrap.init(null);
-        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
         bootstrapMock.replay();
         // configure component
         componentMock.reset();

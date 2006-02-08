@@ -126,6 +126,15 @@ public class HotDeployTest extends AbstractManagementTest {
         assertEquals(LifeCycleMBean.RUNNING, lifecycleMBean.getCurrentState());
         // check mocks
         verify();
+        
+        // Clean shutdown
+        reset();
+        component.getLifeCycle();
+        componentMock.setReturnValue(lifecycle);
+        lifecycle.stop();
+        lifecycle.shutDown();
+        replay();
+        shutdownContainer();
     }
     
     public void testHotDeployUndeployComponent() throws Exception {
@@ -171,8 +180,9 @@ public class HotDeployTest extends AbstractManagementTest {
         reset();
         bootstrap.onUninstall();
         bootstrap.cleanUp();
-        //lifecycle.stop();
+        lifecycle.stop();
         lifecycle.shutDown();
+        //manager.shutDown("su");
         replay();
         // test component uninstallation
         synchronized (lock) {
@@ -184,6 +194,11 @@ public class HotDeployTest extends AbstractManagementTest {
         assertNull(lifecycleName);
         // check mocks
         verify();
+        
+        // Clean shutdown
+        reset();
+        replay();
+        shutdownContainer();
     }
     
     public void testDeploySAThenComponent() throws Exception {
@@ -238,5 +253,17 @@ public class HotDeployTest extends AbstractManagementTest {
         assertEquals(LifeCycleMBean.RUNNING, lifecycleMBean.getCurrentState());
         // check mocks
         verify();
+        
+        // Clean shutdown
+        reset();
+        component.getLifeCycle();
+        componentMock.setReturnValue(lifecycle);
+        component.getServiceUnitManager();
+        componentMock.setReturnValue(manager, MockControl.ONE_OR_MORE);
+        lifecycle.stop();
+        manager.shutDown("su");
+        lifecycle.shutDown();
+        replay();
+        shutdownContainer();
     }
 }

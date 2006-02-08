@@ -69,40 +69,40 @@ public class InstallerMBeanImpl implements InstallerMBean {
         this.bootstrapClassLoader = bootstrapLoader;
         this.bootstrapClassName = bootstrapClassName;
         this.installed = installed;
-        //initialize the bootstrap
-        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-        if (bootstrapLoader != null && bootstrapClassName != null && bootstrapClassName.length() > 0){
-            
-            
-                Class bootstrapClass;
-                try {
-                    bootstrapClass = bootstrapClassLoader.loadClass(bootstrapClassName);
-                    if (bootstrapClass == null){
-                        throw new DeploymentException("Could not find bootstrap class: " + bootstrapClassName);
-                    }
-                    this.bootstrap = (Bootstrap) bootstrapClass.newInstance();
-                    this.bootstrap.init(this.context);
+        if (!installed) {
+            createBootstrap();
+        }
+    }
+    
+    protected void createBootstrap() throws DeploymentException {
+        if (bootstrap == null && bootstrapClassLoader != null && bootstrapClassName != null) {
+            //initialize the bootstrap
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+            Class bootstrapClass;
+            try {
+                bootstrapClass = bootstrapClassLoader.loadClass(bootstrapClassName);
+                if (bootstrapClass == null){
+                    throw new DeploymentException("Could not find bootstrap class: " + bootstrapClassName);
                 }
-                catch (ClassNotFoundException e) {
-                    log.error("Class not found: " + bootstrapClassName,e);
-                    throw new DeploymentException(e);
-                }
-                catch (InstantiationException e) {
-                    log.error("Could not instantiate : " + bootstrapClassName,e);
-                    throw new DeploymentException(e);
-                }
-                catch (IllegalAccessException e) {
-                    log.error("Illegal access on: " + bootstrapClassName,e);
-                    throw new DeploymentException(e);
-                }
-                catch (JBIException e) {
-                    log.error("Could not initialize : " + bootstrapClassName,e);
-                    throw new DeploymentException(e);
-                }
-                
-           
-            
-            
+                this.bootstrap = (Bootstrap) bootstrapClass.newInstance();
+                this.bootstrap.init(this.context);
+            }
+            catch (ClassNotFoundException e) {
+                log.error("Class not found: " + bootstrapClassName,e);
+                throw new DeploymentException(e);
+            }
+            catch (InstantiationException e) {
+                log.error("Could not instantiate : " + bootstrapClassName,e);
+                throw new DeploymentException(e);
+            }
+            catch (IllegalAccessException e) {
+                log.error("Illegal access on: " + bootstrapClassName,e);
+                throw new DeploymentException(e);
+            }
+            catch (JBIException e) {
+                log.error("Could not initialize : " + bootstrapClassName,e);
+                throw new DeploymentException(e);
+            }
         }
     }
 
@@ -126,12 +126,16 @@ public class InstallerMBeanImpl implements InstallerMBean {
         if (installed) {
             throw new DeploymentException("Component is already installed");
         }
+        createBootstrap();
         if (bootstrap != null) {
             bootstrap.onInstall();
         }
         ObjectName result = null;
         try {
             result = activateComponent();
+            ComponentNameSpace cns = new ComponentNameSpace(container.getName(), context.getComponentName(), null);
+            LocalComponentConnector lcc = container.getRegistry().getLocalComponentConnector(cns);
+            lcc.getComponentMBean().persistRunningState();
             installed = true;
         } finally {
             if (bootstrap != null) {
@@ -187,6 +191,7 @@ public class InstallerMBeanImpl implements InstallerMBean {
         if (!installed) {
             throw new DeploymentException("Component is not installed");
         }
+        createBootstrap();
         if (bootstrap != null){
             bootstrap.onUninstall();
         }
