@@ -1,27 +1,13 @@
-<components>
-	<component type="binding-component">
-		<componentUuid>40bcb7a0-6c3f-11da-bcff-0002a5d5c51b</componentUuid>
-		<name>Provider</name>
-		<description>
-			A service that can be configured to source data from an
-			external source such as a database or RDBMS into your JBI
-			environment
-		</description>
+<components xmlns="http://servicemix.apache.org/deployment">
+	<component type="service-engine">
+		<name>lw-container</name>
+		<description>ServiceMix Lightweight Container</description>
+		<type>service-engine</type>
 		<assets>
-			<embeddedArtifact extension="*.msgprv"
-				description="Configuration artifact" />
-			<parameter name="poolsize" defaultValue="10"
-				description="Maximum pool size" />
-			<connection defaultDestination="true"
-				name="destinationService" description="Default destination" mep="robustInOnly" />
-		</assets>
-		<serviceUnit>
-			<assets>
-				<embeddedArtifact extension="*.xml"
-					description="Service Unit Definition" />
-				<connection default="true" name="Destination service"
-					mep="robustInOnly" />
-			</assets>
-		</serviceUnit>
+			<artifact extension="xml"
+				description="ServiceMix Definition" name="servicemix.xml" />
+			<connection default="true" name="defaultDestination"
+				description="Default destination" />
+		</assets>		
 	</component>
 </components>
