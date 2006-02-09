@@ -17,7 +17,7 @@ package org.apache.servicemix.packaging;
 
 import java.util.List;
 
-import org.apache.servicemix.packaging.descriptor.Component;
+import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
 import org.apache.servicemix.packaging.model.Connection;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
@@ -102,17 +102,17 @@ public class DeployerEditorPaletteFactory {
 				if (component.getType().equals("binding-component")) {
 					ImageDescriptor imageDescriptor = null;
 					if (artifact
-							.getComponentImage(component.getComponentUuid()) != null)
+							.getComponentImage(component.getName()) != null)
 						imageDescriptor = ImageDescriptor
 								.createFromImage(artifact
 										.getComponentImage(component
-												.getComponentUuid()));
+												.getName()));
 					CombinedTemplateCreationEntry componentCreationEntry = new CombinedTemplateCreationEntry(
-							component.getDescription(), component.getDescription(),
-							Component.class, new ComponentCreationFactory(
-									editor, component.getComponentUuid(),
-									component.getType()), imageDescriptor,
-							imageDescriptor);
+							component.getDescription(), component
+									.getDescription(), Component.class,
+							new ComponentCreationFactory(editor, component
+									.getName(), component.getType()),
+							imageDescriptor, imageDescriptor);
 					componentsDrawer.add(componentCreationEntry);
 				}
 			}
@@ -132,17 +132,17 @@ public class DeployerEditorPaletteFactory {
 				if (component.getType().equals("service-engine")) {
 					ImageDescriptor imageDescriptor = null;
 					if (artifact
-							.getComponentImage(component.getComponentUuid()) != null)
+							.getComponentImage(component.getName()) != null)
 						imageDescriptor = ImageDescriptor
 								.createFromImage(artifact
 										.getComponentImage(component
-												.getComponentUuid()));
+												.getName()));
 					CombinedTemplateCreationEntry componentCreationEntry = new CombinedTemplateCreationEntry(
-							component.getDescription(), component.getDescription(),
-							Component.class, new ComponentCreationFactory(
-									editor, component.getComponentUuid(),
-									component.getType()), imageDescriptor,
-							imageDescriptor);
+							component.getDescription(), component
+									.getDescription(), Component.class,
+							new ComponentCreationFactory(editor, component
+									.getName(), component.getType()),
+							imageDescriptor, imageDescriptor);
 					componentsDrawer.add(componentCreationEntry);
 				}
 			}

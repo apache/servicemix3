@@ -25,8 +25,8 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
-import org.apache.servicemix.packaging.assets.ArtifactReference;
-import org.apache.servicemix.packaging.assets.StoredAssets;
+import org.apache.servicemix.descriptors.bundled.assets.BundledAssets;
+import org.apache.servicemix.descriptors.bundled.assets.BundledAssets.Artifact;
 import org.apache.servicemix.packaging.model.AbstractComponent;
 import org.apache.servicemix.packaging.model.DeploymentDiagram;
 import org.apache.servicemix.packaging.model.ModelElement;
@@ -77,11 +77,11 @@ public abstract class AbstractDeployer {
 	}
 
 	protected void injectComponentFiles(ZipOutputStream out,
-			String componentUuid) throws IOException {
+			String componentName) throws IOException {
 		for (String fileName : getArtifact().getResourceMap().keySet()) {
 			if (!fileName.equals("META-INF/components.xml")) {
-				if (fileName.equals(getArtifact().getComponentDefinitionByUuid(
-						componentUuid).getComponentDescriptor())) {
+				if (fileName.equals(getArtifact().getComponentDefinitionByName(
+						componentName).getAssets().getJbiDescriptor())) {
 					out.putNextEntry(new ZipEntry("META-INF/jbi.xml"));
 				} else
 					out.putNextEntry(new ZipEntry(fileName));
@@ -91,9 +91,9 @@ public abstract class AbstractDeployer {
 		}
 	}
 
-	protected void injectEmbeddedArtifacts(StoredAssets storedAssets,
+	protected void injectEmbeddedArtifacts(BundledAssets storedAssets,
 			ZipOutputStream suZip, IProject project) throws Exception {
-		for (ArtifactReference reference : storedAssets.getArtifactReference()) {
+		for (Artifact reference : storedAssets.getArtifact()) {
 			InputStream inputStream = project.getFile(reference.getPath())
 					.getContents();
 			byte[] theBytes = new byte[inputStream.available()];
@@ -105,14 +105,14 @@ public abstract class AbstractDeployer {
 
 	}
 
-	protected void injectStoredAssets(StoredAssets assets, ZipOutputStream out)
+	protected void injectBundledAssets(BundledAssets assets, ZipOutputStream out)
 			throws Exception {
-		JAXBContext context = JAXBContext.newInstance(StoredAssets.class
+		JAXBContext context = JAXBContext.newInstance(BundledAssets.class
 				.getPackage().getName());
 		Marshaller m = context.createMarshaller();
 		final StringWriter write = new StringWriter();
 		m.marshal(assets, write);
-		out.putNextEntry(new ZipEntry("META-INF/stored-assets.xml"));
+		out.putNextEntry(new ZipEntry("META-INF/bundled-assets.xml"));
 		out.write(write.toString().getBytes());
 		out.closeEntry();
 	}

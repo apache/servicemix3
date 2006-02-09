@@ -19,14 +19,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.servicemix.descriptors.deployment.assets.Assets;
+import org.apache.servicemix.descriptors.deployment.assets.Connection;
+import org.apache.servicemix.descriptors.deployment.assets.EmbeddedArtifact;
+import org.apache.servicemix.descriptors.deployment.assets.Parameter;
 import org.apache.servicemix.packaging.parts.DeploymentDiagramEditPart;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
-
-import org.apache.servicemix.packaging.descriptor.Assets;
-import org.apache.servicemix.packaging.descriptor.Connection;
-import org.apache.servicemix.packaging.descriptor.EmbeddedArtifact;
-import org.apache.servicemix.packaging.descriptor.Parameter;
 
 /**
  * A simple factory that can take the description of assets for a component and

@@ -28,7 +28,7 @@ public interface ComponentBased {
 	
 	public ComponentArtifact getComponentArtifact();
 
-	public String getComponentUuid();
+	public String getComponentName();
 
-	public void setComponentUuid(String serviceUuid);
+	public void setComponentName(String componentName);
 }

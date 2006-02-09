@@ -44,9 +44,9 @@ public class BindingComponentDeployer extends AbstractDeployer {
 					+ "-bc.zip";
 			out = new ZipOutputStream(new FileOutputStream(
 					getInstallPath(component) + fileName));
-			injectComponentFiles(out, component.getComponentUuid());
+			injectComponentFiles(out, component.getComponentName());
 			injectEmbeddedArtifacts(component.getStoredAssets(), out, project);
-			injectStoredAssets(component.getStoredAssets(), out);
+			injectBundledAssets(component.getStoredAssets(), out);
 		} catch (Throwable e) {
 			throw new InvocationTargetException(e);
 		} finally {

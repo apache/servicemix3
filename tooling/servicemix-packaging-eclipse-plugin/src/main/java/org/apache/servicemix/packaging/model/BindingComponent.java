@@ -17,6 +17,7 @@ package org.apache.servicemix.packaging.model;
 
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
 import org.apache.servicemix.packaging.ComponentArtifact;
 import org.apache.servicemix.packaging.ComponentArtifactFactory;
 
@@ -29,27 +30,26 @@ import org.apache.servicemix.packaging.ComponentArtifactFactory;
 public class BindingComponent extends AbstractConnectableService implements
 		ComponentBased {
 
-	private String componentUuid;
+	private String componentName;
 
 	@XmlTransient
 	public ComponentArtifact getComponentArtifact() {
 		for (ComponentArtifact artifact : ComponentArtifactFactory
 				.getComponentArtifacts()) {
-			for (org.apache.servicemix.packaging.descriptor.Component component : artifact
-					.getComponents().getComponent()) {
-				if (component.getComponentUuid().equals(getComponentUuid()))
+			for (Component component : artifact.getComponents().getComponent()) {
+				if (component.getName().equals(getComponentName()))
 					return artifact;
 			}
 		}
 		return null;
 	}
 
-	public String getComponentUuid() {
-		return componentUuid;
+	public String getComponentName() {
+		return componentName;
 	}
 
-	public void setComponentUuid(String serviceUuid) {
-		this.componentUuid = serviceUuid;
+	public void setComponentName(String componentName) {
+		this.componentName = componentName;
 	}
 
 }

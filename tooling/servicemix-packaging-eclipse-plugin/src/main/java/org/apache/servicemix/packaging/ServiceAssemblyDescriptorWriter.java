@@ -68,7 +68,7 @@ public class ServiceAssemblyDescriptorWriter {
 
 			writer.startElement("component-name");
 			writer.writeText(assembly.getComponentArtifact()
-					.getComponentDefinitionByUuid(assembly.getComponentUuid())
+					.getComponentDefinitionByName(assembly.getComponentName())
 					.getName());
 			writer.endElement();
 

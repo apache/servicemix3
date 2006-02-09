@@ -16,9 +16,8 @@
 package org.apache.servicemix.packaging.parts;
 
 import java.util.LinkedList;
-import java.util.List;
 
-import org.apache.servicemix.packaging.descriptor.Component;
+import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
 import org.apache.servicemix.packaging.figure.ServiceUnitFigure;
 import org.apache.servicemix.packaging.model.AbstractComponent;
 import org.apache.servicemix.packaging.model.ComponentBased;
@@ -73,8 +72,8 @@ public class ServiceUnitEditPart extends AbstractComponentEditPart implements
 		if (getModel() instanceof ComponentBased) {
 			for (Component componentIter : ((ComponentBased) getModel())
 					.getComponentArtifact().getComponents().getComponent()) {
-				if (componentIter.getComponentUuid().equals(
-						((ComponentBased) getModel()).getComponentUuid())) {
+				if (componentIter.getName().equals(
+						((ComponentBased) getModel()).getComponentName())) {
 					component = componentIter;
 				}
 			}
@@ -95,12 +94,11 @@ public class ServiceUnitEditPart extends AbstractComponentEditPart implements
 			descriptors.add(new QNamePropertyDescriptor(
 					((ServiceUnit) getModel()).getServiceName(),
 					"Service name", null));
-			if ((getComponentDescriptor().getServiceUnit() != null)
-					&& (getComponentDescriptor().getServiceUnit().getAssets() != null)) {
+			if (getComponentDescriptor().getAssets() != null)
 				descriptors.addAll(AssetDescriptorFactory.getDescriptors(
-						getComponentDescriptor().getServiceUnit().getAssets(),
+						getComponentDescriptor().getAssets(),
 						getDeploymentDiagram()));
-			}
+
 		}
 		return getArray(descriptors);
 	}

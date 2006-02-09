@@ -29,7 +29,7 @@ import org.eclipse.gef.requests.CreationFactory;
  */
 public class ComponentCreationFactory implements CreationFactory {
 
-	private String serviceUuid;
+	private String serviceName;
 
 	private String type;
 
@@ -39,10 +39,10 @@ public class ComponentCreationFactory implements CreationFactory {
 
 	private static final String TYPE_SE = "service-engine";
 
-	public ComponentCreationFactory(DeployerEditor editor, String serviceUuid,
+	public ComponentCreationFactory(DeployerEditor editor, String serviceName,
 			String type) {
 		this.editor = editor;
-		this.serviceUuid = serviceUuid;
+		this.serviceName = serviceName;
 		this.type = type;
 	}
 
@@ -56,7 +56,7 @@ public class ComponentCreationFactory implements CreationFactory {
 									.getModel())));
 		} else
 			component = new ServiceAssembly();
-		component.setComponentUuid(serviceUuid);
+		component.setComponentName(serviceName);
 		return component;
 	}
 

@@ -24,7 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.servicemix.packaging.descriptor.Component;
+import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
 import org.apache.servicemix.packaging.model.ServiceAssembly;
 import org.apache.servicemix.packaging.model.ServiceUnit;
 import org.eclipse.core.resources.IProject;
@@ -52,9 +52,10 @@ public class ServiceAssemblyDeployer extends AbstractDeployer {
 			String fileName = "/" + assembly.getName() + "-sa.zip";
 			out = new ZipOutputStream(new FileOutputStream(
 					getDeploymentDir(assembly) + fileName));
-
+			System.out.println("Creating " + getDeploymentDir(assembly)
+					+ fileName);
 			injectServiceAssemblyDescriptor(assembly, out);
-			injectStoredAssets(assembly.getStoredAssets(), out);
+			injectBundledAssets(assembly.getStoredAssets(), out);
 
 			for (ServiceUnit unit : assembly.getServiceUnit()) {
 				injectServiceUnitZip(project, unit, out);
@@ -75,8 +76,7 @@ public class ServiceAssemblyDeployer extends AbstractDeployer {
 		for (ComponentArtifact artifact : ComponentArtifactFactory
 				.getComponentArtifacts()) {
 			for (Component component : artifact.getComponents().getComponent()) {
-				if (component.getComponentUuid().equals(
-						serviceToLookup.getComponentUuid())) {
+				if (component.getName().equals(serviceToLookup.getName())) {
 					return artifact;
 				}
 			}
@@ -89,13 +89,13 @@ public class ServiceAssemblyDeployer extends AbstractDeployer {
 		ZipOutputStream out = null;
 		try {
 			Component componentDefintion = c.getComponentArtifact()
-					.getComponentDefinitionByUuid(c.getComponentUuid());
+					.getComponentDefinitionByName(c.getComponentName());
 			File artifactFile = new File(getArtifactForComponent(
 					componentDefintion).getArchivePath());
 
 			out = new ZipOutputStream(new FileOutputStream(getInstallPath(c)
 					+ "/" + artifactFile.getName()));
-			injectComponentFiles(out, c.getComponentUuid());
+			injectComponentFiles(out, c.getComponentName());
 		} catch (Throwable e) {
 			throw new InvocationTargetException(e);
 		} finally {
@@ -111,11 +111,15 @@ public class ServiceAssemblyDeployer extends AbstractDeployer {
 	private void injectServiceUnitZip(IProject project, ServiceUnit unit,
 			ZipOutputStream out) throws Exception {
 		ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-
+		System.out.println("Injecting Service Unit "
+				+ unit.getServiceUnitName());
 		ZipOutputStream suZip = new ZipOutputStream(bytesOut);
 		if (unit.getStoredAssets() != null) {
+			System.out.println("Injecting embedded artifacts");
 			injectEmbeddedArtifacts(unit.getStoredAssets(), suZip, project);
-			injectStoredAssets(unit.getStoredAssets(), suZip);
+			System.out.println("Injecting stored assets");
+			injectBundledAssets(unit.getStoredAssets(), suZip);
+			System.out.println("Injecting parameters as properties");
 			injectParametersAsProperties(unit, suZip);
 		}
 		suZip.close();

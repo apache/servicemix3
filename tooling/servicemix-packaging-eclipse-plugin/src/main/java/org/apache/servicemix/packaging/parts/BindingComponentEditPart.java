@@ -16,8 +16,8 @@
 package org.apache.servicemix.packaging.parts;
 
 import java.util.LinkedList;
-import java.util.List;
 
+import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
 import org.apache.servicemix.packaging.figure.BindingComponentFigure;
 import org.apache.servicemix.packaging.model.AbstractComponent;
 import org.apache.servicemix.packaging.model.BindingComponent;
@@ -27,8 +27,6 @@ import org.apache.servicemix.packaging.parts.descriptors.QNamePropertyDescriptor
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
-
-import org.apache.servicemix.packaging.descriptor.Component;
 
 /**
  * The GEF Edit Part for a Binding Component
@@ -46,15 +44,15 @@ public class BindingComponentEditPart extends AbstractComponentEditPart
 		BindingComponentFigure newFigure = new BindingComponentFigure(
 				(BindingComponent) getModel());
 		return newFigure;
-	}	
+	}
 
 	private Component getComponentDescriptor() {
 		Component component = null;
 		if (getModel() instanceof ComponentBased) {
 			for (Component componentIter : ((ComponentBased) getModel())
 					.getComponentArtifact().getComponents().getComponent()) {
-				if (componentIter.getComponentUuid().equals(
-						((ComponentBased) getModel()).getComponentUuid())) {
+				if (componentIter.getName().equals(
+						((ComponentBased) getModel()).getComponentName())) {
 					component = componentIter;
 				}
 			}
@@ -101,7 +99,7 @@ public class BindingComponentEditPart extends AbstractComponentEditPart
 
 	}
 
-	public void setPropertyValue(Object arg0, Object arg1) {		
+	public void setPropertyValue(Object arg0, Object arg1) {
 		setPropertyFromAssets(arg0, arg1, ((BindingComponent) getModel())
 				.getStoredAssets());
 		((AbstractComponent) getModel()).updated();

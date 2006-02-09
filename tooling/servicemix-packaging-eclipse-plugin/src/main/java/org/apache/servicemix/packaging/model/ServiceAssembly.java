@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.namespace.QName;
 
+import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
 import org.apache.servicemix.packaging.ComponentArtifact;
 import org.apache.servicemix.packaging.ComponentArtifactFactory;
 
@@ -40,7 +41,7 @@ public class ServiceAssembly extends AbstractComponent implements
 
 	public static final String NAME_PROP = "Component.Name";
 
-	private String componentUuid;
+	private String componentName;
 
 	private String name = "serviceAssembly";
 
@@ -64,17 +65,16 @@ public class ServiceAssembly extends AbstractComponent implements
 	public ComponentArtifact getComponentArtifact() {
 		for (ComponentArtifact artifact : ComponentArtifactFactory
 				.getComponentArtifacts()) {
-			for (org.apache.servicemix.packaging.descriptor.Component component : artifact
-					.getComponents().getComponent()) {
-				if (component.getComponentUuid().equals(getComponentUuid()))
+			for (Component component : artifact.getComponents().getComponent()) {
+				if (component.getName().equals(getComponentName()))
 					return artifact;
 			}
 		}
 		return null;
 	}
 
-	public String getComponentUuid() {
-		return componentUuid;
+	public String getComponentName() {
+		return componentName;
 	}
 
 	@XmlAttribute
@@ -92,8 +92,8 @@ public class ServiceAssembly extends AbstractComponent implements
 		firePropertyChange(ADDCHILD_PROP, null, null);
 	}
 
-	public void setComponentUuid(String serviceUuid) {
-		this.componentUuid = serviceUuid;
+	public void setComponentName(String serviceUuid) {
+		this.componentName = serviceUuid;
 	}
 
 	public void setName(String name) {

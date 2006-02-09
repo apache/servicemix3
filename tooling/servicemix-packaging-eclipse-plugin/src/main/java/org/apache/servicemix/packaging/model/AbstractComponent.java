@@ -17,7 +17,7 @@ package org.apache.servicemix.packaging.model;
 
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.apache.servicemix.packaging.assets.StoredAssets;
+import org.apache.servicemix.descriptors.bundled.assets.BundledAssets;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.swt.graphics.Image;
 
@@ -39,7 +39,7 @@ public class AbstractComponent extends ModelElement {
 
 	private ModelElement parentModelElement;
 
-	protected StoredAssets storedAssets = new StoredAssets();
+	protected BundledAssets bundledAssets = new BundledAssets();
 
 	public Image getIcon() {
 		return null;
@@ -54,8 +54,8 @@ public class AbstractComponent extends ModelElement {
 		return parentModelElement;
 	}
 
-	public StoredAssets getStoredAssets() {
-		return storedAssets;
+	public BundledAssets getStoredAssets() {
+		return bundledAssets;
 	}
 
 	public void setLocation(Point newLocation) {
@@ -70,8 +70,8 @@ public class AbstractComponent extends ModelElement {
 		this.parentModelElement = parentModelElement;
 	}
 
-	public void setStoredAssets(StoredAssets storedAssets) {
-		this.storedAssets = storedAssets;
+	public void setStoredAssets(BundledAssets storedAssets) {
+		this.bundledAssets = storedAssets;
 	}
 
 	public void updated() {

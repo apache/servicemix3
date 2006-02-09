@@ -23,9 +23,12 @@ import org.apache.servicemix.packaging.DeployerEditor;
 import org.apache.servicemix.packaging.model.AbstractComponent;
 import org.apache.servicemix.packaging.model.BindingComponent;
 import org.apache.servicemix.packaging.model.ServiceAssembly;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * The Eclipse Action to deploy from the DeployerEditor
@@ -91,7 +94,7 @@ public class DeployServiceAction extends Action {
 
 			// Deploy the services
 			for (AbstractComponent component : components) {
-				if (component instanceof BindingComponent) {					
+				if (component instanceof BindingComponent) {
 					((BindingComponent) component).getComponentArtifact()
 							.getDeploymentEngine().deployBindingComponent(
 									editor.getProject(),
@@ -103,8 +106,12 @@ public class DeployServiceAction extends Action {
 									(ServiceAssembly) component);
 				}
 			}
-		} catch (Exception e) {
-
+		} catch (Throwable e) {
+			Status s = new Status(Status.ERROR, "not_used", 0, e.getMessage(),
+					e);
+			ErrorDialog.openError(PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getShell(), "Unable to Deploy",
+					null, s);
 		}
 	}
 }

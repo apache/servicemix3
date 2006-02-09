@@ -25,8 +25,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.servicemix.packaging.descriptor.Component;
-import org.apache.servicemix.packaging.descriptor.Components;
+import org.apache.servicemix.descriptors.deployment.assets.Components;
+import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
@@ -83,9 +83,9 @@ public class ComponentArtifact {
 		return deploymentEngine;
 	}
 
-	public Image getFailedImage(String serviceUuid) {
-		Image image = createImage(getResource(getComponentDefinitionByUuid(
-				serviceUuid).getFailedImage()));
+	public Image getFailedImage(String componentName) {
+		Image image = createImage(getResource(getComponentDefinitionByName(
+				componentName).getAssets().getFailedImage()));
 		if (image != null)
 			return image;
 		else
@@ -106,17 +106,17 @@ public class ComponentArtifact {
 		return resourceMap;
 	}
 
-	public Component getComponentDefinitionByUuid(String serviceUuid) {
+	public Component getComponentDefinitionByName(String componentName) {
 		for (Component component : components.getComponent()) {
-			if (component.getComponentUuid().equals(serviceUuid))
+			if (component.getName().equals(componentName))
 				return component;
 		}
 		return null;
 	}
 
-	public Image getComponentImage(String serviceUuid) {
-		return createImage(getResource(getComponentDefinitionByUuid(serviceUuid)
-				.getServiceImage()));
+	public Image getComponentImage(String componentName) {
+		return createImage(getResource(getComponentDefinitionByName(
+				componentName).getAssets().getServiceImage()));
 	}
 
 	private void getComponentDescription(File file)
@@ -144,9 +144,9 @@ public class ComponentArtifact {
 
 	}
 
-	public Image getStartedImage(String serviceUuid) {
-		Image image = createImage(getResource(getComponentDefinitionByUuid(
-				serviceUuid).getStartedImage()));
+	public Image getStartedImage(String componentName) {
+		Image image = createImage(getResource(getComponentDefinitionByName(
+				componentName).getAssets().getStartedImage()));
 		if (image != null)
 			return image;
 		else
@@ -155,9 +155,9 @@ public class ComponentArtifact {
 
 	}
 
-	public Image getStoppedImage(String serviceUuid) {
-		Image image = createImage(getResource(getComponentDefinitionByUuid(
-				serviceUuid).getStoppedImage()));
+	public Image getStoppedImage(String componentName) {
+		Image image = createImage(getResource(getComponentDefinitionByName(
+				componentName).getAssets().getStoppedImage()));
 		if (image != null)
 			return image;
 		else

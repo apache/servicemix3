@@ -18,11 +18,11 @@ package org.apache.servicemix.packaging.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
 import org.apache.servicemix.packaging.ComponentArtifact;
 import org.apache.servicemix.packaging.ComponentArtifactFactory;
 import org.apache.servicemix.packaging.DeployerPlugin;
 import org.apache.servicemix.packaging.InvalidArchiveException;
-import org.apache.servicemix.packaging.descriptor.Component;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.preference.PreferencePage;
@@ -52,8 +52,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * Simple Eclipse preference page that can be used to register the JBI
- * components, the preferences should be one of the sources of components
- * for the ComponentArtifactFactory
+ * components, the preferences should be one of the sources of components for
+ * the ComponentArtifactFactory
  * 
  * @author <a href="mailto:costello.tony@gmail.com">Tony Costello </a>
  * 
@@ -236,8 +236,7 @@ public class JbiComponentPreferences extends PreferencePage implements
 					.getComponentArtifacts()) {
 				for (Component component : artifact.getComponents()
 						.getComponent()) {
-					if (component.getComponentUuid().equals(
-							serviceToLookup.getComponentUuid())) {
+					if (component.getName().equals(serviceToLookup.getName())) {
 						return artifact;
 					}
 				}

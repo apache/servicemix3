@@ -19,7 +19,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.servicemix.packaging.descriptor.Component;
+import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
 import org.apache.servicemix.packaging.figure.ServiceAssemblyFigure;
 import org.apache.servicemix.packaging.model.AbstractComponent;
 import org.apache.servicemix.packaging.model.ComponentBased;
@@ -90,8 +90,8 @@ public class ServiceAssemblyEditPart extends AbstractComponentEditPart
 		if (getModel() instanceof ComponentBased) {
 			for (Component componentIter : ((ComponentBased) getModel())
 					.getComponentArtifact().getComponents().getComponent()) {
-				if (componentIter.getComponentUuid().equals(
-						((ComponentBased) getModel()).getComponentUuid())) {
+				if (componentIter.getName().equals(
+						((ComponentBased) getModel()).getComponentName())) {
 					component = componentIter;
 				}
 			}

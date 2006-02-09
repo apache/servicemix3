@@ -14,12 +14,12 @@
   <extension
         point="org.eclipse.ui.newWizards">
      <category
-           id="org.apache.servicemix.packaging"
-           name="Java Business Integration"/>
+           id="org.eclipse.jst.jbi.ui"
+           name="JBI"/>
      <wizard
-           category="org.apache.servicemix.packaging"
+           category="org.eclipse.jst.jbi.ui"
            class="org.apache.servicemix.packaging.wizards.NewDeploymentWizard"
-           icon="icons/sample.gif"
+           icon="icons/deployment.gif"
            id="org.apache.servicemix.packaging.wizards.NewDeploymentWizard"
            name="Deployment"/>
   </extension>

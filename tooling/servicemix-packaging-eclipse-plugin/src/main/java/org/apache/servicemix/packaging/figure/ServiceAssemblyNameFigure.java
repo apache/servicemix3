@@ -67,12 +67,12 @@ public class ServiceAssemblyNameFigure extends Figure {
 		if (serviceAssembly instanceof ComponentBased) {
 			ComponentBased componentBase = (ComponentBased) serviceAssembly;
 			description.append(componentBase.getComponentArtifact()
-					.getComponentDefinitionByUuid(
-							componentBase.getComponentUuid()).getDescription());
+					.getComponentDefinitionByName(
+							componentBase.getComponentName()).getDescription());
 			description.append(" (");
 			description.append(componentBase.getComponentArtifact()
-					.getComponentDefinitionByUuid(
-							componentBase.getComponentUuid()).getType());
+					.getComponentDefinitionByName(
+							componentBase.getComponentName()).getType());
 			description.append(")");
 
 			componentName.setText(description.toString());

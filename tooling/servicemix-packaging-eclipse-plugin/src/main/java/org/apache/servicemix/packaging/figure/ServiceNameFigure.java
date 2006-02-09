@@ -79,12 +79,12 @@ public class ServiceNameFigure extends Figure {
 		if (service instanceof BindingComponent) {
 			ComponentBased componentBase = (ComponentBased) service;
 			description.append(componentBase.getComponentArtifact()
-					.getComponentDefinitionByUuid(
-							componentBase.getComponentUuid()).getName());
+					.getComponentDefinitionByName(
+							componentBase.getComponentName()).getName());
 			description.append(" (");
 			description.append(componentBase.getComponentArtifact()
-					.getComponentDefinitionByUuid(
-							componentBase.getComponentUuid()).getType());
+					.getComponentDefinitionByName(
+							componentBase.getComponentName()).getType());
 			description.append(")");
 
 			componentName.setText(description.toString());

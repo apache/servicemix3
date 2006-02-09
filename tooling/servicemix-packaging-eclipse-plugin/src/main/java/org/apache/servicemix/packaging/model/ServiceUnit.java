@@ -41,8 +41,8 @@ public class ServiceUnit extends AbstractConnectableService implements
 	}
 
 	@XmlTransient
-	public String getComponentUuid() {
-		return ((ServiceAssembly) getParentModelElement()).getComponentUuid();
+	public String getComponentName() {
+		return ((ServiceAssembly) getParentModelElement()).getComponentName();
 	}
 
 	@XmlAttribute
@@ -50,7 +50,7 @@ public class ServiceUnit extends AbstractConnectableService implements
 		return serviceUnitName;
 	}
 
-	public void setComponentUuid(String serviceUuid) {
+	public void setComponentName(String serviceUuid) {
 		// ignore?
 	}
 

@@ -33,6 +33,8 @@ Require-Bundle: org.eclipse.text;visibility:=reexport,
  org.eclipse.core.runtime;visibility:=reexport,
  org.eclipse.osgi;visibility:=reexport,
  org.eclipse.swt;visibility:=reexport,
+ org.eclipse.ui.workbench;visibility:=reexport,
+ org.eclipse.osgi;visibility:=reexport,
  org.eclipse.core.commands;visibility:=reexport,
  org.eclipse.wst.xml.core;visibility:=reexport,
  org.eclipse.wst.xml.ui;visibility:=reexport,
@@ -47,4 +49,5 @@ Require-Bundle: org.eclipse.text;visibility:=reexport,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.emf.ecore.xmi;visibility:=reexport,
  org.eclipse.ui.intro;visibility:=reexport
+ 
 Eclipse-AutoStart: true
