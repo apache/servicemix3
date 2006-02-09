@@ -2,28 +2,33 @@
   <goal name="eclipseplugin:generateManifest">
   <jelly:set var="includedLibs" value=""/>
   <jelly:set var="referencedPlugins" value=""/>
+  <jelly:set var="eclipseVersion" value="${pom.currentVersion}"/>  
+  <jelly:set var="eclipseVersion" value="${eclipseVersion.replaceAll('-SNAPSHOT','')}"/>    
   <jelly:forEach var="lib" items="${pom.artifacts}">   			
-   	<jelly:if test="${!lib.file.name.startsWith('org.eclipse')}">
-	   			<jelly:set var="includedLibs" value="${includedLibs}target/${lib.file.name},&#10; "/>
-	   			<ant:copy
-				file="${pom.getDependencyPath(lib.dependency.getId())}"
-				todir="${basedir}/target" />   				
-   			</jelly:if>	
-			<jelly:if test="${lib.file.name.startsWith('org.eclipse')}">
-	   			<jelly:set var="referencedPlugins" value="${referencedPlugins}${lib.dependency.getArtifactId()};visibility:=reexport,&#10; "/>   				
-   			</jelly:if>   					
-			<ant:copy
-				file="${pom.getDependencyPath(lib.dependency.getId())}"
-				todir="${basedir}/target" />
+  	<jelly:set var="dep" value="${lib.dependency}"/>   
+   	<jelly:if test="${dep.getProperty('eclipse.required.bundle')!='true'}">
+	  <jelly:set var="includedLibs" value="${includedLibs}target/${lib.file.name},&#10; "/>
+	  <ant:copy
+		   file="${pom.getDependencyPath(lib.dependency.getId())}"
+		   todir="${basedir}/target" />   				
+   	</jelly:if>	
+   	<jelly:if test="${dep.getProperty('eclipse.required.bundle')=='true'}">
+      <jelly:if test="${referencedPlugins.equals('')}">
+        <jelly:set var="referencedPlugins" value="${referencedPlugins}${lib.dependency.getArtifactId()};visibility:=reexport&#10; "/>   				
+      </jelly:if>
+	  <jelly:if test="${!referencedPlugins.equals('')}">
+        <jelly:set var="referencedPlugins" value="${referencedPlugins},${lib.dependency.getArtifactId()};visibility:=reexport&#10; "/>   				
+      </jelly:if>
+   	</jelly:if>   					
 	</jelly:forEach>
   	<jelly:file name="${basedir}/META-INF/MANIFEST.MF" omitXmlDeclaration="true"><![CDATA[
      Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ${pom.name}
-Bundle-SymbolicName: org.apache.servicemix.packaging.plugin; singleton:=true
-Bundle-Version: ${pom.currentVersion}
+Bundle-SymbolicName: ${eclipse.plugin.symbolicName}; singleton:=true
+Bundle-Version: ${eclipseVersion}
 Bundle-ClassPath: ${includedLibs}${maven.final.name}.jar
-Bundle-Activator: org.apache.servicemix.packaging.DeployerPlugin
+Bundle-Activator: ${eclipse.plugin.bundle.activator}
 Bundle-Vendor: ${pom.organisation.name}
 Bundle-Localization: plugin
 Export-Package: .
