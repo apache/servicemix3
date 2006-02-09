@@ -21,6 +21,7 @@
       </jelly:if>
    	</jelly:if>   					
 	</jelly:forEach>
+	<ant:mkdir dir="${basedir}/META-INF"/>
   	<jelly:file name="${basedir}/META-INF/MANIFEST.MF" omitXmlDeclaration="true"><![CDATA[
      Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
