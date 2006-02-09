@@ -52,8 +52,7 @@ public class ServiceAssemblyDeployer extends AbstractDeployer {
 			String fileName = "/" + assembly.getName() + "-sa.zip";
 			out = new ZipOutputStream(new FileOutputStream(
 					getDeploymentDir(assembly) + fileName));
-			System.out.println("Creating " + getDeploymentDir(assembly)
-					+ fileName);
+
 			injectServiceAssemblyDescriptor(assembly, out);
 			injectBundledAssets(assembly.getStoredAssets(), out);
 
@@ -111,15 +110,11 @@ public class ServiceAssemblyDeployer extends AbstractDeployer {
 	private void injectServiceUnitZip(IProject project, ServiceUnit unit,
 			ZipOutputStream out) throws Exception {
 		ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-		System.out.println("Injecting Service Unit "
-				+ unit.getServiceUnitName());
+
 		ZipOutputStream suZip = new ZipOutputStream(bytesOut);
 		if (unit.getStoredAssets() != null) {
-			System.out.println("Injecting embedded artifacts");
 			injectEmbeddedArtifacts(unit.getStoredAssets(), suZip, project);
-			System.out.println("Injecting stored assets");
 			injectBundledAssets(unit.getStoredAssets(), suZip);
-			System.out.println("Injecting parameters as properties");
 			injectParametersAsProperties(unit, suZip);
 		}
 		suZip.close();

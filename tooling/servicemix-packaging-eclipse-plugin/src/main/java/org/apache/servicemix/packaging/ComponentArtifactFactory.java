@@ -15,15 +15,18 @@
  */
 package org.apache.servicemix.packaging;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The factory can be used to get a list of the component artifacts that have
  * been registered with the preferences in Eclipse
  * 
  * TODO Should be extended to enable gathering components from plugins and also
- * from projects in the workspace
+ * from the associated ServiceMix runtime
  * 
  * @author <a href="mailto:costello.tony@gmail.com">Tony Costello </a>
  * 
@@ -31,6 +34,10 @@ import java.util.List;
 public class ComponentArtifactFactory {
 
 	private final static String PREFERENCE_ID = "com.unity.jbi.deployer.preferences.serviceBundles";
+
+	private static Map<String, Long> cachedArtifactsUpdateStamps = new HashMap<String, Long>();
+
+	private static Map<String, ComponentArtifact> cachedArtifacts = new HashMap<String, ComponentArtifact>();
 
 	public static List<ComponentArtifact> getComponentArtifacts() {
 		String serviceBundlesString = DeployerPlugin.getDefault()
@@ -41,17 +48,49 @@ public class ComponentArtifactFactory {
 			String[] serviceLocations;
 			serviceLocations = serviceBundlesString.split(";");
 			for (String archivePath : serviceLocations) {
-				ComponentArtifact newArtifact;
-				try {
-					newArtifact = new ComponentArtifact(archivePath);
-					componentArtifacts.add(newArtifact);
-				} catch (InvalidArchiveException e) {
-					System.out.println("Archive on path " + archivePath
-							+ " is not valid and will be dropped");
-				}
+				if (newOrUpdated(archivePath))
+					componentArtifacts.add(addToCache(archivePath));
+				else
+					componentArtifacts.add(getFromCache(archivePath));
+
 			}
 		}
 		return componentArtifacts;
+	}
+
+	private static ComponentArtifact getFromCache(String archivePath) {
+		return cachedArtifacts.get(archivePath);
+	}
+
+	private static ComponentArtifact addToCache(String archivePath) {
+		ComponentArtifact newArtifact;
+		try {
+			System.out.println("Adding to cache! " + archivePath);
+			newArtifact = new ComponentArtifact(archivePath);
+			cachedArtifactsUpdateStamps.put(archivePath,
+					getModified(archivePath));
+			cachedArtifacts.put(archivePath, newArtifact);
+			return newArtifact;
+		} catch (InvalidArchiveException e) {
+			System.out.println("Archive on path " + archivePath
+					+ " is not valid and will be dropped");
+			return null;
+		}
+	}
+
+	private static boolean newOrUpdated(String archivePath) {
+		if (cachedArtifactsUpdateStamps.containsKey(archivePath)) {
+			if (!getModified(archivePath).equals(cachedArtifactsUpdateStamps
+					.get(archivePath)))
+				return true;
+		} else
+			return true;
+		return false;
+	}
+
+	private static Long getModified(String archivePath) {
+		File archiveFile = new File(archivePath);
+		return Long.valueOf(archiveFile.lastModified());
 	}
 
 	public static void setComponentArtifacts(

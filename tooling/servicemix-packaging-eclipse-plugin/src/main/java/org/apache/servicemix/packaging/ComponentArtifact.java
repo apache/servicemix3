@@ -134,7 +134,7 @@ public class ComponentArtifact {
 						.getName());
 				Unmarshaller m = context.createUnmarshaller();
 				components = (Components) m.unmarshal(new ByteArrayInputStream(
-						serviceDescriptor));
+						serviceDescriptor));				
 			} catch (JAXBException e) {
 				throw new InvalidArchiveException(e);
 			}

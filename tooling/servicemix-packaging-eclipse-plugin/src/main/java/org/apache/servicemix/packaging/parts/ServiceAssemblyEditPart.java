@@ -109,11 +109,12 @@ public class ServiceAssemblyEditPart extends AbstractComponentEditPart
 			descriptors = new LinkedList<IPropertyDescriptor>();
 			descriptors.add(new TextPropertyDescriptor(getModel(),
 					"Service assembly name"));
+			/* Ignore assets for assembly 
 			if (getComponentDescriptor().getAssets() != null) {
 				descriptors.addAll(AssetDescriptorFactory.getDescriptors(
 						getComponentDescriptor().getAssets(),
 						getDeploymentDiagram()));
-			}
+			} */
 		}
 
 		return getArray(descriptors);
