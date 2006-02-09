@@ -49,5 +49,20 @@ public class InternalEndpointTest extends TestCase {
         assertNotNull(outE.getServiceName());
         assertNotNull(outE.getEndpointName());
     }
+    
+    public void testEquals() throws Exception {
+        ComponentNameSpace cns = new ComponentNameSpace("myContainer", "myName", "myId");
+        InternalEndpoint e1 = new InternalEndpoint(cns, "myEndpoint1", new QName("myService"));
+        InternalEndpoint e2 = new InternalEndpoint(cns, "myEndpoint2", new QName("myService"));
+        assertFalse(e1.equals(e2));
+        e2 = new InternalEndpoint(cns, "myEndpoint", new QName("myService2"));
+        assertFalse(e1.equals(e2));
+        ComponentNameSpace cns2 = new ComponentNameSpace("myContainer", "myName", "myId2");
+        e2 = new InternalEndpoint(cns2, "myEndpoint1", new QName("myService"));
+        assertFalse(e1.equals(e2));
+        cns2 = new ComponentNameSpace("myContainer", "myName", "myId");
+        e2 = new InternalEndpoint(cns2, "myEndpoint1", new QName("myService"));
+        assertTrue(e1.equals(e2));
+    }
 
 }

@@ -115,7 +115,7 @@ public class InternalEndpoint extends AbstractServiceEndpoint {
         if (obj != null && obj instanceof InternalEndpoint){
             InternalEndpoint other = (InternalEndpoint)obj;
             result = other.getComponentNameSpace().equals(this.getComponentNameSpace()) && 
-                     other.serviceName.equals(this.serviceName);
+                     other.serviceName.equals(this.serviceName) &&
                      other.endpointName.equals(this.endpointName);
         }
         return result;
