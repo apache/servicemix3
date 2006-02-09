@@ -162,6 +162,11 @@
             <ant:include name="junit*.properties"/>
           </ant:fileset>
         </ant:delete>
+        <delete failonerror="false" dir="${directory}/ActiveMQ"/>
+	<delete failonerror="false" dir="${directory}/ServiceMixWDir"/>
+	<delete failonerror="false" dir="${directory}/rootDir"/>
+	<delete failonerror="false" dir="${directory}/testWDIR"/>
+        <delete failonerror="false" dir="${directory}/testWDR"/>
         <ant:echo></ant:echo>
       </j:forEach>
   </goal>
