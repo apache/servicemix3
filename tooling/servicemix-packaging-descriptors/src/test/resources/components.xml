@@ -1,13 +1,13 @@
-<components xmlns="http://servicemix.apache.org/deployment">
-	<component type="service-engine">
-		<name>lw-container</name>
-		<description>ServiceMix Lightweight Container</description>
-		<type>service-engine</type>
-		<assets>
-			<artifact extension="xml"
-				description="ServiceMix Definition" name="servicemix.xml" />
-			<connection default="true" name="defaultDestination"
+<deployment:components
+	xmlns:deployment="http://servicemix.apache.org/deployment">
+	<component name="lw-container"
+		description="ServiceMix Lightweight Container"
+		type="service-engine">
+		<deployment:assets>
+			<deployment:connection name="defaultDestination"
 				description="Default destination" />
-		</assets>		
+			<deployment:embeddedArtifact name="servicemix.xml"
+				description="ServiceMix Definition" extension="xml" />
+		</deployment:assets>
 	</component>
-</components>
+</deployment:components>
