@@ -90,6 +90,7 @@ public class AddressingInHandler extends AbstractHandler {
     
     protected String[] split(String uri) {
 		char sep;
+        uri = uri.trim();
 		if (uri.indexOf('/') > 0) {
 			sep = '/';
 		} else {
