@@ -1,0 +1,33 @@
+<project xmlns:ant="jelly:ant" xmlns:jelly="jelly:core">	
+  <goal name="eclipseplugin:generateManifest">
+  <jelly:set var="includedLibs" value=""/>
+  <jelly:set var="referencedPlugins" value=""/>
+  <jelly:forEach var="lib" items="${pom.artifacts}">   			
+   	<jelly:if test="${!lib.file.name.startsWith('org.eclipse')}">
+	   			<jelly:set var="includedLibs" value="${includedLibs}target/${lib.file.name},&#10; "/>
+	   			<ant:copy
+				file="${pom.getDependencyPath(lib.dependency.getId())}"
+				todir="${basedir}/target" />   				
+   			</jelly:if>	
+			<jelly:if test="${lib.file.name.startsWith('org.eclipse')}">
+	   			<jelly:set var="referencedPlugins" value="${referencedPlugins}${lib.dependency.getArtifactId()};visibility:=reexport,&#10; "/>   				
+   			</jelly:if>   					
+			<ant:copy
+				file="${pom.getDependencyPath(lib.dependency.getId())}"
+				todir="${basedir}/target" />
+	</jelly:forEach>
+  	<jelly:file name="${basedir}/META-INF/MANIFEST.MF" omitXmlDeclaration="true"><![CDATA[
+     Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ${pom.name}
+Bundle-SymbolicName: org.apache.servicemix.packaging.plugin; singleton:=true
+Bundle-Version: ${pom.currentVersion}
+Bundle-ClassPath: ${includedLibs}${maven.final.name}.jar
+Bundle-Activator: org.apache.servicemix.packaging.DeployerPlugin
+Bundle-Vendor: ${pom.organisation.name}
+Bundle-Localization: plugin
+Export-Package: .
+Require-Bundle: ${referencedPlugins}
+Eclipse-AutoStart: true]]></jelly:file>
+  </goal>
+</project>
