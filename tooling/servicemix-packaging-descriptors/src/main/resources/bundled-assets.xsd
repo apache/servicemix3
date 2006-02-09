@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://servicemix.apache.org/deployment"
+	xmlns:tns="http://servicemix.apache.org/deployment">
+
+	<element name="bundledAssets">
+		<complexType>
+			<sequence>
+				<element name="artifact" minOccurs="0" maxOccurs="unbounded">
+					<complexType>
+						<attribute name="name" type="string" use="required"></attribute>
+						<attribute name="path" type="string" use="required"></attribute>
+					</complexType>
+				</element>
+				<element name="parameter" minOccurs="0" maxOccurs="unbounded">
+					<complexType>
+						<attribute name="name" type="string" use="required"></attribute>
+						<attribute name="value" type="string" use="required"></attribute>
+					</complexType>
+				</element>
+				<element name="connection" minOccurs="0" maxOccurs="unbounded">
+					<complexType>
+						<attribute name="name" type="string" use="required"></attribute>
+						<attribute name="qname" type="QName" use="required"></attribute>
+					</complexType>
+				</element>
+			</sequence>
+		</complexType>
+	</element>
+
+</schema>
