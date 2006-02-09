@@ -29,11 +29,11 @@ import org.apache.servicemix.common.EndpointSupport;
 import org.apache.servicemix.common.ServiceUnit;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.core.io.FileSystemResource;
-import org.xbean.kernel.Kernel;
-import org.xbean.kernel.KernelFactory;
-import org.xbean.kernel.ServiceName;
-import org.xbean.server.repository.FileSystemRepository;
-import org.xbean.server.spring.loader.SpringLoader;
+import org.apache.xbean.kernel.Kernel;
+import org.apache.xbean.kernel.KernelFactory;
+import org.apache.xbean.kernel.ServiceName;
+import org.apache.xbean.server.repository.FileSystemRepository;
+import org.apache.xbean.server.spring.loader.SpringLoader;
 
 public class AbstractXBeanDeployer extends AbstractDeployer {
 

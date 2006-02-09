@@ -21,11 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.xbean.server.classloader.MultiParentClassLoader;
-import org.xbean.server.repository.Repository;
-import org.xbean.server.spring.loader.SpringLoader;
-import org.xbean.spring.context.SpringXmlPreprocessor;
-import org.xbean.spring.context.SpringApplicationContext;
+import org.apache.xbean.server.classloader.MultiParentClassLoader;
+import org.apache.xbean.server.repository.Repository;
+import org.apache.xbean.server.spring.loader.SpringLoader;
+import org.apache.xbean.spring.context.SpringXmlPreprocessor;
+import org.apache.xbean.spring.context.SpringApplicationContext;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.w3c.dom.Document;
@@ -37,7 +37,7 @@ import org.w3c.dom.Text;
 * ClassLoaderXmlPreprocessor extracts a ClassLoader definition from the xml document, builds a class loader, assigns
 * the class loader to the application context and xml reader, and removes the classpath element from document.
 *
-* @org.xbean.XBean namespace="http://xbean.org/schemas/server" element="class-loader-xml-preprocessor"
+* @org.apache.xbean.XBean namespace="http://xbean.org/schemas/server" element="class-loader-xml-preprocessor"
 *     description="Extracts a ClassLoader definition from the xml document."
 *
 * @author Dain Sundstrom

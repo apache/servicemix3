@@ -48,7 +48,7 @@ import org.apache.tuscany.model.types.java.JavaOperationType;
  * 
  * @author gnodet
  * @version $Revision: 366467 $
- * @org.xbean.XBean element="endpoint"
+ * @org.apache.xbean.XBean element="endpoint"
  *                  description="A sca endpoint"
  * 
  */

@@ -18,7 +18,7 @@ package org.apache.servicemix.jbi.config;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
-import org.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 import java.io.IOException;
 import java.util.List;

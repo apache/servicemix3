@@ -22,8 +22,8 @@ import org.apache.servicemix.common.BaseComponent;
 import org.apache.servicemix.common.xbean.AbstractXBeanDeployer;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.SpringServiceUnitContainer;
-import org.xbean.kernel.Kernel;
-import org.xbean.kernel.StringServiceName;
+import org.apache.xbean.kernel.Kernel;
+import org.apache.xbean.kernel.StringServiceName;
 
 public class LwContainerXBeanDeployer extends AbstractXBeanDeployer {
 

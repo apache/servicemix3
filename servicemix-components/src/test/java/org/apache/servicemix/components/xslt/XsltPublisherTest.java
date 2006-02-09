@@ -18,7 +18,7 @@ package org.apache.servicemix.components.xslt;
 import org.apache.servicemix.tck.MessageList;
 import org.apache.servicemix.tck.TestSupport;
 import org.springframework.context.support.AbstractXmlApplicationContext;
-import org.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 import javax.xml.namespace.QName;
 

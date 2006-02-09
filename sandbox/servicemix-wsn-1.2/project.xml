@@ -126,7 +126,7 @@
       </properties>
     </dependency>
     <dependency>
-      <groupId>org.xbean</groupId>
+      <groupId>org.apache.xbean</groupId>
       <artifactId>xbean-spring</artifactId>
       <version>${xbean_version}</version>
     </dependency>

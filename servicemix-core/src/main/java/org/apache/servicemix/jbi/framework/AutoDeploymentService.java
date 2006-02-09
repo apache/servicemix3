@@ -49,7 +49,7 @@ import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.servicemix.jbi.util.XmlPersistenceSupport;
-import org.xbean.spring.context.FileSystemXmlApplicationContext;
+import org.apache.xbean.spring.context.FileSystemXmlApplicationContext;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;

@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 import org.apache.servicemix.components.reflection.ProxyInOnlyBinding;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.springframework.context.support.AbstractXmlApplicationContext;
-import org.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
  * @version $Revision$

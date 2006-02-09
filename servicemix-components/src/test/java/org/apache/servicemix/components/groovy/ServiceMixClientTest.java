@@ -37,7 +37,7 @@ import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.resolver.EndpointResolver;
 import org.apache.servicemix.tck.Receiver;
 import org.springframework.context.support.AbstractXmlApplicationContext;
-import org.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
  * @version $Revision$

@@ -3,7 +3,7 @@ package org.servicemix.ws.notification;
 import org.servicemix.tck.TestSupport;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.w3c.dom.Node;
-import org.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;

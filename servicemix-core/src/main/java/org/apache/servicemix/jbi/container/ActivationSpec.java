@@ -29,7 +29,7 @@ import java.io.Serializable;
 /**
  * Represents the registration of a component with the {@link JBIContainer}
  *
- * @org.xbean.XBean element="activationSpec"
+ * @org.apache.xbean.XBean element="activationSpec"
  * description="The Component configuration consisting of its container related properties such as its routing information"
  * 
  * @version $Revision$
@@ -96,7 +96,7 @@ public class ActivationSpec implements Serializable {
     }
 
     /**
-     * @org.xbean.Property
+     * @org.apache.xbean.Property
      * @return
      */
     public Object getComponent() {

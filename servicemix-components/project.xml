@@ -312,7 +312,7 @@
 
     <!--  for custom XML parsing -->
     <dependency>
-      <groupId>org.xbean</groupId>
+      <groupId>org.apache.xbean</groupId>
       <artifactId>xbean-spring</artifactId>
       <version>${xbean_version}</version>
       <url>http://www.xbean.org</url>
@@ -321,13 +321,13 @@
       </properties>
     </dependency>
     <dependency>
-      <groupId>org.xbean</groupId>
+      <groupId>org.apache.xbean</groupId>
       <artifactId>xbean-server</artifactId>
       <version>${xbean_version}</version>
       <url>http://www.xbean.org</url>
     </dependency>
     <dependency>
-      <groupId>org.xbean</groupId>
+      <groupId>org.apache.xbean</groupId>
       <artifactId>xbean-kernel</artifactId>
       <version>${xbean_version}</version>
       <url>http://www.xbean.org</url>

@@ -23,7 +23,7 @@ import org.apache.servicemix.jbi.config.spring.XBeanProcessor;
  * Application context for ServiceMix 1.x xml syntax compatibility
  */ 
 public class XmlWebApplicationContext
-    extends org.xbean.spring.context.XmlWebApplicationContext {
+    extends org.apache.xbean.spring.context.XmlWebApplicationContext {
 
   public XmlWebApplicationContext() {
     super(Arrays.asList(new Object[] {new XBeanProcessor()}));

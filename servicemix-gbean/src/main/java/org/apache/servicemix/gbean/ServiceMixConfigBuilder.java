@@ -31,7 +31,7 @@ import org.apache.geronimo.kernel.config.ConfigurationModuleType;
 import org.apache.servicemix.jbi.config.spring.XBeanProcessor;
 import org.apache.servicemix.jbi.deployment.Descriptor;
 import org.springframework.core.io.UrlResource;
-import org.xbean.spring.context.ResourceXmlApplicationContext;
+import org.apache.xbean.spring.context.ResourceXmlApplicationContext;
 
 import javax.management.ObjectName;
 

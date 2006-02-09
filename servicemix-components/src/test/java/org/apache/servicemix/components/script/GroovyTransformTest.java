@@ -26,7 +26,7 @@ import org.apache.servicemix.tck.MessageList;
 import org.apache.servicemix.tck.Receiver;
 import org.apache.servicemix.tck.Sender;
 import org.springframework.context.support.AbstractXmlApplicationContext;
-import org.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
  * @version $Revision$

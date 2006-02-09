@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.springframework.context.support.AbstractXmlApplicationContext;
-import org.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.NormalizedMessage;

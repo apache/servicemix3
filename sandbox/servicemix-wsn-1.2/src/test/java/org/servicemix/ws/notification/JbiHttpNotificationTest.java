@@ -19,7 +19,7 @@ import org.servicemix.jbi.container.SpringJBIContainer;
 import org.servicemix.jbi.jaxp.SourceTransformer;
 import org.servicemix.jbi.jaxp.StringSource;
 import org.servicemix.tck.Receiver;
-import org.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.xmlsoap.schemas.ws._2003._03.addressing.EndpointReferenceType;
 import org.xmlsoap.schemas.ws._2003._03.addressing.ServiceNameType;
 

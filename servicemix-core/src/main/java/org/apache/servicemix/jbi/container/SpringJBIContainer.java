@@ -34,7 +34,7 @@ import org.springframework.context.ApplicationContextAware;
  * An enhanced JBI container which adds some Spring helper methods for
  * easier configuration through spring's XML configuration file.
  *
- * @org.xbean.XBean element="container" rootElement="true"
+ * @org.apache.xbean.XBean element="container" rootElement="true"
  * description="The ServiceMix JBI Container"
  * 
  * @version $Revision$

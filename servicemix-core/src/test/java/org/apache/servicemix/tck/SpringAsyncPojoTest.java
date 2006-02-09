@@ -17,7 +17,7 @@ package org.apache.servicemix.tck;
 
 import org.apache.servicemix.examples.AbstractSpringTestSupport;
 import org.springframework.context.support.AbstractXmlApplicationContext;
-import org.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
  * @version $Revision$

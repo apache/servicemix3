@@ -19,7 +19,7 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver;
 import org.apache.servicemix.tck.TestSupport;
 import org.springframework.context.support.AbstractXmlApplicationContext;
-import org.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.NormalizedMessage;

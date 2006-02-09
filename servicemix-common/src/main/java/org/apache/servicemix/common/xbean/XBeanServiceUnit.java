@@ -16,10 +16,10 @@
 package org.apache.servicemix.common.xbean;
 
 import org.apache.servicemix.common.ServiceUnit;
-import org.xbean.kernel.Kernel;
-import org.xbean.kernel.ServiceName;
-import org.xbean.kernel.ServiceNotFoundException;
-import org.xbean.server.spring.configuration.SpringConfigurationServiceFactory;
+import org.apache.xbean.kernel.Kernel;
+import org.apache.xbean.kernel.ServiceName;
+import org.apache.xbean.kernel.ServiceNotFoundException;
+import org.apache.xbean.server.spring.configuration.SpringConfigurationServiceFactory;
 
 import javax.jbi.JBIException;
 

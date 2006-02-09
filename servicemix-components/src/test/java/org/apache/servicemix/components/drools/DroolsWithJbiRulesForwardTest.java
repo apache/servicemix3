@@ -32,6 +32,6 @@ public class DroolsWithJbiRulesForwardTest extends DroolsTest {
     }
 
     protected AbstractXmlApplicationContext createBeanFactory() {
-        return new org.xbean.spring.context.ClassPathXmlApplicationContext("org/apache/servicemix/components/drools/jbi-example-forward.xml");
+        return new org.apache.xbean.spring.context.ClassPathXmlApplicationContext("org/apache/servicemix/components/drools/jbi-example-forward.xml");
     }
 }

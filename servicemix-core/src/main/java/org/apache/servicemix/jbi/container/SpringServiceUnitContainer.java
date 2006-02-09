@@ -20,7 +20,7 @@ package org.apache.servicemix.jbi.container;
  * are registered into the JBI container using the Service Unit
  * Manager life cycle methods.
  *
- * @org.xbean.XBean element="serviceunit" rootElement="true"
+ * @org.apache.xbean.XBean element="serviceunit" rootElement="true"
  *                  description="A deployable service unit container"
  * @version $Revision$
  */

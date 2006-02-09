@@ -23,7 +23,7 @@ import java.io.FileWriter;
 import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.servicemix.tck.TestSupport;
 import org.springframework.context.support.AbstractXmlApplicationContext;
-import org.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
  * @version $Revision: 359213 $

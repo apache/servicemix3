@@ -18,7 +18,7 @@ package org.apache.servicemix.components.pojo;
 import org.apache.servicemix.components.util.PojoLifecycleAdaptor;
 import org.apache.servicemix.tck.SpringTestSupport;
 import org.springframework.context.support.AbstractXmlApplicationContext;
-import org.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
  * @version $Revision$

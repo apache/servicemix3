@@ -30,7 +30,7 @@ import java.io.Serializable;
 /**
  * Represents a subscription to a JBI endpoint.
  * 
- * @org.xbean.XBean element="subscriptionSpec"
+ * @org.apache.xbean.XBean element="subscriptionSpec"
  * 
  * @version $Revision$
  */
@@ -96,7 +96,7 @@ public class SubscriptionSpec implements Serializable {
     }
 
     /**
-     * @org.xbean.XBean hide="true"
+     * @org.apache.xbean.XBean hide="true"
      * 
      * @param name
      *            The name to set.

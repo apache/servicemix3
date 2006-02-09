@@ -23,8 +23,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xbean.spring.context.SpringApplicationContext;
-import org.xbean.spring.context.SpringXmlPreprocessor;
+import org.apache.xbean.spring.context.SpringApplicationContext;
+import org.apache.xbean.spring.context.SpringXmlPreprocessor;
 
 import java.io.BufferedReader;
 import java.io.IOException;

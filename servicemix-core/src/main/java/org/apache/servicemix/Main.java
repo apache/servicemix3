@@ -22,8 +22,8 @@ import org.apache.servicemix.jbi.config.spring.XBeanProcessor;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.ApplicationContext;
-import org.xbean.spring.context.ClassPathXmlApplicationContext;
-import org.xbean.spring.context.FileSystemXmlApplicationContext;
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.apache.xbean.spring.context.FileSystemXmlApplicationContext;
 
 /**
  * A simple stand alone application which runs ServiceMix from the command line.
