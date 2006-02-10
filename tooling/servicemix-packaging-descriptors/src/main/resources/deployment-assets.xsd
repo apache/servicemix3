@@ -24,10 +24,17 @@
 	<element name="assets">
 		<complexType>
 			<sequence>
-				<element ref="tns:connection" minOccurs="0" maxOccurs="unbounded"></element>
-				<element ref="tns:embeddedArtifact" minOccurs="0" maxOccurs="unbounded"></element>
+				<element ref="tns:connection" minOccurs="0"
+					maxOccurs="unbounded">
+				</element>
+				<element ref="tns:embeddedArtifact" minOccurs="0"
+					maxOccurs="unbounded">
+				</element>
 				<element ref="tns:parameter" minOccurs="0"
 					maxOccurs="unbounded">
+				</element>
+				<element ref="tns:deploymentAssistants" maxOccurs="1"
+					minOccurs="0">
 				</element>
 			</sequence>
 			<attribute name="failedImage" type="string"
@@ -86,6 +93,14 @@
 			</attribute>
 			<attribute name="type" type="string" default="consumes"></attribute>
 			<attribute name="category" type="string"></attribute>
+		</complexType>
+	</element>
+	<element name="deploymentAssistants">
+		<complexType>
+			<choice minOccurs="0" maxOccurs="unbounded">
+				<any namespace="##other" processContents="skip" />
+				<any namespace="##local" processContents="skip" />
+			</choice>
 		</complexType>
 	</element>
 </schema>

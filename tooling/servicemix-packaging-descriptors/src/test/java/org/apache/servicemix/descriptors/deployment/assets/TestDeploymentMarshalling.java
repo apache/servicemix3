@@ -22,8 +22,8 @@ public class TestDeploymentMarshalling extends TestCase {
 			assertNotNull(components.getComponent());
 			assertEquals(1,components.getComponent().size());
 			Component component = components.getComponent().get(0);
-			assertEquals("lw-container",component.getName());
-			System.out.println(component.getName());
+			assertEquals("servicemix-lwcontainer",component.getName());
+			assertNotNull(component.getAssets().getDeploymentAssistants());
 		} catch (JAXBException e) {
 			fail(e.getMessage());
 		}

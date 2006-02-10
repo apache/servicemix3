@@ -1,6 +1,6 @@
 <deployment:components
 	xmlns:deployment="http://servicemix.apache.org/deployment">
-	<component name="lw-container"
+	<component name="servicemix-lwcontainer"
 		description="ServiceMix Lightweight Container"
 		type="service-engine">
 		<deployment:assets>
@@ -8,6 +8,14 @@
 				description="Default destination" />
 			<deployment:embeddedArtifact name="servicemix.xml"
 				description="ServiceMix Definition" extension="xml" />
+			<deployment:deploymentAssistants>
+				<beans
+					xmlns:injector="java://org.apache.servicemix.packaging.injector">
+					<injector:embeddedResourceInjector/>
+					<injector:parameterPropertiesInjector/>					
+					<injector:bundledAssetsInjector/>					
+				</beans>
+			</deployment:deploymentAssistants>
 		</deployment:assets>
 	</component>
 </deployment:components>
