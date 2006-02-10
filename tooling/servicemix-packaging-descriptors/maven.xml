@@ -35,15 +35,10 @@
 		<echo
 			message="Compiling the deployment assets descriptor schema..." />
 		<xjc
-			schema="${basedir}/src/main/resources/deployment-assets.xsd"
-			package="org.apache.servicemix.descriptors.deployment.assets"
+			schema="${basedir}/src/main/resources/packaging-assets.xsd"
+			package="org.apache.servicemix.descriptors.packaging.assets"
 			destdir="${basedir}/target/generated" />
-
-		<echo
-			message="Compiling the bundled assets descriptor schema..." />
-		<xjc schema="${basedir}/src/main/resources/bundled-assets.xsd"
-			package="org.apache.servicemix.descriptors.bundled.assets"
-			destdir="${basedir}/target/generated" />
+		
 	</preGoal>
 
 </project>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://servicemix.apache.org/deployment"
-	xmlns:tns="http://servicemix.apache.org/deployment">
+	targetNamespace="http://servicemix.apache.org/component/packaging"
+	xmlns:tns="http://servicemix.apache.org/component/packaging">
 	<element name="components">
 		<complexType>
 			<sequence>
@@ -27,13 +27,13 @@
 				<element ref="tns:connection" minOccurs="0"
 					maxOccurs="unbounded">
 				</element>
-				<element ref="tns:embeddedArtifact" minOccurs="0"
+				<element ref="tns:artifact" minOccurs="0"
 					maxOccurs="unbounded">
 				</element>
 				<element ref="tns:parameter" minOccurs="0"
 					maxOccurs="unbounded">
 				</element>
-				<element ref="tns:deploymentAssistants" maxOccurs="1"
+				<element ref="tns:engine" maxOccurs="1"
 					minOccurs="0">
 				</element>
 			</sequence>
@@ -50,7 +50,7 @@
 		</complexType>
 	</element>
 
-	<element name="embeddedArtifact">
+	<element name="artifact">
 		<complexType>
 			<attribute name="name" type="string" use="required">
 			</attribute>
@@ -64,6 +64,7 @@
 			<attribute name="internalSource" type="string"
 				use="optional">
 			</attribute>
+			<attribute name="path" type="string"></attribute>
 		</complexType>
 	</element>
 
@@ -74,7 +75,7 @@
 			<attribute name="description" type="string"
 				use="required">
 			</attribute>
-			<attribute name="defaultValue" type="string"
+			<attribute name="value" type="string"
 				use="optional">
 			</attribute>
 			<attribute name="type" type="string" use="optional"
@@ -93,9 +94,12 @@
 			</attribute>
 			<attribute name="type" type="string" default="consumes"></attribute>
 			<attribute name="category" type="string"></attribute>
+			<attribute name="qname" type="QName"
+				use="optional">
+			</attribute>
 		</complexType>
 	</element>
-	<element name="deploymentAssistants">
+	<element name="engine">
 		<complexType>
 			<choice minOccurs="0" maxOccurs="unbounded">
 				<any namespace="##other" processContents="skip" />

@@ -1,21 +1,18 @@
-<deployment:components
-	xmlns:deployment="http://servicemix.apache.org/deployment">
+<componentPackaging:components
+	xmlns:componentPackaging="http://servicemix.apache.org/component/packaging">
 	<component name="servicemix-lwcontainer"
 		description="ServiceMix Lightweight Container"
 		type="service-engine">
-		<deployment:assets>
-			<deployment:connection name="defaultDestination"
+		<componentPackaging:assets>
+			<componentPackaging:connection name="defaultDestination"
 				description="Default destination" />
-			<deployment:embeddedArtifact name="servicemix.xml"
+			<componentPackaging:artifact name="servicemix.xml"
 				description="ServiceMix Definition" extension="xml" />
-			<deployment:deploymentAssistants>
-				<beans
-					xmlns:injector="java://org.apache.servicemix.packaging.injector">
-					<injector:embeddedResourceInjector/>
-					<injector:parameterPropertiesInjector/>					
-					<injector:bundledAssetsInjector/>					
-				</beans>
-			</deployment:deploymentAssistants>
-		</deployment:assets>
+			<componentPackaging:engine>
+				<packaging:ServiceAssemblyPackagingEngine
+					xmlns:packaging="java://org.apache.servicemix.packaging.engine">
+				</packaging:ServiceAssemblyPackagingEngine>
+			</componentPackaging:engine>
+		</componentPackaging:assets>
 	</component>
-</deployment:components>
+</componentPackaging:components>
