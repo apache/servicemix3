@@ -27,6 +27,7 @@ import javax.xml.bind.Marshaller;
 
 import org.apache.servicemix.descriptors.bundled.assets.BundledAssets;
 import org.apache.servicemix.descriptors.bundled.assets.BundledAssets.Artifact;
+import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
 import org.apache.servicemix.packaging.model.AbstractComponent;
 import org.apache.servicemix.packaging.model.DeploymentDiagram;
 import org.apache.servicemix.packaging.model.ModelElement;
@@ -45,6 +46,18 @@ public abstract class AbstractDeployer {
 
 	public ComponentArtifact getArtifact() {
 		return artifact;
+	}
+
+	public ComponentArtifact getArtifactForComponent(Component serviceToLookup) {
+		for (ComponentArtifact artifact : ComponentArtifactFactory
+				.getComponentArtifacts()) {
+			for (Component component : artifact.getComponents().getComponent()) {
+				if (component.getName().equals(serviceToLookup.getName())) {
+					return artifact;
+				}
+			}
+		}
+		return null;
 	}
 
 	public String getDeploymentDir(ModelElement component) {

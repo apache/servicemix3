@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.servicemix.packaging.DeployerEditor;
+import org.apache.servicemix.packaging.engine.PackagingEngine;
 import org.apache.servicemix.packaging.model.AbstractComponent;
 import org.apache.servicemix.packaging.model.BindingComponent;
 import org.apache.servicemix.packaging.model.ServiceAssembly;
@@ -36,7 +37,7 @@ import org.eclipse.ui.PlatformUI;
  * @author <a href="mailto:philip.dodds@gmail.com">Philip Dodds </a>
  * 
  */
-public class DeployServiceAction extends Action {
+public class DeployAction extends Action {
 
 	public static final String COMPONENT_ID = "DEPLOY_SERVICE_ACTION";
 
@@ -44,7 +45,7 @@ public class DeployServiceAction extends Action {
 
 	private DeployerEditor editor;
 
-	public DeployServiceAction(EditPartViewer viewer, DeployerEditor editor) {
+	public DeployAction(EditPartViewer viewer, DeployerEditor editor) {
 		super();
 		this.viewer = viewer;
 		this.editor = editor;
@@ -95,15 +96,23 @@ public class DeployServiceAction extends Action {
 			// Deploy the services
 			for (AbstractComponent component : components) {
 				if (component instanceof BindingComponent) {
-					((BindingComponent) component).getComponentArtifact()
-							.getDeploymentEngine().deployBindingComponent(
-									editor.getProject(),
-									(BindingComponent) component);
+					for (PackagingEngine engine : ((BindingComponent) component)
+							.getComponentArtifact().getPackagingEngines(
+									((BindingComponent) component)
+											.getComponentName())) {
+						if (engine.canDeploy(component)) {
+							engine.deploy(null, editor.getProject());
+						}
+					}
 				} else if (component instanceof ServiceAssembly) {
-					((ServiceAssembly) component).getComponentArtifact()
-							.getDeploymentEngine().deployServiceAssembly(
-									editor.getProject(),
-									(ServiceAssembly) component);
+					for (PackagingEngine engine : ((ServiceAssembly) component)
+							.getComponentArtifact().getPackagingEngines(
+									((ServiceAssembly) component)
+											.getComponentName())) {
+						if (engine.canDeploy(component)) {
+							engine.deploy(null, editor.getProject());
+						}
+					}
 				}
 			}
 		} catch (Throwable e) {

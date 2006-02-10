@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -28,6 +29,7 @@ import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
 import org.apache.servicemix.packaging.model.ServiceAssembly;
 import org.apache.servicemix.packaging.model.ServiceUnit;
 import org.eclipse.core.resources.IProject;
+import org.w3c.dom.Element;
 
 /**
  * The Service Assembly Deployer
@@ -53,6 +55,17 @@ public class ServiceAssemblyDeployer extends AbstractDeployer {
 			out = new ZipOutputStream(new FileOutputStream(
 					getDeploymentDir(assembly) + fileName));
 
+			Component definition = assembly.getComponentArtifact()
+					.getComponentDefinitionByName(assembly.getComponentName());
+			if ((definition.getAssets() != null)
+					&& (definition.getAssets().getDeploymentAssistants() != null)) {
+				List<Element> elements = definition.getAssets()
+						.getDeploymentAssistants().getAnyOrAny();
+				for(Element element : elements) {
+					System.out.println("Element:"+element);
+				}
+			}
+
 			injectServiceAssemblyDescriptor(assembly, out);
 			injectBundledAssets(assembly.getStoredAssets(), out);
 
@@ -69,18 +82,6 @@ public class ServiceAssemblyDeployer extends AbstractDeployer {
 					// Ignore?
 				}
 		}
-	}
-
-	private ComponentArtifact getArtifactForComponent(Component serviceToLookup) {
-		for (ComponentArtifact artifact : ComponentArtifactFactory
-				.getComponentArtifacts()) {
-			for (Component component : artifact.getComponents().getComponent()) {
-				if (component.getName().equals(serviceToLookup.getName())) {
-					return artifact;
-				}
-			}
-		}
-		return null;
 	}
 
 	private void deployComponent(ServiceAssembly c)

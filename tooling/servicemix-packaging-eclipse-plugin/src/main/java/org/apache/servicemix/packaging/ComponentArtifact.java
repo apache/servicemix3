@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
@@ -27,8 +28,10 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.servicemix.descriptors.deployment.assets.Components;
 import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
+import org.apache.servicemix.packaging.engine.PackagingEngine;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.w3c.dom.Element;
 
 /**
  * A base container for the information and resources in a Component Artifact
@@ -59,9 +62,6 @@ public class ComponentArtifact {
 
 		getComponentDescription(file);
 
-		// Create a deployment engine for this artifact
-		deploymentEngine = new DeploymentEngine(this);
-
 	}
 
 	private Image createImage(InputStream inputStream) {
@@ -79,8 +79,17 @@ public class ComponentArtifact {
 		return components;
 	}
 
-	public DeploymentEngine getDeploymentEngine() {
-		return deploymentEngine;
+	public List<PackagingEngine> getPackagingEngines(String componentName) {
+		Component definition = getComponentDefinitionByName(componentName);
+		if ((definition.getAssets() != null)
+				&& (definition.getAssets().getDeploymentAssistants() != null)) {
+			List<Element> elements = definition.getAssets()
+					.getDeploymentAssistants().getAnyOrAny();
+			for (Element element : elements) {
+				System.out.println("Element:" + element);
+			}
+		}
+		return null;
 	}
 
 	public Image getFailedImage(String componentName) {
@@ -134,7 +143,7 @@ public class ComponentArtifact {
 						.getName());
 				Unmarshaller m = context.createUnmarshaller();
 				components = (Components) m.unmarshal(new ByteArrayInputStream(
-						serviceDescriptor));				
+						serviceDescriptor));
 			} catch (JAXBException e) {
 				throw new InvalidArchiveException(e);
 			}

@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.servicemix.packaging.DeployerEditor;
+import org.apache.servicemix.packaging.engine.PackagingEngine;
 import org.apache.servicemix.packaging.model.AbstractComponent;
 import org.apache.servicemix.packaging.model.BindingComponent;
 import org.apache.servicemix.packaging.model.ServiceAssembly;
@@ -87,16 +88,26 @@ public class UndeployServiceAction extends Action {
 			}
 		}
 
-		// Undeploy
+		// Undeploy the services
 		for (AbstractComponent component : components) {
 			if (component instanceof BindingComponent) {
-				((BindingComponent) component).getComponentArtifact()
-						.getDeploymentEngine().undeployBindingComponent(
-								(BindingComponent) component);
+				for (PackagingEngine engine : ((BindingComponent) component)
+						.getComponentArtifact().getPackagingEngines(
+								((BindingComponent) component)
+										.getComponentName())) {
+					if (engine.canDeploy(component)) {
+						engine.undeploy(null, editor.getProject());
+					}
+				}
 			} else if (component instanceof ServiceAssembly) {
-				((ServiceAssembly) component).getComponentArtifact()
-						.getDeploymentEngine().undeployServiceAssembly(
-								(ServiceAssembly) component);
+				for (PackagingEngine engine : ((ServiceAssembly) component)
+						.getComponentArtifact().getPackagingEngines(
+								((ServiceAssembly) component)
+										.getComponentName())) {
+					if (engine.canDeploy(component)) {
+						engine.undeploy(null, editor.getProject());
+					}
+				}
 			}
 		}
 	}

@@ -15,7 +15,7 @@
  */
 package org.apache.servicemix.packaging;
 
-import org.apache.servicemix.packaging.actions.DeployServiceAction;
+import org.apache.servicemix.packaging.actions.DeployAction;
 import org.apache.servicemix.packaging.actions.UndeployServiceAction;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.EditPartViewer;
@@ -52,13 +52,13 @@ public class DeployerEditorContextMenuProvider extends ContextMenuProvider {
 		// Add standard action groups to the menu
 		GEFActionConstants.addStandardActionGroups(menu);
 
-		actionRegistry.registerAction(new DeployServiceAction(getViewer(),
+		actionRegistry.registerAction(new DeployAction(getViewer(),
 				editor));
 		actionRegistry.registerAction(new UndeployServiceAction(getViewer(),
 				editor));
 
 		menu.appendToGroup(GEFActionConstants.GROUP_EDIT,
-				getAction(DeployServiceAction.COMPONENT_ID));
+				getAction(DeployAction.COMPONENT_ID));
 		menu.appendToGroup(GEFActionConstants.GROUP_EDIT,
 				getAction(UndeployServiceAction.COMPONENT_ID));
 

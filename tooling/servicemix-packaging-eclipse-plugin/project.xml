@@ -62,6 +62,23 @@
 			<artifactId>activation</artifactId>
 			<version>1.4</version>
 		</dependency>
+		
+		<!-- XBean -->
+		<dependency>
+			<groupId>org.xbean</groupId>
+			<artifactId>xbean-spring</artifactId>
+			<version>${xbean_version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.xbean</groupId>
+			<artifactId>xbean-kernel</artifactId>
+			<version>${xbean_version}</version>
+		</dependency>
+		<dependency>
+			<groupId>springframework</groupId>
+			<artifactId>spring</artifactId>
+			<version>${spring_version}</version>			
+		</dependency>
 
 		<!-- Eclipse libraries -->
 		<dependency>

@@ -18,10 +18,13 @@ package org.apache.servicemix.packaging;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
 import org.apache.servicemix.packaging.model.BindingComponent;
 import org.eclipse.core.resources.IProject;
+import org.w3c.dom.Element;
 
 /**
  * The Binding Component Deployer
@@ -30,10 +33,9 @@ import org.eclipse.core.resources.IProject;
  * 
  */
 public class BindingComponentDeployer extends AbstractDeployer {
-	
 
 	public BindingComponentDeployer(ComponentArtifact artifact) {
-		setArtifact(artifact);		
+		setArtifact(artifact);
 	}
 
 	public void deploy(IProject project, BindingComponent component)
@@ -44,6 +46,17 @@ public class BindingComponentDeployer extends AbstractDeployer {
 					+ "-bc.zip";
 			out = new ZipOutputStream(new FileOutputStream(
 					getInstallPath(component) + fileName));
+
+			Component definition = component.getComponentArtifact()
+					.getComponentDefinitionByName(component.getComponentName());
+			if ((definition.getAssets() != null)
+					&& (definition.getAssets().getDeploymentAssistants() != null)) {
+				List<Element> elements = definition.getAssets()
+						.getDeploymentAssistants().getAnyOrAny();
+				for (Element element : elements) {
+					System.out.println("Element:" + element);
+				}
+			}
 			injectComponentFiles(out, component.getComponentName());
 			injectEmbeddedArtifacts(component.getStoredAssets(), out, project);
 			injectBundledAssets(component.getStoredAssets(), out);
