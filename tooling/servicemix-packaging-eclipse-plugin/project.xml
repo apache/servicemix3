@@ -79,6 +79,11 @@
 			<artifactId>spring</artifactId>
 			<version>${spring_version}</version>			
 		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>${commons_logging_version}</version>
+		</dependency>
 
 		<!-- Eclipse libraries -->
 		<dependency>

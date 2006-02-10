@@ -18,7 +18,7 @@ package org.apache.servicemix.packaging.parts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.apache.servicemix.packaging.model.Connection;
+import org.apache.servicemix.packaging.model.ComponentConnection;
 import org.apache.servicemix.packaging.model.ModelElement;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolygonDecoration;
@@ -67,13 +67,13 @@ public class ConnectionEditPart extends AbstractConnectionEditPart implements
 		}
 	}
 
-	private Connection getCastedModel() {
-		return (Connection) getModel();
+	private ComponentConnection getCastedModel() {
+		return (ComponentConnection) getModel();
 	}
 
 	public void propertyChange(PropertyChangeEvent event) {
 		String property = event.getPropertyName();
-		if (Connection.LINESTYLE_PROP.equals(property)) {
+		if (ComponentConnection.LINESTYLE_PROP.equals(property)) {
 			((PolylineConnection) getFigure()).setLineStyle(getCastedModel()
 					.getLineStyle());
 		}

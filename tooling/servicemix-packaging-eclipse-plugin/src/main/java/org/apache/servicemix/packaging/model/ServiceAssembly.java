@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.namespace.QName;
 
-import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
+import org.apache.servicemix.descriptors.packaging.assets.Components.Component;
 import org.apache.servicemix.packaging.ComponentArtifact;
 import org.apache.servicemix.packaging.ComponentArtifactFactory;
 
@@ -53,8 +53,7 @@ public class ServiceAssembly extends AbstractComponent implements
 	}
 
 	public void createServiceUnit(QName qname) {
-		ServiceUnit newUnit = new ServiceUnit();
-		newUnit.setServiceName(qname);
+		ServiceUnit newUnit = new ServiceUnit();		
 		newUnit.setParentModelElement(this);
 		serviceUnit.add(newUnit);
 

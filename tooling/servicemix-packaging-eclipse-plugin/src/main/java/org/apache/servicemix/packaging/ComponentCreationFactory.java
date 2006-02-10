@@ -15,6 +15,7 @@
  */
 package org.apache.servicemix.packaging;
 
+import org.apache.servicemix.descriptors.packaging.assets.Connection;
 import org.apache.servicemix.packaging.model.BindingComponent;
 import org.apache.servicemix.packaging.model.ComponentBased;
 import org.apache.servicemix.packaging.model.ServiceAssembly;
@@ -49,11 +50,7 @@ public class ComponentCreationFactory implements CreationFactory {
 	public Object getNewObject() {
 		ComponentBased component = null;
 		if (TYPE_BC.equals(type)) {
-			component = new BindingComponent();
-			((BindingComponent) component)
-					.setServiceName(ServiceNameHelper
-							.getUniqueServiceName((((DeployerEditor) editor)
-									.getModel())));
+			component = new BindingComponent();			
 		} else
 			component = new ServiceAssembly();
 		component.setComponentName(serviceName);
@@ -62,6 +59,6 @@ public class ComponentCreationFactory implements CreationFactory {
 
 	public Object getObjectType() {
 		return new BindingComponent();
-	}
+	}	
 
 }

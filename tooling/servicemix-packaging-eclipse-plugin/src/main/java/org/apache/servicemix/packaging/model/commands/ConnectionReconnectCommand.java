@@ -18,7 +18,7 @@ package org.apache.servicemix.packaging.model.commands;
 import java.util.Iterator;
 
 import org.apache.servicemix.packaging.model.Connectable;
-import org.apache.servicemix.packaging.model.Connection;
+import org.apache.servicemix.packaging.model.ComponentConnection;
 import org.eclipse.gef.commands.Command;
 
 /**
@@ -29,7 +29,7 @@ import org.eclipse.gef.commands.Command;
  */
 public class ConnectionReconnectCommand extends Command {
 
-	private Connection connection;
+	private ComponentConnection connection;
 
 	private Connectable newSource;
 
@@ -39,7 +39,7 @@ public class ConnectionReconnectCommand extends Command {
 
 	private final Connectable oldTarget;
 
-	public ConnectionReconnectCommand(Connection conn) {
+	public ConnectionReconnectCommand(ComponentConnection conn) {
 		if (conn == null) {
 			throw new IllegalArgumentException();
 		}
@@ -63,7 +63,7 @@ public class ConnectionReconnectCommand extends Command {
 		}
 		for (Iterator iter = newSource.getSourceConnections().iterator(); iter
 				.hasNext();) {
-			Connection conn = (Connection) iter.next();
+			ComponentConnection conn = (ComponentConnection) iter.next();
 			if (conn.getTarget().equals(oldTarget) && !conn.equals(connection)) {
 				return false;
 			}
@@ -77,7 +77,7 @@ public class ConnectionReconnectCommand extends Command {
 		}
 		for (Iterator iter = newTarget.getTargetConnections().iterator(); iter
 				.hasNext();) {
-			Connection conn = (Connection) iter.next();
+			ComponentConnection conn = (ComponentConnection) iter.next();
 			if (conn.getSource().equals(oldSource) && !conn.equals(connection)) {
 				return false;
 			}

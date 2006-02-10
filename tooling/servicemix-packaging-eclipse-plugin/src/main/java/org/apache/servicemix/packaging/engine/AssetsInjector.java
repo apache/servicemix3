@@ -7,16 +7,16 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
-import org.apache.servicemix.descriptors.bundled.assets.BundledAssets;
+import org.apache.servicemix.descriptors.packaging.assets.Assets;
 import org.apache.servicemix.packaging.model.BindingComponent;
 import org.apache.servicemix.packaging.model.ModelElement;
 import org.apache.servicemix.packaging.model.ServiceUnit;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public class BundledAssetsInjector implements PackagingInjector {
+public class AssetsInjector implements PackagingInjector {
 
-	private BundledAssets storedAssets;
+	private Assets storedAssets;
 
 	public boolean canInject(ModelElement modelElement) {
 		if (modelElement instanceof BindingComponent) {
@@ -33,7 +33,7 @@ public class BundledAssetsInjector implements PackagingInjector {
 	public void inject(IProgressMonitor monitor, IProject project,
 			ZipOutputStream outputStream) {
 		try {
-			JAXBContext context = JAXBContext.newInstance(BundledAssets.class
+			JAXBContext context = JAXBContext.newInstance(Assets.class
 					.getPackage().getName());
 			Marshaller m = context.createMarshaller();
 			final StringWriter write = new StringWriter();

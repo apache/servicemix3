@@ -19,10 +19,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.servicemix.descriptors.deployment.assets.Assets;
-import org.apache.servicemix.descriptors.deployment.assets.Connection;
-import org.apache.servicemix.descriptors.deployment.assets.EmbeddedArtifact;
-import org.apache.servicemix.descriptors.deployment.assets.Parameter;
+import org.apache.servicemix.descriptors.packaging.assets.Artifact;
+import org.apache.servicemix.descriptors.packaging.assets.Assets;
+import org.apache.servicemix.descriptors.packaging.assets.Connection;
+import org.apache.servicemix.descriptors.packaging.assets.Parameter;
 import org.apache.servicemix.packaging.parts.DeploymentDiagramEditPart;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
@@ -54,14 +54,22 @@ public class AssetDescriptorFactory {
 
 		// Generate descriptors for connections
 		for (Connection connection : assets.getConnection()) {
-			QNamePropertyDescriptor qnameProperty = new QNamePropertyDescriptor(
-					connection, connection.getDescription(), diagram);
-			qnameProperty.setCategory(connection.getCategory());
-			descriptors.add(qnameProperty);
+			if ("provides".equals(connection.getType())) {
+				QNamePropertyDescriptor qnameProperty = new QNamePropertyDescriptor(
+						connection, connection.getDescription(), null);
+				qnameProperty.setCategory(connection.getCategory());
+				descriptors.add(qnameProperty);
+			} else {
+				QNamePropertyDescriptor qnameProperty = new QNamePropertyDescriptor(
+						connection, connection.getDescription(), diagram);
+				qnameProperty.setCategory(connection.getCategory());
+				descriptors.add(qnameProperty);
+			}
+
 		}
 
 		// Generate descriptiors for artifacts
-		for (EmbeddedArtifact embeddedArtifact : assets.getEmbeddedArtifact()) {
+		for (Artifact embeddedArtifact : assets.getArtifact()) {
 			EmbeddedArtifactDescriptor embeddedArtifactDescriptor = new EmbeddedArtifactDescriptor(
 					embeddedArtifact, embeddedArtifact.getDescription(),
 					diagram, embeddedArtifact.getExtension());

@@ -17,13 +17,12 @@ package org.apache.servicemix.packaging.parts;
 
 import java.util.LinkedList;
 
-import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
+import org.apache.servicemix.descriptors.packaging.assets.Components.Component;
 import org.apache.servicemix.packaging.figure.ServiceUnitFigure;
 import org.apache.servicemix.packaging.model.AbstractComponent;
 import org.apache.servicemix.packaging.model.ComponentBased;
 import org.apache.servicemix.packaging.model.ServiceUnit;
 import org.apache.servicemix.packaging.parts.descriptors.AssetDescriptorFactory;
-import org.apache.servicemix.packaging.parts.descriptors.QNamePropertyDescriptor;
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
@@ -91,9 +90,6 @@ public class ServiceUnitEditPart extends AbstractComponentEditPart implements
 			descriptors = new LinkedList<IPropertyDescriptor>();
 			descriptors.add(new TextPropertyDescriptor(getModel(),
 					"Service unit name"));
-			descriptors.add(new QNamePropertyDescriptor(
-					((ServiceUnit) getModel()).getServiceName(),
-					"Service name", null));
 			if (getComponentDescriptor().getAssets() != null)
 				descriptors.addAll(AssetDescriptorFactory.getDescriptors(
 						getComponentDescriptor().getAssets(),

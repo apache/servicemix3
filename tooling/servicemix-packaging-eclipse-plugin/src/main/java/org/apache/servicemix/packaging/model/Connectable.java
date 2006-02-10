@@ -26,11 +26,11 @@ import java.util.List;
  */
 public interface Connectable {
 
-	public void addConnection(Connection connection);
+	public void addConnection(ComponentConnection connection);
 
-	public void removeConnection(Connection connection);
+	public void removeConnection(ComponentConnection connection);
 
-	public List<Connection> getSourceConnections();
+	public List<ComponentConnection> getSourceConnections();
 
-	public List<Connection> getTargetConnections();
+	public List<ComponentConnection> getTargetConnections();
 }

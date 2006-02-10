@@ -17,7 +17,6 @@ package org.apache.servicemix.packaging.parts.descriptors;
 
 import javax.xml.namespace.QName;
 
-import org.apache.servicemix.packaging.model.DeploymentDiagram;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.TableViewer;
@@ -39,7 +38,7 @@ import org.eclipse.swt.widgets.Text;
  */
 public class QNameEditDialog extends Dialog {
 
-	private QName qname;
+	private QName qname = new QName("http://www.openuri.org","newService");
 
 	private Text localPart;
 

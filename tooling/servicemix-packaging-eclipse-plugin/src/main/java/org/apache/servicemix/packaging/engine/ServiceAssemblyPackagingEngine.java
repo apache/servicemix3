@@ -34,6 +34,8 @@ public class ServiceAssemblyPackagingEngine extends AbstractPackagingEngine {
 					injector.inject(monitor, project, out);
 				}
 			}
+			
+			out.close();
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		} finally {

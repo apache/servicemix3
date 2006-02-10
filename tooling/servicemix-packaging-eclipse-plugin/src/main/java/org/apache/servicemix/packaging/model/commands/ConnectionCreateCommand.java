@@ -19,13 +19,13 @@ import java.util.Iterator;
 
 import org.apache.servicemix.packaging.model.AbstractConnectableService;
 import org.apache.servicemix.packaging.model.BindingComponent;
-import org.apache.servicemix.packaging.model.Connection;
+import org.apache.servicemix.packaging.model.ComponentConnection;
 import org.eclipse.gef.commands.Command;
 
 
 public class ConnectionCreateCommand extends Command {
 	
-	private Connection connection;
+	private ComponentConnection connection;
 
 	private final int lineStyle;
 
@@ -48,7 +48,7 @@ public class ConnectionCreateCommand extends Command {
 		}
 		for (Iterator iter = source.getSourceConnections().iterator(); iter
 				.hasNext();) {
-			Connection conn = (Connection) iter.next();
+			ComponentConnection conn = (ComponentConnection) iter.next();
 			if (conn.getTarget().equals(target)) {
 				return false;
 			}
@@ -57,7 +57,7 @@ public class ConnectionCreateCommand extends Command {
 	}
 
 	public void execute() {
-		connection = new Connection(source, target);
+		connection = new ComponentConnection(source, target);
 		connection.setLineStyle(lineStyle);
 	}
 

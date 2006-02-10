@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.servicemix.descriptors.packaging.assets.Connection;
 import org.apache.servicemix.packaging.DeployerEditor;
 import org.eclipse.swt.graphics.Image;
 
@@ -53,16 +54,16 @@ public abstract class AbstractConnectableService extends AbstractComponent
 
 	protected QName serviceName = null;
 
-	List<Connection> sourceConnections = new ArrayList<Connection>();
+	List<ComponentConnection> sourceConnections = new ArrayList<ComponentConnection>();
 
-	List<Connection> targetConnections = new ArrayList<Connection>();
+	List<ComponentConnection> targetConnections = new ArrayList<ComponentConnection>();
 
 	public AbstractConnectableService() {
 		connectionDecorator = new ConnectionDecorator(this);
 		addPropertyChangeListener(connectionDecorator);
 	}
 
-	public void addConnection(Connection conn) {
+	public void addConnection(ComponentConnection conn) {
 		if (conn == null || conn.getSource() == conn.getTarget()) {
 			throw new IllegalArgumentException();
 		}
@@ -75,23 +76,30 @@ public abstract class AbstractConnectableService extends AbstractComponent
 		}
 	}
 
-	public void refreshConnections() {		
+	public void refreshConnections() {
 		firePropertyChange(SERVICENAME_PROP, null, null);
 	}
 
 	public QName getServiceName() {
-		return serviceName;
+		for (Connection connection : getStoredAssets().getConnection()) {
+			System.out.println("got "+connection.getType());
+			if ("provides".equals(connection.getType())) {
+				System.out.println("Returning "+connection.getQname());
+				return connection.getQname();
+			}
+		}
+		return null;
 	}
 
-	public List<Connection> getSourceConnections() {
-		return new ArrayList<Connection>(sourceConnections);
+	public List<ComponentConnection> getSourceConnections() {
+		return new ArrayList<ComponentConnection>(sourceConnections);
 	}
 
 	public List getTargetConnections() {
-		return new ArrayList<Connection>(targetConnections);
+		return new ArrayList<ComponentConnection>(targetConnections);
 	}
 
-	public void removeConnection(Connection conn) {
+	public void removeConnection(ComponentConnection conn) {
 		if (conn == null) {
 			throw new IllegalArgumentException();
 		}
@@ -102,11 +110,6 @@ public abstract class AbstractConnectableService extends AbstractComponent
 			targetConnections.remove(conn);
 			firePropertyChange(TARGET_CONNECTIONS_PROP, null, conn);
 		}
-	}
-
-	public void setServiceName(QName serviceName) {
-		firePropertyChange(SERVICENAME_PROP, this.serviceName, serviceName);
-		this.serviceName = serviceName;
 	}
 
 }

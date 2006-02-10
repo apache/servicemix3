@@ -23,7 +23,7 @@ import org.eclipse.draw2d.Graphics;
  * @author <a href="mailto:philip.dodds@gmail.com">Philip Dodds </a>
  * 
  */
-public class Connection extends ModelElement {
+public class ComponentConnection extends ModelElement {
 
 	public static final Integer SOLID_CONNECTION = new Integer(
 			Graphics.LINE_SOLID);
@@ -43,7 +43,7 @@ public class Connection extends ModelElement {
 
 	private Connectable target;
 
-	public Connection(Connectable source, Connectable target) {
+	public ComponentConnection(Connectable source, Connectable target) {
 		reconnect(source, target);
 	}
 

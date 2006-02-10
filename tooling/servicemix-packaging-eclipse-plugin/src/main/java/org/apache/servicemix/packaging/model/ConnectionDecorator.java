@@ -18,7 +18,7 @@ package org.apache.servicemix.packaging.model;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.apache.servicemix.descriptors.bundled.assets.BundledAssets;
+import org.apache.servicemix.descriptors.packaging.assets.Connection;
 import org.apache.servicemix.packaging.parts.descriptors.ServiceNameHelper;
 
 /**
@@ -49,16 +49,18 @@ public class ConnectionDecorator implements PropertyChangeListener {
 	}
 
 	private void retargetConnections() {
-		for (Connection connection : component.getSourceConnections()) {
+		for (ComponentConnection connection : component.getSourceConnections()) {
 			component.removeConnection(connection);
 		}
-		for (BundledAssets.Connection reference : component.getStoredAssets()
-				.getConnection()) {
-			Connectable target = ServiceNameHelper.getConnectableByQName(
-					getDeploymentDiagram(component), reference.getQname());
-			if ((target != null) && (!target.equals(component))) {
-				Connection connection = new Connection(component, target);
-				component.addConnection(connection);
+		for (Connection reference : component.getStoredAssets().getConnection()) {
+			if ("consumes".equals(reference.getType())) {
+				Connectable target = ServiceNameHelper.getConnectableByQName(
+						getDeploymentDiagram(component), reference.getQname());
+				if ((target != null) && (!target.equals(component))) {
+					ComponentConnection connection = new ComponentConnection(
+							component, target);
+					component.addConnection(connection);
+				}
 			}
 		}
 

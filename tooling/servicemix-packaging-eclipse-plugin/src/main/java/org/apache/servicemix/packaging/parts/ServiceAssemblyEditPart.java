@@ -19,13 +19,12 @@ import java.beans.PropertyChangeEvent;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
+import org.apache.servicemix.descriptors.packaging.assets.Components.Component;
 import org.apache.servicemix.packaging.figure.ServiceAssemblyFigure;
 import org.apache.servicemix.packaging.model.AbstractComponent;
 import org.apache.servicemix.packaging.model.ComponentBased;
 import org.apache.servicemix.packaging.model.DeploymentDiagram;
 import org.apache.servicemix.packaging.model.ServiceAssembly;
-import org.apache.servicemix.packaging.parts.descriptors.AssetDescriptorFactory;
 import org.apache.servicemix.packaging.parts.descriptors.ServiceNameHelper;
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
@@ -109,12 +108,12 @@ public class ServiceAssemblyEditPart extends AbstractComponentEditPart
 			descriptors = new LinkedList<IPropertyDescriptor>();
 			descriptors.add(new TextPropertyDescriptor(getModel(),
 					"Service assembly name"));
-			/* Ignore assets for assembly 
-			if (getComponentDescriptor().getAssets() != null) {
-				descriptors.addAll(AssetDescriptorFactory.getDescriptors(
-						getComponentDescriptor().getAssets(),
-						getDeploymentDiagram()));
-			} */
+			/*
+			 * Ignore assets for assembly if
+			 * (getComponentDescriptor().getAssets() != null) {
+			 * descriptors.addAll(AssetDescriptorFactory.getDescriptors(
+			 * getComponentDescriptor().getAssets(), getDeploymentDiagram())); }
+			 */
 		}
 
 		return getArray(descriptors);

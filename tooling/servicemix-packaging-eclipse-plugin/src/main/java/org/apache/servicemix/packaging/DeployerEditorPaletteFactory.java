@@ -17,8 +17,8 @@ package org.apache.servicemix.packaging;
 
 import java.util.List;
 
-import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
-import org.apache.servicemix.packaging.model.Connection;
+import org.apache.servicemix.descriptors.packaging.assets.Components.Component;
+import org.apache.servicemix.packaging.model.ComponentConnection;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
 import org.eclipse.gef.palette.MarqueeToolEntry;
@@ -101,12 +101,10 @@ public class DeployerEditorPaletteFactory {
 			for (Component component : artifact.getComponents().getComponent()) {
 				if (component.getType().equals("binding-component")) {
 					ImageDescriptor imageDescriptor = null;
-					if (artifact
-							.getComponentImage(component.getName()) != null)
+					if (artifact.getComponentImage(component.getName()) != null)
 						imageDescriptor = ImageDescriptor
 								.createFromImage(artifact
-										.getComponentImage(component
-												.getName()));
+										.getComponentImage(component.getName()));
 					CombinedTemplateCreationEntry componentCreationEntry = new CombinedTemplateCreationEntry(
 							component.getDescription(), component
 									.getDescription(), Component.class,
@@ -131,12 +129,10 @@ public class DeployerEditorPaletteFactory {
 			for (Component component : artifact.getComponents().getComponent()) {
 				if (component.getType().equals("service-engine")) {
 					ImageDescriptor imageDescriptor = null;
-					if (artifact
-							.getComponentImage(component.getName()) != null)
+					if (artifact.getComponentImage(component.getName()) != null)
 						imageDescriptor = ImageDescriptor
 								.createFromImage(artifact
-										.getComponentImage(component
-												.getName()));
+										.getComponentImage(component.getName()));
 					CombinedTemplateCreationEntry componentCreationEntry = new CombinedTemplateCreationEntry(
 							component.getDescription(), component
 									.getDescription(), Component.class,
@@ -173,7 +169,7 @@ public class DeployerEditorPaletteFactory {
 					}
 
 					public Object getObjectType() {
-						return Connection.SOLID_CONNECTION;
+						return ComponentConnection.SOLID_CONNECTION;
 					}
 				}, ImageDescriptor.createFromFile(DeployerPlugin.class,
 						"icons/connection_s16.gif"), ImageDescriptor

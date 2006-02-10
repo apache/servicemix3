@@ -16,7 +16,7 @@
 package org.apache.servicemix.packaging.parts;
 
 import org.apache.servicemix.packaging.model.BindingComponent;
-import org.apache.servicemix.packaging.model.Connection;
+import org.apache.servicemix.packaging.model.ComponentConnection;
 import org.apache.servicemix.packaging.model.DeploymentDiagram;
 import org.apache.servicemix.packaging.model.ServiceAssembly;
 import org.apache.servicemix.packaging.model.ServiceUnit;
@@ -54,7 +54,7 @@ public class DeploymentEditPartFactory implements EditPartFactory {
 		if (modelElement instanceof ServiceUnit) {
 			return new ServiceUnitEditPart();
 		}
-		if (modelElement instanceof Connection) {
+		if (modelElement instanceof ComponentConnection) {
 			return new ConnectionEditPart();
 		}
 		return null;

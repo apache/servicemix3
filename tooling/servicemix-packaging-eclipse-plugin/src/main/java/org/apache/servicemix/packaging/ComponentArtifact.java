@@ -19,19 +19,29 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
-import org.apache.servicemix.descriptors.deployment.assets.Components;
-import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
+import org.apache.servicemix.descriptors.packaging.assets.Components;
+import org.apache.servicemix.descriptors.packaging.assets.Components.Component;
 import org.apache.servicemix.packaging.engine.PackagingEngine;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.springframework.core.io.ByteArrayResource;
 import org.w3c.dom.Element;
+import org.xbean.spring.context.ResourceXmlApplicationContext;
 
 /**
  * A base container for the information and resources in a Component Artifact
@@ -46,8 +56,6 @@ public class ComponentArtifact {
 	private String archivePath;
 
 	private Components components;
-
-	private DeploymentEngine deploymentEngine;
 
 	private JarResources jar;
 
@@ -81,15 +89,36 @@ public class ComponentArtifact {
 
 	public List<PackagingEngine> getPackagingEngines(String componentName) {
 		Component definition = getComponentDefinitionByName(componentName);
+		List<PackagingEngine> engines = new ArrayList<PackagingEngine>();
 		if ((definition.getAssets() != null)
-				&& (definition.getAssets().getDeploymentAssistants() != null)) {
-			List<Element> elements = definition.getAssets()
-					.getDeploymentAssistants().getAnyOrAny();
-			for (Element element : elements) {
-				System.out.println("Element:" + element);
+				&& (definition.getAssets().getEngine() != null)) {
+			List<Element> elements = definition.getAssets().getEngine()
+					.getAnyOrAny();
+			TransformerFactory transformerFactory = TransformerFactory
+					.newInstance();
+			try {
+				Transformer transformer = transformerFactory.newTransformer();
+
+				for (Element element : elements) {
+					StringWriter stringWriter = new StringWriter();
+					StreamResult streamResult = new StreamResult(stringWriter);
+					transformer.transform(new DOMSource(element), streamResult);
+					ResourceXmlApplicationContext context = new ResourceXmlApplicationContext(
+							new ByteArrayResource(streamResult.getWriter()
+									.toString().getBytes()));
+					for (String name : context.getBeanDefinitionNames()) {
+						System.out.println("Checking bean:" + name);
+						Object bean = context.getBean(name);
+						if (bean instanceof PackagingEngine)
+							engines.add((PackagingEngine) bean);
+					}
+				}
+			} catch (Exception e) {
+				throw new RuntimeException(e);
 			}
+
 		}
-		return null;
+		return engines;
 	}
 
 	public Image getFailedImage(String componentName) {

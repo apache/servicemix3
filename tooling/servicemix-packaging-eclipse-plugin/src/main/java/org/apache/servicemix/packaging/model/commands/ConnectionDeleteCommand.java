@@ -15,7 +15,7 @@
  */
 package org.apache.servicemix.packaging.model.commands;
 
-import org.apache.servicemix.packaging.model.Connection;
+import org.apache.servicemix.packaging.model.ComponentConnection;
 import org.eclipse.gef.commands.Command;
 
 /**
@@ -26,9 +26,9 @@ import org.eclipse.gef.commands.Command;
  */
 public class ConnectionDeleteCommand extends Command {
 
-	private final Connection connection;
+	private final ComponentConnection connection;
 
-	public ConnectionDeleteCommand(Connection conn) {
+	public ConnectionDeleteCommand(ComponentConnection conn) {
 		if (conn == null) {
 			throw new IllegalArgumentException();
 		}

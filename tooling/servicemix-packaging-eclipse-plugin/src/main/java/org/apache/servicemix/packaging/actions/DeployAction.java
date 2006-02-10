@@ -116,6 +116,7 @@ public class DeployAction extends Action {
 				}
 			}
 		} catch (Throwable e) {
+			e.printStackTrace();
 			Status s = new Status(Status.ERROR, "not_used", 0, e.getMessage(),
 					e);
 			ErrorDialog.openError(PlatformUI.getWorkbench()

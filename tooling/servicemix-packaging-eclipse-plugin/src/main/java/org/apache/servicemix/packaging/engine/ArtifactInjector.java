@@ -4,8 +4,8 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.servicemix.descriptors.bundled.assets.BundledAssets;
-import org.apache.servicemix.descriptors.bundled.assets.BundledAssets.Artifact;
+import org.apache.servicemix.descriptors.packaging.assets.Artifact;
+import org.apache.servicemix.descriptors.packaging.assets.Assets;
 import org.apache.servicemix.packaging.model.BindingComponent;
 import org.apache.servicemix.packaging.model.ModelElement;
 import org.apache.servicemix.packaging.model.ServiceUnit;
@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 public class ArtifactInjector implements PackagingInjector {
 
-	private BundledAssets storedAssets;
+	private Assets storedAssets;
 
 	public boolean canInject(ModelElement modelElement) {
 		if (modelElement instanceof BindingComponent) {

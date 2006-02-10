@@ -17,7 +17,7 @@ package org.apache.servicemix.packaging.model;
 
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.apache.servicemix.descriptors.bundled.assets.BundledAssets;
+import org.apache.servicemix.descriptors.packaging.assets.Assets;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.swt.graphics.Image;
 
@@ -39,7 +39,7 @@ public class AbstractComponent extends ModelElement {
 
 	private ModelElement parentModelElement;
 
-	protected BundledAssets bundledAssets = new BundledAssets();
+	protected Assets bundledAssets = new Assets();
 
 	public Image getIcon() {
 		return null;
@@ -54,7 +54,7 @@ public class AbstractComponent extends ModelElement {
 		return parentModelElement;
 	}
 
-	public BundledAssets getStoredAssets() {
+	public Assets getStoredAssets() {
 		return bundledAssets;
 	}
 
@@ -70,7 +70,7 @@ public class AbstractComponent extends ModelElement {
 		this.parentModelElement = parentModelElement;
 	}
 
-	public void setStoredAssets(BundledAssets storedAssets) {
+	public void setStoredAssets(Assets storedAssets) {
 		this.bundledAssets = storedAssets;
 	}
 

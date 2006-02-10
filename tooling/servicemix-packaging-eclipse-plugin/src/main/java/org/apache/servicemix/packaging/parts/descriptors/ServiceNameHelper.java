@@ -42,11 +42,13 @@ public class ServiceNameHelper {
 				if (child instanceof ServiceAssembly) {
 					for (ServiceUnit unit : ((ServiceAssembly) child)
 							.getServiceUnit()) {
-						serviceNames.add(unit.getServiceName());
+						if (unit.getServiceName() != null)
+							serviceNames.add(unit.getServiceName());
 					}
 				} else if (child instanceof AbstractConnectableService) {
-					serviceNames.add(((AbstractConnectableService) child)
-							.getServiceName());
+					if (((AbstractConnectableService) child).getServiceName() != null)
+						serviceNames.add(((AbstractConnectableService) child)
+								.getServiceName());
 				}
 			}
 		}
@@ -75,12 +77,12 @@ public class ServiceNameHelper {
 				if (child instanceof ServiceAssembly) {
 					for (ServiceUnit unit : ((ServiceAssembly) child)
 							.getServiceUnit()) {
-						if (unit.getServiceName().equals(qname))
+						if (qname.equals(unit.getServiceName()))
 							return unit;
 					}
 				} else if (child instanceof AbstractConnectableService) {
-					if (((AbstractConnectableService) child).getServiceName()
-							.equals(qname)) {
+					if (qname.equals(((AbstractConnectableService) child)
+							.getServiceName())) {
 						return (AbstractConnectableService) child;
 					}
 				}

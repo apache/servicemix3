@@ -15,6 +15,8 @@
  */
 package org.apache.servicemix.packaging.figure;
 
+import org.apache.servicemix.descriptors.packaging.assets.Assets;
+import org.apache.servicemix.descriptors.packaging.assets.Connection;
 import org.apache.servicemix.packaging.model.AbstractConnectableService;
 import org.apache.servicemix.packaging.model.BindingComponent;
 import org.apache.servicemix.packaging.model.ComponentBased;
@@ -73,8 +75,6 @@ public class ServiceNameFigure extends Figure {
 	}
 
 	public void refresh() {
-		localName.setText(service.getServiceName().getLocalPart());
-		namespace.setText(service.getServiceName().getNamespaceURI());
 		StringBuffer description = new StringBuffer();
 		if (service instanceof BindingComponent) {
 			ComponentBased componentBase = (ComponentBased) service;
@@ -89,8 +89,83 @@ public class ServiceNameFigure extends Figure {
 
 			componentName.setText(description.toString());
 		} else if (service instanceof ServiceUnit) {
+			description.append(((ServiceUnit) service).getServiceUnitName());
 			componentName.setText(((ServiceUnit) service).getServiceUnitName());
 		}
+
+		if (canHaveServiceName()) {
+			if (service.getServiceName() != null) {
+				localName.setText(service.getServiceName().getLocalPart());
+				namespace.setText(service.getServiceName().getNamespaceURI());
+				componentName.setText(description.toString());
+			} else {
+				localName.setText(description.toString());
+				namespace.setText("Missing '"+getMissingConnectionName()+"' connection");
+				componentName
+						.setText("Check your properties and set up your connections");
+			}
+		} else {
+			localName.setText(description.toString());
+			namespace.setText("No connections available");
+			componentName.setText("");
+		}
+
+	}
+
+	private boolean canHaveServiceName() {
+		if (service instanceof ServiceUnit) {
+			ServiceUnit serviceUnit = (ServiceUnit) service;
+			Assets assets = serviceUnit.getComponentArtifact()
+					.getComponentDefinitionByName(
+							serviceUnit.getComponentName()).getAssets();
+			if ((assets != null) && (assets.getConnection() != null))
+				for (Connection connection : assets.getConnection()) {
+					if ("provides".equals(connection.getType())) {
+						return true;
+					}
+				}
+		} else if (service instanceof BindingComponent) {
+			BindingComponent bindingComponent = (BindingComponent) service;
+			Assets assets = bindingComponent.getComponentArtifact()
+					.getComponentDefinitionByName(
+							bindingComponent.getComponentName()).getAssets();
+			if ((assets != null) && (assets.getConnection() != null))
+				for (Connection connection : assets.getConnection()) {
+					if ("provides".equals(connection.getType())) {
+						return true;
+					}
+				}
+		}
+
+		return false;
+	}
+
+	private String getMissingConnectionName() {
+		if (service instanceof ServiceUnit) {
+			ServiceUnit serviceUnit = (ServiceUnit) service;
+			Assets assets = serviceUnit.getComponentArtifact()
+					.getComponentDefinitionByName(
+							serviceUnit.getComponentName()).getAssets();
+			if ((assets != null) && (assets.getConnection() != null))
+				for (Connection connection : assets.getConnection()) {
+					if ("provides".equals(connection.getType())) {
+						return connection.getDescription();
+					}
+				}
+		} else if (service instanceof BindingComponent) {
+			BindingComponent bindingComponent = (BindingComponent) service;
+			Assets assets = bindingComponent.getComponentArtifact()
+					.getComponentDefinitionByName(
+							bindingComponent.getComponentName()).getAssets();
+			if ((assets != null) && (assets.getConnection() != null))
+				for (Connection connection : assets.getConnection()) {
+					if ("provides".equals(connection.getType())) {
+						return connection.getDescription();
+					}
+				}
+		}
+
+		return null;
 	}
 
 	public Dimension getPreferredSize(int wHint, int hHint) {

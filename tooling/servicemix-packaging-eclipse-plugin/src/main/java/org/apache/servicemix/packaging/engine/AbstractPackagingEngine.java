@@ -3,6 +3,7 @@ package org.apache.servicemix.packaging.engine;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -10,8 +11,8 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
-import org.apache.servicemix.descriptors.bundled.assets.BundledAssets;
-import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
+import org.apache.servicemix.descriptors.packaging.assets.Assets;
+import org.apache.servicemix.descriptors.packaging.assets.Components.Component;
 import org.apache.servicemix.packaging.ComponentArtifact;
 import org.apache.servicemix.packaging.ComponentArtifactFactory;
 import org.apache.servicemix.packaging.model.AbstractComponent;
@@ -22,7 +23,7 @@ public abstract class AbstractPackagingEngine implements PackagingEngine {
 
 	private ComponentArtifact artifact;
 
-	private List<PackagingInjector> injectors;
+	private List injectors = new ArrayList();
 
 	public ComponentArtifact getArtifact() {
 		return artifact;
@@ -84,10 +85,10 @@ public abstract class AbstractPackagingEngine implements PackagingEngine {
 		}
 	}
 
-	protected void injectBundledAssets(BundledAssets assets, ZipOutputStream out)
+	protected void injectAssets(Assets assets, ZipOutputStream out)
 			throws Exception {
-		JAXBContext context = JAXBContext.newInstance(BundledAssets.class
-				.getPackage().getName());
+		JAXBContext context = JAXBContext.newInstance(Assets.class.getPackage()
+				.getName());
 		Marshaller m = context.createMarshaller();
 		final StringWriter write = new StringWriter();
 		m.marshal(assets, write);

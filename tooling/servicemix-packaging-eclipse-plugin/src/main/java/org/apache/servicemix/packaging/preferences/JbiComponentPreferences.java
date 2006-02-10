@@ -18,7 +18,7 @@ package org.apache.servicemix.packaging.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
+import org.apache.servicemix.descriptors.packaging.assets.Components.Component;
 import org.apache.servicemix.packaging.ComponentArtifact;
 import org.apache.servicemix.packaging.ComponentArtifactFactory;
 import org.apache.servicemix.packaging.DeployerPlugin;

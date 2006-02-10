@@ -22,15 +22,15 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.servicemix.descriptors.bundled.assets.BundledAssets;
-import org.apache.servicemix.descriptors.bundled.assets.BundledAssets.Artifact;
-import org.apache.servicemix.descriptors.bundled.assets.BundledAssets.Connection;
-import org.apache.servicemix.descriptors.bundled.assets.BundledAssets.Parameter;
-import org.apache.servicemix.descriptors.deployment.assets.EmbeddedArtifact;
+import org.apache.servicemix.descriptors.packaging.assets.Artifact;
+import org.apache.servicemix.descriptors.packaging.assets.Assets;
+import org.apache.servicemix.descriptors.packaging.assets.Connection;
+import org.apache.servicemix.descriptors.packaging.assets.Parameter;
 import org.apache.servicemix.packaging.ComponentArtifact;
 import org.apache.servicemix.packaging.model.AbstractComponent;
 import org.apache.servicemix.packaging.model.AbstractConnectableService;
 import org.apache.servicemix.packaging.model.ComponentBased;
+import org.apache.servicemix.packaging.model.ComponentConnection;
 import org.apache.servicemix.packaging.model.Connectable;
 import org.apache.servicemix.packaging.model.ModelElement;
 import org.eclipse.core.resources.IResource;
@@ -63,8 +63,7 @@ public abstract class AbstractComponentEditPart extends
 		}
 	}
 
-	protected void setPropertyFromAssets(Object arg0, Object arg1,
-			BundledAssets assets) {
+	protected void setPropertyFromAssets(Object arg0, Object arg1, Assets assets) {
 
 		if (arg0 instanceof Parameter) {
 			Parameter parameter = (Parameter) arg0;
@@ -81,9 +80,6 @@ public abstract class AbstractComponentEditPart extends
 			newParameterValue.setName(parameter.getName());
 			newParameterValue.setValue(value);
 			assets.getParameter().add(newParameterValue);
-		} else if (arg0 instanceof QName) {
-			((AbstractConnectableService) getModel())
-					.setServiceName((QName) arg1);
 		} else if (arg0 instanceof Connection) {
 			Connection connection = (Connection) arg0;
 			QName value = (QName) arg1;
@@ -97,9 +93,11 @@ public abstract class AbstractComponentEditPart extends
 
 			Connection newReference = new Connection();
 			newReference.setName(connection.getName());
+			newReference.setQname(value);
+			newReference.setType(connection.getType());
 			assets.getConnection().add(newReference);
-		} else if (arg0 instanceof EmbeddedArtifact) {
-			EmbeddedArtifact artifact = (EmbeddedArtifact) arg0;
+		} else if (arg0 instanceof Artifact) {
+			Artifact artifact = (Artifact) arg0;
 			IResource resource = (IResource) arg1;
 			for (Artifact artifactReference : assets.getArtifact()) {
 				if (artifact.getName().equals(artifactReference.getName())) {
@@ -116,19 +114,16 @@ public abstract class AbstractComponentEditPart extends
 		}
 	}
 
-	protected Object getPropertyFromAssets(Object arg0, BundledAssets assets) {
+	protected Object getPropertyFromAssets(Object arg0, Assets assets) {
 		Object result = null;
 		if (arg0 instanceof Parameter) {
-			org.apache.servicemix.descriptors.deployment.assets.Parameter parameter = (org.apache.servicemix.descriptors.deployment.assets.Parameter) arg0;
+			Parameter parameter = (Parameter) arg0;
 			for (Parameter parameterValue : assets.getParameter()) {
 				if (parameter.getName().equals(parameterValue.getName())) {
 					result = parameterValue.getValue();
 				}
 			}
-			result = parameter.getDefaultValue();
-		} else if ((arg0 instanceof QName)
-				&& (getModel() instanceof AbstractConnectableService)) {
-			result = ((AbstractConnectableService) getModel()).getServiceName();
+			result = parameter.getValue();
 		} else if (arg0 instanceof Connection) {
 			Connection connection = (Connection) arg0;
 			for (Connection resourceReference : assets.getConnection()) {
@@ -136,8 +131,8 @@ public abstract class AbstractComponentEditPart extends
 					result = resourceReference.getQname();
 				}
 			}
-		} else if (arg0 instanceof EmbeddedArtifact) {
-			EmbeddedArtifact artifact = (EmbeddedArtifact) arg0;
+		} else if (arg0 instanceof Artifact) {
+			Artifact artifact = (Artifact) arg0;
 			for (Artifact artifactReference : assets.getArtifact()) {
 				if (artifact.getName().equals(artifactReference.getName())) {
 					return artifactReference.getPath();

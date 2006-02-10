@@ -17,7 +17,7 @@ package org.apache.servicemix.packaging.parts;
 
 import java.util.LinkedList;
 
-import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
+import org.apache.servicemix.descriptors.packaging.assets.Components.Component;
 import org.apache.servicemix.packaging.figure.BindingComponentFigure;
 import org.apache.servicemix.packaging.model.AbstractComponent;
 import org.apache.servicemix.packaging.model.BindingComponent;
@@ -67,10 +67,7 @@ public class BindingComponentEditPart extends AbstractComponentEditPart
 
 	public IPropertyDescriptor[] getPropertyDescriptors() {
 		if (descriptors == null) {
-			descriptors = new LinkedList<IPropertyDescriptor>();
-			descriptors.add(new QNamePropertyDescriptor(
-					((BindingComponent) getModel()).getServiceName(),
-					"Service name", null));
+			descriptors = new LinkedList<IPropertyDescriptor>();		
 			if (getComponentDescriptor().getAssets() != null) {
 				descriptors.addAll(AssetDescriptorFactory.getDescriptors(
 						getComponentDescriptor().getAssets(),

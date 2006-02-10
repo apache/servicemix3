@@ -17,7 +17,7 @@ package org.apache.servicemix.packaging.model;
 
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.apache.servicemix.descriptors.deployment.assets.Components.Component;
+import org.apache.servicemix.descriptors.packaging.assets.Components.Component;
 import org.apache.servicemix.packaging.ComponentArtifact;
 import org.apache.servicemix.packaging.ComponentArtifactFactory;
 
