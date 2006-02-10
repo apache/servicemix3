@@ -21,6 +21,8 @@ import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanOperationInfo;
 import javax.management.ObjectName;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseLifeCycle;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
@@ -29,6 +31,9 @@ import org.apache.servicemix.jbi.management.OperationInfoHelper;
  * Defines basic statistics on the Component
  */
 public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean {
+    
+    private static Log log = LogFactory.getLog(ComponentMBeanImpl.class);
+    
     private LocalComponentConnector connector;
     private ObjectName objectName;
        
@@ -98,8 +103,19 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      * @exception javax.jbi.JBIException if the item fails to start.
      */
     public void start() throws javax.jbi.JBIException {
-        doStart();
-        connector.writeRunningState();
+        try {
+            doStart();
+            connector.writeRunningState();
+        } catch (JBIException e) {
+            log.error("Could not start component", e);
+            throw e;
+        } catch (RuntimeException e) {
+            log.error("Could not start component", e);
+            throw e;
+        } catch (Error e) {
+            log.error("Could not start component", e);
+            throw e;
+        }
     }
 
     /**
@@ -108,8 +124,19 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      * @exception javax.jbi.JBIException if the item fails to stop.
      */
     public void stop() throws javax.jbi.JBIException {
-        doStop();
-        connector.writeRunningState();
+        try {
+            doStop();
+            connector.writeRunningState();
+        } catch (JBIException e) {
+            log.error("Could not stop component", e);
+            throw e;
+        } catch (RuntimeException e) {
+            log.error("Could not start component", e);
+            throw e;
+        } catch (Error e) {
+            log.error("Could not start component", e);
+            throw e;
+        }
     }
 
     /**
@@ -118,8 +145,19 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      * @exception javax.jbi.JBIException if the item fails to shut down.
      */
     public void shutDown() throws javax.jbi.JBIException {
-        doShutDown();
-        connector.writeRunningState();
+        try {
+            doShutDown();
+            connector.writeRunningState();
+        } catch (JBIException e) {
+            log.error("Could not shutDown component", e);
+            throw e;
+        } catch (RuntimeException e) {
+            log.error("Could not start component", e);
+            throw e;
+        } catch (Error e) {
+            log.error("Could not start component", e);
+            throw e;
+        }
     }
     
     /**
@@ -127,12 +165,12 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      * 
      * @exception javax.jbi.JBIException if the item fails to start.
      */
-    public void doStart() throws javax.jbi.JBIException{
-        if(isShutDown()){
+    public void doStart() throws javax.jbi.JBIException {
+        if (isShutDown()) {
             // need to re-initialze before starting
             connector.init();
         }
-        if(!isRunning()){
+        if (!isRunning()) {
             connector.getLifeCycle().start();
             super.start();
         }
@@ -145,7 +183,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      *                if the item fails to stop.
      */
     public void doStop() throws javax.jbi.JBIException {
-        if (isUnknown() || isRunning()){
+        if (isUnknown() || isRunning()) {
 	        connector.getLifeCycle().stop();
 	        super.stop();
         }
