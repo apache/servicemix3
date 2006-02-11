@@ -2,7 +2,7 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <!-- START SNIPPET: jndi -->
 <beans>
-  <bean id="jndi" class="org.xbean.spring.jndi.DefaultContext" singleton="true">
+  <bean id="jndi" class="org.apache.xbean.spring.jndi.DefaultContext" singleton="true">
     <property name="entries">
       <map>
         <entry key="jdbc/pxe__pm">

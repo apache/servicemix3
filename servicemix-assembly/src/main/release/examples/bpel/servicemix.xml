@@ -47,7 +47,7 @@
 
 	<!-- JNDI configurration -->
 	<bean id="jndi"
-		class="org.xbean.spring.jndi.SpringInitialContextFactory"
+		class="org.apache.xbean.spring.jndi.SpringInitialContextFactory"
 		factory-method="makeInitialContext" singleton="true">
 		<property name="entries">
 			<map>
