@@ -29,7 +29,7 @@ public class FTPPollTest extends TestSupport {
     public void testSendMessagesToFTPThenPollThemAgain() throws Exception {
         QName service = new QName("http://servicemix.org/cheese/", "ftpSender");
 
-        sendMessages(service, messageCount, false);
+        sendMessages(service, messageCount, false, null);
         assertMessagesReceived(messageCount);
     }
 
