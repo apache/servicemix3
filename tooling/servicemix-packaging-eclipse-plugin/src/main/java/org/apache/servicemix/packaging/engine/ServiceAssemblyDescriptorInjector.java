@@ -15,26 +15,22 @@
  */
 package org.apache.servicemix.packaging.engine;
 
+import java.io.StringWriter;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.servicemix.packaging.ComponentArtifact;
-import org.apache.servicemix.packaging.model.BindingComponent;
 import org.apache.servicemix.packaging.model.ModelElement;
+import org.apache.servicemix.packaging.model.ServiceAssembly;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public class ComponentFilesInjector implements PackagingInjector {
+public class ServiceAssemblyDescriptorInjector implements PackagingInjector {
 
-	private ComponentArtifact artifact;
-
-	private String componentName;
+	private ServiceAssembly serviceAssembly;
 
 	public boolean canInject(ModelElement modelElement) {
-		if (modelElement instanceof BindingComponent) {
-			componentName = ((BindingComponent) modelElement)
-					.getComponentName();
-			artifact = ((BindingComponent) modelElement).getComponentArtifact();
+		if (modelElement instanceof ServiceAssembly) {
+			serviceAssembly = (ServiceAssembly) modelElement;
 			return true;
 		}
 		return false;
@@ -43,21 +39,16 @@ public class ComponentFilesInjector implements PackagingInjector {
 	public void inject(IProgressMonitor monitor, IProject project,
 			ZipOutputStream outputStream) {
 		try {
-			for (String fileName : artifact.getResourceMap().keySet()) {
-				if (!fileName.equals("META-INF/components.xml")) {
-					if (fileName.equals(artifact.getComponentDefinitionByName(
-							componentName).getAssets().getJbiDescriptor())) {
-						outputStream.putNextEntry(new ZipEntry(
-								"META-INF/jbi.xml"));
-					} else
-						outputStream.putNextEntry(new ZipEntry(fileName));
-					outputStream.write(artifact.getResourceMap().get(fileName));
-					outputStream.closeEntry();
-				}
-			}
+			StringWriter stringWriter = new StringWriter();
+			ServiceAssemblyDescriptorWriter writer = new ServiceAssemblyDescriptorWriter();
+			writer.write(stringWriter, serviceAssembly);
+			outputStream.putNextEntry(new ZipEntry("META-INF/jbi.xml"));
+			outputStream.write(stringWriter.toString().getBytes());
+			outputStream.closeEntry();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+
 	}
 
 }

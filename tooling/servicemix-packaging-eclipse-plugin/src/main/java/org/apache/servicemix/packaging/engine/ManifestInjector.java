@@ -15,20 +15,33 @@
  */
 package org.apache.servicemix.packaging.engine;
 
-import java.util.List;
+import java.io.StringWriter;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.servicemix.packaging.model.ModelElement;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public interface PackagingEngine {
+public class ManifestInjector implements PackagingInjector {
 
-	public boolean canDeploy(ModelElement modelElement);
+	public boolean canInject(ModelElement modelElement) {
+		return true;
+	}
 
-	public void deploy(IProgressMonitor monitor, IProject project);
-
-	public void undeploy(IProgressMonitor monitor, IProject project);
-
-	public void setInjectors(List<PackagingInjector> injectors);	
+	public void inject(IProgressMonitor monitor, IProject project,
+			ZipOutputStream outputStream) {
+		try {
+			StringWriter stringWriter = new StringWriter();
+			stringWriter.write("Created-By: ServiceMix JBI Packager");
+			stringWriter.write("Built-By:" + System.getProperty("user.name"));
+			stringWriter.write("Built-By:" + System.getProperty("user.name"));
+			outputStream.putNextEntry(new ZipEntry("META-INF/MANIFEST.MF"));
+			outputStream.write(stringWriter.toString().getBytes());
+			outputStream.closeEntry();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 }
