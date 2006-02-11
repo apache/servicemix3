@@ -66,17 +66,9 @@ public class JbiComponentPreferences extends PreferencePage implements
 	@Override
 	protected Control createContents(Composite arg0) {
 		createTableViewer(arg0);
-		componentBundlesViewer.setInput(gatherComponents());
+		componentBundlesViewer.setInput(ComponentArtifactFactory
+				.getComponentArtifacts());
 		return null;
-	}
-
-	private Object gatherComponents() {
-		List<Component> allComponents = new ArrayList<Component>();
-		for (ComponentArtifact artifact : ComponentArtifactFactory
-				.getComponentArtifacts()) {
-			allComponents.addAll(artifact.getComponents().getComponent());
-		}
-		return allComponents;
 	}
 
 	private void createTableViewer(Composite owner) {
@@ -105,9 +97,16 @@ public class JbiComponentPreferences extends PreferencePage implements
 
 					public Object[] getElements(Object arg0) {
 						if (arg0 instanceof List) {
-							return ((List) arg0).toArray();
+							List elements = new ArrayList();
+							for (Object obj : (List) arg0) {
+								if (obj instanceof ComponentArtifact) {
+									elements.addAll(((ComponentArtifact) obj)
+											.getComponents().getComponent());
+								}
+							}
+							return elements.toArray();
 						} else
-							return new ComponentArtifact[] {};
+							return new Object[] {};
 					}
 
 				});
@@ -170,10 +169,13 @@ public class JbiComponentPreferences extends PreferencePage implements
 		if (selection instanceof IStructuredSelection) {
 			Object element = ((IStructuredSelection) selection)
 					.getFirstElement();
-			List<String> services = (List<String>) componentBundlesViewer
-					.getInput();
-			services.remove(element);
-			componentBundlesViewer.refresh();
+			if (element instanceof Component) {
+				List<ComponentArtifact> services = (List<ComponentArtifact>) componentBundlesViewer
+						.getInput();
+				services.remove(getArtifactForComponent((Component) element));
+				componentBundlesViewer.refresh();
+			}
+
 		}
 	}
 
@@ -221,27 +223,26 @@ public class JbiComponentPreferences extends PreferencePage implements
 			if (obj instanceof Component) {
 				Component component = (Component) obj;
 				switch (index) {
-				case 0:
-					return component.getName();
-				case 1:
-					return getArtifactForComponent(component).getArchivePath();
+				case 0: {
+					StringBuffer sb = new StringBuffer();
+					sb.append(component.getDescription());
+					sb.append(" (");
+					sb.append(component.getName());
+					sb.append(")");
+					return sb.toString();
+				}
+
+				case 1: {
+					ComponentArtifact artifact = getArtifactForComponent(component);
+					if (artifact != null)
+						return artifact.getArchivePath();
+					else
+						return "";
+				}
+
 				}
 			}
 			return obj.toString();
-		}
-
-		private ComponentArtifact getArtifactForComponent(
-				Component serviceToLookup) {
-			for (ComponentArtifact artifact : ComponentArtifactFactory
-					.getComponentArtifacts()) {
-				for (Component component : artifact.getComponents()
-						.getComponent()) {
-					if (component.getName().equals(serviceToLookup.getName())) {
-						return artifact;
-					}
-				}
-			}
-			return null;
 		}
 
 		public Image getColumnImage(Object obj, int index) {
@@ -249,4 +250,16 @@ public class JbiComponentPreferences extends PreferencePage implements
 		}
 	}
 
+	protected ComponentArtifact getArtifactForComponent(
+			Component componentToLookup) {
+		for (ComponentArtifact artifact : (List<ComponentArtifact>) componentBundlesViewer
+				.getInput()) {
+			for (Component component : artifact.getComponents().getComponent()) {
+				if (component.getName().equals(componentToLookup.getName())) {
+					return artifact;
+				}
+			}
+		}
+		return null;
+	}
 }

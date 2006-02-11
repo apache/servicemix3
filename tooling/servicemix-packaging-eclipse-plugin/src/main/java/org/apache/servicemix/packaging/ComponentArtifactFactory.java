@@ -65,7 +65,6 @@ public class ComponentArtifactFactory {
 	private static ComponentArtifact addToCache(String archivePath) {
 		ComponentArtifact newArtifact;
 		try {
-			System.out.println("Adding to cache! " + archivePath);
 			newArtifact = new ComponentArtifact(archivePath);
 			cachedArtifactsUpdateStamps.put(archivePath,
 					getModified(archivePath));
@@ -80,8 +79,8 @@ public class ComponentArtifactFactory {
 
 	private static boolean newOrUpdated(String archivePath) {
 		if (cachedArtifactsUpdateStamps.containsKey(archivePath)) {
-			if (!getModified(archivePath).equals(cachedArtifactsUpdateStamps
-					.get(archivePath)))
+			if (!getModified(archivePath).equals(
+					cachedArtifactsUpdateStamps.get(archivePath)))
 				return true;
 		} else
 			return true;
