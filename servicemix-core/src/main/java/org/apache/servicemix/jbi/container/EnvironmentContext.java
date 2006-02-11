@@ -530,30 +530,37 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         if (container.isEmbedded()) {
             return;
         }
-        if (!jbiRootDir.exists()) {
-            if (!jbiRootDir.mkdirs()) {
-            	throw new JBIException("Directory could not be created: "+jbiRootDir.getAbsolutePath());
+        try {
+            jbiRootDir = jbiRootDir.getCanonicalFile();
+            if (!jbiRootDir.exists()) {
+                if (!jbiRootDir.mkdirs()) {
+                	throw new JBIException("Directory could not be created: "+jbiRootDir.getCanonicalFile());
+                }
+            } else if (!jbiRootDir.isDirectory()) {
+            	throw new JBIException("Not a directory: " + jbiRootDir.getCanonicalFile());
+            }         
+            if (installationDir == null){
+                installationDir = FileUtil.getDirectoryPath(jbiRootDir, "install");
             }
-        } else if (!jbiRootDir.isDirectory()) {
-        	throw new JBIException("Not a directory: " + jbiRootDir.getAbsolutePath());
-        }         
-        if (installationDir == null){
-            installationDir = FileUtil.getDirectoryPath(jbiRootDir, "install");
+            installationDir = installationDir.getCanonicalFile();
+            if (deploymentDir == null){
+                deploymentDir = FileUtil.getDirectoryPath(jbiRootDir, "deploy");
+            }
+            deploymentDir = deploymentDir.getCanonicalFile();
+            componentsDir = FileUtil.getDirectoryPath(jbiRootDir, "components").getCanonicalFile();
+            tmpDir = FileUtil.getDirectoryPath(jbiRootDir, "tmp").getCanonicalFile();
+            sharedLibDir = FileUtil.getDirectoryPath(jbiRootDir, "sharedlibs").getCanonicalFile();
+            serviceAssembiliesDirectory = FileUtil.getDirectoryPath(jbiRootDir,"service-assemblies").getCanonicalFile();
+            //actually create the sub directories
+            FileUtil.buildDirectory(installationDir);
+            FileUtil.buildDirectory(deploymentDir);
+            FileUtil.buildDirectory(componentsDir);
+            FileUtil.buildDirectory(tmpDir);
+            FileUtil.buildDirectory(sharedLibDir);
+            FileUtil.buildDirectory(serviceAssembiliesDirectory);
+        } catch (IOException e) {
+            throw new JBIException(e);
         }
-        if (deploymentDir == null){
-            deploymentDir = FileUtil.getDirectoryPath(jbiRootDir, "deploy");
-        }
-        componentsDir = FileUtil.getDirectoryPath(jbiRootDir, "components");
-        tmpDir = FileUtil.getDirectoryPath(jbiRootDir, "tmp");
-        sharedLibDir = FileUtil.getDirectoryPath(jbiRootDir, "sharedlibs");
-        serviceAssembiliesDirectory = FileUtil.getDirectoryPath(jbiRootDir,"service-assemblies");
-        //actually create the sub directories
-        FileUtil.buildDirectory(installationDir);
-        FileUtil.buildDirectory(deploymentDir);
-        FileUtil.buildDirectory(componentsDir);
-        FileUtil.buildDirectory(tmpDir);
-        FileUtil.buildDirectory(sharedLibDir);
-        FileUtil.buildDirectory(serviceAssembiliesDirectory);
     }
 
     private void scheduleStatsTimer() {
