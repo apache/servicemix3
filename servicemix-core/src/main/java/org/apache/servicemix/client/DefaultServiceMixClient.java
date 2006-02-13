@@ -197,6 +197,9 @@ public class DefaultServiceMixClient extends ComponentSupport implements Service
         InOut exchange = createInOutExchange(resolver);
         populateMessage(exchange, exchangeProperties, inMessageProperties, content);
         boolean answer = sendSync(exchange);
+        if (!answer) {
+            throw new JBIException("Exchange aborted");
+        }
         Exception error = exchange.getError();
         if (error != null) {
             throw new JBIException(error);
