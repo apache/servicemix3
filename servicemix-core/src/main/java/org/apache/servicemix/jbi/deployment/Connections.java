@@ -22,11 +22,11 @@ package org.apache.servicemix.jbi.deployment;
 public class Connections {
 	private Connection[] connections;
 
-	public Connection[] getConnection() {
+	public Connection[] getConnections() {
 		return connections;
 	}
 
-	public void setConnection(Connection[] connections) {
+	public void setConnections(Connection[] connections) {
 		this.connections = connections;
 	}
 }

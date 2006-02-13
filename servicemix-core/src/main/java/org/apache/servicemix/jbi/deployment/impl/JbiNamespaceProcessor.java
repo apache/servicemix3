@@ -52,7 +52,7 @@ public class JbiNamespaceProcessor extends CompositeElementProcessor {
 		registerBeanPropertyProcessor("bootstrap-class-path", ClassPath.class);
 		registerBeanPropertyProcessor("component-class-path", ClassPath.class);
 		registerProcessor("component", new ComponentElementProcessor(this));
-		registerBeanPropertyProcessor("connection", Connection.class);
+		registerBeanProcessor("connection", Connection.class);
 		registerBeanPropertyProcessor("connections", Connections.class);
 		registerBeanPropertyProcessor("consumer", Consumer.class);
 		registerBeanPropertyProcessor("consumes", Consumes.class);

@@ -25,6 +25,8 @@ import org.springframework.context.support.AbstractXmlApplicationContext;
 
 import java.util.Arrays;
 
+import javax.xml.namespace.QName;
+
 /**
  * @version $Revision$
  */
@@ -57,6 +59,12 @@ public class ServiceAssemblyTest extends DeploymentTest {
         assertEquals("getIdentification().getDescription() for 3", "Description of Serviceunit: SequencingEngineSU", serviceUnits[3].getIdentification().getDescription());
         assertEquals("getTarget().getArtifactsZip() for 3", "SequencingEngineSU.zip", serviceUnits[3].getTarget().getArtifactsZip());
         assertEquals("getTarget().getComponentName() for 3", "SunSequencingEngine", serviceUnits[3].getTarget().getComponentName());
+        
+        Connection[] connections = serviceAssembly.getConnections().getConnections();
+        assertNotNull("connections are null", connections);
+        assertEquals("connections size", 2, connections.length);
+        
+        assertEquals("getConsumer().getServiceName() for 0", new QName("http://www.gaiati.com/emee/ns/csi", "csi-service"), connections[0].getConsumer().getServiceName());
     }
 
     protected AbstractXmlApplicationContext createBeanFactory() throws Exception {

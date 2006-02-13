@@ -484,7 +484,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
 
     protected void buildConnections(ServiceAssembly sa) throws JBIException {
         if (sa != null) {
-            Connection[] connections = sa.getConnections().getConnection();
+            Connection[] connections = sa.getConnections().getConnections();
             if (connections != null) {
                 for (int i = 0; i < connections.length; i++) {
                     Connection connection = connections[i];
