@@ -21,7 +21,6 @@ import org.apache.ddlutils.io.DatabaseIO;
 import org.apache.ddlutils.model.Database;
 import org.apache.servicemix.jbi.audit.AbstractAuditor;
 import org.apache.servicemix.jbi.audit.AuditorException;
-import org.apache.servicemix.jbi.audit.AuditorMBean;
 import org.apache.servicemix.jbi.messaging.ExchangePacket;
 import org.apache.servicemix.jbi.messaging.InOnlyImpl;
 import org.apache.servicemix.jbi.messaging.InOptionalOutImpl;
