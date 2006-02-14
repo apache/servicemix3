@@ -356,7 +356,7 @@ public class LocalComponentConnector extends ComponentConnector {
             String runningState = getRunningStateFromStore();
             log.info("Setting running state for Component: " + componentName + " to " + runningState);
             if (runningState != null && componentMBean != null) {
-                if (runningState.equals(LifeCycleMBean.RUNNING)) {
+                if (runningState.equals(LifeCycleMBean.STARTED)) {
                     componentMBean.doStart();
                 } else if (runningState.equals(LifeCycleMBean.STOPPED)) {
                     componentMBean.doStart();

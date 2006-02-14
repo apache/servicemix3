@@ -31,7 +31,7 @@ public interface LifeCycleMBean
 
     final static String STOPPED  = "Stopped";
 
-    final static String RUNNING  = "Running";
+    final static String STARTED  = "Started";
 
     final static String UNKNOWN  = "Unknown";
 }

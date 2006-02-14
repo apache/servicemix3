@@ -238,7 +238,7 @@ public class InstallationTest extends AbstractManagementTest {
         lifecycleMock.replay();
         // test component installation
         lifecycleMBean.start();
-        assertEquals(LifeCycleMBean.RUNNING, lifecycleMBean.getCurrentState());
+        assertEquals(LifeCycleMBean.STARTED, lifecycleMBean.getCurrentState());
         // check mocks
         bootstrapMock.verify();
         componentMock.verify();
@@ -279,7 +279,7 @@ public class InstallationTest extends AbstractManagementTest {
         // start container
         startContainer(false);
         lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
-        assertEquals(LifeCycleMBean.RUNNING, lifecycleMBean.getCurrentState());
+        assertEquals(LifeCycleMBean.STARTED, lifecycleMBean.getCurrentState());
         // check mocks
         bootstrapMock.verify();
         componentMock.verify();

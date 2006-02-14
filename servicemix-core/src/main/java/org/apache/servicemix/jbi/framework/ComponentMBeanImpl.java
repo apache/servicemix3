@@ -170,7 +170,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
             // need to re-initialze before starting
             connector.init();
         }
-        if (!isRunning()) {
+        if (!isStarted()) {
             connector.getLifeCycle().start();
             super.start();
         }
@@ -183,7 +183,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      *                if the item fails to stop.
      */
     public void doStop() throws javax.jbi.JBIException {
-        if (isUnknown() || isRunning()) {
+        if (isUnknown() || isStarted()) {
 	        connector.getLifeCycle().stop();
 	        super.stop();
         }

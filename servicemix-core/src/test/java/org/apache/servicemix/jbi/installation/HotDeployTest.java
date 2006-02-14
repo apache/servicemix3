@@ -123,7 +123,7 @@ public class HotDeployTest extends AbstractManagementTest {
         ObjectName lifecycleName = container.getRegistry().getComponentObjectName("component1");
         assertNotNull(lifecycleName);
         LifeCycleMBean lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
-        assertEquals(LifeCycleMBean.RUNNING, lifecycleMBean.getCurrentState());
+        assertEquals(LifeCycleMBean.STARTED, lifecycleMBean.getCurrentState());
         // check mocks
         verify();
         
@@ -172,7 +172,7 @@ public class HotDeployTest extends AbstractManagementTest {
         ObjectName lifecycleName = container.getRegistry().getComponentObjectName("component1");
         assertNotNull(lifecycleName);
         LifeCycleMBean lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
-        assertEquals(LifeCycleMBean.RUNNING, lifecycleMBean.getCurrentState());
+        assertEquals(LifeCycleMBean.STARTED, lifecycleMBean.getCurrentState());
         // check mocks
         verify();
         
@@ -250,7 +250,7 @@ public class HotDeployTest extends AbstractManagementTest {
         ObjectName lifecycleName = container.getRegistry().getComponentObjectName("component1");
         assertNotNull(lifecycleName);
         LifeCycleMBean lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
-        assertEquals(LifeCycleMBean.RUNNING, lifecycleMBean.getCurrentState());
+        assertEquals(LifeCycleMBean.STARTED, lifecycleMBean.getCurrentState());
         // check mocks
         verify();
         

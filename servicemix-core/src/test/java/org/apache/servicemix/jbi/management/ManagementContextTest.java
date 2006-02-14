@@ -107,7 +107,7 @@ public class ManagementContextTest extends TestCase {
     	names = context.getEngineComponents();
     	assertNotNull(names);
     	assertEquals(2, names.length);
-    	assertEquals(LifeCycleMBean.RUNNING, echo.getCurrentState());
+    	assertEquals(LifeCycleMBean.STARTED, echo.getCurrentState());
     	context.stopComponent("echo");
     	assertEquals(LifeCycleMBean.STOPPED, echo.getCurrentState());
     }

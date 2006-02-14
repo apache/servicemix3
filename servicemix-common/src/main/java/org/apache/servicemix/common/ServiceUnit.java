@@ -40,7 +40,7 @@ public class ServiceUnit {
             Endpoint endpoint = (Endpoint) iter.next();
             endpoint.activate();
         }
-        this.status = LifeCycleMBean.RUNNING;
+        this.status = LifeCycleMBean.STARTED;
     }
     
     public void stop() throws Exception {

@@ -111,7 +111,7 @@ public class DeploymentTest extends AbstractManagementTest {
         replay();
         // test component installation
         lifecycleMBean.start();
-        assertEquals(LifeCycleMBean.RUNNING, lifecycleMBean.getCurrentState());
+        assertEquals(LifeCycleMBean.STARTED, lifecycleMBean.getCurrentState());
         // check mocks
         verify();
         
@@ -201,7 +201,7 @@ public class DeploymentTest extends AbstractManagementTest {
         replay();
         // test component installation
         lifecycleMBean.start();
-        assertEquals(LifeCycleMBean.RUNNING, lifecycleMBean.getCurrentState());
+        assertEquals(LifeCycleMBean.STARTED, lifecycleMBean.getCurrentState());
         // check mocks
         verify();
         
@@ -306,7 +306,7 @@ public class DeploymentTest extends AbstractManagementTest {
         replay();
         // test component installation
         lifecycleMBean.start();
-        assertEquals(LifeCycleMBean.RUNNING, lifecycleMBean.getCurrentState());
+        assertEquals(LifeCycleMBean.STARTED, lifecycleMBean.getCurrentState());
         // check mocks
         verify();
         

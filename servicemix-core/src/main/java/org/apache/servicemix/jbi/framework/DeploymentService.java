@@ -297,7 +297,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
     }
 
     /**
-     * Starts the service assembly and puts it in RUNNING state.
+     * Starts the service assembly and puts it in STARTED state.
      * 
      * @param serviceAssemblyName - name of the service assembly.
      * @return Result/Status of this operation.

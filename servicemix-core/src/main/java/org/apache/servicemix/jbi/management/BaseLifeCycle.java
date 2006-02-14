@@ -79,7 +79,7 @@ public abstract class BaseLifeCycle implements LifeCycleMBean, MBeanInfoProvider
      * @exception javax.jbi.JBIException if the item fails to start.
      */
     public void start() throws javax.jbi.JBIException {
-        setCurrentState(LifeCycleMBean.RUNNING);
+        setCurrentState(LifeCycleMBean.STARTED);
     }
 
     /**
@@ -121,10 +121,10 @@ public abstract class BaseLifeCycle implements LifeCycleMBean, MBeanInfoProvider
     }
     
     /**
-     * @return true if the object is in the runnning state
+     * @return true if the object is in the started state
      */
-    public boolean isRunning(){
-        return currentState != null && currentState.equals(LifeCycleMBean.RUNNING);
+    public boolean isStarted(){
+        return currentState != null && currentState.equals(LifeCycleMBean.STARTED);
     }
     
     /**

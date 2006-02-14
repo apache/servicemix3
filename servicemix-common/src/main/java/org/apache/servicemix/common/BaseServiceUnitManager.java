@@ -171,7 +171,7 @@ public class BaseServiceUnitManager implements ServiceUnitManager {
             if (su == null) {
                 throw failure("stop", "Service Unit '" + serviceUnitName + "' is not deployed", null);
             }
-            if (!LifeCycleMBean.RUNNING.equals(su.getCurrentState())) {
+            if (!LifeCycleMBean.STARTED.equals(su.getCurrentState())) {
                 throw failure("stop", "ServiceUnit should be in a SHUTDOWN state", null);
             }
             su.stop();
