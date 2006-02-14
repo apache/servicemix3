@@ -327,15 +327,6 @@
             <id>hsqldb</id>
             <version>${hsqldb_version}</version>
         </dependency>
-        <dependency>
-            <id>axion</id>
-            <version>${axion_version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-primitives</groupId>
-            <artifactId>commons-primitives</artifactId>
-            <version>${commons_primitives_version}</version>
-        </dependency>
         
         <dependency>
             <groupId>servicemix</groupId>
@@ -347,16 +338,7 @@
             <artifactId>commons-lang</artifactId>
             <version>${commons_lang_version}</version>
         </dependency>
-        <dependency>
-            <groupId>commons-betwixt</groupId>
-            <artifactId>commons-betwixt</artifactId>
-            <version>${commons_betwixt_version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-digester</groupId>
-            <artifactId>commons-digester</artifactId>
-            <version>${commons_digester_version}</version>
-        </dependency>
+
  	<dependency>
 	    <groupId>easymock</groupId>
 	    <artifactId>easymock</artifactId>

@@ -17,8 +17,9 @@ package org.apache.servicemix.jbi.audit.jdbc;
 
 import org.apache.ddlutils.Platform;
 import org.apache.ddlutils.PlatformFactory;
-import org.apache.ddlutils.io.DatabaseIO;
+import org.apache.ddlutils.model.Column;
 import org.apache.ddlutils.model.Database;
+import org.apache.ddlutils.model.Table;
 import org.apache.servicemix.jbi.audit.AbstractAuditor;
 import org.apache.servicemix.jbi.audit.AuditorException;
 import org.apache.servicemix.jbi.messaging.ExchangePacket;
@@ -34,8 +35,6 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.sql.DataSource;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -80,20 +79,29 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
             throw new IllegalArgumentException("dataSource should not be null");
         }
         platform = PlatformFactory.createNewPlatformInstance(dataSource);
-        InputStream is = getClass().getResourceAsStream(DATABASE_MODEL);
-        if (is == null) {
-            throw new IllegalArgumentException("Could not find database model on classpath: " + DATABASE_MODEL);
-        }
-        try {
-            DatabaseIO dataReader = new DatabaseIO();
-            dataReader.setValidateXml(false);
-            database = dataReader.read(new InputStreamReader(is));
-        } finally {
-            is.close();
-        }
+        database = createDatabase();
         platform.createTables(database, false, true);
         init(getContainer());
         start();
+    }
+    
+    protected Database createDatabase() {
+        Database db = new Database();
+        db.setName("JDBCAudit");
+        Table table = new Table();
+        table.setName("SM_AUDIT");
+        Column id = new Column();
+        id.setName("ID");
+        id.setType("VARCHAR");
+        id.setPrimaryKey(true);
+        id.setRequired(true);
+        table.addColumn(id);
+        Column exchange = new Column();
+        exchange.setName("EXCHANGE");
+        exchange.setType("BLOB");
+        table.addColumn(exchange);
+        db.addTable(table);
+        return db;
     }
 
     public void onMessageExchange(MessageExchange exchange) throws MessagingException {
