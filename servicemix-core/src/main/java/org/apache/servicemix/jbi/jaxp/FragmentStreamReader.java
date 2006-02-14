@@ -81,7 +81,6 @@ public class FragmentStreamReader extends StreamReaderDelegate implements XMLStr
 			}
 			break;
 		case STATE_END_DOC:
-			getParent().next(); // Go to next event, after END_ELEMENT
 			event = END_DOCUMENT;
 			break;
 		default:

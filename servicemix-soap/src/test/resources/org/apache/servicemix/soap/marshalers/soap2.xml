@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<e:Envelope xmlns:e="http://schemas.xmlsoap.org/soap/envelope/"
+            xmlns:wsa="http://schemas.xmlsoap.org/soap/envelope/">
+  <e:Header>
+    <wsa:To>http://test/MyServiceConsumer/</wsa:To></e:Header>
+  <e:Body>
+    <ping>
+      <pingRequest>
+        <message xmlns="http://soap">hela</message>
+      </pingRequest>
+    </ping>
+  </e:Body>
+</e:Envelope>
+
+  

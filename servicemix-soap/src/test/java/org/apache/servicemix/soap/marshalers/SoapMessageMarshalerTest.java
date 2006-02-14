@@ -144,6 +144,12 @@ public class SoapMessageMarshalerTest extends TestCase {
         Node node = sourceTransformer.toDOMNode(new BytesSource(baos.toByteArray()));
         checkUserIdNamespace(node);
 	}
+    
+    public void testSoapMessage2() throws Exception {
+        SoapMarshaler marshaler = new SoapMarshaler(true);
+        SoapMessage msg = marshaler.createReader().read(getClass().getResourceAsStream("soap2.xml"));
+        assertNotNull(msg);
+    }
 	
 	public void testWriteAndReadSoapMessageWithAttachments() throws Exception {
 		SoapMarshaler marshaler = new SoapMarshaler(true);
