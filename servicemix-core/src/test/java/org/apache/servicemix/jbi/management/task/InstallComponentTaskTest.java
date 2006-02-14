@@ -49,7 +49,7 @@ public class InstallComponentTaskTest extends JbiTaskSupport {
     }
     
     public void testInstallation() throws Exception {
-        URL url = getClass().getClassLoader().getResource("org/servicemix/jbi/installation/testarchive.jar");
+        URL url = getClass().getClassLoader().getResource("org/apache/servicemix/jbi/installation/testarchive.jar");
         if (url != null) {
             String file = url.getFile();
             installComponentTask.setFile(file);

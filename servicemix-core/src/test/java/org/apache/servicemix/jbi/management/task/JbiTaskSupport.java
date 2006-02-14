@@ -38,6 +38,10 @@ public abstract class JbiTaskSupport extends TestCase {
         container.init();
         container.start();
         
+        // Need to sleep as the jmx remote connector 
+        // is started in another thread
+        Thread.sleep(10000);
+        
         remoteConnection = new JbiTask(){};
         remoteConnection.init();
     }

@@ -15,7 +15,6 @@
  */
 package org.apache.servicemix.jbi.framework;
 
-import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
 import org.apache.servicemix.jbi.management.ParameterHelper;
@@ -31,7 +30,6 @@ import java.util.List;
 import java.util.Properties;
 
 public class AdminCommandsService extends BaseSystemService implements AdminCommandsServiceMBean {
-    private JBIContainer container;
 
     /**
      * @return a description of this
