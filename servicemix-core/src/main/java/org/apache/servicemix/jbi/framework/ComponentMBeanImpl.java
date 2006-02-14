@@ -353,15 +353,12 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      */
     public MBeanAttributeInfo[] getAttributeInfos() throws JMException {
         AttributeInfoHelper helper = new AttributeInfoHelper();
-        helper.addAttribute(getObjectToManage(), "inboundQueueSize", "size of the inbound queue");
         helper.addAttribute(getObjectToManage(), "inboundQueueCapacity", "capacity of the inbound queue");
-        helper.addAttribute(getObjectToManage(), "inboundExchangeCount", "count of inbound exchanges");
-        helper.addAttribute(getObjectToManage(), "outboundExchangeCount", "count of outbound exchanges");
-        helper.addAttribute(getObjectToManage(), "inboundExchangeRate", "rate of inbound exchanges/sec");
-        helper.addAttribute(getObjectToManage(), "outboundExchangeRate", "rate of outbound exchanges/sec");
         helper.addAttribute(getObjectToManage(), "exchangeThrottling", "apply throttling");
         helper.addAttribute(getObjectToManage(), "throttlingTimeout", "timeout for throttling");
         helper.addAttribute(getObjectToManage(), "throttlingInterval", "exchange intervals before throttling");
+        helper.addAttribute(getObjectToManage(), "extensionMBeanName", "extension mbean name");
+        helper.addAttribute(getObjectToManage(), "statsMBeanName", "Statistics mbean name");
         return AttributeInfoHelper.join(super.getAttributeInfos(),helper.getAttributeInfos());
     }
 
@@ -373,7 +370,6 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      */
     public MBeanOperationInfo[] getOperationInfos() throws JMException {
         OperationInfoHelper helper = new OperationInfoHelper();
-        helper.addOperation(getObjectToManage(), "getExtensionMBeanName", "extension mbean name");
         helper.addOperation(getObjectToManage(), "reset", "reset statistic counters");
         return OperationInfoHelper.join(super.getOperationInfos(),helper.getOperationInfos());
     }
