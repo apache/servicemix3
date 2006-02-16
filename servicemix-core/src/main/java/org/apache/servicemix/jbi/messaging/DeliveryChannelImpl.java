@@ -280,7 +280,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             sb.append("  id: ").append(me.getExchangeId()).append('\n');
             sb.append("  status: ").append(me.getStatus()).append('\n');
             if (me.getMessage("in") != null) {
-                Node node = new SourceTransformer().toDOMNode(me.getMessage("in"));
+                Node node = new SourceTransformer().toDOMNode(me.getMessage("in").getContent());
                 me.getMessage("in").setContent(new DOMSource(node));
                 String str = DOMUtil.asXML(node);
                 sb.append("  in: ");
@@ -292,7 +292,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                 sb.append('\n');
             }
             if (me.getMessage("out") != null) {
-                Node node = new SourceTransformer().toDOMNode(me.getMessage("out"));
+                Node node = new SourceTransformer().toDOMNode(me.getMessage("out").getContent());
                 me.getMessage("out").setContent(new DOMSource(node));
                 String str = DOMUtil.asXML(node);
                 sb.append("  out: ");

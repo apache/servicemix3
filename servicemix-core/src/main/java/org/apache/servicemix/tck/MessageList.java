@@ -83,13 +83,16 @@ public class MessageList extends Assert {
         }
     }
 
-
     public void waitForMessagesToArrive(int messageCount) {
+        waitForMessagesToArrive(messageCount, 4000);
+    }
+
+    public void waitForMessagesToArrive(int messageCount, long baseTimeout) {
         log.info("Waiting for message to arrive");
 
         long start = System.currentTimeMillis();
 
-        while (System.currentTimeMillis() - start < 4000 + 100 * messageCount) {
+        while (System.currentTimeMillis() - start < baseTimeout + 100 * messageCount) {
             try {
                 if (hasReceivedMessages(messageCount)) {
                     break;

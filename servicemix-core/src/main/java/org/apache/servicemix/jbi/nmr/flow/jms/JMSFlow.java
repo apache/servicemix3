@@ -410,7 +410,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener, ComponentP
                                 try {
                                     JMSFlow.super.doRouting(me);
                                 }
-                                catch (MessagingException e) {
+                                catch (Throwable e) {
                                     log.error("Caught an exception routing ExchangePacket: ", e);
                                 }
                             }
