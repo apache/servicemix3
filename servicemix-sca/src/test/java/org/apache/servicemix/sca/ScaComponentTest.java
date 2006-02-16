@@ -23,20 +23,12 @@ import javax.naming.InitialContext;
 import javax.xml.bind.JAXBContext;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
 
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.tuscany.core.invocation.spi.ProxyFactory;
-import org.apache.tuscany.core.runtime.TuscanyModuleComponentContext;
-import org.apache.tuscany.core.runtime.client.TuscanyRuntime;
-import org.apache.tuscany.model.assembly.ConfiguredReference;
-import org.apache.tuscany.model.assembly.ConfiguredService;
-import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.Module;
-import org.osoa.sca.CurrentModuleContext;
-import org.osoa.sca.ModuleContext;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.components.util.MockServiceComponent;
@@ -45,9 +37,8 @@ import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver;
-import org.apache.servicemix.sca.ScaComponent;
-import org.apache.servicemix.sca.bigbank.account.AccountService;
 import org.apache.servicemix.sca.bigbank.stockquote.StockQuoteResponse;
+import org.w3c.dom.Node;
 
 public class ScaComponentTest extends TestCase {
 
@@ -98,10 +89,13 @@ public class ScaComponentTest extends TestCase {
         
         ServiceMixClient client = new DefaultServiceMixClient(container);
         Source req = new StringSource("<AccountReportRequest><CustomerID>id</CustomerID></AccountReportRequest>");
-        Source rep = (Source) client.request(new ServiceNameEndpointResolver(
+        Object rep = client.request(new ServiceNameEndpointResolver(
         										new QName("http://www.bigbank.com/AccountService/", "AccountService")),
         			   						 null, null, req);
-        log.info(new SourceTransformer().toString(rep));
+        if (rep instanceof Node) {
+            rep = new DOMSource((Node) rep);
+        }
+        log.info(new SourceTransformer().toString((Source) rep));
     }
      
     protected String getServiceUnitPath(String name) {
