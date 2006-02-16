@@ -329,7 +329,7 @@
         </dependency>
         
         <dependency>
-            <groupId>servicemix</groupId>
+            <groupId>org.apache.db.ddlutils</groupId>
             <artifactId>ddlutils</artifactId>
             <version>${ddlutils_version}</version>
         </dependency>

@@ -370,12 +370,12 @@
 
     <!-- Jabber component -->
     <dependency>
-      <groupId>activemq</groupId>
+      <groupId>jivesoftware</groupId>
       <artifactId>smack</artifactId>
       <version>${smack_version}</version>
     </dependency>
     <dependency>
-      <groupId>activemq</groupId>
+      <groupId>jivesoftware</groupId>
       <artifactId>smackx</artifactId>
       <version>${smack_version}</version>
     </dependency>

@@ -333,7 +333,7 @@
     <!--  for ActiveMQ 4.x -->
     <dependency>
       <groupId>incubator-activemq</groupId>
-      <artifactId>activemq</artifactId>
+      <artifactId>activemq-core</artifactId>
       <version>${activemq_version}</version>
       <properties>
         <lib>true</lib>
@@ -521,13 +521,6 @@
       </properties>
     </dependency>
     
-    <dependency>
-      <id>activecluster</id>
-      <version>${activecluster_version}</version>
-      <properties>
-        <optional>true</optional>
-      </properties>
-    </dependency>
     <dependency>
       <id>activesoap</id>
       <version>${activesoap_version}</version>
@@ -763,7 +756,7 @@
     </dependency>
     
     <dependency>
-      <groupId>servicemix</groupId>
+      <groupId>org.apache.db.ddlutils</groupId>
       <artifactId>ddlutils</artifactId>
       <version>${ddlutils_version}</version>
       <properties>
