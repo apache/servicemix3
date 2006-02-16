@@ -1,11 +1,11 @@
 <project>
   <parent>
     <artifactId>servicemix</artifactId>
-    <groupId>org.apache.servicemix</groupId>
+    <groupId>incubator-servicemix</groupId>
     <version>3.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.servicemix</groupId>
+  <groupId>incubator-servicemix</groupId>
   <artifactId>servicemix-jbi</artifactId>
   <name>ServiceMix :: JBI</name>
   <dependencies>

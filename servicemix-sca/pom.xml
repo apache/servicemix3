@@ -22,14 +22,14 @@
     xmlns="http://maven.apache.org/POM/4.0.0">
     
     <parent>
-        <groupId>org.apache.servicemix</groupId>
+        <groupId>incubator-servicemix</groupId>
         <artifactId>servicemix</artifactId>
         <version>3.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.servicemix</groupId>
+    <groupId>incubator-servicemix</groupId>
     <artifactId>servicemix-sca</artifactId>
     <packaging>jbi-component</packaging>
     <name>ServiceMix :: SCA Service Engine</name>
@@ -37,7 +37,7 @@
     <dependencies>
     
         <dependency>
-            <groupId>org.apache.servicemix</groupId>
+            <groupId>incubator-servicemix</groupId>
             <artifactId>servicemix-common</artifactId>
         </dependency>
         <dependency>
@@ -117,7 +117,7 @@
         	<scope>test</scope>
         </dependency>
         <dependency>
-        	<groupId>org.apache.servicemix</groupId>
+        	<groupId>incubator-servicemix</groupId>
         	<artifactId>servicemix-core</artifactId>
         	<scope>provided</scope>
         </dependency>

@@ -22,21 +22,21 @@
     xmlns="http://maven.apache.org/POM/4.0.0">
     
     <parent>
-        <groupId>org.apache.servicemix</groupId>
+        <groupId>incubator-servicemix</groupId>
         <artifactId>servicemix</artifactId>
         <version>3.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.servicemix</groupId>
+    <groupId>incubator-servicemix</groupId>
     <artifactId>servicemix-common</artifactId>
     <packaging>jar</packaging>
     <name>ServiceMix :: Common</name>
     <description>Common library for binding component and service engines</description>
     <dependencies>
         <dependency>
-            <groupId>org.apache.servicemix</groupId>
+            <groupId>incubator-servicemix</groupId>
             <artifactId>servicemix-jbi</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -72,15 +72,15 @@
             <artifactId>wsdl4j</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.xbean</groupId>
+            <groupId>org.apache.xbean</groupId>
             <artifactId>xbean-spring</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.xbean</groupId>
+            <groupId>org.apache.xbean</groupId>
             <artifactId>xbean-server</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.xbean</groupId>
+            <groupId>org.apache.xbean</groupId>
             <artifactId>xbean-kernel</artifactId>
         </dependency>
         <dependency>

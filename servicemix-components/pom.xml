@@ -22,19 +22,19 @@
   xmlns="http://maven.apache.org/POM/4.0.0">
   
   <parent>
-    <groupId>org.apache.servicemix</groupId>
+    <groupId>incubator-servicemix</groupId>
     <artifactId>servicemix</artifactId>
     <version>3.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.servicemix</groupId>
+  <groupId>incubator-servicemix</groupId>
   <artifactId>servicemix-components</artifactId>
   <packaging>jar</packaging>
   <name>ServiceMix :: Components</name>
   <dependencies>
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
+      <groupId>incubator-servicemix</groupId>
       <artifactId>servicemix-core</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -114,11 +114,11 @@
       <artifactId>jetty</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix.dependencies</groupId>
+      <groupId>jivesoftware</groupId>
       <artifactId>smack</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix.dependencies</groupId>
+      <groupId>jivesoftware</groupId>
       <artifactId>smackx</artifactId>
     </dependency>
     <dependency>
@@ -375,15 +375,15 @@
       <artifactId>derby</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.xbean</groupId>
+      <groupId>org.apache.xbean</groupId>
       <artifactId>xbean-kernel</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.xbean</groupId>
+      <groupId>org.apache.xbean</groupId>
       <artifactId>xbean-server</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.xbean</groupId>
+      <groupId>org.apache.xbean</groupId>
       <artifactId>xbean-spring</artifactId>
     </dependency>
     <dependency>
@@ -415,7 +415,7 @@
       <artifactId>saaj-impl</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
+      <groupId>incubator-servicemix</groupId>
       <artifactId>servicemix-jbi</artifactId>
     </dependency>
     <dependency>

@@ -21,7 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
     
     <parent>
-        <groupId>org.apache.servicemix</groupId>
+        <groupId>incubator-servicemix</groupId>
         <artifactId>servicemix</artifactId>
         <version>3.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
@@ -32,23 +32,48 @@
     
     <dependencies>
        <dependency>
-         <groupId>org.apache.servicemix</groupId>
+         <groupId>incubator-servicemix</groupId>
          <artifactId>servicemix-jbi</artifactId>
        </dependency>
        
        <dependency>
-         <groupId>org.apache.servicemix</groupId>
+         <groupId>incubator-servicemix</groupId>
          <artifactId>servicemix-core</artifactId>
        </dependency>
        
        <dependency>
-         <groupId>org.apache.servicemix</groupId>
+         <groupId>incubator-servicemix</groupId>
          <artifactId>servicemix-components</artifactId>
        </dependency>
        
        <dependency>
-         <groupId>org.apache.servicemix</groupId>
+         <groupId>incubator-servicemix</groupId>
          <artifactId>servicemix-common</artifactId>
+       </dependency>
+       
+       <dependency>
+         <groupId>incubator-servicemix</groupId>
+         <artifactId>servicemix-jms</artifactId>
+       </dependency>
+       <dependency>
+         <groupId>incubator-servicemix</groupId>
+         <artifactId>servicemix-http</artifactId>
+       </dependency>
+       <dependency>
+         <groupId>incubator-servicemix</groupId>
+         <artifactId>servicemix-jsr181</artifactId>
+       </dependency>
+       <dependency>
+         <groupId>incubator-servicemix</groupId>
+         <artifactId>servicemix-lwcontainer</artifactId>
+       </dependency>
+       <dependency>
+         <groupId>incubator-servicemix</groupId>
+         <artifactId>servicemix-sca</artifactId>
+       </dependency>
+       <dependency>
+         <groupId>incubator-servicemix</groupId>
+         <artifactId>servicemix-wsn2005</artifactId>
        </dependency>
        
        
