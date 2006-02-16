@@ -15,6 +15,8 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
+import org.apache.servicemix.jbi.jaxp.BytesSource;
+import org.apache.servicemix.jbi.jaxp.ResourceSource;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 
@@ -24,6 +26,8 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.security.auth.Subject;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -270,6 +274,15 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable 
             out.writeObject(properties);
             String src = transformer.toString(content);
             out.writeObject(src);
+            // We have read the source
+            // so now, ensure that it can be re-read
+            if ((content instanceof StreamSource ||
+                    content instanceof SAXSource) &&
+                    !(content instanceof StringSource) &&
+                    !(content instanceof BytesSource) &&
+                    !(content instanceof ResourceSource)) {
+                content = new StringSource(src); 
+            }
         } catch (TransformerException e) {
             throw (IOException) new IOException("Could not transform content to string").initCause(e);
         }
