@@ -273,7 +273,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
 
     private void traceMessageExchange(String header, MessageExchange me) {
         try {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append(header);
             sb.append(": ");
             sb.append("MessageExchange[\n");
