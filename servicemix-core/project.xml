@@ -408,6 +408,9 @@
                 
                 <!-- fail on non windows platform, why ? -->
                 <exclude>**/HotDeployTest.*</exclude>
+
+                <!-- http://jira.activemq.org/jira/browse/SM-310 -->
+                <exclude>**/JMSFlowTest.*</exclude>
                 
             </excludes>
         </unitTest>
