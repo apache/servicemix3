@@ -198,6 +198,18 @@
       <j:set var="goal" value="dist:build-bin"/>
       <attainGoal name="assembly:goal"/>
   </goal>
+  <goal name="dist:build-src" prereqs="init">
+      <j:set var="goal" value="dist:build-src"/>
+      <attainGoal name="assembly:goal"/>
+  </goal>
+  <goal name="dist:build" prereqs="init">
+      <j:set var="goal" value="dist:build"/>
+      <attainGoal name="assembly:goal"/>
+  </goal>
+  <goal name="dist:deploy" prereqs="init">
+      <j:set var="goal" value="dist:deploy"/>
+      <attainGoal name="assembly:goal"/>
+  </goal>
   
   
   <!-- =========================================================== -->

@@ -205,8 +205,10 @@
       +-------------------------------------------------------+
       | C R E A T I N G  S O U R C E  D I S T R I B U T I O N |
       +-------------------------------------------------------+
+${project.root}
     </ant:echo>
 
+    
     <ant:copy todir="${maven.dist.src.assembly.dir}">
       <ant:fileset dir="${project.root}">
          <ant:exclude name="**/target/**"/>

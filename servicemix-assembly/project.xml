@@ -124,6 +124,15 @@
         <component>true</component>
       </properties>
     </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-gbean</artifactId>
+      <version>${pom.currentVersion}</version>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+        <optional>true</optional>
+      </properties>
+    </dependency>
     
     <dependency>
       <groupId>org.apache.xbean</groupId>

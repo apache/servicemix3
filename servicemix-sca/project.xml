@@ -329,6 +329,17 @@
   </dependencies>
 
   <build>
+
+    <unitTest>
+        <includes>
+            <include>**/*Test.*</include>
+        </includes>
+        <excludes>
+           <!-- http://jira.activemq.org/jira/browse/SM-313 -->
+          <exclude>**/ScaComponentTest.*</exclude>
+        </excludes>
+    </unitTest>
+
     <resources>
       <resource>
           <directory>src/main/resources</directory>
