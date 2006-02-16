@@ -120,8 +120,8 @@ public class ValidateComponent extends TransformComponentSupport {
         	// See http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/validation/Validator.html#validate(javax.xml.transform.Source,%20javax.xml.transform.Result)
         	// As we expect a DOMResult as output, we must ensure that the input is a 
         	// DOMSource
-        	Source src = new SourceTransformer().toDOMSource(out.getContent());
-            validator.validate(src, result);
+        	DOMSource src = new SourceTransformer().toDOMSource(out.getContent());
+        	doValidation(validator,src,result);
             if (errorHandler.hasErrors()) {
                 Fault fault = exchange.createFault();
                 fault.setProperty("org.apache.servicemix.schema", schema);
@@ -147,5 +147,9 @@ public class ValidateComponent extends TransformComponentSupport {
         catch (TransformerException e) {
             throw new MessagingException(e);
 		}
+    }
+    
+    protected void doValidation(Validator validator, DOMSource src, DOMResult result) throws SAXException, IOException {
+    	validator.validate(src,result);
     }
 }

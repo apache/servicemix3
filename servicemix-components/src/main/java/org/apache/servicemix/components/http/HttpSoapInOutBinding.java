@@ -51,10 +51,8 @@ import org.codehaus.xfire.service.binding.ObjectServiceFactory;
 import org.codehaus.xfire.soap.SoapConstants;
 import org.codehaus.xfire.soap.handler.ReadHeadersHandler;
 import org.codehaus.xfire.transport.http.XFireServletController;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 public class HttpSoapInOutBinding extends ComponentSupport implements

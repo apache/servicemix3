@@ -23,7 +23,6 @@ import java.net.URLConnection;
 
 import javax.xml.messaging.URLEndpoint;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerException;
 
 import junit.framework.TestCase;
