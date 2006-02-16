@@ -17,10 +17,12 @@ package org.apache.servicemix.components.cache;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
 
 import org.apache.servicemix.jbi.resolver.EndpointResolver;
 import org.apache.servicemix.tck.TestSupport;
 import org.springframework.context.support.AbstractXmlApplicationContext;
+import org.w3c.dom.Node;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
@@ -32,11 +34,17 @@ public class CacheTest extends TestSupport {
         EndpointResolver service = client.createResolverForService(new QName("http://servicemix.org/cheese/", "myServiceImpl"));
 
         Object object = client.request(cachedService, null, null, "<foo id='123'/>");
+        if (object instanceof Node) {
+            object = new DOMSource((Node) object);
+        }
         String text = transformer.toString((Source) object);
 
         System.out.println("Cache: Received response: " + text);
 
         object = client.request(cachedService, null, null, "<foo id='123'/>");
+        if (object instanceof Node) {
+            object = new DOMSource((Node) object);
+        }
         String text2 = transformer.toString((Source) object);
 
         System.out.println("Cache: Received response: " + text2);
@@ -46,11 +54,17 @@ public class CacheTest extends TestSupport {
 
         // now lets try the underlying service to check we get different results each time
         object = client.request(service, null, null, "<foo id='123'/>");
+        if (object instanceof Node) {
+            object = new DOMSource((Node) object);
+        }
         text = transformer.toString((Source) object);
 
         System.out.println("ServiceImpl: Received response: " + text);
 
         object = client.request(service, null, null, "<foo id='123'/>");
+        if (object instanceof Node) {
+            object = new DOMSource((Node) object);
+        }
         text2 = transformer.toString((Source) object);
 
         System.out.println("ServiceImpl: Received response: " + text2);
