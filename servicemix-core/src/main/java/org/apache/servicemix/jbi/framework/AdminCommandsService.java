@@ -268,7 +268,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
             throw new RuntimeException(failure("shutdownServiceAssembly", location, null, e));
         }
     }
-
+    
     /**
      * Prints information about all components (Service Engine or Binding Component) installed
      *
@@ -280,6 +280,34 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
      * @return
      */
     public String listComponents(boolean serviceEngines, boolean bindingComponents, String state, String sharedLibraryName, String serviceAssemblyName) throws Exception {
+        return listAllComponents(serviceEngines, bindingComponents, state, sharedLibraryName, serviceAssemblyName, true);
+    }
+    
+    /**
+     * Prints information about all JBI components (Service Engine or Binding Component) installed
+     *
+     * @param serviceEngines
+     * @param bindingComponents
+     * @param state
+     * @param sharedLibraryName
+     * @param serviceAssemblyName
+     * @return
+     */
+    public String listJBIComponents(boolean serviceEngines, boolean bindingComponents, String state, String sharedLibraryName, String serviceAssemblyName) throws Exception {
+        return listAllComponents(serviceEngines, bindingComponents, state, sharedLibraryName, serviceAssemblyName, false);
+    }
+
+    /**
+     * Prints information about all components (Service Engine or Binding Component) installed
+     *
+     * @param serviceEngines
+     * @param bindingComponents
+     * @param state
+     * @param sharedLibraryName
+     * @param serviceAssemblyName
+     * @return
+     */
+    public String listAllComponents(boolean serviceEngines, boolean bindingComponents, String state, String sharedLibraryName, String serviceAssemblyName, boolean pojo) throws Exception {
         Collection connectors = container.getRegistry().getLocalComponentConnectors();
         List components = new ArrayList();
         for (Iterator iter = connectors.iterator(); iter.hasNext();) {
@@ -308,6 +336,10 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
             if (serviceAssemblyName != null && serviceAssemblyName.length() > 0 && !container.getDeploymentService().isSaDeployed(serviceAssemblyName)) {
                 continue;
             }
+            
+            if (lcc.isPojo() && !pojo){
+                continue;
+            }
 
             components.add(lcc);
         }
@@ -323,6 +355,38 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
             } else if (lcc.isBinding() && !lcc.isService()) {
                 buffer.append(" type='binding-component'");
             }
+            buffer.append(" name='" + lcc.getComponentNameSpace().getName() + "'");
+            buffer.append(" state='" + lcc.getComponentMBean().getCurrentState() + "'>");
+            if (lcc.getPacket().getDescription() != null) {
+                buffer.append("\t\t<description>");
+                buffer.append(lcc.getPacket().getDescription());
+                buffer.append("<description>\n");
+            }
+            buffer.append("\t</component-info>\n");
+        }
+        buffer.append("</component-info-list>");
+        return buffer.toString();
+    }
+    
+    /**
+     * Prints information about all  Pojo components installed    
+     * @return XML string
+     */
+    public String listPojoComponents() throws Exception {
+        Collection connectors = container.getRegistry().getLocalComponentConnectors();
+        List components = new ArrayList();
+        for(Iterator iter=connectors.iterator();iter.hasNext();){
+            LocalComponentConnector lcc=(LocalComponentConnector) iter.next();
+            if(lcc.isPojo()){
+                components.add(lcc);
+            }
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("<?xml version='1.0'?>\n");
+        buffer.append("<component-info-list xmlns='http://java.sun.com/xml/ns/jbi/component-info-list' version='1.0'>\n");
+        for (Iterator iter = components.iterator(); iter.hasNext();) {
+            LocalComponentConnector lcc = (LocalComponentConnector) iter.next();
             buffer.append(" name='" + lcc.getComponentNameSpace().getName() + "'");
             buffer.append(" state='" + lcc.getComponentMBean().getCurrentState() + "'>");
             if (lcc.getPacket().getDescription() != null) {
@@ -433,6 +497,10 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
 
         ph = helper.addOperation(getObjectToManage(), "uninstallSharedLibrary", 1, "uninstall a shared library");
         ph.setDescription(0, "name", "name of shared library to uninstall");
+        
+        ph = helper.addOperation(getObjectToManage(), "installArchive", 1, "install an archive (component/SA etc)");
+        ph.setDescription(0, "location", "file name or url to the location");
+        
 
         ph = helper.addOperation(getObjectToManage(), "startComponent", 1, "start a component");
         ph.setDescription(0, "name", "name of component to start");
@@ -458,21 +526,35 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
         ph = helper.addOperation(getObjectToManage(), "shutdownServiceAssembly", "shutdown a service assembly");
         ph.setDescription(0, "name", "name of service assembly to shutdown");
 
-        ph = helper.addOperation(getObjectToManage(), "listComponents", 1, "list components installed");
+        ph = helper.addOperation(getObjectToManage(), "listComponents", 5, "list all components installed");
         ph.setDescription(0, "serviceEngines", "if true will list service engines");
         ph.setDescription(1, "bindingComponents", "if true will list binding components");
         ph.setDescription(2, "state", "component state to list, if null will list all");
         ph.setDescription(3, "sharedLibraryName", "shared library name to list");
         ph.setDescription(4, "serviceAssemblyName", "service assembly name to list");
+        
+        ph = helper.addOperation(getObjectToManage(), "listJBIComponents", 5, "list JBI components installed");
+        ph.setDescription(0, "serviceEngines", "if true will list service engines");
+        ph.setDescription(1, "bindingComponents", "if true will list binding components");
+        ph.setDescription(2, "state", "component state to list, if null will list all");
+        ph.setDescription(3, "sharedLibraryName", "shared library name to list");
+        ph.setDescription(4, "serviceAssemblyName", "service assembly name to list");
+        
+        ph = helper.addOperation(getObjectToManage(), "listPojoComponents", "list all POJO Components");
 
-        ph = helper.addOperation(getObjectToManage(), "listSharedLibraries", 1, "list shared library");
+        ph = helper.addOperation(getObjectToManage(), "listSharedLibraries", 2, "list shared library");
         ph.setDescription(0, "componentName", "component name");
         ph.setDescription(1, "sharedLibraryName", "shared library name");
 
-        ph = helper.addOperation(getObjectToManage(), "listServiceAssemblies", 1, "list service assemblies");
+        ph = helper.addOperation(getObjectToManage(), "listServiceAssemblies", 3, "list service assemblies");
         ph.setDescription(0, "state", "service assembly state to list");
         ph.setDescription(1, "componentName", "component name");
         ph.setDescription(2, "serviceAssemblyName", "service assembly name");
+        
+        
+        
+        
+                
 
         return OperationInfoHelper.join(super.getOperationInfos(), helper.getOperationInfos());
     }
