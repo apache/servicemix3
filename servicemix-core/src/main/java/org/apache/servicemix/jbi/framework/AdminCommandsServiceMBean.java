@@ -51,6 +51,8 @@ public interface AdminCommandsServiceMBean extends LifeCycleMBean {
     String stopServiceAssembly(String name) throws Exception;
 
     String shutdownServiceAssembly(String name) throws Exception;
+    
+    String installArchive(String location) throws Exception;
 
     String listComponents(boolean serviceEngines,
                           boolean bindingComponents,

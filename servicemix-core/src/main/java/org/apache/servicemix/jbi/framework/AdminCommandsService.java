@@ -250,6 +250,24 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
             throw new RuntimeException(failure("shutdownServiceAssembly", name, null, e));
         }
     }
+    
+   
+    /**
+     * load an archive from an external location and starts it
+     * The archive can be a Component, Service Assembly or Shared Library.
+     * @param location - can either be a url or filename (if relative - must be relative to the container)
+     * @return status
+     * @throws Exception 
+     */
+    public String installArchive(String location) throws Exception{
+        try {
+            container.updateExternalArchive(location);
+            return success("installArchive", location);
+
+        } catch (Exception e) {
+            throw new RuntimeException(failure("shutdownServiceAssembly", location, null, e));
+        }
+    }
 
     /**
      * Prints information about all components (Service Engine or Binding Component) installed
