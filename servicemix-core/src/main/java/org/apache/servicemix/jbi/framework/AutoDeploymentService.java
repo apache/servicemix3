@@ -171,6 +171,20 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     protected Class getServiceMBean() {
         return AutoDeploymentServiceMBean.class;
     }
+    
+    
+    /**
+     * load an archive from an external location
+     * @param location
+     * @param autoStart
+     * @throws DeploymentException
+     */
+    public void updateExternalArchive(String location,boolean autoStart) throws DeploymentException {
+        ArchiveEntry entry = new ArchiveEntry();
+        entry.location = location;
+        entry.lastModified = new Date();
+        updateArchive(location,entry,autoStart);
+    }
 
     /**
      * Update an archive

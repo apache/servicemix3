@@ -18,6 +18,7 @@ package org.apache.servicemix.jbi.container;
 import java.io.File;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.MissingResourceException;
@@ -61,6 +62,7 @@ import org.apache.servicemix.jbi.framework.InstallationService;
 import org.apache.servicemix.jbi.framework.LocalComponentConnector;
 import org.apache.servicemix.jbi.framework.Registry;
 import org.apache.servicemix.jbi.framework.AdminCommandsService;
+import org.apache.servicemix.jbi.framework.AutoDeploymentService.ArchiveEntry;
 import org.apache.servicemix.jbi.management.BaseLifeCycle;
 import org.apache.servicemix.jbi.management.ManagementContext;
 import org.apache.servicemix.jbi.messaging.DeliveryChannelImpl;
@@ -350,7 +352,7 @@ public class JBIContainer extends BaseLifeCycle {
     }
 
     /**
-     * Install an archive from a url
+     * Install an component from a url
      *
      * @param url
      * @throws DeploymentException
@@ -358,6 +360,31 @@ public class JBIContainer extends BaseLifeCycle {
     public void installArchive(String url) throws DeploymentException {
         installationService.install(url, true);
     }
+    
+    /**
+     * load an archive from an external location. 
+     * The archive can be a Component, Service Assembly or Shared Library.
+     * @param location - can either be a url or filename (if relative - must be relative to the container)
+     * @param autoStart - if true will start the component/service assembly
+     * @throws DeploymentException
+     */
+    public void updateExternalArchive(String location,boolean autoStart) throws DeploymentException {
+        updateExternalArchive(location, autoStart);
+    }
+    
+    /**
+     * load an archive from an external location and starts it
+     * The archive can be a Component, Service Assembly or Shared Library.
+     * @param location - can either be a url or filename (if relative - must be relative to the container)
+     * @throws DeploymentException
+     */
+    public void updateExternalArchive(String location) throws DeploymentException {
+        updateExternalArchive(location, true);
+    }
+    
+    
+    
+    
 
     /**
      * @return Returns the deploymentService.
