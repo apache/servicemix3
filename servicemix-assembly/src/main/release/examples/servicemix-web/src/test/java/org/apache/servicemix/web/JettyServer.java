@@ -17,7 +17,10 @@ package org.apache.servicemix.web;
  *
  **/
 
-import org.mortbay.http.SocketListener;
+import org.mortbay.jetty.bio.SocketConnector;
+import org.mortbay.jetty.webapp.WebAppContext;
+import org.mortbay.jetty.Connector;
+import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
 
 /**
@@ -41,10 +44,13 @@ public class JettyServer {
         }
         System.out.println("Starting Web Server on port: " + port);
         Server server = new Server();
-        SocketListener listener = new SocketListener();
-        listener.setPort(port);
-        server.addWebApplication(WEBAPP_CTX, WEBAPP_DIR);
-        server.addListener(listener);
+        SocketConnector connector = new SocketConnector();
+        connector.setPort(port);
+        WebAppContext webapp = new WebAppContext();
+        webapp.setContextPath(WEBAPP_CTX);
+        webapp.setResourceBase(WEBAPP_DIR);
+        server.setHandlers(new Handler[] { webapp });
+        server.setConnectors(new Connector[] { connector });
         server.start();
     }
 }

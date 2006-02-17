@@ -42,11 +42,35 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+    <dependency>
+      <groupId>backport-util-concurrent</groupId>
+      <artifactId>backport-util-concurrent</artifactId>
+      <version>${backport_util_concurrent_version}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derby</artifactId>
+      <version>${derby_version}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
 
     <dependency>
       <groupId>incubator-activemq</groupId>
       <artifactId>activemq-core</artifactId>
       <version>${activemq_version}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>activeio</groupId>
+      <artifactId>activeio</artifactId>
+      <version>${activeio_version}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -173,4 +197,38 @@
     
   </dependencies>
 
+  <build>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
+
+    <integrationUnitTestSourceDirectory/>
+    <aspectSourceDirectory/>
+
+    <unitTest>
+      <resources>
+        <resource>
+            <directory>src/test/resources</directory>
+          <includes>
+            <include>**/*</include>
+          </includes>
+        </resource>
+      </resources>
+      <includes>
+        <include>**/*Test.*</include>
+      </includes>
+      <excludes>
+        <!--  exclude abstract tests -->
+        <exclude>**/Abstract*Test.*</exclude>
+      </excludes>
+    </unitTest>
+
+    <resources>
+      <resource>
+          <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
 </project>

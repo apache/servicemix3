@@ -12,7 +12,7 @@
     </persistenceAdapter>
   
     <transportConnectors>
-       <transportConnector uri="tcp://localhost:61616" discoveryUri="multicast://default"/>
+       <transportConnector uri="tcp://localhost:61636" discoveryUri="multicast://default"/>
     </transportConnectors>
     
     <networkConnectors>
