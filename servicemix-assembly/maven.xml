@@ -178,6 +178,9 @@
     <mkdir dir="${maven.build.dir}/webapp"/>
     <copy todir="${maven.build.dir}/webapp">
       <fileset dir="${basedir}/src/main/release/examples/servicemix-web" />
+      <filterset begintoken="%" endtoken="%">
+        <filter token="pom.currentVersion" value="${pom.currentVersion}"/>
+      </filterset>
     </copy>
     <maven:maven descriptor="${maven.build.dir}/webapp/project.xml" goals="war"/>
     <copy todir="${maven.dist.bin.assembly.dir}/examples/servicemix-web">

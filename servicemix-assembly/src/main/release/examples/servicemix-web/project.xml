@@ -3,7 +3,7 @@
 <project>
   <pomVersion>3</pomVersion>
   <groupId>incubator-servicemix</groupId>
-  <currentVersion>3.0-SNAPSHOT</currentVersion>
+  <currentVersion>%pom.currentVersion%</currentVersion>
   <name>ServiceMix :: Web</name>
   <id>servicemix-web</id>
 
