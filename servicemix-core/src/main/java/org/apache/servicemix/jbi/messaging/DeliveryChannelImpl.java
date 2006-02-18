@@ -285,7 +285,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                 String str = DOMUtil.asXML(node);
                 sb.append("  in: ");
                 if (str.length() > 150) {
-                    sb.append(str, 0, 150).append("...");
+                    sb.append(str.substring(0, 150)).append("...");
                 } else {
                     sb.append(str);
                 }
@@ -297,7 +297,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                 String str = DOMUtil.asXML(node);
                 sb.append("  out: ");
                 if (str.length() > 150) {
-                    sb.append(str, 0, 150).append("...");
+                    sb.append(str.substring(0, 150)).append("...");
                 } else {
                     sb.append(str);
                 }
