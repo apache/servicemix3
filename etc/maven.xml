@@ -60,7 +60,7 @@
         </j:if>
     </preGoal>
     <!-- Build failure reports: write test results. Set build to success if no 
-    test failures -->
+    test failures  -->
     <postGoal name="test:test">
         <j:if test="${generateBuildReports == 'true'}">
             <attainGoal name="build-failure-report:set-test-results"/>
