@@ -58,22 +58,27 @@
 		</dependency>
 
 		<dependency>
-			<groupId>javax.activation</groupId>
-			<artifactId>activation</artifactId>
-			<version>1.4</version>
-		</dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-activation_1.0.2_spec</artifactId>
+      <version>${geronimo_spec_activation_version}</version>
+    </dependency>
 		
 		<!-- XBean -->
 		<dependency>
-			<groupId>org.xbean</groupId>
-			<artifactId>xbean-spring</artifactId>
-			<version>${xbean_version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.xbean</groupId>
-			<artifactId>xbean-kernel</artifactId>
-			<version>${xbean_version}</version>
-		</dependency>
+      <groupId>org.apache.xbean</groupId>
+      <artifactId>xbean-spring</artifactId>
+      <version>${xbean_version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.xbean</groupId>
+      <artifactId>xbean-server</artifactId>
+      <version>${xbean_version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.xbean</groupId>
+      <artifactId>xbean-kernel</artifactId>
+      <version>${xbean_version}</version>
+    </dependency>
 		<dependency>
 			<groupId>springframework</groupId>
 			<artifactId>spring</artifactId>

@@ -28,8 +28,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -37,11 +35,11 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.servicemix.descriptors.packaging.assets.Components;
 import org.apache.servicemix.descriptors.packaging.assets.Components.Component;
 import org.apache.servicemix.packaging.engine.PackagingEngine;
+import org.apache.xbean.spring.context.ResourceXmlApplicationContext;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.springframework.core.io.ByteArrayResource;
 import org.w3c.dom.Element;
-import org.xbean.spring.context.ResourceXmlApplicationContext;
 
 /**
  * A base container for the information and resources in a Component Artifact
