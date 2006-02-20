@@ -21,6 +21,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.servicemix.jbi.management.ManagementContextMBean;
 import org.apache.servicemix.jbi.management.task.JbiTask;
 import org.apache.servicemix.jbi.management.task.DeployedAssembliesTask;
+import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 
 import javax.management.ObjectName;
 import java.io.IOException;
@@ -28,10 +29,44 @@ import java.io.IOException;
 /**
  * ListLibrariesTask
  *
- * @version 
+ * @version $Revision: 
  */
 public class ListLibrariesTask extends JbiTask {
     private static final Log log = LogFactory.getLog(DeployedAssembliesTask.class);
+    private String componentName;
+    private String sharedLibraryName;
+
+    /**
+     *
+     * @return component name
+     */
+    public String getComponentName() {
+        return componentName;
+    }
+
+    /**
+     *
+     * @param componentName The component name to set
+     */
+    public void setComponentName(String componentName) {
+        this.componentName = componentName;
+    }
+
+    /**
+     *
+     * @return shared library name
+     */
+    public String getSharedLibraryName() {
+        return sharedLibraryName;
+    }
+
+    /**
+     *
+     * @param sharedLibraryName the shared library name to set
+     */
+    public void setSharedLibraryName(String sharedLibraryName) {
+        this.sharedLibraryName = sharedLibraryName;
+    }
 
     /**
      * execute the task
@@ -40,26 +75,15 @@ public class ListLibrariesTask extends JbiTask {
      */
     public void execute() throws BuildException {
         try {
-
-            ManagementContextMBean is = getManagementContext();
-            ObjectName[] objName = is.getSystemServices();
-
-            StringBuffer buffer = new StringBuffer();
-            buffer.append("<?xml version='1.0'?>\n");
-            buffer.append("<component-info-list xmlns='http://java.sun.com/xml/ns/jbi/component-info-list' version='1.0'>\n");
-
-            if (objName != null) {
-                for (int i = 0; i < objName.length; i++) {
-                    buffer.append("\t<component-info>");
-                    buffer.append(" <name>" + objName[i].getKeyProperty("name") + "</name>");
-                    buffer.append("\t</component-info>\n");
-                }
-            }
-            buffer.append("</component-info-list>");
-            System.out.println(buffer.toString());
-
+            AdminCommandsServiceMBean acs;
+            acs = getAdminCommandsService();
+            String result = acs.listSharedLibraries(this.getComponentName(), this.getSharedLibraryName());
+            System.out.println(result);
         } catch (IOException e) {
-            log.error("Caught an exception getting deployed assemblies", e);
+            log.error("Caught an exception getting admin commands service", e);
+            throw new BuildException(e);
+        }  catch (Exception e) {
+            log.error("Error listing shared libraries", e);
             throw new BuildException(e);
         }
     }

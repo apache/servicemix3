@@ -31,19 +31,19 @@ import java.io.IOException;
  */
 public class InstallAssemblyTask extends JbiTask {
     private static final Log log = LogFactory.getLog(InstallAssemblyTask.class);
-    private String archivePath; //archivePath to install
+    private String file; //archivePath to install
     
     /**
      * @return Returns the archivePath.
      */
-    public String getArchivePath() {
-        return archivePath;
+    public String getFile() {
+        return file;
     }
     /**
-     * @param archivePath The archivePath to set.
+     * @param file The archivePath to set.
      */
-    public void setArchivePath(String archivePath) {
-        this.archivePath = archivePath;
+    public void setFile(String file) {
+        this.file = file;
     }
     
     /**
@@ -51,13 +51,13 @@ public class InstallAssemblyTask extends JbiTask {
      * @throws BuildException
      */
     public void execute() throws BuildException{
-        if (archivePath == null){
+        if (file == null){
             throw new BuildException("null archivePath - archivePath should be an archive");
         }
-        if (archivePath.endsWith(".zip") || archivePath.endsWith(".jar")){
+        if (file.endsWith(".zip") || file.endsWith(".jar")){
             try {
                 DeploymentServiceMBean is = getDeploymentService();
-                is.deploy(archivePath);
+                is.deploy(file);
             }
             catch (IOException e) {
                 log.error("Caught an exception getting the installation service",e);
@@ -72,7 +72,7 @@ public class InstallAssemblyTask extends JbiTask {
                 throw new BuildException(e);
             }
         }else {
-            throw new BuildException("archivePath: " + archivePath + " is not an archive");
+            throw new BuildException("archivePath: " + file + " is not an archive");
         }
     }
 }
