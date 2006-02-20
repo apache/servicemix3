@@ -616,6 +616,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     	AttributeInfoHelper helper = new AttributeInfoHelper();
     	helper.addAttribute(getObjectToManage(), "bindingComponents", "Get list of all binding components");
     	helper.addAttribute(getObjectToManage(), "engineComponents", "Get list of all engine components");
+    helper.addAttribute(getObjectToManage(), "pojoComponents", "Get list of all pojo components");
     	helper.addAttribute(getObjectToManage(), "systemInfo", "Return current version");
     	helper.addAttribute(getObjectToManage(), "systemServices", "Get list of system services");
     	return AttributeInfoHelper.join(super.getAttributeInfos(), helper.getAttributeInfos());
