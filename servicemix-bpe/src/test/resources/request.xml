@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<e:Envelope xmlns:e="http://schemas.xmlsoap.org/soap/envelope/"
+            xmlns:wsa="http://www.w3.org/2005/08/addressing"
+            xmlns:lb="urn:logicblaze:soa:loanbroker">
+  <e:Header>
+    <wsa:Action>
+      urn:logicblaze:soa:loanbroker:LoanBroker:getLoanQuote
+    </wsa:Action>
+  </e:Header>
+  <e:Body>
+    <lb:getLoanQuoteRequest>
+      <lb:ssn>1243</lb:ssn>
+      <lb:amount>1000.0</lb:amount>
+      <lb:duration>12</lb:duration>
+    </lb:getLoanQuoteRequest>
+  </e:Body>
+</e:Envelope>
