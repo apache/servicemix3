@@ -43,7 +43,8 @@ This ant script contains the Servicemix ant tasks and the targets and properties
     
     <!-- Command Line Argumants can override the following values. -->
      
-    <!-- Test property files -->
+    <!-- Property files -->
+    <property name="sm.state" value="" />
     <property name="sm.install.file" value="" />
     <property name="sm.component.name" value="" />
     <property name="sm.shared.library.name" value="" />
@@ -255,11 +256,17 @@ This ant script contains the Servicemix ant tasks and the targets and properties
          <echo message=" Prints information about all of the Service Engines in Servicemix." />
          <echo message="    host=${sm.host}" />
          <echo message="    port=${sm.port}" />
+         <echo message="    state=${sm.state}" />
+         <echo message="    serviceAssemblyName=${sm.service.assembly.name}" />
+         <echo message="    sharedLibraryName=${sm.shared.library.name}" />
 
          <list-engines-task
-             username="${sm.username}" 
+             username="${sm.username}"
              password="${sm.password}"
              host="${sm.host}"
+             state="${sm.state}"
+             serviceAssemblyName="${sm.service.assembly.name}"
+             sharedLibraryName="${sm.shared.library.name}"
          />
      
      </target>
@@ -270,12 +277,18 @@ This ant script contains the Servicemix ant tasks and the targets and properties
          <echo message=" Prints information about the binding components installed in servicemix." />
          <echo message="    host=${sm.host}" />
          <echo message="    port=${sm.port}" />
-    
+         <echo message="    state=${sm.state}" />
+         <echo message="    sharedLibraryName=${sm.shared.library.name}" />
+         <echo message="    serviceAssemblyName=${sm.service.assembly.name}" />
+
          <list-component-task
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
-         />        
+             state="${sm.state}"
+             sharedLibraryName="${sm.shared.library.name}"
+             serviceAssemblyName="${sm.service.assembly.name}"
+         />
      
      </target>
      
@@ -285,12 +298,16 @@ This ant script contains the Servicemix ant tasks and the targets and properties
          <echo message=" Prints information about all shared libraries installed in Servicemix." />
          <echo message="    host=${sm.host}" />
          <echo message="    port=${sm.port}" />
+         <echo message="    componentName=${sm.component.name}" />
+         <echo message="    sharedLibraryName=${sm.shared.library.name}" />
 
          <list-libraries-task
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
-      />     
+             componentName="${sm.component.name}"
+             sharedLibraryName="${sm.shared.library.name}"
+      />
       </target>
      
      <!-- list-assemblies -->
@@ -299,11 +316,17 @@ This ant script contains the Servicemix ant tasks and the targets and properties
          <echo message=" list deployed Service Assemblies in Servicemix." />
          <echo message="    host=${sm.host}" />
          <echo message="    port=${sm.port}" />
+         <echo message="    state=${sm.state}" />
+         <echo message="    componentName=${sm.component.name}" />
+         <echo message="    serviceAssemblyName=${sm.service.assembly.name}" />
 
          <deployed-assemblies-task
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
+             state="${sm.state}"
+             componentName="${sm.component.name}"
+             serviceAssemblyName="${sm.service.assembly.name}"
          />
      
      </target>
@@ -512,7 +535,10 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.password        : Servicemix password.
         sm.host            : host name where Servicemix is running.
         sm.port            : port where Servicemix is listening.
-    
+        sm.state           : component state
+        sm.service.assembly.name : service assembly name to list.
+        sm.shared.library.name : shared library name to list.
+
     Example :
     ant -f servicemix-admin.xml list-service-engines  
 
@@ -525,7 +551,10 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.password        : Servicemix password.
         sm.host            : host name where Servicemix is running.
         sm.port            : port where Servicemix is listening.
-    
+        sm.state           : component state to list
+        sm.shared.library.name : shared library name to list.
+        sm.service.assembly.name : service assembly name to list.
+
     Example :
     ant -f servicemix-admin.xml list-binding-components  
 
@@ -538,7 +567,9 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.password        : Servicemix password.
         sm.host            : host name where Servicemix is running.
         sm.port            : port where Servicemix is listening.
-    
+        sm.component.name  : component name to list.
+        sm.shared.library.name : shared library name to list.
+
     Example :
     ant -f servicemix-admin.xml list-shared-libraries  
 
@@ -551,7 +582,10 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.password        : Servicemix password.
         sm.host            : host name where Servicemix is running.
         sm.port            : port where Servicemix is listening.
-    
+        sm.state           : component state to list
+        sm.component.name  : component name to list.
+        sm.service.assembly.name : service assembly name to list.
+        
     Example :
     ant -f servicemix-admin.xml deployed-assemblies  
 

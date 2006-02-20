@@ -181,7 +181,10 @@
         sm.password        : Servicemix password.
         sm.host            : host name where Servicemix is running.
         sm.port            : port where Servicemix is listening.
-    
+        sm.state           : component state
+        sm.service.assembly.name : service assembly name to list.
+        sm.shared.library.name : shared library name to list.
+
     Example :
     ant -f servicemix-admin.xml list-service-engines  
 
@@ -194,7 +197,10 @@
         sm.password        : Servicemix password.
         sm.host            : host name where Servicemix is running.
         sm.port            : port where Servicemix is listening.
-    
+        sm.state           : component state to list
+        sm.shared.library.name : shared library name to list.
+        sm.service.assembly.name : service assembly name to list.
+
     Example :
     ant -f servicemix-admin.xml list-binding-components  
 
@@ -207,7 +213,9 @@
         sm.password        : Servicemix password.
         sm.host            : host name where Servicemix is running.
         sm.port            : port where Servicemix is listening.
-    
+        sm.component.name  : component name to list.
+        sm.shared.library.name : shared library name to list.
+
     Example :
     ant -f servicemix-admin.xml list-binding-components  
 
@@ -220,7 +228,10 @@
         sm.password        : Servicemix password.
         sm.host            : host name where Servicemix is running.
         sm.port            : port where Servicemix is listening.
-    
+        sm.state           : component state to list
+        sm.component.name  : component name to list.
+        sm.service.assembly.name : service assembly name to list.
+        
     Example :
     ant -f servicemix-admin.xml deployed-assemblies  
 
