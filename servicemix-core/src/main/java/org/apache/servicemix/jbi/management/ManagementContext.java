@@ -219,6 +219,13 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     public ObjectName[] getEngineComponents() {
         return container.getRegistry().getEngineComponents();
     }
+    
+    /**
+     * @return an array of ObjectNames for all Pojo components
+     */   
+    public ObjectName[] getPojoComponents(){
+        return container.getRegistry().getPojoComponents();
+    }
 
     /**
      * Return current version and other info about this JBI Framework.

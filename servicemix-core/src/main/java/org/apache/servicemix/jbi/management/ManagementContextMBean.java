@@ -17,6 +17,7 @@ package org.apache.servicemix.jbi.management;
 
 import javax.jbi.JBIException;
 import javax.jbi.management.AdminServiceMBean;
+import javax.management.ObjectName;
 
 /**
  * ManagementContext interface
@@ -24,6 +25,13 @@ import javax.jbi.management.AdminServiceMBean;
  * @version $Revision$
  */
 public interface ManagementContextMBean extends AdminServiceMBean {
+    
+    
+    /**
+     * @return an array of ObjectNames for all Pojo components
+     */   
+    ObjectName[] getPojoComponents();
+    
     /**
      * Start a Component
      * 

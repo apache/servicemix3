@@ -277,7 +277,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
      * @param state
      * @param sharedLibraryName
      * @param serviceAssemblyName
-     * @return
+     * @return list of components in an XML blob
      */
     public String listComponents(boolean serviceEngines, boolean bindingComponents, String state, String sharedLibraryName, String serviceAssemblyName) throws Exception {
         return listAllComponents(serviceEngines, bindingComponents, state, sharedLibraryName, serviceAssemblyName, true);
@@ -349,7 +349,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
         buffer.append("<component-info-list xmlns='http://java.sun.com/xml/ns/jbi/component-info-list' version='1.0'>\n");
         for (Iterator iter = components.iterator(); iter.hasNext();) {
             LocalComponentConnector lcc = (LocalComponentConnector) iter.next();
-            buffer.append("\t<component-info");
+            buffer.append("\t<component-info>");
             if (!lcc.isBinding() && lcc.isService()) {
                 buffer.append(" type='service-engine'");
             } else if (lcc.isBinding() && !lcc.isService()) {

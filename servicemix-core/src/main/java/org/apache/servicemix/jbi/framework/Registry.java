@@ -502,6 +502,25 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     }
     
     /**
+     * Get a list of all pojos currently installed.
+     * @return array of JMX object names of all installed PJOJO Conponents.
+     */
+    public ObjectName[] getPojoComponents(){
+        ObjectName[] result = null;
+        List tmpList = new ArrayList();
+        for (Iterator i = getLocalComponentConnectors().iterator(); i.hasNext();){
+            LocalComponentConnector lcc = (LocalComponentConnector) i.next();
+            if (lcc.isPojo() && lcc.getMbeanName() != null){
+                tmpList.add(lcc.getMbeanName());
+            }
+        }
+        result = new ObjectName[tmpList.size()];
+        tmpList.toArray(result);
+        return result;
+        
+    }
+    
+    /**
      * Get a list of all binding components currently installed.
      * @return array of JMX object names of all installed BCs.
      */
