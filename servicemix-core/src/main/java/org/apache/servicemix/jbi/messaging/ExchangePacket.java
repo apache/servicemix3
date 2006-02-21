@@ -366,6 +366,7 @@ public class ExchangePacket implements Externalizable {
         output.writeObject(sourceId);
         output.writeObject(serviceName);
         output.writeObject(interfaceName);
+        output.writeObject(operationName);
         output.writeObject(error);
         output.writeObject(properties);
         output.writeObject(in);
@@ -390,6 +391,7 @@ public class ExchangePacket implements Externalizable {
         sourceId = (ComponentNameSpace) input.readObject();
         serviceName = (QName) input.readObject();
         interfaceName = (QName) input.readObject();
+        operationName = (QName) input.readObject();
         error = (Exception) input.readObject();
         properties = (Map) input.readObject();
         in = (NormalizedMessage) input.readObject();

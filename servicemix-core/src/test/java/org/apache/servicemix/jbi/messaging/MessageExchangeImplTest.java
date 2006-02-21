@@ -24,6 +24,7 @@ import org.apache.servicemix.jbi.messaging.InOnlyImpl;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
@@ -40,6 +41,7 @@ public class MessageExchangeImplTest extends TestCase {
 	
     protected void testSerializeDeserialize(Source src) throws Exception {
         MessageExchange me = new InOnlyImpl("exchangeId");
+        me.setOperation(new QName("uri", "op"));
         me.setProperty("myProp", "myValue");
         NormalizedMessage msg = me.createMessage();
         msg.setProperty("myMsgProp", "myMsgValue");
@@ -59,6 +61,7 @@ public class MessageExchangeImplTest extends TestCase {
         assertNotNull(out);
         assertTrue(out instanceof MessageExchange);
         MessageExchange meOut = (MessageExchange) out;
+        assertEquals(new QName("uri", "op"), meOut.getOperation());
         assertEquals("myValue", meOut.getProperty("myProp"));
         NormalizedMessage msgOut = meOut.getMessage("in");
         assertNotNull(msgOut);
