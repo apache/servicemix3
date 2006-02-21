@@ -238,7 +238,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      * @return the inbound exchange rate
      */
     public double getInboundExchangeRate() {
-        return connector.getDeliveryChannel().getMessagingStats().getInboundExchangeRate().getAverageTime();
+        return connector.getDeliveryChannel().getMessagingStats().getInboundExchangeRate().getAveragePerSecond();
     }
 
     /**
@@ -256,7 +256,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      * @return the outbound exchange rate
      */
     public double getOutboundExchangeRate() {
-        return connector.getDeliveryChannel().getMessagingStats().getOutboundExchangeRate().getAverageTime();
+        return connector.getDeliveryChannel().getMessagingStats().getOutboundExchangeRate().getAveragePerSecond();
     }
 
     /**
