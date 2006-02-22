@@ -447,7 +447,7 @@
 
     <!-- for XFire component -->
     <dependency>
-      <groupId>servicemix</groupId>
+      <groupId>org.codehaus.xfire</groupId>
       <artifactId>xfire-all</artifactId>
       <version>${xfire_version}</version>
     </dependency>
