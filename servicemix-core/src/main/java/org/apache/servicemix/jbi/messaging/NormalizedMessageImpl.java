@@ -49,10 +49,10 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable 
     private static final long serialVersionUID = 9179194301410526549L;
     
     protected transient MessageExchangeImpl exchange;
-    protected transient Source content;
-    protected Subject securitySubject;
-    protected Map properties;
-    protected Map attachments;
+    private transient Source content;
+    private Subject securitySubject;
+    private Map properties;
+    private Map attachments;
 
     private static SourceTransformer transformer = new SourceTransformer();
 
