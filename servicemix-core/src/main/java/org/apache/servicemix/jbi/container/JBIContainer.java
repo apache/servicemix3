@@ -142,14 +142,36 @@ public class JBIContainer extends BaseLifeCycle {
      * @return Returns the flowName.
      */
     public String getFlowName() {
-        return broker.getFlowName();
+        String flowNames = broker.getFlowNames();
+        if (flowNames == null) {
+            return null;
+        }
+        String[] flows = flowNames.split(",");
+        if (flows.length > 1) {
+            throw new IllegalStateException("Multiple flows have been defined");
+        }
+        return flows[0];
     }
 
     /**
      * @param flowName The flow to set.
      */
     public void setFlowName(String flowName) {
-        broker.setFlowName(flowName);
+        broker.setFlowNames(flowName);
+    }
+    
+    /**
+     * @return Returns the flowNames.
+     */
+    public String getFlowNames() {
+        return broker.getFlowNames();
+    }
+
+    /**
+     * @param flowNames The flows to set.
+     */
+    public void setFlowNames(String flowNames) {
+        broker.setFlowNames(flowNames);
     }
     
     /**
@@ -173,14 +195,37 @@ public class JBIContainer extends BaseLifeCycle {
      * @param flow
      */
     public void setFlow(Flow flow) {
-        this.broker.setFlow(flow);
+        this.broker.setFlows(new Flow[] { flow });
     }
 
     /**
      * @return the broker message Flow
      */
     public Flow getFlow() {
-        return this.broker.getFlow();
+        Flow[] flows = this.broker.getFlows();
+        if (flows == null || flows.length == 0) {
+            return null;
+        } else if (flows.length > 1) {
+            throw new IllegalStateException("Multiple flows have been defined");
+        } else {
+            return flows[0];
+        }
+    }
+
+    /**
+     * Set the broker message flows
+     *
+     * @param flow
+     */
+    public void setFlows(Flow[] flows) {
+        this.broker.setFlows(flows);
+    }
+
+    /**
+     * @return the broker message Flows
+     */
+    public Flow[] getFlows() {
+        return this.broker.getFlows();
     }
 
     /**

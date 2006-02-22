@@ -18,6 +18,7 @@ package org.apache.servicemix.jbi.nmr.flow;
 import org.apache.servicemix.jbi.nmr.Broker;
 
 import javax.jbi.JBIException;
+import javax.jbi.management.LifeCycleMBean;
 import javax.jbi.messaging.MessageExchange;
 
 /**
@@ -25,20 +26,26 @@ import javax.jbi.messaging.MessageExchange;
  *
  * @version $Revision$
  */
-public interface Flow  {
+public interface Flow  extends LifeCycleMBean {
    
     /**
      * Initialize the Region
      * @param broker
      * @throws JBIException
      */
-    public void init(Broker broker, String subType) throws JBIException;
+    public void init(Broker broker, String name) throws JBIException;
     
     /**
-     * The type of Flow
-     * @return the type
+     * The description of Flow
+     * @return the description
      */
     public String getDescription();
+    
+    /**
+     * The unique name of Flow
+     * @return the name
+     */
+    public String getName();
     
     /**
      * Distribute an ExchangePacket
@@ -46,26 +53,6 @@ public interface Flow  {
      * @throws JBIException
      */
     public void send(MessageExchange me) throws JBIException;
-    
-    /**
-     * start the flow
-     * @throws JBIException
-     */
-    public void start() throws JBIException;
-    
-    
-    /**
-     * stop the flow
-     * @throws JBIException
-     */
-    public void stop() throws JBIException;
-    
-    /**
-     * shutDown the flow
-     * @throws JBIException
-     */
-    public void shutDown() throws JBIException;
-    
     
     /**
      * suspend the flow to prevent any message exchanges

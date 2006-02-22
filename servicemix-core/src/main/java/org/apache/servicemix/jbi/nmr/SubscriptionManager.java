@@ -22,8 +22,6 @@ import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.framework.Registry;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
-import org.apache.servicemix.jbi.nmr.flow.Flow;
-import org.apache.servicemix.jbi.nmr.flow.FlowProvider;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 
 import javax.jbi.JBIException;
@@ -47,7 +45,6 @@ public class SubscriptionManager extends ComponentSupport implements MessageExch
     
     private Registry registry;
     private String flowName;
-    private Flow flow;
     private static Log log = LogFactory.getLog(SubscriptionManager.class);
     
     //  SM-229: Avoid StackOverflowException
@@ -58,10 +55,7 @@ public class SubscriptionManager extends ComponentSupport implements MessageExch
      * @param broker
      * @throws JBIException
      */
-    public void init(Broker broker,Registry registry) throws JBIException {
-        if (this.flow == null) {
-            this.flow = FlowProvider.getFlow(flowName);
-        }
+    public void init(Broker broker, Registry registry) throws JBIException {
         this.registry = registry; 
         broker.getContainer().activateComponent(this, "#SubscriptionManager#");
     }
@@ -78,7 +72,7 @@ public class SubscriptionManager extends ComponentSupport implements MessageExch
     	if (source == null || !source.booleanValue()) {
 	        List list = registry.getMatchingSubscriptionEndpoints(exchange);
 	        if (list != null) {
-	            for (int i =0;i< list.size(); i++) {
+	            for (int i = 0; i < list.size(); i++) {
 	                InternalEndpoint endpoint = (InternalEndpoint)list.get(i);
 	                dispatchToSubscriber(exchange, endpoint);
 	            }
@@ -96,8 +90,9 @@ public class SubscriptionManager extends ComponentSupport implements MessageExch
      * @throws JBIException 
      */
     protected void dispatchToSubscriber(MessageExchangeImpl exchange, InternalEndpoint endpoint) throws JBIException {
-    	if (log.isDebugEnabled() && endpoint != null)
+    	if (log.isDebugEnabled() && endpoint != null) {
     		log.debug("Subscription Endpoint: "+endpoint.getEndpointName());
+        }
     	// SM-229: Avoid StackOverflowException
     	Boolean source = (Boolean) exchange.getProperty(FROM_SUBSCRIPTION_MANAGER);
     	if (source == null || !source.booleanValue()) {
@@ -121,14 +116,6 @@ public class SubscriptionManager extends ComponentSupport implements MessageExch
 	        }
     	}
     }
-
-	public Flow getFlow() {
-		return flow;
-	}
-
-	public void setFlow(Flow flow) {
-		this.flow = flow;
-	}
 
 	public String getFlowName() {
 		return flowName;

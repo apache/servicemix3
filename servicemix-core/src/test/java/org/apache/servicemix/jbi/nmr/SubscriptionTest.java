@@ -21,6 +21,7 @@ import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.container.SubscriptionSpec;
+import org.apache.servicemix.jbi.nmr.flow.Flow;
 import org.apache.servicemix.jbi.nmr.flow.FlowProvider;
 import org.apache.servicemix.tck.Receiver;
 import org.apache.servicemix.tck.ReceiverComponent;
@@ -87,9 +88,14 @@ public class SubscriptionTest extends TestCase {
 		JBIContainer container = new JBIContainer();
 		try {
             container.setEmbedded(true);
-			container.getBroker().setFlow(FlowProvider.getFlow(flowName));
+            if (subscriptionFlowName != null && !subscriptionFlowName.equals(flowName)) {
+                container.getBroker().setFlows(new Flow[] { FlowProvider.getFlow(flowName),
+                                                            FlowProvider.getFlow(subscriptionFlowName)});
+            } else {
+                container.getBroker().setFlows(new Flow[] { FlowProvider.getFlow(flowName) });
+            }
 			if (subscriptionFlowName != null) {
-				container.getBroker().getSubscriptionManager().setFlow(FlowProvider.getFlow(subscriptionFlowName));
+				container.getBroker().getSubscriptionManager().setFlowName(subscriptionFlowName);
 			}
             // TODO: check why the following line is enabled, there is 
             // a 5 seconds pause when Management stuff is initialized

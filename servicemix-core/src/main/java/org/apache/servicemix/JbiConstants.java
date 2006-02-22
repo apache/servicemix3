@@ -30,5 +30,7 @@ public interface JbiConstants {
 	String PERSISTENT_PROPERTY_NAME = "org.apache.servicemix.persistent";
     
     String DATESTAMP_PROPERTY_NAME = "org.apache.servicemix.datestamp";
+    
+    String FLOW_PROPERTY_NAME = "org.apache.servicemix.flow";
 	
 }

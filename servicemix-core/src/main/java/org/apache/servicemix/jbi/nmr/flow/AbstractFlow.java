@@ -47,7 +47,7 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
     protected Broker broker;
     private ReadWriteLock lock = new ReentrantReadWriteLock();
     private Thread suspendThread = null;
-    private String subType;
+    private String name;
 
     /**
      * Initialize the Region
@@ -55,9 +55,9 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      * @param broker
      * @throws JBIException
      */
-    public void init(Broker broker, String subType) throws JBIException {
+    public void init(Broker broker, String name) throws JBIException {
         this.broker = broker;
-        this.subType = subType;
+        this.name = name;
 		// register self with the management context
         ObjectName objectName = broker.getManagementContext().createObjectName(this);
         try {
@@ -210,10 +210,6 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
         return broker;
     }
 
-    public String getSubType() {
-        return subType;
-    }
-
     /**
      * Get the type of the item
      * @return the type
@@ -227,11 +223,15 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      * @return the name
      */
     public String getName() {
-        String name = super.getName();
-        if (name.endsWith("Flow")) {
-            name = name.substring(0, name.length() - 4);
+        if (this.name == null) {
+            String name = super.getName();
+            if (name.endsWith("Flow")) {
+                name = name.substring(0, name.length() - 4);
+            }
+            return name;
+        } else {
+            return this.name;
         }
-        return name;
     }
     
 }

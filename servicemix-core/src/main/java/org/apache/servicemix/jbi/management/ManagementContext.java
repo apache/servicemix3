@@ -456,6 +456,9 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
             result = in.replace(':', '_');
             result = result.replace('/', '_');
             result = result.replace('\\', '_');
+            result = result.replace('?', '_');
+            result = result.replace('=', '_');
+            result = result.replace(',', '_');
         }
         return result;
     }

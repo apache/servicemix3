@@ -40,7 +40,9 @@ import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.management.ManagementContext;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
+import org.apache.servicemix.jbi.nmr.flow.DefaultFlowChooser;
 import org.apache.servicemix.jbi.nmr.flow.Flow;
+import org.apache.servicemix.jbi.nmr.flow.FlowChooser;
 import org.apache.servicemix.jbi.nmr.flow.FlowProvider;
 import org.apache.servicemix.jbi.resolver.ConsumerComponentEndpointFilter;
 import org.apache.servicemix.jbi.resolver.EndpointChooser;
@@ -60,14 +62,15 @@ import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 public class Broker extends BaseSystemService implements BrokerMBean {
 
     private Registry registry;
-    private String flowName = "seda";
+    private String flowNames = "seda";
     private String subscriptionFlowName = null;
     private WorkManager workManager;
-    private Flow flow;
+    private Flow[] flows;
     private final static Log log = LogFactory.getLog(Broker.class);
     private EndpointChooser defaultServiceChooser = new FirstChoicePolicy();
     private EndpointChooser defaultInterfaceChooser = new FirstChoicePolicy();
     private SubscriptionManager subscriptionManager = new SubscriptionManager();
+    private FlowChooser defaultFlowChooser = new DefaultFlowChooser();
 
     /**
      * Constructor
@@ -120,21 +123,20 @@ public class Broker extends BaseSystemService implements BrokerMBean {
         super.init(container);
         this.workManager = container.getWorkManager();
         this.registry = container.getRegistry();
-        if(this.flow == null){
-            this.flow = FlowProvider.getFlow(flowName);
-        }
-        this.flow.init(this, null);
-    	if (subscriptionManager.getFlow() == null && subscriptionManager.getFlowName() == null) {
-            if (subscriptionFlowName == null || subscriptionFlowName.equals(flowName)){
-            	subscriptionManager.setFlow(flow);
-            } else {
-            	subscriptionManager.setFlowName(subscriptionFlowName);
+        // Create and initialize flows
+        if (this.flows == null) {
+            String[] names = flowNames.split(",");
+            flows = new Flow[names.length];
+            for (int i = 0; i < names.length; i++) {
+                flows[i] = FlowProvider.getFlow(names[i]);
+                flows[i].init(this, names[i]);
             }
-    	}
-    	subscriptionManager.init(this, registry);
-        if (flow != subscriptionManager.getFlow()) {
-        	subscriptionManager.getFlow().init(this, "Subscription");
+        } else {
+            for (int i = 0; i < flows.length; i++) {
+                flows[i].init(this, null);
+            }
         }
+    	subscriptionManager.init(this, registry);
     }
     
     protected Class getServiceMBean() {
@@ -174,9 +176,8 @@ public class Broker extends BaseSystemService implements BrokerMBean {
      * @throws JBIException
      */
     public void start() throws JBIException {
-        flow.start();
-        if (subscriptionManager.getFlow() != flow && subscriptionManager.getFlow() != null) {
-        	subscriptionManager.getFlow().start();
+        for (int i = 0; i < flows.length; i++) {
+            flows[i].start();
         }
         super.start();
     }
@@ -187,9 +188,8 @@ public class Broker extends BaseSystemService implements BrokerMBean {
      * @throws JBIException
      */
     public void stop() throws JBIException {
-        flow.stop();
-        if (subscriptionManager.getFlow() != flow && subscriptionManager.getFlow() != null) {
-	        subscriptionManager.getFlow().stop();
+        for (int i = 0; i < flows.length; i++) {
+            flows[i].stop();
         }
         super.stop();
     }
@@ -201,9 +201,8 @@ public class Broker extends BaseSystemService implements BrokerMBean {
      */
     public void shutDown() throws JBIException {
         stop();
-        flow.shutDown();
-        if (subscriptionManager.getFlow() != flow && subscriptionManager.getFlow() != null) {
-        	subscriptionManager.getFlow().shutDown();
+        for (int i = 0; i < flows.length; i++) {
+            flows[i].shutDown();
         }
         super.shutDown();
         container.getManagementContext().unregisterMBean(this);
@@ -212,16 +211,16 @@ public class Broker extends BaseSystemService implements BrokerMBean {
     /**
      * @return Returns the flow.
      */
-    public String getFlowName() {
-        return flowName;
+    public String getFlowNames() {
+        return flowNames;
     }
 
     /**
      * @param flowName
      *            The flow to set.
      */
-    public void setFlowName(String flowName) {
-        this.flowName = flowName;
+    public void setFlowNames(String flowNames) {
+        this.flowNames = flowNames;
     }
 
     /**
@@ -244,29 +243,33 @@ public class Broker extends BaseSystemService implements BrokerMBean {
      * 
      * @param flow
      */
-    public void setFlow(Flow flow) {
-        this.flow = flow;
+    public void setFlows(Flow[] flows) {
+        this.flows = flows;
     }
 
     /**
      * @return the Flow
      */
-    public Flow getFlow() {
-        return this.flow;
+    public Flow[] getFlows() {
+        return this.flows;
     }
 
     /**
      * suspend the flow to prevent any message exchanges
      */
     public void suspend() {
-        flow.suspend();
+        for (int i = 0; i < flows.length; i++) {
+            flows[i].suspend();
+        }
     }
 
     /**
      * resume message exchange processing
      */
     public void resume() {
-        flow.resume();
+        for (int i = 0; i < flows.length; i++) {
+            flows[i].resume();
+        }
     }
 
     /**
@@ -284,6 +287,10 @@ public class Broker extends BaseSystemService implements BrokerMBean {
         // If we found a destination, or this is a reply
         if (exchange.getEndpoint() != null || exchange.getRole() == Role.CONSUMER) {
             foundRoute = true;
+            Flow flow = defaultFlowChooser.chooseFlow(flows, exchange);
+            if (flow == null) {
+                throw new MessagingException("Unable to choose a flow for exchange: " + exchange);
+            }
             flow.send(exchange);
         }
 
