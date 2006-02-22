@@ -491,7 +491,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         List tmpList = new ArrayList();
         for (Iterator i = getLocalComponentConnectors().iterator(); i.hasNext();){
             LocalComponentConnector lcc = (LocalComponentConnector) i.next();
-            if (lcc.isService() && lcc.getMbeanName() != null){
+            if (!lcc.isPojo() && lcc.isService() && lcc.getMbeanName() != null){
                 tmpList.add(lcc.getMbeanName());
             }
         }
@@ -529,7 +529,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         List tmpList = new ArrayList();
         for (Iterator i = getLocalComponentConnectors().iterator(); i.hasNext();){
             LocalComponentConnector lcc = (LocalComponentConnector) i.next();
-            if (lcc.isBinding() && lcc.getMbeanName() != null){
+            if (!lcc.isPojo() && lcc.isBinding() && lcc.getMbeanName() != null){
                 tmpList.add(lcc.getMbeanName());
             }
         }
