@@ -573,12 +573,11 @@
         <!-- need to check why it fails -->
         <exclude>**/JmsOverJcaWithFullXATest.*</exclude>
 
-	<!-- http://jira.activemq.org/jira/browse/SM-311 -->
-        <exclude>**/CacheTest.*</exclude>
-        <!-- http://jira.activemq.org/jira/browse/SM-312 -->
+        <!-- http://jira.activemq.org/jira/browse/SM-326 -->
         <exclude>**/HttpSoapAndSaajTest.*</exclude>
-        <!-- http://jira.activemq.org/jira/browse/AMQ-571 -->
         <exclude>**/HttpSoapTest.*</exclude>
+        <exclude>**/HttpTest.*</exclude>
+        <exclude>**/SaajTest.*</exclude>
 
       </excludes>
     </unitTest>
