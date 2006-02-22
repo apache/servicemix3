@@ -280,26 +280,30 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             sb.append("  id: ").append(me.getExchangeId()).append('\n');
             sb.append("  status: ").append(me.getStatus()).append('\n');
             if (me.getMessage("in") != null) {
-                Node node = new SourceTransformer().toDOMNode(me.getMessage("in").getContent());
-                me.getMessage("in").setContent(new DOMSource(node));
-                String str = DOMUtil.asXML(node);
                 sb.append("  in: ");
-                if (str.length() > 150) {
-                    sb.append(str.substring(0, 150)).append("...");
-                } else {
-                    sb.append(str);
+                if (me.getMessage("in").getContent() != null) {
+                    Node node = new SourceTransformer().toDOMNode(me.getMessage("in").getContent());
+                    me.getMessage("in").setContent(new DOMSource(node));
+                    String str = DOMUtil.asXML(node);
+                    if (str.length() > 150) {
+                        sb.append(str.substring(0, 150)).append("...");
+                    } else {
+                        sb.append(str);
+                    }
                 }
                 sb.append('\n');
             }
             if (me.getMessage("out") != null) {
-                Node node = new SourceTransformer().toDOMNode(me.getMessage("out").getContent());
-                me.getMessage("out").setContent(new DOMSource(node));
-                String str = DOMUtil.asXML(node);
                 sb.append("  out: ");
-                if (str.length() > 150) {
-                    sb.append(str.substring(0, 150)).append("...");
-                } else {
-                    sb.append(str);
+                if (me.getMessage("out").getContent() != null) {
+                    Node node = new SourceTransformer().toDOMNode(me.getMessage("out").getContent());
+                    me.getMessage("out").setContent(new DOMSource(node));
+                    String str = DOMUtil.asXML(node);
+                    if (str.length() > 150) {
+                        sb.append(str.substring(0, 150)).append("...");
+                    } else {
+                        sb.append(str);
+                    }
                 }
                 sb.append('\n');
             }
