@@ -266,6 +266,11 @@
         <version>${activemq_version}</version>
       </dependency>
       <dependency>
+        <groupId>activeio</groupId>
+        <artifactId>activeio</artifactId>
+        <version>${activeio_version}</version>
+      </dependency>
+      <dependency>
         <groupId>jencks</groupId>
         <artifactId>jencks-all</artifactId>
         <version>${jencks_version}</version>
