@@ -27,6 +27,8 @@ import java.io.ObjectInput;
  */
 public class InOptionalOutImpl extends MessageExchangeImpl implements InOptionalOut {
     
+    private static final long serialVersionUID = -3145649037372074912L;
+
     private static int[][] STATES_CONSUMER = {
         { CAN_CONSUMER + CAN_OWNER + CAN_SET_IN_MSG + CAN_SEND + CAN_SEND_SYNC + CAN_STATUS_ACTIVE, 1, -1, -1},
         { CAN_CONSUMER, 2, 2, 4 },
@@ -66,6 +68,15 @@ public class InOptionalOutImpl extends MessageExchangeImpl implements InOptional
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {        
         this.packet = new ExchangePacket();
         this.packet.readExternal(in);
+        if (this.packet.in != null) {
+            this.packet.in.exchange = this;
+        }
+        if (this.packet.out != null) {
+            this.packet.out.exchange = this;
+        }
+        if (this.packet.fault != null) {
+            this.packet.fault.exchange = this;
+        }
         this.state = in.read();
         this.mirror = new InOptionalOutImpl();
         this.mirror.mirror = this;

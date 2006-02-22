@@ -27,6 +27,8 @@ import java.io.ObjectInput;
  */
 public class InOutImpl extends MessageExchangeImpl implements InOut {
     
+    private static final long serialVersionUID = -1639492357707831113L;
+
     private static int[][] STATES_CONSUMER = {
         { CAN_CONSUMER + CAN_OWNER + CAN_SET_IN_MSG + CAN_SEND + CAN_SEND_SYNC + CAN_STATUS_ACTIVE, 1, -1, -1},
         { CAN_CONSUMER, 2, 2, -1 },
@@ -62,6 +64,15 @@ public class InOutImpl extends MessageExchangeImpl implements InOut {
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {        
         this.packet = new ExchangePacket();
         this.packet.readExternal(in);
+        if (this.packet.in != null) {
+            this.packet.in.exchange = this;
+        }
+        if (this.packet.out != null) {
+            this.packet.out.exchange = this;
+        }
+        if (this.packet.fault != null) {
+            this.packet.fault.exchange = this;
+        }
         this.state = in.read();
         this.mirror = new InOutImpl();
         this.mirror.mirror = this;

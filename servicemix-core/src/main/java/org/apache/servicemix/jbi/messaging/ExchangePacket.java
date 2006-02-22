@@ -46,24 +46,26 @@ import java.util.Set;
  * @version $Revision$
  */
 public class ExchangePacket implements Externalizable {
+    
     private static final long serialVersionUID = -9110837382914609624L;
-    private URI pattern;
-    private String exchangeId;
-    private ComponentNameSpace destinationId;
-    private ComponentNameSpace sourceId;
-    private ExchangeStatus status = ExchangeStatus.ACTIVE;
-    private QName serviceName;
-    private QName interfaceName;
-    private QName operationName;
-    private Exception error;
-    private Map properties;
-    private NormalizedMessage in;
-    private NormalizedMessage out;
-    private Fault fault;
-    private ServiceEndpoint endpoint;
-    private transient Transaction transactionContext;
-    private Boolean persistent;
-    private boolean aborted;
+    
+    protected URI pattern;
+    protected String exchangeId;
+    protected ComponentNameSpace destinationId;
+    protected ComponentNameSpace sourceId;
+    protected ExchangeStatus status = ExchangeStatus.ACTIVE;
+    protected QName serviceName;
+    protected QName interfaceName;
+    protected QName operationName;
+    protected Exception error;
+    protected Map properties;
+    protected NormalizedMessageImpl in;
+    protected NormalizedMessageImpl out;
+    protected FaultImpl fault;
+    protected ServiceEndpoint endpoint;
+    protected transient Transaction transactionContext;
+    protected Boolean persistent;
+    protected boolean aborted;
 
     
     public ExchangePacket() {
@@ -314,7 +316,7 @@ public class ExchangePacket implements Externalizable {
     /**
      * @param fault The fault to set.
      */
-    public void setFault(Fault fault) {
+    public void setFault(FaultImpl fault) {
         this.fault = fault;
     }
 
@@ -328,7 +330,7 @@ public class ExchangePacket implements Externalizable {
     /**
      * @param in The in to set.
      */
-    public void setIn(NormalizedMessage in) {
+    public void setIn(NormalizedMessageImpl in) {
         this.in = in;
     }
 
@@ -342,7 +344,7 @@ public class ExchangePacket implements Externalizable {
     /**
      * @param out The out to set.
      */
-    public void setOut(NormalizedMessage out) {
+    public void setOut(NormalizedMessageImpl out) {
         this.out = out;
     }
 
@@ -394,9 +396,9 @@ public class ExchangePacket implements Externalizable {
         operationName = (QName) input.readObject();
         error = (Exception) input.readObject();
         properties = (Map) input.readObject();
-        in = (NormalizedMessage) input.readObject();
-        out = (NormalizedMessage) input.readObject();
-        fault = (Fault) input.readObject();
+        in = (NormalizedMessageImpl) input.readObject();
+        out = (NormalizedMessageImpl) input.readObject();
+        fault = (FaultImpl) input.readObject();
         endpoint = (ServiceEndpoint) input.readObject();
         byte p = input.readByte();
         persistent = (p == 0) ? null : p == 1 ? Boolean.TRUE : Boolean.FALSE;

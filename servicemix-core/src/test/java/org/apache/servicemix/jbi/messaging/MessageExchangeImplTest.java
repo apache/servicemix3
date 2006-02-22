@@ -48,6 +48,7 @@ public class MessageExchangeImplTest extends TestCase {
         msg.setContent(src);
         //msg.addAttachment("myAttachment", null);
         me.setMessage(msg, "in");
+        assertNotNull(((NormalizedMessageImpl) msg).getBody());
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -70,6 +71,7 @@ public class MessageExchangeImplTest extends TestCase {
         assertNotNull(outSrc);
         String outStr = new SourceTransformer().toString(outSrc);
         assertNotNull(outStr);
+        assertNotNull(((NormalizedMessageImpl) msgOut).getBody());
         log.info(outStr);
     }
 

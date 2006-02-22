@@ -280,7 +280,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             if (packet.getIn() != null) {
                 throw new MessagingException("In message is already set");
             }
-            packet.setIn(message);
+            packet.setIn((NormalizedMessageImpl) message);
         } else if (OUT.equals(name)) {
             if (!can(CAN_SET_OUT_MSG)) {
                 throw new MessagingException("Out not supported");
@@ -288,7 +288,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             if (packet.getOut() != null) {
                 throw new MessagingException("Out message is already set");
             }
-            packet.setOut(message);
+            packet.setOut((NormalizedMessageImpl) message);
         } else if (FAULT.equals(name)) {
             if (!can(CAN_SET_FAULT_MSG)) {
                 throw new MessagingException("Fault not supported");
@@ -299,7 +299,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             if (packet.getFault() != null) {
                 throw new MessagingException("Fault message is already set");
             }
-               packet.setFault((Fault) message);
+               packet.setFault((FaultImpl) message);
         } else {
             throw new MessagingException("Message name must be in, out or fault");
         }

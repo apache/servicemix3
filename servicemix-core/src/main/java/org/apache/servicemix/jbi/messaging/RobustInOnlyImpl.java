@@ -27,6 +27,8 @@ import java.io.ObjectInput;
  */
 public class RobustInOnlyImpl extends MessageExchangeImpl implements RobustInOnly {
 
+    private static final long serialVersionUID = -1606399168587959356L;
+
     private static int[][] STATES_CONSUMER = {
         { CAN_CONSUMER + CAN_OWNER + CAN_SET_IN_MSG + CAN_SEND + CAN_SEND_SYNC + CAN_STATUS_ACTIVE, 1, -1, -1},
         { CAN_CONSUMER, -1, 2, 4 },
@@ -64,6 +66,15 @@ public class RobustInOnlyImpl extends MessageExchangeImpl implements RobustInOnl
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {        
         this.packet = new ExchangePacket();
         this.packet.readExternal(in);
+        if (this.packet.in != null) {
+            this.packet.in.exchange = this;
+        }
+        if (this.packet.out != null) {
+            this.packet.out.exchange = this;
+        }
+        if (this.packet.fault != null) {
+            this.packet.fault.exchange = this;
+        }
         this.state = in.read();
         this.mirror = new RobustInOnlyImpl();
         this.mirror.mirror = this;
