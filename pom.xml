@@ -1365,14 +1365,6 @@
         <artifactId>xbean-spring</artifactId>
         <version>2.2</version>
         <exclusions>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>springframework</groupId>
-            <artifactId>spring</artifactId>
-          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
