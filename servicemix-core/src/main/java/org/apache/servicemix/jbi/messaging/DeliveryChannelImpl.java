@@ -163,22 +163,22 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             QName serviceName = activationSpec.getDestinationService();
             if (serviceName != null) {
                 result.setServiceName(serviceName);
-                log.info("default destination serviceName for " + componentName + " = " + serviceName);
+                log.debug("default destination serviceName for " + componentName + " = " + serviceName);
             }
             QName interfaceName = activationSpec.getDestinationInterface();
             if (interfaceName != null) {
                 result.setInterfaceName(interfaceName);
-                log.info("default destination interfaceName for " + componentName + " = " + interfaceName);
+                log.debug("default destination interfaceName for " + componentName + " = " + interfaceName);
             }
             QName operationName = activationSpec.getDestinationOperation();
             if (operationName != null) {
                 result.setOperationName(operationName);
-                log.info("default destination operationName for " + componentName + " = " + operationName);
+                log.debug("default destination operationName for " + componentName + " = " + operationName);
             }
             String endpointName = activationSpec.getDestinationEndpoint();
             if (endpointName != null) {
                 boolean endpointSet = false;
-                log.info("default destination endpointName for " + componentName + " = " + endpointName);
+                log.debug("default destination endpointName for " + componentName + " = " + endpointName);
                 if (serviceName != null && endpointName != null) {
                     endpointName = endpointName.trim();
                     ServiceEndpoint[] endpoints = container.getRegistry().getEndpointsForService(serviceName);
