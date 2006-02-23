@@ -331,6 +331,10 @@ public class BaseLifeCycle implements ComponentLifeCycle {
         return context;
     }
 
+    public WorkManager getWorkManager() {
+        return workManager;
+    }
+
     protected WorkManager createWorkManager() {
         // Create a very simple one
         return new BasicWorkManager();
