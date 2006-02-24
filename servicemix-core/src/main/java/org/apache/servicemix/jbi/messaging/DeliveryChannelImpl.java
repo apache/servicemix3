@@ -273,20 +273,34 @@ public class DeliveryChannelImpl implements DeliveryChannel {
 
     private void traceMessageExchange(String header, MessageExchange me) {
         try {
+            int maxSize = 1500;
             StringBuffer sb = new StringBuffer();
             sb.append(header);
             sb.append(": ");
             sb.append("MessageExchange[\n");
             sb.append("  id: ").append(me.getExchangeId()).append('\n');
             sb.append("  status: ").append(me.getStatus()).append('\n');
+            sb.append("  role: ").append(me.getRole() == Role.CONSUMER ? "consumer" : "provider").append('\n');
+            if (me.getInterfaceName() != null) {
+                sb.append("  interface: ").append(me.getInterfaceName()).append('\n');
+            }
+            if (me.getService() != null) {
+                sb.append("  service: ").append(me.getService()).append('\n');
+            }
+            if (me.getEndpoint() != null) {
+                sb.append("  endpoint: ").append(me.getEndpoint().getEndpointName()).append('\n');
+            }
+            if (me.getOperation() != null) {
+                sb.append("  operation: ").append(me.getOperation()).append('\n');
+            }
             if (me.getMessage("in") != null) {
                 sb.append("  in: ");
                 if (me.getMessage("in").getContent() != null) {
                     Node node = new SourceTransformer().toDOMNode(me.getMessage("in").getContent());
                     me.getMessage("in").setContent(new DOMSource(node));
                     String str = DOMUtil.asXML(node);
-                    if (str.length() > 150) {
-                        sb.append(str.substring(0, 150)).append("...");
+                    if (str.length() > maxSize) {
+                        sb.append(str.substring(0, maxSize)).append("...");
                     } else {
                         sb.append(str);
                     }
@@ -299,12 +313,31 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                     Node node = new SourceTransformer().toDOMNode(me.getMessage("out").getContent());
                     me.getMessage("out").setContent(new DOMSource(node));
                     String str = DOMUtil.asXML(node);
-                    if (str.length() > 150) {
-                        sb.append(str.substring(0, 150)).append("...");
+                    if (str.length() > maxSize) {
+                        sb.append(str.substring(0, maxSize)).append("...");
                     } else {
                         sb.append(str);
                     }
                 }
+                sb.append('\n');
+            }
+            if (me.getMessage("fault") != null) {
+                sb.append("  fault: ");
+                if (me.getMessage("fault").getContent() != null) {
+                    Node node = new SourceTransformer().toDOMNode(me.getMessage("fault").getContent());
+                    me.getMessage("fault").setContent(new DOMSource(node));
+                    String str = DOMUtil.asXML(node);
+                    if (str.length() > maxSize) {
+                        sb.append(str.substring(0, maxSize)).append("...");
+                    } else {
+                        sb.append(str);
+                    }
+                }
+                sb.append('\n');
+            }
+            if (me.getError() != null) {
+                sb.append("  error: ");
+                sb.append(me.getError().getMessage());
                 sb.append('\n');
             }
             sb.append("]");
