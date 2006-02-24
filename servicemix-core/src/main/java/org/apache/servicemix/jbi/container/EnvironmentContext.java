@@ -488,17 +488,26 @@ public class EnvironmentContext extends BaseSystemService implements Environment
             File file = getComponentRootDirectory(componentName);
             if (file != null) {
                 if (!FileUtil.deleteFile(file)) {
-                    log.warn("Failed to remove directory structure for Component: " + componentName);
+                    log.warn("Failed to remove directory structure for component [version]: " + componentName + " [" + file.getName() + ']');
                 }
                 else {
-                    log.info("Removed Component Root directory for " + componentName);
+                    log.info("Removed directory structure for component [version]: " + componentName + " [" + file.getName() + ']');
+                    File parent = file.getParentFile();
+                    if (parent.list().length == 0) {
+                        if (!FileUtil.deleteFile(parent)) {
+                            log.warn("Failed to remove root directory for component: " + componentName);
+                        }
+                        else {
+                            log.info("Removed root directory structure for component: " + componentName);
+                        }
+                    }
                 }
             }
         }
         catch (IOException e) {
-            log.warn("Failed to remove directory structure for Component: " + componentName, e);
+            log.warn("Failed to remove directory structure for component: " + componentName, e);
         }
-    }
+    } 
     
     /**
      * create a shared library directory
