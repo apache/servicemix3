@@ -18,6 +18,8 @@ package org.apache.servicemix.components.jms;
 import javax.jbi.JBIException;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOnly;
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -25,6 +27,7 @@ import javax.jms.MessageListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.RuntimeJBIException;
 
@@ -34,7 +37,7 @@ import org.apache.servicemix.jbi.RuntimeJBIException;
  *
  * @version $Revision$
  */
-public class JmsInBinding extends ComponentSupport implements MessageListener {
+public class JmsInBinding extends ComponentSupport implements MessageListener, MessageExchangeListener {
     private static final Log log = LogFactory.getLog(JmsInBinding.class);
 
     private JmsMarshaler marshaler = new JmsMarshaler();
@@ -70,5 +73,10 @@ public class JmsInBinding extends ComponentSupport implements MessageListener {
         catch (JBIException e) {
             throw new RuntimeJBIException(e);
         }
+    }
+
+    public void onMessageExchange(MessageExchange exchange) throws MessagingException {
+        // Do nothing as we only send in-only
+        // but this ensure that messages are not queued in the DeliveryChannel
     }
 }
