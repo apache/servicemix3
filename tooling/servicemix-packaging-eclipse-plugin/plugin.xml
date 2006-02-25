@@ -1,6 +1,185 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>	
+    <extension point="org.eclipse.wst.server.core.runtimeTypes">
+	   <runtimeType
+			id="org.eclipse.jst.server.generic.runtime.servicemix30"
+			name="Apache ServiceMix v3.0"
+			description="Apache ServiceMix JBI Container" vendor="Apache"
+			version="3.0"
+			class="org.eclipse.jst.server.generic.core.internal.GenericServerRuntime">
+			<moduleType types="jst.jbi.component" versions="1.0" />
+		</runtimeType>
+	</extension>
+
+	<extension point="org.eclipse.wst.server.core.serverTypes">
+		<serverType
+			class="org.eclipse.jst.server.generic.core.internal.GenericServer"
+			id="org.eclipse.jst.server.generic.servicemix30"
+			initialState="stopped" supportsRemoteHosts="false"
+			runtimeTypeId="org.eclipse.jst.server.generic.runtime.servicemix30"
+			description="Apache ServiceMix JBI Container"
+			launchConfigId="org.eclipse.jst.server.generic.core.launchConfigurationType"
+			behaviourClass="org.eclipse.jst.server.servicemix.ServiceMixServerBehaviour"
+			name="Apache ServiceMix" startTimeout="75000" stopTimeout="15000"
+			hasConfiguration="false" launchModes="run,debug" runtime="true"
+			startBeforePublish="false" />
+	</extension>
+
+	<extension point="org.eclipse.wst.server.ui.wizardFragments">
+		<fragment
+			class="org.eclipse.jst.server.generic.ui.internal.GenericServerRuntimeWizardFragment"
+			id="org.eclipse.jst.server.generic.runtime"
+			typeIds="org.eclipse.jst.server.generic.runtime.servicemix30" />
+		<fragment
+			class="org.eclipse.jst.server.generic.ui.internal.GenericServerWizardFragment"
+			id="org.eclipse.jst.server.generic.server"
+			typeIds="org.eclipse.jst.server.generic.servicemix30" />
+	</extension>
+
+	<extension point="org.eclipse.wst.server.ui.serverImages">
+		<image icon="/icons/servicemix.gif"
+			id="org.apache.servicemix.server.image"
+			typeIds="org.eclipse.jst.server.generic.servicemix30" />
+		<image icon="/icons/servicemix.gif"
+			id="org.apache.servicemix.server.image"
+			typeIds="org.eclipse.jst.server.generic.runtime.servicemix30" />
+	</extension>
+
+	<extension
+		point="org.eclipse.jst.server.core.runtimeClasspathProviders">
+		<runtimeClasspathProvider
+			id="org.eclipse.jst.server.generic.runtimeTarget"
+			runtimeTypeIds="org.eclipse.jst.server.generic.runtime.servicemix30"
+			class="org.eclipse.jst.server.generic.core.internal.GenericServerRuntimeTargetHandler" />
+	</extension>
+
+	<extension
+		point="org.eclipse.jst.server.generic.core.serverdefinition">
+		<serverdefinition
+			definitionfile="/servers/servicemix30.serverdef"
+			id="org.eclipse.jst.server.generic.runtime.servicemix30" />
+	</extension>
+
+	<extension
+		point="org.eclipse.jst.server.core.runtimeFacetMappings">
+		<runtimeFacetMapping
+			runtimeTypeId="org.eclipse.jst.server.generic.runtime.servicemix30"
+			runtime-component="org.eclipse.jst.server.generic.runtime.servicemix"
+			version="3.0" />
+	</extension>
+
+	<extension point="org.eclipse.wst.server.core.moduleTypes">
+		<moduleType id="jst.jbi.component" name="JBI Component" />		
+	</extension>
+
+	<extension
+		point="org.eclipse.wst.common.project.facet.core.runtimes">
+		<runtime-component-type
+			id="org.eclipse.jst.server.generic.runtime.servicemix" />
+		<runtime-component-version
+			type="org.eclipse.jst.server.generic.runtime.servicemix"
+			version="3.0" />
+		<adapter>
+			<runtime-component
+				id="org.eclipse.jst.server.generic.runtime.servicemix" />
+			<factory
+				class="org.eclipse.jst.server.core.internal.RuntimeClasspathProvider$Factory" />
+			<type
+				class="org.eclipse.jst.common.project.facet.core.IClasspathProvider" />
+		</adapter>
+		<supported>
+			<runtime-component
+				id="org.eclipse.jst.server.generic.runtime.servicemix"
+				version="3.0" />
+			<facet id="jst.jbi.component" version="1.0" />
+		</supported>
+	</extension>
+
+	<extension point="org.eclipse.ui.newWizards">
+		<category name="%jbi.category_ui_"
+			id="org.eclipse.jst.jbi.ui">
+		</category>
+		<wizard name="%jbi.project_ui_" icon="/icons/servicemix.gif"
+			category="org.eclipse.jst.jbi.ui"
+			class="org.eclipse.jst.jbi.ui.project.facet.JbiProjectWizard"
+			project="true"
+			finalPerspective="org.eclipse.jdt.internal.ui.JavaHierarchyPerspectiveFactory"
+			id="org.eclipse.jst.jbi.ui.project.facet.JbiProjectWizard">
+			<description>%new.jbi.project.description_ui_</description>
+		</wizard>
+	</extension>
+
+	<extension point="org.eclipse.wst.common.project.facet.ui.wizard">
+		<wizard-pages facet="jst.jbi.component" version="1.0">
+			<install>
+				<page
+					class="org.eclipse.jst.jbi.ui.project.facet.JbiFacetInstallPage" />
+			</install>
+		</wizard-pages>
+	</extension>
+
+	<extension
+		point="org.eclipse.wst.common.project.facet.core.facets">
+		<project-facet id="jst.jbi.component">
+			<label>JBI Component</label>
+			<description>
+				Enables the project to be deployed as a JBI Component
+			</description>
+			<icon>icons/servicemix.gif</icon>
+		</project-facet>
+		<project-facet-version facet="jst.jbi.component"
+			version="1.0">
+			<action type="install">
+				<delegate
+					class="org.eclipse.jst.jbi.ui.project.facet.JbiFacetInstallDelegate" />
+				<config-factory
+					class="org.eclipse.jst.jbi.internal.project.operations.JbiFacetInstallDataModelProvider" />
+			</action>
+		</project-facet-version>
+		<template id="template.jst.jbi.component">
+			<label>JBI</label>
+			<fixed facet="jst.jbi.component" />
+			<fixed facet="jst.java" version="&gt;=1.4" />
+		</template>
+	</extension>
+
+	<extension point="org.eclipse.wst.common.project.facet.ui.images">
+		<image
+			runtime-component-type="org.eclipse.jst.server.generic.runtime.servicemix"
+			path="icons/servicemix.gif" />
+	</extension>
+
+	<extension point="org.eclipse.wst.server.core.moduleFactories">
+		<moduleFactory projects="true"
+			class="org.eclipse.jst.jbi.internal.deployables.JBIComponentDeployableFactory"
+			id="org.eclipse.jst.jbi.deployables.component">
+			<moduleType versions="1.0" types="jst.jbi.component"/>
+		</moduleFactory>
+	</extension>
+
+	<extension
+		point="org.eclipse.wst.server.core.moduleArtifactAdapters">
+		<moduleArtifactAdapter
+			id="org.eclipse.jst.jbi.component"
+			class="org.eclipse.jst.jbt.internal.deployables.JBIComponentDeployableObjectAdapter">
+			<enablement>
+				<with variable="selection">
+					<adapt type="org.eclipse.core.resources.IProject" />
+				</with>
+			</enablement>
+		</moduleArtifactAdapter>
+	</extension>
+	
+	<extension point="org.eclipse.core.runtime.adapters">
+		<factory
+			class="org.eclipse.jst.jbi.internal.deployables.JBIComponentDeployableObjectAdapter"
+			adaptableType="org.eclipse.core.resources.IProject">
+			<adapter
+				type="org.eclipse.jst.jbi.internal.deployables.IJBIComponentArtifact" />
+		</factory>
+	</extension>
+
     <extension point="org.eclipse.ui.editors">
     <editor default="true" name="JBI Component Deployer" extensions="jbi" icon="icons/deployment.gif" class="org.apache.servicemix.packaging.DeployerEditor" id="com.unity.jbi.deployer.DeployerEditor">
       <contentTypeBinding contentTypeId="JBIDeploymentContentType">
