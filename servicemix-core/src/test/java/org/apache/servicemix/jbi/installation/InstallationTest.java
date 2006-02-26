@@ -117,8 +117,6 @@ public class InstallationTest extends AbstractManagementTest {
         ExtMockControl componentMock = ExtMockControl.createControl(Component.class);
         Component component = (Component) componentMock.getMock();
         Component1.setDelegate(component);
-        ExtMockControl lifecycleMock = ExtMockControl.createControl(ComponentLifeCycle.class);
-        ComponentLifeCycle lifecycle = (ComponentLifeCycle) lifecycleMock.getMock();
         
         // configure bootstrap
         bootstrapMock.reset();
@@ -129,8 +127,6 @@ public class InstallationTest extends AbstractManagementTest {
         bootstrapMock.replay();
         // configure component
         componentMock.reset();
-        component.getLifeCycle();
-        componentMock.setReturnValue(lifecycle);
         componentMock.replay();
         // test component installation
         startContainer(true);
@@ -174,14 +170,7 @@ public class InstallationTest extends AbstractManagementTest {
         bootstrapMock.replay();
         // configure component
         componentMock.reset();
-        component.getLifeCycle();
-        componentMock.setReturnValue(lifecycle);
         componentMock.replay();
-        // Configure lifecycle
-        lifecycleMock.reset();
-        lifecycle.getExtensionMBeanName();
-        lifecycleMock.setDefaultReturnValue(null);
-        lifecycleMock.replay();
         // start container
         startContainer(false);
         lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
@@ -189,7 +178,6 @@ public class InstallationTest extends AbstractManagementTest {
         // check mocks
         bootstrapMock.verify();
         componentMock.verify();
-        lifecycleMock.verify();
     }
 
     /**
@@ -216,13 +204,9 @@ public class InstallationTest extends AbstractManagementTest {
         bootstrapMock.replay();
         // configure component
         componentMock.reset();
-        component.getLifeCycle();
-        componentMock.setReturnValue(lifecycle);
         componentMock.replay();
         // configure lifecycle
         lifecycleMock.reset();
-        lifecycle.getExtensionMBeanName();
-        lifecycleMock.setDefaultReturnValue(null);
         lifecycleMock.replay();
         // test component installation
         startContainer(true);
@@ -334,8 +318,6 @@ public class InstallationTest extends AbstractManagementTest {
         componentMock.replay();
         // configure lifecycle
         lifecycleMock.reset();
-        lifecycle.getExtensionMBeanName();
-        lifecycleMock.setDefaultReturnValue(null);
         lifecycleMock.replay();
         // test component installation
         startContainer(true);

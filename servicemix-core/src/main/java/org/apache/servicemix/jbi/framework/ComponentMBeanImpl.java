@@ -53,7 +53,11 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      * @return ObjectName the JMX object name of the additional MBean or null if there is no additional MBean.
      */
     public ObjectName getExtensionMBeanName() {
-        return connector.getComponent().getLifeCycle().getExtensionMBeanName();
+        if (isInitialized() || isStarted() || isStopped()) {
+            return connector.getComponent().getLifeCycle().getExtensionMBeanName();
+        } else {
+            return null;
+        }
     }
     
     /**
