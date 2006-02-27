@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.jbi.JBIException;
+import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.MessageExchange.Role;
 import javax.jms.Connection;
@@ -92,7 +93,7 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
     private String password;
     private ConnectionFactory connectionFactory;
     private Connection connection;
-    private String broadcastDestinationName = "org.apache.servicemix.JMSFlow";
+    private String broadcastDestinationName = "org.apache.servicemix.JCAFlow";
     private Topic broadcastTopic;
     private Map networkNodeKeyMap = new ConcurrentHashMap();
     private Map networkComponentKeyMap = new ConcurrentHashMap();
@@ -263,10 +264,9 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
         	connection.start();
         	broadcastTopic = new ActiveMQTopic(broadcastDestinationName);
             
-        broadcastSession=connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
-        broadcastTopic = new ActiveMQTopic(broadcastDestinationName);
-        advisoryTopic=AdvisorySupport.getConsumerAdvisoryTopic((ActiveMQDestination) broadcastTopic);
-            
+            broadcastSession=connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
+            broadcastTopic = new ActiveMQTopic(broadcastDestinationName);
+            advisoryTopic=AdvisorySupport.getConsumerAdvisoryTopic((ActiveMQDestination) broadcastTopic);
         }
         catch (Exception e) {
             log.error("Failed to initialize JCAFlow", e);
@@ -354,14 +354,17 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
     }
 
     /**
-     * Ability for this flow to persist exchanges.
-     * 
-     * @return <code>true</code> if this flow can persist messages
+     * Check if the flow can support the requested QoS for this exchange
+     * @param me the exchange to check
+     * @return true if this flow can handle the given exchange
      */
-    protected boolean canPersist() {
-    	return true;
+    public boolean canHandle(MessageExchange me) {
+        if (isTransacted(me) && isSynchronous(me)) {
+            return false;
+        }
+        return true;
     }
-
+    
     /**
      * Process state changes in Components
      * 
@@ -372,7 +375,7 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
             String componentName=event.getPacket().getComponentNameSpace().getName();
             if(event.getStatus()==ComponentPacketEvent.ACTIVATED){
                 if(!connectorMap.containsKey(componentName)){
-                    ActiveMQActivationSpec ac=new ActiveMQActivationSpec();
+                    ActiveMQActivationSpec ac = new ActiveMQActivationSpec();
                     ac.setDestinationType("javax.jms.Queue");
                     ac.setDestination(INBOUND_PREFIX+componentName);
                     JCAConnector connector=new JCAConnector();
@@ -419,9 +422,6 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
         ComponentNameSpace id = me.getRole() == Role.PROVIDER ? me.getDestinationId() : me.getSourceId();
         ComponentConnector cc = broker.getRegistry().getComponentConnector(id);
         if (cc != null) {
-        	if (me.getMirror().getSyncState() != MessageExchangeImpl.SYNC_STATE_ASYNC) {
-        		throw new IllegalStateException("sendSync can not be used on jca flow with external components");
-        	}
             try {
                 final String componentName = cc.getComponentNameSpace().getName();
                 String destination;

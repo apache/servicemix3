@@ -74,6 +74,15 @@ public class SedaFlow extends AbstractFlow implements ComponentPacketEventListen
     }
 
     /**
+     * Check if the flow can support the requested QoS for this exchange
+     * @param me the exchange to check
+     * @return true if this flow can handle the given exchange
+     */
+    public boolean canHandle(MessageExchange me) {
+        return !isPersistent(me) && !isClustered(me);
+    }
+    
+    /**
      * start the flow
      * 
      * @throws JBIException

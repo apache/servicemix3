@@ -64,5 +64,18 @@ public interface Flow  extends LifeCycleMBean {
      * resume message exchange processing
      */
     public void resume();
+    
+    /**
+     * Get the broker associated with this flow
+     *
+     */
+    public Broker getBroker();
+    
+    /**
+     * Check if the flow can support the requested QoS for this exchange
+     * @param me the exchange to check
+     * @return true if this flow can handle the given exchange
+     */
+    public boolean canHandle(MessageExchange me);
         
 }

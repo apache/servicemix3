@@ -34,16 +34,22 @@ public class DefaultFlowChooser implements FlowChooser {
         if (flow != null) {
             for (int i = 0; i < flows.length; i++) {
                 if (flows[i].getName().equals(flow)) {
-                    return flows[i];
+                    if (flows[i].canHandle(exchange)) {
+                        return flows[i];
+                    } else {
+                        log.debug("Flow '" + flow + "' was specified but not able to handle exchange");
+                    }
                 }
             }
             log.debug("Flow '" + flow + "' was specified but not found");
         }
         // Check against flow capabilities
-        Object tx = exchange.getProperty(MessageExchange.JTA_TRANSACTION_PROPERTY_NAME);
-        Boolean sync = (Boolean) exchange.getProperty(JbiConstants.SEND_SYNC);
-        // TODO
-        return flows[0];
+        for (int i = 0; i < flows.length; i++) {
+            if (flows[i].canHandle(exchange)) {
+                return flows[i];
+            }
+        }
+        return null;
     }
-
+    
 }

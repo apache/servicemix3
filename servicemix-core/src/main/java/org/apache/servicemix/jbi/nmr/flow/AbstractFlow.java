@@ -20,6 +20,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.locks.ReentrantReadWriteLo
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.jbi.framework.ComponentNameSpace;
 import org.apache.servicemix.jbi.framework.LocalComponentConnector;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
@@ -27,15 +28,18 @@ import org.apache.servicemix.jbi.management.BaseLifeCycle;
 import org.apache.servicemix.jbi.messaging.ExchangePacket;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.Broker;
+import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 
 import javax.jbi.JBIException;
 import javax.jbi.management.LifeCycleMBean;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.MessageExchange.Role;
+import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.ObjectName;
+import javax.xml.namespace.QName;
 
 /**
  * A simple Straight through flow
@@ -95,8 +99,9 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      * @throws JBIException
      */
     public void shutDown() throws JBIException{
-    	if (log.isDebugEnabled())
+    	if (log.isDebugEnabled()) {
     		log.debug("Called Flow shutdown");
+        }
         super.shutDown();
     }
     
@@ -106,12 +111,9 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      * @throws JBIException
      */
     public void send(MessageExchange me) throws JBIException{
-    	// Check persistence
-    	if (log.isDebugEnabled())
+    	if (log.isDebugEnabled()) {
     		log.debug("Called Flow send");
-    	if (!canPersist() && isPersistent(me)) {
-    		throw new UnsupportedOperationException("persistence is not available on st flow");
-    	}
+        }
     	// do send
         try {
             lock.readLock().lock();
@@ -125,8 +127,9 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      * suspend the flow to prevent any message exchanges
      */
     public synchronized void suspend(){
-    	if (log.isDebugEnabled())
+    	if (log.isDebugEnabled()) {
     		log.debug("Called Flow suspend");
+        }
         lock.writeLock().lock();
         suspendThread = Thread.currentThread();
     }
@@ -136,8 +139,9 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      * resume message exchange processing
      */
     public synchronized void resume(){
-    	if (log.isDebugEnabled())
+    	if (log.isDebugEnabled()) {
     		log.debug("Called Flow resume");
+        }
         lock.writeLock().unlock();
         suspendThread = null;
     }
@@ -149,15 +153,6 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      */
     protected abstract void doSend(MessageExchangeImpl me) throws JBIException;
 
-    /**
-     * Ability for this flow to persist exchanges.
-     * 
-     * @return <code>true</code> if this flow can persist messages
-     */
-    protected boolean canPersist() {
-    	return false;
-    }
-    
     /**
      * Distribute an ExchangePacket
      * 
@@ -206,6 +201,55 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
     	}
     }
 
+    protected boolean isTransacted(MessageExchange me) {
+        return me.getProperty(MessageExchange.JTA_TRANSACTION_PROPERTY_NAME) != null;
+    }
+    
+    protected boolean isSynchronous(MessageExchange me) {
+        Boolean sync = (Boolean) me.getProperty(JbiConstants.SEND_SYNC);
+        return sync != null && sync.booleanValue();
+    }
+
+    protected boolean isClustered(MessageExchange me) {
+        ServiceEndpoint se = me.getEndpoint();
+        if (se == null) {
+            // Routing by service name
+            QName serviceName = me.getService();
+            if (serviceName != null) {
+                ServiceEndpoint[] eps = broker.getContainer().getRegistry().getEndpointsForService(serviceName);
+                for (int i = 0; i < eps.length; i++) {
+                    if (eps[i] instanceof InternalEndpoint) {
+                        String name = ((InternalEndpoint) eps[i]).getComponentNameSpace().getContainerName();
+                        if (!name.equals(broker.getContainerName())) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            } else {
+                // Routing by interface name
+                QName interfaceName = me.getInterfaceName();
+                ServiceEndpoint[] eps = broker.getContainer().getRegistry().getEndpoints(interfaceName);
+                for (int i = 0; i < eps.length; i++) {
+                    if (eps[i] instanceof InternalEndpoint) {
+                        String name = ((InternalEndpoint) eps[i]).getComponentNameSpace().getContainerName();
+                        if (!name.equals(broker.getContainerName())) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        // Routing by endpoint
+        } else if (se instanceof InternalEndpoint) {
+            String name = ((InternalEndpoint) se).getComponentNameSpace().getContainerName();
+            return !name.equals(broker.getContainerName());
+        // Unknown: assume this is not clustered
+        } else {
+            return false;
+        }
+    }
+    
     public Broker getBroker() {
         return broker;
     }

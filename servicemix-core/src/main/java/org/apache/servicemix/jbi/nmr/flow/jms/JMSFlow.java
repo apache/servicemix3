@@ -41,6 +41,7 @@ import org.apache.servicemix.jbi.nmr.Broker;
 import org.apache.servicemix.jbi.nmr.flow.AbstractFlow;
 
 import javax.jbi.JBIException;
+import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.MessageExchange.Role;
 import javax.jms.DeliveryMode;
@@ -169,6 +170,18 @@ public class JMSFlow extends AbstractFlow implements MessageListener, ComponentP
     }
 
     /**
+     * Check if the flow can support the requested QoS for this exchange
+     * @param me the exchange to check
+     * @return true if this flow can handle the given exchange
+     */
+    public boolean canHandle(MessageExchange me) {
+        if (isTransacted(me)) {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
      * Initialize the Region
      * 
      * @param broker
@@ -221,11 +234,29 @@ public class JMSFlow extends AbstractFlow implements MessageListener, ComponentP
             super.start();
             try {
                 broadcastConsumer = broadcastSession.createConsumer(broadcastTopic, null, true);
-                broadcastConsumer.setMessageListener(this);
-                Topic advisoryTopic=AdvisorySupport.getConsumerAdvisoryTopic((ActiveMQDestination) broadcastTopic);
-                advisoryConsumer=broadcastSession.createConsumer(advisoryTopic);
-                advisoryConsumer.setMessageListener(this);
-
+                broadcastConsumer.setMessageListener(new MessageListener() {
+                    public void onMessage(Message message) {
+                        try {
+                            if (started.get()) {
+                                ObjectMessage objMsg = (ObjectMessage) message;
+                                ComponentPacketEvent event = (ComponentPacketEvent) objMsg.getObject();
+                                String containerName = event.getPacket().getComponentNameSpace().getContainerName();
+                                processInBoundPacket(containerName, event);
+                            }
+                        } catch (Exception e) {
+                            log.error("Error processing incoming broadcast message", e);
+                        }
+                    }
+                });
+                Topic advisoryTopic = AdvisorySupport.getConsumerAdvisoryTopic((ActiveMQDestination) broadcastTopic);
+                advisoryConsumer = broadcastSession.createConsumer(advisoryTopic);
+                advisoryConsumer.setMessageListener(new MessageListener() {
+                    public void onMessage(Message message) {
+                        if (started.get()) {
+                            onAdvisoryMessage(((ActiveMQMessage) message).getDataStructure());
+                        }
+                    }
+                });
                 
                 // Start queue consumers for all components
                 for (Iterator i = broker.getRegistry().getLocalComponentConnectors().iterator();i.hasNext();) {
@@ -352,15 +383,12 @@ public class JMSFlow extends AbstractFlow implements MessageListener, ComponentP
      * @throws MessagingException
      */
     public void doRouting(MessageExchangeImpl me) throws MessagingException{
-        ComponentNameSpace id=me.getRole()==Role.PROVIDER?me.getDestinationId():me.getSourceId();
-        ComponentConnector cc=broker.getRegistry().getComponentConnector(id);
-        if(cc!=null){
-            if (me.isTransacted() && me.getMirror().getSyncState() != MessageExchangeImpl.SYNC_STATE_ASYNC) {
-                throw new IllegalStateException("transacted sendSync can not be used on jca flow with external components");
-            }
+        ComponentNameSpace id = me.getRole() == Role.PROVIDER ? me.getDestinationId() : me.getSourceId();
+        ComponentConnector cc = broker.getRegistry().getComponentConnector(id);
+        if (cc != null) {
             // let ActiveMQ do the routing ...
             try{
-                String componentName=cc.getComponentNameSpace().getName();
+                String componentName = cc.getComponentNameSpace().getName();
                 String destination = "";
                 if (me.getRole() == Role.PROVIDER){
                     destination = INBOUND_PREFIX + componentName;
@@ -384,55 +412,26 @@ public class JMSFlow extends AbstractFlow implements MessageListener, ComponentP
      * 
      * @param message
      */
-    public void onMessage(Message message) {
-        if (!started.get() || message == null) {
-            return;
-        }
+    public void onMessage(final Message message) {
         try {
-            if (message instanceof ObjectMessage) {
+            if (started.get()) {
                 ObjectMessage objMsg = (ObjectMessage) message;
-                Object obj = objMsg.getObject();
-                if (obj != null) {
-                    if (obj instanceof ComponentPacketEvent) {
-                        ComponentPacketEvent event = (ComponentPacketEvent) obj;
-                        String containerName = event.getPacket().getComponentNameSpace().getContainerName();
-                        processInBoundPacket(containerName, event);
+                final MessageExchangeImpl me = (MessageExchangeImpl) objMsg.getObject();
+                // Dispatch the message in another thread so as to free the jms session
+                // else if a component do a sendSync into the jms flow, the whole
+                // flow is deadlocked 
+                broker.getWorkManager().scheduleWork(new Work() {
+                    public void release() {
                     }
-                    else if (obj instanceof MessageExchangeImpl) {
-                        final MessageExchangeImpl me = (MessageExchangeImpl) obj;
-                        // Dispatch the message in another thread so as to free the jms session
-                        // else if a component do a sendSync into the jms flow, the whole
-                        // flow is deadlocked 
-                        broker.getWorkManager().scheduleWork(new Work() {
-                            public void release() {
-                            }
-                            public void run() {
-                                try {
-                                    JMSFlow.super.doRouting(me);
-                                }
-                                catch (Throwable e) {
-                                    log.error("Caught an exception routing ExchangePacket: ", e);
-                                }
-                            }
-                        });
+                    public void run() {
+                        try {
+                            JMSFlow.super.doRouting(me);
+                        }
+                        catch (Throwable e) {
+                            log.error("Caught an exception routing ExchangePacket: ", e);
+                        }
                     }
-                }
-            } else if (message instanceof ActiveMQMessage) {
-                Object obj = ((ActiveMQMessage) message).getDataStructure();
-                if(obj instanceof ConsumerInfo){
-                    ConsumerInfo info=(ConsumerInfo) obj;
-                    subscriberSet.add(info.getConsumerId().getConnectionId());
-                    for(Iterator i=broker.getRegistry().getLocalComponentConnectors().iterator();i.hasNext();){
-                        LocalComponentConnector lcc=(LocalComponentConnector) i.next();
-                        ComponentPacket packet=lcc.getPacket();
-                        ComponentPacketEvent cpe=new ComponentPacketEvent(packet,ComponentPacketEvent.ACTIVATED);
-                        onEvent(cpe);
-                    }
-                }else if(obj instanceof RemoveInfo){
-                    ConsumerId id=(ConsumerId) ((RemoveInfo) obj).getObjectId();
-                    subscriberSet.remove(id.getConnectionId());
-                    removeAllPackets(id.getConnectionId());
-                }
+                });
             }
         }
         catch (JMSException jmsEx) {
@@ -440,6 +439,23 @@ public class JMSFlow extends AbstractFlow implements MessageListener, ComponentP
         }
         catch (WorkException e) {
             log.error("Caught an exception routing ExchangePacket: ", e);
+        }
+    }
+    
+    protected void onAdvisoryMessage(Object obj) {
+        if (obj instanceof ConsumerInfo) {
+            ConsumerInfo info = (ConsumerInfo) obj;
+            subscriberSet.add(info.getConsumerId().getConnectionId());
+            for(Iterator i=broker.getRegistry().getLocalComponentConnectors().iterator();i.hasNext();){
+                LocalComponentConnector lcc=(LocalComponentConnector) i.next();
+                ComponentPacket packet=lcc.getPacket();
+                ComponentPacketEvent cpe=new ComponentPacketEvent(packet,ComponentPacketEvent.ACTIVATED);
+                onEvent(cpe);
+            }
+        }else if (obj instanceof RemoveInfo) {
+            ConsumerId id = (ConsumerId) ((RemoveInfo) obj).getObjectId();
+            subscriberSet.remove(id.getConnectionId());
+            removeAllPackets(id.getConnectionId());
         }
     }
 

@@ -18,6 +18,7 @@ package org.apache.servicemix.jbi.nmr.flow.st;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.flow.AbstractFlow;
 
+import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 
 /**
@@ -48,6 +49,15 @@ public class STFlow extends AbstractFlow {
      */
     public String getDescription(){
         return "st";
+    }
+    
+    /**
+     * Check if the flow can support the requested QoS for this exchange
+     * @param me the exchange to check
+     * @return true if this flow can handle the given exchange
+     */
+    public boolean canHandle(MessageExchange me) {
+        return !isPersistent(me) && !isClustered(me);
     }
     
 }
