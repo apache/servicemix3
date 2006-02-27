@@ -246,9 +246,9 @@
         <version>${mx4j_version}</version>
       </dependency>
       <dependency>
-        <groupId>xfire</groupId>
+        <groupId>org.apache.ws.commons</groupId>
         <artifactId>XmlSchema</artifactId>
-        <version>${xfire_xmlschema_version}</version>
+        <version>${xmlschema_version}</version>
       </dependency>
 
       <!-- Testing only -->
@@ -296,7 +296,7 @@
         <version>${stax_utils_version}</version>
       </dependency>
       <dependency>
-        <groupId>jetty</groupId>
+        <groupId>org.mortbay.jetty</groupId>
         <artifactId>jetty</artifactId>
         <version>${jetty_version}</version>
       </dependency>
