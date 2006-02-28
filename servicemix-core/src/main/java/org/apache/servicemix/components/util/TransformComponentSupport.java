@@ -37,6 +37,10 @@ public abstract class TransformComponentSupport extends ComponentSupport impleme
         // Skip done exchanges
         if (exchange.getStatus() == ExchangeStatus.DONE) {
             return;
+        // Handle error exchanges
+        } else if (exchange.getStatus() == ExchangeStatus.ERROR) {
+            done(exchange);
+            return;
         }
         NormalizedMessage in = getInMessage(exchange);
         
@@ -49,7 +53,7 @@ public abstract class TransformComponentSupport extends ComponentSupport impleme
                 else {
                     InOnly outExchange = getExchangeFactory().createInOnlyExchange();
                     outExchange.setInMessage(out);
-                    getDeliveryChannel().sendSync(outExchange);
+                    getDeliveryChannel().send(outExchange);
                     exchange.setStatus(ExchangeStatus.DONE);
                 }
             } else {
