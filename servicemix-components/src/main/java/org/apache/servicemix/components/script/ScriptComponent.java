@@ -238,7 +238,7 @@ public class ScriptComponent extends ComponentSupport implements MessageExchange
     }
 
     protected void populateNamespace(Namespace namespace, MessageExchange exchange, NormalizedMessage message) throws MessagingException {
-        namespace.put("context", getContext());
+        namespace.put("componentContext", getContext());
         namespace.put("deliveryChannel", getDeliveryChannel());
         namespace.put("exchange", exchange);
         namespace.put("inMessage", message);
