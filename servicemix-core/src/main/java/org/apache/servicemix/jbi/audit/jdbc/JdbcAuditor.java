@@ -15,6 +15,17 @@
  */
 package org.apache.servicemix.jbi.audit.jdbc;
 
+import java.net.URI;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
+import javax.sql.DataSource;
+
 import org.apache.ddlutils.Platform;
 import org.apache.ddlutils.PlatformFactory;
 import org.apache.ddlutils.model.Column;
@@ -30,17 +41,6 @@ import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.messaging.MessageExchangeSupport;
 import org.apache.servicemix.jbi.messaging.RobustInOnlyImpl;
 import org.springframework.beans.factory.InitializingBean;
-
-import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
-import javax.sql.DataSource;
-
-import java.net.URI;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  * Basic implementation of ServiceMix auditor on a jdbc store.
@@ -66,6 +66,7 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
     private DataSource dataSource;
     private Platform platform;
     private Database database;
+    private boolean autoStart = true;
     
     public String getDescription() {
         return "JDBC Auditing Service";
@@ -82,7 +83,9 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
         database = createDatabase();
         platform.createTables(database, false, true);
         init(getContainer());
-        start();
+        if (autoStart) {
+            start();
+        }
     }
     
     protected Database createDatabase() {
@@ -384,6 +387,14 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
                 log.warn("Error closing statement", e);
             }
         }
+    }
+
+    public boolean isAutoStart() {
+        return autoStart;
+    }
+
+    public void setAutoStart(boolean autoStart) {
+        this.autoStart = autoStart;
     }
 
     
