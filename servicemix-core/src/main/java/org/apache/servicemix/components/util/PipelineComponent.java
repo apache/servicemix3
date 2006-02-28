@@ -15,10 +15,6 @@
  */
 package org.apache.servicemix.components.util;
 
-import org.apache.servicemix.MessageExchangeListener;
-import org.apache.servicemix.jbi.MissingPropertyException;
-import org.apache.servicemix.jbi.NoServiceAvailableException;
-
 import javax.jbi.JBIException;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
@@ -30,6 +26,10 @@ import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
+
+import org.apache.servicemix.MessageExchangeListener;
+import org.apache.servicemix.jbi.MissingPropertyException;
+import org.apache.servicemix.jbi.NoServiceAvailableException;
 
 /**
  * This component acts as an InOnly component which pipelines a request/response (InOut) to a service
@@ -69,31 +69,40 @@ public class PipelineComponent extends ComponentSupport implements MessageExchan
     }
 
     public void onMessageExchange(MessageExchange exchange) throws MessagingException {
-        if (exchange.getStatus() != ExchangeStatus.DONE) {
-            // lets create an endpoint
-            DeliveryChannel deliveryChannel = getDeliveryChannel();
-            MessageExchangeFactory rpcFactory = deliveryChannel.createExchangeFactory(requestResponseEndpoint);
-            InOut rpc = rpcFactory.createInOutExchange();
-            rpc.setInMessage(exchange.getMessage("in"));
-            boolean answer = deliveryChannel.sendSync(rpc);
-    
-            MessageExchangeFactory outputFactory = deliveryChannel.createExchangeFactory(outputEndpoint);
-            InOnly inOnly = outputFactory.createInOnlyExchange();
-    
-            if (answer) {
-                inOnly.setInMessage(rpc.getOutMessage());
-                deliveryChannel.send(inOnly);
-                done(exchange);
-            }
-            else if (exchange instanceof InOnly == false) {
-                inOnly.setError(rpc.getError());
-                Fault fault = rpc.getFault();
-                fail(exchange, fault);
-            } 
-            else {
-                // TODO: log error
-            }
+        // Skip done exchanges
+        if (exchange.getStatus() == ExchangeStatus.DONE) {
+            return;
+        // Handle error exchanges
+        } else if (exchange.getStatus() == ExchangeStatus.ERROR) {
+            done(exchange);
+            return;
         }
+
+        // lets create an endpoint
+        DeliveryChannel deliveryChannel = getDeliveryChannel();
+        MessageExchangeFactory rpcFactory = deliveryChannel.createExchangeFactory(requestResponseEndpoint);
+        InOut rpc = rpcFactory.createInOutExchange();
+        rpc.setInMessage(exchange.getMessage("in"));
+        boolean answer = deliveryChannel.sendSync(rpc);
+
+        MessageExchangeFactory outputFactory = deliveryChannel.createExchangeFactory(outputEndpoint);
+        InOnly inOnly = outputFactory.createInOnlyExchange();
+
+        if (answer) {
+            inOnly.setInMessage(rpc.getOutMessage());
+            deliveryChannel.send(inOnly);
+            done(exchange);
+        }
+        else if (exchange instanceof InOnly == false) {
+            inOnly.setError(rpc.getError());
+            Fault fault = rpc.getFault();
+            fail(exchange, fault);
+        } 
+        else {
+            // terminate the exchange
+            done(exchange);
+        }
+        done(rpc);
     }
 
     // Properties
