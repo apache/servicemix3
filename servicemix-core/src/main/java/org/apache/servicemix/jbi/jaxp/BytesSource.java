@@ -52,4 +52,9 @@ public class BytesSource extends StreamSource {
     public byte[] getData() {
         return data;
     }
+
+    public String toString() {
+        return "BytesSource[" + new String(data) + "]";
+    }
+
 }
