@@ -287,6 +287,9 @@ public class ServiceAssemblyRegistry {
         String result=ServiceAssemblyLifeCycle.UNKNOWN;
         ServiceAssemblyLifeCycle salc=(ServiceAssemblyLifeCycle) serviceAssembilies.get(name);
         if(salc!=null){
+            if (salc.getCurrentState().equals(ServiceAssemblyLifeCycle.STARTED)) {
+                stop(salc);
+            }
             result=shutDown(salc);
             salc.writeRunningState();
         }
