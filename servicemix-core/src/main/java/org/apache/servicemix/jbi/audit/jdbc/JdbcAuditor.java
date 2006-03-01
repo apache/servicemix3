@@ -85,6 +85,8 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
         init(getContainer());
         if (autoStart) {
             start();
+        } else {
+            stop();
         }
     }
     
