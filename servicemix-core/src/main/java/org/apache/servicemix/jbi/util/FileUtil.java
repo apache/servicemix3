@@ -107,7 +107,7 @@ public class FileUtil {
      */
     public static File unpackArchive(File theFile, File targetDir) throws IOException {
         if (!theFile.exists()) {
-            throw new IOException(theFile.getAbsolutePath() + " does Not Exist!");
+            throw new IOException(theFile.getAbsolutePath() + " does not exist");
         }
         if (!targetDir.exists()) {
             targetDir.mkdirs();
@@ -141,13 +141,8 @@ public class FileUtil {
             targetDir.mkdirs();
         }
         InputStream in = new BufferedInputStream(url.openStream(), DEFAULT_BUFFER_SIZE);
-        String fileName = url.getFile();
         // make sure we get the actual file
-        int index = fileName.lastIndexOf("/");
-        if (index > 0) {
-            fileName = fileName.substring(index + 1);
-        }
-        File zip = new File(targetDir, fileName);
+        File zip = File.createTempFile("arc", ".zip", targetDir);
         OutputStream out = new BufferedOutputStream(new FileOutputStream(zip));
         copyInputStream(in, out);
         out.close();
