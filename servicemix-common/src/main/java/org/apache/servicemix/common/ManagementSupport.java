@@ -79,7 +79,7 @@ public class ManagementSupport {
             StringBuffer sw = new StringBuffer();
             // component-task-result
             sw.append("<component-task-result ");
-            sw.append("xmlns=\"http://java.sun.com/xml/ns/jbi/management-message\"");
+            sw.append("xmlns=\"http://java.sun.com/xml/ns/jbi/management-message\">");
             sw.append("\n\t");
             // component-name
             sw.append("<component-name>");
