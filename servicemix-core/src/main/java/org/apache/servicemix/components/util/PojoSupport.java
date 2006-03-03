@@ -37,6 +37,7 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.ObjectName;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
@@ -54,6 +55,7 @@ public abstract class PojoSupport extends BaseLifeCycle implements ComponentLife
     private String endpoint;
     private MessageExchangeFactory exchangeFactory;
     private String description = "POJO Component";
+    private ServiceEndpoint serviceEndpoint;
     
     private static final Log log = LogFactory.getLog(PojoSupport.class);
     
@@ -84,10 +86,21 @@ public abstract class PojoSupport extends BaseLifeCycle implements ComponentLife
         this.context = cc;
         init();
         if (service != null && endpoint != null) {
-            context.activateEndpoint(service, endpoint);
+            serviceEndpoint = context.activateEndpoint(service, endpoint);
         }
     }
 
+    /**
+     * Shut down the item. The releases resources, preparatory to uninstallation.
+     * 
+     * @exception javax.jbi.JBIException if the item fails to shut down.
+     */
+    public void shutDown() throws javax.jbi.JBIException {
+        if (serviceEndpoint != null) {
+            context.deactivateEndpoint(serviceEndpoint);
+        }
+        super.shutDown();
+    }
 
     // Helper methods
     //-------------------------------------------------------------------------
