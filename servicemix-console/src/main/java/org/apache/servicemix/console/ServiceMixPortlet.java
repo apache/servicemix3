@@ -21,12 +21,12 @@ import org.apache.servicemix.jbi.audit.AuditorMBean;
 import org.apache.servicemix.jbi.audit.jdbc.JdbcAuditor;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.framework.DeploymentService;
-import org.apache.servicemix.jbi.framework.FrameworkInstallationService;
 import org.apache.servicemix.jbi.framework.InstallationService;
 import org.apache.servicemix.jbi.management.ManagementContext;
 import org.apache.servicemix.jbi.management.ManagementContextMBean;
 
 import javax.jbi.management.DeploymentServiceMBean;
+import javax.jbi.management.InstallationServiceMBean;
 import javax.jbi.management.LifeCycleMBean;
 import javax.management.MBeanServerConnection;
 import javax.management.MBeanServerInvocationHandler;
@@ -193,9 +193,9 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
      * @return the installation service MBean
      * @throws IOException
      */
-    public FrameworkInstallationService getInstallationService() throws IOException {
+    public InstallationServiceMBean getInstallationService() throws IOException {
         ObjectName objectName = getObjectName(InstallationService.class);
-        return (FrameworkInstallationService) getProxy(objectName, FrameworkInstallationService.class);
+        return (InstallationServiceMBean) getProxy(objectName, InstallationServiceMBean.class);
     }
     
     /**
