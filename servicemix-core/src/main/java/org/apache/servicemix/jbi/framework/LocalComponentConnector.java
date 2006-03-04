@@ -28,12 +28,13 @@ import javax.jbi.management.LifeCycleMBean;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.ObjectName;
 
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.ActivationSpec;
+import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.management.ManagementContext;
 import org.apache.servicemix.jbi.messaging.DeliveryChannelImpl;
+import org.apache.servicemix.jbi.messaging.MessagingStats;
 import org.apache.servicemix.jbi.util.XmlPersistenceSupport;
 
 /**
@@ -49,18 +50,17 @@ public class LocalComponentConnector extends ComponentConnector {
     private ServiceUnitManager suManager;
     private ComponentContextImpl context;
     private ActivationSpec activationSpec;
-    private DeliveryChannelImpl deliveryChannel;
     private ObjectName extendedMBeanName;
     private ComponentMBeanImpl componentMBean;
-    private ComponentStatsMBeanImpl componentStatsMBean;
+    private ObjectName componentMBeanName;
+    private ComponentStats componentStatsMBean;
+    private ObjectName componentStatsMBeanName;
+    private JBIContainer container;
+    private MessagingStats messagingStats;
+    private boolean exchangeThrottling;
+    private long throttlingTimeout = 100;
+    private int throttlingInterval = 1;
     private boolean pojo;
-
-    /**
-     * Default Constructor
-     */
-    public LocalComponentConnector() {
-        super();
-    }
 
     /**
      * Construct with it's id and delivery channel Id
@@ -72,16 +72,17 @@ public class LocalComponentConnector extends ComponentConnector {
      * @param binding
      * @param service
      */
-    public LocalComponentConnector(ComponentNameSpace name, String description, Component component,
-            DeliveryChannelImpl dc, boolean binding, boolean service) {
+    public LocalComponentConnector(JBIContainer container, ComponentNameSpace name, String description, Component component,
+            boolean binding, boolean service) {
         super(name);
+        this.container = container;
         this.component = component;
-        this.deliveryChannel = dc;
         packet.setDescription(description);
         packet.setBinding(binding);
         packet.setService(service);
         this.componentMBean = new ComponentMBeanImpl(this);
-        this.componentStatsMBean = new ComponentStatsMBeanImpl(this);
+        this.componentStatsMBean = new ComponentStats(this);
+        this.messagingStats = new MessagingStats(name.getName());
     }
     
     
@@ -93,13 +94,11 @@ public class LocalComponentConnector extends ComponentConnector {
      */
     public ObjectName registerMBeans(ManagementContext context) throws JBIException{
         try{
-            ObjectName result = context.createObjectName(componentMBean);
-            context.registerMBean(result, componentMBean, ComponentMBean.class);
-            componentMBean.setObjectName(result);
-            ObjectName objName = context.createObjectName(componentStatsMBean);
-            context.registerMBean(objName, componentStatsMBean, ComponentStatsMBean.class);
-            componentStatsMBean.setObjectName(objName);
-            return result;
+            componentMBeanName = context.createObjectName(componentMBean);
+            context.registerMBean(componentMBeanName, componentMBean, ComponentMBean.class);
+            componentStatsMBeanName = context.createObjectName(componentStatsMBean);
+            context.registerMBean(componentStatsMBeanName, componentStatsMBean, ComponentStatsMBean.class);
+            return componentMBeanName;
         }catch(Exception e){
             String errorStr="Failed to register MBeans";
             log.error(errorStr,e);
@@ -113,8 +112,8 @@ public class LocalComponentConnector extends ComponentConnector {
      * @throws JBIException
      */
     public void unregisterMbeans(ManagementContext context) throws JBIException{
-        context.unregisterMBean(componentMBean.getObjectName());
-        context.unregisterMBean(componentStatsMBean.getObjectName());
+        context.unregisterMBean(componentMBeanName);
+        context.unregisterMBean(componentStatsMBeanName);
     }
 
     /**
@@ -206,7 +205,7 @@ public class LocalComponentConnector extends ComponentConnector {
      * @return Returns the deliveryChannel.
      */
     public DeliveryChannelImpl getDeliveryChannel() {
-        return deliveryChannel;
+        return (DeliveryChannelImpl) context.getDeliveryChannel();
     }
 
     /**
@@ -214,7 +213,7 @@ public class LocalComponentConnector extends ComponentConnector {
      *            The deliveryChannel to set.
      */
     public void setDeliveryChannel(DeliveryChannelImpl deliveryChannel) {
-        this.deliveryChannel = deliveryChannel;
+        context.setDeliveryChannel(deliveryChannel);
     }
 
     /**
@@ -236,8 +235,8 @@ public class LocalComponentConnector extends ComponentConnector {
     /**
      * @return Returns the mbeanName.
      */
-    public ObjectName getMbeanName() {
-        return componentMBean.getObjectName();
+    public ObjectName getMBeanName() {
+        return componentMBeanName;
     }
 
     /**
@@ -250,14 +249,14 @@ public class LocalComponentConnector extends ComponentConnector {
     /**
     * @return Returns the stats mbeanName.
     */
-   public ObjectName getStatsMbeanName() {
-       return componentStatsMBean.getObjectName();
+   public ObjectName getStatsMBeanName() {
+       return componentStatsMBeanName;
    }
 
    /**
     * @return Returns the ComponentMBean
     */
-   public ComponentStatsMBeanImpl getComponentStatsMBean() {
+   public ComponentStats getComponentStatsMBean() {
        return componentStatsMBean;
    }
 
@@ -283,6 +282,10 @@ public class LocalComponentConnector extends ComponentConnector {
      */
     public void init() throws JBIException {
         if (context != null && component != null) {
+            DeliveryChannelImpl channel = new DeliveryChannelImpl(container, context.getComponentName());
+            channel.setConnector(this);
+            channel.setContext(context);
+            context.setDeliveryChannel(channel);
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(getLifeCycle().getClass().getClassLoader());
@@ -385,4 +388,74 @@ public class LocalComponentConnector extends ComponentConnector {
         }
         return result;
     }
+
+    /**
+     * @return Returns the container.
+     */
+    public JBIContainer getContainer() {
+        return container;
+    }
+
+    /**
+     * @return Returns the messagingStats.
+     */
+    public MessagingStats getMessagingStats() {
+        return messagingStats;
+    }
+
+
+    /**
+     * Is MessageExchange sender throttling enabled ?
+     * 
+     * @return true if throttling enabled
+     */
+    public boolean isExchangeThrottling() {
+        return exchangeThrottling;
+    }
+
+    /**
+     * Set message throttling
+     * 
+     * @param value
+     */
+    public void setExchangeThrottling(boolean value) {
+        this.exchangeThrottling = value;
+    }
+
+    /**
+     * Get the throttling timeout
+     * 
+     * @return throttling tomeout (ms)
+     */
+    public long getThrottlingTimeout() {
+        return throttlingTimeout;
+    }
+
+    /**
+     * Set the throttling timout
+     * 
+     * @param value (ms)
+     */
+    public void setThrottlingTimeout(long value) {
+        throttlingTimeout = value;
+    }
+
+    /**
+     * Get the interval for throttling - number of Exchanges set before the throttling timeout is applied
+     * 
+     * @return interval for throttling
+     */
+    public int getThrottlingInterval() {
+        return throttlingInterval;
+    }
+
+    /**
+     * Set the throttling interval number of Exchanges set before the throttling timeout is applied
+     * 
+     * @param value
+     */
+    public void setThrottlingInterval(int value) {
+        throttlingInterval = value;
+    }
+
 }

@@ -19,7 +19,8 @@ import java.util.Properties;
  * 
  * @version $Revision: 657 $
  */
-public interface AdminCommandsServiceMBean extends LifeCycleMBean{
+public interface AdminCommandsServiceMBean extends LifeCycleMBean {
+    
     String installComponent(String file) throws Exception;
 
     String installComponent(String file,Properties properties) throws Exception;
@@ -48,15 +49,17 @@ public interface AdminCommandsServiceMBean extends LifeCycleMBean{
 
     String installArchive(String location) throws Exception;
 
-    String listComponents(boolean serviceEngines,boolean bindingComponents,String state,String sharedLibraryName,
-                    String serviceAssemblyName) throws Exception;
+    String listComponents(boolean excludeSEs,
+                          boolean excludeBCs,
+                          boolean excludePojos,
+                          String requiredState,
+                          String sharedLibraryName,
+                          String serviceAssemblyName) throws Exception;
 
-    String listJBIComponents(boolean serviceEngines,boolean bindingComponents,String state,String sharedLibraryName,
-                    String serviceAssemblyName) throws Exception;
+    String listSharedLibraries(String componentName,
+                               String sharedLibraryName) throws Exception;
 
-    String listPojoComponents() throws Exception;
-
-    String listSharedLibraries(String componentName,String sharedLibraryName) throws Exception;
-
-    String listServiceAssemblies(String state,String componentName,String serviceAssemblyName) throws Exception;
+    String listServiceAssemblies(String state,
+                                 String componentName,
+                                 String serviceAssemblyName) throws Exception;
 }

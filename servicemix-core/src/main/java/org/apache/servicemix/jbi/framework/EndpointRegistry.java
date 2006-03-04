@@ -24,10 +24,14 @@ import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.servicedesc.ServiceEndpoint;
+import javax.management.JMException;
+import javax.management.ObjectName;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
@@ -37,6 +41,7 @@ import javax.xml.namespace.QName;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -48,15 +53,18 @@ public class EndpointRegistry {
     
     private static final Log logger = LogFactory.getLog(EndpointRegistry.class);
     
-    private ComponentRegistry componentRegistry;
+    private Registry registry;
+    
+    private Map endpoints;
 
     /**
      * Constructor
      * 
      * @param cr
      */
-    public EndpointRegistry(ComponentRegistry cr) {
-        this.componentRegistry = cr;
+    public EndpointRegistry(Registry registry) {
+        this.registry = registry;
+        this.endpoints = new ConcurrentHashMap();
     }
 
     /**
@@ -141,9 +149,17 @@ public class EndpointRegistry {
      * @param serviceEndpoint
      */
     public synchronized void activateEndpoint(ComponentContext provider, InternalEndpoint serviceEndpoint) {
-        ComponentConnector cc = componentRegistry.getLocalComponentConnector(serviceEndpoint.getComponentNameSpace());
+        ComponentConnector cc = registry.getLocalComponentConnector(serviceEndpoint.getComponentNameSpace());
         if (cc != null) {
             cc.addActiveEndpoint(serviceEndpoint);
+        }
+        try {
+            Endpoint endpoint = new Endpoint(serviceEndpoint, this);
+            ObjectName objectName = registry.getContainer().getManagementContext().createObjectName(endpoint);
+            registry.getContainer().getManagementContext().registerMBean(objectName, endpoint, EndpointMBean.class);
+            endpoints.put(serviceEndpoint, endpoint);
+        } catch (JMException e) {
+            logger.error("Could not register MBean for endpoint", e);
         }
     }
 
@@ -154,9 +170,17 @@ public class EndpointRegistry {
      * @param serviceEndpoint
      */
     public void deactivateEndpoint(ComponentContext provider, InternalEndpoint serviceEndpoint) {
-        ComponentConnector cc = componentRegistry.getLocalComponentConnector(serviceEndpoint.getComponentNameSpace());
+        ComponentConnector cc = registry.getLocalComponentConnector(serviceEndpoint.getComponentNameSpace());
         if (cc != null) {
             cc.removeActiveEndpoint(serviceEndpoint);
+        }
+        Endpoint ep = (Endpoint) endpoints.remove(serviceEndpoint);
+        if (ep != null) {
+            try {
+                registry.getContainer().getManagementContext().unregisterMBean(ep);
+            } catch (JBIException e) {
+                logger.error("Could not unregister MBean for endpoint", e);
+            }
         }
     }
 
@@ -193,7 +217,7 @@ public class EndpointRegistry {
             throw new JBIException("Descriptors can not be queried for external endpoints");
         }
         AbstractServiceEndpoint se = (AbstractServiceEndpoint) endpoint;
-        Component component = componentRegistry.getComponent(se.getComponentNameSpace());
+        Component component = registry.getComponent(se.getComponentNameSpace());
         return component.getServiceDescription(endpoint);
     }
 
@@ -206,7 +230,7 @@ public class EndpointRegistry {
      * @param externalEndpoint the external endpoint to be registered, must be non-null.
      */
     public void registerExternalEndpoint(ComponentContextImpl provider, ServiceEndpoint externalEndpoint) {
-        ComponentConnector cc = componentRegistry.getLocalComponentConnector(provider.getComponentNameSpace());
+        ComponentConnector cc = registry.getLocalComponentConnector(provider.getComponentNameSpace());
         if (cc != null) {
             cc.addExternalActiveEndpoint(new ExternalEndpoint(cc.getComponentNameSpace(), externalEndpoint));
         }
@@ -221,7 +245,7 @@ public class EndpointRegistry {
      * @param externalEndpoint the external endpoint to be deregistered; must be non-null.
      */
     public void deregisterExternalEndpoint(ComponentContextImpl provider, ServiceEndpoint externalEndpoint) {
-        ComponentConnector cc = componentRegistry.getLocalComponentConnector(provider.getComponentNameSpace());
+        ComponentConnector cc = registry.getLocalComponentConnector(provider.getComponentNameSpace());
         if (cc != null) {
             cc.removeExternalActiveEndpoint(externalEndpoint);
         }
@@ -263,7 +287,7 @@ public class EndpointRegistry {
      * cannot be resolved.
      */
     public ServiceEndpoint resolveEndpointReference(DocumentFragment epr) {
-        Collection connectors = componentRegistry.getLocalComponentConnectors();
+        Collection connectors = registry.getLocalComponentConnectors();
         for (Iterator iter = connectors.iterator(); iter.hasNext();) {
             LocalComponentConnector connector = (LocalComponentConnector) iter.next();
             ServiceEndpoint se = connector.getComponent().resolveEndpointReference(epr);
@@ -349,33 +373,7 @@ public class EndpointRegistry {
         Set set = getEndpointsByName(serviceName, getInternalEndpoints());
         if (!set.isEmpty()) {
             InternalEndpoint endpoint = (InternalEndpoint) set.iterator().next();
-            result = componentRegistry.getComponentConnector(endpoint.getComponentNameSpace());
-        }
-        return result;
-    }
-
-    /**
-     * Utility method to get a ComponentConnector from an InterfaceName
-     * 
-     * @param interfaceName
-     * @return the ComponentConnector
-     */
-    public ComponentConnector getComponentConnector(QName interfaceName) {
-        ComponentConnector result = null;
-        for (Iterator i = getInternalEndpoints().iterator();i.hasNext();) {
-            InternalEndpoint endpoint = (InternalEndpoint) i.next();
-            QName[] interfaces = endpoint.getInterfaces();
-            if (interfaces != null) {
-                if (interfaceName != null) {
-                    for (int k = 0;k < interfaces.length;k++) {
-                        QName qn = interfaces[k];
-                        if (qn != null && qn.equals(interfaceName)) {
-                            result = componentRegistry.getComponentConnector(endpoint.getComponentNameSpace());
-                            break;
-                        }
-                    }
-                }
-            }
+            result = registry.getComponentConnector(endpoint.getComponentNameSpace());
         }
         return result;
     }
@@ -386,7 +384,7 @@ public class EndpointRegistry {
             for (Iterator i = getInternalEndpoints().iterator();i.hasNext();) {
                 InternalEndpoint endpoint = (InternalEndpoint) i.next();
                 if (endpoint.getEndpointName().equals(endpointName)) {
-                    result = componentRegistry.getComponentConnector(endpoint.getComponentNameSpace());
+                    result = registry.getComponentConnector(endpoint.getComponentNameSpace());
                     break;
                 }
             }
@@ -413,7 +411,7 @@ public class EndpointRegistry {
      */
     protected Set getInternalEndpoints() {
         Set answer = new HashSet();
-        for (Iterator iter = this.componentRegistry.getComponentConnectors().iterator();iter.hasNext();) {
+        for (Iterator iter = this.registry.getComponentConnectors().iterator();iter.hasNext();) {
             ComponentConnector cc = (ComponentConnector) iter.next();
             answer.addAll(cc.getActiveEndpoints());
         }
@@ -425,7 +423,7 @@ public class EndpointRegistry {
      */
     protected Set getExternalEndpoints() {
         Set answer = new HashSet();
-        for (Iterator iter = this.componentRegistry.getComponentConnectors().iterator(); iter.hasNext();) {
+        for (Iterator iter = this.registry.getComponentConnectors().iterator(); iter.hasNext();) {
             ComponentConnector cc = (ComponentConnector) iter.next();
             answer.addAll(cc.getExternalActiveEndpoints());
         }

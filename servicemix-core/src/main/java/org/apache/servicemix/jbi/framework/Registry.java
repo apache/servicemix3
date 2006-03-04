@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.jbi.JBIException;
@@ -26,21 +27,25 @@ import javax.jbi.component.Component;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.management.DeploymentException;
 import javax.jbi.servicedesc.ServiceEndpoint;
+import javax.management.JMException;
 import javax.management.ObjectName;
 import javax.xml.namespace.QName;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.EnvironmentContext;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.container.SubscriptionSpec;
 import org.apache.servicemix.jbi.deployment.ServiceAssembly;
+import org.apache.servicemix.jbi.deployment.ServiceUnit;
 import org.apache.servicemix.jbi.management.BaseSystemService;
-import org.apache.servicemix.jbi.messaging.DeliveryChannelImpl;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -50,21 +55,24 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
  */
 public class Registry extends BaseSystemService implements RegistryMBean {
     
+    private static final Log log = LogFactory.getLog(Registry.class);
     private ComponentRegistry componentRegistry;
     private EndpointRegistry endpointRegistry;
     private SubscriptionRegistry subscriptionRegistry;
     private ServiceAssemblyRegistry serviceAssemblyRegistry;
     private List componentPacketListeners;
+    private Map serviceUnits;
 
     /**
      * Constructor
      */
     public Registry() {
         this.componentRegistry = new ComponentRegistry(this);
-        this.endpointRegistry = new EndpointRegistry(componentRegistry);
+        this.endpointRegistry = new EndpointRegistry(this);
         this.subscriptionRegistry = new SubscriptionRegistry();
         this.serviceAssemblyRegistry = new ServiceAssemblyRegistry(this);
         this.componentPacketListeners = new CopyOnWriteArrayList();
+        this.serviceUnits = new ConcurrentHashMap();
     }
     
     /**
@@ -273,16 +281,6 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     }
 
     /**
-     * Utility method to get a ComponentConnector from an InterfaceName
-     * 
-     * @param interfaceName
-     * @return the ComponentConnector
-     */
-    public ComponentConnector getComponentConnector(QName interfaceName) {
-        return endpointRegistry.getComponentConnector(interfaceName);
-    }
-
-    /**
      * REgister a local Component
      * 
      * @param name
@@ -295,8 +293,8 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @throws JBIException
      */
     public LocalComponentConnector registerComponent(ComponentNameSpace name, String description,Component component,
-            DeliveryChannelImpl dc, boolean binding, boolean service) throws JBIException {
-        LocalComponentConnector result = componentRegistry.registerComponent(name,description, component, dc, binding, service);
+            boolean binding, boolean service) throws JBIException {
+        LocalComponentConnector result = componentRegistry.registerComponent(name,description, component, binding, service);
         if (result != null) {
             fireComponentPacketEvent(result, ComponentPacketEvent.ACTIVATED);
         }
@@ -399,6 +397,17 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     }
     
     /**
+     * Get a locally create ComponentConnector
+     * 
+     * @param id - id of the ComponentConnector
+     * @return ComponentConnector or null if not found
+     */
+    public LocalComponentConnector getLocalComponentConnector(String componentName) {
+        ComponentNameSpace cns = new ComponentNameSpace(container.getName(), componentName, componentName);
+        return componentRegistry.getLocalComponentConnector(cns);
+    }
+    
+    /**
      * Find existence of a Component locally registered to this Container
      * @param componentName
      * @return true if the Component exists
@@ -417,6 +426,14 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         return componentRegistry.getComponentConnector(component);
     }
 
+    /**
+     * 
+     * @return Collection of ComponentConnectors held by the registry
+     */
+    public Collection getComponentConnectors() {
+        return componentRegistry.getComponentConnectors();
+    }
+    
     /**
      * Get a Component
      * @param cns
@@ -446,7 +463,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         ComponentNameSpace cns = new ComponentNameSpace(container.getName(), name, name);
         LocalComponentConnector lcc = getLocalComponentConnector(cns);
         if (lcc != null){
-            result = lcc.getMbeanName();
+            result = lcc.getMBeanName();
         }
         return result;
         
@@ -491,8 +508,8 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         List tmpList = new ArrayList();
         for (Iterator i = getLocalComponentConnectors().iterator(); i.hasNext();){
             LocalComponentConnector lcc = (LocalComponentConnector) i.next();
-            if (!lcc.isPojo() && lcc.isService() && lcc.getMbeanName() != null){
-                tmpList.add(lcc.getMbeanName());
+            if (!lcc.isPojo() && lcc.isService() && lcc.getMBeanName() != null){
+                tmpList.add(lcc.getMBeanName());
             }
         }
         result = new ObjectName[tmpList.size()];
@@ -510,8 +527,8 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         List tmpList = new ArrayList();
         for (Iterator i = getLocalComponentConnectors().iterator(); i.hasNext();){
             LocalComponentConnector lcc = (LocalComponentConnector) i.next();
-            if (lcc.isPojo() && lcc.getMbeanName() != null){
-                tmpList.add(lcc.getMbeanName());
+            if (lcc.isPojo() && lcc.getMBeanName() != null){
+                tmpList.add(lcc.getMBeanName());
             }
         }
         result = new ObjectName[tmpList.size()];
@@ -529,8 +546,8 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         List tmpList = new ArrayList();
         for (Iterator i = getLocalComponentConnectors().iterator(); i.hasNext();){
             LocalComponentConnector lcc = (LocalComponentConnector) i.next();
-            if (!lcc.isPojo() && lcc.isBinding() && lcc.getMbeanName() != null){
-                tmpList.add(lcc.getMbeanName());
+            if (!lcc.isPojo() && lcc.isBinding() && lcc.getMBeanName() != null){
+                tmpList.add(lcc.getMBeanName());
             }
         }
         result = new ObjectName[tmpList.size()];
@@ -623,80 +640,25 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     }
     
     /**
-     * Start a ServiceAssembly
-     * @param serviceAssemblyName
-     * @return status
-     * @throws DeploymentException 
-     */
-    public String startServiceAssembly(String serviceAssemblyName) throws DeploymentException{
-        return serviceAssemblyRegistry.start(serviceAssemblyName);
-    }
-    
-    /**
-     * Restore a service assembly to its previous state
-     * @param serviceAssemblyName
-     * @return status
-     * @throws DeploymentException
-     */
-    public String restoreServiceAssembly(String serviceAssemblyName) throws DeploymentException {
-    	return serviceAssemblyRegistry.restore(serviceAssemblyName);
-    }
-    
-    /**
-     * Stop a ServiceAssembly
-     * @param serviceAssemblyName
-     * @return status
-     * @throws DeploymentException 
-     */
-    public String stopServiceAssembly(String serviceAssemblyName) throws DeploymentException{
-        return serviceAssemblyRegistry.stop(serviceAssemblyName);
-    }
-    
-    /**
-     * Shutdown a ServiceAssembly
-     * @param serviceAssemblyName
-     * @return status
-     * @throws DeploymentException 
-     */
-    public String shutDownServiceAssembly(String serviceAssemblyName) throws DeploymentException{
-        return serviceAssemblyRegistry.shutDown(serviceAssemblyName);
-    }
-    
-    /**
-     * Get the lifecycle state of a service assembly
-     * @param serviceAssemblyName
-     * @return status
-     */
-    public String getServiceAssemblyState(String serviceAssemblyName){
-        return serviceAssemblyRegistry.getState(serviceAssemblyName);
-    }
-
-    /**
-     * Get the lifecycle description of a service assembly
-     * @param serviceAssemblyName
-     * @return
-     */
-    public String getServiceAssemblyDesc(String serviceAssemblyName) {
-        return serviceAssemblyRegistry.getDescription(serviceAssemblyName);
-    }
-    
-    /**
      * Register a service assembly
      * @param sa
      * @return true if not already registered
      * @throws DeploymentException 
+     * @deprecated
      */
     public boolean registerServiceAssembly(ServiceAssembly sa) throws DeploymentException{
         return serviceAssemblyRegistry.register(sa);
     }
     
     /**
-     * Un-register a service assembly
+     * Register a service assembly
      * @param sa
-     * @return true if successfully unregistered
+     * @param sus list of deployed service units
+     * @return true if not already registered
+     * @throws DeploymentException 
      */
-    public boolean unregisterServiceAssembly(ServiceAssembly sa) {
-        return serviceAssemblyRegistry.unregister(sa);
+    public boolean registerServiceAssembly(ServiceAssembly sa, String[] deployedSUs) throws DeploymentException{
+        return serviceAssemblyRegistry.register(sa, deployedSUs);
     }
     
     /**
@@ -713,29 +675,18 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @param name
      * @return the ServiceAssembly or null if it doesn't exist
      */
-    public ServiceAssembly getServiceAssembly(String name){
-        return serviceAssemblyRegistry.get(name);
+    public ServiceAssemblyLifeCycle getServiceAssembly(String saName){
+        return serviceAssemblyRegistry.getServiceAssembly(saName);
     }
-    
+
     /**
      * Returns a list of Service Units that are currently deployed to the given component.
      * 
      * @param componentName name of the component.
-     * @return List of deployed ASA Ids.
+     * @return List of deployed service units
      */
-    public String[] getSADeployedServiceUnitList(String componentName)  {
-        return serviceAssemblyRegistry.getDeployedServiceUnitList(componentName);
-    }
-
-    /**
-     * Returns the service unit description.
-     *
-     * @param componentName
-     * @param deployedServiceUnit
-     * @return SA deployed service unit description.
-     */
-    public String getSADeployedServiceUnitDesc(String componentName, String deployedServiceUnit) {
-        return serviceAssemblyRegistry.getSADeployedServiceUnitDesc(componentName, deployedServiceUnit);
+    public ServiceUnitLifeCycle[] getDeployedServiceUnits(String componentName)  {
+        return serviceAssemblyRegistry.getDeployedServiceUnits(componentName);
     }
 
     /**
@@ -789,4 +740,50 @@ public class Registry extends BaseSystemService implements RegistryMBean {
             }
         }
     }
+
+    /**
+     * Get a ServiceUnit by its key.
+     * 
+     * @param suKey the key of the service unit
+     * @return the ServiceUnit or null of it doesn't exist
+     */
+    public ServiceUnitLifeCycle getServiceUnit(String suKey) {
+        return (ServiceUnitLifeCycle) serviceUnits.get(suKey);
+    }
+    
+    /**
+     * Register a ServiceUnit.
+     * 
+     * @param su the service unit to register
+     * @param serviceAssembly the service assembly the service unit belongs to 
+     * @return the service unit key
+     */
+    public String registerServiceUnit(ServiceUnit su, String serviceAssembly) {
+        ServiceUnitLifeCycle sulc = new ServiceUnitLifeCycle(su, serviceAssembly, this);
+        this.serviceUnits.put(sulc.getKey(), sulc);
+        try {
+            ObjectName objectName = getContainer().getManagementContext().createObjectName(sulc);
+            getContainer().getManagementContext().registerMBean(objectName, sulc, ServiceUnitMBean.class);
+        } catch (JMException e) {
+            log.error("Could not register MBean for service unit", e);
+        }
+        return sulc.getKey();
+    }
+    
+    /**
+     * Unregister a ServiceUnit by its key.
+     * 
+     * @param suKey the key of the service unit
+     */
+    public void unregisterServiceUnit(String suKey) {
+        ServiceUnitLifeCycle sulc = (ServiceUnitLifeCycle) this.serviceUnits.remove(suKey);
+        if (sulc != null) {
+            try {
+                getContainer().getManagementContext().unregisterMBean(sulc);
+            } catch (JBIException e) {
+                log.error("Could not unregister MBean for service unit", e);
+            }
+        }
+    }
+    
 }

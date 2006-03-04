@@ -15,21 +15,16 @@
  */
 package org.apache.servicemix.jbi.management.task;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.apache.tools.ant.BuildException;
-
-import javax.jbi.management.DeploymentServiceMBean;
-
-import java.io.IOException;
 
 /**
  * Shut down a Service Assembly
  * 
  * @version $Revision$
  */
-public class ShutDownAssemblyTask extends JbiTask {
-    private static final Log log = LogFactory.getLog(ShutDownAssemblyTask.class);
+public class ShutDownServiceAssemblyTask extends JbiTask {
+    
     private String name;
 
     /**
@@ -51,21 +46,11 @@ public class ShutDownAssemblyTask extends JbiTask {
      * 
      * @throws BuildException
      */
-    public void execute() throws BuildException {
+    public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
         if (name == null) {
-            throw new BuildException("null assemblyName");
+            throw new BuildException("null service assembly name");
         }
-        try {
-            DeploymentServiceMBean is = getDeploymentService();
-            is.shutDown(getName());
-        }
-        catch (IOException e) {
-            log.error("Caught an exception shutting down assembly", e);
-            throw new BuildException(e);
-        }
-        catch (Exception e) {
-            log.error("Caught an exception shutting down assembly", e);
-            throw new BuildException(e);
-        }
+        acs.shutdownServiceAssembly(name);
     }
+    
 }

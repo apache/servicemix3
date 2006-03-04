@@ -22,8 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.apache.tools.ant.BuildException;
 
@@ -33,7 +31,7 @@ import org.apache.tools.ant.BuildException;
  * @version $Revision$
  */
 public class InstallComponentTask extends JbiTask {
-    private static final Log log = LogFactory.getLog(InstallComponentTask.class);
+    
     private String file; //file to install
     private String paramsFile;
     private List nestedParams;
@@ -71,33 +69,15 @@ public class InstallComponentTask extends JbiTask {
      * execute the task
      * @throws BuildException
      */
-    public void execute() throws BuildException{
+    public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
         if (file == null){
             throw new BuildException("null file - file should be an archive");
         }
         if (!file.endsWith(".zip") && !file.endsWith(".jar")) {
             throw new BuildException("file: " + file + " is not an archive");
         }
-        Properties props;
-        try {
-            props = getProperties();
-        } catch (IOException e) {
-            log.error("Error retrieving installation properties", e);
-            throw new BuildException(e);
-        }
-        AdminCommandsServiceMBean acs;
-        try {
-            acs = getAdminCommandsService();
-        } catch (IOException e) {
-            log.error("Caught an exception getting the installation service", e);
-            throw new BuildException(e);
-        }
-        try {
-            acs.installComponent(file, props);
-        } catch (Exception e) {
-            log.error("Error installing component", e);
-            throw new BuildException(e);
-        }
+        Properties props = getProperties();
+        acs.installComponent(file, props);
     }
     
     private Properties getProperties() throws IOException {
@@ -130,4 +110,5 @@ public class InstallComponentTask extends JbiTask {
             this.value = value;
         }
     }
+    
 }

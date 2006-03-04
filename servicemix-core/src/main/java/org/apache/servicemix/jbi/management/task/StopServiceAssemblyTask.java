@@ -15,21 +15,16 @@
  */
 package org.apache.servicemix.jbi.management.task;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.apache.tools.ant.BuildException;
-
-import javax.jbi.management.DeploymentServiceMBean;
-
-import java.io.IOException;
 
 /**
  * Stop a Service Assembly
  * 
  * @version $Revision$
  */
-public class StopAssemblyTask extends JbiTask {
-    private static final Log log = LogFactory.getLog(StopAssemblyTask.class);
+public class StopServiceAssemblyTask extends JbiTask {
+    
     private String name; //assembly name to stop.
 
     /**
@@ -51,21 +46,11 @@ public class StopAssemblyTask extends JbiTask {
      * 
      * @throws BuildException
      */
-    public void execute() throws BuildException {
+    public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
         if (name == null) {
-            throw new BuildException("null assemblyName");
+            throw new BuildException("null componentName");
         }
-        try {
-            DeploymentServiceMBean is = getDeploymentService();
-            is.stop(getName());
-        }
-        catch (IOException e) {
-            log.error("Caught an exception stopping assembly", e);
-            throw new BuildException(e);
-        }
-        catch (Exception e) {
-            log.error("Caught an exception stopping assembly", e);
-            throw new BuildException(e);
-        }
+        acs.stopServiceAssembly(name);
     }
+    
 }

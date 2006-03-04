@@ -15,17 +15,8 @@
  */
 package org.apache.servicemix.jbi.management.task;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.container.JBIContainer;
-import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
-import org.apache.servicemix.jbi.framework.DeploymentService;
-import org.apache.servicemix.jbi.framework.FrameworkInstallationService;
-import org.apache.servicemix.jbi.framework.InstallationService;
-import org.apache.servicemix.jbi.management.ManagementContext;
-import org.apache.servicemix.jbi.management.ManagementContextMBean;
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
+import java.io.IOException;
+import java.net.MalformedURLException;
 
 import javax.jbi.management.DeploymentServiceMBean;
 import javax.management.MBeanServerInvocationHandler;
@@ -34,8 +25,14 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
+import org.apache.servicemix.jbi.framework.DeploymentService;
+import org.apache.servicemix.jbi.management.ManagementContext;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
 
 /**
  * A bean for connecting to a remote JMX MBeanServer
@@ -43,7 +40,9 @@ import java.net.MalformedURLException;
  * @version $Revision$
  */
 public abstract class JbiTask extends Task {
-    private static final Log log = LogFactory.getLog(JbiTask.class);
+    
+    protected final Log log = LogFactory.getLog(getClass());
+    
     private String serverProtocol = "rmi";
     private String host = "localhost";
     private String containerName = JBIContainer.DEFAULT_NAME;
@@ -52,6 +51,7 @@ public abstract class JbiTask extends Task {
     private String jndiPath = ManagementContext.DEFAULT_CONNECTOR_PATH;
     private String username;
     private String password;
+    private boolean failOnError = true;
     private JMXConnector jmxConnector;
     
     
@@ -124,18 +124,6 @@ public abstract class JbiTask extends Task {
     
         
     /**
-     * Get the InstallationServiceMBean
-     * @return the installation service MBean
-     * @throws IOException
-     */
-    public FrameworkInstallationService getInstallationService() throws IOException{
-        ObjectName objectName = getObjectName(InstallationService.class);
-        
-        return (FrameworkInstallationService) MBeanServerInvocationHandler.newProxyInstance(jmxConnector.getMBeanServerConnection(), objectName,
-                FrameworkInstallationService.class, true);
-    }
-    
-    /**
      * Get the AdminCommandsService
      * @return the main administration service MBean
      * @throws IOException
@@ -160,18 +148,6 @@ public abstract class JbiTask extends Task {
     }
     
     
-    /**
-     * Get the ManagementContextMBean 
-     * @return the management service mbean
-     * @throws IOException
-     */
-    public ManagementContextMBean getManagementContext() throws IOException{
-        ObjectName objectName = getObjectName(ManagementContext.class);
-        
-        return (ManagementContextMBean) MBeanServerInvocationHandler.newProxyInstance(jmxConnector.getMBeanServerConnection(), objectName,
-                ManagementContextMBean.class, true);
-    }
-
     /**
      * @return Returns the containerName.
      */
@@ -273,4 +249,50 @@ public abstract class JbiTask extends Task {
     public void setUsername(String username) {
         this.username = username;
     }
+    
+    /**
+     * @return Returns the failOnError.
+     */
+    public boolean isFailOnError() {
+        return failOnError;
+    }
+
+    /**
+     * @param failOnError The failOnError to set.
+     */
+    public void setFailOnError(boolean failOnError) {
+        this.failOnError = failOnError;
+    }
+    
+    /**
+     * execute the task
+     * 
+     * @throws BuildException
+     */
+    public void execute() throws BuildException {
+        AdminCommandsServiceMBean acs;
+        try {
+            acs = getAdminCommandsService();
+        } catch (IOException e) {
+            log.error("Error accessing ServiceMix administration", e);
+            if (isFailOnError()) {
+                throw new BuildException("Error accessing ServiceMix administration");
+            } else {
+                return;
+            }
+        }
+        try {
+            doExecute(acs);
+        } catch (Exception e) {
+            log.error("Error executing task", e);
+            if (isFailOnError()) {
+                throw new BuildException("Error accessing ServiceMix administration");
+            } else {
+                return;
+            }
+        }
+    }
+    
+    protected abstract void doExecute(AdminCommandsServiceMBean acs) throws Exception;
+
 }

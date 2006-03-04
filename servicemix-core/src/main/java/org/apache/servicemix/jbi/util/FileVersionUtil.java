@@ -34,9 +34,8 @@ public class FileVersionUtil{
      * 
      * @param rootDirectory
      * @return the version number
-     * @throws IOException
      */
-    public static int getLatestVersionNumber(File rootDirectory) throws IOException{
+    public static int getLatestVersionNumber(File rootDirectory) {
         int result=-1;
         if(isVersioned(rootDirectory)){
             File[] files=rootDirectory.listFiles();
@@ -57,7 +56,7 @@ public class FileVersionUtil{
      * @return the directory
      * @throws IOException
      */
-    public static File getLatestVersionDirectory(File rootDirectory) throws IOException{
+    public static File getLatestVersionDirectory(File rootDirectory) {
         File result=null;
         int highestVersion=-1;
         if(isVersioned(rootDirectory)){
@@ -133,7 +132,7 @@ public class FileVersionUtil{
         }
     }
 
-    private static boolean isVersioned(File rootDirectory) throws IOException{
+    private static boolean isVersioned(File rootDirectory) {
         boolean result=false;
         if(rootDirectory.exists()&&rootDirectory.isDirectory()){
             File[] files=rootDirectory.listFiles();

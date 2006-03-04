@@ -15,12 +15,8 @@
  */
 package org.apache.servicemix.jbi.management.task;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.management.ManagementContextMBean;
+import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.apache.tools.ant.BuildException;
-
-import java.io.IOException;
 
 /**
  * Shutdown a Component
@@ -28,7 +24,7 @@ import java.io.IOException;
  * @version $Revision$
  */
 public class ShutDownComponentTask extends JbiTask {
-    private static final Log log = LogFactory.getLog(ShutDownComponentTask.class);
+    
     private String name;
 
     /**
@@ -50,21 +46,11 @@ public class ShutDownComponentTask extends JbiTask {
      * 
      * @throws BuildException
      */
-    public void execute() throws BuildException {
+    public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
         if (name == null) {
             throw new BuildException("null componentName");
         }
-        try {
-            ManagementContextMBean is = getManagementContext();
-            is.shutDownComponent(name);
-        }
-        catch (IOException e) {
-            log.error("Caught an exception shutting down component", e);
-            throw new BuildException(e);
-        }
-        catch (Exception e) {
-            log.error("Caught an exception shutting down component", e);
-            throw new BuildException(e);
-        }
+        acs.shutdownComponent(name);
     }
+    
 }

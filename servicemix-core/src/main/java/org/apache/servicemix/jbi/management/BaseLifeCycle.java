@@ -29,8 +29,11 @@ import javax.management.MBeanOperationInfo;
  * @version $Revision$
  */
 public abstract class BaseLifeCycle implements LifeCycleMBean, MBeanInfoProvider {
+    
     public static final String INITIALIZED = "Initialized";
+    
     protected String currentState = LifeCycleMBean.UNKNOWN;
+    
     protected PropertyChangeListener listener;
     
     
@@ -114,7 +117,7 @@ public abstract class BaseLifeCycle implements LifeCycleMBean, MBeanInfoProvider
      * Set the current state
      * @param newValue
      */
-    public void setCurrentState(String newValue){
+    protected void setCurrentState(String newValue){
         String oldValue = currentState;
         this.currentState = newValue;
         firePropertyChanged("currentState",oldValue,newValue);

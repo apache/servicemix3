@@ -122,13 +122,12 @@ public class DeploymentTest extends AbstractManagementTest {
         manager.deploy(null, null);
         managerMock.setMatcher(MockControl.ALWAYS_MATCHER);
         managerMock.setReturnValue(null);
-        manager.init(null, null);
-        managerMock.setMatcher(MockControl.ALWAYS_MATCHER);
         replay();
         // deploy sa
         assertTrue(getDeploymentService().canDeployToComponent("component1"));
         File installSaUrl = createServiceAssemblyArchive("sa", "su", "component1");
-        getDeploymentService().deploy(installSaUrl.getAbsolutePath());
+        String result = getDeploymentService().deploy(installSaUrl.getAbsolutePath());
+        System.err.println(result);
         String[] sas = getDeploymentService().getDeployedServiceAssemblies();
         assertNotNull(sas);
         assertEquals(1, sas.length);
@@ -144,7 +143,9 @@ public class DeploymentTest extends AbstractManagementTest {
         // configure mocks
         reset();
         component.getServiceUnitManager();
-        componentMock.setReturnValue(manager, MockControl.ONE_OR_MORE);
+        componentMock.setReturnValue(manager, MockControl.ZERO_OR_MORE);
+        manager.init(null, null);
+        managerMock.setMatcher(MockControl.ALWAYS_MATCHER);
         manager.start("su");
         replay();
         // start sa
@@ -212,8 +213,6 @@ public class DeploymentTest extends AbstractManagementTest {
         manager.deploy(null, null);
         managerMock.setMatcher(MockControl.ALWAYS_MATCHER);
         managerMock.setReturnValue(null);
-        manager.init(null, null);
-        managerMock.setMatcher(MockControl.ALWAYS_MATCHER);
         replay();
         // deploy sa
         assertTrue(getDeploymentService().canDeployToComponent("component1"));
@@ -317,8 +316,6 @@ public class DeploymentTest extends AbstractManagementTest {
         manager.deploy(null, null);
         managerMock.setMatcher(MockControl.ALWAYS_MATCHER);
         managerMock.setReturnValue(null);
-        manager.init(null, null);
-        managerMock.setMatcher(MockControl.ALWAYS_MATCHER);
         replay();
         // deploy sa
         assertTrue(getDeploymentService().canDeployToComponent("component1"));
@@ -338,8 +335,8 @@ public class DeploymentTest extends AbstractManagementTest {
         
         // configure mocks
         reset();
-        component.getServiceUnitManager();
-        componentMock.setReturnValue(manager, MockControl.ONE_OR_MORE);
+        manager.init(null, null);
+        managerMock.setMatcher(MockControl.ALWAYS_MATCHER);
         manager.start("su");
         replay();
         // start sa
@@ -352,8 +349,7 @@ public class DeploymentTest extends AbstractManagementTest {
         reset();
         lifecycle.stop();
         lifecycle.shutDown();
-        component.getServiceUnitManager();
-        componentMock.setReturnValue(manager, MockControl.ONE_OR_MORE);
+        manager.stop("su");
         manager.shutDown("su");
         replay();
         // shutdown container

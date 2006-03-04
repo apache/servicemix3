@@ -31,7 +31,7 @@ public class JmsFlowTransactionTest extends AbstractTransactionTest {
         try {
             runSimpleTest(true, true);
             fail("sendSync can not be used");
-        } catch (IllegalStateException e) {
+        } catch (Exception e) {
             // sendSync can not be used
         }
     }
@@ -40,7 +40,7 @@ public class JmsFlowTransactionTest extends AbstractTransactionTest {
         try {
             runSimpleTest(true, false);
             fail("sendSync can not be used");
-        } catch (IllegalStateException e) {
+        } catch (Exception e) {
             // sendSync can not be used
         }
     }

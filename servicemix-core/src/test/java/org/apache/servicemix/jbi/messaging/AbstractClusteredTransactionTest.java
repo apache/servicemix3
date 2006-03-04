@@ -80,7 +80,7 @@ public abstract class AbstractClusteredTransactionTest extends AbstractTransacti
     	try {
     		runClusteredTest(true, true);
     		fail("sendSync can not be used on clustered flows with external components");
-    	} catch (IllegalStateException e) {
+    	} catch (Exception e) {
     		// ok
     	}
     }
@@ -93,7 +93,7 @@ public abstract class AbstractClusteredTransactionTest extends AbstractTransacti
     	try {
     		runClusteredTest(true, false);
     		fail("sendSync can not be used on clustered flows with external components");
-    	} catch (IllegalStateException e) {
+    	} catch (Exception e) {
     		// ok
     	}
     }

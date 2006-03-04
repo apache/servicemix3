@@ -24,6 +24,7 @@ import java.util.Properties;
 
 import javax.jbi.JBIException;
 import javax.jbi.management.DeploymentException;
+import javax.jbi.management.InstallationServiceMBean;
 import javax.jbi.management.InstallerMBean;
 import javax.management.Attribute;
 import javax.management.JMException;
@@ -44,6 +45,8 @@ import org.apache.servicemix.jbi.deployment.Descriptor;
 import org.apache.servicemix.jbi.deployment.InstallationDescriptorExtension;
 import org.apache.servicemix.jbi.deployment.SharedLibrary;
 import org.apache.servicemix.jbi.deployment.SharedLibraryList;
+import org.apache.servicemix.jbi.loaders.ClassLoaderService;
+import org.apache.servicemix.jbi.loaders.InstallationClassLoader;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.management.ManagementContext;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
@@ -56,7 +59,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * 
  * @version $Revision$
  */
-public class InstallationService extends BaseSystemService implements FrameworkInstallationService{
+public class InstallationService extends BaseSystemService implements InstallationServiceMBean {
     private static final Log log=LogFactory.getLog(InstallationService.class);
     private EnvironmentContext environmentContext;
     private ManagementContext managementContext;
@@ -205,7 +208,7 @@ public class InstallationService extends BaseSystemService implements FrameworkI
      *            true if the component is to be deleted as well.
      * @return - true if the operation was successful, otherwise false.
      */
-    public boolean unloadInstaller(String componentName, boolean isToBeDeleted){
+    public boolean unloadInstaller(String componentName, boolean isToBeDeleted) {
         boolean result=false;
         try {
             container.getBroker().suspend();
@@ -220,7 +223,7 @@ public class InstallationService extends BaseSystemService implements FrameworkI
                 }
             }
         } catch(JBIException e) {
-            String errStr = "problem shutting down Component: " + componentName;
+            String errStr = "Problem shutting down Component: " + componentName;
             log.error(errStr, e);
         } finally {
             container.getBroker().resume();
@@ -261,16 +264,12 @@ public class InstallationService extends BaseSystemService implements FrameworkI
      *            the name of the shared library to uninstall.
      * @return - true iff the uninstall was successful.
      */
-    public boolean uninstallSharedLibrary(String aSharedLibName){
-        boolean result=false;
+    public boolean uninstallSharedLibrary(String aSharedLibName) {
+        // TODO: should check existence of shared library
+        // and that it is not currently in use
         classLoaderService.removeSharedLibrary(aSharedLibName);
-        try{
-            environmentContext.removeSharedLibraryDirectory(aSharedLibName);
-            result=true;
-        }catch(IOException e){
-            log.error("Failed to remove shared library directory");
-        }
-        return result;
+        environmentContext.removeSharedLibraryDirectory(aSharedLibName);
+        return true;
     }
 
     /**
@@ -288,7 +287,7 @@ public class InstallationService extends BaseSystemService implements FrameworkI
     }
     
     protected Class getServiceMBean() {
-        return FrameworkInstallationService.class;
+        return InstallationServiceMBean.class;
     }
 
     /**
@@ -446,10 +445,12 @@ public class InstallationService extends BaseSystemService implements FrameworkI
                     FileUtil.deleteFile(installationDir);
                 }
                 if(!tmpDirectory.renameTo(installationDir)){
-                    throw new DeploymentException("Unable to rename "+tmpDirectory+" to "+installationDir);
+                    throw new DeploymentException("Unable to rename " + tmpDirectory + " to " + installationDir);
                 }
-                log.info("moved "+tmpDirectory+" to "+installationDir);
-                classLoaderService.addSharedLibrary(installationDir,descriptor);
+                if (log.isDebugEnabled()) {
+                    log.debug("Moved " + tmpDirectory + " to " + installationDir);
+                }
+                classLoaderService.addSharedLibrary(installationDir, descriptor);
             }catch(IOException e){
                 log.error("Deployment of Shared Library failed",e);
                 // remove any files created for installation
@@ -468,13 +469,15 @@ public class InstallationService extends BaseSystemService implements FrameworkI
             File oldInstallationDir=environmentContext.getInstallationDirectory(name);
             // try and delete the old version ? - maybe should leave around ??
             if(!FileUtil.deleteFile(oldInstallationDir)){
-                log.warn("Failed to delete old installation directory: "+oldInstallationDir.getPath());
+                log.warn("Failed to delete old installation directory: " + oldInstallationDir.getPath());
             }
             File componentRoot=environmentContext.createComponentRootDirectory(name);
             // this will get the new one
             File installationDir=environmentContext.getInstallationDirectory(name);
             tmpDirectory.renameTo(installationDir);
-            log.info("moved "+tmpDirectory+" to "+installationDir);
+            if (log.isDebugEnabled()) {
+                log.debug("Moved " + tmpDirectory + " to " + installationDir);
+            }
             result=initializeInstaller(installationDir,componentRoot,descriptor);
             return result;
         }catch(IOException e){

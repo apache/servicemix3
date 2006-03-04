@@ -15,24 +15,16 @@
  */
 package org.apache.servicemix.jbi.management.task;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.tools.ant.BuildException;
-import org.apache.servicemix.jbi.management.ManagementContextMBean;
-import org.apache.servicemix.jbi.management.task.JbiTask;
-import org.apache.servicemix.jbi.management.task.DeployedAssembliesTask;
 import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
-
-import javax.management.ObjectName;
-import java.io.IOException;
+import org.apache.tools.ant.BuildException;
 
 /**
- * ListLibrariesTask
+ * ListSharedLibrariesTask
  *
  * @version $Revision: 
  */
-public class ListLibrariesTask extends JbiTask {
-    private static final Log log = LogFactory.getLog(DeployedAssembliesTask.class);
+public class ListSharedLibrariesTask extends JbiTask {
+    
     private String componentName;
     private String sharedLibraryName;
 
@@ -73,18 +65,9 @@ public class ListLibrariesTask extends JbiTask {
      *
      * @throws BuildException
      */
-    public void execute() throws BuildException {
-        try {
-            AdminCommandsServiceMBean acs;
-            acs = getAdminCommandsService();
-            String result = acs.listSharedLibraries(this.getComponentName(), this.getSharedLibraryName());
-            System.out.println(result);
-        } catch (IOException e) {
-            log.error("Caught an exception getting admin commands service", e);
-            throw new BuildException(e);
-        }  catch (Exception e) {
-            log.error("Error listing shared libraries", e);
-            throw new BuildException(e);
-        }
+    public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
+        String result = acs.listSharedLibraries(getComponentName(), getSharedLibraryName());
+        System.out.println(result);
     }
+    
 }

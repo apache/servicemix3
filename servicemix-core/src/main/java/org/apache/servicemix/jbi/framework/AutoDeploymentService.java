@@ -15,8 +15,11 @@
  */
 package org.apache.servicemix.jbi.framework;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -61,7 +64,6 @@ import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
 public class AutoDeploymentService extends BaseSystemService implements AutoDeploymentServiceMBean {
 	
     private static final Log log = LogFactory.getLog(AutoDeploymentService.class);
-    private static final String MONITOR_STATE_FILE = ".state.xml";
     private EnvironmentContext environmentContext;
     protected static final String DESCRIPTOR_FILE = "META-INF/jbi.xml";
     private DeploymentService deploymentService;
@@ -203,7 +205,6 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 	String componentName = root.getComponent().getIdentification().getName();
                 	entry.type = "component";
                 	entry.name = componentName; 
-                    log.info("Uninstalling Component: "+componentName);
                     installationService.unloadInstaller(componentName, true);
                     installationService.install(tmp, root, autoStart);
                     checkPendingSAs();
@@ -221,13 +222,13 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                         if (deploymentService.isSaDeployed(name)) {
                             deploymentService.shutDown(name);
                             deploymentService.undeploy(name);
-                            deploymentService.deploy(tmp,sa);
+                            deploymentService.deployServiceAssembly(tmp, sa);
                             if (autoStart) {
                                 deploymentService.start(name);
                             }
                         } else {
                             // see if components are installed
-                            entry.componentNames = deploymentService.getComponentNames(sa);
+                            entry.componentNames = getComponentNames(sa);
                             String missings = null;
                             boolean canDeploy = true;
                             for (Iterator it = entry.componentNames.iterator(); it.hasNext();) {
@@ -242,11 +243,12 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                             	}
                             }
                             if (canDeploy) {
-                                deploymentService.deploy(tmp, sa);
+                                deploymentService.deployServiceAssembly(tmp, sa);
                                 if (autoStart){
                                     deploymentService.start(name);
                                 }
                             } else {
+                                // TODO: check that the assembly is not already pending
                             	entry.pending = true;
                                 log.info("Components " + missings + " are not installed yet - adding ServiceAssembly "
                                                 + name + " to pending list");
@@ -265,15 +267,26 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
         }
     }
 
+    protected Set getComponentNames(ServiceAssembly sa) {
+        Set names = null;
+        if (sa.getServiceUnits() != null && sa.getServiceUnits().length > 0) {
+            names = new HashSet();
+            for (int i = 0; i < sa.getServiceUnits().length; i++) {
+                names.add(sa.getServiceUnits()[i].getTarget().getComponentName());
+            }
+        }
+        return names;
+    }
+
     /**
      * Remove an archive location
      * 
      * @param location
      * @throws DeploymentException
      */
-    public void removeArchive(ArchiveEntry entry) throws DeploymentException{
+    public void removeArchive(ArchiveEntry entry) throws DeploymentException {
         log.info("Attempting to remove archive at: " + entry.location);
-       try{
+        try{
             container.getBroker().suspend();
             if ("component".equals(entry.type)) {
                 log.info("Uninstalling component: " + entry.name);
@@ -287,14 +300,14 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 installationService.uninstallSharedLibrary(entry.name);
             }
             if ("assembly".equals(entry.type)) {
-                log.info("Removing service assembly " + entry.name);
+                log.info("Undeploying service assembly " + entry.name);
                 try{
                     if(deploymentService.isSaDeployed(entry.name)){
                         deploymentService.shutDown(entry.name);
                         deploymentService.undeploy(entry.name);
                     }
                 } catch(Exception e) {
-                    String errStr="Failed to update service assembly: "+ entry.name;
+                    String errStr = "Failed to update service assembly: "+ entry.name;
                     log.error(errStr,e);
                     throw new DeploymentException(errStr,e);
                 }
@@ -327,7 +340,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 deployedSas.add(tmp);
                 try {
 	                Descriptor root = AutoDeploymentService.buildDescriptor(tmp);
-	                deploymentService.deploy(tmp, root.getServiceAssembly());
+	                deploymentService.deployServiceAssembly(tmp, root.getServiceAssembly());
 	                deploymentService.start(root.getServiceAssembly().getIdentification().getName());
                 } catch (Exception e) {
                     String errStr = "Failed to update Service Assembly: " + tmp.getName();
@@ -345,41 +358,6 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
 	    	persistState(environmentContext.getDeploymentDir(), deployFileMap);
 	    	persistState(environmentContext.getInstallationDir(), installFileMap);
     	}
-    }
-
-    /**
-     * Check to see if an archive is installed
-     * 
-     * @param location
-     * @return the Descriptor if installed
-     */
-    protected Descriptor getInstalledDescriptor(String location) throws JBIException{
-        Descriptor result=null;
-        boolean exists=false;
-        try{
-            File tmp=AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(),location);
-            Descriptor root=AutoDeploymentService.buildDescriptor(tmp);
-            if(root.getComponent()!=null){
-                String componentName=root.getComponent().getIdentification().getName();
-                exists=container.getRegistry().isLocalComponentRegistered(componentName);
-            }else if(root.getServiceAssembly()!=null){
-                ServiceAssembly sa=root.getServiceAssembly();
-                String name=sa.getIdentification().getName();
-                exists=deploymentService.isSaDeployed(name);
-            }else if(root.getSharedLibrary()!=null){
-                String name=root.getSharedLibrary().getIdentification().getName();
-                exists=installationService.containsSharedLibrary(name);
-            }
-            if(exists){
-                result=root;
-            }else{
-                FileUtil.deleteFile(tmp);
-            }
-        }catch(DeploymentException e){
-            result=null;
-            log.error("Could not process "+location,e);
-        }
-        return result;
     }
 
     /**
@@ -403,62 +381,84 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
      * @return the Descriptor object
      */
     protected static Descriptor buildDescriptor(File tmpDir){
-        Descriptor root=null;
-        File descriptorFile=new File(tmpDir,DESCRIPTOR_FILE);
-        if(descriptorFile.exists()){
-            ClassLoader cl=Thread.currentThread().getContextClassLoader();
-            try{
+        Descriptor root = null;
+        File descriptorFile = new File(tmpDir, DESCRIPTOR_FILE);
+        if (descriptorFile.exists()) {
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            try {
                 Thread.currentThread().setContextClassLoader(AutoDeploymentService.class.getClassLoader());
-                FileSystemXmlApplicationContext context=new FileSystemXmlApplicationContext("file:///"
-                                +descriptorFile.getAbsolutePath(),Arrays.asList(new Object[] { new XBeanProcessor() }));
-                root=(Descriptor) context.getBean("jbi");
-            }finally{
+                FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(
+                        "file:///" + descriptorFile.getAbsolutePath(),
+                        Arrays.asList(new Object[] { new XBeanProcessor() }));
+                root = (Descriptor) context.getBean("jbi");
+            } finally {
                 Thread.currentThread().setContextClassLoader(cl);
             }
         }
         return root;
     }
+    
+    protected static String getDescriptorAsText(File tmpDir) {
+        File descriptorFile = new File(tmpDir, DESCRIPTOR_FILE);
+        if (descriptorFile.exists()) {
+            try {
+                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                InputStream is = new FileInputStream(descriptorFile);
+                FileUtil.copyInputStream(is, os);
+                return os.toString();
+            } catch (Exception e) {
+                log.debug("Error reading jbi descritor: " + descriptorFile, e);
+            }
+        }
+        return null;
+    }
 
     /**
-     * Unpack a location into a temp file directory
+     * Unpack a location into a temp file directory.
+     * If the location does not contain a jbi descritor, no unpacking occurs.
      * 
      * @param location
-     * @return tmp directory
+     * @return tmp directory (if location contains a jbi descriptor)
      * @throws DeploymentException
      */
-    protected static File unpackLocation(File tmpRoot,String location) throws DeploymentException{
-        File tmpDir=null;
-        try{
-            File file=new File(location);
-            if(file.isDirectory()){
-                log.info("Deploying an exploded jar/zip,  we will create a temporary jar for it.");
+    protected static File unpackLocation(File tmpRoot, String location) throws DeploymentException {
+        File tmpDir = null;
+        try {
+            File file = new File(location);
+            if (file.isDirectory()) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Deploying an exploded jar/zip, we will create a temporary jar for it.");
+                }
                 // If we have a directory then we should move it over
-                File newFile=new File(tmpRoot.getAbsolutePath()+"/exploded.jar");
+                File newFile = new File(tmpRoot.getAbsolutePath() + "/exploded.jar");
                 newFile.delete();
-                FileUtil.zipDir(file.getAbsolutePath(),newFile.getAbsolutePath());
-                file=newFile;
-                log.info("Deployment will now work from "+file.getAbsolutePath());
+                FileUtil.zipDir(file.getAbsolutePath(), newFile.getAbsolutePath());
+                file = newFile;
+                if (log.isDebugEnabled()) {
+                    log.debug("Deployment will now work from " + file.getAbsolutePath());
+                }
             }
-            if(!file.exists()){
+            if (!file.exists()) {
                 // assume it's a URL
                 try{
-                    URL url=new URL(location);
-                    String fileName=url.getFile();
-                    if(fileName==null||(!fileName.endsWith(".zip")&&!fileName.endsWith(".jar"))){
-                        throw new DeploymentException("Location: "+location+" is not an archive");
+                    URL url = new URL(location);
+                    String fileName = url.getFile();
+                    if (fileName == null || (!fileName.endsWith(".zip") && !fileName.endsWith(".jar"))) {
+                        throw new DeploymentException("Location: " + location + " is not an archive");
                     }
-                    file=FileUtil.unpackArchive(url,tmpRoot);
-                }catch(MalformedURLException e){
+                    file = FileUtil.unpackArchive(url,tmpRoot);
+                } catch (MalformedURLException e) {
                     throw new DeploymentException(e);
                 }
             }
-            if(FileUtil.archiveContainsEntry(file,AutoDeploymentService.DESCRIPTOR_FILE)){
-                tmpDir=FileUtil.createUniqueDirectory(tmpRoot,file.getName());
-                FileUtil.unpackArchive(file,tmpDir);
-                log.info("Unpacked archive "+location+" to "+tmpDir);
+            if (FileUtil.archiveContainsEntry(file, AutoDeploymentService.DESCRIPTOR_FILE)) {
+                tmpDir = FileUtil.createUniqueDirectory(tmpRoot, file.getName());
+                FileUtil.unpackArchive(file, tmpDir);
+                if (log.isDebugEnabled()) {
+                    log.debug("Unpacked archive " + location + " to " + tmpDir);
+                }
             }
-        }catch(IOException e){
-            log.error("I/O error installing archive",e);
+        } catch (IOException e) {
             throw new DeploymentException(e);
         }
         return tmpDir;
@@ -554,26 +554,26 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
         }
     }
 
-    private void persistState(File root,Map map){
-        try{
-            File file = FileUtil.getDirectoryPath(root,MONITOR_STATE_FILE);
+    private void persistState(File root, Map map) {
+        try {
+            File file = new File(environmentContext.getJbiRootDir(), root.getName() + ".xml");
             XmlPersistenceSupport.write(file, map);
-        }catch(IOException e){
-            log.error("Failed to persist file state to: "+root,e);
+        } catch (IOException e) {
+            log.error("Failed to persist file state to: " + root, e);
         }
     }
 
-    private Map readState(File root){
+    private Map readState(File root) {
         Map result = new HashMap();
-        try{
-            File file = FileUtil.getDirectoryPath(root,MONITOR_STATE_FILE);
-            if(file.exists()) {
+        try {
+            File file = new File(environmentContext.getJbiRootDir(), root.getName() + ".xml");
+            if (file.exists()) {
                 result = (Map) XmlPersistenceSupport.read(file);
-            }else {
+            } else {
                 log.debug("State file doesn't exist: " + file.getPath());
             }
-        }catch(Exception e){
-            log.error("Failed to read file state from: "+root,e);
+        } catch (Exception e) {
+            log.error("Failed to read file state from: " + root, e);
         }
         return result;
     }

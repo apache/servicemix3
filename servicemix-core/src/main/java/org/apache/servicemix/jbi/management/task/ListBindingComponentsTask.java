@@ -15,22 +15,16 @@
  */
 package org.apache.servicemix.jbi.management.task;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.management.ManagementContextMBean;
 import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.apache.tools.ant.BuildException;
 
-import javax.management.ObjectName;
-import java.io.IOException;
-
 /**
- * ListComponentTask
+ * ListBindingComponentsTask
  *
  * @version $Revision: 
  */
-public class ListComponentTask extends JbiTask {
-    private static final Log log = LogFactory.getLog(DeployedAssembliesTask.class);
+public class ListBindingComponentsTask extends JbiTask {
+    
     private String sharedLibraryName;
     private String serviceAssemblyName;
     private String bindingComponentName;
@@ -105,19 +99,9 @@ public class ListComponentTask extends JbiTask {
      * 
      * @throws BuildException
      */
-    public void execute() throws BuildException {
-        try {
-             AdminCommandsServiceMBean acs;
-             acs = getAdminCommandsService();
-             String result = acs.listComponents(false, true, this.getState(), this.getSharedLibraryName(), this.getServiceAssemblyName());
-             System.out.println(result);
-        } catch (IOException e) {
-            log.error("Caught an exception getting the admin commands service", e);
-            throw new BuildException("exception " + e);
-        } catch (Exception e) {
-            log.error("Error listing component", e);
-            throw new BuildException("exception " + e);
-        }
-
+    public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
+        String result = acs.listComponents(true, false, true, getState(), getSharedLibraryName(), getServiceAssemblyName());
+        System.out.println(result);
     }
+    
 }

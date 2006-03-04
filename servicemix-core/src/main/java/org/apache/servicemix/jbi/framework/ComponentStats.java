@@ -18,7 +18,7 @@ package org.apache.servicemix.jbi.framework;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanOperationInfo;
-import javax.management.ObjectName;
+
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseLifeCycle;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
@@ -26,30 +26,19 @@ import org.apache.servicemix.jbi.management.OperationInfoHelper;
 /**
  * Defines basic statistics on the Component
  */
-public class ComponentStatsMBeanImpl  extends BaseLifeCycle implements ComponentStatsMBean {
+public class ComponentStats extends BaseLifeCycle implements ComponentStatsMBean {
+
     private LocalComponentConnector connector;
-    private ObjectName objectName;
-       
 
     /**
      * Constructor
      * 
      * @param lcc
      */
-    public ComponentStatsMBeanImpl(LocalComponentConnector lcc) {
+    public ComponentStats(LocalComponentConnector lcc) {
         this.connector = lcc;
     }
 
-    
-    /**
-     * Get the ObjectName for this mbean
-     * @return the ObjectName
-     */
-    public ObjectName getObjectName(){
-        return objectName;
-    }
-    
-    
     /**
      * Get the type of the item
      * @return the type
@@ -57,33 +46,26 @@ public class ComponentStatsMBeanImpl  extends BaseLifeCycle implements Component
     public String getType() {
         return "Component";
     }
-    
+
     public String getSubType() {
         return "Statistics";
     }
-    
+
     /**
      * Get the name of the item
      * @return the name
      */
-    public String getName(){
+    public String getName() {
         return connector.getComponentNameSpace().getName();
     }
-    
-   /**
+
+    /**
      * Get the Description of the item
      * @return the description
      */
-    public String getDescription(){
+    public String getDescription() {
         return "Statistics for " + connector.getComponentPacket().getDescription();
     }
-
-    
-    
-    
-    
-   
-    
 
     /**
      * Get the Inbound MessageExchange count
@@ -91,7 +73,7 @@ public class ComponentStatsMBeanImpl  extends BaseLifeCycle implements Component
      * @return inbound count
      */
     public long getInboundExchangeCount() {
-        return connector.getDeliveryChannel().getMessagingStats().getInboundExchanges().getCount();
+        return connector.getMessagingStats().getInboundExchanges().getCount();
     }
 
     /**
@@ -100,7 +82,7 @@ public class ComponentStatsMBeanImpl  extends BaseLifeCycle implements Component
      * @return the inbound exchange rate
      */
     public double getInboundExchangeRate() {
-        return connector.getDeliveryChannel().getMessagingStats().getInboundExchangeRate().getAverageTime();
+        return connector.getMessagingStats().getInboundExchangeRate().getAverageTime();
     }
 
     /**
@@ -109,7 +91,7 @@ public class ComponentStatsMBeanImpl  extends BaseLifeCycle implements Component
      * @return outbound count
      */
     public long getOutboundExchangeCount() {
-        return connector.getDeliveryChannel().getMessagingStats().getOutboundExchanges().getCount();
+        return connector.getMessagingStats().getOutboundExchanges().getCount();
     }
 
     /**
@@ -118,20 +100,27 @@ public class ComponentStatsMBeanImpl  extends BaseLifeCycle implements Component
      * @return the outbound exchange rate
      */
     public double getOutboundExchangeRate() {
-        return connector.getDeliveryChannel().getMessagingStats().getOutboundExchangeRate().getAverageTime();
+        return connector.getMessagingStats().getOutboundExchangeRate().getAverageTime();
     }
 
-   
-    
     /**
      * @return size of the inbound Queue
      */
-    public int getInboundQueueSize(){
-        return connector.getDeliveryChannel().getQueueSize();
+    public int getInboundQueueSize() {
+        if (connector.getDeliveryChannel() != null) {
+            return connector.getDeliveryChannel().getQueueSize();
+        } else {
+            return 0;
+        }
     }
-    
-   
-    
+
+    /**
+     * Reset all stats counters
+     */
+    public void reset() {
+        connector.getMessagingStats().reset();
+    }
+
     /**
      * Get an array of MBeanAttributeInfo
      * 
@@ -147,7 +136,7 @@ public class ComponentStatsMBeanImpl  extends BaseLifeCycle implements Component
         helper.addAttribute(getObjectToManage(), "outboundExchangeRate", "rate of outbound exchanges/sec");
         return helper.getAttributeInfos();
     }
-    
+
     /**
      * Get an array of MBeanOperationInfo
      * 
@@ -155,19 +144,8 @@ public class ComponentStatsMBeanImpl  extends BaseLifeCycle implements Component
      */
     public MBeanOperationInfo[] getOperationInfos() {
         OperationInfoHelper helper = new OperationInfoHelper();
+        helper.addOperation(getObjectToManage(), "reset", "reset statistic counters");
         return helper.getOperationInfos();
     }
-
-
-    /**
-     * Set the object name
-     * @param objectName
-     */
-	public void setObjectName(ObjectName objectName) {
-		this.objectName = objectName;
-	}
-    
-    
-
 
 }

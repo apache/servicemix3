@@ -25,6 +25,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.namespace.QName;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -86,6 +87,17 @@ public class DOMUtil {
      */
     public static String asXML(Node node) throws TransformerException {
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        StringWriter buffer = new StringWriter();
+        transformer.transform(new DOMSource(node), new StreamResult(buffer));
+        return buffer.toString();
+    }
+
+    /**
+     * A helper method useful for debugging and logging which will convert the given DOM node into XML text
+     */
+    public static String asIndentedXML(Node node) throws TransformerException {
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         StringWriter buffer = new StringWriter();
         transformer.transform(new DOMSource(node), new StreamResult(buffer));
         return buffer.toString();

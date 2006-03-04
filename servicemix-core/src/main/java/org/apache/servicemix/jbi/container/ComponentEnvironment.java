@@ -116,7 +116,7 @@ public class ComponentEnvironment {
                     statsWriter.println(localConnector.getComponentNameSpace().getName() + ":");
                     statsWriter.println("inboundExchanges,inboundExchangeRate,outboundExchanges,outboundExchangeRate");
                 }
-                MessagingStats stats = localConnector.getDeliveryChannel().getMessagingStats();
+                MessagingStats stats = localConnector.getMessagingStats();
                 long inbound = stats.getInboundExchanges().getCount();
                 double inboundRate = stats.getInboundExchangeRate().getAveragePerSecond();
                 long outbound = stats.getOutboundExchanges().getCount();

@@ -15,12 +15,8 @@
  */
 package org.apache.servicemix.jbi.management.task;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.framework.FrameworkInstallationService;
+import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.apache.tools.ant.BuildException;
-
-import java.io.IOException;
 
 /**
  * Uninstall a Component
@@ -28,9 +24,8 @@ import java.io.IOException;
  * @version $Revision$
  */
 public class UninstallComponentTask extends JbiTask {
-    private static final Log log = LogFactory.getLog(UninstallComponentTask.class);
+    
     private String name; //component name to uninstall
-    private boolean delete;
 
     /**
      * @return Returns the component name.
@@ -47,35 +42,15 @@ public class UninstallComponentTask extends JbiTask {
     }
     
     /**
-     * @return Returns the delete.
-     */
-    public boolean isDelete() {
-        return delete;
-    }
-    /**
-     * @param delete The delete to set.
-     */
-    public void setDelete(boolean delete) {
-        this.delete = delete;
-    }
-
-    /**
      * execute the task
      * 
      * @throws BuildException
      */
-    public void execute() throws BuildException {
+    public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
         if (name == null) {
             throw new BuildException("null componentName");
         }
-        try {
-            FrameworkInstallationService is = getInstallationService();
-            is.unloadInstaller(name, delete);
-        }
-        catch (IOException e) {
-            log.error("Caught an exception getting the installation service", e);
-            throw new BuildException(e);
-        }
+        acs.uninstallComponent(name);
     }
    
 }

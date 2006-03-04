@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.framework;
+package org.apache.servicemix.jbi.loaders;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 
@@ -114,7 +114,7 @@ public class ClassLoaderService {
 	 * @param sl
 	 * @throws MalformedURLException
 	 */
-	protected void addSharedLibrary(File dir, SharedLibrary sl)
+    public void addSharedLibrary(File dir, SharedLibrary sl)
 			throws MalformedURLException {
 		if (sl != null) {
 			boolean parentFirst = sl.isParentFirstClassLoaderDelegation();
@@ -145,7 +145,7 @@ public class ClassLoaderService {
 	 * 
 	 * @param id
 	 */
-	protected void removeSharedLibrary(String id) {
+	public void removeSharedLibrary(String id) {
 		sharedLibraryMap.remove(id);
 	}
     
@@ -154,7 +154,7 @@ public class ClassLoaderService {
      * @param name
      * @return true/false
      */
-    protected  boolean containsSharedLibrary(String name){
+    public  boolean containsSharedLibrary(String name){
         return sharedLibraryMap.containsKey(name);
     }
 }

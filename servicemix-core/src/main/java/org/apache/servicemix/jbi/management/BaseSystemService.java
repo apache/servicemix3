@@ -22,42 +22,48 @@ import org.apache.servicemix.jbi.container.JBIContainer;
 public abstract class BaseSystemService extends BaseLifeCycle {
 
     protected JBIContainer container;
-    
+
     /**
      * Get the name of the item
+     * 
      * @return the name
      */
     public String getName() {
         String name = getClass().getName();
         int index = name.lastIndexOf(".");
-        if (index >= 0 && (index+1) < name.length()) {
-            name = name.substring(index+1);
+        if (index >= 0 && (index + 1) < name.length()) {
+            name = name.substring(index + 1);
         }
         return name;
     }
 
     /**
      * Get the type of the item
+     * 
      * @return the type
      */
-   public String getType() {
+    public String getType() {
         return "SystemService";
-   }
-   
-   public void init(JBIContainer container) throws JBIException {
-       this.container = container;
-       container.getManagementContext().registerSystemService(this, getServiceMBean());
+    }
 
-   }
-   
-   public void shutDown() throws JBIException {
-       stop();
-       super.shutDown();
-       if (container != null && container.getManagementContext() != null) {
-           container.getManagementContext().unregisterMBean(this);
-       }
-   }
-   
-   protected abstract Class getServiceMBean();
-   
+    public void init(JBIContainer container) throws JBIException {
+        this.container = container;
+        container.getManagementContext().registerSystemService(this, getServiceMBean());
+
+    }
+
+    public void shutDown() throws JBIException {
+        stop();
+        super.shutDown();
+        if (container != null && container.getManagementContext() != null) {
+            container.getManagementContext().unregisterMBean(this);
+        }
+    }
+
+    protected abstract Class getServiceMBean();
+
+    public JBIContainer getContainer() {
+        return container;
+    }
+
 }

@@ -15,22 +15,16 @@
  */
 package org.apache.servicemix.jbi.management.task;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.management.ManagementContextMBean;
 import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.apache.tools.ant.BuildException;
 
-import javax.management.ObjectName;
-import java.io.IOException;
-
 /**
- * ListEnginesTask
+ * ListServiceEnginesTask
  *
  * @version $Revision: 
  */
-public class ListEnginesTask extends JbiTask {
-    private static final Log log = LogFactory.getLog(ListEnginesTask.class);
+public class ListServiceEnginesTask extends JbiTask {
+    
     private String state;
     private String serviceAssemblyName;
     private String sharedLibraryName;
@@ -89,20 +83,9 @@ public class ListEnginesTask extends JbiTask {
      *
      * @throws BuildException
      */
-    public void execute() throws BuildException {
-        try {
-            AdminCommandsServiceMBean acs = getAdminCommandsService();
-            String result = acs.listComponents(true, false, this.getState(), this.getSharedLibraryName(), this.getServiceAssemblyName());
-            System.out.println(result);
-        } catch (IOException e) {
-            log.error("Caught an exception getting deployed assemblies", e);
-            throw new BuildException(e);
-
-        } catch (Exception e) {
-            log.error("Caught an exception getting deployed assemblies", e);
-            throw new BuildException("exception " + e);
-        }
-
+    public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
+        String result = acs.listComponents(false, true, true, getState(), getSharedLibraryName(), getServiceAssemblyName());
+        System.out.println(result);
     }
 
 }

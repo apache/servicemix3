@@ -17,8 +17,8 @@ package org.apache.servicemix.jbi.framework;
 
 import java.net.URLClassLoader;
 
-import org.apache.servicemix.jbi.framework.ParentFirstClassLoader;
-import org.apache.servicemix.jbi.framework.SelfFirstClassLoader;
+import org.apache.servicemix.jbi.loaders.ParentFirstClassLoader;
+import org.apache.servicemix.jbi.loaders.SelfFirstClassLoader;
 
 import junit.framework.TestCase;
 

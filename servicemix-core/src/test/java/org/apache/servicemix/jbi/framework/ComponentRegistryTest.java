@@ -33,13 +33,12 @@ public class ComponentRegistryTest extends TestCase {
     }
     
     public void testRegister() throws Exception {
-        ComponentRegistry reg = new ComponentRegistry(null);
+        ComponentRegistry reg = new ComponentRegistry(new Registry());
         Component component = new SenderComponent();
         LocalComponentConnector con = reg.registerComponent(
                               new ComponentNameSpace("container", "name", "id"),
                               "description",
                               component,
-                              null,
                               false,
                               false);
         assertNotNull(con);

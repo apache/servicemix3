@@ -16,16 +16,18 @@
 package org.apache.servicemix.jbi.framework;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.jbi.component.Component;
-import javax.jbi.component.ServiceUnitManager;
+
+import javax.jbi.JBIException;
 import javax.jbi.management.DeploymentException;
+import javax.management.JMException;
+import javax.management.ObjectName;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.deployment.ServiceAssembly;
@@ -41,9 +43,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 public class ServiceAssemblyRegistry {
     
     private static final Log log = LogFactory.getLog(ServiceAssemblyRegistry.class);
-    private Map serviceAssembilies = new ConcurrentHashMap();
-   
-
+    private Map serviceAssemblies = new ConcurrentHashMap();
     private Registry registry;
 
     /**
@@ -55,52 +55,21 @@ public class ServiceAssemblyRegistry {
     }
 
     /**
-     *  initialize service assembilies to their persisted running state
+     *  Start all registered service assemblies
      */
     public void start() {
-        for (Iterator i = serviceAssembilies.values().iterator(); i.hasNext();){
-            ServiceAssemblyLifeCycle salc = (ServiceAssemblyLifeCycle) i.next();
-            salc.getCurrentState();
-            if (salc.isStarted()){
-                try{
-                    start(salc);
-                }catch(DeploymentException e){
-                    log.error("Failed to start: " + salc);
-                }
-            }
-        }
     }
     
     /**
      * Stop service assembilies 
      */
     public void stop(){
-        for (Iterator i = serviceAssembilies.values().iterator(); i.hasNext();){
-            ServiceAssemblyLifeCycle salc = (ServiceAssemblyLifeCycle) i.next();
-            if (salc.isStarted()){
-                try{
-                    stop(salc);
-                }catch(DeploymentException e){
-                    log.error("Failed to start: " + salc);
-                }
-            }
-        }
     }
     
     /**
      * shutDown the service
      */
     public void shutDown(){
-        for (Iterator i = serviceAssembilies.values().iterator(); i.hasNext();){
-            ServiceAssemblyLifeCycle salc = (ServiceAssemblyLifeCycle) i.next();
-            if (!salc.isShutDown()){
-                try{
-                    shutDown(salc);
-                }catch(DeploymentException e){
-                    log.error("Failed to start: " + salc);
-                }
-            }
-        }
     }
 
     /**
@@ -108,43 +77,60 @@ public class ServiceAssemblyRegistry {
      * @param sa
      * @return true if successful
      * @throws DeploymentException 
+     * @deprecated
      */
-    public boolean register(ServiceAssembly sa) throws DeploymentException{
-        boolean result=false;
-        String saName=sa.getIdentification().getName();
-        try{
-            File stateFile=registry.getEnvironmentContext().getServiceAssemblyStateFile(saName);
-            ServiceAssemblyLifeCycle salc=new ServiceAssemblyLifeCycle(sa,stateFile);
-            init(salc);
-            if(!serviceAssembilies.containsKey(saName)){
-                serviceAssembilies.put(saName,salc);
-                result=true;
+    public boolean register(ServiceAssembly sa) throws DeploymentException {
+        List sus = new ArrayList();
+        for (int i = 0; i < sa.getServiceUnits().length; i++) {
+            String suKey = registry.registerServiceUnit(
+                                    sa.getServiceUnits()[i], 
+                                    sa.getIdentification().getName());
+            sus.add(suKey);
+        }
+        return register(sa, (String[]) sus.toArray(new String[sus.size()]));
+    }
+    
+    /**
+     * Register the Service Assembly
+     * @param sa
+     * @return true if successful
+     * @throws DeploymentException 
+     */
+    public boolean register(ServiceAssembly sa, String[] sus) throws DeploymentException {
+        boolean result = false;
+        String saName = sa.getIdentification().getName();
+        File stateFile = registry.getEnvironmentContext().getServiceAssemblyStateFile(saName);
+        ServiceAssemblyLifeCycle salc = new ServiceAssemblyLifeCycle(sa, sus, stateFile, registry);
+        if (!serviceAssemblies.containsKey(saName)) {
+            serviceAssemblies.put(saName, salc);
+            try {
+                ObjectName objectName = registry.getContainer().getManagementContext().createObjectName(salc);
+                registry.getContainer().getManagementContext().registerMBean(objectName, salc, ServiceAssemblyMBean.class);
+            } catch (JMException e) {
+                log.error("Could not register MBean for service assembly", e);
             }
-        }catch(IOException e){
-            log.error("Failed to get state file for service assembly: "+saName);
-            throw new DeploymentException(e);
+            result = true;
         }
         return result;
     }
     
     /**
      * unregister a service assembly
-     * 
-     * @param sa
-     * @return true if successful
-     */
-    public boolean unregister(ServiceAssembly sa){
-        return unregister(sa.getIdentification().getName());
-    }
-    
-    
-    /**
-     * unregister a service assembly
      * @param name
      * @return true if successful
      */
-    public boolean unregister(String name){
-        return serviceAssembilies.remove(name) != null;
+    public boolean unregister(String name) {
+        ServiceAssemblyLifeCycle salc = (ServiceAssemblyLifeCycle) serviceAssemblies.remove(name);
+        if (salc != null) {
+            try {
+                registry.getContainer().getManagementContext().unregisterMBean(salc);
+            } catch (JBIException e) {
+                log.error("Unable to unregister MBean for service assembly", e);
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
     
     /**
@@ -152,251 +138,33 @@ public class ServiceAssemblyRegistry {
      * @param name
      * @return the ServiceAssembly or null if it doesn't exist
      */
-    public ServiceAssembly get(String name){
-        ServiceAssemblyLifeCycle result = (ServiceAssemblyLifeCycle) serviceAssembilies.get(name);
-        return result != null ? result.getServiceAssembly() : null;
+    public ServiceAssemblyLifeCycle getServiceAssembly(String saName) {
+        return (ServiceAssemblyLifeCycle) serviceAssemblies.get(saName);
     }
     
-    
-    /**
-     * Start a Service Assembly
-     * @param name
-     * @return the status
-     * @throws DeploymentException
-     */
-    public String start(String name) throws DeploymentException{
-        String result=ServiceAssemblyLifeCycle.UNKNOWN;
-        ServiceAssemblyLifeCycle salc=(ServiceAssemblyLifeCycle) serviceAssembilies.get(name);
-        if(salc!=null){
-            result=start(salc);
-            salc.writeRunningState();
-        }
-        return result;
-    }
-    
-    public String restore(String name) throws DeploymentException {
-        String result = ServiceAssemblyLifeCycle.UNKNOWN;
-        ServiceAssemblyLifeCycle salc = (ServiceAssemblyLifeCycle) serviceAssembilies.get(name);
-        if (salc != null) {
-        	result = salc.getRunningStateFromStore();
-        	if (ServiceAssemblyLifeCycle.STARTED.equals(result)) {
-        		start(salc);
-        	} else if (ServiceAssemblyLifeCycle.SHUTDOWN.equals(result)) {
-        		shutDown(salc);
-        	}
-        }
-        return result;
-    }
-    
-    void init(ServiceAssemblyLifeCycle salc) throws DeploymentException{
-        if (salc != null) {
-            ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
-            if (sus != null) {
-                for (int i = 0;i < sus.length;i++) {
-                	String suName = sus[i].getIdentification().getName();
-                    String componentName = sus[i].getTarget().getComponentName();
-                    Component component = registry.getComponent(componentName);
-                    if (component != null) {
-                        ServiceUnitManager sum = component.getServiceUnitManager();
-                        if (sum != null) {
-                            try {
-	                            File targetDir = registry.getEnvironmentContext().getServiceUnitDirectory(componentName, suName);
-	                            sum.init(suName, targetDir.getAbsolutePath());
-                            } catch (IOException e) {
-                            	throw new DeploymentException(e);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    String start(ServiceAssemblyLifeCycle salc) throws DeploymentException{
-        String result = ServiceAssemblyLifeCycle.UNKNOWN;
-        if (salc != null) {
-            ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
-            if (sus != null) {
-                for (int i = 0;i < sus.length;i++) {
-                	String suName = sus[i].getIdentification().getName();
-                    String componentName = sus[i].getTarget().getComponentName();
-                    Component component = registry.getComponent(componentName);
-                    if (component != null) {
-                        ServiceUnitManager sum = component.getServiceUnitManager();
-                        if (sum != null) {
-                            sum.start(suName);
-                        }
-                    }
-                }
-            }
-            salc.start();
-            result = salc.getCurrentState();
-            log.info("Started Service Assembly: " + salc.getName());
-        }
-        return result;
-    }
-    
-    /**
-     * Stops the service assembly and puts it in STOPPED state.
-     * @param name 
-     * 
-     * @return Result/Status of this operation.
-     * @throws DeploymentException 
-     */
-    public String stop(String name) throws DeploymentException{
-        String result=ServiceAssemblyLifeCycle.UNKNOWN;
-        ServiceAssemblyLifeCycle salc=(ServiceAssemblyLifeCycle) serviceAssembilies.get(name);
-        if(salc!=null){
-            result=stop(salc);
-            salc.writeRunningState();
-        }
-        return result;
-    }
-    
-    String stop(ServiceAssemblyLifeCycle salc) throws DeploymentException {
-        String result = ServiceAssemblyLifeCycle.UNKNOWN;
-        if (salc != null) {
-            ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
-            if (sus != null) {
-                for (int i = 0;i < sus.length;i++) {
-                    String componentName = sus[i].getTarget().getComponentName();
-                    Component component = registry.getComponent(componentName);
-                    if (component != null) {
-                        ServiceUnitManager sum = component.getServiceUnitManager();
-                        if (sum != null) {
-                            sum.stop(sus[i].getIdentification().getName());
-                        }
-                    }
-                }
-            }
-            salc.stop();
-            result = salc.getCurrentState();
-            log.info("Stopped Service Assembly: " + salc.getName());
-        }
-        return result;
-    }
-    
-    /**
-    * Shutdown the service assembly and puts it in SHUTDOWN state.
-    * @param name 
-    * 
-    * @return Result/Status of this operation.
-    * @throws DeploymentException 
-    */
-    public String shutDown(String name) throws DeploymentException{
-        String result=ServiceAssemblyLifeCycle.UNKNOWN;
-        ServiceAssemblyLifeCycle salc=(ServiceAssemblyLifeCycle) serviceAssembilies.get(name);
-        if(salc!=null){
-            if (salc.getCurrentState().equals(ServiceAssemblyLifeCycle.STARTED)) {
-                stop(salc);
-            }
-            result=shutDown(salc);
-            salc.writeRunningState();
-        }
-        return result;
-    }
-    
-    String shutDown(ServiceAssemblyLifeCycle salc) throws DeploymentException {
-        String result = ServiceAssemblyLifeCycle.UNKNOWN;
-        if (salc != null) {
-            ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
-            if (sus != null) {
-                for (int i = 0;i < sus.length;i++) {
-                    String componentName = sus[i].getTarget().getComponentName();
-                    Component component = registry.getComponent(componentName);
-                    if (component != null) {
-                        ServiceUnitManager sum = component.getServiceUnitManager();
-                        if (sum != null) {
-                            sum.shutDown(sus[i].getIdentification().getName());
-                        }
-                    }
-                }
-            }
-            salc.shutDown();
-            result = salc.getCurrentState();
-            log.info("Shutdown Service Assembly: " + salc.getName());
-        }
-        return result;
-    }
-   
-   
-   /**
-    * Get the current state of the named service assembly
-    * @param name
-    * @return the state
-    */
-   public String getState(String name){
-       String result = ServiceAssemblyLifeCycle.SHUTDOWN;
-       ServiceAssemblyLifeCycle salc = (ServiceAssemblyLifeCycle) serviceAssembilies.get(name);
-       if (salc != null) {
-           result = salc.getCurrentState();
-       }
-       return result;
-   }
-   
-   /**
-    * Get the current description of the named service assembly
-    *
-    * @param name
-    * @return the description
-    */
-   public String getDescription(String name) {
-       String result = null;
-       ServiceAssemblyLifeCycle salc = (ServiceAssemblyLifeCycle) serviceAssembilies.get(name);
-       if (salc != null) {
-           result = salc.getDescription();
-       }       
-       return result;
-   }
-
    /**
     * Returns a list of Service Units that are currently deployed to the given component.
     * 
     * @param componentName name of the component.
     * @return List of deployed ASA Ids.
     */
-   public String[] getDeployedServiceUnitList(String componentName) {
-       String[] result = null;
+   public ServiceUnitLifeCycle[] getDeployedServiceUnits(String componentName) {
+       ServiceUnitLifeCycle[] result = null;
        // iterate through the service assembilies
        List tmpList = new ArrayList();
-       for (Iterator iter = serviceAssembilies.values().iterator();iter.hasNext();) {
+       for (Iterator iter = serviceAssemblies.values().iterator();iter.hasNext();) {
            ServiceAssemblyLifeCycle salc = (ServiceAssemblyLifeCycle) iter.next();
-           ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
+           ServiceUnitLifeCycle[] sus = salc.getDeployedSUs();
            if (sus != null) {
-               for (int i = 0;i < sus.length;i++) {
-                   if (sus[i].getTarget().getComponentName().equals(componentName)) {
-                       tmpList.add(sus[i].getIdentification().getName());
+               for (int i = 0; i < sus.length; i++) {
+                   if (sus[i].getComponentName().equals(componentName)) {
+                       tmpList.add(sus[i]);
                    }
                }
            }
        }
-       result = new String[tmpList.size()];
+       result = new ServiceUnitLifeCycle[tmpList.size()];
        tmpList.toArray(result);
-       return result;
-   }
-
-   /**
-    * Returns the description of SA deployed service unit.
-    *
-    * @param componentName
-    * @param deployedServiceUnit
-    * @return
-    */
-   public String getSADeployedServiceUnitDesc(String componentName, String deployedServiceUnit) {
-       String result = null;
-       ServiceAssemblyLifeCycle salc = (ServiceAssemblyLifeCycle) serviceAssembilies;
-       ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
-       if (sus != null) {
-           for (int i = 0;i < sus.length;i++) {
-               if (sus[i].getTarget().getComponentName().equals(componentName)) {
-                   if (sus[i].getIdentification().getName().equals(deployedServiceUnit)) {
-                       result = sus[i].getIdentification().getDescription();
-                       break;
-                   }
-               }
-           }
-       }
-
        return result;
    }
 
@@ -407,7 +175,7 @@ public class ServiceAssemblyRegistry {
     */
    public String[] getDeployedServiceAssemblies()  {
        String[] result = null;
-       Set keys = serviceAssembilies.keySet();
+       Set keys = serviceAssemblies.keySet();
        result = new String[keys.size()];
        keys.toArray(result);
        return result;
@@ -423,7 +191,7 @@ public class ServiceAssemblyRegistry {
        String[] result = null;
        // iterate through the service assembilies
        Set tmpList = new HashSet();
-       for (Iterator iter = serviceAssembilies.values().iterator();iter.hasNext();) {
+       for (Iterator iter = serviceAssemblies.values().iterator();iter.hasNext();) {
            ServiceAssemblyLifeCycle salc = (ServiceAssemblyLifeCycle) iter.next();
            ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
            if (sus != null) {
@@ -448,9 +216,9 @@ public class ServiceAssemblyRegistry {
    public String[] getComponentsForDeployedServiceAssembly(String saName)  {
        String[] result = null;
        Set tmpList = new HashSet();
-       ServiceAssembly sa = get(saName);
+       ServiceAssemblyLifeCycle sa = getServiceAssembly(saName);
        if (sa != null) {
-           ServiceUnit[] sus = sa.getServiceUnits();
+           ServiceUnit[] sus = sa.getServiceAssembly().getServiceUnits();
            if (sus != null) {
                for (int i = 0;i < sus.length;i++) {
                    tmpList.add(sus[i].getTarget().getComponentName());
@@ -471,7 +239,7 @@ public class ServiceAssemblyRegistry {
     */
    public boolean isDeployedServiceUnit(String componentName, String suName) {
        boolean result = false;
-       for (Iterator iter = serviceAssembilies.values().iterator();iter.hasNext();) {
+       for (Iterator iter = serviceAssemblies.values().iterator();iter.hasNext();) {
            ServiceAssemblyLifeCycle salc = (ServiceAssemblyLifeCycle) iter.next();
            ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
            if (sus != null) {
@@ -486,9 +254,5 @@ public class ServiceAssemblyRegistry {
        }
        return result;
    }
-
-    
-    
-    
-    
+   
 }

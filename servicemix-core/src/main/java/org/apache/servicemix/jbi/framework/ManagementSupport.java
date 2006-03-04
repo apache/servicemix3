@@ -17,9 +17,19 @@ package org.apache.servicemix.jbi.framework;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.util.DOMUtil;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.jbi.management.DeploymentException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * ManagementMessageHelper is a class that ease the building of management messages. 
@@ -29,24 +39,32 @@ public class ManagementSupport {
     private static final Log logger = LogFactory.getLog(ManagementSupport.class);
 
     public static class Message {
+        private boolean isCauseFramework;
         private String task;
-        private String component;
         private String result;
         private Exception exception;
         private String type;
         private String message;
+        private String component;
+        private String locale;
         
-        public String getComponent() {
-            return component;
-        }
-        public void setComponent(String component) {
-            this.component = component;
-        }
         public Exception getException() {
             return exception;
         }
         public void setException(Exception exception) {
             this.exception = exception;
+        }
+        public boolean isCauseFramework() {
+            return isCauseFramework;
+        }
+        public void setCauseFramework(boolean isCauseFramework) {
+            this.isCauseFramework = isCauseFramework;
+        }
+        public String getMessage() {
+            return message;
+        }
+        public void setMessage(String message) {
+            this.message = message;
         }
         public String getResult() {
             return result;
@@ -66,104 +84,200 @@ public class ManagementSupport {
         public void setType(String type) {
             this.type = type;
         }
-        public String getMessage() {
-            return message;
+        public String getComponent() {
+            return component;
         }
-        public void setMessage(String message) {
-            this.message = message;
+        public void setComponent(String component) {
+            this.component = component;
+        }
+        public String getLocale() {
+            return locale;
+        }
+        public void setLocale(String locale) {
+            this.locale = locale;
         }
     }
     
-    public static String createComponentMessage(Message msg) {
+    public static Exception failure(String task, String info) throws Exception {
+        return failure(task, info, null, null);
+    }
+    
+    public static Exception failure(String task, List componentResults) throws Exception {
+        return failure(task, null, null, componentResults);
+    }
+    
+    public static Exception failure(String task, String info, Exception e) throws Exception {
+        return failure(task, info, e, null);
+    }
+    
+    public static Exception failure(String task, String info, Exception e, List componentResults) throws Exception {
+        ManagementSupport.Message msg = new ManagementSupport.Message();
+        msg.setTask(task);
+        msg.setResult("FAILED");
+        msg.setType("ERROR");
+        msg.setException(e);
+        msg.setMessage(info);
+        return new Exception(ManagementSupport.createFrameworkMessage(msg, componentResults));
+    }
+
+    public static String createSuccessMessage(String task) {
+        return createSuccessMessage(task, null, null);
+    }
+    
+    public static String createSuccessMessage(String task, List componentResults) {
+        return createSuccessMessage(task, null, componentResults);
+    }
+    
+    public static String createSuccessMessage(String task, String info) {
+        return createSuccessMessage(task, info, null);
+    }
+
+    public static String createSuccessMessage(String task, String info, List componentResults) {
+        ManagementSupport.Message msg = new ManagementSupport.Message();
+        msg.setTask(task);
+        msg.setResult("SUCCESS");
+        msg.setMessage(info);
+        return ManagementSupport.createFrameworkMessage(msg, componentResults);
+    }
+    
+    public static String createWarningMessage(String task, String info, List componentResults) {
+        ManagementSupport.Message msg = new ManagementSupport.Message();
+        msg.setTask(task);
+        msg.setResult("SUCCESS");
+        msg.setType("WARNING");
+        msg.setMessage(info);
+        return ManagementSupport.createFrameworkMessage(msg, componentResults);
+    }
+
+    public static String createFrameworkMessage(Message fmkMsg, List componentResults) {
         try {
-            StringBuffer sw = new StringBuffer();
-            // component-task-result
-            sw.append("<component-task-result");
-            sw.append("xmlns=\"http://java.sun.com/xml/ns/jbi/management-message\"");
-            sw.append("\n\t");
-            // component-name
-            sw.append("<component-name>");
-            sw.append(msg.getComponent());
-            sw.append("</component-name>");
-            // component-task-result-details
-            sw.append("\n\t");
-            sw.append("<component-task-result-details>");
-            // task-result-details
-            sw.append("\n\t\t");
-            sw.append("<task-result-details>");
-            // task-id
-            sw.append("\n\t\t\t");
-            sw.append("<task-id>");
-            sw.append(msg.getTask());
-            sw.append("</task-id>");
-            // task-result
-            sw.append("\n\t\t\t");
-            sw.append("<task-result>");
-            sw.append(msg.getResult());
-            sw.append("</task-result>");
-            // message-type
-            if (msg.getType() != null) {
-                sw.append("\n\t\t\t");
-                sw.append("<message-type>");
-                sw.append(msg.getType());
-                sw.append("</message-type>");
+            Document doc = createDocument();
+            Element jbiTask = createChild(doc, "jbi-task");
+            jbiTask.setAttribute("xmlns", "http://java.sun.com/xml/ns/jbi/management-message");
+            jbiTask.setAttribute("version", "1.0");
+            Element jbiTaskResult = createChild(jbiTask, "jbi-task-result");
+            Element frmkTaskResult = createChild(jbiTaskResult, "frmwk-task-result");
+            Element frmkTaskResultDetails = createChild(frmkTaskResult, "frmwk-task-result-details");
+            appendTaskResultDetails(frmkTaskResultDetails, fmkMsg);
+            if (fmkMsg.getLocale() != null) {
+                createChild(frmkTaskResult, "locale", fmkMsg.getLocale());
             }
-            // task-status-message
-            if (msg.getMessage() != null) {
-                sw.append("\n\t\t\t");
-                sw.append("<task-status-message>");
-                sw.append("<msg-loc-info>");
-                sw.append("<loc-token/>");
-                sw.append("<loc-message>");
-                sw.append(msg.getMessage());
-                sw.append("</loc-message>");
-                sw.append("</msg-loc-info>");
-                sw.append("</task-status-message>");
+            if (componentResults != null) {
+                for (Iterator iter = componentResults.iterator(); iter.hasNext();) {
+                    Element element = (Element) iter.next();
+                    jbiTaskResult.appendChild(doc.importNode(element, true));
+                }
             }
-            // exception-info
-            if (msg.getException() != null) {
-                sw.append("\n\t\t\t");
-                sw.append("<exception-info>");
-                sw.append("\n\t\t\t\t");
-                sw.append("<nesting-level>1</nesting-level>");
-                sw.append("\n\t\t\t\t");
-                sw.append("<msg-loc-info>");
-                sw.append("\n\t\t\t\t\t");
-                sw.append("<loc-token />");
-                sw.append("\n\t\t\t\t\t");
-                sw.append("<loc-message>");
-                sw.append(msg.getException().getMessage());
-                sw.append("</loc-message>");
-                sw.append("\n\t\t\t\t\t");
-                sw.append("<stack-trace>");
-                StringWriter sw2 = new StringWriter();
-                PrintWriter pw = new PrintWriter(sw2);
-                msg.getException().printStackTrace(pw);
-                pw.close();
-                sw.append("<[CDATA[");
-                sw.append(sw2.toString());
-                sw.append("]]>");
-                sw.append("</stack-trace>");
-                sw.append("\n\t\t\t\t");
-                sw.append("</msg-loc-info>");
-                sw.append("\n\t\t\t");
-                sw.append("</exception-info>");
-            }
-            // end: task-result-details
-            sw.append("\n\t\t");
-            sw.append("</task-result-details>");
-            // end: component-task-result-details
-            sw.append("\n\t");
-            sw.append("</component-task-result-details>");
-            // end: component-task-result
-            sw.append("\n");
-            sw.append("</component-task-result>");
-            // return result
-            return sw.toString();
+            return DOMUtil.asIndentedXML(doc);
         } catch (Exception e) {
-            logger.warn("Error generating component management message", e);
+            logger.error("Error", e);
             return null;
         }
+    }
+    
+    private static Document createDocument() {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true);
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            return builder.newDocument();
+        } catch (Exception e) {
+            throw new RuntimeException("Could not create DOM document", e);
+        }
+    }
+    
+    private static Element createChild(Node parent, String name) {
+        return createChild(parent, name, null);
+    }
+    
+    private static Element createChild(Node parent, String name, String text) {
+        Document doc = parent instanceof Document ? (Document) parent : parent.getOwnerDocument();
+        Element child = doc.createElementNS("http://java.sun.com/xml/ns/jbi/management-message", name);
+        if (text != null) {
+            child.appendChild(doc.createTextNode(text));
+        }
+        parent.appendChild(child);
+        return child;
+    }
+    
+    private static void appendTaskResultDetails(Element root, Message fmkMsg) {
+        Element taskResultDetails = createChild(root, "task-result-details");
+        createChild(taskResultDetails, "task-id", fmkMsg.getTask());
+        createChild(taskResultDetails, "task-result", fmkMsg.getResult());
+        if (fmkMsg.getType() != null) {
+            createChild(taskResultDetails, "message-type", fmkMsg.getType());
+        }
+        // task-status-message
+        if (fmkMsg.getMessage() != null) {
+            Element taskStatusMessage = createChild(taskResultDetails, "task-status-message");
+            Element msgLocInfo = createChild(taskStatusMessage, "msg-loc-info");
+            createChild(msgLocInfo, "loc-token");
+            createChild(msgLocInfo, "loc-message", fmkMsg.getMessage());
+        }
+        // exception-info
+        if (fmkMsg.getException() != null) {
+            Element exceptionInfo = createChild(taskResultDetails, "exception-info");
+            createChild(exceptionInfo, "nesting-level", "1");
+            createChild(exceptionInfo, "loc-token");
+            createChild(exceptionInfo, "loc-message", fmkMsg.getException().getMessage());
+            Element stackTrace = createChild(exceptionInfo, "stack-trace");
+            StringWriter sw2 = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw2);
+            fmkMsg.getException().printStackTrace(pw);
+            pw.close();
+            stackTrace.appendChild(root.getOwnerDocument().createCDATASection(sw2.toString()));
+        }
+    }
+    
+    public static DeploymentException componentFailure(String task, String component, String info) {
+        try {
+            Element e = createComponentFailure(task, component, info, null);
+            return new DeploymentException(DOMUtil.asXML(e));
+        } catch (Exception e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Error creating management message", e);
+            }
+            return new DeploymentException(info);
+        }
+    }
+    
+    public static Element createComponentMessage(Message msg) {
+        Document doc = createDocument();
+        Element componentTaskResult = createChild(doc, "component-task-result");
+        createChild(componentTaskResult, "component-name", msg.getComponent());
+        Element componentTaskResultDetails = createChild(componentTaskResult, "component-task-result-details");
+        appendTaskResultDetails(componentTaskResultDetails, msg);
+        return componentTaskResult;
+    }
+    
+    public static Element createComponentSuccess(String task, String component) {
+        ManagementSupport.Message msg = new ManagementSupport.Message();
+        msg.setTask(task);
+        msg.setResult("SUCCESS");
+        msg.setComponent(component);
+        return createComponentMessage(msg);
+    }
+    
+    public static Element createComponentFailure(String task, String component, String info, Exception e) {
+        ManagementSupport.Message msg = new ManagementSupport.Message();
+        msg.setTask(task);
+        msg.setResult("FAILED");
+        msg.setType("ERROR");
+        msg.setException(e);
+        msg.setMessage(info);
+        msg.setComponent(component);
+        return createComponentMessage(msg);
+    }
+    
+    public static Element createComponentWarning(String task, String component, String info, Exception e) {
+        ManagementSupport.Message msg = new ManagementSupport.Message();
+        msg.setTask(task);
+        msg.setResult("SUCCESS");
+        msg.setType("WARNING");
+        msg.setException(e);
+        msg.setMessage(info);
+        msg.setComponent(component);
+        return createComponentMessage(msg);
     }
     
 }

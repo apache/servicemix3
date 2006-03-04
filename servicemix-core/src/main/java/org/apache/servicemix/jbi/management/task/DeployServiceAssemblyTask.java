@@ -19,38 +19,39 @@ import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.apache.tools.ant.BuildException;
 
 /**
- * Stop a Component
+ * Install an Assembly
  * 
  * @version $Revision$
  */
-public class StopComponentTask extends JbiTask {
+public class DeployServiceAssemblyTask extends JbiTask {
     
-    private String name;
-
+    private String file; //archivePath to install
+    
     /**
-     * @return Returns the component name.
+     * @return Returns the archivePath.
      */
-    public String getName() {
-        return name;
+    public String getFile() {
+        return file;
     }
-
     /**
-     * @param name The component name to set.
+     * @param file The archivePath to set.
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setFile(String file) {
+        this.file = file;
     }
-
+    
     /**
      * execute the task
-     * 
      * @throws BuildException
      */
     public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
-        if (name == null) {
-            throw new BuildException("null componentName");
+        if (file == null){
+            throw new BuildException("null file - file should be an archive");
         }
-        acs.stopComponent(name);
+        if (!file.endsWith(".zip") && !file.endsWith(".jar")) {
+            throw new BuildException("file: " + file + " is not an archive");
+        }
+        acs.deployServiceAssembly(file);
     }
     
 }

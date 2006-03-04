@@ -52,7 +52,7 @@ public class JcaFlowPersistentTest extends AbstractPersistenceTest {
     	try {
         	runSimpleTest(true, true);
         	fail("sendSync can not be used");
-    	} catch (IllegalStateException e) {
+    	} catch (Exception e) {
     		// sendSync can not be used
     	}
     }
@@ -65,7 +65,7 @@ public class JcaFlowPersistentTest extends AbstractPersistenceTest {
     	try {
 	    	runSimpleTest(true, false);
         	fail("sendSync can not be used");
-    	} catch (IllegalStateException e) {
+    	} catch (Exception e) {
     		// sendSync can not be used
     	}
     }

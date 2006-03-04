@@ -53,6 +53,7 @@ import org.apache.servicemix.jbi.resolver.ProducerComponentEndpointFilter;
 import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
 import org.apache.servicemix.jbi.servicedesc.ExternalEndpoint;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
+import org.apache.servicemix.jbi.servicedesc.LinkedEndpoint;
 
 /**
  * The Broker handles Nomalised Message Routing within ServiceMix
@@ -513,5 +514,25 @@ public class Broker extends BaseSystemService implements BrokerMBean {
 	public JBIContainer getContainer() {
 		return container;
 	}
+
+    public void registerInterfaceConnection(QName fromItf, QName toSvc, String toEp) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void unregisterInterfaceConnection(QName fromItf, QName toSvc, String toEp) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void registerEndpointConnection(QName fromSvc, String fromEp, QName toSvc, String toEp, String link) {
+        LinkedEndpoint ep = new LinkedEndpoint(fromSvc, fromEp, toSvc, toEp, link);
+        // TODO register endpoint
+    }
+    
+    public void unregisterEndpointConnection(QName fromSvc, String fromEp, QName toSvc, String toEp) {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

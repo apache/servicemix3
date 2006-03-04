@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.jbi.JBIException;
 import javax.jbi.component.Component;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
@@ -66,10 +67,6 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     private BoundedLinkedQueue queue = new BoundedLinkedQueue();
     private IdGenerator idGenerator = new IdGenerator();
     private MessageExchangeFactory inboundFactory;
-    private MessagingStats messagingStats;
-    private boolean exchangeThrottling;
-    private long throttlingTimeout = 100;
-    private int throttlingInterval = 1;
     private int intervalCount = 0;
     private long lastSendTime = System.currentTimeMillis();
     private long lastReceiveTime = System.currentTimeMillis();
@@ -85,7 +82,6 @@ public class DeliveryChannelImpl implements DeliveryChannel {
      */
     public DeliveryChannelImpl(JBIContainer container, String componentName) {
         this.container = container;
-        this.messagingStats = new MessagingStats(componentName);
     }
 
     /**
@@ -135,7 +131,15 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             for (int i = 0; i < threads.length; i++) {
                 ((Thread) threads[i]).interrupt();
             }
-            // TODO: deactivate all endpoints from this component
+            // deactivate all endpoints from this component
+            ServiceEndpoint[] endpoints = (ServiceEndpoint[]) componentConnector.getActiveEndpoints().toArray(new ServiceEndpoint[0]);
+            for (int i = 0; i < endpoints.length; i++) {
+                try {
+                    componentConnector.getContext().deactivateEndpoint(endpoints[i]);
+                } catch (JBIException e) {
+                    log.error("Error deactivating endpoint", e);
+                }
+            }
             // TODO: Cause all accepts to return null
             // TODO: Abort all pending exchanges
         }
@@ -408,11 +412,11 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                 messageExchange.setPersistent(persistent);
             }
 
-            if (exchangeThrottling) {
-                if (throttlingInterval > intervalCount) {
+            if (componentConnector.isExchangeThrottling()) {
+                if (componentConnector.getThrottlingInterval() > intervalCount) {
                     intervalCount = 0;
                     try {
-                        Thread.sleep(throttlingTimeout);
+                        Thread.sleep(componentConnector.getThrottlingTimeout());
                     }
                     catch (InterruptedException e) {
                         log.warn("throttling failed", e);
@@ -422,6 +426,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             }
 
             // Update stats
+            MessagingStats messagingStats = componentConnector.getMessagingStats();
             long currentTime = System.currentTimeMillis();
             if (container.isNotifyStatistics()) {
                 long oldCount = messagingStats.getOutboundExchanges().getCount();
@@ -595,69 +600,6 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     }
 
     /**
-     * Get the MessagingStats
-     * 
-     * @return messaging stats
-     */
-    public MessagingStats getMessagingStats() {
-        return messagingStats;
-    }
-
-    /**
-     * Is MessageExchange sender throttling enabled ?
-     * 
-     * @return true if throttling enabled
-     */
-    public boolean isExchangeThrottling() {
-        return exchangeThrottling;
-    }
-
-    /**
-     * Set message throttling
-     * 
-     * @param value
-     */
-    public void setExchangeThrottling(boolean value) {
-        this.exchangeThrottling = value;
-    }
-
-    /**
-     * Get the throttling timeout
-     * 
-     * @return throttling tomeout (ms)
-     */
-    public long getThrottlingTimeout() {
-        return throttlingTimeout;
-    }
-
-    /**
-     * Set the throttling timout
-     * 
-     * @param value (ms)
-     */
-    public void setThrottlingTimeout(long value) {
-        throttlingTimeout = value;
-    }
-
-    /**
-     * Get the interval for throttling - number of Exchanges set before the throttling timeout is applied
-     * 
-     * @return interval for throttling
-     */
-    public int getThrottlingInterval() {
-        return throttlingInterval;
-    }
-
-    /**
-     * Set the throttling interval number of Exchanges set before the throttling timeout is applied
-     * 
-     * @param value
-     */
-    public void setThrottlingInterval(int value) {
-        throttlingInterval = value;
-    }
-
-    /**
      * Used internally for passing in a MessageExchange
      * 
      * @param me
@@ -667,6 +609,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         checkNotClosed();
 
         // Update stats
+        MessagingStats messagingStats = componentConnector.getMessagingStats();
         long currentTime = System.currentTimeMillis();
         if (container.isNotifyStatistics()) {
             long oldCount = messagingStats.getInboundExchanges().getCount();

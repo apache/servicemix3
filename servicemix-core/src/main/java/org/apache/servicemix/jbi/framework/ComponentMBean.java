@@ -23,40 +23,6 @@ import javax.management.ObjectName;
  */
 public interface ComponentMBean extends ComponentLifeCycleMBean {
     
-    
-    /**
-     * Get the Inbound MessageExchange count
-     * 
-     * @return inbound count
-     */
-    public long getInboundExchangeCount();
-
-    /**
-     * Get the Inbound MessageExchange rate (number/sec)
-     * 
-     * @return the inbound exchange rate
-     */
-    public double getInboundExchangeRate();
-
-    /**
-     * Get the Outbound MessageExchange count
-     * 
-     * @return outbound count
-     */
-    public long getOutboundExchangeCount();
-
-    /**
-     * Get the Outbound MessageExchange rate (number/sec)
-     * 
-     * @return the outbound exchange rate
-     */
-    public double getOutboundExchangeRate();
-
-    /**
-     * reset all stats counters
-     */
-    public void reset();
-    
     /**
      * Is MessageExchange sender throttling enabled ?
      * @return true if throttling enabled

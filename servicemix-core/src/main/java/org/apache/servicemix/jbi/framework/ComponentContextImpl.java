@@ -15,16 +15,8 @@
  */
 package org.apache.servicemix.jbi.framework;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.container.ActivationSpec;
-import org.apache.servicemix.jbi.container.ComponentEnvironment;
-import org.apache.servicemix.jbi.container.JBIContainer;
-import org.apache.servicemix.jbi.container.SubscriptionSpec;
-import org.apache.servicemix.jbi.messaging.DeliveryChannelImpl;
-import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
+import java.util.MissingResourceException;
+import java.util.logging.Logger;
 
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
@@ -39,8 +31,15 @@ import javax.naming.InitialContext;
 import javax.resource.spi.work.WorkManager;
 import javax.xml.namespace.QName;
 
-import java.util.MissingResourceException;
-import java.util.logging.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.container.ActivationSpec;
+import org.apache.servicemix.jbi.container.ComponentEnvironment;
+import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.container.SubscriptionSpec;
+import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
 
 /**
  * This context provides access to data needed by all JBI components running in the JBI environment.
@@ -77,13 +76,11 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      * @param spec
      * @param installRoot
      */
-    public void activate(Component component, DeliveryChannelImpl channel, ComponentEnvironment env,
+    public void activate(Component component, ComponentEnvironment env,
             ActivationSpec spec) {
         this.component = component;
-        this.deliveryChannel = channel;
         this.environment = env;
         this.activationSpec = spec;
-        channel.setContext(this);
         activated = true;
         //activate and subscriptions
         container.getRegistry().registerSubscriptions(this, spec);
@@ -129,7 +126,9 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      */
     public ServiceEndpoint activateEndpoint(QName serviceName, String endpointName) throws JBIException {
         checkActivated();
-        log.info("Component: " + componentName.getName() + " activated endpoint: " + serviceName + " : " + endpointName);
+        if (log.isDebugEnabled()) {
+            log.debug("Component: " + componentName.getName() + " activated endpoint: " + serviceName + " : " + endpointName);
+        }
         return container.getRegistry().activateEndpoint(this, serviceName, endpointName);
     }
 
@@ -199,7 +198,7 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      * @return the Delivery Channel
      * @throws MessagingException
      */
-    public DeliveryChannel getDeliveryChannel() throws MessagingException {
+    public DeliveryChannel getDeliveryChannel() {
         return deliveryChannel;
     }
 
@@ -301,9 +300,8 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
     /**
      * @param deliveryChannel The deliveryChannel to set.
      */
-    public void setDeliveryChannel(DeliveryChannelImpl deliveryChannel) {
+    public void setDeliveryChannel(DeliveryChannel deliveryChannel) {
         this.deliveryChannel = deliveryChannel;
-        deliveryChannel.setContext(this);
     }
 
     /**

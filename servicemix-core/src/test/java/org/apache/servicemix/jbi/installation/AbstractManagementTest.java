@@ -70,6 +70,10 @@ public abstract class AbstractManagementTest extends TestCase {
         }
     }
     
+    protected JBIContainer getContainer() {
+        return container;
+    }
+    
     protected File createInstallerArchive(String jbi) throws Exception {
         InputStream is = getClass().getResourceAsStream(jbi + "-jbi.xml");
         File jar = File.createTempFile("jbi", ".zip");
@@ -84,7 +88,22 @@ public abstract class AbstractManagementTest extends TestCase {
         return jar;
     }
     
+    protected File createDummyArchive() throws Exception {
+        File jar = File.createTempFile("jbi", ".zip");
+        JarOutputStream jos = new JarOutputStream(new FileOutputStream(jar));
+        jos.putNextEntry(new ZipEntry("test.txt"));
+        jos.closeEntry();
+        jos.close();
+        return jar;
+    }
+
     protected File createServiceAssemblyArchive(String saName, String suName, String compName) throws Exception {
+        return createServiceAssemblyArchive(saName, 
+                                            new String[] { suName }, 
+                                            new String[] { compName }); 
+    }
+
+    protected File createServiceAssemblyArchive(String saName, String[] suName, String[] compName) throws Exception {
         File jar = File.createTempFile("jbi", ".zip");
         JarOutputStream jos = new JarOutputStream(new FileOutputStream(jar));
         // Write jbi.xml
@@ -101,32 +120,36 @@ public abstract class AbstractManagementTest extends TestCase {
               xsw.writeCharacters(saName);
               xsw.writeEndElement();
             xsw.writeEndElement();
-            xsw.writeStartElement("service-unit");
-              xsw.writeStartElement("identification");
-                xsw.writeStartElement("name");
-                xsw.writeCharacters(suName);
+            for (int i = 0; i < suName.length; i++) {
+              xsw.writeStartElement("service-unit");
+                xsw.writeStartElement("identification");
+                  xsw.writeStartElement("name");
+                  xsw.writeCharacters(suName[i]);
+                  xsw.writeEndElement();
+                xsw.writeEndElement();
+                xsw.writeStartElement("target");
+                  xsw.writeStartElement("artifacts-zip");
+                  xsw.writeCharacters(suName[i] + ".zip");
+                  xsw.writeEndElement();
+                  xsw.writeStartElement("component-name");
+                  xsw.writeCharacters(compName[i]);
+                  xsw.writeEndElement();
                 xsw.writeEndElement();
               xsw.writeEndElement();
-              xsw.writeStartElement("target");
-                xsw.writeStartElement("artifacts-zip");
-                xsw.writeCharacters(suName + ".zip");
-                xsw.writeEndElement();
-                xsw.writeStartElement("component-name");
-                xsw.writeCharacters(compName);
-                xsw.writeEndElement();
-              xsw.writeEndElement();
-            xsw.writeEndElement();
+            }
           xsw.writeEndElement();
         xsw.writeEndElement();
         xsw.writeEndDocument();
         xsw.flush();
         jos.closeEntry();
         // Put su artifact
-        jos.putNextEntry(new ZipEntry(suName + ".zip"));
-        JarOutputStream jos2 = new JarOutputStream(jos, new Manifest());
-        jos2.finish();
-        jos2.flush();
-        jos.closeEntry();
+        for (int i = 0; i < suName.length; i++) {
+            jos.putNextEntry(new ZipEntry(suName[i] + ".zip"));
+            JarOutputStream jos2 = new JarOutputStream(jos, new Manifest());
+            jos2.finish();
+            jos2.flush();
+            jos.closeEntry();
+        }
         // Close jar
         jos.close();
         return jar;

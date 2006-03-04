@@ -51,7 +51,7 @@ public class JcaFlowTransactionTest extends AbstractClusteredTransactionTest {
         try {
             runSimpleTest(true, true);
             fail("sendSync can not be used");
-        } catch (IllegalStateException e) {
+        } catch (Exception e) {
             // sendSync can not be used
         }
     }
@@ -60,7 +60,7 @@ public class JcaFlowTransactionTest extends AbstractClusteredTransactionTest {
         try {
             runSimpleTest(true, false);
             fail("sendSync can not be used");
-        } catch (IllegalStateException e) {
+        } catch (Exception e) {
             // sendSync can not be used
         }
     }

@@ -15,25 +15,20 @@
  */
 package org.apache.servicemix.jbi.management.task;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.apache.tools.ant.BuildException;
 
-import javax.jbi.management.DeploymentServiceMBean;
-
-import java.io.IOException;
-
 /**
- * Uninstall an Assembly
+ * Start a Service Assembly
  * 
  * @version $Revision$
  */
-public class UninstallAssemblyTask extends JbiTask {
-    private static final Log log = LogFactory.getLog(UninstallComponentTask.class);
-    private String name; //assembly name to uninstall
+public class StartServiceAssemblyTask extends JbiTask {
+    
+    private String name; //assembly name to get descriptor for
 
     /**
-     * @return Returns the assemblyName.
+     * @return Returns the assembly name.
      */
     public String getName() {
         return name;
@@ -51,21 +46,11 @@ public class UninstallAssemblyTask extends JbiTask {
      * 
      * @throws BuildException
      */
-    public void execute() throws BuildException {
+    public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
         if (name == null) {
-            throw new BuildException("null assemblyName");
+            throw new BuildException("null service assembly name");
         }
-        try {
-            DeploymentServiceMBean is = getDeploymentService();
-            is.undeploy(name);
-        }
-        catch (IOException e) {
-            log.error("Caught an exception uninstalling the assembly", e);
-            throw new BuildException(e);
-        }
-        catch (Exception e) {
-            log.error("Caught an exception uninstalling the assembly", e);
-            throw new BuildException(e);
-        }
+        acs.startServiceAssembly(name);
     }
+    
 }

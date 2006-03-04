@@ -55,4 +55,8 @@ public interface ComponentStatsMBean {
      */
     public int getInboundQueueSize();
 
+    /**
+     * reset all stats counters
+     */
+    public void reset();
 }

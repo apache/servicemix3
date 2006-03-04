@@ -15,19 +15,17 @@
  */
 package org.apache.servicemix.jbi.framework;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.servicemix.jbi.messaging.DeliveryChannelImpl;
-
-import javax.jbi.JBIException;
-import javax.jbi.component.Component;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
+
+import javax.jbi.JBIException;
+import javax.jbi.component.Component;
+
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Registry for Components
@@ -62,12 +60,11 @@ public class ComponentRegistry {
     public LocalComponentConnector registerComponent(ComponentNameSpace name, 
                                                      String description, 
                                                      Component component,
-                                                     DeliveryChannelImpl dc, 
                                                      boolean binding, 
                                                      boolean service) {
         LocalComponentConnector result = null;
         if (!componentMap.containsKey(component)) {
-            result = new LocalComponentConnector(name, description, component, dc, binding, service);
+            result = new LocalComponentConnector(registry.getContainer(), name, description, component, binding, service);
             componentMap.put(component, result);
             localIdMap.put(name, result);
             addComponentConnector(result);
@@ -101,6 +98,7 @@ public class ComponentRegistry {
             LocalComponentConnector lcc = (LocalComponentConnector) i.next();
             lcc.getComponentMBean().doStop();
         }
+        runningStateInitialized = false;
     }
     
     /**
@@ -112,9 +110,7 @@ public class ComponentRegistry {
         for (Iterator i = getLocalComponentConnectors().iterator();i.hasNext();) {
             LocalComponentConnector lcc = (LocalComponentConnector) i.next();
             lcc.getComponentMBean().persistRunningState();
-            lcc.getComponentMBean().doStop();
             lcc.getComponentMBean().doShutDown();
-            lcc.getDeliveryChannel().close();
         }
     }
     
@@ -239,7 +235,6 @@ public class ComponentRegistry {
         return localIdMap.values();
     }
     
-    
     /**
      * 
      * @return Collection of ComponentConnectors held by the registry
@@ -247,6 +242,7 @@ public class ComponentRegistry {
     public Collection getComponentConnectors() {
         return idMap.values();
     }
+
     /**
      * @return Returns the containerName.
      */

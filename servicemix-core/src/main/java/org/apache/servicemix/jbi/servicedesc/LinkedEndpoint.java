@@ -37,13 +37,12 @@ public class LinkedEndpoint extends AbstractServiceEndpoint {
     private final String toEndpoint;
     private final String linkType;
     
-    public LinkedEndpoint(ComponentNameSpace componentName,
-                          QName fromService,
+    public LinkedEndpoint(QName fromService,
                           String fromEndpoint,
                           QName toService,
                           String toEndpoint,
                           String linkType) {
-        super(componentName);
+        super(null);
         this.fromService = fromService;
         this.fromEndpoint = fromEndpoint;
         this.toService = toService;

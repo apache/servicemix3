@@ -15,11 +15,9 @@
  */
 package org.apache.servicemix.jbi.management.task;
 
-import org.apache.servicemix.jbi.management.ManagementContextMBean;
-import org.apache.servicemix.jbi.management.task.JbiTask;
-
 import javax.jbi.management.DeploymentServiceMBean;
-import javax.jbi.management.InstallationServiceMBean;
+
+import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 
 
 /**
@@ -29,14 +27,17 @@ import javax.jbi.management.InstallationServiceMBean;
  */
 public class JbiTaskTest extends JbiTaskSupport {
    
-
     private JbiTask jbiTask;
+    
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();        
-        jbiTask = new JbiTask(){};
+        jbiTask = new JbiTask(){
+            protected void doExecute(AdminCommandsServiceMBean acs) throws Exception {
+            }
+        };
         jbiTask.init();
     }
 
@@ -47,10 +48,6 @@ public class JbiTaskTest extends JbiTaskSupport {
         jbiTask.close();
         super.tearDown();
     }
-    public void testGetInstallationService() throws Exception {
-        InstallationServiceMBean mbean = jbiTask.getInstallationService();
-        assertNotNull(mbean);
-    }
 
     public void testGetDeploymentService() throws Exception {
         DeploymentServiceMBean mbean = jbiTask.getDeploymentService();
@@ -58,8 +55,8 @@ public class JbiTaskTest extends JbiTaskSupport {
         mbean.getDeployedServiceAssemblies();
     }
     
-    public void testGetManagementContext() throws Exception {
-        ManagementContextMBean mbean = jbiTask.getManagementContext();
+    public void testGetAdminCommandsService() throws Exception {
+        AdminCommandsServiceMBean mbean = jbiTask.getAdminCommandsService();
         assertNotNull(mbean);
     }
 }

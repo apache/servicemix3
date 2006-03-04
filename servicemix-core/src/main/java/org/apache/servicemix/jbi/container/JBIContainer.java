@@ -63,7 +63,6 @@ import org.apache.servicemix.jbi.framework.Registry;
 import org.apache.servicemix.jbi.framework.AdminCommandsService;
 import org.apache.servicemix.jbi.management.BaseLifeCycle;
 import org.apache.servicemix.jbi.management.ManagementContext;
-import org.apache.servicemix.jbi.messaging.DeliveryChannelImpl;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.Broker;
 import org.apache.servicemix.jbi.nmr.flow.Flow;
@@ -784,7 +783,7 @@ public class JBIContainer extends BaseLifeCycle {
         Component component = registry.getComponent(cns);
         LocalComponentConnector lcc = registry.getLocalComponentConnector(cns);
         if (component != null && lcc != null) {
-        	lcc.getComponentMBean().shutDown();
+            lcc.getComponentMBean().shutDown();
         	lcc.unregisterMbeans(managementContext);
             registry.deregisterComponent(component);
             environmentContext.unreregister(lcc);
@@ -830,8 +829,7 @@ public class JBIContainer extends BaseLifeCycle {
      * @return the LocalComponentConnector
      */
     public LocalComponentConnector getLocalComponentConnector(String componentName) {
-        ComponentNameSpace cns = new ComponentNameSpace(name, componentName, componentName);
-        return registry.getLocalComponentConnector(cns);
+        return registry.getLocalComponentConnector(componentName);
     }
 
     /**
@@ -922,7 +920,7 @@ public class JBIContainer extends BaseLifeCycle {
      * @throws JBIException
      */
     public ObjectName activateComponent(Component component, ActivationSpec activationSpec) throws JBIException {
-        return activateComponent(component, "POJO Component", activationSpec, true, true, true);
+        return activateComponent(component, "POJO Component", activationSpec, true, false, false);
     }
 
     /**
@@ -980,16 +978,16 @@ public class JBIContainer extends BaseLifeCycle {
             throws JBIException {
         ObjectName result = null;
         ComponentNameSpace cns = new ComponentNameSpace(getName(), activationSpec.getComponentName(), activationSpec.getId());
-        log.info("Activating component for: " + cns + " with service: " + activationSpec.getService() + " component: "
-                + component);
-        DeliveryChannelImpl dc = new DeliveryChannelImpl(this, activationSpec.getComponentName());
-        LocalComponentConnector lcc = registry.registerComponent(cns, description, component, dc, binding, service);
+        if (log.isDebugEnabled()) {
+            log.info("Activating component for: " + cns + " with service: " + activationSpec.getService() + " component: "
+                    + component);
+        }
+        LocalComponentConnector lcc = registry.registerComponent(cns, description, component, binding, service);
         if (lcc != null) {
-            dc.setConnector(lcc);
             lcc.setPojo(pojo);
             ComponentEnvironment env = environmentContext.registerComponent(context.getEnvironment(),lcc);
             env.setInstallRoot(installationDir);
-            context.activate(component, dc, env, activationSpec);
+            context.activate(component, env, activationSpec);
             lcc.setContext(context);
             lcc.setActivationSpec(activationSpec);
             
@@ -1001,7 +999,7 @@ public class JBIContainer extends BaseLifeCycle {
                     lcc.getComponentMBean().start();
                 }
             } else {
-                lcc.getComponentMBean().setCurrentState(LifeCycleMBean.SHUTDOWN);
+                lcc.getComponentMBean().doShutDown();
             }
             result = lcc.registerMBeans(managementContext);
         }

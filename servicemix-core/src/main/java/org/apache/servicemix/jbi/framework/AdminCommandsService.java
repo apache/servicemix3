@@ -15,19 +15,19 @@
  */
 package org.apache.servicemix.jbi.framework;
 
-import org.apache.servicemix.jbi.management.BaseSystemService;
-import org.apache.servicemix.jbi.management.OperationInfoHelper;
-import org.apache.servicemix.jbi.management.ParameterHelper;
-
-import javax.jbi.JBIException;
-import javax.jbi.management.DeploymentException;
-import javax.management.MBeanOperationInfo;
-import javax.management.JMException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+
+import javax.jbi.JBIException;
+import javax.management.JMException;
+import javax.management.MBeanOperationInfo;
+
+import org.apache.servicemix.jbi.management.BaseSystemService;
+import org.apache.servicemix.jbi.management.OperationInfoHelper;
+import org.apache.servicemix.jbi.management.ParameterHelper;
 
 public class AdminCommandsService extends BaseSystemService implements AdminCommandsServiceMBean {
 
@@ -62,12 +62,9 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
     public String installComponent(String file, Properties props) throws Exception {
         try {
             container.getInstallationService().install(file);
-            return success("installComponent", file);
-
-        } catch (DeploymentException e) {
-            throw new RuntimeException(failure("installComponent", file, null, e));
+            return ManagementSupport.createSuccessMessage("installComponent", file);
         } catch (Exception e) {
-            throw new RuntimeException(failure("installComponent", file, null, e));
+            throw ManagementSupport.failure("installComponent", file, e);
         }
     }
 
@@ -82,7 +79,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
         if (success) {
             return success("uninstallComponent", name);
         } else {
-            return failure("uninstallComponent", name, "Failed", null);
+            return failure("uninstallComponent", name, null);
         }
     }
 
@@ -107,7 +104,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
         if (success) {
             return success("uninstallSharedLibrary", name);
         } else {
-            return failure("uninstallSharedLibrary", name, "Failed", null);
+            return failure("uninstallSharedLibrary", name, null);
         }
     }
 
@@ -127,7 +124,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
             lcc.getComponentMBean().start();
             return success("startComponent", name);
         } catch (JBIException e) {
-            throw new RuntimeException(failure("startComponent", name, null, e));
+            throw new RuntimeException(failure("startComponent", name, e));
         }
     }
 
@@ -147,7 +144,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
             lcc.getComponentMBean().stop();
             return success("stopComponent", name);
         } catch (JBIException e) {
-            throw new RuntimeException(failure("stopComponent", name, null, e));
+            throw new RuntimeException(failure("stopComponent", name, e));
         }
     }
 
@@ -167,7 +164,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
             lcc.getComponentMBean().shutDown();
             return success("shutdownComponent", name);
         } catch (JBIException e) {
-            throw new RuntimeException(failure("shutdownComponent", name, null, e));
+            throw new RuntimeException(failure("shutdownComponent", name, e));
         }
     }
 
@@ -178,13 +175,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
      * @return
      */
     public String deployServiceAssembly(String file) throws Exception {
-        try {
-            container.getDeploymentService().deploy(file);
-            return success("installComponent", file);
-
-        } catch (Exception e) {
-            throw new RuntimeException(failure("deployServiceAssembly", file, null, e));
-        }
+        return container.getDeploymentService().deploy(file);
     }
 
     /**
@@ -199,7 +190,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
             return success("undeployServiceAssembly", name);
 
         } catch (Exception e) {
-            throw new RuntimeException(failure("undeployServiceAssembly", name, null, e));
+            throw new RuntimeException(failure("undeployServiceAssembly", name, e));
         }
     }
 
@@ -215,7 +206,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
             return success("startServiceAssembly", name);
 
         } catch (Exception e) {
-            throw new RuntimeException(failure("startServiceAssembly", name, null, e));
+            throw new RuntimeException(failure("startServiceAssembly", name, e));
         }
     }
 
@@ -231,7 +222,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
             return success("stopServiceAssembly", name);
 
         } catch (Exception e) {
-            throw new RuntimeException(failure("stopServiceAssembly", name, null, e));
+            throw new RuntimeException(failure("stopServiceAssembly", name, e));
         }
     }
 
@@ -247,7 +238,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
             return success("shutdownServiceAssembly", name);
 
         } catch (Exception e) {
-            throw new RuntimeException(failure("shutdownServiceAssembly", name, null, e));
+            throw new RuntimeException(failure("shutdownServiceAssembly", name, e));
         }
     }
     
@@ -265,7 +256,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
             return success("installArchive", location);
 
         } catch (Exception e) {
-            throw new RuntimeException(failure("shutdownServiceAssembly", location, null, e));
+            throw new RuntimeException(failure("shutdownServiceAssembly", location, e));
         }
     }
     
@@ -279,68 +270,42 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
      * @param serviceAssemblyName
      * @return list of components in an XML blob
      */
-    public String listComponents(boolean serviceEngines, boolean bindingComponents, String state, String sharedLibraryName, String serviceAssemblyName) throws Exception {
-        return listAllComponents(serviceEngines, bindingComponents, state, sharedLibraryName, serviceAssemblyName, true);
-    }
-    
-    /**
-     * Prints information about all JBI components (Service Engine or Binding Component) installed
-     *
-     * @param serviceEngines
-     * @param bindingComponents
-     * @param state
-     * @param sharedLibraryName
-     * @param serviceAssemblyName
-     * @return
-     */
-    public String listJBIComponents(boolean serviceEngines, boolean bindingComponents, String state, String sharedLibraryName, String serviceAssemblyName) throws Exception {
-        return listAllComponents(serviceEngines, bindingComponents, state, sharedLibraryName, serviceAssemblyName, false);
-    }
-
-    /**
-     * Prints information about all components (Service Engine or Binding Component) installed
-     *
-     * @param serviceEngines
-     * @param bindingComponents
-     * @param state
-     * @param sharedLibraryName
-     * @param serviceAssemblyName
-     * @return
-     */
-    public String listAllComponents(boolean serviceEngines, boolean bindingComponents, String state, String sharedLibraryName, String serviceAssemblyName, boolean pojo) throws Exception {
+    public String listComponents(boolean excludeSEs,
+                                 boolean excludeBCs,
+                                 boolean excludePojos,
+                                 String requiredState,
+                                 String sharedLibraryName,
+                                 String serviceAssemblyName) throws Exception {
         Collection connectors = container.getRegistry().getLocalComponentConnectors();
         List components = new ArrayList();
         for (Iterator iter = connectors.iterator(); iter.hasNext();) {
             LocalComponentConnector lcc = (LocalComponentConnector) iter.next();
-
-            // If we want SE, and it is not one, skip
-            if (!serviceEngines && !lcc.isService()) {
+            // Skip SEs if needed
+            if (excludeSEs && lcc.isService()) {
                 continue;
             }
-            // If we want BC, and it is not one, skip
-            if (!bindingComponents && !lcc.isBinding()) {
+            // Skip BCs if needed
+            if (excludeBCs && lcc.isBinding()) {
+                continue;
+            }
+            // Skip Pojos if needed
+            if (excludePojos && lcc.isPojo()) {
                 continue;
             }
             // Check status
-            if (state != null && state.length() > 0 && !state.equals(lcc.getComponentMBean().getCurrentState())) {
-                System.out.println("state passed");
+            if (requiredState != null && requiredState.length() > 0 && !requiredState.equals(lcc.getComponentMBean().getCurrentState())) {
                 continue;
             }
-
             // Check shared library
+            // TODO: check component dependency on SL
             if (sharedLibraryName != null && sharedLibraryName.length() > 0 && !container.getInstallationService().containsSharedLibrary(sharedLibraryName)) {
                 continue;
             }
-
             // Check deployed service assembly
+            // TODO: check SA dependency on component 
             if (serviceAssemblyName != null && serviceAssemblyName.length() > 0 && !container.getDeploymentService().isSaDeployed(serviceAssemblyName)) {
                 continue;
             }
-            
-            if (lcc.isPojo() && !pojo){
-                continue;
-            }
-
             components.add(lcc);
         }
 
@@ -368,38 +333,6 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
         return buffer.toString();
     }
     
-    /**
-     * Prints information about all  Pojo components installed    
-     * @return XML string
-     */
-    public String listPojoComponents() throws Exception {
-        Collection connectors = container.getRegistry().getLocalComponentConnectors();
-        List components = new ArrayList();
-        for(Iterator iter=connectors.iterator();iter.hasNext();){
-            LocalComponentConnector lcc=(LocalComponentConnector) iter.next();
-            if(lcc.isPojo()){
-                components.add(lcc);
-            }
-        }
-
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("<?xml version='1.0'?>\n");
-        buffer.append("<component-info-list xmlns='http://java.sun.com/xml/ns/jbi/component-info-list' version='1.0'>\n");
-        for (Iterator iter = components.iterator(); iter.hasNext();) {
-            LocalComponentConnector lcc = (LocalComponentConnector) iter.next();
-            buffer.append(" name='" + lcc.getComponentNameSpace().getName() + "'");
-            buffer.append(" state='" + lcc.getComponentMBean().getCurrentState() + "'>");
-            if (lcc.getPacket().getDescription() != null) {
-                buffer.append("\t\t<description>");
-                buffer.append(lcc.getPacket().getDescription());
-                buffer.append("<description>\n");
-            }
-            buffer.append("\t</component-info>\n");
-        }
-        buffer.append("</component-info-list>");
-        return buffer.toString();
-    }
-
     /**
      * Prints information about shared libraries installed.
      *
@@ -430,32 +363,32 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
             result = container.getRegistry().getDeployedServiceAssemblies();
         }
 
-        List components = new ArrayList();
+        List assemblies = new ArrayList();
         for (int i = 0; i < result.length; i++) {
+            ServiceAssemblyLifeCycle sa = container.getRegistry().getServiceAssembly(result[i]);
             // Check status
-            if (state != null && state.length() > 0 && !state.equals(container.getRegistry().getServiceAssemblyState(result[i]))) {
+            if (state != null && state.length() > 0 && !state.equals(sa.getCurrentState())) {
                 continue;
             }
-            components.add(result[i]);
+            assemblies.add(sa);
         }
 
         StringBuffer buffer = new StringBuffer();
         buffer.append("<?xml version='1.0'?>\n");
         buffer.append("<service-assembly-info-list xmlns='http://java.sun.com/xml/ns/jbi/component-info-list' version='1.0'>\n");
-        for (Iterator iter = components.iterator(); iter.hasNext();) {
-            String name = (String) iter.next();
-
+        for (Iterator iter = assemblies.iterator(); iter.hasNext();) {
+            ServiceAssemblyLifeCycle sa = (ServiceAssemblyLifeCycle) iter.next();
             buffer.append("\t<service-assembly-info");
-            buffer.append(" name='" + name + "'");
-            buffer.append(" state='" + container.getRegistry().getServiceAssemblyState(name) + "'/>");
-            buffer.append(" <description>" + container.getRegistry().getServiceAssemblyDesc(name) + "</description>");
+            buffer.append(" name='" + sa.getName() + "'");
+            buffer.append(" state='" + sa.getCurrentState() + "'/>");
+            buffer.append(" <description>" + sa.getDescription() + "</description>");
             buffer.append("\t</service-assembly-info>\n");
 
-            String[] serviceUnitList = container.getRegistry().getSADeployedServiceUnitList(name);
+            ServiceUnitLifeCycle[] serviceUnitList = sa.getDeployedSUs();
             for (int i = 0; i < serviceUnitList.length; i++) {
                 buffer.append("\t<service-unit-info");
-                buffer.append(" name='" + serviceUnitList[i] + "'");
-                buffer.append(" state='" + container.getRegistry().getSADeployedServiceUnitDesc(name, serviceUnitList[i]) + "/>");
+                buffer.append(" name='" + serviceUnitList[i].getName() + "'");
+                buffer.append(" state='" + serviceUnitList[i].getCurrentState() + "/>");
                 buffer.append("\t</service-unit-info");
             }
         }
@@ -464,24 +397,22 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
         return buffer.toString();
     }
 
-    public String failure(String task, String componentName, String info, Exception e) {
+    public String failure(String task, String location, Exception e) {
         ManagementSupport.Message msg = new ManagementSupport.Message();
-        msg.setComponent(componentName);
         msg.setTask(task);
         msg.setResult("FAILED");
         msg.setType("ERROR");
         msg.setException(e);
-        msg.setMessage(info);
-        return ManagementSupport.createComponentMessage(msg);
+        msg.setMessage(location);
+        return ManagementSupport.createFrameworkMessage(msg, (List) null);
     }
 
-    public String success(String task, String componentName) {
+    public String success(String task, String location) {
         ManagementSupport.Message msg = new ManagementSupport.Message();
-        msg.setComponent(componentName);
         msg.setTask(task);
+        msg.setMessage(location);
         msg.setResult("SUCCESS");
-        // TODO: change the generated xml
-        return ManagementSupport.createComponentMessage(msg);
+        return ManagementSupport.createFrameworkMessage(msg, (List) null);
     }
 
     public MBeanOperationInfo[] getOperationInfos() throws JMException {
@@ -500,7 +431,6 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
         
         ph = helper.addOperation(getObjectToManage(), "installArchive", 1, "install an archive (component/SA etc)");
         ph.setDescription(0, "location", "file name or url to the location");
-        
 
         ph = helper.addOperation(getObjectToManage(), "startComponent", 1, "start a component");
         ph.setDescription(0, "name", "name of component to start");
@@ -527,21 +457,13 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
         ph.setDescription(0, "name", "name of service assembly to shutdown");
 
         ph = helper.addOperation(getObjectToManage(), "listComponents", 5, "list all components installed");
-        ph.setDescription(0, "serviceEngines", "if true will list service engines");
-        ph.setDescription(1, "bindingComponents", "if true will list binding components");
-        ph.setDescription(2, "state", "component state to list, if null will list all");
+        ph.setDescription(0, "excludeSEs", "if true will exclude service engines");
+        ph.setDescription(1, "excludeBCs", "if true will exclude binding components");
+        ph.setDescription(1, "excludePojos", "if true will exclude pojos components");
+        ph.setDescription(2, "requiredState", "component state to list, if null will list all");
         ph.setDescription(3, "sharedLibraryName", "shared library name to list");
         ph.setDescription(4, "serviceAssemblyName", "service assembly name to list");
         
-        ph = helper.addOperation(getObjectToManage(), "listJBIComponents", 5, "list JBI components installed");
-        ph.setDescription(0, "serviceEngines", "if true will list service engines");
-        ph.setDescription(1, "bindingComponents", "if true will list binding components");
-        ph.setDescription(2, "state", "component state to list, if null will list all");
-        ph.setDescription(3, "sharedLibraryName", "shared library name to list");
-        ph.setDescription(4, "serviceAssemblyName", "service assembly name to list");
-        
-        ph = helper.addOperation(getObjectToManage(), "listPojoComponents", "list all POJO Components");
-
         ph = helper.addOperation(getObjectToManage(), "listSharedLibraries", 2, "list shared library");
         ph.setDescription(0, "componentName", "component name");
         ph.setDescription(1, "sharedLibraryName", "shared library name");
@@ -550,11 +472,6 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
         ph.setDescription(0, "state", "service assembly state to list");
         ph.setDescription(1, "componentName", "component name");
         ph.setDescription(2, "serviceAssemblyName", "service assembly name");
-        
-        
-        
-        
-                
 
         return OperationInfoHelper.join(super.getOperationInfos(), helper.getOperationInfos());
     }

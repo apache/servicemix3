@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.framework;
+package org.apache.servicemix.jbi.loaders;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,13 +23,12 @@ import java.io.InputStream;
 import java.net.URL;
 
 /**
- * Loadsfrom parent class loader first
+ * loads classes from self first
  * 
  * @version $Revision$
  */
-public class ParentFirstClassLoader extends InstallationClassLoader {
-    private static final Log log = LogFactory.getLog(ParentFirstClassLoader.class);
-   
+public class SelfFirstClassLoader extends InstallationClassLoader {
+    private static final Log log = LogFactory.getLog(SelfFirstClassLoader.class);
 
     /**
      * Constructor
@@ -37,11 +36,9 @@ public class ParentFirstClassLoader extends InstallationClassLoader {
      * @param urls
      * @param parent
      */
-    public ParentFirstClassLoader(URL[] urls, ClassLoader parent) {
+    public SelfFirstClassLoader(URL[] urls, ClassLoader parent) {
         super(urls, parent);
     }
-    
-    
 
     /**
      * load a class
@@ -52,7 +49,6 @@ public class ParentFirstClassLoader extends InstallationClassLoader {
      * @throws ClassNotFoundException
      */
     protected Class loadClass(String name, boolean resolve) throws ClassNotFoundException {
-        
         Class result = null;
         try {
             result = super.loadClass(name, resolve);
@@ -60,23 +56,21 @@ public class ParentFirstClassLoader extends InstallationClassLoader {
         catch (ClassNotFoundException e) {
         }
         if (result == null) {
-        	try {
-        		result = parentLoader.loadClass(name);
-        		if (result != null && resolve) {
-        			resolveClass(result);
-        		}
-        	}
-        	catch (ClassNotFoundException e) {
-        	}
-        }
-        if (result == null) {
             try {
                 result = findClass(name);
+                if (result != null) {
+                    if (resolve) {
+                        resolveClass(result);
+                    }
+                }
+            }
+            catch (ClassNotFoundException cnfe) {
+            }
+            if (result == null) {
+                result = parentLoader.loadClass(name);
                 if (result != null && resolve) {
                     resolveClass(result);
                 }
-            }
-            catch (ClassNotFoundException e) {
             }
         }
         return result;
@@ -90,9 +84,9 @@ public class ParentFirstClassLoader extends InstallationClassLoader {
      */
     public URL getResource(String name) {
         URL result = null;
-        result = parentLoader.getResource(name);
+        result = findResource(name);
         if (result == null) {
-            result = findResource(name);
+            result = parentLoader.getResource(name);
         }
         return result;
     }
@@ -104,17 +98,18 @@ public class ParentFirstClassLoader extends InstallationClassLoader {
      * @return InputStream
      */
     public InputStream getResourceAsStream(String name) {
-        InputStream result = parentLoader.getResourceAsStream(name);
-        if (result == null) {
-            URL url = findResource(name);
-            if (url != null) {
-                try {
-                    result = url.openStream();
-                }
-                catch (IOException e) {
-                    log.warn("failed to open stream for URL: " + url, e);
-                }
+        InputStream result = null;
+        URL url = findResource(name);
+        if (url != null) {
+            try {
+                result = url.openStream();
             }
+            catch (IOException e) {
+                log.warn("failed to open stream for URL: " + url, e);
+            }
+        }
+        if (result == null) {
+            result = parentLoader.getResourceAsStream(name);
         }
         return result;
     }

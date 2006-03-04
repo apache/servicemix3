@@ -153,7 +153,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      */
     public void init(JBIContainer container, String rootDirPath) throws JBIException {
         super.init(container);
-        jbiRootDir = new File(rootDirPath, container.getName());
+        jbiRootDir = new File(rootDirPath);
         buildDirectoryStructure();
     }
 
@@ -307,7 +307,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @return directory for deployment/workspace etc
      * @throws IOException
      */
-    public File getComponentRootDirectory(String componentName) throws IOException {
+    public File getComponentRootDirectory(String componentName) {
         if (getComponentsDir() == null) {
             return null;
         }
@@ -367,13 +367,13 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @return directory for deployment/workspace etc
      * @throws IOException
      */
-    public File getSARootDirectory(String saName) throws IOException{
-        if(getServiceAssembiliesDirectory()==null){
+    public File getSARootDirectory(String saName) {
+        if (getServiceAssembiliesDirectory() == null) {
             return null;
         }
-        File result=FileUtil.getDirectoryPath(getServiceAssembiliesDirectory(),saName);
+        File result = FileUtil.getDirectoryPath(getServiceAssembiliesDirectory(), saName);
         // get the version directory
-        result=FileVersionUtil.getLatestVersionDirectory(result);
+        result = FileVersionUtil.getLatestVersionDirectory(result);
         return result;
     }
     
@@ -414,7 +414,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @return the state file
      * @throws IOException 
      */
-    public File getServiceAssemblyStateFile(String saName) throws IOException {
+    public File getServiceAssemblyStateFile(String saName) {
         File result = getSARootDirectory(saName);
         FileUtil.buildDirectory(result);
         result = new File(result,"state.xml");
@@ -443,7 +443,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @return directory
      * @throws IOException
      */
-    public File getServiceUnitDirectory(String componentName,String suName) throws IOException {
+    public File getServiceUnitDirectory(String componentName,String suName) {
         File result = getComponentRootDirectory(componentName);
         result = FileUtil.getDirectoryPath(result, "serviceunit");
         result = FileUtil.getDirectoryPath(result,suName);
@@ -484,28 +484,23 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @param componentName
      */
     public void removeComponentRootDirectory(String componentName) {
-        try {
-            File file = getComponentRootDirectory(componentName);
-            if (file != null) {
-                if (!FileUtil.deleteFile(file)) {
-                    log.warn("Failed to remove directory structure for component [version]: " + componentName + " [" + file.getName() + ']');
-                }
-                else {
-                    log.info("Removed directory structure for component [version]: " + componentName + " [" + file.getName() + ']');
-                    File parent = file.getParentFile();
-                    if (parent.list().length == 0) {
-                        if (!FileUtil.deleteFile(parent)) {
-                            log.warn("Failed to remove root directory for component: " + componentName);
-                        }
-                        else {
-                            log.info("Removed root directory structure for component: " + componentName);
-                        }
+        File file = getComponentRootDirectory(componentName);
+        if (file != null) {
+            if (!FileUtil.deleteFile(file)) {
+                log.warn("Failed to remove directory structure for component [version]: " + componentName + " [" + file.getName() + ']');
+            }
+            else {
+                log.info("Removed directory structure for component [version]: " + componentName + " [" + file.getName() + ']');
+                File parent = file.getParentFile();
+                if (parent.list().length == 0) {
+                    if (!FileUtil.deleteFile(parent)) {
+                        log.warn("Failed to remove root directory for component: " + componentName);
+                    }
+                    else {
+                        log.info("Removed root directory structure for component: " + componentName);
                     }
                 }
             }
-        }
-        catch (IOException e) {
-            log.warn("Failed to remove directory structure for component: " + componentName, e);
         }
     } 
     
@@ -516,7 +511,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @return directory
      * @throws IOException
      */
-    public File createSharedLibraryDirectory(String name) throws IOException {
+    public File createSharedLibraryDirectory(String name) {
         File result = FileUtil.getDirectoryPath(getSharedLibDir(), name);
         FileUtil.buildDirectory(result);
         return result;
@@ -527,7 +522,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @param name
      * @throws IOException
      */
-    public void removeSharedLibraryDirectory(String name) throws IOException{
+    public void removeSharedLibraryDirectory(String name) {
         File result = FileUtil.getDirectoryPath(getSharedLibDir(), name);
         FileUtil.deleteFile(result);
     }
@@ -605,6 +600,10 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         helper.addAttribute(getObjectToManage(), "dumpStats", "Periodically dump Component statistics");
         helper.addAttribute(getObjectToManage(), "statsInterval", "Interval (secs) before dumping statistics");
         return AttributeInfoHelper.join(super.getAttributeInfos(), helper.getAttributeInfos());
+    }
+
+    public File getJbiRootDir() {
+        return jbiRootDir;
     }
 
 
