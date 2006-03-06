@@ -77,7 +77,9 @@ public abstract class InstallationClassLoader extends URLClassLoader {
             try {
                 ClassLoader cl = (ClassLoader) i.next();
                 result = cl.loadClass(name);
-                break;
+                if (result != null) {
+                    break;
+                }
             }
             catch (ClassNotFoundException cnfe) {
             }
