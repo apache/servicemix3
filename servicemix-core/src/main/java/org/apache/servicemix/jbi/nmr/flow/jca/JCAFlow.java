@@ -16,7 +16,6 @@
 package org.apache.servicemix.jbi.nmr.flow.jca;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,6 +23,7 @@ import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.MessageExchange.Role;
+import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
@@ -46,7 +46,6 @@ import javax.transaction.TransactionManager;
 import org.apache.activemq.advisory.AdvisorySupport;
 import org.apache.activemq.command.ActiveMQDestination;
 import org.apache.activemq.command.ActiveMQMessage;
-import org.apache.activemq.command.ActiveMQObjectMessage;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTopic;
 import org.apache.activemq.command.ConsumerId;
@@ -62,15 +61,14 @@ import org.apache.geronimo.connector.outbound.connectionmanagerconfig.SinglePool
 import org.apache.geronimo.connector.outbound.connectionmanagerconfig.XATransactions;
 import org.apache.geronimo.connector.work.GeronimoWorkManager;
 import org.apache.geronimo.transaction.context.TransactionContextManager;
-import org.apache.servicemix.jbi.framework.ComponentConnector;
+import org.apache.servicemix.jbi.event.EndpointAdapter;
+import org.apache.servicemix.jbi.event.EndpointEvent;
+import org.apache.servicemix.jbi.event.EndpointListener;
 import org.apache.servicemix.jbi.framework.ComponentNameSpace;
-import org.apache.servicemix.jbi.framework.ComponentPacket;
-import org.apache.servicemix.jbi.framework.ComponentPacketEvent;
-import org.apache.servicemix.jbi.framework.ComponentPacketEventListener;
-import org.apache.servicemix.jbi.framework.LocalComponentConnector;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.Broker;
 import org.apache.servicemix.jbi.nmr.flow.AbstractFlow;
+import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 import org.jencks.JCAConnector;
 import org.jencks.SingletonEndpointFactory;
 import org.jencks.factory.ConnectionManagerFactoryBean;
@@ -84,7 +82,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
  * 
  * @version $Revision$
  */
-public class JCAFlow extends AbstractFlow implements  MessageListener, ComponentPacketEventListener {
+public class JCAFlow extends AbstractFlow implements MessageListener {
     
     private static final Log log = LogFactory.getLog(JCAFlow.class);
     private static final String INBOUND_PREFIX = "org.apache.servicemix.inbound.";
@@ -95,8 +93,6 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
     private Connection connection;
     private String broadcastDestinationName = "org.apache.servicemix.JCAFlow";
     private Topic broadcastTopic;
-    private Map networkNodeKeyMap = new ConcurrentHashMap();
-    private Map networkComponentKeyMap = new ConcurrentHashMap();
     private Map connectorMap = new ConcurrentHashMap();
     private AtomicBoolean started = new AtomicBoolean(false);
     private Set subscriberSet=new CopyOnWriteArraySet();
@@ -109,6 +105,8 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
     private Session broadcastSession;
     private Topic advisoryTopic;
     private MessageConsumer advisoryConsumer;
+
+    private EndpointListener endpointListener;
 
     /**
      * The type of Flow
@@ -227,8 +225,19 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
      * @throws JBIException
      */
     public void init(Broker broker, String subType) throws JBIException {
+        log.info(broker.getContainerName() + ": Initializing jca flow");
         super.init(broker, subType);
-        broker.getRegistry().addComponentPacketListener(this);
+        // Create and register endpoint listener
+        endpointListener = new EndpointAdapter() {
+            public void internalEndpointRegistered(EndpointEvent event) {
+                onInternalEndpointRegistered(event, true);
+            }
+
+            public void internalEndpointUnregistered(EndpointEvent event) {
+                onInternalEndpointUnregistered(event, true);
+            }
+        };
+        broker.getContainer().addListener(endpointListener);
         try {
         	resourceAdapter = createResourceAdapter();
         	
@@ -247,17 +256,6 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
         	ActiveMQManagedConnectionFactory mcf = new ActiveMQManagedConnectionFactory();
         	mcf.setResourceAdapter(resourceAdapter);
         	connectionFactory = (ConnectionFactory) mcf.createConnectionFactory(getConnectionManager());
-        	
-        	// Inbound broadcast
-        	ac = new ActiveMQActivationSpec();
-        	ac.setDestinationType("javax.jms.Topic");
-        	ac.setDestination(broadcastDestinationName);
-        	broadcastConnector = new JCAConnector();
-        	broadcastConnector.setBootstrapContext(getBootstrapContext());
-        	broadcastConnector.setActivationSpec(ac);
-        	broadcastConnector.setResourceAdapter(resourceAdapter);
-        	broadcastConnector.setEndpointFactory(new SingletonEndpointFactory(this));
-        	broadcastConnector.afterPropertiesSet();
         	
         	// Outbound broadcast
         	connection = ((ActiveMQResourceAdapter) resourceAdapter).makeConnection();
@@ -283,10 +281,43 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
         if (started.compareAndSet(false, true)) {
             super.start();
             try {
-                advisoryConsumer=broadcastSession.createConsumer(advisoryTopic);
-                advisoryConsumer.setMessageListener(this);
+                // Inbound broadcast
+                ActiveMQActivationSpec ac = new ActiveMQActivationSpec();
+                ac.setDestinationType("javax.jms.Topic");
+                ac.setDestination(broadcastDestinationName);
+                broadcastConnector = new JCAConnector();
+                broadcastConnector.setBootstrapContext(getBootstrapContext());
+                broadcastConnector.setActivationSpec(ac);
+                broadcastConnector.setResourceAdapter(resourceAdapter);
+                broadcastConnector.setEndpointFactory(new SingletonEndpointFactory(new MessageListener() {
+                    public void onMessage(Message message) {
+                        try {
+                            Object obj = ((ObjectMessage) message).getObject();
+                            if (obj instanceof EndpointEvent) {
+                                EndpointEvent event = (EndpointEvent) obj;
+                                if (event.getEventType() == EndpointEvent.INTERNAL_ENDPOINT_REGISTERED) {
+                                    onRemoteEndpointRegistered(event);
+                                } else if (event.getEventType() == EndpointEvent.INTERNAL_ENDPOINT_UNREGISTERED) {
+                                    onRemoteEndpointUnregistered(event);
+                                }
+                            }
+                        } catch (Exception e) {
+                            log.error("Error processing incoming broadcast message", e);
+                        }
+                    }
+                }));
+                broadcastConnector.afterPropertiesSet();
+                
+                advisoryConsumer = broadcastSession.createConsumer(advisoryTopic);
+                advisoryConsumer.setMessageListener(new MessageListener() {
+                    public void onMessage(Message message) {
+                        if (started.get()) {
+                            onAdvisoryMessage(((ActiveMQMessage) message).getDataStructure());
+                        }
+                    }
+                });
             }
-            catch (JMSException e) {
+            catch (Exception e) {
                 throw new JBIException("JMSException caught in start: " + e.getMessage(), e);
             }
         }
@@ -313,6 +344,8 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
     public void shutDown() throws JBIException {
         super.shutDown();
         stop();
+        // Remove endpoint listener
+        broker.getContainer().removeListener(endpointListener);
         // Destroy connectors
         while (!connectorMap.isEmpty()) {
         	JCAConnector connector = (JCAConnector) connectorMap.remove(connectorMap.keySet().iterator().next());
@@ -365,41 +398,60 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
         return true;
     }
     
-    /**
-     * Process state changes in Components
-     * 
-     * @param event
-     */
-    public void onEvent(final ComponentPacketEvent event){
-        try{
-            String componentName=event.getPacket().getComponentNameSpace().getName();
-            if(event.getStatus()==ComponentPacketEvent.ACTIVATED){
-                if(!connectorMap.containsKey(componentName)){
-                    ActiveMQActivationSpec ac = new ActiveMQActivationSpec();
-                    ac.setDestinationType("javax.jms.Queue");
-                    ac.setDestination(INBOUND_PREFIX+componentName);
-                    JCAConnector connector=new JCAConnector();
-                    connector.setBootstrapContext(getBootstrapContext());
-                    connector.setActivationSpec(ac);
-                    connector.setResourceAdapter(resourceAdapter);
-                    connector.setEndpointFactory(new SingletonEndpointFactory(this,getTransactionManager()));
-                    connector.afterPropertiesSet();
-                    connectorMap.put(componentName,connector);
-                }
-            }else if(event.getStatus()==ComponentPacketEvent.DEACTIVATED){
-                JCAConnector connector=(JCAConnector) connectorMap.remove(componentName);
-                if(connector!=null){
-                    connector.destroy();
-                }
+    public void onInternalEndpointRegistered(EndpointEvent event, boolean broadcast) {
+        if (!started.get()) {
+            return;
+        }
+        try {
+            String key = event.getEndpoint().getServiceName() + event.getEndpoint().getEndpointName();
+            if(!connectorMap.containsKey(key)){
+                ActiveMQActivationSpec ac = new ActiveMQActivationSpec();
+                ac.setDestinationType("javax.jms.Queue");
+                ac.setDestination(INBOUND_PREFIX + key);
+                JCAConnector connector = new JCAConnector();
+                connector.setBootstrapContext(getBootstrapContext());
+                connector.setActivationSpec(ac);
+                connector.setResourceAdapter(resourceAdapter);
+                connector.setEndpointFactory(new SingletonEndpointFactory(this, getTransactionManager()));
+                connector.afterPropertiesSet();
+                connectorMap.put(key, connector);
             }
             // broadcast change to the network
-            log.info("broadcast to internal JMS network: " + event);
-            sendJmsMessage(broadcastTopic, event, false, false);
-        }catch(Exception e){
-            log.error("failed to broadcast to the internal JMS network: "+event,e);
+            if (broadcast) {
+                log.info(broker.getContainerName() + ": broadcasting info for " + event);
+                sendJmsMessage(broadcastTopic, event, false, false);
+            }
+        } catch (Exception e) {
+            log.error("Cannot create consumer for " + event.getEndpoint(), e);
         }
     }
+    
+    public void onInternalEndpointUnregistered(EndpointEvent event, boolean broadcast) {
+        try{
+            String key = event.getEndpoint().getServiceName() + event.getEndpoint().getEndpointName();
+            JCAConnector connector=(JCAConnector) connectorMap.remove(key);
+            if(connector!=null){
+                connector.destroy();
+            }
+            // broadcast change to the network
+            if (broadcast) {
+                log.info(broker.getContainerName() + ": broadcasting info for " + event);
+                sendJmsMessage(broadcastTopic, event, false, false);
+            }
+        } catch (Exception e) {
+            log.error("Cannot destroy consumer for " + event, e);
+        }
+    }
+    
+    public void onRemoteEndpointRegistered(EndpointEvent event) {
+        log.info(broker.getContainerName() + ": adding remote endpoint: " + event.getEndpoint());
+        broker.getRegistry().registerRemoteEndpoint(event.getEndpoint());
+    }
 
+    public void onRemoteEndpointUnregistered(EndpointEvent event) {
+        log.info(broker.getContainerName() + ": removing remote endpoint: " + event.getEndpoint());
+        broker.getRegistry().unregisterRemoteEndpoint(event.getEndpoint());
+    }
 
     /**
      * Distribute an ExchangePacket
@@ -418,25 +470,19 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
      * @throws MessagingException
      */
     public void doRouting(final MessageExchangeImpl me) throws MessagingException {
-        
-        ComponentNameSpace id = me.getRole() == Role.PROVIDER ? me.getDestinationId() : me.getSourceId();
-        ComponentConnector cc = broker.getRegistry().getComponentConnector(id);
-        if (cc != null) {
-            try {
-                final String componentName = cc.getComponentNameSpace().getName();
-                String destination;
-                if (me.getRole() == Role.PROVIDER){
-                    destination = INBOUND_PREFIX + componentName;
-                }else {
-                    destination = INBOUND_PREFIX + id.getContainerName();
-                }
-                sendJmsMessage(new ActiveMQQueue(destination), me, isPersistent(me), me.isTransacted());
-            } catch (Exception e) {
-                log.error("Failed to send exchange: " + me + " internal JMS Network", e);
-                throw new MessagingException(e);
+        // let ActiveMQ do the routing ...
+        try {
+            String destination;
+            if (me.getRole() == Role.PROVIDER) {
+                destination = INBOUND_PREFIX + me.getEndpoint().getServiceName() + me.getEndpoint().getEndpointName();
+            } else {
+                ComponentNameSpace id = me.getRole() == Role.PROVIDER ? me.getDestinationId() : me.getSourceId();
+                destination = INBOUND_PREFIX + id.getContainerName();
             }
-        } else {
-            throw new MessagingException("No component with id (" + id + ") - Couldn't route MessageExchange " + me);
+            sendJmsMessage(new ActiveMQQueue(destination), me, isPersistent(me), me.isTransacted());
+        } catch (JMSException e) {
+            log.error("Failed to send exchange: " + me + " internal JMS Network", e);
+            throw new MessagingException(e);
         }
     }
 
@@ -446,50 +492,26 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
      * @param message
      */
     public void onMessage(Message message) {
-        if (message == null) {
-            return;
-        }
         try {
-            if (message instanceof ObjectMessage) {
+            if (message != null && started.get()) {
                 ObjectMessage objMsg = (ObjectMessage) message;
-                Object obj = objMsg.getObject();
-                if (obj != null) {
-                    if (obj instanceof ComponentPacketEvent) {
-                        ComponentPacketEvent event = (ComponentPacketEvent) obj;
-                        String containerName = event.getPacket().getComponentNameSpace().getContainerName();
-                        processInBoundPacket(containerName, event);
-                    }
-                    else if (obj instanceof MessageExchangeImpl) {
-                        // Hack for redelivery: AMQ is too optimized and the object is the same upon redelivery
-                        // so that there are side effect (the exchange state may have been modified)
-                        // See http://jira.activemq.org/jira/browse/AMQ-519
-                        obj = ((ActiveMQObjectMessage) ((ActiveMQObjectMessage) message).copy()).getObject();
-                        MessageExchangeImpl me = (MessageExchangeImpl) obj;
-                        TransactionManager tm = (TransactionManager) getTransactionManager();
-                        if (tm != null) {
-                            me.setTransactionContext(tm.getTransaction());
-                        }
-                        super.doRouting(me);
-                    }
+                final MessageExchangeImpl me = (MessageExchangeImpl) objMsg.getObject();
+                // Hack for redelivery: AMQ is too optimized and the object is the same upon redelivery
+                // so that there are side effect (the exchange state may have been modified)
+                // See http://jira.activemq.org/jira/browse/AMQ-519
+                //me = (MessageExchangeImpl) ((ActiveMQObjectMessage) ((ActiveMQObjectMessage) message).copy()).getObject();
+                TransactionManager tm = (TransactionManager) getTransactionManager();
+                if (tm != null) {
+                    me.setTransactionContext(tm.getTransaction());
                 }
-            } else if (message instanceof ActiveMQMessage) {
-                Object obj = ((ActiveMQMessage) message).getDataStructure();
-                if(obj instanceof ConsumerInfo){
-                    ConsumerInfo info=(ConsumerInfo) obj;
-                    subscriberSet.add(info.getConsumerId().getConnectionId());
-                    if(started.get()){
-                        for(Iterator i=broker.getRegistry().getLocalComponentConnectors().iterator();i.hasNext();){
-                            LocalComponentConnector lcc=(LocalComponentConnector) i.next();
-                            ComponentPacket packet=lcc.getPacket();
-                            ComponentPacketEvent cpe=new ComponentPacketEvent(packet,ComponentPacketEvent.ACTIVATED);
-                            onEvent(cpe);
-                        }
-                    }
-                }else if(obj instanceof RemoveInfo){
-                    ConsumerId id=(ConsumerId) ((RemoveInfo) obj).getObjectId();
-                    subscriberSet.remove(id.getConnectionId());
-                    removeAllPackets(id.getConnectionId());
-                }            
+                if (me.getDestinationId() == null) {
+                    ServiceEndpoint se = me.getEndpoint();
+                    se = broker.getRegistry()
+                            .getInternalEndpoint(se.getServiceName(), se.getEndpointName());
+                    me.setEndpoint(se);
+                    me.setDestinationId(((InternalEndpoint) se).getComponentNameSpace());
+                }
+                super.doRouting(me);
             }
         }
         catch (JMSException jmsEx) {
@@ -503,82 +525,26 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
 		}
     }
 
-    /**
-     * Process Inbound packets
-     * 
-     * @param containerName
-     * @param event
-     */
-    protected void processInBoundPacket(String containerName, ComponentPacketEvent event) {
-        ComponentPacket packet = event.getPacket();
-        if (!packet.getComponentNameSpace().getContainerName().equals(broker.getContainerName())) {
-        	log.info("received from internal JMS network: " + event);
-            int eventStatus = event.getStatus();
-            switch (eventStatus) {
-                case ComponentPacketEvent.ACTIVATED:
-                    addRemotePacket(containerName, packet);
-                    break;
-                case ComponentPacketEvent.DEACTIVATED:
-                    removeRemotePacket(containerName, packet);
-                    break;
-                case ComponentPacketEvent.STATE_CHANGE:
-                    updateRemotePacket(containerName, packet);
-                    break;
-                default:
-                    log.warn("Unable to determine ComponentPacketEvent type: " + eventStatus + " for packet: " + packet);
-            }         	
-        }
-    }
-
-    private void addRemotePacket(String containerName, ComponentPacket packet) {
-        networkComponentKeyMap.put(packet.getComponentNameSpace(), containerName);
-        Set set = (Set) networkNodeKeyMap.get(containerName);
-        if (set == null) {
-            set = new CopyOnWriteArraySet();
-            networkNodeKeyMap.put(containerName, set);
-        }
-        ComponentConnector cc = new ComponentConnector(packet);
-        log.info("Adding Remote Component: " + cc);
-        broker.getRegistry().addRemoteComponentConnector(cc);
-        set.add(packet);
-    }
-
-    private void updateRemotePacket(String containerName, ComponentPacket packet) {
-        Set set = (Set) networkNodeKeyMap.get(containerName);
-        if (set != null) {
-            set.remove(packet);
-            set.add(packet);
-        }
-        ComponentConnector cc = new ComponentConnector(packet);
-        log.info("Updating remote Component: " + cc);
-        broker.getRegistry().updateRemoteComponentConnector(cc);
-    }
-
-    private void removeRemotePacket(String containerName, ComponentPacket packet) {
-        networkComponentKeyMap.remove(packet.getComponentNameSpace());
-        Set set = (Set) networkNodeKeyMap.get(containerName);
-        if (set != null) {
-            set.remove(packet);
-            ComponentConnector cc = new ComponentConnector(packet);
-            log.info("Removing remote Component: " + cc);
-            broker.getRegistry().removeRemoteComponentConnector(cc);
-            if (set.isEmpty()) {
-                networkNodeKeyMap.remove(containerName);
+    protected void onAdvisoryMessage(Object obj) {
+        if (obj instanceof ConsumerInfo) {
+            ConsumerInfo info = (ConsumerInfo) obj;
+            subscriberSet.add(info.getConsumerId().getConnectionId());
+            ServiceEndpoint[] endpoints = broker.getRegistry().getEndpointsForInterface(null);
+            for (int i = 0; i < endpoints.length; i++) {
+                if (endpoints[i] instanceof InternalEndpoint && ((InternalEndpoint) endpoints[i]).isLocal()) {
+                    onInternalEndpointRegistered(new EndpointEvent(endpoints[i],
+                            EndpointEvent.INTERNAL_ENDPOINT_REGISTERED), true);
+                }
             }
+        } else if (obj instanceof RemoveInfo) {
+            ConsumerId id = (ConsumerId) ((RemoveInfo) obj).getObjectId();
+            subscriberSet.remove(id.getConnectionId());
+            removeAllPackets(id.getConnectionId());
         }
     }
 
     private void removeAllPackets(String containerName) {
-        Set set = (Set) networkNodeKeyMap.remove(containerName);
-        if (set != null) {
-	        for (Iterator i = set.iterator();i.hasNext();) {
-	            ComponentPacket packet = (ComponentPacket) i.next();
-	            ComponentConnector cc = new ComponentConnector(packet);
-	            log.info("Network node: " + containerName + " Stopped. Removing remote Component: " + cc);
-	            broker.getRegistry().removeRemoteComponentConnector(cc);
-	            networkComponentKeyMap.remove(packet.getComponentNameSpace());
-	        }
-        }
+        //TODO: broker.getRegistry().unregisterRemoteEndpoints(containerName);
     }
 
 	public ConnectionManager getConnectionManager() throws Exception {
@@ -643,4 +609,5 @@ public class JCAFlow extends AbstractFlow implements  MessageListener, Component
     		connection.close();
     	}
     }
+
 }

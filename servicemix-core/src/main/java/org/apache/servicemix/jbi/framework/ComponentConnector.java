@@ -15,9 +15,6 @@
  */
 package org.apache.servicemix.jbi.framework;
 
-import javax.jbi.servicedesc.ServiceEndpoint;
-
-import java.util.Set;
 
 /**
  * ComponentConnector is used internally for message routing
@@ -89,61 +86,6 @@ public class ComponentConnector {
         return packet.getComponentNameSpace();
     }
 
-   
-    /**
-     * Get the Set of activated endpoints
-     * 
-     * @return the activated endpoint Set
-     */
-    public Set getActiveEndpoints() {
-        return packet.getActiveEndpoints();
-    }
-
-    /**
-     * Add an activated endpoint
-     * 
-     * @param endpoint
-     */
-    public void addActiveEndpoint(ServiceEndpoint endpoint) {
-        throw new RuntimeException("Not a LocalComponentConnector");
-    }
-
-    /**
-     * remove an activated endpoint
-     * 
-     * @param endpoint
-     */
-    public void removeActiveEndpoint(ServiceEndpoint endpoint) {
-        throw new RuntimeException("Not a LocalComponentConnector");
-    }
-
-    /**
-     * Add an external activated endpoint
-     * 
-     * @param endpoint
-     */
-    public void addExternalActiveEndpoint(ServiceEndpoint endpoint) {
-        throw new RuntimeException("Not a LocalComponentConnector");
-    }
-
-    /**
-     * remove an external activated endpoint
-     * 
-     * @param endpoint
-     */
-    public void removeExternalActiveEndpoint(ServiceEndpoint endpoint) {
-        throw new RuntimeException("Not a LocalComponentConnector");
-    }
-
-    /**
-     * Get the Set of external activated endpoints
-     * 
-     * @return the activated endpoint Set
-     */
-    public Set getExternalActiveEndpoints() {
-        return packet.getExternalActiveEndpoints();
-    }
-    
     /**
      * @return Returns the binding.
      */

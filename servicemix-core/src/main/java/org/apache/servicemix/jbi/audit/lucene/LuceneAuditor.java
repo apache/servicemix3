@@ -31,6 +31,8 @@ import org.apache.servicemix.jbi.audit.AbstractAuditor;
 import org.apache.servicemix.jbi.audit.AuditorException;
 import org.apache.servicemix.jbi.audit.AuditorMBean;
 import org.apache.servicemix.jbi.audit.AuditorQueryMBean;
+import org.apache.servicemix.jbi.event.ExchangeEvent;
+import org.apache.servicemix.jbi.event.ExchangeListener;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 
 /**
@@ -53,6 +55,7 @@ import org.apache.servicemix.jbi.jaxp.SourceTransformer;
  * @version $Revision$
  */
 public class LuceneAuditor extends AbstractAuditor implements AuditorQueryMBean {
+    
 	private AuditorMBean delegatedAuditor;
 	private LuceneIndexer luceneIndexer = new LuceneIndexer();
 
@@ -126,15 +129,16 @@ public class LuceneAuditor extends AbstractAuditor implements AuditorQueryMBean 
 		return this.delegatedAuditor.deleteExchanges(ids);
 	}
 
-	public void onMessageExchange(MessageExchange exchange) throws MessagingException {
+    public void exchangeSent(ExchangeEvent event) {
+        MessageExchange exchange = event.getExchange();
 		try {
 			Document doc = createDocument(exchange);
 			this.luceneIndexer.add(doc,exchange.getExchangeId());
-		} catch (IOException e) {
-			throw new MessagingException("Error while adding to lucene",e);
-		}
-		if (delegatedAuditor instanceof AbstractAuditor) {
-			((AbstractAuditor)delegatedAuditor).onMessageExchange(exchange);
+			if (delegatedAuditor instanceof ExchangeListener) {
+			    ((ExchangeListener) delegatedAuditor).exchangeSent(event);
+			}
+		} catch (Exception e) {
+			log.error("Error while adding to lucene", e);
 		}
 	}
 

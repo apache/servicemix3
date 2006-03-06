@@ -69,12 +69,6 @@ public class JMSFlowTest extends TestCase {
         receiver = new ReceiverComponent();
         sender = new SenderComponent();
         sender.setResolver(new ServiceNameEndpointResolver(ReceiverComponent.SERVICE));
-
-        senderContainer.activateComponent(new ActivationSpec("sender", sender));
-        receiverContainer.activateComponent(new ActivationSpec("receiver", receiver));
-
-        
-        Thread.sleep(2000);
     }
     
     protected void tearDown() throws Exception{
@@ -85,9 +79,13 @@ public class JMSFlowTest extends TestCase {
     }
     
     public void testInOnly() throws Exception {
-      sender.sendMessages(NUM_MESSAGES);
-      Thread.sleep(3000);
-      receiver.getMessageList().assertMessagesReceived(NUM_MESSAGES);
+        senderContainer.activateComponent(new ActivationSpec("sender", sender));
+        receiverContainer.activateComponent(new ActivationSpec("receiver", receiver));
+        Thread.sleep(1000);
+
+        sender.sendMessages(NUM_MESSAGES);
+        Thread.sleep(3000);
+        receiver.getMessageList().assertMessagesReceived(NUM_MESSAGES);
     }
 
     public void testClusteredInOnly() throws Exception {

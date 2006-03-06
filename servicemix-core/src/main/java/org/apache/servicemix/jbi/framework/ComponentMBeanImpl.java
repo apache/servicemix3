@@ -25,6 +25,8 @@ import javax.management.ObjectName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.event.ComponentEvent;
+import org.apache.servicemix.jbi.event.ComponentListener;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseLifeCycle;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
@@ -182,6 +184,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
             initServiceAssemblies();
             startServiceAssemblies();
         }
+        fireEvent(ComponentEvent.COMPONENT_STARTED);
     }
 
     /**
@@ -196,6 +199,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
 	        connector.getLifeCycle().stop();
 	        super.stop();
         }
+        fireEvent(ComponentEvent.COMPONENT_STOPPED);
     }
 
     /**
@@ -216,6 +220,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
             }
         }
         super.shutDown();
+        fireEvent(ComponentEvent.COMPONENT_SHUTDOWN);
     }
     
     
@@ -362,7 +367,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
             ServiceAssemblyLifeCycle sa = registry.getServiceAssembly(sas[i]);
             if (sa.isStarted()) {
                 try {
-                    sa.stop(false);
+                    sa.stop(false, false);
                     // TODO: add sa to a list of pending sa 
                 } catch (Exception e) {
                     log.error("Error stopping service assembly " + sas[i]);
@@ -387,6 +392,25 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
                 }
             }
         }
+    }
+    
+    protected void fireEvent(int type) {
+        ComponentEvent event = new ComponentEvent(connector, type);
+        ComponentListener[] listeners = (ComponentListener[]) connector.getContainer().getListeners(ComponentListener.class);
+        for (int i = 0; i < listeners.length; i++) {
+            switch (type) {
+            case ComponentEvent.COMPONENT_STARTED:
+                listeners[i].componentStarted(event);
+                break;
+            case ComponentEvent.COMPONENT_STOPPED:
+                listeners[i].componentStopped(event);
+                break;
+            case ComponentEvent.COMPONENT_SHUTDOWN:
+                listeners[i].componentShutDown(event);
+                break;
+            }
+        }
+        
     }
 
 }

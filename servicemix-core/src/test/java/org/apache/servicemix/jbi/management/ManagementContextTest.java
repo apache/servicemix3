@@ -67,6 +67,7 @@ public class ManagementContextTest extends TestCase {
     }
 
     public void testRemote() throws Exception {
+        Thread.sleep(5000);
         // The address of the connector server
         JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://"
                 + namingHost + ":" + namingPort + jndiPath);
@@ -100,11 +101,11 @@ public class ManagementContextTest extends TestCase {
     }
     
     public void testComponent() throws Exception {
-    	ObjectName[] names = context.getEngineComponents();
+    	ObjectName[] names = context.getPojoComponents();
     	assertEquals(1, names.length);
     	EchoComponent echo = new EchoComponent();
     	container.activateComponent(echo, "echo");
-    	names = context.getEngineComponents();
+    	names = context.getPojoComponents();
     	assertNotNull(names);
     	assertEquals(2, names.length);
     	assertEquals(LifeCycleMBean.STARTED, echo.getCurrentState());

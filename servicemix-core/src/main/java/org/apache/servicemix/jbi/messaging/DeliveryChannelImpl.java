@@ -132,7 +132,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                 ((Thread) threads[i]).interrupt();
             }
             // deactivate all endpoints from this component
-            ServiceEndpoint[] endpoints = (ServiceEndpoint[]) componentConnector.getActiveEndpoints().toArray(new ServiceEndpoint[0]);
+            ServiceEndpoint[] endpoints = container.getRegistry().getEndpointsForComponent(componentConnector.getComponentNameSpace());
             for (int i = 0; i < endpoints.length; i++) {
                 try {
                     componentConnector.getContext().deactivateEndpoint(endpoints[i]);
@@ -185,17 +185,11 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                 log.debug("default destination endpointName for " + componentName + " = " + endpointName);
                 if (serviceName != null && endpointName != null) {
                     endpointName = endpointName.trim();
-                    ServiceEndpoint[] endpoints = container.getRegistry().getEndpointsForService(serviceName);
-                    if (endpoints != null) {
-                        for (int i = 0;i < endpoints.length;i++) {
-                            if (endpoints[i].getEndpointName().equals(endpointName)) {
-                                result.setEndpoint(endpoints[i]);
-                                log.info("Set default destination endpoint for " + componentName + " to "
-                                        + endpoints[i]);
-                                endpointSet = true;
-                                break;
-                            }
-                        }
+                    ServiceEndpoint endpoint = container.getRegistry().getEndpoint(serviceName, endpointName);
+                    if (endpoint != null) {
+                        result.setEndpoint(endpoint);
+                        log.info("Set default destination endpoint for " + componentName + " to " + endpoint);
+                        endpointSet = true;
                     }
                 }
                 if (!endpointSet) {

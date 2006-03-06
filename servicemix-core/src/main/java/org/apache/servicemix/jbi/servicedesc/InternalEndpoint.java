@@ -16,7 +16,9 @@
 package org.apache.servicemix.jbi.servicedesc;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -38,7 +40,7 @@ public class InternalEndpoint extends AbstractServiceEndpoint {
     private String endpointName;
     private QName serviceName;
     private List interfaces = new ArrayList();
-    
+    private transient Map remotes = new HashMap();
     
 
     /**
@@ -52,10 +54,6 @@ public class InternalEndpoint extends AbstractServiceEndpoint {
         this.endpointName = endpointName;
         this.serviceName = serviceName;
     }
-    
-    protected InternalEndpoint() {
-    }
-    
     
     /**
      * Get a reference to this endpoint, using an endpoint reference vocabulary
@@ -107,6 +105,40 @@ public class InternalEndpoint extends AbstractServiceEndpoint {
     }
     
     /**
+     * Retrieve all remote component namespaces where this endpoint is activated
+     * @return component namespaces
+     */
+    public InternalEndpoint[] getRemoteEndpoints() {
+        InternalEndpoint[] result = new InternalEndpoint[remotes.size()];
+        remotes.values().toArray(result);
+        return result;
+    }
+    
+    public void addRemoteEndpoint(InternalEndpoint remote) {
+        remotes.put(remote.getComponentNameSpace(), remote);
+    }
+    
+    public void removeRemoteEndpoint(InternalEndpoint remote) {
+        remotes.remove(remote.getComponentNameSpace());
+    }
+    
+    /**
+     * Check if this endpoint is locally activated
+     * @return true if the endpoint has been activated locally
+     */
+    public boolean isLocal() {
+        return getComponentNameSpace() != null;
+    }
+    
+    /**
+     * Check if the endpoint is remotely activated
+     * @return true if the endpoint has been remotely activated
+     */
+    public boolean isClustered() {
+        return remotes != null && remotes.size() > 0;
+    }
+    
+    /**
      * @param obj
      * @return true if equal
      */
@@ -114,8 +146,7 @@ public class InternalEndpoint extends AbstractServiceEndpoint {
         boolean result = false;
         if (obj != null && obj instanceof InternalEndpoint){
             InternalEndpoint other = (InternalEndpoint)obj;
-            result = other.getComponentNameSpace().equals(this.getComponentNameSpace()) && 
-                     other.serviceName.equals(this.serviceName) &&
+            result = other.serviceName.equals(this.serviceName) &&
                      other.endpointName.equals(this.endpointName);
         }
         return result;
@@ -126,8 +157,7 @@ public class InternalEndpoint extends AbstractServiceEndpoint {
      * @return has code
      */
     public int hashCode() {
-        return getComponentNameSpace().hashCode() ^
-               serviceName.hashCode() ^
+        return serviceName.hashCode() ^
                endpointName.hashCode() ;
     }
     

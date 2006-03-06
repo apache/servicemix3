@@ -79,7 +79,7 @@ public class ServiceAssemblyRegistry {
      * @throws DeploymentException 
      * @deprecated
      */
-    public boolean register(ServiceAssembly sa) throws DeploymentException {
+    public ServiceAssemblyLifeCycle register(ServiceAssembly sa) throws DeploymentException {
         List sus = new ArrayList();
         for (int i = 0; i < sa.getServiceUnits().length; i++) {
             String suKey = registry.registerServiceUnit(
@@ -96,12 +96,11 @@ public class ServiceAssemblyRegistry {
      * @return true if successful
      * @throws DeploymentException 
      */
-    public boolean register(ServiceAssembly sa, String[] sus) throws DeploymentException {
-        boolean result = false;
+    public ServiceAssemblyLifeCycle register(ServiceAssembly sa, String[] sus) throws DeploymentException {
         String saName = sa.getIdentification().getName();
         File stateFile = registry.getEnvironmentContext().getServiceAssemblyStateFile(saName);
-        ServiceAssemblyLifeCycle salc = new ServiceAssemblyLifeCycle(sa, sus, stateFile, registry);
         if (!serviceAssemblies.containsKey(saName)) {
+            ServiceAssemblyLifeCycle salc = new ServiceAssemblyLifeCycle(sa, sus, stateFile, registry);
             serviceAssemblies.put(saName, salc);
             try {
                 ObjectName objectName = registry.getContainer().getManagementContext().createObjectName(salc);
@@ -109,9 +108,9 @@ public class ServiceAssemblyRegistry {
             } catch (JMException e) {
                 log.error("Could not register MBean for service assembly", e);
             }
-            result = true;
+            return salc;
         }
-        return result;
+        return null;
     }
     
     /**

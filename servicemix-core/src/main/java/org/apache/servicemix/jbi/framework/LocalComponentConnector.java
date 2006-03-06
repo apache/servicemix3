@@ -18,14 +18,12 @@ package org.apache.servicemix.jbi.framework;
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.Set;
 
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
 import javax.jbi.component.ComponentLifeCycle;
 import javax.jbi.component.ServiceUnitManager;
 import javax.jbi.management.LifeCycleMBean;
-import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.ObjectName;
 
 import org.apache.commons.logging.Log;
@@ -139,51 +137,6 @@ public class LocalComponentConnector extends ComponentConnector {
      */
     public void setContext(ComponentContextImpl context) {
         this.context = context;
-    }
-
-    /**
-     * Add an activated endpoint
-     * 
-     * @param endpoint
-     */
-    public void addActiveEndpoint(ServiceEndpoint endpoint) {
-        packet.addActiveEndpoint(endpoint);
-    }
-
-    /**
-     * remove an activated endpoint
-     * 
-     * @param endpoint
-     */
-    public void removeActiveEndpoint(ServiceEndpoint endpoint) {
-        packet.removeActiveEndpoint(endpoint);
-    }
-
-    /**
-     * Add an external activated endpoint
-     * 
-     * @param endpoint
-     */
-    public void addExternalActiveEndpoint(ServiceEndpoint endpoint) {
-        packet.addExternalActiveEndpoint(endpoint);
-    }
-
-    /**
-     * remove an external activated endpoint
-     * 
-     * @param endpoint
-     */
-    public void removeExternalActiveEndpoint(ServiceEndpoint endpoint) {
-        packet.removeExternalActiveEndpoint(endpoint);
-    }
-
-    /**
-     * Get the Set of external activated endpoints
-     * 
-     * @return the activated endpoint Set
-     */
-    public Set getExternalActiveEndpoints() {
-        return packet.getExternalActiveEndpoints();
     }
 
     /**

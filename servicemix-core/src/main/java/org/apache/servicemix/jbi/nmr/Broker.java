@@ -328,6 +328,16 @@ public class Broker extends BaseSystemService implements BrokerMBean {
                 throw new JBIException("Component-specific endpoints can not be used for routing: should be an internal or dynamic endpoint.");
             }
         }
+        // Resolve linked endpoints
+        if (theEndpoint instanceof LinkedEndpoint) {
+            QName svcName = ((LinkedEndpoint) theEndpoint).getToService();
+            String epName = ((LinkedEndpoint) theEndpoint).getToEndpoint();
+            ServiceEndpoint ep = registry.getInternalEndpoint(svcName, epName);
+            if (ep == null) {
+                throw new JBIException("Could not resolve linked endpoint: " + theEndpoint);
+            }
+            theEndpoint = ep;
+        }
 
         // get the context which created the exchange
         ComponentContextImpl context = exchange.getSourceContext();
@@ -346,7 +356,7 @@ public class Broker extends BaseSystemService implements BrokerMBean {
                 }
             }
             if (theEndpoint == null && interfaceName != null) {
-                ServiceEndpoint[] endpoints = registry.getEndpoints(interfaceName);
+                ServiceEndpoint[] endpoints = registry.getEndpointsForInterface(interfaceName);
                 endpoints = getMatchingEndpoints(endpoints, exchange);
                 theEndpoint = (InternalEndpoint) getInterfaceChooser(exchange).chooseEndpoint(endpoints, context, exchange);
                 if (theEndpoint == null) {
@@ -393,16 +403,17 @@ public class Broker extends BaseSystemService implements BrokerMBean {
         LocalComponentConnector consumer = getRegistry().getLocalComponentConnector(exchange.getSourceId());
         
     	for (int i = 0; i < endpoints.length; i++) {
-			ComponentNameSpace id = ((AbstractServiceEndpoint) endpoints[i]).getComponentNameSpace();
-	        LocalComponentConnector provider = getRegistry().getLocalComponentConnector(id);
-            if (provider != null) {
-                if (consumer.getComponent().isExchangeWithProviderOkay(endpoints[i], exchange) &&
-                    provider.getComponent().isExchangeWithConsumerOkay(endpoints[i], exchange)) {
-       			    filtered.add(endpoints[i]);
-            	}
-            } else {
-                filtered.add(endpoints[i]);
+			ComponentNameSpace id = ((InternalEndpoint) endpoints[i]).getComponentNameSpace();
+            if (id != null) {
+    	        LocalComponentConnector provider = getRegistry().getLocalComponentConnector(id);
+                if (provider != null) {
+                    if (!consumer.getComponent().isExchangeWithProviderOkay(endpoints[i], exchange) ||
+                        !provider.getComponent().isExchangeWithConsumerOkay(endpoints[i], exchange)) {
+           			    continue;
+                	}
+                }
             }
+            filtered.add(endpoints[i]);
 		}
 		return (ServiceEndpoint[]) filtered.toArray(new ServiceEndpoint[filtered.size()]);
 	}
@@ -514,25 +525,5 @@ public class Broker extends BaseSystemService implements BrokerMBean {
 	public JBIContainer getContainer() {
 		return container;
 	}
-
-    public void registerInterfaceConnection(QName fromItf, QName toSvc, String toEp) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    public void unregisterInterfaceConnection(QName fromItf, QName toSvc, String toEp) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    public void registerEndpointConnection(QName fromSvc, String fromEp, QName toSvc, String toEp, String link) {
-        LinkedEndpoint ep = new LinkedEndpoint(fromSvc, fromEp, toSvc, toEp, link);
-        // TODO register endpoint
-    }
-    
-    public void unregisterEndpointConnection(QName fromSvc, String fromEp, QName toSvc, String toEp) {
-        // TODO Auto-generated method stub
-        
-    }
 
 }

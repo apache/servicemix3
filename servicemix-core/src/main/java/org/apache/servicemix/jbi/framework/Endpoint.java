@@ -27,16 +27,19 @@ import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.MBeanInfoProvider;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
 import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
+import org.apache.servicemix.jbi.servicedesc.ExternalEndpoint;
+import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
+import org.apache.servicemix.jbi.servicedesc.LinkedEndpoint;
 import org.apache.servicemix.jbi.util.DOMUtil;
 
 public class Endpoint implements EndpointMBean, MBeanInfoProvider {
 
     private AbstractServiceEndpoint endpoint;
-    private EndpointRegistry endpointRegistry;
+    private Registry registry;
     
-    public Endpoint(AbstractServiceEndpoint endpoint, EndpointRegistry endpointRegistry) {
+    public Endpoint(AbstractServiceEndpoint endpoint, Registry registry) {
         this.endpoint = endpoint;
-        this.endpointRegistry = endpointRegistry;
+        this.registry = registry;
     }
 
     public String getEndpointName() {
@@ -61,14 +64,18 @@ public class Endpoint implements EndpointMBean, MBeanInfoProvider {
     
     public String getWSDL() {
         try {
-            return DOMUtil.asXML(endpointRegistry.getEndpointDescriptor(endpoint));
+            return DOMUtil.asXML(registry.getEndpointDescriptor(endpoint));
         } catch (Exception e) {
             return null;
         }
     }
 
     public String getComponentName() {
-        return endpoint.getComponentNameSpace().getName();
+        if (endpoint.getComponentNameSpace() != null) {
+            return endpoint.getComponentNameSpace().getName();
+        } else {
+            return null;
+        }
     }
 
     public MBeanAttributeInfo[] getAttributeInfos() throws JMException {
@@ -92,7 +99,7 @@ public class Endpoint implements EndpointMBean, MBeanInfoProvider {
     }
 
     public String getName() {
-        return endpoint.getServiceName().toString() + endpoint.getEndpointName();
+        return endpoint.getServiceName() + endpoint.getEndpointName();
     }
 
     public String getType() {
@@ -100,7 +107,13 @@ public class Endpoint implements EndpointMBean, MBeanInfoProvider {
     }
 
     public String getSubType() {
-        // TODO: return internal, external, linked ?
+        if (endpoint instanceof InternalEndpoint) {
+            return "Internal";
+        } else if (endpoint instanceof LinkedEndpoint) {
+            return "Linked";
+        } else if (endpoint instanceof ExternalEndpoint) {
+            return "External";
+        }
         return null;
     }
 
@@ -109,6 +122,10 @@ public class Endpoint implements EndpointMBean, MBeanInfoProvider {
     }
 
     public void setPropertyChangeListener(PropertyChangeListener l) {
+    }
+
+    protected AbstractServiceEndpoint getEndpoint() {
+        return endpoint;
     }
 
 }

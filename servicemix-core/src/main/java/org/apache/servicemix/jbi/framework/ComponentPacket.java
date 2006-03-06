@@ -15,14 +15,12 @@
  */
 package org.apache.servicemix.jbi.framework;
 
-import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
+import java.io.Serializable;
+import java.util.Set;
 
 import org.apache.servicemix.jbi.container.SubscriptionSpec;
 
-import javax.jbi.servicedesc.ServiceEndpoint;
-
-import java.io.Serializable;
-import java.util.Set;
+import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * ComponentPacket - potentially passed around clusters
@@ -38,8 +36,6 @@ public class ComponentPacket implements Serializable {
     
     private ComponentNameSpace componentName;
     private String description = "POJO Component";
-    private Set endpoints = new CopyOnWriteArraySet();
-    private Set externalEndpoints = new CopyOnWriteArraySet();
     private Set subscriptionSpecs = new CopyOnWriteArraySet();
     private boolean binding;
     private boolean service;
@@ -73,60 +69,9 @@ public class ComponentPacket implements Serializable {
         this.componentName = componentName;
     }
     
-    
-    /**
-     * Add an activated endpoint
-     * @param endpoint
-     */
-    public void addActiveEndpoint(ServiceEndpoint endpoint) {
-        endpoints.add(endpoint);
-    }
-    
-    /**
-     * remove an activated endpoint
-     * @param endpoint
-     */
-    public void removeActiveEndpoint(ServiceEndpoint endpoint) {
-        endpoints.remove(endpoint);
-    }
-    
-    /**
-     * Get the Set of activated endpoints
-     * @return the activated endpoint Set
-     */
-    public Set getActiveEndpoints() {
-        return endpoints;
-    }
-    
-    /**
-     * Add an external activated endpoint
-     * @param endpoint
-     */
-    public void addExternalActiveEndpoint(ServiceEndpoint endpoint) {
-        externalEndpoints.add(endpoint);
-    }
-    
-    /**
-     * remove an external activated endpoint
-     * @param endpoint
-     */
-    public void removeExternalActiveEndpoint(ServiceEndpoint endpoint) {
-        externalEndpoints.remove(endpoint);
-    }
-    
-    /**
-     * Get the Set of external activated endpoints
-     * @return the activated endpoint Set
-     */
-    public Set getExternalActiveEndpoints() {
-        return externalEndpoints;
-    }
-    
-    
     public void addSubscriptionSpec(SubscriptionSpec ss) {
         subscriptionSpecs.add(ss);
     }
-    
     
     public void removeSubscriptionSpec(SubscriptionSpec ss) {
         subscriptionSpecs.remove(ss);

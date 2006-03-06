@@ -23,8 +23,8 @@ import javax.management.MBeanOperationInfo;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.event.ExchangeListener;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
@@ -37,7 +37,7 @@ import org.apache.servicemix.jbi.management.ParameterHelper;
  * @since 2.1
  * @version $Revision$
  */
-public abstract class AbstractAuditor extends BaseSystemService implements AuditorMBean, MessageExchangeListener {
+public abstract class AbstractAuditor extends BaseSystemService implements AuditorMBean, ExchangeListener {
 
     protected final Log log = LogFactory.getLog(getClass());
     

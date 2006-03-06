@@ -132,7 +132,7 @@ public class SubscriptionSpec implements Serializable {
                 }
             }
             if (result && interfaceName != null) {
-                ServiceEndpoint[] ses = registry.getEndpoints(interfaceName);
+                ServiceEndpoint[] ses = registry.getEndpointsForInterface(interfaceName);
                 if (ses != null) {
                     result = false;
                     for (int i = 0; i < ses.length; i++) {

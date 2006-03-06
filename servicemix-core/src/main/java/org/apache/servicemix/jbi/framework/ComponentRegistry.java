@@ -18,7 +18,6 @@ package org.apache.servicemix.jbi.framework;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,7 +38,6 @@ public class ComponentRegistry {
     private Map componentByNameMap = new ConcurrentHashMap();
     private Map idMap = new ConcurrentHashMap();
     private Map localIdMap = new ConcurrentHashMap();
-    private Map loadBalancedComponentMap = new ConcurrentHashMap();
     private boolean runningStateInitialized = false;
     private Registry registry;
     
@@ -69,7 +67,6 @@ public class ComponentRegistry {
             localIdMap.put(name, result);
             addComponentConnector(result);
             componentByNameMap.put(name, component);
-            addToLoadBalancedMap(name);
         }
         return result;
     }
@@ -128,7 +125,6 @@ public class ComponentRegistry {
             removeComponentConnector(result.getComponentNameSpace());
             localIdMap.remove(result.getComponentNameSpace());
             componentByNameMap.remove(result.getComponentNameSpace());
-            removeFromLoadBalancedMap(result.getComponentNameSpace());
         }
         return result;
     }
@@ -165,15 +161,6 @@ public class ComponentRegistry {
      */
     public ComponentConnector getComponentConnector(ComponentNameSpace id) {
         return (ComponentConnector) idMap.get(id);
-    }
-    
-    /**
-     * For distributed containers, get a ComponentConnector by round-robin
-     * @param id
-     * @return the ComponentConnector or null
-     */
-    public ComponentConnector getLoadBalancedComponentConnector(ComponentNameSpace id){
-        return getComponentConnector(getLoadBalancedComponentName(id));
     }
     
     /**
@@ -254,38 +241,6 @@ public class ComponentRegistry {
      */
     public void setContainerName(String containerName) {
         this.containerName = containerName;
-    }
-    
-    private synchronized void addToLoadBalancedMap(ComponentNameSpace cns){
-        String key = cns.getName();
-        LinkedList list = (LinkedList)loadBalancedComponentMap.get(key);
-        if (list == null){
-            list = new LinkedList();
-        }
-        list.add(cns);
-        
-    }
-    
-    private synchronized void removeFromLoadBalancedMap(ComponentNameSpace cns){
-        String key = cns.getName();
-        LinkedList list = (LinkedList)loadBalancedComponentMap.get(key);
-        if (list != null){
-            list.remove(cns);
-            if (list.isEmpty()){
-                loadBalancedComponentMap.remove(key);
-            }
-        }
-    }
-    
-    private synchronized ComponentNameSpace getLoadBalancedComponentName(ComponentNameSpace cns){
-        ComponentNameSpace result = null;
-        String key = cns.getName();
-        LinkedList list = (LinkedList)loadBalancedComponentMap.get(key);
-        if (list != null && !list.isEmpty()){
-            result = (ComponentNameSpace) list.removeFirst();
-            list.addLast(result);
-        }
-        return result;
     }
     
     private boolean setInitialRunningStateFromStart() throws JBIException{

@@ -15,10 +15,9 @@
  */
 package org.apache.servicemix.jbi.servicedesc;
 
-import org.apache.servicemix.jbi.framework.ComponentNameSpace;
-import org.w3c.dom.DocumentFragment;
-
 import javax.xml.namespace.QName;
+
+import org.w3c.dom.DocumentFragment;
 
 /**
  * Linked endpoints are defined by SA deployment.

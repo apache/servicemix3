@@ -382,7 +382,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
     public String stop(String serviceAssemblyName) throws Exception {
         try {
             ServiceAssemblyLifeCycle sa = registry.getServiceAssembly(serviceAssemblyName);
-            return sa.stop(true);
+            return sa.stop(true, false);
         } catch (Exception e) {
             log.info("Error in stop", e);
             throw e;
@@ -539,7 +539,8 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         else {
             // Register SA
             String[] deployedSUs = (String[]) suKeys.toArray(new String[suKeys.size()]);
-            registry.registerServiceAssembly(sa, deployedSUs);
+            ServiceAssemblyLifeCycle salc = registry.registerServiceAssembly(sa, deployedSUs);
+            salc.writeRunningState();
             // Build result string
             if (nbFailures > 0) {
                 return ManagementSupport.createWarningMessage("deploy", "Failed to deploy some service units", componentResults);

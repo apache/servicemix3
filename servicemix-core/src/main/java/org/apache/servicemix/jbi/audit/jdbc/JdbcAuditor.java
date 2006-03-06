@@ -23,7 +23,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 import javax.sql.DataSource;
 
 import org.apache.ddlutils.Platform;
@@ -33,6 +32,7 @@ import org.apache.ddlutils.model.Database;
 import org.apache.ddlutils.model.Table;
 import org.apache.servicemix.jbi.audit.AbstractAuditor;
 import org.apache.servicemix.jbi.audit.AuditorException;
+import org.apache.servicemix.jbi.event.ExchangeEvent;
 import org.apache.servicemix.jbi.messaging.ExchangePacket;
 import org.apache.servicemix.jbi.messaging.InOnlyImpl;
 import org.apache.servicemix.jbi.messaging.InOptionalOutImpl;
@@ -109,7 +109,8 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
         return db;
     }
 
-    public void onMessageExchange(MessageExchange exchange) throws MessagingException {
+    public void exchangeSent(ExchangeEvent event) {
+        MessageExchange exchange = event.getExchange();
         if (exchange instanceof MessageExchangeImpl == false) {
             throw new IllegalArgumentException("exchange should be a MessageExchangeImpl");
         }
@@ -124,7 +125,7 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
                 platform.returnConnection(connection);
             }
         } catch (Exception e) {
-            throw new MessagingException("Could not persist exchange", e);
+            log.error("Could not persist exchange", e);
         }
     }
     

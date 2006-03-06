@@ -318,7 +318,7 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
         if (externalEndpoint == null) {
             throw new IllegalArgumentException("externalEndpoint should be non null");
         }
-        container.registerExternalEndpoint(this, externalEndpoint);
+        container.getRegistry().registerExternalEndpoint(getComponentNameSpace(), externalEndpoint);
     }
 
     /**
@@ -331,7 +331,7 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      */
     public void deregisterExternalEndpoint(ServiceEndpoint externalEndpoint) throws JBIException {
         checkActivated();
-        container.deregisterExternalEndpoint(this, externalEndpoint);
+        container.getRegistry().deregisterExternalEndpoint(getComponentNameSpace(), externalEndpoint);
     }
 
     /**
@@ -348,7 +348,7 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      */
     public ServiceEndpoint resolveEndpointReference(DocumentFragment epr) {
         checkActivated();
-        return container.resolveEndpointReference(this, epr);
+        return container.getRegistry().resolveEndpointReference(epr);
     }
 
     /**
@@ -360,7 +360,7 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      */
     public ServiceEndpoint getEndpoint(QName service, String name) {
         checkActivated();
-        return container.getEndpoint(this, service, name);
+        return container.getRegistry().getEndpoint(service, name);
     }
 
     /**
@@ -388,7 +388,7 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      */
     public ServiceEndpoint[] getEndpoints(QName interfaceName) {
         checkActivated();
-        return container.getEndpoints(this, interfaceName);
+        return container.getRegistry().getEndpointsForInterface(interfaceName);
     }
 
     /**
@@ -400,7 +400,7 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      */
     public ServiceEndpoint[] getEndpointsForService(QName serviceName) {
         checkActivated();
-        return container.getEndpointsForService(this, serviceName);
+        return container.getRegistry().getEndpointsForService(serviceName);
     }
 
     /**
@@ -413,7 +413,7 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      */
     public ServiceEndpoint[] getExternalEndpoints(QName interfaceName) {
         checkActivated();
-        return container.getExternalEndpoints(this, interfaceName);
+        return container.getRegistry().getExternalEndpoints(interfaceName);
     }
 
     /**
@@ -424,7 +424,7 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      */
     public ServiceEndpoint[] getExternalEndpointsForService(QName serviceName) {
         checkActivated();
-        return container.getExternalEndpointsForService(this, serviceName);
+        return container.getRegistry().getExternalEndpointsForService(serviceName);
     }
 
     /**

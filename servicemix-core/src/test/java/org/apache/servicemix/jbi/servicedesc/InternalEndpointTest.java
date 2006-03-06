@@ -59,7 +59,7 @@ public class InternalEndpointTest extends TestCase {
         assertFalse(e1.equals(e2));
         ComponentNameSpace cns2 = new ComponentNameSpace("myContainer", "myName", "myId2");
         e2 = new InternalEndpoint(cns2, "myEndpoint1", new QName("myService"));
-        assertFalse(e1.equals(e2));
+        assertTrue(e1.equals(e2));
         cns2 = new ComponentNameSpace("myContainer", "myName", "myId");
         e2 = new InternalEndpoint(cns2, "myEndpoint1", new QName("myService"));
         assertTrue(e1.equals(e2));

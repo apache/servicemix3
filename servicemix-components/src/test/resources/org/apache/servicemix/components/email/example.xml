@@ -7,7 +7,7 @@
     <sm:activationSpecs>
 
       <!-- START SNIPPET: mime -->
-      <sm:activationSpec componentName="emailSender" service="foo:emailSender">
+      <sm:activationSpec componentName="emailSender" service="foo:mimeSender">
         <sm:component><bean class="org.apache.servicemix.components.email.MimeMailSender">
           <property name="sender">
             <bean class="org.springframework.mail.javamail.JavaMailSenderImpl">

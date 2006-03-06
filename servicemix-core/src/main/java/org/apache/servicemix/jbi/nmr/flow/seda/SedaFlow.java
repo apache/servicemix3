@@ -15,18 +15,8 @@
  */
 package org.apache.servicemix.jbi.nmr.flow.seda;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.framework.ComponentNameSpace;
-import org.apache.servicemix.jbi.framework.ComponentPacketEvent;
-import org.apache.servicemix.jbi.framework.ComponentPacketEventListener;
-import org.apache.servicemix.jbi.management.AttributeInfoHelper;
-import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
-import org.apache.servicemix.jbi.nmr.Broker;
-import org.apache.servicemix.jbi.nmr.flow.AbstractFlow;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.jbi.JBIException;
 import javax.jbi.management.LifeCycleMBean;
@@ -36,8 +26,19 @@ import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.ObjectName;
 
-import java.util.Iterator;
-import java.util.Map;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.event.ComponentAdapter;
+import org.apache.servicemix.jbi.event.ComponentEvent;
+import org.apache.servicemix.jbi.event.ComponentListener;
+import org.apache.servicemix.jbi.framework.ComponentNameSpace;
+import org.apache.servicemix.jbi.management.AttributeInfoHelper;
+import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
+import org.apache.servicemix.jbi.nmr.Broker;
+import org.apache.servicemix.jbi.nmr.flow.AbstractFlow;
+
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The SedaFlow introduces a simple event staging between the internal processes 
@@ -47,11 +48,12 @@ import java.util.Map;
  * 
  * @version $Revision$
  */
-public class SedaFlow extends AbstractFlow implements ComponentPacketEventListener {
+public class SedaFlow extends AbstractFlow {
     private static final Log log = LogFactory.getLog(SedaFlow.class);
     protected Map queueMap = new ConcurrentHashMap();
     protected int capacity = 100;
     protected AtomicBoolean started = new AtomicBoolean(false);
+    protected ComponentListener listener;
 
     /**
      * The type of Flow
@@ -70,7 +72,12 @@ public class SedaFlow extends AbstractFlow implements ComponentPacketEventListen
      */
     public void init(Broker broker, String subType) throws JBIException {
         super.init(broker, subType);
-        broker.getRegistry().addComponentPacketListener(this);
+        listener = new ComponentAdapter() {
+            public void componentShutDown(ComponentEvent event) {
+                onComponentShutdown(event.getComponent().getComponentNameSpace());
+            }
+        };
+        broker.getContainer().addListener(listener);
     }
 
     /**
@@ -118,8 +125,8 @@ public class SedaFlow extends AbstractFlow implements ComponentPacketEventListen
      * @throws JBIException
      */
     public void shutDown() throws JBIException {
-        broker.getRegistry().removeComponentPacketListener(this);
-        for (Iterator i = queueMap.values().iterator();i.hasNext();) {
+        broker.getContainer().removeListener(listener);
+        for (Iterator i = queueMap.values().iterator(); i.hasNext();) {
             SedaQueue queue = (SedaQueue) i.next();
             queue.shutDown();
             unregisterQueue(queue);
@@ -177,19 +184,15 @@ public class SedaFlow extends AbstractFlow implements ComponentPacketEventListen
      * 
      * @param event
      */
-    public synchronized void onEvent(ComponentPacketEvent event) {
-        // watch for deactivations
-        if (event.getStatus() == ComponentPacketEvent.DEACTIVATED) {
-            ComponentNameSpace cns = event.getPacket().getComponentNameSpace();
-            SedaQueue queue = (SedaQueue) queueMap.remove(cns);
-            if (queue != null) {
-                try {
-                    queue.shutDown();
-                    unregisterQueue(queue);
-                }
-                catch (JBIException e) {
-                    log.error("Caught exception stopping SedaQueue: " + queue);
-                }
+    public synchronized void onComponentShutdown(ComponentNameSpace cns) {
+        SedaQueue queue = (SedaQueue) queueMap.remove(cns);
+        if (queue != null) {
+            try {
+                queue.shutDown();
+                unregisterQueue(queue);
+            }
+            catch (JBIException e) {
+                log.error("Caught exception stopping SedaQueue: " + queue);
             }
         }
     }

@@ -47,7 +47,9 @@ import javax.xml.namespace.QName;
  * @version $Revision$
  */
 public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
+    
     private static final Log log = LogFactory.getLog(AbstractFlow.class);
+    
     protected Broker broker;
     private ReadWriteLock lock = new ReentrantReadWriteLock();
     private Thread suspendThread = null;
@@ -215,6 +217,7 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
         if (se == null) {
             // Routing by service name
             QName serviceName = me.getService();
+            QName interfaceName = me.getInterfaceName();
             if (serviceName != null) {
                 ServiceEndpoint[] eps = broker.getContainer().getRegistry().getEndpointsForService(serviceName);
                 for (int i = 0; i < eps.length; i++) {
@@ -226,10 +229,9 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
                     }
                 }
                 return false;
-            } else {
-                // Routing by interface name
-                QName interfaceName = me.getInterfaceName();
-                ServiceEndpoint[] eps = broker.getContainer().getRegistry().getEndpoints(interfaceName);
+            // Routing by interface name
+            } else if (interfaceName != null) {
+                ServiceEndpoint[] eps = broker.getContainer().getRegistry().getEndpointsForInterface(interfaceName);
                 for (int i = 0; i < eps.length; i++) {
                     if (eps[i] instanceof InternalEndpoint) {
                         String name = ((InternalEndpoint) eps[i]).getComponentNameSpace().getContainerName();
@@ -238,6 +240,9 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
                         }
                     }
                 }
+                return false;
+            } else {
+                // Should not happen
                 return false;
             }
         // Routing by endpoint

@@ -36,8 +36,12 @@ public abstract class AbstractServiceEndpoint implements ServiceEndpoint, Serial
      * get the id of the ComponentConnector
      * @return the id
      */
-    public ComponentNameSpace getComponentNameSpace(){
+    public ComponentNameSpace getComponentNameSpace() {
         return componentName;
+    }
+
+    public void setComponentName(ComponentNameSpace componentName) {
+        this.componentName = componentName;
     }
 
 }

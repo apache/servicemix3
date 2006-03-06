@@ -29,6 +29,8 @@ import javax.management.MBeanOperationInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.deployment.ServiceUnit;
+import org.apache.servicemix.jbi.event.ServiceUnitEvent;
+import org.apache.servicemix.jbi.event.ServiceUnitListener;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.MBeanInfoProvider;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
@@ -236,6 +238,25 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
 
     public String getKey() {
         return getComponentName() + "/" + getName();
+    }
+
+    protected void fireEvent(int type) {
+        ServiceUnitEvent event = new ServiceUnitEvent(this, type);
+        ServiceUnitListener[] listeners = (ServiceUnitListener[]) registry.getContainer().getListeners(ServiceUnitListener.class);
+        for (int i = 0; i < listeners.length; i++) {
+            switch (type) {
+            case ServiceUnitEvent.UNIT_STARTED:
+                listeners[i].unitStarted(event);
+                break;
+            case ServiceUnitEvent.UNIT_STOPPED:
+                listeners[i].unitStopped(event);
+                break;
+            case ServiceUnitEvent.UNIT_SHUTDOWN:
+                listeners[i].unitShutDown(event);
+                break;
+            }
+        }
+        
     }
 
 }

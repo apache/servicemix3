@@ -251,6 +251,7 @@ public class DeploymentTest extends AbstractManagementTest {
         componentMock.setReturnValue(manager, MockControl.ONE_OR_MORE);
         manager.init(null, null);
         managerMock.setMatcher(MockControl.ALWAYS_MATCHER);
+        manager.shutDown("su");
         replay();
         // start container
         startContainer(false);

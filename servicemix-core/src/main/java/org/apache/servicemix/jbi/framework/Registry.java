@@ -41,12 +41,13 @@ import org.apache.servicemix.jbi.deployment.ServiceAssembly;
 import org.apache.servicemix.jbi.deployment.ServiceUnit;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
+import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
+import org.apache.servicemix.jbi.servicedesc.DynamicEndpoint;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
-import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Registry - state infomation including running state, SA's deployed etc.
@@ -60,7 +61,6 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     private EndpointRegistry endpointRegistry;
     private SubscriptionRegistry subscriptionRegistry;
     private ServiceAssemblyRegistry serviceAssemblyRegistry;
-    private List componentPacketListeners;
     private Map serviceUnits;
 
     /**
@@ -71,7 +71,6 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         this.endpointRegistry = new EndpointRegistry(this);
         this.subscriptionRegistry = new SubscriptionRegistry();
         this.serviceAssemblyRegistry = new ServiceAssemblyRegistry(this);
-        this.componentPacketListeners = new CopyOnWriteArrayList();
         this.serviceUnits = new ConcurrentHashMap();
     }
     
@@ -170,22 +169,20 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      */
     public synchronized ServiceEndpoint activateEndpoint(ComponentContextImpl context, QName serviceName,
             String endpointName) throws JBIException {
-        InternalEndpoint result = endpointRegistry.activateEndpoint(context, serviceName, endpointName);
-        if (result != null) {
-            ComponentConnector cc = componentRegistry.getComponentConnector(result.getComponentNameSpace());
-            if (cc != null) {
-                fireComponentPacketEvent(cc, ComponentPacketEvent.STATE_CHANGE);
-            }
-        }
+        InternalEndpoint result = endpointRegistry.registerInternalEndpoint(context, serviceName, endpointName);
         return result;
     }
 
+    public ServiceEndpoint[] getEndpointsForComponent(ComponentNameSpace cns) {
+        return endpointRegistry.getEndpointsForComponent(cns);
+    }
+    
     /**
      * @param interfaceName qualified name
      * @return an array of available endpoints for the specified interface name;
      */
-    public ServiceEndpoint[] getEndpoints(QName interfaceName) {
-        return endpointRegistry.getEndpoints(interfaceName);
+    public ServiceEndpoint[] getEndpointsForInterface(QName interfaceName) {
+        return endpointRegistry.getEndpointsForInterface(interfaceName);
     }
 
     /**
@@ -193,43 +190,60 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @param serviceEndpoint
      */
     public void deactivateEndpoint(ComponentContext provider, InternalEndpoint serviceEndpoint) {
-        endpointRegistry.deactivateEndpoint(provider, serviceEndpoint);
-        if (serviceEndpoint != null) {
-            ComponentConnector cc = componentRegistry.getComponentConnector(serviceEndpoint.getComponentNameSpace());
-            if (cc != null) {
-                fireComponentPacketEvent(cc, ComponentPacketEvent.STATE_CHANGE);
-            }
-        }
+        endpointRegistry.unregisterInternalEndpoint(provider, serviceEndpoint);
     }
 
     /**
+     * Retrieve the service description metadata for the specified endpoint.
+     * <p>
+     * Note that the result can use either the WSDL 1.1 or WSDL 2.0 description language.
+     * 
      * @param endpoint endpoint reference; must be non-null.
      * @return metadata describing endpoint, or <code>null</code> if metadata is unavailable.
      * @throws JBIException invalid endpoint reference.
      */
     public Document getEndpointDescriptor(ServiceEndpoint endpoint) throws JBIException {
-        return endpointRegistry.getEndpointDescriptor(endpoint);
+        if (endpoint instanceof AbstractServiceEndpoint == false) {
+            throw new JBIException("Descriptors can not be queried for external endpoints");
+        }
+        AbstractServiceEndpoint se = (AbstractServiceEndpoint) endpoint;
+        // TODO: what if the endpoint is linked or dynamic
+        Component component = getComponent(se.getComponentNameSpace());
+        return component.getServiceDescription(endpoint);
     }
 
     /**
-     * @param epr
-     * @return endpoint
+     * Resolve the given endpoint reference into a service endpoint. This is called by the component when it has an EPR
+     * that it wants to resolve into a service endpoint.
+     * <p>
+     * Note that the service endpoint returned refers to a dynamic endpoint; the endpoint will exist only as long as
+     * this component retains a strong reference to the object returned by this method. The endpoint may not be included
+     * in the list of "activated" endpoints.
+     * 
+     * @param epr endpoint reference as an XML fragment; must be non-null.
+     * @return the service endpoint corresponding to the given endpoint reference; <code>null</code> if the reference
+     * cannot be resolved.
      */
     public ServiceEndpoint resolveEndpointReference(DocumentFragment epr) {
-        return endpointRegistry.resolveEndpointReference(epr);
+        Collection connectors = getLocalComponentConnectors();
+        for (Iterator iter = connectors.iterator(); iter.hasNext();) {
+            LocalComponentConnector connector = (LocalComponentConnector) iter.next();
+            ServiceEndpoint se = connector.getComponent().resolveEndpointReference(epr);
+            if (se != null) {
+                return new DynamicEndpoint(connector.getComponentNameSpace(), se, epr);  
+            }
+        }
+        return null;
     }
 
     /**
      * @param provider
      * @param externalEndpoint the external endpoint to be registered, must be non-null.
+     * @throws JBIException 
      */
-    public void registerExternalEndpoint(ComponentContextImpl provider, ServiceEndpoint externalEndpoint) {
+    public void registerExternalEndpoint(ComponentNameSpace cns, ServiceEndpoint externalEndpoint) throws JBIException {
         if (externalEndpoint != null) {
-            endpointRegistry.registerExternalEndpoint(provider, externalEndpoint);
-            ComponentConnector cc = componentRegistry.getComponentConnector(provider.getComponentNameSpace());
-            if (cc != null) {
-                fireComponentPacketEvent(cc, ComponentPacketEvent.STATE_CHANGE);
-            }
+            endpointRegistry.registerExternalEndpoint(cns, externalEndpoint);
         }
     }
 
@@ -237,14 +251,8 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @param provider
      * @param externalEndpoint the external endpoint to be deregistered; must be non-null.
      */
-    public void deregisterExternalEndpoint(ComponentContextImpl provider, ServiceEndpoint externalEndpoint) {
-        endpointRegistry.deregisterExternalEndpoint(provider, externalEndpoint);
-        if (externalEndpoint != null) {
-            ComponentConnector cc = componentRegistry.getComponentConnector(provider.getComponentNameSpace());
-            if (cc != null) {
-                fireComponentPacketEvent(cc, ComponentPacketEvent.STATE_CHANGE);
-            }
-        }
+    public void deregisterExternalEndpoint(ComponentNameSpace cns, ServiceEndpoint externalEndpoint) {
+        endpointRegistry.unregisterExternalEndpoint(cns, externalEndpoint);
     }
 
     /**
@@ -254,6 +262,10 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      */
     public ServiceEndpoint getEndpoint(QName service, String name) {
         return endpointRegistry.getEndpoint(service, name);
+    }
+    
+    public ServiceEndpoint getInternalEndpoint(QName service, String name) {
+        return endpointRegistry.getInternalEndpoint(service, name);
     }
 
     /**
@@ -269,7 +281,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @return endpoints
      */
     public ServiceEndpoint[] getExternalEndpoints(QName interfaceName) {
-        return endpointRegistry.getExternalEndpoints(interfaceName);
+        return endpointRegistry.getExternalEndpointsForInterface(interfaceName);
     }
 
     /**
@@ -295,9 +307,6 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     public LocalComponentConnector registerComponent(ComponentNameSpace name, String description,Component component,
             boolean binding, boolean service) throws JBIException {
         LocalComponentConnector result = componentRegistry.registerComponent(name,description, component, binding, service);
-        if (result != null) {
-            fireComponentPacketEvent(result, ComponentPacketEvent.ACTIVATED);
-        }
         return result;
     }
 
@@ -307,9 +316,6 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      */
     public ComponentConnector deregisterComponent(Component component) {
         ComponentConnector result = componentRegistry.deregisterComponent(component);
-        if (result != null) {
-            fireComponentPacketEvent(result, ComponentPacketEvent.DEACTIVATED);
-        }
         return result;
     }
 
@@ -318,24 +324,6 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      */
     public Collection getLocalComponentConnectors() {
         return componentRegistry.getLocalComponentConnectors();
-    }
-
-    /**
-     * Add a listener
-     * 
-     * @param l
-     */
-    public void addComponentPacketListener(ComponentPacketEventListener l) {
-        this.componentPacketListeners.add(l);
-    }
-
-    /**
-     * remove a listener
-     * 
-     * @param l
-     */
-    public void removeComponentPacketListener(ComponentPacketEventListener l) {
-        this.componentPacketListeners.remove(l);
     }
 
     /**
@@ -349,15 +337,6 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     }
     
     
-    /**
-     * For distributed containers, get a ComponentConnector by round-robin
-     * @param id
-     * @return the ComponentConnector or null
-     */
-    public ComponentConnector getLoadBalancedComponentConnector(ComponentNameSpace id){
-        return componentRegistry.getLoadBalancedComponentConnector(id);
-    }
-
     /**
      * Add a ComponentConnector to ComponentRegistry Should be called for adding remote ComponentConnectors from other
      * Containers
@@ -605,12 +584,6 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         InternalEndpoint sei = (InternalEndpoint)endpoint;
         subscription.setName(context.getComponentNameSpace());
         subscriptionRegistry.registerSubscription(subscription,sei);
-        if (sei != null) {
-            ComponentConnector cc = componentRegistry.getComponentConnector(sei.getComponentNameSpace());
-            if (cc != null) {
-                fireComponentPacketEvent(cc, ComponentPacketEvent.STATE_CHANGE);
-            }
-        }
     }
 
     /**
@@ -621,12 +594,6 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     public InternalEndpoint deregisterSubscription(ComponentContextImpl context,SubscriptionSpec subscription) {
         subscription.setName(context.getComponentNameSpace());
         InternalEndpoint result = subscriptionRegistry.deregisterSubscription(subscription);
-        if (result != null) {
-            ComponentConnector cc = componentRegistry.getComponentConnector(result.getComponentNameSpace());
-            if (cc != null) {
-                fireComponentPacketEvent(cc, ComponentPacketEvent.STATE_CHANGE);
-            }
-        }
         return result;
     }
     
@@ -646,7 +613,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @throws DeploymentException 
      * @deprecated
      */
-    public boolean registerServiceAssembly(ServiceAssembly sa) throws DeploymentException{
+    public ServiceAssemblyLifeCycle registerServiceAssembly(ServiceAssembly sa) throws DeploymentException{
         return serviceAssemblyRegistry.register(sa);
     }
     
@@ -657,7 +624,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @return true if not already registered
      * @throws DeploymentException 
      */
-    public boolean registerServiceAssembly(ServiceAssembly sa, String[] deployedSUs) throws DeploymentException{
+    public ServiceAssemblyLifeCycle registerServiceAssembly(ServiceAssembly sa, String[] deployedSUs) throws DeploymentException{
         return serviceAssemblyRegistry.register(sa, deployedSUs);
     }
     
@@ -729,18 +696,6 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         return serviceAssemblyRegistry.isDeployedServiceUnit(componentName, suName);
     }
     
-    
-
-    protected void fireComponentPacketEvent(ComponentConnector cc, int status) {
-        if (!componentPacketListeners.isEmpty()) {
-            ComponentPacketEvent event = new ComponentPacketEvent(cc.getComponentPacket(), status);
-            for (Iterator i = componentPacketListeners.iterator();i.hasNext();) {
-                ComponentPacketEventListener l = (ComponentPacketEventListener) i.next();
-                l.onEvent(event);
-            }
-        }
-    }
-
     /**
      * Get a ServiceUnit by its key.
      * 
@@ -785,5 +740,29 @@ public class Registry extends BaseSystemService implements RegistryMBean {
             }
         }
     }
+
+    public void registerEndpointConnection(QName fromSvc, String fromEp, QName toSvc, String toEp, String link) throws JBIException {
+        endpointRegistry.registerEndpointConnection(fromSvc, fromEp, toSvc, toEp, link);
+    }
+
+    public void unregisterEndpointConnection(QName fromSvc, String fromEp) {
+        endpointRegistry.unregisterEndpointConnection(fromSvc, fromEp);
+    }
     
+    public void registerInterfaceConnection(QName fromItf, QName toSvc, String toEp) throws JBIException {
+        endpointRegistry.registerInterfaceConnection(fromItf, toSvc, toEp);
+    }
+
+    public void unregisterInterfaceConnection(QName fromItf) {
+        endpointRegistry.unregisterInterfaceConnection(fromItf);
+    }
+
+    public void registerRemoteEndpoint(ServiceEndpoint endpoint) {
+        endpointRegistry.registerRemoteEndpoint((InternalEndpoint) endpoint);
+    }
+
+    public void unregisterRemoteEndpoint(ServiceEndpoint endpoint) {
+        endpointRegistry.unregisterRemoteEndpoint((InternalEndpoint) endpoint);
+    }
+
 }

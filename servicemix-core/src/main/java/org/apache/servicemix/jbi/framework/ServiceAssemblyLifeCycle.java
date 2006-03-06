@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import javax.jbi.JBIException;
 import javax.jbi.management.DeploymentException;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
@@ -40,10 +41,11 @@ import org.apache.servicemix.jbi.deployment.Connection;
 import org.apache.servicemix.jbi.deployment.Consumes;
 import org.apache.servicemix.jbi.deployment.Descriptor;
 import org.apache.servicemix.jbi.deployment.ServiceAssembly;
+import org.apache.servicemix.jbi.event.ServiceAssemblyEvent;
+import org.apache.servicemix.jbi.event.ServiceAssemblyListener;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.MBeanInfoProvider;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
-import org.apache.servicemix.jbi.nmr.Broker;
 import org.apache.servicemix.jbi.util.XmlPersistenceSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -105,7 +107,11 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
     public String start(boolean writeState) throws Exception {
         log.info("Starting service assembly: " + getName());
         // Start connections
-        startConnections();
+        try {
+            startConnections();
+        } catch (JBIException e) {
+            throw ManagementSupport.failure("start", e.getMessage());
+        }
         // Start service units
         List componentFailures = new ArrayList();
         for (int i = 0; i < sus.length; i++) {
@@ -132,6 +138,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
             if (writeState) {
                 writeRunningState();
             }
+            fireEvent(ServiceAssemblyEvent.ASSEMBLY_STARTED);
             return ManagementSupport.createSuccessMessage("start");
         } else {
             throw ManagementSupport.failure("start", componentFailures);
@@ -145,15 +152,24 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
      * @throws Exception 
      */
     public String stop() throws Exception {
-        return stop(true);
+        return stop(true, false);
     }
     
-    public String stop(boolean writeState) throws Exception {
+    public String stop(boolean writeState, boolean forceInit) throws Exception {
         log.info("Stopping service assembly: " + getName());
         // Stop connections
         stopConnections();
         // Stop service units
         List componentFailures = new ArrayList();
+        if (forceInit) {
+            for (int i = 0; i < sus.length; i++) {
+                try {
+                    sus[i].init();
+                } catch (DeploymentException e) {
+                    componentFailures.add(getComponentFailure(e, "stop", sus[i].getComponentName()));
+                }
+            }
+        }
         for (int i = 0; i < sus.length; i++) {
             if (sus[i].isStarted()) {
                 try {
@@ -169,6 +185,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
             if (writeState) {
                 writeRunningState();
             }
+            fireEvent(ServiceAssemblyEvent.ASSEMBLY_STOPPED);
             return ManagementSupport.createSuccessMessage("stop");
         } else {
             throw ManagementSupport.failure("stop", componentFailures);
@@ -212,6 +229,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
             if (writeState) {
                 writeRunningState();
             }
+            fireEvent(ServiceAssemblyEvent.ASSEMBLY_SHUTDOWN);
             return ManagementSupport.createSuccessMessage("shutDown");
         } else {
             throw ManagementSupport.failure("shutDown", componentFailures);
@@ -307,11 +325,11 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
     void restore() throws Exception {
         String state = getRunningStateFromStore();
         if (STARTED.equals(state)) {
-            start();
+            start(false);
         } else {
-            stop();
+            stop(false, true);
             if (SHUTDOWN.equals(state)) {
-                shutDown();
+                shutDown(false);
             }
         }
     }
@@ -320,26 +338,25 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
         return sus;
     }
     
-    protected void startConnections() {
+    protected void startConnections() throws JBIException {
         if (serviceAssembly.getConnections() == null ||
             serviceAssembly.getConnections().getConnections() == null) {
             return;
         }
         Connection[] connections = serviceAssembly.getConnections().getConnections();
-        Broker broker = registry.getContainer().getBroker();
         for (int i = 0; i < connections.length; i++) {
             if (connections[i].getConsumer().getInterfaceName() != null) {
                 QName fromItf = connections[i].getConsumer().getInterfaceName();
                 QName toSvc = connections[i].getProvider().getServiceName();
                 String toEp = connections[i].getProvider().getEndpointName();
-                broker.registerInterfaceConnection(fromItf, toSvc, toEp);
+                registry.registerInterfaceConnection(fromItf, toSvc, toEp);
             } else {
                 QName fromSvc = connections[i].getConsumer().getServiceName();
                 String fromEp = connections[i].getConsumer().getEndpointName();
                 QName toSvc = connections[i].getProvider().getServiceName();
                 String toEp = connections[i].getProvider().getEndpointName();
                 String link = getLinkType(fromSvc, fromEp);
-                broker.registerEndpointConnection(fromSvc, fromEp, toSvc, toEp, link);
+                registry.registerEndpointConnection(fromSvc, fromEp, toSvc, toEp, link);
             }
         }
     }
@@ -362,25 +379,20 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
     
     protected void stopConnections() {
         if (serviceAssembly.getConnections() == null ||
-                serviceAssembly.getConnections().getConnections() == null) {
-                return;
+            serviceAssembly.getConnections().getConnections() == null) {
+            return;
+        }
+        Connection[] connections = serviceAssembly.getConnections().getConnections();
+        for (int i = 0; i < connections.length; i++) {
+            if (connections[i].getConsumer().getInterfaceName() != null) {
+                QName fromItf = connections[i].getConsumer().getInterfaceName();
+                registry.unregisterInterfaceConnection(fromItf);
+            } else {
+                QName fromSvc = connections[i].getConsumer().getServiceName();
+                String fromEp = connections[i].getConsumer().getEndpointName();
+                registry.unregisterEndpointConnection(fromSvc, fromEp);
             }
-            Connection[] connections = serviceAssembly.getConnections().getConnections();
-            Broker broker = registry.getContainer().getBroker();
-            for (int i = 0; i < connections.length; i++) {
-                if (connections[i].getConsumer().getInterfaceName() != null) {
-                    QName fromItf = connections[i].getConsumer().getInterfaceName();
-                    QName toSvc = connections[i].getProvider().getServiceName();
-                    String toEp = connections[i].getProvider().getEndpointName();
-                    broker.unregisterInterfaceConnection(fromItf, toSvc, toEp);
-                } else {
-                    QName fromSvc = connections[i].getConsumer().getServiceName();
-                    String fromEp = connections[i].getConsumer().getEndpointName();
-                    QName toSvc = connections[i].getProvider().getServiceName();
-                    String toEp = connections[i].getProvider().getEndpointName();
-                    broker.unregisterEndpointConnection(fromSvc, fromEp, toSvc, toEp);
-                }
-            }
+        }
     }
 
     protected Element getComponentFailure(Exception exception, String task, String component) {
@@ -461,4 +473,24 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
         // TODO Auto-generated method stub
         return null;
     }
+
+    protected void fireEvent(int type) {
+        ServiceAssemblyEvent event = new ServiceAssemblyEvent(this, type);
+        ServiceAssemblyListener[] listeners = (ServiceAssemblyListener[]) registry.getContainer().getListeners(ServiceAssemblyListener.class);
+        for (int i = 0; i < listeners.length; i++) {
+            switch (type) {
+            case ServiceAssemblyEvent.ASSEMBLY_STARTED:
+                listeners[i].assemblyStarted(event);
+                break;
+            case ServiceAssemblyEvent.ASSEMBLY_STOPPED:
+                listeners[i].assemblyStopped(event);
+                break;
+            case ServiceAssemblyEvent.ASSEMBLY_SHUTDOWN:
+                listeners[i].assemblyShutDown(event);
+                break;
+            }
+        }
+        
+    }
+
 }

@@ -18,8 +18,7 @@ package org.apache.servicemix.jbi.container;
 import java.io.File;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.EventListener;
 import java.util.MissingResourceException;
 import java.util.logging.Logger;
 
@@ -39,6 +38,7 @@ import javax.management.ObjectName;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.resource.spi.work.WorkManager;
+import javax.swing.event.EventListenerList;
 import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
 
@@ -53,6 +53,13 @@ import org.apache.servicemix.components.util.ComponentAdaptorMEListener;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.components.util.PojoLifecycleAdaptor;
 import org.apache.servicemix.components.util.PojoSupport;
+import org.apache.servicemix.jbi.event.ComponentListener;
+import org.apache.servicemix.jbi.event.EndpointListener;
+import org.apache.servicemix.jbi.event.ExchangeEvent;
+import org.apache.servicemix.jbi.event.ExchangeListener;
+import org.apache.servicemix.jbi.event.ServiceAssemblyListener;
+import org.apache.servicemix.jbi.event.ServiceUnitListener;
+import org.apache.servicemix.jbi.framework.AdminCommandsService;
 import org.apache.servicemix.jbi.framework.AutoDeploymentService;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 import org.apache.servicemix.jbi.framework.ComponentNameSpace;
@@ -60,7 +67,6 @@ import org.apache.servicemix.jbi.framework.DeploymentService;
 import org.apache.servicemix.jbi.framework.InstallationService;
 import org.apache.servicemix.jbi.framework.LocalComponentConnector;
 import org.apache.servicemix.jbi.framework.Registry;
-import org.apache.servicemix.jbi.framework.AdminCommandsService;
 import org.apache.servicemix.jbi.management.BaseLifeCycle;
 import org.apache.servicemix.jbi.management.ManagementContext;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
@@ -69,7 +75,6 @@ import org.apache.servicemix.jbi.nmr.flow.Flow;
 import org.jencks.factory.WorkManagerFactoryBean;
 import org.w3c.dom.DocumentFragment;
 
-import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -104,9 +109,9 @@ public class JBIContainer extends BaseLifeCycle {
     protected boolean isWorkManagerCreated;
     protected boolean autoEnlistInTransaction = false;
     protected boolean persistent = false;
-    protected List listeners = new CopyOnWriteArrayList();
     protected boolean embedded = false;
     protected boolean notifyStatistics = false;
+    protected EventListenerList listeners = new EventListenerList();
     
     /**
      * Default Constructor
@@ -691,9 +696,9 @@ public class JBIContainer extends BaseLifeCycle {
      * @param externalEndpoint
      * @throws JBIException
      */
-    public void registerExternalEndpoint(ComponentContextImpl context, ServiceEndpoint externalEndpoint)
+    public void registerExternalEndpoint(ComponentNameSpace cns, ServiceEndpoint externalEndpoint)
             throws JBIException {
-        registry.registerExternalEndpoint(context, externalEndpoint);
+        registry.registerExternalEndpoint(cns, externalEndpoint);
     }
 
     /**
@@ -701,9 +706,9 @@ public class JBIContainer extends BaseLifeCycle {
      * @param externalEndpoint
      * @throws JBIException
      */
-    public void deregisterExternalEndpoint(ComponentContextImpl context, ServiceEndpoint externalEndpoint)
+    public void deregisterExternalEndpoint(ComponentNameSpace cns, ServiceEndpoint externalEndpoint)
             throws JBIException {
-        registry.deregisterExternalEndpoint(context, externalEndpoint);
+        registry.deregisterExternalEndpoint(cns, externalEndpoint);
     }
 
     /**
@@ -731,7 +736,7 @@ public class JBIContainer extends BaseLifeCycle {
      * @return endpoints that match the interface name
      */
     public ServiceEndpoint[] getEndpoints(ComponentContextImpl context, QName interfaceName) {
-        return registry.getEndpoints(interfaceName);
+        return registry.getEndpointsForInterface(interfaceName);
     }
 
     /**
@@ -1114,19 +1119,52 @@ public class JBIContainer extends BaseLifeCycle {
 		this.persistent = persistent;
 	}
     
-    public void addListener(MessageExchangeListener listener) {
-        listeners.add(listener);
+    public void addListener(EventListener listener) {
+        if (listener instanceof ExchangeListener) {
+            listeners.add(ExchangeListener.class, (ExchangeListener) listener);
+        }
+        if (listener instanceof ComponentListener) {
+            listeners.add(ComponentListener.class, (ComponentListener) listener);
+        }
+        if (listener instanceof ServiceAssemblyListener) {
+            listeners.add(ServiceAssemblyListener.class, (ServiceAssemblyListener) listener);
+        }
+        if (listener instanceof ServiceUnitListener) {
+            listeners.add(ServiceUnitListener.class, (ServiceUnitListener) listener);
+        }
+        if (listener instanceof EndpointListener) {
+            listeners.add(EndpointListener.class, (EndpointListener) listener);
+        }
     }
     
-    public void removeListener(MessageExchangeListener listener) {
-        listeners.remove(listener);
+    public void removeListener(EventListener listener) {
+        if (listener instanceof ExchangeListener) {
+            listeners.remove(ExchangeListener.class, (ExchangeListener) listener);
+        }
+        if (listener instanceof ComponentListener) {
+            listeners.remove(ComponentListener.class, (ComponentListener) listener);
+        }
+        if (listener instanceof ServiceAssemblyListener) {
+            listeners.remove(ServiceAssemblyListener.class, (ServiceAssemblyListener) listener);
+        }
+        if (listener instanceof ServiceUnitListener) {
+            listeners.remove(ServiceUnitListener.class, (ServiceUnitListener) listener);
+        }
+        if (listener instanceof EndpointListener) {
+            listeners.remove(EndpointListener.class, (EndpointListener) listener);
+        }
+    }
+    
+    public Object[] getListeners(Class lc) {
+        return listeners.getListeners(lc);
     }
     
     public void callListeners(MessageExchange exchange) {
-        for (Iterator iter = listeners.iterator(); iter.hasNext();) {
-            MessageExchangeListener listener = (MessageExchangeListener) iter.next();
+        ExchangeListener[] l = (ExchangeListener[]) listeners.getListeners(ExchangeListener.class);
+        ExchangeEvent event = new ExchangeEvent(exchange);
+        for (int i = 0; i < l.length; i++) {
             try {
-                listener.onMessageExchange(exchange);
+                l[i].exchangeSent(event);
             } catch (Exception e) {
                 log.warn("Error calling listener: " + e.getMessage(), e);
             }
