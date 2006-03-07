@@ -6,15 +6,16 @@
 
   <!-- the JBI container -->
   <sm:container id="jbi"
-      rootDir="../wdir"
+      rootDir="#rootDir"
       useMBeanServer="true"
 		  createMBeanServer="true" 
-      installationDirPath="../install"
-      deploymentDirPath="../deploy"
+      installationDirPath="#installDir"
+      deploymentDirPath="#deployDir"
 		  monitorInstallationDirectory="true" 
       dumpStats="true"
 		  statsInterval="10" 
-      transactionManager="#transactionManager">
+      transactionManager="#transactionManager"
+      depends-on="broker">
 
     <sm:activationSpecs>
 
@@ -150,20 +151,6 @@
     </property>
   </bean>
 
-  <!-- message broker -->
-  
-  <!--  ActiveMQ 3.x  -->
-  <bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean">
-     <property name="config" value="/WEB-INF/activemq.xml"/>
-   </bean>
-  
-  <!--  ActiveMQ 4.x  -->
-  <!-- 
-  <bean id="broker" class="org.apache.activemq.broker.BrokerService" init-method="start">
-    <property name="transportConnectorURIs" value="tcp://localhost:61636"/>
-  </bean>
-   -->
-  
   <bean id="transactionManager" class="org.jencks.factory.TransactionManagerFactoryBean"/>
 
   <bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
@@ -172,6 +159,21 @@
         <constructor-arg value="tcp://localhost:61636"/>
       </bean>
     </property>
+  </bean>
+
+  <!-- Directories relative to web app -->
+  <bean id="servletContext" class="org.springframework.web.context.support.ServletContextFactoryBean" />
+  <bean id="rootDir" class="org.springframework.web.util.WebUtils" factory-method="getRealPath">
+    <constructor-arg ref="servletContext" />
+    <constructor-arg value="/wdir" />
+  </bean>
+  <bean id="installDir" class="org.springframework.web.util.WebUtils" factory-method="getRealPath">
+    <constructor-arg ref="servletContext" />
+    <constructor-arg value="/install" />
+  </bean>
+  <bean id="deployDir" class="org.springframework.web.util.WebUtils" factory-method="getRealPath">
+    <constructor-arg ref="servletContext" />
+    <constructor-arg value="/deploy" />
   </bean>
 
 </beans>
