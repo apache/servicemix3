@@ -40,8 +40,7 @@
       <attainGoal name="jar:install" />
     </j:if>
     <j:if test="${maven.multiproject.type == 'jbi'}">
-      <attainGoal name="jar:install" />
-      <attainGoal name="jbi:install" />
+      <attainGoal name="build-jbi" />
     </j:if>
     <j:if test="${maven.multiproject.type == 'war'}">
       <attainGoal name="war:install" />
@@ -51,6 +50,7 @@
       <attainGoal name="plugin:install-now" />
     </j:if>
   </goal>
+  <goal name="build-jbi" prereqs="jar:install,jbi:install"/>
   <goal name="deploy">
     <j:if test="${maven.multiproject.type == 'jar'}">
       <attainGoal name="jar:deploy" />
