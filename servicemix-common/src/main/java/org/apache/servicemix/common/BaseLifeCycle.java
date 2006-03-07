@@ -175,6 +175,7 @@ public class BaseLifeCycle implements ComponentLifeCycle {
             if (this.workManager instanceof BasicWorkManager) {
                 ((BasicWorkManager) this.workManager).shutDown();
             }
+            this.workManager = null;
         }
     }
 
@@ -195,7 +196,7 @@ public class BaseLifeCycle implements ComponentLifeCycle {
         } catch (JBIException e) {
             throw e;
         } catch (Exception e) {
-            throw new JBIException("Error calling init", e);
+            throw new JBIException("Error calling start", e);
         }
     }
 
