@@ -186,7 +186,7 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
     protected File getServiceUnitRootPath() {
         String componentName = getComponentName();
         String suName = getName();
-        File targetDir = registry.getEnvironmentContext().getServiceUnitDirectory(componentName, suName);
+        File targetDir = registry.getEnvironmentContext().getServiceUnitDirectory(componentName, suName, serviceAssembly);
         return targetDir;
     }
     

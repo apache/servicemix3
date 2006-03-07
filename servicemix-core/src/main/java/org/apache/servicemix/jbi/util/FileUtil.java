@@ -65,7 +65,7 @@ public class FileUtil {
     public static File getDirectoryPath(File parent, String subDirectory) {
         File result = null;
         if (parent != null){
-            result = new File(parent.getAbsolutePath() + File.separator + subDirectory);
+            result = new File(parent, subDirectory);
         }
         return result;
     }

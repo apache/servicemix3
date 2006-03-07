@@ -496,7 +496,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
                 // Unpack SU
                 try {
                     File artifactFile = new File(saDirectory, artifact);
-                    targetDir = environmentContext.getServiceUnitDirectory(componentName, suName);
+                    targetDir = environmentContext.getServiceUnitDirectory(componentName, suName, assemblyName);
                     if (log.isDebugEnabled()) {
                         log.debug("Unpack service unit archive " + artifactFile + " to " + targetDir);
                     }
@@ -635,7 +635,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
     protected void buildState() {
         log.info("Restoring service assemblies");
         // walk through deployed SA's
-        File top = environmentContext.getServiceAssembiliesDirectory();
+        File top = environmentContext.getServiceAssembliesDirectory();
         if (top != null && top.exists() && top.isDirectory()) {
             File[] files = top.listFiles();
             if (files != null) {

@@ -473,7 +473,7 @@ public class InstallationService extends BaseSystemService implements Installati
             }
             File componentRoot=environmentContext.createComponentRootDirectory(name);
             // this will get the new one
-            File installationDir=environmentContext.getInstallationDirectory(name);
+            File installationDir=environmentContext.getNewInstallationDirectory(name);
             tmpDirectory.renameTo(installationDir);
             if (log.isDebugEnabled()) {
                 log.debug("Moved " + tmpDirectory + " to " + installationDir);
