@@ -65,11 +65,6 @@
         </j:forEach>
     </preGoal>
 
-    <goal name="rebuild">
-        <attainGoal name="clean"/>
-        <attainGoal name="default"/>
-    </goal>
-
     <goal name="dist:prepare-bin-filesystem"
           prereqs="jar:install"
           description="Builds the binary distribution file system.">
@@ -79,7 +74,6 @@
       be archived.
     -->
     
-    <ant:delete dir="${maven.dist.bin.assembly.dir}"/>
     <ant:mkdir dir="${maven.dist.bin.assembly.dir}"/>
     <ant:mkdir dir="${maven.build.dir}/unjar"/>
 
@@ -201,7 +195,6 @@
 
     <!-- S O U R C E  D I S T R I B U T I O N -->
 
-    <ant:delete dir="${maven.dist.src.assembly.dir}" />
     <ant:mkdir dir="${maven.dist.src.assembly.dir}" />
 
     <ant:echo>

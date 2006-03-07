@@ -30,9 +30,42 @@
     <touch file="${maven.repo.local}/servicemix/jars/${pom.artifactId}-${pom.currentVersion}.jar"/>
   </postGoal>
   
-  <goal name="default" prereqs="jar:install"/>
-
-  <goal name="nightly" prereqs="clean, jar:install, jar:deploy"/>
+  <!-- Public goals -->
+  <goal name="default" prereqs="build"/>
+  <goal name="rebuild" prereqs="clean, default"/>
+  <goal name="nightly" prereqs="rebuild, deploy"/>
+  
+  <goal name="build">
+    <j:if test="${maven.multiproject.type == 'jar' || maven.multiproject.type == null}">
+      <attainGoal name="jar:install" />
+    </j:if>
+    <j:if test="${maven.multiproject.type == 'jbi'}">
+      <attainGoal name="jar:install" />
+      <attainGoal name="jbi:install" />
+    </j:if>
+    <j:if test="${maven.multiproject.type == 'war'}">
+      <attainGoal name="war:install" />
+    </j:if>
+    <j:if test="${maven.multiproject.type == 'plugin'}">
+      <attainGoal name="plugin:repository-install" />
+      <attainGoal name="plugin:install-now" />
+    </j:if>
+  </goal>
+  <goal name="deploy">
+    <j:if test="${maven.multiproject.type == 'jar'}">
+      <attainGoal name="jar:deploy" />
+    </j:if>
+    <j:if test="${maven.multiproject.type == 'jbi'}">
+      <attainGoal name="jar:deploy" />
+      <attainGoal name="jbi:deploy" />
+    </j:if>
+    <j:if test="${maven.multiproject.type == 'war'}">
+      <attainGoal name="war:deploy" />
+    </j:if>
+    <j:if test="${maven.multiproject.type == 'plugin'}">
+      <attainGoal name="plugin:repository-deploy" />
+    </j:if>
+  </goal>
 
   <postGoal name="clean:clean">
     <delete failonerror="false" dir="ActiveMQ"/>

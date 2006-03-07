@@ -15,13 +15,11 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+    
 -->
 
 <project default="default" xmlns:ant="jelly:ant">
-
-  <!-- redefined "build" goal from parent to create a war instead -->
-  <goal name="default" prereqs="jar:install"/>
-  
-  <goal name="nightly" prereqs="clean, jar:install, jar:deploy"/>
+    
+    <!-- default goal is defined in /etc/ -->
 
 </project>

@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--
 
-    Copyright 2004 The Apache Software Foundation
+    Copyright 2005 The Apache Software Foundation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,13 +18,8 @@
     
 -->
 
-<project default="default"
-    xmlns:j="jelly:core"
-    xmlns:u="jelly:util"
-    xmlns:ant="jelly:ant"
-    xmlns:util="jelly:util"
-    xmlns:artifact="artifact">
+<project default="default" xmlns:ant="jelly:ant">
     
     <!-- default goal is defined in /etc/ -->
-    
+
 </project>
