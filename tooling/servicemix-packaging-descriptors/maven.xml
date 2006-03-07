@@ -18,10 +18,23 @@
 -->
 
 <project xmlns:ant="jelly:ant"
-	xmlns:artifact="artifact">
+         xmlns:j="jelly:core" 
+         xmlns:maven="jelly:maven"
+	       xmlns:artifact="artifact">
+
+  <preGoal name="java:compile">
+    <attainGoal name="generate"/>
+    <j:set var="sourcesPresent" value="true" />
+    <ant:path
+       id="my.other.src.dir"
+       location="${basedir}/target/generated"/>
+    <maven:addPath
+       id="maven.compile.src.set"
+       refid="my.other.src.dir"/>
+  </preGoal>
 
 	<!-- redefined "build" goal from parent pom -->
-	<preGoal name="java:compile">
+	<goal name="generate">
 		<echo message="Compiling the JBI descriptor schema..." />
 		<mkdir dir="${basedir}/target/generated" />
 		<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask"
@@ -39,6 +52,6 @@
 			package="org.apache.servicemix.descriptors.packaging.assets"
 			destdir="${basedir}/target/generated" />
 		
-	</preGoal>
+	</goal>
 
 </project>
