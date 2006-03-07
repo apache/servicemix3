@@ -79,6 +79,9 @@ public class ParentFirstClassLoader extends InstallationClassLoader {
             catch (ClassNotFoundException e) {
             }
         }
+        if (result == null) {
+            throw new ClassNotFoundException(name);
+        }
         return result;
     }
 

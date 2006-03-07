@@ -113,6 +113,8 @@ public abstract class InstallationClassLoader extends URLClassLoader {
             //is it a reserved class ?
             if (name.startsWith("java.") || name.startsWith("javax.")) {
                 result = parentLoader.loadClass(name);
+            } else {
+                throw new ClassNotFoundException(name);
             }
         }
         else if (resolve) {

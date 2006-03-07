@@ -73,6 +73,9 @@ public class SelfFirstClassLoader extends InstallationClassLoader {
                 }
             }
         }
+        if (result == null) {
+            throw new ClassNotFoundException(name);
+        }
         return result;
     }
 
