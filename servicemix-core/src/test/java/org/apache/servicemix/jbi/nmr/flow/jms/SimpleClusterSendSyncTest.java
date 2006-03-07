@@ -63,6 +63,8 @@ public class SimpleClusterSendSyncTest extends TestCase {
             assertNotNull(exchange.getOutMessage());
             System.out.println("GOT RESPONSE; exchange.out=" + new SourceTransformer().toString(exchange.getOutMessage().getContent()));
             client.done(exchange);
+            // Wait for done to be delivered
+            Thread.sleep(50);
         } finally {
             ctx.close();
         }

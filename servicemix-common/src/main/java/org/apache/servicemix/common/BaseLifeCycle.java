@@ -23,7 +23,6 @@ import javax.jbi.component.ComponentContext;
 import javax.jbi.component.ComponentLifeCycle;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
-import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.MessageExchange.Role;
@@ -242,14 +241,10 @@ public class BaseLifeCycle implements ComponentLifeCycle {
                                 logger.error("Error processing exchange " + exchange, t);
                                 // Set an error on message
                                 try {
-                                    if (exchange instanceof InOnly) {
-                                        exchange.setStatus(ExchangeStatus.DONE);
+                                    if (t instanceof Exception) {
+                                        exchange.setError((Exception) t);
                                     } else {
-                                        if (t instanceof Exception) {
-                                            exchange.setError((Exception) t);
-                                        } else {
-                                            exchange.setError(new Exception("Throwable", t));
-                                        }
+                                        exchange.setError(new Exception("Throwable", t));
                                     }
                                     channel.send(exchange);
                                 } catch (Exception inner) {

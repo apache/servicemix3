@@ -27,7 +27,9 @@ import javax.xml.transform.Source;
  */
 public class SoapFault extends Exception {
 	
-	public static final String SENDER = "Sender";
+    private static final long serialVersionUID = 984561453557136677L;
+    
+    public static final String SENDER = "Sender";
 	public static final String RECEIVER = "Receiver";
 	
     private String code;

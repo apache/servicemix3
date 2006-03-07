@@ -29,13 +29,14 @@ import junit.framework.TestCase;
 public class MessageExchangeTest extends TestCase {
 
     public static class TestMessageExchange extends MessageExchangeImpl {
+        private static final long serialVersionUID = 5572313276570983400L;
         public TestMessageExchange() {
             super(new ExchangePacket(), STATES);
         }
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         }
         private static int[][] STATES = {
-            { CAN_CONSUMER + CAN_OWNER + CAN_SET_IN_MSG + CAN_SEND + CAN_SEND_SYNC + CAN_STATUS_ACTIVE, -1, -1, -1 },
+            { CAN_CONSUMER + CAN_OWNER + CAN_SET_IN_MSG + CAN_SEND + CAN_STATUS_ACTIVE, -1, -1, -1 },
         };
     }
     

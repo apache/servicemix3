@@ -23,6 +23,7 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
+import javax.jbi.messaging.Fault;
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.InOptionalOut;
 import javax.jbi.messaging.InOut;
@@ -100,6 +101,12 @@ public class MEPExchangeTest extends TestCase {
         } catch (Exception e) {
             // ok
         }
+        try {
+            mec.setMessage(mec.createFault(), "fault");
+            fail("Fault not supported");
+        } catch (Exception e) {
+            // ok
+        }
 		consumer.getChannel().send(mec);
         try {
             mec.setProperty("myprop", "myvalue");
@@ -122,6 +129,38 @@ public class MEPExchangeTest extends TestCase {
 		assertNull(consumer.getChannel().accept(100L)); // receive in
 		assertNull(provider.getChannel().accept(100L)); // receive in
 	}
+    
+    public void testInOnlyWithError() throws Exception {
+        MessageExchangeFactory mef = consumer.getChannel().createExchangeFactoryForService(new QName("provider"));
+        InOnly mec = mef.createInOnlyExchange();
+        NormalizedMessage m = mec.createMessage();
+        m.setContent(new StringSource(PAYLOAD));
+        mec.setInMessage(m);
+        assertEquals(Role.CONSUMER, mec.getRole());
+        consumer.getChannel().send(mec);
+        // Provider side
+        InOnly mep = (InOnly) provider.getChannel().accept(1000L);
+        assertNotNull(mep);
+        assertEquals(ExchangeStatus.ACTIVE, mep.getStatus());
+        assertEquals(Role.PROVIDER, mep.getRole());
+        mep.setError(new Exception());
+        provider.getChannel().send(mep);
+        // Consumer side
+        assertSame(mec, consumer.getChannel().accept(1000L));
+        assertEquals(ExchangeStatus.ERROR, mec.getStatus());
+        assertEquals(Role.CONSUMER, mec.getRole());
+        // Check we can not send the exchange anymore
+        try {
+            mec.setStatus(ExchangeStatus.DONE);
+            consumer.getChannel().send(mec);
+            fail("Exchange status is ERROR");
+        } catch (Exception e) {
+            // ok
+        }
+        // Nothing left
+        assertNull(consumer.getChannel().accept(100L)); // receive in
+        assertNull(provider.getChannel().accept(100L)); // receive in
+    }
 	
 	public void testInOnlySync() throws Exception {
 		// Create thread to answer
@@ -311,35 +350,131 @@ public class MEPExchangeTest extends TestCase {
 		assertNull(provider.getChannel().accept(100L)); // receive in
 	}
 	
-	public void testInOutWithFault() throws Exception {
-		// Send message exchange
-		MessageExchangeFactory mef = consumer.getChannel().createExchangeFactoryForService(new QName("provider"));
-		InOut mec = mef.createInOutExchange();
-		NormalizedMessage m = mec.createMessage();
-		m.setContent(new StringSource(PAYLOAD));
-		mec.setInMessage(m);
-		consumer.getChannel().send(mec);
-		// Provider side
-		InOut mep = (InOut) provider.getChannel().accept(100L);
-		assertNotNull(mep);
-		assertEquals(ExchangeStatus.ACTIVE, mep.getStatus());
-		m = mep.createMessage();
-		m.setContent(new StringSource(RESPONSE));
-		mep.setStatus(ExchangeStatus.ERROR);
-		provider.getChannel().send(mep);
-		// Consumer side
-		assertSame(mec, consumer.getChannel().accept(100L));
-		assertEquals(ExchangeStatus.ERROR, mec.getStatus());
-		mec.setStatus(ExchangeStatus.DONE);
-		consumer.getChannel().send(mec);
-		// Provider site
-		assertSame(mep, provider.getChannel().accept(100L));
-		assertEquals(ExchangeStatus.DONE, mec.getStatus());
-		// Nothing left
-		assertNull(consumer.getChannel().accept(100L)); // receive in
-		assertNull(provider.getChannel().accept(100L)); // receive in
-	}
-	
+    public void testInOutWithFault() throws Exception {
+        // Send message exchange
+        MessageExchangeFactory mef = consumer.getChannel().createExchangeFactoryForService(new QName("provider"));
+        InOut mec = mef.createInOutExchange();
+        NormalizedMessage m = mec.createMessage();
+        m.setContent(new StringSource(PAYLOAD));
+        mec.setInMessage(m);
+        consumer.getChannel().send(mec);
+        // Provider side
+        InOut mep = (InOut) provider.getChannel().accept(100L);
+        assertNotNull(mep);
+        assertEquals(ExchangeStatus.ACTIVE, mep.getStatus());
+        Fault f = mep.createFault();
+        f.setContent(new StringSource(RESPONSE));
+        mep.setFault(f);
+        provider.getChannel().send(mep);
+        // Consumer side
+        assertSame(mec, consumer.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.ACTIVE, mec.getStatus());
+        assertNotNull(mec.getFault());
+        mec.setStatus(ExchangeStatus.DONE);
+        consumer.getChannel().send(mec);
+        // Provider site
+        assertSame(mep, provider.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.DONE, mec.getStatus());
+        // Nothing left
+        assertNull(consumer.getChannel().accept(100L)); // receive in
+        assertNull(provider.getChannel().accept(100L)); // receive in
+    }
+    
+    public void testInOutWithFaultAndError() throws Exception {
+        // Send message exchange
+        MessageExchangeFactory mef = consumer.getChannel().createExchangeFactoryForService(new QName("provider"));
+        InOut mec = mef.createInOutExchange();
+        NormalizedMessage m = mec.createMessage();
+        m.setContent(new StringSource(PAYLOAD));
+        mec.setInMessage(m);
+        consumer.getChannel().send(mec);
+        // Provider side
+        InOut mep = (InOut) provider.getChannel().accept(100L);
+        assertNotNull(mep);
+        assertEquals(ExchangeStatus.ACTIVE, mep.getStatus());
+        Fault f = mep.createFault();
+        f.setContent(new StringSource(RESPONSE));
+        mep.setFault(f);
+        provider.getChannel().send(mep);
+        // Consumer side
+        assertSame(mec, consumer.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.ACTIVE, mec.getStatus());
+        assertNotNull(mec.getFault());
+        mec.setStatus(ExchangeStatus.ERROR);
+        consumer.getChannel().send(mec);
+        // Provider site
+        assertSame(mep, provider.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.ERROR, mec.getStatus());
+        try {
+            consumer.getChannel().send(mec);
+            fail("Exchange status is ERROR");
+        } catch (Exception e) {
+            // ok
+        }
+        // Nothing left
+        assertNull(consumer.getChannel().accept(100L)); // receive in
+        assertNull(provider.getChannel().accept(100L)); // receive in
+    }
+    
+    public void testInOutWithError1() throws Exception {
+        // Send message exchange
+        MessageExchangeFactory mef = consumer.getChannel().createExchangeFactoryForService(new QName("provider"));
+        InOut mec = mef.createInOutExchange();
+        NormalizedMessage m = mec.createMessage();
+        m.setContent(new StringSource(PAYLOAD));
+        mec.setInMessage(m);
+        consumer.getChannel().send(mec);
+        // Provider side
+        InOut mep = (InOut) provider.getChannel().accept(100L);
+        assertNotNull(mep);
+        assertEquals(ExchangeStatus.ACTIVE, mep.getStatus());
+        m = mep.createMessage();
+        m.setContent(new StringSource(RESPONSE));
+        mep.setStatus(ExchangeStatus.ERROR);
+        provider.getChannel().send(mep);
+        // Consumer side
+        assertSame(mec, consumer.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.ERROR, mec.getStatus());
+        try {
+            mec.setStatus(ExchangeStatus.DONE);
+            consumer.getChannel().send(mec);
+            fail("Exchange status is ERROR");
+        } catch (Exception e) {
+            // ok
+        }
+        // Nothing left
+        assertNull(consumer.getChannel().accept(100L)); // receive in
+        assertNull(provider.getChannel().accept(100L)); // receive in
+    }
+    
+    public void testInOutWithError2() throws Exception {
+        // Send message exchange
+        MessageExchangeFactory mef = consumer.getChannel().createExchangeFactoryForService(new QName("provider"));
+        InOut mec = mef.createInOutExchange();
+        NormalizedMessage m = mec.createMessage();
+        m.setContent(new StringSource(PAYLOAD));
+        mec.setInMessage(m);
+        consumer.getChannel().send(mec);
+        // Provider side
+        InOut mep = (InOut) provider.getChannel().accept(100L);
+        assertNotNull(mep);
+        assertEquals(ExchangeStatus.ACTIVE, mep.getStatus());
+        m = mep.createMessage();
+        m.setContent(new StringSource(RESPONSE));
+        provider.getChannel().send(mep);
+        // Consumer side
+        assertSame(mec, consumer.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.ACTIVE, mec.getStatus());
+        mec.setStatus(ExchangeStatus.ERROR);
+        consumer.getChannel().send(mec);
+        // Provider site
+        assertSame(mep, provider.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.ERROR, mec.getStatus());
+        // Nothing left
+        assertNull(consumer.getChannel().accept(100L)); // receive in
+        assertNull(provider.getChannel().accept(100L)); // receive in
+    }
+    
 	public void testInOptOutWithRep() throws Exception {
 		// Send message exchange
 		MessageExchangeFactory mef = consumer.getChannel().createExchangeFactoryForService(new QName("provider"));
@@ -391,67 +526,176 @@ public class MEPExchangeTest extends TestCase {
 		assertNull(provider.getChannel().accept(100L)); // receive in
 	}
 	
-	public void testInOptOutWithProviderFault() throws Exception {
-		// Send message exchange
-		MessageExchangeFactory mef = consumer.getChannel().createExchangeFactoryForService(new QName("provider"));
-		InOptionalOut mec = mef.createInOptionalOutExchange();
-		NormalizedMessage m = mec.createMessage();
-		m.setContent(new StringSource(PAYLOAD));
-		mec.setInMessage(m);
-		consumer.getChannel().send(mec);
-		// Provider side
-		InOptionalOut mep = (InOptionalOut) provider.getChannel().accept(100L);
-		assertNotNull(mep);
-		assertEquals(ExchangeStatus.ACTIVE, mep.getStatus());
-		mep.setStatus(ExchangeStatus.ERROR);
-		provider.getChannel().send(mep);
-		// Consumer side
-		assertSame(mec, consumer.getChannel().accept(100L));
-		assertEquals(ExchangeStatus.ERROR, mec.getStatus());
-		mec.setStatus(ExchangeStatus.DONE);
-		consumer.getChannel().send(mec);
-		// Provider site
-		assertSame(mep, provider.getChannel().accept(100L));
-		assertEquals(ExchangeStatus.DONE, mec.getStatus());
-		// Nothing left
-		assertNull(consumer.getChannel().accept(100L)); // receive in
-		assertNull(provider.getChannel().accept(100L)); // receive in
-	}
-	
-	public void testInOptOutWithRepAndConsumerFault() throws Exception {
-		// Send message exchange
-		MessageExchangeFactory mef = consumer.getChannel().createExchangeFactoryForService(new QName("provider"));
-		InOptionalOut mec = mef.createInOptionalOutExchange();
-		NormalizedMessage m = mec.createMessage();
-		m.setContent(new StringSource(PAYLOAD));
-		mec.setInMessage(m);
-		consumer.getChannel().send(mec);
-		// Provider side
-		InOptionalOut mep = (InOptionalOut) provider.getChannel().accept(100L);
-		assertNotNull(mep);
-		assertEquals(ExchangeStatus.ACTIVE, mep.getStatus());
-		m = mep.createMessage();
-		m.setContent(new StringSource(RESPONSE));
-		mep.setOutMessage(m);
-		provider.getChannel().send(mep);
-		// Consumer side
-		assertSame(mec, consumer.getChannel().accept(100L));
-		assertEquals(ExchangeStatus.ACTIVE, mec.getStatus());
-		mec.setStatus(ExchangeStatus.ERROR);
-		consumer.getChannel().send(mec);
-		// Provider site
-		assertSame(mep, provider.getChannel().accept(100L));
-		assertEquals(ExchangeStatus.ERROR, mep.getStatus());
-		mep.setStatus(ExchangeStatus.DONE);
-		provider.getChannel().send(mep);
-		// Consumer side
-		assertSame(mec, consumer.getChannel().accept(100L));
-		assertEquals(ExchangeStatus.DONE, mec.getStatus());
-		// Nothing left
-		assertNull(consumer.getChannel().accept(100L)); // receive in
-		assertNull(provider.getChannel().accept(100L)); // receive in
-	}
-	
+    public void testInOptOutWithProviderFault() throws Exception {
+        // Send message exchange
+        MessageExchangeFactory mef = consumer.getChannel().createExchangeFactoryForService(new QName("provider"));
+        InOptionalOut mec = mef.createInOptionalOutExchange();
+        NormalizedMessage m = mec.createMessage();
+        m.setContent(new StringSource(PAYLOAD));
+        mec.setInMessage(m);
+        consumer.getChannel().send(mec);
+        // Provider side
+        InOptionalOut mep = (InOptionalOut) provider.getChannel().accept(100L);
+        assertNotNull(mep);
+        assertEquals(ExchangeStatus.ACTIVE, mep.getStatus());
+        mep.setFault(mep.createFault());
+        provider.getChannel().send(mep);
+        // Consumer side
+        assertSame(mec, consumer.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.ACTIVE, mec.getStatus());
+        assertNotNull(mec.getFault());
+        mec.setStatus(ExchangeStatus.DONE);
+        consumer.getChannel().send(mec);
+        // Provider site
+        assertSame(mep, provider.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.DONE, mec.getStatus());
+        // Nothing left
+        assertNull(consumer.getChannel().accept(100L)); // receive in
+        assertNull(provider.getChannel().accept(100L)); // receive in
+    }
+    
+    public void testInOptOutWithProviderError() throws Exception {
+        // Send message exchange
+        MessageExchangeFactory mef = consumer.getChannel().createExchangeFactoryForService(new QName("provider"));
+        InOptionalOut mec = mef.createInOptionalOutExchange();
+        NormalizedMessage m = mec.createMessage();
+        m.setContent(new StringSource(PAYLOAD));
+        mec.setInMessage(m);
+        consumer.getChannel().send(mec);
+        // Provider side
+        InOptionalOut mep = (InOptionalOut) provider.getChannel().accept(100L);
+        assertNotNull(mep);
+        assertEquals(ExchangeStatus.ACTIVE, mep.getStatus());
+        mep.setStatus(ExchangeStatus.ERROR);
+        provider.getChannel().send(mep);
+        // Consumer side
+        assertSame(mec, consumer.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.ERROR, mec.getStatus());
+        try {
+            mec.setStatus(ExchangeStatus.DONE);
+            consumer.getChannel().send(mec);
+            fail("Exchange status is ERROR");
+        } catch (Exception e) {
+            // ok
+        }
+        // Nothing left
+        assertNull(consumer.getChannel().accept(100L)); // receive in
+        assertNull(provider.getChannel().accept(100L)); // receive in
+    }
+    
+    public void testInOptOutWithRepAndConsumerFault() throws Exception {
+        // Send message exchange
+        MessageExchangeFactory mef = consumer.getChannel().createExchangeFactoryForService(new QName("provider"));
+        InOptionalOut mec = mef.createInOptionalOutExchange();
+        NormalizedMessage m = mec.createMessage();
+        m.setContent(new StringSource(PAYLOAD));
+        mec.setInMessage(m);
+        consumer.getChannel().send(mec);
+        // Provider side
+        InOptionalOut mep = (InOptionalOut) provider.getChannel().accept(100L);
+        assertNotNull(mep);
+        assertEquals(ExchangeStatus.ACTIVE, mep.getStatus());
+        m = mep.createMessage();
+        m.setContent(new StringSource(RESPONSE));
+        mep.setOutMessage(m);
+        provider.getChannel().send(mep);
+        // Consumer side
+        assertSame(mec, consumer.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.ACTIVE, mec.getStatus());
+        mec.setFault(mec.createFault());
+        consumer.getChannel().send(mec);
+        // Provider site
+        assertSame(mep, provider.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.ACTIVE, mep.getStatus());
+        assertNotNull(mep.getFault());
+        mep.setStatus(ExchangeStatus.DONE);
+        provider.getChannel().send(mep);
+        // Consumer side
+        assertSame(mec, consumer.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.DONE, mec.getStatus());
+        // Nothing left
+        assertNull(consumer.getChannel().accept(100L)); // receive in
+        assertNull(provider.getChannel().accept(100L)); // receive in
+    }
+    
+    public void testInOptOutWithRepAndConsumerError() throws Exception {
+        // Send message exchange
+        MessageExchangeFactory mef = consumer.getChannel().createExchangeFactoryForService(new QName("provider"));
+        InOptionalOut mec = mef.createInOptionalOutExchange();
+        NormalizedMessage m = mec.createMessage();
+        m.setContent(new StringSource(PAYLOAD));
+        mec.setInMessage(m);
+        consumer.getChannel().send(mec);
+        // Provider side
+        InOptionalOut mep = (InOptionalOut) provider.getChannel().accept(100L);
+        assertNotNull(mep);
+        assertEquals(ExchangeStatus.ACTIVE, mep.getStatus());
+        m = mep.createMessage();
+        m.setContent(new StringSource(RESPONSE));
+        mep.setOutMessage(m);
+        provider.getChannel().send(mep);
+        // Consumer side
+        assertSame(mec, consumer.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.ACTIVE, mec.getStatus());
+        mec.setStatus(ExchangeStatus.ERROR);
+        consumer.getChannel().send(mec);
+        // Provider site
+        assertSame(mep, provider.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.ERROR, mep.getStatus());
+        try {
+            mep.setStatus(ExchangeStatus.DONE);
+            provider.getChannel().send(mep);
+            fail("Exchange status is ERROR");
+        } catch (Exception e) {
+            // ok
+        }
+        // Nothing left
+        assertNull(consumer.getChannel().accept(100L)); // receive in
+        assertNull(provider.getChannel().accept(100L)); // receive in
+    }
+    
+    public void testInOptOutWithRepFaultAndError() throws Exception {
+        // Send message exchange
+        MessageExchangeFactory mef = consumer.getChannel().createExchangeFactoryForService(new QName("provider"));
+        InOptionalOut mec = mef.createInOptionalOutExchange();
+        NormalizedMessage m = mec.createMessage();
+        m.setContent(new StringSource(PAYLOAD));
+        mec.setInMessage(m);
+        consumer.getChannel().send(mec);
+        // Provider side
+        InOptionalOut mep = (InOptionalOut) provider.getChannel().accept(100L);
+        assertNotNull(mep);
+        assertEquals(ExchangeStatus.ACTIVE, mep.getStatus());
+        m = mep.createMessage();
+        m.setContent(new StringSource(RESPONSE));
+        mep.setOutMessage(m);
+        provider.getChannel().send(mep);
+        // Consumer side
+        assertSame(mec, consumer.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.ACTIVE, mec.getStatus());
+        mec.setFault(mec.createFault());
+        consumer.getChannel().send(mec);
+        // Provider site
+        assertSame(mep, provider.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.ACTIVE, mep.getStatus());
+        assertNotNull(mep.getFault());
+        mep.setStatus(ExchangeStatus.ERROR);
+        provider.getChannel().send(mep);
+        // Consumer side
+        assertSame(mec, consumer.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.ERROR, mec.getStatus());
+        try {
+            mec.setStatus(ExchangeStatus.DONE);
+            consumer.getChannel().send(mec);
+            fail("Exchange status is ERROR");
+        } catch (Exception e) {
+            // ok
+        }
+        // Nothing left
+        assertNull(consumer.getChannel().accept(100L)); // receive in
+        assertNull(provider.getChannel().accept(100L)); // receive in
+    }
+    
 	public void testRobustInOnly() throws Exception {
 		// Send message exchange
 		MessageExchangeFactory mef = consumer.getChannel().createExchangeFactoryForService(new QName("provider"));
@@ -474,31 +718,96 @@ public class MEPExchangeTest extends TestCase {
 		assertNull(provider.getChannel().accept(100L)); // receive in
 	}
 	
-	public void testRobustInOnlyWithFault() throws Exception {
-		// Send message exchange
-		MessageExchangeFactory mef = consumer.getChannel().createExchangeFactoryForService(new QName("provider"));
-		RobustInOnly mec = mef.createRobustInOnlyExchange();
-		NormalizedMessage m = mec.createMessage();
-		m.setContent(new StringSource(PAYLOAD));
-		mec.setInMessage(m);
-		consumer.getChannel().send(mec);
-		// Provider side
-		RobustInOnly mep = (RobustInOnly) provider.getChannel().accept(100L);
-		assertNotNull(mep);
-		assertEquals(ExchangeStatus.ACTIVE, mep.getStatus());
-		mep.setStatus(ExchangeStatus.ERROR);
-		provider.getChannel().send(mep);
-		// Consumer side
-		assertSame(mec, consumer.getChannel().accept(100L));
-		assertEquals(ExchangeStatus.ERROR, mec.getStatus());
-		mec.setStatus(ExchangeStatus.DONE);
-		provider.getChannel().send(mec);
-		// Provider site
-		assertSame(mep, provider.getChannel().accept(100L));
-		assertEquals(ExchangeStatus.DONE, mep.getStatus());
-		// Nothing left
-		assertNull(consumer.getChannel().accept(100L)); // receive in
-		assertNull(provider.getChannel().accept(100L)); // receive in
-	}
-	
+    public void testRobustInOnlyWithFault() throws Exception {
+        // Send message exchange
+        MessageExchangeFactory mef = consumer.getChannel().createExchangeFactoryForService(new QName("provider"));
+        RobustInOnly mec = mef.createRobustInOnlyExchange();
+        NormalizedMessage m = mec.createMessage();
+        m.setContent(new StringSource(PAYLOAD));
+        mec.setInMessage(m);
+        consumer.getChannel().send(mec);
+        // Provider side
+        RobustInOnly mep = (RobustInOnly) provider.getChannel().accept(100L);
+        assertNotNull(mep);
+        assertEquals(ExchangeStatus.ACTIVE, mep.getStatus());
+        mep.setFault(mep.createFault());
+        provider.getChannel().send(mep);
+        // Consumer side
+        assertSame(mec, consumer.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.ACTIVE, mec.getStatus());
+        assertNotNull(mec.getFault());
+        mec.setStatus(ExchangeStatus.DONE);
+        provider.getChannel().send(mec);
+        // Provider site
+        assertSame(mep, provider.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.DONE, mep.getStatus());
+        // Nothing left
+        assertNull(consumer.getChannel().accept(100L)); // receive in
+        assertNull(provider.getChannel().accept(100L)); // receive in
+    }
+    
+    public void testRobustInOnlyWithError() throws Exception {
+        // Send message exchange
+        MessageExchangeFactory mef = consumer.getChannel().createExchangeFactoryForService(new QName("provider"));
+        RobustInOnly mec = mef.createRobustInOnlyExchange();
+        NormalizedMessage m = mec.createMessage();
+        m.setContent(new StringSource(PAYLOAD));
+        mec.setInMessage(m);
+        consumer.getChannel().send(mec);
+        // Provider side
+        RobustInOnly mep = (RobustInOnly) provider.getChannel().accept(100L);
+        assertNotNull(mep);
+        assertEquals(ExchangeStatus.ACTIVE, mep.getStatus());
+        mep.setStatus(ExchangeStatus.ERROR);
+        provider.getChannel().send(mep);
+        // Consumer side
+        assertSame(mec, consumer.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.ERROR, mec.getStatus());
+        try {
+            mec.setStatus(ExchangeStatus.DONE);
+            provider.getChannel().send(mec);
+            fail("Exchange status is ERROR");
+        } catch (Exception e) {
+            // ok
+        }
+        // Nothing left
+        assertNull(consumer.getChannel().accept(100L)); // receive in
+        assertNull(provider.getChannel().accept(100L)); // receive in
+    }
+    
+    public void testRobustInOnlyWithFaultAndError() throws Exception {
+        // Send message exchange
+        MessageExchangeFactory mef = consumer.getChannel().createExchangeFactoryForService(new QName("provider"));
+        RobustInOnly mec = mef.createRobustInOnlyExchange();
+        NormalizedMessage m = mec.createMessage();
+        m.setContent(new StringSource(PAYLOAD));
+        mec.setInMessage(m);
+        consumer.getChannel().send(mec);
+        // Provider side
+        RobustInOnly mep = (RobustInOnly) provider.getChannel().accept(100L);
+        assertNotNull(mep);
+        assertEquals(ExchangeStatus.ACTIVE, mep.getStatus());
+        mep.setFault(mep.createFault());
+        provider.getChannel().send(mep);
+        // Consumer side
+        assertSame(mec, consumer.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.ACTIVE, mec.getStatus());
+        assertNotNull(mec.getFault());
+        mec.setError(new Exception());
+        provider.getChannel().send(mec);
+        // Provider site
+        assertSame(mep, provider.getChannel().accept(100L));
+        assertEquals(ExchangeStatus.ERROR, mep.getStatus());
+        try {
+            mep.setStatus(ExchangeStatus.DONE);
+            provider.getChannel().send(mep);
+            fail("Exchange status is ERROR");
+        } catch (Exception e) {
+            // ok
+        }
+        // Nothing left
+        assertNull(consumer.getChannel().accept(100L)); // receive in
+        assertNull(provider.getChannel().accept(100L)); // receive in
+    }
+    
 }

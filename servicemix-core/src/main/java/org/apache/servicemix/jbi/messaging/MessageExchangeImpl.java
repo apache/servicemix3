@@ -54,16 +54,16 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     protected static final int CAN_PROVIDER                 = 0x00000008;
     protected static final int CAN_CONSUMER                 = 0x00000000;
     protected static final int CAN_SEND                     = 0x00000010;
-    protected static final int CAN_SEND_SYNC                = 0x00000020;
     protected static final int CAN_STATUS_ACTIVE            = 0x00000040;
     protected static final int CAN_STATUS_DONE              = 0x00000080;
     protected static final int CAN_STATUS_ERROR             = 0x00000100;
     protected static final int CAN_OWNER                    = 0x00000200;
 
     protected static final int STATES_CANS       = 0;
-    protected static final int STATES_NEXT_MSG   = 1;
-    protected static final int STATES_NEXT_ERROR = 2;
-    protected static final int STATES_NEXT_DONE  = 3;
+    protected static final int STATES_NEXT_OUT   = 1;
+    protected static final int STATES_NEXT_FAULT = 2;
+    protected static final int STATES_NEXT_ERROR = 3;
+    protected static final int STATES_NEXT_DONE  = 4;
     
     public static final String FAULT = "fault";
     public static final String IN = "in";
@@ -475,7 +475,6 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
      */
     public  void setOutMessage(NormalizedMessage message) throws MessagingException {
         setMessage(message, OUT);
-        
     }
     
     /**
@@ -535,14 +534,11 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     
     public void handleSend(boolean sync) throws MessagingException {
         // Check if send / sendSync is legal
-        if (sync) {
-            if (!can(CAN_SEND_SYNC)) {
-                throw new MessagingException("illegal call to sendSync");
-            }
-        } else {
-            if (!can(CAN_SEND)) {
-                throw new MessagingException("illegal call to send");
-            }
+        if (!can(CAN_SEND)) {
+            throw new MessagingException("illegal call to send / sendSync");
+        }
+        if (sync && getStatus() != ExchangeStatus.ACTIVE) {
+            throw new MessagingException("illegal call to sendSync");
         }
         this.syncState = sync ? SYNC_STATE_SYNC_SENT : SYNC_STATE_ASYNC;
         // Check status
@@ -558,8 +554,10 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
         }
         // Check message
         // Change state
-        if (status == ExchangeStatus.ACTIVE) {
-            this.state = this.states[this.state][STATES_NEXT_MSG];
+        if (status == ExchangeStatus.ACTIVE && packet.getFault() == null) {
+            this.state = this.states[this.state][STATES_NEXT_OUT];
+        } else if (status == ExchangeStatus.ACTIVE && packet.getFault() != null) {
+            this.state = this.states[this.state][STATES_NEXT_FAULT];
         } else if (status == ExchangeStatus.ERROR) {
             this.state = this.states[this.state][STATES_NEXT_ERROR];
         } else if (status == ExchangeStatus.DONE) {
@@ -576,8 +574,10 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
         // Change state
         ExchangeStatus status = getStatus();
         int nextState;
-        if (status == ExchangeStatus.ACTIVE) {
-            nextState = this.states[this.state][STATES_NEXT_MSG];
+        if (status == ExchangeStatus.ACTIVE && packet.getFault() == null) {
+            nextState = this.states[this.state][STATES_NEXT_OUT];
+        } else if (status == ExchangeStatus.ACTIVE && packet.getFault() != null) {
+            nextState = this.states[this.state][STATES_NEXT_FAULT];
         } else if (status == ExchangeStatus.ERROR) {
             nextState = this.states[this.state][STATES_NEXT_ERROR];
         } else if (status == ExchangeStatus.DONE) {

@@ -76,8 +76,6 @@ public class BPEEndpoint extends Endpoint implements ExchangeProcessor {
         if (exchange.getStatus() == ExchangeStatus.DONE) {
             return;
         } else if (exchange.getStatus() == ExchangeStatus.ERROR) {
-            exchange.setStatus(ExchangeStatus.DONE);
-            channel.send(exchange);
             return;
         }
 		BPELStaticKey bsk = new BPELStaticKey();
@@ -145,7 +143,6 @@ public class BPEEndpoint extends Endpoint implements ExchangeProcessor {
             } else {
                 exchange.setError(e);
             }
-            exchange.setStatus(ExchangeStatus.ERROR);
             channel.send(exchange);
         }
 	}

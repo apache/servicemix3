@@ -167,29 +167,17 @@ public class JbiInvokeAction implements IExternalAction, ExchangeProcessor {
                 throw new ActionSystemException("Timeout on sending message");
             }
             if (me.getStatus() == ExchangeStatus.ACTIVE) {
-                nm = me.getMessage("out");
-                if (nm != null) {
-                    try {
-                        XMLInteractionObject result = new XMLInteractionObject();
-                        result.setDocument((Document) transformer.toDOMNode(nm));
-                        output.put(BPEComponent.PART_PAYLOAD, result);
-                    } catch (Exception e) {
-                        throw new ActionSystemException(e);
-                    }
-                }
-                me.setStatus(ExchangeStatus.DONE);
-                channel.send(me);
-            } else if (me.getStatus() == ExchangeStatus.ERROR) {
-                // Extract fault or error
                 if (me.getFault() != null) {
                     Document fault;
                     try {
                         fault = (Document) transformer.toDOMNode(me.getFault());
+                        me.setStatus(ExchangeStatus.DONE);
                     } catch (Exception e) {
+                        me.setError(e);
                         throw new ActionSystemException(e);
+                    } finally {
+                        channel.send(me);
                     }
-                    me.setStatus(ExchangeStatus.DONE);
-                    channel.send(me);
                     Element e = fault.getDocumentElement();
                     BPRuntimeException bpre = new BPRuntimeException(e.getLocalName(), "");
                     bpre.setNameSpace(e.getNamespaceURI());
@@ -197,23 +185,26 @@ public class JbiInvokeAction implements IExternalAction, ExchangeProcessor {
                     interaction.setDocument(fault);
                     bpre.addPartMessage("payload", interaction);
                     throw bpre;
-                    /*
-                    try {
-                        XMLInteractionObject result = new XMLInteractionObject();
-                        result.setDocument((Document) transformer.toDOMNode(me.getFault()));
-                        output.put(BPEComponent.PART_PAYLOAD, result);
-                    } catch (Exception e) {
-                        throw new ActionSystemException(e);
-                    }
-                    me.setStatus(ExchangeStatus.DONE);
-                    channel.send(me);
-                    */
                 } else {
-                    Exception error = me.getError();
-                    me.setStatus(ExchangeStatus.DONE);
-                    channel.send(me);
-                    throw new BPRuntimeException("Unknown", error);
+                    try {
+                        nm = me.getMessage("out");
+                        if (nm != null) {
+                            XMLInteractionObject result = new XMLInteractionObject();
+                            result.setDocument((Document) transformer.toDOMNode(nm));
+                            output.put(BPEComponent.PART_PAYLOAD, result);
+                        }
+                        me.setStatus(ExchangeStatus.DONE);
+                    } catch (Exception e) {
+                        me.setError(e);
+                        throw new ActionSystemException(e);
+                    } finally {
+                        channel.send(me);
+                    }
                 }
+            } else if (me.getStatus() == ExchangeStatus.ERROR) {
+                // Extract error
+                Exception error = me.getError();
+                throw new BPRuntimeException("Unknown", error);
             }
         } catch (MessagingException e) {
             throw new ActionSystemException(e);

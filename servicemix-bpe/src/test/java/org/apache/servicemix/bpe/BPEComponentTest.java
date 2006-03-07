@@ -220,7 +220,7 @@ public class BPEComponentTest extends TestCase {
         me.setOperation(new QName("getLoanQuote"));
         me.getMessage("in").setContent(new StringSource("<getLoanQuoteRequest xmlns=\"urn:logicblaze:soa:loanbroker\"><ssn>234341</ssn></getLoanQuoteRequest>"));
         client.sendSync(me);
-        assertEquals(ExchangeStatus.ERROR, me.getStatus());
+        assertEquals(ExchangeStatus.ACTIVE, me.getStatus());
         assertNotNull(me.getFault());
         client.done(me);
     }
@@ -242,7 +242,6 @@ public class BPEComponentTest extends TestCase {
         client.sendSync(me);
         assertEquals(ExchangeStatus.ERROR, me.getStatus());
         assertNotNull(me.getError());
-        client.done(me);
     }
     
     public static class Bank extends ComponentSupport implements MessageExchangeListener {

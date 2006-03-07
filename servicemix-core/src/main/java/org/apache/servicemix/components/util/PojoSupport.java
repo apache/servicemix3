@@ -15,15 +15,6 @@
  */
 package org.apache.servicemix.components.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.JavaSource;
-import org.apache.servicemix.jbi.FaultException;
-import org.apache.servicemix.jbi.NotInitialisedYetException;
-import org.apache.servicemix.jbi.management.BaseLifeCycle;
-import org.apache.servicemix.jbi.messaging.NormalizedMessageImpl;
-import org.apache.servicemix.jbi.messaging.PojoMarshaler;
-
 import javax.jbi.JBIException;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.component.ComponentLifeCycle;
@@ -42,6 +33,13 @@ import javax.management.ObjectName;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
+import org.apache.servicemix.JavaSource;
+import org.apache.servicemix.jbi.FaultException;
+import org.apache.servicemix.jbi.NotInitialisedYetException;
+import org.apache.servicemix.jbi.management.BaseLifeCycle;
+import org.apache.servicemix.jbi.messaging.NormalizedMessageImpl;
+import org.apache.servicemix.jbi.messaging.PojoMarshaler;
+
 /**
  * A useful base class for a POJO based JBI component which contains most of the basic plumbing
  *
@@ -56,8 +54,6 @@ public abstract class PojoSupport extends BaseLifeCycle implements ComponentLife
     private MessageExchangeFactory exchangeFactory;
     private String description = "POJO Component";
     private ServiceEndpoint serviceEndpoint;
-    
-    private static final Log log = LogFactory.getLog(PojoSupport.class);
     
     protected PojoSupport() {
     }
@@ -249,10 +245,11 @@ public abstract class PojoSupport extends BaseLifeCycle implements ComponentLife
      * A helper method which fails and completes the given exchange with the specified fault
      */
     public void fail(MessageExchange exchange, Fault fault) throws MessagingException {
-        if (fault != null) {
+        if (exchange instanceof InOnly || fault == null) {
+            exchange.setError(new FaultException("Fault occured for in-only exchange", exchange, fault));
+        } else {
             exchange.setFault(fault);
         }
-        exchange.setStatus(ExchangeStatus.ERROR);
         getDeliveryChannel().send(exchange);
     }
 
@@ -261,15 +258,11 @@ public abstract class PojoSupport extends BaseLifeCycle implements ComponentLife
      * @throws MessagingException 
      */
     public void fail(MessageExchange exchange, Exception error) throws MessagingException {
-        if (exchange instanceof InOnly) {
-            log.error("Error processing exchange", error);
-            exchange.setStatus(ExchangeStatus.DONE);
-        } else {
+        if (exchange instanceof InOnly || error instanceof FaultException == false) {
             exchange.setError(error);
-            if (error instanceof FaultException) {
-                FaultException faultException = (FaultException) error;
-                exchange.setFault(faultException.getFault());
-            }
+        } else {
+            FaultException faultException = (FaultException) error;
+            exchange.setFault(faultException.getFault());
         }
         getDeliveryChannel().send(exchange);
     }

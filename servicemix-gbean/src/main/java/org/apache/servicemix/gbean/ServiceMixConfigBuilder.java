@@ -174,7 +174,7 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
             context.addGBean(gbeanData);
 
             try {
-                servicemix.getContainer().getInstallationService().install(module.getName());
+                servicemix.getContainer().getAdminCommandsService().installArchive(module.getName());
             } catch (javax.jbi.management.DeploymentException e) {
                 throw new DeploymentException("Could not deploy jbi package", e);
             }

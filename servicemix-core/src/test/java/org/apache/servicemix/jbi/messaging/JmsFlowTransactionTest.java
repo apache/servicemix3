@@ -29,19 +29,37 @@ public class JmsFlowTransactionTest extends AbstractTransactionTest {
 
     public void testSyncSendSyncReceive() throws Exception {
         try {
-            runSimpleTest(true, true);
-            fail("sendSync can not be used");
+            super.testSyncSendSyncReceive();
+            fail("JMS flow does not handle transactions");
         } catch (Exception e) {
-            // sendSync can not be used
+            // JMS flow does not handle transactions
         }
     }
 
     public void testSyncSendAsyncReceive() throws Exception {
         try {
-            runSimpleTest(true, false);
-            fail("sendSync can not be used");
+            super.testSyncSendAsyncReceive();
+            fail("JMS flow does not handle transactions");
         } catch (Exception e) {
-            // sendSync can not be used
+            // JMS flow does not handle transactions
+        }
+    }
+
+    public void testAsyncSendAsyncReceive() throws Exception {
+        try {
+            super.testAsyncSendAsyncReceive();
+            fail("JMS flow does not handle transactions");
+        } catch (Exception e) {
+            // JMS flow does not handle transactions
+        }
+    }
+
+    public void testAsyncSendSyncReceive() throws Exception {
+        try {
+            super.testAsyncSendSyncReceive();
+            fail("JMS flow does not handle transactions");
+        } catch (Exception e) {
+            // JMS flow does not handle transactions
         }
     }
 
