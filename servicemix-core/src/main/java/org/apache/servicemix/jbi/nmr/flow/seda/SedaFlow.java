@@ -36,6 +36,7 @@ import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.Broker;
 import org.apache.servicemix.jbi.nmr.flow.AbstractFlow;
+import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
@@ -144,6 +145,9 @@ public class SedaFlow extends AbstractFlow {
         // If the message has been sent synchronously, do not use seda
         // as it would consume threads from the work manager in a useless
         // way.  This could lead to deadlocks.
+        if (me.getDestinationId() == null) {
+            me.setDestinationId(((AbstractServiceEndpoint) me.getEndpoint()).getComponentNameSpace());
+        }
         if (me.getProperty(MessageExchange.JTA_TRANSACTION_PROPERTY_NAME) == null &&
             me.getSyncState() == MessageExchangeImpl.SYNC_STATE_ASYNC &&
             me.getMirror().getSyncState() == MessageExchangeImpl.SYNC_STATE_ASYNC) {

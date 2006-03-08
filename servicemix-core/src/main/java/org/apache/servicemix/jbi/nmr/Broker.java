@@ -383,7 +383,6 @@ public class Broker extends BaseSystemService implements BrokerMBean {
         }
         if (theEndpoint != null) {
             exchange.setEndpoint(theEndpoint);
-            exchange.setDestinationId(((AbstractServiceEndpoint) theEndpoint).getComponentNameSpace());
         }
         if (log.isTraceEnabled()) {
             log.trace("Routing exchange " + exchange + " to: " + theEndpoint);

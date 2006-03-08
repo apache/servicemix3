@@ -211,45 +211,19 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
     }
 
     protected boolean isClustered(MessageExchange me) {
-        ServiceEndpoint se = me.getEndpoint();
-        if (se == null) {
-            // Routing by service name
-            QName serviceName = me.getService();
-            QName interfaceName = me.getInterfaceName();
-            if (serviceName != null) {
-                ServiceEndpoint[] eps = broker.getContainer().getRegistry().getEndpointsForService(serviceName);
-                for (int i = 0; i < eps.length; i++) {
-                    if (eps[i] instanceof InternalEndpoint) {
-                        String name = ((InternalEndpoint) eps[i]).getComponentNameSpace().getContainerName();
-                        if (!name.equals(broker.getContainerName())) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            // Routing by interface name
-            } else if (interfaceName != null) {
-                ServiceEndpoint[] eps = broker.getContainer().getRegistry().getEndpointsForInterface(interfaceName);
-                for (int i = 0; i < eps.length; i++) {
-                    if (eps[i] instanceof InternalEndpoint) {
-                        String name = ((InternalEndpoint) eps[i]).getComponentNameSpace().getContainerName();
-                        if (!name.equals(broker.getContainerName())) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
+        MessageExchangeImpl mei = (MessageExchangeImpl) me;
+        if (mei.getDestinationId() == null) {
+            ServiceEndpoint se = me.getEndpoint();
+            if (se instanceof InternalEndpoint) {
+                return ((InternalEndpoint) se).isClustered();
+            // Unknown: assume this is not clustered
             } else {
-                // Should not happen
                 return false;
             }
-        // Routing by endpoint
-        } else if (se instanceof InternalEndpoint) {
-            String name = ((InternalEndpoint) se).getComponentNameSpace().getContainerName();
-            return !name.equals(broker.getContainerName());
-        // Unknown: assume this is not clustered
         } else {
-            return false;
+            String destination = mei.getDestinationId().getContainerName();
+            String source = mei.getSourceId().getContainerName();
+            return !source.equals(destination);
         }
     }
     

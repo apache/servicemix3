@@ -17,6 +17,7 @@ package org.apache.servicemix.jbi.nmr.flow.st;
 
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.flow.AbstractFlow;
+import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
@@ -40,6 +41,9 @@ public class STFlow extends AbstractFlow {
      * @throws MessagingException
      */
     protected void doSend(MessageExchangeImpl me) throws MessagingException {
+        if (me.getDestinationId() == null) {
+            me.setDestinationId(((AbstractServiceEndpoint) me.getEndpoint()).getComponentNameSpace());
+        }
         doRouting(me);
     }
     

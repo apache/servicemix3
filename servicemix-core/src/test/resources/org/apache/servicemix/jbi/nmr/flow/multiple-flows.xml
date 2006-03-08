@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
+       xmlns:foo="urn:foo"> 
+
+  <sm:container name="local" flowNames="seda,jms" embedded="true"> 
+    <sm:activationSpecs> 
+      <sm:activationSpec id="localSender" destinationService="localReceiver"> 
+        <sm:component> 
+          <bean class="org.apache.servicemix.tck.SenderComponent" /> 
+        </sm:component> 
+      </sm:activationSpec> 
+      <sm:activationSpec id="remoteSender" destinationService="remoteReceiver"> 
+        <sm:component> 
+          <bean class="org.apache.servicemix.tck.SenderComponent" /> 
+        </sm:component> 
+      </sm:activationSpec> 
+      <sm:activationSpec id="clusteredSender" destinationService="clusteredReceiver"> 
+        <sm:component> 
+          <bean class="org.apache.servicemix.tck.SenderComponent" /> 
+        </sm:component> 
+      </sm:activationSpec> 
+      <sm:activationSpec id="localReceiver" service="localReceiver"> 
+        <sm:component> 
+          <bean class="org.apache.servicemix.tck.ReceiverComponent" /> 
+        </sm:component> 
+      </sm:activationSpec> 
+      <sm:activationSpec id="clusteredReceiver" service="clusteredReceiver"> 
+        <sm:component> 
+          <bean class="org.apache.servicemix.tck.ReceiverComponent" /> 
+        </sm:component> 
+      </sm:activationSpec> 
+    </sm:activationSpecs> 
+  </sm:container> 
+  
+  <sm:container name="remote" flowNames="seda,jms" embedded="true"> 
+    <sm:activationSpecs> 
+      <sm:activationSpec id="remoteReceiver" service="remoteReceiver"> 
+        <sm:component> 
+          <bean class="org.apache.servicemix.tck.ReceiverComponent" /> 
+        </sm:component> 
+      </sm:activationSpec> 
+      <sm:activationSpec id="clusteredReceiver" service="clusteredReceiver"> 
+        <sm:component> 
+          <bean class="org.apache.servicemix.tck.ReceiverComponent" /> 
+        </sm:component> 
+      </sm:activationSpec> 
+    </sm:activationSpecs> 
+  </sm:container> 
+  
+</beans> 
