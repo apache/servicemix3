@@ -134,9 +134,8 @@ public class InstallerMBeanImpl implements InstallerMBean {
         ObjectName result = null;
         try {
             result = activateComponent();
-            ComponentNameSpace cns = new ComponentNameSpace(container.getName(), context.getComponentName(), null);
-            LocalComponentConnector lcc = container.getRegistry().getLocalComponentConnector(cns);
-            lcc.getComponentMBean().persistRunningState();
+            ComponentMBeanImpl lcc = container.getComponent(context.getComponentName());
+            lcc.persistRunningState();
             installed = true;
         } finally {
             if (bootstrap != null) {

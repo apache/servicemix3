@@ -47,7 +47,9 @@ import org.w3c.dom.DocumentFragment;
  * @version $Revision$
  */
 public class ComponentContextImpl implements ComponentContext, MBeanNames {
+    
     private static final Log log = LogFactory.getLog(ComponentContextImpl.class);
+    
     private ComponentNameSpace componentName;
     private ComponentEnvironment environment;
     private JBIContainer container;
@@ -76,8 +78,9 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      * @param spec
      * @param installRoot
      */
-    public void activate(Component component, ComponentEnvironment env,
-            ActivationSpec spec) {
+    public void activate(Component component, 
+                         ComponentEnvironment env,
+                         ActivationSpec spec) {
         this.component = component;
         this.environment = env;
         this.activationSpec = spec;
@@ -158,7 +161,7 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      * @param context 
      * @param as 
      */
-    public void registerSubscriptions(ComponentContextImpl context,ActivationSpec as) {
+    public void registerSubscriptions(ComponentContextImpl context, ActivationSpec as) {
         checkActivated();
         container.getRegistry().registerSubscriptions(context, as);
     }
@@ -168,7 +171,7 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      * @param context
      * @param as
      */
-    public void deregisterSubscriptions(ComponentContextImpl context,ActivationSpec as) {
+    public void deregisterSubscriptions(ComponentContextImpl context, ActivationSpec as) {
         checkActivated();
         container.getRegistry().deregisterSubscriptions(context, as);
     }
@@ -178,7 +181,7 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      * @param subscription
      * @param endpoint
      */
-    public void registerSubscription(ComponentContextImpl context,SubscriptionSpec subscription, ServiceEndpoint endpoint) {
+    public void registerSubscription(ComponentContextImpl context, SubscriptionSpec subscription, ServiceEndpoint endpoint) {
         checkActivated();
         container.getRegistry().registerSubscription(context, subscription, endpoint);
     }
@@ -188,7 +191,7 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      * @param subscription
      * @return the ServiceEndpoint
      */
-    public InternalEndpoint deregisterSubscription(ComponentContextImpl context,SubscriptionSpec subscription) {
+    public InternalEndpoint deregisterSubscription(ComponentContextImpl context, SubscriptionSpec subscription) {
         checkActivated();
         return container.getRegistry().deregisterSubscription(context, subscription);
     }

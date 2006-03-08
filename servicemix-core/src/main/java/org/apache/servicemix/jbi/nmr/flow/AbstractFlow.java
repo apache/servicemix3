@@ -15,21 +15,6 @@
  */
 package org.apache.servicemix.jbi.nmr.flow;
 
-import edu.emory.mathcs.backport.java.util.concurrent.locks.ReadWriteLock;
-import edu.emory.mathcs.backport.java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.JbiConstants;
-import org.apache.servicemix.jbi.framework.ComponentNameSpace;
-import org.apache.servicemix.jbi.framework.LocalComponentConnector;
-import org.apache.servicemix.jbi.management.AttributeInfoHelper;
-import org.apache.servicemix.jbi.management.BaseLifeCycle;
-import org.apache.servicemix.jbi.messaging.ExchangePacket;
-import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
-import org.apache.servicemix.jbi.nmr.Broker;
-import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
-
 import javax.jbi.JBIException;
 import javax.jbi.management.LifeCycleMBean;
 import javax.jbi.messaging.MessageExchange;
@@ -40,6 +25,21 @@ import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.ObjectName;
 import javax.xml.namespace.QName;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.JbiConstants;
+import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
+import org.apache.servicemix.jbi.framework.ComponentNameSpace;
+import org.apache.servicemix.jbi.management.AttributeInfoHelper;
+import org.apache.servicemix.jbi.management.BaseLifeCycle;
+import org.apache.servicemix.jbi.messaging.ExchangePacket;
+import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
+import org.apache.servicemix.jbi.nmr.Broker;
+import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
+
+import edu.emory.mathcs.backport.java.util.concurrent.locks.ReadWriteLock;
+import edu.emory.mathcs.backport.java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * A simple Straight through flow
@@ -166,14 +166,12 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
     		log.debug("Called Flow doRouting");
         ComponentNameSpace id = me.getRole() == Role.PROVIDER ? me.getDestinationId() : me.getSourceId();
         //As the MessageExchange could come from another container - ensure we get the local Component
-        ComponentNameSpace copy = id.copy();
-        copy.setContainerName(broker.getContainerName());
-        LocalComponentConnector lcc = broker.getRegistry().getLocalComponentConnector(copy);
+        ComponentMBeanImpl lcc = broker.getRegistry().getComponent(id.getName());
         if (lcc != null) {
             lcc.getDeliveryChannel().processInBound(me);
         }
         else {
-            throw new MessagingException("No component with id (" + id + ") - Couldn't route MessageExchange " + me);
+            throw new MessagingException("No component named " + id.getName() + " - Couldn't route MessageExchange " + me);
         }
     }
     

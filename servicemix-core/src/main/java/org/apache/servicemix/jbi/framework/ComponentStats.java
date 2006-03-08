@@ -28,15 +28,15 @@ import org.apache.servicemix.jbi.management.OperationInfoHelper;
  */
 public class ComponentStats extends BaseLifeCycle implements ComponentStatsMBean {
 
-    private LocalComponentConnector connector;
+    private ComponentMBeanImpl component;
 
     /**
      * Constructor
      * 
      * @param lcc
      */
-    public ComponentStats(LocalComponentConnector lcc) {
-        this.connector = lcc;
+    public ComponentStats(ComponentMBeanImpl component) {
+        this.component = component;
     }
 
     /**
@@ -56,7 +56,7 @@ public class ComponentStats extends BaseLifeCycle implements ComponentStatsMBean
      * @return the name
      */
     public String getName() {
-        return connector.getComponentNameSpace().getName();
+        return component.getName();
     }
 
     /**
@@ -64,7 +64,7 @@ public class ComponentStats extends BaseLifeCycle implements ComponentStatsMBean
      * @return the description
      */
     public String getDescription() {
-        return "Statistics for " + connector.getComponentPacket().getDescription();
+        return "Statistics for " + component.getDescription();
     }
 
     /**
@@ -73,7 +73,7 @@ public class ComponentStats extends BaseLifeCycle implements ComponentStatsMBean
      * @return inbound count
      */
     public long getInboundExchangeCount() {
-        return connector.getMessagingStats().getInboundExchanges().getCount();
+        return component.getMessagingStats().getInboundExchanges().getCount();
     }
 
     /**
@@ -82,7 +82,7 @@ public class ComponentStats extends BaseLifeCycle implements ComponentStatsMBean
      * @return the inbound exchange rate
      */
     public double getInboundExchangeRate() {
-        return connector.getMessagingStats().getInboundExchangeRate().getAverageTime();
+        return component.getMessagingStats().getInboundExchangeRate().getAverageTime();
     }
 
     /**
@@ -91,7 +91,7 @@ public class ComponentStats extends BaseLifeCycle implements ComponentStatsMBean
      * @return outbound count
      */
     public long getOutboundExchangeCount() {
-        return connector.getMessagingStats().getOutboundExchanges().getCount();
+        return component.getMessagingStats().getOutboundExchanges().getCount();
     }
 
     /**
@@ -100,15 +100,15 @@ public class ComponentStats extends BaseLifeCycle implements ComponentStatsMBean
      * @return the outbound exchange rate
      */
     public double getOutboundExchangeRate() {
-        return connector.getMessagingStats().getOutboundExchangeRate().getAverageTime();
+        return component.getMessagingStats().getOutboundExchangeRate().getAverageTime();
     }
 
     /**
      * @return size of the inbound Queue
      */
     public int getInboundQueueSize() {
-        if (connector.getDeliveryChannel() != null) {
-            return connector.getDeliveryChannel().getQueueSize();
+        if (component.getDeliveryChannel() != null) {
+            return component.getDeliveryChannel().getQueueSize();
         } else {
             return 0;
         }
@@ -118,7 +118,7 @@ public class ComponentStats extends BaseLifeCycle implements ComponentStatsMBean
      * Reset all stats counters
      */
     public void reset() {
-        connector.getMessagingStats().reset();
+        component.getMessagingStats().reset();
     }
 
     /**

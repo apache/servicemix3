@@ -20,6 +20,7 @@ import javax.jbi.component.ServiceUnitManager;
 import javax.resource.spi.work.WorkManager;
 
 import org.apache.servicemix.components.util.ComponentAdaptor;
+import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.jencks.factory.WorkManagerFactoryBean;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -97,10 +98,10 @@ public class SpringJBIContainer extends JBIContainer
      * @return the Component
      */
     public Object getBean(String id) {
-        Object bean = getComponent(id);
+        ComponentMBeanImpl component = getComponent(id);
+        Object bean = component != null ? component.getComponent() : null;
         if (bean instanceof ComponentAdaptor) {
-            ComponentAdaptor adaptor = (ComponentAdaptor) bean;
-            return adaptor.getLifeCycle();
+            bean = ((ComponentAdaptor) bean).getLifeCycle();
         }
         return bean;
     }

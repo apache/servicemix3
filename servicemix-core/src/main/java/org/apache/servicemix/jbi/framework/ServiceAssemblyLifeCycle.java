@@ -39,8 +39,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.deployment.Connection;
 import org.apache.servicemix.jbi.deployment.Consumes;
-import org.apache.servicemix.jbi.deployment.Descriptor;
+import org.apache.servicemix.jbi.deployment.DescriptorFactory;
 import org.apache.servicemix.jbi.deployment.ServiceAssembly;
+import org.apache.servicemix.jbi.deployment.Services;
 import org.apache.servicemix.jbi.event.ServiceAssemblyEvent;
 import org.apache.servicemix.jbi.event.ServiceAssemblyListener;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
@@ -80,10 +81,10 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
      * @param sa
      * @param stateFile
      */
-    ServiceAssemblyLifeCycle(ServiceAssembly sa, 
-                             String[] suKeys, 
-                             File stateFile,
-                             Registry registry) {
+    public ServiceAssemblyLifeCycle(ServiceAssembly sa, 
+                                    String[] suKeys, 
+                                    File stateFile,
+                                    Registry registry) {
         this.serviceAssembly = sa;
         this.stateFile = stateFile;
         this.registry = registry;
@@ -279,7 +280,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
     
     public String getDescriptor() {
         File saDir = registry.getEnvironmentContext().getSARootDirectory(getName());
-        return AutoDeploymentService.getDescriptorAsText(saDir);
+        return DescriptorFactory.getDescriptorAsText(saDir);
     }
 
     /**
@@ -363,9 +364,9 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
     
     protected String getLinkType(QName svc, String ep) {
         for (int i = 0; i < sus.length; i++) {
-            Descriptor d = AutoDeploymentService.buildDescriptor(sus[i].getServiceUnitRootPath());
-            if (d != null && d.getServices() != null && d.getServices().getConsumes() != null) {
-                Consumes[] consumes = d.getServices().getConsumes();
+            Services s = sus[i].getServices();
+            if (s != null && s.getConsumes() != null) {
+                Consumes[] consumes = s.getConsumes();
                 for (int j = 0; j < consumes.length; j++) {
                     if (svc.equals(consumes[j].getServiceName()) &&
                         ep.equals(consumes[j].getEndpointName())) {

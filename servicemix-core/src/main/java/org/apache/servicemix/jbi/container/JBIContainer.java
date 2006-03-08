@@ -62,10 +62,10 @@ import org.apache.servicemix.jbi.event.ServiceUnitListener;
 import org.apache.servicemix.jbi.framework.AdminCommandsService;
 import org.apache.servicemix.jbi.framework.AutoDeploymentService;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
+import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.framework.ComponentNameSpace;
 import org.apache.servicemix.jbi.framework.DeploymentService;
 import org.apache.servicemix.jbi.framework.InstallationService;
-import org.apache.servicemix.jbi.framework.LocalComponentConnector;
 import org.apache.servicemix.jbi.framework.Registry;
 import org.apache.servicemix.jbi.management.BaseLifeCycle;
 import org.apache.servicemix.jbi.management.ManagementContext;
@@ -780,22 +780,20 @@ public class JBIContainer extends BaseLifeCycle {
     /**
      * Used for Simple POJO's
      *
-     * @param id - the unique component ID
+     * @param name - the unique component ID
      * @throws JBIException
      */
-    public void deactivateComponent(String id) throws JBIException {
-        ComponentNameSpace cns = new ComponentNameSpace(name, id, id);
-        Component component = registry.getComponent(cns);
-        LocalComponentConnector lcc = registry.getLocalComponentConnector(cns);
-        if (component != null && lcc != null) {
-            lcc.getComponentMBean().shutDown();
-        	lcc.unregisterMbeans(managementContext);
+    public void deactivateComponent(String name) throws JBIException {
+        ComponentMBeanImpl component = registry.getComponent(name);
+        if (component != null) {
+            component.shutDown();
+        	component.unregisterMbeans(managementContext);
             registry.deregisterComponent(component);
-            environmentContext.unreregister(lcc);
-            log.info("Deactivating component for name: " + id + " component: " + component);
+            environmentContext.unreregister(component);
+            log.info("Deactivating component " + name);
         }
         else {
-            throw new JBIException("Could not find Component with id " + id);
+            throw new JBIException("Could not find component " + name);
         }
     }
 
@@ -813,28 +811,18 @@ public class JBIContainer extends BaseLifeCycle {
     /**
      * Get the component associated with the given component ID
      *
-     * @param id
+     * @param componentName
      * @return the component
      */
-    public Component getComponent(String id) {
-        return registry.getComponent(id);
+    public ComponentMBeanImpl getComponent(String componentName) {
+        return registry.getComponent(componentName);
     }
 
     /**
      * @return all local ComponentConnectors
      */
     public Collection getLocalComponentConnectors() {
-        return registry.getLocalComponentConnectors();
-    }
-
-    /**
-     * Retrive the local component connector for a given name
-     *
-     * @param componentName
-     * @return the LocalComponentConnector
-     */
-    public LocalComponentConnector getLocalComponentConnector(String componentName) {
-        return registry.getLocalComponentConnector(componentName);
+        return registry.getComponents();
     }
 
     /**
@@ -962,6 +950,9 @@ public class JBIContainer extends BaseLifeCycle {
     public ObjectName activateComponent(Component component, String description, ActivationSpec activationSpec,
                                         boolean pojo, boolean binding, boolean service) throws JBIException {
         ComponentNameSpace cns = new ComponentNameSpace(getName(), activationSpec.getComponentName(), activationSpec.getId());
+        if (registry.getComponent(cns) != null) {
+            throw new JBIException("A component is already registered for " + cns);
+        }
         ComponentContextImpl context = new ComponentContextImpl(this, cns);
         return activateComponent(new File("."), component, description, context, activationSpec, pojo, binding, service);
     }
@@ -987,7 +978,7 @@ public class JBIContainer extends BaseLifeCycle {
             log.info("Activating component for: " + cns + " with service: " + activationSpec.getService() + " component: "
                     + component);
         }
-        LocalComponentConnector lcc = registry.registerComponent(cns, description, component, binding, service);
+        ComponentMBeanImpl lcc = registry.registerComponent(cns, description, component, binding, service);
         if (lcc != null) {
             lcc.setPojo(pojo);
             ComponentEnvironment env = environmentContext.registerComponent(context.getEnvironment(),lcc);
@@ -999,12 +990,12 @@ public class JBIContainer extends BaseLifeCycle {
             if (lcc.isPojo()) {
                 //non-pojo's are either started by the auto deployer
                 //or manually
-                lcc.getComponentMBean().init();
+                lcc.init();
                 if (started.get()) {
-                    lcc.getComponentMBean().start();
+                    lcc.start();
                 }
             } else {
-                lcc.getComponentMBean().doShutDown();
+                lcc.doShutDown();
             }
             result = lcc.registerMBeans(managementContext);
         }

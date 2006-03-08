@@ -15,17 +15,17 @@
  */
 package org.apache.servicemix.examples;
 
+import javax.jbi.component.Component;
+
+import junit.framework.TestCase;
+
 import org.apache.servicemix.components.util.ComponentAdaptor;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
-import org.apache.servicemix.jbi.framework.LocalComponentConnector;
+import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.tck.MessageList;
 import org.apache.servicemix.tck.Receiver;
 import org.apache.servicemix.tck.Sender;
 import org.springframework.context.support.AbstractXmlApplicationContext;
-
-import javax.jbi.component.Component;
-
-import junit.framework.TestCase;
 
 /**
  * A base class for spring related test cases
@@ -88,7 +88,7 @@ public abstract class AbstractSpringTestSupport extends TestCase {
     }
     
     protected Component getComponent(String name) {
-        LocalComponentConnector lcc = jbi.getLocalComponentConnector(name);
+        ComponentMBeanImpl lcc = jbi.getComponent(name);
         return lcc != null ? lcc.getComponent() : null;
     }
 

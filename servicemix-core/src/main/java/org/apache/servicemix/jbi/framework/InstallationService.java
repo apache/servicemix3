@@ -42,6 +42,7 @@ import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.deployment.ClassPath;
 import org.apache.servicemix.jbi.deployment.Component;
 import org.apache.servicemix.jbi.deployment.Descriptor;
+import org.apache.servicemix.jbi.deployment.DescriptorFactory;
 import org.apache.servicemix.jbi.deployment.InstallationDescriptorExtension;
 import org.apache.servicemix.jbi.deployment.SharedLibrary;
 import org.apache.servicemix.jbi.deployment.SharedLibraryList;
@@ -91,7 +92,7 @@ public class InstallationService extends BaseSystemService implements Installati
             }
             File tmpDir=AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(),installJarURL);
             if(tmpDir!=null){
-                Descriptor root=AutoDeploymentService.buildDescriptor(tmpDir);
+                Descriptor root=DescriptorFactory.buildDescriptor(tmpDir);
                 if(root!=null&&root.getComponent()!=null){
                     String componentName=root.getComponent().getIdentification().getName();
                     if(!installers.containsKey(componentName)){
@@ -153,7 +154,7 @@ public class InstallationService extends BaseSystemService implements Installati
     
     private InstallerMBeanImpl createInstaller(String componentName) throws IOException, DeploymentException {
         File installationDir = environmentContext.getInstallationDirectory(componentName);
-        Descriptor root = AutoDeploymentService.buildDescriptor(installationDir);
+        Descriptor root = DescriptorFactory.buildDescriptor(installationDir);
         Component descriptor = root.getComponent();
 
         String name = descriptor.getIdentification().getName();
@@ -243,7 +244,7 @@ public class InstallationService extends BaseSystemService implements Installati
         try{
             File tmpDir=AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(),aSharedLibURI);
             if(tmpDir!=null){
-                Descriptor root=AutoDeploymentService.buildDescriptor(tmpDir);
+                Descriptor root=DescriptorFactory.buildDescriptor(tmpDir);
                 SharedLibrary sl=root.getSharedLibrary();
                 if(sl!=null){
                     result=doInstallSharedLibrary(tmpDir,sl);
@@ -318,7 +319,7 @@ public class InstallationService extends BaseSystemService implements Installati
     public void install(String location, Properties props, boolean autoStart) throws DeploymentException {
         File tmpDir=AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(),location);
         if(tmpDir!=null){
-            Descriptor root=AutoDeploymentService.buildDescriptor(tmpDir);
+            Descriptor root=DescriptorFactory.buildDescriptor(tmpDir);
             if(root!=null){
                 install(tmpDir, props, root, autoStart);
             }else{
@@ -371,16 +372,9 @@ public class InstallationService extends BaseSystemService implements Installati
                     }
                     if (autoStart) {
                         try{
-                            ComponentNameSpace cns=new ComponentNameSpace(container.getName(),componentName,
-                                            componentName);
-                            LocalComponentConnector lcc=container.getRegistry().getLocalComponentConnector(cns);
-                            if(container.getRegistry().isLocalComponentRegistered(componentName)){
-                                ComponentMBean mbean=lcc.getComponentMBean();
-                                if(mbean!=null){
-                                    mbean.start();
-                                }else{
-                                    log.warn("No ComponentMBean found for Component "+componentName);
-                                }
+                            ComponentMBeanImpl lcc = container.getComponent(componentName);
+                            if (lcc != null) {
+                                lcc.start();
                             }else{
                                 log.warn("No ComponentConnector found for Component "+componentName);
                             }
@@ -563,7 +557,7 @@ public class InstallationService extends BaseSystemService implements Installati
             if(files!=null){
                 for(int i=0;i<files.length;i++){
                     if(files[i].isDirectory()){
-                        Descriptor root=AutoDeploymentService.buildDescriptor(files[i]);
+                        Descriptor root=DescriptorFactory.buildDescriptor(files[i]);
                         if(root!=null){
                             SharedLibrary sl=root.getSharedLibrary();
                             if(sl!=null){

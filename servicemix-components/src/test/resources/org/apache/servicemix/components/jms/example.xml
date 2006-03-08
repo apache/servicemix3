@@ -64,7 +64,7 @@
       </sm:activationSpec>
       -->
 
-      <sm:activationSpec componentName="jmsTrace" service="foo:trace">
+      <sm:activationSpec componentName="trace" service="foo:trace">
         <sm:component><bean class="org.apache.servicemix.components.groovy.GroovyComponent">
           <property name="disableOutput" value="true"/>
           <property name="scriptText">

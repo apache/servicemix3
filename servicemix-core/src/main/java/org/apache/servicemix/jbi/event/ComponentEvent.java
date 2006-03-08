@@ -17,7 +17,7 @@ package org.apache.servicemix.jbi.event;
 
 import java.util.EventObject;
 
-import org.apache.servicemix.jbi.framework.LocalComponentConnector;
+import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 
 public class ComponentEvent extends EventObject {
 
@@ -29,17 +29,17 @@ public class ComponentEvent extends EventObject {
     public static final int COMPONENT_SHUTDOWN = 3;
     public static final int COMPONENT_UNINSTALLED = 4;
     
-    private LocalComponentConnector lcc;
+    private ComponentMBeanImpl component;
     private int type;
     
-    public ComponentEvent(LocalComponentConnector lcc, int type) {
-        super(lcc);
-        this.lcc = lcc;
+    public ComponentEvent(ComponentMBeanImpl component, int type) {
+        super(component);
+        this.component = component;
         this.type = type;
     }
     
-    public LocalComponentConnector getComponent() {
-        return lcc;
+    public ComponentMBeanImpl getComponent() {
+        return component;
     }
     
     public int getEventType() {

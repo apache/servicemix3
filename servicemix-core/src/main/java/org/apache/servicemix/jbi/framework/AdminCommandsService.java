@@ -116,12 +116,11 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
      */
     public String startComponent(String name) throws Exception {
         try {
-            ComponentNameSpace cns = new ComponentNameSpace(container.getName(), name, name);
-            LocalComponentConnector lcc = container.getRegistry().getLocalComponentConnector(cns);
+            ComponentMBeanImpl lcc = container.getComponent(name);
             if (lcc == null) {
                 throw new JBIException("Component " + name + " not found");
             }
-            lcc.getComponentMBean().start();
+            lcc.start();
             return success("startComponent", name);
         } catch (JBIException e) {
             throw new RuntimeException(failure("startComponent", name, e));
@@ -136,12 +135,11 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
      */
     public String stopComponent(String name) throws Exception {
         try {
-            ComponentNameSpace cns = new ComponentNameSpace(container.getName(), name, name);
-            LocalComponentConnector lcc = container.getRegistry().getLocalComponentConnector(cns);
+            ComponentMBeanImpl lcc = container.getComponent(name);
             if (lcc == null) {
                 throw new JBIException("Component " + name + " not found");
             }
-            lcc.getComponentMBean().stop();
+            lcc.stop();
             return success("stopComponent", name);
         } catch (JBIException e) {
             throw new RuntimeException(failure("stopComponent", name, e));
@@ -156,12 +154,11 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
      */
     public String shutdownComponent(String name) throws Exception {
         try {
-            ComponentNameSpace cns = new ComponentNameSpace(container.getName(), name, name);
-            LocalComponentConnector lcc = container.getRegistry().getLocalComponentConnector(cns);
+            ComponentMBeanImpl lcc = container.getComponent(name);
             if (lcc == null) {
                 throw new JBIException("Component " + name + " not found");
             }
-            lcc.getComponentMBean().shutDown();
+            lcc.shutDown();
             return success("shutdownComponent", name);
         } catch (JBIException e) {
             throw new RuntimeException(failure("shutdownComponent", name, e));
@@ -276,24 +273,24 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
                                  String requiredState,
                                  String sharedLibraryName,
                                  String serviceAssemblyName) throws Exception {
-        Collection connectors = container.getRegistry().getLocalComponentConnectors();
+        Collection connectors = container.getRegistry().getComponents();
         List components = new ArrayList();
         for (Iterator iter = connectors.iterator(); iter.hasNext();) {
-            LocalComponentConnector lcc = (LocalComponentConnector) iter.next();
+            ComponentMBeanImpl component = (ComponentMBeanImpl) iter.next();
             // Skip SEs if needed
-            if (excludeSEs && lcc.isService()) {
+            if (excludeSEs && component.isService()) {
                 continue;
             }
             // Skip BCs if needed
-            if (excludeBCs && lcc.isBinding()) {
+            if (excludeBCs && component.isBinding()) {
                 continue;
             }
             // Skip Pojos if needed
-            if (excludePojos && lcc.isPojo()) {
+            if (excludePojos && component.isPojo()) {
                 continue;
             }
             // Check status
-            if (requiredState != null && requiredState.length() > 0 && !requiredState.equals(lcc.getComponentMBean().getCurrentState())) {
+            if (requiredState != null && requiredState.length() > 0 && !requiredState.equals(component.getCurrentState())) {
                 continue;
             }
             // Check shared library
@@ -306,25 +303,25 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
             if (serviceAssemblyName != null && serviceAssemblyName.length() > 0 && !container.getDeploymentService().isSaDeployed(serviceAssemblyName)) {
                 continue;
             }
-            components.add(lcc);
+            components.add(component);
         }
 
         StringBuffer buffer = new StringBuffer();
         buffer.append("<?xml version='1.0'?>\n");
         buffer.append("<component-info-list xmlns='http://java.sun.com/xml/ns/jbi/component-info-list' version='1.0'>\n");
         for (Iterator iter = components.iterator(); iter.hasNext();) {
-            LocalComponentConnector lcc = (LocalComponentConnector) iter.next();
+            ComponentMBeanImpl component = (ComponentMBeanImpl) iter.next();
             buffer.append("\t<component-info>");
-            if (!lcc.isBinding() && lcc.isService()) {
+            if (!component.isBinding() && component.isService()) {
                 buffer.append(" type='service-engine'");
-            } else if (lcc.isBinding() && !lcc.isService()) {
+            } else if (component.isBinding() && !component.isService()) {
                 buffer.append(" type='binding-component'");
             }
-            buffer.append(" name='" + lcc.getComponentNameSpace().getName() + "'");
-            buffer.append(" state='" + lcc.getComponentMBean().getCurrentState() + "'>");
-            if (lcc.getPacket().getDescription() != null) {
+            buffer.append(" name='" + component.getName() + "'");
+            buffer.append(" state='" + component.getCurrentState() + "'>");
+            if (component.getDescription() != null) {
                 buffer.append("\t\t<description>");
-                buffer.append(lcc.getPacket().getDescription());
+                buffer.append(component.getDescription());
                 buffer.append("<description>\n");
             }
             buffer.append("\t</component-info>\n");

@@ -19,7 +19,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 
-import javax.jbi.component.Component;
 import javax.jbi.component.ServiceUnitManager;
 import javax.jbi.management.DeploymentException;
 import javax.management.JMException;
@@ -28,7 +27,10 @@ import javax.management.MBeanOperationInfo;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.deployment.Descriptor;
+import org.apache.servicemix.jbi.deployment.DescriptorFactory;
 import org.apache.servicemix.jbi.deployment.ServiceUnit;
+import org.apache.servicemix.jbi.deployment.Services;
 import org.apache.servicemix.jbi.event.ServiceUnitEvent;
 import org.apache.servicemix.jbi.event.ServiceUnitListener;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
@@ -49,12 +51,18 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
 
     private PropertyChangeListener listener;
     
-    ServiceUnitLifeCycle(ServiceUnit serviceUnit, 
+    private Services services;
+    
+    public ServiceUnitLifeCycle(ServiceUnit serviceUnit, 
                                 String serviceAssembly,
                                 Registry registry) {
         this.serviceUnit = serviceUnit;
         this.serviceAssembly = serviceAssembly;
         this.registry = registry;
+        Descriptor d = DescriptorFactory.buildDescriptor(getServiceUnitRootPath());
+        if (d != null) {
+            services = d.getServices();
+        }
     }
 
     /**
@@ -150,17 +158,21 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
 
     public String getDescriptor() {
         File suDir = getServiceUnitRootPath();
-        return AutoDeploymentService.getDescriptorAsText(suDir);
+        return DescriptorFactory.getDescriptorAsText(suDir);
+    }
+    
+    public Services getServices() {
+        return services;
     }
 
     protected void checkComponentStarted(String task) throws DeploymentException {
         String componentName = getComponentName();
         String suName = getName();
-        LocalComponentConnector lcc = registry.getLocalComponentConnector(componentName);
+        ComponentMBeanImpl lcc = registry.getComponent(componentName);
         if (lcc == null) {
             throw ManagementSupport.componentFailure("deploy", componentName, "Target component " + componentName + " for service unit " + suName + " is not installed");
         }
-        if (!lcc.getComponentMBean().isStarted()) {
+        if (!lcc.isStarted()) {
             throw ManagementSupport.componentFailure("deploy", componentName, "Target component " + componentName + " for service unit " + suName + " is not started");
         }
         if (lcc.getServiceUnitManager() == null) {
@@ -171,11 +183,11 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
     protected void checkComponentStartedOrStopped(String task) throws DeploymentException {
         String componentName = getComponentName();
         String suName = getName();
-        LocalComponentConnector lcc = registry.getLocalComponentConnector(componentName);
+        ComponentMBeanImpl lcc = registry.getComponent(componentName);
         if (lcc == null) {
             throw ManagementSupport.componentFailure("deploy", componentName, "Target component " + componentName + " for service unit " + suName + " is not installed");
         }
-        if (!lcc.getComponentMBean().isStarted() && !lcc.getComponentMBean().isStopped()) {
+        if (!lcc.isStarted() && !lcc.isStopped()) {
             throw ManagementSupport.componentFailure("deploy", componentName, "Target component " + componentName + " for service unit " + suName + " is not started");
         }
         if (lcc.getServiceUnitManager() == null) {
@@ -191,8 +203,7 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
     }
     
     protected ServiceUnitManager getServiceUnitManager() {
-        Component component = registry.getComponent(getComponentName());
-        LocalComponentConnector lcc = registry.getComponentConnector(component);
+        ComponentMBeanImpl lcc = registry.getComponent(getComponentName());
         return lcc.getServiceUnitManager();
     }
 
@@ -256,7 +267,6 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
                 break;
             }
         }
-        
     }
 
 }

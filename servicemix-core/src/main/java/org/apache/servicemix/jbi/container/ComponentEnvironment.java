@@ -15,15 +15,15 @@
  */
 package org.apache.servicemix.jbi.container;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.framework.LocalComponentConnector;
-import org.apache.servicemix.jbi.messaging.MessagingStats;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
+import org.apache.servicemix.jbi.messaging.MessagingStats;
 
 /**
  * Holder for environment infomation
@@ -36,7 +36,7 @@ public class ComponentEnvironment {
     private File workspaceRoot;
     private File componentRoot;
     private PrintWriter statsWriter;
-    private LocalComponentConnector localConnector;
+    private ComponentMBeanImpl localConnector;
 
     /**
      * @return Returns the installRoot.
@@ -69,14 +69,14 @@ public class ComponentEnvironment {
     /**
      * @return Returns the localConnector.
      */
-    public LocalComponentConnector getLocalConnector() {
+    public ComponentMBeanImpl getLocalConnector() {
         return localConnector;
     }
 
     /**
      * @param localConnector The localConnector to set.
      */
-    public void setLocalConnector(LocalComponentConnector localConnector) {
+    public void setLocalConnector(ComponentMBeanImpl localConnector) {
         this.localConnector = localConnector;
     }
 

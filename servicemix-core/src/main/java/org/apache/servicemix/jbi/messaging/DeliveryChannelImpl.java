@@ -41,9 +41,8 @@ import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.jbi.ExchangeTimeoutException;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
-import org.apache.servicemix.jbi.framework.ComponentConnector;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
-import org.apache.servicemix.jbi.framework.LocalComponentConnector;
+import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.util.BoundedLinkedQueue;
 import org.apache.servicemix.jbi.util.DOMUtil;
@@ -63,7 +62,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
 
     private JBIContainer container;
     private ComponentContextImpl context;
-    private LocalComponentConnector componentConnector;
+    private ComponentMBeanImpl component;
     private BoundedLinkedQueue queue = new BoundedLinkedQueue();
     private IdGenerator idGenerator = new IdGenerator();
     private MessageExchangeFactory inboundFactory;
@@ -80,8 +79,9 @@ public class DeliveryChannelImpl implements DeliveryChannel {
      * @param container
      * @param componentName
      */
-    public DeliveryChannelImpl(JBIContainer container, String componentName) {
-        this.container = container;
+    public DeliveryChannelImpl(ComponentMBeanImpl component) {
+        this.component = component;
+        this.container = component.getContainer();
     }
 
     /**
@@ -132,10 +132,10 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                 ((Thread) threads[i]).interrupt();
             }
             // deactivate all endpoints from this component
-            ServiceEndpoint[] endpoints = container.getRegistry().getEndpointsForComponent(componentConnector.getComponentNameSpace());
+            ServiceEndpoint[] endpoints = container.getRegistry().getEndpointsForComponent(component.getComponentNameSpace());
             for (int i = 0; i < endpoints.length; i++) {
                 try {
-                    componentConnector.getContext().deactivateEndpoint(endpoints[i]);
+                    component.getContext().deactivateEndpoint(endpoints[i]);
                 } catch (JBIException e) {
                     log.error("Error deactivating endpoint", e);
                 }
@@ -406,11 +406,11 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                 messageExchange.setPersistent(persistent);
             }
 
-            if (componentConnector.isExchangeThrottling()) {
-                if (componentConnector.getThrottlingInterval() > intervalCount) {
+            if (component.isExchangeThrottling()) {
+                if (component.getThrottlingInterval() > intervalCount) {
                     intervalCount = 0;
                     try {
-                        Thread.sleep(componentConnector.getThrottlingTimeout());
+                        Thread.sleep(component.getThrottlingTimeout());
                     }
                     catch (InterruptedException e) {
                         log.warn("throttling failed", e);
@@ -420,18 +420,18 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             }
 
             // Update stats
-            MessagingStats messagingStats = componentConnector.getMessagingStats();
+            MessagingStats messagingStats = component.getMessagingStats();
             long currentTime = System.currentTimeMillis();
             if (container.isNotifyStatistics()) {
                 long oldCount = messagingStats.getOutboundExchanges().getCount();
                 messagingStats.getOutboundExchanges().increment();
-                componentConnector.getComponentMBean().firePropertyChanged(
+                component.firePropertyChanged(
                         "outboundExchangeCount",
                         new Long(oldCount),
                         new Long(messagingStats.getOutboundExchanges().getCount()));
                 double oldRate = messagingStats.getOutboundExchangeRate().getAverageTime();
                 messagingStats.getOutboundExchangeRate().addTime(currentTime - lastSendTime);
-                componentConnector.getComponentMBean().firePropertyChanged("outboundExchangeRate",
+                component.firePropertyChanged("outboundExchangeRate",
                         new Double(oldRate),
                         new Double(messagingStats.getOutboundExchangeRate().getAverageTime()));
             } else {
@@ -441,7 +441,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             lastSendTime = currentTime;
 
             if (messageExchange.getRole() == Role.CONSUMER) {
-                messageExchange.setSourceId(componentConnector.getComponentNameSpace());
+                messageExchange.setSourceId(component.getComponentNameSpace());
             }
 
             // Call the listeners before the ownership changes
@@ -562,17 +562,8 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     /**
      * @return Returns the componentConnector.
      */
-    public ComponentConnector getConnector() {
-        return componentConnector;
-    }
-
-    /**
-     * Set the ComponentConnector
-     * 
-     * @param connector context to set.
-     */
-    public void setConnector(LocalComponentConnector connector) {
-        this.componentConnector = connector;
+    public ComponentMBeanImpl getComponent() {
+        return component;
     }
 
     /**
@@ -603,18 +594,18 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         checkNotClosed();
 
         // Update stats
-        MessagingStats messagingStats = componentConnector.getMessagingStats();
+        MessagingStats messagingStats = component.getMessagingStats();
         long currentTime = System.currentTimeMillis();
         if (container.isNotifyStatistics()) {
             long oldCount = messagingStats.getInboundExchanges().getCount();
             messagingStats.getInboundExchanges().increment();
-            componentConnector.getComponentMBean().firePropertyChanged(
+            component.firePropertyChanged(
                     "inboundExchangeCount",
                     new Long(oldCount),
                     new Long(messagingStats.getInboundExchanges().getCount()));
             double oldRate = messagingStats.getInboundExchangeRate().getAverageTime();
             messagingStats.getInboundExchangeRate().addTime(currentTime - lastReceiveTime);
-            componentConnector.getComponentMBean().firePropertyChanged("inboundExchangeRate",
+            component.firePropertyChanged("inboundExchangeRate",
                     new Double(oldRate),
                     new Double(messagingStats.getInboundExchangeRate().getAverageTime()));
         } else {
@@ -636,7 +627,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                 theOriginal.notify();
             }
         } else {
-            Component component = ((LocalComponentConnector) componentConnector).getComponent();
+            Component component = this.component.getComponent();
             // If the component implements the MessageExchangeListener,
             // the delivery can be made synchronously, so we don't need
             // to bother about transactions
@@ -766,6 +757,6 @@ public class DeliveryChannelImpl implements DeliveryChannel {
      * @return pretty print
      */
     public String toString() {
-        return "DeliveryChannel{" + componentConnector.getComponentNameSpace() + "}";
+        return "DeliveryChannel{" + component.getName() + "}";
     }
 }

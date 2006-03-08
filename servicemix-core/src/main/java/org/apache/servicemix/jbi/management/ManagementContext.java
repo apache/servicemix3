@@ -207,8 +207,9 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * @param name - is the name of the BC or SE.
      * @return the JMX object name of the component's LifeCycle MBean or null.
      */
-    public ObjectName getComponentByName(String name) {
-        return container.getRegistry().getComponentObjectName(name);
+    public ObjectName getComponentByName(String componentName) {
+        ComponentMBeanImpl component = container.getRegistry().getComponent(componentName);
+        return component != null ? component.getMBeanName() : null;
     }
 
     /**
@@ -266,7 +267,8 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * @return true if the component is a binding
      */
     public boolean isBinding(String componentName) {
-        return container.getRegistry().isBinding(componentName);
+        ComponentMBeanImpl component = container.getRegistry().getComponent(componentName);
+        return component != null ? component.isBinding() : false;
     }
 
     /**
@@ -276,7 +278,8 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * @return true if the component is a service engine
      */
     public boolean isEngine(String componentName) {
-        return container.getRegistry().isEngine(componentName);
+        ComponentMBeanImpl component = container.getRegistry().getComponent(componentName);
+        return component != null ? component.isEngine() : false;
     }
 
     /**

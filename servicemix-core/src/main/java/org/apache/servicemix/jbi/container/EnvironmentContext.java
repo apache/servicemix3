@@ -28,7 +28,7 @@ import javax.management.MBeanAttributeInfo;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.framework.LocalComponentConnector;
+import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.util.FileUtil;
@@ -262,7 +262,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @return the CompponentEnvironment
      * @throws JBIException
      */
-    public ComponentEnvironment registerComponent(LocalComponentConnector connector) throws JBIException {
+    public ComponentEnvironment registerComponent(ComponentMBeanImpl connector) throws JBIException {
         ComponentEnvironment result = new ComponentEnvironment();
         return registerComponent(result,connector);
     }
@@ -275,7 +275,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @throws JBIException
      */
     public ComponentEnvironment registerComponent(ComponentEnvironment result,
-                                                  LocalComponentConnector connector) throws JBIException {
+            ComponentMBeanImpl connector) throws JBIException {
         if (result == null) {
             result = new ComponentEnvironment();
         }
@@ -364,8 +364,11 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @return the state file
      * @throws IOException 
      */
-    public File getComponentStateFile(String componentName) throws IOException {
+    public File getComponentStateFile(String componentName) {
         File result = getComponentRootDirectory(componentName);
+        if (result == null) {
+            return null;
+        }
         FileUtil.buildDirectory(result);
         result = new File(result,"state.xml");
         return result;
@@ -483,7 +486,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @param connector
      * @param doDelete true if component is to be deleted
      */
-    public void unreregister(LocalComponentConnector connector) {
+    public void unreregister(ComponentMBeanImpl connector) {
         ComponentEnvironment ce = (ComponentEnvironment) envMap.remove(connector);
         if (ce != null) {
             ce.close();

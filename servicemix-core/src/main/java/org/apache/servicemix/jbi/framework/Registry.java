@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
@@ -35,7 +34,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.EnvironmentContext;
-import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.container.SubscriptionSpec;
 import org.apache.servicemix.jbi.deployment.ServiceAssembly;
 import org.apache.servicemix.jbi.deployment.ServiceUnit;
@@ -69,7 +67,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     public Registry() {
         this.componentRegistry = new ComponentRegistry(this);
         this.endpointRegistry = new EndpointRegistry(this);
-        this.subscriptionRegistry = new SubscriptionRegistry();
+        this.subscriptionRegistry = new SubscriptionRegistry(this);
         this.serviceAssemblyRegistry = new ServiceAssemblyRegistry(this);
         this.serviceUnits = new ConcurrentHashMap();
     }
@@ -82,18 +80,6 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         return "Registry of Components/SU's and Endpoints";
     }
 
-    /**
-     * Initialize the Registry
-     * 
-     * @param container
-     * @throws JBIException
-     */
-    public void init(JBIContainer container) throws JBIException {
-        super.init(container);
-        this.componentRegistry.setContainerName(container.getName());
-        this.subscriptionRegistry.init(this);
-    }
-    
     protected Class getServiceMBean() {
         return RegistryMBean.class;
     }
@@ -167,8 +153,9 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @return EndPointReference
      * @throws JBIException
      */
-    public synchronized ServiceEndpoint activateEndpoint(ComponentContextImpl context, QName serviceName,
-            String endpointName) throws JBIException {
+    public ServiceEndpoint activateEndpoint(ComponentContextImpl context, 
+                                            QName serviceName,
+                                            String endpointName) throws JBIException {
         InternalEndpoint result = endpointRegistry.registerInternalEndpoint(context, serviceName, endpointName);
         return result;
     }
@@ -208,8 +195,8 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         }
         AbstractServiceEndpoint se = (AbstractServiceEndpoint) endpoint;
         // TODO: what if the endpoint is linked or dynamic
-        Component component = getComponent(se.getComponentNameSpace());
-        return component.getServiceDescription(endpoint);
+        ComponentMBeanImpl component = getComponent(se.getComponentNameSpace());
+        return component.getComponent().getServiceDescription(endpoint);
     }
 
     /**
@@ -225,9 +212,9 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * cannot be resolved.
      */
     public ServiceEndpoint resolveEndpointReference(DocumentFragment epr) {
-        Collection connectors = getLocalComponentConnectors();
+        Collection connectors = getComponents();
         for (Iterator iter = connectors.iterator(); iter.hasNext();) {
-            LocalComponentConnector connector = (LocalComponentConnector) iter.next();
+            ComponentMBeanImpl connector = (ComponentMBeanImpl) iter.next();
             ServiceEndpoint se = connector.getComponent().resolveEndpointReference(epr);
             if (se != null) {
                 return new DynamicEndpoint(connector.getComponentNameSpace(), se, epr);  
@@ -304,121 +291,35 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @return ComponentConnector
      * @throws JBIException
      */
-    public LocalComponentConnector registerComponent(ComponentNameSpace name, String description,Component component,
-            boolean binding, boolean service) throws JBIException {
-        LocalComponentConnector result = componentRegistry.registerComponent(name,description, component, binding, service);
-        return result;
+    public ComponentMBeanImpl registerComponent(ComponentNameSpace name, 
+                                                String description,
+                                                Component component,
+                                                boolean binding, 
+                                                boolean service) throws JBIException {
+        return componentRegistry.registerComponent(name,description, component, binding, service);
     }
 
     /**
      * @param component
      * @return ComponentConnector
      */
-    public ComponentConnector deregisterComponent(Component component) {
-        ComponentConnector result = componentRegistry.deregisterComponent(component);
-        return result;
+    public void deregisterComponent(ComponentMBeanImpl component) {
+        componentRegistry.deregisterComponent(component);
     }
 
     /**
      * @return all local ComponentConnectors
      */
-    public Collection getLocalComponentConnectors() {
-        return componentRegistry.getLocalComponentConnectors();
+    public Collection getComponents() {
+        return componentRegistry.getComponents();
     }
 
-    /**
-     * Get a registered ComponentConnector from it's id
-     * 
-     * @param id
-     * @return the ComponentConnector or null
-     */
-    public ComponentConnector getComponentConnector(ComponentNameSpace id) {
-        return componentRegistry.getComponentConnector(id);
-    }
-    
-    
-    /**
-     * Add a ComponentConnector to ComponentRegistry Should be called for adding remote ComponentConnectors from other
-     * Containers
-     * 
-     * @param connector
-     */
-    public void addRemoteComponentConnector(ComponentConnector connector) {
-        componentRegistry.addComponentConnector(connector);
-    }
-
-    /**
-     * Remove a ComponentConnector
-     * 
-     * @param connector
-     */
-    public void removeRemoteComponentConnector(ComponentConnector connector) {
-        componentRegistry.removeComponentConnector(connector.getComponentNameSpace());
-    }
-
-    /**
-     * Update a ComponentConnector
-     * 
-     * @param connector
-     */
-    public void updateRemoteComponentConnector(ComponentConnector connector) {
-        componentRegistry.updateConnector(connector);
-    }
-
-    /**
-     * Get a locally create ComponentConnector
-     * 
-     * @param id - id of the ComponentConnector
-     * @return ComponentConnector or null if not found
-     */
-    public LocalComponentConnector getLocalComponentConnector(ComponentNameSpace id) {
-        return componentRegistry.getLocalComponentConnector(id);
-    }
-    
-    /**
-     * Get a locally create ComponentConnector
-     * 
-     * @param id - id of the ComponentConnector
-     * @return ComponentConnector or null if not found
-     */
-    public LocalComponentConnector getLocalComponentConnector(String componentName) {
-        ComponentNameSpace cns = new ComponentNameSpace(container.getName(), componentName, componentName);
-        return componentRegistry.getLocalComponentConnector(cns);
-    }
-    
-    /**
-     * Find existence of a Component locally registered to this Container
-     * @param componentName
-     * @return true if the Component exists
-     */
-    public boolean isLocalComponentRegistered(String componentName){
-        return componentRegistry.isLocalComponentRegistered(componentName);
-    }
-
-    /**
-     * Get the ComponentConnector associated with the componet
-     * 
-     * @param component
-     * @return the associated ComponentConnector
-     */
-    public LocalComponentConnector getComponentConnector(Component component) {
-        return componentRegistry.getComponentConnector(component);
-    }
-
-    /**
-     * 
-     * @return Collection of ComponentConnectors held by the registry
-     */
-    public Collection getComponentConnectors() {
-        return componentRegistry.getComponentConnectors();
-    }
-    
     /**
      * Get a Component
      * @param cns
      * @return the Component
      */
-    public Component getComponent(ComponentNameSpace cns) {
+    public ComponentMBeanImpl getComponent(ComponentNameSpace cns) {
         return componentRegistry.getComponent(cns);
     }
     
@@ -427,86 +328,21 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @param name
      * @return the Componment
      */
-    public Component getComponent(String name) {
+    public ComponentMBeanImpl getComponent(String name) {
         ComponentNameSpace cns = new ComponentNameSpace(container.getName(), name, name);
         return getComponent(cns);
-    }
-    
-    /**
-     * Get the ObjectName for the MBean managing the Component
-     * @param name
-     * @return ObjectName or null
-     */
-    public ObjectName getComponentObjectName(String name){
-        ObjectName  result = null;
-        ComponentNameSpace cns = new ComponentNameSpace(container.getName(), name, name);
-        LocalComponentConnector lcc = getLocalComponentConnector(cns);
-        if (lcc != null){
-            result = lcc.getMBeanName();
-        }
-        return result;
-        
-    }
-    
-    /**
-     * Check if a given JBI Installable Component is a Binding Component.
-     * @param name - the unique name of the component
-     * @return true if the component is a binding
-     */
-    public boolean isBinding(String name){
-        boolean result = false;
-        ComponentNameSpace cns = new ComponentNameSpace(container.getName(), name, name);
-        LocalComponentConnector lcc = getLocalComponentConnector(cns);
-        if (lcc != null){
-            result = lcc.isBinding();
-        }
-        return result;
-    }
-    
-    /**
-     * Check if a given JBI Component is a service engine.
-     * @param name - the unique name of the component
-     * @return true if the component is a service engine
-     */
-    public boolean isEngine(String name){
-        boolean result = false;
-        ComponentNameSpace cns = new ComponentNameSpace(container.getName(), name, name);
-        LocalComponentConnector lcc = getLocalComponentConnector(cns);
-        if (lcc != null){
-            result = lcc.isService();
-        }
-        return result;
     }
     
     /**
      * Get a list of all engines currently installed.
      * @return array of JMX object names of all installed SEs.
      */
-    public ObjectName[] getEngineComponents(){
+    public ObjectName[] getEngineComponents() {
         ObjectName[] result = null;
         List tmpList = new ArrayList();
-        for (Iterator i = getLocalComponentConnectors().iterator(); i.hasNext();){
-            LocalComponentConnector lcc = (LocalComponentConnector) i.next();
+        for (Iterator i = getComponents().iterator(); i.hasNext();){
+            ComponentMBeanImpl lcc = (ComponentMBeanImpl) i.next();
             if (!lcc.isPojo() && lcc.isService() && lcc.getMBeanName() != null){
-                tmpList.add(lcc.getMBeanName());
-            }
-        }
-        result = new ObjectName[tmpList.size()];
-        tmpList.toArray(result);
-        return result;
-        
-    }
-    
-    /**
-     * Get a list of all pojos currently installed.
-     * @return array of JMX object names of all installed PJOJO Conponents.
-     */
-    public ObjectName[] getPojoComponents(){
-        ObjectName[] result = null;
-        List tmpList = new ArrayList();
-        for (Iterator i = getLocalComponentConnectors().iterator(); i.hasNext();){
-            LocalComponentConnector lcc = (LocalComponentConnector) i.next();
-            if (lcc.isPojo() && lcc.getMBeanName() != null){
                 tmpList.add(lcc.getMBeanName());
             }
         }
@@ -520,11 +356,11 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * Get a list of all binding components currently installed.
      * @return array of JMX object names of all installed BCs.
      */
-    public ObjectName[] getBindingComponents(){
+    public ObjectName[] getBindingComponents() {
         ObjectName[] result = null;
         List tmpList = new ArrayList();
-        for (Iterator i = getLocalComponentConnectors().iterator(); i.hasNext();){
-            LocalComponentConnector lcc = (LocalComponentConnector) i.next();
+        for (Iterator i = getComponents().iterator(); i.hasNext();){
+            ComponentMBeanImpl lcc = (ComponentMBeanImpl) i.next();
             if (!lcc.isPojo() && lcc.isBinding() && lcc.getMBeanName() != null){
                 tmpList.add(lcc.getMBeanName());
             }
@@ -534,14 +370,23 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         return result;
     }
 
-
     /**
-     * Get set of Components
-     * 
-     * @return a Set of Component objects
+     * Get a list of all pojos currently installed.
+     * @return array of JMX object names of all installed PJOJO Conponents.
      */
-    public Set getComponents() {
-        return componentRegistry.getComponents();
+    public ObjectName[] getPojoComponents() {
+        ObjectName[] result = null;
+        List tmpList = new ArrayList();
+        for (Iterator i = getComponents().iterator(); i.hasNext();){
+            ComponentMBeanImpl lcc = (ComponentMBeanImpl) i.next();
+            if (lcc.isPojo() && lcc.getMBeanName() != null){
+                tmpList.add(lcc.getMBeanName());
+            }
+        }
+        result = new ObjectName[tmpList.size()];
+        tmpList.toArray(result);
+        return result;
+        
     }
     
     /**

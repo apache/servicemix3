@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.jbi.JBIException;
-import javax.jbi.component.Component;
 import javax.jbi.component.ServiceUnitManager;
 import javax.jbi.management.DeploymentException;
 import javax.jbi.management.DeploymentServiceMBean;
@@ -38,6 +37,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.EnvironmentContext;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.deployment.Descriptor;
+import org.apache.servicemix.jbi.deployment.DescriptorFactory;
 import org.apache.servicemix.jbi.deployment.ServiceAssembly;
 import org.apache.servicemix.jbi.deployment.ServiceUnit;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
@@ -186,7 +186,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
             }
             Descriptor root = null;
             try {
-                root = AutoDeploymentService.buildDescriptor(tmpDir);
+                root = DescriptorFactory.buildDescriptor(tmpDir);
             } catch (Exception e) {
                 throw ManagementSupport.failure("deploy", "Unable to build jbi descriptor: " + saZipURL, e);
             }
@@ -349,8 +349,8 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
      * @return boolean value indicating whether the SU can be deployed.
      */
     public boolean canDeployToComponent(String componentName) {
-        LocalComponentConnector lcc = container.getLocalComponentConnector(componentName);
-        return lcc != null && lcc.getComponentMBean().isStarted() && lcc.getServiceUnitManager() != null;
+        ComponentMBeanImpl lcc = container.getComponent(componentName);
+        return lcc != null && lcc.isStarted() && lcc.getServiceUnitManager() != null;
     }
 
     /**
@@ -465,11 +465,11 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
                 if (!artifactFile.exists()) {
                     throw ManagementSupport.failure("deploy", "Artifact " + artifact + " not found for service unit " + suName);
                 }
-                LocalComponentConnector lcc = container.getLocalComponentConnector(componentName);
+                ComponentMBeanImpl lcc = container.getComponent(componentName);
                 if (lcc == null) {
                     throw ManagementSupport.failure("deploy", "Target component " + componentName + " for service unit " + suName + " is not installed");
                 }
-                if (!lcc.getComponentMBean().isStarted()) {
+                if (!lcc.isStarted()) {
                     throw ManagementSupport.failure("deploy", "Target component " + componentName + " for service unit " + suName + " is not started");
                 }
                 if (lcc.getServiceUnitManager() == null) {
@@ -511,7 +511,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
                 // Deploy it
                 boolean success = false;
                 try {
-                    LocalComponentConnector lcc = container.getLocalComponentConnector(componentName);
+                    ComponentMBeanImpl lcc = container.getComponent(componentName);
                     ServiceUnitManager sum = lcc.getServiceUnitManager();
                     String resultMsg = sum.deploy(suName, targetDir.getAbsolutePath());
                     success = getComponentTaskResult(resultMsg, componentName, componentResults, true);
@@ -615,7 +615,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         registry.unregisterServiceUnit(su.getKey());
         // unpack the artifact
         // now get the component and give it a SA
-        Component component = container.getComponent(componentName);
+        ComponentMBeanImpl component = container.getComponent(componentName);
         if (component != null) {
             ServiceUnitManager sum = component.getServiceUnitManager();
             if (sum != null) {
@@ -645,7 +645,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
                         String assemblyName = files[i].getName();
                         try {
                         	File assemblyDir = environmentContext.getSARootDirectory(assemblyName);
-	                        Descriptor root = AutoDeploymentService.buildDescriptor(assemblyDir);
+	                        Descriptor root = DescriptorFactory.buildDescriptor(assemblyDir);
 	                        if (root != null) {
 	                            ServiceAssembly sa = root.getServiceAssembly();
 	                            if (sa != null && sa.getIdentification() != null) {

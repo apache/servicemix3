@@ -15,38 +15,31 @@
  */
 package org.apache.servicemix.jbi.framework;
 
-import org.apache.servicemix.jbi.framework.ComponentNameSpace;
-import org.apache.servicemix.jbi.framework.ComponentRegistry;
-import org.apache.servicemix.jbi.framework.LocalComponentConnector;
-import org.apache.servicemix.tck.SenderComponent;
-
 import javax.jbi.component.Component;
 
 import junit.framework.TestCase;
 
+import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.tck.SenderComponent;
+
 public class ComponentRegistryTest extends TestCase {
     
-    public void testContainerName() throws Exception {
-        ComponentRegistry reg = new ComponentRegistry(null);
-        reg.setContainerName("containerName");
-        assertEquals("containerName", reg.getContainerName());
-    }
-    
     public void testRegister() throws Exception {
-        ComponentRegistry reg = new ComponentRegistry(new Registry());
+        JBIContainer container = new JBIContainer();
+        container.setEmbedded(true);
+        container.setUseMBeanServer(false);
+        container.init();
+        ComponentRegistry reg = new ComponentRegistry(container.getRegistry());
         Component component = new SenderComponent();
-        LocalComponentConnector con = reg.registerComponent(
+        ComponentMBeanImpl con = reg.registerComponent(
                               new ComponentNameSpace("container", "name", "id"),
                               "description",
                               component,
                               false,
                               false);
         assertNotNull(con);
-        assertEquals(con, reg.getComponentConnector(component));
-        assertEquals(con, reg.getComponentConnector(new ComponentNameSpace("container", null, "id")));
-        assertEquals(component, reg.getComponent(new ComponentNameSpace("container", null, "id")));
-        assertEquals(1, reg.getComponentConnectors().size());
-        assertEquals(1, reg.getLocalComponentConnectors().size());
+        assertEquals(con, reg.getComponent(new ComponentNameSpace("container", null, "id")));
+        assertEquals(component, reg.getComponent(new ComponentNameSpace("container", null, "id")).getComponent());
         assertEquals(1, reg.getComponents().size());
     }
 

@@ -120,7 +120,7 @@ public class HotDeployTest extends AbstractManagementTest {
         	lock.wait(5000);
         }
         Thread.sleep(50);
-        ObjectName lifecycleName = container.getRegistry().getComponentObjectName("component1");
+        ObjectName lifecycleName = container.getComponent("component1").getMBeanName();
         assertNotNull(lifecycleName);
         LifeCycleMBean lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
         assertEquals(LifeCycleMBean.STARTED, lifecycleMBean.getCurrentState());
@@ -169,7 +169,7 @@ public class HotDeployTest extends AbstractManagementTest {
         	lock.wait(5000);
         }
         Thread.sleep(50);
-        ObjectName lifecycleName = container.getRegistry().getComponentObjectName("component1");
+        ObjectName lifecycleName = container.getComponent("component1").getMBeanName();
         assertNotNull(lifecycleName);
         LifeCycleMBean lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
         assertEquals(LifeCycleMBean.STARTED, lifecycleMBean.getCurrentState());
@@ -190,8 +190,7 @@ public class HotDeployTest extends AbstractManagementTest {
         	lock.wait(5000);
         }
         Thread.sleep(50);
-        lifecycleName = container.getRegistry().getComponentObjectName("component1");
-        assertNull(lifecycleName);
+        assertNull(container.getComponent("component1"));
         // check mocks
         verify();
         
@@ -247,7 +246,7 @@ public class HotDeployTest extends AbstractManagementTest {
         	lock.wait(5000);
         }
         Thread.sleep(2000);
-        ObjectName lifecycleName = container.getRegistry().getComponentObjectName("component1");
+        ObjectName lifecycleName = container.getComponent("component1").getMBeanName();
         assertNotNull(lifecycleName);
         LifeCycleMBean lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
         assertEquals(LifeCycleMBean.STARTED, lifecycleMBean.getCurrentState());

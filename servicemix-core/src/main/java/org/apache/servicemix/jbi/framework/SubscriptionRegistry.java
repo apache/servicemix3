@@ -37,7 +37,7 @@ public class SubscriptionRegistry {
     private Map subscriptions = new ConcurrentHashMap();
     private Registry registry;
     
-    public void init(Registry registry) {
+    public SubscriptionRegistry(Registry registry) {
         this.registry = registry;
     }
 

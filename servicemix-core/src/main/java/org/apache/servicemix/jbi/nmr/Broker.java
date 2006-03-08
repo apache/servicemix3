@@ -33,8 +33,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
+import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.framework.ComponentNameSpace;
-import org.apache.servicemix.jbi.framework.LocalComponentConnector;
 import org.apache.servicemix.jbi.framework.Registry;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.management.ManagementContext;
@@ -400,12 +400,12 @@ public class Broker extends BaseSystemService implements BrokerMBean {
      */
     protected ServiceEndpoint[] getMatchingEndpoints(ServiceEndpoint[] endpoints, MessageExchangeImpl exchange) {
     	List filtered = new ArrayList();
-        LocalComponentConnector consumer = getRegistry().getLocalComponentConnector(exchange.getSourceId());
+        ComponentMBeanImpl consumer = getRegistry().getComponent(exchange.getSourceId());
         
     	for (int i = 0; i < endpoints.length; i++) {
 			ComponentNameSpace id = ((InternalEndpoint) endpoints[i]).getComponentNameSpace();
             if (id != null) {
-    	        LocalComponentConnector provider = getRegistry().getLocalComponentConnector(id);
+                ComponentMBeanImpl provider = getRegistry().getComponent(id);
                 if (provider != null) {
                     if (!consumer.getComponent().isExchangeWithProviderOkay(endpoints[i], exchange) ||
                         !provider.getComponent().isExchangeWithConsumerOkay(endpoints[i], exchange)) {

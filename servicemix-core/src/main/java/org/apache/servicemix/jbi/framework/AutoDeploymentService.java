@@ -15,15 +15,11 @@
  */
 package org.apache.servicemix.jbi.framework;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,16 +39,15 @@ import javax.resource.spi.work.WorkException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.config.spring.XBeanProcessor;
 import org.apache.servicemix.jbi.container.EnvironmentContext;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.deployment.Descriptor;
+import org.apache.servicemix.jbi.deployment.DescriptorFactory;
 import org.apache.servicemix.jbi.deployment.ServiceAssembly;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.servicemix.jbi.util.XmlPersistenceSupport;
-import org.apache.xbean.spring.context.FileSystemXmlApplicationContext;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
@@ -65,7 +60,6 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
 	
     private static final Log log = LogFactory.getLog(AutoDeploymentService.class);
     private EnvironmentContext environmentContext;
-    protected static final String DESCRIPTOR_FILE = "META-INF/jbi.xml";
     private DeploymentService deploymentService;
     private InstallationService installationService;
     private boolean monitorInstallationDirectory = true;
@@ -197,7 +191,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
      */
     public void updateArchive(String location, ArchiveEntry entry, boolean autoStart) throws DeploymentException{
         File tmp=AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(),location);
-        Descriptor root=AutoDeploymentService.buildDescriptor(tmp);
+        Descriptor root = DescriptorFactory.buildDescriptor(tmp);
         if (root != null) {
             try{
                 container.getBroker().suspend();
@@ -233,7 +227,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                             boolean canDeploy = true;
                             for (Iterator it = entry.componentNames.iterator(); it.hasNext();) {
                             	String componentName = (String) it.next();
-                            	if (!container.getRegistry().isLocalComponentRegistered(componentName)) {
+                            	if (container.getComponent(componentName) == null) {
                             		canDeploy = false;
                             		if (missings != null) {
                             			missings += ", " + componentName;
@@ -330,7 +324,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             boolean canDeploy = true;
             for (Iterator it2 = entry.componentNames.iterator(); it2.hasNext();) {
             	String componentName = (String) it2.next();
-            	if (!container.getRegistry().isLocalComponentRegistered(componentName)) {
+            	if (container.getComponent(componentName) == null) {
             		canDeploy = false;
             		break;
             	}
@@ -339,7 +333,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 File tmp = (File) me.getKey();
                 deployedSas.add(tmp);
                 try {
-	                Descriptor root = AutoDeploymentService.buildDescriptor(tmp);
+	                Descriptor root = DescriptorFactory.buildDescriptor(tmp);
 	                deploymentService.deployServiceAssembly(tmp, root.getServiceAssembly());
 	                deploymentService.start(root.getServiceAssembly().getIdentification().getName());
                 } catch (Exception e) {
@@ -372,45 +366,6 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                         "Periodically monitor the Installation directory");
         helper.addAttribute(getObjectToManage(),"monitorInterval","Interval (secs) before monitoring");
         return AttributeInfoHelper.join(super.getAttributeInfos(),helper.getAttributeInfos());
-    }
-
-    /**
-     * Build a Descriptor from a file archieve
-     * 
-     * @param tmpDir
-     * @return the Descriptor object
-     */
-    protected static Descriptor buildDescriptor(File tmpDir){
-        Descriptor root = null;
-        File descriptorFile = new File(tmpDir, DESCRIPTOR_FILE);
-        if (descriptorFile.exists()) {
-            ClassLoader cl = Thread.currentThread().getContextClassLoader();
-            try {
-                Thread.currentThread().setContextClassLoader(AutoDeploymentService.class.getClassLoader());
-                FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(
-                        "file:///" + descriptorFile.getAbsolutePath(),
-                        Arrays.asList(new Object[] { new XBeanProcessor() }));
-                root = (Descriptor) context.getBean("jbi");
-            } finally {
-                Thread.currentThread().setContextClassLoader(cl);
-            }
-        }
-        return root;
-    }
-    
-    protected static String getDescriptorAsText(File tmpDir) {
-        File descriptorFile = new File(tmpDir, DESCRIPTOR_FILE);
-        if (descriptorFile.exists()) {
-            try {
-                ByteArrayOutputStream os = new ByteArrayOutputStream();
-                InputStream is = new FileInputStream(descriptorFile);
-                FileUtil.copyInputStream(is, os);
-                return os.toString();
-            } catch (Exception e) {
-                log.debug("Error reading jbi descritor: " + descriptorFile, e);
-            }
-        }
-        return null;
     }
 
     /**
@@ -451,7 +406,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                     throw new DeploymentException(e);
                 }
             }
-            if (FileUtil.archiveContainsEntry(file, AutoDeploymentService.DESCRIPTOR_FILE)) {
+            if (FileUtil.archiveContainsEntry(file, DescriptorFactory.DESCRIPTOR_FILE)) {
                 tmpDir = FileUtil.createUniqueDirectory(tmpRoot, file.getName());
                 FileUtil.unpackArchive(file, tmpDir);
                 if (log.isDebugEnabled()) {

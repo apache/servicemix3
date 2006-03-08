@@ -21,12 +21,12 @@ import javax.jbi.component.Component;
 import javax.jbi.messaging.NormalizedMessage;
 
 import org.apache.servicemix.components.util.ComponentAdaptor;
-import org.apache.servicemix.jbi.framework.LocalComponentConnector;
+import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.tck.MessageList;
 import org.apache.servicemix.tck.Receiver;
 import org.apache.servicemix.tck.Sender;
-import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
  * @version $Revision$
@@ -73,7 +73,7 @@ public class GroovyTransformTest extends org.apache.servicemix.tck.SpringTestSup
     }
     
     protected Component getComponent(String name) {
-        LocalComponentConnector lcc = jbi.getLocalComponentConnector(name);
+        ComponentMBeanImpl lcc = jbi.getComponent(name);
         return lcc != null ? lcc.getComponent() : null;
     }
 }
