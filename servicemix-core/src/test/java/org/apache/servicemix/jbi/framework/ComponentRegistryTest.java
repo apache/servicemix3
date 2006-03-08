@@ -32,14 +32,14 @@ public class ComponentRegistryTest extends TestCase {
         ComponentRegistry reg = new ComponentRegistry(container.getRegistry());
         Component component = new SenderComponent();
         ComponentMBeanImpl con = reg.registerComponent(
-                              new ComponentNameSpace("container", "name", "id"),
+                              new ComponentNameSpace("container", "name"),
                               "description",
                               component,
                               false,
                               false);
         assertNotNull(con);
-        assertEquals(con, reg.getComponent(new ComponentNameSpace("container", null, "id")));
-        assertEquals(component, reg.getComponent(new ComponentNameSpace("container", null, "id")).getComponent());
+        assertEquals(con, reg.getComponent(new ComponentNameSpace("container", "name")));
+        assertEquals(component, reg.getComponent(new ComponentNameSpace("container", "name")).getComponent());
         assertEquals(1, reg.getComponents().size());
     }
 

@@ -329,7 +329,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @return the Componment
      */
     public ComponentMBeanImpl getComponent(String name) {
-        ComponentNameSpace cns = new ComponentNameSpace(container.getName(), name, name);
+        ComponentNameSpace cns = new ComponentNameSpace(container.getName(), name);
         return getComponent(cns);
     }
     
@@ -498,7 +498,17 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @return List of deployed service units
      */
     public ServiceUnitLifeCycle[] getDeployedServiceUnits(String componentName)  {
-        return serviceAssemblyRegistry.getDeployedServiceUnits(componentName);
+        Collection sus = serviceUnits.values();
+        List tmpList = new ArrayList();
+        for (Iterator iter = sus.iterator(); iter.hasNext();) {
+            ServiceUnitLifeCycle su = (ServiceUnitLifeCycle) iter.next();
+            if (su.getComponentName().equals(componentName)) {
+                tmpList.add(su);
+            }
+        }
+        ServiceUnitLifeCycle[] result = new ServiceUnitLifeCycle[tmpList.size()];
+        tmpList.toArray(result);
+        return result;
     }
 
     /**

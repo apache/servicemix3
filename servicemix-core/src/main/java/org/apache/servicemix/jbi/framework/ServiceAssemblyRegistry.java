@@ -142,32 +142,6 @@ public class ServiceAssemblyRegistry {
     }
     
    /**
-    * Returns a list of Service Units that are currently deployed to the given component.
-    * 
-    * @param componentName name of the component.
-    * @return List of deployed ASA Ids.
-    */
-   public ServiceUnitLifeCycle[] getDeployedServiceUnits(String componentName) {
-       ServiceUnitLifeCycle[] result = null;
-       // iterate through the service assembilies
-       List tmpList = new ArrayList();
-       for (Iterator iter = serviceAssemblies.values().iterator();iter.hasNext();) {
-           ServiceAssemblyLifeCycle salc = (ServiceAssemblyLifeCycle) iter.next();
-           ServiceUnitLifeCycle[] sus = salc.getDeployedSUs();
-           if (sus != null) {
-               for (int i = 0; i < sus.length; i++) {
-                   if (sus[i].getComponentName().equals(componentName)) {
-                       tmpList.add(sus[i]);
-                   }
-               }
-           }
-       }
-       result = new ServiceUnitLifeCycle[tmpList.size()];
-       tmpList.toArray(result);
-       return result;
-   }
-
-   /**
     * Returns a list of Service Assemblies deployed to the JBI enviroment.
     * 
     * @return list of Service Assembly Name's.

@@ -898,7 +898,7 @@ public class JBIContainer extends BaseLifeCycle {
      */
     public ObjectName activateComponent(Component component, String name) throws JBIException {
         ActivationSpec activationSpec = new ActivationSpec();
-        ComponentNameSpace cns = new ComponentNameSpace(getName(), name, name);
+        ComponentNameSpace cns = new ComponentNameSpace(getName(), name);
         activationSpec.setComponent(component);
         activationSpec.setComponentName(cns.getName());
         return activateComponent(component, activationSpec);
@@ -949,7 +949,7 @@ public class JBIContainer extends BaseLifeCycle {
      */
     public ObjectName activateComponent(Component component, String description, ActivationSpec activationSpec,
                                         boolean pojo, boolean binding, boolean service) throws JBIException {
-        ComponentNameSpace cns = new ComponentNameSpace(getName(), activationSpec.getComponentName(), activationSpec.getId());
+        ComponentNameSpace cns = new ComponentNameSpace(getName(), activationSpec.getComponentName());
         if (registry.getComponent(cns) != null) {
             throw new JBIException("A component is already registered for " + cns);
         }
@@ -973,7 +973,7 @@ public class JBIContainer extends BaseLifeCycle {
                                         ComponentContextImpl context, ActivationSpec activationSpec, boolean pojo, boolean binding, boolean service)
             throws JBIException {
         ObjectName result = null;
-        ComponentNameSpace cns = new ComponentNameSpace(getName(), activationSpec.getComponentName(), activationSpec.getId());
+        ComponentNameSpace cns = new ComponentNameSpace(getName(), activationSpec.getComponentName());
         if (log.isDebugEnabled()) {
             log.info("Activating component for: " + cns + " with service: " + activationSpec.getService() + " component: "
                     + component);

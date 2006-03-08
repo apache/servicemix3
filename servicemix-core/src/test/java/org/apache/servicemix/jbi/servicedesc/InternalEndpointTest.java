@@ -30,7 +30,7 @@ import junit.framework.TestCase;
 public class InternalEndpointTest extends TestCase {
 
     public void testSerializeDeserialize() throws Exception {
-        ComponentNameSpace cns = new ComponentNameSpace("myContainer", "myName", "myId");
+        ComponentNameSpace cns = new ComponentNameSpace("myContainer", "myName");
         InternalEndpoint e = new InternalEndpoint(cns, "myEndpoint", new QName("myService"));
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -51,16 +51,16 @@ public class InternalEndpointTest extends TestCase {
     }
     
     public void testEquals() throws Exception {
-        ComponentNameSpace cns = new ComponentNameSpace("myContainer", "myName", "myId");
+        ComponentNameSpace cns = new ComponentNameSpace("myContainer", "myName");
         InternalEndpoint e1 = new InternalEndpoint(cns, "myEndpoint1", new QName("myService"));
         InternalEndpoint e2 = new InternalEndpoint(cns, "myEndpoint2", new QName("myService"));
         assertFalse(e1.equals(e2));
         e2 = new InternalEndpoint(cns, "myEndpoint", new QName("myService2"));
         assertFalse(e1.equals(e2));
-        ComponentNameSpace cns2 = new ComponentNameSpace("myContainer", "myName", "myId2");
+        ComponentNameSpace cns2 = new ComponentNameSpace("myContainer2", "myId2");
         e2 = new InternalEndpoint(cns2, "myEndpoint1", new QName("myService"));
         assertTrue(e1.equals(e2));
-        cns2 = new ComponentNameSpace("myContainer", "myName", "myId");
+        cns2 = new ComponentNameSpace("myContainer", "myName");
         e2 = new InternalEndpoint(cns2, "myEndpoint1", new QName("myService"));
         assertTrue(e1.equals(e2));
     }

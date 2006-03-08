@@ -34,7 +34,6 @@ public class ComponentNameSpace implements Externalizable {
     
     protected String containerName;
     protected String name;
-    protected String componentId;
 
     /**
      * Default Constructor
@@ -49,32 +48,11 @@ public class ComponentNameSpace implements Externalizable {
      * @param componentName
      * @param componentId
      */
-    public ComponentNameSpace(String containerName, String componentName, String componentId) {
+    public ComponentNameSpace(String containerName, String componentName) {
         this.containerName = containerName;
         this.name = componentName;
-        this.componentId = componentId;
-        if (this.name == null) {
-            this.name = this.componentId;
-        }
-        if (this.componentId == null) {
-            this.componentId = this.name;
-        }
     }
     
-    /**
-     * @return Returns the componentId.
-     */
-    public String getComponentId() {
-        return componentId;
-    }
-
-    /**
-     * @param componentId The componentId to set.
-     */
-    public void setComponentId(String componentId) {
-        this.componentId = componentId;
-    }
-
     /**
      * @return Returns the componentName.
      */
@@ -111,8 +89,8 @@ public class ComponentNameSpace implements Externalizable {
         boolean result = false;
         if (obj != null && obj instanceof ComponentNameSpace) {
             ComponentNameSpace other = (ComponentNameSpace) obj;
-            result = other.getContainerName().equals(this.containerName)
-                    && other.getComponentId().equals(this.componentId);
+            result = other.containerName.equals(this.containerName)
+                    && other.name.equals(this.name);
         }
         return result;
     }
@@ -121,14 +99,14 @@ public class ComponentNameSpace implements Externalizable {
      * @return the hashCode
      */
     public int hashCode() {
-        return containerName.hashCode() ^ componentId.hashCode();
+        return containerName.hashCode() ^ name.hashCode();
     }
     
     /**
      * @return pretty print
      */
     public String toString() {
-        return "[container=" + containerName + ",name=" + name + ",id=" + componentId + "]";
+        return "[container=" + containerName + ",name=" + name + "]";
     }
 
     /**
@@ -139,7 +117,6 @@ public class ComponentNameSpace implements Externalizable {
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeUTF(containerName != null ? containerName : "");
         out.writeUTF(name != null ? name : "");
-        out.writeUTF(componentId != null ? componentId : "");
     }
 
     /**
@@ -151,15 +128,14 @@ public class ComponentNameSpace implements Externalizable {
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         containerName = in.readUTF();
         name = in.readUTF();
-        componentId = in.readUTF();
     }
     
     /**
      * copy this
      * @return
      */
-    public ComponentNameSpace copy(){
-        ComponentNameSpace result = new ComponentNameSpace(containerName,name,componentId);
+    public ComponentNameSpace copy() {
+        ComponentNameSpace result = new ComponentNameSpace(containerName, name);
         return result;
     }
     

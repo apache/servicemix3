@@ -631,7 +631,7 @@ public class InstallationService extends BaseSystemService implements Installati
     }
 
     protected ComponentContextImpl buildComponentContext(File componentRoot,String name) throws IOException{
-        ComponentNameSpace cns=new ComponentNameSpace(container.getName(),name,name);
+        ComponentNameSpace cns=new ComponentNameSpace(container.getName(),name);
         ComponentContextImpl context=new ComponentContextImpl(container,cns);
         ComponentEnvironment env=new ComponentEnvironment();
         FileUtil.buildDirectory(componentRoot);
