@@ -36,33 +36,35 @@
   <goal name="nightly" prereqs="rebuild, deploy"/>
   
   <goal name="build">
-    <j:if test="${maven.multiproject.type == 'jar' || maven.multiproject.type == null}">
+    <j:set var="multiprojectType" value="${maven.multiproject.type}"/>
+    <j:if test="${multiprojectType == 'jar' || multiprojectType == null}">
       <attainGoal name="jar:install" />
     </j:if>
-    <j:if test="${maven.multiproject.type == 'jbi'}">
+    <j:if test="${multiprojectType == 'jbi'}">
       <attainGoal name="build-jbi" />
     </j:if>
-    <j:if test="${maven.multiproject.type == 'war'}">
+    <j:if test="${multiprojectType == 'war'}">
       <attainGoal name="war:install" />
     </j:if>
-    <j:if test="${maven.multiproject.type == 'plugin'}">
+    <j:if test="${multiprojectType == 'plugin'}">
       <attainGoal name="plugin:repository-install" />
       <attainGoal name="plugin:install-now" />
     </j:if>
   </goal>
   <goal name="build-jbi" prereqs="jar:install,jbi:install"/>
   <goal name="deploy">
-    <j:if test="${maven.multiproject.type == 'jar'}">
+    <j:set var="multiprojectType" value="${maven.multiproject.type}"/>
+    <j:if test="${multiprojectType == 'jar' || multiprojectType == null}">
       <attainGoal name="jar:deploy" />
     </j:if>
-    <j:if test="${maven.multiproject.type == 'jbi'}">
+    <j:if test="${multiprojectType == 'jbi'}">
       <attainGoal name="jar:deploy" />
       <attainGoal name="jbi:deploy" />
     </j:if>
-    <j:if test="${maven.multiproject.type == 'war'}">
+    <j:if test="${multiprojectType == 'war'}">
       <attainGoal name="war:deploy" />
     </j:if>
-    <j:if test="${maven.multiproject.type == 'plugin'}">
+    <j:if test="${multiprojectType == 'plugin'}">
       <attainGoal name="plugin:repository-deploy" />
     </j:if>
   </goal>

@@ -35,23 +35,45 @@
 
 	<!-- redefined "build" goal from parent pom -->
 	<goal name="generate">
-		<echo message="Compiling the JBI descriptor schema..." />
 		<mkdir dir="${basedir}/target/generated" />
 		<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask"
 			fork="true">
 			<classpath refid="maven.dependency.classpath" />
 		</taskdef>
+
+		<echo message="Compiling the JBI descriptor schema..." />
+    <java classname="com.sun.tools.xjc.XJCFacade" 
+          fork="true" failOnError="true"
+          classpathref="maven.dependency.classpath">
+      <arg value="-d"/>
+      <arg value="${basedir}/target/generated"/>
+      <arg value="-p"/>
+      <arg value="org.apache.servicemix.descriptors.jbi"/>
+      <arg value="${basedir}/src/main/resources/jbi.xsd"/>
+    </java>
+    <!--
 		<xjc schema="${basedir}/src/main/resources/jbi.xsd"
 			package="org.apache.servicemix.descriptors.jbi"
 			destdir="${basedir}/target/generated" />
+			-->
 
 		<echo
 			message="Compiling the deployment assets descriptor schema..." />
+    <java classname="com.sun.tools.xjc.XJCFacade" 
+          fork="true" failOnError="true"
+          classpathref="maven.dependency.classpath">
+      <arg value="-d"/>
+      <arg value="${basedir}/target/generated"/>
+      <arg value="-p"/>
+      <arg value="org.apache.servicemix.descriptors.assets"/>
+      <arg value="${basedir}/src/main/resources/packaging-assets.xsd"/>
+    </java>
+    <!--
 		<xjc
 			schema="${basedir}/src/main/resources/packaging-assets.xsd"
 			package="org.apache.servicemix.descriptors.packaging.assets"
 			destdir="${basedir}/target/generated" />
-		
+		-->
 	</goal>
 
 </project>
