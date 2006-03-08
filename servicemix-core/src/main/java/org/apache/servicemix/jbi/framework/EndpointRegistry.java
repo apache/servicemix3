@@ -35,6 +35,8 @@ import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.deployment.Provides;
+import org.apache.servicemix.jbi.deployment.Services;
 import org.apache.servicemix.jbi.event.EndpointEvent;
 import org.apache.servicemix.jbi.event.EndpointListener;
 import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
@@ -148,11 +150,14 @@ public class EndpointRegistry {
         }        
         // Create a new endpoint
         InternalEndpoint serviceEndpoint = new InternalEndpoint(provider.getComponentNameSpace(), endpointName, serviceName);
-        // Get implemented interfaces
+        // Get interface from activationSpec
         if (provider.getActivationSpec().getInterfaceName() != null) {
             serviceEndpoint.addInterface(provider.getActivationSpec().getInterfaceName());
         }
-        retrieveInterfacesFromDescription(provider, serviceEndpoint);
+        // Get interface from SU jbi descriptor
+        retrieveInterfaceFromSUDescriptor(serviceEndpoint);
+        // Get interfaces from WSDL
+        retrieveInterfacesFromDescription(serviceEndpoint);
         // Set remote namespaces
         if (registered != null) {
             InternalEndpoint[] remote = registered.getRemoteEndpoints();
@@ -184,32 +189,63 @@ public class EndpointRegistry {
         }
         fireEvent(serviceEndpoint, EndpointEvent.INTERNAL_ENDPOINT_UNREGISTERED);
     }
+    
+    /**
+     * Retrieve interface implemented by the given endpoint using the SU jbi descriptors.
+     * 
+     * @param serviceEndpoint the endpoint being checked
+     */
+    protected void retrieveInterfaceFromSUDescriptor(InternalEndpoint serviceEndpoint) {
+        ServiceUnitLifeCycle[] sus = registry.getDeployedServiceUnits(serviceEndpoint.getComponentNameSpace().getName());
+        for (int i = 0; i < sus.length; i++) {
+            Services services = sus[i].getServices();
+            if (services != null) {
+                Provides[] provides = services.getProvides();
+                for (int j = 0; j < provides.length; j++) {
+                    if (provides[j].getInterfaceName() != null &&
+                        serviceEndpoint.getServiceName().equals(provides[j].getServiceName()) &&
+                        serviceEndpoint.getEndpointName().equals(provides[j].getEndpointName())) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Endpoint " + serviceEndpoint + " is provided by SU " + sus[i].getName());
+                            logger.debug("Endpoint " + serviceEndpoint + " implements interface " + provides[j].getInterfaceName());
+                        }
+                        serviceEndpoint.addInterface(provides[j].getInterfaceName());
+                    }
+                }
+            }
+        }
+    }
 
-    protected void retrieveInterfacesFromDescription(ComponentContextImpl provider, InternalEndpoint answer) {
+    /**
+     * Retrieve interfaces implemented by the given endpoint using its WSDL description.
+     * 
+     * @param serviceEndpoint the endpoint being checked
+     */
+    protected void retrieveInterfacesFromDescription(InternalEndpoint serviceEndpoint) {
         try {
-            Document document = provider.getComponent().getServiceDescription(answer);
+            Document document = registry.getEndpointDescriptor(serviceEndpoint);
             if (document == null) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Endpoint " + answer + " has no service description");
+                    logger.debug("Endpoint " + serviceEndpoint + " has no service description");
                 }
                 return;
             }
             Definition definition = WSDLFactory.newInstance().newWSDLReader().readWSDL(null, document);
-            Service service = definition.getService(answer.getServiceName());
+            Service service = definition.getService(serviceEndpoint.getServiceName());
             if (service == null) {
-                logger.info("Endpoint " + answer + " has a service description, but no matching service found in " + definition.getServices().keySet());
+                logger.info("Endpoint " + serviceEndpoint + " has a service description, but no matching service found in " + definition.getServices().keySet());
                 return;
             }
-            Port port = service.getPort(answer.getEndpointName());
+            Port port = service.getPort(serviceEndpoint.getEndpointName());
             if (port == null) {
-                logger.info("Endpoint " + answer + " has a service description, but no matching endpoint found in " + service.getPorts().keySet());
+                logger.info("Endpoint " + serviceEndpoint + " has a service description, but no matching endpoint found in " + service.getPorts().keySet());
                 return;
             }
             QName interfaceName = port.getBinding().getPortType().getQName();
             if (logger.isDebugEnabled()) {
-                logger.debug("Endpoint " + answer + " implements interface " + interfaceName);
+                logger.debug("Endpoint " + serviceEndpoint + " implements interface " + interfaceName);
             }
-            answer.addInterface(interfaceName);
+            serviceEndpoint.addInterface(interfaceName);
         } catch (Exception e) {
             logger.warn("Error retrieving interfaces from service description: " + e.getMessage());
             if (logger.isDebugEnabled()) {
