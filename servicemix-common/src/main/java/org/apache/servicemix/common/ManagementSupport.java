@@ -140,7 +140,7 @@ public class ManagementSupport {
                 PrintWriter pw = new PrintWriter(sw2);
                 msg.getException().printStackTrace(pw);
                 pw.close();
-                sw.append("<[CDATA[");
+                sw.append("<![CDATA[");
                 sw.append(sw2.toString());
                 sw.append("]]>");
                 sw.append("</stack-trace>");
