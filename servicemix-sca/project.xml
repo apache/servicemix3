@@ -35,10 +35,7 @@
     </packageGroup>
   </packageGroups>
 
-  <siteDirectory>/home/projects/servicemix/public_html/maven/sca</siteDirectory>
-
   <dependencies>
-
       <dependency>
         <groupId>${pom.groupId}</groupId>
         <artifactId>maven-jbi-plugin</artifactId>
