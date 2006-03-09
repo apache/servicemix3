@@ -300,8 +300,18 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
             }
             // Check deployed service assembly
             // TODO: check SA dependency on component 
-            if (serviceAssemblyName != null && serviceAssemblyName.length() > 0 && !container.getDeploymentService().isSaDeployed(serviceAssemblyName)) {
-                continue;
+            if (serviceAssemblyName != null && serviceAssemblyName.length() > 0) {
+                String[] saNames = container.getRegistry().getDeployedServiceAssembliesForComponent(component.getName());
+                boolean found = false;
+                for (int i = 0; i < saNames.length; i++) {
+                    if (serviceAssemblyName.equals(saNames[i])) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    continue;
+                }
             }
             components.add(component);
         }
@@ -311,20 +321,20 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
         buffer.append("<component-info-list xmlns='http://java.sun.com/xml/ns/jbi/component-info-list' version='1.0'>\n");
         for (Iterator iter = components.iterator(); iter.hasNext();) {
             ComponentMBeanImpl component = (ComponentMBeanImpl) iter.next();
-            buffer.append("\t<component-info>");
+            buffer.append("  <component-info>");
             if (!component.isBinding() && component.isService()) {
                 buffer.append(" type='service-engine'");
             } else if (component.isBinding() && !component.isService()) {
                 buffer.append(" type='binding-component'");
             }
             buffer.append(" name='" + component.getName() + "'");
-            buffer.append(" state='" + component.getCurrentState() + "'>");
+            buffer.append(" state='" + component.getCurrentState() + "'>\n");
             if (component.getDescription() != null) {
-                buffer.append("\t\t<description>");
+                buffer.append("    <description>");
                 buffer.append(component.getDescription());
                 buffer.append("<description>\n");
             }
-            buffer.append("\t</component-info>\n");
+            buffer.append("  </component-info>\n");
         }
         buffer.append("</component-info-list>");
         return buffer.toString();
@@ -375,19 +385,22 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
         buffer.append("<service-assembly-info-list xmlns='http://java.sun.com/xml/ns/jbi/component-info-list' version='1.0'>\n");
         for (Iterator iter = assemblies.iterator(); iter.hasNext();) {
             ServiceAssemblyLifeCycle sa = (ServiceAssemblyLifeCycle) iter.next();
-            buffer.append("\t<service-assembly-info");
+            buffer.append("  <service-assembly-info");
             buffer.append(" name='" + sa.getName() + "'");
-            buffer.append(" state='" + sa.getCurrentState() + "'/>");
-            buffer.append(" <description>" + sa.getDescription() + "</description>");
-            buffer.append("\t</service-assembly-info>\n");
+            buffer.append(" state='" + sa.getCurrentState() + "'>\n");
+            buffer.append("    <description>" + sa.getDescription() + "</description>\n");
 
             ServiceUnitLifeCycle[] serviceUnitList = sa.getDeployedSUs();
             for (int i = 0; i < serviceUnitList.length; i++) {
-                buffer.append("\t<service-unit-info");
+                buffer.append("    <service-unit-info");
                 buffer.append(" name='" + serviceUnitList[i].getName() + "'");
-                buffer.append(" state='" + serviceUnitList[i].getCurrentState() + "/>");
-                buffer.append("\t</service-unit-info");
+                buffer.append(" state='" + serviceUnitList[i].getCurrentState() + "'");
+                buffer.append(" deployed-on='" + serviceUnitList[i].getComponentName() + "'>\n");
+                buffer.append("      <description>" + serviceUnitList[i].getDescription() + "</description>\n");
+                buffer.append("    </service-unit-info>\n");
             }
+            
+            buffer.append("  </service-assembly-info>\n");
         }
         buffer.append("</service-assembly-info-list>");
 

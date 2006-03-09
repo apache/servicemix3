@@ -17,6 +17,7 @@ package org.apache.servicemix.jbi.management.task;
 
 import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 
 /**
  * ListBindingComponentsTask
@@ -101,7 +102,7 @@ public class ListBindingComponentsTask extends JbiTask {
      */
     public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
         String result = acs.listComponents(true, false, true, getState(), getSharedLibraryName(), getServiceAssemblyName());
-        System.out.println(result);
+        log(result, Project.MSG_WARN);
     }
     
 }

@@ -17,6 +17,7 @@ package org.apache.servicemix.jbi.management.task;
 
 import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 
 /**
  * ListServiceEnginesTask
@@ -85,7 +86,7 @@ public class ListServiceEnginesTask extends JbiTask {
      */
     public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
         String result = acs.listComponents(false, true, true, getState(), getSharedLibraryName(), getServiceAssemblyName());
-        System.out.println(result);
+        log(result, Project.MSG_WARN);
     }
 
 }

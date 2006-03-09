@@ -12,15 +12,17 @@ This ant script contains the Servicemix ant tasks and the targets and properties
     <!-- Servicemix ant task definitions  -->
     <taskdef file="${servicemix.taskdefs}">
         <classpath id="servicemix.classpath">            
+            <fileset dir="../..">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="../../lib">
+                <include name="*.jar"/>
+            </fileset>
+            <!--
             <fileset dir="../../lib/optional">
                 <include name="**/*.jar"/>
-            </fileset>            
-            <fileset dir="../../lib">
-                <include name="**/*.jar"/>
-            </fileset>
-            <fileset dir="../..">
-                <include name="**/*.jar"/>
-            </fileset>
+            </fileset>      
+            -->      
         </classpath>
     </taskdef>
     
@@ -56,12 +58,13 @@ This ant script contains the Servicemix ant tasks and the targets and properties
      
      <!-- install-component task -->
      <target name="install-component" description="Installs service engine or binding component with installation parameters.">
+         <echo message=" install-component" />
          <echo message=" Installing a service engine or binding component."/>
          <echo message="    host=${sm.host}" />
          <echo message="    port=${sm.port}" />
          <echo message="    file=${sm.install.file}" />
          
-         <install-component-task 
+         <jbi-install-component
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
@@ -70,12 +73,12 @@ This ant script contains the Servicemix ant tasks and the targets and properties
      
      <!-- uninstall-component task -->
      <target name="uninstall-component" description="Uninstalls service engine or binding component.">
-         <echo message="    uninstall-component" />
-         <echo message="    Uninstalling a Service Engine or Binding Component." />
+         <echo message=" uninstall-component" />
+         <echo message=" Uninstalling a Service Engine or Binding Component." />
          <echo message="    host=${sm.host}" />
          <echo message="    port=${sm.port}" />
          <echo message="    name=${sm.component.name}" />
-         <uninstall-component-task
+         <jbi-uninstall-component
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
@@ -87,12 +90,12 @@ This ant script contains the Servicemix ant tasks and the targets and properties
      <!-- install-shared-library -->
      <target name="install-shared-library" description="Installs shared library.">
         <echo message=" install-shared-library" />
-        <echo message="    Installs a shared library in Servicemix." />
+        <echo message=" Installs a shared library in Servicemix." />
         <echo message="    host=${sm.host}" />
         <echo message="    port=${sm.port}" />
         <echo message="    file=${sm.install.file}" /> 
         
-        <install-shared-library-task
+        <jbi-install-shared-library
             username="${sm.username}" 
             password="${sm.password}"
             host="${sm.host}"
@@ -108,7 +111,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
          <echo message="    port=${sm.port}" />
          <echo message="    name=${sm.shared.library.name}" />
          
-         <uninstall-shared-library-task
+         <jbi-uninstall-shared-library
             username="${sm.username}" 
             password="${sm.password}"
             host="${sm.host}"
@@ -125,7 +128,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
          <echo message="    port=${sm.port}" />
          <echo message="    name=${sm.component.name}" />
          
-         <start-component-task
+         <jbi-start-component
             username="${sm.username}" 
             password="${sm.password}"
             host="${sm.host}"
@@ -142,7 +145,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
          <echo message="    port=${sm.port}" />
          <echo message="    name=${sm.component.name}" />
          
-         <stop-component-task
+         <jbi-stop-component
             username="${sm.username}" 
             password="${sm.password}"
             host="${sm.host}"
@@ -153,13 +156,13 @@ This ant script contains the Servicemix ant tasks and the targets and properties
      
      <!-- shutdown-component -->
      <target name="shutdown-component" description="shut downs a particular Servicemix component.">
-         <echo message=" shut-down-component" />
+         <echo message=" shutdown-component" />
          <echo message=" shuts down a particular component (service engine or binding component) in Servicemix" />
          <echo message="    host=${sm.host}" />
          <echo message="    port=${sm.port}" />
          <echo message="    name=${sm.component.name}" />
          
-         <shutdown-component-task
+         <jbi-shutdown-component
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
@@ -169,13 +172,13 @@ This ant script contains the Servicemix ant tasks and the targets and properties
      
      <!-- deploy-service-assembly -->
      <target name="deploy-service-assembly" description="deploys service assembly in Servicemix.">
-         <echo message=" deploy-assembly" />
+         <echo message=" deploy-service-assembly" />
          <echo message=" deploys a service assembly in Servicemix." />
          <echo message="    host=${sm.host}" />
          <echo message="    port=${sm.port}" />
          <echo message="    file=${sm.deploy.file}" />
          
-         <install-assembly-task
+         <jbi-deploy-service-assembly
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
@@ -185,13 +188,13 @@ This ant script contains the Servicemix ant tasks and the targets and properties
      
      <!-- undeploy-service-assembly -->
      <target name="undeploy-service-assembly" description="undeploys a previously deployed service assembly in Servicemix.">
-         <echo message=" undeploy-assembly" />
+         <echo message=" undeploy-service-assembly" />
          <echo message=" undeploys a previously deployed service assembly in Sericemix."/>
          <echo message="    host=${sm.host}" />
          <echo message="    port=${sm.port}" />
          <echo message="    name=${sm.service.assembly.name}" />
          
-         <uninstall-assembly-task
+         <jbi-undeploy-service-assembly
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
@@ -202,13 +205,13 @@ This ant script contains the Servicemix ant tasks and the targets and properties
      
      <!-- start-service-assembly -->
      <target name="start-service-assembly" description="starts a particular service assembly in Servicemix.">
-         <echo message=" start-assembly" />
+         <echo message=" start-service-assembly" />
          <echo message=" starts a particular service assembly in Servicemix." />
          <echo message="    host=${sm.host}" />
          <echo message="    port=${sm.port}" />
          <echo message="    name=${sm.service.assembly.name}" />
          
-         <start-assembly-task
+         <jbi-start-service-assembly
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
@@ -219,13 +222,13 @@ This ant script contains the Servicemix ant tasks and the targets and properties
      
      <!-- stop-service-assembly -->
      <target name="stop-service-assembly" description="stops a particular service assembly in Servicemix.">
-         <echo message=" shutdown-assembly" />
+         <echo message=" stop-service-assembly" />
          <echo message=" stops a particular service assembly in Servicemix." />
          <echo message="    host=${sm.host}" />
          <echo message="    port=${sm.port}" />
          <echo message="    name=${sm.service.assembly.name}" /> 
 
-         <stop-assembly-task
+         <jbi-stop-service-assembly
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
@@ -235,13 +238,13 @@ This ant script contains the Servicemix ant tasks and the targets and properties
      
      <!-- shutdown-service-assembly -->
      <target name="shutdown-service-assembly" description="shuts down a particular service assembly in Servicemix.">
-         <echo message=" shutdown-assembly" />
+         <echo message=" shutdown-service-assembly" />
          <echo message=" shuts down a particular service assembly in Servicemix." />
          <echo message="    host=${sm.host}" />
          <echo message="    port=${sm.port}" />
          <echo message="    name=${sm.service.assembly.name}" /> 
 
-         <shutdown-assembly-task
+         <jbi-shutdown-service-assembly
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
@@ -260,7 +263,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
          <echo message="    serviceAssemblyName=${sm.service.assembly.name}" />
          <echo message="    sharedLibraryName=${sm.shared.library.name}" />
 
-         <list-engines-task
+         <jbi-list-service-engines
              username="${sm.username}"
              password="${sm.password}"
              host="${sm.host}"
@@ -281,7 +284,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
          <echo message="    sharedLibraryName=${sm.shared.library.name}" />
          <echo message="    serviceAssemblyName=${sm.service.assembly.name}" />
 
-         <list-component-task
+         <jbi-list-binding-components
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
@@ -301,7 +304,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
          <echo message="    componentName=${sm.component.name}" />
          <echo message="    sharedLibraryName=${sm.shared.library.name}" />
 
-         <list-libraries-task
+         <jbi-list-shared-libraries
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
@@ -310,9 +313,9 @@ This ant script contains the Servicemix ant tasks and the targets and properties
       />
       </target>
      
-     <!-- list-assemblies -->
-     <target name="deployed-assemblies" description="list deployed Service Assemblies in Servicemix.">
-         <echo message=" deployed-assemblies" />
+     <!-- list-service-assemblies -->
+     <target name="list-service-assemblies" description="list deployed Service Assemblies in Servicemix.">
+         <echo message=" list-service-assemblies" />
          <echo message=" list deployed Service Assemblies in Servicemix." />
          <echo message="    host=${sm.host}" />
          <echo message="    port=${sm.port}" />
@@ -320,7 +323,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
          <echo message="    componentName=${sm.component.name}" />
          <echo message="    serviceAssemblyName=${sm.service.assembly.name}" />
 
-         <deployed-assemblies-task
+         <jbi-list-service-assemblies
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
@@ -331,31 +334,13 @@ This ant script contains the Servicemix ant tasks and the targets and properties
      
      </target>
 
-     <!-- deployed-serviceunits -->
-     <target name="deployed-serviceunits" description="List deployed service units for a Component.">
-         <echo message=" deployed-serviceunits" />
-         <echo message=" List deployed service units for a Component." />
-         <echo message="    host=${sm.host}" />
-         <echo message="    port=${sm.port}" />
-         <echo message="    componentname=${sm.component.name}" />         
-
-         <deployed-serviceunits-task
-             username="${sm.username}" 
-             password="${sm.password}"
-             host="${sm.host}"
-             componentName="${sm.component.name}"
-         />
-     
-     </target>
-     
-     
      <!-- Help/Usage target -->
     <target name="help" description="Description of commands and their parameters.">
     <echo>         
     Servicemix Ant Task Help.
     ==========================================================
-    Usage : ant -f &lt;fullpath&gt;/jbi_admin.xml [options] [target]
-    options: -D&lt;property&gt;=&lt;value&gt; use value for given property
+    Usage : ant -f &lt;fullpath>/servicemix-ant-task.xml [options] [target]
+    options: -D&lt;property>=&lt;value> use value for given property
     
     Targets Available:
     ----------------------------------------------------------
@@ -370,7 +355,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.install.file   : file path for installing service engine or binding component.
 
     Example :
-     ant -f servicemix-admin.xml -Dsm.install.file=testarchive.jar install-component-task
+     ant -f servicemix-ant-task.xml -Dsm.install.file=testarchive.jar install-component
      
     ----------------------------------------------------------
     target : uninstall-component 
@@ -384,7 +369,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.component.name : name of service engine or binding component to uninstall.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.component.name=testarchive uninstall-component
+    ant -f servicemix-ant-task.xml -Dsm.component.name=testarchive uninstall-component
 
     ----------------------------------------------------------
     target : install-shared-library 
@@ -398,7 +383,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.install.file   : zip file path for installing shared library installation file.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.install.file=/dir/sharedlib.zip install-shared-library  
+    ant -f servicemix-ant-task.xml -Dsm.install.file=/dir/sharedlib.zip install-shared-library  
                 
     ----------------------------------------------------------
     target : uninstall-shared-library 
@@ -412,7 +397,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.shared.library.name : uninstall shared library, given name.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.shared.library.name=sharedlibname uninstall-shared-library  
+    ant -f servicemix-ant-task.xml -Dsm.shared.library.name="sharedlibname" uninstall-shared-library  
                 
     ----------------------------------------------------------
     target : start-component 
@@ -426,7 +411,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.component.name  : component name, service engine or binding component to start.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.component.name=componentname start-component  
+    ant -f servicemix-ant-task.xml -Dsm.component.name=componentname start-component  
 
     ----------------------------------------------------------
     target : stop-component 
@@ -440,7 +425,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.component.name  : component name, service engine or binding component to stop.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.component.name=componentname stop-component  
+    ant -f servicemix-ant-task.xml -Dsm.component.name=componentname stop-component  
 
     ----------------------------------------------------------
     target : shutdown-component 
@@ -454,7 +439,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.component.name  : component name, service engine or binding component to shutdown.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.component.name=componentname shutdown-component  
+    ant -f servicemix-ant-task.xml -Dsm.component.name=componentname shutdown-component  
 
     ----------------------------------------------------------
     target : deploy-service-assembly 
@@ -468,7 +453,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.deploy.file     : fully qualified service assembly file path.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.deploy.file deploy-service-assembly  
+    ant -f servicemix-ant-task.xml -Dsm.deploy.file deploy-service-assembly  
 
     ----------------------------------------------------------
     target : undeploy-service-assembly 
@@ -482,7 +467,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.service.assembly.name  : service assembly name previously deployed. 
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.service.assembly.name undeploy-service-assemply  
+    ant -f servicemix-ant-task.xml -Dsm.service.assembly.name undeploy-service-assembly  
 
     ----------------------------------------------------------
     target : start-service-assembly 
@@ -496,7 +481,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.service.assembly.name : service assembly name to start.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.service.assembly.name start-service-assemply  
+    ant -f servicemix-ant-task.xml -Dsm.service.assembly.name start-service-assembly  
 
     ----------------------------------------------------------
     target : stop-service-assembly 
@@ -510,7 +495,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.service.assembly.name : service assembly name to stop.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.service.assembly.name stop-service-assemply  
+    ant -f servicemix-ant-task.xml -Dsm.service.assembly.name stop-service-assembly  
 
     ----------------------------------------------------------
     target : shutdown-service-assembly 
@@ -524,7 +509,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.service.assembly.name : service assembly name to shutdown.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.service.assembly.name shutdown-service-assemply  
+    ant -f servicemix-ant-task.xml -Dsm.service.assembly.name shutdown-service-assembly  
 
     ----------------------------------------------------------
     target : list-service-engines 
@@ -540,7 +525,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.shared.library.name : shared library name to list.
 
     Example :
-    ant -f servicemix-admin.xml list-service-engines  
+    ant -f servicemix-ant-task.xml list-service-engines  
 
     ----------------------------------------------------------
     target : list-binding-components 
@@ -556,7 +541,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.service.assembly.name : service assembly name to list.
 
     Example :
-    ant -f servicemix-admin.xml list-binding-components  
+    ant -f servicemix-ant-task.xml list-binding-components  
 
     ----------------------------------------------------------
     target : list-shared-libraries 
@@ -571,10 +556,10 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.shared.library.name : shared library name to list.
 
     Example :
-    ant -f servicemix-admin.xml list-shared-libraries  
+    ant -f servicemix-ant-task.xml list-shared-libraries   
 
     ----------------------------------------------------------
-    target : deployed-assemblies 
+    target : list-service-assemblies 
         - list deployed Service Assemblies in Servicemix.
     
     options :        
@@ -587,21 +572,7 @@ This ant script contains the Servicemix ant tasks and the targets and properties
         sm.service.assembly.name : service assembly name to list.
         
     Example :
-    ant -f servicemix-admin.xml deployed-assemblies  
-
-    ----------------------------------------------------------
-    target : deployed-serviceunits 
-        - List deployed service units for a Component.
-    
-    options :        
-        sm.username        : Servicemix user name.
-        sm.password        : Servicemix password.
-        sm.host            : host name where Servicemix is running.
-        sm.port            : port where Servicemix is listening.
-        sm.component.name  : component name. 
-    
-    Example :
-    ant -f servicemix-admin.xml deployed-serviceunits  
+    ant -f servicemix-ant-task.xml list-service-assemblies  
 
     </echo>
     </target>

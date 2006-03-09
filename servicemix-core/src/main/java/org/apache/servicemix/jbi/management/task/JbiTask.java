@@ -25,13 +25,12 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.apache.servicemix.jbi.framework.DeploymentService;
 import org.apache.servicemix.jbi.management.ManagementContext;
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 
 /**
@@ -40,8 +39,6 @@ import org.apache.tools.ant.Task;
  * @version $Revision$
  */
 public abstract class JbiTask extends Task {
-    
-    protected final Log log = LogFactory.getLog(getClass());
     
     private String serverProtocol = "rmi";
     private String host = "localhost";
@@ -59,15 +56,10 @@ public abstract class JbiTask extends Task {
      * Get the JMXServiceURL - built from the protocol used and host names
      * @return the url
      */
-    public JMXServiceURL getServiceURL(){
+    public JMXServiceURL getServiceURL() throws MalformedURLException {
         JMXServiceURL url = null;
-        try {
-            url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://" 
-                    + host + ":" + port + jndiPath);
-        }
-        catch (MalformedURLException e) {
-            log.error("error creating serviceURL: ",e);
-        }
+        url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://" 
+                + host + ":" + port + jndiPath);
         return url;
     }
     
@@ -77,7 +69,7 @@ public abstract class JbiTask extends Task {
      * @return the JMXConnector
      * @throws IOException
      */
-    public JMXConnector getJMXConnector (JMXServiceURL url) throws IOException{
+    public JMXConnector getJMXConnector (JMXServiceURL url) throws IOException {
         return JMXConnectorFactory.connect(url);
     }
     
@@ -85,13 +77,13 @@ public abstract class JbiTask extends Task {
      * initialize the connection
      * @throws BuildException
      */
-    public void init() throws BuildException{
+    public void init() throws BuildException {
         super.init();
         try {
             this.jmxConnector = getJMXConnector(getServiceURL());
         }
-        catch (IOException e) {
-            log.error("Failed to initialize the JbiTask",e);
+        catch (Throwable e) {
+            log("Failed to initialize the JbiTask: " + e.getMessage(), Project.MSG_ERR);
             throw new BuildException(e);
         }
     }
@@ -107,7 +99,7 @@ public abstract class JbiTask extends Task {
                 jmxConnector.close();
             }
             catch (IOException e) {
-                log.warn("caught an error closing the jmxConnector",e);
+                log("Caught an error closing the jmxConnector" + e.getMessage(), Project.MSG_WARN);
             }
         }
     }
@@ -272,21 +264,23 @@ public abstract class JbiTask extends Task {
     public void execute() throws BuildException {
         AdminCommandsServiceMBean acs;
         try {
+            log("Retrieving remote admin interface", Project.MSG_DEBUG);
             acs = getAdminCommandsService();
-        } catch (IOException e) {
-            log.error("Error accessing ServiceMix administration", e);
+        } catch (Throwable e) {
+            log("Error accessing ServiceMix administration: " + e.getMessage(), Project.MSG_WARN);
             if (isFailOnError()) {
-                throw new BuildException("Error accessing ServiceMix administration");
+                throw new BuildException("Error accessing ServiceMix administration", e);
             } else {
                 return;
             }
         }
         try {
+            log("Executing command", Project.MSG_DEBUG);
             doExecute(acs);
-        } catch (Exception e) {
-            log.error("Error executing task", e);
+        } catch (Throwable e) {
+            log("Error executing command: " + e.getMessage(), Project.MSG_WARN);
             if (isFailOnError()) {
-                throw new BuildException("Error accessing ServiceMix administration");
+                throw new BuildException("Error accessing ServiceMix administration", e);
             } else {
                 return;
             }

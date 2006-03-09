@@ -1,7 +1,7 @@
     Servicemix Ant Task Help.
     ==========================================================
-    Usage : ant -f <fullpath>/jbi_admin.xml [options] [target]
-    options: -D<property>;=<value>; use value for given property
+    Usage : ant -f <fullpath>/servicemix-ant-task.xml [options] [target]
+    options: -D<property>=<value> use value for given property
     
     Targets Available:
     ----------------------------------------------------------
@@ -16,7 +16,7 @@
         sm.install.file   : file path for installing service engine or binding component.
 
     Example :
-     ant -f servicemix-admin.xml -Dsm.install.file=testarchive.jar install-component-task
+     ant -f servicemix-ant-task.xml -Dsm.install.file=testarchive.jar install-component
      
     ----------------------------------------------------------
     target : uninstall-component 
@@ -30,7 +30,7 @@
         sm.component.name : name of service engine or binding component to uninstall.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.component.name=testarchive uninstall-component
+    ant -f servicemix-ant-task.xml -Dsm.component.name=testarchive uninstall-component
 
     ----------------------------------------------------------
     target : install-shared-library 
@@ -44,7 +44,7 @@
         sm.install.file   : zip file path for installing shared library installation file.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.install.file=/dir/sharedlib.zip install-shared-library  
+    ant -f servicemix-ant-task.xml -Dsm.install.file=/dir/sharedlib.zip install-shared-library  
                 
     ----------------------------------------------------------
     target : uninstall-shared-library 
@@ -58,7 +58,7 @@
         sm.shared.library.name : uninstall shared library, given name.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.shared.library.name="sharedlibname" uninstall-shared-library  
+    ant -f servicemix-ant-task.xml -Dsm.shared.library.name="sharedlibname" uninstall-shared-library  
                 
     ----------------------------------------------------------
     target : start-component 
@@ -72,7 +72,7 @@
         sm.component.name  : component name, service engine or binding component to start.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.component.name=componentname start-component  
+    ant -f servicemix-ant-task.xml -Dsm.component.name=componentname start-component  
 
     ----------------------------------------------------------
     target : stop-component 
@@ -86,7 +86,7 @@
         sm.component.name  : component name, service engine or binding component to stop.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.component.name=componentname stop-component  
+    ant -f servicemix-ant-task.xml -Dsm.component.name=componentname stop-component  
 
     ----------------------------------------------------------
     target : shutdown-component 
@@ -100,7 +100,7 @@
         sm.component.name  : component name, service engine or binding component to shutdown.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.component.name=componentname shutdown-component  
+    ant -f servicemix-ant-task.xml -Dsm.component.name=componentname shutdown-component  
 
     ----------------------------------------------------------
     target : deploy-service-assembly 
@@ -114,7 +114,7 @@
         sm.deploy.file     : fully qualified service assembly file path.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.deploy.file deploy-service-assembly  
+    ant -f servicemix-ant-task.xml -Dsm.deploy.file deploy-service-assembly  
 
     ----------------------------------------------------------
     target : undeploy-service-assembly 
@@ -128,7 +128,7 @@
         sm.service.assembly.name  : service assembly name previously deployed. 
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.service.assembly.name undeploy-service-assemply  
+    ant -f servicemix-ant-task.xml -Dsm.service.assembly.name undeploy-service-assemply  
 
     ----------------------------------------------------------
     target : start-service-assembly 
@@ -142,7 +142,7 @@
         sm.service.assembly.name : service assembly name to start.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.service.assembly.name start-service-assemply  
+    ant -f servicemix-ant-task.xml -Dsm.service.assembly.name start-service-assemply  
 
     ----------------------------------------------------------
     target : stop-service-assembly 
@@ -156,7 +156,7 @@
         sm.service.assembly.name : service assembly name to stop.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.service.assembly.name stop-service-assemply  
+    ant -f servicemix-ant-task.xml -Dsm.service.assembly.name stop-service-assembly  
 
     ----------------------------------------------------------
     target : shutdown-service-assembly 
@@ -170,7 +170,7 @@
         sm.service.assembly.name : service assembly name to shutdown.
     
     Example :
-    ant -f servicemix-admin.xml -Dsm.service.assembly.name shutdown-service-assemply  
+    ant -f servicemix-ant-task.xml -Dsm.service.assembly.name shutdown-service-assemply  
 
     ----------------------------------------------------------
     target : list-service-engines 
@@ -186,7 +186,7 @@
         sm.shared.library.name : shared library name to list.
 
     Example :
-    ant -f servicemix-admin.xml list-service-engines  
+    ant -f servicemix-ant-task.xml list-service-engines  
 
     ----------------------------------------------------------
     target : list-binding-components 
@@ -202,7 +202,7 @@
         sm.service.assembly.name : service assembly name to list.
 
     Example :
-    ant -f servicemix-admin.xml list-binding-components  
+    ant -f servicemix-ant-task.xml list-binding-components  
 
     ----------------------------------------------------------
     target : list-shared-libraries 
@@ -217,10 +217,10 @@
         sm.shared.library.name : shared library name to list.
 
     Example :
-    ant -f servicemix-admin.xml list-binding-components  
+    ant -f servicemix-ant-task.xml list-shared-libraries   
 
     ----------------------------------------------------------
-    target : deployed-assemblies 
+    target : list-service-assemblies 
         - list deployed Service Assemblies in Servicemix.
     
     options :        
@@ -233,18 +233,5 @@
         sm.service.assembly.name : service assembly name to list.
         
     Example :
-    ant -f servicemix-admin.xml deployed-assemblies  
+    ant -f servicemix-ant-task.xml list-service-assemblies  
 
-    ----------------------------------------------------------
-    target : deployed-serviceunits 
-        - List deployed service units for a Component.
-    
-    options :        
-        sm.username        : Servicemix user name.
-        sm.password        : Servicemix password.
-        sm.host            : host name where Servicemix is running.
-        sm.port            : port where Servicemix is listening.
-        sm.component.name  : component name. 
-    
-    Example :
-    ant -f servicemix-admin.xml list-binding-components  

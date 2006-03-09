@@ -17,6 +17,7 @@ package org.apache.servicemix.jbi.management.task;
 
 import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 
 /**
  * List deployed Service Assemblies
@@ -84,7 +85,7 @@ public class ListServiceAssembliesTask extends JbiTask {
      */
     public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
         String result = acs.listServiceAssemblies(getState(), getComponentName(), getServiceAssemblyName());
-        System.out.println(result);
+        log(result, Project.MSG_WARN);
     }
     
 }
