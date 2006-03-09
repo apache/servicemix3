@@ -28,6 +28,8 @@ import javax.jbi.management.DeploymentException;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.JMException;
 import javax.management.ObjectName;
+import javax.resource.spi.work.Work;
+import javax.resource.spi.work.WorkException;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
@@ -46,6 +48,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Registry - state infomation including running state, SA's deployed etc.
@@ -60,6 +63,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     private SubscriptionRegistry subscriptionRegistry;
     private ServiceAssemblyRegistry serviceAssemblyRegistry;
     private Map serviceUnits;
+    private List pendingAssemblies;
 
     /**
      * Constructor
@@ -70,6 +74,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         this.subscriptionRegistry = new SubscriptionRegistry(this);
         this.serviceAssemblyRegistry = new ServiceAssemblyRegistry(this);
         this.serviceUnits = new ConcurrentHashMap();
+        this.pendingAssemblies = new CopyOnWriteArrayList();
     }
     
     /**
@@ -456,7 +461,6 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @param sa
      * @return true if not already registered
      * @throws DeploymentException 
-     * @deprecated
      */
     public ServiceAssemblyLifeCycle registerServiceAssembly(ServiceAssembly sa) throws DeploymentException{
         return serviceAssemblyRegistry.register(sa);
@@ -618,6 +622,49 @@ public class Registry extends BaseSystemService implements RegistryMBean {
 
     public void unregisterRemoteEndpoint(ServiceEndpoint endpoint) {
         endpointRegistry.unregisterRemoteEndpoint((InternalEndpoint) endpoint);
+    }
+
+    public void checkPendingAssemblies() {
+        try {
+            getContainer().getWorkManager().scheduleWork(new Work() {
+                public void release() {
+                }
+                public void run() {
+                    startPendingAssemblies();
+                }
+            });
+        } catch (WorkException e) {
+            log.error("Could not schedule work", e);
+        }
+    }
+
+    public void addPendingAssembly(ServiceAssemblyLifeCycle sa) {
+        if (!pendingAssemblies.contains(sa)) {
+            pendingAssemblies.add(sa);
+        }
+    }
+    
+    protected synchronized void startPendingAssemblies() {
+        for (Iterator iter = pendingAssemblies.iterator(); iter.hasNext();) {
+            ServiceAssemblyLifeCycle sa = (ServiceAssemblyLifeCycle) iter.next();
+            ServiceUnitLifeCycle[] sus = sa.getDeployedSUs();
+            boolean ok = true;
+            for (int i = 0; i < sus.length; i++) {
+                ComponentMBeanImpl c = getComponent(sus[i].getComponentName());
+                if (c == null || !c.isStarted()) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) {
+                try {
+                    sa.restore();
+                    pendingAssemblies.remove(sa);
+                } catch (Exception e) {
+                    log.error("Error trying to restore service assembly state", e);
+                }
+            }
+        }
     }
 
 }

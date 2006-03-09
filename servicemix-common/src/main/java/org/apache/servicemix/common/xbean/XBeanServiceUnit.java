@@ -54,10 +54,10 @@ public class XBeanServiceUnit extends ServiceUnit {
      * @see org.apache.servicemix.common.ServiceUnit#shutDown()
      */
     public void shutDown() throws JBIException {
+        super.shutDown();
         if (kernel != null) {
             kernel.destroy();
         }
-        super.shutDown();
     }
     
     public ClassLoader getConfigurationClassLoader() throws ServiceNotFoundException {

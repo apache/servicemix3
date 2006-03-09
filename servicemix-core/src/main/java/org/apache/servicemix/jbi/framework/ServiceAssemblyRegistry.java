@@ -77,15 +77,16 @@ public class ServiceAssemblyRegistry {
      * @param sa
      * @return true if successful
      * @throws DeploymentException 
-     * @deprecated
      */
     public ServiceAssemblyLifeCycle register(ServiceAssembly sa) throws DeploymentException {
         List sus = new ArrayList();
-        for (int i = 0; i < sa.getServiceUnits().length; i++) {
-            String suKey = registry.registerServiceUnit(
-                                    sa.getServiceUnits()[i], 
-                                    sa.getIdentification().getName());
-            sus.add(suKey);
+        if (sa.getServiceUnits() != null) {
+            for (int i = 0; i < sa.getServiceUnits().length; i++) {
+                String suKey = registry.registerServiceUnit(
+                                        sa.getServiceUnits()[i], 
+                                        sa.getIdentification().getName());
+                sus.add(suKey);
+            }
         }
         return register(sa, (String[]) sus.toArray(new String[sus.size()]));
     }

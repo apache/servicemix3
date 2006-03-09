@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.jbi.JBIException;
@@ -224,6 +225,12 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
             throw ManagementSupport.failure("undeploy", "SA must be shut down: " + saName);
         }
         try {
+            // Make sure the all service units in the assembly are shutdown.
+            // SUs can have different states (if a previous shutdown failed).
+            try {
+                sa.shutDown();
+            } catch (Exception e) {
+            }
             String result = null;
             if (sa != null) {
                 String assemblyName = sa.getName();
@@ -513,12 +520,16 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
                 try {
                     ComponentMBeanImpl lcc = container.getComponent(componentName);
                     ServiceUnitManager sum = lcc.getServiceUnitManager();
-                    String resultMsg = sum.deploy(suName, targetDir.getAbsolutePath());
-                    success = getComponentTaskResult(resultMsg, componentName, componentResults, true);
+                    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+                    try {
+                        Thread.currentThread().setContextClassLoader(lcc.getComponent().getClass().getClassLoader());
+                        String resultMsg = sum.deploy(suName, targetDir.getAbsolutePath());
+                        success = getComponentTaskResult(resultMsg, componentName, componentResults, true);
+                    } finally {
+                        Thread.currentThread().setContextClassLoader(cl);
+                    }
                     // TODO: need to register the SU somewhere to keep track of its state
                 } catch (Exception e) {
-                    // Delete SU deployment dir
-                    FileUtil.deleteFile(targetDir);
                     getComponentTaskResult(e.getMessage(), componentName, componentResults, false);
                 }
                 if (success) {
@@ -529,10 +540,25 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
                 }
             }
         }
-        // Total failure
-        if (nbSuccess == 0 && nbFailures > 0) {
+        // Note: the jbi spec says that if at least one deployment succeeds, 
+        // this should be a SUCCESS.  However, ServiceMix handles SA in an
+        // atomic way: for a given operation on an SA, all operations on SU
+        // should succeed.  This is clearly a minor violation of the spec.
+        //
+        // Failure
+        if (nbFailures > 0) {
+            // Undeploy SUs
+            for (Iterator iter = suKeys.iterator(); iter.hasNext();) {
+                try {
+                    String suName = (String) iter.next();
+                    ServiceUnitLifeCycle su = registry.getServiceUnit(suName);
+                    undeployServiceUnit(su);
+                } catch (Exception e) {
+                    log.warn("Error undeploying SU", e);
+                }
+            }
             // Delete SA deployment directory 
-            FileUtil.deleteFile(tmpDir);
+            FileUtil.deleteFile(saDirectory);
             throw ManagementSupport.failure("deploy", componentResults);
         }
         // Success
@@ -619,7 +645,13 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         if (component != null) {
             ServiceUnitManager sum = component.getServiceUnitManager();
             if (sum != null) {
-                sum.undeploy(name, targetDir.getAbsolutePath());
+                ClassLoader cl = Thread.currentThread().getContextClassLoader();
+                try {
+                    Thread.currentThread().setContextClassLoader(component.getComponent().getClass().getClassLoader());
+                    sum.undeploy(name, targetDir.getAbsolutePath());
+                } finally {
+                    Thread.currentThread().setContextClassLoader(cl);
+                }
                 FileUtil.deleteFile(targetDir);
             }
         }

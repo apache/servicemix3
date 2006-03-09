@@ -105,7 +105,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
         return start(true);
     }
     
-    public String start(boolean writeState) throws Exception {
+    public synchronized String start(boolean writeState) throws Exception {
         log.info("Starting service assembly: " + getName());
         // Start connections
         try {
@@ -134,7 +134,6 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
             }
         }
         if (componentFailures.size() == 0) {
-            log.info("Started Service Assembly: " + getName());
             currentState = STARTED;
             if (writeState) {
                 writeRunningState();
@@ -156,7 +155,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
         return stop(true, false);
     }
     
-    public String stop(boolean writeState, boolean forceInit) throws Exception {
+    public synchronized String stop(boolean writeState, boolean forceInit) throws Exception {
         log.info("Stopping service assembly: " + getName());
         // Stop connections
         stopConnections();
@@ -181,7 +180,6 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
             }
         }
         if (componentFailures.size() == 0) {
-            log.info("Stopped Service Assembly: " + getName());
             currentState = STOPPED;
             if (writeState) {
                 writeRunningState();
@@ -203,7 +201,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
         return shutDown(true);
     }
     
-    public String shutDown(boolean writeState) throws Exception {
+    public synchronized String shutDown(boolean writeState) throws Exception {
         log.info("Shutting down service assembly: " + getName());
         List componentFailures = new ArrayList();
         for (int i = 0; i < sus.length; i++) {
@@ -225,7 +223,6 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
             }
         }
         if (componentFailures.size() == 0) {
-            log.info("Shutdown Service Assembly: " + getName());
             currentState = SHUTDOWN;
             if (writeState) {
                 writeRunningState();
@@ -323,7 +320,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
      * Restore this service assembly to its state at shutdown.
      * @throws Exception
      */
-    void restore() throws Exception {
+    synchronized void restore() throws Exception {
         String state = getRunningStateFromStore();
         if (STARTED.equals(state)) {
             start(false);

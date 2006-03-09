@@ -533,7 +533,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     }
     
     public static ObjectName getContainerObjectName(String domainName, String containerName) {
-        String tmp = domainName + ":" + "type=Container,name=" + containerName;
+        String tmp = domainName + ":container=" + containerName + ",type=Container";
         ObjectName result = null;
         try {
             result = new ObjectName(tmp);

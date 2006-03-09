@@ -207,6 +207,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
         try {
             doStart();
             persistRunningState();
+            getContainer().getRegistry().checkPendingAssemblies();
         } catch (JBIException e) {
             log.error("Could not start component", e);
             throw e;
@@ -544,7 +545,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
             if (sa.isStarted()) {
                 try {
                     sa.stop(false, false);
-                    // TODO: add sa to a list of pending sa 
+                    registry.addPendingAssembly(sa);
                 } catch (Exception e) {
                     log.error("Error stopping service assembly " + sas[i]);
                 }
@@ -553,15 +554,14 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
     }
 
     protected void shutDownServiceAssemblies() throws DeploymentException {
-        JBIContainer container = getContainer();
-        Registry registry = container.getRegistry();
+        Registry registry = getContainer().getRegistry();
         String[] sas = registry.getDeployedServiceAssembliesForComponent(getName());
         for (int i = 0; i < sas.length; i++) {
             ServiceAssemblyLifeCycle sa = registry.getServiceAssembly(sas[i]);
             if (sa.isStopped()) {
                 try {
                     sa.shutDown(false);
-                    // TODO: add sa to a list of pending sa 
+                    registry.addPendingAssembly(sa);
                 } catch (Exception e) {
                     log.error("Error shutting down service assembly " + sas[i]);
                 }

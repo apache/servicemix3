@@ -74,7 +74,13 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
         checkComponentStarted("init");
         ServiceUnitManager sum = getServiceUnitManager();
         File path = getServiceUnitRootPath();
-        sum.init(getName(), path.getAbsolutePath());
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getComponentClassLoader());
+            sum.init(getName(), path.getAbsolutePath());
+        } finally {
+            Thread.currentThread().setContextClassLoader(cl);
+        }
         currentState = STOPPED;
     }
     
@@ -86,7 +92,13 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
         log.info("Starting service unit: " + getName());
         checkComponentStarted("start");
         ServiceUnitManager sum = getServiceUnitManager();
-        sum.start(getName());
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getComponentClassLoader());
+            sum.start(getName());
+        } finally {
+            Thread.currentThread().setContextClassLoader(cl);
+        }
         currentState = STARTED;
     }
 
@@ -98,7 +110,13 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
         log.info("Stopping service unit: " + getName());
         checkComponentStarted("stop");
         ServiceUnitManager sum = getServiceUnitManager();
-        sum.stop(getName());
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getComponentClassLoader());
+            sum.stop(getName());
+        } finally {
+            Thread.currentThread().setContextClassLoader(cl);
+        }
         currentState = STOPPED;
     }
 
@@ -111,7 +129,13 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
         log.info("Shutting down service unit: " + getName());
         checkComponentStartedOrStopped("shutDown");
         ServiceUnitManager sum = getServiceUnitManager();
-        sum.shutDown(getName());
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(getComponentClassLoader());
+            sum.shutDown(getName());
+        } finally {
+            Thread.currentThread().setContextClassLoader(cl);
+        }
         currentState = SHUTDOWN;
     }
 
@@ -205,6 +229,12 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
     protected ServiceUnitManager getServiceUnitManager() {
         ComponentMBeanImpl lcc = registry.getComponent(getComponentName());
         return lcc.getServiceUnitManager();
+    }
+
+    protected ClassLoader getComponentClassLoader() {
+        ComponentMBeanImpl lcc = registry.getComponent(getComponentName());
+        // TODO: should retrieve the real component class loader
+        return lcc.getComponent().getClass().getClassLoader();
     }
 
     public MBeanAttributeInfo[] getAttributeInfos() throws JMException {

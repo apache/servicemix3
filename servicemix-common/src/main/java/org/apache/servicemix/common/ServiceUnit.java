@@ -15,20 +15,22 @@
  */
 package org.apache.servicemix.common;
 
-import javax.jbi.JBIException;
-import javax.jbi.management.LifeCycleMBean;
-
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+
+import javax.jbi.JBIException;
+import javax.jbi.management.LifeCycleMBean;
 
 public class ServiceUnit {
 
     protected BaseComponent component;
     protected String name;
     protected String rootPath;
-    protected String status = LifeCycleMBean.STOPPED;
+    protected String status = LifeCycleMBean.SHUTDOWN;
     protected Map endpoints = new HashMap();
     
     public ServiceUnit() {
@@ -36,19 +38,42 @@ public class ServiceUnit {
     
     public void start() throws Exception {
         // Activate endpoints
-        for (Iterator iter = getEndpoints().iterator(); iter.hasNext();) {
-            Endpoint endpoint = (Endpoint) iter.next();
-            endpoint.activate();
+        List activated = new ArrayList();
+        try {
+            for (Iterator iter = getEndpoints().iterator(); iter.hasNext();) {
+                Endpoint endpoint = (Endpoint) iter.next();
+                endpoint.activate();
+                activated.add(endpoint);
+            }
+            this.status = LifeCycleMBean.STARTED;
+        } catch (Exception e) {
+            // Deactivate activated endpoints
+            for (Iterator iter = activated.iterator(); iter.hasNext();) {
+                try {
+                    Endpoint endpoint = (Endpoint) iter.next();
+                    endpoint.deactivate();
+                } catch (Exception e2) {
+                    // do nothing
+                }
+            }
+            throw e;
         }
-        this.status = LifeCycleMBean.STARTED;
     }
     
     public void stop() throws Exception {
         this.status = LifeCycleMBean.STOPPED;
-        // Activate endpoints
+        // Deactivate endpoints
+        Exception exception = null;
         for (Iterator iter = getEndpoints().iterator(); iter.hasNext();) {
             Endpoint endpoint = (Endpoint) iter.next();
-            endpoint.deactivate();
+            try {
+                endpoint.deactivate();
+            } catch (Exception e) {
+                exception = e;
+            }
+        }
+        if (exception != null) {
+            throw exception;
         }
     }
     
