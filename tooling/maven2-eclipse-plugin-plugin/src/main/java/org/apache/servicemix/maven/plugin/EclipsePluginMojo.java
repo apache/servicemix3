@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
+import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -161,9 +163,10 @@ public class EclipsePluginMojo extends AbstractMojo {
 		File destinationDir = new File(projectBuildDirectory);
 		for (Iterator iter = artifacts.iterator(); iter.hasNext();) {
 			Artifact artifact = (Artifact) iter.next();
+			ArtifactFilter filter = new ScopeArtifactFilter(
+					Artifact.SCOPE_RUNTIME);
 			try {
-				if (!artifact.isOptional()
-						&& Artifact.SCOPE_RUNTIME.equals(artifact.getScope())) {
+				if (!artifact.isOptional() && filter.include(artifact)) {
 					String type = artifact.getType();
 					if ("jar".equals(type)) {
 						uris.add("target/" + artifact.getFile().getName());
