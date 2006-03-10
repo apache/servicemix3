@@ -86,7 +86,7 @@ public class JBIContainer extends BaseLifeCycle {
     /**
      * Default Container name - must be unique if used in a cluster
      */
-    public static final String DEFAULT_NAME = "defaultJBI";
+    public static final String DEFAULT_NAME = "ServiceMix";
     private static final Log log = LogFactory.getLog(JBIContainer.class);
     private String name = DEFAULT_NAME;
     private InitialContext namingContext;
