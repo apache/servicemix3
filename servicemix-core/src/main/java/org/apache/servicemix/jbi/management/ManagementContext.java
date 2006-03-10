@@ -351,10 +351,10 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      */
     public ObjectName createCustomComponentMBeanName(String type, String name) {
         Map result = new LinkedHashMap();
-        result.put("container", container.getName());
-        result.put("type", "Component");
-        result.put("name", sanitizeString(name));
-        result.put("subtype", sanitizeString(type));
+        result.put("ContainerName", container.getName());
+        result.put("Type", "Component");
+        result.put("Name", sanitizeString(name));
+        result.put("SubType", sanitizeString(type));
         return createObjectName(result);
     }
 
@@ -438,11 +438,11 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      */
     public Map createObjectNameProps(MBeanInfoProvider provider){
         Map result = new LinkedHashMap();
-        result.put("container", container.getName());
-        result.put("type", sanitizeString(provider.getType()));
-        result.put("name", sanitizeString(provider.getName()));
+        result.put("ContainerName", container.getName());
+        result.put("Type", sanitizeString(provider.getType()));
+        result.put("Name", sanitizeString(provider.getName()));
         if (provider.getSubType() != null) {
-            result.put("subtype", sanitizeString(provider.getSubType()));
+            result.put("SubType", sanitizeString(provider.getSubType()));
         }
         return result;
     }
@@ -509,7 +509,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * @return the ObjectName
      */
     public static ObjectName getSystemObjectName(String domainName, String containerName, Class interfaceType) {
-        String tmp = domainName + ":container=" + containerName + ",type=SystemService,name=" + getSystemServiceName(interfaceType); 
+        String tmp = domainName + ":ContainerName=" + containerName + ",Type=SystemService,Name=" + getSystemServiceName(interfaceType); 
         ObjectName result = null;
         try {
             result = new ObjectName(tmp);
@@ -533,7 +533,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     }
     
     public static ObjectName getContainerObjectName(String domainName, String containerName) {
-        String tmp = domainName + ":container=" + containerName + ",type=JBIContainer";
+        String tmp = domainName + ":ContainerName=" + containerName + ",Type=JBIContainer";
         ObjectName result = null;
         try {
             result = new ObjectName(tmp);
