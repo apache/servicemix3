@@ -111,14 +111,14 @@ public class ManagementSupport {
             // task-status-message
             if (msg.getMessage() != null) {
                 sw.append("\n\t\t\t");
-                sw.append("<task-status-message>");
+                sw.append("<task-status-msg>");
                 sw.append("<msg-loc-info>");
                 sw.append("<loc-token/>");
                 sw.append("<loc-message>");
                 sw.append(msg.getMessage());
                 sw.append("</loc-message>");
                 sw.append("</msg-loc-info>");
-                sw.append("</task-status-message>");
+                sw.append("</task-status-msg>");
             }
             // exception-info
             if (msg.getException() != null) {
