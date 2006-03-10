@@ -182,13 +182,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
      * @return
      */
     public String undeployServiceAssembly(String name) throws Exception {
-        try {
-            container.getDeploymentService().undeploy(name);
-            return success("undeployServiceAssembly", name);
-
-        } catch (Exception e) {
-            throw new RuntimeException(failure("undeployServiceAssembly", name, e));
-        }
+        return container.getDeploymentService().undeploy(name);
     }
 
     /**
@@ -198,13 +192,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
      * @return
      */
     public String startServiceAssembly(String name) throws Exception {
-        try {
-            container.getDeploymentService().start(name);
-            return success("startServiceAssembly", name);
-
-        } catch (Exception e) {
-            throw new RuntimeException(failure("startServiceAssembly", name, e));
-        }
+        return container.getDeploymentService().start(name);
     }
 
     /**
@@ -214,13 +202,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
      * @return
      */
     public String stopServiceAssembly(String name) throws Exception {
-        try {
-            container.getDeploymentService().stop(name);
-            return success("stopServiceAssembly", name);
-
-        } catch (Exception e) {
-            throw new RuntimeException(failure("stopServiceAssembly", name, e));
-        }
+        return container.getDeploymentService().stop(name);
     }
 
     /**
@@ -230,13 +212,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
      * @return
      */
     public String shutdownServiceAssembly(String name) throws Exception {
-        try {
-            container.getDeploymentService().shutDown(name);
-            return success("shutdownServiceAssembly", name);
-
-        } catch (Exception e) {
-            throw new RuntimeException(failure("shutdownServiceAssembly", name, e));
-        }
+        return container.getDeploymentService().shutDown(name);
     }
     
    
