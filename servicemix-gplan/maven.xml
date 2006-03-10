@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<project default="default">
+<project default="default"
+        xmlns:j="jelly:core">
 
   <goal name="default" prereqs="car:install"/>
 
@@ -8,6 +9,24 @@
   
   <goal name="distribute">
     <attainGoal name="car:distribute"/>
+  </goal>
+  
+  <goal name="deploy">
+    <j:if test="${geronimo.home == null}">
+      <echo>Set the geronimo.home property</echo>
+    </j:if>
+    <j:if test="${geronimo.home != null}">
+      <j:forEach var="artifact" items="${pom.artifacts}">
+        <j:set var="dependency" value="${artifact.dependency}"/>
+        <j:if test="${dependency.getProperty('geronimo.include') == 'true'}">
+            <copy todir="${geronimo.home}/repository/${dependency.groupId}/jars" file="${artifact.path}"/>
+        </j:if>
+      </j:forEach>
+      <java jar="${geronimo.home}/bin/deployer.jar" fork="true">
+        <arg value="deploy"/>
+        <arg value="${basedir}/target/plan/plan.xml"/>
+      </java>
+    </j:if>
   </goal>
     
 </project>
