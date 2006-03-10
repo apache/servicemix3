@@ -97,7 +97,7 @@ public class ServiceMixGBean implements GBeanLifecycle, ServiceMixContainer {
                 container.start();
                 // Create a JMX Connector
                 JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:" + namingPort
-                        + "/" + JBIContainer.DEFAULT_NAME + "JMX");
+                        + "/jmxrmi");
                 // Create and start the RMIConnectorServer
                 MBeanServer server = container.getMBeanServer();
                 connectorServer = JMXConnectorServerFactory.newJMXConnectorServer(url, null, server);
