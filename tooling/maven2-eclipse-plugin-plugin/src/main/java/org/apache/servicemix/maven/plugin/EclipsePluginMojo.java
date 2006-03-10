@@ -1,4 +1,19 @@
-package com.unity.maven2.plugin;
+/*
+ * Copyright 2005-2006 The Apache Software Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.servicemix.maven.plugin;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -43,8 +58,6 @@ public class EclipsePluginMojo extends AbstractMojo {
 	 * @required
 	 */
 	private String pluginClass;
-
-	private static final String LIB_DIRECTORY = "";
 
 	/**
 	 * Directory where the plugin.xml file will be auto-generated.
@@ -92,7 +105,7 @@ public class EclipsePluginMojo extends AbstractMojo {
 				if (it.hasNext())
 					writer.write(",\n");
 			}
-			
+
 			writer.write("\nBundle-Activator: ");
 			writer.write(pluginClass);
 			writer.write("\nBundle-Vendor: ");
@@ -135,62 +148,55 @@ public class EclipsePluginMojo extends AbstractMojo {
 
 	}
 
-	public List getEmbeddedDependencies() {
+	/**
+	 * Helper method that returns a list of the artifacts that need to be
+	 * embedded into the plugin
+	 * 
+	 * @return
+	 */
+	private List getEmbeddedDependencies() {
 		List uris = new ArrayList();
 		Set artifacts = project.getArtifacts();
 
 		File destinationDir = new File(projectBuildDirectory);
 		for (Iterator iter = artifacts.iterator(); iter.hasNext();) {
 			Artifact artifact = (Artifact) iter.next();
-
-			// TODO: utilise appropriate methods from project builder
-			ScopeArtifactFilter filter = new ScopeArtifactFilter(
-					Artifact.SCOPE_RUNTIME);
-
-			if (!artifact.getGroupId().equals("eclipse")) {
-				try {
-					FileUtils.copyFileToDirectory(artifact.getFile(),
-							destinationDir);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if (!artifact.isOptional() && filter.include(artifact)) {
+			try {
+				if (!artifact.isOptional()
+						&& Artifact.SCOPE_RUNTIME.equals(artifact.getScope())) {
 					String type = artifact.getType();
 					if ("jar".equals(type)) {
 						uris.add("target/" + artifact.getFile().getName());
+						FileUtils.copyFileToDirectory(artifact.getFile(),
+								destinationDir);
 					}
 				}
+			} catch (IOException e) {
+				throw new RuntimeException("Unable to handle dependency : "
+						+ artifact.getArtifactId(), e);
 			}
 		}
 
 		return uris;
 	}
 
-	public List getEclipseDependencies() {
+	/**
+	 * Helper method that returns a list of the dependencies that need to be
+	 * referenced
+	 * 
+	 * @return
+	 */
+	private List getEclipseDependencies() {
 		List uris = new ArrayList();
-		Set artifacts = project.getArtifacts();
+		List artifacts = project.getDependencies();
 
-		File destinationDir = new File(projectBuildDirectory);
 		for (Iterator iter = artifacts.iterator(); iter.hasNext();) {
-			Artifact artifact = (Artifact) iter.next();
-
-			// TODO: utilise appropriate methods from project builder
-			ScopeArtifactFilter filter = new ScopeArtifactFilter(
-					Artifact.SCOPE_RUNTIME);
-
-			if (artifact.getGroupId().equals("eclipse")) {
-
-				if (!artifact.isOptional() && filter.include(artifact)) {
-					String type = artifact.getType();
-					if ("jar".equals(type)) {
-						uris.add(artifact.getArtifactId());
-					}
-				}
+			Dependency dependency = (Dependency) iter.next();
+			if (!dependency.isOptional()
+					&& Artifact.SCOPE_PROVIDED.equals(dependency.getScope())) {
+				uris.add(dependency.getArtifactId());
 			}
-
 		}
-
 		return uris;
 	}
 }
