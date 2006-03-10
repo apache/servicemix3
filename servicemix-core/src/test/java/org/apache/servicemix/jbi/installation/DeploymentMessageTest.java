@@ -144,13 +144,19 @@ public class DeploymentMessageTest extends AbstractManagementTest {
         getContainer().activateComponent(component2, "component2");
         getContainer().getEnvironmentContext().createComponentRootDirectory("component2");
         File installSaUrl = createServiceAssemblyArchive("sa", new String[] { "su1", "su2" }, new String[] { "component1", "component2"});
-        String result = getDeploymentService().deploy(installSaUrl.getAbsolutePath());
+        String result = null;;
+        try {
+            result = getDeploymentService().deploy(installSaUrl.getAbsolutePath());
+            fail("Deployment with an error is not supported");
+        } catch (Exception e) {
+            result = e.getMessage();
+        }
         System.err.println(result);
         Node node = new SourceTransformer().toDOMNode(new StringSource(result));
         assertNotNull(node);
         // main task
-        assertEquals("SUCCESS", textValueOfXPath(node, "//jbi:frmwk-task-result//jbi:task-result"));
-        assertEquals("WARNING", textValueOfXPath(node, "//jbi:frmwk-task-result//jbi:message-type"));
+        assertEquals("FAILED", textValueOfXPath(node, "//jbi:frmwk-task-result//jbi:task-result"));
+        assertEquals("ERROR", textValueOfXPath(node, "//jbi:frmwk-task-result//jbi:message-type"));
         assertEquals("deploy", textValueOfXPath(node, "//jbi:frmwk-task-result//jbi:task-id"));
         // first component task
         assertEquals("FAILED", textValueOfXPath(node, "//jbi:component-task-result[1]//jbi:task-result"));
