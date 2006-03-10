@@ -15,6 +15,7 @@
  */
 package org.apache.servicemix.jbi.management.task;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -76,8 +77,12 @@ public class InstallComponentTask extends JbiTask {
         if (!file.endsWith(".zip") && !file.endsWith(".jar")) {
             throw new BuildException("file: " + file + " is not an archive");
         }
+        File archive = new File(file);
+        if (!archive.isFile()) {
+            throw new BuildException("file: " + file + " not found");
+        }
         Properties props = getProperties();
-        acs.installComponent(file, props);
+        acs.installComponent(archive.getAbsolutePath(), props);
     }
     
     private Properties getProperties() throws IOException {

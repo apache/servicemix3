@@ -15,6 +15,8 @@
  */
 package org.apache.servicemix.jbi.management.task;
 
+import java.io.File;
+
 import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.apache.tools.ant.BuildException;
 
@@ -51,7 +53,11 @@ public class DeployServiceAssemblyTask extends JbiTask {
         if (!file.endsWith(".zip") && !file.endsWith(".jar")) {
             throw new BuildException("file: " + file + " is not an archive");
         }
-        acs.deployServiceAssembly(file);
+        File archive = new File(file);
+        if (!archive.isFile()) {
+            throw new BuildException("file: " + file + " not found");
+        }
+        acs.deployServiceAssembly(archive.getAbsolutePath());
     }
     
 }
