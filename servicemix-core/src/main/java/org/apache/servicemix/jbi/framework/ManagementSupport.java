@@ -209,7 +209,7 @@ public class ManagementSupport {
         }
         // task-status-message
         if (fmkMsg.getMessage() != null) {
-            Element taskStatusMessage = createChild(taskResultDetails, "task-status-message");
+            Element taskStatusMessage = createChild(taskResultDetails, "task-status-msg");
             Element msgLocInfo = createChild(taskStatusMessage, "msg-loc-info");
             createChild(msgLocInfo, "loc-token");
             createChild(msgLocInfo, "loc-message", fmkMsg.getMessage());
