@@ -178,13 +178,17 @@ public class BaseStandardMBean extends StandardMBean
                 ca.updateAttribute(beanUtil, attr);
                 sendAttributeChangeNotification(old, attr);
             }
+            catch (NoSuchMethodException e) {
+                throw new ReflectionException(e);
+            }
             catch (IllegalAccessException e) {
-                throw new MBeanException(e);
+                throw new ReflectionException(e);
             }
             catch (InvocationTargetException e) {
-                throw new MBeanException(e);
-            }
-            catch (NoSuchMethodException e) {
+                Throwable t = e.getTargetException();
+                if (t instanceof Exception) {
+                    throw new MBeanException(e);
+                }
                 throw new MBeanException(e);
             }
         }
@@ -309,10 +313,11 @@ public class BaseStandardMBean extends StandardMBean
             throw new ReflectionException(e);
         }
         catch (InvocationTargetException e) {
-            if (e.getTargetException() instanceof Exception) {
-                throw new ReflectionException((Exception) e.getTargetException());
+            Throwable t = e.getTargetException();
+            if (t instanceof Exception) {
+                throw new MBeanException((Exception)t);
             } else {
-                throw new ReflectionException(e);
+                throw new MBeanException(e);
             }
         }
     }
