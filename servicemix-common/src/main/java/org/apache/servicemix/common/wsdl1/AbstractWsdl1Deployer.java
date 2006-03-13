@@ -85,7 +85,7 @@ public abstract class AbstractWsdl1Deployer extends AbstractDeployer {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
             description = factory.newDocumentBuilder().parse(wsdl);
-            definition = createJmsWsdlReader().readWSDL(null, description);
+            definition = createWsdlReader().readWSDL(null, description);
         } catch (Exception e) {
             throw failure("deploy", "Could not parse " + wsdl, e);
         }
@@ -142,7 +142,7 @@ public abstract class AbstractWsdl1Deployer extends AbstractDeployer {
         }
     }    
     
-    protected WSDLReader createJmsWsdlReader() throws WSDLException {
+    protected WSDLReader createWsdlReader() throws WSDLException {
         WSDLFactory factory = WSDLFactory.newInstance();
         ExtensionRegistry registry = factory.newPopulatedExtensionRegistry();
         registerExtensions(registry);
