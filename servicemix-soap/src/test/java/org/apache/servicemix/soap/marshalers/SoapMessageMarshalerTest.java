@@ -37,6 +37,7 @@ import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.servicemix.soap.marshalers.SoapMarshaler;
 import org.apache.servicemix.soap.marshalers.SoapMessage;
 import org.apache.xpath.CachedXPathAPI;
+import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -150,7 +151,19 @@ public class SoapMessageMarshalerTest extends TestCase {
         SoapMessage msg = marshaler.createReader().read(getClass().getResourceAsStream("soap2.xml"));
         assertNotNull(msg);
     }
-	
+    
+    public void testSoap11Message() throws Exception {
+        SoapMarshaler marshaler = new SoapMarshaler(true);
+        marshaler.setSoapUri(SoapMarshaler.SOAP_11_URI);
+        SoapMessage msg = new SoapMessage();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        marshaler.createWriter(msg).write(baos);
+        Node node = sourceTransformer.toDOMNode(new BytesSource(baos.toByteArray()));
+        assertNotNull(node);
+        Element root = ((Document) node).getDocumentElement();
+        assertEquals(SoapMarshaler.SOAP_11_URI, root.getNamespaceURI());
+    }
+    
 	public void testWriteAndReadSoapMessageWithAttachments() throws Exception {
 		SoapMarshaler marshaler = new SoapMarshaler(true);
 		SoapMessage msg = marshaler.createReader().read(getClass().getResourceAsStream("soap.xml"));

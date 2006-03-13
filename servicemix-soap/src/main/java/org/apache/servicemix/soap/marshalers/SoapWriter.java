@@ -248,9 +248,9 @@ public class SoapWriter {
     protected QName getEnvelopeName() {
         QName name = message.getEnvelopeName();
         if (name == null) {
-            name = new QName(marshaler.soapUri, SoapMarshaler.ENVELOPE, marshaler.prefix);
+            name = new QName(marshaler.getSoapUri(), SoapMarshaler.ENVELOPE, marshaler.getPrefix());
         } else if (name.getPrefix() == null) {
-            name = new QName(name.getNamespaceURI(), name.getLocalPart(), marshaler.prefix);
+            name = new QName(name.getNamespaceURI(), name.getLocalPart(), marshaler.getPrefix());
         }
         return name;
     }
