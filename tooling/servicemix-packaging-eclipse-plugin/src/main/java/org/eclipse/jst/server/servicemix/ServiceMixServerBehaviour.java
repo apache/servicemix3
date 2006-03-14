@@ -46,7 +46,7 @@ public class ServiceMixServerBehaviour extends GenericServerBehaviour {
 	}
 
 	protected JMXConnector getJMXConnector() throws CoreException, IOException {
-		String jndiPath = "defaultJBIJMX";
+		String jndiPath = "jmxrmi";
 		JMXServiceURL url;
 		url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:1099/"
 				+ jndiPath);
