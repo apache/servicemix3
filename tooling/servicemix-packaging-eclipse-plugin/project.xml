@@ -526,6 +526,13 @@
 				</includes>
 				<filtering>false</filtering>
 			</resource>
+			<resource>
+				<directory>${basedir}</directory>
+				<includes>
+				  <include>plugin.xml</include>
+					<include>META-INF/MANIFEST.MF</include>
+				</includes>
+			</resource>
 		</resources>
 	</build>
 </project>
