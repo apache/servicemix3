@@ -506,15 +506,6 @@ public class EnvironmentContext extends BaseSystemService implements Environment
             }
             else {
                 log.info("Removed directory structure for component [version]: " + componentName + " [" + file.getName() + ']');
-                File parent = file.getParentFile();
-                if (parent.list().length == 0) {
-                    if (!FileUtil.deleteFile(parent)) {
-                        log.warn("Failed to remove root directory for component: " + componentName);
-                    }
-                    else {
-                        log.info("Removed root directory structure for component: " + componentName);
-                    }
-                }
             }
         }
     } 

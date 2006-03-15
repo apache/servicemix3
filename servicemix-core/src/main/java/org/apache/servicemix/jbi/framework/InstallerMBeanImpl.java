@@ -188,6 +188,8 @@ public class InstallerMBeanImpl implements InstallerMBean {
      * @throws javax.jbi.JBIException if the uninstallation fails.
      */
     public void uninstall() throws javax.jbi.JBIException {
+        // TODO: check component status
+        // the component must not be started and not have any SUs deployed
         if (!installed) {
             throw new DeploymentException("Component is not installed");
         }

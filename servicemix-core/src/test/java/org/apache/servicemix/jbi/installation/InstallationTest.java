@@ -358,4 +358,90 @@ public class InstallationTest extends AbstractManagementTest {
         componentMock.verify();
     }
 
+    /**
+     * Installer is created, component installed, uninstalled and reinstalled
+     * @throws Exception
+     */
+    public void testInstallAndReinstall() throws Exception {
+        // Create mocks
+        ExtMockControl bootstrapMock = ExtMockControl.createControl(Bootstrap.class);
+        Bootstrap bootstrap = (Bootstrap) bootstrapMock.getMock();
+        Bootstrap1.setDelegate(bootstrap);
+        ExtMockControl componentMock = ExtMockControl.createControl(Component.class);
+        Component component = (Component) componentMock.getMock();
+        Component1.setDelegate(component);
+        
+        // configure bootstrap
+        bootstrapMock.reset();
+        bootstrap.init(null);
+        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
+        bootstrap.onInstall();
+        bootstrap.cleanUp();
+        bootstrapMock.replay();
+        // configure component
+        componentMock.reset();
+        componentMock.replay();
+        // test component installation
+        startContainer(true);
+        String installJarUrl = createInstallerArchive("component1").getAbsolutePath();
+        ObjectName installerName = getInstallationService().loadNewInstaller(installJarUrl);
+        InstallerMBean installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), installerName, InstallerMBean.class, false);
+        assertFalse(installer.isInstalled());
+        ObjectName lifecycleName = installer.install();
+        LifeCycleMBean lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
+        assertEquals(LifeCycleMBean.SHUTDOWN, lifecycleMBean.getCurrentState());
+        // check mocks
+        bootstrapMock.verify();
+        componentMock.verify();
+        
+        // configure bootstrap
+        bootstrapMock.reset();
+        bootstrap.onUninstall();
+        bootstrap.cleanUp();
+        bootstrapMock.replay();
+        // configure component
+        componentMock.reset();
+        componentMock.replay();
+        // unload installer
+        container.getInstallationService().unloadInstaller("component1", true);
+        // check mocks
+        bootstrapMock.verify();
+        componentMock.verify();
+
+        // configure bootstrap
+        bootstrapMock.reset();
+        bootstrap.init(null);
+        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
+        bootstrap.onInstall();
+        bootstrap.cleanUp();
+        bootstrapMock.replay();
+        // configure component
+        componentMock.reset();
+        componentMock.replay();
+        // test component installation
+        startContainer(true);
+        installJarUrl = createInstallerArchive("component1").getAbsolutePath();
+        installerName = getInstallationService().loadNewInstaller(installJarUrl);
+        installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), installerName, InstallerMBean.class, false);
+        assertFalse(installer.isInstalled());
+        lifecycleName = installer.install();
+        lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
+        assertEquals(LifeCycleMBean.SHUTDOWN, lifecycleMBean.getCurrentState());
+        // check mocks
+        bootstrapMock.verify();
+        componentMock.verify();
+        
+        // configure bootstrap
+        bootstrapMock.reset();
+        bootstrapMock.replay();
+        // configure component
+        componentMock.reset();
+        componentMock.replay();
+        // shutdown container
+        shutdownContainer();
+        // check mocks
+        bootstrapMock.verify();
+        componentMock.verify();
+    }
+
 }
