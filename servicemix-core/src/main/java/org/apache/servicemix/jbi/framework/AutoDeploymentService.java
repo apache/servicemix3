@@ -189,9 +189,26 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
      * @param autoStart
      * @throws DeploymentException
      */
-    public void updateArchive(String location, ArchiveEntry entry, boolean autoStart) throws DeploymentException{
-        File tmp=AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(),location);
-        Descriptor root = DescriptorFactory.buildDescriptor(tmp);
+    public void updateArchive(String location, ArchiveEntry entry, boolean autoStart) throws DeploymentException {
+        File tmpDir = null;
+        try {
+            tmpDir = AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(), location);
+        } catch (Exception e) {
+            throw failure("deploy", "Unable to unpack archive: " + location, e);
+        }
+        // unpackLocation returns null if no jbi descriptor is found
+        if (tmpDir == null) {
+            throw failure("deploy", "Unable to find jbi descriptor: " + location);
+        }
+        Descriptor root = null;
+        try {
+            root = DescriptorFactory.buildDescriptor(tmpDir);
+        } catch (Exception e) {
+            throw failure("deploy", "Unable to build jbi descriptor: " + location, e);
+        }
+        if (root == null) {
+            throw failure("deploy", "Unable to find jbi descriptor: " + location);
+        }
         if (root != null) {
             try{
                 container.getBroker().suspend();
@@ -200,13 +217,13 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 	entry.type = "component";
                 	entry.name = componentName; 
                     installationService.unloadInstaller(componentName, true);
-                    installationService.install(tmp, root, autoStart);
+                    installationService.install(tmpDir, root, autoStart);
                     checkPendingSAs();
                 } else if (root.getSharedLibrary() != null) {
                 	String libraryName = root.getSharedLibrary().getIdentification().getName();
                 	entry.type = "component";
                 	entry.name = libraryName; 
-                    installationService.doInstallSharedLibrary(tmp, root.getSharedLibrary());
+                    installationService.doInstallSharedLibrary(tmpDir, root.getSharedLibrary());
                 } else if (root.getServiceAssembly() != null) {
                     ServiceAssembly sa = root.getServiceAssembly();
                     String name = sa.getIdentification().getName();
@@ -216,7 +233,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                         if (deploymentService.isSaDeployed(name)) {
                             deploymentService.shutDown(name);
                             deploymentService.undeploy(name);
-                            deploymentService.deployServiceAssembly(tmp, sa);
+                            deploymentService.deployServiceAssembly(tmpDir, sa);
                             if (autoStart) {
                                 deploymentService.start(name);
                             }
@@ -237,7 +254,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                             	}
                             }
                             if (canDeploy) {
-                                deploymentService.deployServiceAssembly(tmp, sa);
+                                deploymentService.deployServiceAssembly(tmpDir, sa);
                                 if (autoStart){
                                     deploymentService.start(name);
                                 }
@@ -246,7 +263,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                             	entry.pending = true;
                                 log.info("Components " + missings + " are not installed yet - adding ServiceAssembly "
                                                 + name + " to pending list");
-                                pendingSAs.put(tmp, entry);
+                                pendingSAs.put(tmpDir, entry);
                             }
                         }
                     } catch (Exception e) {
@@ -259,6 +276,24 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 container.getBroker().resume();
             }
         }
+    }
+
+    protected DeploymentException failure(String task, String info) {
+        return failure(task, info, null, null);
+    }
+    
+    protected DeploymentException failure(String task, String info, Exception e) {
+        return failure(task, info, e, null);
+    }
+    
+    protected DeploymentException failure(String task, String info, Exception e, List componentResults) {
+        ManagementSupport.Message msg = new ManagementSupport.Message();
+        msg.setTask(task);
+        msg.setResult("FAILED");
+        msg.setType("ERROR");
+        msg.setException(e);
+        msg.setMessage(info);
+        return new DeploymentException(ManagementSupport.createFrameworkMessage(msg, componentResults));
     }
 
     protected Set getComponentNames(ServiceAssembly sa) {
@@ -470,12 +505,12 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                                                         +file.getName()+" ...");
                                         try{
                                             updateArchive(file.getAbsolutePath(), entry, true);
+                                            log.info("Directory: "+root.getName()+": Finished installation of archive:  "
+                                                    +file.getName());
                                         }catch(Exception e){
                                             log.warn("Directory: "+root.getName()+": Automatic install of "+file
                                                             +" failed",e);
                                         }
-                                        log.info("Directory: "+root.getName()+": Finished installation of archive:  "
-                                                        +file.getName());
                                     }
 
                                     public void release(){}
