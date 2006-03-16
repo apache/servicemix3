@@ -108,4 +108,12 @@ public class HttpClientMarshaler {
                 !"Content-Length".equalsIgnoreCase(name) &&
                 !"Content-Type".equalsIgnoreCase(name);
     }
+
+    public boolean isStreaming() {
+        return streaming;
+    }
+
+    public void setStreaming(boolean streaming) {
+        this.streaming = streaming;
+    }
 }

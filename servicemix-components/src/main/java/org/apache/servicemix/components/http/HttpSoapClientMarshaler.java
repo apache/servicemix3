@@ -38,6 +38,14 @@ import org.w3c.dom.traversal.NodeIterator;
  */
 public class HttpSoapClientMarshaler extends HttpClientMarshaler {
 
+    public HttpSoapClientMarshaler() {
+        super();
+    }
+    
+    public HttpSoapClientMarshaler(boolean streaming) {
+        super(streaming);
+    }
+    
     public void toNMS(NormalizedMessage normalizedMessage, HttpMethod method)
             throws Exception {
         addNmsProperties(normalizedMessage, method);
