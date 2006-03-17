@@ -15,17 +15,32 @@
  */
 package org.apache.servicemix.sca.assembly.impl;
 
+import java.util.List;
+
+import javax.wsdl.Definition;
+import javax.wsdl.Port;
+import javax.wsdl.PortType;
+import javax.wsdl.Service;
+import javax.xml.namespace.QName;
+
 import org.apache.servicemix.sca.assembly.JbiBinding;
 import org.apache.tuscany.model.assembly.AssemblyModelContext;
-import org.apache.tuscany.model.assembly.AssemblyModelVisitor;
-import org.apache.tuscany.model.assembly.impl.AssemblyModelVisitorHelperImpl;
+import org.apache.tuscany.model.assembly.impl.BindingImpl;
 
 /**
  * An implementation of the model object '<em><b>Web Service Binding</b></em>'.
  */
-public class JbiBindingImpl extends org.apache.servicemix.sca.assembly.sdo.impl.JbiBindingImpl implements JbiBinding {
+public class JbiBindingImpl extends BindingImpl implements JbiBinding {
 
-    private Object runtimeConfiguration;
+    private String portURI;
+    private QName serviceName;
+    private String endpointName;
+    private QName interfaceName;
+    private Definition definition;
+    private Service service;
+    private PortType portType;
+    private Port port;
+
 
     /**
      * Constructor
@@ -33,65 +48,116 @@ public class JbiBindingImpl extends org.apache.servicemix.sca.assembly.sdo.impl.
     protected JbiBindingImpl() {
     }
 
-    /**
-     * @see org.apache.tuscany.binding.axis.assembly.sdo.impl.JbiBindingImpl#getPort()
+    /* (non-Javadoc)
+     * @see org.apache.servicemix.sca.assembly.JbiBinding#getPortURI()
      */
-    public String getPort() {
-        return super.getPort();
+    public String getPortURI() {
+        return portURI;
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.servicemix.sca.assembly.JbiBinding#setPortURI(java.lang.String)
+     */
+    public void setPortURI(String portURI) {
+        this.portURI = portURI;
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.servicemix.sca.assembly.JbiBinding#getServiceName()
+     */
+    public QName getServiceName() {
+        return serviceName;
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.servicemix.sca.assembly.JbiBinding#getEndpointName()
+     */
+    public String getEndpointName() {
+        return endpointName;
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.servicemix.sca.assembly.JbiBinding#getInterfaceName()
+     */
+    public QName getInterfaceName() {
+        return interfaceName;
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.servicemix.sca.assembly.JbiBinding#getDefinition()
+     */
+    public Definition getDefinition() {
+        return definition;
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.servicemix.sca.assembly.JbiBinding#getService()
+     */
+    public Service getService() {
+        return service;
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.servicemix.sca.assembly.JbiBinding#getPort()
+     */
+    public Port getPort() {
+        return port;
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.servicemix.sca.assembly.JbiBinding#getPortType()
+     */
+    public PortType getPortType() {
+        return portType;
     }
 
     /**
-     * @see org.apache.tuscany.binding.axis.assembly.sdo.impl.JbiBindingImpl#setPort(java.lang.String)
-     */
-    public void setPort(String newPort) {
-        super.setPort(newPort);
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.Binding#setURI(java.lang.String)
-     */
-    public void setURI(String value) {
-        super.setUri(value);
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.Binding#getURI()
-     */
-    public String getURI() {
-        return super.getUri();
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredRuntimeObject#getRuntimeConfiguration()
-     */
-    public Object getRuntimeConfiguration() {
-        return runtimeConfiguration;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.ConfiguredRuntimeObject#setRuntimeConfiguration(java.lang.Object)
-     */
-    public void setRuntimeConfiguration(Object configuration) {
-        this.runtimeConfiguration = configuration;
-    }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
+     * @see org.apache.tuscany.model.assembly.impl.BindingImpl#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
      */
     public void initialize(AssemblyModelContext modelContext) {
+        if (isInitialized())
+            return;
+        super.initialize(modelContext);
+
+        // Get the service name and endpoint name
+        String[] parts = split(portURI);
+        serviceName = new QName(parts[0], parts[1]);
+        endpointName = parts[2];
+        
+        // Load the WSDL definitions for the given namespace
+        List<Definition> definitions = modelContext.getAssemblyLoader().loadDefinitions(parts[0]);
+        if (definitions != null) {
+            for (Definition definition : definitions) {
+                Service service = definition.getService(serviceName);
+                if (service != null) {
+                    Port port = service.getPort(endpointName);
+                    if (port != null) {
+                        this.service = service;
+                        this.port = port;
+                        this.portType = port.getBinding().getPortType();
+                        this.interfaceName = portType.getQName();
+                        this.definition = definition;
+                        return;
+                    }
+                }
+            }
+        }
     }
 
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#freeze()
-     */
-    public void freeze() {
+    protected String[] split(String uri) {
+        char sep;
+        uri = uri.trim();
+        if (uri.indexOf('/') > 0) {
+            sep = '/';
+        } else {
+            sep = ':';
+        }
+        int idx1 = uri.lastIndexOf(sep);
+        int idx2 = uri.lastIndexOf(sep, idx1 - 1);
+        String epName = uri.substring(idx1 + 1);
+        String svcName = uri.substring(idx2 + 1, idx1);
+        String nsUri   = uri.substring(0, idx2);
+        return new String[] { nsUri, svcName, epName };
     }
-
-    /**
-     * @see org.apache.tuscany.model.assembly.AssemblyModelObject#accept(org.apache.tuscany.model.assembly.AssemblyModelVisitor)
-     */
-    public boolean accept(AssemblyModelVisitor visitor) {
-        return AssemblyModelVisitorHelperImpl.accept(this, visitor);
-    }
-
-} //TWebServiceBindingImpl
+    
+}

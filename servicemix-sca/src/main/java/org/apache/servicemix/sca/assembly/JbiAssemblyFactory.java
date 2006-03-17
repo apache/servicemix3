@@ -16,7 +16,6 @@
 package org.apache.servicemix.sca.assembly;
 
 import org.apache.tuscany.model.assembly.AssemblyFactory;
-import org.osoa.sca.model.JbiBinding;
 
 /**
  * The <b>Factory</b> for the model.
@@ -24,13 +23,8 @@ import org.osoa.sca.model.JbiBinding;
 public interface JbiAssemblyFactory extends AssemblyFactory {
 
     /**
-     * Returns a new object of class '<em>ServiceMix Binding</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     *
-     * @return a new object of class '<em>ServiceMix Binding</em>'.
-     * @generated
+     * Returns a new JbiBinding
      */
     JbiBinding createJbiBinding();
 
-} //TWebServiceAssemblyFactory
+}

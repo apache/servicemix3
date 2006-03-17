@@ -15,15 +15,14 @@
  * limitations under the License.
  -->
 <wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-                  xmlns:tns="http://www.bigbank.com/AccountService/"
+                  xmlns:tns="http://sca.servicemix.apache.org/Bigbank/Account"
                   xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
                   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                  targetNamespace="http://www.bigbank.com/AccountService/"
-
+                  targetNamespace="http://sca.servicemix.apache.org/Bigbank/Account"
                   name="AccountService">
 
     <wsdl:types>
-        <xsd:schema targetNamespace="http://www.bigbank.com/AccountService/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <xsd:schema targetNamespace="http://sca.servicemix.apache.org/Bigbank/Account" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
 			<xsd:element name="getAccountReportRequest" type="tns:AccountReportRequest"/>
             <xsd:complexType name="AccountReportRequest">

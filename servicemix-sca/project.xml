@@ -54,22 +54,65 @@
         <jbi.bootstrap>true</jbi.bootstrap>
       </properties>
     </dependency>
+    
     <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>commonj-sdo</artifactId>
-      <version>${eclipse_emf_version}</version>
+      <groupId>commonj</groupId>
+      <artifactId>sdo-api</artifactId>
+      <version>20060317</version>
       <properties>
         <jbi.bundle>true</jbi.bundle>
       </properties>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>ecore</artifactId>
-      <version>${eclipse_emf_version}</version>
+      <groupId>org.osoa</groupId>
+      <artifactId>sca-api</artifactId>
+      <version>${tuscany_version}</version>
       <properties>
         <jbi.bundle>true</jbi.bundle>
       </properties>
     </dependency>
+    
+    <dependency>
+      <groupId>org.apache.tuscany</groupId>
+      <artifactId>tuscany-common</artifactId>
+      <version>${tuscany_version}</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tuscany</groupId>
+      <artifactId>tuscany-container-java</artifactId>
+      <version>${tuscany_version}</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tuscany</groupId>
+      <artifactId>tuscany-core</artifactId>
+      <version>${tuscany_version}</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tuscany</groupId>
+      <artifactId>tuscany-model</artifactId>
+      <version>${tuscany_version}</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tuscany</groupId>
+      <artifactId>tuscany-sdo-impl</artifactId>
+      <version>${tuscany_version}</version>
+      <properties>
+        <jbi.bundle>true</jbi.bundle>
+      </properties>
+    </dependency>
+    
     <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>common</artifactId>
@@ -80,8 +123,8 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.emf</groupId>
-      <artifactId>ecore-sdo</artifactId>
-      <version>2.1.1</version>
+      <artifactId>ecore</artifactId>
+      <version>${eclipse_emf_version}</version>
       <properties>
         <jbi.bundle>true</jbi.bundle>
       </properties>
@@ -103,14 +146,6 @@
       </properties>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.wtp</groupId>
-      <artifactId>wsdl</artifactId>
-      <version>${eclipse_wtp_version}</version>
-      <properties>
-        <jbi.bundle>true</jbi.bundle>
-      </properties>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse.xsd</groupId>
       <artifactId>xsd</artifactId>
       <version>${eclipse_xsd_version}</version>
@@ -118,46 +153,7 @@
         <jbi.bundle>true</jbi.bundle>
       </properties>
     </dependency>
-    <dependency>
-      <groupId>servicemix</groupId>
-      <artifactId>tuscany-common</artifactId>
-      <version>dev-200512</version>
-      <properties>
-        <jbi.bundle>true</jbi.bundle>
-      </properties>
-    </dependency>
-    <dependency>
-      <groupId>servicemix</groupId>
-      <artifactId>tuscany-container-java</artifactId>
-      <version>dev-200512</version>
-      <properties>
-        <jbi.bundle>true</jbi.bundle>
-      </properties>
-    </dependency>
-    <dependency>
-      <groupId>servicemix</groupId>
-      <artifactId>tuscany-core</artifactId>
-      <version>dev-200512</version>
-      <properties>
-        <jbi.bundle>true</jbi.bundle>
-      </properties>
-    </dependency>
-    <dependency>
-      <groupId>servicemix</groupId>
-      <artifactId>tuscany-model</artifactId>
-      <version>dev-200512</version>
-      <properties>
-        <jbi.bundle>true</jbi.bundle>
-      </properties>
-    </dependency>
-    <dependency>
-      <groupId>servicemix</groupId>
-      <artifactId>sca-api</artifactId>
-      <version>dev-200512</version>
-      <properties>
-        <jbi.bundle>true</jbi.bundle>
-      </properties>
-    </dependency>
+    
     <dependency>
       <groupId>servicemix</groupId>
       <artifactId>jaxb-impl</artifactId>
@@ -192,6 +188,13 @@
       <groupId>stax</groupId>
       <artifactId>stax-api</artifactId>
       <version>${stax_api_version}</version>
+      <properties>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>woodstox</groupId>
+      <artifactId>wstx-asl</artifactId>
+      <version>${woodstox_version}</version>
       <properties>
       </properties>
     </dependency>
@@ -324,37 +327,5 @@
         <url>http://incubator.apache.org/beehive/</url>
       </dependency>
   </dependencies>
-
-  <build>
-
-    <unitTest>
-        <includes>
-            <include>**/*Test.*</include>
-        </includes>
-        <excludes>
-           <!-- http://jira.activemq.org/jira/browse/SM-313 -->
-          <exclude>**/ScaComponentTest.*</exclude>
-        </excludes>
-    </unitTest>
-
-    <resources>
-      <resource>
-          <directory>src/main/resources</directory>
-        <includes>
-          <include>**/*.xml</include>
-          <include>**/*.properties</include>
-          <include>**/*</include>
-        </includes>
-      </resource>
-      <!--
-      <resource>
-        <directory>target/generated</directory>
-        <includes>
-          <include>**/*</include>
-        </includes>
-      </resource>
-      -->
-    </resources>
-  </build>
 
 </project>

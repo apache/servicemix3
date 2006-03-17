@@ -16,8 +16,9 @@
 package org.apache.servicemix.sca;
 
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,14 +36,11 @@ import javax.xml.bind.JAXBContext;
 import org.apache.servicemix.common.Endpoint;
 import org.apache.servicemix.common.ExchangeProcessor;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.tuscany.core.context.EntryPointContext;
 import org.apache.tuscany.core.invocation.spi.ProxyFactory;
 import org.apache.tuscany.model.assembly.ConfiguredReference;
 import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.Interface;
-import org.apache.tuscany.model.types.InterfaceType;
-import org.apache.tuscany.model.types.OperationType;
-import org.apache.tuscany.model.types.java.JavaOperationType;
 
 /**
  * 
@@ -76,26 +74,22 @@ public class ScaEndpoint extends Endpoint implements ExchangeProcessor {
         channel = ctx.getDeliveryChannel();
         // Get the target service
         ConfiguredReference referenceValue = entryPoint.getConfiguredReference();
-        ConfiguredService targetServiceEndpoint = referenceValue.getConfiguredServices().get(0);
+        ConfiguredService targetServiceEndpoint = referenceValue.getTargetConfiguredServices().get(0);
         // Create a proxy
         ProxyFactory proxyFactory = (ProxyFactory) targetServiceEndpoint.getProxyFactory();
         proxy = proxyFactory.createProxy();
         // Get the business interface
-        Interface targetInterface = targetServiceEndpoint.getService().getInterfaceContract();
-        InterfaceType targetInterfaceType = targetInterface.getInterfaceType();
+        Class serviceInterface = targetServiceEndpoint.getService().getServiceContract().getInterface();
         List<Class> classes = new ArrayList<Class>();
         methodMap = new HashMap<Class, Method>();
-        for (OperationType oper : targetInterfaceType.getOperationTypes()) {
-        	if (oper instanceof JavaOperationType) {
-        		Method mth = ((JavaOperationType) oper).getJavaMethod();
-        		Class[] params = mth.getParameterTypes();
-        		if (params.length != 1) {
-        			throw new IllegalStateException("Supports only methods with one parameter");
-        		}
-        		methodMap.put(params[0], mth);
-        		classes.add(mth.getReturnType());
-        		classes.add(params[0]);
-        	}
+        for (Method mth : serviceInterface.getMethods()) {
+    		Class[] params = mth.getParameterTypes();
+    		if (params.length != 1) {
+    			throw new IllegalStateException("Supports only methods with one parameter");
+    		}
+    		methodMap.put(params[0], mth);
+    		classes.add(mth.getReturnType());
+    		classes.add(params[0]);
         }
         jaxbContext = JAXBContext.newInstance(classes.toArray(new Class[0]));
 	}
@@ -115,8 +109,6 @@ public class ScaEndpoint extends Endpoint implements ExchangeProcessor {
 		if (exchange.getStatus() == ExchangeStatus.DONE) {
 			return;
 		} else if (exchange.getStatus() == ExchangeStatus.ERROR) {
-			exchange.setStatus(ExchangeStatus.DONE);
-			channel.send(exchange);
 			return;
 		}
 		Object input = jaxbContext.createUnmarshaller().unmarshal(exchange.getMessage("in").getContent());
@@ -127,15 +119,19 @@ public class ScaEndpoint extends Endpoint implements ExchangeProcessor {
 		boolean oneWay = method.getReturnType() == null;
 		Object output;
 		try {
-			output = method.invoke(proxy, new Object[] { input });
-		} catch (InvocationTargetException e) {
-			if (e.getCause() instanceof Exception) {
-				throw (Exception) e.getCause();
-			} else if (e.getCause() instanceof Error) {
-				throw (Error) e.getCause();
-			} else {
-				throw new RuntimeException(e.getCause());
-			}
+            EntryPointContext entryPointContext = (EntryPointContext) ((ScaServiceUnit) serviceUnit).getTuscanyRuntime().getModuleContext().getContext(entryPoint.getName());
+            InvocationHandler handler = (InvocationHandler) entryPointContext.getImplementationInstance();
+			output = handler.invoke(null, method, new Object[] { input });
+        } catch (UndeclaredThrowableException e) {
+            throw e;
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Error e) {
+            throw e;
+        } catch (Exception e) {
+            throw e;
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
 		}
 		if (oneWay) {
 			exchange.setStatus(ExchangeStatus.DONE);

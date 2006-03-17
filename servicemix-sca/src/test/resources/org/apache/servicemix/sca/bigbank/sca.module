@@ -20,8 +20,8 @@
 
     <entryPoint name="AccountService">
         <interface.java interface="org.apache.servicemix.sca.bigbank.account.AccountService"/>
-        <interface.wsdl interface="http://www.bigbank.com/AccountService/#AccountService"/>
-        <binding.jbi port="http://www.bigbank.com/AccountService/#AccountServiceJBI"/>
+        <interface.wsdl interface="http://sca.servicemix.apache.org/Bigbank/Account#AccountService"/>
+        <binding.jbi port="http://sca.servicemix.apache.org/Bigbank/Account/AccountService/AccountServiceJBI"/>
         <reference>AccountServiceComponent</reference>
     </entryPoint>
 
@@ -42,8 +42,12 @@
 
     <externalService name="StockQuoteService">
         <interface.java interface="org.apache.servicemix.sca.bigbank.stockquote.StockQuoteService"/>
-        <binding.jbi port="http://www.quickstockquote.com/StockQuoteService#StockQuoteServiceJBI"/>
+        <binding.jbi port="http://www.quickstockquote.com/StockQuoteService/StockQuoteServiceJBI"/>
     </externalService>
+    
+    <import.wsdl
+		location="org/apache/servicemix/sca/bigbank/account/AccountService.wsdl"
+		namespace="http://sca.servicemix.apache.org/Bigbank/Account" />
 
 </module>
 	

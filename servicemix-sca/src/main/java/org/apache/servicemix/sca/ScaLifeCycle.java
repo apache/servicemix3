@@ -15,10 +15,6 @@
  */
 package org.apache.servicemix.sca;
 
-import java.util.List;
-
-import org.apache.tuscany.common.discovery.util.ServiceProviderRegistry;
-import org.apache.tuscany.common.logging.LogProvider;
 import org.apache.servicemix.common.BaseComponent;
 import org.apache.servicemix.common.BaseLifeCycle;
 
@@ -26,9 +22,6 @@ public class ScaLifeCycle extends BaseLifeCycle {
 
 	public ScaLifeCycle(BaseComponent component) {
 		super(component);
-		List l = ServiceProviderRegistry.getInstance().getServiceProviders(LogProvider.class);
-		l.clear();
-		l.add(new CommonsLoggingLogProvider());
 	}
 
 }

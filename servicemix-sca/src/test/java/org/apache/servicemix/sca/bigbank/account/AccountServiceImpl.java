@@ -26,7 +26,9 @@ import org.apache.servicemix.sca.bigbank.stockquote.StockQuoteResponse;
 import org.apache.servicemix.sca.bigbank.stockquote.StockQuoteService;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Service;
 
+@Service(interfaces=AccountService.class)
 public class AccountServiceImpl implements AccountService {
 
     @Property

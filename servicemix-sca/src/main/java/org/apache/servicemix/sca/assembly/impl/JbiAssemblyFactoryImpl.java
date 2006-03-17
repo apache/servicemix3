@@ -16,8 +16,8 @@
 package org.apache.servicemix.sca.assembly.impl;
 
 import org.apache.servicemix.sca.assembly.JbiAssemblyFactory;
+import org.apache.servicemix.sca.assembly.JbiBinding;
 import org.apache.tuscany.model.assembly.impl.AssemblyFactoryImpl;
-import org.osoa.sca.model.JbiBinding;
 
 /**
  * An implementation of the model <b>Factory</b>.
@@ -31,11 +31,11 @@ public class JbiAssemblyFactoryImpl extends AssemblyFactoryImpl implements JbiAs
         super();
     }
 
-    /**
-     * @see org.apache.servicemix.sca.assembly#createJbiBinding()
+    /* (non-Javadoc)
+     * @see org.apache.servicemix.sca.assembly.JbiAssemblyFactory#createJbiBinding()
      */
     public JbiBinding createJbiBinding() {
         return new JbiBindingImpl();
     }
 
-} //WebServiceAssemblyFactoryImpl
+}

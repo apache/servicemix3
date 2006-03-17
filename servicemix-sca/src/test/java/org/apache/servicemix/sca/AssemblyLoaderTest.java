@@ -15,38 +15,44 @@
  */
 package org.apache.servicemix.sca;
 
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.servicemix.sca.assembly.JbiBinding;
-import org.apache.tuscany.model.assembly.AssemblyLoader;
-import org.apache.tuscany.model.assembly.AssemblyModelContext;
+import org.apache.servicemix.sca.tuscany.TuscanyRuntime;
+import org.apache.tuscany.common.monitor.impl.NullMonitorFactory;
 import org.apache.tuscany.model.assembly.Binding;
 import org.apache.tuscany.model.assembly.Component;
 import org.apache.tuscany.model.assembly.EntryPoint;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.impl.AssemblyModelContextImpl;
 
 /**
  * @author delfinoj
  */
 public class AssemblyLoaderTest extends TestCase {
 
-    private AssemblyModelContext modelContext;
-
-    /**
-     *
-     */
-    public AssemblyLoaderTest() {
-        super();
+    protected void setUp() throws Exception {
+        super.setUp();
+        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
     }
 
-    public void testLoader() {
-
-        AssemblyLoader loader = modelContext.getAssemblyLoader();
-        Module module = loader.getModule(getClass().getResource("bigbank/sca.module").toString());
-        module.initialize(modelContext);
+    public void testLoader() throws Exception {
+        String name = "bigbank";
+        String uri  = getClass().getResource("bigbank/sca.module").toString();
+        
+        URL url = getClass().getResource("bigbank/sca.module");
+        URL parentUrl = new File(url.toURI()).getParentFile().toURL();
+        ClassLoader cl = new URLClassLoader(new URL[] { parentUrl }, getClass().getClassLoader());
+        
+        TuscanyRuntime rt = new TuscanyRuntime(name, uri, cl, new NullMonitorFactory());
+        assertNotNull(rt);
+        
+        Module module = rt.getModuleComponent().getModuleImplementation();
 
         Assert.assertTrue(module.getName().equals("org.apache.servicemix.sca.bigbank"));
 
@@ -62,12 +68,4 @@ public class AssemblyLoaderTest extends TestCase {
         Binding binding = externalService.getBindings().get(0);
         Assert.assertTrue(binding instanceof JbiBinding);
     }
-
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-        modelContext = new AssemblyModelContextImpl();
-    }
-
 }

@@ -67,15 +67,14 @@ public class ScaComponentTest extends TestCase {
         container.activateComponent(component, "JSR181Component");
 
         MockServiceComponent mock = new MockServiceComponent();
-        mock.setService(new QName("StockQuoteService"));
-        mock.setEndpoint("Mock");
+        mock.setService(new QName("http://www.quickstockquote.com", "StockQuoteService"));
+        mock.setEndpoint("StockQuoteServiceJBI");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         StockQuoteResponse r = new StockQuoteResponse();
         r.setResult(8.23f);
         JAXBContext.newInstance(StockQuoteResponse.class).createMarshaller().marshal(r, baos);
         mock.setResponseXml(baos.toString());
         ActivationSpec as = new ActivationSpec();
-        as.setInterfaceName(new QName("http://www.quickstockquote.com/StockQuoteService", "StockQuoteServiceJBI"));
         as.setComponent(mock);
         container.activateComponent(as);
         
@@ -90,7 +89,7 @@ public class ScaComponentTest extends TestCase {
         ServiceMixClient client = new DefaultServiceMixClient(container);
         Source req = new StringSource("<AccountReportRequest><CustomerID>id</CustomerID></AccountReportRequest>");
         Object rep = client.request(new ServiceNameEndpointResolver(
-        										new QName("http://www.bigbank.com/AccountService/", "AccountService")),
+        										new QName("http://sca.servicemix.apache.org/Bigbank/Account", "AccountService")),
         			   						 null, null, req);
         if (rep instanceof Node) {
             rep = new DOMSource((Node) rep);

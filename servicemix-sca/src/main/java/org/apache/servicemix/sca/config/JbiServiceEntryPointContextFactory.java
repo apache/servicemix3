@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Copyright 2005-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,9 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- -->
-<config:modelConfiguration xmlns:config="http://org.apache.tuscany/xmlns/model/config/0.9">
+ */
+package org.apache.servicemix.sca.config;
 
-    <generatedPackage packageClassName="org.apache.servicemix.sca.assembly.sdo.JbiAssemblyPackage" uri="http://org.apache.tuscany/xmlns/jbi/0.9" preLoad="true"/>
+import org.apache.tuscany.core.builder.impl.EntryPointContextFactory;
+import org.apache.tuscany.core.message.MessageFactory;
 
-</config:modelConfiguration>
+public class JbiServiceEntryPointContextFactory extends EntryPointContextFactory {
+
+    public JbiServiceEntryPointContextFactory(String name, String referenceName, MessageFactory msgFactory) {
+        super(name, referenceName, msgFactory);
+    }
+
+}

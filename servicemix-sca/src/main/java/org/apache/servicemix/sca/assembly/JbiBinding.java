@@ -15,11 +15,68 @@
  */
 package org.apache.servicemix.sca.assembly;
 
+import javax.wsdl.Definition;
+import javax.wsdl.Port;
+import javax.wsdl.PortType;
+import javax.wsdl.Service;
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.model.assembly.Binding;
 
 public interface JbiBinding extends Binding {
 
-	void setPort(String port);
-	
-	String getPort();
+    /**
+     * Returns the URI of the WSDL port for this binding.
+     * @return the URI of the WSDL port for this binding
+     */
+    String getPortURI();
+
+    /**
+     * Set the URI of the WSDL port for this binding.
+     * @param portURI the URI of the WSDL port
+     */
+    void setPortURI(String portURI);
+    
+    /**
+     * Returns the service name. 
+     * @return the service name
+     */
+    QName getServiceName();
+    
+    /**
+     * Returns the endpoint name.
+     * @return the endpoint name
+     */
+    String getEndpointName();
+    
+    /**
+     * Returns the interface name.
+     * @returnthe interface name
+     */
+    QName getInterfaceName();
+    
+    /**
+     * Returns the WSDL definition containing the WSDL port.
+     * @return the WSDL definition containing the WSDL port
+     */
+    Definition getDefinition();
+
+    /**
+     * Returns the the WSDL service.
+     * @return the WSDL service
+     */
+    Service getService();
+    
+    /**
+     * Returns the WSDL port defining this binding.
+     * @return the WSDL port defining this binding
+     */
+    Port getPort();
+    
+    /**
+     * Returns the WSDL port type.
+     * @return the WSDL port type
+     */
+    PortType getPortType();
+    
 }
