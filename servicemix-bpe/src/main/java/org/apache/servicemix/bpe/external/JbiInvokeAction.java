@@ -40,12 +40,12 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import org.apache.ode.action.external.ActionSystemException;
-import org.apache.ode.action.external.IExternalAction;
-import org.apache.ode.action.external.IURIResolver;
-import org.apache.ode.client.IFormattableValue;
-import org.apache.ode.interaction.XMLInteractionObject;
-import org.apache.ode.scope.service.BPRuntimeException;
+import org.apache.ode.bpe.action.external.ActionSystemException;
+import org.apache.ode.bpe.action.external.IExternalAction;
+import org.apache.ode.bpe.action.external.IURIResolver;
+import org.apache.ode.bpe.client.IFormattableValue;
+import org.apache.ode.bpe.interaction.XMLInteractionObject;
+import org.apache.ode.bpe.scope.service.BPRuntimeException;
 
 public class JbiInvokeAction implements IExternalAction, ExchangeProcessor {
 

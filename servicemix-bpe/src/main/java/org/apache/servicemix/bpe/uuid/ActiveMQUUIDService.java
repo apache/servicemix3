@@ -16,9 +16,9 @@
 package org.apache.servicemix.bpe.uuid;
 
 import org.apache.activemq.util.IdGenerator;
-import org.apache.ode.util.BPEProperties;
-import org.apache.ode.uuid.UUIDService;
-import org.apache.ode.uuid.UUIDServiceException;
+import org.apache.ode.bpe.util.BPEProperties;
+import org.apache.ode.bpe.uuid.UUIDService;
+import org.apache.ode.bpe.uuid.UUIDServiceException;
 
 
 public class ActiveMQUUIDService implements UUIDService {

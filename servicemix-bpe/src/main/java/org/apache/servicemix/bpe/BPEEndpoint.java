@@ -34,15 +34,15 @@ import org.apache.servicemix.common.ExchangeProcessor;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.w3c.dom.Document;
 
-import org.apache.ode.bped.EventDirector;
-import org.apache.ode.client.IFormattableValue;
-import org.apache.ode.event.BPELStaticKey;
-import org.apache.ode.event.IResponseMessage;
-import org.apache.ode.event.SimpleRequestMessageEvent;
-import org.apache.ode.interaction.IInteraction;
-import org.apache.ode.interaction.InvocationFactory;
-import org.apache.ode.interaction.XMLInteractionObject;
-import org.apache.ode.scope.service.BPRuntimeException;
+import org.apache.ode.bpe.bped.EventDirector;
+import org.apache.ode.bpe.client.IFormattableValue;
+import org.apache.ode.bpe.event.BPELStaticKey;
+import org.apache.ode.bpe.event.IResponseMessage;
+import org.apache.ode.bpe.event.SimpleRequestMessageEvent;
+import org.apache.ode.bpe.interaction.IInteraction;
+import org.apache.ode.bpe.interaction.InvocationFactory;
+import org.apache.ode.bpe.interaction.XMLInteractionObject;
+import org.apache.ode.bpe.scope.service.BPRuntimeException;
 
 public class BPEEndpoint extends Endpoint implements ExchangeProcessor {
 

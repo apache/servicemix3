@@ -21,15 +21,15 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.apache.ode.action.bpel.ExternalServiceAction;
-import org.apache.ode.context.resolver.ContextResolver;
-import org.apache.ode.definition.IPMDProcess;
-import org.apache.ode.deployment.bpel.BPELAttributes;
-import org.apache.ode.deployment.bpel.WSDLOperationKey;
-import org.apache.ode.engine.IEvaluationContext;
-import org.apache.ode.engine.IProcessCallBack;
-import org.apache.ode.instance.IPMIProcess;
-import org.apache.ode.util.BPException;
+import org.apache.ode.bpe.action.bpel.ExternalServiceAction;
+import org.apache.ode.bpe.context.resolver.ContextResolver;
+import org.apache.ode.bpe.definition.IPMDProcess;
+import org.apache.ode.bpe.deployment.bpel.BPELAttributes;
+import org.apache.ode.bpe.deployment.bpel.WSDLOperationKey;
+import org.apache.ode.bpe.engine.IEvaluationContext;
+import org.apache.ode.bpe.engine.IProcessCallBack;
+import org.apache.ode.bpe.instance.IPMIProcess;
+import org.apache.ode.bpe.util.BPException;
 
 public class JbiExternalAction extends ExternalServiceAction {
 

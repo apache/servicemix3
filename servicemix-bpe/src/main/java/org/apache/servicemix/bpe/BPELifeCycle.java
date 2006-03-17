@@ -18,9 +18,9 @@ package org.apache.servicemix.bpe;
 import org.apache.servicemix.common.BaseComponent;
 import org.apache.servicemix.common.BaseLifeCycle;
 
-import org.apache.ode.bped.EventDirector;
-import org.apache.ode.bped.EventDirectorFactory;
-import org.apache.ode.util.BPEProperties;
+import org.apache.ode.bpe.bped.EventDirector;
+import org.apache.ode.bpe.bped.EventDirectorFactory;
+import org.apache.ode.bpe.util.BPEProperties;
 
 public class BPELifeCycle extends BaseLifeCycle {
 

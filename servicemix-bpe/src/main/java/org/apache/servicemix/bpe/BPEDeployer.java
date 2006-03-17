@@ -42,25 +42,25 @@ import org.apache.servicemix.bpe.util.FileSystemJarInputStream;
 import org.apache.servicemix.common.AbstractDeployer;
 import org.apache.servicemix.common.ServiceUnit;
 
-import org.apache.ode.bped.DeployTypeEnum;
-import org.apache.ode.bped.EventDirector;
-import org.apache.ode.bped.IDeployer;
-import org.apache.ode.util.BPException;
-import org.apache.ode.wsdl.extensions.BPEAction;
-import org.apache.ode.wsdl.extensions.BPEActionSerializer;
-import org.apache.ode.wsdl.extensions.BPEFault;
-import org.apache.ode.wsdl.extensions.BPEFaultSerializer;
-import org.apache.ode.wsdl.extensions.BPEInput;
-import org.apache.ode.wsdl.extensions.BPEInputSerializer;
-import org.apache.ode.wsdl.extensions.BPELProperty;
-import org.apache.ode.wsdl.extensions.BPELPropertyAlias;
-import org.apache.ode.wsdl.extensions.BPELPropertyAliasSerializer;
-import org.apache.ode.wsdl.extensions.BPELPropertySerializer;
-import org.apache.ode.wsdl.extensions.BPEOutput;
-import org.apache.ode.wsdl.extensions.BPEOutputSerializer;
-import org.apache.ode.wsdl.extensions.BPEVariableMap;
-import org.apache.ode.wsdl.extensions.BPEVariableMapSerializer;
-import org.apache.ode.wsdl.extensions.ExtentionConstants;
+import org.apache.ode.bpe.bped.DeployTypeEnum;
+import org.apache.ode.bpe.bped.EventDirector;
+import org.apache.ode.bpe.bped.IDeployer;
+import org.apache.ode.bpe.util.BPException;
+import org.apache.ode.bpe.wsdl.extensions.BPEAction;
+import org.apache.ode.bpe.wsdl.extensions.BPEActionSerializer;
+import org.apache.ode.bpe.wsdl.extensions.BPEFault;
+import org.apache.ode.bpe.wsdl.extensions.BPEFaultSerializer;
+import org.apache.ode.bpe.wsdl.extensions.BPEInput;
+import org.apache.ode.bpe.wsdl.extensions.BPEInputSerializer;
+import org.apache.ode.bpe.wsdl.extensions.BPELProperty;
+import org.apache.ode.bpe.wsdl.extensions.BPELPropertyAlias;
+import org.apache.ode.bpe.wsdl.extensions.BPELPropertyAliasSerializer;
+import org.apache.ode.bpe.wsdl.extensions.BPELPropertySerializer;
+import org.apache.ode.bpe.wsdl.extensions.BPEOutput;
+import org.apache.ode.bpe.wsdl.extensions.BPEOutputSerializer;
+import org.apache.ode.bpe.wsdl.extensions.BPEVariableMap;
+import org.apache.ode.bpe.wsdl.extensions.BPEVariableMapSerializer;
+import org.apache.ode.bpe.wsdl.extensions.ExtentionConstants;
 
 public class BPEDeployer extends AbstractDeployer {
 

@@ -21,11 +21,11 @@ import java.util.Timer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.apache.ode.event.ITimerEvent;
-import org.apache.ode.timerservice.IBPETimer;
-import org.apache.ode.timerservice.IBPETimerService;
-import org.apache.ode.util.BPEProperties;
-import org.apache.ode.util.BPException;
+import org.apache.ode.bpe.event.ITimerEvent;
+import org.apache.ode.bpe.timerservice.IBPETimer;
+import org.apache.ode.bpe.timerservice.IBPETimerService;
+import org.apache.ode.bpe.util.BPEProperties;
+import org.apache.ode.bpe.util.BPException;
 
 public class BPETimerServiceJdk implements IBPETimerService {
 

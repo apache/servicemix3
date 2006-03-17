@@ -20,7 +20,7 @@ import org.apache.servicemix.common.BaseLifeCycle;
 import org.apache.servicemix.common.BaseServiceUnitManager;
 import org.apache.servicemix.common.Deployer;
 
-import org.apache.ode.bped.EventDirector;
+import org.apache.ode.bpe.bped.EventDirector;
 
 public class BPEComponent extends BaseComponent {
 
