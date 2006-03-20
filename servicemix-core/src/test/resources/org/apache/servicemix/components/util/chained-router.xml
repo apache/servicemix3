@@ -1,78 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:sm="http://servicemix.apache.org/config/1.0"
-	xmlns:foo="http://servicemix.org/demo/">
+       xmlns:foo="http://servicemix.org/demo/"
+       xmlns:util="java://org.apache.servicemix.components.util">
 
 	<!-- the JBI container -->
 	<sm:container id="jbi" flowName="st">
 		<sm:activationSpecs>
 
 			<sm:activationSpec componentName="sender"
-				service="foo:sender" endpoint="sender"
-				destinationService="foo:chain">
+			                   service="foo:sender" 
+			                   endpoint="sender"
+			                   destinationService="foo:chain">
 				<sm:component>
-					<bean
-						class="org.apache.servicemix.tck.SenderComponent" />
+					<bean class="org.apache.servicemix.tck.SenderComponent" />
 				</sm:component>
 			</sm:activationSpec>
 
-			<sm:activationSpec componentName="chain" service="foo:chain"
-				destinationService="foo:receiver">
+			<sm:activationSpec componentName="chain" 
+			                   service="foo:chain"
+			                   destinationService="foo:receiver">
 				<sm:component>
-					<bean xmlns=""
-						class="org.apache.servicemix.components.util.ChainedComponent">
-						<property name="services">
-							<list>
-								<bean
-									class="javax.xml.namespace.QName">
-									<constructor-arg
-										value="http://servicemix.org/demo/" />
-									<constructor-arg
-										value="transformer1" />
-								</bean>
-								<bean
-									class="javax.xml.namespace.QName">
-									<constructor-arg
-										value="http://servicemix.org/demo/" />
-									<constructor-arg
-										value="transformer2" />
-								</bean>
-							</list>
-						</property>
-					</bean>
+					<util:ChainedComponent>
+						<services>
+						    <qname>foo:transformer1</qname>
+						    <qname>foo:transformer2</qname>
+						</services>
+					</util:ChainedComponent>
 				</sm:component>
 			</sm:activationSpec>
 
 			<sm:activationSpec componentName="transformer1"
-				service="foo:transformer1">
+			                   service="foo:transformer1">
 				<sm:component>
-					<TransformComponent
-						xmlns="java://org.apache.servicemix.components.util">
+					<util:TransformComponent>
 						<transformer>
-							<PropertyAddTransformer name="prop1"
-								value="value1" />
+							<util:PropertyAddTransformer name="prop1" value="value1" />
 						</transformer>
-					</TransformComponent>
+					</util:TransformComponent>
 				</sm:component>
 			</sm:activationSpec>
 
 			<sm:activationSpec componentName="transformer2"
-				service="foo:transformer2">
+			                   service="foo:transformer2">
 				<sm:component>
-					<TransformComponent
-						xmlns="java://org.apache.servicemix.components.util">
+					<util:TransformComponent>
 						<transformer>
-							<PropertyAddTransformer name="prop2"
-								value="value2" />
+							<util:PropertyAddTransformer name="prop2" value="value2" />
 						</transformer>
-					</TransformComponent>
+					</util:TransformComponent>
 				</sm:component>
 			</sm:activationSpec>
 
 			<sm:activationSpec componentName="receiver"
-				service="foo:receiver" endpoint="receiver">
+			                   service="foo:receiver" 
+			                   endpoint="receiver">
 				<sm:component>
-					<bean
-						class="org.apache.servicemix.tck.ReceiverComponent" />
+					<bean class="org.apache.servicemix.tck.ReceiverComponent" />
 				</sm:component>
 			</sm:activationSpec>
 		</sm:activationSpecs>
