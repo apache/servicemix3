@@ -148,8 +148,11 @@ public class WSIFMarshaler {
      * Returns true if the given part is a string type
      */
     protected boolean isSimpleType(Part part) {
-        QName typeName = part.getTypeName();
-        return "http://www.w3.org/2001/XMLSchema".equals(typeName.getNamespaceURI());
+       QName typeName = part.getTypeName();
+       if (typeName != null) {
+          return "http://www.w3.org/2001/XMLSchema".equals(typeName.getNamespaceURI());
+       }
+       return false;
     }
 
     protected Node createResultDocument(MessageExchange exchange, NormalizedMessage normalizedMessage, WSIFOperationInfo operationInfo, WSIFMessage wsifMessage) {
