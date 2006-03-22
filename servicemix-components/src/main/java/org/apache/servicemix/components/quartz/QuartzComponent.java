@@ -17,6 +17,7 @@ package org.apache.servicemix.components.quartz;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
@@ -29,6 +30,7 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import javax.jbi.JBIException;
 import javax.jbi.messaging.InOnly;
+import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import java.util.Date;
@@ -40,7 +42,7 @@ import java.util.Map;
  *
  * @version $Revision$
  */
-public class QuartzComponent extends ComponentSupport {
+public class QuartzComponent extends ComponentSupport implements MessageExchangeListener {
     private static final transient Log log = LogFactory.getLog(QuartzComponent.class);
 
     public static final String COMPONENT_KEY = "org.apache.servicemix.component";
@@ -199,6 +201,11 @@ public class QuartzComponent extends ComponentSupport {
                 addTrigger((Trigger) key, (JobDetail) value);
             }
         }
+    }
+
+    public void onMessageExchange(MessageExchange exchange) throws MessagingException {
+        // As we send in-only MEPS, we will only
+        // receive DONE or ERROR status
     }
 
 }
