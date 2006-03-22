@@ -578,6 +578,9 @@
         <exclude>**/HttpSoapTest.*</exclude>
         <exclude>**/HttpTest.*</exclude>
         <exclude>**/SaajTest.*</exclude>
+	
+	<!-- http://jira.activemq.org/jira/browse/SM-355 -->
+        <exclude>**/JmsBindingClusterTest.*</exclude>
 
       </excludes>
     </unitTest>
