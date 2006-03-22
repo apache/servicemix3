@@ -82,12 +82,20 @@ public interface MessageExchange
 
     public static final class Role
     {
-        public static final Role PROVIDER = new Role();
+        public static final Role PROVIDER = new Role("Provider");
 
-        public static final Role CONSUMER = new Role();
+        public static final Role CONSUMER = new Role("Consumer");
 
-        private Role()
+        private String mRole;
+        
+        private Role(String role)
         {
+            mRole = role;
+        }
+        
+        public String toString()
+        {
+            return mRole;
         }
     }
 }
