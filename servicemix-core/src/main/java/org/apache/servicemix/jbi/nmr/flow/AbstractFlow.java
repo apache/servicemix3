@@ -24,7 +24,6 @@ import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.ObjectName;
-import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -168,7 +167,11 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
         //As the MessageExchange could come from another container - ensure we get the local Component
         ComponentMBeanImpl lcc = broker.getRegistry().getComponent(id.getName());
         if (lcc != null) {
-            lcc.getDeliveryChannel().processInBound(me);
+            if (lcc.getDeliveryChannel() != null) {
+                lcc.getDeliveryChannel().processInBound(me);
+            } else {
+                throw new MessagingException("Component " + id.getName() + " is shut down");
+            }
         }
         else {
             throw new MessagingException("No component named " + id.getName() + " - Couldn't route MessageExchange " + me);
