@@ -17,10 +17,14 @@ package org.apache.servicemix.soap;
 
 import java.net.URI;
 
+import javax.xml.namespace.QName;
+
 import org.apache.servicemix.common.Endpoint;
 
 public abstract class SoapEndpoint extends Endpoint {
 
 	public abstract URI getDefaultMep();
+    
+    public abstract QName getDefaultOperation();
 	
 }

@@ -62,6 +62,11 @@ public class JbiEndpointDeserializer implements ExtensionDeserializer {
             jbiEndpoint.setDefaultMep(URI.create(JbiExtension.WSDL2_NS + defaultMep));
         }
         
+        QName defaultOperation = DOMUtils.getQualifiedAttributeValue(el, JbiExtension.DEFAULT_OPERATION, null, false, def);
+        if (defaultOperation != null) {
+            jbiEndpoint.setDefaultOperation(defaultOperation);
+        }
+        
         return jbiEndpoint;
     }
 

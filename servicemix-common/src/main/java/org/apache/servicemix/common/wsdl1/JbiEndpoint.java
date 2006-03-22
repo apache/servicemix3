@@ -34,6 +34,7 @@ public class JbiEndpoint implements ExtensibilityElement, Serializable {
     
     protected Role role;
     protected URI defaultMep;
+    protected QName defaultOperation;
     
     /**
      * @return Returns the elementType.
@@ -78,13 +79,26 @@ public class JbiEndpoint implements ExtensibilityElement, Serializable {
         this.defaultMep = defaultMep;
     }
     
+    /**
+     * @return Returns the defaultOperation.
+     */
+    public QName getDefaultOperation() {
+        return defaultOperation;
+    }
+    /**
+     * @param defaultOperation The defaultOperation to set.
+     */
+    public void setDefaultOperation(QName defaultOperation) {
+        this.defaultOperation = defaultOperation;
+    }
+    
     public String toString() {
         return "JbiEndpoint[" + 
                     "required=" + required + ", " +
                     "elementType=" + elementType + ", " +
                     "role=" + role + ", " +
-                    "defaultMep=" + defaultMep + "]";
+                    "defaultMep=" + defaultMep + "," +
+                    "defaultOperation=" + defaultOperation + "]";
     }
-    
     
 }

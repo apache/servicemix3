@@ -35,6 +35,8 @@ public class JbiExtension {
     public static final String DEFAULT_MEP_ROBUST_IN_ONLY = "robust-in-only";
     public static final String DEFAULT_MEP_IN_OUT = "in-out";
     
+    public static final String DEFAULT_OPERATION = "defaultOperation";
+    
     public static final String WSDL2_NS = "http://www.w3.org/2004/08/wsdl/";
 
     public static void register(ExtensionRegistry registry) {
