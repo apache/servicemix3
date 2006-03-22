@@ -241,6 +241,12 @@ public class EndpointRegistry {
                 logger.info("Endpoint " + serviceEndpoint + " has a service description, but no matching endpoint found in " + service.getPorts().keySet());
                 return;
             }
+            if (port.getBinding() == null) {
+                logger.info("Endpoint " + serviceEndpoint + " has a service description, but no binding found");
+            }
+            if (port.getBinding().getPortType() == null) {
+                logger.info("Endpoint " + serviceEndpoint + " has a service description, but no port type found");
+            }
             QName interfaceName = port.getBinding().getPortType().getQName();
             if (logger.isDebugEnabled()) {
                 logger.debug("Endpoint " + serviceEndpoint + " implements interface " + interfaceName);
