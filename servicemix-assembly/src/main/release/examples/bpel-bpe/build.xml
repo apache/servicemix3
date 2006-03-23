@@ -1,0 +1,95 @@
+<project name="jms-binding" default="run" basedir=".">
+
+  <property name="build.dir" value="build"/>
+  <property name="comp.build.dir" value="${build.dir}/components"/>
+  <property name="client.build.dir" value="${build.dir}/client"/>
+  
+  <property name="src.dir" value="src"/>
+  <property name="comp.src.dir" value="${src.dir}/components"/>
+  <property name="client.src.dir" value="${src.dir}/client"/>
+  <property name="su.bpe.src.dir" value="${src.dir}/bpe-su"/>
+  <property name="su.lw.src.dir" value="${src.dir}/lw-su"/>
+  <property name="sa.src.dir" value="${src.dir}/sa"/>
+
+  <target name="clean">
+    <delete dir="target" quiet="true"/>
+    <delete dir="${build.dir}" quiet="true"/>
+  </target>
+
+  <target name="init">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${comp.build.dir}"/>
+    <mkdir dir="${client.build.dir}"/>
+
+    <path id="javac.classpath">
+      <pathelement path="${comp.build.dir}"/>
+      <pathelement path="${client.build.dir}"/>
+      <pathelement path="../../conf"/>
+      <fileset dir="../../lib">
+        <include name="**/*.jar"/>
+      </fileset>
+      <fileset dir="../..">
+        <include name="*.jar"/>
+      </fileset>
+    </path>
+  </target>
+
+  <target name="build-components" depends="init" description="Build components">
+    <javac srcdir="${comp.src.dir}" destdir="${comp.build.dir}" debug="on" source="1.4" target="1.4">
+      <classpath refid="javac.classpath"/>
+    </javac>
+  </target>
+  
+  <target name="build-lw-su" depends="build-components" description="Build the engine service unit">
+    <zip destfile="${build.dir}/lw-su.zip">
+      <fileset dir="${comp.build.dir}"/>
+      <fileset dir="${su.lw.src.dir}"/>
+    </zip>
+  </target>
+
+  <target name="build-bpe-su" depends="init" description="Build the bpe service unit">
+    <zip destfile="${build.dir}/bpe-su.zip">
+      <fileset dir="${su.bpe.src.dir}"/>
+    </zip>
+  </target>
+
+  <target name="build-sa" depends="build-bpe-su, build-lw-su" description="Build the service assembly">
+    <zip destfile="${build.dir}/bpe-demo-sa.zip">
+      <fileset dir="${build.dir}" includes="bpe-su.zip"/>
+      <fileset dir="${build.dir}" includes="lw-su.zip"/>
+      <fileset dir="${sa.src.dir}"/>
+    </zip>
+  </target>
+  
+  <target name="setup" depends="build-sa" description="Setup servicemix">
+    <mkdir dir="install"/>
+    <mkdir dir="deploy"/>
+    <copy todir="install">
+      <fileset dir="../../components" includes="*bpe*"/>
+      <fileset dir="../../components" includes="*lwcontainer*"/>
+    </copy>
+    <copy file="${build.dir}/bpe-demo-sa.zip" todir="deploy"/>
+  </target>
+
+  <target name="build-client" depends="init" description="Build components">
+    <javac srcdir="${client.src.dir}" destdir="${client.build.dir}" debug="on" source="1.4" target="1.4">
+      <classpath refid="javac.classpath"/>
+    </javac>
+  </target>
+  
+  <target name="run" depends="build-client" description="Runs the example client">
+    <echo>Running exsample client</echo>
+    <java classname="JMSClient" fork="yes" maxmemory="100M">
+      <classpath refid="javac.classpath"/>
+    </java>
+  </target>
+	
+  <target name="run-loop" depends="build-client" description="Runs the example client">
+    <echo>Running exsample client</echo>
+    <java classname="JMSClient" fork="yes" maxmemory="100M">
+      <classpath refid="javac.classpath"/>
+      <arg value="100000"/>
+    </java>
+  </target>
+	
+</project>
