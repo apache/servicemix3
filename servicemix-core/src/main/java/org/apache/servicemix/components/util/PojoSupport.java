@@ -54,6 +54,7 @@ public abstract class PojoSupport extends BaseLifeCycle implements ComponentLife
     private MessageExchangeFactory exchangeFactory;
     private String description = "POJO Component";
     private ServiceEndpoint serviceEndpoint;
+    private DeliveryChannel channel;
     
     protected PojoSupport() {
     }
@@ -80,6 +81,7 @@ public abstract class PojoSupport extends BaseLifeCycle implements ComponentLife
      */
     public void init(ComponentContext cc) throws JBIException {
         this.context = cc;
+        this.channel = this.context.getDeliveryChannel();
         init();
         if (service != null && endpoint != null) {
             serviceEndpoint = context.activateEndpoint(service, endpoint);
@@ -187,10 +189,10 @@ public abstract class PojoSupport extends BaseLifeCycle implements ComponentLife
     }
 
     public DeliveryChannel getDeliveryChannel() throws MessagingException {
-        if (context == null) {
+        if (channel == null) {
             throw new NotInitialisedYetException();
         }
-        return context.getDeliveryChannel();
+        return channel;
     }
 
     /**
