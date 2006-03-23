@@ -61,6 +61,7 @@ import org.apache.ode.bpe.wsdl.extensions.BPEOutputSerializer;
 import org.apache.ode.bpe.wsdl.extensions.BPEVariableMap;
 import org.apache.ode.bpe.wsdl.extensions.BPEVariableMapSerializer;
 import org.apache.ode.bpe.wsdl.extensions.ExtentionConstants;
+import org.w3c.dom.Document;
 
 public class BPEDeployer extends AbstractDeployer {
 
@@ -88,6 +89,7 @@ public class BPEDeployer extends AbstractDeployer {
             su.setRootPath(serviceUnitRootPath);
 			Definition rootDef = loadMainWsdl(serviceUnitRootPath);
             checkDefinition(rootDef);
+            Document description = WSDLFactory.newInstance().newWSDLWriter().getDocument(rootDef);
 			for (Iterator it = rootDef.getServices().values().iterator(); it.hasNext();) {
 				Service svc = (Service) it.next();
 				for (Iterator it2 = svc.getPorts().values().iterator(); it2.hasNext();) {
@@ -97,6 +99,8 @@ public class BPEDeployer extends AbstractDeployer {
 					ep.setInterfaceName(pt.getBinding().getPortType().getQName());
 					ep.setService(svc.getQName());
 					ep.setEndpoint(pt.getName());
+                    ep.setDefinition(rootDef);
+                    ep.setDescription(description);
                     // Retrieve wsdl
 					su.addEndpoint(ep);
 				}

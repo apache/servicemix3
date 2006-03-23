@@ -31,6 +31,12 @@ import javax.xml.transform.dom.DOMSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ode.bpe.action.external.ActionSystemException;
+import org.apache.ode.bpe.action.external.IExternalAction;
+import org.apache.ode.bpe.action.external.IURIResolver;
+import org.apache.ode.bpe.client.IFormattableValue;
+import org.apache.ode.bpe.interaction.XMLInteractionObject;
+import org.apache.ode.bpe.scope.service.BPRuntimeException;
 import org.apache.servicemix.bpe.BPEComponent;
 import org.apache.servicemix.bpe.BPELifeCycle;
 import org.apache.servicemix.common.ExchangeProcessor;
@@ -39,13 +45,6 @@ import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import org.apache.ode.bpe.action.external.ActionSystemException;
-import org.apache.ode.bpe.action.external.IExternalAction;
-import org.apache.ode.bpe.action.external.IURIResolver;
-import org.apache.ode.bpe.client.IFormattableValue;
-import org.apache.ode.bpe.interaction.XMLInteractionObject;
-import org.apache.ode.bpe.scope.service.BPRuntimeException;
 
 public class JbiInvokeAction implements IExternalAction, ExchangeProcessor {
 
@@ -63,9 +62,6 @@ public class JbiInvokeAction implements IExternalAction, ExchangeProcessor {
     private static Log log = LogFactory.getLog(JbiInvokeAction.class);
     
     private Properties properties;
-    private DeliveryChannel channel;
-    private MessageExchangeFactory factory;
-    private BPEComponent component;
     private QName interfaceName;
     private QName serviceName;
     private String endpointName;
@@ -87,16 +83,6 @@ public class JbiInvokeAction implements IExternalAction, ExchangeProcessor {
             log.debug("init");
         }
         this.properties = props;
-        component = BPEComponent.getInstance();
-        if (component == null) {
-            throw new BPRuntimeException("BPEComponent has not been created", "");
-        }
-        try {
-            channel = ((BPELifeCycle) component.getLifeCycle()).getContext().getDeliveryChannel();
-            factory = channel.createExchangeFactory();
-        } catch (MessagingException e) {
-            throw new BPRuntimeException("Could not retrieve DeliveryChannel", e);
-        } 
         extractInformations();
         if (serviceName == null && interfaceName == null) { 
             throw new BPRuntimeException("Interface, Service or Endpoint should be specified", "");
@@ -153,6 +139,9 @@ public class JbiInvokeAction implements IExternalAction, ExchangeProcessor {
         Source inputSource = getSourceFromPayload(payload);
         // Create and send exchange
         try {
+            BPEComponent component = BPEComponent.getCurrent();
+            DeliveryChannel channel = ((BPELifeCycle) component.getLifeCycle()).getContext().getDeliveryChannel();
+            MessageExchangeFactory factory = channel.createExchangeFactory();
             // TODO: need to configure mep
             MessageExchange me = factory.createExchange(this.mep);
             me.setInterfaceName(interfaceName);

@@ -26,14 +26,17 @@ public class BPEComponent extends BaseComponent {
 
     public static String PART_PAYLOAD = "payload";
     
-    private static BPEComponent INSTANCE;
+    private static final ThreadLocal COMPONENT = new ThreadLocal();
     
-    public static BPEComponent getInstance() {
-        return INSTANCE;
+    public static BPEComponent getCurrent() {
+        return (BPEComponent) COMPONENT.get();
+    }
+    
+    public static void setCurrent(BPEComponent component) {
+        COMPONENT.set(component);
     }
     
     public BPEComponent() {
-        INSTANCE = this;
     }
     
 	protected BaseLifeCycle createLifeCycle() {

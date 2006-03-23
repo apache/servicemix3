@@ -78,6 +78,7 @@ public class BPEEndpoint extends Endpoint implements ExchangeProcessor {
         } else if (exchange.getStatus() == ExchangeStatus.ERROR) {
             return;
         }
+        
 		BPELStaticKey bsk = new BPELStaticKey();
 		bsk.setTargetNamespace(getInterfaceName().getNamespaceURI());
 		bsk.setPortType(getInterfaceName().getLocalPart());
@@ -92,7 +93,13 @@ public class BPEEndpoint extends Endpoint implements ExchangeProcessor {
         
         EventDirector ed = ((BPEComponent) getServiceUnit().getComponent()).getEventDirector();
         try {
-            IResponseMessage response = ed.sendEvent(msg, true);
+            IResponseMessage response;
+            try {
+                BPEComponent.setCurrent((BPEComponent) serviceUnit.getComponent());
+                response = ed.sendEvent(msg, true);
+            } finally {
+                BPEComponent.setCurrent(null);
+            }
             IInteraction payload = response.getPart(BPEComponent.PART_PAYLOAD);
             if (response.getFault() != null) {
                 Exception e = response.getFault().getFaultException();

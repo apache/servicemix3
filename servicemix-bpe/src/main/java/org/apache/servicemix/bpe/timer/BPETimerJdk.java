@@ -31,9 +31,11 @@ public class BPETimerJdk extends TimerTask implements IBPETimer {
     private static Log log = LogFactory.getLog(BPETimerJdk.class);
     
     private ITimerEvent te;
+    private BPEComponent component;
     
-    public BPETimerJdk(ITimerEvent te) {
+    public BPETimerJdk(ITimerEvent te, BPEComponent component) {
         this.te = te;
+        this.component = component;
     }
 
     public Object getId() {
@@ -49,8 +51,13 @@ public class BPETimerJdk extends TimerTask implements IBPETimer {
             if (log.isDebugEnabled()) {
                 log.debug("Timer " + te + " elapsed at " + new Date());
             }
-            EventDirector ed = BPEComponent.getInstance().getEventDirector();
-            ed.getIInternalEventDirector().sendEvent(this, true);
+            EventDirector ed = component.getEventDirector();
+            try {
+                BPEComponent.setCurrent(component);
+                ed.getIInternalEventDirector().sendEvent(this, true);
+            } finally {
+                BPEComponent.setCurrent(null);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
