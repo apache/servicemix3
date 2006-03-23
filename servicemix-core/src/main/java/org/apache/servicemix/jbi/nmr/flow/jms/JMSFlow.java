@@ -69,7 +69,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
 
     private static final Log log = LogFactory.getLog(JMSFlow.class);
 
-    private static final String INBOUND_PREFIX = "org.apache.servicemix.inbound.";
+    private static final String INBOUND_PREFIX = "org.apache.servicemix.jms.";
 
     private String jmsURL = "peer://org.apache.servicemix?persistent=false";
 

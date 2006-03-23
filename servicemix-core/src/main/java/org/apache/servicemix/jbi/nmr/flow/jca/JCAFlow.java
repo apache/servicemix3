@@ -61,6 +61,7 @@ import org.apache.geronimo.connector.outbound.connectionmanagerconfig.SinglePool
 import org.apache.geronimo.connector.outbound.connectionmanagerconfig.XATransactions;
 import org.apache.geronimo.connector.work.GeronimoWorkManager;
 import org.apache.geronimo.transaction.context.TransactionContextManager;
+import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.apache.servicemix.jbi.event.EndpointAdapter;
 import org.apache.servicemix.jbi.event.EndpointEvent;
 import org.apache.servicemix.jbi.event.EndpointListener;
@@ -72,6 +73,7 @@ import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 import org.jencks.JCAConnector;
 import org.jencks.SingletonEndpointFactory;
 import org.jencks.factory.ConnectionManagerFactoryBean;
+import org.springframework.context.ApplicationContext;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
@@ -85,7 +87,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
 public class JCAFlow extends AbstractFlow implements MessageListener {
     
     private static final Log log = LogFactory.getLog(JCAFlow.class);
-    private static final String INBOUND_PREFIX = "org.apache.servicemix.inbound.";
+    private static final String INBOUND_PREFIX = "org.apache.servicemix.jca.";
     private String jmsURL = "tcp://localhost:61616";
     private String userName;
     private String password;
@@ -573,6 +575,17 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
 	}
 
 	public TransactionContextManager getTransactionContextManager() {
+        if (transactionContextManager == null) {
+            if (broker != null && broker.getContainer() instanceof SpringJBIContainer) {
+                ApplicationContext applicationContext = ((SpringJBIContainer) broker.getContainer()).getApplicationContext();
+                if (applicationContext != null) {
+                    Map map = applicationContext.getBeansOfType(TransactionContextManager.class);
+                    if( map.size() == 1) {
+                        transactionContextManager = (TransactionContextManager) map.values().iterator().next();
+                    }
+                }
+            }
+        }
 		return transactionContextManager;
 	}
 
