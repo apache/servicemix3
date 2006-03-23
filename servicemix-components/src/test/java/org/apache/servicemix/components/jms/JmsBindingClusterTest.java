@@ -30,6 +30,9 @@ public class JmsBindingClusterTest extends TestSupport {
         QName service = new QName("http://servicemix.org/cheese/", "myJmsSender");
 
         assertSendAndReceiveMessages(service);
+        
+        // Wait for all messages to be processsed
+        Thread.sleep(100);
     }
 
     protected AbstractXmlApplicationContext createBeanFactory() {
