@@ -17,8 +17,10 @@ package org.apache.servicemix.soap;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.DeliveryChannel;
@@ -30,10 +32,13 @@ import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.wsdl.Definition;
 import javax.wsdl.Operation;
 import javax.wsdl.PortType;
+import javax.wsdl.WSDLException;
 import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.soap.marshalers.JBIMarshaler;
 import org.apache.servicemix.soap.marshalers.SoapMessage;
 import org.w3c.dom.Document;
@@ -47,6 +52,8 @@ import org.w3c.dom.Document;
  */
 public class SoapHelper {
 
+    private static final Log logger = LogFactory.getLog(SoapHelper.class);
+    
     public static final URI IN_ONLY = URI.create("http://www.w3.org/2004/08/wsdl/in-only");
     public static final URI IN_OUT = URI.create("http://www.w3.org/2004/08/wsdl/in-out");
     public static final URI ROBUST_IN_ONLY = URI.create("http://www.w3.org/2004/08/wsdl/robust-in-only");
@@ -54,14 +61,12 @@ public class SoapHelper {
 	private SoapEndpoint endpoint;
     private List policies;
     private JBIMarshaler jbiMarshaler;
-	
-	public SoapHelper() {
-		this.policies = new ArrayList();
-        this.jbiMarshaler = new JBIMarshaler();
-	}
+    private Map definitions;
 	
 	public SoapHelper(SoapEndpoint endpoint) {
-		this();
+        this.policies = new ArrayList();
+        this.definitions = new HashMap();
+        this.jbiMarshaler = new JBIMarshaler();
 		this.endpoint = endpoint;
 	}
 	
@@ -146,22 +151,32 @@ public class SoapHelper {
 		if (se == null) {
 			// Get this endpoint definition
 			definition = endpoint.getDefinition();
-			if (definition == null && endpoint.getDescription() != null) {
-				// Eventually parse the definition
-	            WSDLFactory factory = WSDLFactory.newInstance();
-	            WSDLReader reader = factory.newWSDLReader();
-	            definition = reader.readWSDL(null, endpoint.getDescription());
-            	endpoint.setDefinition(definition);
-			}
 		} else {
 			// Find endpoint description from the component context
-			Document description = componentContext.getEndpointDescriptor(se);
-			if (description != null) {
-				// Parse WSDL
-				WSDLFactory factory = WSDLFactory.newInstance();
-				WSDLReader reader = factory.newWSDLReader();
-				definition = reader.readWSDL(null, description);
-			}
+            String key = se.getServiceName() + se.getEndpointName();
+            synchronized (definitions) {
+                definition = (Definition) definitions.get(key);
+                if (definition == null) {
+                    WSDLFactory factory = WSDLFactory.newInstance();
+                    Document description = componentContext.getEndpointDescriptor(se);
+                    if (description != null) {
+                        // Parse WSDL
+                        WSDLReader reader = factory.newWSDLReader();
+                        try {
+                            definition = reader.readWSDL(null, description);
+                        } catch (WSDLException e) {
+                            logger.info("Could not read wsdl from endpoint descriptor: " + e.getMessage());
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Could not read wsdl from endpoint descriptor", e);
+                            }
+                        }
+                    }
+                    if (definition == null) {
+                        definition = factory.newDefinition();
+                    }
+                    definitions.put(key, definition);
+                }
+            }
 		}
 		
 		// Find operation within description
