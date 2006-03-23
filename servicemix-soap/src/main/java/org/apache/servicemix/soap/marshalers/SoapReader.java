@@ -15,7 +15,9 @@
  */
 package org.apache.servicemix.soap.marshalers;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.SequenceInputStream;
 import java.util.Properties;
 
 import javax.mail.Session;
@@ -51,8 +53,9 @@ public class SoapReader {
 
 	public SoapMessage read(InputStream is, String contentType)
 			throws Exception {
-		if (contentType != null && contentType.toLowerCase().indexOf(SoapMarshaler.MULTIPART_CONTENT) != -1) {
+		if (contentType != null && contentType.toLowerCase().startsWith(SoapMarshaler.MULTIPART_CONTENT)) {
 			Session session = Session.getDefaultInstance(new Properties());
+            is = new SequenceInputStream(new ByteArrayInputStream(new byte[] { 13, 10 }), is);
 			MimeMessage mime = new MimeMessage(session, is);
 			mime.setHeader("Content-Type", contentType);
 			return read(mime);
@@ -135,18 +138,22 @@ public class SoapReader {
 			MimeMultipart multipart = (MimeMultipart) content;
 			ContentType type = new ContentType(mime.getContentType());
 			String contentId = type.getParameter("start");
-			if (contentId == null) {
-				contentId = ((MimeBodyPart) multipart.getBodyPart(0))
-						.getContentID();
-			}
 			// Get request
-			MimeBodyPart part = (MimeBodyPart) multipart.getBodyPart(contentId);
-			SoapMessage message = read(part.getInputStream());
+			MimeBodyPart contentPart;
+            if (contentId != null) {
+                contentPart = (MimeBodyPart) multipart.getBodyPart(contentId);
+            } else {
+                contentPart = (MimeBodyPart) multipart.getBodyPart(0);
+            }
+            SoapMessage message = read(contentPart.getInputStream());
+            // Get attachments
 			for (int i = 0; i < multipart.getCount(); i++) {
-				part = (MimeBodyPart) multipart.getBodyPart(i);
-				String id = part.getContentID();
-				if (id != null && !id.equals(contentId)) {
-					if (id.startsWith("<")) {
+                MimeBodyPart part = (MimeBodyPart) multipart.getBodyPart(i);
+                if (part != contentPart) {
+                    String id = part.getContentID();
+                    if (id == null) {
+                        id = "Part" + i;
+                    } else if (id.startsWith("<")) {
 						id = id.substring(1, id.length() - 1);
 					}
 					message.addAttachment(id, part.getDataHandler());

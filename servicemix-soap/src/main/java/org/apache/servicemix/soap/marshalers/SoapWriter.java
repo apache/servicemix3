@@ -16,12 +16,18 @@
 package org.apache.servicemix.soap.marshalers;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FilterOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
+import javax.mail.Header;
 import javax.mail.Session;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -130,7 +136,28 @@ public class SoapWriter {
             parts.addBodyPart(part);
         }
         mime.setContent(parts);
-        mime.writeTo(out);
+        mime.setHeader("Content-Type", getContentType());
+        // We do not want headers, so 
+        //  * retrieve all headers
+        //  * skip first 2 bytes (CRLF)
+        mime.saveChanges();
+        Enumeration headersEnum = mime.getAllHeaders();
+        List headersList = new ArrayList();
+        while (headersEnum.hasMoreElements()) {
+            headersList.add(((Header) headersEnum.nextElement()).getName().toLowerCase());
+        }
+        String[] headers = (String[]) headersList.toArray(new String[0]);
+        // Skip first 2 bytes
+        OutputStream os = new FilterOutputStream(out) {
+            private int nb = 0;
+            public void write(int b) throws IOException {
+                if (++nb > 2) {
+                    super.write(b);
+                }
+            }
+        };
+        // Write
+        mime.writeTo(os, headers);
     }
 
     private void writeSoapEnvelope(XMLStreamWriter writer) throws Exception {

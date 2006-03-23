@@ -28,7 +28,7 @@ import org.apache.servicemix.jbi.jaxp.StAXSourceTransformer;
  */
 public class SoapMarshaler {
 
-	public static final String MULTIPART_CONTENT = "multipart/related";
+	public static final String MULTIPART_CONTENT = "multipart/";
 	public static final String SOAP_PART_ID = "soap-request";
 	public static final String SOAP_11_URI = "http://schemas.xmlsoap.org/soap/envelope/";
 	public static final String SOAP_12_URI = "http://www.w3.org/2003/05/soap-envelope";
