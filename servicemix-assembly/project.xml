@@ -330,6 +330,14 @@
         <optional>true</optional>
       </properties>
     </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-ejb_2.1_spec</artifactId>
+      <version>${geronimo_spec_ejb_version}</version>
+      <properties>
+        <optional>true</optional>
+      </properties>
+    </dependency>
 
     <!-- example database for testing -->
     <dependency>
