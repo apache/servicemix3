@@ -247,9 +247,7 @@ init() {
 
 run() {
     # Compensate for funky hot-deploy issues
-    rm -rf ../wdir
-    touch ../install/*.zip
-    touch ../deploy/*.zip
+    cd $SERVICEMIX_HOME
     # For Cygwin, switch paths to Windows format before running java
     if $cygwin; then
         SERVICEMIX_HOME=`cygpath --path --windows "$SERVICEMIX_HOME"`
