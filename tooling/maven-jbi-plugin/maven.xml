@@ -30,5 +30,15 @@
             
           <attainGoal name="plugin:repository-deploy"/>
   </goal>
+  
+  <preGoal name="plugin:plugin">
+    <mkdir dir="${maven.build.dir}/plugin-resources"/>
+    <copy todir="${maven.build.dir}/plugin-resources">
+      <fileset dir="${basedir}/src/plugin-resources"/>
+      <filterset begintoken="%" endtoken="%">
+        <filter token="pom.currentVersion" value="${pom.currentVersion}"/>
+      </filterset>
+    </copy>
+  </preGoal>
 
 </project>

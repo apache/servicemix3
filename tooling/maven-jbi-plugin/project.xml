@@ -50,7 +50,7 @@
       <!-- This section is compulsory -->
       <resources>
         <resource>
-          <directory>${basedir}/src/plugin-resources</directory>
+          <directory>${maven.build.dir}/plugin-resources</directory>
           <targetPath>plugin-resources</targetPath>
         </resource>
         <resource>

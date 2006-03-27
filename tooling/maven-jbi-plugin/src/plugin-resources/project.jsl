@@ -27,7 +27,7 @@
 	<pomVersion>3</pomVersion>
 	<name>${projectName}</name>
 	<id>${projectName}</id>
-	<currentVersion>3.0-SNAPSHOT</currentVersion>
+	<currentVersion>1.0</currentVersion>
 	<package>org.apache.servicemix.demo</package>
 	<shortDescription>
           A new JBI component
@@ -38,8 +38,9 @@
 
 	<dependencies>
 	<dependency>
-	  <id>org.apache.servicemix</id>
-	  <version>3.0</version>
+	  <groupId>incubator-servicemix</groupId>
+	  <artifactId>servicemix</artifactId>
+	  <version>%pom.currentVersion%</version>
 	  <type>jar</type>
 	  <url>http://www.servicemix.org</url>
         </dependency>
