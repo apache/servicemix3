@@ -594,11 +594,11 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
             // and consider this is a successfull deployment
             try {
                 if (success) {
-                    result = ManagementSupport.createComponentFailure(
+                    result = ManagementSupport.createComponentWarning(
                             "deploy", component,
                             "Unable to parse result string", e);
                 } else {
-                    result = ManagementSupport.createComponentWarning(
+                    result = ManagementSupport.createComponentFailure(
                             "deploy", component,
                             "Unable to parse result string", e);
                 }
