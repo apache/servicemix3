@@ -530,7 +530,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
                     }
                     // TODO: need to register the SU somewhere to keep track of its state
                 } catch (Exception e) {
-                    getComponentTaskResult(e.getMessage(), componentName, componentResults, false);
+                    getComponentTaskError(e, componentName, componentResults);
                 }
                 if (success) {
                     nbSuccess++;
@@ -576,6 +576,21 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         }
     }
     
+    protected void getComponentTaskError(Exception exception, String component, List results) {
+        Element result = null;
+        try {
+            Document doc = parse(exception.getMessage());
+            result = getElement(doc, "component-task-result");
+        } catch (Exception e) {
+            result = ManagementSupport.createComponentFailure(
+                    "deploy", component,
+                    "Unable to parse result string", exception);
+        }
+        if (result != null) {
+            results.add(result);
+        }
+    }
+
     protected boolean getComponentTaskResult(String resultMsg, String component, List results, boolean success) {
         Element result = null;
         try {
