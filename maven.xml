@@ -177,7 +177,7 @@
       <ant:echo>+----------------------------------------</ant:echo>
       <ant:delete quiet="false">
         <ant:fileset dir="${maven.repo.local}/incubator-servicemix">
-          <ant:include name="**/servicemix*.*"/>
+          <ant:include name="**/*.*"/>
         </ant:fileset>
       </ant:delete>
   </goal>
