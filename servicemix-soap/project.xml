@@ -65,6 +65,26 @@
           <eclipse.dependency>true</eclipse.dependency>
         </properties>
       </dependency>
+      <dependency>
+        <groupId>org.apache.xbean</groupId>
+        <artifactId>xbean-spring</artifactId>
+        <version>${xbean_version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.xbean</groupId>
+        <artifactId>xbean-server</artifactId>
+        <version>${xbean_version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.xbean</groupId>
+        <artifactId>xbean-kernel</artifactId>
+        <version>${xbean_version}</version>
+      </dependency>
+      <dependency>
+        <groupId>springframework</groupId>
+        <artifactId>spring</artifactId>
+        <version>${spring_version}</version>
+      </dependency>
       
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>

@@ -82,9 +82,20 @@ public class SoapHelper {
         } else {
             context.setProperty(Context.OPERATION, message.getBodyName());
         }
-		context.setProperty(Context.INTERFACE, endpoint.getInterfaceName());
-		context.setProperty(Context.SERVICE, endpoint.getService());
-		context.setProperty(Context.ENDPOINT, endpoint.getEndpoint());
+        // If no target endpoint / service / interface is defined
+        // we assume we use the same informations has defined on the
+        // external endpoint
+        if (endpoint.getTargetInterfaceName() == null && 
+            endpoint.getTargetService() == null &&
+            endpoint.getTargetEndpoint() == null) {
+    		context.setProperty(Context.INTERFACE, endpoint.getInterfaceName());
+    		context.setProperty(Context.SERVICE, endpoint.getService());
+    		context.setProperty(Context.ENDPOINT, endpoint.getEndpoint());
+        } else {
+            context.setProperty(Context.INTERFACE, endpoint.getTargetInterfaceName());
+            context.setProperty(Context.SERVICE, endpoint.getTargetService());
+            context.setProperty(Context.ENDPOINT, endpoint.getTargetEndpoint());
+        }
 		return context;
 	}
 	
