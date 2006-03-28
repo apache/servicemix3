@@ -39,12 +39,12 @@ public class Main {
             if (p != null) {
                 version = ": " + p.getImplementationVersion();
             }
-            System.out.println("ServiceMix ESB" + version);
+            System.out.println("Apache ServiceMix ESB" + version);
             System.out.println();
 
             ApplicationContext context = null;
             if (args.length <= 0) {
-                System.out.println("Loading ServiceMix from servicemix.xml on the CLASSPATH");
+                System.out.println("Loading Apache ServiceMix from servicemix.xml on the CLASSPATH");
                 context = new ClassPathXmlApplicationContext("servicemix.xml");
             }
             else {
@@ -60,17 +60,17 @@ public class Main {
                     
                     List processors = Collections.singletonList(new XBeanProcessor());
                     if (args.length <= 1) {
-                        System.out.println("Loading ServiceMix (compatible 1.x) from servicemix.xml on the CLASSPATH");
+                        System.out.println("Loading Apache ServiceMix (compatible 1.x) from servicemix.xml on the CLASSPATH");
                         context = new ClassPathXmlApplicationContext("servicemix.xml", processors);
                     }
                     else {
                         file = args[1];
-                        System.out.println("Loading ServiceMix (compatible 1.x) from file: " + file);
+                        System.out.println("Loading Apache ServiceMix (compatible 1.x) from file: " + file);
                         context = new FileSystemXmlApplicationContext(file, processors);
                     }
                 }
                 else {
-                    System.out.println("Loading ServiceMix from file: " + file);
+                    System.out.println("Loading Apache ServiceMix from file: " + file);
                     context = new FileSystemXmlApplicationContext(file);
                 }
             }
