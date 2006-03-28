@@ -23,8 +23,12 @@ package org.apache.servicemix.soap;
  */
 public interface Handler {
 
-	public void process(Context context) throws Exception;
+	public void onReceive(Context context) throws Exception;
+    
+    public void onReply(Context context) throws Exception;
 	
+    public void onFault(Context context) throws Exception;
+    
 	public void onComplete(Context context);
 	
 	public void onException(Context context, Exception e);

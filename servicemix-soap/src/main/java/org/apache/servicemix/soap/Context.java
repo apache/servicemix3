@@ -18,6 +18,8 @@ package org.apache.servicemix.soap;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.servicemix.soap.marshalers.SoapMessage;
+
 /**
  * 
  * @author Guillaume Nodet
@@ -26,7 +28,9 @@ import java.util.Map;
  */
 public class Context {
 
-	public static final String SOAP_MESSAGE = "org.apache.servicemix.SoapMessage";
+    public static final String SOAP_IN = "org.apache.servicemix.SoapIn";
+    public static final String SOAP_OUT = "org.apache.servicemix.SoapOut";
+    public static final String SOAP_FAULT = "org.apache.servicemix.SoapFault";
 	public static final String INTERFACE = "org.apache.servicemix.Interface";
 	public static final String OPERATION = "org.apache.servicemix.Operation";
 	public static final String SERVICE = "org.apache.servicemix.Service";
@@ -37,7 +41,31 @@ public class Context {
 	public Context() {
 		this.properties = new HashMap();
 	}
-	
+    
+    public SoapMessage getInMessage() {
+        return (SoapMessage) getProperty(SOAP_IN);
+    }
+    
+    public SoapMessage getOutMessage() {
+        return (SoapMessage) getProperty(SOAP_OUT);
+    }
+    
+    public SoapMessage getFaultMessage() {
+        return (SoapMessage) getProperty(SOAP_FAULT);
+    }
+    
+    public void setInMessage(SoapMessage message) {
+        setProperty(SOAP_IN, message);
+    }
+    
+    public void setOutMessage(SoapMessage message) {
+        setProperty(SOAP_OUT, message);
+    }
+    
+    public void setFaultMessage(SoapMessage message) {
+        setProperty(SOAP_FAULT, message);
+    }
+    
 	public Object getProperty(String name) {
 		return properties.get(name);
 	}

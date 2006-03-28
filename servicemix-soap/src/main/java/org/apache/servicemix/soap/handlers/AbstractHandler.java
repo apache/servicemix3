@@ -24,7 +24,16 @@ import org.apache.servicemix.soap.Handler;
  * @version $Revision: 1.5 $
  * @since 3.0
  */
-public abstract class AbstractHandler implements Handler {
+public class AbstractHandler implements Handler {
+
+    public void onReceive(Context context) throws Exception {
+    }
+
+    public void onReply(Context context) throws Exception {
+    }
+
+    public void onFault(Context context) throws Exception {
+    }
 
 	public void onComplete(Context context) {
 	}

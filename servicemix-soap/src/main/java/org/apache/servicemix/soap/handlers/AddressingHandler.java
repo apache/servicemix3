@@ -20,10 +20,13 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.activemq.util.IdGenerator;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.servicemix.soap.Context;
 import org.apache.servicemix.soap.SoapFault;
 import org.apache.servicemix.soap.marshalers.SoapMessage;
+import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 
@@ -33,11 +36,13 @@ import org.w3c.dom.Element;
  * @version $Revision: 1.5 $
  * @since 3.0
  */
-public class AddressingInHandler extends AbstractHandler {
+public class AddressingHandler extends AbstractHandler {
 
     public static final String WSA_NAMESPACE_200303 = "http://schemas.xmlsoap.org/ws/2003/03/addressing";
     public static final String WSA_NAMESPACE_200408 = "http://schemas.xmlsoap.org/ws/2004/08/addressing";
     public static final String WSA_NAMESPACE_200508 = "http://www.w3.org/2005/08/addressing";
+    
+    public static final String WSA_PREFIX = "wsa";
     
     public static final String EL_ACTION = "Action";
     public static final String EL_ADDRESS = "Address";
@@ -50,8 +55,11 @@ public class AddressingInHandler extends AbstractHandler {
     public static final String EL_REPLY_TO = "ReplyTo";
     public static final String EL_TO = "To";
     
-	public void process(Context context) throws Exception {
-		SoapMessage message = (SoapMessage) context.getProperty(Context.SOAP_MESSAGE);
+    protected final SourceTransformer sourceTransformer = new SourceTransformer();
+    protected final IdGenerator idGenerator = new IdGenerator();
+    
+	public void onReceive(Context context) throws Exception {
+		SoapMessage message = context.getInMessage();
     	String action = null;
     	String to = null;
     	String nsUri = null;
@@ -68,15 +76,13 @@ public class AddressingInHandler extends AbstractHandler {
 	    			} else if (!nsUri.equals(qname.getNamespaceURI())) {
 	    				throw new SoapFault(SoapFault.SENDER, "Inconsistent use of wsa namespaces");
 	    			}
-		    		if (qname.getLocalPart().equals(AddressingInHandler.EL_ACTION)) {
-		    			Element el = (Element) ((DocumentFragment) value).getFirstChild();
-		    			action = DOMUtil.getElementText(el);
+		    		if (EL_ACTION.equals(qname.getLocalPart())) {
+		    			action = getHeaderText(value);
 		        		String[] parts = split(action);
 		        		context.setProperty(Context.INTERFACE, new QName(parts[0], parts[1]));
 		        		context.setProperty(Context.OPERATION, new QName(parts[0], parts[2]));
-		    		} else if (qname.getLocalPart().equals(AddressingInHandler.EL_TO)) {
-		    			Element el = (Element) ((DocumentFragment) value).getFirstChild();
-		    			to = DOMUtil.getElementText(el);
+		    		} else if (EL_TO.equals(qname.getLocalPart())) {
+                        to = getHeaderText(value);
 		        		String[] parts = split(to);
 		        		context.setProperty(Context.SERVICE, new QName(parts[0], parts[1]));
 		        		context.setProperty(Context.ENDPOINT, parts[2]);
@@ -87,6 +93,48 @@ public class AddressingInHandler extends AbstractHandler {
 	    	}
     	}
 	}
+    
+    public void onReply(Context context) throws Exception {
+        SoapMessage in = context.getInMessage();
+        SoapMessage out = context.getOutMessage();
+        Map headers = in.getHeaders();
+        if (headers != null) {
+            for (Iterator it = headers.keySet().iterator(); it.hasNext();) {
+                QName qname = (QName) it.next();
+                Object value = headers.get(qname);
+                if (WSA_NAMESPACE_200303.equals(qname.getNamespaceURI()) ||
+                    WSA_NAMESPACE_200408.equals(qname.getNamespaceURI()) ||
+                    WSA_NAMESPACE_200508.equals(qname.getNamespaceURI())) {
+                    if (EL_MESSAGE_ID.equals(qname.getLocalPart())) {
+                        QName name = new QName(qname.getNamespaceURI(), EL_MESSAGE_ID, qname.getPrefix() != null ? qname.getPrefix() : WSA_PREFIX);
+                        DocumentFragment df = createHeader(name, idGenerator.generateSanitizedId());
+                        out.addHeader(name, df);
+                        name = new QName(qname.getNamespaceURI(), EL_RELATES_TO, qname.getPrefix() != null ? qname.getPrefix() : WSA_PREFIX);
+                        df = createHeader(name, getHeaderText(value));
+                        out.addHeader(name, df);
+                    }
+                }
+            }
+        }
+    }
+    
+    public void onFault(Context context) throws Exception {
+        
+    }
+    
+    protected String getHeaderText(Object header) {
+        Element el = (Element) ((DocumentFragment) header).getFirstChild();
+        return DOMUtil.getElementText(el);
+    }
+    
+    protected DocumentFragment createHeader(QName name, String value) throws Exception {
+        Document doc = new SourceTransformer().createDocument();
+        DocumentFragment df = doc.createDocumentFragment();
+        Element el = doc.createElementNS(name.getNamespaceURI(), name.getPrefix() + ":" + name.getLocalPart());
+        el.appendChild(doc.createTextNode(value));
+        df.appendChild(el);
+        return df;
+    }
     
     protected String[] split(String uri) {
 		char sep;

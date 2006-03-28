@@ -74,34 +74,11 @@ public class SoapHelper {
     	policies.add(policy);
     }
 
-	public Context createContext(SoapMessage message) {
-		Context context = new Context();
-		context.setProperty(Context.SOAP_MESSAGE, message);
-        if (message.getBodyName() == null) {
-            context.setProperty(Context.OPERATION, endpoint.getDefaultOperation());
-        } else {
-            context.setProperty(Context.OPERATION, message.getBodyName());
+	public MessageExchange onReceive(Context context) throws Exception {
+        for (Iterator it = policies.iterator(); it.hasNext();) {
+            Handler policy = (Handler) it.next();
+            policy.onReceive(context);
         }
-        // If no target endpoint / service / interface is defined
-        // we assume we use the same informations has defined on the
-        // external endpoint
-        if (endpoint.getTargetInterfaceName() == null && 
-            endpoint.getTargetService() == null &&
-            endpoint.getTargetEndpoint() == null) {
-    		context.setProperty(Context.INTERFACE, endpoint.getInterfaceName());
-    		context.setProperty(Context.SERVICE, endpoint.getService());
-    		context.setProperty(Context.ENDPOINT, endpoint.getEndpoint());
-        } else {
-            context.setProperty(Context.INTERFACE, endpoint.getTargetInterfaceName());
-            context.setProperty(Context.SERVICE, endpoint.getTargetService());
-            context.setProperty(Context.ENDPOINT, endpoint.getTargetEndpoint());
-        }
-		return context;
-	}
-	
-	public MessageExchange createExchange(SoapMessage message) throws Exception {
-		Context context = createContext(message);
-		analyzeHeaders(context);
 		URI mep = findMep(context);
 		if (mep == null) {
 			mep = endpoint.getDefaultMep();
@@ -120,19 +97,68 @@ public class SoapHelper {
     		}
         }
         NormalizedMessage inMessage = exchange.createMessage();
-        jbiMarshaler.toNMS(inMessage, message);
+        jbiMarshaler.toNMS(inMessage, context.getInMessage());
         exchange.setMessage(inMessage, "in");
         return exchange;
 	}
-	
-    public void analyzeHeaders(Context context) throws Exception {
-    	for (Iterator it = policies.iterator(); it.hasNext();) {
-    		Handler policy = (Handler) it.next();
-    		policy.process(context);
-    	}
+    
+    public SoapMessage onReply(Context context, NormalizedMessage outMsg) throws Exception {
+        SoapMessage out = new SoapMessage();
+        if (context.getInMessage() != null) {
+            out.setEnvelopeName(context.getInMessage().getEnvelopeName());
+        }
+        jbiMarshaler.fromNMS(out, outMsg);
+        context.setOutMessage(out);
+        for (Iterator it = policies.iterator(); it.hasNext();) {
+            Handler policy = (Handler) it.next();
+            policy.onReply(context);
+        }
+        return out;
     }
-	
-    public MessageExchange createExchange(URI mep) throws MessagingException {
+    
+    public SoapMessage onFault(Context context, SoapFault fault) throws Exception {
+        SoapMessage soapFault = new SoapMessage();
+        soapFault.setFault(fault);
+        if (context == null) {
+            context = new Context();
+        }
+        if (context.getInMessage() != null) {
+            soapFault.setEnvelopeName(context.getInMessage().getEnvelopeName());
+        }
+        context.setFaultMessage(soapFault);
+        for (Iterator it = policies.iterator(); it.hasNext();) {
+            Handler policy = (Handler) it.next();
+            policy.onFault(context);
+        }
+        return soapFault;
+    }
+    
+    public Context createContext(SoapMessage message) {
+        Context context = new Context();
+        context.setInMessage(message);
+        if (message.getBodyName() == null) {
+            context.setProperty(Context.OPERATION, endpoint.getDefaultOperation());
+        } else {
+            context.setProperty(Context.OPERATION, message.getBodyName());
+        }
+        // If no target endpoint / service / interface is defined
+        // we assume we use the same informations has defined on the
+        // external endpoint
+        if (endpoint.getTargetInterfaceName() == null && 
+            endpoint.getTargetService() == null &&
+            endpoint.getTargetEndpoint() == null) {
+            context.setProperty(Context.INTERFACE, endpoint.getInterfaceName());
+            context.setProperty(Context.SERVICE, endpoint.getService());
+            context.setProperty(Context.ENDPOINT, endpoint.getEndpoint());
+        } else {
+            context.setProperty(Context.INTERFACE, endpoint.getTargetInterfaceName());
+            context.setProperty(Context.SERVICE, endpoint.getTargetService());
+            context.setProperty(Context.ENDPOINT, endpoint.getTargetEndpoint());
+        }
+        return context;
+    }
+    
+    protected MessageExchange createExchange(URI mep) throws MessagingException {
         ComponentContext context = endpoint.getServiceUnit().getComponent().getComponentContext();
         DeliveryChannel channel = context.getDeliveryChannel();
         MessageExchangeFactory factory = channel.createExchangeFactory();
@@ -140,7 +166,7 @@ public class SoapHelper {
         return exchange;
     }
     
-    public URI findMep(Context context) throws Exception {
+    protected URI findMep(Context context) throws Exception {
 		QName interfaceName = (QName) context.getProperty(Context.INTERFACE);
 		QName serviceName = (QName) context.getProperty(Context.SERVICE);
 		QName operationName = (QName) context.getProperty(Context.OPERATION);
