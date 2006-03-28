@@ -32,9 +32,21 @@
     <property name="daemon" value="true"/>
     <property name="environment">
       <map>
+        <!-- Uncomment the following line to enable authentication for jmx
+        <entry key="jmx.remote.authenticator" value-ref="jmxRemoteAuthenticator" />
+         -->
       </map>
     </property>
   </bean>
+  <bean id="jmxRemoteAuthenticator" class="mx4j.tools.remote.PasswordAuthenticator">
+    <constructor-arg>
+      <bean factory-method="getInputStream" factory-bean="jmxRemotePasswords" />
+    </constructor-arg>
+  </bean>
+  <bean id="jmxRemotePasswords"  factory-method="getResource" factory-bean="resourceLoader">
+    <constructor-arg value="classpath:passwords.txt"/>
+  </bean>
+  <bean id="resourceLoader" class="org.springframework.core.io.DefaultResourceLoader" />
 
   <!-- message broker -->
   <bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean" depends-on="mbeanServer">
