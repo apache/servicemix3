@@ -39,6 +39,7 @@ import org.w3c.dom.Element;
 public class AddressingHandler extends AbstractHandler {
 
     public static final String WSA_NAMESPACE_200303 = "http://schemas.xmlsoap.org/ws/2003/03/addressing";
+    public static final String WSA_NAMESPACE_200403 = "http://schemas.xmlsoap.org/ws/2004/03/addressing";
     public static final String WSA_NAMESPACE_200408 = "http://schemas.xmlsoap.org/ws/2004/08/addressing";
     public static final String WSA_NAMESPACE_200508 = "http://www.w3.org/2005/08/addressing";
     
@@ -68,9 +69,7 @@ public class AddressingHandler extends AbstractHandler {
 	    	for (Iterator it = headers.keySet().iterator(); it.hasNext();) {
 	    		QName qname = (QName) it.next();
 	    		Object value = headers.get(qname);
-	    		if (WSA_NAMESPACE_200303.equals(qname.getNamespaceURI()) ||
-	    			WSA_NAMESPACE_200408.equals(qname.getNamespaceURI()) ||
-	    			WSA_NAMESPACE_200508.equals(qname.getNamespaceURI())) {
+                if (isWSANamespace(qname.getNamespaceURI())) {
 	    			if (nsUri == null) {
 	    				nsUri = qname.getNamespaceURI();
 	    			} else if (!nsUri.equals(qname.getNamespaceURI())) {
@@ -102,9 +101,7 @@ public class AddressingHandler extends AbstractHandler {
             for (Iterator it = headers.keySet().iterator(); it.hasNext();) {
                 QName qname = (QName) it.next();
                 Object value = headers.get(qname);
-                if (WSA_NAMESPACE_200303.equals(qname.getNamespaceURI()) ||
-                    WSA_NAMESPACE_200408.equals(qname.getNamespaceURI()) ||
-                    WSA_NAMESPACE_200508.equals(qname.getNamespaceURI())) {
+                if (isWSANamespace(qname.getNamespaceURI())) {
                     if (EL_MESSAGE_ID.equals(qname.getLocalPart())) {
                         QName name = new QName(qname.getNamespaceURI(), EL_MESSAGE_ID, qname.getPrefix() != null ? qname.getPrefix() : WSA_PREFIX);
                         DocumentFragment df = createHeader(name, idGenerator.generateSanitizedId());
@@ -119,7 +116,14 @@ public class AddressingHandler extends AbstractHandler {
     }
     
     public void onFault(Context context) throws Exception {
-        
+        // TODO: handle MessageID ?
+    }
+    
+    protected boolean isWSANamespace(String ns) {
+        return WSA_NAMESPACE_200303.equals(ns) ||
+               WSA_NAMESPACE_200403.equals(ns) ||
+               WSA_NAMESPACE_200408.equals(ns) ||
+               WSA_NAMESPACE_200508.equals(ns);
     }
     
     protected String getHeaderText(Object header) {
