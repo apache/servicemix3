@@ -44,7 +44,7 @@
 		<!-- parent config -->
 		<dependency>
 			<groupId>geronimo</groupId>
-			<artifactId>j2ee-server</artifactId>
+			<artifactId>j2ee-deployer</artifactId>
 			<version>${geronimo_version}</version>
 			<type>car</type>
 			<properties>
@@ -65,7 +65,7 @@
 			<artifactId>geronimo-deployment</artifactId>
 			<version>${geronimo_version}</version>
 			<properties>
-				<geronimo.dependency>true</geronimo.dependency>
+				<!--geronimo.dependency>true</geronimo.dependency-->
 			</properties>
 		</dependency>
 		<dependency>
@@ -73,7 +73,7 @@
 			<artifactId>geronimo-connector</artifactId>
 			<version>${geronimo_version}</version>
 			<properties>
-				<geronimo.dependency>true</geronimo.dependency>
+				<!--geronimo.dependency>true</geronimo.dependency-->
 			</properties>
 		</dependency>
 		<dependency>
@@ -81,7 +81,7 @@
 			<artifactId>geronimo-transaction</artifactId>
 			<version>${geronimo_version}</version>
 			<properties>
-				<geronimo.dependency>true</geronimo.dependency>
+				<!--geronimo.dependency>true</geronimo.dependency-->
 			</properties>
 		</dependency>
 
@@ -174,6 +174,30 @@
 			</properties>
 		</dependency>
 		<dependency>
+			<groupId>xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>${xstream_version}</version>
+			<properties>
+				<geronimo.include>true</geronimo.include>
+			</properties>
+		</dependency>
+		<dependency>
+			<groupId>wsdl4j</groupId>
+			<artifactId>wsdl4j</artifactId>
+			<version>${wsdl4j_version}</version>
+			<properties>
+				<geronimo.include>true</geronimo.include>
+			</properties>
+		</dependency>
+		<dependency>
+			<groupId>woodstox</groupId>
+			<artifactId>wstx-asl</artifactId>
+			<version>${woodstox_version}</version>
+			<properties>
+				<geronimo.include>true</geronimo.include>
+			</properties>
+		</dependency>
+		<dependency>
 			<groupId>concurrent</groupId>
 			<artifactId>concurrent</artifactId>
 			<version>${concurrent_version}</version>
@@ -186,7 +210,7 @@
 			<artifactId>activemq-core</artifactId>
 			<version>${activemq_version}</version>
 			<properties>
-				<geronimo.dependency>true</geronimo.dependency>
+				<geronimo.include>true</geronimo.include>
 			</properties>
 		</dependency>
 		

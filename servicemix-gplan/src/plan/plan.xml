@@ -1,15 +1,18 @@
 <configuration
     xmlns="http://geronimo.apache.org/xml/ns/deployment-1.0"
-    configId="${pom.groupId}/${pom.artifactId}/${pom.currentVersion}/car">
+    configId="servicemix/${pom.currentVersion}/car"
+    domain="geronimo.maven"
+    server="geronimo">
 
     <gbean name="WorkManager" class="org.apache.geronimo.connector.work.GeronimoWorkManagerGBean">
         <attribute name="syncMaximumPoolSize">30</attribute>
         <attribute name="startMaximumPoolSize">30</attribute>
         <attribute name="scheduledMaximumPoolSize">30</attribute>
         <reference name="TransactionContextManager">
-        	<module>geronimo/j2ee-server/${geronimo_version}/car</module>
-        	<type>TransactionContextManager</type>
-        	<name>TransactionContextManager</name>
+          <domain>geronimo.server</domain>
+          <module>geronimo/j2ee-server/${geronimo_version}/car</module>
+          <type>TransactionContextManager</type>
+          <name>TransactionContextManager</name>
         </reference>
     </gbean>
 
@@ -17,18 +20,19 @@
         <attribute name="name">defaultJBI</attribute>
         <attribute name="directory">var/servicemix</attribute>
         <reference name="transactionContextManager">
-        	<module>geronimo/j2ee-server/${geronimo_version}/car</module>
-        	<type>TransactionContextManager</type>
-        	<name>TransactionContextManager</name>
+          <domain>geronimo.server</domain>
+          <module>geronimo/j2ee-server/${geronimo_version}/car</module>
+          <type>TransactionContextManager</type>
+          <name>TransactionContextManager</name>
         </reference>
         <reference name="workManager">
-            <type>JCAWorkManager</type>
-        	<name>WorkManager</name>
+          <type>JCAWorkManager</type>
+          <name>WorkManager</name>
         </reference>
     </gbean>
-    
+
     <gbean name="ServiceMixConfigBuilder" class="org.apache.servicemix.gbean.ServiceMixConfigBuilder">
-        <attribute name="defaultParentId">org/apache/servicemix/JBIContainer</attribute>
+        <attribute name="defaultParentId">servicemix/${pom.currentVersion}/car</attribute>
         <reference name="servicemix">
           <type>JBIContainer</type>
           <name>ServiceMixJBIContainer</name>
