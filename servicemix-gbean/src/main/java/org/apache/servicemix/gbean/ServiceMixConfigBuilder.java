@@ -156,7 +156,7 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
         try {
             URI configId = getConfigurationID(plan, module);
             List parentId = new ArrayList();
-            if (parentId != null) {
+            if (defaultParentId != null) {
                 for (Iterator iter = defaultParentId.iterator(); iter.hasNext();) {
                     String element = (String) iter.next();
                     parentId.add(new URI(element));
