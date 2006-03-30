@@ -47,6 +47,7 @@ public abstract class MailMarshalerSupport extends MarshalerSupport {
     private Expression bcc = new PropertyExpression("org.apache.servicemix.email.bcc");
     private Expression from = new PropertyExpression("org.apache.servicemix.email.from", "noone@servicemix.org");
     private Expression text = new PropertyExpression("org.apache.servicemix.email.text");
+    private Expression html = new PropertyExpression("org.apache.servicemix.email.html");
     private Expression subject = new PropertyExpression("org.apache.servicemix.email.subject", "Message from ServiceMix");
     private Expression replyTo = new PropertyExpression("org.apache.servicemix.email.replyTo");
     private Expression sentDate = new PropertyExpression("org.apache.servicemix.email.sentDate");
@@ -89,6 +90,14 @@ public abstract class MailMarshalerSupport extends MarshalerSupport {
 
     public void setText(Expression text) {
         this.text = text;
+    }
+    
+    public Expression getHtml() {
+        return html;
+    }
+
+    public void setHtml(Expression html) {
+        this.html = html;
     }
 
     public Expression getSubject() {
@@ -143,6 +152,10 @@ public abstract class MailMarshalerSupport extends MarshalerSupport {
             }
         }
         return text;
+    }
+    
+    protected String getHtml(MessageExchange exchange, NormalizedMessage normalizedMessage) throws MessagingException, TransformerException {
+        return (this.html != null) ? asString(this.html.evaluate(exchange, normalizedMessage)) : null;
     }
 
     protected Address asAddress(Object value) throws AddressException {

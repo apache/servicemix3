@@ -25,7 +25,9 @@ import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.xml.transform.TransformerException;
 
 import org.apache.servicemix.jbi.jaxp.StringSource;
@@ -103,8 +105,20 @@ public class MimeMailMarshaler extends MailMarshalerSupport {
                 mimeMessage.setFrom(from);
             }
             String text = getText(exchange, normalizedMessage);
-            if (text != null) {
+            String html = getHtml(exchange, normalizedMessage);
+            if ((text != null) && (html == null)) {
                 mimeMessage.setText(text);
+            }
+            else if ((text != null) && (html != null)) {
+                MimeMultipart content = new MimeMultipart("alternative");
+                MimeBodyPart textBodyPart = new MimeBodyPart();
+                MimeBodyPart htmlBodyPart = new MimeBodyPart();
+                textBodyPart.setText(text);
+                htmlBodyPart.setContent(html, "text/html");
+                content.addBodyPart(textBodyPart);
+                content.addBodyPart(htmlBodyPart);
+                
+                mimeMessage.setContent(content);
             }
             String subject = getSubject(exchange, normalizedMessage);
             if (subject != null) {
