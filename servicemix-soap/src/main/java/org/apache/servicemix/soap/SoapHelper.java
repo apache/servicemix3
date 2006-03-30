@@ -136,7 +136,7 @@ public class SoapHelper {
     public Context createContext(SoapMessage message) {
         Context context = new Context();
         context.setInMessage(message);
-        if (message.getBodyName() == null) {
+        if (endpoint.getDefaultOperation() != null) {
             context.setProperty(Context.OPERATION, endpoint.getDefaultOperation());
         } else {
             context.setProperty(Context.OPERATION, message.getBodyName());
