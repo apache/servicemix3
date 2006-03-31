@@ -19,13 +19,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.config.spring.XBeanProcessor;
 import org.apache.servicemix.jbi.util.FileUtil;
-import org.apache.xbean.spring.context.FileSystemXmlApplicationContext;
+import org.apache.xbean.spring.context.ResourceXmlApplicationContext;
+import org.springframework.core.io.UrlResource;
 
 /**
  * @version $Revision: 359151 $
@@ -43,22 +46,46 @@ public class DescriptorFactory {
      * @return the Descriptor object
      */
     public static Descriptor buildDescriptor(File descriptorFile) {
-        Descriptor root = null;
         if (descriptorFile.isDirectory()) {
             descriptorFile = new File(descriptorFile, DESCRIPTOR_FILE);
         }
         if (descriptorFile.isFile()) {
-            ClassLoader cl = Thread.currentThread().getContextClassLoader();
             try {
-                Thread.currentThread().setContextClassLoader(DescriptorFactory.class.getClassLoader());
-                FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext("file:///"
-                        + descriptorFile.getAbsolutePath(), Arrays.asList(new Object[] { new XBeanProcessor() }));
-                root = (Descriptor) context.getBean("jbi");
-            } finally {
-                Thread.currentThread().setContextClassLoader(cl);
+                return buildDescriptor(descriptorFile.toURL());
+            } catch (MalformedURLException e) {
+                throw new RuntimeException("There is a bug here...", e);
             }
         }
-        return root;
+        return null;
+    }
+    
+    /**
+     * Build a jbi descriptor from the specified URL
+     * 
+     * @param url url to the jbi descriptor
+     * @return the Descriptor object
+     */
+    public static Descriptor buildDescriptor(URL url) {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(DescriptorFactory.class.getClassLoader());
+            ResourceXmlApplicationContext context = new ResourceXmlApplicationContext(
+                    new UrlResource(url), 
+                    Arrays.asList(new Object[] { new XBeanProcessor() }));
+            Descriptor descriptor = (Descriptor) context.getBean("jbi");
+            return descriptor;
+        } finally {
+            Thread.currentThread().setContextClassLoader(cl);
+        }
+    }
+    
+    /**
+     * Check validity of the JBI descriptor
+     * @param descriptor the descriptor to check
+     * @throws Exception if the descriptor is not valid
+     */
+    public static void checkDescriptor(Descriptor descriptor) throws Exception {
+        // TODO
     }
 
     /**
