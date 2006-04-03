@@ -38,8 +38,10 @@ import java.util.Map;
  * container or to receive them using the regular JBI API together with a collection of helper methods making it
  * easier to interact with the JBI API.
  *
+ * 
  * @version $Revision$
  */
+// * @deprecated Please use the {@link Client} interface instead.
 public interface ServiceMixClient {
 
 
@@ -293,6 +295,12 @@ public interface ServiceMixClient {
     void fail(MessageExchange exchange, Fault fault) throws MessagingException;
 
     /**
+     * A helper method which fails and completes the given exchange with the specified exception
+     */
+    void fail(MessageExchange exchange, Exception error) throws MessagingException;
+
+        
+        /**
      * Returns the current component context which can be used to activate endpoints, components and
      * query the available service endpoints.
      *
