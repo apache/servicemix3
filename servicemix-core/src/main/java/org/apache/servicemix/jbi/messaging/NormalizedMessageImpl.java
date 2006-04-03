@@ -15,12 +15,16 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
+import org.apache.servicemix.client.Message;
+import org.apache.servicemix.jbi.RuntimeJBIException;
 import org.apache.servicemix.jbi.jaxp.BytesSource;
 import org.apache.servicemix.jbi.jaxp.ResourceSource;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 
 import javax.activation.DataHandler;
+import javax.jbi.messaging.Fault;
+import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.security.auth.Subject;
@@ -44,12 +48,13 @@ import java.util.Set;
  *
  * @version $Revision$
  */
-public class NormalizedMessageImpl implements NormalizedMessage, Externalizable {
+public class NormalizedMessageImpl implements NormalizedMessage, Externalizable, Message {
     
     private static final long serialVersionUID = 9179194301410526549L;
     
     protected transient MessageExchangeImpl exchange;
     private transient Source content;
+    private transient Object body;
     private Subject securitySubject;
     private Map properties;
     private Map attachments;
@@ -79,6 +84,14 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable 
      * @return the content of the message
      */
     public synchronized Source getContent() {
+        if (content == null && body != null) {
+            try {
+                getMarshaler().marshal(exchange, this, body);
+            }
+            catch (MessagingException e) {
+                throw new RuntimeJBIException(e);
+            }
+        }
         return content;
     }
 
@@ -210,11 +223,14 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable 
     //-------------------------------------------------------------------------
 
     public Object getBody() throws MessagingException {
-        return getMarshaler().unmarshal(exchange, this);
+        if (body == null) {
+            body = getMarshaler().unmarshal(exchange, this);
+        }
+        return body;
     }
 
     public void setBody(Object body) throws MessagingException {
-        getMarshaler().marshal(exchange, this, body);
+        this.body = body;
     }
 
     public String getBodyText() throws TransformerException {
@@ -225,8 +241,16 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable 
         setContent(new StringSource(xml));
     }
 
-    public  PojoMarshaler getMarshaler() {
+    public PojoMarshaler getMarshaler() {
         return exchange.getMarshaler();
+    }
+
+    public MessageExchange getExchange() {
+        return exchange;
+    }
+
+    public Fault createFault() throws MessagingException {
+        return getExchange().createFault();
     }
 
 
