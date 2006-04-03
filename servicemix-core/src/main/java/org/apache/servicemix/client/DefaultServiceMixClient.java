@@ -167,6 +167,10 @@ public class DefaultServiceMixClient extends ComponentSupport implements Service
         super.fail(exchange, fault);
     }
 
+    public void fail(MessageExchange exchange, Exception error) throws MessagingException {
+        super.fail(exchange, error);
+    }
+
     // Helper methods to make JBI a little more concise to use from a client
     //-------------------------------------------------------------------------
     public Object request(Map inMessageProperties, Object content) throws JBIException {
