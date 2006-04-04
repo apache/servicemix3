@@ -31,10 +31,14 @@ import org.apache.servicemix.jbi.messaging.MessagingStats;
  * @version $Revision$
  */
 public class ComponentEnvironment {
+    
     private static final Log log = LogFactory.getLog(ComponentEnvironment.class);
+    
     private File installRoot;
     private File workspaceRoot;
     private File componentRoot;
+    private File stateFile;
+    private File statsFile;
     private PrintWriter statsWriter;
     private ComponentMBeanImpl localConnector;
 
@@ -95,6 +99,20 @@ public class ComponentEnvironment {
     }
 
     /**
+     * @return Returns the stateFile.
+     */
+    public File getStateFile() {
+        return stateFile;
+    }
+
+    /**
+     * @param stateFile The stateFile to set.
+     */
+    public void setStateFile(File stateFile) {
+        this.stateFile = stateFile;
+    }
+    
+    /**
      * close this environment
      */
     public synchronized void close() {
@@ -109,9 +127,8 @@ public class ComponentEnvironment {
     public synchronized void dumpStats() {
         if (componentRoot != null && componentRoot.exists()) {
             try {
-                if (statsWriter == null) {
-                    File file = new File(componentRoot, "Stats.csv");
-                    FileOutputStream fileOut = new FileOutputStream(file);
+                if (statsWriter == null && statsFile != null) {
+                    FileOutputStream fileOut = new FileOutputStream(statsFile);
                     statsWriter = new PrintWriter(fileOut, true);
                     statsWriter.println(localConnector.getComponentNameSpace().getName() + ":");
                     statsWriter.println("inboundExchanges,inboundExchangeRate,outboundExchanges,outboundExchangeRate");
@@ -128,4 +145,19 @@ public class ComponentEnvironment {
             }
         }
     }
+
+    /**
+     * @return Returns the statsFile.
+     */
+    public File getStatsFile() {
+        return statsFile;
+    }
+
+    /**
+     * @param statsFile The statsFile to set.
+     */
+    public void setStatsFile(File statsFile) {
+        this.statsFile = statsFile;
+    }
+
 }

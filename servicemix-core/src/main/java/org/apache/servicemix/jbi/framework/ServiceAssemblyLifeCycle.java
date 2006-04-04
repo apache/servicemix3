@@ -37,6 +37,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.container.ServiceAssemblyEnvironment;
 import org.apache.servicemix.jbi.deployment.Connection;
 import org.apache.servicemix.jbi.deployment.Consumes;
 import org.apache.servicemix.jbi.deployment.DescriptorFactory;
@@ -67,13 +68,13 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
 
     private String currentState = SHUTDOWN;
 
-    private File stateFile;
-
     private ServiceUnitLifeCycle[] sus;
     
     private Registry registry;
 
     private PropertyChangeListener listener;
+    
+    private ServiceAssemblyEnvironment env;
     
     /**
      * Construct a LifeCycle
@@ -82,17 +83,15 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
      * @param stateFile
      */
     public ServiceAssemblyLifeCycle(ServiceAssembly sa, 
-                                    String[] suKeys, 
-                                    File stateFile,
+                                    ServiceAssemblyEnvironment env,
                                     Registry registry) {
         this.serviceAssembly = sa;
-        this.stateFile = stateFile;
+        this.env = env;
         this.registry = registry;
-        this.sus = new ServiceUnitLifeCycle[suKeys.length];
-        for (int i = 0; i < suKeys.length; i++) {
-            this.sus[i] = registry.getServiceUnit(suKeys[i]);
-        }
-        
+    }
+    
+    protected void setServiceUnits(ServiceUnitLifeCycle[] sus) {
+        this.sus = sus;
     }
 
     /**
@@ -276,7 +275,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
     }
     
     public String getDescriptor() {
-        File saDir = registry.getEnvironmentContext().getSARootDirectory(getName());
+        File saDir = env.getInstallDir();
         return DescriptorFactory.getDescriptorAsText(saDir);
     }
 
@@ -292,10 +291,12 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
      */
     void writeRunningState() {
         try {
-            String currentState = getCurrentState();
-            Properties props = new Properties();
-            props.setProperty("state", currentState);
-            XmlPersistenceSupport.write(stateFile, props);
+            if (env.getStateFile() != null) {
+                String currentState = getCurrentState();
+                Properties props = new Properties();
+                props.setProperty("state", currentState);
+                XmlPersistenceSupport.write(env.getStateFile(), props);
+            }
         } catch (IOException e) {
             log.error("Failed to write current running state for ServiceAssembly: " + getName(), e);
         }
@@ -306,8 +307,8 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
      */
     String getRunningStateFromStore() {
         try {
-            if (stateFile.exists()) {
-                Properties props = (Properties) XmlPersistenceSupport.read(stateFile);
+            if (env.getStateFile() != null && env.getStateFile().exists()) {
+                Properties props = (Properties) XmlPersistenceSupport.read(env.getStateFile());
                 return props.getProperty("state", SHUTDOWN);
             }
         } catch (Exception e) {
@@ -320,7 +321,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
      * Restore this service assembly to its state at shutdown.
      * @throws Exception
      */
-    synchronized void restore() throws Exception {
+    public synchronized void restore() throws Exception {
         String state = getRunningStateFromStore();
         if (STARTED.equals(state)) {
             start(false);
@@ -471,7 +472,11 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
         // TODO Auto-generated method stub
         return null;
     }
-
+    
+    public ServiceAssemblyEnvironment getEnvironment() {
+        return env;
+    }
+    
     protected void fireEvent(int type) {
         ServiceAssemblyEvent event = new ServiceAssemblyEvent(this, type);
         ServiceAssemblyListener[] listeners = (ServiceAssemblyListener[]) registry.getContainer().getListeners(ServiceAssemblyListener.class);

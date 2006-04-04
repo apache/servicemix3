@@ -53,12 +53,16 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
     
     private Services services;
     
+    private File rootDir;
+    
     public ServiceUnitLifeCycle(ServiceUnit serviceUnit, 
                                 String serviceAssembly,
-                                Registry registry) {
+                                Registry registry,
+                                File rootDir) {
         this.serviceUnit = serviceUnit;
         this.serviceAssembly = serviceAssembly;
         this.registry = registry;
+        this.rootDir = rootDir;
         Descriptor d = DescriptorFactory.buildDescriptor(getServiceUnitRootPath());
         if (d != null) {
             services = d.getServices();
@@ -220,10 +224,7 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
     }
     
     protected File getServiceUnitRootPath() {
-        String componentName = getComponentName();
-        String suName = getName();
-        File targetDir = registry.getEnvironmentContext().getServiceUnitDirectory(componentName, suName, serviceAssembly);
-        return targetDir;
+        return rootDir;
     }
     
     protected ServiceUnitManager getServiceUnitManager() {

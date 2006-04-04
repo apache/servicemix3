@@ -114,7 +114,7 @@ public class DeploymentMessageTest extends AbstractManagementTest {
         System.err.println(deployResult);
         startContainer(true);
         getContainer().activateComponent(component, "component1");
-        getContainer().getEnvironmentContext().createComponentRootDirectory("component1");
+        getContainer().getEnvironmentContext().createComponentRootDir("component1");
         File installSaUrl = createServiceAssemblyArchive("sa", "su", "component1");
         String result = getDeploymentService().deploy(installSaUrl.getAbsolutePath());
         System.err.println(result);
@@ -140,9 +140,9 @@ public class DeploymentMessageTest extends AbstractManagementTest {
         System.err.println(deployResult2);
         startContainer(true);
         getContainer().activateComponent(component1, "component1");
-        getContainer().getEnvironmentContext().createComponentRootDirectory("component1");
+        getContainer().getEnvironmentContext().createComponentRootDir("component1");
         getContainer().activateComponent(component2, "component2");
-        getContainer().getEnvironmentContext().createComponentRootDirectory("component2");
+        getContainer().getEnvironmentContext().createComponentRootDir("component2");
         File installSaUrl = createServiceAssemblyArchive("sa", new String[] { "su1", "su2" }, new String[] { "component1", "component2"});
         String result = null;;
         try {

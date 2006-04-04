@@ -15,6 +15,7 @@
  */
 package org.apache.servicemix.jbi.framework;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -36,6 +37,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.EnvironmentContext;
+import org.apache.servicemix.jbi.container.ServiceAssemblyEnvironment;
 import org.apache.servicemix.jbi.container.SubscriptionSpec;
 import org.apache.servicemix.jbi.deployment.ServiceAssembly;
 import org.apache.servicemix.jbi.deployment.ServiceUnit;
@@ -462,19 +464,21 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @return true if not already registered
      * @throws DeploymentException 
      */
-    public ServiceAssemblyLifeCycle registerServiceAssembly(ServiceAssembly sa) throws DeploymentException{
-        return serviceAssemblyRegistry.register(sa);
+    public ServiceAssemblyLifeCycle registerServiceAssembly(ServiceAssembly sa,
+                                                            ServiceAssemblyEnvironment env) throws DeploymentException{
+        return serviceAssemblyRegistry.register(sa, env);
     }
     
     /**
      * Register a service assembly
      * @param sa
-     * @param sus list of deployed service units
      * @return true if not already registered
      * @throws DeploymentException 
      */
-    public ServiceAssemblyLifeCycle registerServiceAssembly(ServiceAssembly sa, String[] deployedSUs) throws DeploymentException{
-        return serviceAssemblyRegistry.register(sa, deployedSUs);
+    public ServiceAssemblyLifeCycle registerServiceAssembly(ServiceAssembly sa,
+                                                            String[] suKeys,
+                                                            ServiceAssemblyEnvironment env) throws DeploymentException{
+        return serviceAssemblyRegistry.register(sa, suKeys, env);
     }
     
     /**
@@ -572,8 +576,12 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @param serviceAssembly the service assembly the service unit belongs to 
      * @return the service unit key
      */
-    public String registerServiceUnit(ServiceUnit su, String serviceAssembly) {
-        ServiceUnitLifeCycle sulc = new ServiceUnitLifeCycle(su, serviceAssembly, this);
+    public String registerServiceUnit(ServiceUnit su, String saName, File suDir) {
+        ServiceUnitLifeCycle sulc = new ServiceUnitLifeCycle(
+                su, 
+                saName, 
+                this,
+                suDir);
         this.serviceUnits.put(sulc.getKey(), sulc);
         try {
             ObjectName objectName = getContainer().getManagementContext().createObjectName(sulc);

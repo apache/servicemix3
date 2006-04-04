@@ -37,6 +37,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.EnvironmentContext;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.container.ServiceAssemblyEnvironment;
 import org.apache.servicemix.jbi.deployment.Descriptor;
 import org.apache.servicemix.jbi.deployment.DescriptorFactory;
 import org.apache.servicemix.jbi.deployment.ServiceAssembly;
@@ -235,14 +236,13 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
             if (sa != null) {
                 String assemblyName = sa.getName();
                 registry.unregisterServiceAssembly(assemblyName);
-                File saDirectory = environmentContext.getSARootDirectory(assemblyName);
                 ServiceUnitLifeCycle[] sus = sa.getDeployedSUs();
                 if (sus != null) {
                     for (int i = 0;i < sus.length; i++) {
                         undeployServiceUnit(sus[i]);
                     }
                 }
-                FileUtil.deleteFile(saDirectory);
+                FileUtil.deleteFile(sa.getEnvironment().getRootDir());
             }
             return result;
         } catch (Exception e) {
@@ -450,14 +450,14 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
      */
     protected String deployServiceAssembly(File tmpDir, ServiceAssembly sa) throws Exception {
         String assemblyName = sa.getIdentification().getName();
-        File oldSaDirectory = environmentContext.getSARootDirectory(assemblyName);
-        FileUtil.deleteFile(oldSaDirectory);
-        File saDirectory = environmentContext.createSARootDirectory(assemblyName);
+        ServiceAssemblyEnvironment env = environmentContext.getNewServiceAssemblyEnvironment(assemblyName);
+        File saDirectory = env.getInstallDir();
 
         // move the assembly to a well-named holding area
         if (log.isDebugEnabled()) {
             log.debug("Moving " + tmpDir.getAbsolutePath() + " to " + saDirectory.getAbsolutePath());
         }
+        saDirectory.getParentFile().mkdirs();
         if (!tmpDir.renameTo(saDirectory)) {
             throw ManagementSupport.failure("deploy", "Failed to rename " + tmpDir + " to " + saDirectory);
         }
@@ -503,7 +503,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
                 // Unpack SU
                 try {
                     File artifactFile = new File(saDirectory, artifact);
-                    targetDir = environmentContext.getServiceUnitDirectory(componentName, suName, assemblyName);
+                    targetDir = env.getServiceUnitDirectory(componentName, suName);
                     if (log.isDebugEnabled()) {
                         log.debug("Unpack service unit archive " + artifactFile + " to " + targetDir);
                     }
@@ -534,7 +534,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
                 }
                 if (success) {
                     nbSuccess++;
-                    suKeys.add(registry.registerServiceUnit(sus[i], assemblyName));
+                    suKeys.add(registry.registerServiceUnit(sus[i], assemblyName, targetDir));
                 } else {
                     nbFailures++;
                 }
@@ -565,7 +565,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         else {
             // Register SA
             String[] deployedSUs = (String[]) suKeys.toArray(new String[suKeys.size()]);
-            ServiceAssemblyLifeCycle salc = registry.registerServiceAssembly(sa, deployedSUs);
+            ServiceAssemblyLifeCycle salc = registry.registerServiceAssembly(sa, deployedSUs, env);
             salc.writeRunningState();
             // Build result string
             if (nbFailures > 0) {
@@ -682,7 +682,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
     protected void buildState() {
         log.info("Restoring service assemblies");
         // walk through deployed SA's
-        File top = environmentContext.getServiceAssembliesDirectory();
+        File top = environmentContext.getServiceAssembliesDir();
         if (top != null && top.exists() && top.isDirectory()) {
             File[] files = top.listFiles();
             if (files != null) {
@@ -691,12 +691,12 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
                     if (files[i].isDirectory()) {
                         String assemblyName = files[i].getName();
                         try {
-                        	File assemblyDir = environmentContext.getSARootDirectory(assemblyName);
-	                        Descriptor root = DescriptorFactory.buildDescriptor(assemblyDir);
+                            ServiceAssemblyEnvironment env = environmentContext.getServiceAssemblyEnvironment(assemblyName);
+	                        Descriptor root = DescriptorFactory.buildDescriptor(env.getInstallDir());
 	                        if (root != null) {
 	                            ServiceAssembly sa = root.getServiceAssembly();
 	                            if (sa != null && sa.getIdentification() != null) {
-	                                registry.registerServiceAssembly(sa);
+	                                registry.registerServiceAssembly(sa, env);
 	                            }
 	                        }
                         } catch(Exception e) {

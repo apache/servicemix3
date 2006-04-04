@@ -59,7 +59,7 @@ public class FileVersionUtil{
     public static File getLatestVersionDirectory(File rootDirectory) {
         File result=null;
         int highestVersion=-1;
-        if(isVersioned(rootDirectory)){
+        if(rootDirectory != null && isVersioned(rootDirectory)){
             File[] files=rootDirectory.listFiles();
             for(int i=0;i<files.length;i++){
                 int version=getVersionNumber(files[i].getName());

@@ -153,7 +153,7 @@ public class InstallationService extends BaseSystemService implements Installati
     }
     
     private InstallerMBeanImpl createInstaller(String componentName) throws IOException, DeploymentException {
-        File installationDir = environmentContext.getInstallationDirectory(componentName);
+        File installationDir = environmentContext.getComponentInstallationDir(componentName);
         Descriptor root = DescriptorFactory.buildDescriptor(installationDir);
         Component descriptor = root.getComponent();
 
@@ -169,7 +169,7 @@ public class InstallationService extends BaseSystemService implements Installati
             installationContext.setClassPathElements(cp.getPathElements());
         }
         // now build the ComponentContext
-        File componentRoot = environmentContext.getComponentRootDirectory(componentName);
+        File componentRoot = environmentContext.getComponentRootDir(componentName);
         ComponentContextImpl context = buildComponentContext(componentRoot, componentName);
         installationContext.setContext(context);
         InstallationDescriptorExtension desc = descriptor.getDescriptorExtension();
@@ -460,14 +460,14 @@ public class InstallationService extends BaseSystemService implements Installati
         InstallerMBeanImpl result=null;
         String name=descriptor.getIdentification().getName();
         try{
-            File oldInstallationDir=environmentContext.getInstallationDirectory(name);
+            File oldInstallationDir=environmentContext.getComponentInstallationDir(name);
             // try and delete the old version ? - maybe should leave around ??
             if(!FileUtil.deleteFile(oldInstallationDir)){
                 log.warn("Failed to delete old installation directory: " + oldInstallationDir.getPath());
             }
-            File componentRoot=environmentContext.createComponentRootDirectory(name);
+            File componentRoot=environmentContext.createComponentRootDir(name);
             // this will get the new one
-            File installationDir=environmentContext.getNewInstallationDirectory(name);
+            File installationDir=environmentContext.getNewComponentInstallationDir(name);
             tmpDirectory.renameTo(installationDir);
             if (log.isDebugEnabled()) {
                 log.debug("Moved " + tmpDirectory + " to " + installationDir);
@@ -613,8 +613,8 @@ public class InstallationService extends BaseSystemService implements Installati
             throws DeploymentException {
         try {
             String componentName = componentDirectory.getName();
-            File stateFile = container.getEnvironmentContext().getComponentStateFile(componentName);
-            if (!stateFile.exists()) {
+            ComponentEnvironment env = container.getEnvironmentContext().getComponentEnvironment(componentName);
+            if (!env.getStateFile().exists()) {
                 // An installer has been created but the component has not been installed
                 // So remove it
                 FileUtil.deleteFile(componentDirectory);

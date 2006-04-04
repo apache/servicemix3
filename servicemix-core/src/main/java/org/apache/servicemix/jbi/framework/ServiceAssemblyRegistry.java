@@ -15,7 +15,6 @@
  */
 package org.apache.servicemix.jbi.framework;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -30,6 +29,7 @@ import javax.management.ObjectName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.container.ServiceAssemblyEnvironment;
 import org.apache.servicemix.jbi.deployment.ServiceAssembly;
 import org.apache.servicemix.jbi.deployment.ServiceUnit;
 
@@ -72,36 +72,17 @@ public class ServiceAssemblyRegistry {
     public void shutDown(){
     }
 
-    /**
-     * Register the Service Assembly
-     * @param sa
-     * @return true if successful
-     * @throws DeploymentException 
-     */
-    public ServiceAssemblyLifeCycle register(ServiceAssembly sa) throws DeploymentException {
-        List sus = new ArrayList();
-        if (sa.getServiceUnits() != null) {
-            for (int i = 0; i < sa.getServiceUnits().length; i++) {
-                String suKey = registry.registerServiceUnit(
-                                        sa.getServiceUnits()[i], 
-                                        sa.getIdentification().getName());
-                sus.add(suKey);
-            }
-        }
-        return register(sa, (String[]) sus.toArray(new String[sus.size()]));
-    }
-    
-    /**
-     * Register the Service Assembly
-     * @param sa
-     * @return true if successful
-     * @throws DeploymentException 
-     */
-    public ServiceAssemblyLifeCycle register(ServiceAssembly sa, String[] sus) throws DeploymentException {
+    public ServiceAssemblyLifeCycle register(ServiceAssembly sa, 
+                                             String[] suKeys,
+                                             ServiceAssemblyEnvironment env) throws DeploymentException {
         String saName = sa.getIdentification().getName();
-        File stateFile = registry.getEnvironmentContext().getServiceAssemblyStateFile(saName);
         if (!serviceAssemblies.containsKey(saName)) {
-            ServiceAssemblyLifeCycle salc = new ServiceAssemblyLifeCycle(sa, sus, stateFile, registry);
+            ServiceAssemblyLifeCycle salc = new ServiceAssemblyLifeCycle(sa, env, registry);
+            List sus = new ArrayList();
+            for (int i = 0; i < suKeys.length; i++) {
+                sus.add(registry.getServiceUnit(suKeys[i]));
+            }
+            salc.setServiceUnits((ServiceUnitLifeCycle[]) sus.toArray(new ServiceUnitLifeCycle[sus.size()]));
             serviceAssemblies.put(saName, salc);
             try {
                 ObjectName objectName = registry.getContainer().getManagementContext().createObjectName(salc);
@@ -112,6 +93,23 @@ public class ServiceAssemblyRegistry {
             return salc;
         }
         return null;
+    }
+    
+    public ServiceAssemblyLifeCycle register(ServiceAssembly sa, ServiceAssemblyEnvironment env) throws DeploymentException {
+        List sus = new ArrayList();
+        if (sa.getServiceUnits() != null) {
+            for (int i = 0; i < sa.getServiceUnits().length; i++) {
+                String suKey = registry.registerServiceUnit(
+                                        sa.getServiceUnits()[i],
+                                        sa.getIdentification().getName(),
+                                        env.getServiceUnitDirectory(sa.getServiceUnits()[i].getTarget().getComponentName(),
+                                                                    sa.getServiceUnits()[i].getIdentification().getName()));
+                sus.add(suKey);
+            }
+        }
+        return register(sa,
+                        (String[]) sus.toArray(new String[sus.size()]),
+                        env);
     }
     
     /**

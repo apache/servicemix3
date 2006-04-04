@@ -96,7 +96,6 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
         this.service = service;
         this.componentStatsMBean = new ComponentStats(this);
         this.messagingStats = new MessagingStats(name.getName());
-        this.stateFile = container.getEnvironmentContext().getComponentStateFile(name.getName());
     }
 
     /**
@@ -136,6 +135,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      */
     public void setContext(ComponentContextImpl context) {
         this.context = context;
+        this.stateFile = context.getEnvironment().getStateFile();
     }
 
     /**
@@ -366,7 +366,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
     /**
      * @return the current running state from disk
      */
-    String getRunningStateFromStore() {
+    public String getRunningStateFromStore() {
         String result = LifeCycleMBean.UNKNOWN;
         String componentName = getName();
         try {

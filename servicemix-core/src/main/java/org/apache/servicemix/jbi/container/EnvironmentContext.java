@@ -38,7 +38,18 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Holder for environment infomation
+ * Holder for environment information
+ * 
+ * <component-name> (component root dir)
+ *   |-> version_X (versionned dir)
+ *   \-> workspace (workspace dir)
+ *   
+ * ServiceAssembly root
+ *   \-> version_X (versionned dir)
+ *     |-> install (unzip dir)
+ *     \-> sus (service units dir)
+ *       |-> <component-name>
+ *         |-> <service-unit-name>
  * 
  * @version $Revision$
  */
@@ -50,7 +61,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
     private File installationDir;
     private File deploymentDir;
     private File sharedLibDir;
-    private File serviceAssembliesDirectory;
+    private File serviceAssembliesDir;
     private File tmpDir;
     private int statsInterval = 5;
     private Map envMap = new ConcurrentHashMap();
@@ -139,8 +150,8 @@ public class EnvironmentContext extends BaseSystemService implements Environment
     /**
      * @return Returns service asseblies directory
      */
-    public File getServiceAssembliesDirectory(){
-        return serviceAssembliesDirectory;
+    public File getServiceAssembliesDir(){
+        return serviceAssembliesDir;
     } 
    
 
@@ -263,8 +274,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @throws JBIException
      */
     public ComponentEnvironment registerComponent(ComponentMBeanImpl connector) throws JBIException {
-        ComponentEnvironment result = new ComponentEnvironment();
-        return registerComponent(result,connector);
+        return registerComponent(null, connector);
     }
     
     /**
@@ -286,20 +296,32 @@ public class EnvironmentContext extends BaseSystemService implements Environment
             // add workspace root and stats root ..
             try {
                 String name = connector.getComponentNameSpace().getName();
-                File componentRoot = getComponentRootDirectory(name);
-                FileUtil.buildDirectory(componentRoot);
-                File privateWorkspace = createWorkspaceDirectory(name);
-                result.setWorkspaceRoot(privateWorkspace);
-                result.setComponentRoot(componentRoot);
+                if (result.getComponentRoot() == null) {
+                    File componentRoot = getComponentRootDir(name);
+                    FileUtil.buildDirectory(componentRoot);
+                    result.setComponentRoot(componentRoot);
+                }
+                if (result.getWorkspaceRoot() == null) {
+                    File privateWorkspace = createWorkspaceDirectory(name);
+                    result.setWorkspaceRoot(privateWorkspace);
+                }
+                if (result.getStateFile() == null) {
+                    File stateFile = FileUtil.getDirectoryPath(result.getComponentRoot(), "state.xml");
+                    result.setStateFile(stateFile);
+                }
             } catch (IOException e) {
                 throw new JBIException(e);
             }
+        }
+        if (result.getStatsFile() == null) {
+            File statsFile = FileUtil.getDirectoryPath(result.getComponentRoot(), "stats.cvs");
+            result.setStatsFile(statsFile);
         }
         result.setLocalConnector(connector);
         envMap.put(connector, result);
         return result;
 	}
-
+    
     /**
      * Get root directory for a Component
      * 
@@ -307,7 +329,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @return directory for deployment/workspace etc
      * @throws IOException
      */
-    public File getComponentRootDirectory(String componentName) {
+    public File getComponentRootDir(String componentName) {
         if (getComponentsDir() == null) {
             return null;
         }
@@ -322,7 +344,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @return directory for deployment/workspace etc
      * @throws IOException
      */
-    public File createComponentRootDirectory(String componentName) throws IOException {
+    public File createComponentRootDir(String componentName) throws IOException {
         if (getComponentsDir() == null) {
             return null;
         }
@@ -337,8 +359,8 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @return
      * @throws IOException
      */
-    public File getNewInstallationDirectory(String componentName) throws IOException {
-        File result = getComponentRootDirectory(componentName);
+    public File getNewComponentInstallationDir(String componentName) throws IOException {
+        File result = getComponentRootDir(componentName);
         // get new version dir
         result = FileVersionUtil.getNewVersionDirectory(result);
         return result;
@@ -351,92 +373,71 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @return directory to deploy in
      * @throws IOException
      */
-    public File getInstallationDirectory(String componentName) throws IOException {
-        File result = getComponentRootDirectory(componentName);
+    public File getComponentInstallationDir(String componentName) throws IOException {
+        File result = getComponentRootDir(componentName);
         // get the version directory
         result = FileVersionUtil.getLatestVersionDirectory(result);
         return result;
     }
     
-    /**
-     * Get the file holding running state infomation for a Component
-     * @param componentName
-     * @return the state file
-     * @throws IOException 
-     */
-    public File getComponentStateFile(String componentName) {
-        File result = getComponentRootDirectory(componentName);
-        if (result == null) {
-            return null;
-        }
-        FileUtil.buildDirectory(result);
-        result = new File(result,"state.xml");
-        return result;
+    public ComponentEnvironment getNewComponentEnvironment(String compName) throws IOException {
+        File rootDir   = FileUtil.getDirectoryPath(getComponentsDir(), compName);
+        File instDir   = FileVersionUtil.getNewVersionDirectory(rootDir);
+        File workDir   = FileUtil.getDirectoryPath(rootDir, "workspace");
+        File stateFile = FileUtil.getDirectoryPath(rootDir, "state.xml");
+        File statsFile = FileUtil.getDirectoryPath(rootDir, "stats.cvs");
+        ComponentEnvironment env = new ComponentEnvironment();
+        env.setComponentRoot(rootDir);
+        env.setInstallRoot(instDir);
+        env.setWorkspaceRoot(workDir);
+        env.setStateFile(stateFile);
+        env.setStatsFile(statsFile);
+        return env;
     }
     
-    /**
-     * Get the root directory for a Service Assembly
-     * @param saName 
-     * 
-     * @return directory for deployment/workspace etc
-     * @throws IOException
-     */
-    public File getSARootDirectory(String saName) {
-        if (getServiceAssembliesDirectory() == null) {
-            return null;
-        }
-        File result = FileUtil.getDirectoryPath(getServiceAssembliesDirectory(), saName);
-        // get the version directory
-        result = FileVersionUtil.getLatestVersionDirectory(result);
-        return result;
+    public ComponentEnvironment getComponentEnvironment(String compName) throws IOException {
+        File rootDir   = FileUtil.getDirectoryPath(getComponentsDir(), compName);
+        File instDir   = FileVersionUtil.getLatestVersionDirectory(rootDir);
+        File workDir   = FileUtil.getDirectoryPath(rootDir, "workspace");
+        File stateFile = FileUtil.getDirectoryPath(rootDir, "state.xml");
+        File statsFile = FileUtil.getDirectoryPath(rootDir, "stats.cvs");
+        ComponentEnvironment env = new ComponentEnvironment();
+        env.setComponentRoot(rootDir);
+        env.setInstallRoot(instDir);
+        env.setWorkspaceRoot(workDir);
+        env.setStateFile(stateFile);
+        env.setStatsFile(statsFile);
+        return env;
     }
     
-    /**
-     * Create root directory for a Service Assembly
-     * @param saName 
-     * 
-     * @return directory for deployment/workspace etc
-     * @throws IOException
-     */
-    public File createSARootDirectory(String saName) throws IOException{
-        if(getServiceAssembliesDirectory()==null){
-            return null;
-        }
-        File result=FileUtil.getDirectoryPath(getServiceAssembliesDirectory(),saName);
-        // get the version directory
-        result=FileVersionUtil.getNewVersionDirectory(result);
-        return result;
+    public ServiceAssemblyEnvironment getNewServiceAssemblyEnvironment(String saName) throws IOException {
+        File rootDir   = FileUtil.getDirectoryPath(getServiceAssembliesDir(), saName);
+        File versDir   = FileVersionUtil.getNewVersionDirectory(rootDir);
+        File instDir   = FileUtil.getDirectoryPath(versDir, "install");
+        File susDir    = FileUtil.getDirectoryPath(versDir, "sus");
+        File stateFile = FileUtil.getDirectoryPath(rootDir, "state.xml");
+        ServiceAssemblyEnvironment env = new ServiceAssemblyEnvironment();
+        env.setRootDir(rootDir);
+        env.setInstallDir(instDir);
+        env.setSusDir(susDir);
+        env.setStateFile(stateFile);
+        return env;
     }
     
-       
-    /**
-     * Remove a Service Assembly directory
-     * @param saName
-     * @return true if successful
-     * @throws IOException
-     */
-    public boolean removeSARootDirectory(String saName) throws IOException{
-        File result = FileUtil.getDirectoryPath(getServiceAssembliesDirectory(), saName);
-        //get the version directory
-        result=FileVersionUtil.getLatestVersionDirectory(result);
-        return FileUtil.deleteFile(result);
+    public ServiceAssemblyEnvironment getServiceAssemblyEnvironment(String saName) {
+        File rootDir   = FileUtil.getDirectoryPath(getServiceAssembliesDir(), saName);
+        File versDir   = FileVersionUtil.getLatestVersionDirectory(rootDir);
+        File instDir   = FileUtil.getDirectoryPath(versDir, "install");
+        File susDir    = FileUtil.getDirectoryPath(versDir, "sus");
+        File stateFile = FileUtil.getDirectoryPath(rootDir, "state.xml");
+        ServiceAssemblyEnvironment env = new ServiceAssemblyEnvironment();
+        env.setRootDir(rootDir);
+        env.setInstallDir(instDir);
+        env.setSusDir(susDir);
+        env.setStateFile(stateFile);
+        return env;
     }
     
-    /**
-     * Get the file holding running state infomation for a Service Assembly
-     * @param saName 
-     * @return the state file
-     * @throws IOException 
-     */
-    public File getServiceAssemblyStateFile(String saName) {
-        File result = getSARootDirectory(saName);
-        result = result.getParentFile();
-        FileUtil.buildDirectory(result);
-        result = new File(result,"state.xml");
-        return result;
-    }
-    
-
     /**
      * Create workspace directory for a Component
      * 
@@ -451,35 +452,6 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         return result;
     }
     
-    /**
-     * Create a SU directory for a Component
-     * @param componentName
-     * @param suName
-     * @param saName
-     * @return directory
-     * @throws IOException
-     */
-    public File getServiceUnitDirectory(String componentName, String suName, String saName) {
-        File result = getSARootDirectory(saName);
-        result = FileUtil.getDirectoryPath(result, componentName);
-        result = FileUtil.getDirectoryPath(result, suName);
-        FileUtil.buildDirectory(result);
-        return result;
-    }
-    
-    /**
-     * Remove a SU directory
-     * @param componentName
-     * @param suName
-     * @param saName
-     * @return true if successful
-     * @throws IOException
-     */
-    public boolean removeServiceUnitDirectory(String componentName, String suName, String saName) throws IOException {
-        File result = getServiceUnitDirectory(componentName, suName, saName);
-        return FileUtil.deleteFile(result);
-    }
-
     /**
      * deregister the ComponentConnector
      * 
@@ -499,7 +471,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @param componentName
      */
     public void removeComponentRootDirectory(String componentName) {
-        File file = getComponentRootDirectory(componentName);
+        File file = getComponentRootDir(componentName);
         if (file != null) {
             if (!FileUtil.deleteFile(file)) {
                 log.warn("Failed to remove directory structure for component [version]: " + componentName + " [" + file.getName() + ']');
@@ -560,14 +532,14 @@ public class EnvironmentContext extends BaseSystemService implements Environment
             componentsDir = FileUtil.getDirectoryPath(jbiRootDir, "components").getCanonicalFile();
             tmpDir = FileUtil.getDirectoryPath(jbiRootDir, "tmp").getCanonicalFile();
             sharedLibDir = FileUtil.getDirectoryPath(jbiRootDir, "sharedlibs").getCanonicalFile();
-            serviceAssembliesDirectory = FileUtil.getDirectoryPath(jbiRootDir,"service-assemblies").getCanonicalFile();
+            serviceAssembliesDir = FileUtil.getDirectoryPath(jbiRootDir,"service-assemblies").getCanonicalFile();
             //actually create the sub directories
             FileUtil.buildDirectory(installationDir);
             FileUtil.buildDirectory(deploymentDir);
             FileUtil.buildDirectory(componentsDir);
             FileUtil.buildDirectory(tmpDir);
             FileUtil.buildDirectory(sharedLibDir);
-            FileUtil.buildDirectory(serviceAssembliesDirectory);
+            FileUtil.buildDirectory(serviceAssembliesDir);
         } catch (IOException e) {
             throw new JBIException(e);
         }

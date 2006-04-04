@@ -786,7 +786,7 @@ public class JBIContainer extends BaseLifeCycle {
     public void deactivateComponent(String name) throws JBIException {
         ComponentMBeanImpl component = registry.getComponent(name);
         if (component != null) {
-            component.shutDown();
+            component.doShutDown();
         	component.unregisterMbeans(managementContext);
             registry.deregisterComponent(component);
             environmentContext.unreregister(component);
@@ -982,7 +982,9 @@ public class JBIContainer extends BaseLifeCycle {
         if (lcc != null) {
             lcc.setPojo(pojo);
             ComponentEnvironment env = environmentContext.registerComponent(context.getEnvironment(),lcc);
-            env.setInstallRoot(installationDir);
+            if (env.getInstallRoot() == null) {
+                env.setInstallRoot(installationDir);
+            }
             context.activate(component, env, activationSpec);
             lcc.setContext(context);
             lcc.setActivationSpec(activationSpec);

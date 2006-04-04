@@ -15,13 +15,13 @@
  */
 package org.apache.servicemix.client;
 
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
+import javax.jbi.JBIException;
 
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.nmr.flow.jms.JMSFlow;
 
-import javax.jbi.JBIException;
+import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Provides remote access to ServiceMix JBI Containers running on the JMS NMR Flow
@@ -44,7 +44,7 @@ public class RemoteServiceMixClient extends DefaultServiceMixClient{
      * 
      */
     public RemoteServiceMixClient(){
-        this("peer://org.apache.servicemix");
+        this("peer://org.apache.servicemix?persistent=false");
     }
 
     /**
@@ -104,7 +104,6 @@ public class RemoteServiceMixClient extends DefaultServiceMixClient{
      */
     public void stop() throws javax.jbi.JBIException{
         super.stop();
-        container.stop();
     }
 
     /**
@@ -113,7 +112,7 @@ public class RemoteServiceMixClient extends DefaultServiceMixClient{
      * @exception javax.jbi.JBIException
      *                if the item fails to shut down.
      */
-    public void shutDown() throws javax.jbi.JBIException{
+    public void shutDown() throws javax.jbi.JBIException {
         super.shutDown();
         container.shutDown();
     }
