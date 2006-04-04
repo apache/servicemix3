@@ -313,7 +313,7 @@ public abstract class SoapEndpoint extends Endpoint {
         processor.stop();
     }
 
-    protected abstract void overrideDefinition(Definition def);
+    protected abstract void overrideDefinition(Definition def) throws Exception;
     
     protected abstract ExchangeProcessor createProviderProcessor();
     
