@@ -37,7 +37,7 @@ Specification will at all times remain with the Authors.
 No other rights are granted by implication, estoppel or otherwise.
 
 -->
-<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:rm="http://schemas.xmlsoap.org/ws/2005/02/rm" xmlns:tns="http://schemas.xmlsoap.org/ws/2005/02/rm/wsdl" targetNamespace="http://schemas.xmlsoap.org/ws/2005/02/rm/wsdl">
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:rm="http://schemas.xmlsoap.org/ws/2005/02/rm" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://schemas.xmlsoap.org/ws/2005/02/rm/wsdl" targetNamespace="http://schemas.xmlsoap.org/ws/2005/02/rm/wsdl">
   <wsdl:types>
     <xs:schema>
       <xs:import namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" schemaLocation="http://schemas.xmlsoap.org/ws/2005/02/rm/wsrm.xsd"/>
@@ -53,7 +53,7 @@ No other rights are granted by implication, estoppel or otherwise.
   <wsdl:message name="TerminateSequence">
     <wsdl:part name="terminate" element="rm:TerminateSequence"/>
   </wsdl:message>
-  <wsdl:portType name="SequenceAbsractPortType">
+  <wsdl:portType name="SequenceAbstractPortType">
     <wsdl:operation name="CreateSequence">
       <wsdl:input message="tns:CreateSequence" wsa:Action="http://schemas.xmlsoap.org/ws/2005/02/rm/CreateSequence"/>
       <wsdl:output message="tns:CreateSequenceResponse" wsa:Action="http://schemas.xmlsoap.org/ws/2005/02/rm/CreateSequenceResponse"/>
@@ -62,4 +62,37 @@ No other rights are granted by implication, estoppel or otherwise.
       <wsdl:input message="tns:TerminateSequence" wsa:Action="http://schemas.xmlsoap.org/ws/2005/02/rm/CreateSequenceResponse"/>
     </wsdl:operation>
   </wsdl:portType>
-</wsdl:definitions>
+
+  <!-- default binding for out-of band RM protocol messages -->
+
+  <wsdl:binding name="SequenceAbstractSoapBinding" type="tns:SequenceAbstractPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="CreateSequence">
+            <soap:operation style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <!--
+            <wsdl:fault name="SequenceFault">
+                <soap:fault name="SequenceFault" use="literal"/>
+            </wsdl:fault>
+            -->
+        </wsdl:operation>
+        <wsdl:operation name="TerminateSequence">
+            <soap:operation style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <!-- TODO: fault -->
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="SequenceAbstractService">
+        <wsdl:port name="SequenceAbstractPort" binding="tns:SequenceAbstractSoapBinding">
+            <soap:address location="http://localhost:9000/SequenceAbstractContext/SequenceAbstractPort"/>
+        </wsdl:port>
+    </wsdl:service>
+  </wsdl:definitions>

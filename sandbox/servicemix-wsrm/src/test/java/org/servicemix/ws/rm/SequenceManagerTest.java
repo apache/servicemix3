@@ -17,7 +17,6 @@
  **/
 package org.servicemix.ws.rm;
 
-import org.servicemix.wspojo.rm.SequenceAbsractPortType;
 import org.xmlsoap.schemas.ws._2004._08.addressing.AttributedURI;
 import org.xmlsoap.schemas.ws._2004._08.addressing.EndpointReferenceType;
 import org.xmlsoap.schemas.ws._2005._02.rm.CreateSequenceResponseType;
@@ -25,6 +24,7 @@ import org.xmlsoap.schemas.ws._2005._02.rm.CreateSequenceType;
 import org.xmlsoap.schemas.ws._2005._02.rm.Expires;
 import org.xmlsoap.schemas.ws._2005._02.rm.Identifier;
 import org.xmlsoap.schemas.ws._2005._02.rm.TerminateSequenceType;
+import org.xmlsoap.schemas.ws._2005._02.rm.wsdl.SequenceAbstractPortType;
 
 import junit.framework.TestCase;
 
@@ -33,7 +33,7 @@ import junit.framework.TestCase;
  * @version $Revision$
  */
 public class SequenceManagerTest extends TestCase {
-    protected SequenceAbsractPortType sequenceManager;
+    protected SequenceAbstractPortType sequenceManager;
     protected boolean specifyExpires = false;
 
     public void testCreateAndTerminateSequence() throws Exception {
@@ -67,7 +67,7 @@ public class SequenceManagerTest extends TestCase {
         sequenceManager = createSequenceManager();
     }
 
-    protected SequenceAbsractPortType createSequenceManager() {
+    protected SequenceAbstractPortType createSequenceManager() {
         return new SequenceManager(createSequenceStore());
     }
 

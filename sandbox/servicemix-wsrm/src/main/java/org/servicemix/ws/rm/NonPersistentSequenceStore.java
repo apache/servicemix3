@@ -19,12 +19,12 @@ package org.servicemix.ws.rm;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 
-import org.activemq.util.IdGenerator;
+import org.apache.activemq.util.IdGenerator;
 import org.xmlsoap.schemas.ws._2005._02.rm.Identifier;
 
 /**
- * A simple implementation of the {@link SequenceStore} which doesn not persist messages
- * but is usesful for testing.
+ * A simple implementation of the {@link SequenceStore} which does not persist messages
+ * but is useful for testing.
  * 
  * @version $Revision$
  */

@@ -17,7 +17,6 @@
  **/
 package org.servicemix.ws.rm;
 
-import org.servicemix.wspojo.rm.SequenceAbsractPortType;
 import org.xmlsoap.schemas.ws._2005._02.rm.AckRequestedType;
 import org.xmlsoap.schemas.ws._2005._02.rm.CreateSequenceResponseType;
 import org.xmlsoap.schemas.ws._2005._02.rm.CreateSequenceType;
@@ -27,6 +26,7 @@ import org.xmlsoap.schemas.ws._2005._02.rm.SequenceAcknowledgement;
 import org.xmlsoap.schemas.ws._2005._02.rm.SequenceType;
 import org.xmlsoap.schemas.ws._2005._02.rm.TerminateSequenceType;
 import org.xmlsoap.schemas.ws._2005._02.rm.SequenceAcknowledgement.AcknowledgementRange;
+import org.xmlsoap.schemas.ws._2005._02.rm.wsdl.SequenceAbstractPortType;
 
 import java.math.BigInteger;
 
@@ -35,7 +35,7 @@ import java.math.BigInteger;
  * 
  * @version $Revision$
  */
-public class SequenceManager implements SequenceAbsractPortType {
+public class SequenceManager implements SequenceAbstractPortType {
 
     private static final BigInteger MAX_INTEGER = new BigInteger("" + Integer.MAX_VALUE);
     
