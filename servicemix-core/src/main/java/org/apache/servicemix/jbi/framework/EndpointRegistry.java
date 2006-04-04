@@ -29,6 +29,7 @@ import javax.management.JMException;
 import javax.management.ObjectName;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
+import javax.wsdl.PortType;
 import javax.wsdl.Service;
 import javax.wsdl.factory.WSDLFactory;
 import javax.xml.namespace.QName;
@@ -231,29 +232,42 @@ public class EndpointRegistry {
                 return;
             }
             Definition definition = WSDLFactory.newInstance().newWSDLReader().readWSDL(null, document);
-            Service service = definition.getService(serviceEndpoint.getServiceName());
-            if (service == null) {
-                logger.info("Endpoint " + serviceEndpoint + " has a service description, but no matching service found in " + definition.getServices().keySet());
-                return;
+            // Check if the wsdl is only a port type
+            // In these cases, only the port type is used, as the service name and endpoint name
+            // are provided on the jbi endpoint
+            if (definition.getPortTypes().keySet().size() == 1 &&
+                definition.getServices().keySet().size() == 0) {
+                PortType portType = (PortType) definition.getPortTypes().values().iterator().next();
+                QName interfaceName = portType.getQName();
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Endpoint " + serviceEndpoint + " implements interface " + interfaceName);
+                }
+                serviceEndpoint.addInterface(interfaceName);
+            } else {
+                Service service = definition.getService(serviceEndpoint.getServiceName());
+                if (service == null) {
+                    logger.info("Endpoint " + serviceEndpoint + " has a service description, but no matching service found in " + definition.getServices().keySet());
+                    return;
+                }
+                Port port = service.getPort(serviceEndpoint.getEndpointName());
+                if (port == null) {
+                    logger.info("Endpoint " + serviceEndpoint + " has a service description, but no matching endpoint found in " + service.getPorts().keySet());
+                    return;
+                }
+                if (port.getBinding() == null) {
+                    logger.info("Endpoint " + serviceEndpoint + " has a service description, but no binding found");
+                    return;
+                }
+                if (port.getBinding().getPortType() == null) {
+                    logger.info("Endpoint " + serviceEndpoint + " has a service description, but no port type found");
+                    return;
+                }
+                QName interfaceName = port.getBinding().getPortType().getQName();
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Endpoint " + serviceEndpoint + " implements interface " + interfaceName);
+                }
+                serviceEndpoint.addInterface(interfaceName);
             }
-            Port port = service.getPort(serviceEndpoint.getEndpointName());
-            if (port == null) {
-                logger.info("Endpoint " + serviceEndpoint + " has a service description, but no matching endpoint found in " + service.getPorts().keySet());
-                return;
-            }
-            if (port.getBinding() == null) {
-                logger.info("Endpoint " + serviceEndpoint + " has a service description, but no binding found");
-                return;
-            }
-            if (port.getBinding().getPortType() == null) {
-                logger.info("Endpoint " + serviceEndpoint + " has a service description, but no port type found");
-                return;
-            }
-            QName interfaceName = port.getBinding().getPortType().getQName();
-            if (logger.isDebugEnabled()) {
-                logger.debug("Endpoint " + serviceEndpoint + " implements interface " + interfaceName);
-            }
-            serviceEndpoint.addInterface(interfaceName);
         } catch (Exception e) {
             logger.warn("Error retrieving interfaces from service description: " + e.getMessage());
             if (logger.isDebugEnabled()) {
