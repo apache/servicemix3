@@ -1,3 +1,36 @@
 <project default="default" xmlns:j="jelly:core" xmlns:ant="jelly:ant" xmlns:maven="jelly:maven">
+  <preGoal name="java:compile"><attainGoal name="jaxws:compile" /></preGoal>
+
+  <goal name="jaxws:compile" prereqs="setclasspath" description="generate JAX-WS POJOS from WSDL">
+    <mkdir dir="${jaxws.compiled.java.dir}" />
+    <mkdir dir="${jaxws.compiled.classes.dir}" />
+    <wsimport
+      fork="true"
+      debug="${debug}"
+      verbose="${verbose}"
+      keep="${keep}"
+      sourcedestdir="${jaxws.compiled.java.dir}"
+      destdir="${jaxws.compiled.classes.dir}"
+      catalog="${wsdl.home}/catalog.xml"
+      wsdl="${wsdl.home}/wsrm.wsdl">
+    </wsimport>
+  </goal>
+
+  <!-- Build failure reports: initialize compile fail -->
+  <preGoal name="jaxws:compile">
+    <j:if test="${generateBuildReports == 'true'}"><attainGoal name="build-failure-report:set-compile-fail" /></j:if>
+  </preGoal>
+
+  <goal name="setclasspath">
+    <taskdef name="wsimport" classname="com.sun.tools.ws.ant.WsImport">
+      <classpath refid="maven.dependency.classpath" />
+    </taskdef>
+
+    <taskdef name="wsgen" classname="com.sun.tools.ws.ant.WsGen">
+      <classpath refid="maven.dependency.classpath" />
+    </taskdef>
+
+    <taskdef name="apt" classname="com.sun.tools.ws.ant.Apt"><classpath refid="maven.dependency.classpath" /></taskdef>
+  </goal>
 
 </project>
