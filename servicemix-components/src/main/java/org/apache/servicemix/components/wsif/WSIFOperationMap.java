@@ -100,10 +100,7 @@ public class WSIFOperationMap {
     protected void addBindingOperation(Binding binding, BindingOperation bindingOperation) throws WSIFException {
         Operation operation = bindingOperation.getOperation();
         String name = operation.getName();
-        WSIFOperation wsifOperation = service.getPort().createOperation(name);
-
-        WSIFOperationInfo info = new WSIFOperationInfo(wsifOperation, bindingOperation);
-
+        WSIFOperationInfo info = new WSIFOperationInfo(service.getPort(), name);
         operationMap.put(name, info);
         operationMap.put(new QName(name), info);
         if (defaultOperation == null) {

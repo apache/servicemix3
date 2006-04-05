@@ -15,9 +15,9 @@
  */
 package org.apache.servicemix.components.wsif;
 
-import javax.wsdl.BindingOperation;
-
+import org.apache.wsif.WSIFException;
 import org.apache.wsif.WSIFOperation;
+import org.apache.wsif.WSIFPort;
 
 /**
  * The information about an operation.
@@ -25,19 +25,15 @@ import org.apache.wsif.WSIFOperation;
  * @version $Revision$
  */
 public class WSIFOperationInfo {
-    private BindingOperation bindingOperation;
-    private WSIFOperation wsifOperation;
+    private WSIFPort port;
+    private String name;
 
-    public WSIFOperationInfo(WSIFOperation wsifOperation, BindingOperation bindingOperation) {
-        this.wsifOperation = wsifOperation;
-        this.bindingOperation = bindingOperation;
+    public WSIFOperationInfo(WSIFPort port, String name) {
+        this.port = port;
+        this.name = name;
     }
 
-    public BindingOperation getBindingOperation() {
-        return bindingOperation;
-    }
-
-    public WSIFOperation getWsifOperation() {
-        return wsifOperation;
+    public WSIFOperation createWsifOperation() throws WSIFException {
+        return this.port.createOperation(name);
     }
 }

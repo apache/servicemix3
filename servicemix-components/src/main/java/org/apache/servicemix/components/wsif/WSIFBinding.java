@@ -143,7 +143,7 @@ public class WSIFBinding extends TransformComponentSupport {
         try {
             WSIFOperationInfo operationInfo = operationMap.getOperationForExchange(exchange);
 
-            WSIFOperation operation = operationInfo.getWsifOperation();
+            WSIFOperation operation = operationInfo.createWsifOperation();
             WSIFMessage inMessage = operation.createInputMessage();
             Object body = getBody(in);
             marshaler.fromNMS(operationInfo, inMessage, in, body);

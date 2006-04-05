@@ -30,73 +30,75 @@ import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 public class WsifTest extends TestSupport {
     QName serviceName = new QName("http://servicemix.org/cheese/", "checkAvailability");
 
+    public static final int MESSAGES = 2;
+    
     public void testUsingXMLMessaging() throws Exception {
-        String file = "request.xml";
-
-        Object answer = requestServiceWithFileRequest(serviceName, file);
-        assertTrue("Shoud return a DOM Node: " + answer, answer instanceof Node);
-        Node node = (Node) answer;
-        System.out.println(transformer.toString(node));
-
-        String text = textValueOfXPath(node, "/*/*[local-name()='part']").trim();
-
-        System.out.println("Found value: " + text);
-
-        assertTrue("price text should not be empty", text.length() > 0);
-
+        for (int i = 0; i < MESSAGES; i++) {
+            String file = "request.xml";
+    
+            Object answer = requestServiceWithFileRequest(serviceName, file);
+            assertTrue("Shoud return a DOM Node: " + answer, answer instanceof Node);
+            Node node = (Node) answer;
+            System.out.println(transformer.toString(node));
+    
+            String text = textValueOfXPath(node, "/*/*[local-name()='part']").trim();
+    
+            System.out.println("Found value: " + text);
+    
+            assertTrue("price text should not be empty", text.length() > 0);
+        }
     }
 
     public void testUsingWSIFStyleJBI() throws Exception {
-
-        // START SNIPPET: wsif
-        InOut exchange = client.createInOutExchange();
-
-        exchange.getInMessage().setProperty("zipCode", "10505");
-        client.sendSync(exchange);
-
-        NormalizedMessage out = exchange.getOutMessage();
-        String result = (String) out.getProperty("result");
-
-        System.out.println("Found value: " + result);
-        // END SNIPPET: wsif
-
-        assertEquals("should have no fault", null, exchange.getFault());
-        Exception error = exchange.getError();
-        if (error != null) {
-            throw error;
+        for (int i = 0; i < MESSAGES; i++) {
+            // START SNIPPET: wsif
+            InOut exchange = client.createInOutExchange();
+    
+            exchange.getInMessage().setProperty("zipCode", "10505");
+            client.sendSync(exchange);
+    
+            NormalizedMessage out = exchange.getOutMessage();
+            String result = (String) out.getProperty("result");
+    
+            System.out.println("Found value: " + result);
+            // END SNIPPET: wsif
+    
+            assertEquals("should have no fault", null, exchange.getFault());
+            Exception error = exchange.getError();
+            if (error != null) {
+                throw error;
+            }
+            assertEquals("should have no error", null, error);
+            assertNotNull("must have an output message!", out);
+    
+            assertTrue("price text should not be empty", result.length() > 0);
         }
-        assertEquals("should have no error", null, error);
-        assertNotNull("must have an output message!", out);
-
-        assertTrue("price text should not be empty", result.length() > 0);
-
     }
 
     public void testUsingWSIFStyleJBIWithEarlyErrorHandling() throws Exception {
-
-        InOut exchange = client.createInOutExchange();
-
-        exchange.getInMessage().setProperty("zipCode", "10505");
-        client.sendSync(exchange);
-
-        Exception error = exchange.getError();
-        if (error != null) {
-            throw error;
+        for (int i = 0; i < MESSAGES; i++) {
+            InOut exchange = client.createInOutExchange();
+    
+            exchange.getInMessage().setProperty("zipCode", "10505");
+            client.sendSync(exchange);
+    
+            Exception error = exchange.getError();
+            if (error != null) {
+                throw error;
+            }
+    
+            assertEquals("should have no fault", null, exchange.getFault());
+            assertEquals("should have no error", null, error);
+    
+            NormalizedMessage out = exchange.getOutMessage();
+            assertNotNull("must have an output message!", out);
+    
+            String result = (String) out.getProperty("result");
+    
+            System.out.println("Found value: " + result);
+    
+            assertTrue("price text should not be empty", result.length() > 0);
         }
-
-        assertEquals("should have no fault", null, exchange.getFault());
-        assertEquals("should have no error", null, error);
-
-        NormalizedMessage out = exchange.getOutMessage();
-        assertNotNull("must have an output message!", out);
-
-        String result = (String) out.getProperty("result");
-
-        System.out.println("Found value: " + result);
-
-
-        assertTrue("price text should not be empty", result.length() > 0);
-
     }
 
     protected AbstractXmlApplicationContext createBeanFactory() {

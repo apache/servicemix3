@@ -56,7 +56,7 @@ public class WSIFOutBinding extends OutBinding {
     protected void process(MessageExchange exchange, NormalizedMessage normalizedMessage) throws MessagingException {
         try {
             WSIFOperationInfo operationInfo = operationMap.getOperationForExchange(exchange);
-            WSIFOperation operation = operationInfo.getWsifOperation();
+            WSIFOperation operation = operationInfo.createWsifOperation();
             WSIFMessage message = operation.createInputMessage();
             marshaler.fromNMS(operationInfo, message, normalizedMessage, getBody(normalizedMessage));
             operation.executeInputOnlyOperation(message);
