@@ -48,10 +48,11 @@ public abstract class OutBinding extends ComponentSupport implements Runnable, M
                 process(exchange, message);
             }
             catch (Exception e) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Exchange failed", e);
+                }
                 fail(exchange, e);
             }
-        } else if (exchange.getStatus() == ExchangeStatus.ERROR) {
-            done(exchange);
         }
     }
 
@@ -115,11 +116,14 @@ public abstract class OutBinding extends ComponentSupport implements Runnable, M
     }
 
     /**
-     * Process incoming
+     * Process incoming exchange.
+     * The exchange is in the ACTIVE state.
+     * The method should end by a call to done() or answer().
+     * When an exception is thrown, the fail() method will be called.
      *
-     * @param messageExchange
-     * @param message
-     * @throws MessagingException
+     * @param messageExchange the exchange to process
+     * @param message the input message of the exchange
+     * @throws Exception if an error occurs
      */
-    protected abstract void process(MessageExchange messageExchange, NormalizedMessage message) throws MessagingException;
+    protected abstract void process(MessageExchange messageExchange, NormalizedMessage message) throws Exception;
 }

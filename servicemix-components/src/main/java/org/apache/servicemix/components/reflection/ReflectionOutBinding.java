@@ -15,11 +15,9 @@
  */
 package org.apache.servicemix.components.reflection;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 
 import org.apache.servicemix.components.util.OutBinding;
@@ -42,20 +40,11 @@ public class ReflectionOutBinding extends OutBinding {
     
     // Implementation methods
     //-------------------------------------------------------------------------
-    protected void process(MessageExchange messageExchange, NormalizedMessage inMessage) throws MessagingException {
+    protected void process(MessageExchange messageExchange, NormalizedMessage inMessage) throws Exception {
         
         Method method = (Method) inMessage.getProperty("method");
         Object []args = (Object[]) inMessage.getProperty("args");
-                
-        try {
-            method.invoke(target, args);
-            done(messageExchange);
-        } catch (IllegalArgumentException e) {
-            throw new MessagingException(e);
-        } catch (IllegalAccessException e) {
-            throw new MessagingException(e);
-        } catch (InvocationTargetException e) {
-            throw new MessagingException(e);
-        }
+        method.invoke(target, args);
+        done(messageExchange);
     }
 }

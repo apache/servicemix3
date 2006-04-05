@@ -103,7 +103,7 @@ public class FileWriter extends OutBinding {
         super.init();
     }
 
-    protected void process(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
+    protected void process(MessageExchange exchange, NormalizedMessage message) throws Exception {
         OutputStream out = null;
         try {
             String name = marshaler.getOutputName(exchange, message);
@@ -123,15 +123,6 @@ public class FileWriter extends OutBinding {
             }
             marshaler.writeMessage(exchange, message, out, name);
             done(exchange);
-        }
-        catch (IOException e) {
-            throw new MessagingException(e);
-        }
-        catch (MessagingException e) {
-        	throw e;
-        }
-        catch (JBIException e) {
-            throw new MessagingException(e);
         }
         finally {
             if (out != null) {

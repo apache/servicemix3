@@ -15,6 +15,13 @@
  */
 package org.apache.servicemix.components.xfire;
 
+import java.io.ByteArrayOutputStream;
+
+import javax.jbi.JBIException;
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.NormalizedMessage;
+import javax.xml.stream.XMLStreamReader;
+
 import org.apache.servicemix.components.util.OutBinding;
 import org.codehaus.xfire.MessageContext;
 import org.codehaus.xfire.XFire;
@@ -22,14 +29,6 @@ import org.codehaus.xfire.exchange.InMessage;
 import org.codehaus.xfire.transport.Channel;
 import org.codehaus.xfire.transport.Transport;
 import org.codehaus.xfire.transport.local.LocalTransport;
-
-import javax.jbi.JBIException;
-import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
-import javax.jbi.messaging.NormalizedMessage;
-import javax.xml.stream.XMLStreamReader;
-
-import java.io.ByteArrayOutputStream;
 
 public class XFireBinding extends OutBinding {
     private XMarshaler marshaler;
@@ -43,39 +42,31 @@ public class XFireBinding extends OutBinding {
         this.marshaler = new XMarshaler();
     }
     
-    protected void process(MessageExchange messageExchange, NormalizedMessage nm)
-            throws MessagingException {
-        try {
-            XMLStreamReader reader = marshaler.createStreamReader(nm);
-
-            if (reader == null) 
-            {
-                fail(messageExchange, new JBIException("Could not get source as XMLStreamReader."));
-                return;
-            }
-            
-            InMessage in = new InMessage(reader, "");
-            MessageContext context = new MessageContext();
-            context.setXFire(xfire);
-            context.setService(xfire.getServiceRegistry().getService(getService().getLocalPart()));
-
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-            context.setProperty(Channel.BACKCHANNEL_URI, buffer);
-            
-            Transport transport = 
-                xfire.getTransportManager().getTransport(LocalTransport.BINDING_ID);
-            Channel channel = transport.createChannel();
-            channel.receive(context, in);
-
-            NormalizedMessage outMessage = messageExchange.createMessage();
-
-            marshaler.setContent(outMessage, buffer.toString());
-            marshaler.toNMS(outMessage, context.getOutMessage());
-
-            answer(messageExchange, outMessage);
-        } catch (Exception e) {
-            fail(messageExchange, e);
+    protected void process(MessageExchange messageExchange, NormalizedMessage nm) throws Exception {
+        
+        XMLStreamReader reader = marshaler.createStreamReader(nm);
+        if (reader == null) {
+            throw new JBIException("Could not get source as XMLStreamReader.");
         }
+        
+        InMessage in = new InMessage(reader, "");
+        MessageContext context = new MessageContext();
+        context.setXFire(xfire);
+        context.setService(xfire.getServiceRegistry().getService(getService().getLocalPart()));
+
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        context.setProperty(Channel.BACKCHANNEL_URI, buffer);
+        
+        Transport transport =  xfire.getTransportManager().getTransport(LocalTransport.BINDING_ID);
+        Channel channel = transport.createChannel();
+        channel.receive(context, in);
+
+        NormalizedMessage outMessage = messageExchange.createMessage();
+
+        marshaler.setContent(outMessage, buffer.toString());
+        marshaler.toNMS(outMessage, context.getOutMessage());
+
+        answer(messageExchange, outMessage);
     }
 
     public XFire getXfire() {

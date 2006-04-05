@@ -15,20 +15,18 @@
  */
 package org.apache.servicemix.components.jms;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.components.util.OutBinding;
-import org.springframework.jms.JmsException;
-import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.core.MessageCreator;
-
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
 import javax.xml.transform.TransformerException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.components.util.OutBinding;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 
 /**
  * Consumers JBI messages and sends them to a JMS destination using the Spring
@@ -64,29 +62,23 @@ public class JmsSenderComponent extends OutBinding {
 
     // Implementation methods
     //-------------------------------------------------------------------------
-    protected void process(MessageExchange exchange, final NormalizedMessage inMessage) throws MessagingException {
-        try {
-            template.send(new MessageCreator() {
-                public Message createMessage(Session session) throws JMSException {
-                    try {
-                        Message message = marshaler.createMessage(inMessage, session);
-                        if (log.isTraceEnabled()) {
-                            log.trace("Sending message to: " + template.getDefaultDestinationName() + " message: " + message);
-                        }
-                        return message;
+    protected void process(MessageExchange exchange, final NormalizedMessage inMessage) throws Exception {
+        template.send(new MessageCreator() {
+            public Message createMessage(Session session) throws JMSException {
+                try {
+                    Message message = marshaler.createMessage(inMessage, session);
+                    if (log.isTraceEnabled()) {
+                        log.trace("Sending message to: " + template.getDefaultDestinationName() + " message: " + message);
                     }
-                    catch (TransformerException e) {
-                        JMSException jmsEx =  new JMSException("Failed to create JMS Message: " + e);
-                        jmsEx.setLinkedException(e);
-                        throw jmsEx;
-                    }
+                    return message;
                 }
-            });
-            done(exchange);
-        }
-        catch (JmsException e) {
-            e.printStackTrace();
-            throw new MessagingException(e);
-        }
+                catch (TransformerException e) {
+                    JMSException jmsEx =  new JMSException("Failed to create JMS Message: " + e);
+                    jmsEx.setLinkedException(e);
+                    throw jmsEx;
+                }
+            }
+        });
+        done(exchange);
     }
 }

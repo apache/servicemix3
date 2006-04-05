@@ -17,12 +17,9 @@ package org.apache.servicemix.components.jabber;
 
 import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.xml.transform.TransformerException;
 
 import org.jivesoftware.smack.GroupChat;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 
 /**
@@ -81,19 +78,11 @@ public class JabberGroupChatSender extends JabberComponentSupport {
 
     // Implementation methods
     //-------------------------------------------------------------------------
-    protected void process(MessageExchange messageExchange, NormalizedMessage normalizedMessage) throws MessagingException {
-        try {
-            Message message = chat.createMessage();
-            getMarshaler().fromNMS(message, normalizedMessage);
-            chat.sendMessage(message);
-            done(messageExchange);
-        }
-        catch (TransformerException e) {
-            throw new MessagingException(e);
-        }
-        catch (XMPPException e) {
-            throw new MessagingException(e);
-        }
+    protected void process(MessageExchange messageExchange, NormalizedMessage normalizedMessage) throws Exception {
+        Message message = chat.createMessage();
+        getMarshaler().fromNMS(message, normalizedMessage);
+        chat.sendMessage(message);
+        done(messageExchange);
     }
 
 }

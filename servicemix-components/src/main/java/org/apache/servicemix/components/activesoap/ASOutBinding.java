@@ -16,9 +16,7 @@
 package org.apache.servicemix.components.activesoap;
 
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.servicemix.components.util.OutBinding;
@@ -49,19 +47,13 @@ public class ASOutBinding extends OutBinding {
 
     // Implementation methods
     //-------------------------------------------------------------------------
-    protected void process(MessageExchange messageExchange, NormalizedMessage inMessage) throws MessagingException {
-        try {
-            XMLStreamReader in = marshaler.createStreamReader(inMessage);
-    
-            org.codehaus.activesoap.MessageExchange asExchange = service.createMessageExchange(in, null);
-            marshaler.fromNMS(asExchange, inMessage);
-            service.invoke(asExchange);
-    
-            done(messageExchange);
-        } catch (XMLStreamException e) {
-            throw new MessagingException(e);
-        } catch (Exception e) {
-            throw new MessagingException(e);
-        }
+    protected void process(MessageExchange messageExchange, NormalizedMessage inMessage) throws Exception {
+        XMLStreamReader in = marshaler.createStreamReader(inMessage);
+
+        org.codehaus.activesoap.MessageExchange asExchange = service.createMessageExchange(in, null);
+        marshaler.fromNMS(asExchange, inMessage);
+        service.invoke(asExchange);
+
+        done(messageExchange);
     }
 }

@@ -184,23 +184,12 @@ public class FeedWriter extends OutBinding {
         }
     }
 
-    protected void process(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
-        try {
-            SyndFeed feed = getCachedFeed();
-            addMessageToFeed(feed, exchange, message);
-            removeExpiredEntries(feed);
-            writeFeed(feed, exchange, message);
-            done(exchange);
-        }
-        catch (IOException e) {
-            throw new MessagingException(e);
-        }
-        catch (FeedException e) {
-            throw new MessagingException(e);
-        }
-        catch (TransformerException e) {
-            throw new MessagingException(e);
-        }
+    protected void process(MessageExchange exchange, NormalizedMessage message) throws Exception {
+        SyndFeed feed = getCachedFeed();
+        addMessageToFeed(feed, exchange, message);
+        removeExpiredEntries(feed);
+        writeFeed(feed, exchange, message);
+        done(exchange);
     }
 
     protected void addMessageToFeed(SyndFeed feed, MessageExchange exchange, NormalizedMessage message) throws TransformerException, MessagingException {

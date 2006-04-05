@@ -58,7 +58,7 @@ public class JabberReceiver extends JabberComponentSupport {
 
     // Implementation methods
     //-------------------------------------------------------------------------
-    protected void process(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
+    protected void process(MessageExchange exchange, NormalizedMessage message) throws Exception {
         throw new MessagingException("This component is not meant to receive inbound messages but received: " + message);
     }
 }

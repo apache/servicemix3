@@ -23,8 +23,8 @@ import org.codehaus.xfire.transport.Channel;
 import org.codehaus.xfire.transport.Transport;
 import org.codehaus.xfire.transport.local.LocalTransport;
 
+import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.stream.XMLStreamReader;
 
@@ -40,25 +40,23 @@ public class XFireOutBinding extends OutBinding {
         this.marshaller = new XMarshaler();
     }
     
-    protected void process(MessageExchange messageExchange, NormalizedMessage nm)
-            throws MessagingException {
-        try {
-            XMLStreamReader reader = marshaller.createStreamReader(nm);
-
-            InMessage in = new InMessage(reader, "");
-            MessageContext context = new MessageContext();
-            context.setXFire(xfire);
-            context.setService(xfire.getServiceRegistry().getService(getService().getLocalPart()));
-
-            Transport transport = 
-                xfire.getTransportManager().getTransport(LocalTransport.BINDING_ID);
-            Channel channel = transport.createChannel();
-            channel.receive(context, in);
-
-            done(messageExchange);
-        } catch (Exception e) {
-            fail(messageExchange, e);
+    protected void process(MessageExchange messageExchange, NormalizedMessage nm) throws Exception {
+        
+        XMLStreamReader reader = marshaller.createStreamReader(nm);
+        if (reader == null) {
+            throw new JBIException("Could not get source as XMLStreamReader.");
         }
+
+        InMessage in = new InMessage(reader, "");
+        MessageContext context = new MessageContext();
+        context.setXFire(xfire);
+        context.setService(xfire.getServiceRegistry().getService(getService().getLocalPart()));
+
+        Transport transport = xfire.getTransportManager().getTransport(LocalTransport.BINDING_ID);
+        Channel channel = transport.createChannel();
+        channel.receive(context, in);
+
+        done(messageExchange);
     }
 
     public XFire getXfire() {

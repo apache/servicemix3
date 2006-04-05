@@ -15,15 +15,12 @@
  */
 package org.apache.servicemix.components.wsif;
 
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.NormalizedMessage;
+
 import org.apache.servicemix.components.util.OutBinding;
-import org.apache.wsif.WSIFException;
 import org.apache.wsif.WSIFMessage;
 import org.apache.wsif.WSIFOperation;
-
-import javax.jbi.messaging.ExchangeStatus;
-import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
-import javax.jbi.messaging.NormalizedMessage;
 
 /**
  * Consumers JBI messages and sends them as a oneway into WSIF
@@ -53,18 +50,12 @@ public class WSIFOutBinding extends OutBinding {
 
     // Implementation methods
     //-------------------------------------------------------------------------
-    protected void process(MessageExchange exchange, NormalizedMessage normalizedMessage) throws MessagingException {
-        try {
-            WSIFOperationInfo operationInfo = operationMap.getOperationForExchange(exchange);
-            WSIFOperation operation = operationInfo.createWsifOperation();
-            WSIFMessage message = operation.createInputMessage();
-            marshaler.fromNMS(operationInfo, message, normalizedMessage, getBody(normalizedMessage));
-            operation.executeInputOnlyOperation(message);
-            done(exchange);
-        }
-        catch (WSIFException e) {
-            exchange.setError(e);
-            exchange.setStatus(ExchangeStatus.ERROR);
-        }
+    protected void process(MessageExchange exchange, NormalizedMessage normalizedMessage) throws Exception {
+        WSIFOperationInfo operationInfo = operationMap.getOperationForExchange(exchange);
+        WSIFOperation operation = operationInfo.createWsifOperation();
+        WSIFMessage message = operation.createInputMessage();
+        marshaler.fromNMS(operationInfo, message, normalizedMessage, getBody(normalizedMessage));
+        operation.executeInputOnlyOperation(message);
+        done(exchange);
     }
 }

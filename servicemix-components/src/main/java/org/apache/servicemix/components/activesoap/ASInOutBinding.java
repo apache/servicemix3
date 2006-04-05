@@ -17,11 +17,8 @@ package org.apache.servicemix.components.activesoap;
 
 import java.io.StringWriter;
 
-import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -53,33 +50,22 @@ public class ASInOutBinding extends OutBinding {
 
     // Implementation methods
     //-------------------------------------------------------------------------
-    protected void process(MessageExchange messageExchange, NormalizedMessage inMessage) throws MessagingException {
-        try {
+    protected void process(MessageExchange messageExchange, NormalizedMessage inMessage) throws Exception {
+        XMLStreamReader in = marshaler.createStreamReader(inMessage);
 
-            XMLStreamReader in = marshaler.createStreamReader(inMessage);
+        StringWriter buffer = new StringWriter();
+        XMLStreamWriter out = marshaler.createStreamWriter(buffer);
 
-            StringWriter buffer = new StringWriter();
-            XMLStreamWriter out = marshaler.createStreamWriter(buffer);
+        org.codehaus.activesoap.MessageExchange asExchange = service.createMessageExchange(in, out);
+        marshaler.fromNMS(asExchange, inMessage);
 
-            org.codehaus.activesoap.MessageExchange asExchange = service.createMessageExchange(in, out);
-            marshaler.fromNMS(asExchange, inMessage);
+        service.invoke(asExchange);
 
-            service.invoke(asExchange);
+        NormalizedMessage outMessage = messageExchange.createMessage();
 
-            NormalizedMessage outMessage = messageExchange.createMessage();
+        marshaler.setContent(outMessage, buffer.toString());
+        marshaler.toNMS(outMessage, asExchange);
 
-            marshaler.setContent(outMessage, buffer.toString());
-            marshaler.toNMS(outMessage, asExchange);
-
-            answer(messageExchange, outMessage);
-        }
-        catch (XMLStreamException e) {
-            messageExchange.setError(e);
-            messageExchange.setStatus(ExchangeStatus.ERROR);
-        }
-        catch (Exception e) {
-            messageExchange.setError(e);
-            messageExchange.setStatus(ExchangeStatus.ERROR);
-        }
+        answer(messageExchange, outMessage);
     }
 }

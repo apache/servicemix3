@@ -110,16 +110,11 @@ public class DroolsComponent extends OutBinding {
         }
     }
 
-    protected void process(MessageExchange exchange, NormalizedMessage in) throws MessagingException {
-        try {
-            WorkingMemory memory = ruleBase.newWorkingMemory();
-            populateWorkingMemory(memory, exchange, in);
-            memory.fireAllRules();
-            done(exchange);
-        }
-        catch (FactException e) {
-            throw new FactMessagingException(e);
-        }
+    protected void process(MessageExchange exchange, NormalizedMessage in) throws Exception {
+        WorkingMemory memory = ruleBase.newWorkingMemory();
+        populateWorkingMemory(memory, exchange, in);
+        memory.fireAllRules();
+        done(exchange);
     }
 
     protected void populateWorkingMemory(WorkingMemory memory, MessageExchange exchange, NormalizedMessage in) throws MessagingException, FactException {

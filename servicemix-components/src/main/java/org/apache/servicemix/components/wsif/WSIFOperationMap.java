@@ -15,20 +15,20 @@
  */
 package org.apache.servicemix.components.wsif;
 
-import org.apache.servicemix.jbi.NoSuchOperationException;
-import org.apache.wsif.WSIFException;
-import org.apache.wsif.WSIFOperation;
-import org.apache.wsif.WSIFService;
-
-import javax.wsdl.Binding;
-import javax.wsdl.BindingOperation;
-import javax.wsdl.Operation;
-import javax.xml.namespace.QName;
-import javax.jbi.messaging.MessageExchange;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.jbi.messaging.MessageExchange;
+import javax.wsdl.Binding;
+import javax.wsdl.BindingOperation;
+import javax.wsdl.Operation;
+import javax.xml.namespace.QName;
+
+import org.apache.servicemix.jbi.NoSuchOperationException;
+import org.apache.wsif.WSIFException;
+import org.apache.wsif.WSIFService;
 
 /**
  * Maintains a Map of the available operations for the binding.

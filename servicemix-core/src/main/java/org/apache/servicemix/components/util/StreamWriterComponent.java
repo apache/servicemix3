@@ -19,12 +19,10 @@ import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.w3c.dom.Node;
 
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -60,24 +58,19 @@ public class StreamWriterComponent extends OutBinding {
     // -------------------------------------------------------------------------
     
 
-    protected void process(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
-        try {
-            TransformerFactory tFactory = TransformerFactory.newInstance();
-            Transformer transformer = tFactory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            Source content = null;
-            Node document = (Node) message.getProperty(SourceTransformer.CONTENT_DOCUMENT_PROPERTY);
-            if (document != null) {
-                content = new DOMSource(document);
-            }
-            else {
-                content = message.getContent();
-            }
-            transformer.transform(content, new StreamResult(out));
-            done(exchange);
+    protected void process(MessageExchange exchange, NormalizedMessage message) throws Exception {
+        TransformerFactory tFactory = TransformerFactory.newInstance();
+        Transformer transformer = tFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        Source content = null;
+        Node document = (Node) message.getProperty(SourceTransformer.CONTENT_DOCUMENT_PROPERTY);
+        if (document != null) {
+            content = new DOMSource(document);
         }
-        catch (TransformerException e) {
-            throw new MessagingException(e);
+        else {
+            content = message.getContent();
         }
+        transformer.transform(content, new StreamResult(out));
+        done(exchange);
     }
 }

@@ -17,11 +17,9 @@ package org.apache.servicemix.components.email;
 
 import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 
 import org.apache.servicemix.components.util.OutBinding;
-import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 
@@ -61,17 +59,10 @@ public class SimpleMailSender extends OutBinding {
         }
     }
 
-    protected void process(final MessageExchange exchange, final NormalizedMessage message) throws MessagingException {
-        try {
-            SimpleMailMessage email = new SimpleMailMessage();
-            marshaler.prepareMessage(email, exchange, message);
-            sender.send(email);
-            done(exchange);
-        }
-        catch (MailException e) {
-            throw new MessagingException(e);
-        } catch (javax.mail.MessagingException e) {
-            throw new MessagingException(e);
-        }
+    protected void process(final MessageExchange exchange, final NormalizedMessage message) throws Exception {
+        SimpleMailMessage email = new SimpleMailMessage();
+        marshaler.prepareMessage(email, exchange, message);
+        sender.send(email);
+        done(exchange);
     }
 }

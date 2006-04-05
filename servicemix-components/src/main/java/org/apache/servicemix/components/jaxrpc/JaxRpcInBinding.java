@@ -15,12 +15,11 @@
  */
 package org.apache.servicemix.components.jaxrpc;
 
-import org.apache.servicemix.components.util.OutBinding;
-
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.rpc.Call;
+
+import org.apache.servicemix.components.util.OutBinding;
 
 /**
  * @version $Revision$
@@ -29,7 +28,7 @@ public class JaxRpcInBinding extends OutBinding {
     private JaxRpcMarshaler marshaler = new JaxRpcMarshaler();
 
 
-    protected void process(MessageExchange messageExchange, NormalizedMessage inMessage) throws MessagingException {
+    protected void process(MessageExchange messageExchange, NormalizedMessage inMessage) throws Exception {
         Call call = marshaler.createCall(inMessage);
         Object[] params = marshaler.getCallParams(inMessage);
 

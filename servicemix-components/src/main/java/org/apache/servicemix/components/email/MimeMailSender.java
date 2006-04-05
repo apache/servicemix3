@@ -16,7 +16,6 @@
 package org.apache.servicemix.components.email;
 
 import org.apache.servicemix.components.util.OutBinding;
-import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
@@ -64,17 +63,13 @@ public class MimeMailSender extends OutBinding {
         }
     }
 
-    protected void process(final MessageExchange exchange, final NormalizedMessage message) throws javax.jbi.messaging.MessagingException {
+    protected void process(final MessageExchange exchange, final NormalizedMessage message) throws Exception {
         MimeMessagePreparator preparator = new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) throws MessagingException {
                 marshaler.prepareMessage(mimeMessage, exchange, message);
             }
         };
-        try {
-            sender.send(preparator);
-        } catch (MailException e) {
-            throw new javax.jbi.messaging.MessagingException(e);
-        }
+        sender.send(preparator);
         done(exchange);
     }
 }

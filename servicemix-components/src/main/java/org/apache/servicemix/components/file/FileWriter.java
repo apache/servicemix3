@@ -23,7 +23,6 @@ import org.apache.servicemix.components.util.OutBinding;
 
 import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -105,7 +104,7 @@ public class FileWriter extends OutBinding {
         super.init();
     }
 
-    protected void process(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
+    protected void process(MessageExchange exchange, NormalizedMessage message) throws Exception {
         OutputStream out = null;
         try {
             String name = marshaler.getOutputName(exchange, message);
@@ -119,15 +118,6 @@ public class FileWriter extends OutBinding {
             out = new BufferedOutputStream(new FileOutputStream(newFile));
             marshaler.writeMessage(exchange, message, out, name);
             done(exchange);
-        }
-        catch (IOException e) {
-            throw new MessagingException(e);
-        }
-        catch (MessagingException e) {
-        	throw e;
-        }
-        catch (JBIException e) {
-            throw new MessagingException(e);
         }
         finally {
             if (out != null) {

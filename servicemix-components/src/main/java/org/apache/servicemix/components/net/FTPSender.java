@@ -15,6 +15,13 @@
  */
 package org.apache.servicemix.components.net;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
+import javax.jbi.JBIException;
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.NormalizedMessage;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.net.SocketClient;
@@ -22,13 +29,6 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.servicemix.components.util.DefaultFileMarshaler;
 import org.apache.servicemix.components.util.FileMarshaler;
 import org.apache.servicemix.components.util.OutBinding;
-
-import javax.jbi.JBIException;
-import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
-import javax.jbi.messaging.NormalizedMessage;
-import java.io.OutputStream;
-import java.io.IOException;
 
 /**
  * A component which sends a message to a file using FTP via the
@@ -93,7 +93,7 @@ public class FTPSender extends OutBinding {
         super.init();
     }
 
-    protected void process(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
+    protected void process(MessageExchange exchange, NormalizedMessage message) throws Exception {
         FTPClient client = null;
         OutputStream out = null;
         try {
@@ -119,16 +119,10 @@ public class FTPSender extends OutBinding {
                 }
             }
             if (out == null) {
-                throw new MessagingException("No output stream available for output name: " + name + ". Maybe the file already exists?");
+                throw new IOException("No output stream available for output name: " + name + ". Maybe the file already exists?");
             }
             marshaler.writeMessage(exchange, message, out, name);
             done(exchange);
-        }
-        catch (MessagingException e) {
-            throw e;
-        }
-        catch (Exception e) {
-            throw new MessagingException(e);
         }
         finally {
             returnClient(client);
