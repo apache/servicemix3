@@ -512,7 +512,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     }
 
 
-    public synchronized PojoMarshaler getMarshaler() {
+    public PojoMarshaler getMarshaler() {
         if (marshaler == null) {
             marshaler = new DefaultMarshaler();
         }

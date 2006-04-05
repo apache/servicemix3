@@ -83,7 +83,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
     /**
      * @return the content of the message
      */
-    public synchronized Source getContent() {
+    public Source getContent() {
         if (content == null && body != null) {
             try {
                 getMarshaler().marshal(exchange, this, body);
@@ -100,14 +100,14 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
      *
      * @param source
      */
-    public synchronized void setContent(Source source) {
+    public void setContent(Source source) {
         this.content = source;
     }
 
     /**
      * @return the security subject from the message
      */
-    public synchronized Subject getSecuritySubject() {
+    public Subject getSecuritySubject() {
         return securitySubject;
     }
 
@@ -116,7 +116,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
      *
      * @param securitySubject
      */
-    public synchronized void setSecuritySubject(Subject securitySubject) {
+    public void setSecuritySubject(Subject securitySubject) {
         this.securitySubject = securitySubject;
     }
 
@@ -126,7 +126,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
      * @param name
      * @return a property from the message
      */
-    public synchronized Object getProperty(String name) {
+    public Object getProperty(String name) {
         if (properties != null) {
             return properties.get(name);
         }
@@ -136,7 +136,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
     /**
      * @return an iterator of property names
      */
-    public synchronized Set getPropertyNames() {
+    public Set getPropertyNames() {
         if (properties != null) {
             return Collections.unmodifiableSet(properties.keySet());
         }
@@ -149,7 +149,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
      * @param name
      * @param value
      */
-    public synchronized void setProperty(String name, Object value) {
+    public void setProperty(String name, Object value) {
         if (value == null) {
             if (properties != null) {
                 properties.remove(name);
@@ -165,7 +165,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
      * @param id
      * @param content
      */
-    public synchronized void addAttachment(String id, DataHandler content) {
+    public void addAttachment(String id, DataHandler content) {
         getAttachments().put(id, content);
     }
 
@@ -175,7 +175,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
      * @param id
      * @return the specified attachment
      */
-    public synchronized DataHandler getAttachment(String id) {
+    public DataHandler getAttachment(String id) {
         if (attachments != null) {
             return (DataHandler) attachments.get(id);
         }
@@ -185,7 +185,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
     /**
      * @return a list of identifiers for atachments
      */
-    public synchronized Iterator listAttachments() {
+    public Iterator listAttachments() {
         if (attachments != null) {
             return attachments.keySet().iterator();
         }
@@ -197,7 +197,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
      *
      * @param id
      */
-    public synchronized void removeAttachment(String id) {
+    public void removeAttachment(String id) {
         if (attachments != null) {
             attachments.remove(id);
         }
