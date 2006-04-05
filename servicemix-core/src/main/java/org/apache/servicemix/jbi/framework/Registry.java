@@ -91,6 +91,15 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         return RegistryMBean.class;
     }
 
+    
+    public ComponentRegistry getComponentRegistry() {
+        return componentRegistry;
+    }
+
+    public EndpointRegistry getEndpointRegistry() {
+        return endpointRegistry;
+    }
+
     /**
      * start brokering
      * 

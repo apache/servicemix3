@@ -93,6 +93,13 @@ public class EndpointRegistry {
         }
         return asEndpointArray(endpoints);
     }
+    
+    /**
+     * Returns a collection of Endpoint objects
+     */
+    public Collection getEndpointMBeans() {
+        return endpointMBeans.values();
+    }
 
     /**
      * Get all endpoints for a given service
