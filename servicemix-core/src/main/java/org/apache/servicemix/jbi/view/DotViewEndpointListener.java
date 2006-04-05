@@ -53,7 +53,6 @@ public class DotViewEndpointListener extends EndpointViewRenderer implements Con
     }
 
     public void setContainer(JBIContainer container) {
-        System.out.println("####Êregistering container: " + container);
         this.container = container;
     }
 
@@ -72,7 +71,6 @@ public class DotViewEndpointListener extends EndpointViewRenderer implements Con
         if (log.isDebugEnabled()) {
             log.debug("Creating DOT file at: " + file);
         }
-        System.out.println("####Êcreating: " + file);
         PrintWriter writer = new PrintWriter(new FileWriter(file));
         try {
             generateFile(writer);
