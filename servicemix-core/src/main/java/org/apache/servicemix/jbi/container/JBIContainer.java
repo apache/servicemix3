@@ -1113,6 +1113,10 @@ public class JBIContainer extends BaseLifeCycle {
 	}
     
     public void addListener(EventListener listener) {
+        if (listener instanceof ContainerAware) {
+            ContainerAware containerAware = (ContainerAware) listener;
+            containerAware.setContainer(this);
+        }
         if (listener instanceof ExchangeListener) {
             listeners.add(ExchangeListener.class, (ExchangeListener) listener);
         }
@@ -1150,6 +1154,13 @@ public class JBIContainer extends BaseLifeCycle {
     
     public Object[] getListeners(Class lc) {
         return listeners.getListeners(lc);
+    }
+    
+    public void setListeners(EventListener[] listeners) {
+        for (int i = 0; i < listeners.length; i++) {
+            EventListener listener = listeners[i];
+            addListener(listener);
+        }
     }
     
     public void callListeners(MessageExchange exchange) {
