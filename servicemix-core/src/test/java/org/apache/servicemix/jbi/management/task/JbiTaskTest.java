@@ -39,6 +39,7 @@ public class JbiTaskTest extends JbiTaskSupport {
             }
         };
         jbiTask.init();
+        jbiTask.connect();
     }
 
     /*
