@@ -16,6 +16,7 @@
 package org.apache.servicemix.components.http;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -25,9 +26,9 @@ import java.net.URLConnection;
 import javax.xml.namespace.QName;
 
 import org.apache.servicemix.tck.TestSupport;
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.w3c.dom.Node;
-import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
  * @version $Revision$
@@ -35,6 +36,24 @@ import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 public class HttpTest extends TestSupport {
 
     protected String quote = "SUNW";
+    
+    protected void setUp() throws Exception {
+        System.setProperty("javax.net.debug", "all");
+        // The following properties will be used by default if not specified in the xml conf
+        /*
+        System.setProperty("javax.net.ssl.trustStore", getResourceFilePath("client.keystore"));
+        System.setProperty("javax.net.ssl.trustStorePassword", "password");
+        System.setProperty("javax.net.ssl.keyStore", getResourceFilePath("server.keystore"));
+        System.setProperty("javax.net.ssl.keyStorePassword", "password");
+        */
+        super.setUp();
+    }
+    
+    String getResourceFilePath(String resource) throws Exception {
+        URL url = getClass().getResource(resource);
+        File f = new File(url.toURI());
+        return f.toString();
+    }
 
     public void testCurrencyQuotes() throws Exception {
         QName serviceName = new QName("http://servicemix.org/cheese/", "httpSender");

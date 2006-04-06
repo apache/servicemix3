@@ -24,15 +24,21 @@
       <!-- END SNIPPET: binding -->
 
       <sm:activationSpec componentName="httpSender2" service="foo:httpSender2">
-        <sm:component><bean class="org.apache.servicemix.components.http.HttpInvoker">
-          <property name="url" value="http://localhost:8913"/>
+        <sm:component><bean class="org.apache.servicemix.components.http.HttpsInvoker">
+          <property name="url" value="https://localhost:8913"/>
+          <property name="keyStore" value="classpath:org/apache/servicemix/components/http/server.keystore" />
+          <property name="keyStorePassword" value="password" />
+          <property name="trustStore" value="classpath:org/apache/servicemix/components/http/client.keystore" />
+          <property name="trustStorePassword" value="password" />
         </bean></sm:component>
       </sm:activationSpec>
       
       <sm:activationSpec componentName="httpReceiver2" service="foo:httpBinding2" destinationService="foo:stockQuote">
-        <sm:component><bean class="org.apache.servicemix.components.http.HttpConnector">
+        <sm:component><bean class="org.apache.servicemix.components.http.HttpsConnector">
           <property name="host" value="localhost"/>
           <property name="port" value="8913"/>
+          <property name="keyStore" value="classpath:org/apache/servicemix/components/http/server.keystore" />
+          <property name="keyStorePassword" value="password" />
         </bean></sm:component>
       </sm:activationSpec>
       
