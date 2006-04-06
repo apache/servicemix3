@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.framework;
+package org.apache.servicemix.jbi.loaders;
 
+import java.io.File;
+import java.net.URL;
 import java.net.URLClassLoader;
 
 import org.apache.servicemix.jbi.loaders.ParentFirstClassLoader;
@@ -43,5 +45,25 @@ public class ClassLoaderTest extends TestCase {
 		Class  clazz = clsLoader.loadClass(TestClass.class.getName());
 		assertNotSame(TestClass.class, clazz);
 	}
-	
+    
+    public void testParentFirstResource() throws Exception {
+        URLClassLoader pcl = (URLClassLoader) getClass().getClassLoader();
+        URL url = getClass().getResource("jndi.properties");
+        url = new File(url.toURI()).getParentFile().toURL();
+        ClassLoader clsLoader = new ParentFirstClassLoader(new URL[] { url }, pcl);
+        URL res1 = clsLoader.getResource("jndi.properties");
+        URL res2 = pcl.getResource("jndi.properties");
+        assertEquals(res2, res1);
+    }
+    
+    public void testSelfFirstResource() throws Exception {
+        URLClassLoader pcl = (URLClassLoader) getClass().getClassLoader();
+        URL url = getClass().getResource("jndi.properties");
+        url = new File(url.toURI()).getParentFile().toURL();
+        ClassLoader clsLoader = new SelfFirstClassLoader(new URL[] { url }, pcl);
+        URL res1 = clsLoader.getResource("jndi.properties");
+        URL res2 = pcl.getResource("jndi.properties");
+        assertFalse(res2.equals(res1));
+    }
+    
 }
