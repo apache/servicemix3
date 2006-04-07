@@ -68,8 +68,8 @@
       </properties>
     </dependency>
     <dependency>
-      <groupId>activeio</groupId>
-      <artifactId>activeio</artifactId>
+      <groupId>incubator-activemq</groupId>
+      <artifactId>activeio-core</artifactId>
       <version>${activeio_version}</version>
       <properties>
         <war.bundle>true</war.bundle>
