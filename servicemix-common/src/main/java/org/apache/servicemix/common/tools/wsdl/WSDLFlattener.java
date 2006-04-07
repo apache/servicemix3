@@ -167,12 +167,14 @@ public class WSDLFlattener {
             for (Iterator itPart = msg.getParts().values().iterator(); itPart.hasNext();) {
                 Part part = (Part) itPart.next();
                 QName elemName = part.getElementName();
-                namespaces.add(elemName.getNamespaceURI());
-                Schema schema = schemas.getSchema(elemName.getNamespaceURI());
-                if (schema.getImports() != null) {
-                    for (Iterator iter = schema.getImports().iterator(); iter.hasNext();) {
-                        String ns = (String) iter.next();
-                        namespaces.add(ns);
+                if (elemName != null) {
+                    namespaces.add(elemName.getNamespaceURI());
+                    Schema schema = schemas.getSchema(elemName.getNamespaceURI());
+                    if (schema.getImports() != null) {
+                        for (Iterator iter = schema.getImports().iterator(); iter.hasNext();) {
+                            String ns = (String) iter.next();
+                            namespaces.add(ns);
+                        }
                     }
                 }
             }
@@ -221,17 +223,17 @@ public class WSDLFlattener {
     }
 
     private void addNamespaces(Definition flat, Definition def) {
-        for (Iterator itNs = def.getNamespaces().keySet().iterator(); itNs.hasNext();) {
-            String key = (String) itNs.next();
-            String val = def.getNamespace(key);
-            flat.addNamespace(key, val);
-        }
         for (Iterator itImport = def.getImports().values().iterator(); itImport.hasNext();) {
             List defImports = (List) itImport.next();
             for (Iterator iter = defImports.iterator(); iter.hasNext();) {
                 Import defImport = (Import) iter.next();
                 addNamespaces(flat, defImport.getDefinition());
             }
+        }
+        for (Iterator itNs = def.getNamespaces().keySet().iterator(); itNs.hasNext();) {
+            String key = (String) itNs.next();
+            String val = def.getNamespace(key);
+            flat.addNamespace(key, val);
         }
     }
     
