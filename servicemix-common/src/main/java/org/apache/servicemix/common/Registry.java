@@ -40,12 +40,20 @@ public class Registry {
         return (ServiceUnit) this.serviceUnits.get(name);
     }
     
+    public void registerEndpoint(Endpoint ep) {
+        this.endpoints.put(EndpointSupport.getKey(ep), ep);
+    }
+    
+    public void unregisterEndpoint(Endpoint ep) {
+        this.endpoints.remove(EndpointSupport.getKey(ep));
+    }
+    
     public void registerServiceUnit(ServiceUnit su) {
         this.serviceUnits.put(su.getName(), su);
         Collection endpoints = (Collection) su.getEndpoints();
         for (Iterator iter = endpoints.iterator(); iter.hasNext();) {
             Endpoint ep = (Endpoint) iter.next();
-            this.endpoints.put(EndpointSupport.getKey(ep), ep);
+            registerEndpoint(ep);
         }
     }
     
@@ -54,7 +62,7 @@ public class Registry {
         Collection endpoints = (Collection) su.getEndpoints();
         for (Iterator iter = endpoints.iterator(); iter.hasNext();) {
             Endpoint ep = (Endpoint) iter.next();
-            this.endpoints.remove(EndpointSupport.getKey(ep));
+            unregisterEndpoint(ep);
         }
     }
     
