@@ -65,8 +65,8 @@
 
 	<portType name="LoanBroker">
 		<operation name="getLoanQuote">
-			<input message="getLoanQuoteRequest" />
-			<output message="getLoanQuoteResponse" />
+			<input message="tns:getLoanQuoteRequest" />
+			<output message="tns:getLoanQuoteResponse" />
 			<fault name="UnknownSSN" message="tns:unknownSSNFault" />
 			<fault name="InvalidSSN" message="tns:invalidSSNFault" />
 		</operation>
