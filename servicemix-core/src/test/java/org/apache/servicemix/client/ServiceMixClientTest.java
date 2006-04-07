@@ -182,7 +182,7 @@ public class ServiceMixClientTest extends TestCase {
         context = createBeanFactory();
         //context.setXmlValidating(false);
 
-        client = (ServiceMixClient) getBean("client");
+        client = getClient();
 
         // TODO
         //receiver = (Receiver) getBean("receiver");
@@ -190,6 +190,10 @@ public class ServiceMixClientTest extends TestCase {
         SpringJBIContainer jbi = (SpringJBIContainer) getBean("jbi");
         receiver = (Receiver) jbi.getBean("receiver");
         assertNotNull("receiver not found in JBI container", receiver);
+    }
+    
+    protected ServiceMixClient getClient() throws Exception {
+        return (ServiceMixClient) getBean("client");
     }
 
     protected void tearDown() throws Exception {
@@ -208,6 +212,5 @@ public class ServiceMixClientTest extends TestCase {
 
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/client/example.xml");
-
     }
 }

@@ -21,7 +21,6 @@ import org.apache.servicemix.components.util.OutBinding;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 
-import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
@@ -48,7 +47,7 @@ public class SimpleClientTest extends TestCase {
         out = new OutBinding() {
             protected void process(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
                 System.out.println("Received: " + message);
-                exchange.setStatus(ExchangeStatus.DONE);
+                done(exchange);
             }
         };
         ActivationSpec as = new ActivationSpec("out",out);
@@ -73,6 +72,6 @@ public class SimpleClientTest extends TestCase {
         message.setContent(new StreamSource(new StringReader("<hello>world</hello>")));
         QName service = new QName("out");
         exchange.setService(service);
-        client.send(exchange);
+        client.sendSync(exchange);
     }
 }
