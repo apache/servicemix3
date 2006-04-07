@@ -17,7 +17,6 @@ package org.apache.servicemix.bpe;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -37,15 +36,11 @@ import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensionRegistry;
 import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
-
-import org.apache.servicemix.bpe.util.FileSystemJarInputStream;
-import org.apache.servicemix.common.AbstractDeployer;
-import org.apache.servicemix.common.ServiceUnit;
+import javax.wsdl.xml.WSDLWriter;
 
 import org.apache.ode.bpe.bped.DeployTypeEnum;
 import org.apache.ode.bpe.bped.EventDirector;
 import org.apache.ode.bpe.bped.IDeployer;
-import org.apache.ode.bpe.util.BPException;
 import org.apache.ode.bpe.wsdl.extensions.BPEAction;
 import org.apache.ode.bpe.wsdl.extensions.BPEActionSerializer;
 import org.apache.ode.bpe.wsdl.extensions.BPEFault;
@@ -61,6 +56,10 @@ import org.apache.ode.bpe.wsdl.extensions.BPEOutputSerializer;
 import org.apache.ode.bpe.wsdl.extensions.BPEVariableMap;
 import org.apache.ode.bpe.wsdl.extensions.BPEVariableMapSerializer;
 import org.apache.ode.bpe.wsdl.extensions.ExtentionConstants;
+import org.apache.servicemix.bpe.util.FileSystemJarInputStream;
+import org.apache.servicemix.common.AbstractDeployer;
+import org.apache.servicemix.common.ServiceUnit;
+import org.apache.servicemix.common.tools.wsdl.WSDLFlattener;
 import org.w3c.dom.Document;
 
 public class BPEDeployer extends AbstractDeployer {
@@ -89,7 +88,8 @@ public class BPEDeployer extends AbstractDeployer {
             su.setRootPath(serviceUnitRootPath);
 			Definition rootDef = loadMainWsdl(serviceUnitRootPath);
             checkDefinition(rootDef);
-            Document description = WSDLFactory.newInstance().newWSDLWriter().getDocument(rootDef);
+            WSDLWriter writer = WSDLFactory.newInstance().newWSDLWriter();
+            WSDLFlattener flattener = new WSDLFlattener(rootDef);
 			for (Iterator it = rootDef.getServices().values().iterator(); it.hasNext();) {
 				Service svc = (Service) it.next();
 				for (Iterator it2 = svc.getPorts().values().iterator(); it2.hasNext();) {
@@ -99,18 +99,18 @@ public class BPEDeployer extends AbstractDeployer {
 					ep.setInterfaceName(pt.getBinding().getPortType().getQName());
 					ep.setService(svc.getQName());
 					ep.setEndpoint(pt.getName());
-                    ep.setDefinition(rootDef);
-                    ep.setDescription(description);
+                    Definition def = flattener.getDefinition(ep.getInterfaceName());
+                    Document desc = writer.getDocument(def);
+                    ep.setDefinition(def);
+                    ep.setDescription(desc);
                     // Retrieve wsdl
 					su.addEndpoint(ep);
 				}
 			}
 			return su;
-		} catch (BPException e) {
-			throw new DeploymentException(e);
-		} catch (IOException e) {
-			throw new DeploymentException(e);
-		} catch (WSDLException e) {
+		} catch (DeploymentException e) {
+			throw e;
+		} catch (Exception e) {
 			throw new DeploymentException(e);
 		}
 	}
