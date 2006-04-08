@@ -26,7 +26,7 @@ import org.apache.ode.bpe.timerservice.IBPETimer;
 import org.apache.ode.bpe.timerservice.IBPETimerService;
 import org.apache.ode.bpe.util.BPEProperties;
 import org.apache.ode.bpe.util.BPException;
-import org.apache.servicemix.bpe.BPEComponent;
+import org.apache.servicemix.bpe.BPEEndpoint;
 
 public class BPETimerServiceJdk implements IBPETimerService {
 
@@ -41,7 +41,7 @@ public class BPETimerServiceJdk implements IBPETimerService {
         if (log.isDebugEnabled()) {
             log.debug("Schedule timer " + timerEvent + " for " + startDuration);
         }
-        BPETimerJdk tt = new BPETimerJdk(timerEvent, BPEComponent.getCurrent());
+        BPETimerJdk tt = new BPETimerJdk(timerEvent, BPEEndpoint.getCurrent());
         timer.schedule(tt, startDuration);
         return tt;
     }
@@ -50,7 +50,7 @@ public class BPETimerServiceJdk implements IBPETimerService {
         if (log.isDebugEnabled()) {
             log.debug("Schedule timer " + timerEvent + " at " + startTime);
         }
-        BPETimerJdk tt = new BPETimerJdk(timerEvent, BPEComponent.getCurrent());
+        BPETimerJdk tt = new BPETimerJdk(timerEvent, BPEEndpoint.getCurrent());
         timer.schedule(tt, startTime);
         return tt;
     }

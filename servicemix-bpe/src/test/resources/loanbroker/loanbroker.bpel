@@ -84,7 +84,7 @@
 				<bpel:assign>
 					<bpel:copy>
 						<bpel:from variable="request" part="payload" query="/tns:getLoanQuoteRequest/tns:ssn" />
-						<bpel:to variable="ca-score-request" part="payload" query="/ca:getCreditScoreRequest/ca:ssn" />
+						<bpel:to variable="ca-score-request" part="request" query="/ca:getCreditScoreRequest/ca:ssn" />
 					</bpel:copy>
 				</bpel:assign>
 		
@@ -109,7 +109,7 @@
 				<bpel:to variable="bk-loanquote-request" part="payload" query="/bk:getLoanQuoteRequest/bk:duration"/>
 			</bpel:copy>
 			<bpel:copy>
-				<bpel:from variable="ca-score-response" part="payload" query="/ca:getCreditScoreResponse/ca:score" />
+				<bpel:from variable="ca-score-response" part="response" query="/ca:getCreditScoreResponse/ca:score" />
 				<bpel:to variable="bk-loanquote-request" part="payload" query="/bk:getLoanQuoteRequest/bk:score"/>
 			</bpel:copy>
 			<bpel:copy>

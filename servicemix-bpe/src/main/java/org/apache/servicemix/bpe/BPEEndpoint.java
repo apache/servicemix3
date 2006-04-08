@@ -15,6 +15,8 @@
  */
 package org.apache.servicemix.bpe;
 
+import java.util.Map;
+
 import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
@@ -27,12 +29,9 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.messaging.RobustInOnly;
 import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.servicedesc.ServiceEndpoint;
+import javax.wsdl.Operation;
+import javax.wsdl.PortType;
 import javax.xml.transform.dom.DOMSource;
-
-import org.apache.servicemix.common.Endpoint;
-import org.apache.servicemix.common.ExchangeProcessor;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.w3c.dom.Document;
 
 import org.apache.ode.bpe.bped.EventDirector;
 import org.apache.ode.bpe.client.IFormattableValue;
@@ -43,6 +42,10 @@ import org.apache.ode.bpe.interaction.IInteraction;
 import org.apache.ode.bpe.interaction.InvocationFactory;
 import org.apache.ode.bpe.interaction.XMLInteractionObject;
 import org.apache.ode.bpe.scope.service.BPRuntimeException;
+import org.apache.servicemix.common.Endpoint;
+import org.apache.servicemix.common.ExchangeProcessor;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.w3c.dom.Document;
 
 public class BPEEndpoint extends Endpoint implements ExchangeProcessor {
 
@@ -50,6 +53,16 @@ public class BPEEndpoint extends Endpoint implements ExchangeProcessor {
     protected DeliveryChannel channel;
     protected SourceTransformer transformer = new SourceTransformer();
 	
+    private static final ThreadLocal ENDPOINT = new ThreadLocal();
+    
+    public static BPEEndpoint getCurrent() {
+        return (BPEEndpoint) ENDPOINT.get();
+    }
+    
+    public static void setCurrent(BPEEndpoint endpoint) {
+        ENDPOINT.set(endpoint);
+    }
+    
 	public Role getRole() {
 		return Role.PROVIDER;
 	}
@@ -79,6 +92,22 @@ public class BPEEndpoint extends Endpoint implements ExchangeProcessor {
             return;
         }
         
+        String inputPartName = BPEComponent.PART_PAYLOAD;
+        String outputPartName = BPEComponent.PART_PAYLOAD;
+        if (exchange.getOperation() != null) {
+            PortType pt = getDefinition().getPortType(getInterfaceName());
+            Operation oper = pt.getOperation(exchange.getOperation().getLocalPart(), null, null);
+            if (oper.getInput() != null && oper.getInput().getMessage() != null) {
+                Map parts = oper.getInput().getMessage().getParts();
+                inputPartName = (String) parts.keySet().iterator().next(); 
+            }
+            if (oper.getOutput() != null && oper.getOutput().getMessage() != null) {
+                Map parts = oper.getOutput().getMessage().getParts();
+                outputPartName = (String) parts.keySet().iterator().next(); 
+            }
+        }
+        
+        
 		BPELStaticKey bsk = new BPELStaticKey();
 		bsk.setTargetNamespace(getInterfaceName().getNamespaceURI());
 		bsk.setPortType(getInterfaceName().getLocalPart());
@@ -89,18 +118,18 @@ public class BPEEndpoint extends Endpoint implements ExchangeProcessor {
 		msg.setStaticKey(bsk);
 		XMLInteractionObject interaction = new XMLInteractionObject();
 		interaction.setDocument((Document) transformer.toDOMNode(exchange.getMessage("in")));
-		msg.setPart(BPEComponent.PART_PAYLOAD, interaction);
+		msg.setPart(inputPartName, interaction);
         
         EventDirector ed = ((BPEComponent) getServiceUnit().getComponent()).getEventDirector();
         try {
             IResponseMessage response;
             try {
-                BPEComponent.setCurrent((BPEComponent) serviceUnit.getComponent());
+                BPEEndpoint.setCurrent(this);
                 response = ed.sendEvent(msg, true);
             } finally {
-                BPEComponent.setCurrent(null);
+                BPEEndpoint.setCurrent(null);
             }
-            IInteraction payload = response.getPart(BPEComponent.PART_PAYLOAD);
+            IInteraction payload = response.getPart(outputPartName);
             if (response.getFault() != null) {
                 Exception e = response.getFault().getFaultException();
                 if (e != null) {

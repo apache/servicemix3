@@ -29,7 +29,6 @@ import javax.wsdl.BindingOutput;
 import javax.wsdl.Definition;
 import javax.wsdl.Import;
 import javax.wsdl.Message;
-import javax.wsdl.Part;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
 import javax.wsdl.WSDLException;
@@ -87,7 +86,8 @@ public class BPEDeployer extends AbstractDeployer {
             su.setName(serviceUnitName);
             su.setRootPath(serviceUnitRootPath);
 			Definition rootDef = loadMainWsdl(serviceUnitRootPath);
-            checkDefinition(rootDef);
+            checkDefinition(rootDef, true);
+            su.setDefinition(rootDef);
             WSDLWriter writer = WSDLFactory.newInstance().newWSDLWriter();
             WSDLFlattener flattener = new WSDLFlattener(rootDef);
 			for (Iterator it = rootDef.getServices().values().iterator(); it.hasNext();) {
@@ -115,7 +115,7 @@ public class BPEDeployer extends AbstractDeployer {
 		}
 	}
 
-	protected void checkDefinition(Definition rootDef) throws DeploymentException {
+	protected void checkDefinition(Definition rootDef, boolean main) throws DeploymentException {
         // Check that messages have only one part named "payload"
         Collection msgs = rootDef.getMessages().values();
         for (Iterator iter = msgs.iterator(); iter.hasNext();) {
@@ -123,12 +123,6 @@ public class BPEDeployer extends AbstractDeployer {
             if (msg.getParts().size() > 1) {
                 throw failure("deploy", 
                         "WSDL Message '" + msg.getQName() + "' has more than one part", null);
-            } else if (msg.getParts().size() == 1) {
-                Part part = (Part) msg.getParts().values().iterator().next();
-                if (!part.getName().equals(BPEComponent.PART_PAYLOAD)) {
-                    throw failure("deploy", 
-                            "WSDL Message '" + msg.getQName() + "' part should be named 'payload'", null);
-                }
             }
         }
         // Check imported wsdls
@@ -137,7 +131,7 @@ public class BPEDeployer extends AbstractDeployer {
             List imps = (List) iter.next();
             for (Iterator iterator = imps.iterator(); iterator.hasNext();) {
                 Import imp = (Import) iterator.next();
-                checkDefinition(imp.getDefinition());
+                checkDefinition(imp.getDefinition(), false);
             }
         }
     }

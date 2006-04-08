@@ -45,11 +45,11 @@
 	</types>
 
 	<message name="getCreditScoreRequest">
-		<part name="payload" type="typens:getCreditScoreRequest" />
+		<part name="request" type="typens:getCreditScoreRequest" />
 	</message>
 
 	<message name="getCreditScoreResponse">
-		<part name="payload" type="typens:getCreditScoreResponse" />
+		<part name="response" type="typens:getCreditScoreResponse" />
 	</message>
 
 	<message name="getCreditHistoryLengthRequest">

@@ -15,8 +15,26 @@
  */
 package org.apache.servicemix.bpe;
 
+import javax.wsdl.Definition;
+
 import org.apache.servicemix.common.ServiceUnit;
 
 public class BPEServiceUnit extends ServiceUnit {
 
+    private Definition definition;
+
+    /**
+     * @return Returns the definition.
+     */
+    public Definition getDefinition() {
+        return definition;
+    }
+
+    /**
+     * @param definition The definition to set.
+     */
+    public void setDefinition(Definition definition) {
+        this.definition = definition;
+    }
+    
 }

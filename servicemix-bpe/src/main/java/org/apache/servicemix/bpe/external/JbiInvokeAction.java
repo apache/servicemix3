@@ -17,6 +17,8 @@ package org.apache.servicemix.bpe.external;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.jbi.messaging.DeliveryChannel;
@@ -25,6 +27,11 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.wsdl.Definition;
+import javax.wsdl.Fault;
+import javax.wsdl.Operation;
+import javax.wsdl.Part;
+import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
@@ -38,15 +45,16 @@ import org.apache.ode.bpe.client.IFormattableValue;
 import org.apache.ode.bpe.interaction.XMLInteractionObject;
 import org.apache.ode.bpe.scope.service.BPRuntimeException;
 import org.apache.servicemix.bpe.BPEComponent;
+import org.apache.servicemix.bpe.BPEEndpoint;
 import org.apache.servicemix.bpe.BPELifeCycle;
-import org.apache.servicemix.common.ExchangeProcessor;
+import org.apache.servicemix.bpe.BPEServiceUnit;
 import org.apache.servicemix.jbi.jaxp.BytesSource;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class JbiInvokeAction implements IExternalAction, ExchangeProcessor {
+public class JbiInvokeAction implements IExternalAction {
 
     public static final String INTERFACE_NAMESPACE = "interfaceNamespace";
     public static final String INTERFACE_LOCALNAME = "interfaceLocalName";
@@ -66,8 +74,11 @@ public class JbiInvokeAction implements IExternalAction, ExchangeProcessor {
     private QName serviceName;
     private String endpointName;
     private QName operationName;
+    private String inputPartName = BPEComponent.PART_PAYLOAD;
+    private String outputPartName = BPEComponent.PART_PAYLOAD;
     private URI mep;
     private SourceTransformer transformer;
+    private Operation wsdlOperation;
     
 	/**
 	 * Generated serial version UID
@@ -125,6 +136,34 @@ public class JbiInvokeAction implements IExternalAction, ExchangeProcessor {
         }
         String mep = properties.getProperty(MEP);
         if (mep == null) {
+            BPEEndpoint ep = BPEEndpoint.getCurrent();
+            Definition def = ((BPEServiceUnit) ep.getServiceUnit()).getDefinition();
+            PortType pt = def.getPortType(interfaceName);
+            Operation oper = pt != null ? pt.getOperation(operationName.getLocalPart(), null, null) : null;
+            if (oper != null) {
+                boolean output = oper.getOutput() != null && 
+                                 oper.getOutput().getMessage() != null &&
+                                 oper.getOutput().getMessage().getParts().size() > 0;
+                boolean faults = oper.getFaults().size() > 0;
+                if (output) {
+                    mep = "in-out";
+                } else if (faults) {
+                    mep = "robust-in-only";
+                } else {
+                    mep = "in-only";
+                }
+                if (oper.getInput() != null && oper.getInput().getMessage() != null) {
+                    Map parts = oper.getInput().getMessage().getParts();
+                    inputPartName = (String) parts.keySet().iterator().next(); 
+                }
+                if (oper.getOutput() != null && oper.getOutput().getMessage() != null) {
+                    Map parts = oper.getOutput().getMessage().getParts();
+                    outputPartName = (String) parts.keySet().iterator().next(); 
+                }
+                wsdlOperation = oper;
+            }
+        }
+        if (mep == null) {
             mep = "in-out"; 
         }
         this.mep = URI.create("http://www.w3.org/2004/08/wsdl/" + mep);
@@ -135,11 +174,12 @@ public class JbiInvokeAction implements IExternalAction, ExchangeProcessor {
         if (log.isDebugEnabled()) {
             log.debug("execute");
         }
-        Object payload = input.get(BPEComponent.PART_PAYLOAD);
+        Object payload = input.get(inputPartName);
         Source inputSource = getSourceFromPayload(payload);
         // Create and send exchange
         try {
-            BPEComponent component = BPEComponent.getCurrent();
+            BPEEndpoint endpoint = BPEEndpoint.getCurrent();
+            BPEComponent component = (BPEComponent) endpoint.getServiceUnit().getComponent();
             DeliveryChannel channel = ((BPELifeCycle) component.getLifeCycle()).getContext().getDeliveryChannel();
             MessageExchangeFactory factory = channel.createExchangeFactory();
             // TODO: need to configure mep
@@ -168,11 +208,27 @@ public class JbiInvokeAction implements IExternalAction, ExchangeProcessor {
                         channel.send(me);
                     }
                     Element e = fault.getDocumentElement();
-                    BPRuntimeException bpre = new BPRuntimeException(e.getLocalName(), "");
+                    // Try to determine fault name
+                    String faultName = e.getLocalName();
+                    String partName = BPEComponent.PART_PAYLOAD;
+                    QName elemName = new QName(e.getNamespaceURI(), e.getLocalName());
+                    if (wsdlOperation != null) {
+                        for (Iterator itFault = wsdlOperation.getFaults().values().iterator(); itFault.hasNext();) {
+                            Fault f = (Fault) itFault.next();
+                            Part p = (Part) f.getMessage().getParts().values().iterator().next();
+                            if (elemName.equals(p.getTypeName())) {
+                                faultName = f.getName();
+                                partName = p.getName();
+                            }
+                        }
+                    }
+                    BPRuntimeException bpre = new BPRuntimeException(faultName, "");
                     bpre.setNameSpace(e.getNamespaceURI());
                     XMLInteractionObject interaction = new XMLInteractionObject();
                     interaction.setDocument(fault);
-                    bpre.addPartMessage("payload", interaction);
+                    bpre.addPartMessage(partName, interaction);
+                    // TODO: should retrieve part name from WSDL.
+                    // how can we know the fault name ?
                     throw bpre;
                 } else {
                     try {
@@ -180,7 +236,7 @@ public class JbiInvokeAction implements IExternalAction, ExchangeProcessor {
                         if (nm != null) {
                             XMLInteractionObject result = new XMLInteractionObject();
                             result.setDocument((Document) transformer.toDOMNode(nm));
-                            output.put(BPEComponent.PART_PAYLOAD, result);
+                            output.put(outputPartName, result);
                         }
                         me.setStatus(ExchangeStatus.DONE);
                     } catch (Exception e) {
@@ -200,7 +256,7 @@ public class JbiInvokeAction implements IExternalAction, ExchangeProcessor {
         }
         if (log.isDebugEnabled()) {
             log.debug("Request: " + payload);
-            log.debug("Response: " + output.get("payload"));
+            log.debug("Response: " + output.get(outputPartName));
         }
 	}
 

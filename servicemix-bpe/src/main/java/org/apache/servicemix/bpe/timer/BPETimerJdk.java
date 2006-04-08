@@ -21,6 +21,7 @@ import java.util.TimerTask;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.bpe.BPEComponent;
+import org.apache.servicemix.bpe.BPEEndpoint;
 
 import org.apache.ode.bpe.bped.EventDirector;
 import org.apache.ode.bpe.event.ITimerEvent;
@@ -31,11 +32,11 @@ public class BPETimerJdk extends TimerTask implements IBPETimer {
     private static Log log = LogFactory.getLog(BPETimerJdk.class);
     
     private ITimerEvent te;
-    private BPEComponent component;
+    private BPEEndpoint endpoint;
     
-    public BPETimerJdk(ITimerEvent te, BPEComponent component) {
+    public BPETimerJdk(ITimerEvent te, BPEEndpoint endpoint) {
         this.te = te;
-        this.component = component;
+        this.endpoint = endpoint;
     }
 
     public Object getId() {
@@ -51,12 +52,12 @@ public class BPETimerJdk extends TimerTask implements IBPETimer {
             if (log.isDebugEnabled()) {
                 log.debug("Timer " + te + " elapsed at " + new Date());
             }
-            EventDirector ed = component.getEventDirector();
+            EventDirector ed = ((BPEComponent) endpoint.getServiceUnit().getComponent()).getEventDirector();
             try {
-                BPEComponent.setCurrent(component);
+                BPEEndpoint.setCurrent(endpoint);
                 ed.getIInternalEventDirector().sendEvent(this, true);
             } finally {
-                BPEComponent.setCurrent(null);
+                BPEEndpoint.setCurrent(null);
             }
         } catch (Exception e) {
             e.printStackTrace();

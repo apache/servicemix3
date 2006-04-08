@@ -26,16 +26,6 @@ public class BPEComponent extends BaseComponent {
 
     public static String PART_PAYLOAD = "payload";
     
-    private static final ThreadLocal COMPONENT = new ThreadLocal();
-    
-    public static BPEComponent getCurrent() {
-        return (BPEComponent) COMPONENT.get();
-    }
-    
-    public static void setCurrent(BPEComponent component) {
-        COMPONENT.set(component);
-    }
-    
     public BPEComponent() {
     }
     

@@ -59,7 +59,7 @@ public class CreditAgency extends ComponentSupport implements MessageExchangeLis
             } 
             if (!ssn.startsWith("1")) {
                 Fault fault = inOut.createFault();
-                fault.setContent(new StringSource("<InvalidSSN xmlns=\"urn:logicblaze:soa:creditagency\"><ssn>" + ssn + "</ssn></InvalidSSN>"));
+                fault.setContent(new StringSource("<invalidSSNFault xmlns=\"urn:logicblaze:soa:creditagency:types\"><ssn>" + ssn + "</ssn></invalidSSNFault>"));
                 fail(inOut, fault);
             } else {
                 String operation = null;
