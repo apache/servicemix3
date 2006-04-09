@@ -8,6 +8,13 @@
 
 		<sm:activationSpecs>
 
+			<!-- Route the event to a trace component that just outputs the event to the console -->
+			<sm:activationSpec componentName="trace" service="my:trace">
+				<sm:component>
+					<bean class="org.apache.servicemix.components.util.TraceComponent" />
+				</sm:component>
+			</sm:activationSpec>
+
 			<!-- lets kick off a timer  every 5 seconds -->
 			<sm:activationSpec componentName="timer" service="my:timer"
 				destinationService="my:trace">
@@ -31,14 +38,6 @@
 							</map>
 						</property>
 					</bean>
-				</sm:component>
-			</sm:activationSpec>
-
-
-			<!-- Route the event to a trace component that just outputs the event to the console -->
-			<sm:activationSpec componentName="trace" service="my:trace">
-				<sm:component>
-					<bean class="org.apache.servicemix.components.util.TraceComponent" />
 				</sm:component>
 			</sm:activationSpec>
 
