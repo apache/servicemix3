@@ -21,7 +21,9 @@ import org.apache.servicemix.jbi.jaxp.BytesSource;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.InOnlyImpl;
+import org.apache.servicemix.jbi.util.StreamDataSource;
 
+import javax.activation.DataHandler;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
@@ -46,7 +48,7 @@ public class MessageExchangeImplTest extends TestCase {
         NormalizedMessage msg = me.createMessage();
         msg.setProperty("myMsgProp", "myMsgValue");
         msg.setContent(src);
-        //msg.addAttachment("myAttachment", null);
+        msg.addAttachment("myAttachment", new DataHandler(new StreamDataSource(new ByteArrayInputStream("hello".getBytes()))));
         me.setMessage(msg, "in");
         assertNotNull(((NormalizedMessageImpl) msg).getBody());
         
@@ -73,6 +75,7 @@ public class MessageExchangeImplTest extends TestCase {
         assertNotNull(outStr);
         assertNotNull(((NormalizedMessageImpl) msgOut).getBody());
         log.info(outStr);
+        assertNotNull(msgOut.getAttachment("myAttachment"));
     }
 
     

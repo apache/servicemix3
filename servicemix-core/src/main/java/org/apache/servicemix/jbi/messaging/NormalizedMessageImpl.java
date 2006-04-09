@@ -15,14 +15,19 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
-import org.apache.servicemix.client.Message;
-import org.apache.servicemix.jbi.RuntimeJBIException;
-import org.apache.servicemix.jbi.jaxp.BytesSource;
-import org.apache.servicemix.jbi.jaxp.ResourceSource;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.jaxp.StringSource;
+import java.io.ByteArrayOutputStream;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import javax.jbi.messaging.Fault;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
@@ -33,15 +38,14 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import org.apache.servicemix.client.Message;
+import org.apache.servicemix.jbi.RuntimeJBIException;
+import org.apache.servicemix.jbi.jaxp.BytesSource;
+import org.apache.servicemix.jbi.jaxp.ResourceSource;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.util.ByteArrayDataSource;
+import org.apache.servicemix.jbi.util.FileUtil;
 
 /**
  * Represents a JBI NormalizedMessage.
@@ -166,7 +170,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
      * @param content
      */
     public void addAttachment(String id, DataHandler content) {
-        getAttachments().put(id, content);
+        getAttachments().put(id, content.getDataSource());
     }
 
     /**
@@ -177,7 +181,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
      */
     public DataHandler getAttachment(String id) {
         if (attachments != null) {
-            return (DataHandler) attachments.get(id);
+            return new DataHandler((DataSource) attachments.get(id));
         }
         return null;
     }
@@ -295,6 +299,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
      */
     public void writeExternal(ObjectOutput out) throws IOException {
         try {
+            convertAttachments();
             out.writeObject(attachments);
             out.writeObject(properties);
             String src = transformer.toString(content);
@@ -310,6 +315,26 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
             }
         } catch (TransformerException e) {
             throw (IOException) new IOException("Could not transform content to string").initCause(e);
+        }
+    }
+
+    private void convertAttachments() throws IOException {
+        if (attachments != null) {
+            Map newAttachments = createAttachmentsMap();
+            for (Iterator it = attachments.keySet().iterator(); it.hasNext();) {
+                String name = (String) it.next();
+                DataSource ds = (DataSource) attachments.get(name);
+                if (ds instanceof ByteArrayDataSource) {
+                    newAttachments.put(name, ds);
+                } else {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    FileUtil.copyInputStream(ds.getInputStream(), baos);
+                    ByteArrayDataSource bads = new ByteArrayDataSource(baos.toByteArray(), ds.getContentType());
+                    bads.setName(ds.getName());
+                    newAttachments.put(name, bads);
+                }
+            }
+            attachments = newAttachments;
         }
     }
 
