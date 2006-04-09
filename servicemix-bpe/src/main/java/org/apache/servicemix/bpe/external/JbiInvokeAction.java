@@ -227,8 +227,6 @@ public class JbiInvokeAction implements IExternalAction {
                     XMLInteractionObject interaction = new XMLInteractionObject();
                     interaction.setDocument(fault);
                     bpre.addPartMessage(partName, interaction);
-                    // TODO: should retrieve part name from WSDL.
-                    // how can we know the fault name ?
                     throw bpre;
                 } else {
                     try {
