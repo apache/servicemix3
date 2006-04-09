@@ -29,7 +29,7 @@
   <name>ServiceMix</name>
   <id>servicemix</id>
   <groupId>incubator-servicemix</groupId>
-  <currentVersion>3.0-SNAPSHOT</currentVersion>
+  <currentVersion>3.0-M1</currentVersion>
 
   <organization>
       <name>Apache Software Foundation</name>
@@ -170,6 +170,11 @@
       <id>2.0.1</id>
       <name>2.0.1</name>
       <tag>SERVICEMIX_2_0_1</tag>
+    </version>
+    <version>
+      <id>3.0-M1</id>
+      <name>3.0-M1</name>
+      <tag>SERVICEMIX_3_0_M1</tag>
     </version>
   </versions>
   <branches>
