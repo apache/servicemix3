@@ -845,7 +845,7 @@ public class JBIContainer extends BaseLifeCycle {
         if (id == null) {
             throw new IllegalArgumentException("A Registration must have an ID");
         }
-        if (activationSpec.getEndpoint() == null) {
+        if (activationSpec.getEndpoint() == null && activationSpec.getService() != null) {
             // lets default to the ID
             activationSpec.setEndpoint(id);
         }

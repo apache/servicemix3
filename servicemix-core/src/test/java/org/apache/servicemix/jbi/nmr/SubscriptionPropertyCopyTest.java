@@ -102,6 +102,7 @@ public class SubscriptionPropertyCopyTest extends TestCase {
 		ActivationSpec as = new ActivationSpec(id, component);
 		SubscriptionSpec ss = new SubscriptionSpec();
 		ss.setService(SenderComponent.SERVICE);
+        as.setEndpoint(id);
 		as.setSubscriptions(new SubscriptionSpec[] { ss }); 
 		return as;
 	}
