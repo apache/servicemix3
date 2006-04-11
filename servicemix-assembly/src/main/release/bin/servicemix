@@ -75,7 +75,7 @@ unlimitFD() {
             fi
             
             ulimit -n $MAX_FD
-            echo "ulimit -n" `ulimit -n`
+            # echo "ulimit -n" `ulimit -n`
             if [ $? -ne 0 ]; then
                 warn "Could not set maximum file descriptor limit: $MAX_FD"
             fi
