@@ -40,6 +40,11 @@ import java.util.Iterator;
  */
 public class HttpMarshaler extends MarshalerSupport {
 
+    public static final String REMOTE_ADDRESS = "REMOTE_ADDR";
+    public static final String REMOTE_HOST = "REMOTE_HOST";
+    public static final String REMOTE_USER = "REMOTE_USER";
+    public static final String REQUEST_URI = "REQUEST_URI";
+    
     protected static final Source EMPTY_CONTENT = new StringSource("<payload/>");
 
     private String contentType = "text/xml";
@@ -89,6 +94,10 @@ public class HttpMarshaler extends MarshalerSupport {
             String value = request.getHeader(name);
             exchange.setProperty(name, value);
         }
+        exchange.setProperty(REMOTE_ADDRESS, request.getRemoteAddr());
+        exchange.setProperty(REMOTE_HOST, request.getRemoteHost());
+        exchange.setProperty(REMOTE_USER, request.getRemoteUser());
+        exchange.setProperty(REQUEST_URI, request.getRequestURL());
     }
     
     protected void addHttpHeaders(HttpServletResponse response, NormalizedMessage normalizedMessage) {
@@ -107,8 +116,8 @@ public class HttpMarshaler extends MarshalerSupport {
      */
     protected boolean shouldIncludeHeader(NormalizedMessage normalizedMessage, String name, Object value) {
         return value instanceof String && 
-        		!"Content-Length".equalsIgnoreCase(name) &&
-        		!"Content-Type".equalsIgnoreCase(name);
+                !"Content-Length".equalsIgnoreCase(name) &&
+                !"Content-Type".equalsIgnoreCase(name);
     }
 
 }
