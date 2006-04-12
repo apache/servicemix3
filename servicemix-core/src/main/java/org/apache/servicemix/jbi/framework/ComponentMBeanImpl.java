@@ -279,7 +279,13 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
             init();
         }
         if (!isStarted()) {
-            getLifeCycle().start();
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(getLifeCycle().getClass().getClassLoader());
+                getLifeCycle().start();
+            } finally {
+                Thread.currentThread().setContextClassLoader(loader);
+            }
             super.start();
             initServiceAssemblies();
             startServiceAssemblies();
@@ -296,7 +302,13 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
     public void doStop() throws javax.jbi.JBIException {
         if (isUnknown() || isStarted()) {
             stopServiceAssemblies();
-	        getLifeCycle().stop();
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(getLifeCycle().getClass().getClassLoader());
+                getLifeCycle().stop();
+            } finally {
+                Thread.currentThread().setContextClassLoader(loader);
+            }
 	        super.stop();
         }
         fireEvent(ComponentEvent.COMPONENT_STOPPED);
@@ -313,7 +325,13 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
         if (!isUnknown() && !isShutDown()) {
             doStop();
             shutDownServiceAssemblies();
-            getLifeCycle().shutDown();
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(getLifeCycle().getClass().getClassLoader());
+                getLifeCycle().shutDown();
+            } finally {
+                Thread.currentThread().setContextClassLoader(loader);
+            }
             if (getDeliveryChannel() != null) {
                 getDeliveryChannel().close();
                 setDeliveryChannel(null);
