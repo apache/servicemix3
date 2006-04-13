@@ -138,7 +138,7 @@ detectJVM() {
    else
        JVM_VENDOR="SUN"
    fi
-   echo "JVM vendor is $JVM_VENDOR"
+   # echo "JVM vendor is $JVM_VENDOR"
 }
 setupDebugOptions() {
     if [ "x$JAVA_OPTS" = "x" ]; then
@@ -255,16 +255,16 @@ run() {
     fi
     
     # Execute the Java Virtual Machine
-    echo $JAVA \
-        $JAVA_OPTS \
-        $SERVICEMIX_OPTS \
-        -classpath "$CLASSPATH" \
-        -Dclassworlds.conf="$CLASSWORLDS_CONF" \
-        -Dservicemix.home="$SERVICEMIX_HOME" \
-        -Dcygwin.user.home="$CYGHOME" \
-        -Djava.endorsed.dirs="$SERVICEMIX_HOME/lib/endorsed" \
-        org.codehaus.classworlds.Launcher \
-        "$@"        
+    # echo $JAVA \
+    #     $JAVA_OPTS \
+    #     $SERVICEMIX_OPTS \
+    #     -classpath "$CLASSPATH" \
+    #     -Dclassworlds.conf="$CLASSWORLDS_CONF" \
+    #     -Dservicemix.home="$SERVICEMIX_HOME" \
+    #     -Dcygwin.user.home="$CYGHOME" \
+    #     -Djava.endorsed.dirs="$SERVICEMIX_HOME/lib/endorsed" \
+    #     org.codehaus.classworlds.Launcher \
+    #     "$@"        
     exec $JAVA \
         $JAVA_OPTS \
         $SERVICEMIX_OPTS \
