@@ -47,10 +47,14 @@ import org.apache.activemq.command.ConsumerInfo;
 import org.apache.activemq.command.RemoveInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.JbiConstants;
+import org.apache.servicemix.jbi.event.ComponentAdapter;
+import org.apache.servicemix.jbi.event.ComponentEvent;
+import org.apache.servicemix.jbi.event.ComponentListener;
 import org.apache.servicemix.jbi.event.EndpointAdapter;
 import org.apache.servicemix.jbi.event.EndpointEvent;
 import org.apache.servicemix.jbi.event.EndpointListener;
-import org.apache.servicemix.jbi.framework.ComponentNameSpace;
+import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.Broker;
 import org.apache.servicemix.jbi.nmr.flow.AbstractFlow;
@@ -104,6 +108,8 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
     private AtomicBoolean started = new AtomicBoolean(false);
 
     private EndpointListener endpointListener;
+    
+    private ComponentListener componentListener;
 
     /**
      * The type of Flow
@@ -216,6 +222,16 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
             }
         };
         broker.getContainer().addListener(endpointListener);
+        // Create and register component listener
+        componentListener = new ComponentAdapter() {
+            public void componentStarted(ComponentEvent event) {
+                onComponentStarted(event);
+            }
+            public void componentStopped(ComponentEvent event) {
+                onComponentStopped(event);
+            }
+        };
+        broker.getContainer().addListener(componentListener);
         try {
             if (connectionFactory == null) {
                 if (jmsURL != null) {
@@ -285,6 +301,13 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
                 });
 
                 // Start queue consumers for all components
+                for (Iterator it = broker.getRegistry().getComponents().iterator(); it.hasNext();) {
+                    ComponentMBeanImpl cmp = (ComponentMBeanImpl) it.next();
+                    if (cmp.isStarted()) {
+                        onComponentStarted(new ComponentEvent(cmp, ComponentEvent.COMPONENT_STARTED));
+                    }
+                }
+                // Start queue consumers for all endpoints
                 ServiceEndpoint[] endpoints = broker.getRegistry().getEndpointsForInterface(null);
                 for (int i = 0; i < endpoints.length; i++) {
                     if (endpoints[i] instanceof InternalEndpoint && ((InternalEndpoint) endpoints[i]).isLocal()) {
@@ -328,6 +351,8 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
         stop();
         // Remove endpoint listener
         broker.getContainer().removeListener(endpointListener);
+        // Remove component listener
+        broker.getContainer().removeListener(componentListener);
         if (this.connection != null) {
             try {
                 this.connection.close();
@@ -384,6 +409,35 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
             log.error("Cannot destroy consumer for " + event, e);
         }
     }
+    
+    public void onComponentStarted(ComponentEvent event) {
+        if (!started.get()) {
+            return;
+        }
+        try {
+            String key = event.getComponent().getName();
+            if (!consumerMap.containsKey(key)) {
+                Queue queue = inboundSession.createQueue(INBOUND_PREFIX + key);
+                MessageConsumer consumer = inboundSession.createConsumer(queue);
+                consumer.setMessageListener(this);
+                consumerMap.put(key, consumer);
+            }
+        } catch (Exception e) {
+            log.error("Cannot create consumer for component " + event.getComponent().getName(), e);
+        }
+    }
+    
+    public void onComponentStopped(ComponentEvent event) {
+        try {
+            String key = event.getComponent().getName();
+            MessageConsumer consumer = (MessageConsumer) consumerMap.remove(key);
+            if (consumer != null) {
+                consumer.close();
+            }
+        } catch (Exception e) {
+            log.error("Cannot destroy consumer for component " + event.getComponent().getName(), e);
+        }
+    }
 
     public void onRemoteEndpointRegistered(EndpointEvent event) {
         log.info(broker.getContainerName() + ": adding remote endpoint: " + event.getEndpoint());
@@ -416,11 +470,23 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
         try {
             String destination;
             if (me.getRole() == Role.PROVIDER) {
-                destination = INBOUND_PREFIX + me.getEndpoint().getServiceName() + me.getEndpoint().getEndpointName();
+                if (me.getDestinationId() == null) {
+                    destination = INBOUND_PREFIX + me.getEndpoint().getServiceName() + me.getEndpoint().getEndpointName();
+                } else if (Boolean.TRUE.equals(me.getProperty(JbiConstants.STATELESS_PROVIDER)) && !isSynchronous(me)) {
+                    destination = INBOUND_PREFIX + me.getDestinationId().getName();
+                } else {
+                    destination = INBOUND_PREFIX + me.getDestinationId().getContainerName();
+                }
             } else {
-                ComponentNameSpace id = me.getRole() == Role.PROVIDER ? me.getDestinationId() : me.getSourceId();
-                destination = INBOUND_PREFIX + id.getContainerName();
+                if (me.getSourceId() == null) {
+                    throw new IllegalStateException("No sourceId set on the exchange");
+                } else if (Boolean.TRUE.equals(me.getProperty(JbiConstants.STATELESS_CONSUMER)) && !isSynchronous(me)) {
+                    destination = INBOUND_PREFIX + me.getSourceId().getName();
+                } else {
+                    destination = INBOUND_PREFIX + me.getSourceId().getContainerName();
+                }
             }
+                
             Queue queue = inboundSession.createQueue(destination);
             ObjectMessage msg = inboundSession.createObjectMessage(me);
             queueProducer.send(queue, msg);

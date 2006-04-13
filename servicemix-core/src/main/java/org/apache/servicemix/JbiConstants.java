@@ -32,5 +32,9 @@ public interface JbiConstants {
     String DATESTAMP_PROPERTY_NAME = "org.apache.servicemix.datestamp";
     
     String FLOW_PROPERTY_NAME = "org.apache.servicemix.flow";
-	
+    
+    String STATELESS_CONSUMER = " org.apache.servicemix.consumer.stateless";
+    
+    String STATELESS_PROVIDER = " org.apache.servicemix.provider.stateless";
+    
 }

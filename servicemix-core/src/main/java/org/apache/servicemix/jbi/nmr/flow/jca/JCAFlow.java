@@ -61,11 +61,14 @@ import org.apache.geronimo.connector.outbound.connectionmanagerconfig.SinglePool
 import org.apache.geronimo.connector.outbound.connectionmanagerconfig.XATransactions;
 import org.apache.geronimo.connector.work.GeronimoWorkManager;
 import org.apache.geronimo.transaction.context.TransactionContextManager;
+import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
+import org.apache.servicemix.jbi.event.ComponentAdapter;
+import org.apache.servicemix.jbi.event.ComponentEvent;
+import org.apache.servicemix.jbi.event.ComponentListener;
 import org.apache.servicemix.jbi.event.EndpointAdapter;
 import org.apache.servicemix.jbi.event.EndpointEvent;
 import org.apache.servicemix.jbi.event.EndpointListener;
-import org.apache.servicemix.jbi.framework.ComponentNameSpace;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.Broker;
 import org.apache.servicemix.jbi.nmr.flow.AbstractFlow;
@@ -109,6 +112,8 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
     private MessageConsumer advisoryConsumer;
 
     private EndpointListener endpointListener;
+
+    private ComponentListener componentListener;
 
     /**
      * The type of Flow
@@ -240,6 +245,16 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
             }
         };
         broker.getContainer().addListener(endpointListener);
+        // Create and register component listener
+        componentListener = new ComponentAdapter() {
+            public void componentStarted(ComponentEvent event) {
+                onComponentStarted(event);
+            }
+            public void componentStopped(ComponentEvent event) {
+                onComponentStopped(event);
+            }
+        };
+        broker.getContainer().addListener(componentListener);
         try {
         	resourceAdapter = createResourceAdapter();
         	
@@ -348,6 +363,8 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
         stop();
         // Remove endpoint listener
         broker.getContainer().removeListener(endpointListener);
+        // Remove component listener
+        broker.getContainer().removeListener(componentListener);
         // Destroy connectors
         while (!connectorMap.isEmpty()) {
         	JCAConnector connector = (JCAConnector) connectorMap.remove(connectorMap.keySet().iterator().next());
@@ -445,6 +462,41 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
         }
     }
     
+    public void onComponentStarted(ComponentEvent event) {
+        if (!started.get()) {
+            return;
+        }
+        try {
+            String key = event.getComponent().getName();
+            if(!connectorMap.containsKey(key)){
+                ActiveMQActivationSpec ac = new ActiveMQActivationSpec();
+                ac.setDestinationType("javax.jms.Queue");
+                ac.setDestination(INBOUND_PREFIX + key);
+                JCAConnector connector = new JCAConnector();
+                connector.setBootstrapContext(getBootstrapContext());
+                connector.setActivationSpec(ac);
+                connector.setResourceAdapter(resourceAdapter);
+                connector.setEndpointFactory(new SingletonEndpointFactory(this, getTransactionManager()));
+                connector.afterPropertiesSet();
+                connectorMap.put(key, connector);
+            }
+        } catch (Exception e) {
+            log.error("Cannot create consumer for component " + event.getComponent().getName(), e);
+        }
+    }
+    
+    public void onComponentStopped(ComponentEvent event) {
+        try {
+            String key = event.getComponent().getName();
+            JCAConnector connector = (JCAConnector) connectorMap.remove(key);
+            if (connector != null){
+                connector.destroy();
+            }
+        } catch (Exception e) {
+            log.error("Cannot destroy consumer for component " + event.getComponent().getName(), e);
+        }
+    }
+
     public void onRemoteEndpointRegistered(EndpointEvent event) {
         log.info(broker.getContainerName() + ": adding remote endpoint: " + event.getEndpoint());
         broker.getRegistry().registerRemoteEndpoint(event.getEndpoint());
@@ -476,10 +528,21 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
         try {
             String destination;
             if (me.getRole() == Role.PROVIDER) {
-                destination = INBOUND_PREFIX + me.getEndpoint().getServiceName() + me.getEndpoint().getEndpointName();
+                if (me.getDestinationId() == null) {
+                    destination = INBOUND_PREFIX + me.getEndpoint().getServiceName() + me.getEndpoint().getEndpointName();
+                } else if (Boolean.TRUE.equals(me.getProperty(JbiConstants.STATELESS_PROVIDER)) && !isSynchronous(me)) {
+                    destination = INBOUND_PREFIX + me.getDestinationId().getName();
+                } else {
+                    destination = INBOUND_PREFIX + me.getDestinationId().getContainerName();
+                }
             } else {
-                ComponentNameSpace id = me.getRole() == Role.PROVIDER ? me.getDestinationId() : me.getSourceId();
-                destination = INBOUND_PREFIX + id.getContainerName();
+                if (me.getSourceId() == null) {
+                    throw new IllegalStateException("No sourceId set on the exchange");
+                } else if (Boolean.TRUE.equals(me.getProperty(JbiConstants.STATELESS_CONSUMER)) && !isSynchronous(me)) {
+                    destination = INBOUND_PREFIX + me.getSourceId().getName();
+                } else {
+                    destination = INBOUND_PREFIX + me.getSourceId().getContainerName();
+                }
             }
             sendJmsMessage(new ActiveMQQueue(destination), me, isPersistent(me), me.isTransacted());
         } catch (JMSException e) {

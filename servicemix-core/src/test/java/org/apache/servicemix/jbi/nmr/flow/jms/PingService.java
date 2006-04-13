@@ -34,7 +34,8 @@ public class PingService extends ComponentSupport implements MessageExchangeList
             NormalizedMessage out=exchange.createMessage();
             out.setContent(new StringSource("<response>Ping back at ya!</response>"));
             System.out.println("SENDING RESPONSE; exchange.status="+exchange.getStatus());
-            answer(exchange,out);
+            exchange.setMessage(out, "out");
+            getDeliveryChannel().sendSync(exchange);
             System.out.println("RESPONSE SENT; exchange.status="+exchange.getStatus());
         } else {
             System.out.println("GOT A MESSAGE; exchange.status="+exchange.getStatus());
