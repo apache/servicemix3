@@ -33,8 +33,8 @@ public interface JbiConstants {
     
     String FLOW_PROPERTY_NAME = "org.apache.servicemix.flow";
     
-    String STATELESS_CONSUMER = " org.apache.servicemix.consumer.stateless";
+    String STATELESS_CONSUMER = "org.apache.servicemix.consumer.stateless";
     
-    String STATELESS_PROVIDER = " org.apache.servicemix.provider.stateless";
+    String STATELESS_PROVIDER = "org.apache.servicemix.provider.stateless";
     
 }
