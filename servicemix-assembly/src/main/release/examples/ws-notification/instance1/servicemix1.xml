@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
+	   xmlns:amq="http://activemq.org/config/1.0"
+	   xmlns:test="http://servicemix.org/test">
+
+  <!-- the JBI container -->
+  <sm:container id="jbi" 
+                name="wsn1"
+                embedded="true"
+                MBeanServer="#mbeanServer">
+  <sm:flow>
+    <bean class="org.apache.servicemix.jbi.nmr.flow.jms.JMSFlow">
+      <property name="connectionFactory" ref="connectionFactory" />
+    </bean>
+  </sm:flow>
+
+    <sm:activationSpecs />
+
+  </sm:container>
+  
+  <!-- JMX server and connector -->
+  <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean"/>
+  
+  <bean id="registry" class="mx4j.tools.naming.NamingService" init-method="start">
+    <property name="port" value="1091"/>
+  </bean>
+  
+  <bean id="serverConnector" class="org.springframework.jmx.support.ConnectorServerFactoryBean" depends-on="registry">
+    <property name="objectName" value="connector:name=rmi"/>
+    <property name="serviceUrl" value="service:jmx:rmi:///jndi/rmi://localhost:1091/jmxrmi"/>
+    <property name="threaded" value="true"/>
+    <property name="daemon" value="true"/>
+  </bean>
+
+  <bean id="connectionFactory" 
+        class="org.apache.activemq.ActiveMQConnectionFactory">
+    <property name="brokerURL" value="peer://localhost/wsnbroker1?broker.persistent=false" />
+  </bean>
+ 
+<!-- 
+  <amq:broker id="broker" depends-on="mbeanServer" persistent="false">
+
+    <amq:transportConnectors>
+      <amq:transportConnector uri="tcp://localhost:61611" discoveryUri="multicast://default"/>
+    </amq:transportConnectors>
+
+  </amq:broker>
+-->  
+
+
+</beans>
