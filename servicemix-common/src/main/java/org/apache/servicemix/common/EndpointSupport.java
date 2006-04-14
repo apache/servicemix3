@@ -18,17 +18,11 @@ package org.apache.servicemix.common;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
+
 public class EndpointSupport {
 
     public static String getKey(QName service, String endpoint) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("{");
-        sb.append(service.getNamespaceURI());
-        sb.append("}");
-        sb.append(service.getLocalPart());
-        sb.append(":");
-        sb.append(endpoint);
-        return sb.toString();
+        return org.apache.servicemix.jbi.servicedesc.EndpointSupport.getKey(service, endpoint);
     }
     
     public static String getKey(ServiceEndpoint endpoint) {

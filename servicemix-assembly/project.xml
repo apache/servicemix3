@@ -154,6 +154,16 @@
     </dependency>
     <dependency>
       <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-eip</artifactId>
+      <version>${pom.currentVersion}</version>
+      <type>zip</type>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+        <component>true</component>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-gbean</artifactId>
       <version>${pom.currentVersion}</version>
       <properties>

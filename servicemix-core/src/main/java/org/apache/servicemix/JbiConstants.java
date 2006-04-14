@@ -15,6 +15,7 @@
  */
 package org.apache.servicemix;
 
+
 public interface JbiConstants {
 
     String SEND_SYNC = "javax.jbi.messaging.sendSync";
@@ -36,5 +37,7 @@ public interface JbiConstants {
     String STATELESS_CONSUMER = "org.apache.servicemix.consumer.stateless";
     
     String STATELESS_PROVIDER = "org.apache.servicemix.provider.stateless";
+    
+    String SENDER_ENDPOINT = "org.apache.servicemix.senderEndpoint";
     
 }

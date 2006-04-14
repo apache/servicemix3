@@ -35,6 +35,7 @@ import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
 import org.apache.commons.logging.Log;
+import org.apache.servicemix.JbiConstants;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
@@ -373,7 +374,16 @@ public class BaseLifeCycle implements ComponentLifeCycle {
             }
             processor.process(exchange);
         } else {
-            ExchangeProcessor processor = (ExchangeProcessor) processors.remove(exchange.getExchangeId());
+            ExchangeProcessor processor = null;
+            if (exchange.getProperty(JbiConstants.SENDER_ENDPOINT) != null) {
+                String key = exchange.getProperty(JbiConstants.SENDER_ENDPOINT).toString();
+                Endpoint ep = (Endpoint) this.component.getRegistry().getEndpoint(key);
+                if (ep != null) {
+                    processor = ep.getProcessor();
+                }
+            } else {
+                processor = (ExchangeProcessor) processors.remove(exchange.getExchangeId());
+            }
             if (processor == null) {
                 throw new IllegalStateException("No processor found for: " + exchange.getExchangeId());
             }
@@ -381,11 +391,31 @@ public class BaseLifeCycle implements ComponentLifeCycle {
         }
     }
 
+    /**
+     * 
+     * @param exchange
+     * @param processor
+     * @throws MessagingException
+     * @deprecated use sendConsumerExchange(MessageExchange, Endpoint) instead
+     */
     public void sendConsumerExchange(MessageExchange exchange, ExchangeProcessor processor) throws MessagingException {
-        // If this is a DONE status, no answer is expected
-        if (exchange.getStatus() != ExchangeStatus.DONE) {
+        // If the exchange is not ACTIVE, no answer is expected
+        if (exchange.getStatus() == ExchangeStatus.ACTIVE) {
             processors.put(exchange.getExchangeId(), processor);
         }
+        channel.send(exchange);
+    }
+    
+    /**
+     * This method allows the component to keep no state in memory so that
+     * components can be clustered and provide fail-over and load-balancing.
+     * @param exchange
+     * @param endpoint
+     * @throws MessagingException
+     */
+    public void sendConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException {
+        String key = EndpointSupport.getKey(endpoint);
+        exchange.setProperty(JbiConstants.SENDER_ENDPOINT, key);
         channel.send(exchange);
     }
 

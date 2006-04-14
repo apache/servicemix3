@@ -72,6 +72,7 @@ import org.apache.servicemix.jbi.event.EndpointListener;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.Broker;
 import org.apache.servicemix.jbi.nmr.flow.AbstractFlow;
+import org.apache.servicemix.jbi.servicedesc.EndpointSupport;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 import org.jencks.JCAConnector;
 import org.jencks.SingletonEndpointFactory;
@@ -422,7 +423,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
             return;
         }
         try {
-            String key = event.getEndpoint().getServiceName() + event.getEndpoint().getEndpointName();
+            String key = EndpointSupport.getKey(event.getEndpoint());
             if(!connectorMap.containsKey(key)){
                 ActiveMQActivationSpec ac = new ActiveMQActivationSpec();
                 ac.setDestinationType("javax.jms.Queue");
@@ -447,7 +448,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
     
     public void onInternalEndpointUnregistered(EndpointEvent event, boolean broadcast) {
         try{
-            String key = event.getEndpoint().getServiceName() + event.getEndpoint().getEndpointName();
+            String key = EndpointSupport.getKey(event.getEndpoint());
             JCAConnector connector=(JCAConnector) connectorMap.remove(key);
             if(connector!=null){
                 connector.destroy();
@@ -529,7 +530,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
             String destination;
             if (me.getRole() == Role.PROVIDER) {
                 if (me.getDestinationId() == null) {
-                    destination = INBOUND_PREFIX + me.getEndpoint().getServiceName() + me.getEndpoint().getEndpointName();
+                    destination = INBOUND_PREFIX + EndpointSupport.getKey(me.getEndpoint());
                 } else if (Boolean.TRUE.equals(me.getProperty(JbiConstants.STATELESS_PROVIDER)) && !isSynchronous(me)) {
                     destination = INBOUND_PREFIX + me.getDestinationId().getName();
                 } else {
@@ -539,7 +540,15 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
                 if (me.getSourceId() == null) {
                     throw new IllegalStateException("No sourceId set on the exchange");
                 } else if (Boolean.TRUE.equals(me.getProperty(JbiConstants.STATELESS_CONSUMER)) && !isSynchronous(me)) {
-                    destination = INBOUND_PREFIX + me.getSourceId().getName();
+                    // If the consumer is stateless and has specified a sender endpoint,
+                    // this exchange will be sent to the given endpoint queue, so that
+                    // This property must have been created using EndpointSupport.getKey
+                    // fail-over and load-balancing can be achieved
+                    if (me.getProperty(JbiConstants.SENDER_ENDPOINT) != null) {
+                        destination = INBOUND_PREFIX + me.getProperty(JbiConstants.SENDER_ENDPOINT);
+                    } else {
+                        destination = INBOUND_PREFIX + me.getSourceId().getName();
+                    }
                 } else {
                     destination = INBOUND_PREFIX + me.getSourceId().getContainerName();
                 }
