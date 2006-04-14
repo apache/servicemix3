@@ -118,10 +118,18 @@
       <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-wsn2005</artifactId>
       <version>${pom.currentVersion}</version>
-      <type>zip</type>
+      <type>jar</type>
       <properties>
-        <eclipse.dependency>true</eclipse.dependency>
-        <component>true</component>
+        <optional>true</optional>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-common</artifactId>
+      <version>${pom.currentVersion}</version>
+      <type>jar</type>
+      <properties>
+        <optional>true</optional>
       </properties>
     </dependency>
     <dependency>
@@ -826,6 +834,14 @@
       <groupId>classworlds</groupId>
       <artifactId>classworlds</artifactId>
       <version>${classworlds_version}</version>
+      <properties>
+        <lib>true</lib>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit_version}</version>
       <properties>
         <lib>true</lib>
       </properties>
