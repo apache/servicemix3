@@ -118,6 +118,16 @@
       <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-wsn2005</artifactId>
       <version>${pom.currentVersion}</version>
+      <type>zip</type>
+      <properties>
+        <eclipse.dependency>true</eclipse.dependency>
+        <component>true</component>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-wsn2005</artifactId>
+      <version>${pom.currentVersion}</version>
       <type>jar</type>
       <properties>
         <optional>true</optional>
