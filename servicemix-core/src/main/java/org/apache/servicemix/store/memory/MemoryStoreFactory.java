@@ -31,7 +31,7 @@ public class MemoryStoreFactory implements StoreFactory {
     /* (non-Javadoc)
      * @see org.apache.servicemix.store.ExchangeStoreFactory#get(java.lang.String)
      */
-    public synchronized Store get(String name) throws IOException {
+    public synchronized Store open(String name) throws IOException {
         MemoryStore store = (MemoryStore) stores.get(name);
         if (store == null) {
             store = new MemoryStore(idGenerator);
@@ -43,9 +43,8 @@ public class MemoryStoreFactory implements StoreFactory {
     /* (non-Javadoc)
      * @see org.apache.servicemix.store.ExchangeStoreFactory#release(org.apache.servicemix.store.ExchangeStore)
      */
-    public synchronized void release(Store store) throws IOException {
+    public synchronized void close(Store store) throws IOException {
         stores.remove(store);
     }
     
-
 }

@@ -17,20 +17,60 @@ package org.apache.servicemix.store;
 
 import java.io.IOException;
 
+/**
+ * A Store is an interface representing a storage where objects can be
+ * put and retrieved.  A store can support different features, mainly
+ * persistence, clustered or transactional.
+ * 
+ *  A store is not designed to be a thread-safe map.  If a user tries to
+ *  store an object with an existing id, the behavior is undefined.
+ *  
+ * @author gnodet
+ */
 public interface Store {
 
     String PERSISTENT = "Persistent";
     
     String CLUSTERED = "Clustered";
     
+    String TRANSACTIONAL = "Transactional";
+    
+    /**
+     * Returns true if the store implementation supports the given feature.
+     * @param name the feature to check
+     * @return <code>true</code> if the feature is supported
+     */
     public boolean hasFeature(String name);
     
+    /**
+     * Put an object in the store under the given id.
+     * This method must be used with caution and the behavior is
+     * unspecified if an object already exist for the same id.
+     *  
+     * @param id the id of the object to store
+     * @param data the object to store
+     * @throws IOException if an error occurs
+     */
     public void store(String id, Object data) throws IOException;
     
+    /**
+     * Put an object into the store and return the unique id that
+     * may be used at a later time to retrieve the object.
+     * 
+     * @param data the object to store
+     * @return the id of the object stored
+     * @throws IOException if an error occurs
+     */
     public String store(Object data) throws IOException;
     
+    /**
+     * Loads an object that has been previously stored under the specified key.
+     * The object is removed from the store.
+     * 
+     * @param id the id of the object
+     * @return the object, or <code>null></code> if the object could not be found
+     * @throws IOException if an error occurs
+     */
     public Object load(String id) throws IOException;
-    
-    public void remove(String id) throws IOException;
     
 }

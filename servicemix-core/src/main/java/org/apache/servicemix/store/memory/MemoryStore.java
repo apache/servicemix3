@@ -25,6 +25,12 @@ import org.apache.servicemix.store.Store;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * A simple memory store implementation based on a simple map.
+ * This store is neither clusterable, nor persistent, nor transactional.
+ * 
+ * @author gnodet
+ */
 public class MemoryStore implements Store {
     
     private static final Log log = LogFactory.getLog(MemoryStore.class);
@@ -47,7 +53,7 @@ public class MemoryStore implements Store {
     
     public String store(Object data) throws IOException {
         String id = idGenerator.generateId();
-        datas.put(id, data);
+        store(id, data);
         return id;
     }
 
@@ -55,10 +61,5 @@ public class MemoryStore implements Store {
         log.debug("Loading object with id: " + id);
         return datas.get(id);
     }
-    
-    public void remove(String id) throws IOException {
-        datas.remove(id);
-    }
-
     
 }

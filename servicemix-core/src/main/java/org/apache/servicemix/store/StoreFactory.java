@@ -19,8 +19,8 @@ import java.io.IOException;
 
 public interface StoreFactory {
 
-    public Store get(String name) throws IOException;
+    public Store open(String name) throws IOException;
     
-    public void release(Store store) throws IOException;
+    public void close(Store store) throws IOException;
     
 }
