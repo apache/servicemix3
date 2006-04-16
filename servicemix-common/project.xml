@@ -49,6 +49,14 @@
           <eclipse.dependency>true</eclipse.dependency>
         </properties>
       </dependency>
+      <dependency>
+        <groupId>${pom.groupId}</groupId>
+        <artifactId>servicemix-core</artifactId>
+        <version>${pom.currentVersion}</version>
+        <properties>
+          <eclipse.dependency>true</eclipse.dependency>
+        </properties>
+      </dependency>
       
       <!-- J2EE JARs -->
       <dependency>
