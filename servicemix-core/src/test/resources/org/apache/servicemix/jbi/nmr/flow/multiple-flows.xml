@@ -4,17 +4,17 @@
 
   <sm:container name="local" flowNames="seda,jms" embedded="true"> 
     <sm:activationSpecs> 
-      <sm:activationSpec id="localSender" destinationService="localReceiver"> 
+      <sm:activationSpec id="localSender" endpoint="localSender" destinationService="localReceiver"> 
         <sm:component> 
           <bean class="org.apache.servicemix.tck.SenderComponent" /> 
         </sm:component> 
       </sm:activationSpec> 
-      <sm:activationSpec id="remoteSender" destinationService="remoteReceiver"> 
+      <sm:activationSpec id="remoteSender" endpoint="remoteSender" destinationService="remoteReceiver"> 
         <sm:component> 
           <bean class="org.apache.servicemix.tck.SenderComponent" /> 
         </sm:component> 
       </sm:activationSpec> 
-      <sm:activationSpec id="clusteredSender" destinationService="clusteredReceiver"> 
+      <sm:activationSpec id="clusteredSender" endpoint="clusteredSender" destinationService="clusteredReceiver"> 
         <sm:component> 
           <bean class="org.apache.servicemix.tck.SenderComponent" /> 
         </sm:component> 
