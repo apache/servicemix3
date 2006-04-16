@@ -36,6 +36,8 @@ import java.util.Iterator;
  */
 public class JmsMarshaler {
     private SourceMarshaler sourceMarshaler;
+    
+    private boolean needJavaIdentifiers;
 
     public JmsMarshaler() {
         this(new SourceMarshaler());
@@ -118,6 +120,32 @@ public class JmsMarshaler {
      * By default this includes all suitable typed values
      */
     protected boolean shouldIncludeHeader(NormalizedMessage normalizedMessage, String name, Object value) {
-        return value instanceof String || value instanceof Number || value instanceof Date;
+        return (value instanceof String || value instanceof Number || value instanceof Date) &&
+               (!isNeedJavaIdentifiers() || isJavaIdentifier(name));
     }
+    
+    private static boolean isJavaIdentifier(String s) {
+        int n = s.length();
+        if (n==0) return false;
+        if (!Character.isJavaIdentifierStart(s.charAt(0)))
+            return false;
+        for (int i = 1; i < n; i++)
+            if (!Character.isJavaIdentifierPart(s.charAt(i)))
+                return false;
+        return true;
+      }
+
+    /**
+     * @return Returns the needJavaIdentifiers.
+     */
+    public boolean isNeedJavaIdentifiers() {
+        return needJavaIdentifiers;
+    }
+
+    /**
+     * @param needJavaIdentifiers The needJavaIdentifiers to set.
+     */
+    public void setNeedJavaIdentifiers(boolean needJavaIdentifiers) {
+        this.needJavaIdentifiers = needJavaIdentifiers;
+    }    
 }

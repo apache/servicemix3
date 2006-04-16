@@ -60,6 +60,20 @@ public class JmsSenderComponent extends OutBinding {
         this.marshaler = marshaler;
     }
 
+    /**
+     * @return Returns the needJavaIdentifiers.
+     */
+    public boolean isNeedJavaIdentifiers() {
+        return this.marshaler.isNeedJavaIdentifiers();
+    }
+
+    /**
+     * @param needJavaIdentifiers The needJavaIdentifiers to set.
+     */
+    public void setNeedJavaIdentifiers(boolean needJavaIdentifiers) {
+        this.marshaler.setNeedJavaIdentifiers(needJavaIdentifiers);
+    }    
+    
     // Implementation methods
     //-------------------------------------------------------------------------
     protected void process(MessageExchange exchange, final NormalizedMessage inMessage) throws Exception {
