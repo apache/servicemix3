@@ -84,7 +84,7 @@ public class DotViewFlowListener extends DotViewEndpointListener
 
             writer.println("subgraph cluster_" + id + " {");
             writer.println("  label=\"" + name + "\";");
-            writer.println("  node [fillcolor = yellow];");
+            writer.println("  node [fillcolor = green];");
             writer.println("  " + id + " [label=\"" + name + "\"];");
             writer.println("  node [fillcolor = red];");
             
