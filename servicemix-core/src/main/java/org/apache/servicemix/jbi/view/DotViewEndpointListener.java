@@ -130,12 +130,19 @@ public class DotViewEndpointListener extends EndpointViewRenderer implements Con
         writer.println("}");
     }
 
-    protected void generateLinks(PrintWriter writer, List lines) {
+    protected void generateLinks(PrintWriter writer, Collection lines, String style) {
         for (Iterator iter = lines.iterator(); iter.hasNext();) {
             writer.print(iter.next().toString());
+            if (style != null) {
+                writer.print(" [" + style + "]");
+            }
             writer.println(";");
         }
         writer.println();
+    }
+
+    protected void generateLinks(PrintWriter writer, Collection lines) {
+        generateLinks(writer, lines, null);
     }
 
     /**
