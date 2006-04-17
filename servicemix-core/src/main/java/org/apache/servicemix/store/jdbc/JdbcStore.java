@@ -1,14 +1,27 @@
+/*
+ * Copyright 2005-2006 The Apache Software Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.servicemix.store.jdbc;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
+import org.apache.activeio.util.ByteArrayInputStream;
+import org.apache.activeio.util.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.store.Store;
@@ -40,10 +53,8 @@ public class JdbcStore implements Store {
             out.writeObject(data);
             out.close();
             connection = factory.getDataSource().getConnection();
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO " + factory.getTableName() + " (ID, DATA) VALUES (?, ?)");
-            ps.setString(1, name + ":" + id);
-            ps.setBytes(2, buffer.toByteArray());
-            ps.execute();
+            factory.getAdapter().doStoreData(connection, name + ":" + id, buffer.toByteArray());
+            connection.commit();
         } catch (Exception e) {
             throw (IOException) new IOException("Error storing object").initCause(e);
         } finally {
@@ -68,20 +79,15 @@ public class JdbcStore implements Store {
         Connection connection = null;
         try {
             connection = factory.getDataSource().getConnection();
-            PreparedStatement ps = connection.prepareStatement("SELECT DATA FROM " + factory.getTableName() + " WHERE ID = ?");
-            ps.setString(1, name + ":" + id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                byte[] data = rs.getBytes(1);
+            byte[] data = factory.getAdapter().doLoadData(connection, name + ":" + id);
+            Object result = null;
+            if (data != null) {
                 ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
-                Object result = ois.readObject();
-                ps = connection.prepareStatement("DELETE FROM " + factory.getTableName() + " WHERE ID = ?");
-                ps.setString(1, name + ":" + id);
-                ps.execute();
-                return result;
-            } else {
-                return null;
+                result = ois.readObject();
+                factory.getAdapter().doRemoveData(connection, name + ":" + id);
             }
+            connection.commit();
+            return result;
         } catch (Exception e) {
             throw (IOException) new IOException("Error storing object").initCause(e);
         } finally {

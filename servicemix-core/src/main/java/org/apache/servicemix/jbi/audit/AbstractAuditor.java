@@ -195,7 +195,9 @@ public abstract class AbstractAuditor extends BaseSystemService implements Audit
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#deleteExchanges(int, int)
      */
-    public abstract int deleteExchanges(int fromIndex, int toIndex) throws AuditorException;
+    public int deleteExchanges(int fromIndex, int toIndex) throws AuditorException {
+        return deleteExchanges(getExchangeIds(fromIndex, toIndex));
+    }
     
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#deleteExchanges(java.lang.String[])

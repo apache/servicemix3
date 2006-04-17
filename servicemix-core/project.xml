@@ -329,11 +329,6 @@
         </dependency>
         
         <dependency>
-            <groupId>org.apache.db.ddlutils</groupId>
-            <artifactId>ddlutils</artifactId>
-            <version>${ddlutils_version}</version>
-        </dependency>
-        <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>${commons_lang_version}</version>

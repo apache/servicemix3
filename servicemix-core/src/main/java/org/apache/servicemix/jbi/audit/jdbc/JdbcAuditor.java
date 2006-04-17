@@ -15,21 +15,14 @@
  */
 package org.apache.servicemix.jbi.audit.jdbc;
 
+import java.io.IOException;
 import java.net.URI;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.sql.DataSource;
 
-import org.apache.ddlutils.Platform;
-import org.apache.ddlutils.PlatformFactory;
-import org.apache.ddlutils.model.Column;
-import org.apache.ddlutils.model.Database;
-import org.apache.ddlutils.model.Table;
 import org.apache.servicemix.jbi.audit.AbstractAuditor;
 import org.apache.servicemix.jbi.audit.AuditorException;
 import org.apache.servicemix.jbi.event.ExchangeEvent;
@@ -40,6 +33,9 @@ import org.apache.servicemix.jbi.messaging.InOutImpl;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.messaging.MessageExchangeSupport;
 import org.apache.servicemix.jbi.messaging.RobustInOnlyImpl;
+import org.apache.servicemix.jdbc.JDBCAdapter;
+import org.apache.servicemix.jdbc.JDBCAdapterFactory;
+import org.apache.servicemix.jdbc.Statements;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
@@ -61,12 +57,12 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
 
-    public static String DATABASE_MODEL = "database.xml";
-    
     private DataSource dataSource;
-    private Platform platform;
-    private Database database;
     private boolean autoStart = true;
+    private Statements statements;
+    private String tableName = "SM_AUDIT";
+    private JDBCAdapter adapter;
+    private boolean createDataBase = true;
     
     public String getDescription() {
         return "JDBC Auditing Service";
@@ -79,9 +75,33 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
         if (this.dataSource == null) {
             throw new IllegalArgumentException("dataSource should not be null");
         }
-        platform = PlatformFactory.createNewPlatformInstance(dataSource);
-        database = createDatabase();
-        platform.createTables(database, false, true);
+        if (statements == null) {
+            statements = new Statements();
+            statements.setStoreTableName(tableName);
+        }
+        Connection connection = null;
+        try {
+            connection = getDataSource().getConnection();
+            adapter = JDBCAdapterFactory.getAdapter(connection);
+            if (statements == null) {
+                statements = new Statements();
+                statements.setStoreTableName(tableName);
+            }
+            adapter.setStatements(statements);
+            if (createDataBase) {
+                adapter.doCreateTables(connection);
+            }
+            connection.commit();
+        } catch (SQLException e) {
+            throw (IOException) new IOException("Exception while creating database").initCause(e); 
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (Exception e) {
+                }
+            }
+        }
         init(getContainer());
         if (autoStart) {
             start();
@@ -90,25 +110,6 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
         }
     }
     
-    protected Database createDatabase() {
-        Database db = new Database();
-        db.setName("JDBCAudit");
-        Table table = new Table();
-        table.setName("SM_AUDIT");
-        Column id = new Column();
-        id.setName("ID");
-        id.setType("VARCHAR");
-        id.setPrimaryKey(true);
-        id.setRequired(true);
-        table.addColumn(id);
-        Column exchange = new Column();
-        exchange.setName("EXCHANGE");
-        exchange.setType("BLOB");
-        table.addColumn(exchange);
-        db.addTable(table);
-        return db;
-    }
-
     public void exchangeSent(ExchangeEvent event) {
         MessageExchange exchange = event.getExchange();
         if (exchange instanceof MessageExchangeImpl == false) {
@@ -118,39 +119,33 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
             ExchangePacket packet = ((MessageExchangeImpl) exchange).getPacket();
             String id = packet.getExchangeId();
             byte[] data = packet.getData();
-            Connection connection = platform.borrowConnection();
+            Connection connection = dataSource.getConnection();
             try {
                 store(connection, id, data);
+                connection.commit();
             } finally {
-                platform.returnConnection(connection);
+                close(connection);
             }
         } catch (Exception e) {
             log.error("Could not persist exchange", e);
         }
     }
     
-    protected void store(Connection connection, String id, byte[] data) throws Exception {
-        PreparedStatement selectStatement = null;
-        PreparedStatement storeStatement = null;
-        try {
-            selectStatement = connection.prepareStatement("SELECT ID FROM SM_AUDIT WHERE ID = ?");
-            selectStatement.setString(1, id);
-            // Update
-            if (selectStatement.executeQuery().next()) {
-                storeStatement = connection.prepareStatement("UPDATE SM_AUDIT SET EXCHANGE = ? WHERE ID = ?");
-                storeStatement.setString(2, id);
-                storeStatement.setBytes(1, data);
-                storeStatement.execute();
-            // Insert
-            } else {
-                storeStatement = connection.prepareStatement("INSERT INTO SM_AUDIT (ID, EXCHANGE) VALUES (?, ?)");
-                storeStatement.setString(1, id);
-                storeStatement.setBytes(2, data);
-                storeStatement.execute();
+    private static void close(Connection connection) {
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
             }
-        } finally {
-            closeStatement(selectStatement);
-            closeStatement(storeStatement);
+        }
+        
+    }
+
+    protected void store(Connection connection, String id, byte[] data) throws Exception {
+        if (adapter.doLoadData(connection, id) != null) {
+            adapter.doUpdateData(connection, id, data);
+        } else {
+            adapter.doStoreData(connection, id, data);
         }
     }
     
@@ -165,59 +160,18 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#getExchangeCount()
      */
-    public int getExchangeCount()throws AuditorException {
-        Connection con = platform.borrowConnection();
-        Statement statement = null;
+    public int getExchangeCount() throws AuditorException {
+        Connection connection = null;
         try {
-            statement = con.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT COUNT(ID) FROM SM_AUDIT");
-            rs.next();
-            return rs.getInt(1);
-        } catch (SQLException e) {
+            connection = dataSource.getConnection();
+            return adapter.doGetCount(connection);
+        } catch (Exception e) {
             throw new AuditorException("Could not retrieve exchange count", e);
         } finally {
-            closeStatement(statement);
-            platform.returnConnection(con);
+            close(connection);
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.servicemix.jbi.audit.AuditorMBean#getExchanges(int, int)
-     */
-    public MessageExchange[] getExchanges(int fromIndex, int toIndex) throws AuditorException {
-        if (fromIndex < 0) {
-            throw new IllegalArgumentException("fromIndex should be greater or equal to zero");
-        }
-        if (toIndex < fromIndex) {
-            throw new IllegalArgumentException("toIndex should be greater or equal to fromIndex");
-        }
-        // Do not hit the database if no exchanges are requested
-        if (fromIndex == toIndex) {
-            return new MessageExchange[0];
-        }
-        Connection con = platform.borrowConnection();
-        Statement statement = null;
-        try {
-            statement = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            statement.setFetchSize(toIndex - fromIndex);
-            ResultSet rs = statement.executeQuery("SELECT EXCHANGE FROM SM_AUDIT");
-            rs.absolute(fromIndex + 1);
-            MessageExchange[] exchanges = new MessageExchange[toIndex - fromIndex];
-            for (int row = 0; row < toIndex - fromIndex; row++) {
-                exchanges[row] = getExchange(rs.getBytes(1));
-                if (!rs.next()) {
-                    break;
-                }
-            }
-            return exchanges;
-        } catch (SQLException e) {
-            throw new AuditorException("Could not retrieve exchanges", e);
-        } finally {
-            closeStatement(statement);
-            platform.returnConnection(con);
-        }
-    }
-    
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#getExchangeIds(int, int)
      */
@@ -232,26 +186,15 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
         if (fromIndex == toIndex) {
             return new String[0];
         }
-        Connection con = platform.borrowConnection();
-        Statement statement = null;
+        Connection connection = null;
         try {
-            statement = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            statement.setFetchSize(toIndex - fromIndex);
-            ResultSet rs = statement.executeQuery("SELECT ID FROM SM_AUDIT");
-            rs.absolute(fromIndex + 1);
-            String[] ids = new String[toIndex - fromIndex];
-            for (int row = 0; row < toIndex - fromIndex; row++) {
-                ids[row] = rs.getString(1);
-                if (!rs.next()) {
-                    break;
-                }
-            }
+            connection = dataSource.getConnection();
+            String[] ids = adapter.doGetIds(connection, fromIndex, toIndex);
             return ids;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new AuditorException("Could not retrieve exchange ids", e);
         } finally {
-            closeStatement(statement);
-            platform.returnConnection(con);
+            close(connection);
         }
     }
 
@@ -260,74 +203,17 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
      */
     public MessageExchange[] getExchanges(String[] ids) throws AuditorException {
         MessageExchange[] exchanges = new MessageExchange[ids.length];
-        Connection con = platform.borrowConnection();
-        PreparedStatement statement = null;
+        Connection connection = null;
         try {
-            statement = con.prepareStatement("SELECT EXCHANGE FROM SM_AUDIT WHERE ID = ?");
-            for (int i = 0; i < exchanges.length; i++) {
-                statement.setString(1, ids[i]);
-                ResultSet rs = statement.executeQuery();
-                rs.next();
-                exchanges[i] = getExchange(rs.getBytes(1));
+            connection = dataSource.getConnection();
+            for (int row = 0; row < ids.length; row++) {
+                exchanges[row] = getExchange(adapter.doLoadData(connection, ids[row]));
             }
             return exchanges;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new AuditorException("Could not retrieve exchanges", e);
         } finally {
-            closeStatement(statement);
-            platform.returnConnection(con);
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.servicemix.jbi.audit.AuditorMBean#deleteExchanges()
-     */
-    public int deleteExchanges() throws AuditorException {
-        Connection con = platform.borrowConnection();
-        Statement statement = null;
-        try {
-            statement = con.createStatement();
-            return statement.executeUpdate("DELETE FROM SM_AUDIT");
-        } catch (SQLException e) {
-            throw new AuditorException("Could not delete exchanges", e);
-        } finally {
-            closeStatement(statement);
-            platform.returnConnection(con);
-        }
-    }
-    
-    /* (non-Javadoc)
-     * @see org.apache.servicemix.jbi.audit.AuditorMBean#deleteExchanges(int, int)
-     */
-    public int deleteExchanges(int fromIndex, int toIndex) throws AuditorException {
-        if (fromIndex < 0) {
-            throw new IllegalArgumentException("fromIndex should be greater or equal to zero");
-        }
-        if (toIndex < fromIndex) {
-            throw new IllegalArgumentException("toIndex should be greater or equal to fromIndex");
-        }
-        // Do not hit the database if no removal is requested
-        if (fromIndex == toIndex) {
-            return 0;
-        }
-        Connection con = platform.borrowConnection();
-        Statement statement = null;
-        try {
-            statement = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            ResultSet rs = statement.executeQuery("SELECT ID FROM SM_AUDIT");
-            rs.absolute(fromIndex + 1);
-            for (int row = 0; row < toIndex - fromIndex; row++) {
-                rs.deleteRow();
-                if (!rs.next()) {
-                    return row + 1;
-                }
-            }
-            return toIndex - fromIndex;
-        } catch (SQLException e) {
-            throw new AuditorException("Could not delete exchanges", e);
-        } finally {
-            closeStatement(statement);
-            platform.returnConnection(con);
+            close(connection);
         }
     }
 
@@ -335,21 +221,17 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#deleteExchanges(java.lang.String[])
      */
     public int deleteExchanges(String[] ids) throws AuditorException {
-        Connection con = platform.borrowConnection();
-        PreparedStatement statement = null;
+        Connection connection = null;
         try {
-            int deleted = 0;
-            statement = con.prepareStatement("DELETE FROM SM_AUDIT WHERE ID = ?");
-            for (int i = 0; i < ids.length; i++) {
-                statement.setString(1, ids[i]);
-                deleted += statement.executeUpdate();
+            connection = dataSource.getConnection();
+            for (int row = 0; row < ids.length; row++) {
+                adapter.doRemoveData(connection, ids[row]);
             }
-            return deleted;
-        } catch (SQLException e) {
+            return -1;
+        } catch (Exception e) {
             throw new AuditorException("Could not delete exchanges", e);
         } finally {
-            closeStatement(statement);
-            platform.returnConnection(con);
+            close(connection);
         }
     }
     
@@ -375,23 +257,6 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
         }
     }
     
-    /**
-     * Close the given statement, logging any exception.
-     * @param statement the statement to close
-     */
-    protected void closeStatement(Statement statement) {
-        if (statement != null) {
-            try {
-                Connection conn = statement.getConnection();
-                if ((conn != null) && !conn.isClosed()) {
-                    statement.close();
-                }
-            } catch (Exception e) {
-                log.warn("Error closing statement", e);
-            }
-        }
-    }
-
     public boolean isAutoStart() {
         return autoStart;
     }
