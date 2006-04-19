@@ -112,6 +112,7 @@ public class JBIContainer extends BaseLifeCycle {
     protected boolean embedded = false;
     protected boolean notifyStatistics = false;
     protected EventListenerList listeners = new EventListenerList();
+    protected EventListener[] configuredListeners;
     
     /**
      * Default Constructor
@@ -505,6 +506,16 @@ public class JBIContainer extends BaseLifeCycle {
             } catch (JMException e) {
                 throw new JBIException(e);
             }
+            
+            // Initialize listeners after the whole container has been initialized
+            // so that they can register themselves as JMX mbeans for example
+            if (configuredListeners != null) {
+                for (int i = 0; i < configuredListeners.length; i++) {
+                    EventListener listener = configuredListeners[i];
+                    addListener(listener);
+                }
+            }
+            
             log.info("ServiceMix JBI Container (http://servicemix.org/) name: " + getName() + " running version: "
                     + EnvironmentContext.getVersion());
         }
@@ -1157,10 +1168,7 @@ public class JBIContainer extends BaseLifeCycle {
     }
     
     public void setListeners(EventListener[] listeners) {
-        for (int i = 0; i < listeners.length; i++) {
-            EventListener listener = listeners[i];
-            addListener(listener);
-        }
+        configuredListeners = listeners;
     }
     
     public void callListeners(MessageExchange exchange) {
