@@ -24,7 +24,7 @@
   <extend>${basedir}/../etc/project.xml</extend>
   
   <name>ServiceMix :: Assembly</name>
-  <id>servicemix</id>   
+  <id>incubator-servicemix</id>   
   
   <shortDescription>ServiceMix Assembly</shortDescription>
   <description>ServiceMix Assembly creates a ServiceMix distribution</description>
