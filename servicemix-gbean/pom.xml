@@ -21,22 +21,23 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xmlns="http://maven.apache.org/POM/4.0.0">
   
-    <parent>
-        <groupId>incubator-servicemix</groupId>
-        <artifactId>servicemix</artifactId>
-        <version>3.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>incubator-servicemix</groupId>
+
+    <parent>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix</artifactId>
+        <version>3.0-SNAPSHOT</version>
+    </parent>
+
     <artifactId>servicemix-gbean</artifactId>
     <packaging>jar</packaging>
     <name>ServiceMix :: GBeans</name>
     <description>ServiceMix GBeans used for integration into Apache Geronimo</description>
+
     <dependencies>
         <dependency>
-            <groupId>incubator-servicemix</groupId>
-            <artifactId>servicemix-core</artifactId>
+          <groupId>org.apache.servicemix</groupId>
+          <artifactId>servicemix-core</artifactId>
         </dependency>
         <dependency>
             <groupId>geronimo</groupId>

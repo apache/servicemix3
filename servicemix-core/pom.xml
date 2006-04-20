@@ -18,273 +18,267 @@
 <!-- $Rev$ $Date$ -->
 <project
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://maven.apache.org/POM/4.0.0">
-  
-    <modelVersion>4.0.0</modelVersion>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
 
-    <parent>
-        <groupId>incubator-servicemix</groupId>
-        <artifactId>servicemix</artifactId>
-        <version>3.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>servicemix-core</artifactId>
-    <packaging>jar</packaging>
-    <name>ServiceMix :: Core</name>
+  <parent>
+    <groupId>org.apache.servicemix</groupId>
+    <artifactId>servicemix</artifactId>
+    <version>3.0-SNAPSHOT</version>
+  </parent>
 
-    <dependencies>
-        <dependency>
-            <groupId>incubator-servicemix</groupId>
-            <artifactId>servicemix-jbi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
-        </dependency>
-      <dependency>
-        <groupId>geronimo</groupId>
-        <artifactId>geronimo-connector</artifactId>
-        </dependency>
-      <dependency>
-        <groupId>geronimo</groupId>
-        <artifactId>geronimo-transaction</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.servicemix.dependencies</groupId>
-            <artifactId>activeio</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>incubator-activemq</groupId>
-            <artifactId>activemq-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>incubator-activemq</groupId>
-            <artifactId>activemq-ra</artifactId>
-        </dependency>
+  <artifactId>servicemix-core</artifactId>
+  <packaging>jar</packaging>
+  <name>ServiceMix :: Core</name>
 
-        <dependency>
-            <groupId>backport-util-concurrent</groupId>
-            <artifactId>backport-util-concurrent</artifactId>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-jbi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>geronimo</groupId>
+      <artifactId>geronimo-connector</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>geronimo</groupId>
+      <artifactId>geronimo-transaction</artifactId>
+      <optional>true</optional>
+    </dependency>
 
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>incubator-activemq</groupId>
+      <artifactId>activemq-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>incubator-activemq</groupId>
+      <artifactId>activemq-ra</artifactId>
+      <optional>true</optional>
+    </dependency>
 
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jms_1.1_spec</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-j2ee-management_1.0_spec</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-j2ee-jacc_1.0_spec</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-betwixt</groupId>
-            <artifactId>commons-betwixt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xbean</groupId>
-            <artifactId>xbean-server</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xbean</groupId>
-            <artifactId>xbean-spring</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <scope>runtime</scope>
-        </dependency>
+    <dependency>
+      <groupId>backport-util-concurrent</groupId>
+      <artifactId>backport-util-concurrent</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jms_1.1_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-j2ee-management_1.0_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-j2ee-jacc_1.0_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-betwixt</groupId>
+      <artifactId>commons-betwixt</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.xbean</groupId>
+      <artifactId>xbean-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.xbean</groupId>
+      <artifactId>xbean-spring</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <scope>runtime</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>mx4j</groupId>
-            <artifactId>mx4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>mx4j</groupId>
-            <artifactId>mx4j-remote</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>ant</groupId>
-            <artifactId>ant</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.servicemix.dependencies</groupId>
-            <artifactId>jencks</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>geronimo</groupId>
-            <artifactId>geronimo-connector</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>geronimo</groupId>
-            <artifactId>geronimo-transaction</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xstream</groupId>
-            <artifactId>xstream</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>wsdl4j</groupId>
-            <artifactId>wsdl4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jaxen</groupId>
-            <artifactId>jaxen</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xalan</groupId>
-            <artifactId>xalan</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>mx4j</groupId>
+      <artifactId>mx4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>mx4j</groupId>
+      <artifactId>mx4j-remote</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.servicemix.dependencies</groupId>
+      <artifactId>jencks</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>geronimo</groupId>
+      <artifactId>geronimo-connector</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>geronimo</groupId>
+      <artifactId>geronimo-transaction</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xstream</groupId>
+      <artifactId>xstream</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>wsdl4j</groupId>
+      <artifactId>wsdl4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jaxen</groupId>
+      <artifactId>jaxen</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+    </dependency>
     <dependency>
       <groupId>woodstox</groupId>
       <artifactId>wstx-asl</artifactId>
     </dependency>
-        <dependency>
-            <groupId>net.java.dev.stax-utils</groupId>
-            <artifactId>stax-utils</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.db.ddlutils</groupId>
-            <artifactId>ddlutils</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>xmlbeans</groupId>
-            <artifactId>xmlpublic</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xmlbeans</groupId>
-            <artifactId>xbean</artifactId>
-        </dependency>
-        
-        <dependency>
-        	<groupId>lingo</groupId>
-        	<artifactId>lingo</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>net.java.dev.stax-utils</groupId>
+      <artifactId>stax-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xmlbeans</groupId>
+      <artifactId>xmlpublic</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xmlbeans</groupId>
+      <artifactId>xbean</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>lingo</groupId>
+      <artifactId>lingo</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>lucene</groupId>
-            <artifactId>lucene</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-        </dependency>
-    </dependencies>
+    <dependency>
+      <groupId>hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**/*.properties</include>
-                    <include>**/*.xml</include>
-                    <include>**/*</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>target/generated</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
-        </resources>
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <includes>
-                    <include>**/*.properties</include>
-                    <include>**/*.x*</include>
-                    <include>**/*.wsdl</include>
-                    <include>**/*.zip</include>
-                </includes>
-            </testResource>
-            <testResource>
-                <directory>src/test/components</directory>
-                <includes>
-                    <include>**/*.jar</include>
-                    <include>**/*.x*</include>
-                    <include>**/*.zip</include>
-                </includes>
-            </testResource>
-            <testResource>
-                <directory>src/test/assemblies</directory>
-                <includes>
-                    <include>**/*.jar</include>
-                    <include>**/*.zip</include>
-                </includes>
-            </testResource>
-            <testResource>
-                <directory>src/test/java</directory>
-                <includes>
-                    <include>**/*.jar</include>
-                    <include>**/*.zip</include>
-                </includes>
-            </testResource>
-        </testResources>
-        <plugins>
-            <!--
+    <dependency>
+      <groupId>lucene</groupId>
+      <artifactId>lucene</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ant</groupId>
+      <artifactId>ant</artifactId>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*.properties</include>
+          <include>**/*.xml</include>
+          <include>**/*</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>target/generated</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <includes>
+          <include>**/*.properties</include>
+          <include>**/*.x*</include>
+          <include>**/*.wsdl</include>
+          <include>**/*.zip</include>
+        </includes>
+      </testResource>
+      <testResource>
+        <directory>src/test/components</directory>
+        <includes>
+          <include>**/*.jar</include>
+          <include>**/*.x*</include>
+          <include>**/*.zip</include>
+        </includes>
+      </testResource>
+      <testResource>
+        <directory>src/test/assemblies</directory>
+        <includes>
+          <include>**/*.jar</include>
+          <include>**/*.zip</include>
+        </includes>
+      </testResource>
+      <testResource>
+        <directory>src/test/java</directory>
+        <includes>
+          <include>**/*.jar</include>
+          <include>**/*.zip</include>
+        </includes>
+      </testResource>
+    </testResources>
+    <plugins>
+      <!--
             <plugin>
                 <groupId>org.apache.xbean</groupId>
                 <artifactId>xbean-maven-plugin</artifactId>
@@ -302,67 +296,84 @@
                 </executions>
             </plugin>
             -->
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <tasks>
-                                <taskdef classname="org.apache.xbean.spring.generator.MappingGeneratorTask" name="mapping">
-                                    <classpath>
-                                        <pathelement path="${basedir}/target/classes"></pathelement>
-                                        <path refid="maven.test.classpath"></path>
-                                    </classpath>
-                                </taskdef>
-                                <mapping destFile="${basedir}/target/servicemix.xsd" namespace="http://servicemix.apache.org/config/1.0"
-                                    srcdir="${basedir}/src/main/java" metaInfDir="${basedir}/target/generated/"/>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/*Test*</include>
-                    </includes>
-                    <excludes>
-                        <!--  exclude abstract tests -->
-                        <exclude>**/Abstract*Test.*</exclude>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <configuration>
+              <tasks>
+                <taskdef classname="org.apache.xbean.spring.generator.MappingGeneratorTask"
+                  name="mapping">
+                  <classpath>
+                    <pathelement path="${basedir}/target/classes" />
+                    <path refid="maven.test.classpath" />
+                  </classpath>
+                </taskdef>
+                <mapping destFile="${basedir}/target/servicemix.xsd"
+                  namespace="http://servicemix.apache.org/config/1.0"
+                  srcdir="${basedir}/src/main/java" metaInfDir="${basedir}/target/generated/" />
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>qdox</groupId>
+            <artifactId>qdox</artifactId>
+            <version>${qdox.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/*Test*</include>
+          </includes>
+          <excludes>
+            <!--  exclude abstract tests -->
+            <exclude>**/Abstract*.*</exclude>
+            <exclude>**/*$*</exclude>
 
-                        <!-- fails on some platforms due to ActiveCluster issue -->
-                        <exclude>**/ClusterFlow*.*</exclude>
-                        <exclude>**/JmsFlow*.*</exclude>
-                        <exclude>**/JcaFlowPersistentTest.*</exclude>
-                        <exclude>**/JcaFlowTransactionTest.*</exclude>
+            <!-- fails on some platforms due to ActiveCluster issue -->
+            <exclude>**/ClusterFlow*.*</exclude>
+            <exclude>**/JmsFlow*.*</exclude>
+            <exclude>**/JcaFlowPersistentTest.*</exclude>
+            <exclude>**/JcaFlowTransactionTest.*</exclude>
 
-                        <!-- test cases hangs
+            <!-- test cases hangs
                         <exclude>**/SimpleClusterSendSyncTest.*</exclude>
                         -->
 
-                        <!-- fails in some linux platform due to missing lib libXp.so.6 -->
-                        <exclude>**/ServiceMixComponentTest.*</exclude>
-                        <exclude>**/ExplodedComponentInstallationTest.*</exclude>
-                        <exclude>**/ComponentInstallationTest.*</exclude>
-                        <exclude>**/ComponentAssemblyInstallationTest.*</exclude>
-                        <exclude>**/DeploymentTest.*</exclude>
-                        
-                        <!-- Succeed in Eclipse, but fail with maven, why ? 
+            <!-- fails in some linux platform due to missing lib libXp.so.6 -->
+            <exclude>**/ServiceMixComponentTest.*</exclude>
+            <exclude>**/ExplodedComponentInstallationTest.*</exclude>
+            <exclude>**/ComponentInstallationTest.*</exclude>
+            <exclude>**/ComponentAssemblyInstallationTest.*</exclude>
+            <exclude>**/DeploymentTest.*</exclude>
+
+            <!-- Succeed in Eclipse, but fail with maven, why ? 
                              This may be realted to activemq jmx stuff
                           -->
-                        <exclude>**/AdminServiceTest.*</exclude>
-                        <exclude>**/ManagementAttributesTest.*</exclude>
-                        <exclude>**/ManagementContextTest.*</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+            <exclude>**/AdminServiceTest.*</exclude>
+            <exclude>**/ManagementAttributesTest.*</exclude>
+            <exclude>**/ManagementContextTest.*</exclude>
+
+            <exclude>**/JbiTaskTest.*</exclude>
+            <exclude>**/InstallComponentTaskTest.*</exclude>
+            <exclude>**/StatelessJcaFlowTest.*</exclude>
+            <exclude>**/HotDeployTest.*</exclude>
+            <exclude>**/InstallationTest.*</exclude>
+            <exclude>**/DeploymentMessageTest.*</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

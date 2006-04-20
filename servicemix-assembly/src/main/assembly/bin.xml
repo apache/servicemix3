@@ -1,23 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2005-2006 The Apache Software Foundation
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+  http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
 <assembly>
-      <id>bin</id>
-      <formats>
-        <format>tar.gz</format>
-        <format>zip</format>
-      </formats>
-      <fileSets>
-        <fileSet>
-          <directory>src/main/release</directory>
-          <outputDirectory></outputDirectory>
-        </fileSet>
-      </fileSets>
-      <dependencySets>
-        <dependencySet>
-          <outputDirectory>lib</outputDirectory>
-          <scope>runtime</scope>
-        </dependencySet>
-        <dependencySet>
-          <outputDirectory>lib/optional</outputDirectory>
-          <scope>optional</scope>
-        </dependencySet>
-      </dependencySets>
+  <id>bin</id>
+  <formats>
+    <format>tar.gz</format>
+    <format>zip</format>
+  </formats>
+  <fileSets>
+    <fileSet>
+      <directory>..</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>README.txt</include>      
+        <include>LICENSE.txt</include>      
+        <include>STATUS</include>      
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/release</directory>
+      <outputDirectory>/</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/components</directory>
+      <outputDirectory>components</outputDirectory>
+    </fileSet>
+  </fileSets>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>lib</outputDirectory>
+      <scope>runtime</scope>
+      <includes>
+        <include>classworlds:classworlds</include>
+
+        <include>backport-util-concurrent:backport-util-concurrent</include>
+        <include>incubator-activemq:activemq-core</include>
+        <include>incubator-activemq:activemq-ra</include>
+        <include>incubator-activemq:activeio-core</include>
+        <include>commons-logging:commons-logging</include>
+        <include>commons-beanutils:commons-beanutils-core</include>
+        <include>org.apache.servicemix:servicemix-jbi</include>
+        <include>org.apache.servicemix:servicemix-core</include>
+        <include>org.apache.xbean:xbean-spring</include>
+        <include>org.apache.xbean:xbean-server</include>
+        <include>org.apache.xbean:xbean-kernel</include>
+        <include>wsdl4j:wsdl4j</include>
+        <include>org.springframework:spring</include>
+        
+        <include>org.apache.geronimo.specs:geronimo-jms_1.1_spec</include>
+        <include>org.apache.geronimo.specs:geronimo-jta_1.0.1B_spec</include>
+        <include>org.apache.geronimo.specs:geronimo-j2ee-management_1.0_spec</include>
+        <include>org.apache.geronimo.specs:geronimo-j2ee-jacc_1.0_spec</include>
+        <include>org.apache.geronimo.specs:geronimo-j2ee-connector_1.5_spec</include>
+        <include>org.apache.geronimo.specs:geronimo-ejb_2.1_spec</include>
+        <include>org.apache.geronimo.specs:activation_1.0.2_spec</include>
+        <include>org.apache.geronimo.specs:javamail_1.3.1_spec</include>
+        <include>org.apache.geronimo.specs:servlet_2.4_spec</include>
+        <include>org.apache.geronimo.specs:_spec</include>
+        
+        <include>org.apache.servicemix.dependencies:jencks</include>
+        
+        <include>geronimo:geronimo-connector</include>
+        <include>geronimo:geronimo-transaction</include>
+        <include>geronimo:geronimo-activation</include>
+        
+        <include>concurrent:concurrent</include>
+        <include>xstream:xstream</include>
+        <include>xerces:xercesImpl</include>
+        <include>xalan:xalan</include>
+
+        <include>mx4j:mx4j</include>
+        <include>mx4j:mx4j-remote</include>
+        <include>mx4j:mx4j-tools</include>
+        
+        <include>stax:stax-api</include>
+        <include>woodstox:wstx-asl</include>
+        <include>xml-apis:xml-apis</include>
+      </includes>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>lib/optional</outputDirectory>
+      <scope>runtime</scope>
+      <includes>
+        <include>mx4j:mx4j-tools</include>
+        <include>log4j:log4j</include>
+        <include>org.apache.derby:derby</include>
+        <include>hsqldb:hsqldb</include>
+        <include>quartz:quartz</include>
+        <include>org.apache.servicemix:servicemix-components</include>
+        <include>commons-pool:commons-pool</include>
+        <include>commons-collections:commons-collections</include>
+        <include>xmlbeans:xmlpublic</include>
+        <include>lingo:lingo</include>
+        <include>jaxen:jaxen</include>
+        <include>org.mortbay.jetty:jetty</include>
+        <include>axis:axis-jaxrpc</include>
+        <include>drools:drools-all-jdk1.4</include>
+        
+      </includes>
+    </dependencySet>
+  </dependencySets>
 </assembly>

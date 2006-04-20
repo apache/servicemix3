@@ -22,7 +22,14 @@
   xmlns="http://maven.apache.org/POM/4.0.0">
   
   <modelVersion>4.0.0</modelVersion>
-  <groupId>incubator-servicemix</groupId>
+  
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>1</version>
+  </parent>
+  
+  <groupId>org.apache.servicemix</groupId>
   <artifactId>servicemix</artifactId>
   <packaging>pom</packaging>
   <name>ServiceMix</name>
@@ -209,14 +216,20 @@
     <module>servicemix-soap</module>
     <module>servicemix-console</module>
     <module>servicemix-gbean</module>
+    <module>servicemix-bpe</module>
     <module>servicemix-jms</module>
     <module>servicemix-jsr181</module>
     <module>servicemix-http</module>
     <module>servicemix-wsn2005</module>
     <module>servicemix-lwcontainer</module>
     <module>servicemix-sca</module>
+    <module>servicemix-eip</module>
     <module>servicemix-assembly</module>
   </modules>
+  
+  <properties>
+    <qdox.version>1.5</qdox.version>
+  </properties>
   
   <profiles>
       <profile>
@@ -262,33 +275,15 @@
       <url>http://servicemix.org/m2-repo</url>
     </repository>
     <repository>
+      <id>lb-m1-repo</id>
+      <name>LogicBlaze Maven1 Repository</name>
+      <url>http://repo.logicblaze.com/maven1</url>
+      <layout>legacy</layout>
+    </repository>
+    <repository>
       <id>apache-m2</id>
       <name>Apache M2 Repository</name>
       <url>http://cvs.apache.org/maven-snapshot-repository</url>
-    </repository>
-    <repository>
-      <id>apache</id>
-      <name>Apache Repository</name>
-      <url>http://cvs.apache.org/repository</url>
-      <layout>legacy</layout>
-    </repository>    
-    <repository>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <id>codehaus</id>
-      <name>Codehaus Repository</name>
-      <url>http://dist.codehaus.org</url>
-      <layout>legacy</layout>
-    </repository>
-    <repository>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <id>logicblaze</id>
-      <name>Codehaus Repository</name>
-      <url>http://repo.logicblaze.com/maven1</url>
-      <layout>legacy</layout>
     </repository>
   </repositories>
   
@@ -304,91 +299,81 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>incubator-servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix</artifactId>
         <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>incubator-servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-jbi</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>${pom.version}</version>
       </dependency>
       <dependency>
-        <groupId>incubator-servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-core</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>${pom.version}</version>
       </dependency>
       <dependency>
-        <groupId>incubator-servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-components</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>${pom.version}</version>
       </dependency>
       <dependency>
-        <groupId>incubator-servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-common</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>${pom.version}</version>
       </dependency>
       <dependency>
-        <groupId>incubator-servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-console</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>${pom.version}</version>
       </dependency>
       <dependency>
-        <groupId>incubator-servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-gbean</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>${pom.version}</version>
       </dependency>
       <dependency>
-        <groupId>incubator-servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-jms</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>${pom.version}</version>
       </dependency>
       <dependency>
-        <groupId>incubator-servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-jsr181</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>${pom.version}</version>
       </dependency>
       <dependency>
-        <groupId>incubator-servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-http</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>${pom.version}</version>
       </dependency>
       <dependency>
-        <groupId>incubator-servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-sca</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>${pom.version}</version>
       </dependency>
       <dependency>
-        <groupId>incubator-servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-soap</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>${pom.version}</version>
       </dependency>
       <dependency>
-        <groupId>incubator-servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-wsn2005</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>${pom.version}</version>
       </dependency>
       <dependency>
-        <groupId>incubator-servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-lwcontainer</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${pom.groupId}</groupId>
+        <artifactId>servicemix-eip</artifactId>
+        <version>${pom.version}</version>
       </dependency>
  
-      <dependency>
-        <groupId>org.apache.db.ddlutils</groupId>
-        <artifactId>ddlutils</artifactId>
-        <version>1.0-20060223</version>
-        <exclusions>
-          <exclusion>
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>xerces</groupId>
-            <artifactId>xerces</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
       <dependency>
         <groupId>org.apache.servicemix.dependencies</groupId>
         <artifactId>jsr-223</artifactId>
@@ -625,11 +610,6 @@
         <version>1.0</version>
       </dependency>
       <dependency>
-        <groupId>commons-jelly</groupId>
-        <artifactId>commons-jelly-tags-velocity</artifactId>
-        <version>SNAPSHOT</version>
-      </dependency>
-      <dependency>
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>
         <version>2.1</version>
@@ -705,6 +685,16 @@
         <groupId>geronimo</groupId>
         <artifactId>geronimo-activation</artifactId>
         <version>1.0</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-jelly</groupId>
+            <artifactId>commons-jelly-tags-velocity</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>velocity</groupId>
+            <artifactId>velocity</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>geronimo</groupId>
@@ -887,7 +877,7 @@
       <dependency>
         <groupId>org.apache.geronimo.specs</groupId>
         <artifactId>geronimo-javamail_1.3.1_spec</artifactId>
-        <version>1.0</version>
+        <version>1.1-20060323</version>
       </dependency>
       <dependency>
         <groupId>org.apache.geronimo.specs</groupId>
@@ -1144,6 +1134,11 @@
         <version>3.0.1</version>
       </dependency>
       <dependency>
+        <groupId>mx4j</groupId>
+        <artifactId>mx4j-tools</artifactId>
+        <version>2.1.1</version>
+      </dependency>
+      <dependency>
         <groupId>openejb</groupId>
         <artifactId>openejb-core</artifactId>
         <version>2.0-SNAPSHOT</version>
@@ -1365,6 +1360,10 @@
         <artifactId>xbean-spring</artifactId>
         <version>2.2</version>
         <exclusions>
+          <exclusion>
+            <groupId>qdox</groupId>
+            <artifactId>qdox</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
@@ -1442,50 +1441,43 @@
       <artifactId>saaj-impl</artifactId>
       <version>ea3</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.ode</groupId>
+      <artifactId>bpe</artifactId>
+      <version>1.0-20060316</version>
+    </dependency>
     </dependencies>
   </dependencyManagement>
   
   <distributionManagement>
     <repository>
       <id>servicemix-repository</id>
-      <url>scpexe://dist.codehaus.org/</url>
+      <url>scp://dist.codehaus.org/</url>
     </repository>
     
     <snapshotRepository>
       <id>servicemix-snapshots</id>
       <name>ServiceMix Central Development Repository</name>
-      <url>scpexe://servicemix.org/home/projects/servicemix/dist-m2-snapshot</url>
+      <url>scp://servicemix.org/home/projects/servicemix/dist-m2-snapshot</url>
     </snapshotRepository>
     
     <site>
       <id>servicemix-website</id>
-      <url>scpexe://servicemix.org/home/projects/xbean/public_html/maven/</url>
+      <url>scp://servicemix.org/home/projects/xbean/public_html/maven/</url>
     </site>
   </distributionManagement>
   
   <build>
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ssh-external</artifactId>
-        <version>1.0-alpha-6</version>
-      </extension>
-    </extensions>
     <pluginManagement>
       <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <includes>
-                        <include>**/*Test.*</include>
-                    </includes>
-                    <excludes>
-                        <exclude>**/Abstract*Test.*</exclude>
-                    </excludes>
-                    <reportFormat>brief</reportFormat>
-                    <useFile>false</useFile>
-                    <forkMode>none</forkMode>
+                    <useFile>true</useFile>
+                    <forkMode>once</forkMode>
+                    <childDelegation>false</childDelegation>
+                    <workingDir>${basedir}</workingDir>
 
                     <systemProperties>
                         <property>
@@ -1519,26 +1511,25 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-war-plugin</artifactId>
-          <version>2.0-beta-2</version>
           <configuration>
             <warSourceDirectory>src/webapp/</warSourceDirectory>
           </configuration>
         </plugin>                
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <version>2.0-beta-4</version>
-      </plugin>
       </plugins>
     </pluginManagement>
   </build>
   <reporting>
     <plugins>
       <plugin>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <artifactId>maven-javadoc-plugin</artifactId>
       </plugin>
       <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jxr-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>surefire-report-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </reporting>

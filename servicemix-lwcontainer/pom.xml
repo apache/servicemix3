@@ -16,119 +16,51 @@
     limitations under the License.
 -->
 <!-- $Rev: 356052 $ $Date: 2005-12-11 14:41:20 -0800 (dim., 11 déc. 2005) $ -->
-<project 
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xmlns="http://maven.apache.org/POM/4.0.0">
-    
-    <parent>
-        <groupId>incubator-servicemix</groupId>
-        <artifactId>servicemix</artifactId>
-        <version>3.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
-    
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>incubator-servicemix</groupId>
-    <artifactId>servicemix-lwcontainer</artifactId>
-    <packaging>jbi-component</packaging>
-    <name>ServiceMix :: Lightweight container Service Engine</name>
-    <description>Lightweight container Service Engine</description>
-    <dependencies>
-    
-        <dependency>
-            <groupId>incubator-servicemix</groupId>
-            <artifactId>servicemix-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>incubator-servicemix</groupId>
-            <artifactId>servicemix-components</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>incubator-servicemix</groupId>
-            <artifactId>servicemix-core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-<!--
-        <dependency>
-            <groupId>org.apache.servicemix.dependencies</groupId>
-            <artifactId>xfire-all</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.servicemix.dependencies</groupId>
-            <artifactId>xfire-jaxws</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jdom</groupId>
-            <artifactId>jdom</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xbean</groupId>
-            <artifactId>xbean-spring</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xbean</groupId>
-            <artifactId>xbean-server</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xbean</groupId>
-            <artifactId>xbean-kernel</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xmlbeans</groupId>
-            <artifactId>xbean</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-attributes</groupId>
-            <artifactId>commons-attributes-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-attributes</groupId>
-            <artifactId>commons-attributes-plugin</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>backport175</groupId>
-            <artifactId>backport175</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xfire</groupId>
-            <artifactId>jaxb-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>beehive</groupId>
-            <artifactId>wsm</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>qdox</groupId>
-            <artifactId>qdox</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>annogen</groupId>
-            <artifactId>annogen</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <scope>test</scope>
-        </dependency>
-        -->
-    </dependencies>
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.servicemix.plugins</groupId>
-                <artifactId>maven2-jbi-plugin</artifactId>
-                <configuration>
-                   <type>service-engine</type>
-                   <bootstrap>org.apache.servicemix.lwcontainer.LwContainerBootstrap</bootstrap>
-                   <component>org.apache.servicemix.lwcontainer.LwContainerComponent</component>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.servicemix</groupId>
+    <artifactId>servicemix</artifactId>
+    <version>3.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>servicemix-lwcontainer</artifactId>
+  <packaging>jbi-component</packaging>
+  <name>ServiceMix :: Lightweight container Service Engine</name>
+  <description>Lightweight container Service Engine</description>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-components</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.servicemix.plugins</groupId>
+        <artifactId>maven2-jbi-plugin</artifactId>
+        <configuration>
+          <type>service-engine</type>
+          <bootstrap>org.apache.servicemix.lwcontainer.LwContainerBootstrap</bootstrap>
+          <component>org.apache.servicemix.lwcontainer.LwContainerComponent</component>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

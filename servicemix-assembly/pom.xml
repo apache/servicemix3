@@ -17,91 +17,208 @@
 
 -->
 <!-- $Rev: 359503 $ $Date: 2005-12-28 13:56:03 +0100 (mer., 28 déc. 2005) $ -->
-<model>
-    <modelVersion>4.0.0</modelVersion>
-    
-    <parent>
-        <groupId>incubator-servicemix</groupId>
-        <artifactId>servicemix</artifactId>
-        <version>3.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
-    
-    <artifactId>servicemix-assembly</artifactId>
-    <name>Servicemix :: Assembly</name>
-    
-    <dependencies>
-       <dependency>
-         <groupId>incubator-servicemix</groupId>
-         <artifactId>servicemix-jbi</artifactId>
-       </dependency>
-       
-       <dependency>
-         <groupId>incubator-servicemix</groupId>
-         <artifactId>servicemix-core</artifactId>
-       </dependency>
-       
-       <dependency>
-         <groupId>incubator-servicemix</groupId>
-         <artifactId>servicemix-components</artifactId>
-       </dependency>
-       
-       <dependency>
-         <groupId>incubator-servicemix</groupId>
-         <artifactId>servicemix-common</artifactId>
-       </dependency>
-       
-       <dependency>
-         <groupId>incubator-servicemix</groupId>
-         <artifactId>servicemix-jms</artifactId>
-       </dependency>
-       <dependency>
-         <groupId>incubator-servicemix</groupId>
-         <artifactId>servicemix-http</artifactId>
-       </dependency>
-       <dependency>
-         <groupId>incubator-servicemix</groupId>
-         <artifactId>servicemix-jsr181</artifactId>
-       </dependency>
-       <dependency>
-         <groupId>incubator-servicemix</groupId>
-         <artifactId>servicemix-lwcontainer</artifactId>
-       </dependency>
-       <dependency>
-         <groupId>incubator-servicemix</groupId>
-         <artifactId>servicemix-sca</artifactId>
-       </dependency>
-       <dependency>
-         <groupId>incubator-servicemix</groupId>
-         <artifactId>servicemix-wsn2005</artifactId>
-       </dependency>
-       
-       
-       
-       <!--dependency>
-         <groupId>classworlds</groupId>
-         <artifactId>classworlds</artifactId>
-       </dependency>
-       
-       <dependency>
-         <groupId>xmlbeans</groupId>
-         <artifactId>xbean</artifactId>
-         <scope>optional</scope>
-       </dependency-->
-    
-    </dependencies>
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
 
-    <build>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <configuration>
-            <descriptor>src/main/assembly/bin.xml</descriptor>
-            <!--finalName>servicemix-${version}</finalName>-->
-          </configuration>
-        </plugin>
-      </plugins>
-    </build>
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.servicemix</groupId>
+    <artifactId>servicemix</artifactId>
+    <version>3.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>servicemix-assembly</artifactId>
+  <name>Servicemix :: Assembly</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-jbi</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-components</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-jms</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-http</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-jsr181</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-lwcontainer</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-sca</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-wsn2005</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-eip</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-components</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-ejb_2.1_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>classworlds</groupId>
+      <artifactId>classworlds</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derby</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>mx4j</groupId>
+      <artifactId>mx4j-tools</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>quartz</groupId>
+      <artifactId>quartz</artifactId>
+    </dependency>    
+    <dependency>
+      <groupId>jaxen</groupId>
+      <artifactId>jaxen</artifactId>
+    </dependency>
     
-</model>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>dependency-maven-plugin</artifactId>
+        <version>1.0</version>
+        <executions>
+          <execution>
+            <id>unpack-javadoc</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/components</outputDirectory>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${pom.groupId}</groupId>
+                  <artifactId>servicemix-http</artifactId>
+                  <version>${pom.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>${pom.groupId}</groupId>
+                  <artifactId>servicemix-jms</artifactId>
+                  <version>${pom.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>${pom.groupId}</groupId>
+                  <artifactId>servicemix-wsn2005</artifactId>
+                  <version>${pom.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>${pom.groupId}</groupId>
+                  <artifactId>servicemix-bpe</artifactId>
+                  <version>${pom.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>${pom.groupId}</groupId>
+                  <artifactId>servicemix-sca</artifactId>
+                  <version>${pom.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>${pom.groupId}</groupId>
+                  <artifactId>servicemix-eip</artifactId>
+                  <version>${pom.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>${pom.groupId}</groupId>
+                  <artifactId>servicemix-jsr181</artifactId>
+                  <version>${pom.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>${pom.groupId}</groupId>
+                  <artifactId>servicemix-lwcontainer</artifactId>
+                  <version>${pom.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.1-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <id>bin</id>
+            <phase>package</phase>
+            <goals>
+              <goal>assembly</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>src/main/assembly/bin.xml</descriptor>
+              </descriptors>
+              <finalName>incubating-servicemix-${pom.version}</finalName>
+              <appendAssemblyId>false</appendAssemblyId>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
