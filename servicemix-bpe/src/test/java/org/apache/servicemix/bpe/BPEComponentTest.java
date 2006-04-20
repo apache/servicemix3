@@ -207,6 +207,9 @@ public class BPEComponentTest extends TestCase {
         me.setOperation(new QName("getLoanQuote"));
         me.getMessage("in").setContent(new StringSource("<getLoanQuoteRequest xmlns=\"urn:logicblaze:soa:loanbroker\"><ssn>234341</ssn></getLoanQuoteRequest>"));
         client.sendSync(me);
+        if (me.getError() != null) {
+            throw me.getError();
+        }
         assertEquals(ExchangeStatus.ACTIVE, me.getStatus());
         assertNotNull(me.getFault());
         client.done(me);

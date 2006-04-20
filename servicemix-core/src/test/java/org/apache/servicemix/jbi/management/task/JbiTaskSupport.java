@@ -41,7 +41,7 @@ public abstract class JbiTaskSupport extends TestCase {
         
         // Need to sleep as the jmx remote connector 
         // is started in another thread
-        Thread.sleep(10000);
+        Thread.sleep(5000);
         
         remoteConnection = new JbiTask(){
             protected void doExecute(AdminCommandsServiceMBean acs) throws Exception {

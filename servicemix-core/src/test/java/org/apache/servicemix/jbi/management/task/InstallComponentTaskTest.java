@@ -15,11 +15,11 @@
  */
 package org.apache.servicemix.jbi.management.task;
 
-import org.apache.servicemix.jbi.management.task.InstallComponentTask;
-import org.apache.servicemix.jbi.util.FileUtil;
-
 import java.io.File;
 import java.net.URL;
+
+import org.apache.servicemix.jbi.util.FileUtil;
+import org.apache.tools.ant.Project;
 
 /**
  *
@@ -34,9 +34,11 @@ public class InstallComponentTaskTest extends JbiTaskSupport {
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
+        FileUtil.deleteFile(rootDir);
         this.container.setRootDir(rootDir.getPath());
         super.setUp();        
         installComponentTask = new InstallComponentTask(){};
+        installComponentTask.setProject(new Project());
         installComponentTask.init();
     }
 
@@ -55,7 +57,7 @@ public class InstallComponentTaskTest extends JbiTaskSupport {
             installComponentTask.setFile(file);
             installComponentTask.init();
             installComponentTask.execute();
-            File testFile = new File(rootDir, container.getName() + File.separator + "components" + File.separator
+            File testFile = new File(rootDir, "components" + File.separator
                     + "ComponentTest");
             assertTrue(testFile.exists());
             FileUtil.deleteFile(rootDir);

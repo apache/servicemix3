@@ -18,6 +18,7 @@ package org.apache.servicemix.jbi.management.task;
 import javax.jbi.management.DeploymentServiceMBean;
 
 import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
+import org.apache.tools.ant.Project;
 
 
 /**
@@ -38,6 +39,7 @@ public class JbiTaskTest extends JbiTaskSupport {
             protected void doExecute(AdminCommandsServiceMBean acs) throws Exception {
             }
         };
+        jbiTask.setProject(new Project());
         jbiTask.init();
         jbiTask.connect();
     }
