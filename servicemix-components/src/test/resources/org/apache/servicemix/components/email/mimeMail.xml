@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
 	   xmlns:foo="http://servicemix.org/cheese/">
 
   <!-- the JBI container -->
@@ -39,6 +39,42 @@
               <property name="text">
                 <bean class="org.apache.servicemix.expression.JaxenStringXPathExpression">
                   <constructor-arg value="concat('Hello there ', /person/name, ' how are you today?')"/>
+                </bean>
+              </property>
+            </bean>
+          </property>
+        </bean></sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec componentName="emailSenderWithExpressionsAndAttachment" service="foo:emailSenderWithExpressionsAndAttachment">
+        <sm:component><bean class="org.apache.servicemix.components.email.MimeMailSender">
+          <property name="sender" ref="javaMailSender"/>
+
+          <property name="marshaler">
+            <bean class="org.apache.servicemix.components.email.MimeMailMarshaler">
+              <property name="from">
+                <bean class="org.apache.servicemix.expression.JaxenStringXPathExpression">
+                  <constructor-arg value="/person/email"/>
+                </bean>
+              </property>
+              <property name="to">
+                <bean class="org.apache.servicemix.expression.JaxenStringXPathExpression">
+                  <constructor-arg value="/person/accountant/email"/>
+                </bean>
+              </property>
+              <property name="subject">
+                <bean class="org.apache.servicemix.expression.JaxenStringXPathExpression">
+                  <constructor-arg value="concat('Drink a beer ', /person/name)"/>
+                </bean>
+              </property>
+              <property name="text">
+                <bean class="org.apache.servicemix.expression.JaxenStringXPathExpression">
+                  <constructor-arg value="concat('Hello there ', /person/name, ' how are you today?')"/>
+                </bean>
+              </property>
+              <property name="attachments">
+                <bean class="org.apache.servicemix.expression.JaxenStringXPathExpression">
+                  <constructor-arg value="/person/attachments"/>
                 </bean>
               </property>
             </bean>

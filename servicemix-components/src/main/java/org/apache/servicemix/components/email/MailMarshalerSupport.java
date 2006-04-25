@@ -51,6 +51,7 @@ public abstract class MailMarshalerSupport extends MarshalerSupport {
     private Expression subject = new PropertyExpression("org.apache.servicemix.email.subject", "Message from ServiceMix");
     private Expression replyTo = new PropertyExpression("org.apache.servicemix.email.replyTo");
     private Expression sentDate = new PropertyExpression("org.apache.servicemix.email.sentDate");
+    private Expression attachments = new PropertyExpression("org.apache.servicemix.email.attachments");
 
     public Expression getTo() {
         return to;
@@ -91,7 +92,7 @@ public abstract class MailMarshalerSupport extends MarshalerSupport {
     public void setText(Expression text) {
         this.text = text;
     }
-    
+
     public Expression getHtml() {
         return html;
     }
@@ -132,6 +133,13 @@ public abstract class MailMarshalerSupport extends MarshalerSupport {
         this.dateFormat = dateFormat;
     }
 
+    public Expression getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(Expression attachments) {
+        this.attachments = attachments;
+    }
     // Implementation methods
     //-------------------------------------------------------------------------
     protected Date getSentDate(MessageExchange exchange, NormalizedMessage normalizedMessage) throws MessagingException {

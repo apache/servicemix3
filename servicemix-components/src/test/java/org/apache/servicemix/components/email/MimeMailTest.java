@@ -18,13 +18,17 @@ package org.apache.servicemix.components.email;
 import java.util.Date;
 import java.util.List;
 
+import javax.activation.DataHandler;
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.mail.Part;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
 import org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver;
+import org.apache.servicemix.jbi.util.ByteArrayDataSource;
 import org.apache.servicemix.tck.TestSupport;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
@@ -88,7 +92,50 @@ public class MimeMailTest extends TestSupport {
         assertEquals("subject", "Drink a beer James", message.getSubject());
     }
 
+    public void testUsingXPathExpressionsInEmailWithAttachment() throws Exception {
 
+        // START SNIPPET: xpath
+        QName xpathSender = new QName("http://servicemix.org/cheese/", "emailSenderWithExpressionsAndAttachment");
+        ServiceNameEndpointResolver resolver = new ServiceNameEndpointResolver(xpathSender);
+
+        InOnly exchange = client.createInOnlyExchange(resolver);
+
+        Source source = getSourceFromClassPath("request.xml");
+        exchange.getInMessage().setContent(source);
+        ByteArrayDataSource ds = new ByteArrayDataSource("hello".getBytes(), "text/plain");
+        ds.setName("id");
+        exchange.getInMessage().addAttachment("id", new DataHandler(ds));
+
+        client.send(exchange);
+        // END SNIPPET: xpath
+
+        // lest find the test sender
+        StubJavaMailSender sender = (StubJavaMailSender) getBean("javaMailSender");
+        sender.assertMessagesReceived(1);
+        List messages = sender.getMessages();
+        assertEquals("message size: " + messages, 1, messages.size());
+
+        MimeMessage message = (MimeMessage) messages.get(0);
+
+        System.out.println("Created message: " + message);
+        Object content = message.getContent();
+        assertTrue(content instanceof MimeMultipart);
+        MimeMultipart contentMP = (MimeMultipart) content;
+        assertEquals(contentMP.getCount(), 3); // first attachement for text body and second for file attached
+        Part part = contentMP.getBodyPart(0);
+        assertTrue(part.isMimeType("text/plain"));
+        part = contentMP.getBodyPart(1);
+        String disposition = part.getDisposition();
+        assertTrue(disposition.equalsIgnoreCase(Part.ATTACHMENT));
+        DataHandler att = part.getDataHandler();
+        assertEquals("example.xml", att.getName().toLowerCase());
+        part = contentMP.getBodyPart(2);
+        disposition = part.getDisposition();
+        assertTrue(disposition.equalsIgnoreCase(Part.ATTACHMENT));
+        att = part.getDataHandler();
+        assertEquals("id", att.getName().toLowerCase());
+        assertEquals("subject", "Drink a beer James", message.getSubject());
+    }
 
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/email/mimeMail.xml");

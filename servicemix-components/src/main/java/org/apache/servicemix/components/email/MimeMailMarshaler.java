@@ -15,14 +15,25 @@
  */
 package org.apache.servicemix.components.email;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.StringTokenizer;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.mail.Address;
+import javax.mail.BodyPart;
 import javax.mail.Message;
+import javax.mail.Multipart;
+import javax.mail.Part;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -30,6 +41,8 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 
 /**
@@ -39,7 +52,7 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
  * @version $Revision$
  */
 public class MimeMailMarshaler extends MailMarshalerSupport {
-
+    private static Log log = LogFactory.getLog(MimeMailPoller.class);
 
     /**
      * Populates the MessageExchange with values extracted from the mail message using expressions.
@@ -50,34 +63,84 @@ public class MimeMailMarshaler extends MailMarshalerSupport {
      * @throws javax.mail.MessagingException if the message could not be constructed or there was an error creating an address
      */
 	public void prepareExchange(MessageExchange exchange, NormalizedMessage normalizedMessage, MimeMessage mimeMessage) throws javax.mail.MessagingException {
-		String from 	= InternetAddress.toString(mimeMessage.getFrom());
+		String from     = InternetAddress.toString(mimeMessage.getFrom());
 		String to 		= InternetAddress.toString(mimeMessage.getRecipients(Message.RecipientType.TO));
 		String cc 		= InternetAddress.toString(mimeMessage.getRecipients(Message.RecipientType.CC));
 		String replyTo 	= InternetAddress.toString(mimeMessage.getReplyTo());
 		String sentDate = getDateFormat().format(mimeMessage.getSentDate());
-		String text;
+		String text = null;
+        String html = null;
+        MimeMultipart mp = null;
+        Object content = null;
+        Object subContent = null;
+        MimeMultipart subMP = null;
+
 		try {
-			//TODO: Add Message Attachments and allow multipart messages.
-			text 	= asString(mimeMessage.getContent());
-		} catch (IOException e) {
-			throw new javax.mail.MessagingException("Error while fetching content",e);
-		}
-		
-		normalizedMessage.setProperty("org.apache.servicemix.email.from",from);
-		normalizedMessage.setProperty("org.apache.servicemix.email.to",to);
-		normalizedMessage.setProperty("org.apache.servicemix.email.cc",cc);
-		normalizedMessage.setProperty("org.apache.servicemix.email.text",text);
-		normalizedMessage.setProperty("org.apache.servicemix.email.replyTo",replyTo);
-		normalizedMessage.setProperty("org.apache.servicemix.email.sentDate",sentDate);
-		
-		//TODO: Change this to something that makes more sense
-		try {
-			normalizedMessage.setContent(new StringSource(text));
+            content = mimeMessage.getContent();
+            if (content instanceof String)
+                // simple mail
+                text = asString(content);
+            else if (content instanceof MimeMultipart) {
+                // mail with attachment
+                mp = (MimeMultipart)content;
+                int nbMP = mp.getCount();
+                for (int i=0; i < nbMP; i++) {
+                    Part part = mp.getBodyPart(i);
+                    String disposition = part.getDisposition();
+                    if ((disposition != null) &&
+                        ((disposition.equals(Part.ATTACHMENT) ||
+                         (disposition.equals(Part.INLINE))))) {
+                        //Parts marked with a disposition of Part.ATTACHMENT from part.getDisposition() are clearly attachments
+                        DataHandler att = part.getDataHandler();
+                        normalizedMessage.addAttachment(att.getName(), att);
+                    } else {
+                        MimeBodyPart mbp = (MimeBodyPart)part;
+                        if (mbp.isMimeType("text/plain")) {
+                          // Handle plain
+                            text = (String)mbp.getContent();
+                        } else if (mbp.isMimeType("text/html")) {
+                          // Handle html contents
+                            html = (String)mbp.getContent();
+                        } else if (mbp.isMimeType("multipart/related")){
+                            // Special case for multipart/related message type
+                            subContent = mbp.getContent();
+                            if (subContent instanceof MimeMultipart) {
+                                subMP = (MimeMultipart)subContent;
+                                int nbsubMP = subMP.getCount();
+                                for (int j=0; j < nbsubMP; j++) {
+                                    MimeBodyPart subMBP = (MimeBodyPart)part;
+                                    // add a property into the normalize message
+                                    normalizedMessage.setProperty("org.apache.servicemix.email.alternativeContent" + j, subMBP.getContent());
+                                }
+                            }
+                        } else // strange mail...log a warning
+                            log.warn("Some mail contents can not be traited and is not include into message");
+                    }
+                }
+            } else { // strange mail...log a warning
+                log.warn("Some mail contents can not be traited and is not include into message");
+            }
 		} catch (MessagingException e) {
 			throw new javax.mail.MessagingException("Error while setting content on normalized message",e);
-		}
+		} catch (IOException e) {
+            throw new javax.mail.MessagingException("Error while fetching content",e);
+        }
+
+        normalizedMessage.setProperty("org.apache.servicemix.email.from", from);
+        normalizedMessage.setProperty("org.apache.servicemix.email.to", to);
+        normalizedMessage.setProperty("org.apache.servicemix.email.cc", cc);
+        normalizedMessage.setProperty("org.apache.servicemix.email.text", text);
+        normalizedMessage.setProperty("org.apache.servicemix.email.replyTo", replyTo);
+        normalizedMessage.setProperty("org.apache.servicemix.email.sentDate", sentDate);
+        normalizedMessage.setProperty("org.apache.servicemix.email.html", html);
+
+        try {
+            normalizedMessage.setContent(new StringSource(text));
+        } catch (MessagingException e) {
+            throw new javax.mail.MessagingException("Error while setting content on normalized message",e);
+        }
 	}
-	
+
     /**
      * Populates the mime email message with values extracted from the message exchange using expressions.
      *
@@ -117,7 +180,7 @@ public class MimeMailMarshaler extends MailMarshalerSupport {
                 htmlBodyPart.setContent(html, "text/html");
                 content.addBodyPart(textBodyPart);
                 content.addBodyPart(htmlBodyPart);
-                
+
                 mimeMessage.setContent(content);
             }
             String subject = getSubject(exchange, normalizedMessage);
@@ -131,6 +194,38 @@ public class MimeMailMarshaler extends MailMarshalerSupport {
             Address[] replyTo = getReplyTo(exchange, normalizedMessage);
             if (replyTo != null) {
                 mimeMessage.setReplyTo(replyTo);
+            }
+
+            // add attachment from message and properties
+            HashMap attachments = this.getAttachments(exchange, normalizedMessage);
+            if (attachments != null) {
+                Set attNames = attachments.keySet();
+                Iterator itAttNames = attNames.iterator();
+                if (itAttNames.hasNext()) { // there is at least one attachment
+                    // Create the message part
+                    BodyPart messageBodyPart = new MimeBodyPart();
+                    // Fill the message
+                    messageBodyPart.setText(text);
+                    // Create a Multipart
+                    Multipart multipart = new MimeMultipart();
+                    // Add part one
+                    multipart.addBodyPart(messageBodyPart);
+                    while (itAttNames.hasNext()) {
+                        String oneAttachmentName = (String)itAttNames.next();
+                        // Create another body part
+                        messageBodyPart = new MimeBodyPart();
+                        // Set the data handler to the attachment
+                        messageBodyPart.setDataHandler(new DataHandler((DataSource)attachments.get(oneAttachmentName)));
+                        // Set the filename
+                        messageBodyPart.setFileName(oneAttachmentName);
+                        // Set Disposition
+                        messageBodyPart.setDisposition(Part.ATTACHMENT);
+                        // Add part to multipart
+                        multipart.addBodyPart(messageBodyPart);
+                    }
+                    // Put parts in message
+                    mimeMessage.setContent(multipart);
+                 }
             }
         }
         catch (MessagingException e) {
@@ -162,6 +257,38 @@ public class MimeMailMarshaler extends MailMarshalerSupport {
 
     protected Address[] getReplyTo(MessageExchange exchange, NormalizedMessage normalizedMessage) throws MessagingException, AddressException {
         return asAddressArray(getReplyTo().evaluate(exchange, normalizedMessage));
+    }
+
+    protected HashMap getAttachments(MessageExchange exchange, NormalizedMessage normalizedMessage) {
+        HashMap attachments = new HashMap();
+        String filePath = "";
+        String oneAttachmentName = "";
+        try {
+            // get attachment from property org.apache.servicemix.email.attachment
+            String listAttachment = (String)getAttachments().evaluate(exchange, normalizedMessage);
+            if (listAttachment == null || listAttachment.equals(""))
+                return null;// no attachmnent
+            StringTokenizer st = new StringTokenizer(listAttachment, ",");
+            if (st == null)
+                return null; // no attachmnent
+            while (st.hasMoreTokens()) {
+                filePath = st.nextToken();
+                File file = new File(filePath);
+                attachments.put(file.getName(), new FileDataSource(file));
+            }
+        } catch (MessagingException e) {
+            log.warn("file not found for attachment : " + e.getMessage() + " : " + filePath);
+        }
+        // get attachment from Normalize Message
+        Set attNames = normalizedMessage.getAttachmentNames();
+        Iterator itAttNames = attNames.iterator();
+        while (itAttNames.hasNext()) {
+            oneAttachmentName = (String)itAttNames.next();
+            DataSource oneAttchmentInputString = normalizedMessage.getAttachment(oneAttachmentName).getDataSource();
+            attachments.put(oneAttachmentName, oneAttchmentInputString);
+        }
+
+        return attachments;
     }
 
 }
