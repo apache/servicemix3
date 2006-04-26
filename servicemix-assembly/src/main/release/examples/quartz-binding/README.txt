@@ -13,4 +13,4 @@ the Quartz scheduler and then the event is picked up by a trace JBI component
 which just outputs the event to the console.
 
 For more information see:
-http://servicemix.org/Quartz
+http://incubator.apache.org/servicemix/Quartz

@@ -16,4 +16,4 @@ The client is built and run from source using Ant, http://ant.apache.org.
 Just execute 'ant' from the current directory to run the HTTP client.
 
 For more information see:
-http://servicemix.org/HTTP
+http://incubator.apache.org/servicemix/HTTP

@@ -16,4 +16,4 @@ run the JMS client.
 
 For more information see
 
-http://servicemix.org/JMS
+http://incubator.apache.org/servicemix/JMS

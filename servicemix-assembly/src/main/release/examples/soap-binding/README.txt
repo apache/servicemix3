@@ -17,7 +17,7 @@ You should see the response on the right pane.
 
 For more information on this example please see
 
-http://servicemix.org/soap+binding+example
+http://incubator.apache.org/servicemix/soap+binding+example
 
 
 

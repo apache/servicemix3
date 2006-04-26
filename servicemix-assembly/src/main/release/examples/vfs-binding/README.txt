@@ -23,4 +23,4 @@ directory and you should see it apear in the outbox directory in a
 few seconds.
 
 For more information see:
-http://servicemix.org/VFS
+http://incubator.apache.org/servicemix/VFS

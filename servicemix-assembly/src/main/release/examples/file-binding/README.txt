@@ -15,4 +15,4 @@ Just copy the test-file.xml file into the inbox directory and you should
 see it apear in the outbox directory in a few seconds.
 
 For more information see:
-http://servicemix.org/File
+http://incubator.apache.org/servicemix/File

@@ -21,4 +21,4 @@ run the JMS client.
 
 For more information on this example please see
 
-  http://servicemix.org/BPEL+example
+  http://incubator.apache.org/servicemix/BPEL+example
