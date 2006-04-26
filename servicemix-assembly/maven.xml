@@ -150,7 +150,7 @@
 
     <ant:echo message="${project.root}"/>
     <ant:copy todir="${maven.dist.bin.assembly.dir}">
-       <fileset dir="${project.root}" includes="*.txt,STATUS,NOTICE"/>
+       <fileset dir="${project.root}" includes="README,LICENSE,STATUS,NOTICE,licenses/*.*"/>
     </ant:copy>
 
     <!-- Copy core api docs -->
