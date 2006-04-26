@@ -234,10 +234,17 @@
   <build>
     <resources>
       <resource>
+        <directory>..</directory>
+        <targetPath>META-INF</targetPath>
+        <includes>
+          <include>LICENSE</include>
+          <include>NOTICE</include>
+          <include>DISCLAIMER</include>
+        </includes>
+      </resource>
+      <resource>
         <directory>src/main/resources</directory>
         <includes>
-          <include>**/*.properties</include>
-          <include>**/*.xml</include>
           <include>**/*</include>
         </includes>
       </resource>

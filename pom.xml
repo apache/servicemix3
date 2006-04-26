@@ -38,9 +38,9 @@
     ServiceMix is an open source ESB based on the Java Business
     Integration framework - JSR-208 
   </description>
-  <url>http://www.servicemix.org/</url>
+  <url>http://incubator.apache.org/servicemix</url>
   <prerequisites>
-    <maven>2.0</maven>
+    <maven>2.0.4</maven>
   </prerequisites>
   <inceptionYear>2005</inceptionYear>
   
@@ -77,9 +77,10 @@
       <subscribe>servicemix-dev-subscribe@geronimo.apache.org</subscribe>
       <unsubscribe>servicemix-dev-unsubscribe@geronimo.apache.org</unsubscribe>
       <post>servicemix-dev@geronimo.apache.org</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-dev/</archive>
+      <archive>http://www.nabble.com/ServiceMix---Dev-f12051.html</archive>
       <otherArchives>
         <archive>http://dir.gmane.org/gmane.comp.java.servicemix.devel</archive>
+        <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-dev/</archive>
       </otherArchives>
     </mailingList>
     <mailingList>
@@ -87,9 +88,10 @@
       <subscribe>servicemix-users-subscribe@geronimo.apache.org</subscribe>
       <unsubscribe>servicemix-users-unsubscribe@geronimo.apache.org</unsubscribe>
       <post>servicemix-users@geronimo.apache.org</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-users/</archive>
+      <archive>http://www.nabble.com/ServiceMix---User-f12050.html</archive>
       <otherArchives>
         <archive>http://dir.gmane.org/gmane.comp.java.servicemix.user</archive>
+        <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-users/</archive>
       </otherArchives>
     </mailingList>
     <mailingList>
@@ -98,9 +100,6 @@
       <unsubscribe>servicemix-commits-unsubscribe@geronimo.apache.org</unsubscribe>
       <post>servicemix-commits@geronimo.apache.org</post>
       <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-commits/</archive>
-      <otherArchives>
-        <archive>http://archive.servicemix.codehaus.org/scm/</archive>
-      </otherArchives>
     </mailingList>
   </mailingLists>
   
@@ -189,24 +188,11 @@
     </developer>
   </developers>
   
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/servicemix/trunk</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/servicemix/trunk</developerConnection>
     <url>http://svn.apache.org/viewcvs.cgi/incubator/servicemix/trunk/</url>
   </scm>
-  
-  <organization>
-    <name>Apache Software Foundation</name>
-    <url>http://www.apache.org</url>
-  </organization>
   
   <modules>
     <module>servicemix-jbi</module>
@@ -1483,6 +1469,29 @@
   </distributionManagement>
   
   <build>
+    <resources>
+      <resource>
+        <directory>..</directory>
+        <targetPath>META-INF</targetPath>
+        <includes>
+          <include>LICENSE</include>
+          <include>NOTICE</include>
+          <include>DISCLAIMER</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>target/generated</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+    </resources>
     <pluginManagement>
       <plugins>
             <plugin>
