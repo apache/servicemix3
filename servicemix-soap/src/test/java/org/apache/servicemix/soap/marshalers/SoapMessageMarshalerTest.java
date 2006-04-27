@@ -21,9 +21,14 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Iterator;
+import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
+import javax.mail.Session;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.xml.namespace.QName;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
@@ -197,7 +202,35 @@ public class SoapMessageMarshalerTest extends TestCase {
         checkServiceNameNamespace((DocumentFragment) headers.next());
 		assertFalse(headers.hasNext());
 	}
-	
+
+    public void testReadNonSoapMessageWithAttachmentsAndNoSource()  throws Exception {
+        Session session = Session.getDefaultInstance(new Properties(), null);
+        MimeMessage message = new MimeMessage(session);
+        MimeMultipart multipart = new MimeMultipart();
+        MimeBodyPart mimePart = new MimeBodyPart();
+        mimePart.setText("This is a dummy text");
+        mimePart.setContentID("<bla1>");
+        multipart.addBodyPart(mimePart);
+        mimePart = new MimeBodyPart();
+        mimePart.setContentID("<bla2>");
+        mimePart.setContent("<html>dummy</html>", "text/html");
+        multipart.addBodyPart(mimePart);
+        message.setContent(multipart);
+        message.setHeader("Content-Type", multipart.getContentType());
+        message.saveChanges();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        message.writeTo(baos);
+        log.info(baos.toString());
+        
+        SoapMarshaler marshaler = new SoapMarshaler(true);
+        SoapMessage msg = marshaler.createReader().read(new ByteArrayInputStream(baos.toByteArray()), multipart.getContentType());
+        assertTrue(msg.getSource().equals(SoapReader.EMPTY_CONTENT));
+        SoapWriter writer = marshaler.createWriter(msg);
+        baos = new ByteArrayOutputStream();
+        writer.write(baos);
+        log.info(baos.toString());
+    }
+  
 	protected void checkUserIdNamespace(Node node) throws Exception {
         CachedXPathAPI cachedXPathAPI = new CachedXPathAPI(); 
         NodeIterator iterator = cachedXPathAPI.selectNodeIterator(node, "//*[local-name() = 'userId']"); 

@@ -28,11 +28,13 @@ import javax.mail.internet.MimeMultipart;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.servicemix.jbi.jaxp.ExtendedXMLStreamReader;
 import org.apache.servicemix.jbi.jaxp.FragmentStreamReader;
 import org.apache.servicemix.jbi.jaxp.StaxSource;
+import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.soap.SoapFault;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
@@ -46,6 +48,8 @@ import org.w3c.dom.DocumentFragment;
 public class SoapReader {
 
 	private SoapMarshaler marshaler;
+  
+  protected static final Source EMPTY_CONTENT = new StringSource("<payload/>");
 
 	public SoapReader(SoapMarshaler marshaler) {
 		this.marshaler = marshaler;
@@ -139,13 +143,29 @@ public class SoapReader {
 			ContentType type = new ContentType(mime.getContentType());
 			String contentId = type.getParameter("start");
 			// Get request
-			MimeBodyPart contentPart;
+			MimeBodyPart contentPart = null;
             if (contentId != null) {
                 contentPart = (MimeBodyPart) multipart.getBodyPart(contentId);
             } else {
-                contentPart = (MimeBodyPart) multipart.getBodyPart(0);
+                for (int i = 0; i < multipart.getCount(); i++) {
+                  MimeBodyPart contentPart2 = (MimeBodyPart) multipart.getBodyPart(i);
+                  String contentType = contentPart2.getContentType();
+                  
+                  if (contentType.indexOf("xml") >= 0) {
+                    contentPart = contentPart2;
+                    break;
+                  }
+                }
             }
-            SoapMessage message = read(contentPart.getInputStream());
+            
+            SoapMessage message = null;
+            if (contentPart != null) {
+              message = read(contentPart.getInputStream());  
+            } else {
+              message = new SoapMessage();
+              message.setSource(EMPTY_CONTENT);
+            }
+            
             // Get attachments
 			for (int i = 0; i < multipart.getCount(); i++) {
                 MimeBodyPart part = (MimeBodyPart) multipart.getBodyPart(i);
