@@ -26,6 +26,7 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathException;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
@@ -51,15 +52,16 @@ public class JAXPXPathExpression implements Expression, InitializingBean {
     }
 
     /**
-     * A helper constructor to make a fully created expression. This constructor will
-     * call the {@link #afterPropertiesSet()} method to ensure this POJO is properly constructed.
+     * A helper constructor to make a fully created expression. 
      */
     public JAXPXPathExpression(String xpath) throws Exception {
         this.xpath = xpath;
-        afterPropertiesSet();
     }
 
-    public void afterPropertiesSet() throws Exception {
+    /**
+     * Compiles the xpath expression.
+     */
+    public void afterPropertiesSet() throws XPathExpressionException {
         if (xPathExpression == null) {
             if (xpath == null) {
                 throw new IllegalArgumentException("You must specify the xpath property");
@@ -80,8 +82,13 @@ public class JAXPXPathExpression implements Expression, InitializingBean {
         }
     }
 
+    /**
+     * Before evaluating the xpath expression, it will be compiled by calling
+     * the {@link #afterPropertiesSet()} method.
+     */
     public Object evaluate(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
         try {
+            afterPropertiesSet();
             Object object = getXMLNode(exchange, message);
             synchronized (this) {
                 variableResolver.setExchange(exchange);
