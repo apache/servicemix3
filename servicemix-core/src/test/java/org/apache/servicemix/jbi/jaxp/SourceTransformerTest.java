@@ -16,6 +16,7 @@
 package org.apache.servicemix.jbi.jaxp;
 
 import javax.xml.namespace.QName;
+import javax.xml.transform.dom.DOMSource;
 
 import junit.framework.TestCase;
 
@@ -41,6 +42,15 @@ public class SourceTransformerTest extends TestCase {
         Element e = (Element) doc.getDocumentElement().getFirstChild();
         QName q = DOMUtil.createQName(e, e.getFirstChild().getNodeValue());
         assertEquals("http://foo.bar.com", q.getNamespaceURI());
+    }
+    
+    public void testToDOMSourceFromStream() throws Exception {
+        DOMSource domsource = transformer.toDOMSourceFromStream(new StringSource(
+            "<definition xmlns:tns='http://foo.bar.com'><value>Jürgen</value></definition>"));
+        assertNotNull(domsource);
+        
+        // 2006-04-28 JMa: You'll get a SAXParseException:
+        // [Fatal Error] :1:51: Invalid byte 1 of 1-byte UTF-8 sequence.
     }
 
 }

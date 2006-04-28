@@ -48,6 +48,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.nio.charset.Charset;
 
 /**
  * A helper class to transform from one type of {@link Source} to another
@@ -62,6 +63,15 @@ public class SourceTransformer {
     private DocumentBuilderFactory documentBuilderFactory;
     private TransformerFactory transformerFactory;
 
+    public static final String defaultCharEncodingName;
+    
+    static {
+        String canonName = new java.io.OutputStreamWriter( 
+                new java.io.ByteArrayOutputStream()).getEncoding();
+        
+        defaultCharEncodingName = Charset.forName(canonName).displayName();
+    }
+    
     public SourceTransformer() {
     }
 
@@ -190,7 +200,7 @@ public class SourceTransformer {
         return new StreamSource(new ByteArrayInputStream(result.getBytes()));
     }
 
-	public StreamSource toStreamSourceFromDOM(DOMSource source) throws TransformerException {
+    public StreamSource toStreamSourceFromDOM(DOMSource source) throws TransformerException {
         String result = toString(source);
         return new StreamSource(new ByteArrayInputStream(result.getBytes()));
     }
@@ -218,7 +228,10 @@ public class SourceTransformer {
         Document document = null;
         InputStream inputStream = source.getInputStream();
         if (inputStream != null) {
-            document = builder.parse(inputStream, systemId);
+            InputSource inputsource = new InputSource(inputStream);
+            inputsource.setSystemId(systemId);
+            inputsource.setEncoding(defaultCharEncodingName);
+            document = builder.parse(inputsource);
         }
         else {
             Reader reader = source.getReader();
