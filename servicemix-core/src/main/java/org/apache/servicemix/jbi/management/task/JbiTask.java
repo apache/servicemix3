@@ -17,6 +17,8 @@ package org.apache.servicemix.jbi.management.task;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.jbi.management.DeploymentServiceMBean;
 import javax.management.MBeanServerInvocationHandler;
@@ -70,7 +72,10 @@ public abstract class JbiTask extends Task {
      * @throws IOException
      */
     public JMXConnector getJMXConnector (JMXServiceURL url) throws IOException {
-        return JMXConnectorFactory.connect(url);
+        String[] credentials = new String[] { getUsername(), getPassword() };
+        Map environment = new HashMap();
+        environment.put(JMXConnector.CREDENTIALS, credentials);
+        return JMXConnectorFactory.connect(url, environment);
     }
     
     /**
