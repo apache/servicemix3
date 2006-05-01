@@ -1,0 +1,40 @@
+<project name="jms-binding" default="run" basedir=".">
+
+  <property name="build.dir" value="build"/>
+  
+  <property name="src.dir" value="src"/>
+  <property name="su.http.binding.src.dir" value="${src.dir}/wsn-http-binding-su"/>
+  <property name="sa.src.dir" value="${src.dir}/sa"/>
+  
+  <target name="clean">
+    <delete dir="target" quiet="true"/>
+    <delete dir="${build.dir}" quiet="true"/>
+  </target>
+
+  <target name="init">
+    <mkdir dir="${build.dir}"/>
+  </target>
+
+  <target name="build-wsn-http-binding-su" description="Build the binding service unit">
+    <zip destfile="${build.dir}/wsn-http-binding-su.zip">
+      <fileset dir="${su.http.binding.src.dir}"/>
+    </zip>
+  </target>
+
+  <target name="build-sa" depends="init,build-wsn-http-binding-su" description="Build the service assembly">
+    <zip destfile="${build.dir}/soap-demo-sa.zip">
+      <fileset dir="${build.dir}" includes="wsn-http-binding-su.zip"/>
+      <fileset dir="${sa.src.dir}"/>
+    </zip>
+  </target>
+  
+  <target name="setup" depends="build-sa" description="Setup servicemix">
+    <mkdir dir="install"/>
+    <mkdir dir="deploy"/>
+    <copy todir="install">
+      <fileset dir="../../components" includes="*wsn*"/>
+      <fileset dir="../../components" includes="*http*"/>
+    </copy>
+    <copy file="${build.dir}/soap-demo-sa.zip" todir="deploy"/>
+  </target>
+</project>
