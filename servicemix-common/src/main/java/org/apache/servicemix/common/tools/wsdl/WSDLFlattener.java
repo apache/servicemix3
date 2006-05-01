@@ -24,10 +24,15 @@ import javax.wsdl.extensions.schema.SchemaImport;
 import javax.wsdl.factory.WSDLFactory;
 import javax.xml.namespace.QName;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.ibm.wsdl.extensions.schema.SchemaImpl;
 
 public class WSDLFlattener {
 
+    private static Log log = LogFactory.getLog(WSDLFlattener.class);
+    
     private Definition definition;
     private SchemaCollection schemas;
     private Map flattened;

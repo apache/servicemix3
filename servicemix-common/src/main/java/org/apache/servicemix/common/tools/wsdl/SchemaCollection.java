@@ -25,6 +25,8 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -38,6 +40,8 @@ import org.xml.sax.InputSource;
  */
 public class SchemaCollection {
 
+    private static Log log = LogFactory.getLog(SchemaCollection.class);
+    
     private Map schemas;
     private URI baseUri;
     
@@ -46,6 +50,9 @@ public class SchemaCollection {
     }
     
     public SchemaCollection(URI baseUri) {
+        if (log.isDebugEnabled()) {
+            log.debug("Initializing schema collection with baseUri: " + baseUri);
+        }
         this.baseUri = baseUri;
         this.schemas = new HashMap();
     }
@@ -64,14 +71,23 @@ public class SchemaCollection {
     }
     
     public void read(String location, URI baseUri) throws Exception {
+        if (log.isDebugEnabled()) {
+            log.debug("Reading schema at '" + location + "' with baseUri '" + baseUri + "'");
+        }
         if (baseUri == null) {
             baseUri = this.baseUri;
         }
         URI loc;
         if (baseUri != null) {
-            loc = baseUri.resolve(location);
+            loc = resolve(baseUri, location);
+            if (!loc.isAbsolute()) {
+                throw new IllegalArgumentException("Unable to resolve '" + loc.toString() + "' relative to '" + baseUri + "'");
+            }
         } else {
             loc = new URI(location);
+            if (!loc.isAbsolute()) {
+                throw new IllegalArgumentException("Location '" + loc.toString() + "' is not absolute and no baseUri specified");
+            }
         }
         InputSource inputSource = new InputSource();
         inputSource.setByteStream(loc.toURL().openStream());
@@ -113,6 +129,16 @@ public class SchemaCollection {
             schema.addImport(namespace);
             schema.getRoot().removeChild(ce);
         }
+    }
+    
+    protected static URI resolve(URI base, String location) {
+        if ("jar".equals(base.getScheme())) {
+            String str = base.toString();
+            String[] parts = str.split("!");
+            parts[1] = URI.create(parts[1]).resolve(location).toString();
+            return URI.create(parts[0] + "!" + parts[1]);
+        }
+        return base.resolve(location);
     }
 
 }

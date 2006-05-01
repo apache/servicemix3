@@ -2,6 +2,7 @@ package org.apache.servicemix.common.tools.wsdl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.net.URI;
 import java.net.URL;
 
 import javax.wsdl.Definition;
@@ -12,9 +13,9 @@ import javax.wsdl.xml.WSDLWriter;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.w3c.dom.Document;
-
 import junit.framework.TestCase;
+
+import org.w3c.dom.Document;
 
 public class WSDLFlattenerTest extends TestCase {
 
@@ -42,6 +43,14 @@ public class WSDLFlattenerTest extends TestCase {
         assertEquals(1, newFlat.getPortTypes().size());
         PortType portType = (PortType) newFlat.getPortTypes().values().iterator().next();
         assertNotNull(portType);
+    }
+    
+    public void testResolve() throws Exception {
+        URI base = URI.create("jar:file:/C:/java/servicemix/servicemix-assembly/target/incubator-servicemix-3.0-SNAPSHOT/bin/incubator-servicemix-3.0-SNAPSHOT/bin/../lib/optional/servicemix-wsn2005-3.0-SNAPSHOT.jar!/org/apache/servicemix/wsn/wsn.wsdl");
+        String loc = "b-2.xsd";
+        URI rel = SchemaCollection.resolve(base, loc);
+        assertEquals("jar:file:/C:/java/servicemix/servicemix-assembly/target/incubator-servicemix-3.0-SNAPSHOT/bin/incubator-servicemix-3.0-SNAPSHOT/bin/../lib/optional/servicemix-wsn2005-3.0-SNAPSHOT.jar!/org/apache/servicemix/wsn/b-2.xsd", rel.toString());
+        System.out.println(rel);
     }
     
 }
