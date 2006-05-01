@@ -2,28 +2,34 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <!-- START SNIPPET: jndi -->
 <beans>
-  <bean id="jndi" class="org.apache.xbean.spring.jndi.DefaultContext" singleton="true">
+
+  <bean id="jndi" 
+        class="org.apache.xbean.spring.jndi.SpringInitialContextFactory" 
+        factory-method="makeInitialContext"
+        singleton="true">
     <property name="entries">
       <map>
-        <entry key="jdbc/pxe__pm">
+      
+        <!-- PXE DB datasource -->
+        <entry key="java:comp/env/jdbc/pxe__pm">
           <bean class="org.hsqldb.jdbc.jdbcDataSource">
             <property name="database" value="jdbc:hsqldb:mem:pxe"/>
             <property name="user" value = "sa"/>
             <property name="password" value = ""/>
           </bean>
         </entry>
+        
+        <!-- wsn2005 jms connection factory -->
+        <entry key="java:comp/env/jms/wsnotificationCF">
+          <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+            <property name="brokerURL" value="tcp://localhost:61616" />
+          </bean>
+        </entry>
 
+        <!-- transaction manager -->
         <entry key="javax.transaction.TransactionManager" value-ref="transactionManager" />
       </map>
     </property>
-  </bean>
-
-  <bean id="extendedTransactionManager" class="org.jencks.factory.TransactionManagerFactoryBean"/>
-  <bean id="transactionContextManager" class="org.jencks.factory.TransactionContextManagerFactoryBean">
-    <property name="transactionManager" ref="extendedTransactionManager"/>
-  </bean>
-  <bean id="transactionManager" class="org.jencks.factory.GeronimoTransactionManagerFactoryBean">
-    <property name="transactionContextManager" ref="transactionContextManager"/>
   </bean>
 
 </beans>

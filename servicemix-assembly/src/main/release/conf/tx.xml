@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+  <bean id="extendedTransactionManager" class="org.jencks.factory.TransactionManagerFactoryBean"/>
+  <bean id="transactionContextManager" class="org.jencks.factory.TransactionContextManagerFactoryBean">
+    <property name="transactionManager" ref="extendedTransactionManager"/>
+  </bean>
+  <bean id="transactionManager" class="org.jencks.factory.GeronimoTransactionManagerFactoryBean">
+    <property name="transactionContextManager" ref="transactionContextManager"/>
+  </bean>
+  
+  <!-- We should configure a txlog to handle tx recovery -->
+
+</beans>
