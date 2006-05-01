@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<geronimo-plugin>
+  <configuration>
+    <name>ServiceMix Deployer 3.0-SNAPSHOT</name>
+    <config-id>incubator-servicemix/servicemix-deployer/3.0-SNAPSHOT/car</config-id>
+    <category>Integration</category>
+    <description>Apache ServiceMix is an open source distributed Enterprise Service Bus (ESB) and SOA toolkit built from the ground up on the semantics and APIs of the Java Business Integration (JBI) specification JSR 208 and released under the Apache license.
+
+This plugin installs the ServiceMix Deployer.</description>
+    <license osi-approved="true">ASL 2</license>
+    <geronimo-version>1.1-SNAPSHOT</geronimo-version>
+    <geronimo-version>1.1</geronimo-version>
+    <dependency>geronimo/j2ee-deployer//car</dependency>
+    <dependency>incubator-servicemix/servicemix//car</dependency>
+    <dependency>incubator-servicemix/servicemix-jbi//jar</dependency>
+    <dependency>incubator-servicemix/servicemix-core//jar</dependency>
+    <dependency>incubator-servicemix/geronimo-servicemix//jar</dependency>
+    <dependency>incubator-servicemix/geronimo-servicemix-builder//jar</dependency>
+    <dependency>springframework/spring//jar</dependency>
+    <dependency>org.apache.xbean/xbean-spring//jar</dependency>
+  </configuration>
+  <source-repository>http://cvs.apache.org/repository/</source-repository>
+</geronimo-plugin>
