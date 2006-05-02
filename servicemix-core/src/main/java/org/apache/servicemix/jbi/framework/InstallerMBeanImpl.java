@@ -147,7 +147,9 @@ public class InstallerMBeanImpl implements InstallerMBean {
     
     public ObjectName activateComponent() throws JBIException {
         ObjectName result = null;
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
         try {
+            Thread.currentThread().setContextClassLoader(componentClassLoader);
             Class componentClass = componentClassLoader.loadClass(context.getComponentClassName());
             if (componentClass != null){
                 Component component = (Component) componentClass.newInstance();
@@ -169,6 +171,8 @@ public class InstallerMBeanImpl implements InstallerMBean {
         }
         catch (IllegalAccessException e) {
             throw new DeploymentException(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(cl);
         }
         return result;
     }
