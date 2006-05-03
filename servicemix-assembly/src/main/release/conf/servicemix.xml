@@ -2,7 +2,6 @@
 <beans xmlns:sm="http://servicemix.apache.org/config/1.0">
 
   <import resource="classpath:jmx.xml" />
-  <import resource="classpath:tx.xml" />
   <import resource="classpath:activemq.xml" />
   <import resource="classpath:jndi.xml" />
 
@@ -15,10 +14,11 @@
                 dumpStats="true"
                 statsInterval="10" 
                 flowName="seda"
-                transactionManager="#transactionManager">
+                transactionManager="#transactionManager"
+                namingContext="#jndi">
 
     <sm:activationSpecs>
-		
+
     </sm:activationSpecs>
   </sm:container>
 

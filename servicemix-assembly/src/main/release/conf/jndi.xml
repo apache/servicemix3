@@ -3,6 +3,8 @@
 <!-- START SNIPPET: jndi -->
 <beans>
 
+  <import resource="tx.xml" />
+
   <bean id="jndi" 
         class="org.apache.xbean.spring.jndi.SpringInitialContextFactory" 
         factory-method="makeInitialContext"
