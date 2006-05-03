@@ -15,7 +15,7 @@
                 statsInterval="10" 
                 flowName="seda"
                 transactionManager="#transactionManager"
-                namingContext="#jndi">
+                depends-on="jndi">
 
     <sm:activationSpecs>
 

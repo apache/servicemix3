@@ -13,6 +13,7 @@
       <map>
       
         <!-- PXE DB datasource -->
+        <!--
         <entry key="java:comp/env/jdbc/pxe__pm">
           <bean class="org.hsqldb.jdbc.jdbcDataSource">
             <property name="database" value="jdbc:hsqldb:mem:pxe"/>
@@ -20,6 +21,7 @@
             <property name="password" value = ""/>
           </bean>
         </entry>
+        -->
         
         <!-- wsn2005 jms connection factory -->
         <entry key="java:comp/env/jms/wsnotificationCF">
