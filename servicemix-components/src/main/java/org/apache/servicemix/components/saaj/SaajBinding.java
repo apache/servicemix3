@@ -78,7 +78,6 @@ public class SaajBinding extends ComponentSupport implements MessageExchangeList
         if (exchange.getStatus() == ExchangeStatus.DONE) {
             return;
         } else if (exchange.getStatus() == ExchangeStatus.ERROR) {
-            done(exchange);
             return;
         }
         SOAPConnection connection = null;

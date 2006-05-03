@@ -74,7 +74,6 @@ public class PipelineComponent extends ComponentSupport implements MessageExchan
             return;
         // Handle error exchanges
         } else if (exchange.getStatus() == ExchangeStatus.ERROR) {
-            done(exchange);
             return;
         }
 
