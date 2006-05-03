@@ -183,7 +183,7 @@
       <artifactId>wstx-asl</artifactId>
     </dependency>
     <dependency>
-      <groupId>net.java.dev.stax-utils</groupId>
+      <groupId>stax-utils</groupId>
       <artifactId>stax-utils</artifactId>
     </dependency>
     <dependency>
@@ -280,55 +280,20 @@
       </testResource>
     </testResources>
     <plugins>
-      <!--
-            <plugin>
-                <groupId>org.apache.xbean</groupId>
-                <artifactId>xbean-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>process-classes</phase>
-                <configuration>
-                   <namespace>http://servicemix.apache.org/config/1.0</namespace>
-                   <destFile>target/servicemix.xsd</destFile>
-                </configuration>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
       <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
+        <groupId>org.apache.xbean</groupId>
+        <artifactId>maven-xbean-plugin</artifactId>
         <executions>
           <execution>
-            <phase>generate-resources</phase>
             <configuration>
-              <tasks>
-                <taskdef classname="org.apache.xbean.spring.generator.MappingGeneratorTask"
-                  name="mapping">
-                  <classpath>
-                    <pathelement path="${basedir}/target/classes" />
-                    <path refid="maven.test.classpath" />
-                  </classpath>
-                </taskdef>
-                <mapping destFile="${basedir}/target/servicemix.xsd"
-                  namespace="http://servicemix.apache.org/config/1.0"
-                  srcdir="${basedir}/src/main/java" metaInfDir="${basedir}/target/generated/" />
-              </tasks>
+              <namespace>http://servicemix.apache.org/config/1.0</namespace>
+              <schema>target/servicemix.xsd</schema>
             </configuration>
             <goals>
-              <goal>run</goal>
+              <goal>mapping</goal>
             </goals>
           </execution>
         </executions>
-        <dependencies>
-          <dependency>
-            <groupId>qdox</groupId>
-            <artifactId>qdox</artifactId>
-            <version>${qdox.version}</version>
-          </dependency>
-        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

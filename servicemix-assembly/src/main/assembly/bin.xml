@@ -44,7 +44,6 @@
   <dependencySets>
     <dependencySet>
       <outputDirectory>lib</outputDirectory>
-      <scope>runtime</scope>
       <includes>
         <include>classworlds:classworlds</include>
 
@@ -68,10 +67,9 @@
         <include>org.apache.geronimo.specs:geronimo-j2ee-jacc_1.0_spec</include>
         <include>org.apache.geronimo.specs:geronimo-j2ee-connector_1.5_spec</include>
         <include>org.apache.geronimo.specs:geronimo-ejb_2.1_spec</include>
-        <include>org.apache.geronimo.specs:activation_1.0.2_spec</include>
-        <include>org.apache.geronimo.specs:javamail_1.3.1_spec</include>
-        <include>org.apache.geronimo.specs:servlet_2.4_spec</include>
-        <include>org.apache.geronimo.specs:_spec</include>
+        <include>org.apache.geronimo.specs:geronimo-servlet_2.4_spec</include>
+        <include>org.apache.geronimo.specs:geronimo-activation_1.0.2_spec</include>
+        <include>org.apache.geronimo.specs:geronimo-javamail_1.3.1_spec</include>
         
         <include>org.apache.servicemix.dependencies:jencks</include>
         
@@ -95,12 +93,10 @@
     </dependencySet>
     <dependencySet>
       <outputDirectory>lib/optional</outputDirectory>
-      <scope>runtime</scope>
       <includes>
         <include>mx4j:mx4j-tools</include>
         <include>log4j:log4j</include>
         <include>org.apache.derby:derby</include>
-        <include>hsqldb:hsqldb</include>
         <include>quartz:quartz</include>
         <include>org.apache.servicemix:servicemix-components</include>
         <include>commons-pool:commons-pool</include>
@@ -111,7 +107,7 @@
         <include>org.mortbay.jetty:jetty</include>
         <include>axis:axis-jaxrpc</include>
         <include>drools:drools-all-jdk1.4</include>
-        
+        <include>stax-utils:stax-utils</include>
       </includes>
     </dependencySet>
   </dependencySets>
