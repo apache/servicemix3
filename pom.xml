@@ -1447,17 +1447,6 @@
   </dependencyManagement>
   
   <distributionManagement>
-    <repository>
-      <id>servicemix-repository</id>
-      <url>scp://dist.codehaus.org/</url>
-    </repository>
-    
-    <snapshotRepository>
-      <id>servicemix-snapshots</id>
-      <name>ServiceMix Central Development Repository</name>
-      <url>scp://servicemix.org/home/projects/servicemix/dist-m2-snapshot</url>
-    </snapshotRepository>
-    
     <site>
       <id>servicemix-website</id>
       <url>scp://servicemix.org/home/projects/xbean/public_html/maven/</url>
@@ -1498,21 +1487,6 @@
                     </systemProperties>
                 </configuration>
             </plugin>
-      <plugin>
-        <artifactId>maven-one-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>install-maven-one-repository</goal>
-              <goal>deploy-maven-one-repository</goal>
-            </goals>
-            <configuration>
-              <remoteRepositoryId>servicemix-maven1</remoteRepositoryId>
-              <remoteRepositoryUrl>scpexe://servicemix.org/dist</remoteRepositoryUrl>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
         <plugin>
           <groupId>org.apache.servicemix.plugins</groupId>
           <artifactId>maven2-jbi-plugin</artifactId>
@@ -1533,6 +1507,24 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <artifactId>maven-one-plugin</artifactId>
+        <version>1.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>install-maven-one-repository</goal>
+              <goal>deploy-maven-one-repository</goal>
+            </goals>
+            <configuration>
+              <remoteRepositoryId>apache.m1.releases</remoteRepositoryId>
+              <remoteRepositoryUrl>scp://minotaur.apache.org/www/cvs.apache.org/repository</remoteRepositoryUrl>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
   <reporting>
     <plugins>
