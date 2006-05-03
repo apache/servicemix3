@@ -16,6 +16,7 @@
 package org.apache.servicemix.jbi.jaxp;
 
 import javanet.staxutils.XMLStreamReaderToContentHandler;
+import javanet.staxutils.helpers.XMLFilterImplEx;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
@@ -233,7 +234,9 @@ public class XMLStreamHelper implements XMLStreamConstants {
      * Copies the content to the SAX stream
      */
     public static void copy(XMLStreamReader in, ContentHandler contentHandler) throws XMLStreamException {
-        XMLStreamReaderToContentHandler converter = new XMLStreamReaderToContentHandler(in, contentHandler);
+        XMLFilterImplEx filter = new XMLFilterImplEx();
+        filter.setContentHandler(contentHandler);
+        XMLStreamReaderToContentHandler converter = new XMLStreamReaderToContentHandler(in, filter);
         converter.bridge();
     }
 
