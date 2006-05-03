@@ -175,11 +175,12 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
      * @param autoStart
      * @throws DeploymentException
      */
-    public void updateExternalArchive(String location,boolean autoStart) throws DeploymentException {
+    public ArchiveEntry updateExternalArchive(String location,boolean autoStart) throws DeploymentException {
         ArchiveEntry entry = new ArchiveEntry();
         entry.location = location;
         entry.lastModified = new Date();
         updateArchive(location,entry,autoStart);
+        return entry;
     }
 
     /**
