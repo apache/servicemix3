@@ -295,20 +295,31 @@ public abstract class SoapEndpoint extends Endpoint {
         }
         processor.start();
     }
+    
+    public void activateDynamic() throws Exception {
+        if (getRole() == Role.PROVIDER) {
+            processor = createProviderProcessor();
+        } else {
+            processor = createConsumerProcessor();
+        }
+        processor.start();
+    }
 
     /* (non-Javadoc)
      * @see org.servicemix.common.Endpoint#deactivate()
      */
     public void deactivate() throws Exception {
-        ComponentContext ctx = this.serviceUnit.getComponent().getComponentContext();
-        if (getRole() == Role.PROVIDER) {
-            ServiceEndpoint ep = activated;
-            activated = null;
-            ctx.deactivateEndpoint(ep);
-        } else {
-            ServiceEndpoint ep = activated;
-            activated = null;
-            ctx.deregisterExternalEndpoint(ep);
+        if (activated != null) {
+            ComponentContext ctx = this.serviceUnit.getComponent().getComponentContext();
+            if (getRole() == Role.PROVIDER) {
+                ServiceEndpoint ep = activated;
+                activated = null;
+                ctx.deactivateEndpoint(ep);
+            } else {
+                ServiceEndpoint ep = activated;
+                activated = null;
+                ctx.deregisterExternalEndpoint(ep);
+            }
         }
         processor.stop();
     }

@@ -21,6 +21,7 @@ import org.apache.servicemix.jbi.resolver.EndpointResolver;
 import org.apache.servicemix.jbi.resolver.InterfaceNameEndpointResolver;
 import org.apache.servicemix.jbi.resolver.ServiceAndEndpointNameResolver;
 import org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver;
+import org.apache.servicemix.jbi.resolver.URIResolver;
 
 import javax.xml.namespace.QName;
 
@@ -55,6 +56,7 @@ public class ActivationSpec implements Serializable {
     private SubscriptionSpec[] subscriptions = {};
     private boolean failIfNoDestinationEndpoint = true;
     private Boolean persistent;
+    private String destinationUri;
 
 
     public ActivationSpec() {
@@ -273,10 +275,10 @@ public class ActivationSpec implements Serializable {
                 return new ServiceNameEndpointResolver(destinationService);
             }
         }
-        else {
-            if (destinationInterface != null) {
-                return new InterfaceNameEndpointResolver(destinationInterface);
-            }
+        else if (destinationInterface != null) {
+            return new InterfaceNameEndpointResolver(destinationInterface);
+        } else if (destinationUri != null) {
+            return new URIResolver(destinationUri);
         }
         return null;
     }
@@ -295,6 +297,20 @@ public class ActivationSpec implements Serializable {
 	public void setPersistent(Boolean persistent) {
 		this.persistent = persistent;
 	}
+
+    /**
+     * @return the destinationUri
+     */
+    public String getDestinationUri() {
+        return destinationUri;
+    }
+
+    /**
+     * @param destinationUri the destinationUri to set
+     */
+    public void setDestinationUri(String destinationUri) {
+        this.destinationUri = destinationUri;
+    }
 
 
 }

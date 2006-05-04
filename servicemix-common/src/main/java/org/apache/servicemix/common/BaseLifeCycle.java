@@ -26,6 +26,7 @@ import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.MessageExchange.Role;
+import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.resource.spi.work.Work;
@@ -33,6 +34,7 @@ import javax.resource.spi.work.WorkManager;
 import javax.transaction.Status;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
+import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.servicemix.JbiConstants;
@@ -86,6 +88,10 @@ public class BaseLifeCycle implements ComponentLifeCycle {
     
     protected ObjectName createExtensionMBeanName() throws Exception {
         return this.context.getMBeanNames().createCustomComponentMBeanName("Configuration");
+    }
+    
+    protected QName getEPRServiceName() {
+        return null;
     }
 
     /* (non-Javadoc)
@@ -363,16 +369,31 @@ public class BaseLifeCycle implements ComponentLifeCycle {
             logger.debug("Received exchange: status: " + exchange.getStatus() + ", role: " + exchange.getRole());
         }
         if (exchange.getRole() == Role.PROVIDER) {
+            boolean dynamic = false;
+            ServiceEndpoint endpoint = exchange.getEndpoint();
             String key = EndpointSupport.getKey(exchange.getEndpoint());
             Endpoint ep = (Endpoint) this.component.getRegistry().getEndpoint(key);
             if (ep == null) {
-                throw new IllegalStateException("Endpoint not found: " + key);
+                if (endpoint.getServiceName().equals(getEPRServiceName())) {
+                    ep = getResolvedEPR(exchange.getEndpoint());
+                    dynamic = true;
+                } 
+                if (ep == null) {
+                    throw new IllegalStateException("Endpoint not found: " + key);
+                }
             }
             ExchangeProcessor processor = ep.getProcessor();
             if (processor == null) {
                 throw new IllegalStateException("No processor found for endpoint: " + key);
             }
-            processor.process(exchange);
+            try {
+                processor.process(exchange);
+            } finally {
+                // If the endpoint is dynamic, deactivate it
+                if (dynamic) {
+                    ep.deactivate();
+                }
+            }
         } else {
             ExchangeProcessor processor = null;
             if (exchange.getProperty(JbiConstants.SENDER_ENDPOINT) != null) {
@@ -417,6 +438,16 @@ public class BaseLifeCycle implements ComponentLifeCycle {
         String key = EndpointSupport.getKey(endpoint);
         exchange.setProperty(JbiConstants.SENDER_ENDPOINT, key);
         channel.send(exchange);
+    }
+    
+    /**
+     * Handle an exchange sent to an EPR resolved by this component
+     * @param exchange
+     * @return an endpoint to use for handling the exchange
+     * @throws Exception
+     */
+    protected Endpoint getResolvedEPR(ServiceEndpoint ep) throws Exception {
+        throw new UnsupportedOperationException("Component does not handle EPR exchanges");
     }
 
 }

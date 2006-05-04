@@ -46,8 +46,12 @@ import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
 import org.apache.servicemix.jbi.servicedesc.DynamicEndpoint;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
+import org.apache.servicemix.jbi.util.DOMUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
@@ -236,9 +240,87 @@ public class Registry extends BaseSystemService implements RegistryMBean {
                 return new DynamicEndpoint(connector.getComponentNameSpace(), se, epr);  
             }
         }
+        return resolveStandardEPR(epr);
+    }
+    
+    /**
+     * Resolve a standard EPR understood by ServiceMix container.
+     * Currently, the supported syntax is the WSA one, the address uri
+     * being parsed with the following possiblities:
+     *    jbi:endpoint:service-namespace/service-name/endpoint
+     *    jbi:endpoint:service-namespace:service-name:endpoint
+     *    
+     * The full EPR will look like:
+     *   <epr xmlns:wsa="http://www.w3.org/2005/08/addressing">
+     *     <wsa:Address>jbi:endpoint:http://foo.bar.com/service/endpoint</wsa:Address>
+     *   </epr>
+     *   
+     * BCs should also be able to resolve such EPR but using their own URI parsing,
+     * for example:
+     *   <epr xmlns:wsa="http://www.w3.org/2005/08/addressing">
+     *     <wsa:Address>http://foo.bar.com/myService?http.soap=true</wsa:Address>
+     *   </epr>
+     * 
+     * or
+     *   <epr xmlns:wsa="http://www.w3.org/2005/08/addressing">
+     *     <wsa:Address>jms://activemq/queue/FOO.BAR?persistent=true</wsa:Address>
+     *   </epr>
+     *    
+     * Note that the separator should be same as the one used in the namespace
+     * depending on the namespace:
+     *     http://foo.bar.com  => '/'
+     *     urn:foo:bar         => ':' 
+     *    
+     * The syntax is the same as the one that can be used to specifiy a target
+     * for a JBI exchange with the restriction that it only allows the
+     * endpoint subprotocol to be used. 
+     * 
+     * @param epr
+     * @return
+     */
+    public ServiceEndpoint resolveStandardEPR(DocumentFragment epr) {
+        try {
+            if (epr.getChildNodes().getLength() == 1) {
+                Node child = epr.getFirstChild();
+                if (child instanceof Element) {
+                    Element elem = (Element) child;
+                    NodeList nl = elem.getElementsByTagNameNS("http://www.w3.org/2005/08/addressing", "Address");
+                    if (nl.getLength() == 1) {
+                        Element address = (Element) nl.item(0);
+                        String uri = DOMUtil.getElementText(address);
+                        if (uri != null) {
+                            uri = uri.trim();
+                        }
+                        if (uri.startsWith("endpoint:")) {
+                            uri = uri.substring("endpoint:".length());
+                            String[] parts = split(uri);
+                            return getInternalEndpoint(new QName(parts[0], parts[1]), parts[2]);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // Ignored
+        }
         return null;
     }
 
+    protected String[] split(String uri) {
+        char sep;
+        uri = uri.trim();
+        if (uri.indexOf('/') > 0) {
+            sep = '/';
+        } else {
+            sep = ':';
+        }
+        int idx1 = uri.lastIndexOf(sep);
+        int idx2 = uri.lastIndexOf(sep, idx1 - 1);
+        String epName = uri.substring(idx1 + 1);
+        String svcName = uri.substring(idx2 + 1, idx1);
+        String nsUri   = uri.substring(0, idx2);
+        return new String[] { nsUri, svcName, epName };
+    }
+    
     /**
      * @param provider
      * @param externalEndpoint the external endpoint to be registered, must be non-null.

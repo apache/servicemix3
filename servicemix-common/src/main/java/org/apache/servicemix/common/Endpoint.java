@@ -114,7 +114,7 @@ public abstract class Endpoint {
         return true;
     }
 
-    public abstract void activate() throws Exception ;
+    public abstract void activate() throws Exception;
     
     public abstract void deactivate() throws Exception;
 

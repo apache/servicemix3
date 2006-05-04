@@ -36,6 +36,10 @@ public class ServiceUnit {
     public ServiceUnit() {
     }
     
+    public ServiceUnit(BaseComponent component) {
+        this.component = component;
+    }
+    
     public void start() throws Exception {
         // Activate endpoints
         List activated = new ArrayList();
