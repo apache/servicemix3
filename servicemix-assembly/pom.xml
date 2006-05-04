@@ -29,7 +29,7 @@
     <version>3.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>servicemix-assembly</artifactId>
+  <artifactId>incubating-servicemix</artifactId>
   <name>Servicemix :: Assembly</name>
 
   <dependencies>
@@ -216,7 +216,6 @@
               <descriptors>
                 <descriptor>src/main/assembly/bin.xml</descriptor>
               </descriptors>
-              <finalName>incubating-servicemix-${pom.version}</finalName>
               <appendAssemblyId>false</appendAssemblyId>
             </configuration>
           </execution>
