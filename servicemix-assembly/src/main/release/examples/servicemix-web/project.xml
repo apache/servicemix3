@@ -93,7 +93,23 @@
     </dependency>
     <dependency>
       <groupId>incubator-servicemix</groupId>
-      <artifactId>servicemix</artifactId>
+      <artifactId>servicemix-core</artifactId>
+      <version>${pom.currentVersion}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>incubator-servicemix</groupId>
+      <artifactId>servicemix-jbi</artifactId>
+      <version>${pom.currentVersion}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>incubator-servicemix</groupId>
+      <artifactId>servicemix-components</artifactId>
       <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
