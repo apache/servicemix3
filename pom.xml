@@ -236,7 +236,20 @@
       <id>servicemix-m2-repo</id>
       <name>Servicemix Maven2 Repository</name>
       <url>http://servicemix.org/m2-repo</url>
-      <snapshots><enabled>true</enabled></snapshots>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>codehaus.snapshots</id>
+      <name>Maven Central Plugins Development Repository</name>
+      <url>http://snapshots.maven.codehaus.org/maven2</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
     </pluginRepository>
   </pluginRepositories>
   
