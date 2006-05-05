@@ -171,12 +171,15 @@
   <goal name="servicemix-web">
     <mkdir dir="${maven.build.dir}/webapp"/>
     <copy todir="${maven.build.dir}/webapp">
-      <fileset dir="${basedir}/src/main/release/examples/servicemix-web" excludes="project.xml"/>
+      <fileset dir="${basedir}/../servicemix-web" excludes="project.xml"/>
     </copy>
-    <copy todir="${maven.build.dir}/webapp" file="${basedir}/src/main/release/examples/servicemix-web/project.xml">
+    <copy todir="${maven.build.dir}/webapp" file="${basedir}/../servicemix-web/project.xml">
       <filterset begintoken="%" endtoken="%">
         <filter token="pom.currentVersion" value="${pom.currentVersion}"/>
       </filterset>
+    </copy>
+    <copy todir="${maven.dist.bin.assembly.dir}/examples/servicemix-web">
+      <fileset dir="${maven.build.dir}/webapp" />
     </copy>
     <maven:maven descriptor="${maven.build.dir}/webapp/project.xml" goals="war"/>
     <copy todir="${maven.dist.bin.assembly.dir}/examples/servicemix-web">
