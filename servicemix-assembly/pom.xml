@@ -83,6 +83,11 @@
     </dependency>
     <dependency>
       <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-web</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-components</artifactId>
     </dependency>
     <dependency>
@@ -132,7 +137,7 @@
         <version>1.0</version>
         <executions>
           <execution>
-            <id>unpack-javadoc</id>
+            <id>copy-components</id>
             <phase>generate-resources</phase>
             <goals>
               <goal>copy</goal>
@@ -194,6 +199,25 @@
                   <artifactId>servicemix-lwcontainer</artifactId>
                   <version>${pom.version}</version>
                   <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-servicemix-web</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/servicemix-web</outputDirectory>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${pom.groupId}</groupId>
+                  <artifactId>servicemix-web</artifactId>
+                  <version>${pom.version}</version>
+                  <classifier>src</classifier>
                   <type>zip</type>
                 </artifactItem>
               </artifactItems>
