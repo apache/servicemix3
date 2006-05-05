@@ -21,52 +21,44 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://maven.apache.org/POM/4.0.0">
 
+	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
-		<groupId>incubator-servicemix</groupId>
+		<groupId>org.apache.servicemix</groupId>
 		<artifactId>servicemix</artifactId>
 		<version>3.0-SNAPSHOT</version>
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
-	<modelVersion>4.0.0</modelVersion>
 	<artifactId>servicemix-packaging-eclipse-plugin</artifactId>
 	<name>ServiceMix :: Packaging Eclipse Plugin</name>
+	
+	<repositories>
+	  <repository>
+      <id>servicemix-m1-repo</id>
+      <name>Servicemix Repository on Codehaus</name>
+      <url>http://www.servicemix.org/maven-repo</url>
+      <layout>legacy</layout>
+	  </repository>
+	</repositories>
+	
 	<dependencies>
 
 		<!--  ServiceMix Dependencies -->
 		<dependency>
-			<groupId>incubator-servicemix</groupId>
+		  <groupId>org.apache.servicemix</groupId>
 			<artifactId>servicemix-common</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>incubator-servicemix</groupId>
+		  <groupId>org.apache.servicemix.plugins</groupId>
 			<artifactId>servicemix-packaging-descriptors</artifactId>
-			<version>3.0-SNAPSHOT</version>
-		</dependency>
-
-		<!-- JAXB2 -->
-		<dependency>
-			<groupId>com.sun.xml</groupId>
-			<artifactId>jaxb-impl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>xfire</groupId>
-			<artifactId>jaxb-api</artifactId>
+			<version>${pom.version}</version>
 		</dependency>
 
 		<!-- XBean -->
 		<dependency>
 			<groupId>org.apache.xbean</groupId>
 			<artifactId>xbean-server</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.xbean</groupId>
-			<artifactId>xbean-spring</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
 		</dependency>
 
 		<!-- Plexus (for XMLWriter) -->
@@ -422,7 +414,7 @@
 				<artifactId>maven2-eclipse-plugin-plugin</artifactId>
 				<executions>
 					<execution>
-						<phase>compile</phase>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>create-manifest</goal>
 						</goals>
@@ -435,6 +427,15 @@
 					</pluginClass>
 				</configuration>
 			</plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.directory}/eclipse/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
 		</plugins>
 	</build>
 </project>

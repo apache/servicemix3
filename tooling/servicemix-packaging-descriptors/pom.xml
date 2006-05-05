@@ -21,22 +21,31 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://maven.apache.org/POM/4.0.0">
 
+	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
-		<groupId>incubator-servicemix</groupId>
+		<groupId>org.apache.servicemix</groupId>
 		<artifactId>servicemix</artifactId>
 		<version>3.0-SNAPSHOT</version>
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
-	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.apache.servicemix.plugins</groupId>
 	<artifactId>servicemix-packaging-descriptors</artifactId>
 	<name>ServiceMix :: Packaging Descriptors</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.sun.xml</groupId>
-			<artifactId>jaxb-xjc</artifactId>
-			<version>2.0-JAXWS-2.0-EA3</version>
+			<artifactId>jaxb-impl</artifactId>
+		</dependency>
+		<dependency>
+		  <groupId>stax</groupId>
+		  <artifactId>stax-api</artifactId>
+		</dependency>
+		<dependency>
+		  <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-activation_1.0.2_spec</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -51,6 +60,39 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxb2-maven-plugin</artifactId>
+				<executions>
+				  <execution>
+				    <id>jbi</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+    				<configuration>
+    					<schemaDirectory>${basedir}/src/main/resources</schemaDirectory>
+    					<schemaFiles>jbi.xsd</schemaFiles>
+    					<packageName>org.apache.servicemix.descriptors.jbi</packageName>
+    					<staleFile>${project.build.directory}/jaxb-source/jbi.stale</staleFile>
+    				</configuration>
+    			</execution>
+				  <execution>
+				    <id>assets</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+    				<configuration>
+    					<schemaDirectory>${basedir}/src/main/resources</schemaDirectory>
+    					<schemaFiles>packaging-assets.xsd</schemaFiles>
+    					<packageName>org.apache.servicemix.descriptors.packaging.assets</packageName>
+    					<staleFile>${project.build.directory}/jaxb-source/assets.stale</staleFile>
+    				</configuration>
+    			</execution>
+    		</executions>
+			</plugin>
+			<!--
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
@@ -85,6 +127,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			-->
 		</plugins>
 	</build>
 </project>

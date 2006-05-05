@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.maven.model.Resource;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
@@ -64,9 +65,9 @@ public class EclipsePluginMojo extends AbstractMojo {
 	/**
 	 * Directory where the plugin.xml file will be auto-generated.
 	 * 
-	 * @parameter expression="${project.build.directory}"
+	 * @parameter expression="${project.build.directory}/eclipse"
 	 */
-	private String projectBuildDirectory;
+	private File outputDir;
 
 	/**
 	 * The maven project.
@@ -82,12 +83,9 @@ public class EclipsePluginMojo extends AbstractMojo {
 
 		try {
 
-			File metaInfDir = new File(project.getBasedir().getAbsolutePath()
-					+ "/META-INF");
+			File metaInfDir = new File(outputDir, "META-INF");
 			metaInfDir.mkdirs();
-			FileWriter fileWriter = new FileWriter(new File(metaInfDir
-					.getAbsolutePath()
-					+ "/MANIFEST.MF"));
+			FileWriter fileWriter = new FileWriter(new File(metaInfDir, "MANIFEST.MF"));
 
 			BufferedWriter writer = new BufferedWriter(fileWriter);
 
@@ -129,18 +127,15 @@ public class EclipsePluginMojo extends AbstractMojo {
 			writer.close();
 			fileWriter.close();
 
-			FileWriter buildPropertiesFileWriter = new FileWriter(new File(
-					project.getBasedir().getAbsolutePath()
-							+ "/build.properties"));
-
-			BufferedWriter buildPropertiesWriter = new BufferedWriter(
-					buildPropertiesFileWriter);
-
+			FileWriter buildPropertiesFileWriter = new FileWriter(new File(outputDir, "build.properties"));
+			BufferedWriter buildPropertiesWriter = new BufferedWriter(buildPropertiesFileWriter);
 			buildPropertiesWriter.write("bin.includes = /META-INF");
-
 			buildPropertiesWriter.close();
-
 			buildPropertiesFileWriter.close();
+
+      Resource res = new Resource();
+      res.setDirectory(outputDir.toString());
+      project.addResource(res);
 
 		} catch (Exception e) {
 			throw new MojoFailureException(
@@ -160,7 +155,7 @@ public class EclipsePluginMojo extends AbstractMojo {
 		List uris = new ArrayList();
 		Set artifacts = project.getArtifacts();
 
-		File destinationDir = new File(projectBuildDirectory);
+    uris.add(".");
 		for (Iterator iter = artifacts.iterator(); iter.hasNext();) {
 			Artifact artifact = (Artifact) iter.next();
 			ArtifactFilter filter = new ScopeArtifactFilter(
@@ -169,9 +164,9 @@ public class EclipsePluginMojo extends AbstractMojo {
 				if (!artifact.isOptional() && filter.include(artifact)) {
 					String type = artifact.getType();
 					if ("jar".equals(type)) {
-						uris.add("target/" + artifact.getFile().getName());
+						uris.add(artifact.getFile().getName());
 						FileUtils.copyFileToDirectory(artifact.getFile(),
-								destinationDir);
+								outputDir);
 					}
 				}
 			} catch (IOException e) {
