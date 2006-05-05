@@ -1,21 +1,30 @@
 package org.apache.servicemix.console;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import javax.jbi.management.LifeCycleMBean;
 import javax.management.ObjectName;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
+import javax.portlet.PortletConfig;
+import javax.portlet.PortletContext;
+import javax.portlet.PortletException;
+import javax.portlet.PortletRequestDispatcher;
 import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
 
 import org.apache.servicemix.jbi.management.ManagementContextMBean;
 
 public class JBIComponentsPortlet extends ServiceMixPortlet {
 
+    private static final String MODE_KEY = "mode";
+    private static final String LIST_MODE = "list";
+    private static final String COMP_MODE = "comp";
+    
+    protected PortletRequestDispatcher compView;
+    
 	   public static class ComponentInfo {
 	        private String name;
 	        private String type;
@@ -40,9 +49,29 @@ public class JBIComponentsPortlet extends ServiceMixPortlet {
 	            this.state = state;
 	        }
 	    }
-	    
-	    protected void fillViewRequest(RenderRequest request) throws Exception {
-	        LifeCycleMBean container = getJBIContainer();
+
+        public void init(PortletConfig portletConfig) throws PortletException {
+            super.init(portletConfig);
+            PortletContext pc = portletConfig.getPortletContext();
+            compView = pc.getRequestDispatcher("/WEB-INF/view/" + getPortletName() + "/comp.jsp");
+        }
+       
+        protected void renderView(RenderRequest renderRequest, RenderResponse renderResponse) throws Exception {
+            String mode = renderRequest.getParameter(MODE_KEY);
+            System.err.println("Mode: " + mode);
+            if (COMP_MODE.equals(mode)) {
+                renderCompRequest(renderRequest, renderResponse);
+            } else {
+                // Render list
+                renderListRequest(renderRequest, renderResponse);
+            }
+        }
+
+        protected void renderCompRequest(RenderRequest request, RenderResponse response) throws Exception {
+            compView.include(request, response);
+        }
+        
+	    protected void renderListRequest(RenderRequest request, RenderResponse response) throws Exception {
 	        ManagementContextMBean management = getManagementContext();
 	        SortedMap components = new TreeMap();
 	        ObjectName[] bcs = management.getBindingComponents();
@@ -67,6 +96,7 @@ public class JBIComponentsPortlet extends ServiceMixPortlet {
 	        }
 	        List infos = new ArrayList(components.values());
 	        request.setAttribute("components", infos);
+            normalView.include(request, response);
 	    }
 	    
 	    protected String getAttribute(ObjectName name, String attribute) {

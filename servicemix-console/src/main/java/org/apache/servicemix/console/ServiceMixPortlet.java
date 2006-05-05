@@ -53,8 +53,8 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
     protected final Log log = LogFactory.getLog(getClass());
     
     protected PortletRequestDispatcher normalView;
-
     protected PortletRequestDispatcher helpView;
+    protected PortletRequestDispatcher errorView;
 
     private JMXConnector jmxConnector;
     private String namingHost = "localhost";
@@ -104,10 +104,7 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
             if (this.jmxConnector == null) {
                 this.jmxConnector = getJMXConnector(getServiceURL());
             }
-            // Fill request
-            fillViewRequest(renderRequest);
-            // Render view
-            normalView.include(renderRequest, renderResponse);
+            renderView(renderRequest, renderResponse);
         } catch (PortletException e) {
             log.error("Error rendering portlet", e);
             closeConnector();
@@ -117,10 +114,22 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
             closeConnector();
             throw e;
         } catch (Exception e) {
-            log.error("Error rendering portlet", e);
-            closeConnector();
-            throw new PortletException("Error rendering portlet", e);
+            try {
+                renderRequest.setAttribute("exception", e);
+                errorView.include(renderRequest, renderResponse);
+            } finally {
+                closeConnector();
+            }
+            //log.error("Error rendering portlet", e);
+            //throw new PortletException("Error rendering portlet", e);
         }
+    }
+    
+    protected void renderView(RenderRequest renderRequest, RenderResponse renderResponse) throws Exception {
+        // Fill request
+        fillViewRequest(renderRequest);
+        // Render view
+        normalView.include(renderRequest, renderResponse);
     }
     
     /**
@@ -142,6 +151,7 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
         PortletContext pc = portletConfig.getPortletContext();
         normalView = pc.getRequestDispatcher("/WEB-INF/view/" + getPortletName() + "/view.jsp");
         helpView = pc.getRequestDispatcher("/WEB-INF/view/" + getPortletName() + "/help.jsp");
+        errorView = pc.getRequestDispatcher("/WEB-INF/view/error.jsp");
     }
 
     public void processAction(ActionRequest actionRequest, ActionResponse actionResponse) throws PortletException, IOException {

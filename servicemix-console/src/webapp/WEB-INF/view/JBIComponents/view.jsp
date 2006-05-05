@@ -18,7 +18,15 @@
   </tr>
   <c:forEach var="component" items="${components}">
     <tr>
-      <td>${component.name}</td>
+      <td>
+        <portlet:renderURL var="componentUrl">
+            <portlet:param name="mode" value="comp" />
+            <portlet:param name="name" value="${component.name}" />
+        </portlet:renderURL>
+        <a href="${componentUrl}">
+          ${component.name}
+        </a> 
+      </td>
       <td>${component.type}</td>
       <td>${component.state}</td>
       <td>
@@ -30,7 +38,7 @@
             <a href="<portlet:actionURL><portlet:param name="action" value="shutdown"/><portlet:param name="name" value="${component.name}"/></portlet:actionURL>">shutdown</a>&nbsp;
             <a href="<portlet:actionURL><portlet:param name="action" value="start"/><portlet:param name="name" value="${component.name}"/></portlet:actionURL>">start</a>
           </c:when>
-          <c:when test="${component.state == 'Running'}">
+          <c:when test="${component.state == 'Started'}">
             <a href="<portlet:actionURL><portlet:param name="action" value="stop"/><portlet:param name="name" value="${component.name}"/></portlet:actionURL>">stop</a>
           </c:when>
         </c:choose>
