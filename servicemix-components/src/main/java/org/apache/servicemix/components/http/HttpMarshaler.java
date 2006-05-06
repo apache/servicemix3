@@ -40,10 +40,22 @@ import java.util.Iterator;
  */
 public class HttpMarshaler extends MarshalerSupport {
 
+    public static final String AUTH_TYPE = "AUTH_TYPE";
+    public static final String CONTENT_LENGTH = "CONTENT_LENGTH";
+    public static final String CONTENT_TYPE = "CONTENT_TYPE";
+    public static final String DOCUMENT_ROOT = "DOCUMENT_ROOT";
+    public static final String PATH_INFO = "PATH_INFO";
+    public static final String PATH_TRANSLATED = "PATH_TRANSLATED";
+    public static final String QUERY_STRING = "QUERY_STRING";
     public static final String REMOTE_ADDRESS = "REMOTE_ADDR";
     public static final String REMOTE_HOST = "REMOTE_HOST";
     public static final String REMOTE_USER = "REMOTE_USER";
+    public static final String REQUEST_METHOD = "REQUEST_METHOD";
     public static final String REQUEST_URI = "REQUEST_URI";
+    public static final String SCRIPT_NAME = "SCRIPT_NAME";
+    public static final String SERVER_NAME = "SERVER_NAME";
+    public static final String SERVER_PORT = "SERVER_PORT";
+    public static final String SERVER_PROTOCOL = "SERVER_PROTOCOL";
     
     protected static final Source EMPTY_CONTENT = new StringSource("<payload/>");
 
@@ -94,10 +106,22 @@ public class HttpMarshaler extends MarshalerSupport {
             String value = request.getHeader(name);
             exchange.setProperty(name, value);
         }
+        exchange.setProperty(AUTH_TYPE, request.getAuthType());
+        exchange.setProperty(CONTENT_LENGTH, String.valueOf(request.getContentLength()));
+        exchange.setProperty(CONTENT_TYPE, request.getContentType());
+        exchange.setProperty(DOCUMENT_ROOT, request.getRealPath("/"));
+        exchange.setProperty(PATH_INFO, request.getPathInfo());
+        exchange.setProperty(PATH_TRANSLATED, request.getPathTranslated());
+        exchange.setProperty(QUERY_STRING, request.getQueryString());
         exchange.setProperty(REMOTE_ADDRESS, request.getRemoteAddr());
         exchange.setProperty(REMOTE_HOST, request.getRemoteHost());
         exchange.setProperty(REMOTE_USER, request.getRemoteUser());
+        exchange.setProperty(REQUEST_METHOD, request.getMethod());
         exchange.setProperty(REQUEST_URI, request.getRequestURL());
+        exchange.setProperty(SCRIPT_NAME, request.getServletPath());
+        exchange.setProperty(SERVER_NAME, request.getServerName());
+        exchange.setProperty(SERVER_PORT, String.valueOf(request.getServerPort()));
+        exchange.setProperty(SERVER_PROTOCOL, request.getProtocol());
     }
     
     protected void addHttpHeaders(HttpServletResponse response, NormalizedMessage normalizedMessage) {
