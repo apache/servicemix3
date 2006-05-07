@@ -208,6 +208,7 @@
     <module>servicemix-wsn2005</module>
     <module>servicemix-lwcontainer</module>
     <module>servicemix-sca</module>
+    <module>servicemix-web</module>
     <module>servicemix-eip</module>
     <module>servicemix-assembly</module>
   </modules>
