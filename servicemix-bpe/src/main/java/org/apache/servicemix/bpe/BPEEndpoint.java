@@ -39,6 +39,7 @@ import org.apache.ode.bpe.event.BPELStaticKey;
 import org.apache.ode.bpe.event.IResponseMessage;
 import org.apache.ode.bpe.event.SimpleRequestMessageEvent;
 import org.apache.ode.bpe.interaction.IInteraction;
+import org.apache.ode.bpe.interaction.InteractionException;
 import org.apache.ode.bpe.interaction.InvocationFactory;
 import org.apache.ode.bpe.interaction.XMLInteractionObject;
 import org.apache.ode.bpe.scope.service.BPRuntimeException;
@@ -148,10 +149,8 @@ public class BPEEndpoint extends Endpoint implements ExchangeProcessor {
                     exchange.setStatus(ExchangeStatus.DONE);
                     channel.send(exchange);
                 } else {
-                    IFormattableValue value = (IFormattableValue) payload.invoke(InvocationFactory.newInstance().createGetObjectInvocation());
-                    Document doc = (Document) value.getValueAs(Document.class);
                     NormalizedMessage out = exchange.createMessage();
-                    out.setContent(new DOMSource(doc));
+                    out.setContent(new DOMSource(getDocument(payload)));
                     exchange.setMessage(out, "out");
                     channel.send(exchange);
                 }
@@ -159,22 +158,21 @@ public class BPEEndpoint extends Endpoint implements ExchangeProcessor {
                 if (payload == null) {
                     throw new UnsupportedOperationException("Expected return data for in-out"); 
                 }
-                IFormattableValue value = (IFormattableValue) payload.invoke(InvocationFactory.newInstance().createGetObjectInvocation());
-                Document doc = (Document) value.getValueAs(Document.class);
                 NormalizedMessage out = exchange.createMessage();
-                out.setContent(new DOMSource(doc));
+                out.setContent(new DOMSource(getDocument(payload)));
                 exchange.setMessage(out, "out");
                 channel.send(exchange);
             } else {
                 throw new UnsupportedOperationException("Unhandled mep: " + exchange.getPattern());
             }
         } catch (BPRuntimeException e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Exception caught", e);
+            }
             IInteraction payload = (IInteraction) e.getPartMessage(BPEComponent.PART_PAYLOAD);
             if (payload != null) {
                 Fault fault = exchange.createFault();
-                IFormattableValue value = (IFormattableValue) payload.invoke(InvocationFactory.newInstance().createGetObjectInvocation());
-                Document doc = (Document) value.getValueAs(Document.class);
-                fault.setContent(new DOMSource(doc));
+                fault.setContent(new DOMSource(getDocument(payload)));
                 exchange.setFault(fault);
             } else {
                 exchange.setError(e);
@@ -187,6 +185,17 @@ public class BPEEndpoint extends Endpoint implements ExchangeProcessor {
 	}
 
 	public void stop() throws Exception {
+	}
+	
+	protected Document getDocument(IInteraction interaction) throws InteractionException {
+		Object obj = interaction.invoke(InvocationFactory.newInstance().createGetObjectInvocation());
+        if (obj instanceof Document) {
+        	return (Document) obj;
+        } else if (obj instanceof IFormattableValue) {
+        	return (Document) ((IFormattableValue) obj).getValueAs(Document.class);
+        } else {
+        	throw new IllegalStateException("Unable to handle object of type: " + obj.getClass().getName());
+        }
 	}
 
 
