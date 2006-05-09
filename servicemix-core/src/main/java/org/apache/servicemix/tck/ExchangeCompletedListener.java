@@ -15,6 +15,7 @@
  */
 package org.apache.servicemix.tck;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -26,22 +27,52 @@ import junit.framework.Assert;
 import org.apache.servicemix.jbi.event.ExchangeEvent;
 import org.apache.servicemix.jbi.event.ExchangeListener;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
-
 public class ExchangeCompletedListener extends Assert implements ExchangeListener {
 
-    private Map exchanges = new ConcurrentHashMap();
-    
-    public void exchangeSent(ExchangeEvent event) {
-        exchanges.put(event.getExchange().getExchangeId(), event.getExchange());
+    private Map exchanges = new HashMap();
+
+    private long timeout;
+
+    public ExchangeCompletedListener() {
+        this(1000);
     }
-    
-    public void assertExchangeCompleted() throws Exception {
-        Thread.sleep(50);
-        for (Iterator it = exchanges.values().iterator(); it.hasNext();) {
-            MessageExchange me = (MessageExchange) it.next();
-            assertTrue("Exchange is ACTIVE", me.getStatus() != ExchangeStatus.ACTIVE);
+
+    public ExchangeCompletedListener(long timeout) {
+        this.timeout = timeout;
+    }
+
+    public void exchangeSent(ExchangeEvent event) {
+        synchronized (exchanges) {
+            exchanges.put(event.getExchange().getExchangeId(), event.getExchange());
+            exchanges.notify();
         }
+    }
+
+    public void assertExchangeCompleted() throws Exception {
+        long start = System.currentTimeMillis();
+        MessageExchange active = null;
+        while (true) {
+            synchronized (exchanges) {
+                for (Iterator it = exchanges.values().iterator(); it.hasNext();) {
+                    active = null;
+                    MessageExchange me = (MessageExchange) it.next();
+                    if (me.getStatus() == ExchangeStatus.ACTIVE) {
+                        active = me;
+                        break;
+                    }
+                }
+                if (active == null) {
+                    break;
+                }
+                long remain = timeout - (System.currentTimeMillis() - start);
+                if (remain < 0) {
+                    assertTrue("Exchange is ACTIVE", active.getStatus() != ExchangeStatus.ACTIVE);
+                } else {
+                    exchanges.wait(remain);
+                }
+            }
+        }
+        while (System.currentTimeMillis() - start < 1000);
     }
 
 }
