@@ -61,6 +61,20 @@
       <groupId>org.codehaus.xfire</groupId>
       <artifactId>xfire-all</artifactId>
       <optional>true</optional>
+      <exclusions>
+        <exclusion>
+          <groupId>jaxb</groupId>
+          <artifactId>jaxb-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>jaxb</groupId>
+          <artifactId>jaxb-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.mail</groupId>
+          <artifactId>mail</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix.dependencies</groupId>
