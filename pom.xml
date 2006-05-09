@@ -1380,6 +1380,14 @@
             <groupId>jetty</groupId>
             <artifactId>org.mortbay.jetty</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>jaxb</groupId>
+            <artifactId>jaxb-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>jaxb</groupId>
+            <artifactId>jaxb-impl</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
