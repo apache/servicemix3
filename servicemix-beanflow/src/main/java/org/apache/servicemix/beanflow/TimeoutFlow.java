@@ -15,6 +15,7 @@
  */
 package org.apache.servicemix.beanflow;
 
+import java.util.Timer;
 import java.util.TimerTask;
 
 /**
@@ -41,7 +42,7 @@ public class TimeoutFlow extends FlowSupport {
     public void run() {
         if (!isStopped()) {
             if (timedOut.get().booleanValue()) {
-                fail();
+                fail("Timed out");
             }
         }
     }
@@ -51,6 +52,12 @@ public class TimeoutFlow extends FlowSupport {
      */
     public boolean isTimedOut() {
         return timedOut.get();
+    }
+
+
+    public void startWithTimeout(Timer timer, long timeout) {
+        timer.schedule(getTimeoutTask(), timeout);
+        start();
     }
 
     /**

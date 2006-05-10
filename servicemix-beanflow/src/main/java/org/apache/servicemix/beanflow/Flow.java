@@ -16,6 +16,8 @@
 
 package org.apache.servicemix.beanflow;
 
+import java.util.Timer;
+
 /**
  * Represents a flow instance which is a bean based workflow written using Java code.
  * A flow monitors various {@link State} objects and takes action when things change.
@@ -44,6 +46,12 @@ public interface Flow {
     public void start();
 
     /**
+     * For flows that support timeout based operation this helper method
+     * starts the flow and registers the timeout 
+     */
+    public void startWithTimeout(Timer timer, long timeout);
+    
+    /**
      * Stops the flow
      */
     public void stop();
@@ -63,4 +71,10 @@ public interface Flow {
      * Returns true if the flow has failed to complete succesfully
      */
     public boolean isFailed();
+    
+    /**
+     * If this flow has failed then return a reason for the failure
+     */
+    public String getFailedReason();
+
 }

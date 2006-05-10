@@ -31,7 +31,7 @@ import java.util.Iterator;
 public abstract class FlowSupport implements Runnable, Flow {
 
     private State<Transitions> state = new DefaultState<Transitions>(Transitions.Initialised);
-    private State<Boolean> failed = new DefaultState<Boolean>(Boolean.FALSE);
+    private State<String> failed = new DefaultState<String>();
     private Introspector introspector = new FieldIntrospector();
 
     /**
@@ -49,17 +49,17 @@ public abstract class FlowSupport implements Runnable, Flow {
      */
     public void stop() {
         if (state.compareAndSet(Transitions.Started, Transitions.Stopping)) {
-            doStop();
             state.set(Transitions.Stopped);
+            doStop();
         }
     }
 
     /**
-     * Stops the flow with a failed state
+     * Stops the flow with a failed state, giving the reason for the failure
      */
-    public void fail() {
+    public void fail(String reason) {
         stop();
-        failed.set(true);
+        failed.set(reason);
     }
     
     /**
@@ -74,6 +74,10 @@ public abstract class FlowSupport implements Runnable, Flow {
     }
 
     public boolean isFailed() {
+        return getFailedReason() != null;
+    }
+    
+    public String getFailedReason() {
         return failed.get();
     }
     
