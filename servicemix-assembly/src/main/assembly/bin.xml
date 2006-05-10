@@ -58,6 +58,7 @@
         <include>commons-logging:commons-logging</include>
         <include>commons-beanutils:commons-beanutils-core</include>
         <include>org.apache.servicemix:servicemix-jbi</include>
+        <include>org.apache.servicemix:servicemix-services</include>
         <include>org.apache.servicemix:servicemix-core</include>
         <include>org.apache.xbean:xbean-spring</include>
         <include>org.apache.xbean:xbean-server</include>
