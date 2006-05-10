@@ -17,11 +17,23 @@
 package org.apache.servicemix.beanflow;
 
 /**
+ * Represents a flow instance which is a bean based workflow written using Java code.
+ * A flow monitors various {@link State} objects and takes action when things change.
+ * Flows are designed to be thread safe and are intended for use in highly concurrent
+ * or distributed applications so that the state can be changed from any thread.
+ * <br>
+ * The Processing of notifications of state changes should generally be quick; if lots of work
+ * is required when some state changes it is advisable to use a thread pool to do the work.
  * 
  * @version $Revision: $
  */
 public interface Flow {
 
+    /**
+     * The core transitions of a flow
+     * 
+     * @version $Revision: 1.1 $
+     */
     public enum Transitions {
         Initialised, Starting, Started, Stopping, Stopped,
     };
@@ -47,4 +59,8 @@ public interface Flow {
      */
     public boolean isStopped();
 
+    /**
+     * Returns true if the flow has failed to complete succesfully
+     */
+    public boolean isFailed();
 }

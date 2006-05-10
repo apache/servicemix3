@@ -41,7 +41,7 @@ public class TimeoutFlow extends FlowSupport {
     public void run() {
         if (!isStopped()) {
             if (timedOut.get().booleanValue()) {
-                stop();
+                fail();
             }
         }
     }

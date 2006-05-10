@@ -33,21 +33,37 @@ public class TimeoutFlowTest extends TestCase {
     public void testFlowStopsSuccessfully() throws Exception {
         flow.getState().set(Transitions.Stopped);
         
-        assertTrue("Flow should be stopped", flow.isStopped());
+        assertEquals("Transition", Transitions.Stopped, flow.getState().get());
+        
+        assertTrue("Flow should be stopped but is: " + flow.getState().get(), flow.isStopped());
+        assertTrue("Flow should not have failed", !flow.isFailed());
+        
+        // lets sleep so that the timer can go off now to check we don't fail after we've stopped
+        Thread.sleep(timeout  * 4);
         
         assertEquals("Transition", Transitions.Stopped, flow.getState().get());
+        
+        assertTrue("Flow should be stopped but is: " + flow.getState().get(), flow.isStopped());
+        assertTrue("Flow should not have failed", !flow.isFailed());
     }
 
     public void testFlowTimesOutAndFails() throws Exception {
         Thread.sleep(timeout  * 4);
         
+        assertEquals("Transition", Transitions.Stopped, flow.getState().get());
+        
         assertTrue("Flow should be stopped but is: " + flow.getState().get(), flow.isStopped());
-        assertTrue("Flow should have timed out", flow.isTimedOut());
+        assertTrue("Flow should have failed", flow.isFailed());
         
     }
 
     protected void setUp() throws Exception {
         timer.schedule(flow.getTimeoutTask(), timeout);
+        
+        assertTrue("flow should not be stopped", !flow.isStopped());
+        assertTrue("flow should not have failed", !flow.isFailed());
+        assertEquals("Transition", Transitions.Initialised, flow.getState().get());
+        
         flow.start();
         assertEquals("Transition", Transitions.Started, flow.getState().get());
     }
