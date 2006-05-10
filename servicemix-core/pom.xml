@@ -38,6 +38,10 @@
       <artifactId>servicemix-jbi</artifactId>
     </dependency>
     <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-services</artifactId>
+    </dependency>
+    <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <optional>true</optional>
