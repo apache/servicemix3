@@ -10,7 +10,7 @@
     </appender>
 
     <appender name="FILE" class="org.apache.log4j.FileAppender">
-        <param name="File" value="outage.log"/>
+        <param name="File" value="servicemix.log"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%p - %C{1}.%M(%L) | %m%n"/>
         </layout>
