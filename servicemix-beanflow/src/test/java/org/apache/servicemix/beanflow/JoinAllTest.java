@@ -26,7 +26,7 @@ public class JoinAllTest extends FlowTestSupport {
     protected Flow child3 = new TimeoutFlow();
 
     public void testJoinAllWhenEachChildFlowCompletes() throws Exception {
-        // START SNIPPET: join
+        // START SNIPPET: example
         // lets create a join on a number of child flows completing
         JoinAll flow = new JoinAll(child1, child2, child3);
         flow.startWithTimeout(timer, timeout);
@@ -40,7 +40,7 @@ public class JoinAllTest extends FlowTestSupport {
 
         child3.stop();
         assertFlowStopped(flow);
-        // START SNIPPET: end
+        // END SNIPPET: example
     }
 
     public void testJoinAllTerminatesWhenAClientFails() throws Exception {
