@@ -24,7 +24,7 @@ import java.util.TimerTask;
  * 
  * @version $Revision: $
  */
-public class TimeoutFlow extends FlowSupport {
+public class TimeoutFlow extends AbstractFlow {
 
     private State<Boolean> timedOut = new DefaultState<Boolean>(Boolean.FALSE);
     private TimerTask timeoutTask;
@@ -44,6 +44,9 @@ public class TimeoutFlow extends FlowSupport {
             if (timedOut.get().booleanValue()) {
                 fail("Timed out");
             }
+            else {
+                onValidStateChange();
+            }
         }
     }
 
@@ -56,8 +59,15 @@ public class TimeoutFlow extends FlowSupport {
 
 
     public void startWithTimeout(Timer timer, long timeout) {
-        timer.schedule(getTimeoutTask(), timeout);
+        scheduleTimeout(timer, timeout);
         start();
+    }
+
+    /**
+     * Schedules the flow to timeout at the given value
+     */
+    public void scheduleTimeout(Timer timer, long timeout) {
+        timer.schedule(getTimeoutTask(), timeout);
     }
 
     /**
@@ -72,5 +82,12 @@ public class TimeoutFlow extends FlowSupport {
             };
         }
         return timeoutTask;
+    }
+
+    /**
+     * A hook so that derived classes can ignore whether the flow is started or timed out and instead
+     * focus on the other state
+     */
+    protected void onValidStateChange() {
     }
 }

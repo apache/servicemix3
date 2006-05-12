@@ -15,6 +15,8 @@
  */
 package org.apache.servicemix.beanflow;
 
+import org.apache.servicemix.beanflow.support.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,14 +29,25 @@ import java.util.List;
 public class DefaultState<T> implements State<T> {
 
     private T value;
-    private List<Runnable> listeners = new ArrayList<Runnable>();
     private Object lock = new Object();
+    private Notifier notifier;
 
     public DefaultState() {
+        notifier = new SynchronousNotifier();
     }
 
     public DefaultState(T value) {
+        this();
         this.value = value;
+    }
+
+    public DefaultState(Notifier notifier) {
+        this.notifier = notifier;
+    }
+
+    public DefaultState(T value, Notifier notifier) {
+        this.value = value;
+        this.notifier = notifier;
     }
 
     public T get() {
@@ -50,7 +63,7 @@ public class DefaultState<T> implements State<T> {
             this.value = value;
         }
 
-        fireEvents();
+        notifier.run();
         return answer;
     }
 
@@ -59,7 +72,7 @@ public class DefaultState<T> implements State<T> {
             this.value = value;
         }
 
-        fireEvents();
+        notifier.run();
     }
 
     public boolean compareAndSet(T expected, T newValue) {
@@ -73,15 +86,11 @@ public class DefaultState<T> implements State<T> {
     }
 
     public void addRunnable(Runnable listener) {
-        synchronized (listeners) {
-            listeners.add(listener);
-        }
+        notifier.addRunnable(listener);
     }
 
     public void removeRunnable(Runnable listener) {
-        synchronized (listeners) {
-            listeners.remove(listener);
-        }
+        notifier.removeRunnable(listener);
     }
 
     public String toString() {
@@ -124,16 +133,5 @@ public class DefaultState<T> implements State<T> {
             return false;
         }
         return value1.equals(value2);
-    }
-
-    protected void fireEvents() {
-        Runnable[] array = null;
-        synchronized (listeners) {
-            array = new Runnable[listeners.size()];
-            listeners.toArray(array);
-        }
-        for (Runnable listener : array) {
-            listener.run();
-        }
     }
 }

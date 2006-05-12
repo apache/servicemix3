@@ -23,7 +23,6 @@ import org.apache.servicemix.beanflow.Flow.Transitions;
  */
 public class TimeoutFlowTest extends FlowTestSupport {
     protected TimeoutFlow flow = new TimeoutFlow();
-    protected long timeout = 500;
     
     public void testFlowStopsSuccessfully() throws Exception {
         flow.getState().set(Transitions.Stopped);
@@ -40,7 +39,6 @@ public class TimeoutFlowTest extends FlowTestSupport {
     }
 
     protected void setUp() throws Exception {
-        timer.schedule(flow.getTimeoutTask(), timeout);
         startFlow(flow, timeout);
     }
 }

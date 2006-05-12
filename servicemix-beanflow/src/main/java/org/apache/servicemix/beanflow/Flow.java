@@ -37,7 +37,7 @@ public interface Flow {
      * @version $Revision: 1.1 $
      */
     public enum Transitions {
-        Initialised, Starting, Started, Stopping, Stopped,
+        Initialised, Starting, Started, Stopping, Stopped, Failed
     };
 
     /**
@@ -57,13 +57,18 @@ public interface Flow {
     public void stop();
 
     /**
+     * Stops the flow with a failed state, giving the reason for the failure
+     */
+    public void fail(String reason);
+
+    /**
      * Returns the current running state of this flow
      */
     public State<Transitions> getState();
 
     /**
-     * Returns true if the flow has stopped running (though it might have
-     * failed)
+     * Returns true if the flow has stopped running either successfully or
+     * if it failed
      */
     public boolean isStopped();
 

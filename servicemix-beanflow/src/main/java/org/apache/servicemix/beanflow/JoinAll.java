@@ -15,79 +15,42 @@
  */
 package org.apache.servicemix.beanflow;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a flow which joins on the success of a number of child flows.
+ * Represents a flow which joins on the completion of a collection of child
+ * flows.
  * 
  * @version $Revision: $
  */
-public class JoinAll extends TimeoutFlow {
+public class JoinAll extends JoinSupport {
 
-    private List<Flow> children = new ArrayList<Flow>();
+    private boolean failFast;
 
     public JoinAll() {
-    }
-
-    public JoinAll(List<Flow> flows) {
-        for (Flow flow : flows) {
-            addChildFlow(flow);
-        }
+        super();
     }
 
     public JoinAll(Flow... flows) {
-        for (Flow flow : flows) {
-            addChildFlow(flow);
-        }
+        super(flows);
     }
 
-    public void addChildFlow(Flow child) {
-        synchronized (children) {
-            child.getState().addRunnable(this);
-            children.add(child);
-        }
+    public JoinAll(List<Flow> flows) {
+        super(flows);
     }
 
-    public void removeChildFlow(Flow child) {
-        synchronized (children) {
-            child.getState().removeRunnable(this);
-            children.remove(child);
-        }
+    public boolean isFailFast() {
+        return failFast;
     }
 
-    @Override
-    public void run() {
-        if (isStopped()) {
-            return;
-        }
-        int childCount = 0;
-        int stoppedCount = 0;
-        int failedCount = 0;
-        synchronized (children) {
-            childCount = children.size();
-            for (Flow child : children) {
-                if (child.isStopped()) {
-                    stoppedCount++;
-                    if (child.isFailed()) {
-                        failedCount++;
-                    }
-                }
-            }
-        }
-        onChildStateChange(childCount, stoppedCount, failedCount);
-    }
-
-    @Override
-    protected void doStart() {
-        super.doStart();
-        
-        // lets make sure that the child flows are started properly
-        synchronized (children) {
-            for (Flow child : children) {
-                child.start();
-            }
-        }
+    /**
+     * If fail fast mode is enabled then this flow fails as soon as a child flow
+     * fails. The default is to wait for all the child flows to complete
+     * irrespective of whether they stop succesfully or fail before completing
+     * this flow
+     */
+    public void setFailFast(boolean failFast) {
+        this.failFast = failFast;
     }
 
     /**
@@ -95,6 +58,9 @@ public class JoinAll extends TimeoutFlow {
      * number of child flows stopped and the number of failed flows
      */
     protected void onChildStateChange(int childCount, int stoppedCount, int failedCount) {
+        if (failFast && failedCount > 0) {
+            fail("" + failedCount + " child workflows have failed");
+        }
         if (childCount <= stoppedCount) {
             if (failedCount > 0) {
                 fail("" + failedCount + " child workflows have failed");

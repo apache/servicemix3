@@ -19,69 +19,54 @@ package org.apache.servicemix.beanflow;
  * 
  * @version $Revision: $
  */
-public class JoinAllTest extends FlowTestSupport {
+public class JoinQuorumTest extends FlowTestSupport {
 
     protected Flow child1 = new TimeoutFlow();
     protected Flow child2 = new TimeoutFlow();
     protected Flow child3 = new TimeoutFlow();
 
     public void testJoinAllWhenEachChildFlowCompletes() throws Exception {
-        // START SNIPPET: join
-        // lets create a join on a number of child flows completing
-        JoinAll flow = new JoinAll(child1, child2, child3);
-        flow.startWithTimeout(timer, timeout);
+        JoinQuorum flow = new JoinQuorum(child1, child2, child3);
+        startFlow(flow, timeout);
 
-        // now lets test the flow
         child1.stop();
         assertFlowStarted(flow);
 
         child2.stop();
-        assertFlowStarted(flow);
-
+        assertFlowStopped(flow);
+        
+        // lets check things are still fine when the quorum is complete
         child3.stop();
         assertFlowStopped(flow);
-        // START SNIPPET: end
     }
 
-    public void testJoinAllTerminatesWhenAClientFails() throws Exception {
-        JoinAll flow = new JoinAll(child1, child2, child3);
+    public void testJoinQuorumTerminatesWhenTooManyClientsFail() throws Exception {
+        JoinQuorum flow = new JoinQuorum(child1, child2, child3);
         startFlow(flow, timeout);
 
         child3.fail("Test case error simulation");
         assertFlowStarted(flow);
-
-        child2.stop();
-        assertFlowStarted(flow);
-
-        child1.stop();
-        assertFlowFailed(flow);
-    }
-    
-    public void testJoinAllTerminatesAsSoonAsOneChildFails() throws Exception {
-        JoinAll flow = new JoinAll(child1, child2, child3);
-        flow.setFailFast(true);
-        startFlow(flow, timeout);
         
-        child1.fail("Test case error simulation");
+        child2.fail("Test case error simulation");
         assertFlowFailed(flow);
     }
 
-    public void testJoinAllFailsIfChildrenDoNotCompleteInTime() throws Exception {
-        JoinAll flow = new JoinAll(child1, child2, child3);
+    public void testJoinQuorumFailsIfChildrenDoNotCompleteInTime() throws Exception {
+        JoinQuorum flow = new JoinQuorum(child1, child2, child3);
         startFlow(flow, timeout);
 
         child1.stop();
-        assertFlowStarted(flow);
-
-        child2.stop();
         assertFlowStarted(flow);
 
         // lets force a timeout failure
         Thread.sleep(timeout * 2);
-        
+
         assertFlowFailed(flow);
-        
+
         // lets check that completing the final child flow keeps the join failed
+        child2.stop();
+        assertFlowFailed(flow);
+
         child3.stop();
         assertFlowFailed(flow);
     }

@@ -23,7 +23,7 @@ import java.util.List;
  * 
  * @version $Revision: $
  */
-public class JoinQuorum extends JoinAll {
+public class JoinQuorum extends JoinSupport {
 
     public JoinQuorum() {
         super();

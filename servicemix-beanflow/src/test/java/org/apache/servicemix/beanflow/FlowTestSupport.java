@@ -25,9 +25,10 @@ import junit.framework.TestCase;
  * 
  * @version $Revision: $
  */
-public class FlowTestSupport extends TestCase {
+public abstract class FlowTestSupport extends TestCase {
 
     protected Timer timer = new Timer();
+    protected long timeout = 500L;
 
     protected void assertFlowStopped(Flow flow) {
         assertEquals("Transition", Transitions.Stopped, flow.getState().get());
@@ -37,7 +38,7 @@ public class FlowTestSupport extends TestCase {
     }
 
     protected void assertFlowFailed(Flow flow) {
-        assertEquals("Transition", Transitions.Stopped, flow.getState().get());
+        assertEquals("Transition", Transitions.Failed, flow.getState().get());
 
         assertTrue("Flow should be stopped but is: " + flow.getState().get(), flow.isStopped());
         assertTrue("Flow should have failed", flow.isFailed());
