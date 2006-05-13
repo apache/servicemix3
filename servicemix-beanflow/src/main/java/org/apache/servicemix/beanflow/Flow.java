@@ -82,4 +82,8 @@ public interface Flow {
      */
     public String getFailedReason();
 
+    /**
+     * Returns the exception which caused the failure
+     */
+    public Throwable getFailedException();
 }

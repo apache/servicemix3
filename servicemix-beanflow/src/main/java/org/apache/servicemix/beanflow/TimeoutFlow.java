@@ -57,7 +57,6 @@ public class TimeoutFlow extends AbstractFlow {
         return timedOut.get();
     }
 
-
     public void startWithTimeout(Timer timer, long timeout) {
         scheduleTimeout(timer, timeout);
         start();
@@ -67,7 +66,9 @@ public class TimeoutFlow extends AbstractFlow {
      * Schedules the flow to timeout at the given value
      */
     public void scheduleTimeout(Timer timer, long timeout) {
-        timer.schedule(getTimeoutTask(), timeout);
+        if (timeout > 0) {
+            timer.schedule(getTimeoutTask(), timeout);
+        }
     }
 
     /**
@@ -85,8 +86,8 @@ public class TimeoutFlow extends AbstractFlow {
     }
 
     /**
-     * A hook so that derived classes can ignore whether the flow is started or timed out and instead
-     * focus on the other state
+     * A hook so that derived classes can ignore whether the flow is started or
+     * timed out and instead focus on the other state
      */
     protected void onValidStateChange() {
     }

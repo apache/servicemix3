@@ -15,10 +15,12 @@
  */
 package org.apache.servicemix.beanflow;
 
+import org.apache.commons.logging.*;
 import org.apache.servicemix.beanflow.Flow.Transitions;
 
 import java.util.Timer;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 /**
@@ -27,14 +29,34 @@ import junit.framework.TestCase;
  */
 public abstract class FlowTestSupport extends TestCase {
 
+    private static final Log log = LogFactory.getLog(FlowTestSupport.class);
+
     protected Timer timer = new Timer();
     protected long timeout = 500L;
 
-    protected void assertFlowStopped(Flow flow) {
+    protected void assertFlowStarted(Flow flow) throws Exception {
+        assertNotFailed(flow);
+        assertEquals("Transition", Transitions.Started, flow.getState().get());
+    }
+
+    protected void assertFlowStopped(Flow flow) throws Exception {
+        assertNotFailed(flow);
         assertEquals("Transition", Transitions.Stopped, flow.getState().get());
 
         assertTrue("Flow should be stopped but is: " + flow.getState().get(), flow.isStopped());
         assertTrue("Flow should not have failed", !flow.isFailed());
+    }
+
+    protected void assertNotFailed(Flow flow) throws Exception {
+        Throwable failedException = flow.getFailedException();
+        if (failedException != null) {
+            if (failedException instanceof Exception) {
+                throw (Exception) failedException;
+            }
+            else {
+                throw new RuntimeException(failedException);
+            }
+        }
     }
 
     protected void assertFlowFailed(Flow flow) {
@@ -43,20 +65,16 @@ public abstract class FlowTestSupport extends TestCase {
         assertTrue("Flow should be stopped but is: " + flow.getState().get(), flow.isStopped());
         assertTrue("Flow should have failed", flow.isFailed());
 
-        System.out.println("The flow failed due to: " + flow.getFailedReason());
+        log.info("The flow failed due to: " + flow.getFailedReason());
     }
 
-    protected void startFlow(Flow flow, long timeout) {
+    protected void startFlow(Flow flow, long timeout) throws Exception {
         assertTrue("flow should not be stopped", !flow.isStopped());
         assertTrue("flow should not have failed", !flow.isFailed());
         assertEquals("Transition", Transitions.Initialised, flow.getState().get());
 
         flow.startWithTimeout(timer, timeout);
         assertFlowStarted(flow);
-    }
-
-    protected void assertFlowStarted(Flow flow) {
-        assertEquals("Transition", Transitions.Started, flow.getState().get());
     }
 
 }

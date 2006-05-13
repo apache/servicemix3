@@ -46,6 +46,7 @@ public abstract class JoinSupport extends TimeoutFlow {
         synchronized (children) {
             child.getState().addRunnable(this);
             children.add(child);
+            child.start();
         }
     }
 
@@ -53,6 +54,7 @@ public abstract class JoinSupport extends TimeoutFlow {
         synchronized (children) {
             child.getState().removeRunnable(this);
             children.remove(child);
+            child.stop();
         }
     }
 

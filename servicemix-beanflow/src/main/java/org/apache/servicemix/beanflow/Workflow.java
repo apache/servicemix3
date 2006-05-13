@@ -15,7 +15,8 @@
  */
 package org.apache.servicemix.beanflow;
 
-import org.apache.commons.logging.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.beanflow.support.Interpreter;
 import org.apache.servicemix.beanflow.support.ReflectionInterpreter;
 

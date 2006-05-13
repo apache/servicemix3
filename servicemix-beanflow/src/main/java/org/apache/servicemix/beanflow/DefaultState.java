@@ -15,10 +15,8 @@
  */
 package org.apache.servicemix.beanflow;
 
-import org.apache.servicemix.beanflow.support.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.servicemix.beanflow.support.Notifier;
+import org.apache.servicemix.beanflow.support.SynchronousNotifier;
 
 /**
  * A default implementation where the state changes are thread safe and the

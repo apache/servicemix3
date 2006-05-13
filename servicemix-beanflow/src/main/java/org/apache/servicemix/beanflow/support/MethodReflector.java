@@ -24,7 +24,7 @@ import java.util.concurrent.Callable;
  * 
  * @version $Revision: $
  */
-public class MethodReflector implements Callable {
+public class MethodReflector<T> implements Callable<T> {
 
     protected static final Object[] NO_ARGUMENTS = {};
 
@@ -42,9 +42,10 @@ public class MethodReflector implements Callable {
         this.arguments = arguments;
     }
 
-    public Object call() throws Exception {
+    @SuppressWarnings("unchecked")
+    public T call() throws Exception {
         try {
-            return method.invoke(source, arguments);
+            return (T) method.invoke(source, arguments);
         }
         catch (InvocationTargetException e) {
             Throwable targetException = e.getTargetException();
