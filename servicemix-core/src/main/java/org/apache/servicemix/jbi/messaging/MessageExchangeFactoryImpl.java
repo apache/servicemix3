@@ -157,6 +157,7 @@ public class MessageExchangeFactoryImpl implements MessageExchangeFactory {
      * @throws MessagingException
      */
     public MessageExchange createExchange(QName serviceName, QName operationName) throws MessagingException {
+        // TODO: look for the operation in the wsdl and infer the MEP
         checkNotClosed();
         InOptionalOutImpl me =  new InOptionalOutImpl(getExchangeId());
         setDefaults(me);
