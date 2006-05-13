@@ -15,8 +15,8 @@
  */
 package org.apache.servicemix.beanflow;
 
-import org.apache.servicemix.beanflow.introspector.FieldIntrospector;
-import org.apache.servicemix.beanflow.introspector.Introspector;
+import org.apache.servicemix.beanflow.support.FieldIntrospector;
+import org.apache.servicemix.beanflow.support.Introspector;
 
 import java.util.Iterator;
 
