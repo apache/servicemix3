@@ -19,7 +19,10 @@ import java.net.URL;
 
 import javax.jbi.JBIException;
 import javax.jbi.messaging.DeliveryChannel;
+import javax.jbi.messaging.ExchangeStatus;
+import javax.jbi.messaging.Fault;
 import javax.jbi.messaging.InOnly;
+import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
@@ -44,6 +47,7 @@ public class DroolsComponent extends OutBinding {
     private RuleBase ruleBase;
     private Resource ruleBaseResource;
     private URL ruleBaseURL;
+    private ThreadLocal routed = new ThreadLocal();
 
     public RuleBase getRuleBase() {
         return ruleBase;
@@ -86,6 +90,43 @@ public class DroolsComponent extends OutBinding {
         forwardToExchange(exchange, outExchange, in);
     }
 
+    public void route(MessageExchange exchange, NormalizedMessage in, QName service, QName interfaceName, QName operation) throws MessagingException {
+        if (routed.get() != null) {
+            throw new IllegalStateException("Drools component has already routed this exchange");
+        }
+        routed.set(Boolean.TRUE);
+        DeliveryChannel channel = getDeliveryChannel();
+        MessageExchangeFactory factory = channel.createExchangeFactory();
+        MessageExchange me = factory.createExchange(exchange.getPattern());
+        me.setInterfaceName(interfaceName);
+        me.setService(service);
+        me.setOperation(operation);
+        NormalizedMessage nm = me.createMessage(); 
+        me.setMessage(nm, "in");
+        getMessageTransformer().transform(exchange, in, nm);
+        channel.sendSync(me); 
+        if (me.getStatus() == ExchangeStatus.ERROR) {
+            fail(exchange, me.getError());
+        } else if (me.getStatus() == ExchangeStatus.DONE) {
+            done(exchange);
+        } else {
+            NormalizedMessage out = me.getMessage("out");
+            if (out != null) {
+                nm = exchange.createMessage();
+                exchange.setMessage(nm, "out");
+                getMessageTransformer().transform(exchange, out, nm);
+            } else {
+                Fault f = me.getFault();
+                Fault of = exchange.createFault();
+                exchange.setFault(of);
+                getMessageTransformer().transform(exchange, f, of);
+            }
+            channel.send(exchange);
+            done(me);
+        }
+        
+    }
+
 
     // Implementation methods
     //-------------------------------------------------------------------------
@@ -113,14 +154,21 @@ public class DroolsComponent extends OutBinding {
     protected void process(MessageExchange exchange, NormalizedMessage in) throws Exception {
         WorkingMemory memory = ruleBase.newWorkingMemory();
         populateWorkingMemory(memory, exchange, in);
+        routed.set(null);
         memory.fireAllRules();
-        done(exchange);
+        if (routed.get() == null) {
+            if (exchange instanceof InOut) {
+                fail(exchange, new Exception("Drools component has not routed the exchange"));
+            } else {
+                done(exchange);
+            }
+        }
     }
 
     protected void populateWorkingMemory(WorkingMemory memory, MessageExchange exchange, NormalizedMessage in) throws MessagingException, FactException {
         memory.setApplicationData("context", getContext());
         memory.setApplicationData("deliveryChannel", getDeliveryChannel());
-        memory.setApplicationData("jbi", new JbiHelper(this, exchange, in));
+        memory.setApplicationData("jbi", new JbiHelper(this, exchange, in, memory));
         memory.assertObject(in);
         memory.assertObject(exchange);
     }

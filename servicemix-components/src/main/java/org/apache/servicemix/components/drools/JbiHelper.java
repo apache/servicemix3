@@ -21,6 +21,8 @@ import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 
+import org.drools.WorkingMemory;
+
 /**
  * A helper class for use inside a rule to forward a message to an endpoint
  *
@@ -30,11 +32,16 @@ public class JbiHelper {
     private DroolsComponent component;
     private MessageExchange exchange;
     private NormalizedMessage in;
+    private WorkingMemory memory;
 
-    public JbiHelper(DroolsComponent component, MessageExchange exchange, NormalizedMessage in) {
+    public JbiHelper(DroolsComponent component, 
+                     MessageExchange exchange, 
+                     NormalizedMessage in,
+                     WorkingMemory memory) {
         this.component = component;
         this.exchange = exchange;
         this.in = in;
+        this.memory = memory;
     }
 
     /**
@@ -52,9 +59,12 @@ public class JbiHelper {
         component.forwardToService(exchange, in, name);
     }
 
-
     public void invoke(QName service, QName operation, QName interfaceName) throws MessagingException {
         component.invoke(exchange, in, service, interfaceName, operation);
+    }
+
+    public void route(QName service, QName operation, QName interfaceName) throws MessagingException {
+        component.route(exchange, in, service, interfaceName, operation);
     }
 
     public DeliveryChannel getDeliveryChannel() throws MessagingException {
