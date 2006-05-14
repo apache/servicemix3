@@ -15,9 +15,8 @@
  */
 package org.apache.servicemix.beanflow;
 
-import org.apache.servicemix.beanflow.support.FindCallableMethods;
-
-import java.util.concurrent.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * 
@@ -29,22 +28,22 @@ public class ParallelActivityTest extends FlowTestSupport {
 
     @SuppressWarnings("unchecked")
     public void test() throws Exception {
+        
+        // START SNIPPET: example
         ExampleParallelBean parallelBean = new ExampleParallelBean();
-        FindCallableMethods factory = new FindCallableMethods(parallelBean);
-
-        ParallelActivity activity = new ParallelActivity(new JoinAll(), executor, factory);
+        ParallelActivity activity =  ParallelActivity.newParallelMethodActivity(executor, parallelBean);
         activity.startWithTimeout(timer, -1);
-
-        assertFlowStarted(activity);
+        // END SNIPPET: example
 
         parallelBean.assertCompleted();
-        
-        // OK the latch may be completed but the 
+
+        // OK the latch may be completed but the
         // join might not have completed yet
-        Thread.sleep(5000);
-        
-        // TODO FIXME!
-        //assertFlowStopped(activity);
+        if (!activity.isStopped()) {
+            Thread.sleep(1000);
+        }
+
+        assertFlowStopped(activity);
     }
 
 }
