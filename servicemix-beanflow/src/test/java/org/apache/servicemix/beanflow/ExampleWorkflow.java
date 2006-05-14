@@ -30,14 +30,16 @@ public class ExampleWorkflow extends Workflow {
     // Workflow steps
     // -------------------------------------------------------------------------
 
-    // lets use an explicit goTo() 
-    // to tell the workflow which step to go to next
+    // This is the first step of a workflow by default
+    // but you can start at any point by passing in a parameter
+    // to the Workflow constructor 
     public void startStep() {
+        // lets use an explicit goTo() to tell the workflow 
+        // which step to go to next; though we can just return Strings
         goTo("loopStep");
     }
 
-    // lets use the return value to
-    // specify the next step
+    // lets use the return value to specify the next step
     public String loopStep() {
         if (++loopCount > 3) {
             return "waitForUserInputStep";
