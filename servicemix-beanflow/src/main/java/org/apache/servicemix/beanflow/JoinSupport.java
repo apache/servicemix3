@@ -19,30 +19,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A useful base class for a flow which joins on the success of a collection of child flows.
+ * A useful base class for a activity which joins on the success of a collection of child activities.
  * 
  * @version $Revision: $
  */
-public abstract class JoinSupport extends TimeoutFlow {
+public abstract class JoinSupport extends TimeoutActivity {
 
-    private List<Flow> children = new ArrayList<Flow>();
+    private List<Activity> children = new ArrayList<Activity>();
 
     public JoinSupport() {
     }
 
-    public JoinSupport(List<Flow> flows) {
-        for (Flow flow : flows) {
-            fork(flow);
+    public JoinSupport(List<Activity> activities) {
+        for (Activity activity : activities) {
+            fork(activity);
         }
     }
 
-    public JoinSupport(Flow... flows) {
-        for (Flow flow : flows) {
-            fork(flow);
+    public JoinSupport(Activity... activities) {
+        for (Activity activity : activities) {
+            fork(activity);
         }
     }
 
-    public void fork(Flow child) {
+    public void fork(Activity child) {
         synchronized (children) {
             child.getState().addRunnable(this);
             children.add(child);
@@ -50,7 +50,7 @@ public abstract class JoinSupport extends TimeoutFlow {
         }
     }
 
-    public void cancelFork(Flow child) {
+    public void cancelFork(Activity child) {
         synchronized (children) {
             child.getState().removeRunnable(this);
             children.remove(child);
@@ -65,7 +65,7 @@ public abstract class JoinSupport extends TimeoutFlow {
         int failedCount = 0;
         synchronized (children) {
             childCount = children.size();
-            for (Flow child : children) {
+            for (Activity child : children) {
                 if (child.isStopped()) {
                     stoppedCount++;
                     if (child.isFailed()) {
@@ -81,9 +81,9 @@ public abstract class JoinSupport extends TimeoutFlow {
     protected void doStart() {
         super.doStart();
         
-        // lets make sure that the child flows are started properly
+        // lets make sure that the child activities are started properly
         synchronized (children) {
-            for (Flow child : children) {
+            for (Activity child : children) {
                 child.start();
             }
         }
@@ -91,7 +91,7 @@ public abstract class JoinSupport extends TimeoutFlow {
 
     /**
      * Decide whether or not we are done based on the number of children, the
-     * number of child flows stopped and the number of failed flows
+     * number of child activities stopped and the number of failed activities
      */
     protected abstract void onChildStateChange(int childCount, int stoppedCount, int failedCount);
 

@@ -21,9 +21,9 @@ package org.apache.servicemix.beanflow;
  */
 public class JoinAllTest extends FlowTestSupport {
 
-    protected Flow child1 = new TimeoutFlow();
-    protected Flow child2 = new TimeoutFlow();
-    protected Flow child3 = new TimeoutFlow();
+    protected Activity child1 = new TimeoutActivity();
+    protected Activity child2 = new TimeoutActivity();
+    protected Activity child3 = new TimeoutActivity();
 
     public void testJoinAllWhenEachChildFlowCompletes() throws Exception {
         // START SNIPPET: example

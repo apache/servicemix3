@@ -26,7 +26,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * A flow which implements a more traditional workflow model where each method
+ * An activity which implements a more traditional workflow model where each method
  * represents a transition.
  * 
  * @version $Revision: $
@@ -90,40 +90,40 @@ public class Workflow extends JoinSupport {
     }
 
     /**
-     * Forks one or more child flows
+     * Forks one or more child activities
      */
-    public void fork(TimeoutFlow... flows) {
-        for (TimeoutFlow flow : flows) {
-            flow.start();
+    public void fork(TimeoutActivity... activities) {
+        for (TimeoutActivity activity : activities) {
+            activity.start();
         }
     }
     
     /**
-     * Forks one or more child flows
+     * Forks one or more child activities
      */
-    public void fork(long timeout, TimeoutFlow... flows) {
-        for (TimeoutFlow flow : flows) {
-            flow.scheduleTimeout(timer, timeout);
-            flow.start();
+    public void fork(long timeout, TimeoutActivity... activities) {
+        for (TimeoutActivity activity : activities) {
+            activity.scheduleTimeout(timer, timeout);
+            activity.start();
         }
     }
 
     /**
-     * Creates a join such that when all of the flows are completed the given
+     * Creates a join such that when all of the activities are completed the given
      * step will be executed
      */
-    public void joinAll(final String joinedStep, long timeout, Flow... flows) {
-        JoinAll joinFlow = new JoinAll(flows);
+    public void joinAll(final String joinedStep, long timeout, Activity... activities) {
+        JoinAll joinFlow = new JoinAll(activities);
         join(joinFlow, joinedStep, timeout);
     }
 
     /**
-     * Performs a join with the given join flow condition, advancing to the
+     * Performs a join with the given join activity condition, advancing to the
      * specified joinedStep when the join takes place using the given timeout to
      * the join
      */
     public void join(JoinSupport joinFlow, final String joinedStep, long timeout) {
-        // start the join flow and register the timeout
+        // start the join activity and register the timeout
         fork(timeout, joinFlow);
 
         // when the join completes move to the next step
@@ -132,7 +132,7 @@ public class Workflow extends JoinSupport {
 
     /**
      * Suspends the workflow processing. The workflow will then wait for an
-     * external event before restarting the flow
+     * external event before restarting the activity
      */
     public void suspend() {
         suspended.set(true);

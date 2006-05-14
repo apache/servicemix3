@@ -24,37 +24,37 @@ public class CustomJoinConditionTest extends FlowTestSupport  {
     public void testCustomJoinCondition() throws Exception {
         // START SNIPPET: join
         // lets create some child workflows
-        final Flow a = new TimeoutFlow();
-        final Flow b = new TimeoutFlow();
-        final Flow c = new TimeoutFlow();
+        final Activity a = new TimeoutActivity();
+        final Activity b = new TimeoutActivity();
+        final Activity c = new TimeoutActivity();
 
-        // lets create the flow with a custom join condition
-        Flow flow = new JoinSupport(a, b, c) {
+        // lets create the activity with a custom join condition
+        Activity activity = new JoinSupport(a, b, c) {
             @Override
             protected void onChildStateChange(int childCount, int stoppedCount, int failedCount) {
                 
                 if (a.isStopped() && (b.isStopped() || c.isStopped())) {
-                    // lets stop the flow we're done
+                    // lets stop the activity we're done
                     stop();
                 }
             }
         };
         
-        // lets start the flows
-        flow.startWithTimeout(timer, timeout);
+        // lets start the activities
+        activity.startWithTimeout(timer, timeout);
         
         // now lets test things behave properly
-        assertFlowStarted(flow);
+        assertFlowStarted(activity);
 
         a.stop();
-        assertFlowStarted(flow);
+        assertFlowStarted(activity);
 
         b.stop();
-        assertFlowStopped(flow);
+        assertFlowStopped(activity);
         // END SNIPPET: join
         
         // lets check things are still fine when c completes
         c.stop();
-        assertFlowStopped(flow);
+        assertFlowStopped(activity);
     }
 }

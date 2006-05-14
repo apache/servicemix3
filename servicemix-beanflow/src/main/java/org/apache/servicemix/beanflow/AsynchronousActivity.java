@@ -23,7 +23,7 @@ import java.util.concurrent.Executor;
  * 
  * @version $Revision: $
  */
-public class AsynchronousActivity extends TimeoutFlow {
+public class AsynchronousActivity extends TimeoutActivity {
 
     private final Executor executor;
     private final Runnable runnable;

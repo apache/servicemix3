@@ -15,14 +15,14 @@
  */
 package org.apache.servicemix.beanflow;
 
-import org.apache.servicemix.beanflow.Flow.Transitions;
+import org.apache.servicemix.beanflow.Activity.Transitions;
 
 /**
  * 
  * @version $Revision: $
  */
 public class TimeoutFlowTest extends FlowTestSupport {
-    protected TimeoutFlow flow = new TimeoutFlow();
+    protected TimeoutActivity flow = new TimeoutActivity();
     
     public void testFlowStopsSuccessfully() throws Exception {
         flow.getState().set(Transitions.Stopped);

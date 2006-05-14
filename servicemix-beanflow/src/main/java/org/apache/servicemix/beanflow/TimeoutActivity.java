@@ -24,7 +24,7 @@ import java.util.TimerTask;
  * 
  * @version $Revision: $
  */
-public class TimeoutFlow extends AbstractFlow {
+public class TimeoutActivity extends AbstractActivity {
 
     private State<Boolean> timedOut = new DefaultState<Boolean>(Boolean.FALSE);
     private TimerTask timeoutTask;

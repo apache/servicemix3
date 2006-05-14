@@ -19,9 +19,9 @@ package org.apache.servicemix.beanflow;
 import java.util.Timer;
 
 /**
- * Represents a flow instance which is a bean based workflow written using Java code.
- * A flow monitors various {@link State} objects and takes action when things change.
- * Flows are designed to be thread safe and are intended for use in highly concurrent
+ * Represents an activity (step) in a workflow written typically using regular Java code.
+ * An activity typically monitors various {@link State} objects and takes action when things change.
+ * Activities are designed to be thread safe and are intended for use in highly concurrent
  * or distributed applications so that the state can be changed from any thread.
  * <br>
  * The Processing of notifications of state changes should generally be quick; if lots of work
@@ -29,10 +29,10 @@ import java.util.Timer;
  * 
  * @version $Revision: $
  */
-public interface Flow {
+public interface Activity {
 
     /**
-     * The core transitions of a flow
+     * The core transition states of the activity
      * 
      * @version $Revision: 1.1 $
      */
@@ -41,44 +41,45 @@ public interface Flow {
     };
 
     /**
-     * Starts the flow
+     * Starts the activity. Once it is started it can take an arbitrary amount of time to complete.
+     * The execution of an activity is usually asynchronous in nature (though its not mandatory)
      */
     public void start();
 
     /**
-     * For flows that support timeout based operation this helper method
-     * starts the flow and registers the timeout 
+     * For activities that support timeout based operation this helper method
+     * starts the activity and registers the timeout 
      */
     public void startWithTimeout(Timer timer, long timeout);
     
     /**
-     * Stops the flow
+     * Stops the activity, setting the status to {@link Stopped}
      */
     public void stop();
 
     /**
-     * Stops the flow with a failed state, giving the reason for the failure
+     * Stops the activity with a failed state, giving the reason for the failure
      */
     public void fail(String reason);
 
     /**
-     * Returns the current running state of this flow
+     * Returns the current running state of this activity
      */
     public State<Transitions> getState();
 
     /**
-     * Returns true if the flow has stopped running either successfully or
+     * Returns true if the activity has stopped running either successfully or
      * if it failed
      */
     public boolean isStopped();
 
     /**
-     * Returns true if the flow has failed to complete succesfully
+     * Returns true if the activity has failed to complete succesfully
      */
     public boolean isFailed();
     
     /**
-     * If this flow has failed then return a reason for the failure
+     * If this activity has failed then return a reason for the failure
      */
     public String getFailedReason();
 

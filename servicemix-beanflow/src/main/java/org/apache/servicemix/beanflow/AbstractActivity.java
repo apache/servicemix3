@@ -21,14 +21,14 @@ import org.apache.servicemix.beanflow.support.Introspector;
 import java.util.Iterator;
 
 /**
- * A useful base class which allows simple bean flows to be written easily. When
- * this flow is started it will listen to all the state values which can be
+ * A useful base class which allows simple bean activities to be written easily. When
+ * this activity is started it will listen to all the state values which can be
  * found by the introspector (such as all the fields by default) calling the
- * {@link run} method when the state changes so that the flow can be evaluted.
+ * {@link run} method when the state changes so that the activity can be evaluted.
  * 
  * @version $Revision: $
  */
-public abstract class AbstractFlow implements Runnable, Flow {
+public abstract class AbstractActivity implements Runnable, Activity {
 
     private State<Transitions> state = new DefaultState<Transitions>(Transitions.Initialised);
     private Introspector introspector = new FieldIntrospector();
@@ -36,7 +36,7 @@ public abstract class AbstractFlow implements Runnable, Flow {
     private Throwable failedException;
 
     /**
-     * Starts the flow
+     * Starts the activity
      */
     public void start() {
         if (state.compareAndSet(Transitions.Initialised, Transitions.Starting)) {
@@ -46,7 +46,7 @@ public abstract class AbstractFlow implements Runnable, Flow {
     }
 
     /**
-     * Stops the flow
+     * Stops the activity
      */
     public void stop() {
         if (state.compareAndSet(Transitions.Started, Transitions.Stopping)) {
@@ -56,7 +56,7 @@ public abstract class AbstractFlow implements Runnable, Flow {
     }
 
     /**
-     * Stops the flow with a failed state, giving the reason for the failure
+     * Stops the activity with a failed state, giving the reason for the failure
      */
     public void fail(String reason) {
         if (state.compareAndSet(Transitions.Started, Transitions.Failed)) {
@@ -67,7 +67,7 @@ public abstract class AbstractFlow implements Runnable, Flow {
     }
 
     /**
-     * Stops the flow with a failed state with the given reason and exception.
+     * Stops the activity with a failed state with the given reason and exception.
      */
     public void fail(String message, Throwable e) {
         fail(message);
@@ -75,7 +75,7 @@ public abstract class AbstractFlow implements Runnable, Flow {
     }
 
     /**
-     * Returns the current running state of this flow
+     * Returns the current running state of this activity
      */
     public State<Transitions> getState() {
         return state;
@@ -104,7 +104,7 @@ public abstract class AbstractFlow implements Runnable, Flow {
     }
 
     /**
-     * A helper method to add a task to fire when the workflow is completed
+     * A helper method to add a task to fire when the activity is completed
      */
     public void onStop(final Runnable runnable) {
         getState().addRunnable(new Runnable() {
@@ -118,7 +118,7 @@ public abstract class AbstractFlow implements Runnable, Flow {
     }
 
     /**
-     * A helper method to add a task to fire when the workflow fails
+     * A helper method to add a task to fire when the activity fails
      */
     public void onFailure(final Runnable runnable) {
         getState().addRunnable(new Runnable() {

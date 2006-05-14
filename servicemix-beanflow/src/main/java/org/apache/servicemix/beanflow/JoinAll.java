@@ -18,8 +18,8 @@ package org.apache.servicemix.beanflow;
 import java.util.List;
 
 /**
- * Represents a flow which joins on the completion of a collection of child
- * flows.
+ * Represents a activity which joins on the completion of a collection of child
+ * activities.
  * 
  * @version $Revision: $
  */
@@ -31,12 +31,12 @@ public class JoinAll extends JoinSupport {
         super();
     }
 
-    public JoinAll(Flow... flows) {
-        super(flows);
+    public JoinAll(Activity... activities) {
+        super(activities);
     }
 
-    public JoinAll(List<Flow> flows) {
-        super(flows);
+    public JoinAll(List<Activity> activities) {
+        super(activities);
     }
 
     public boolean isFailFast() {
@@ -44,10 +44,10 @@ public class JoinAll extends JoinSupport {
     }
 
     /**
-     * If fail fast mode is enabled then this flow fails as soon as a child flow
-     * fails. The default is to wait for all the child flows to complete
+     * If fail fast mode is enabled then this activity fails as soon as a child activity
+     * fails. The default is to wait for all the child activities to complete
      * irrespective of whether they stop succesfully or fail before completing
-     * this flow
+     * this activity
      */
     public void setFailFast(boolean failFast) {
         this.failFast = failFast;
@@ -55,15 +55,15 @@ public class JoinAll extends JoinSupport {
 
     /**
      * Decide whether or not we are done based on the number of children, the
-     * number of child flows stopped and the number of failed flows
+     * number of child activities stopped and the number of failed activities
      */
     protected void onChildStateChange(int childCount, int stoppedCount, int failedCount) {
         if (failFast && failedCount > 0) {
-            fail("" + failedCount + " child workflows have failed");
+            fail("" + failedCount + " child workactivities have failed");
         }
         if (childCount <= stoppedCount) {
             if (failedCount > 0) {
-                fail("" + failedCount + " child workflows have failed");
+                fail("" + failedCount + " child workactivities have failed");
             }
             else {
                 stop();

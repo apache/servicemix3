@@ -15,7 +15,7 @@
  */
 package org.apache.servicemix.beanflow;
 
-import org.apache.servicemix.beanflow.Flow.Transitions;
+import org.apache.servicemix.beanflow.Activity.Transitions;
 
 import java.util.Timer;
 
@@ -25,11 +25,11 @@ import java.util.Timer;
  * 
  * @version $Revision: $
  */
-public class ProxyActivity implements Flow {
+public class ProxyActivity implements Activity {
 
-    private Flow proxy;
+    private Activity proxy;
 
-    public ProxyActivity(Flow proxy) {
+    public ProxyActivity(Activity proxy) {
         this.proxy = proxy;
     }
 
@@ -69,11 +69,11 @@ public class ProxyActivity implements Flow {
         getProxy().stop();
     }
 
-    protected Flow getProxy() {
+    protected Activity getProxy() {
         return proxy;
     }
 
-    protected void setProxy(Flow proxy) {
+    protected void setProxy(Activity proxy) {
         this.proxy = proxy;
     }
 

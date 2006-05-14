@@ -61,9 +61,9 @@ public class ExampleWorkflow extends Workflow {
     
     public void forkStep() {
         // lets fork some child flows
-        TimeoutFlow a = new TimeoutFlow();
-        TimeoutFlow b = new TimeoutFlow();
-        TimeoutFlow c = new TimeoutFlow();
+        TimeoutActivity a = new TimeoutActivity();
+        TimeoutActivity b = new TimeoutActivity();
+        TimeoutActivity c = new TimeoutActivity();
         
         System.out.println("Forking off processes a, b, c");
         fork(a, b, c);

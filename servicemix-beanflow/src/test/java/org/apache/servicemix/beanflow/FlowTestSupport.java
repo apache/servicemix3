@@ -16,7 +16,7 @@
 package org.apache.servicemix.beanflow;
 
 import org.apache.commons.logging.*;
-import org.apache.servicemix.beanflow.Flow.Transitions;
+import org.apache.servicemix.beanflow.Activity.Transitions;
 
 import java.util.Timer;
 
@@ -34,12 +34,12 @@ public abstract class FlowTestSupport extends TestCase {
     protected Timer timer = new Timer();
     protected long timeout = 500L;
 
-    protected void assertFlowStarted(Flow flow) throws Exception {
+    protected void assertFlowStarted(Activity flow) throws Exception {
         assertNotFailed(flow);
         assertEquals("Transition", Transitions.Started, flow.getState().get());
     }
 
-    protected void assertFlowStopped(Flow flow) throws Exception {
+    protected void assertFlowStopped(Activity flow) throws Exception {
         assertNotFailed(flow);
         assertEquals("Transition", Transitions.Stopped, flow.getState().get());
 
@@ -47,7 +47,7 @@ public abstract class FlowTestSupport extends TestCase {
         assertTrue("Flow should not have failed", !flow.isFailed());
     }
 
-    protected void assertNotFailed(Flow flow) throws Exception {
+    protected void assertNotFailed(Activity flow) throws Exception {
         Throwable failedException = flow.getFailedException();
         if (failedException != null) {
             if (failedException instanceof Exception) {
@@ -59,7 +59,7 @@ public abstract class FlowTestSupport extends TestCase {
         }
     }
 
-    protected void assertFlowFailed(Flow flow) {
+    protected void assertFlowFailed(Activity flow) {
         assertEquals("Transition", Transitions.Failed, flow.getState().get());
 
         assertTrue("Flow should be stopped but is: " + flow.getState().get(), flow.isStopped());
@@ -68,7 +68,7 @@ public abstract class FlowTestSupport extends TestCase {
         log.info("The flow failed due to: " + flow.getFailedReason());
     }
 
-    protected void startFlow(Flow flow, long timeout) throws Exception {
+    protected void startFlow(Activity flow, long timeout) throws Exception {
         assertTrue("flow should not be stopped", !flow.isStopped());
         assertTrue("flow should not have failed", !flow.isFailed());
         assertEquals("Transition", Transitions.Initialised, flow.getState().get());

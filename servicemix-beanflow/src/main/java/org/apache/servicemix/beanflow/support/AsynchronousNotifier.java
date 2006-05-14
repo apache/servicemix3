@@ -19,7 +19,7 @@ import java.util.concurrent.Executor;
 
 /**
  * A {@link Notifier} which asynchronously notifies listeners to avoid large
- * amounts of deep recursion in complex state models and flows.
+ * amounts of deep recursion in complex state models and activities.
  * 
  * @version $Revision: $
  */

@@ -18,8 +18,8 @@ package org.apache.servicemix.beanflow;
 import java.util.List;
 
 /**
- * A flow which completes when quorum of the child flows are completed
- * successfully (or there are too many child flows failed to achieve quorum).
+ * A activity which completes when quorum of the child activities are completed
+ * successfully (or there are too many child activities failed to achieve quorum).
  * 
  * @version $Revision: $
  */
@@ -30,12 +30,12 @@ public class JoinQuorum extends JoinSupport {
 
     }
 
-    public JoinQuorum(Flow... flows) {
-        super(flows);
+    public JoinQuorum(Activity... activities) {
+        super(activities);
     }
 
-    public JoinQuorum(List<Flow> flows) {
-        super(flows);
+    public JoinQuorum(List<Activity> activities) {
+        super(activities);
     }
 
     protected void onChildStateChange(int childCount, int stoppedCount, int failedCount) {
@@ -46,7 +46,7 @@ public class JoinQuorum extends JoinSupport {
         }
         else {
             if (failedCount >= quorum) {
-                fail("Too many child flows failed: " + failedCount);
+                fail("Too many child activities failed: " + failedCount);
             }
         }
     }

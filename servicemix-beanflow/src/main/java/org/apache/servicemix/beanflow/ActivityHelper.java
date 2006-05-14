@@ -18,45 +18,45 @@ package org.apache.servicemix.beanflow;
 import java.util.List;
 
 /**
- * Some helper methods for working with flows
+ * Some helper methods for working with activities
  * 
  * @version $Revision: $
  */
-public class FlowHelper {
+public class ActivityHelper {
     
     /**
-     * Ensures that all the flows are started
+     * Ensures that all the activities are started
      */
-    public static void start(Flow... flows) {
-        for (Flow flow : flows) {
-            flow.start();
+    public static void start(Activity... activities) {
+        for (Activity activity : activities) {
+            activity.start();
         }
     }
     
     /**
-     * Ensures that all the flows are started
+     * Ensures that all the activities are started
      */
-    public static void start(List<Flow> flows) {
-        for (Flow flow : flows) {
-            flow.start();
+    public static void start(List<Activity> activities) {
+        for (Activity activity : activities) {
+            activity.start();
         }
     }
 
     /**
-     * Ensures that all the flows are stopped
+     * Ensures that all the activities are stopped
      */
-    public static void stop(Flow... flows) {
-        for (Flow flow : flows) {
-            flow.stop();
+    public static void stop(Activity... activities) {
+        for (Activity activity : activities) {
+            activity.stop();
         }
     }
 
     /**
-     * Ensures that all the flows are stopped
+     * Ensures that all the activities are stopped
      */
-    public static void stop(List<Flow> flows) {
-        for (Flow flow : flows) {
-            flow.stop();
+    public static void stop(List<Activity> activities) {
+        for (Activity activity : activities) {
+            activity.stop();
         }
     }
 }
