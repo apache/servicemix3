@@ -218,6 +218,7 @@
     <qdox.version>1.5</qdox.version>
     <jaxws.tools.version>2.0EA3</jaxws.tools.version>
     <xfire.jsr181.api.version>1.0-M1</xfire.jsr181.api.version>
+    <mavenAssemblyPluginVersion>2.1</mavenAssemblyPluginVersion>
   </properties>
   
   <profiles>
@@ -245,7 +246,7 @@
     <pluginRepository>
       <id>apache.snapshots</id>
       <name>Maven Central Plugins Development Repository</name>
-      <url>http://cvs.apache.org/maven-snapshot-repository/</url>
+      <url>http://cvs.apache.org/maven-snapshot-repository</url>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
@@ -258,13 +259,17 @@
   <repositories>
     <repository>
       <id>central</id>
-      <name>Maven Repository Switchboard</name>
-      <url>http://repo1.maven.org/maven2</url>
+      <url>http://www.ibiblio.org/maven2</url>
     </repository>
     <repository>
       <id>servicemix-m2-repo</id>
       <name>Servicemix Maven2 Repository</name>
       <url>http://servicemix.org/m2-repo</url>
+    </repository>
+    <repository>
+      <id>activemq-tmp-repo</id>
+      <name>ActiveMQ Maven2 Temp Repository</name>
+      <url>http://people.apache.org/~chirino/incubator-activemq-4.0/maven2</url>
     </repository>
   </repositories>
   
@@ -412,22 +417,22 @@
       <dependency>
         <groupId>incubator-activemq</groupId>
         <artifactId>activeio-core</artifactId>
-        <version>3.0-beta2</version>
+        <version>3.0-beta3</version>
       </dependency>
       <dependency>
         <groupId>incubator-activemq</groupId>
         <artifactId>activemq-core</artifactId>
-        <version>4.0-SNAPSHOT</version>
+        <version>4.0</version>
       </dependency>
       <dependency>
         <groupId>incubator-activemq</groupId>
         <artifactId>activemq-ra</artifactId>
-        <version>4.0-SNAPSHOT</version>
+        <version>4.0</version>
       </dependency>
       <dependency>
         <groupId>incubator-activemq</groupId>
         <artifactId>activemq-web</artifactId>
-        <version>4.0-SNAPSHOT</version>
+        <version>4.0</version>
       </dependency>
       <dependency>
       <groupId>jivesoftware</groupId>
@@ -1516,7 +1521,12 @@
       <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven--plugin</artifactId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <useFile>true</useFile>
                     <forkMode>once</forkMode>
