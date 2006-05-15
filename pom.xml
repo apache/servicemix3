@@ -1032,7 +1032,7 @@
       <dependency>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>jetty</artifactId>
-        <version>6.0.0beta10</version>
+        <version>6.0.0beta15</version>
       </dependency>
       <dependency>
         <groupId>jgroups</groupId>
