@@ -1,0 +1,21 @@
+<archetype>
+  <id>servicemix-se</id>
+  <sources>
+    <source>src/main/java/MyBootstrap.java</source>
+    <source>src/main/java/MyComponent.java</source>
+    <source>src/main/java/MyConsumerProcessor.java</source>
+    <source>src/main/java/MyDeployer.java</source>
+    <source>src/main/java/MyEndpoint.java</source>
+    <source>src/main/java/MyExternalEndpoint.java</source>
+    <source>src/main/java/MyLifeCycle.java</source>
+    <source>src/main/java/MyProviderProcessor.java</source>
+    <source>src/main/java/MyResolvedEndpoint.java</source>
+    <source>src/main/java/MySpringComponent.java</source>
+  </sources>
+  <testSources>
+    <source>src/test/java/MySpringComponentTest.java</source>
+  </testSources>
+  <testResources>
+    <resource>src/test/resources/spring.xml</resource>
+  </testResources>
+</archetype>
