@@ -15,8 +15,11 @@
  */
 package org.apache.servicemix.components.http;
 
-import org.apache.servicemix.components.util.MarshalerSupport;
-import org.apache.servicemix.jbi.jaxp.StringSource;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
@@ -29,9 +32,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Iterator;
+import org.apache.servicemix.components.util.MarshalerSupport;
+import org.apache.servicemix.jbi.jaxp.StringSource;
 
 /**
  * A class which marshalls a HTTP request to a NMS message
@@ -40,6 +42,8 @@ import java.util.Iterator;
  */
 public class HttpMarshaler extends MarshalerSupport {
 
+    public static final String CGI_HEADERS = "cgi.headers";
+    
     public static final String AUTH_TYPE = "AUTH_TYPE";
     public static final String CONTENT_LENGTH = "CONTENT_LENGTH";
     public static final String CONTENT_TYPE = "CONTENT_TYPE";
@@ -62,9 +66,33 @@ public class HttpMarshaler extends MarshalerSupport {
     private String contentType = "text/xml";
 
     public void toNMS(MessageExchange exchange, NormalizedMessage inMessage, HttpServletRequest request) throws IOException, MessagingException {
-        addNmsProperties(exchange, request);
+        addNmsProperties(inMessage, request);
         String method = request.getMethod();
         if (method != null && method.equalsIgnoreCase("POST")) {
+            /*
+            Source src = null;
+            try {
+                if (request.getContentType() != null) {
+                    String charset = new MimeType(request.getContentType()).getParameter("charset");
+                    if (charset != null) {
+                        XMLStreamReader xr = XMLInputFactory.newInstance().createXMLStreamReader(request.getInputStream(), charset);
+                        src = new StaxSource(xr);
+                    }
+                }
+                if (src == null) {
+                    XMLStreamReader xr = XMLInputFactory.newInstance().createXMLStreamReader(request.getInputStream());
+                    src = new StaxSource(xr);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                src = getTransformer().toDOMSource(src);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            inMessage.setContent(src);
+            */
             inMessage.setContent(new StreamSource(request.getInputStream()));
         }
         else {
@@ -99,29 +127,31 @@ public class HttpMarshaler extends MarshalerSupport {
 
     // Implementation methods
     // -------------------------------------------------------------------------
-    protected void addNmsProperties(MessageExchange exchange, HttpServletRequest request) {
+    protected void addNmsProperties(NormalizedMessage message, HttpServletRequest request) {
         Enumeration enumeration = request.getHeaderNames();
         while (enumeration.hasMoreElements()) {
             String name = (String) enumeration.nextElement();
             String value = request.getHeader(name);
-            exchange.setProperty(name, value);
+            message.setProperty(name, value);  
         }
-        exchange.setProperty(AUTH_TYPE, request.getAuthType());
-        exchange.setProperty(CONTENT_LENGTH, String.valueOf(request.getContentLength()));
-        exchange.setProperty(CONTENT_TYPE, request.getContentType());
-        exchange.setProperty(DOCUMENT_ROOT, request.getRealPath("/"));
-        exchange.setProperty(PATH_INFO, request.getPathInfo());
-        exchange.setProperty(PATH_TRANSLATED, request.getPathTranslated());
-        exchange.setProperty(QUERY_STRING, request.getQueryString());
-        exchange.setProperty(REMOTE_ADDRESS, request.getRemoteAddr());
-        exchange.setProperty(REMOTE_HOST, request.getRemoteHost());
-        exchange.setProperty(REMOTE_USER, request.getRemoteUser());
-        exchange.setProperty(REQUEST_METHOD, request.getMethod());
-        exchange.setProperty(REQUEST_URI, request.getRequestURL());
-        exchange.setProperty(SCRIPT_NAME, request.getServletPath());
-        exchange.setProperty(SERVER_NAME, request.getServerName());
-        exchange.setProperty(SERVER_PORT, String.valueOf(request.getServerPort()));
-        exchange.setProperty(SERVER_PROTOCOL, request.getProtocol());
+        Map cgi = new HashMap();
+        cgi.put(AUTH_TYPE, request.getAuthType());
+        cgi.put(CONTENT_LENGTH, String.valueOf(request.getContentLength()));
+        cgi.put(CONTENT_TYPE, request.getContentType());
+        cgi.put(DOCUMENT_ROOT, request.getRealPath("/"));
+        cgi.put(PATH_INFO, request.getPathInfo());
+        cgi.put(PATH_TRANSLATED, request.getPathTranslated());
+        cgi.put(QUERY_STRING, request.getQueryString());
+        cgi.put(REMOTE_ADDRESS, request.getRemoteAddr());
+        cgi.put(REMOTE_HOST, request.getRemoteHost());
+        cgi.put(REMOTE_USER, request.getRemoteUser());
+        cgi.put(REQUEST_METHOD, request.getMethod());
+        cgi.put(REQUEST_URI, request.getRequestURL());
+        cgi.put(SCRIPT_NAME, request.getServletPath());
+        cgi.put(SERVER_NAME, request.getServerName());
+        cgi.put(SERVER_PORT, String.valueOf(request.getServerPort()));
+        cgi.put(SERVER_PROTOCOL, request.getProtocol());
+        message.setProperty(CGI_HEADERS, cgi);
     }
     
     protected void addHttpHeaders(HttpServletResponse response, NormalizedMessage normalizedMessage) {

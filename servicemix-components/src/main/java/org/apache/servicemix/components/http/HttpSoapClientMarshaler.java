@@ -80,7 +80,7 @@ public class HttpSoapClientMarshaler extends HttpClientMarshaler {
     }
 
     public void fromNMS(PostMethod method, MessageExchange exchange, NormalizedMessage normalizedMessage) throws Exception {
-        addHttpHeaders(method, exchange);
+        addHttpHeaders(method, normalizedMessage);
         Node node = sourceTransformer.toDOMNode(normalizedMessage.getContent());
         Element elem;
         if (node instanceof Document) {

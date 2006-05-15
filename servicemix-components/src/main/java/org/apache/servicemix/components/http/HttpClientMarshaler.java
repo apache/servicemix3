@@ -40,7 +40,8 @@ public class HttpClientMarshaler {
 
     protected SourceTransformer sourceTransformer;
     private boolean streaming;
-    
+    private String contentType = "text/xml";
+
     public HttpClientMarshaler() {
         this(false);
     }
@@ -48,6 +49,34 @@ public class HttpClientMarshaler {
     public HttpClientMarshaler(boolean streaming) {
         this.sourceTransformer = new SourceTransformer();
         this.streaming = streaming;
+    }
+
+    /**
+     * @return the streaming
+     */
+    public boolean isStreaming() {
+        return streaming;
+    }
+
+    /**
+     * @param streaming the streaming to set
+     */
+    public void setStreaming(boolean streaming) {
+        this.streaming = streaming;
+    }
+
+    /**
+     * @return the contentType
+     */
+    public String getContentType() {
+        return contentType;
+    }
+
+    /**
+     * @param contentType the contentType to set
+     */
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 
     public void toNMS(NormalizedMessage normalizedMessage, HttpMethod method) throws Exception {
@@ -60,7 +89,10 @@ public class HttpClientMarshaler {
     }
 
     public void fromNMS(PostMethod method, MessageExchange exchange, NormalizedMessage normalizedMessage) throws Exception, TransformerException {
-        addHttpHeaders(method, exchange);
+        addHttpHeaders(method, normalizedMessage);
+        if (method.getRequestHeader("Content-Type") == null) {
+            method.setRequestHeader("Content-Type", contentType);
+        }
         if (streaming) {
             method.setContentChunked(true);
             Source src = normalizedMessage.getContent();
@@ -78,11 +110,11 @@ public class HttpClientMarshaler {
         }
     }
 
-    protected void addHttpHeaders(HttpMethod method, MessageExchange exchange) {
-        for (Iterator iter = exchange.getPropertyNames().iterator(); iter.hasNext();) {
+    protected void addHttpHeaders(HttpMethod method, NormalizedMessage message) {
+        for (Iterator iter = message.getPropertyNames().iterator(); iter.hasNext();) {
             String name = (String) iter.next();
-            Object value = exchange.getProperty(name);
-            if (shouldIncludeHeader(exchange, name, value)) {
+            Object value = message.getProperty(name);
+            if (shouldIncludeHeader(message, name, value)) {
                 method.addRequestHeader(name, value.toString());
             }
         }
@@ -98,22 +130,14 @@ public class HttpClientMarshaler {
         }
     }
 
-
     /**
      * Decides whether or not the given header should be included in the JMS message.
      * By default this includes all suitable typed values
      */
-    protected boolean shouldIncludeHeader(MessageExchange exchange, String name, Object value) {
+    protected boolean shouldIncludeHeader(NormalizedMessage normalizedMessage, String name, Object value) {
         return value instanceof String && 
                 !"Content-Length".equalsIgnoreCase(name) &&
                 !"Content-Type".equalsIgnoreCase(name);
     }
 
-    public boolean isStreaming() {
-        return streaming;
-    }
-
-    public void setStreaming(boolean streaming) {
-        this.streaming = streaming;
-    }
 }

@@ -18,6 +18,7 @@ package org.apache.servicemix.components.http;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -48,8 +49,10 @@ import org.w3c.dom.traversal.NodeIterator;
 
 public class HttpSoapAndSaajTest extends TestCase {
     
-    private static final int PORT = 7012;
-    private static final int PORT_WS = 7013;
+    private static final int PORT_1 = 7012;
+    private static final int PORT_2 = 7012;
+    private static final int PORT_WS_1 = 7014;
+    private static final int PORT_WS_2 = 7014;
 
     protected JBIContainer container;
 	protected BrokerService broker;
@@ -82,20 +85,20 @@ public class HttpSoapAndSaajTest extends TestCase {
         ActivationSpec as = new ActivationSpec();
         as.setId("saaj");
         SaajBinding saaj = new SaajBinding();
-        saaj.setSoapEndpoint(new URLEndpoint("http://localhost:" + PORT_WS)); 
+        saaj.setSoapEndpoint(new URLEndpoint("http://localhost:" + PORT_WS_1)); 
         as.setComponent(saaj);
         as.setService(new QName("saaj"));
         container.activateComponent(as);
         
         as = new ActivationSpec();
         as.setId("xfireBinding");
-        as.setComponent(new HttpSoapConnector(null, PORT, true));
+        as.setComponent(new HttpSoapConnector(null, PORT_2, true));
         as.setDestinationService(new QName("saaj"));
         container.activateComponent(as);
         
         as = new ActivationSpec();
         as.setId("webservice");
-        as.setComponent(new HttpConnector(null, PORT_WS));
+        as.setComponent(new HttpConnector(null, PORT_WS_2));
         as.setDestinationService(new QName("mock"));
         container.activateComponent(as);
         
@@ -107,9 +110,10 @@ public class HttpSoapAndSaajTest extends TestCase {
         as.setService(new QName("mock"));
         container.activateComponent(as);
 
-        URLConnection connection = new URL("http://localhost:" + PORT).openConnection();
+        URLConnection connection = new URL("http://localhost:" + PORT_1).openConnection();
         connection.setDoOutput(true);
         connection.setDoInput(true);
+        ((HttpURLConnection) connection).setRequestProperty("Content-Type", "text/xml; charset=utf-8;");
         OutputStream os = connection.getOutputStream();
         // Post the request file.
         InputStream fis = getClass().getResourceAsStream("soap-request.xml");

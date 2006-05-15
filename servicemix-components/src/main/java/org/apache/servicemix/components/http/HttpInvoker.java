@@ -52,9 +52,6 @@ public class HttpInvoker extends TransformComponentSupport implements MessageExc
         PostMethod method = new PostMethod(url);
         try {
             marshaler.fromNMS(method, exchange, in);
-            if (method.getRequestHeader("Content-Type") == null) {
-                method.setRequestHeader("Content-Type", "text/html; charset=UTF-8");
-            }
             if (url != null) {
                 hostConfiguration.setHost(new URI(url, false));
             }
