@@ -35,11 +35,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.geronimo.specs</groupId>
-      <artifactId>geronimo-commonj_1.1_spec</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
       <groupId>incubator-activemq</groupId>
       <artifactId>activeio-core</artifactId>
       <optional>true</optional>
