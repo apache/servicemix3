@@ -214,13 +214,14 @@ public class SaajMarshaler {
      * Decides whether or not the given header should be included in the SAAJ message as a MimeHeader
      */
     protected boolean shouldIncludeHeader(NormalizedMessage normalizedMessage, String name, Object value) {
+        // TODO: remove http headers that may come from a consumer http BC
         return true;
     }
 
     /**
      * Decides whether or not the given property should be included in the SAAJ message as a property
      */
-    private boolean shouldIncludeProperty(NormalizedMessage normalizedMessage, String name, Object value) {
+    protected boolean shouldIncludeProperty(NormalizedMessage normalizedMessage, String name, Object value) {
         return true;
     }
 
