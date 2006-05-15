@@ -32,6 +32,6 @@
   <name>ServiceMix :: Maven2 :: Plugins</name>
   <packaging>pom</packaging>
   <modules>
-    <module>maven2-jbi-plugin</module>
+    <module>jbi-maven-plugin</module>
   </modules>
 </project>
