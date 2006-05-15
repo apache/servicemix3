@@ -22,5 +22,7 @@ public interface TimerManager {
     Timer schedule(TimerListener listener, long delay);
     
     Timer schedule(TimerListener listener, Date date);
+    
+    void stop();
 
 }

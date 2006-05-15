@@ -47,6 +47,10 @@ public class TimerManagerImpl implements TimerManager {
         return tt;
     }
     
+    public void stop() {
+        timer.cancel();
+    }
+    
     protected static class TimerImpl extends TimerTask implements Timer {
 
         private TimerListener timerListener;
