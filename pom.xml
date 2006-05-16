@@ -212,6 +212,8 @@
     <module>servicemix-web</module>
     <module>servicemix-eip</module>
     <module>servicemix-assembly</module>
+    <module>servicemix-beanflow</module>
+    <module>tooling</module>
   </modules>
   
   <properties>
