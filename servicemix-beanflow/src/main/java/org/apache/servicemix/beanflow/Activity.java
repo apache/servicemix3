@@ -19,13 +19,14 @@ package org.apache.servicemix.beanflow;
 import java.util.Timer;
 
 /**
- * Represents an activity (step) in a workflow written typically using regular Java code.
- * An activity typically monitors various {@link State} objects and takes action when things change.
- * Activities are designed to be thread safe and are intended for use in highly concurrent
- * or distributed applications so that the state can be changed from any thread.
- * <br>
- * The Processing of notifications of state changes should generally be quick; if lots of work
- * is required when some state changes it is advisable to use a thread pool to do the work.
+ * Represents an activity (step) in a workflow written typically using regular
+ * Java code. An activity typically monitors various {@link State} objects and
+ * takes action when things change. Activities are designed to be thread safe
+ * and are intended for use in highly concurrent or distributed applications so
+ * that the state can be changed from any thread. <br>
+ * The Processing of notifications of state changes should generally be quick;
+ * if lots of work is required when some state changes it is advisable to use a
+ * thread pool to do the work.
  * 
  * @version $Revision: $
  */
@@ -41,17 +42,18 @@ public interface Activity {
     };
 
     /**
-     * Starts the activity. Once it is started it can take an arbitrary amount of time to complete.
-     * The execution of an activity is usually asynchronous in nature (though its not mandatory)
+     * Starts the activity. Once it is started it can take an arbitrary amount
+     * of time to complete. The execution of an activity is usually asynchronous
+     * in nature (though its not mandatory)
      */
     public void start();
 
     /**
      * For activities that support timeout based operation this helper method
-     * starts the activity and registers the timeout 
+     * starts the activity and registers the timeout
      */
     public void startWithTimeout(Timer timer, long timeout);
-    
+
     /**
      * Stops the activity, setting the status to {@link Stopped}
      */
@@ -77,7 +79,7 @@ public interface Activity {
      * Returns true if the activity has failed to complete succesfully
      */
     public boolean isFailed();
-    
+
     /**
      * If this activity has failed then return a reason for the failure
      */

@@ -56,12 +56,12 @@ public class JoinAllTest extends FlowTestSupport {
         child1.stop();
         assertFlowFailed(flow);
     }
-    
+
     public void testJoinAllTerminatesAsSoonAsOneChildFails() throws Exception {
         JoinAll flow = new JoinAll(child1, child2, child3);
         flow.setFailFast(true);
         startFlow(flow, timeout);
-        
+
         child1.fail("Test case error simulation");
         assertFlowFailed(flow);
     }
@@ -78,9 +78,9 @@ public class JoinAllTest extends FlowTestSupport {
 
         // lets force a timeout failure
         Thread.sleep(timeout * 2);
-        
+
         assertFlowFailed(flow);
-        
+
         // lets check that completing the final child flow keeps the join failed
         child3.stop();
         assertFlowFailed(flow);

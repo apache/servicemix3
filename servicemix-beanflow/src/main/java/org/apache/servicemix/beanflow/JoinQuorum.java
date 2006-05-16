@@ -19,7 +19,8 @@ import java.util.List;
 
 /**
  * A activity which completes when quorum of the child activities are completed
- * successfully (or there are too many child activities failed to achieve quorum).
+ * successfully (or there are too many child activities failed to achieve
+ * quorum).
  * 
  * @version $Revision: $
  */

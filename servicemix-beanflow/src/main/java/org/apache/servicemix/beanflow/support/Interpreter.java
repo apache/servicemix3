@@ -18,7 +18,7 @@ package org.apache.servicemix.beanflow.support;
 import org.apache.servicemix.beanflow.Workflow;
 
 /**
- *
+ * 
  * @version $Revision: $
  */
 public interface Interpreter {

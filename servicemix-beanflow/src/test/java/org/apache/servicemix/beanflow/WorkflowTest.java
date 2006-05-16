@@ -15,29 +15,34 @@
  */
 package org.apache.servicemix.beanflow;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
- *
+ * 
  * @version $Revision: $
  */
-public class WorkflowTest extends FlowTestSupport  {
+public class WorkflowTest extends FlowTestSupport {
+
+    private static final Log log = LogFactory.getLog(WorkflowTest.class);
 
     public void testWorkflow() throws Exception {
         // START SNIPPET: workflow
         ExampleWorkflow workflow = new ExampleWorkflow();
         workflow.start();
-        
+
         // wait for user entry point
         Thread.sleep(2000);
-        
+
         workflow.userEntered("foo");
         assertFlowStarted(workflow);
-        
-        System.out.println("We are entering some valid input");
-        
+
+        log.info("We are entering some valid input");
+
         workflow.userEntered("foo@bar.com");
-        
+
         Thread.sleep(5000);
-        
+
         assertFlowStopped(workflow);
     }
 }

@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A useful base class for a activity which joins on the success of a collection of child activities.
+ * A useful base class for a activity which joins on the success of a collection
+ * of child activities.
  * 
  * @version $Revision: $
  */
@@ -80,7 +81,7 @@ public abstract class JoinSupport extends TimeoutActivity {
     @Override
     protected void doStart() {
         super.doStart();
-        
+
         // lets make sure that the child activities are started properly
         synchronized (children) {
             for (Activity child : children) {

@@ -16,10 +16,10 @@
 package org.apache.servicemix.beanflow;
 
 /**
- *
+ * 
  * @version $Revision: $
  */
-public class CustomJoinConditionTest extends FlowTestSupport  {
+public class CustomJoinConditionTest extends FlowTestSupport {
 
     public void testCustomJoinCondition() throws Exception {
         // START SNIPPET: join
@@ -32,17 +32,17 @@ public class CustomJoinConditionTest extends FlowTestSupport  {
         Activity activity = new JoinSupport(a, b, c) {
             @Override
             protected void onChildStateChange(int childCount, int stoppedCount, int failedCount) {
-                
+
                 if (a.isStopped() && (b.isStopped() || c.isStopped())) {
                     // lets stop the activity we're done
                     stop();
                 }
             }
         };
-        
+
         // lets start the activities
         activity.startWithTimeout(timer, timeout);
-        
+
         // now lets test things behave properly
         assertFlowStarted(activity);
 
@@ -52,7 +52,7 @@ public class CustomJoinConditionTest extends FlowTestSupport  {
         b.stop();
         assertFlowStopped(activity);
         // END SNIPPET: join
-        
+
         // lets check things are still fine when c completes
         c.stop();
         assertFlowStopped(activity);

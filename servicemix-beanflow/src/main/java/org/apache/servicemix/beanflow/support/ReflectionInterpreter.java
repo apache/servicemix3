@@ -20,7 +20,8 @@ import org.apache.servicemix.beanflow.Workflow;
 import java.lang.reflect.Method;
 
 /**
- * An interpreter strategy which uses reflection to map step names to method names.
+ * An interpreter strategy which uses reflection to map step names to method
+ * names.
  * 
  * @version $Revision: $
  */

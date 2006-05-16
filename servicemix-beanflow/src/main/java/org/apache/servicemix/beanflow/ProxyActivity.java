@@ -15,8 +15,6 @@
  */
 package org.apache.servicemix.beanflow;
 
-import org.apache.servicemix.beanflow.Activity.Transitions;
-
 import java.util.Timer;
 
 /**
@@ -40,7 +38,7 @@ public class ProxyActivity implements Activity {
     public String getFailedReason() {
         return getProxy().getFailedReason();
     }
-    
+
     public Throwable getFailedException() {
         return getProxy().getFailedException();
     }

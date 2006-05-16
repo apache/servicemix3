@@ -26,8 +26,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * An activity which implements a more traditional workflow model where each method
- * represents a transition.
+ * An activity which implements a more traditional workflow model where each
+ * method represents a transition.
  * 
  * @version $Revision: $
  */
@@ -97,7 +97,7 @@ public class Workflow extends JoinSupport {
             activity.start();
         }
     }
-    
+
     /**
      * Forks one or more child activities
      */
@@ -109,8 +109,8 @@ public class Workflow extends JoinSupport {
     }
 
     /**
-     * Creates a join such that when all of the activities are completed the given
-     * step will be executed
+     * Creates a join such that when all of the activities are completed the
+     * given step will be executed
      */
     public void joinAll(final String joinedStep, long timeout, Activity... activities) {
         JoinAll joinFlow = new JoinAll(activities);

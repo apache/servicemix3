@@ -21,13 +21,13 @@ package org.apache.servicemix.beanflow.support;
  * @version $Revision: $
  */
 public interface Notifier extends Runnable {
-    
+
     /**
      * Adds a new listener
      */
     public void addRunnable(Runnable listener);
 
-    /** 
+    /**
      * removes a listener
      */
     public void removeRunnable(Runnable listener);

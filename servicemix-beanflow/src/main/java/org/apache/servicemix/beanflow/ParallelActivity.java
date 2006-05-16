@@ -18,7 +18,9 @@ package org.apache.servicemix.beanflow;
 import org.apache.servicemix.beanflow.support.CallablesFactory;
 import org.apache.servicemix.beanflow.support.FindCallableMethods;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
@@ -35,16 +37,17 @@ public class ParallelActivity<T> extends ProxyActivity {
     private AtomicBoolean started = new AtomicBoolean();
 
     /**
-     * A helper method to create a new {@link ParallelActivity} which invokes a number of methods
-     * on a POJO in parallel and then joins on them all completing
+     * A helper method to create a new {@link ParallelActivity} which invokes a
+     * number of methods on a POJO in parallel and then joins on them all
+     * completing
      */
     public static ParallelActivity newParallelMethodActivity(Executor executor, Object bean) {
         return newParallelMethodActivity(new JoinAll(), executor, bean);
     }
 
     /**
-     * A helper method to create a new {@link ParallelActivity} which invokes a number of methods
-     * on a POJO in parallel and then performs a custom join
+     * A helper method to create a new {@link ParallelActivity} which invokes a
+     * number of methods on a POJO in parallel and then performs a custom join
      */
     @SuppressWarnings("unchecked")
     public static ParallelActivity newParallelMethodActivity(JoinSupport join, Executor executor, Object bean) {

@@ -28,10 +28,10 @@ public class ParallelActivityTest extends FlowTestSupport {
 
     @SuppressWarnings("unchecked")
     public void test() throws Exception {
-        
+
         // START SNIPPET: example
         ExampleParallelBean parallelBean = new ExampleParallelBean();
-        ParallelActivity activity =  ParallelActivity.newParallelMethodActivity(executor, parallelBean);
+        ParallelActivity activity = ParallelActivity.newParallelMethodActivity(executor, parallelBean);
         activity.startWithTimeout(timer, -1);
         // END SNIPPET: example
 

@@ -23,18 +23,19 @@ import org.apache.servicemix.beanflow.Activity.Transitions;
  */
 public class TimeoutFlowTest extends FlowTestSupport {
     protected TimeoutActivity flow = new TimeoutActivity();
-    
+
     public void testFlowStopsSuccessfully() throws Exception {
         flow.getState().set(Transitions.Stopped);
         assertFlowStopped(flow);
-        
-        // lets sleep so that the timer can go off now to check we don't fail after we've stopped
-        Thread.sleep(timeout  * 4);
+
+        // lets sleep so that the timer can go off now to check we don't fail
+        // after we've stopped
+        Thread.sleep(timeout * 4);
         assertFlowStopped(flow);
     }
 
     public void testFlowTimesOutAndFails() throws Exception {
-        Thread.sleep(timeout  * 4);
+        Thread.sleep(timeout * 4);
         assertFlowFailed(flow);
     }
 

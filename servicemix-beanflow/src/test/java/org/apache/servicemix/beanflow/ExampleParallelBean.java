@@ -15,10 +15,10 @@
  */
 package org.apache.servicemix.beanflow;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.beanflow.annotations.Parallel;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -31,6 +31,7 @@ import junit.framework.Assert;
  */
 // START SNIPPET: workflow
 public class ExampleParallelBean {
+    private static final Log log = LogFactory.getLog(ExampleParallelBean.class);
 
     private CountDownLatch latch = new CountDownLatch(3);
 
@@ -40,19 +41,19 @@ public class ExampleParallelBean {
 
     @Parallel
     public void methodOne() {
-        System.out.println("Called method one");
+        log.info("Called method one");
         latch.countDown();
     }
 
     @Parallel
     public void methodTwo() {
-        System.out.println("Called method two");
+        log.info("Called method two");
         latch.countDown();
     }
 
     @Parallel
     public void methodThree() {
-        System.out.println("Called method three");
+        log.info("Called method three");
         latch.countDown();
     }
 

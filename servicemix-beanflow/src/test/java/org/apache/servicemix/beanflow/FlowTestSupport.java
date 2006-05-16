@@ -15,12 +15,12 @@
  */
 package org.apache.servicemix.beanflow;
 
-import org.apache.commons.logging.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.beanflow.Activity.Transitions;
 
 import java.util.Timer;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 /**

@@ -18,8 +18,8 @@ package org.apache.servicemix.beanflow;
 
 /**
  * Represents a piece of state which can be accessed in a multi threaded way
- * rather like {@link java.util.concurrent.atomic.AtomicReference} but which also 
- * supports the use of listeners to be notified when the state changes.
+ * rather like {@link java.util.concurrent.atomic.AtomicReference} but which
+ * also supports the use of listeners to be notified when the state changes.
  * 
  * @version $Revision: $
  */

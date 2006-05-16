@@ -24,7 +24,7 @@ import java.util.concurrent.Callable;
  * @version $Revision: $
  */
 public interface CallablesFactory<T> {
-    
+
     public List<Callable<T>> createCallables();
 
 }

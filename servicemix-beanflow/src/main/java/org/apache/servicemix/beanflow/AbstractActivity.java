@@ -21,10 +21,11 @@ import org.apache.servicemix.beanflow.support.Introspector;
 import java.util.Iterator;
 
 /**
- * A useful base class which allows simple bean activities to be written easily. When
- * this activity is started it will listen to all the state values which can be
- * found by the introspector (such as all the fields by default) calling the
- * {@link run} method when the state changes so that the activity can be evaluted.
+ * A useful base class which allows simple bean activities to be written easily.
+ * When this activity is started it will listen to all the state values which
+ * can be found by the introspector (such as all the fields by default) calling
+ * the {@link run} method when the state changes so that the activity can be
+ * evaluted.
  * 
  * @version $Revision: $
  */
@@ -67,7 +68,8 @@ public abstract class AbstractActivity implements Runnable, Activity {
     }
 
     /**
-     * Stops the activity with a failed state with the given reason and exception.
+     * Stops the activity with a failed state with the given reason and
+     * exception.
      */
     public void fail(String message, Throwable e) {
         fail(message);

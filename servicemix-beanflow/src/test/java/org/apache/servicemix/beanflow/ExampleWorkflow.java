@@ -15,6 +15,9 @@
  */
 package org.apache.servicemix.beanflow;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * An example workflow
  * 
@@ -22,6 +25,7 @@ package org.apache.servicemix.beanflow;
  */
 // START SNIPPET: workflow
 public class ExampleWorkflow extends Workflow {
+    private static final Log log = LogFactory.getLog(ExampleWorkflow.class);
 
     private int loopCount;
     private long timeout = 500;
@@ -32,9 +36,9 @@ public class ExampleWorkflow extends Workflow {
 
     // This is the first step of a workflow by default
     // but you can start at any point by passing in a parameter
-    // to the Workflow constructor 
+    // to the Workflow constructor
     public void startStep() {
-        // lets use an explicit goTo() to tell the workflow 
+        // lets use an explicit goTo() to tell the workflow
         // which step to go to next; though we can just return Strings
         goTo("loopStep");
     }
@@ -47,41 +51,41 @@ public class ExampleWorkflow extends Workflow {
         // lets keep looping
         return "loopStep";
     }
-    
+
     public void waitForUserInputStep() {
-        // we are going to park here until a user 
+        // we are going to park here until a user
         // enters a valid email address
         // so lets park the workflow engine
     }
-    
+
     public String afterEnteredEmailStep() {
-        // we are going to park here until a user 
+        // we are going to park here until a user
         // enters a valid email address
-        System.out.println("User entered email address: " + userEmailAddress);
+        log.info("User entered email address: " + userEmailAddress);
         return "forkStep";
     }
-    
+
     public void forkStep() {
         // lets fork some child flows
         TimeoutActivity a = new TimeoutActivity();
         TimeoutActivity b = new TimeoutActivity();
         TimeoutActivity c = new TimeoutActivity();
-        
-        System.out.println("Forking off processes a, b, c");
+
+        log.info("Forking off processes a, b, c");
         fork(a, b, c);
-        
+
         // now lets add some joins
-        joinAll("aCompletedStep",timeout, a);
+        joinAll("aCompletedStep", timeout, a);
         joinAll("abcCompletedStep", timeout, a, b, c);
     }
-    
+
     public void aCompletedStep() {
-        System.out.println("child flow A completed!");
+        log.info("child flow A completed!");
     }
-    
+
     public String abcCompletedStep() {
-        System.out.println("child flows A, B and C completed!");
-        
+        log.info("child flows A, B and C completed!");
+
         // we are completely done now
         return "stop";
     }
@@ -91,8 +95,8 @@ public class ExampleWorkflow extends Workflow {
     public void userEntered(String emailAddress) {
         if (emailAddress != null && emailAddress.indexOf("@") > 0) {
             this.userEmailAddress = emailAddress;
-            
-            System.out.println("Lets re-start the suspended workflow");
+
+            log.info("Lets re-start the suspended workflow");
             goTo("afterEnteredEmailStep");
         }
     }

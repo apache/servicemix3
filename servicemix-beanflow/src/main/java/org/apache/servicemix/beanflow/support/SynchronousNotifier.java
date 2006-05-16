@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A default {@link Notifier} which just performs the notifications synchronously
- * as the state changes.
+ * A default {@link Notifier} which just performs the notifications
+ * synchronously as the state changes.
  * 
  * @version $Revision: $
  */

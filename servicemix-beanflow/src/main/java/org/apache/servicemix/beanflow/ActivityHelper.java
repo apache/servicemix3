@@ -23,7 +23,7 @@ import java.util.List;
  * @version $Revision: $
  */
 public class ActivityHelper {
-    
+
     /**
      * Ensures that all the activities are started
      */
@@ -32,7 +32,7 @@ public class ActivityHelper {
             activity.start();
         }
     }
-    
+
     /**
      * Ensures that all the activities are started
      */

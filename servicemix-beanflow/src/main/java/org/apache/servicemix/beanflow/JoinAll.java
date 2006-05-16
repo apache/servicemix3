@@ -44,10 +44,10 @@ public class JoinAll extends JoinSupport {
     }
 
     /**
-     * If fail fast mode is enabled then this activity fails as soon as a child activity
-     * fails. The default is to wait for all the child activities to complete
-     * irrespective of whether they stop succesfully or fail before completing
-     * this activity
+     * If fail fast mode is enabled then this activity fails as soon as a child
+     * activity fails. The default is to wait for all the child activities to
+     * complete irrespective of whether they stop succesfully or fail before
+     * completing this activity
      */
     public void setFailFast(boolean failFast) {
         this.failFast = failFast;

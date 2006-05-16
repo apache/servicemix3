@@ -34,7 +34,7 @@ public class JoinQuorumTest extends FlowTestSupport {
 
         child2.stop();
         assertFlowStopped(flow);
-        
+
         // lets check things are still fine when the quorum is complete
         child3.stop();
         assertFlowStopped(flow);
@@ -46,7 +46,7 @@ public class JoinQuorumTest extends FlowTestSupport {
 
         child3.fail("Test case error simulation");
         assertFlowStarted(flow);
-        
+
         child2.fail("Test case error simulation");
         assertFlowFailed(flow);
     }
