@@ -46,7 +46,7 @@
   
   <issueManagement>
     <system>jira</system>
-    <url>http://jira.logicblaze.com/browse/SM</url>
+    <url>http://issues.apache.org/activemq/browse/SM</url>
   </issueManagement>
   
   <ciManagement>
@@ -1497,8 +1497,8 @@
   
   <distributionManagement>
     <site>
-      <id>servicemix-website</id>
-      <url>scp://servicemix.org/home/projects/xbean/public_html/maven/</url>
+      <id>goopen.org</id>
+      <url>scp://goopen.org/home/projects/servicemix/public_html/maven/</url>
     </site>
   </distributionManagement>
   
