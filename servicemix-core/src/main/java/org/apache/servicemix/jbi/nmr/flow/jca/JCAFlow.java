@@ -54,8 +54,6 @@ import org.apache.activemq.command.RemoveInfo;
 import org.apache.activemq.ra.ActiveMQActivationSpec;
 import org.apache.activemq.ra.ActiveMQManagedConnectionFactory;
 import org.apache.activemq.ra.ActiveMQResourceAdapter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.geronimo.connector.BootstrapContextImpl;
 import org.apache.geronimo.connector.outbound.connectionmanagerconfig.SinglePool;
 import org.apache.geronimo.connector.outbound.connectionmanagerconfig.XATransactions;
@@ -90,7 +88,6 @@ import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
  */
 public class JCAFlow extends AbstractFlow implements MessageListener {
     
-    private static final Log log = LogFactory.getLog(JCAFlow.class);
     private static final String INBOUND_PREFIX = "org.apache.servicemix.jca.";
     private String jmsURL = "tcp://localhost:61616";
     private String userName;

@@ -26,8 +26,6 @@ import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.ObjectName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.event.ComponentAdapter;
 import org.apache.servicemix.jbi.event.ComponentEvent;
 import org.apache.servicemix.jbi.event.ComponentListener;
@@ -50,7 +48,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
  * @version $Revision$
  */
 public class SedaFlow extends AbstractFlow {
-    private static final Log log = LogFactory.getLog(SedaFlow.class);
+
     protected Map queueMap = new ConcurrentHashMap();
     protected int capacity = 100;
     protected AtomicBoolean started = new AtomicBoolean(false);

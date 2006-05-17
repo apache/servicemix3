@@ -47,7 +47,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.locks.ReentrantReadWriteLo
  */
 public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
     
-    private static final Log log = LogFactory.getLog(AbstractFlow.class);
+    protected final Log log = LogFactory.getLog(getClass());
     
     protected Broker broker;
     private ReadWriteLock lock = new ReentrantReadWriteLock();

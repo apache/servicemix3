@@ -45,8 +45,6 @@ import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ConsumerId;
 import org.apache.activemq.command.ConsumerInfo;
 import org.apache.activemq.command.RemoveInfo;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.jbi.event.ComponentAdapter;
 import org.apache.servicemix.jbi.event.ComponentEvent;
@@ -71,8 +69,6 @@ import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
  * @version $Revision$
  */
 public class JMSFlow extends AbstractFlow implements MessageListener {
-
-    private static final Log log = LogFactory.getLog(JMSFlow.class);
 
     private static final String INBOUND_PREFIX = "org.apache.servicemix.jms.";
 
