@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+	   xmlns:jsr181="http://servicemix.apache.org/jsr181/1.0"
+	   xmlns:http="http://servicemix.apache.org/http/1.0"
+	   xmlns:eip="http://servicemix.apache.org/eip/1.0"
+	   xmlns:jms="http://servicemix.apache.org/jms/1.0"
+	   xmlns:amq="http://activemq.org/config/1.0"
+	   xmlns:test="http://servicemix.org/test">
+	
+	<sm:container id="jbi" embedded="true" depends-on="broker">
+		<sm:activationSpecs>
+
+			<sm:activationSpec id="echo">
+				<sm:component>
+					<jsr181:component>
+						<jsr181:endpoints>
+							<jsr181:endpoint 
+								pojoClass="org.apache.servicemix.itests.beans.Echo"
+								service="test:Hello" 
+								endpoint="endpoint" />
+						</jsr181:endpoints>
+					</jsr181:component>
+				</sm:component>
+			</sm:activationSpec>
+			
+			<sm:activationSpec>
+			    <sm:component>
+			        <jms:component>
+			            <jms:endpoints>
+			                <jms:endpoint 
+								service="test:Jms"
+								endpoint="endpoint" 
+								role="provider" 
+								soap="false"
+                                destinationStyle="queue"
+                                jmsProviderDestinationName="queue/A"
+                                connectionFactory="#connectionFactory" />
+			            </jms:endpoints>
+			        </jms:component>
+			    </sm:component>
+			</sm:activationSpec>
+
+			<sm:activationSpec id="routing-slip">
+				<sm:component>
+					<eip:component>
+						<eip:endpoints>
+							<eip:static-routing-slip
+								service="test:RoutingSlip" 
+								endpoint="endpoint">
+							  <eip:targets>
+							    <eip:exchange-target service="test:Hello" />
+							    <eip:exchange-target service="test:Jms" />
+							  </eip:targets>
+							</eip:static-routing-slip>
+						</eip:endpoints>
+					</eip:component>
+				</sm:component>
+			</sm:activationSpec>
+
+			<sm:activationSpec id="hello-http">
+				<sm:component>
+					<http:component>
+						<http:endpoints>
+							<http:endpoint 
+								service="test:HelloHttp"
+								endpoint="endpoint" 
+								targetService="test:RoutingSlip"
+								role="consumer" 
+								locationURI="http://localhost:8192/Service/"
+								defaultMep="http://www.w3.org/2004/08/wsdl/in-out" 
+								soap="true" />
+						</http:endpoints>
+					</http:component>
+				</sm:component>
+			</sm:activationSpec>
+
+		</sm:activationSpecs>
+	</sm:container>
+
+    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://localhost:61216" />
+    </bean>
+  
+    <amq:broker id="broker" persistent="false">
+        <amq:transportConnectors>
+          <amq:transportConnector uri="tcp://localhost:61216" />
+        </amq:transportConnectors>
+    </amq:broker>
+    
+    <!-- Simulate the target jms endpoint -->
+    <sm:container id="external" embedded="true" useMBeanServer="false">
+        <sm:activationSpecs>
+            <sm:activationSpec id="jms">
+                <sm:component>
+                    <jms:component>
+                        <jms:endpoints>
+                            <jms:endpoint 
+                                service="test:ExternalJms"
+                                endpoint="endpoint"
+                                targetService="test:ExternalEcho" 
+								role="consumer" 
+								soap="false"
+                                defaultMep="http://www.w3.org/2004/08/wsdl/in-out"
+                                destinationStyle="queue"
+                                jmsProviderDestinationName="queue/A"
+                                connectionFactory="#connectionFactory" />
+                        </jms:endpoints>
+                    </jms:component>
+                </sm:component>
+            </sm:activationSpec>
+            <sm:activationSpec id="echo" service="test:ExternalEcho">
+                <sm:component>
+                    <bean class="org.apache.servicemix.components.util.EchoComponent" />
+                </sm:component>
+            </sm:activationSpec>
+        </sm:activationSpecs>
+    </sm:container>
+
+</beans>

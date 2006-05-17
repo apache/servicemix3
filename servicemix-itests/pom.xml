@@ -59,6 +59,11 @@
       <artifactId>servicemix-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-eip</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
