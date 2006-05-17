@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+	   xmlns:jsr181="http://servicemix.apache.org/jsr181/1.0"
+	   xmlns:http="http://servicemix.apache.org/http/1.0"
+	   xmlns:test="http://servicemix.org/test/">
+	
+	<sm:container id="jbi" embedded="true" >
+		<sm:activationSpecs>
+
+			<sm:activationSpec>
+				<sm:component>
+					<jsr181:component>
+						<jsr181:endpoints>
+							<jsr181:endpoint 
+								pojoClass="org.apache.servicemix.itests.beans.Echo"
+								service="test:Hello" 
+								endpoint="testService" />
+						</jsr181:endpoints>
+					</jsr181:component>
+				</sm:component>
+			</sm:activationSpec>
+
+			<sm:activationSpec>
+				<sm:component>
+					<http:component>
+						<http:endpoints>
+							<http:endpoint 
+								service="test:Hello"
+								endpoint="testService" 
+								role="consumer" 
+								defaultOperation="echo"
+								locationURI="http://localhost:8194/Service/"
+								defaultMep="http://www.w3.org/2004/08/wsdl/in-out" 
+								soap="true" />
+						</http:endpoints>
+					</http:component>
+				</sm:component>
+			</sm:activationSpec>
+
+		</sm:activationSpecs>
+	</sm:container>
+</beans>
