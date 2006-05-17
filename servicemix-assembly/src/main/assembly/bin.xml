@@ -110,6 +110,7 @@
         <include>lingo:lingo</include>
         <include>jaxen:jaxen</include>
         <include>org.mortbay.jetty:jetty</include>
+        <include>org.mortbay.jetty:jetty-util</include>
         <include>axis:axis-jaxrpc</include>
         <include>drools:drools-all-jdk1.4</include>
         <include>stax-utils:stax-utils</include>
