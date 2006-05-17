@@ -233,7 +233,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
      * @throws JBIException
      */
     public void init(Broker broker, String subType) throws JBIException {
-        log.info(broker.getContainerName() + ": Initializing jca flow");
+        log.info(broker.getContainer().getName() + ": Initializing jca flow");
         super.init(broker, subType);
         // Create and register endpoint listener
         endpointListener = new EndpointAdapter() {
@@ -262,7 +262,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
         	// Inbound connector
         	ActiveMQActivationSpec ac = new ActiveMQActivationSpec();
         	ac.setDestinationType("javax.jms.Queue");
-        	ac.setDestination(INBOUND_PREFIX + broker.getContainerName());
+        	ac.setDestination(INBOUND_PREFIX + broker.getContainer().getName());
         	containerConnector = new JCAConnector();
         	containerConnector.setBootstrapContext(getBootstrapContext());
         	containerConnector.setActivationSpec(ac);
@@ -438,7 +438,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
             }
             // broadcast change to the network
             if (broadcast) {
-                log.info(broker.getContainerName() + ": broadcasting info for " + event);
+                log.info(broker.getContainer().getName() + ": broadcasting info for " + event);
                 sendJmsMessage(broadcastTopic, event, false, false);
             }
         } catch (Exception e) {
@@ -455,7 +455,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
             }
             // broadcast change to the network
             if (broadcast) {
-                log.info(broker.getContainerName() + ": broadcasting info for " + event);
+                log.info(broker.getContainer().getName() + ": broadcasting info for " + event);
                 sendJmsMessage(broadcastTopic, event, false, false);
             }
         } catch (Exception e) {
@@ -499,13 +499,13 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
     }
 
     public void onRemoteEndpointRegistered(EndpointEvent event) {
-        log.info(broker.getContainerName() + ": adding remote endpoint: " + event.getEndpoint());
-        broker.getRegistry().registerRemoteEndpoint(event.getEndpoint());
+        log.info(broker.getContainer().getName() + ": adding remote endpoint: " + event.getEndpoint());
+        broker.getContainer().getRegistry().registerRemoteEndpoint(event.getEndpoint());
     }
 
     public void onRemoteEndpointUnregistered(EndpointEvent event) {
-        log.info(broker.getContainerName() + ": removing remote endpoint: " + event.getEndpoint());
-        broker.getRegistry().unregisterRemoteEndpoint(event.getEndpoint());
+        log.info(broker.getContainer().getName() + ": removing remote endpoint: " + event.getEndpoint());
+        broker.getContainer().getRegistry().unregisterRemoteEndpoint(event.getEndpoint());
     }
 
     /**
@@ -580,7 +580,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
                 }
                 if (me.getDestinationId() == null) {
                     ServiceEndpoint se = me.getEndpoint();
-                    se = broker.getRegistry()
+                    se = broker.getContainer().getRegistry()
                             .getInternalEndpoint(se.getServiceName(), se.getEndpointName());
                     me.setEndpoint(se);
                     me.setDestinationId(((InternalEndpoint) se).getComponentNameSpace());
@@ -603,7 +603,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
         if (obj instanceof ConsumerInfo) {
             ConsumerInfo info = (ConsumerInfo) obj;
             subscriberSet.add(info.getConsumerId().getConnectionId());
-            ServiceEndpoint[] endpoints = broker.getRegistry().getEndpointsForInterface(null);
+            ServiceEndpoint[] endpoints = broker.getContainer().getRegistry().getEndpointsForInterface(null);
             for (int i = 0; i < endpoints.length; i++) {
                 if (endpoints[i] instanceof InternalEndpoint && ((InternalEndpoint) endpoints[i]).isLocal()) {
                     onInternalEndpointRegistered(new EndpointEvent(endpoints[i],
@@ -668,7 +668,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
 
 	public BootstrapContext getBootstrapContext() {
 		if (bootstrapContext == null) {
-	    	GeronimoWorkManager wm = (GeronimoWorkManager) broker.getWorkManager();
+	    	GeronimoWorkManager wm = (GeronimoWorkManager) broker.getContainer().getWorkManager();
 	    	bootstrapContext = new BootstrapContextImpl(wm);
 		}
 		return bootstrapContext;
@@ -679,7 +679,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
 	}
     
     public String toString(){
-        return broker.getContainerName() + " JCAFlow";
+        return broker.getContainer().getName() + " JCAFlow";
     }
     
     private void sendJmsMessage(Destination dest, Serializable object, boolean persistent, boolean transacted) throws JMSException {

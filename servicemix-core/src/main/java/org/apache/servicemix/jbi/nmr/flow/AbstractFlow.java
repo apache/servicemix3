@@ -64,9 +64,9 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
         this.broker = broker;
         this.name = name;
 		// register self with the management context
-        ObjectName objectName = broker.getManagementContext().createObjectName(this);
+        ObjectName objectName = broker.getContainer().getManagementContext().createObjectName(this);
         try {
-            broker.getManagementContext().registerMBean(objectName, this, LifeCycleMBean.class);
+            broker.getContainer().getManagementContext().registerMBean(objectName, this, LifeCycleMBean.class);
         }
         catch (JMException e) {
             throw new JBIException("Failed to register MBean with the ManagementContext", e);
@@ -165,7 +165,7 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
     		log.debug("Called Flow doRouting");
         ComponentNameSpace id = me.getRole() == Role.PROVIDER ? me.getDestinationId() : me.getSourceId();
         //As the MessageExchange could come from another container - ensure we get the local Component
-        ComponentMBeanImpl lcc = broker.getRegistry().getComponent(id.getName());
+        ComponentMBeanImpl lcc = broker.getContainer().getRegistry().getComponent(id.getName());
         if (lcc != null) {
             if (lcc.getDeliveryChannel() != null) {
                 lcc.getDeliveryChannel().processInBound(me);

@@ -142,7 +142,7 @@ public class SedaQueue extends BaseLifeCycle implements Work {
         synchronized (running) {
             try {
                 started.set(true);
-                flow.getBroker().getWorkManager().startWork(this);
+                flow.getBroker().getContainer().getWorkManager().startWork(this);
                 running.wait();
                 super.start();
             } catch (Exception e) {
@@ -210,7 +210,7 @@ public class SedaQueue extends BaseLifeCycle implements Work {
             try {
                 me = (MessageExchangeImpl) queue.poll(1000);
                 if (me != null) {
-                    flow.getBroker().getWorkManager().scheduleWork(new Work() {
+                    flow.getBroker().getContainer().getWorkManager().scheduleWork(new Work() {
                         public void release() {
                         }
                         public void run() {

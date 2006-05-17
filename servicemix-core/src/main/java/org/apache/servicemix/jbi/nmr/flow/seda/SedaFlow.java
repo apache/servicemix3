@@ -238,12 +238,12 @@ public class SedaFlow extends AbstractFlow {
 
     protected void registerQueue(ComponentNameSpace cns, SedaQueue queue) {
         try {
-            ObjectName objectName = broker.getManagementContext().createObjectName(queue);
+            ObjectName objectName = broker.getContainer().getManagementContext().createObjectName(queue);
             if (getSubType() != null) {
                 objectName = new ObjectName(objectName + ",subtype=" + getSubType());
             }
             queue.setObjectName(objectName);
-            broker.getManagementContext().registerMBean(objectName, queue, LifeCycleMBean.class);
+            broker.getContainer().getManagementContext().registerMBean(objectName, queue, LifeCycleMBean.class);
         }
         catch (JMException e) {
             log.error("Failed to register SedaQueue: " + queue + " with the ManagementContext");
@@ -252,7 +252,7 @@ public class SedaFlow extends AbstractFlow {
 
     protected void unregisterQueue(SedaQueue queue) {
         try {
-            broker.getManagementContext().unregisterMBean(queue.getObjectName());
+            broker.getContainer().getManagementContext().unregisterMBean(queue.getObjectName());
         }
         catch (JBIException e) {
             log.error("Failed to unregister SedaQueue: " + queue + " from the ManagementContext");

@@ -71,6 +71,7 @@ import org.apache.servicemix.jbi.management.BaseLifeCycle;
 import org.apache.servicemix.jbi.management.ManagementContext;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.Broker;
+import org.apache.servicemix.jbi.nmr.DefaultBroker;
 import org.apache.servicemix.jbi.nmr.flow.Flow;
 import org.jencks.factory.WorkManagerFactoryBean;
 import org.w3c.dom.DocumentFragment;
@@ -96,7 +97,7 @@ public class JBIContainer extends BaseLifeCycle {
     private AtomicBoolean started = new AtomicBoolean(false);
     private AtomicBoolean containerInitialized = new AtomicBoolean(false);
     private IdGenerator idGenerator = new IdGenerator();
-    protected Broker broker = new Broker();
+    protected Broker broker = new DefaultBroker();
     protected ServiceUnitManager serviceManager;
     protected ManagementContext managementContext = new ManagementContext();
     protected EnvironmentContext environmentContext = new EnvironmentContext();
@@ -147,7 +148,7 @@ public class JBIContainer extends BaseLifeCycle {
      * @return Returns the flowName.
      */
     public String getFlowName() {
-        String flowNames = broker.getFlowNames();
+        String flowNames = getDefaultBroker().getFlowNames();
         if (flowNames == null) {
             return null;
         }
@@ -162,28 +163,28 @@ public class JBIContainer extends BaseLifeCycle {
      * @param flowName The flow to set.
      */
     public void setFlowName(String flowName) {
-        broker.setFlowNames(flowName);
+        getDefaultBroker().setFlowNames(flowName);
     }
     
     /**
      * @return Returns the flowNames.
      */
     public String getFlowNames() {
-        return broker.getFlowNames();
+        return getDefaultBroker().getFlowNames();
     }
 
     /**
      * @param flowNames The flows to set.
      */
     public void setFlowNames(String flowNames) {
-        broker.setFlowNames(flowNames);
+        getDefaultBroker().setFlowNames(flowNames);
     }
     
     /**
      * @return the subscriptionFlowName
      */
     public String getSubscriptionFlowName() {
-		return broker.getSubscriptionFlowName();
+		return getDefaultBroker().getSubscriptionFlowName();
 	}
 
     /**
@@ -191,7 +192,7 @@ public class JBIContainer extends BaseLifeCycle {
      * @param subscriptionFlowName
      */
 	public void setSubscriptionFlowName(String subscriptionFlowName) {
-		broker.setSubscriptionFlowName(subscriptionFlowName);
+        getDefaultBroker().setSubscriptionFlowName(subscriptionFlowName);
 	}
 
     /**
@@ -200,14 +201,14 @@ public class JBIContainer extends BaseLifeCycle {
      * @param flow
      */
     public void setFlow(Flow flow) {
-        this.broker.setFlows(new Flow[] { flow });
+        getDefaultBroker().setFlows(new Flow[] { flow });
     }
 
     /**
      * @return the broker message Flow
      */
     public Flow getFlow() {
-        Flow[] flows = this.broker.getFlows();
+        Flow[] flows = getDefaultBroker().getFlows();
         if (flows == null || flows.length == 0) {
             return null;
         } else if (flows.length > 1) {
@@ -223,14 +224,14 @@ public class JBIContainer extends BaseLifeCycle {
      * @param flow
      */
     public void setFlows(Flow[] flows) {
-        this.broker.setFlows(flows);
+        getDefaultBroker().setFlows(flows);
     }
 
     /**
      * @return the broker message Flows
      */
     public Flow[] getFlows() {
-        return this.broker.getFlows();
+        return getDefaultBroker().getFlows();
     }
 
     /**
@@ -257,10 +258,28 @@ public class JBIContainer extends BaseLifeCycle {
     }
     
     /**
+     * Return the DefaultBroker instance
+     */
+    public DefaultBroker getDefaultBroker() {
+        if (broker == null ||
+            broker instanceof DefaultBroker == false) {
+            throw new IllegalStateException("Broker is not a DefaultBroker");
+        }
+        return (DefaultBroker) broker;
+    }
+    
+    /**
      * @return Return the NMR broker
      */
     public Broker getBroker(){
         return broker;
+    }
+    
+    /**
+     * Set the Broker to use
+     */
+    public void setBroker(Broker broker) {
+        this.broker = broker;
     }
 
     /**

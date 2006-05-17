@@ -60,13 +60,13 @@ public class SubscriptionPropertyCopyTest extends TestCase {
 		JBIContainer container = new JBIContainer();
 		try {
             if (subscriptionFlowName != null && !subscriptionFlowName.equals(flowName)) {
-                container.getBroker().setFlows(new Flow[] { FlowProvider.getFlow(flowName),
-                                                            FlowProvider.getFlow(subscriptionFlowName)});
+                container.getDefaultBroker().setFlows(new Flow[] { FlowProvider.getFlow(flowName),
+                                                                   FlowProvider.getFlow(subscriptionFlowName)});
             } else {
-                container.getBroker().setFlows(new Flow[] { FlowProvider.getFlow(flowName) });
+                container.getDefaultBroker().setFlows(new Flow[] { FlowProvider.getFlow(flowName) });
             }
             if (subscriptionFlowName != null) {
-                container.getBroker().getSubscriptionManager().setFlowName(subscriptionFlowName);
+                container.getDefaultBroker().getSubscriptionManager().setFlowName(subscriptionFlowName);
             }
             // TODO: check why the following line is enabled, there is 
             // a 5 seconds pause when Management stuff is initialized

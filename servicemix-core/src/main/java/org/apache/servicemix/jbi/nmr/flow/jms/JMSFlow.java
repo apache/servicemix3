@@ -210,7 +210,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
      * @throws JBIException
      */
     public void init(Broker broker, String subType) throws JBIException {
-        log.info(broker.getContainerName() + ": Initializing jms flow");
+        log.info(broker.getContainer().getName() + ": Initializing jms flow");
         super.init(broker, subType);
         // Create and register endpoint listener
         endpointListener = new EndpointAdapter() {
@@ -246,10 +246,10 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
             } else {
                 connection = (ActiveMQConnection) connectionFactory.createConnection();
             }
-            connection.setClientID(broker.getContainerName());
+            connection.setClientID(broker.getContainer().getName());
             connection.start();
             inboundSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            Queue queue = inboundSession.createQueue(INBOUND_PREFIX + broker.getContainerName());
+            Queue queue = inboundSession.createQueue(INBOUND_PREFIX + broker.getContainer().getName());
             MessageConsumer inboundQueue = inboundSession.createConsumer(queue);
             inboundQueue.setMessageListener(this);
             queueProducer = inboundSession.createProducer(null);
@@ -270,7 +270,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
      */
     public void start() throws JBIException {
         if (started.compareAndSet(false, true)) {
-            log.info(broker.getContainerName() + ": Starting jms flow");
+            log.info(broker.getContainer().getName() + ": Starting jms flow");
             super.start();
             try {
                 broadcastConsumer = broadcastSession.createConsumer(broadcastTopic, null, true);
@@ -302,14 +302,14 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
                 });
 
                 // Start queue consumers for all components
-                for (Iterator it = broker.getRegistry().getComponents().iterator(); it.hasNext();) {
+                for (Iterator it = broker.getContainer().getRegistry().getComponents().iterator(); it.hasNext();) {
                     ComponentMBeanImpl cmp = (ComponentMBeanImpl) it.next();
                     if (cmp.isStarted()) {
                         onComponentStarted(new ComponentEvent(cmp, ComponentEvent.COMPONENT_STARTED));
                     }
                 }
                 // Start queue consumers for all endpoints
-                ServiceEndpoint[] endpoints = broker.getRegistry().getEndpointsForInterface(null);
+                ServiceEndpoint[] endpoints = broker.getContainer().getRegistry().getEndpointsForInterface(null);
                 for (int i = 0; i < endpoints.length; i++) {
                     if (endpoints[i] instanceof InternalEndpoint && ((InternalEndpoint) endpoints[i]).isLocal()) {
                         onInternalEndpointRegistered(new EndpointEvent(endpoints[i],
@@ -330,7 +330,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
      */
     public void stop() throws JBIException {
         if (started.compareAndSet(true, false)) {
-            log.info(broker.getContainerName() + ": Stopping jms flow");
+            log.info(broker.getContainer().getName() + ": Stopping jms flow");
             super.stop();
             for (Iterator it = subscriberSet.iterator(); it.hasNext();) {
                 String id = (String) it.next();
@@ -385,7 +385,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
                 consumerMap.put(key, consumer);
             }
             if (broadcast) {
-                log.info(broker.getContainerName() + ": broadcasting info for " + event);
+                log.info(broker.getContainer().getName() + ": broadcasting info for " + event);
                 ObjectMessage msg = broadcastSession.createObjectMessage(event);
                 topicProducer.send(msg);
             }
@@ -403,7 +403,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
             }
             if (broadcast) {
                 ObjectMessage msg = broadcastSession.createObjectMessage(event);
-                log.info(broker.getContainerName() + ": broadcasting info for " + event);
+                log.info(broker.getContainer().getName() + ": broadcasting info for " + event);
                 topicProducer.send(msg);
             }
         } catch (Exception e) {
@@ -441,13 +441,13 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
     }
 
     public void onRemoteEndpointRegistered(EndpointEvent event) {
-        log.info(broker.getContainerName() + ": adding remote endpoint: " + event.getEndpoint());
-        broker.getRegistry().registerRemoteEndpoint(event.getEndpoint());
+        log.info(broker.getContainer().getName() + ": adding remote endpoint: " + event.getEndpoint());
+        broker.getContainer().getRegistry().registerRemoteEndpoint(event.getEndpoint());
     }
 
     public void onRemoteEndpointUnregistered(EndpointEvent event) {
-        log.info(broker.getContainerName() + ": removing remote endpoint: " + event.getEndpoint());
-        broker.getRegistry().unregisterRemoteEndpoint(event.getEndpoint());
+        log.info(broker.getContainer().getName() + ": removing remote endpoint: " + event.getEndpoint());
+        broker.getContainer().getRegistry().unregisterRemoteEndpoint(event.getEndpoint());
     }
 
     /**
@@ -518,7 +518,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
                 // Dispatch the message in another thread so as to free the jms session
                 // else if a component do a sendSync into the jms flow, the whole
                 // flow is deadlocked 
-                broker.getWorkManager().scheduleWork(new Work() {
+                broker.getContainer().getWorkManager().scheduleWork(new Work() {
                     public void release() {
                     }
 
@@ -526,7 +526,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
                         try {
                             if (me.getDestinationId() == null) {
                                 ServiceEndpoint se = me.getEndpoint();
-                                se = broker.getRegistry()
+                                se = broker.getContainer().getRegistry()
                                         .getInternalEndpoint(se.getServiceName(), se.getEndpointName());
                                 me.setEndpoint(se);
                                 me.setDestinationId(((InternalEndpoint) se).getComponentNameSpace());
@@ -549,7 +549,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
         if (obj instanceof ConsumerInfo) {
             ConsumerInfo info = (ConsumerInfo) obj;
             subscriberSet.add(info.getConsumerId().getConnectionId());
-            ServiceEndpoint[] endpoints = broker.getRegistry().getEndpointsForInterface(null);
+            ServiceEndpoint[] endpoints = broker.getContainer().getRegistry().getEndpointsForInterface(null);
             for (int i = 0; i < endpoints.length; i++) {
                 if (endpoints[i] instanceof InternalEndpoint && ((InternalEndpoint) endpoints[i]).isLocal()) {
                     onInternalEndpointRegistered(new EndpointEvent(endpoints[i],
