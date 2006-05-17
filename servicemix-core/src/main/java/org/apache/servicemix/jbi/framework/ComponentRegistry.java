@@ -15,14 +15,15 @@
  */
 package org.apache.servicemix.jbi.framework;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
-
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Registry for Components
@@ -31,7 +32,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  */
 public class ComponentRegistry {
     
-    private Map idMap = new ConcurrentHashMap();
+    private Map idMap = new LinkedHashMap();
     private boolean runningStateInitialized = false;
     private Registry registry;
     
@@ -49,11 +50,12 @@ public class ComponentRegistry {
      * @param service
      * @return an associated ComponentConnector or null if it already exists
      */
-    public ComponentMBeanImpl registerComponent(ComponentNameSpace name, 
-                                                String description, 
-                                                Component component,
-                                                boolean binding, 
-                                                boolean service) {
+    public synchronized ComponentMBeanImpl registerComponent(
+                    ComponentNameSpace name, 
+                    String description, 
+                    Component component,
+                    boolean binding, 
+                    boolean service) {
         ComponentMBeanImpl result = null;
         if (!idMap.containsKey(name)) {
             result = new ComponentMBeanImpl(registry.getContainer(), name, description, component, binding, service);
@@ -66,7 +68,7 @@ public class ComponentRegistry {
      * start components
      * @throws JBIException
      */
-    public void start() throws JBIException{
+    public synchronized void start() throws JBIException{
         if (!setInitialRunningStateFromStart()) {
             for(Iterator i = getComponents().iterator(); i.hasNext();) {
                 ComponentMBeanImpl lcc = (ComponentMBeanImpl) i.next();
@@ -81,8 +83,8 @@ public class ComponentRegistry {
      * 
      * @throws JBIException
      */
-    public void stop() throws JBIException  {
-        for (Iterator i = getComponents().iterator();i.hasNext();) {
+    public synchronized void stop() throws JBIException  {
+        for (Iterator i = getReverseComponents(). iterator();i.hasNext();) {
             ComponentMBeanImpl lcc = (ComponentMBeanImpl) i.next();
             lcc.doStop();
         }
@@ -94,15 +96,19 @@ public class ComponentRegistry {
      * 
      * @throws JBIException
      */
-    public void shutDown() throws JBIException {
-        for (Iterator i = getComponents().iterator();i.hasNext();) {
+    public synchronized void shutDown() throws JBIException {
+        for (Iterator i = getReverseComponents().iterator();i.hasNext();) {
             ComponentMBeanImpl lcc = (ComponentMBeanImpl) i.next();
             lcc.persistRunningState();
             lcc.doShutDown();
         }
     }
     
-    
+    private Collection getReverseComponents() {
+        ArrayList l = new ArrayList(getComponents());
+        Collections.reverse(l);
+        return l;
+    }
 
     
     /**
@@ -110,7 +116,7 @@ public class ComponentRegistry {
      * @param component
      * @return the deregistered component
      */
-    public void deregisterComponent(ComponentMBeanImpl component) {
+    public synchronized void deregisterComponent(ComponentMBeanImpl component) {
         idMap.remove(component.getComponentNameSpace());
     }
     
@@ -119,7 +125,7 @@ public class ComponentRegistry {
      * @param id
      * @return the ComponentConnector or null
      */
-    public ComponentMBeanImpl getComponent(ComponentNameSpace id) {
+    public synchronized ComponentMBeanImpl getComponent(ComponentNameSpace id) {
         return (ComponentMBeanImpl) idMap.get(id);
     }
     
@@ -127,7 +133,7 @@ public class ComponentRegistry {
      * 
      * @return Collection of ComponentConnectors held by the registry
      */
-    public Collection getComponents() {
+    public synchronized Collection getComponents() {
         return idMap.values();
     }
 
