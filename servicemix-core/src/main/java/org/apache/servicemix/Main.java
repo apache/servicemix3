@@ -15,6 +15,8 @@
  */
 package org.apache.servicemix;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,6 +24,8 @@ import org.apache.servicemix.jbi.config.spring.XBeanProcessor;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.ApplicationContext;
+import org.apache.xbean.server.repository.FileSystemRepository;
+import org.apache.xbean.server.spring.configuration.ClassLoaderXmlPreprocessor;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.apache.xbean.spring.context.FileSystemXmlApplicationContext;
 
@@ -56,9 +60,11 @@ public class Main {
                     return;
                 }
                 
+                List processors = new ArrayList();
+                processors.add(new ClassLoaderXmlPreprocessor(new FileSystemRepository(new File("."))));
                 if (file.equals("-v1")) {
                     
-                    List processors = Collections.singletonList(new XBeanProcessor());
+                    processors.add(new XBeanProcessor());
                     if (args.length <= 1) {
                         System.out.println("Loading Apache ServiceMix (compatible 1.x) from servicemix.xml on the CLASSPATH");
                         context = new ClassPathXmlApplicationContext("servicemix.xml", processors);
@@ -71,7 +77,7 @@ public class Main {
                 }
                 else {
                     System.out.println("Loading Apache ServiceMix from file: " + file);
-                    context = new FileSystemXmlApplicationContext(file);
+                    context = new FileSystemXmlApplicationContext(file, processors);
                 }
             }
             SpringJBIContainer container = (SpringJBIContainer) context.getBean("jbi");
