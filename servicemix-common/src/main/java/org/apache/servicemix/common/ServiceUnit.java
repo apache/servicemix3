@@ -124,7 +124,10 @@ public class ServiceUnit {
     }
     
     public void addEndpoint(Endpoint endpoint) {
-        this.endpoints.put(EndpointSupport.getKey(endpoint), endpoint);
+        String key = EndpointSupport.getKey(endpoint);
+        if (this.endpoints.put(key, endpoint) != null) {
+            throw new IllegalStateException("More than one endpoint found in the SU for key: " + key);
+        }
     }
     
     public Endpoint getEndpoint(String key) {

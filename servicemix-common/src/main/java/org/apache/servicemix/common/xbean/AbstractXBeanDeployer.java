@@ -25,7 +25,6 @@ import javax.jbi.management.DeploymentException;
 import org.apache.servicemix.common.AbstractDeployer;
 import org.apache.servicemix.common.BaseComponent;
 import org.apache.servicemix.common.Endpoint;
-import org.apache.servicemix.common.EndpointSupport;
 import org.apache.servicemix.common.ServiceUnit;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.core.io.FileSystemResource;
@@ -100,9 +99,6 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
                 Endpoint endpoint = (Endpoint) iter.next();
                 endpoint.setServiceUnit(su);
                 if (validate(endpoint)) {
-                    if (su.getEndpoint(EndpointSupport.getKey(endpoint)) != null) {
-                        throw failure("deploy", "More than one endpoint found for: " + EndpointSupport.getKey(endpoint), null);
-                    }
                     su.addEndpoint(endpoint);
                 } else {
                     logger.warn("Endpoint " + endpoint + "has not been validated");

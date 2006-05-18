@@ -41,7 +41,10 @@ public class Registry {
     }
     
     public void registerEndpoint(Endpoint ep) {
-        this.endpoints.put(EndpointSupport.getKey(ep), ep);
+        String key = EndpointSupport.getKey(ep);
+        if (this.endpoints.put(key, ep) != null) {
+            throw new IllegalStateException("An endpoint is already registered for key: " + key);
+        }
     }
     
     public void unregisterEndpoint(Endpoint ep) {
