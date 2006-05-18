@@ -36,6 +36,21 @@
   <dependencies>
     <dependency>
       <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-jbi</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-services</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-http</artifactId>
       <scope>test</scope>
     </dependency>
