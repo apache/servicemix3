@@ -94,14 +94,13 @@
         <include>stax:stax-api</include>
         <include>woodstox:wstx-asl</include>
         <include>xml-apis:xml-apis</include>
+        <include>log4j:log4j</include>
+        <include>org.apache.derby:derby</include>
       </includes>
     </dependencySet>
     <dependencySet>
       <outputDirectory>lib/optional</outputDirectory>
       <includes>
-        <include>mx4j:mx4j-tools</include>
-        <include>log4j:log4j</include>
-        <include>org.apache.derby:derby</include>
         <include>quartz:quartz</include>
         <include>org.apache.servicemix:servicemix-components</include>
         <include>commons-pool:commons-pool</include>
@@ -111,9 +110,14 @@
         <include>jaxen:jaxen</include>
         <include>org.mortbay.jetty:jetty</include>
         <include>org.mortbay.jetty:jetty-util</include>
-        <include>axis:axis-jaxrpc</include>
         <include>drools:drools-all-jdk1.4</include>
         <include>stax-utils:stax-utils</include>
+        <include>junit:junit</include>
+        <include>commons-vfs:commons-vfs</include>
+        <include>rome:rome</include>
+        <include>axis:axis</include>
+        <include>axis:axis-jaxrpc</include>
+        <include>axis:axis-saaj</include>
       </includes>
     </dependencySet>
   </dependencySets>

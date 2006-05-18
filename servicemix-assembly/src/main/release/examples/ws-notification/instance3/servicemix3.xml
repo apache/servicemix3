@@ -4,6 +4,15 @@
 	   xmlns:test="http://servicemix.org/test"
 	   xmlns:my="http://servicemix.apache.org/demo">
 
+	<classpath>
+	  <location>../lib/junit-3.8.1.jar</location>
+	  <location>../lib/servicemix-wsn2005-3.0-SNAPSHOT.jar</location>
+	  <location>../lib/servicemix-common-3.0-SNAPSHOT.jar</location>
+	  <location>../lib/jaxb-api-2.0EA3.jar</location>
+	  <location>../lib/jaxb-impl-2.0EA3.jar</location>
+	  <location>../lib/xfire-jsr181-api-1.0-M1.jar</location>
+	</classpath>
+	   
   <!-- the JBI container -->
   <sm:container id="jbi" 
                 name="wsn3"

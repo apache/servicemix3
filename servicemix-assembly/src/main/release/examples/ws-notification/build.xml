@@ -1,0 +1,16 @@
+<project name="ws-notification" default="dep" basedir=".">
+
+  <target name="dep">
+    <mkdir dir="lib"/>
+    <get verbose="true" usetimestamp="true" src="http://repo.mergere.com/maven2/junit/junit/3.8.1/junit-3.8.1.jar" dest="lib/junit-3.8.1.jar" />
+    <unzip dest=".">
+      <patternset>
+        <include name="lib/*.jar"/>
+      </patternset>
+      <fileset dir="../../components">
+        <include name="*wsn2005*"/>
+      </fileset>
+    </unzip>
+  </target>
+
+</project>

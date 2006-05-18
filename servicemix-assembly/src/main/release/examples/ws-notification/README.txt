@@ -2,9 +2,12 @@ Welcome to the ServiceMix Web Services - Notification Example
 =============================================================
 
 This example demonstrates the ability to use the Web Services - 
-Notification implementation in ServiceMix. To run this example, open 
-three terminals - one for each instance directory. In each terminal, start
-ServiceMix and feed the configuration like so: 
+Notification implementation in ServiceMix. 
+First, in this directory, run 'ant' to add needed dependencies to
+the classpath.  
+To run this example, open three terminals - one for each instance 
+directory. In each terminal, start ServiceMix and feed the 
+configuration like so: 
 
 In terminal one: 
 $ cd ./instance1 

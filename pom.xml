@@ -478,6 +478,11 @@
         <version>1.3</version>
       </dependency>
       <dependency>
+        <groupId>axis</groupId>
+        <artifactId>axis-saaj</artifactId>
+        <version>1.3</version>
+      </dependency>
+      <dependency>
         <groupId>backport175</groupId>
         <artifactId>backport175</artifactId>
         <version>1.0.RC1</version>
