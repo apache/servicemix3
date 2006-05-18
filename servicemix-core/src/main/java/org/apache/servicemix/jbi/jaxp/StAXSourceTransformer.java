@@ -15,6 +15,9 @@
  */
 package org.apache.servicemix.jbi.jaxp;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import javanet.staxutils.StAXSource;
@@ -63,6 +66,13 @@ public class StAXSourceTransformer extends SourceTransformer {
         try {
         	return factory.createXMLStreamReader(source);
         } catch (XMLStreamException e) {
+            if (source instanceof DOMSource) {
+                Node n = ((DOMSource) source).getNode();
+                Element el = n instanceof Document ? ((Document) n).getDocumentElement() : n instanceof Element ? (Element) n : null;
+                if (el != null) {
+                    return new W3CDOMStreamReader(el);
+                }
+            }
         	return factory.createXMLStreamReader(toReaderFromSource(source));
         }
     }
