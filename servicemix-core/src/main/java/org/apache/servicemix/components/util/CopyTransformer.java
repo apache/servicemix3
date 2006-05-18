@@ -44,6 +44,37 @@ public class CopyTransformer implements MessageTransformer {
     private static final CopyTransformer instance = new CopyTransformer();
 
     private SourceTransformer sourceTransformer = new SourceTransformer();
+    
+    private boolean copyProperties = true;
+    private boolean copyAttachments = true;
+
+    /**
+     * @return the copyAttachments
+     */
+    public boolean isCopyAttachments() {
+        return copyAttachments;
+    }
+
+    /**
+     * @param copyAttachments the copyAttachments to set
+     */
+    public void setCopyAttachments(boolean copyAttachments) {
+        this.copyAttachments = copyAttachments;
+    }
+
+    /**
+     * @return the copyProperties
+     */
+    public boolean isCopyProperties() {
+        return copyProperties;
+    }
+
+    /**
+     * @param copyProperties the copyProperties to set
+     */
+    public void setCopyProperties(boolean copyProperties) {
+        this.copyProperties = copyProperties;
+    }
 
     /**
      * Returns the singleton instance
@@ -55,7 +86,9 @@ public class CopyTransformer implements MessageTransformer {
     }
 
     public boolean transform(MessageExchange exchange, NormalizedMessage from, NormalizedMessage to) throws MessagingException {
-        copyProperties(from, to);
+        if (copyProperties) {
+            copyProperties(from, to);
+        }
 
         Source content = from.getContent();
         if ((content instanceof StreamSource ||
@@ -82,7 +115,9 @@ public class CopyTransformer implements MessageTransformer {
         }
         to.setContent(content);
         
-        copyAttachments(from, to);
+        if (copyAttachments) {
+            copyAttachments(from, to);
+        }
         return true;
     }
 

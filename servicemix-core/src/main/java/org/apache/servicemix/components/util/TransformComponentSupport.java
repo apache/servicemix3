@@ -82,6 +82,9 @@ public abstract class TransformComponentSupport extends ComponentSupport impleme
 
     public void setCopyProperties(boolean copyProperties) {
         this.copyProperties = copyProperties;
+        if (getMessageTransformer() instanceof CopyTransformer) {
+            ((CopyTransformer) getMessageTransformer()).setCopyProperties(copyProperties);
+        }
     }
 
 
@@ -90,8 +93,11 @@ public abstract class TransformComponentSupport extends ComponentSupport impleme
     }
 
 
-    public void setCopyAttachments(boolean copyAttachmenets) {
-        this.copyAttachments = copyAttachmenets;
+    public void setCopyAttachments(boolean copyAttachments) {
+        this.copyAttachments = copyAttachments;
+        if (getMessageTransformer() instanceof CopyTransformer) {
+            ((CopyTransformer) getMessageTransformer()).setCopyAttachments(copyAttachments);
+        }
     }
 
 
