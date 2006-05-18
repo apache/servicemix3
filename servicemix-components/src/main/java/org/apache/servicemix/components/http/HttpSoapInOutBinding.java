@@ -46,7 +46,7 @@ import org.codehaus.xfire.attachments.Attachment;
 import org.codehaus.xfire.attachments.Attachments;
 import org.codehaus.xfire.fault.XFireFault;
 import org.codehaus.xfire.service.Service;
-import org.codehaus.xfire.service.binding.BeanInvoker;
+import org.codehaus.xfire.service.invoker.BeanInvoker;
 import org.codehaus.xfire.service.binding.ObjectServiceFactory;
 import org.codehaus.xfire.soap.SoapConstants;
 import org.codehaus.xfire.soap.handler.ReadHeadersHandler;
@@ -133,8 +133,6 @@ public class HttpSoapInOutBinding extends ComponentSupport implements
             }
             if (exchange.getStatus() == ExchangeStatus.ERROR) {
                 Exception e = exchange.getError();
-                exchange.setStatus(ExchangeStatus.DONE);
-                channel.send(exchange);
                 if (e == null) {
                     throw new XFireFault("Received error", XFireFault.SENDER);
                 } else {
@@ -188,7 +186,7 @@ public class HttpSoapInOutBinding extends ComponentSupport implements
         // Set the source
         inMessage.setContent(new DOMSource(element));
         // Retrieve attachments
-        Attachments attachments = (Attachments) ctx.getProperty(Attachments.ATTACHMENTS_KEY);
+        Attachments attachments = (Attachments) ctx.getInMessage().getAttachments();
         if (attachments != null) {
             for (Iterator it = attachments.getParts(); it.hasNext();) {
                 Attachment part = (Attachment) it.next();

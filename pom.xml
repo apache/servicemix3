@@ -1394,7 +1394,7 @@
       <dependency>
         <groupId>org.codehaus.xfire</groupId>
         <artifactId>xfire-all</artifactId>
-        <version>1.0</version>
+        <version>1.1</version>
         <exclusions>
           <exclusion>
             <groupId>javax.mail</groupId>
@@ -1441,7 +1441,7 @@
       <dependency>
         <groupId>org.codehaus.xfire</groupId>
         <artifactId>xfire-jaxb</artifactId>
-        <version>1.0</version>
+        <version>1.1</version>
         <exclusions>
           <exclusion>
             <groupId>xfire</groupId>
@@ -1476,7 +1476,7 @@
       <dependency>
         <groupId>org.codehaus.xfire</groupId>
         <artifactId>xfire-jaxb2</artifactId>
-        <version>1.0</version>
+        <version>1.1</version>
         <exclusions>
           <exclusion>
             <groupId>httpunit</groupId>
@@ -1531,7 +1531,7 @@
       <dependency>
         <groupId>org.codehaus.xfire</groupId>
         <artifactId>xfire-xmlbeans</artifactId>
-        <version>1.0</version>
+        <version>1.1</version>
       </dependency>
       <dependency>
         <groupId>xml-apis</groupId>
