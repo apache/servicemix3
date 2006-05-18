@@ -262,10 +262,6 @@
   
   <repositories>
     <repository>
-      <id>central</id>
-      <url>http://www.ibiblio.org/maven2</url>
-    </repository>
-    <repository>
       <id>servicemix-m2-repo</id>
       <name>Servicemix Maven2 Repository</name>
       <url>http://servicemix.org/m2-repo</url>
