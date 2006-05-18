@@ -15,10 +15,12 @@
  */
 package org.apache.servicemix.soap.marshalers;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.activation.DataHandler;
+import javax.security.auth.Subject;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
@@ -40,8 +42,21 @@ public class SoapMessage {
 	private Map attachments;
 	private Map headers;
 	private SoapFault fault;
+    private Subject subject;
 	
-	public Map getAttachments() {
+	/**
+     * @return the subject
+     */
+    public Subject getSubject() {
+        return subject;
+    }
+    /**
+     * @param subject the subject to set
+     */
+    public void setSubject(Subject subject) {
+        this.subject = subject;
+    }
+    public Map getAttachments() {
 		return attachments;
 	}
 	public void setAttachments(Map attachments) {
@@ -99,5 +114,12 @@ public class SoapMessage {
 	public void setFault(SoapFault fault) {
 		this.fault = fault;
 	}
+    
+    public void addPrincipal(Principal principal) {
+        if (subject == null) {
+            subject = new Subject();
+        }
+        subject.getPrincipals().add(principal);
+    }
 	
 }

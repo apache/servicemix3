@@ -15,6 +15,7 @@
  */
 package org.apache.servicemix.soap.marshalers;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
@@ -37,20 +38,49 @@ public class SoapMarshaler {
 	public static final String HEADER = "Header";
 	public static final String BODY = "Body";
 	public static final String FAULT = "Fault";
-
+    
+    public static final QName SOAP_11_FAULTCODE = new QName("faultcode");
+    public static final QName SOAP_11_FAULTSTRING = new QName("faultstring");
+    public static final QName SOAP_11_FAULTACTOR = new QName("faultactor");
+    public static final QName SOAP_11_FAULTDETAIL = new QName("detail");
+    public static final QName SOAP_11_CODE_VERSIONMISMATCH = new QName(SOAP_11_URI, "VersionMismatch");
+    public static final QName SOAP_11_CODE_MUSTUNDERSTAND = new QName(SOAP_11_URI, "MustUnderstand");
+    public static final QName SOAP_11_CODE_CLIENT = new QName(SOAP_11_URI, "Client");
+    public static final QName SOAP_11_CODE_SERVER = new QName(SOAP_11_URI, "Server");
+    
+    public static final QName SOAP_12_FAULTCODE = new QName(SOAP_12_URI, "Code");
+    public static final QName SOAP_12_FAULTSUBCODE = new QName(SOAP_12_URI, "Subcode");
+    public static final QName SOAP_12_FAULTVALUE = new QName(SOAP_12_URI, "Value");
+    public static final QName SOAP_12_FAULTREASON = new QName(SOAP_12_URI, "Reason");
+    public static final QName SOAP_12_FAULTTEXT = new QName(SOAP_12_URI, "Text");
+    public static final QName SOAP_12_FAULTNODE = new QName(SOAP_12_URI, "Node");
+    public static final QName SOAP_12_FAULTROLE = new QName(SOAP_12_URI, "Role");
+    public static final QName SOAP_12_FAULTDETAIL = new QName(SOAP_12_URI, "Detail");
+    public static final QName SOAP_12_CODE_DATAENCODINGUNKNOWN = new QName(SOAP_12_URI, "DataEncodingUnknown");
+    public static final QName SOAP_12_CODE_VERSIONMISMATCH = new QName(SOAP_12_URI, "VersionMismatch");
+    public static final QName SOAP_12_CODE_MUSTUNDERSTAND = new QName(SOAP_12_URI, "MustUnderstand");
+    public static final QName SOAP_12_CODE_RECEIVER = new QName(SOAP_12_URI, "Receiver");
+    public static final QName SOAP_12_CODE_SENDER = new QName(SOAP_12_URI, "Sender");
+    
 	protected XMLInputFactory inputFactory;
 	protected XMLOutputFactory outputFactory;
 	protected StAXSourceTransformer  sourceTransformer;
 	protected boolean repairingNamespace;
 	protected String prefix = SOAP_PREFIX;
 	protected boolean soap = true;
+    protected boolean useDom = false;
 	protected String soapUri = SOAP_12_URI;
 
 	public SoapMarshaler() {
 	}
 
-	public SoapMarshaler(boolean soap) {
+    public SoapMarshaler(boolean soap) {
+        this.soap = soap;
+    }
+
+	public SoapMarshaler(boolean soap, boolean useDom) {
 		this.soap = soap;
+        this.useDom = useDom;
 	}
 
     public XMLInputFactory getInputFactory() {
@@ -95,6 +125,20 @@ public class SoapMarshaler {
     	this.soap = soap;
     }
     
+    /**
+     * @return the useDom
+     */
+    public boolean isUseDom() {
+        return useDom;
+    }
+
+    /**
+     * @param useDom the useDom to set
+     */
+    public void setUseDom(boolean useDom) {
+        this.useDom = useDom;
+    }
+
     public String getPrefix() {
     	return prefix;
     }

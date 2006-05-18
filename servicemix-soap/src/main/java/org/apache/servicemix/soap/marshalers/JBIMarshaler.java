@@ -15,15 +15,18 @@
  */
 package org.apache.servicemix.soap.marshalers;
 
+import java.net.URI;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import javax.activation.DataHandler;
+import javax.jbi.messaging.Fault;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 
 import org.apache.servicemix.JbiConstants;
+import org.apache.servicemix.soap.SoapFault;
 import org.w3c.dom.DocumentFragment;
 
 /**
@@ -34,6 +37,12 @@ import org.w3c.dom.DocumentFragment;
  */
 public class JBIMarshaler {
 
+    public static final String SOAP_FAULT_CODE = "org.apache.servicemix.soap.fault.code";
+    public static final String SOAP_FAULT_SUBCODE = "org.apache.servicemix.soap.fault.subcode";
+    public static final String SOAP_FAULT_REASON = "org.apache.servicemix.soap.fault.reason";
+    public static final String SOAP_FAULT_NODE = "org.apache.servicemix.soap.fault.node";
+    public static final String SOAP_FAULT_ROLE = "org.apache.servicemix.soap.fault.role";
+    
 	public void toNMS(NormalizedMessage normalizedMessage, SoapMessage soapMessage) throws Exception {
     	if (soapMessage.hasHeaders()) {
     		normalizedMessage.setProperty(JbiConstants.SOAP_HEADERS, soapMessage.getHeaders());
@@ -46,7 +55,21 @@ public class JBIMarshaler {
         										(DataHandler) entry.getValue());
         	}
         }
-        normalizedMessage.setContent(soapMessage.getSource());
+        normalizedMessage.setSecuritySubject(soapMessage.getSubject());
+        if (soapMessage.getFault() != null) {
+            if (normalizedMessage instanceof Fault == false) {
+                throw new IllegalStateException("The soap message is a fault but the jbi message is not");
+            }
+            SoapFault fault = soapMessage.getFault();
+            normalizedMessage.setProperty(SOAP_FAULT_CODE, fault.getCode());
+            normalizedMessage.setProperty(SOAP_FAULT_SUBCODE, fault.getSubcode());
+            normalizedMessage.setProperty(SOAP_FAULT_REASON, fault.getReason());
+            normalizedMessage.setProperty(SOAP_FAULT_NODE, fault.getNode());
+            normalizedMessage.setProperty(SOAP_FAULT_ROLE, fault.getRole());
+            normalizedMessage.setContent(fault.getDetails());
+        } else {
+            normalizedMessage.setContent(soapMessage.getSource());
+        }
 	}
 	
 	public void fromNMS(SoapMessage soapMessage, NormalizedMessage normalizedMessage) {
@@ -63,7 +86,17 @@ public class JBIMarshaler {
 			DataHandler handler = normalizedMessage.getAttachment(id);
 			soapMessage.addAttachment(id, handler);
 		}
-		soapMessage.setSource(normalizedMessage.getContent());
+        if (normalizedMessage instanceof Fault) {
+            QName code = (QName) normalizedMessage.getProperty(SOAP_FAULT_CODE);
+            QName subcode = (QName) normalizedMessage.getProperty(SOAP_FAULT_SUBCODE);
+            String reason = (String) normalizedMessage.getProperty(SOAP_FAULT_REASON);
+            URI node = (URI) normalizedMessage.getProperty(SOAP_FAULT_NODE);
+            URI role = (URI) normalizedMessage.getProperty(SOAP_FAULT_ROLE);
+            SoapFault fault = new SoapFault(code, subcode, reason, node, role, normalizedMessage.getContent());
+            soapMessage.setFault(fault);
+        } else {
+            soapMessage.setSource(normalizedMessage.getContent());
+        }
 	}
 
 }

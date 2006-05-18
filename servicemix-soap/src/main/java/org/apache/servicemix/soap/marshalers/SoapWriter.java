@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -34,6 +35,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.Source;
@@ -103,7 +105,7 @@ public class SoapWriter {
                 if (message.getFault().getDetails() != null) {
                     XMLStreamReader reader = marshaler.getSourceTransformer().toXMLStreamReader(
                             message.getFault().getDetails());
-                    XMLStreamHelper.copy(reader, writer, marshaler.isRepairingNamespace());
+                    XMLStreamHelper.copy(reader, writer);
                 } else {
                     throw new IllegalStateException("Cannot write non xml faults for non soap messages");
                 }
@@ -176,7 +178,7 @@ public class SoapWriter {
             for (Iterator it = message.getHeaders().values().iterator(); it.hasNext();) {
                 DocumentFragment df = (DocumentFragment) it.next();
                 Element e = (Element) df.getFirstChild();
-                XMLStreamHelper.copy(new W3CDOMStreamReader(e), writer, marshaler.isRepairingNamespace());
+                XMLStreamHelper.copy(new W3CDOMStreamReader(e), writer);
             }
             writer.writeEndElement();
         }
@@ -193,7 +195,7 @@ public class SoapWriter {
 
     private void writeContents(XMLStreamWriter writer) throws Exception {
         XMLStreamReader reader = marshaler.getSourceTransformer().toXMLStreamReader(message.getSource());
-        XMLStreamHelper.copy(reader, writer, marshaler.isRepairingNamespace());
+        XMLStreamHelper.copy(reader, writer);
     }
 
     private void writeFault(XMLStreamWriter writer) throws Exception {
@@ -201,14 +203,52 @@ public class SoapWriter {
         String soapUri = envelope.getNamespaceURI();
         if (SoapMarshaler.SOAP_11_URI.equals(soapUri)) {
             writeSoap11Fault(writer);
-        } else {
+        } else if (SoapMarshaler.SOAP_12_URI.equals(soapUri)) {
             writeSoap12Fault(writer);
+        } else {
+            throw new IllegalStateException("Unknown soap namespace: " + soapUri);
         }
     }
 
     private void writeSoap11Fault(XMLStreamWriter writer) throws Exception {
-        // TODO
-        writeSoap12Fault(writer);
+        QName envelope = getEnvelopeName();
+        String soapUri = envelope.getNamespaceURI();
+        String soapPrefix = envelope.getPrefix();
+        writer.setPrefix(soapPrefix, soapUri);
+        SoapFault fault = message.getFault();
+        fault.translateCodeTo11();
+
+        writer.writeStartElement(soapPrefix, SoapMarshaler.FAULT, soapUri);
+        QName code = fault.getCode();
+        if (code != null) {
+            XMLStreamHelper.writeStartElement(writer, SoapMarshaler.SOAP_11_FAULTCODE);
+            XMLStreamHelper.writeTextQName(writer, code);
+            writer.writeEndElement();
+        }
+        String reason = fault.getReason();
+        if (reason == null && fault.getCause() != null) {
+            reason = fault.getCause().toString();
+        }
+        XMLStreamHelper.writeStartElement(writer, SoapMarshaler.SOAP_11_FAULTSTRING);
+        if (reason != null) {
+            writer.writeCharacters(reason);
+        }
+        writer.writeEndElement();
+        URI node = fault.getNode();
+        if (node != null) {
+            XMLStreamHelper.writeStartElement(writer, SoapMarshaler.SOAP_11_FAULTACTOR);
+            writer.writeCharacters(node.toString());
+            writer.writeEndElement();
+        }
+        Source details = fault.getDetails();
+        if (details != null) {
+            XMLStreamHelper.writeStartElement(writer, SoapMarshaler.SOAP_11_FAULTDETAIL);
+            XMLStreamReader reader = marshaler.getSourceTransformer().toXMLStreamReader(details);
+            XMLStreamHelper.copy(reader, writer);
+            writer.writeEndElement();
+        }
+
+        writer.writeEndElement();
     }
 
     private void writeSoap12Fault(XMLStreamWriter writer) throws Exception {
@@ -217,19 +257,20 @@ public class SoapWriter {
         String soapPrefix = envelope.getPrefix();
         writer.setPrefix(soapPrefix, soapUri);
         SoapFault fault = message.getFault();
-
-        writer.writeStartElement(soapPrefix, "Fault", soapUri);
-        String code = fault.getCode();
+        fault.translateCodeTo12();
+        
+        writer.writeStartElement(soapPrefix, SoapMarshaler.FAULT, soapUri);
+        QName code = fault.getCode();
         if (code != null) {
-            writer.writeStartElement(soapPrefix, "Code", soapUri);
-            writer.writeStartElement(soapPrefix, "Value", soapUri);
-            writer.writeCharacters(soapPrefix + ":" + code);
+            XMLStreamHelper.writeStartElement(writer, SoapMarshaler.SOAP_12_FAULTCODE);
+            XMLStreamHelper.writeStartElement(writer, SoapMarshaler.SOAP_12_FAULTVALUE);
+            XMLStreamHelper.writeTextQName(writer, code);
             writer.writeEndElement();
-            String subcode = fault.getSubcode();
+            QName subcode = fault.getSubcode();
             if (subcode != null) {
-                writer.writeStartElement(soapPrefix, "Subcode", soapUri);
-                writer.writeStartElement(soapPrefix, "Value", soapUri);
-                writer.writeCharacters(subcode);
+                XMLStreamHelper.writeStartElement(writer, SoapMarshaler.SOAP_12_FAULTSUBCODE);
+                XMLStreamHelper.writeStartElement(writer, SoapMarshaler.SOAP_12_FAULTVALUE);
+                XMLStreamHelper.writeTextQName(writer, subcode);
                 writer.writeEndElement();
                 writer.writeEndElement();
             }
@@ -239,39 +280,39 @@ public class SoapWriter {
         if (reason == null && fault.getCause() != null) {
             reason = fault.getCause().toString();
         }
+        XMLStreamHelper.writeStartElement(writer, SoapMarshaler.SOAP_12_FAULTREASON);
+        XMLStreamHelper.writeStartElement(writer, SoapMarshaler.SOAP_12_FAULTTEXT);
+        writer.writeAttribute(XMLConstants.XML_NS_PREFIX, XMLConstants.XML_NS_URI, "lang", "en");
         if (reason != null) {
-            writer.writeStartElement(soapPrefix, "Reason", soapUri);
-            writer.writeStartElement(soapPrefix, "Text", soapUri);
-            writer.writeAttribute(XMLConstants.XML_NS_PREFIX, XMLConstants.XML_NS_URI, "lang", "en-US");
             writer.writeCharacters(reason);
-            writer.writeEndElement();
-            writer.writeEndElement();
         }
-        String node = fault.getNode();
+        writer.writeEndElement();
+        writer.writeEndElement();
+        URI node = fault.getNode();
         if (node != null) {
-            writer.writeStartElement(soapPrefix, "Node", soapUri);
-            writer.writeCharacters(node);
+            XMLStreamHelper.writeStartElement(writer, SoapMarshaler.SOAP_12_FAULTNODE);
+            writer.writeCharacters(node.toString());
             writer.writeEndElement();
         }
 
-        String role = fault.getRole();
+        URI role = fault.getRole();
         if (role != null) {
-            writer.writeStartElement(soapPrefix, "Role", soapUri);
-            writer.writeCharacters(role);
+            XMLStreamHelper.writeStartElement(writer, SoapMarshaler.SOAP_12_FAULTROLE);
+            writer.writeCharacters(role.toString());
             writer.writeEndElement();
         }
 
         Source details = fault.getDetails();
         if (details != null) {
-            writer.writeStartElement(soapPrefix, "Details", soapUri);
+            XMLStreamHelper.writeStartElement(writer, SoapMarshaler.SOAP_12_FAULTDETAIL);
             XMLStreamReader reader = marshaler.getSourceTransformer().toXMLStreamReader(details);
-            XMLStreamHelper.copy(reader, writer, marshaler.isRepairingNamespace());
+            XMLStreamHelper.copy(reader, writer);
             writer.writeEndElement();
         }
 
         writer.writeEndElement();
     }
-
+    
     protected QName getEnvelopeName() {
         QName name = message.getEnvelopeName();
         if (name == null) {
@@ -281,5 +322,5 @@ public class SoapWriter {
         }
         return name;
     }
-
+    
 }

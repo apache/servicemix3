@@ -249,6 +249,5 @@ public class SoapMessageMarshalerTest extends TestCase {
         QName qname = DOMUtil.createQName(root, DOMUtil.getElementText(root)); 
         assertEquals(new QName("uri:test", "MyConsumerService"), qname); 
 	}
-	
-	
+    
 }

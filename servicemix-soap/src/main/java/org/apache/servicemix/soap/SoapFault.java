@@ -15,7 +15,12 @@
  */
 package org.apache.servicemix.soap;
 
+import java.net.URI;
+
+import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
+
+import org.apache.servicemix.soap.marshalers.SoapMarshaler;
 
 /**
  * Represents a SOAP fault which occurred while processing the
@@ -29,39 +34,43 @@ public class SoapFault extends Exception {
 	
     private static final long serialVersionUID = 984561453557136677L;
     
-    public static final String SENDER = "Sender";
-	public static final String RECEIVER = "Receiver";
+    public static final QName SENDER = SoapMarshaler.SOAP_12_CODE_SENDER;
+	public static final QName RECEIVER = SoapMarshaler.SOAP_12_CODE_RECEIVER;
 	
-    private String code;
-    private String subcode;
+    private QName code;
+    private QName subcode;
     private String reason;
-    private String node;
-    private String role;
+    private URI node;
+    private URI role;
     private Source details;
 
     public SoapFault(Exception cause) {
         super(cause);
     }
 
-    public SoapFault(String code, String reason) {
+    public SoapFault(QName code, String reason) {
+        super(reason);
         this.code = code;
         this.reason = reason;
     }
 
-    public SoapFault(String code, String subcode, String reason) {
+    public SoapFault(QName code, QName subcode, String reason) {
+        super(reason);
         this.code = code;
         this.subcode = subcode;
         this.reason = reason;
     }
 
-    public SoapFault(String code, String reason, String node, String role) {
+    public SoapFault(QName code, String reason, URI node, URI role) {
+        super(reason);
         this.code = code;
         this.reason = reason;
         this.node = node;
         this.role = role;
     }
 
-    public SoapFault(String code, String reason, String node, String role, Source details) {
+    public SoapFault(QName code, String reason, URI node, URI role, Source details) {
+        super(reason);
         this.code = code;
         this.reason = reason;
         this.node = node;
@@ -69,11 +78,21 @@ public class SoapFault extends Exception {
         this.details = details;
     }
 
-    public String getCode() {
+    public SoapFault(QName code, QName subcode, String reason, URI node, URI role, Source details) {
+        super(reason);
+        this.code = code;
+        this.subcode = subcode;
+        this.reason = reason;
+        this.node = node;
+        this.role = role;
+        this.details = details;
+    }
+
+    public QName getCode() {
         return code;
     }
 
-    public String getSubcode() {
+    public QName getSubcode() {
         return subcode;
     }
 
@@ -81,15 +100,53 @@ public class SoapFault extends Exception {
         return reason;
     }
 
-    public String getNode() {
+    public URI getNode() {
         return node;
     }
 
-    public String getRole() {
+    public URI getRole() {
         return role;
     }
 
 	public Source getDetails() {
 		return details;
 	}
+
+    public void translateCodeTo11() {
+        if (code != null) {
+            if (subcode != null) {
+                code = subcode;
+                subcode = null;
+            } else if (SoapMarshaler.SOAP_12_CODE_DATAENCODINGUNKNOWN.equals(code)) {
+                code = SoapMarshaler.SOAP_11_CODE_CLIENT;
+            } else if (SoapMarshaler.SOAP_12_CODE_MUSTUNDERSTAND.equals(code)) {
+                code = SoapMarshaler.SOAP_11_CODE_MUSTUNDERSTAND;
+            } else if (SoapMarshaler.SOAP_12_CODE_RECEIVER.equals(code)) {
+                code = SoapMarshaler.SOAP_11_CODE_SERVER;
+            } else if (SoapMarshaler.SOAP_12_CODE_SENDER.equals(code)) {
+                code = SoapMarshaler.SOAP_11_CODE_CLIENT;
+            }
+        } else {
+            code = SoapMarshaler.SOAP_11_CODE_SERVER;
+        }
+    }
+
+    public void translateCodeTo12() {
+        if (code != null && subcode == null) {
+            if (SoapMarshaler.SOAP_11_CODE_CLIENT.equals(code)) {
+                code = SoapMarshaler.SOAP_12_CODE_SENDER;
+            } else if (SoapMarshaler.SOAP_11_CODE_MUSTUNDERSTAND.equals(code)) {
+                code = SoapMarshaler.SOAP_12_CODE_MUSTUNDERSTAND;
+            } else if (SoapMarshaler.SOAP_11_CODE_SERVER.equals(code)) {
+                code = SoapMarshaler.SOAP_12_CODE_RECEIVER;
+            } else if (SoapMarshaler.SOAP_11_CODE_VERSIONMISMATCH.equals(code)) {
+                code = SoapMarshaler.SOAP_12_CODE_VERSIONMISMATCH;
+            } else {
+                subcode = code;
+                code = SoapMarshaler.SOAP_12_CODE_SENDER;
+            }
+        } else if (code == null) {
+            code = SoapMarshaler.SOAP_12_CODE_RECEIVER;
+        }
+    }
 }

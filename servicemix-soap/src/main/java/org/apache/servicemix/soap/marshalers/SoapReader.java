@@ -18,6 +18,7 @@ package org.apache.servicemix.soap.marshalers;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
+import java.net.URI;
 import java.util.Properties;
 
 import javax.mail.Session;
@@ -26,18 +27,22 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.servicemix.jbi.jaxp.ExtendedXMLStreamReader;
 import org.apache.servicemix.jbi.jaxp.FragmentStreamReader;
 import org.apache.servicemix.jbi.jaxp.StaxSource;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.servicemix.soap.SoapFault;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Element;
 
 /**
  * 
@@ -49,7 +54,7 @@ public class SoapReader {
 
 	private SoapMarshaler marshaler;
   
-  protected static final Source EMPTY_CONTENT = new StringSource("<payload/>");
+    protected static final Source EMPTY_CONTENT = new StringSource("<payload/>");
 
 	public SoapReader(SoapMarshaler marshaler) {
 		this.marshaler = marshaler;
@@ -70,7 +75,11 @@ public class SoapReader {
 
 	public SoapMessage read(InputStream is) throws Exception {
 		if (marshaler.isSoap()) {
-			return readSoap(is);
+            if (marshaler.isUseDom()) {
+                return readSoapUsingDom(is);
+            } else {
+                return readSoapUsingStax(is);
+            }
 		} else {
 			SoapMessage message = new SoapMessage();
 			message.setSource(new StreamSource(is));
@@ -78,7 +87,65 @@ public class SoapReader {
 		}
 	}
 
-	private SoapMessage readSoap(InputStream is) throws Exception {
+    private SoapMessage readSoapUsingDom(InputStream is) throws Exception {
+        SoapMessage message = new SoapMessage();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        Document doc = factory.newDocumentBuilder().parse(is);
+        Element env = doc.getDocumentElement();
+        QName envName = DOMUtil.getQName(env);
+        if (!envName.getLocalPart().equals(SoapMarshaler.ENVELOPE)) {
+            throw new SoapFault(SoapFault.SENDER, "Unrecognized element: "
+                    + envName + ". Expecting 'Envelope'.");
+        }
+        message.setEnvelopeName(envName);
+        // Check soap 1.1 or 1.2
+        String soapUri = envName.getNamespaceURI();
+        if (!SoapMarshaler.SOAP_11_URI.equals(soapUri) && !SoapMarshaler.SOAP_12_URI.equals(soapUri)) {
+            throw new SoapFault(SoapFault.SENDER, "Unrecognized namespace: " + soapUri
+                    + " for element 'Envelope'.");
+        }
+        // Check Headers
+        Element child = DOMUtil.getFirstChildElement(env);
+        if (DOMUtil.getQName(child).equals(new QName(soapUri, SoapMarshaler.HEADER))) {
+            parseHeaders(message, child);
+            child = DOMUtil.getNextSiblingElement(child);
+        }
+        // Check Body
+        if (!DOMUtil.getQName(child).equals(new QName(soapUri, SoapMarshaler.BODY))) {
+            throw new SoapFault(SoapFault.SENDER, "Unrecognized element: "
+                    + DOMUtil.getQName(child) + ". Expecting 'Body'.");
+        }
+        // Create Source for content
+        child = DOMUtil.getFirstChildElement(child);
+        if (child != null) {
+            QName childName = DOMUtil.getQName(child);
+            message.setBodyName(childName);
+            // Check for fault
+            if (childName.equals(new QName(soapUri, SoapMarshaler.FAULT))) {
+                message.setFault(readFaultUsingDom(child));
+            } else {
+                message.setSource(new DOMSource(child));
+            }
+        }
+        child = DOMUtil.getNextSiblingElement(child);
+        if (child != null) {
+            throw new SoapFault(SoapFault.RECEIVER, "Body element has more than one child element.");
+        }
+        return message;
+    }
+    
+    private void parseHeaders(SoapMessage message, Element headers) {
+        for (Element child = DOMUtil.getFirstChildElement(headers);
+             child != null;
+             child = DOMUtil.getNextSiblingElement(child)) {
+            DocumentFragment df = child.getOwnerDocument().createDocumentFragment();
+            df.appendChild(child.cloneNode(true));
+            message.addHeader(DOMUtil.getQName(child), df);
+        }
+    }
+    
+	private SoapMessage readSoapUsingStax(InputStream is) throws Exception {
 		SoapMessage message = new SoapMessage();
 		XMLStreamReader reader = marshaler.getInputFactory().createXMLStreamReader(is);
 		reader = new ExtendedXMLStreamReader(reader);
@@ -117,11 +184,152 @@ public class SoapReader {
 		}
 		// Create Source for content
 		if (reader.nextTag() != XMLStreamConstants.END_ELEMENT) {
-			message.setBodyName(reader.getName());
-			message.setSource(new StaxSource(new FragmentStreamReader(reader)));
+            QName childName = reader.getName();
+            message.setBodyName(childName);
+            // Check for fault
+            if (childName.equals(new QName(soapUri, SoapMarshaler.FAULT))) {
+                message.setFault(readFaultUsingStax(reader));
+            } else {
+                message.setSource(new StaxSource(new FragmentStreamReader(reader)));
+            }
 		}
 		return message;
 	}
+    
+    private SoapFault readFaultUsingDom(Element element) throws SoapFault {
+        QName code = null;
+        QName subcode = null;
+        String reason = null;
+        URI node = null;
+        URI role = null;
+        Source details = null;
+        // Parse soap 1.1 faults
+        if (element.getNamespaceURI().equals(SoapMarshaler.SOAP_11_URI)) {
+            // Fault code
+            Element child = DOMUtil.getFirstChildElement(element);
+            checkElementName(child, SoapMarshaler.SOAP_11_FAULTCODE);
+            code = DOMUtil.createQName(child, DOMUtil.getElementText(child));
+            // Fault string
+            child = DOMUtil.getNextSiblingElement(child);
+            checkElementName(child, SoapMarshaler.SOAP_11_FAULTSTRING);
+            reason = DOMUtil.getElementText(child);
+            child = DOMUtil.getNextSiblingElement(child);
+            QName childname = DOMUtil.getQName(child);
+            // Fault actor
+            if (SoapMarshaler.SOAP_11_FAULTACTOR.equals(childname)) {
+                node = URI.create(DOMUtil.getElementText(child));
+                child = DOMUtil.getNextSiblingElement(child);
+                childname = DOMUtil.getQName(child);
+            }
+            // Fault details
+            if (SoapMarshaler.SOAP_11_FAULTDETAIL.equals(childname)) {
+                Element subchild = DOMUtil.getFirstChildElement(child);
+                if (subchild != null) {
+                    details = new DOMSource(subchild);
+                    subchild = DOMUtil.getNextSiblingElement(subchild);
+                    if (subchild != null) {
+                        throw new SoapFault(SoapFault.RECEIVER, "Multiple elements are not supported in Detail");
+                    }
+                }
+                child = DOMUtil.getNextSiblingElement(child);
+                childname = DOMUtil.getQName(child);
+            }
+            // Nothing should be left
+            if (childname != null) {
+                throw new SoapFault(SoapFault.SENDER, "Unexpected element: " + childname);
+            }
+        // Parse soap 1.2 faults
+        } else {
+            // Fault code
+            Element child = DOMUtil.getFirstChildElement(element);
+            checkElementName(child, SoapMarshaler.SOAP_12_FAULTCODE);
+            Element subchild = DOMUtil.getFirstChildElement(child);
+            checkElementName(subchild, SoapMarshaler.SOAP_12_FAULTVALUE);
+            code = DOMUtil.createQName(subchild, DOMUtil.getElementText(subchild));
+            if (!SoapMarshaler.SOAP_12_CODE_DATAENCODINGUNKNOWN.equals(code) &&
+                !SoapMarshaler.SOAP_12_CODE_MUSTUNDERSTAND.equals(code) &&
+                !SoapMarshaler.SOAP_12_CODE_RECEIVER.equals(code) &&
+                !SoapMarshaler.SOAP_12_CODE_SENDER.equals(code) &&
+                !SoapMarshaler.SOAP_12_CODE_VERSIONMISMATCH.equals(code)) {
+                throw new SoapFault(SoapFault.SENDER, "Unexpected fault code: " + code); 
+            }
+            subchild = DOMUtil.getNextSiblingElement(subchild);
+            if (subchild != null) {
+                checkElementName(subchild, SoapMarshaler.SOAP_12_FAULTSUBCODE);
+                Element subsubchild = DOMUtil.getFirstChildElement(subchild);
+                checkElementName(subsubchild, SoapMarshaler.SOAP_12_FAULTVALUE);
+                subcode = DOMUtil.createQName(subsubchild, DOMUtil.getElementText(subsubchild));
+                subsubchild = DOMUtil.getNextSiblingElement(subsubchild);
+                if (subsubchild != null) {
+                    checkElementName(subsubchild, SoapMarshaler.SOAP_12_FAULTSUBCODE);
+                    throw new SoapFault(SoapFault.RECEIVER, "Unsupported nested subcodes");
+                }
+            }
+            // Fault reason
+            child = DOMUtil.getNextSiblingElement(child);
+            checkElementName(child, SoapMarshaler.SOAP_12_FAULTREASON);
+            subchild = DOMUtil.getFirstChildElement(child);
+            checkElementName(subchild, SoapMarshaler.SOAP_12_FAULTTEXT);
+            reason = DOMUtil.getElementText(subchild);
+            subchild = DOMUtil.getNextSiblingElement(subchild);
+            if (subchild != null) {
+                throw new SoapFault(SoapFault.RECEIVER, "Unsupported multiple reasons");
+            }
+            // Fault node
+            child = DOMUtil.getNextSiblingElement(child);
+            QName childname = DOMUtil.getQName(child);
+            if (SoapMarshaler.SOAP_12_FAULTNODE.equals(childname)) {
+                node = URI.create(DOMUtil.getElementText(child));
+                child = DOMUtil.getNextSiblingElement(child);
+                childname = DOMUtil.getQName(child);
+            }
+            // Fault role
+            if (SoapMarshaler.SOAP_12_FAULTROLE.equals(childname)) {
+                role = URI.create(DOMUtil.getElementText(child));
+                child = DOMUtil.getNextSiblingElement(child);
+                childname = DOMUtil.getQName(child);
+            }
+            // Fault details
+            if (SoapMarshaler.SOAP_12_FAULTDETAIL.equals(childname)) {
+                subchild = DOMUtil.getFirstChildElement(child);
+                if (subchild != null) {
+                    details = new DOMSource(subchild);
+                    subchild = DOMUtil.getNextSiblingElement(subchild);
+                    if (subchild != null) {
+                        throw new SoapFault(SoapFault.RECEIVER, "Multiple elements are not supported in Detail");
+                    }
+                }
+                child = DOMUtil.getNextSiblingElement(child);
+                childname = DOMUtil.getQName(child);
+            }
+            // Nothing should be left
+            if (childname != null) {
+                throw new SoapFault(SoapFault.SENDER, "Unexpected element: " + childname);
+            }
+        }
+        SoapFault fault = new SoapFault(code, subcode, reason, node, role, details);
+        return fault;
+    }
+    
+    private SoapFault readFaultUsingStax(XMLStreamReader reader) throws SoapFault {
+        try {
+            FragmentStreamReader rh = new FragmentStreamReader(reader);
+            Document doc = (Document) marshaler.getSourceTransformer().toDOMNode(
+                    new StaxSource(rh));
+            return readFaultUsingDom(doc.getDocumentElement());
+        } catch (SoapFault e) {
+            throw e;
+        } catch (Exception e) {
+            throw new SoapFault(e);
+        }
+    }
+    
+    private void checkElementName(Element element, QName expected) throws SoapFault {
+        QName name= DOMUtil.getQName(element);
+        if (!expected.equals(name)) {
+            throw new SoapFault(SoapFault.SENDER, "Expected element: " + expected + " but found " + name);
+        }            
+    }
 
 	private void parseHeaders(SoapMessage message, XMLStreamReader reader)
 			throws Exception {

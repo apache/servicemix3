@@ -161,4 +161,50 @@ public class DOMUtil {
         }
         return answer;
     }
+
+    /**
+     * Get the first child element
+     * @param parent
+     * @return
+     */
+    public static Element getFirstChildElement(Element parent) {
+        NodeList childs = parent.getChildNodes();
+        for (int i = 0; i < childs.getLength(); i++) {
+            Node child = childs.item(i);
+            if (child instanceof Element) {
+                return (Element) child;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Get the next sibling element
+     * @param el
+     * @return
+     */
+    public static Element getNextSiblingElement(Element el) {
+        for (Node n = el.getNextSibling(); n != null; n = n.getNextSibling()) {
+            if (n instanceof Element) {
+                return (Element) n;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Build a QName from the element name
+     * @param el
+     * @return
+     */
+    public static QName getQName(Element el) {
+        if (el == null) {
+            return null;
+        } else if (el.getPrefix() != null) {
+            return new QName(el.getNamespaceURI(), el.getLocalName(), el.getPrefix());
+        } else {
+            return new QName(el.getNamespaceURI(), el.getLocalName());
+        }
+    }
+    
 }

@@ -236,16 +236,25 @@ public abstract class SoapEndpoint extends Endpoint {
      * informations to it.
      */
     protected void retrieveProxiedEndpointDefinition() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Retrieving proxied endpoint definition");
+        }
         try {
             ComponentContext ctx = this.serviceUnit.getComponent().getComponentContext();
             ServiceEndpoint ep = null;
             if (targetService != null && targetEndpoint != null) {
                 ep = ctx.getEndpoint(targetService, targetEndpoint);
+                if (ep == null && logger.isDebugEnabled()) {
+                    logger.debug("Could not retrieve endpoint targetService/targetEndpoint");
+                }
             }
             if (ep == null && targetService != null) {
                 ServiceEndpoint[] eps = ctx.getEndpointsForService(targetService);
                 if (eps != null && eps.length > 0) {
                     ep = eps[0];
+                }
+                if (ep == null && logger.isDebugEnabled()) {
+                    logger.debug("Could not retrieve endpoint for targetService");
                 }
             }
             if (ep == null && targetInterfaceName != null) {
@@ -253,9 +262,15 @@ public abstract class SoapEndpoint extends Endpoint {
                 if (eps != null && eps.length > 0) {
                     ep = eps[0];
                 }
+                if (ep == null && logger.isDebugEnabled()) {
+                    logger.debug("Could not retrieve endpoint for targetInterfaceName");
+                }
             }
             if (ep == null && service != null && endpoint != null) {
                 ep = ctx.getEndpoint(service, endpoint);
+                if (ep == null && logger.isDebugEnabled()) {
+                    logger.debug("Could not retrieve endpoint for service/endpoint");
+                }
             }
             if (ep != null) {
                 Document doc = ctx.getEndpointDescriptor(ep);

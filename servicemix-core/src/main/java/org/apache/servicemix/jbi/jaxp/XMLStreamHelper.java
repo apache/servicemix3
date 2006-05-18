@@ -15,237 +15,330 @@
  */
 package org.apache.servicemix.jbi.jaxp;
 
-import javanet.staxutils.XMLStreamReaderToContentHandler;
-import javanet.staxutils.helpers.XMLFilterImplEx;
-
-import javax.xml.namespace.NamespaceContext;
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-
 /**
  * Utility methods for working with an XMLStreamWriter. Maybe push this back into
  * stax-utils project.
  * 
+ * Code borrowed to XFire project.
+ * 
  * @version $Revision: 1.16 $
  */
 public class XMLStreamHelper implements XMLStreamConstants {
-    private static Attributes emptyAttributes = new AttributesImpl();
-
 
     /**
-     * Returns true if currently at the start of an element, otherwise move forwards to
-     * the next element start and return true, otherwise false is returned if the end of
-     * the stream is reached.
+     * Copies the reader to the writer.  The start and end document
+     * methods must be handled on the writer manually.
+     * 
+     * TODO: if the namespace on the reader has been declared previously
+     * to where we are in the stream, this probably won't work.
+     * 
+     * @param reader
+     * @param writer
+     * @throws XMLStreamException
      */
-    public static boolean skipToStartOfElement(XMLStreamReader in) throws XMLStreamException {
-        for (int code = in.getEventType(); code != END_DOCUMENT; code = in.next()) {
-            if (code == START_ELEMENT) {
-                return true;
+    public static void copy( XMLStreamReader reader, XMLStreamWriter writer ) 
+        throws XMLStreamException
+    {
+        int read = 0; // number of elements read in
+        int event = reader.getEventType();
+        
+        while ( reader.hasNext() )
+        {
+            switch( event )
+            {
+                case XMLStreamConstants.START_ELEMENT:
+                    read++;
+                    writeStartElement( reader, writer );
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    writer.writeEndElement();
+                    read--;
+                    if ( read <= 0 )
+                        return;
+                    break;
+                case XMLStreamConstants.CHARACTERS:
+                    writer.writeCharacters( reader.getText() );  
+                    break;
+                case XMLStreamConstants.START_DOCUMENT:
+                case XMLStreamConstants.END_DOCUMENT:
+                case XMLStreamConstants.ATTRIBUTE:
+                case XMLStreamConstants.NAMESPACE:
+                    break;
+                default:
+                    break;
             }
-        }
-        return false;
-    }
-
-    public static void writeStartElement(QName qname, ContentHandler handler) throws SAXException {
-        handler.startElement(qname.getNamespaceURI(), qname.getLocalPart(), QNameHelper.getQualifiedName(qname), emptyAttributes);
-    }
-
-    public static void writeEndElement(QName qname, ContentHandler handler) throws SAXException {
-        handler.endElement(qname.getNamespaceURI(), qname.getLocalPart(), QNameHelper.getQualifiedName(qname));
-    }
-
-
-    /**
-     * Copies the current element and its conetnt to the output
-     */
-    public static void copy(XMLStreamReader in, XMLStreamWriter out, boolean repairing) throws XMLStreamException {
-        int elementCount = 0;
-        for (int code = in.getEventType(); in.hasNext(); code = in.next()) {
-          elementCount = copyOne(in, out, repairing, code, elementCount);
-        }
-        while (elementCount-- > 0) {
-            out.writeEndElement();
-        }
-    }
-
-    /**
-     *
-     */
-    public static int copyOne(XMLStreamReader in, XMLStreamWriter out, boolean repairing, int code, int elementCount) throws XMLStreamException {
-      switch (code) {
-        case START_ELEMENT:
-            elementCount++;
-            writeStartElementAndAttributes(out, in, repairing);
-            break;
-
-        case END_ELEMENT:
-            if (--elementCount < 0) {
-                return elementCount;
-            }
-            out.writeEndElement();
-            break;
-
-        case CDATA:
-            out.writeCData(in.getText());
-            break;
-
-        case CHARACTERS:
-            out.writeCharacters(in.getText());
-            break;
-      }
-      return elementCount;
-    }
-    
-    public static void writeStartElement(XMLStreamWriter out, String prefix, String uri, String localName, boolean repairing) throws XMLStreamException {
-        boolean map = isPrefixNotMappedToUri(out, prefix, uri);
-        if (prefix != null && prefix.length() > 0) {
-            if (map) {
-                out.setPrefix(prefix, uri);
-            }
-            out.writeStartElement(prefix, localName, uri);
-            if (map && !repairing) {
-                out.writeNamespace(prefix, uri);
-            }
-        }
-        else {
-            boolean hasURI = uri != null && uri.length() > 0;
-            if (map && hasURI) {
-                out.setDefaultNamespace(uri);
-            }
-            out.writeStartElement(uri, localName);
-            if (map && !repairing && hasURI) {
-                out.writeDefaultNamespace(uri);
-            }
+            event = reader.next();
         }
     }
 
-    public static void writeStartElement(XMLStreamWriter out, QName envelopeName, boolean repairing) throws XMLStreamException {
-        writeStartElement(out, envelopeName.getPrefix(), envelopeName.getNamespaceURI(), envelopeName.getLocalPart(), repairing);
-    }
-
-    public static void writeStartElement(XMLStreamWriter out, XMLStreamReader in, boolean repairing) throws XMLStreamException {
-        String prefix = in.getPrefix();
-
-        // we can avoid this step if in repairing mode
-        int count = in.getNamespaceCount();
-        for (int i = 0; i < count; i++) {
-            String aPrefix = in.getNamespacePrefix(i);
-            if (prefix == aPrefix || (prefix != null && prefix.equals(aPrefix))) {
-                continue;
-            }
-            String uri = in.getNamespaceURI(i);
-            if (isPrefixNotMappedToUri(out, aPrefix, uri)) {
-                if (aPrefix != null && aPrefix.length() > 0) {
-                    out.setPrefix(aPrefix, uri);
-                }
-                else {
-                    out.setDefaultNamespace(uri);
-                }
-            }
-        }
-        String localName = in.getLocalName();
-        String uri = in.getNamespaceURI();
-        writeStartElement(out, prefix, uri, localName, repairing);
-    }
-
-
-    public static void writeStartElementAndAttributes(XMLStreamWriter out, XMLStreamReader in, boolean repairing) throws XMLStreamException {
-        writeStartElement(out, in, repairing);
-        if (!repairing) {
-            writeNamespaces(out, in, in.getPrefix());
-        }
-        writeAttributes(out, in);
-    }
-
-    public static void writeAttributes(XMLStreamWriter out, XMLStreamReader in) throws XMLStreamException {
-        int count = in.getAttributeCount();
-        for (int i = 0; i < count; i++) {
-            out.writeAttribute(in.getAttributePrefix(i),
-                    in.getAttributeNamespace(i),
-                    in.getAttributeLocalName(i),
-                    in.getAttributeValue(i));
-        }
-    }
-
-    public static void writeNamespaces(XMLStreamWriter out, XMLStreamReader in, String prefixOfCurrentElement) throws XMLStreamException {
-        int count = in.getNamespaceCount();
-        for (int i = 0; i < count; i++) {
-            String prefix = in.getNamespacePrefix(i);
-            String uri = in.getNamespaceURI(i);
-            
-            // ROGER
-            if ( prefixOfCurrentElement == null && prefix.length()==0 ) {
-              continue;
-            }
-            
-            if (prefixOfCurrentElement != null && prefixOfCurrentElement.equals(prefix)) {
-                continue;
-            }
-            if (isPrefixNotMappedToUri(out, prefix, uri)) {
-                out.writeNamespace(prefix, uri);
-            }
-        }
-    }
-
-
-    public static void writeNamespacesExcludingPrefixAndNamespace(XMLStreamWriter out, XMLStreamReader in, String ignorePrefix, String ignoreNamespace) throws XMLStreamException {
-        int count = in.getNamespaceCount();
-        for (int i = 0; i < count; i++) {
-            String prefix = in.getNamespacePrefix(i);
-            if (!ignorePrefix.equals(prefix)) {
-                String uri = in.getNamespaceURI(i);
-                if (!ignoreNamespace.equals(uri)) {
-                    out.writeNamespace(prefix, uri);
-                }
-            }
-        }
-    }
-
-    public static void writeAttribute(XMLStreamWriter out, QName name, String attributeValue) throws XMLStreamException {
-        writeAttribute(out, name.getPrefix(), name.getNamespaceURI(), name.getLocalPart(), attributeValue);
-    }
-
-    public static void writeAttribute(XMLStreamWriter out, String prefix, String namespaceURI, String localPart, String attributeValue) throws XMLStreamException {
-        out.writeAttribute(prefix, namespaceURI, localPart, attributeValue);
-    }
-
-    protected static boolean isPrefixNotMappedToUri(XMLStreamWriter out, String prefix, String uri) {
-        if (prefix == null) {
+    private static void writeStartElement(XMLStreamReader reader, XMLStreamWriter writer) 
+        throws XMLStreamException
+    {
+        String local = reader.getLocalName();
+        String uri = reader.getNamespaceURI();
+        String prefix = reader.getPrefix();
+        if (prefix == null)
+        {
             prefix = "";
         }
-        NamespaceContext context = out.getNamespaceContext();
-        if (context == null) {
-            return false;
+        if (uri == null)
+        {
+            uri = "";
         }
-        String mappedUri = context.getPrefix(prefix);
-        boolean map = (mappedUri == null || !mappedUri.equals(uri));
-        return map;
-    }
+        
+        String boundPrefix = writer.getPrefix(uri);
+        boolean writeElementNS = false;
+        if ( boundPrefix == null || !prefix.equals(boundPrefix) )
+        {   
+            writeElementNS = true;
+        }
+        
+        // Write out the element name
+        if (uri != null)
+        {
+            if (prefix.length() == 0) 
+            { 
+                
+                writer.writeStartElement(local);
+                writer.setDefaultNamespace(uri); 
+                
+            } 
+            else 
+            { 
+                writer.writeStartElement(prefix, local, uri); 
+                writer.setPrefix(prefix, uri); 
+            } 
+        }
+        else
+        {
+            writer.writeStartElement( local );
+        }
 
-    /**
-     * Copies the content to the SAX stream
-     */
-    public static void copy(XMLStreamReader in, ContentHandler contentHandler) throws XMLStreamException {
-        XMLFilterImplEx filter = new XMLFilterImplEx();
-        filter.setContentHandler(contentHandler);
-        XMLStreamReaderToContentHandler converter = new XMLStreamReaderToContentHandler(in, filter);
-        converter.bridge();
-    }
+        // Write out the namespaces
+        for ( int i = 0; i < reader.getNamespaceCount(); i++ )
+        {
+            String nsURI = reader.getNamespaceURI(i);
+            String nsPrefix = reader.getNamespacePrefix(i);
+            if (nsPrefix == null) nsPrefix = "";
+            
+            if ( nsPrefix.length() ==  0 )
+            {
+                writer.writeDefaultNamespace(nsURI);
+            }
+            else
+            {
+                writer.writeNamespace(nsPrefix, nsURI);
+            }
 
-    /**
-     * Copies the element and its content to the SAX stream
-     */
-    public static void copyElement(XMLStreamReader in, ContentHandler contentHandler) throws XMLStreamException {
-        copy(new FragmentStreamReader(in), contentHandler);
-    }
+            if (nsURI.equals(uri) && nsPrefix.equals(prefix))
+            {
+                writeElementNS = false;
+            }
+        }
+        
+        // Check if the namespace still needs to be written.
+        // We need this check because namespace writing works 
+        // different on Woodstox and the RI.
+        if (writeElementNS)
+        {
+            if ( prefix == null || prefix.length() ==  0 )
+            {
+                writer.writeDefaultNamespace(uri);
+            }
+            else
+            {
+                writer.writeNamespace(prefix, uri);
+            }
+        }
 
+        // Write out attributes
+        for ( int i = 0; i < reader.getAttributeCount(); i++ )
+        {
+            String ns = reader.getAttributeNamespace(i);
+            String nsPrefix = reader.getAttributePrefix(i);
+            if ( ns == null || ns.length() == 0 )
+            {
+                writer.writeAttribute(
+                        reader.getAttributeLocalName(i),
+                        reader.getAttributeValue(i));
+            }
+            else if (nsPrefix == null || nsPrefix.length() == 0)
+            {
+                writer.writeAttribute(
+                    reader.getAttributeNamespace(i),
+                    reader.getAttributeLocalName(i),
+                    reader.getAttributeValue(i));
+            }
+            else
+            {
+                writer.writeAttribute(reader.getAttributePrefix(i),
+                                      reader.getAttributeNamespace(i),
+                                      reader.getAttributeLocalName(i),
+                                      reader.getAttributeValue(i));
+            }
+            
+            
+        }
+    }
     
+    /**
+     * Write a start element with the specified parameters
+     * @param writer
+     * @param uri
+     * @param local
+     * @param prefix
+     * @throws XMLStreamException
+     */
+    public static void writeStartElement( XMLStreamWriter writer, String uri, String local, String prefix ) 
+        throws XMLStreamException 
+    {
+        if (prefix == null)
+        {
+            prefix = "";
+        }
+        if (uri == null)
+        {
+            uri = "";
+        }
+        
+        String boundPrefix = writer.getPrefix(uri);
+        boolean writeElementNS = false;
+        if ( boundPrefix == null || !prefix.equals(boundPrefix) )
+        {   
+            writeElementNS = true;
+        }
+        
+        // Write out the element name
+        if (uri != null)
+        {
+            if (prefix.length() == 0) 
+            { 
+                
+                writer.writeStartElement(local);
+                writer.setDefaultNamespace(uri); 
+                
+            } 
+            else 
+            { 
+                writer.writeStartElement(prefix, local, uri); 
+                writer.setPrefix(prefix, uri); 
+            } 
+        }
+        else
+        {
+            writer.writeStartElement( local );
+        }
+
+        // Check if the namespace still needs to be written.
+        // We need this check because namespace writing works 
+        // different on Woodstox and the RI.
+        if (writeElementNS)
+        {
+            if ( prefix.length() ==  0 )
+            {
+                writer.writeDefaultNamespace(uri);
+            }
+            else
+            {
+                writer.writeNamespace(prefix, uri);
+            }
+        }
+    }
+
+    /**
+     * Write a start element with the given QName.
+     * However, if a namespace has already been bound to a prefix,
+     * use the existing one, else default to the prefix
+     * in the QName (if specified).  Else, a prefix is generated.
+     * 
+     * @param writer
+     * @param name
+     * @throws XMLStreamException
+     */
+    public static void writeStartElement(XMLStreamWriter writer, QName name) throws XMLStreamException {
+        String prefix = choosePrefix(writer, name, false);
+        writeStartElement(writer, name.getNamespaceURI(), name.getLocalPart(), prefix);
+    }
+
+    /**
+     * 
+     * @param out
+     * @param name
+     * @throws XMLStreamException
+     */
+    public static void writeTextQName(XMLStreamWriter out, QName name) throws XMLStreamException {
+        String prefix = choosePrefix(out, name, true);
+        if (XMLConstants.DEFAULT_NS_PREFIX.equals(prefix)) {
+            out.writeCharacters(name.getLocalPart());
+        } else {
+            out.writeCharacters(prefix + ":" + name.getLocalPart());
+        }
+    }
+    
+    protected static String choosePrefix(XMLStreamWriter out, QName name, boolean declare) throws XMLStreamException {
+        String uri = name.getNamespaceURI();
+        // If no namespace
+        if (uri == null || XMLConstants.NULL_NS_URI.equals(uri)) {
+            if (!XMLConstants.NULL_NS_URI.equals(out.getNamespaceContext().getNamespaceURI(XMLConstants.DEFAULT_NS_PREFIX))) {
+                out.setPrefix(XMLConstants.DEFAULT_NS_PREFIX, XMLConstants.NULL_NS_URI);
+            }
+            return XMLConstants.DEFAULT_NS_PREFIX;
+        // Need to write a prefix
+        } else {
+            String defPrefix = name.getPrefix();
+            // A prefix is specified
+            if (defPrefix != null && !XMLConstants.DEFAULT_NS_PREFIX.equals(defPrefix)) {
+                // if the uri is bound to the specified prefix, good, else
+                if (!uri.equals(out.getNamespaceContext().getNamespaceURI(defPrefix))) {
+                    // if there is a prefix bound to the uri, use it
+                    if (out.getNamespaceContext().getPrefix(uri) != null) {
+                        defPrefix = out.getNamespaceContext().getPrefix(uri);
+                    // get prefix from the writer
+                    } else if (out.getPrefix(uri) != null) {
+                        defPrefix = out.getPrefix(uri);
+                    // we need to bind the prefix
+                    } else if (declare) {
+                        out.setPrefix(defPrefix, uri);
+                        out.writeNamespace(defPrefix, uri);
+                    }
+                }
+            // No prefix specified
+            } else {
+                // if there is a prefix bound to the uri, use it
+                if (out.getNamespaceContext().getPrefix(uri) != null) {
+                    defPrefix = out.getNamespaceContext().getPrefix(uri);
+                // get prefix from the writer
+                } else if (out.getPrefix(uri) != null) {
+                    defPrefix = out.getPrefix(uri);
+                // we need to generate a prefix
+                } else {
+                    defPrefix = getUniquePrefix(out); 
+                    if (declare) {
+                        out.setPrefix(defPrefix, uri);
+                        out.writeNamespace(defPrefix, uri);
+                    }
+                }
+            }
+            return defPrefix;
+        }
+    }
+    
+    protected static String getUniquePrefix(XMLStreamWriter writer) {
+        int n = 1;
+        while (true) {
+            String nsPrefix = "ns" + n;
+            if (writer.getNamespaceContext().getNamespaceURI(nsPrefix) == null) {
+                return nsPrefix;
+            }
+            n++;
+        }
+    }
+
 }
