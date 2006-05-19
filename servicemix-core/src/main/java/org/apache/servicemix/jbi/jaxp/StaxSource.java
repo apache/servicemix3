@@ -135,6 +135,9 @@ public class StaxSource extends SAXSource implements XMLReader {
         for (int i = 0; i < streamReader.getNamespaceCount(); i++) {
             String prefix = streamReader.getNamespacePrefix(i);
             String uri = streamReader.getNamespaceURI(i);
+            if (uri == null) {
+                uri = "";
+            }
             // Default namespace
             if (prefix == null || prefix.length() == 0) {
                 attrs.addAttribute(null, 
@@ -162,6 +165,9 @@ public class StaxSource extends SAXSource implements XMLReader {
             }
             String type = streamReader.getAttributeType(i);
             String value = streamReader.getAttributeValue(i);
+            if (value == null) {
+                value = "";
+            }
             attrs.addAttribute(uri, localName, qName, type, value);
         }
         return attrs;
