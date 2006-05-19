@@ -42,7 +42,7 @@ public class SpringSecuredBrokerTest extends SpringTestSupport {
     static {
         String path = System.getProperty("java.security.auth.login.config");
         if (path == null) {
-            URL resource = PropertiesLoginModuleTest.class.getResource("login.config");
+            URL resource = PropertiesLoginModuleTest.class.getResource("login.properties");
             if (resource != null) {
                 path = new File(resource.getFile()).getAbsolutePath();
                 System.setProperty("java.security.auth.login.config", path);

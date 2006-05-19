@@ -15,6 +15,7 @@
  */
 package org.apache.servicemix.jbi.security;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -39,9 +40,9 @@ public class PropertiesLoginModuleTest extends TestCase {
     static {
         String path = System.getProperty("java.security.auth.login.config");
         if (path == null) {
-            URL resource = PropertiesLoginModuleTest.class.getResource("login.config");
+            URL resource = PropertiesLoginModuleTest.class.getResource("login.properties");
             if (resource != null) {
-                path = resource.getFile();
+                path = new File(resource.getFile()).getAbsolutePath();
                 System.setProperty("java.security.auth.login.config", path);
             }
         }
