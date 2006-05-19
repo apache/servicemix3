@@ -15,6 +15,7 @@
  */
 package org.apache.servicemix.jbi.security;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -32,7 +33,6 @@ import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.tck.Receiver;
-import org.apache.servicemix.tck.ReceiverComponent;
 import org.apache.servicemix.tck.SpringTestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
@@ -44,11 +44,11 @@ public class SpringSecuredBrokerTest extends SpringTestSupport {
         if (path == null) {
             URL resource = PropertiesLoginModuleTest.class.getResource("login.config");
             if (resource != null) {
-                path = resource.getFile();
+                path = new File(resource.getFile()).getAbsolutePath();
                 System.setProperty("java.security.auth.login.config", path);
             }
         }
-        System.out.println("Path to login config: " + path);
+        System.err.println("Path to login config: " + path);
     }
 
     protected Receiver receiver1;
