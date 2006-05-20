@@ -34,6 +34,14 @@
                 <eclipse.dependency>true</eclipse.dependency>
             </properties>
         </dependency>
+        <dependency>
+	        <groupId>${pom.groupId}</groupId>
+	        <artifactId>servicemix-services</artifactId>
+	        <version>${pom.currentVersion}</version>
+	        <properties>
+	          <eclipse.dependency>true</eclipse.dependency>
+	        </properties>
+        </dependency>
 
         <dependency>
             <groupId>mx4j</groupId>
@@ -199,6 +207,12 @@
         <dependency>
             <groupId>org.apache.xbean</groupId>
             <artifactId>xbean-spring</artifactId>
+            <version>${xbean_version}</version>
+            <url>http://www.xbean.org</url>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xbean</groupId>
+            <artifactId>xbean-server</artifactId>
             <version>${xbean_version}</version>
             <url>http://www.xbean.org</url>
         </dependency>
