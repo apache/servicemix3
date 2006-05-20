@@ -121,7 +121,7 @@ public class HttpSoapTest extends TestCase {
     }
 
     public void testMarhaler() throws Exception {
-        String url = "http://64.124.140.30/soap";
+        String url = "http://64.124.140.30:9090/soap";
         HttpSoapClientMarshaler marshaler = new HttpSoapClientMarshaler();
         PostMethod method = new PostMethod(url);
         method.addRequestHeader("Content-Type", "text/xml");

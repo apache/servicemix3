@@ -10,7 +10,7 @@
         <sm:component><bean class="org.apache.servicemix.components.saaj.SaajBinding">
           <property name="soapEndpoint">
             <bean class="javax.xml.messaging.URLEndpoint">
-              <constructor-arg value="http://64.124.140.30/soap"/>
+              <constructor-arg value="http://64.124.140.30:9090/soap"/>
             </bean>
           </property>
         </bean></sm:component>
