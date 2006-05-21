@@ -1549,6 +1549,11 @@
       <artifactId>bpe</artifactId>
       <version>1.0-20060316</version>
     </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jcl</artifactId>
+      <version>1.0.1</version>
+    </dependency>
     </dependencies>
   </dependencyManagement>
   
