@@ -45,7 +45,7 @@ public class FragmentStreamReader extends StreamReaderDelegate implements XMLStr
 		if (ctx instanceof ExtendedNamespaceContext) {
 			Iterator it = ((ExtendedNamespaceContext) ctx).getPrefixes();
 			while (it.hasNext()) {
-				String prefix = it.next().toString();
+				String prefix = (String) it.next();
 				rootPrefixes.add(prefix);
 			}
 		}
