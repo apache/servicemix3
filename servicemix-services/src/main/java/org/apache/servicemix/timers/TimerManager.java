@@ -23,6 +23,8 @@ public interface TimerManager {
     
     Timer schedule(TimerListener listener, Date date);
     
+    void start();
+    
     void stop();
 
 }

@@ -27,7 +27,7 @@ import org.apache.servicemix.timers.TimerManager;
 public class TimerManagerImpl implements TimerManager {
 
     private static final Log log = LogFactory.getLog(TimerManagerImpl.class);
-    private static java.util.Timer timer = new java.util.Timer();
+    private java.util.Timer timer;
     
     public Timer schedule(TimerListener listener, long delay) {
         if (log.isDebugEnabled()) {
@@ -45,6 +45,10 @@ public class TimerManagerImpl implements TimerManager {
         TimerImpl tt = new TimerImpl(listener);
         timer.schedule(tt, date);
         return tt;
+    }
+    
+    public void start() {
+        timer = new java.util.Timer();
     }
     
     public void stop() {
