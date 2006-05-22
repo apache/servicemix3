@@ -67,9 +67,11 @@ public class SecuredBroker extends DefaultBroker {
                     throw new SecurityException("User not authenticated");
                 }
                 Set acls = authorizationMap.getAcls(se);
-                acls.retainAll(subject.getPrincipals());
-                if (acls.size() == 0) {
-                    throw new SecurityException("Endpoint is not authorized for this user");
+                if (!acls.contains(GroupPrincipal.ANY)) { 
+                    acls.retainAll(subject.getPrincipals());
+                    if (acls.size() == 0) {
+                        throw new SecurityException("Endpoint is not authorized for this user");
+                    }
                 }
             }
         }

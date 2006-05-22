@@ -72,14 +72,21 @@ public class DefaultAuthorizationMap implements AuthorizationMap {
 
     public Set getAcls(ServiceEndpoint endpoint) {
         Set acls = new HashSet();
+        if (defaultEntry != null) {
+            acls.add(defaultEntry);
+        }
         for (Iterator iter = authorizationEntries.iterator(); iter.hasNext();) {
             AuthorizationEntry entry = (AuthorizationEntry) iter.next();
             if (match(entry, endpoint)) {
-                acls.addAll(entry.getAcls());
+                if (AuthorizationEntry.TYPE_ADD.equalsIgnoreCase(entry.getType())) {
+                    acls.addAll(entry.getAcls());
+                } else if (AuthorizationEntry.TYPE_SET.equalsIgnoreCase(entry.getType())) {
+                    acls.clear();
+                    acls.addAll(entry.getAcls());
+                } else if (AuthorizationEntry.TYPE_REM.equalsIgnoreCase(entry.getType())) {
+                    acls.removeAll(entry.getAcls());
+                }
             }
-        }
-        if (defaultEntry != null) {
-            acls.add(defaultEntry);
         }
         return acls;
     }

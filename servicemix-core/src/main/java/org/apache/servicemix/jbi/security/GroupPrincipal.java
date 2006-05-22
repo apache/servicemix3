@@ -23,6 +23,8 @@ import java.security.Principal;
  */
 public class GroupPrincipal implements Principal {
 
+    public static final GroupPrincipal ANY = new GroupPrincipal("*"); 
+    
     private final String name;
     private transient int hash;
 

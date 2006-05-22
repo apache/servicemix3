@@ -29,10 +29,24 @@ import javax.xml.namespace.QName;
  * @org.apache.xbean.XBean 
  */
 public class AuthorizationEntry {
+    
+    /**
+     * Add the roles to the ACLs list
+     */
+    public static final String TYPE_ADD = "add";
+    /**
+     * Set the ACLs to the given roles
+     */
+    public static final String TYPE_SET = "set";
+    /**
+     * Remove the given roles from the ACLs list
+     */
+    public static final String TYPE_REM = "rem";
 
     private Set acls;
     private QName service;
     private String endpoint;
+    private String type = TYPE_ADD;
 
     public AuthorizationEntry() {
     }
@@ -43,6 +57,27 @@ public class AuthorizationEntry {
         setRoles(roles);
     }
     
+    public AuthorizationEntry(QName service, String endpoint, String roles, String type) {
+        this.service = service;
+        this.endpoint = endpoint;
+        setRoles(roles);
+        this.type = type;
+    }
+    
+    /**
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
     /**
      * @return the endpoint
      */
