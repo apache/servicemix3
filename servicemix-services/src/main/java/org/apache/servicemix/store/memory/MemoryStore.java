@@ -59,7 +59,7 @@ public class MemoryStore implements Store {
 
     public Object load(String id) throws IOException {
         log.debug("Loading object with id: " + id);
-        return datas.get(id);
+        return datas.remove(id);
     }
     
 }
