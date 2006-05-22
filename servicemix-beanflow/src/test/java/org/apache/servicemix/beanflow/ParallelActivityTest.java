@@ -37,10 +37,8 @@ public class ParallelActivityTest extends ActivityTestSupport {
         activity.startWithTimeout(timer, 200000);
         // END SNIPPET: example
 
-        /** TOOD
         activity.join();
         assertStopped(activity);
         parallelBean.assertCompleted();
-        */
     }
 }
