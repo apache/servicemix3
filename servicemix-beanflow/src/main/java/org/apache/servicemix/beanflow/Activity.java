@@ -89,4 +89,20 @@ public interface Activity {
      * Returns the exception which caused the failure
      */
     public Throwable getFailedException();
+
+    /**
+     * A helper method to add a task to fire when the activity is completed
+     */
+    public void onStop(Runnable runnable);
+
+    /**
+     * A helper method to add a task to fire when the activity fails
+     */
+    public void onFailure(Runnable runnable);
+
+    /**
+     * A helper method to block the calling thread until the activity completes. Behaves
+     * similar to {@link Thread#join()}
+     */
+    public void join();
 }

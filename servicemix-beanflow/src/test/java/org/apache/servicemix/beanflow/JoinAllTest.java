@@ -15,11 +15,13 @@
  */
 package org.apache.servicemix.beanflow;
 
+import org.apache.servicemix.beanflow.util.ActivityTestSupport;
+
 /**
  * 
  * @version $Revision: $
  */
-public class JoinAllTest extends FlowTestSupport {
+public class JoinAllTest extends ActivityTestSupport {
 
     protected Activity child1 = new TimeoutActivity();
     protected Activity child2 = new TimeoutActivity();
@@ -33,56 +35,56 @@ public class JoinAllTest extends FlowTestSupport {
 
         // now lets test the flow
         child1.stop();
-        assertFlowStarted(flow);
+        assertStarted(flow);
 
         child2.stop();
-        assertFlowStarted(flow);
+        assertStarted(flow);
 
         child3.stop();
-        assertFlowStopped(flow);
+        assertStopped(flow);
         // END SNIPPET: example
     }
 
     public void testJoinAllTerminatesWhenAClientFails() throws Exception {
         JoinAll flow = new JoinAll(child1, child2, child3);
-        startFlow(flow, timeout);
+        startActivity(flow, timeout);
 
         child3.fail("Test case error simulation");
-        assertFlowStarted(flow);
+        assertStarted(flow);
 
         child2.stop();
-        assertFlowStarted(flow);
+        assertStarted(flow);
 
         child1.stop();
-        assertFlowFailed(flow);
+        assertFailed(flow);
     }
 
     public void testJoinAllTerminatesAsSoonAsOneChildFails() throws Exception {
         JoinAll flow = new JoinAll(child1, child2, child3);
         flow.setFailFast(true);
-        startFlow(flow, timeout);
+        startActivity(flow, timeout);
 
         child1.fail("Test case error simulation");
-        assertFlowFailed(flow);
+        assertFailed(flow);
     }
 
     public void testJoinAllFailsIfChildrenDoNotCompleteInTime() throws Exception {
         JoinAll flow = new JoinAll(child1, child2, child3);
-        startFlow(flow, timeout);
+        startActivity(flow, timeout);
 
         child1.stop();
-        assertFlowStarted(flow);
+        assertStarted(flow);
 
         child2.stop();
-        assertFlowStarted(flow);
+        assertStarted(flow);
 
         // lets force a timeout failure
         Thread.sleep(timeout * 2);
 
-        assertFlowFailed(flow);
+        assertFailed(flow);
 
         // lets check that completing the final child flow keeps the join failed
         child3.stop();
-        assertFlowFailed(flow);
+        assertFailed(flow);
     }
 }

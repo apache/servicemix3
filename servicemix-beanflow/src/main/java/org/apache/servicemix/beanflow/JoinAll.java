@@ -58,6 +58,7 @@ public class JoinAll extends JoinSupport {
      * number of child activities stopped and the number of failed activities
      */
     protected void onChildStateChange(int childCount, int stoppedCount, int failedCount) {
+        //System.out.println("This: " + this + " child: " + childCount + " stopped: " + stoppedCount + " failed: " + failedCount);
         if (failFast && failedCount > 0) {
             fail("" + failedCount + " child workactivities have failed");
         }

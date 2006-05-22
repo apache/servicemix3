@@ -17,12 +17,13 @@ package org.apache.servicemix.beanflow;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.beanflow.util.ActivityTestSupport;
 
 /**
  * 
  * @version $Revision: $
  */
-public class WorkflowTest extends FlowTestSupport {
+public class WorkflowTest extends ActivityTestSupport {
 
     private static final Log log = LogFactory.getLog(WorkflowTest.class);
 
@@ -35,7 +36,7 @@ public class WorkflowTest extends FlowTestSupport {
         Thread.sleep(2000);
 
         workflow.userEntered("foo");
-        assertFlowStarted(workflow);
+        assertStarted(workflow);
 
         log.info("We are entering some valid input");
 
@@ -43,6 +44,6 @@ public class WorkflowTest extends FlowTestSupport {
 
         Thread.sleep(5000);
 
-        assertFlowStopped(workflow);
+        assertStopped(workflow);
     }
 }

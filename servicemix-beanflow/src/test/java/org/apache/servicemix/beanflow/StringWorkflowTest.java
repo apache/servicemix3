@@ -15,32 +15,35 @@
  */
 package org.apache.servicemix.beanflow;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.beanflow.util.ActivityTestSupport;
-
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 /**
  * 
  * @version $Revision: $
  */
-public class ParallelActivityTest extends ActivityTestSupport {
+public class StringWorkflowTest extends ActivityTestSupport {
 
-    protected Executor executor = Executors.newFixedThreadPool(10);
+    private static final Log log = LogFactory.getLog(StringWorkflowTest.class);
 
-    @SuppressWarnings("unchecked")
-    public void testParallelWorkflow() throws Exception {
+    public void testWorkflow() throws Exception {
+        // START SNIPPET: workflow
+        ExampleStringWorkflow workflow = new ExampleStringWorkflow();
+        workflow.start();
 
-        // START SNIPPET: example
-        ExampleParallelBean parallelBean = new ExampleParallelBean();
-        ParallelActivity activity = ParallelActivity.newParallelMethodActivity(executor, parallelBean);
-        activity.startWithTimeout(timer, 200000);
-        // END SNIPPET: example
+        // wait for user entry point
+        Thread.sleep(2000);
 
-        /** TOOD
-        activity.join();
-        assertStopped(activity);
-        parallelBean.assertCompleted();
-        */
+        workflow.userEntered("foo");
+        assertStarted(workflow);
+
+        log.info("We are entering some valid input");
+
+        workflow.userEntered("foo@bar.com");
+
+        Thread.sleep(5000);
+
+        assertStopped(workflow);
     }
 }

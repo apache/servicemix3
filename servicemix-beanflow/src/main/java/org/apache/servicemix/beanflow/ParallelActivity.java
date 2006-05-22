@@ -22,8 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -35,6 +37,8 @@ public class ParallelActivity<T> extends ProxyActivity {
     private JoinSupport joinActivity;
     private List<CallableActivity<T>> activities;
     private AtomicBoolean started = new AtomicBoolean();
+    private Object lock = new Object();
+    private CountDownLatch countDownLatch;
 
     /**
      * A helper method to create a new {@link ParallelActivity} which invokes a
@@ -51,8 +55,7 @@ public class ParallelActivity<T> extends ProxyActivity {
      */
     @SuppressWarnings("unchecked")
     public static ParallelActivity newParallelMethodActivity(JoinSupport join, Executor executor, Object bean) {
-        FindCallableMethods factory = new FindCallableMethods(bean);
-        return new ParallelActivity(join, executor, factory);
+        return new ParallelActivity(join, executor, new FindCallableMethods(bean));
     }
 
     public ParallelActivity(JoinSupport activity, Executor executor, CallablesFactory<T> callablesFactory) {
@@ -76,22 +79,75 @@ public class ParallelActivity<T> extends ProxyActivity {
 
     public List<Future<T>> getFutures() {
         List<Future<T>> answer = new ArrayList<Future<T>>();
-        for (CallableActivity<T> activity : activities) {
-            answer.add(activity.getFuture());
+        synchronized (lock) {
+            for (CallableActivity<T> activity : activities) {
+                answer.add(activity.getFuture());
+            }
         }
         return answer;
     }
 
     @Override
     public void start() {
-        super.start();
         init();
+        super.start();
     }
 
     @Override
     public void startWithTimeout(Timer timer, long timeout) {
-        super.startWithTimeout(timer, timeout);
         init();
+        super.startWithTimeout(timer, timeout);
+    }
+
+    public void sync() {
+        try {
+            CountDownLatch latch = getCountDownLatch();
+            latch.countDown();
+            latch.await();
+        }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        finally {
+            resetCountDownLatch();
+        }
+    }
+
+    public boolean sync(long millis) {
+        try {
+            CountDownLatch latch = getCountDownLatch();
+            latch.countDown();
+            return latch.await(millis, TimeUnit.MILLISECONDS);
+        }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
+        }
+        finally {
+            resetCountDownLatch();
+        }
+    }
+
+
+    // Implementation methods
+    // -------------------------------------------------------------------------
+    protected void resetCountDownLatch() {
+        synchronized (lock) {
+            if (countDownLatch != null && countDownLatch.getCount() == 0) {
+                countDownLatch = null;
+            }
+        }
+        
+    }
+
+    protected CountDownLatch getCountDownLatch() {
+        synchronized (lock) {
+            int count = activities.size();
+            if (countDownLatch == null) {
+                countDownLatch = new CountDownLatch(count);
+            }
+            return countDownLatch;
+        }
     }
 
     private void init() {

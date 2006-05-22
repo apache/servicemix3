@@ -16,30 +16,31 @@
 package org.apache.servicemix.beanflow;
 
 import org.apache.servicemix.beanflow.Activity.Transitions;
+import org.apache.servicemix.beanflow.util.ActivityTestSupport;
 
 /**
  * 
  * @version $Revision: $
  */
-public class TimeoutFlowTest extends FlowTestSupport {
+public class TimeoutFlowTest extends ActivityTestSupport {
     protected TimeoutActivity flow = new TimeoutActivity();
 
     public void testFlowStopsSuccessfully() throws Exception {
         flow.getState().set(Transitions.Stopped);
-        assertFlowStopped(flow);
+        assertStopped(flow);
 
         // lets sleep so that the timer can go off now to check we don't fail
         // after we've stopped
         Thread.sleep(timeout * 4);
-        assertFlowStopped(flow);
+        assertStopped(flow);
     }
 
     public void testFlowTimesOutAndFails() throws Exception {
         Thread.sleep(timeout * 4);
-        assertFlowFailed(flow);
+        assertFailed(flow);
     }
 
     protected void setUp() throws Exception {
-        startFlow(flow, timeout);
+        startActivity(flow, timeout);
     }
 }

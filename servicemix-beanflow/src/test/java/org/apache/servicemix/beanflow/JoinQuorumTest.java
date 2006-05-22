@@ -15,11 +15,13 @@
  */
 package org.apache.servicemix.beanflow;
 
+import org.apache.servicemix.beanflow.util.ActivityTestSupport;
+
 /**
  * 
  * @version $Revision: $
  */
-public class JoinQuorumTest extends FlowTestSupport {
+public class JoinQuorumTest extends ActivityTestSupport {
 
     protected Activity child1 = new TimeoutActivity();
     protected Activity child2 = new TimeoutActivity();
@@ -27,47 +29,47 @@ public class JoinQuorumTest extends FlowTestSupport {
 
     public void testJoinAllWhenEachChildFlowCompletes() throws Exception {
         JoinQuorum flow = new JoinQuorum(child1, child2, child3);
-        startFlow(flow, timeout);
+        startActivity(flow, timeout);
 
         child1.stop();
-        assertFlowStarted(flow);
+        assertStarted(flow);
 
         child2.stop();
-        assertFlowStopped(flow);
+        assertStopped(flow);
 
         // lets check things are still fine when the quorum is complete
         child3.stop();
-        assertFlowStopped(flow);
+        assertStopped(flow);
     }
 
     public void testJoinQuorumTerminatesWhenTooManyClientsFail() throws Exception {
         JoinQuorum flow = new JoinQuorum(child1, child2, child3);
-        startFlow(flow, timeout);
+        startActivity(flow, timeout);
 
         child3.fail("Test case error simulation");
-        assertFlowStarted(flow);
+        assertStarted(flow);
 
         child2.fail("Test case error simulation");
-        assertFlowFailed(flow);
+        assertFailed(flow);
     }
 
     public void testJoinQuorumFailsIfChildrenDoNotCompleteInTime() throws Exception {
         JoinQuorum flow = new JoinQuorum(child1, child2, child3);
-        startFlow(flow, timeout);
+        startActivity(flow, timeout);
 
         child1.stop();
-        assertFlowStarted(flow);
+        assertStarted(flow);
 
         // lets force a timeout failure
         Thread.sleep(timeout * 2);
 
-        assertFlowFailed(flow);
+        assertFailed(flow);
 
         // lets check that completing the final child flow keeps the join failed
         child2.stop();
-        assertFlowFailed(flow);
+        assertFailed(flow);
 
         child3.stop();
-        assertFlowFailed(flow);
+        assertFailed(flow);
     }
 }

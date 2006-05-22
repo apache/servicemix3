@@ -15,11 +15,13 @@
  */
 package org.apache.servicemix.beanflow;
 
+import org.apache.servicemix.beanflow.util.ActivityTestSupport;
+
 /**
  * 
  * @version $Revision: $
  */
-public class CustomJoinConditionTest extends FlowTestSupport {
+public class CustomJoinConditionTest extends ActivityTestSupport {
 
     public void testCustomJoinCondition() throws Exception {
         // START SNIPPET: join
@@ -44,17 +46,17 @@ public class CustomJoinConditionTest extends FlowTestSupport {
         activity.startWithTimeout(timer, timeout);
 
         // now lets test things behave properly
-        assertFlowStarted(activity);
+        assertStarted(activity);
 
         a.stop();
-        assertFlowStarted(activity);
+        assertStarted(activity);
 
         b.stop();
-        assertFlowStopped(activity);
+        assertStopped(activity);
         // END SNIPPET: join
 
         // lets check things are still fine when c completes
         c.stop();
-        assertFlowStopped(activity);
+        assertStopped(activity);
     }
 }

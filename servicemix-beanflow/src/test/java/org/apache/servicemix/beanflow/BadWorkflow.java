@@ -13,25 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.beanflow.support;
+package org.apache.servicemix.beanflow;
 
-import org.apache.servicemix.beanflow.Workflow;
 
 /**
+ * A workflow which cannot be used as the step enumerations don't match with method names
  * 
  * @version $Revision: $
  */
-public interface Interpreter {
+public class BadWorkflow extends Workflow<BadWorkflow.Step> {
+    
+    public static enum Step {
+        startStep, fooStep, doesNotExistStep
+    };
 
-    /**
-     * Executes the given step on the workflow
-     */
-    void executeStep(String nextStep, Workflow workflow);
+    public BadWorkflow() {
+        super(Step.startStep);
+    }
 
-    /**
-     * Validates that all the available step values (enumeration values) are
-     * available on the given workflow
-     */
-    void validateStepsExist(Object[] stepValues, Workflow workflow);
+    // Workflow steps
+    // -------------------------------------------------------------------------
 
+    public Step startStep() {
+        return Step.fooStep;
+    }
+    
+    public Step fooStep() {
+        return Step.doesNotExistStep;
+    }
 }
+// END SNIPPET: workflow

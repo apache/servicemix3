@@ -67,6 +67,18 @@ public class ProxyActivity implements Activity {
         getProxy().stop();
     }
 
+    public void onFailure(Runnable runnable) {
+        getProxy().onFailure(runnable);
+    }
+
+    public void onStop(Runnable runnable) {
+        getProxy().onStop(runnable);
+    }
+
+    public void join() {
+        getProxy().join();
+    }
+
     protected Activity getProxy() {
         return proxy;
     }
@@ -74,5 +86,4 @@ public class ProxyActivity implements Activity {
     protected void setProxy(Activity proxy) {
         this.proxy = proxy;
     }
-
 }

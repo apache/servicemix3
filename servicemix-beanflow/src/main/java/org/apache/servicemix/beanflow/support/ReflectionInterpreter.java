@@ -42,9 +42,25 @@ public class ReflectionInterpreter implements Interpreter {
         }
     }
 
+    public void validateStepsExist(Object[] stepValues, Workflow workflow) {
+        Class<? extends Workflow> type = workflow.getClass();
+        for (int i = 0; i < stepValues.length; i++) {
+            Object value = stepValues[i];
+            String step = value.toString();
+            try {
+                type.getMethod(step, NO_TYPE_ARGUMENTS);
+            }
+            catch (Exception e) {
+                workflow.fail("No " + step + "() method is available in class: " + type.getName()
+                        + " so unable to bind the code to the enumeration of steps", e);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     protected void handleStepResult(String step, Workflow workflow, Object result) {
-        if (result instanceof String) {
-            workflow.goTo((String) result);
+        if (result != null) {
+            workflow.goTo(result);
         }
         else {
             workflow.suspend();

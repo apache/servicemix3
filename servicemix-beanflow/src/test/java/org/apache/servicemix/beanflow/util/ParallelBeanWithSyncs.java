@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.beanflow;
+package org.apache.servicemix.beanflow.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.beanflow.annotations.Parallel;
+import org.apache.servicemix.beanflow.util.ParallelBean;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -30,42 +31,47 @@ import junit.framework.Assert;
  * @version $Revision: $
  */
 // START SNIPPET: workflow
-public class ExampleParallelBean {
-    private static final Log log = LogFactory.getLog(ExampleParallelBean.class);
+public class ParallelBeanWithSyncs extends ParallelBean {
+    private static final Log log = LogFactory.getLog(ParallelBeanWithSyncs.class);
 
-    private CountDownLatch latch = new CountDownLatch(3);
-
-    public void shouldNotBeRun() {
-        throw new RuntimeException("Should not be ran");
-    }
+    private boolean methodOneSync1, methodOneSync2, methodTwoSync1, methodTwoSync2;
 
     @Parallel
     public void methodOne() {
         log.info("Called method one");
-        latch.countDown();
-        log.info("method one complete");
+        sync();
+        methodOneSync1 = true;
+        log.info("methodOne: after sync1");
+
+        // simulate a slow thing
+        sleep(1000);
+
+        sync();
+        methodOneSync2 = true;
+        log.info("methodOne: after sync2");
     }
 
     @Parallel
     public void methodTwo() {
         log.info("Called method two");
-        latch.countDown();
-        log.info("method two complete");
+
+        // simulate a slow thing
+        sleep(1000);
+
+        sync();
+        methodTwoSync1 = true;
+        log.info("methodTwo: after sync1");
+
+        sync();
+        methodTwoSync2 = true;
+        log.info("methodTwo: after sync2");
     }
 
-    @Parallel
-    public void methodThree() {
-        log.info("Called method three");
-        latch.countDown();
-        log.info("method three complete");
-    }
-
-    public void assertCompleted() throws InterruptedException {
-        latch.await(3000, TimeUnit.MILLISECONDS);
-        if (latch.getCount() > 0) {
-            latch.await(300000, TimeUnit.MILLISECONDS);
-        }
-        Assert.assertEquals("Count down latch value", 0, latch.getCount());
+    public void assertWorked() {
+        Assert.assertTrue("Did not reach sync1 for methodOne", methodOneSync1);
+        Assert.assertTrue("Did not reach sync2 for methodOne", methodOneSync2);
+        Assert.assertTrue("Did not reach sync1 for methodTwo", methodTwoSync1);
+        Assert.assertTrue("Did not reach sync2 for methodTwo", methodTwoSync2);
     }
 }
 // END SNIPPET: workflow

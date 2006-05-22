@@ -19,6 +19,8 @@ import org.apache.servicemix.beanflow.support.FieldIntrospector;
 import org.apache.servicemix.beanflow.support.Introspector;
 
 import java.util.Iterator;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.FutureTask;
 
 /**
  * A useful base class which allows simple bean activities to be written easily.
@@ -50,7 +52,7 @@ public abstract class AbstractActivity implements Runnable, Activity {
      * Stops the activity
      */
     public void stop() {
-        if (state.compareAndSet(Transitions.Started, Transitions.Stopping)) {
+        if (! state.isAny(Transitions.Stopped, Transitions.Failed)) {
             state.set(Transitions.Stopped);
             doStop();
         }
@@ -60,11 +62,9 @@ public abstract class AbstractActivity implements Runnable, Activity {
      * Stops the activity with a failed state, giving the reason for the failure
      */
     public void fail(String reason) {
-        if (state.compareAndSet(Transitions.Started, Transitions.Failed)) {
-            this.failedReason = reason;
-            state.set(Transitions.Failed);
-            doStop();
-        }
+        this.failedReason = reason;
+        state.set(Transitions.Failed);
+        doStop();
     }
 
     /**
@@ -131,6 +131,26 @@ public abstract class AbstractActivity implements Runnable, Activity {
                 }
             }
         });
+    }
+
+    /**
+     * A helper method to block the calling thread until the activity completes
+     */
+    public void join() {
+        while (!isStopped()) {
+            final CountDownLatch latch = new CountDownLatch(1);
+            onStop(new Runnable() {
+                public void run() {
+                    latch.countDown();
+                }
+            });
+            try {
+                latch.await();
+            }
+            catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 
     // Implementation methods

@@ -40,7 +40,9 @@ public class AsynchronousActivity extends TimeoutActivity {
             public void run() {
                 try {
                     runnable.run();
+                    //System.out.println("About to call stop on: " + this);
                     stop();
+                    //System.out.println("Activity completed: " + this + " status now: " + getState());
                 }
                 catch (Throwable e) {
                     fail("Failed to run task: " + runnable + ". Cause: " + e, e);

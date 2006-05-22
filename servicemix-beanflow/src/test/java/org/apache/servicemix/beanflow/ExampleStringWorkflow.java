@@ -24,38 +24,38 @@ import org.apache.commons.logging.LogFactory;
  * @version $Revision: $
  */
 // START SNIPPET: workflow
-public class ExampleWorkflow extends Workflow<ExampleWorkflow.Step> {
-    private static final Log log = LogFactory.getLog(ExampleWorkflow.class);
+public class ExampleStringWorkflow extends Workflow<String> {
+
+    private static final Log log = LogFactory.getLog(ExampleStringWorkflow.class);
 
     private int loopCount;
     private long timeout = 500;
     private String userEmailAddress;
 
-    public static enum Step {
-        startStep, afterEnteredEmailStep, loopStep, waitForUserInputStep, forkStep, 
-        aCompletedStep, abcCompletedStep, stop
-    };
-
-    public ExampleWorkflow() {
-        super(Step.startStep);
+    public ExampleStringWorkflow() {
+        // lets specify the first step to start at
+        super("startStep");
     }
 
     // Workflow steps
     // -------------------------------------------------------------------------
 
+    // This is the first step of a workflow by default
+    // but you can start at any point by passing in a parameter
+    // to the Workflow constructor
     public void startStep() {
         // lets use an explicit goTo() to tell the workflow
         // which step to go to next; though we can just return Strings
-        goTo(Step.loopStep);
+        goTo("loopStep");
     }
 
     // lets use the return value to specify the next step
-    public Step loopStep() {
+    public String loopStep() {
         if (++loopCount > 3) {
-            return Step.waitForUserInputStep;
+            return "waitForUserInputStep";
         }
         // lets keep looping
-        return Step.loopStep;
+        return "loopStep";
     }
 
     public void waitForUserInputStep() {
@@ -64,11 +64,11 @@ public class ExampleWorkflow extends Workflow<ExampleWorkflow.Step> {
         // so lets park the workflow engine
     }
 
-    public Step afterEnteredEmailStep() {
+    public String afterEnteredEmailStep() {
         // we are going to park here until a user
         // enters a valid email address
         log.info("User entered email address: " + userEmailAddress);
-        return Step.forkStep;
+        return "forkStep";
     }
 
     public void forkStep() {
@@ -81,19 +81,19 @@ public class ExampleWorkflow extends Workflow<ExampleWorkflow.Step> {
         fork(a, b, c);
 
         // now lets add some joins
-        joinAll(Step.aCompletedStep, timeout, a);
-        joinAll(Step.abcCompletedStep, timeout, a, b, c);
+        joinAll("aCompletedStep", timeout, a);
+        joinAll("abcCompletedStep", timeout, a, b, c);
     }
 
     public void aCompletedStep() {
         log.info("child flow A completed!");
     }
 
-    public Step abcCompletedStep() {
+    public String abcCompletedStep() {
         log.info("child flows A, B and C completed!");
 
         // we are completely done now
-        return Step.stop;
+        return "stop";
     }
 
     // External events
@@ -103,7 +103,7 @@ public class ExampleWorkflow extends Workflow<ExampleWorkflow.Step> {
             this.userEmailAddress = emailAddress;
 
             log.info("Lets re-start the suspended workflow");
-            goTo(Step.afterEnteredEmailStep);
+            goTo("afterEnteredEmailStep");
         }
     }
 }

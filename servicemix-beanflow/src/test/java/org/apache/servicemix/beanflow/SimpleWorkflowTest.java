@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.beanflow.support;
+package org.apache.servicemix.beanflow;
 
-import org.apache.servicemix.beanflow.Workflow;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.beanflow.util.ActivityTestSupport;
 
 /**
  * 
  * @version $Revision: $
  */
-public interface Interpreter {
+public class SimpleWorkflowTest extends ActivityTestSupport {
 
-    /**
-     * Executes the given step on the workflow
-     */
-    void executeStep(String nextStep, Workflow workflow);
+    public void testWorkflow() throws Exception {
+        SimpleWorkflow workflow = new SimpleWorkflow();
+        workflow.start();
 
-    /**
-     * Validates that all the available step values (enumeration values) are
-     * available on the given workflow
-     */
-    void validateStepsExist(Object[] stepValues, Workflow workflow);
+        Thread.sleep(2000);
 
+        assertStopped(workflow);
+    }
 }

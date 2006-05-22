@@ -13,25 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.beanflow.support;
+package org.apache.servicemix.beanflow;
 
-import org.apache.servicemix.beanflow.Workflow;
 
 /**
+ * A simple example
  * 
  * @version $Revision: $
  */
-public interface Interpreter {
+// START SNIPPET: workflow
+public class SimpleWorkflow extends Workflow<SimpleWorkflow.Step> {
 
-    /**
-     * Executes the given step on the workflow
-     */
-    void executeStep(String nextStep, Workflow workflow);
+    public static enum Step {
+        stepA, stepB, stepC, stop
+    };
 
-    /**
-     * Validates that all the available step values (enumeration values) are
-     * available on the given workflow
-     */
-    void validateStepsExist(Object[] stepValues, Workflow workflow);
+    public SimpleWorkflow() {
+        super(Step.stepA);
+    }
 
+    // Workflow steps
+    // -------------------------------------------------------------------------
+    public Step stepA() {
+        return Step.stepB;
+    }
+    
+    public Step stepB() {
+        return Step.stepC;
+    }
+    
+    public Step stepC() {
+        return Step.stop;
+    }
 }
+// END SNIPPET: workflow

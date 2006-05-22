@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.beanflow.support;
+package org.apache.servicemix.beanflow.util;
 
-import org.apache.servicemix.beanflow.Workflow;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * 
  * @version $Revision: $
  */
-public interface Interpreter {
+public class ParallelBeanTest extends ActivityTestSupport {
 
-    /**
-     * Executes the given step on the workflow
-     */
-    void executeStep(String nextStep, Workflow workflow);
+    public void testParallelWithSyncs() throws Exception {
+        ParallelBeanWithSyncs bean = new ParallelBeanWithSyncs();
+        startActivity(bean.getActivity(), 10000);
+        bean.getActivity().join();
 
-    /**
-     * Validates that all the available step values (enumeration values) are
-     * available on the given workflow
-     */
-    void validateStepsExist(Object[] stepValues, Workflow workflow);
-
+        bean.assertWorked();
+        assertStopped(bean.getActivity());
+    }
 }

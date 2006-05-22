@@ -20,6 +20,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.beanflow.support.Interpreter;
 import org.apache.servicemix.beanflow.support.ReflectionInterpreter;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -31,36 +33,42 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 
  * @version $Revision: $
  */
-public class Workflow extends JoinSupport {
+public class Workflow<T> extends JoinSupport {
     private static final Log log = LogFactory.getLog(Workflow.class);
 
-    public static final String DEFAULT_START_STEP = "startStep";
+    private static final Class[] NO_PARAMETER_TYPES = {};
+    private static final Object[] NO_PARAMETER_VALUES = {};
 
     private Executor executor;
     private Interpreter interpreter;
-    private State<String> step;
-    private String nextStep;
+    private State<T> step;
+    private T nextStep;
     private Timer timer = new Timer();
     private AtomicBoolean suspended = new AtomicBoolean();
 
-    public Workflow() {
-        this(Executors.newSingleThreadExecutor(), DEFAULT_START_STEP);
+    public Workflow(T firstStep) {
+        this(Executors.newSingleThreadExecutor(), firstStep);
     }
 
-    public Workflow(Executor executor, String firstStep) {
-        this(executor, new ReflectionInterpreter(), new DefaultState<String>(firstStep));
+    public Workflow(Executor executor, T firstStep) {
+        this(executor, new ReflectionInterpreter(), new DefaultState<T>(firstStep));
     }
 
-    public Workflow(Executor executor, Interpreter interpreter, State<String> step) {
+    public Workflow(Executor executor, Interpreter interpreter, State<T> step) {
         this.executor = executor;
         this.interpreter = interpreter;
         this.step = step;
+
+        T firstStep = step.get();
+        if (firstStep instanceof Enum) {
+            validateStepsExist(firstStep.getClass());
+        }
     }
 
     /**
      * Sets the next step to be executed when the current step completes
      */
-    public void goTo(String stepName) {
+    public void goTo(T stepName) {
         this.nextStep = stepName;
         suspended.set(false);
         nextStep();
@@ -73,9 +81,11 @@ public class Workflow extends JoinSupport {
             }
             log.debug("About to execute step: " + nextStep);
 
-            interpreter.executeStep(nextStep, this);
+            if (nextStep != null) {
+                interpreter.executeStep(nextStep.toString(), this);
 
-            nextStep();
+                nextStep();
+            }
         }
     }
 
@@ -112,7 +122,7 @@ public class Workflow extends JoinSupport {
      * Creates a join such that when all of the activities are completed the
      * given step will be executed
      */
-    public void joinAll(final String joinedStep, long timeout, Activity... activities) {
+    public void joinAll(T joinedStep, long timeout, Activity... activities) {
         JoinAll joinFlow = new JoinAll(activities);
         join(joinFlow, joinedStep, timeout);
     }
@@ -122,7 +132,7 @@ public class Workflow extends JoinSupport {
      * specified joinedStep when the join takes place using the given timeout to
      * the join
      */
-    public void join(JoinSupport joinFlow, final String joinedStep, long timeout) {
+    public void join(JoinSupport joinFlow, T joinedStep, long timeout) {
         // start the join activity and register the timeout
         fork(timeout, joinFlow);
 
@@ -149,7 +159,7 @@ public class Workflow extends JoinSupport {
     /**
      * Creates a task which will move to the given step
      */
-    public Runnable createGoToStepTask(final String joinedStep) {
+    public Runnable createGoToStepTask(final T joinedStep) {
         return new Runnable() {
 
             public void run() {
@@ -170,5 +180,22 @@ public class Workflow extends JoinSupport {
 
     @Override
     protected void onChildStateChange(int childCount, int stoppedCount, int failedCount) {
+    }
+
+    /**
+     * lets validate the steps exist
+     */
+    protected void validateStepsExist(Class enumType) {
+        Object[] values = null;
+        try {
+            Method method = enumType.getMethod("values", NO_PARAMETER_TYPES);
+            values = (Object[]) method.invoke(null, NO_PARAMETER_VALUES);
+        }
+        catch (Exception e) {
+            fail("Cannot get the values of the enumeration: " + enumType.getName(), e);
+        }
+        if (values != null) {
+            interpreter.validateStepsExist(values, this);
+        }
     }
 }
