@@ -1023,13 +1023,15 @@ public class JBIContainer extends BaseLifeCycle {
                 //non-pojo's are either started by the auto deployer
                 //or manually
                 lcc.init();
-                if (started.get()) {
-                    lcc.start();
-                }
             } else {
                 lcc.doShutDown();
             }
             result = lcc.registerMBeans(managementContext);
+            // Start the component after mbeans have been registered
+            // This can be usefull if listeners use them
+            if (lcc.isPojo() && started.get()) {
+                lcc.start();
+            }
         }
         return result;
     }
