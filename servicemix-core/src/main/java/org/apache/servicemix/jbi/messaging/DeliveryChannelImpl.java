@@ -523,7 +523,12 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             synchronized (messageExchangeImpl) {
                 doSend(messageExchangeImpl, true);
                 if (messageExchangeImpl.getSyncState() != MessageExchangeImpl.SYNC_STATE_SYNC_RECEIVED) {
-                    messageExchangeImpl.wait(timeoutMS);
+                    waiters.put(Thread.currentThread(), Boolean.TRUE);
+                    try {
+                        messageExchangeImpl.wait(timeoutMS);
+                    } finally {
+                        waiters.remove(Thread.currentThread());
+                    }
                 }
             }
             if (messageExchangeImpl.getSyncState() == MessageExchangeImpl.SYNC_STATE_SYNC_RECEIVED) {

@@ -158,16 +158,16 @@ public class SedaQueue extends BaseLifeCycle implements Work {
      */
     public void stop() throws JBIException {
         started.set(false);
-        if (thread != null && running.get()) {
-            try {
-                synchronized (running) {
+        synchronized (running) {
+            if (thread != null && running.get()) {
+                try {
                     thread.interrupt();
                     running.wait();
+                } catch (Exception e) {
+                    log.warn("Error stopping thread", e);
+                } finally {
+                    thread = null;
                 }
-            } catch (Exception e) {
-                log.warn("Error stopping thread", e);
-            } finally {
-                thread = null;
             }
         }
         super.stop();
@@ -179,6 +179,7 @@ public class SedaQueue extends BaseLifeCycle implements Work {
      * @throws JBIException
      */
     public void shutDown() throws JBIException {
+        stop();
         super.shutDown();
     }
 
