@@ -38,17 +38,17 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.ServiceAssemblyEnvironment;
-import org.apache.servicemix.jbi.deployment.Connection;
-import org.apache.servicemix.jbi.deployment.Consumes;
-import org.apache.servicemix.jbi.deployment.DescriptorFactory;
-import org.apache.servicemix.jbi.deployment.ServiceAssembly;
-import org.apache.servicemix.jbi.deployment.Services;
 import org.apache.servicemix.jbi.event.ServiceAssemblyEvent;
 import org.apache.servicemix.jbi.event.ServiceAssemblyListener;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.MBeanInfoProvider;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
 import org.apache.servicemix.jbi.util.XmlPersistenceSupport;
+import org.apache.servicemix.schemas.deployment.Connection;
+import org.apache.servicemix.schemas.deployment.Consumes;
+import org.apache.servicemix.schemas.deployment.DescriptorFactory;
+import org.apache.servicemix.schemas.deployment.ServiceAssembly;
+import org.apache.servicemix.schemas.deployment.Services;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -339,21 +339,21 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
     
     protected void startConnections() throws JBIException {
         if (serviceAssembly.getConnections() == null ||
-            serviceAssembly.getConnections().getConnections() == null) {
+            serviceAssembly.getConnections().getConnection() == null) {
             return;
         }
-        Connection[] connections = serviceAssembly.getConnections().getConnections();
-        for (int i = 0; i < connections.length; i++) {
-            if (connections[i].getConsumer().getInterfaceName() != null) {
-                QName fromItf = connections[i].getConsumer().getInterfaceName();
-                QName toSvc = connections[i].getProvider().getServiceName();
-                String toEp = connections[i].getProvider().getEndpointName();
+        List<Connection> connections = serviceAssembly.getConnections().getConnection();
+        for (Connection connection : connections) {
+            if (connection.getConsumer().getInterfaceName() != null) {
+                QName fromItf = connection.getConsumer().getInterfaceName();
+                QName toSvc = connection.getProvider().getServiceName();
+                String toEp = connection.getProvider().getEndpointName();
                 registry.registerInterfaceConnection(fromItf, toSvc, toEp);
             } else {
-                QName fromSvc = connections[i].getConsumer().getServiceName();
-                String fromEp = connections[i].getConsumer().getEndpointName();
-                QName toSvc = connections[i].getProvider().getServiceName();
-                String toEp = connections[i].getProvider().getEndpointName();
+                QName fromSvc = connection.getConsumer().getServiceName();
+                String fromEp = connection.getConsumer().getEndpointName();
+                QName toSvc = connection.getProvider().getServiceName();
+                String toEp = connection.getProvider().getEndpointName();
                 String link = getLinkType(fromSvc, fromEp);
                 registry.registerEndpointConnection(fromSvc, fromEp, toSvc, toEp, link);
             }
@@ -364,11 +364,10 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
         for (int i = 0; i < sus.length; i++) {
             Services s = sus[i].getServices();
             if (s != null && s.getConsumes() != null) {
-                Consumes[] consumes = s.getConsumes();
-                for (int j = 0; j < consumes.length; j++) {
-                    if (svc.equals(consumes[j].getServiceName()) &&
-                        ep.equals(consumes[j].getEndpointName())) {
-                        return consumes[j].getLinkType();
+                for (Consumes consumes : s.getConsumes()) {
+                    if (svc.equals(consumes.getServiceName()) &&
+                        ep.equals(consumes.getEndpointName())) {
+                        return consumes.getLinkType();
                     }
                 }
             }
@@ -378,17 +377,16 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
     
     protected void stopConnections() {
         if (serviceAssembly.getConnections() == null ||
-            serviceAssembly.getConnections().getConnections() == null) {
+            serviceAssembly.getConnections().getConnection() == null) {
             return;
         }
-        Connection[] connections = serviceAssembly.getConnections().getConnections();
-        for (int i = 0; i < connections.length; i++) {
-            if (connections[i].getConsumer().getInterfaceName() != null) {
-                QName fromItf = connections[i].getConsumer().getInterfaceName();
+        for (Connection connection : serviceAssembly.getConnections().getConnection()) {
+            if (connection.getConsumer().getInterfaceName() != null) {
+                QName fromItf = connection.getConsumer().getInterfaceName();
                 registry.unregisterInterfaceConnection(fromItf);
             } else {
-                QName fromSvc = connections[i].getConsumer().getServiceName();
-                String fromEp = connections[i].getConsumer().getEndpointName();
+                QName fromSvc = connection.getConsumer().getServiceName();
+                String fromEp = connection.getConsumer().getEndpointName();
                 registry.unregisterEndpointConnection(fromSvc, fromEp);
             }
         }

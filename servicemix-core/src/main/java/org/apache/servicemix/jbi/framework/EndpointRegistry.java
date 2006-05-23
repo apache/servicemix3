@@ -36,8 +36,8 @@ import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.deployment.Provides;
-import org.apache.servicemix.jbi.deployment.Services;
+import org.apache.servicemix.schemas.deployment.Provides;
+import org.apache.servicemix.schemas.deployment.Services;
 import org.apache.servicemix.jbi.event.EndpointEvent;
 import org.apache.servicemix.jbi.event.EndpointListener;
 import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
@@ -208,16 +208,15 @@ public class EndpointRegistry {
         for (int i = 0; i < sus.length; i++) {
             Services services = sus[i].getServices();
             if (services != null) {
-                Provides[] provides = services.getProvides();
-                for (int j = 0; j < provides.length; j++) {
-                    if (provides[j].getInterfaceName() != null &&
-                        serviceEndpoint.getServiceName().equals(provides[j].getServiceName()) &&
-                        serviceEndpoint.getEndpointName().equals(provides[j].getEndpointName())) {
+            	for (Provides provides : services.getProvides()) {
+                    if (provides.getInterfaceName() != null &&
+                        serviceEndpoint.getServiceName().equals(provides.getServiceName()) &&
+                        serviceEndpoint.getEndpointName().equals(provides.getEndpointName())) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("Endpoint " + serviceEndpoint + " is provided by SU " + sus[i].getName());
-                            logger.debug("Endpoint " + serviceEndpoint + " implements interface " + provides[j].getInterfaceName());
+                            logger.debug("Endpoint " + serviceEndpoint + " implements interface " + provides.getInterfaceName());
                         }
-                        serviceEndpoint.addInterface(provides[j].getInterfaceName());
+                        serviceEndpoint.addInterface(provides.getInterfaceName());
                     }
                 }
             }

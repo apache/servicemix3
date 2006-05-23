@@ -19,8 +19,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jbi.JBIException;
 import javax.jbi.management.DeploymentException;
@@ -39,13 +41,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.ComponentEnvironment;
 import org.apache.servicemix.jbi.container.EnvironmentContext;
 import org.apache.servicemix.jbi.container.JBIContainer;
-import org.apache.servicemix.jbi.deployment.ClassPath;
-import org.apache.servicemix.jbi.deployment.Component;
-import org.apache.servicemix.jbi.deployment.Descriptor;
-import org.apache.servicemix.jbi.deployment.DescriptorFactory;
-import org.apache.servicemix.jbi.deployment.InstallationDescriptorExtension;
-import org.apache.servicemix.jbi.deployment.SharedLibrary;
-import org.apache.servicemix.jbi.deployment.SharedLibraryList;
 import org.apache.servicemix.jbi.loaders.ClassLoaderService;
 import org.apache.servicemix.jbi.loaders.InstallationClassLoader;
 import org.apache.servicemix.jbi.management.BaseSystemService;
@@ -53,8 +48,13 @@ import org.apache.servicemix.jbi.management.ManagementContext;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
 import org.apache.servicemix.jbi.management.ParameterHelper;
 import org.apache.servicemix.jbi.util.FileUtil;
+import org.apache.servicemix.schemas.deployment.ClassPath;
+import org.apache.servicemix.schemas.deployment.Component;
+import org.apache.servicemix.schemas.deployment.Descriptor;
+import org.apache.servicemix.schemas.deployment.DescriptorFactory;
+import org.apache.servicemix.schemas.deployment.Descriptor.SharedLibrary;
+import org.w3c.dom.DocumentFragment;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 /**
  * Installation Service - installs/uninstalls archives
  * 
@@ -65,8 +65,8 @@ public class InstallationService extends BaseSystemService implements Installati
     private EnvironmentContext environmentContext;
     private ManagementContext managementContext;
     private ClassLoaderService classLoaderService=new ClassLoaderService();
-    private Map installers=new ConcurrentHashMap();
-    private Map nonLoadedInstallers = new ConcurrentHashMap();
+    private Map<String, InstallerMBeanImpl> installers = new ConcurrentHashMap<String, InstallerMBeanImpl>();
+    private Map<String, InstallerMBeanImpl> nonLoadedInstallers = new ConcurrentHashMap<String, InstallerMBeanImpl>();
 
     /**
      * Get Description
@@ -163,36 +163,36 @@ public class InstallationService extends BaseSystemService implements Installati
         installationContext.setComponentName(name);
         installationContext.setComponentDescription(descriptor.getIdentification().getDescription());
         installationContext.setInstallRoot(installationDir);
-        installationContext.setComponentClassName(descriptor.getComponentClassName());
+        installationContext.setComponentClassName(descriptor.getComponentClassName().getContent());
         ClassPath cp = descriptor.getComponentClassPath();
         if (cp != null) {
-            installationContext.setClassPathElements(cp.getPathElements());
+            installationContext.setClassPathElements(cp.getPathElement());
         }
         // now build the ComponentContext
         File componentRoot = environmentContext.getComponentRootDir(componentName);
         ComponentContextImpl context = buildComponentContext(componentRoot, componentName);
         installationContext.setContext(context);
-        InstallationDescriptorExtension desc = descriptor.getDescriptorExtension();
+        DocumentFragment desc = DescriptorFactory.getDescriptorExtension(descriptor);
         if (desc != null) {
-            installationContext.setDescriptorExtension(desc.getDescriptorExtension());
+            installationContext.setDescriptorExtension(desc);
         }
-        installationContext.setBinding(descriptor.isBindingComponent());
-        installationContext.setEngine(descriptor.isServiceEngine());
+        installationContext.setBinding(DescriptorFactory.isBindingComponent(descriptor));
+        installationContext.setEngine(DescriptorFactory.isServiceEngine(descriptor));
         // now we must initialize the boot strap class
         String bootstrapClassName = descriptor.getBootstrapClassName();
         ClassPath bootStrapClassPath = descriptor.getBootstrapClassPath();
         InstallationClassLoader bootstrapLoader = null;
         if (bootstrapClassName != null && bootstrapClassName.length() > 0) {
-            boolean parentFirst = descriptor.isBootstrapClassLoaderDelegationParentFirst();
+            boolean parentFirst = DescriptorFactory.isBCLParentFirst(descriptor);
             bootstrapLoader = classLoaderService.buildClassLoader(
-                    installationDir, bootStrapClassPath.getPathElements(), parentFirst);
+                    installationDir, bootStrapClassPath.getPathElement(), parentFirst);
         }
-        SharedLibraryList[] lists = descriptor.getSharedLibraries();
-        String componentClassName = descriptor.getComponentClassName();
+        List<Component.SharedLibrary> lists = descriptor.getSharedLibraryList();
+        String componentClassName = descriptor.getComponentClassName().getContent();
         ClassPath componentClassPath = descriptor.getComponentClassPath();
-        boolean parentFirst = descriptor.isComponentClassLoaderDelegationParentFirst();
-        ClassLoader componentClassLoader = classLoaderService.buildClassLoader(installationDir, componentClassPath
-                        .getPathElements(), parentFirst, lists);
+        boolean parentFirst = DescriptorFactory.isCCLParentFirst(descriptor);
+        ClassLoader componentClassLoader = classLoaderService.buildClassLoader(
+        			installationDir, componentClassPath.getPathElement(), parentFirst, lists);
         InstallerMBeanImpl installer = new InstallerMBeanImpl(container,
                 installationContext, componentClassLoader,
                 componentClassName, bootstrapLoader,
@@ -245,7 +245,7 @@ public class InstallationService extends BaseSystemService implements Installati
             File tmpDir=AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(),aSharedLibURI);
             if(tmpDir!=null){
                 Descriptor root=DescriptorFactory.buildDescriptor(tmpDir);
-                SharedLibrary sl=root.getSharedLibrary();
+                SharedLibrary sl = root.getSharedLibrary();
                 if(sl!=null){
                     result=doInstallSharedLibrary(tmpDir,sl);
                 }
@@ -489,34 +489,34 @@ public class InstallationService extends BaseSystemService implements Installati
             installationContext.setComponentName(name);
             installationContext.setComponentDescription(descriptor.getIdentification().getDescription());
             installationContext.setInstallRoot(installationDir);
-            installationContext.setComponentClassName(descriptor.getComponentClassName());
+            installationContext.setComponentClassName(descriptor.getComponentClassName().getContent());
             ClassPath cp=descriptor.getComponentClassPath();
             if(cp!=null){
-                installationContext.setClassPathElements(cp.getPathElements());
+                installationContext.setClassPathElements(cp.getPathElement());
             }
             // now build the ComponentContext
             installationContext.setContext(buildComponentContext(componentRoot,name));
-            InstallationDescriptorExtension desc=descriptor.getDescriptorExtension();
-            if(desc!=null){
-                installationContext.setDescriptorExtension(desc.getDescriptorExtension());
+            DocumentFragment desc = DescriptorFactory.getDescriptorExtension(descriptor);
+            if (desc != null) {
+                installationContext.setDescriptorExtension(desc);
             }
-            installationContext.setBinding(descriptor.isBindingComponent());
-            installationContext.setEngine(descriptor.isServiceEngine());
+            installationContext.setBinding(DescriptorFactory.isBindingComponent(descriptor));
+            installationContext.setEngine(DescriptorFactory.isServiceEngine(descriptor));
             // now we must initialize the boot strap class
             String bootstrapClassName=descriptor.getBootstrapClassName();
             ClassPath bootStrapClassPath=descriptor.getBootstrapClassPath();
             InstallationClassLoader bootstrapLoader=null;
-            if(bootstrapClassName!=null&&bootstrapClassName.length()>0){
-                boolean parentFirst=descriptor.isBootstrapClassLoaderDelegationParentFirst();
-                bootstrapLoader=classLoaderService.buildClassLoader(installationDir,bootStrapClassPath
-                                .getPathElements(),parentFirst);
+            if (bootstrapClassName != null && bootstrapClassName.length() > 0) {
+                boolean parentFirst = DescriptorFactory.isBCLParentFirst(descriptor);
+                bootstrapLoader = classLoaderService.buildClassLoader(
+                		installationDir, bootStrapClassPath.getPathElement(), parentFirst);
             }
-            SharedLibraryList[] lists=descriptor.getSharedLibraries();
-            String componentClassName=descriptor.getComponentClassName();
+            List<Component.SharedLibrary> lists = descriptor.getSharedLibraryList();
+            String componentClassName=descriptor.getComponentClassName().getContent();
             ClassPath componentClassPath=descriptor.getComponentClassPath();
-            boolean parentFirst=descriptor.isComponentClassLoaderDelegationParentFirst();
-            ClassLoader componentClassLoader=classLoaderService.buildClassLoader(installationDir,componentClassPath
-                            .getPathElements(),parentFirst,lists);
+            boolean parentFirst = DescriptorFactory.isCCLParentFirst(descriptor);
+            ClassLoader componentClassLoader=classLoaderService.buildClassLoader(
+            			installationDir, componentClassPath.getPathElement(), parentFirst, lists);
             result=new InstallerMBeanImpl(container,installationContext,componentClassLoader,componentClassName,
                             bootstrapLoader,bootstrapClassName, false);
             // create an MBean for the installer

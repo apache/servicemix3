@@ -21,6 +21,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.jbi.JBIException;
 import javax.management.JMException;
@@ -33,9 +35,6 @@ import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.servicemix.jbi.util.FileVersionUtil;
-
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Holder for environment information
@@ -64,7 +63,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
     private File serviceAssembliesDir;
     private File tmpDir;
     private int statsInterval = 5;
-    private Map envMap = new ConcurrentHashMap();
+    private Map<ComponentMBeanImpl, ComponentEnvironment> envMap = new ConcurrentHashMap<ComponentMBeanImpl, ComponentEnvironment>();
     private AtomicBoolean started = new AtomicBoolean(false);
     private boolean dumpStats = false;
     private Timer statsTimer;
@@ -168,7 +167,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         buildDirectoryStructure();
     }
 
-    protected Class getServiceMBean() {
+    protected Class<EnvironmentContextMBean> getServiceMBean() {
         return EnvironmentContextMBean.class;
     }
 
@@ -205,8 +204,8 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      */
     public void shutDown() throws javax.jbi.JBIException {
         super.shutDown();
-        for (Iterator i = envMap.values().iterator();i.hasNext();) {
-            ComponentEnvironment ce = (ComponentEnvironment) i.next();
+        for (Iterator<ComponentEnvironment> i = envMap.values().iterator();i.hasNext();) {
+            ComponentEnvironment ce = i.next();
             ce.close();
         }
         if (timerTask != null) {
@@ -259,8 +258,8 @@ public class EnvironmentContext extends BaseSystemService implements Environment
 
     protected void doDumpStats() {
         if (isDumpStats()) {
-            for (Iterator i = envMap.values().iterator();i.hasNext();) {
-                ComponentEnvironment ce = (ComponentEnvironment) i.next();
+            for (Iterator<ComponentEnvironment> i = envMap.values().iterator();i.hasNext();) {
+                ComponentEnvironment ce = i.next();
                 ce.dumpStats();
             }
         }
@@ -459,7 +458,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @param doDelete true if component is to be deleted
      */
     public void unreregister(ComponentMBeanImpl connector) {
-        ComponentEnvironment ce = (ComponentEnvironment) envMap.remove(connector);
+        ComponentEnvironment ce = envMap.remove(connector);
         if (ce != null) {
             ce.close();
         }

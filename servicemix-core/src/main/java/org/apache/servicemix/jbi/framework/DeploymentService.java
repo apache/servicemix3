@@ -38,10 +38,10 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.EnvironmentContext;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.container.ServiceAssemblyEnvironment;
-import org.apache.servicemix.jbi.deployment.Descriptor;
-import org.apache.servicemix.jbi.deployment.DescriptorFactory;
-import org.apache.servicemix.jbi.deployment.ServiceAssembly;
-import org.apache.servicemix.jbi.deployment.ServiceUnit;
+import org.apache.servicemix.schemas.deployment.Descriptor;
+import org.apache.servicemix.schemas.deployment.DescriptorFactory;
+import org.apache.servicemix.schemas.deployment.ServiceAssembly;
+import org.apache.servicemix.schemas.deployment.ServiceUnit;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
@@ -462,82 +462,77 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
             throw ManagementSupport.failure("deploy", "Failed to rename " + tmpDir + " to " + saDirectory);
         }
         // Check all SUs requirements
-        ServiceUnit[] sus = sa.getServiceUnits();
-        if (sus != null) {
-            for (int i = 0; i < sus.length; i++) {
-                String suName = sus[i].getIdentification().getName();
-                String artifact = sus[i].getTarget().getArtifactsZip();
-                String componentName = sus[i].getTarget().getComponentName();
-                File artifactFile = new File(saDirectory, artifact);
-                if (!artifactFile.exists()) {
-                    throw ManagementSupport.failure("deploy", "Artifact " + artifact + " not found for service unit " + suName);
-                }
-                ComponentMBeanImpl lcc = container.getComponent(componentName);
-                if (lcc == null) {
-                    throw ManagementSupport.failure("deploy", "Target component " + componentName + " for service unit " + suName + " is not installed");
-                }
-                if (!lcc.isStarted()) {
-                    throw ManagementSupport.failure("deploy", "Target component " + componentName + " for service unit " + suName + " is not started");
-                }
-                if (lcc.getServiceUnitManager() == null) {
-                    throw ManagementSupport.failure("deploy", "Target component " + componentName + " for service unit " + suName + " does not accept deployments");
-                }
-                // TODO: check duplicates here ?
-                if (isDeployedServiceUnit(componentName, suName)) {
-                    throw ManagementSupport.failure("deploy", "Service unit " + suName + " is already deployed on component " + componentName);
-                }
+        for (ServiceUnit su : sa.getServiceUnit()) {
+            String suName = su.getIdentification().getName();
+            String artifact = su.getTarget().getArtifactsZip();
+            String componentName = su.getTarget().getComponentName();
+            File artifactFile = new File(saDirectory, artifact);
+            if (!artifactFile.exists()) {
+                throw ManagementSupport.failure("deploy", "Artifact " + artifact + " not found for service unit " + suName);
+            }
+            ComponentMBeanImpl lcc = container.getComponent(componentName);
+            if (lcc == null) {
+                throw ManagementSupport.failure("deploy", "Target component " + componentName + " for service unit " + suName + " is not installed");
+            }
+            if (!lcc.isStarted()) {
+                throw ManagementSupport.failure("deploy", "Target component " + componentName + " for service unit " + suName + " is not started");
+            }
+            if (lcc.getServiceUnitManager() == null) {
+                throw ManagementSupport.failure("deploy", "Target component " + componentName + " for service unit " + suName + " does not accept deployments");
+            }
+            // TODO: check duplicates here ?
+            if (isDeployedServiceUnit(componentName, suName)) {
+                throw ManagementSupport.failure("deploy", "Service unit " + suName + " is already deployed on component " + componentName);
             }
         }
         // Everything seems ok, so deploy all SUs
         int nbSuccess = 0;
         int nbFailures = 0;
         List componentResults = new ArrayList();
-        List suKeys = new ArrayList();
-        if (sus != null) {
-            for (int i = 0; i < sus.length; i++) {
-                File targetDir = null;
-                String suName = sus[i].getIdentification().getName();
-                String artifact = sus[i].getTarget().getArtifactsZip();
-                String componentName = sus[i].getTarget().getComponentName();
-                // TODO: skip duplicates
-                // Unpack SU
+        List<String> suKeys = new ArrayList<String>();
+        for (ServiceUnit su : sa.getServiceUnit()) {
+            File targetDir = null;
+            String suName = su.getIdentification().getName();
+            String artifact = su.getTarget().getArtifactsZip();
+            String componentName = su.getTarget().getComponentName();
+            // TODO: skip duplicates
+            // Unpack SU
+            try {
+                File artifactFile = new File(saDirectory, artifact);
+                targetDir = env.getServiceUnitDirectory(componentName, suName);
+                if (log.isDebugEnabled()) {
+                    log.debug("Unpack service unit archive " + artifactFile + " to " + targetDir);
+                }
+                FileUtil.unpackArchive(artifactFile, targetDir);
+            } catch (IOException e) {
+                nbFailures++;
+                componentResults.add(ManagementSupport.createComponentFailure(
+                        "deploy", componentName,
+                        "Error unpacking service unit", e));
+                continue;
+            }
+            // Deploy it
+            boolean success = false;
+            try {
+                ComponentMBeanImpl lcc = container.getComponent(componentName);
+                ServiceUnitManager sum = lcc.getServiceUnitManager();
+                ClassLoader cl = Thread.currentThread().getContextClassLoader();
                 try {
-                    File artifactFile = new File(saDirectory, artifact);
-                    targetDir = env.getServiceUnitDirectory(componentName, suName);
-                    if (log.isDebugEnabled()) {
-                        log.debug("Unpack service unit archive " + artifactFile + " to " + targetDir);
-                    }
-                    FileUtil.unpackArchive(artifactFile, targetDir);
-                } catch (IOException e) {
-                    nbFailures++;
-                    componentResults.add(ManagementSupport.createComponentFailure(
-                            "deploy", componentName,
-                            "Error unpacking service unit", e));
-                    continue;
+                    Thread.currentThread().setContextClassLoader(lcc.getComponent().getClass().getClassLoader());
+                    String resultMsg = sum.deploy(suName, targetDir.getAbsolutePath());
+                    success = getComponentTaskResult(resultMsg, componentName, componentResults, true);
+                } finally {
+                    Thread.currentThread().setContextClassLoader(cl);
                 }
-                // Deploy it
-                boolean success = false;
-                try {
-                    ComponentMBeanImpl lcc = container.getComponent(componentName);
-                    ServiceUnitManager sum = lcc.getServiceUnitManager();
-                    ClassLoader cl = Thread.currentThread().getContextClassLoader();
-                    try {
-                        Thread.currentThread().setContextClassLoader(lcc.getComponent().getClass().getClassLoader());
-                        String resultMsg = sum.deploy(suName, targetDir.getAbsolutePath());
-                        success = getComponentTaskResult(resultMsg, componentName, componentResults, true);
-                    } finally {
-                        Thread.currentThread().setContextClassLoader(cl);
-                    }
-                    // TODO: need to register the SU somewhere to keep track of its state
-                } catch (Exception e) {
-                    getComponentTaskError(e, componentName, componentResults);
-                }
-                if (success) {
-                    nbSuccess++;
-                    suKeys.add(registry.registerServiceUnit(sus[i], assemblyName, targetDir));
-                } else {
-                    nbFailures++;
-                }
+                // TODO: need to register the SU somewhere to keep track of its state
+            } catch (Exception e) {
+                getComponentTaskError(e, componentName, componentResults);
+            }
+            if (success) {
+                nbSuccess++;
+                suKeys.add(registry.registerServiceUnit(su, assemblyName, targetDir));
+            } else {
+                nbFailures++;
             }
         }
         // Note: the jbi spec says that if at least one deployment succeeds, 
@@ -564,7 +559,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         // Success
         else {
             // Register SA
-            String[] deployedSUs = (String[]) suKeys.toArray(new String[suKeys.size()]);
+            String[] deployedSUs = suKeys.toArray(new String[suKeys.size()]);
             ServiceAssemblyLifeCycle salc = registry.registerServiceAssembly(sa, deployedSUs, env);
             salc.writeRunningState();
             // Build result string

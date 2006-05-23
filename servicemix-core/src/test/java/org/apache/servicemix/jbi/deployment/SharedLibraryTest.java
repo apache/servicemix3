@@ -15,31 +15,23 @@
  */
 package org.apache.servicemix.jbi.deployment;
 
-import org.apache.servicemix.jbi.config.DebugClassPathXmlApplicationContext;
-import org.apache.servicemix.jbi.config.spring.XBeanProcessor;
-import org.apache.servicemix.jbi.deployment.Descriptor;
-import org.apache.servicemix.jbi.deployment.Identification;
-import org.apache.servicemix.jbi.deployment.SharedLibrary;
+import java.net.URL;
+
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.springframework.context.support.AbstractXmlApplicationContext;
-
-import java.util.Arrays;
-
-import junit.framework.TestCase;
+import org.apache.servicemix.schemas.deployment.Identification;
+import org.apache.servicemix.schemas.deployment.Descriptor.SharedLibrary;
 
 /**
  * @version $Revision$
  */
-public class SharedLibraryTest extends TestCase {
+public class SharedLibraryTest extends DeploymentTest {
 
-    protected AbstractXmlApplicationContext context;
     protected SourceTransformer transformer = new SourceTransformer();
 
     public void testParse() throws Exception {
 
         // lets force the JBI container to be constructed first
-        Descriptor root = (Descriptor) context.getBeansOfType(Descriptor.class).values().iterator().next();
-        assertNotNull("JBI Container not found in spring!", root);
+        assertNotNull("JBI descriptor not found", root);
 
         SharedLibrary sl = root.getSharedLibrary();
         Identification identification = sl.getIdentification();
@@ -64,13 +56,8 @@ public class SharedLibraryTest extends TestCase {
         return buffer.toString();
     }
 
-    protected void setUp() throws Exception {
-        context = createBeanFactory();
-    }
-
-    protected AbstractXmlApplicationContext createBeanFactory() throws Exception {
-        return new DebugClassPathXmlApplicationContext("org/apache/servicemix/jbi/deployment/SharedLibrary.xml",
-                                                       Arrays.asList(new Object[] { new XBeanProcessor() }));
+    protected URL getDescriptorURL() throws Exception {
+        return getClass().getResource("SharedLibrary.xml");
     }
 
 }

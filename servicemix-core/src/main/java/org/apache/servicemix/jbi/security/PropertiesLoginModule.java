@@ -17,6 +17,7 @@ package org.apache.servicemix.jbi.security;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Map;
@@ -56,7 +57,7 @@ public class PropertiesLoginModule implements LoginModule {
     private Properties users = new Properties();
     private Properties groups = new Properties();
     private String user;
-    private Set principals = new HashSet();
+    private Set<Principal> principals = new HashSet<Principal>();
     private File baseDir;
 
     public void initialize(Subject subject, CallbackHandler callbackHandler, Map sharedState, Map options) {

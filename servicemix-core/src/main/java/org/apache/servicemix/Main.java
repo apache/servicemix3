@@ -17,10 +17,8 @@ package org.apache.servicemix;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.servicemix.jbi.config.spring.XBeanProcessor;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.ApplicationContext;
@@ -28,6 +26,7 @@ import org.apache.xbean.server.repository.FileSystemRepository;
 import org.apache.xbean.server.spring.configuration.ClassLoaderXmlPreprocessor;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.apache.xbean.spring.context.FileSystemXmlApplicationContext;
+import org.apache.xbean.spring.context.SpringXmlPreprocessor;
 
 /**
  * A simple stand alone application which runs ServiceMix from the command line.
@@ -60,25 +59,10 @@ public class Main {
                     return;
                 }
                 
-                List processors = new ArrayList();
+                List<SpringXmlPreprocessor> processors = new ArrayList<SpringXmlPreprocessor>();
                 processors.add(new ClassLoaderXmlPreprocessor(new FileSystemRepository(new File("."))));
-                if (file.equals("-v1")) {
-                    
-                    processors.add(new XBeanProcessor());
-                    if (args.length <= 1) {
-                        System.out.println("Loading Apache ServiceMix (compatible 1.x) from servicemix.xml on the CLASSPATH");
-                        context = new ClassPathXmlApplicationContext("servicemix.xml", processors);
-                    }
-                    else {
-                        file = args[1];
-                        System.out.println("Loading Apache ServiceMix (compatible 1.x) from file: " + file);
-                        context = new FileSystemXmlApplicationContext(file, processors);
-                    }
-                }
-                else {
-                    System.out.println("Loading Apache ServiceMix from file: " + file);
-                    context = new FileSystemXmlApplicationContext(file, processors);
-                }
+                System.out.println("Loading Apache ServiceMix from file: " + file);
+                context = new FileSystemXmlApplicationContext(file, processors);
             }
             SpringJBIContainer container = (SpringJBIContainer) context.getBean("jbi");
             Object lock = new Object();

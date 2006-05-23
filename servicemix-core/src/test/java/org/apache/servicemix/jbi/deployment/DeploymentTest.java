@@ -15,36 +15,49 @@
  */
 package org.apache.servicemix.jbi.deployment;
 
-import org.apache.servicemix.jbi.config.DebugClassPathXmlApplicationContext;
-import org.apache.servicemix.jbi.config.spring.XBeanProcessor;
-import org.apache.servicemix.jbi.deployment.ClassPath;
-import org.apache.servicemix.jbi.deployment.Component;
-import org.apache.servicemix.jbi.deployment.Descriptor;
-import org.apache.servicemix.jbi.deployment.Identification;
-import org.apache.servicemix.jbi.deployment.InstallationDescriptorExtension;
-import org.apache.servicemix.jbi.deployment.SharedLibraryList;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.springframework.context.support.AbstractXmlApplicationContext;
-import org.w3c.dom.DocumentFragment;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javax.xml.transform.dom.DOMSource;
 
-import java.util.Arrays;
-
 import junit.framework.TestCase;
+
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.schemas.deployment.ClassPath;
+import org.apache.servicemix.schemas.deployment.Component;
+import org.apache.servicemix.schemas.deployment.Descriptor;
+import org.apache.servicemix.schemas.deployment.DescriptorFactory;
+import org.apache.servicemix.schemas.deployment.Identification;
+import org.apache.servicemix.schemas.deployment.Component.SharedLibrary;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Element;
 
 /**
  * @version $Revision$
  */
 public class DeploymentTest extends TestCase {
 
-    protected AbstractXmlApplicationContext context;
     protected SourceTransformer transformer = new SourceTransformer();
 
+    protected Descriptor root;
+    
+    protected ClassPath newClassPath(String[] jars) {
+    	ClassPath cp = new ClassPath();
+    	for (int i = 0; i < jars.length; i++) {
+        	cp.getPathElement().add(jars[i]);
+		}
+    	return cp;
+    }
+    
+    protected SharedLibrary newSharedLibrary(String name) {
+    	SharedLibrary sl = new SharedLibrary();
+    	sl.setContent(name);
+    	return sl;
+    }
+    
     public void testParse() throws Exception {
-
-        // lets force the JBI container to be constructed first
-        Descriptor root = (Descriptor) context.getBean("jbi");
         assertNotNull("JBI Container not found in spring!", root);
 
         // component stuff
@@ -52,22 +65,22 @@ public class DeploymentTest extends TestCase {
         assertNotNull("component is null", component);
         assertEquals("getBootstrapClassName", "com.foo.Engine1Bootstrap", component.getBootstrapClassName());
         assertEquals("getComponentClassName", "com.foo.Engine1", component.getComponentClassName());
-        assertEquals("getComponentClassPath", new ClassPath(new String[] {"Engine1.jar"}), component.getComponentClassPath());
-        assertEquals("getBootstrapClassPath", new ClassPath(new String[] {"Engine2.jar"}), component.getBootstrapClassPath());
+        assertEquals("getComponentClassPath", newClassPath(new String[] {"Engine1.jar"}), component.getComponentClassPath());
+        assertEquals("getBootstrapClassPath", newClassPath(new String[] {"Engine2.jar"}), component.getBootstrapClassPath());
 
-        assertEquals("getDescription", "foo", component.getDescription());
+        assertEquals("getDescription", "foo", component.getIdentification().getDescription());
 
-        assertArrayEquals("getSharedLibraries", new SharedLibraryList[] {new SharedLibraryList("slib1")}, component.getSharedLibraries());
+        assertEquals("getSharedLibraries",  Collections.singletonList(newSharedLibrary("slib1")), component.getSharedLibraryList());
 
         Identification identification = component.getIdentification();
         assertNotNull("identification is null", identification);
         assertEquals("getName", "example-engine-1", identification.getName());
         assertEquals("getDescription", "An example service engine", identification.getDescription());
 
-        InstallationDescriptorExtension descriptorExtension = component.getDescriptorExtension();
+        List<Element> descriptorExtension = component.getAnyOrAny();
         assertNotNull("descriptorExtension is null", descriptorExtension);
 
-        DocumentFragment fragment = descriptorExtension.getDescriptorExtension();
+        DocumentFragment fragment = DescriptorFactory.getDescriptorExtension(component);
         assertNotNull("fragment is null", fragment);
 
         System.out.println("Created document fragment: " + fragment);
@@ -95,12 +108,11 @@ public class DeploymentTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        context = createBeanFactory();
+        root = DescriptorFactory.buildDescriptor(getDescriptorURL());
     }
 
-    protected AbstractXmlApplicationContext createBeanFactory() throws Exception {
-        return new DebugClassPathXmlApplicationContext("org/apache/servicemix/jbi/deployment/example.xml",
-                                                       Arrays.asList(new Object[] { new XBeanProcessor() }));
+    protected URL getDescriptorURL() throws Exception {
+        return getClass().getResource("example.xml");
     }
 
 }

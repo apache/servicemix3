@@ -1184,7 +1184,7 @@ public class JBIContainer extends BaseLifeCycle {
         }
     }
     
-    public Object[] getListeners(Class lc) {
+    public <T extends EventListener> T[] getListeners(Class<T> lc) {
         return listeners.getListeners(lc);
     }
     

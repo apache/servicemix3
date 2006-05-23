@@ -15,17 +15,15 @@
  */
 package org.apache.servicemix.jbi.deployment;
 
-import org.apache.servicemix.jbi.config.DebugClassPathXmlApplicationContext;
-import org.apache.servicemix.jbi.config.spring.XBeanProcessor;
-import org.apache.servicemix.jbi.deployment.Descriptor;
-import org.apache.servicemix.jbi.deployment.Identification;
-import org.apache.servicemix.jbi.deployment.ServiceAssembly;
-import org.apache.servicemix.jbi.deployment.ServiceUnit;
-import org.springframework.context.support.AbstractXmlApplicationContext;
-
-import java.util.Arrays;
+import java.net.URL;
+import java.util.List;
 
 import javax.xml.namespace.QName;
+
+import org.apache.servicemix.schemas.deployment.Connection;
+import org.apache.servicemix.schemas.deployment.Identification;
+import org.apache.servicemix.schemas.deployment.ServiceAssembly;
+import org.apache.servicemix.schemas.deployment.ServiceUnit;
 
 /**
  * @version $Revision$
@@ -33,10 +31,7 @@ import javax.xml.namespace.QName;
 public class ServiceAssemblyTest extends DeploymentTest {
 
     public void testParse() throws Exception {
-
-        // lets force the JBI container to be constructed first
-        Descriptor root = (Descriptor) context.getBean("jbi");
-        assertNotNull("JBI Container not found in spring!", root);
+        assertNotNull("JBI descriptor not found", root);
 
         ServiceAssembly serviceAssembly = root.getServiceAssembly();
         assertNotNull("serviceAssembly is null", serviceAssembly);
@@ -46,30 +41,29 @@ public class ServiceAssemblyTest extends DeploymentTest {
         assertEquals("getName", "ServiceAssembly_041207153211-0800_saId", identification.getName());
         assertEquals("getDescription", "Description of Service Assembly : ServiceAssembly", identification.getDescription());
 
-        ServiceUnit[] serviceUnits = serviceAssembly.getServiceUnits();
+        List<ServiceUnit> serviceUnits = serviceAssembly.getServiceUnit();
         assertNotNull("serviceUnits are null", serviceUnits);
-        assertEquals("serviceUnits size", 4, serviceUnits.length);
+        assertEquals("serviceUnits size", 4, serviceUnits.size());
 
-        assertEquals("getIdentification().getName() for 0", "TransformationSU_041207152821-0800_suId", serviceUnits[0].getIdentification().getName());
-        assertEquals("getIdentification().getDescription() for 0", "Description of Serviceunit: TransformationSU", serviceUnits[0].getIdentification().getDescription());
-        assertEquals("getTarget().getArtifactsZip() for 0", "TransformationSU.zip", serviceUnits[0].getTarget().getArtifactsZip());
-        assertEquals("getTarget().getComponentName() for 0", "SunTransformationEngine", serviceUnits[0].getTarget().getComponentName());
+        assertEquals("getIdentification().getName() for 0", "TransformationSU_041207152821-0800_suId", serviceUnits.get(0).getIdentification().getName());
+        assertEquals("getIdentification().getDescription() for 0", "Description of Serviceunit: TransformationSU", serviceUnits.get(0).getIdentification().getDescription());
+        assertEquals("getTarget().getArtifactsZip() for 0", "TransformationSU.zip", serviceUnits.get(0).getTarget().getArtifactsZip());
+        assertEquals("getTarget().getComponentName() for 0", "SunTransformationEngine", serviceUnits.get(0).getTarget().getComponentName());
 
-        assertEquals("getIdentification().getName() for 3", "SequencingEngineSU_041207152507-0800_suId", serviceUnits[3].getIdentification().getName());
-        assertEquals("getIdentification().getDescription() for 3", "Description of Serviceunit: SequencingEngineSU", serviceUnits[3].getIdentification().getDescription());
-        assertEquals("getTarget().getArtifactsZip() for 3", "SequencingEngineSU.zip", serviceUnits[3].getTarget().getArtifactsZip());
-        assertEquals("getTarget().getComponentName() for 3", "SunSequencingEngine", serviceUnits[3].getTarget().getComponentName());
+        assertEquals("getIdentification().getName() for 3", "SequencingEngineSU_041207152507-0800_suId", serviceUnits.get(3).getIdentification().getName());
+        assertEquals("getIdentification().getDescription() for 3", "Description of Serviceunit: SequencingEngineSU", serviceUnits.get(3).getIdentification().getDescription());
+        assertEquals("getTarget().getArtifactsZip() for 3", "SequencingEngineSU.zip", serviceUnits.get(3).getTarget().getArtifactsZip());
+        assertEquals("getTarget().getComponentName() for 3", "SunSequencingEngine", serviceUnits.get(3).getTarget().getComponentName());
         
-        Connection[] connections = serviceAssembly.getConnections().getConnections();
+        List<Connection> connections = serviceAssembly.getConnections().getConnection();
         assertNotNull("connections are null", connections);
-        assertEquals("connections size", 2, connections.length);
+        assertEquals("connections size", 2, connections.size());
         
-        assertEquals("getConsumer().getServiceName() for 0", new QName("http://www.gaiati.com/emee/ns/csi", "csi-service"), connections[0].getConsumer().getServiceName());
+        assertEquals("getConsumer().getServiceName() for 0", new QName("http://www.gaiati.com/emee/ns/csi", "csi-service"), connections.get(0).getConsumer().getServiceName());
     }
 
-    protected AbstractXmlApplicationContext createBeanFactory() throws Exception {
-        return new DebugClassPathXmlApplicationContext("org/apache/servicemix/jbi/deployment/serviceAssembly.xml",
-                                                       Arrays.asList(new Object[] { new XBeanProcessor() }));
+    protected URL getDescriptorURL() throws Exception {
+        return getClass().getResource("serviceAssembly.xml");
     }
 
 }

@@ -27,10 +27,10 @@ import javax.management.MBeanOperationInfo;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.deployment.Descriptor;
-import org.apache.servicemix.jbi.deployment.DescriptorFactory;
-import org.apache.servicemix.jbi.deployment.ServiceUnit;
-import org.apache.servicemix.jbi.deployment.Services;
+import org.apache.servicemix.schemas.deployment.Descriptor;
+import org.apache.servicemix.schemas.deployment.DescriptorFactory;
+import org.apache.servicemix.schemas.deployment.ServiceUnit;
+import org.apache.servicemix.schemas.deployment.Services;
 import org.apache.servicemix.jbi.event.ServiceUnitEvent;
 import org.apache.servicemix.jbi.event.ServiceUnitListener;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;

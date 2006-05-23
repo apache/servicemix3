@@ -197,6 +197,7 @@
   <modules>
     <module>servicemix-jbi</module>
     <module>servicemix-services</module>
+    <module>servicemix-schemas</module>
     <module>servicemix-core</module>
     <module>servicemix-components</module>
     <module>servicemix-common</module>
@@ -292,6 +293,11 @@
       <dependency>
         <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-services</artifactId>
+        <version>3.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>${pom.groupId}</groupId>
+        <artifactId>servicemix-schemas</artifactId>
         <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>

@@ -21,6 +21,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
@@ -39,22 +41,19 @@ import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.EnvironmentContext;
 import org.apache.servicemix.jbi.container.ServiceAssemblyEnvironment;
 import org.apache.servicemix.jbi.container.SubscriptionSpec;
-import org.apache.servicemix.jbi.deployment.ServiceAssembly;
-import org.apache.servicemix.jbi.deployment.ServiceUnit;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
 import org.apache.servicemix.jbi.servicedesc.DynamicEndpoint;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 import org.apache.servicemix.jbi.util.DOMUtil;
+import org.apache.servicemix.schemas.deployment.ServiceAssembly;
+import org.apache.servicemix.schemas.deployment.ServiceUnit;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
-import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Registry - state infomation including running state, SA's deployed etc.
@@ -68,7 +67,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     private EndpointRegistry endpointRegistry;
     private SubscriptionRegistry subscriptionRegistry;
     private ServiceAssemblyRegistry serviceAssemblyRegistry;
-    private Map serviceUnits;
+    private Map<String, ServiceUnitLifeCycle> serviceUnits;
     private List pendingAssemblies;
 
     /**
@@ -79,7 +78,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         this.endpointRegistry = new EndpointRegistry(this);
         this.subscriptionRegistry = new SubscriptionRegistry(this);
         this.serviceAssemblyRegistry = new ServiceAssemblyRegistry(this);
-        this.serviceUnits = new ConcurrentHashMap();
+        this.serviceUnits = new ConcurrentHashMap<String, ServiceUnitLifeCycle>();
         this.pendingAssemblies = new CopyOnWriteArrayList();
     }
     
@@ -437,7 +436,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      */
     public ObjectName[] getEngineComponents() {
         ObjectName[] result = null;
-        List tmpList = new ArrayList();
+        List<ObjectName> tmpList = new ArrayList<ObjectName>();
         for (Iterator i = getComponents().iterator(); i.hasNext();){
             ComponentMBeanImpl lcc = (ComponentMBeanImpl) i.next();
             if (!lcc.isPojo() && lcc.isService() && lcc.getMBeanName() != null){
@@ -456,7 +455,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      */
     public ObjectName[] getBindingComponents() {
         ObjectName[] result = null;
-        List tmpList = new ArrayList();
+        List<ObjectName> tmpList = new ArrayList<ObjectName>();
         for (Iterator i = getComponents().iterator(); i.hasNext();){
             ComponentMBeanImpl lcc = (ComponentMBeanImpl) i.next();
             if (!lcc.isPojo() && lcc.isBinding() && lcc.getMBeanName() != null){
@@ -474,7 +473,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      */
     public ObjectName[] getPojoComponents() {
         ObjectName[] result = null;
-        List tmpList = new ArrayList();
+        List<ObjectName> tmpList = new ArrayList<ObjectName>();
         for (Iterator i = getComponents().iterator(); i.hasNext();){
             ComponentMBeanImpl lcc = (ComponentMBeanImpl) i.next();
             if (lcc.isPojo() && lcc.getMBeanName() != null){
@@ -598,7 +597,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      */
     public ServiceUnitLifeCycle[] getDeployedServiceUnits(String componentName)  {
         Collection sus = serviceUnits.values();
-        List tmpList = new ArrayList();
+        List<ServiceUnitLifeCycle> tmpList = new ArrayList<ServiceUnitLifeCycle>();
         for (Iterator iter = sus.iterator(); iter.hasNext();) {
             ServiceUnitLifeCycle su = (ServiceUnitLifeCycle) iter.next();
             if (su.getComponentName().equals(componentName)) {

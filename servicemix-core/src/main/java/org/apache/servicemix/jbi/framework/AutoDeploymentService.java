@@ -41,9 +41,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.EnvironmentContext;
 import org.apache.servicemix.jbi.container.JBIContainer;
-import org.apache.servicemix.jbi.deployment.Descriptor;
-import org.apache.servicemix.jbi.deployment.DescriptorFactory;
-import org.apache.servicemix.jbi.deployment.ServiceAssembly;
+import org.apache.servicemix.schemas.deployment.Descriptor;
+import org.apache.servicemix.schemas.deployment.DescriptorFactory;
+import org.apache.servicemix.schemas.deployment.ServiceAssembly;
+import org.apache.servicemix.schemas.deployment.ServiceUnit;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.util.FileUtil;
@@ -299,10 +300,10 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
 
     protected Set getComponentNames(ServiceAssembly sa) {
         Set names = null;
-        if (sa.getServiceUnits() != null && sa.getServiceUnits().length > 0) {
+        if (sa.getServiceUnit() != null && sa.getServiceUnit().size() > 0) {
             names = new HashSet();
-            for (int i = 0; i < sa.getServiceUnits().length; i++) {
-                names.add(sa.getServiceUnits()[i].getTarget().getComponentName());
+            for (ServiceUnit su : sa.getServiceUnit()) {
+                names.add(su.getTarget().getComponentName());
             }
         }
         return names;

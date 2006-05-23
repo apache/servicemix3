@@ -32,7 +32,7 @@ import javax.jbi.component.Component;
  */
 public class ComponentRegistry {
     
-    private Map idMap = new LinkedHashMap();
+    private Map<ComponentNameSpace, ComponentMBeanImpl> idMap = new LinkedHashMap<ComponentNameSpace, ComponentMBeanImpl>();
     private boolean runningStateInitialized = false;
     private Registry registry;
     
@@ -105,7 +105,7 @@ public class ComponentRegistry {
     }
     
     private Collection getReverseComponents() {
-        ArrayList l = new ArrayList(getComponents());
+        ArrayList<ComponentMBean> l = new ArrayList<ComponentMBean>(getComponents());
         Collections.reverse(l);
         return l;
     }
@@ -126,14 +126,14 @@ public class ComponentRegistry {
      * @return the ComponentConnector or null
      */
     public synchronized ComponentMBeanImpl getComponent(ComponentNameSpace id) {
-        return (ComponentMBeanImpl) idMap.get(id);
+        return idMap.get(id);
     }
     
     /**
      * 
      * @return Collection of ComponentConnectors held by the registry
      */
-    public synchronized Collection getComponents() {
+    public synchronized Collection<ComponentMBeanImpl> getComponents() {
         return idMap.values();
     }
 

@@ -15,20 +15,21 @@
  */
 package org.apache.servicemix.jbi.loaders;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.deployment.ClassPath;
-import org.apache.servicemix.jbi.deployment.SharedLibrary;
-import org.apache.servicemix.jbi.deployment.SharedLibraryList;
-
-import javax.jbi.management.DeploymentException;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.jbi.management.DeploymentException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.schemas.deployment.ClassPath;
+import org.apache.servicemix.schemas.deployment.Component;
+import org.apache.servicemix.schemas.deployment.Descriptor;
+import org.apache.servicemix.schemas.deployment.DescriptorFactory;
 
 /**
  * Build custom class loader
@@ -38,7 +39,7 @@ import java.util.Map;
 public class ClassLoaderService {
 	private static final Log log = LogFactory.getLog(ClassLoaderService.class);
 
-	private Map sharedLibraryMap = new ConcurrentHashMap();
+	private Map<String, ClassLoader> sharedLibraryMap = new ConcurrentHashMap<String, ClassLoader>();
 
 	/**
 	 * Buld a Custom ClassLoader
@@ -52,7 +53,7 @@ public class ClassLoaderService {
 	 * @throws DeploymentException
 	 */
 	public InstallationClassLoader buildClassLoader(File dir,
-			String[] classPathNames, boolean parentFirst)
+			List<String> classPathNames, boolean parentFirst)
 			throws MalformedURLException, DeploymentException {
 		return buildClassLoader(dir, classPathNames, parentFirst, null);
 	}
@@ -70,17 +71,17 @@ public class ClassLoaderService {
 	 * @throws DeploymentException
 	 */
 	public InstallationClassLoader buildClassLoader(File dir,
-			String[] classPathNames, boolean parentFirst,
-			SharedLibraryList[] list) throws MalformedURLException,
+			List<String> classPathNames, boolean parentFirst,
+			List<Component.SharedLibrary> list) throws MalformedURLException,
 			DeploymentException {
 		InstallationClassLoader result = null;
 
 		// Make the current ClassLoader the parent
 		ClassLoader parent = getClass().getClassLoader();		
 		
-		URL[] urls = new URL[classPathNames.length];
-		for (int i = 0; i < classPathNames.length; i++) {
-			File file = new File(dir, classPathNames[i]);
+		URL[] urls = new URL[classPathNames.size()];
+		for (int i = 0; i < classPathNames.size(); i++) {
+			File file = new File(dir, classPathNames.get(i));
 			if (!file.exists()) {
 				throw new DeploymentException("Unable to add File " + file
 						+ " to class path as it doesn't exist: "
@@ -94,8 +95,8 @@ public class ClassLoaderService {
 			result = new SelfFirstClassLoader(urls, parent);
 		}
 		if (list != null) {
-			for (int i = 0; i < list.length; i++) {
-				String name = list[i].getName();
+			for (Component.SharedLibrary lib : list) {
+				String name = lib.getContent();
 				ClassLoader cl = (ClassLoader) sharedLibraryMap.get(name);
 				if (cl != null) {
 					result.addSharedLibraryLoader(cl);
@@ -114,20 +115,20 @@ public class ClassLoaderService {
 	 * @param sl
 	 * @throws MalformedURLException
 	 */
-    public void addSharedLibrary(File dir, SharedLibrary sl)
+    public void addSharedLibrary(File dir, Descriptor.SharedLibrary sl)
 			throws MalformedURLException {
 		if (sl != null) {
-			boolean parentFirst = sl.isParentFirstClassLoaderDelegation();
+			boolean parentFirst = DescriptorFactory.isSLParentFirst(sl);
 			String name = sl.getIdentification().getName();
 			
 			// Make the current ClassLoader the parent
 			ClassLoader parent = getClass().getClassLoader();		
 			
 			ClassPath cp = sl.getSharedLibraryClassPath();
-			String[] classPathNames = cp.getPathElements();
-			URL[] urls = new URL[classPathNames.length];
-			for (int i = 0; i < classPathNames.length; i++) {
-				File file = new File(dir, classPathNames[i]);
+			List<String> classPathNames = cp.getPathElement();
+			URL[] urls = new URL[classPathNames.size()];
+			for (int i = 0; i < classPathNames.size(); i++) {
+				File file = new File(dir, classPathNames.get(i));
 				urls[i] = file.toURL();
 			}
 			if (parentFirst) {
