@@ -30,6 +30,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.jaxp.StAXSourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.codehaus.xfire.exchange.OutMessage;
 
@@ -38,13 +39,11 @@ import org.codehaus.xfire.exchange.OutMessage;
  */
 public class XMarshaler {
 
-    private XMLOutputFactory outputFactory;
-    private XMLInputFactory inputFactory;
+    private StAXSourceTransformer transformer;
     
     public XMarshaler()
     {
-        outputFactory = XMLOutputFactory.newInstance();
-        inputFactory = XMLInputFactory.newInstance();
+        transformer = new StAXSourceTransformer();
     }
 
     public void setContent(NormalizedMessage message, String xml) throws MessagingException {
@@ -53,18 +52,12 @@ public class XMarshaler {
 
     public XMLStreamReader createStreamReader(NormalizedMessage message) throws XMLStreamException, TransformerException {
         Source content = message.getContent();
-        try {
-            return getInputFactory().createXMLStreamReader(content);
-        } catch (XMLStreamException e) {
-            // Such features can be not supported, depending on the source type
-            InputStream is = new SourceTransformer().toStreamSource(content).getInputStream();
-            return getInputFactory().createXMLStreamReader(is);
-        }
+        return transformer.toXMLStreamReader(content);
     }
 
 
     public XMLStreamWriter createStreamWriter(Writer writer) throws XMLStreamException {
-        return getOutputFactory().createXMLStreamWriter(writer);
+        return transformer.getOutputFactory().createXMLStreamWriter(writer);
     }
 
     /**
@@ -79,13 +72,4 @@ public class XMarshaler {
     public void toNMS(NormalizedMessage normalizedMessage, OutMessage outMessage) {
     }
 
-    public XMLInputFactory getInputFactory()
-    {
-        return inputFactory;
-    }
-
-    public XMLOutputFactory getOutputFactory()
-    {
-        return outputFactory;
-    }
 }
