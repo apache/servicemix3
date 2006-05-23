@@ -20,10 +20,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import javanet.staxutils.StAXSource;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Source;
@@ -45,19 +44,20 @@ import java.io.IOException;
 public class StAXSourceTransformer extends SourceTransformer {
 
     private XMLInputFactory inputFactory;
+    private XMLOutputFactory outputFactory;
 
     /**
      * Converts the source instance to a {@link javax.xml.transform.dom.DOMSource} or returns null if the conversion is not
      * supported (making it easy to derive from this class to add new kinds of conversion).
      */
-    public StAXSource toStaxSource(Source source) throws XMLStreamException {
-        if (source instanceof StAXSource) {
-            return (StAXSource) source;
+    public StaxSource toStaxSource(Source source) throws XMLStreamException {
+        if (source instanceof StaxSource) {
+            return (StaxSource) source;
         }
         else {
             XMLInputFactory factory = getInputFactory();
             XMLStreamReader reader = factory.createXMLStreamReader(source);
-            return new StAXSource(reader);
+            return new StaxSource(reader);
         }
     }
     
@@ -81,28 +81,28 @@ public class StAXSourceTransformer extends SourceTransformer {
 
     public DOMSource toDOMSource(Source source) throws ParserConfigurationException, IOException, SAXException, TransformerException {
         DOMSource answer = super.toDOMSource(source);
-        if (answer == null && source instanceof StAXSource) {
-            answer = toDOMSourceFromStax((StAXSource) source);
+        if (answer == null && source instanceof StaxSource) {
+            answer = toDOMSourceFromStax((StaxSource) source);
         }
         return answer;
     }
 
     public SAXSource toSAXSource(Source source) throws IOException, SAXException {
         SAXSource answer = super.toSAXSource(source);
-        if (answer == null && source instanceof StAXSource) {
-            answer = toSAXSourceFromStax((StAXSource) source);
+        if (answer == null && source instanceof StaxSource) {
+            answer = toSAXSourceFromStax((StaxSource) source);
         }
         return answer;
     }
 
-    public DOMSource toDOMSourceFromStax(StAXSource source) throws TransformerException {
+    public DOMSource toDOMSourceFromStax(StaxSource source) throws TransformerException {
         Transformer transformer = createTransfomer();
         DOMResult result = new DOMResult();
         transformer.transform(source, result);
         return new DOMSource(result.getNode(), result.getSystemId());
     }
 
-    public SAXSource toSAXSourceFromStax(StAXSource source) {
+    public SAXSource toSAXSourceFromStax(StaxSource source) {
         return (SAXSource) source;
     }
 
@@ -118,11 +118,27 @@ public class StAXSourceTransformer extends SourceTransformer {
     public void setInputFactory(XMLInputFactory inputFactory) {
         this.inputFactory = inputFactory;
     }
+    
+    public XMLOutputFactory getOutputFactory() {
+        if (outputFactory == null) {
+            outputFactory = createOutputFactory();
+        }
+        return outputFactory;
+    }
+    
+    public void setOutputFactory(XMLOutputFactory outputFactory) {
+        this.outputFactory = outputFactory;
+    }
 
     // Implementation methods
     //-------------------------------------------------------------------------
     protected XMLInputFactory createInputFactory() {
         XMLInputFactory answer = XMLInputFactory.newInstance();
+        return answer;
+    }
+
+    protected XMLOutputFactory createOutputFactory() {
+        XMLOutputFactory answer = XMLOutputFactory.newInstance();
         return answer;
     }
 
