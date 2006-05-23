@@ -37,13 +37,13 @@ X -- SVN modules created and committers added to avail file?
      Yes:       https://svn.apache.org/repos/asf/incubator/servicemix
 
 X -- Are the developer,commit and user mailing lists set up and archived?
-     Yes:       http://servicemix.org/Mailing+Lists
+     Yes:       http://incubator.apache.org/servicemix/mailing-lists.html
 
 X -- Bug tracking system enabled?
-     Yes:       http://jira.servicemix.org
+     Yes:       http://issues.apache.org/activemq/browse/SM
 
 X -- wiki based documentation site enabled?
-     Yes:       http://www.servicemix.org
+     Yes:       http://goopen.org/confluence/display/SM/Home
 
 X -- Has the project migrated to our infrastructure?
      Yes
