@@ -90,9 +90,6 @@ public class HttpClientMarshaler {
 
     public void fromNMS(PostMethod method, MessageExchange exchange, NormalizedMessage normalizedMessage) throws Exception, TransformerException {
         addHttpHeaders(method, normalizedMessage);
-        if (method.getRequestHeader("Content-Type") == null) {
-            method.setRequestHeader("Content-Type", contentType);
-        }
         if (streaming) {
             method.setContentChunked(true);
             Source src = normalizedMessage.getContent();
@@ -117,6 +114,9 @@ public class HttpClientMarshaler {
             if (shouldIncludeHeader(message, name, value)) {
                 method.addRequestHeader(name, value.toString());
             }
+        }
+        if (method.getRequestHeader("Content-Type") == null) {
+            method.setRequestHeader("Content-Type", contentType);
         }
     }
 
