@@ -53,8 +53,8 @@
   <distributionDirectory />
   
   <!-- Used for artifact deployment -->
-  <siteAddress>geronimo.apache.org</siteAddress>
-  <siteDirectory>/www/geronimo.apache.org.apache.servicemix/${pom.artifactId}</siteDirectory>
+  <siteAddress>people.apache.org</siteAddress>
+  <siteDirectory>/www/incubator.apache.org/servicemix/maven/${pom.artifactId}</siteDirectory>
   <distributionSite>geronimo.apache.org</distributionSite>
   <distributionDirectory>/www/geronimo.apache.org/builds</distributionDirectory>
 
