@@ -31,7 +31,7 @@
   <version>3.0-SNAPSHOT</version>
 
   <name>ServiceMix :: BeanFlow</name>
-  <description>BeanFlow library for making asynchronous flows of beans</description>
+  <description>A library for orchestrating beans and asynchronous events using regular POJOs rather than XML</description>
 
   <dependencies>
     <dependency>
