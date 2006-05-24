@@ -17,6 +17,7 @@ package org.apache.servicemix.client;
 
 import javax.jbi.JBIException;
 
+import org.apache.servicemix.id.IdGenerator;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.nmr.flow.jms.JMSFlow;
@@ -30,13 +31,14 @@ import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
  * 
  * @version $Revision$
  */
-public class RemoteServiceMixClient extends DefaultServiceMixClient{
+public class RemoteServiceMixClient extends DefaultServiceMixClient {
 
     private JBIContainer container;
     private ActivationSpec activationSpec;
     private String uri;
     private JMSFlow jmsFlow;
     private AtomicBoolean initialized = new AtomicBoolean(false);
+    private AtomicBoolean started = new AtomicBoolean(false);
 
     /**
      * Create a RemoteServiceMixClient - setting the default
@@ -53,7 +55,7 @@ public class RemoteServiceMixClient extends DefaultServiceMixClient{
      * 
      */
     public RemoteServiceMixClient(String uri){
-        this(uri,new ActivationSpec());
+        this(uri, new ActivationSpec());
     }
 
     /**
@@ -61,8 +63,11 @@ public class RemoteServiceMixClient extends DefaultServiceMixClient{
      * @param uri 
      * @param activationSpec 
      */
-    public RemoteServiceMixClient(String uri,ActivationSpec activationSpec){
+    public RemoteServiceMixClient(String uri, ActivationSpec activationSpec){
         container = new JBIContainer();
+        container.setEmbedded(true);
+        container.setUseMBeanServer(false);
+        container.setName(new IdGenerator().generateSanitizedId());
         this.uri = uri;
         this.activationSpec = activationSpec;
 
@@ -73,8 +78,8 @@ public class RemoteServiceMixClient extends DefaultServiceMixClient{
      * 
      * @throws JBIException
      */
-    public void init() throws JBIException{
-        if(initialized.compareAndSet(false, true)){
+    public void init() throws JBIException {
+        if (initialized.compareAndSet(false, true)) {
             jmsFlow = new JMSFlow();
             jmsFlow.setJmsURL(uri);
             container.setFlow(jmsFlow);
@@ -90,10 +95,33 @@ public class RemoteServiceMixClient extends DefaultServiceMixClient{
      * @exception javax.jbi.JBIException
      *                if the item fails to start.
      */
-    public void start() throws javax.jbi.JBIException{
+    public void start() throws JBIException {
+        start(Long.MAX_VALUE);
+    }
+    
+    public void start(long timeout) throws JBIException {
         init();
-        container.start();
-        super.start();
+        if (started.compareAndSet(false, true)) {
+            container.start();
+            if (timeout > 0) {
+                // Wait for cluster to be connected
+                // This is very ugly but we have no way yet to be notified
+                // of cluster events.
+                long start = System.currentTimeMillis();
+                while (jmsFlow.numberInNetwork() == 0 &&
+                       System.currentTimeMillis() - start < timeout) {
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        throw new JBIException(e);
+                    }
+                }
+                if (jmsFlow.numberInNetwork() == 0) {
+                    throw new JBIException("Timeout while connecting to remote JBI container");
+                }
+            }
+            super.start();
+        }
     }
 
     /**
@@ -102,7 +130,7 @@ public class RemoteServiceMixClient extends DefaultServiceMixClient{
      * @exception javax.jbi.JBIException
      *                if the item fails to stop.
      */
-    public void stop() throws javax.jbi.JBIException{
+    public void stop() throws JBIException {
         super.stop();
     }
 
@@ -112,9 +140,17 @@ public class RemoteServiceMixClient extends DefaultServiceMixClient{
      * @exception javax.jbi.JBIException
      *                if the item fails to shut down.
      */
-    public void shutDown() throws javax.jbi.JBIException {
+    public void shutDown() throws JBIException {
         super.shutDown();
         container.shutDown();
+    }
+    
+    public String getContainerName() {
+        return container.getName();
+    }
+    
+    public void setContainerName(String name) {
+        container.setName(name);
     }
 
 }

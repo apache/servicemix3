@@ -15,6 +15,7 @@
  */
 package org.apache.servicemix.client;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,8 @@ import java.util.List;
  *
  * @version $Revision$
  */
-public class TestBean {
+public class TestBean implements Serializable {
+    
     private String name;
     private int length;
     private List  addresses = new ArrayList();
