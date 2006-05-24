@@ -21,7 +21,7 @@ package org.apache.servicemix.beanflow;
  * 
  * @version $Revision: $
  */
-//START SNIPPET: workflow
+// START SNIPPET: workflow
 public class BadWorkflow extends Workflow<BadWorkflow.Step> {
     
     public static enum Step {
