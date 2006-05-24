@@ -1558,9 +1558,15 @@
   </dependencyManagement>
   
   <distributionManagement>
+  <!--
     <site>
       <id>goopen.org</id>
       <url>scp://goopen.org/home/projects/servicemix/public_html/maven/</url>
+    </site>
+    -->
+    <site>
+      <id>apache-website</id>
+      <url>scpexe://people.apache.org/www/incubator.apache.org/servicemix/maven/</url>
     </site>
   </distributionManagement>
   
