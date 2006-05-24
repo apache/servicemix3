@@ -209,15 +209,17 @@ public class EndpointRegistry {
             Services services = sus[i].getServices();
             if (services != null) {
                 Provides[] provides = services.getProvides();
-                for (int j = 0; j < provides.length; j++) {
-                    if (provides[j].getInterfaceName() != null &&
-                        serviceEndpoint.getServiceName().equals(provides[j].getServiceName()) &&
-                        serviceEndpoint.getEndpointName().equals(provides[j].getEndpointName())) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Endpoint " + serviceEndpoint + " is provided by SU " + sus[i].getName());
-                            logger.debug("Endpoint " + serviceEndpoint + " implements interface " + provides[j].getInterfaceName());
+                if (provides != null) {
+                    for (int j = 0; j < provides.length; j++) {
+                        if (provides[j].getInterfaceName() != null &&
+                            serviceEndpoint.getServiceName().equals(provides[j].getServiceName()) &&
+                            serviceEndpoint.getEndpointName().equals(provides[j].getEndpointName())) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Endpoint " + serviceEndpoint + " is provided by SU " + sus[i].getName());
+                                logger.debug("Endpoint " + serviceEndpoint + " implements interface " + provides[j].getInterfaceName());
+                            }
+                            serviceEndpoint.addInterface(provides[j].getInterfaceName());
                         }
-                        serviceEndpoint.addInterface(provides[j].getInterfaceName());
                     }
                 }
             }
