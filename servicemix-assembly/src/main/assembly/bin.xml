@@ -105,6 +105,7 @@
         <include>org.apache.servicemix:servicemix-components</include>
         <include>commons-pool:commons-pool</include>
         <include>commons-collections:commons-collections</include>
+        <include>commons-discovery:commons-discovery</include>
         <include>xmlbeans:xmlpublic</include>
         <include>lingo:lingo</include>
         <include>jaxen:jaxen</include>
