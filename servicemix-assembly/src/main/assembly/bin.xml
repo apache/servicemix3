@@ -50,6 +50,9 @@
       <outputDirectory>lib</outputDirectory>
       <includes>
         <include>classworlds:classworlds</include>
+        
+        <include>net.sf.retrotranslator:retrotranslator-runtime</include>
+        <include>net.sf.retrotranslator:retrotranslator-transformer</include>
 
         <include>backport-util-concurrent:backport-util-concurrent</include>
         <include>incubator-activemq:activemq-core</include>
@@ -59,6 +62,7 @@
         <include>commons-beanutils:commons-beanutils-core</include>
         <include>org.apache.servicemix:servicemix-jbi</include>
         <include>org.apache.servicemix:servicemix-services</include>
+        <include>org.apache.servicemix:servicemix-schemas</include>
         <include>org.apache.servicemix:servicemix-core</include>
         <include>org.apache.xbean:xbean-spring</include>
         <include>org.apache.xbean:xbean-server</include>
@@ -96,6 +100,9 @@
         <include>xml-apis:xml-apis</include>
         <include>log4j:log4j</include>
         <include>org.apache.derby:derby</include>
+        
+        <include>javax.xml:jaxb-api</include>
+        <include>javax.xml:jaxb-impl</include>
       </includes>
     </dependencySet>
     <dependencySet>

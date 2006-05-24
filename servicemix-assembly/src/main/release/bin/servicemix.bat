@@ -96,7 +96,7 @@ if "%SERVICEMIX_PROFILER%" == "" goto :EXECUTE
 
 :EXECUTE
     rem Execute the Java Virtual Machine
-    "%JAVA%" %JAVA_OPTS% -classpath "%CLASSPATH%" %BOOT_OPTS% org.codehaus.classworlds.Launcher %ARGS%
+    "%JAVA%" %JAVA_OPTS% -classpath "%CLASSPATH%" %BOOT_OPTS% org.codehaus.classworlds.Launcher org.apache.servicemix.Main %ARGS%
 
 rem # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

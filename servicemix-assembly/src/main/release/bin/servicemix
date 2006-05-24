@@ -274,6 +274,7 @@ run() {
         -Dcygwin.user.home="$CYGHOME" \
         -Djava.endorsed.dirs="$SERVICEMIX_HOME/lib/endorsed" \
         org.codehaus.classworlds.Launcher \
+        org.apache.servicemix.Main \
         "$@"      
 }
 

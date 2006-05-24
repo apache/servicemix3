@@ -160,6 +160,17 @@
       <artifactId>axis</artifactId>
     </dependency>
     
+    <dependency>
+      <groupId>net.sf.retrotranslator</groupId>
+      <artifactId>retrotranslator-runtime</artifactId>
+      <version>1.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.retrotranslator</groupId>
+      <artifactId>retrotranslator-transformer</artifactId>
+      <version>1.0.4</version>
+    </dependency>
+    
   </dependencies>
 
   <build>
