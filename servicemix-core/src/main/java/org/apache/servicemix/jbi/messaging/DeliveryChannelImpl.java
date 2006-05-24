@@ -31,7 +31,6 @@ import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
-import javax.xml.transform.dom.DOMSource;
 
 import org.apache.activemq.util.IdGenerator;
 import org.apache.commons.logging.Log;
@@ -43,10 +42,7 @@ import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.util.BoundedLinkedQueue;
-import org.apache.servicemix.jbi.util.DOMUtil;
-import org.w3c.dom.Node;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
@@ -58,7 +54,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
  */
 public class DeliveryChannelImpl implements DeliveryChannel {
 
-    private static final Log log = LogFactory.getLog(DeliveryChannel.class);
+    private static final Log log = LogFactory.getLog(DeliveryChannelImpl.class);
 
     private JBIContainer container;
     private ComponentContextImpl context;
@@ -257,7 +253,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             resumeTx(me);
             me.handleAccept();
             if (log.isTraceEnabled()) {
-                traceMessageExchange("Accepted", me);
+                log.trace("Accepted: " + me);
             }
             return me;
         }
@@ -266,82 +262,6 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         }
         catch (InterruptedException e) {
             throw new MessagingException("accept failed", e);
-        }
-    }
-
-    private void traceMessageExchange(String header, MessageExchange me) {
-        try {
-            int maxSize = 1500;
-            StringBuffer sb = new StringBuffer();
-            sb.append(header);
-            sb.append(": ");
-            sb.append("MessageExchange[\n");
-            sb.append("  id: ").append(me.getExchangeId()).append('\n');
-            sb.append("  status: ").append(me.getStatus()).append('\n');
-            sb.append("  role: ").append(me.getRole() == Role.CONSUMER ? "consumer" : "provider").append('\n');
-            if (me.getInterfaceName() != null) {
-                sb.append("  interface: ").append(me.getInterfaceName()).append('\n');
-            }
-            if (me.getService() != null) {
-                sb.append("  service: ").append(me.getService()).append('\n');
-            }
-            if (me.getEndpoint() != null) {
-                sb.append("  endpoint: ").append(me.getEndpoint().getEndpointName()).append('\n');
-            }
-            if (me.getOperation() != null) {
-                sb.append("  operation: ").append(me.getOperation()).append('\n');
-            }
-            if (me.getMessage("in") != null) {
-                sb.append("  in: ");
-                if (me.getMessage("in").getContent() != null) {
-                    Node node = new SourceTransformer().toDOMNode(me.getMessage("in").getContent());
-                    me.getMessage("in").setContent(new DOMSource(node));
-                    String str = DOMUtil.asXML(node);
-                    if (str.length() > maxSize) {
-                        sb.append(str.substring(0, maxSize)).append("...");
-                    } else {
-                        sb.append(str);
-                    }
-                }
-                sb.append('\n');
-            }
-            if (me.getMessage("out") != null) {
-                sb.append("  out: ");
-                if (me.getMessage("out").getContent() != null) {
-                    Node node = new SourceTransformer().toDOMNode(me.getMessage("out").getContent());
-                    me.getMessage("out").setContent(new DOMSource(node));
-                    String str = DOMUtil.asXML(node);
-                    if (str.length() > maxSize) {
-                        sb.append(str.substring(0, maxSize)).append("...");
-                    } else {
-                        sb.append(str);
-                    }
-                }
-                sb.append('\n');
-            }
-            if (me.getMessage("fault") != null) {
-                sb.append("  fault: ");
-                if (me.getMessage("fault").getContent() != null) {
-                    Node node = new SourceTransformer().toDOMNode(me.getMessage("fault").getContent());
-                    me.getMessage("fault").setContent(new DOMSource(node));
-                    String str = DOMUtil.asXML(node);
-                    if (str.length() > maxSize) {
-                        sb.append(str.substring(0, maxSize)).append("...");
-                    } else {
-                        sb.append(str);
-                    }
-                }
-                sb.append('\n');
-            }
-            if (me.getError() != null) {
-                sb.append("  error: ");
-                sb.append(me.getError().getMessage());
-                sb.append('\n');
-            }
-            sb.append("]");
-            log.trace(sb.toString());
-        } catch (Exception e) {
-            log.trace("Unable to display message", e);
         }
     }
 
@@ -371,7 +291,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                     resumeTx(me);
                     me.handleAccept();
                     if (log.isTraceEnabled()) {
-                        traceMessageExchange("Accepted", me);
+                        log.trace("Accepted: " + me);
                     }
                 }
             }
@@ -385,7 +305,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     protected void doSend(MessageExchangeImpl messageExchange, boolean sync) throws MessagingException {
         try {
             if (log.isTraceEnabled()) {
-                traceMessageExchange("Sent", messageExchange);
+                log.trace("Sent: " + messageExchange);
             }
             // If the delivery channel has been closed
             checkNotClosed();
@@ -638,6 +558,9 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             // to bother about transactions
             if (component != null && component instanceof MessageExchangeListener) {
                 me.handleAccept();
+                if (log.isTraceEnabled()) {
+                    log.trace("Received: " + me);
+                }
                 ((MessageExchangeListener) component).onMessageExchange(me);
             }
             else {

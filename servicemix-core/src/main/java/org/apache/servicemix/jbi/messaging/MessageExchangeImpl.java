@@ -15,10 +15,15 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 import org.apache.servicemix.jbi.framework.ComponentNameSpace;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.util.DOMUtil;
+import org.w3c.dom.Node;
 
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.Fault;
@@ -28,6 +33,7 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.transaction.Transaction;
 import javax.xml.namespace.QName;
+import javax.xml.transform.dom.DOMSource;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -70,6 +76,8 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     public static final String OUT = "out";
     
     private static final long serialVersionUID = -3639175136897005605L;
+    
+    private static final Log log = LogFactory.getLog(MessageExchangeImpl.class);
     
     protected ComponentContextImpl sourceContext;
     protected ExchangePacket packet;
@@ -601,6 +609,81 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
 
     public void setSyncState(int syncState) {
         this.syncState = syncState;
+    }
+    
+    public String toString() {
+        try {
+            int maxSize = 1500;
+            StringBuffer sb = new StringBuffer();
+            sb.append("MessageExchange[\n");
+            sb.append("  id: ").append(getExchangeId()).append('\n');
+            sb.append("  status: ").append(getStatus()).append('\n');
+            sb.append("  role: ").append(getRole() == Role.CONSUMER ? "consumer" : "provider").append('\n');
+            if (getInterfaceName() != null) {
+                sb.append("  interface: ").append(getInterfaceName()).append('\n');
+            }
+            if (getService() != null) {
+                sb.append("  service: ").append(getService()).append('\n');
+            }
+            if (getEndpoint() != null) {
+                sb.append("  endpoint: ").append(getEndpoint().getEndpointName()).append('\n');
+            }
+            if (getOperation() != null) {
+                sb.append("  operation: ").append(getOperation()).append('\n');
+            }
+            if (getMessage("in") != null) {
+                sb.append("  in: ");
+                if (getMessage("in").getContent() != null) {
+                    Node node = new SourceTransformer().toDOMNode(getMessage("in").getContent());
+                    getMessage("in").setContent(new DOMSource(node));
+                    String str = DOMUtil.asXML(node);
+                    if (str.length() > maxSize) {
+                        sb.append(str.substring(0, maxSize)).append("...");
+                    } else {
+                        sb.append(str);
+                    }
+                }
+                sb.append('\n');
+            }
+            if (getMessage("out") != null) {
+                sb.append("  out: ");
+                if (getMessage("out").getContent() != null) {
+                    Node node = new SourceTransformer().toDOMNode(getMessage("out").getContent());
+                    getMessage("out").setContent(new DOMSource(node));
+                    String str = DOMUtil.asXML(node);
+                    if (str.length() > maxSize) {
+                        sb.append(str.substring(0, maxSize)).append("...");
+                    } else {
+                        sb.append(str);
+                    }
+                }
+                sb.append('\n');
+            }
+            if (getMessage("fault") != null) {
+                sb.append("  fault: ");
+                if (getMessage("fault").getContent() != null) {
+                    Node node = new SourceTransformer().toDOMNode(getMessage("fault").getContent());
+                    getMessage("fault").setContent(new DOMSource(node));
+                    String str = DOMUtil.asXML(node);
+                    if (str.length() > maxSize) {
+                        sb.append(str.substring(0, maxSize)).append("...");
+                    } else {
+                        sb.append(str);
+                    }
+                }
+                sb.append('\n');
+            }
+            if (getError() != null) {
+                sb.append("  error: ");
+                sb.append(getError().getMessage());
+                sb.append('\n');
+            }
+            sb.append("]");
+            return sb.toString();
+        } catch (Exception e) {
+            log.trace("Error caught in toString", e);
+            return null;
+        }
     }
     
 }
