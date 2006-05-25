@@ -18,10 +18,6 @@ package org.apache.servicemix.beanflow.util;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.beanflow.annotations.Parallel;
-import org.apache.servicemix.beanflow.util.ParallelBean;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import junit.framework.Assert;
 

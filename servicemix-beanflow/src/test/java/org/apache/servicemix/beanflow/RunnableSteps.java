@@ -15,20 +15,32 @@
  */
 package org.apache.servicemix.beanflow;
 
-import org.apache.servicemix.beanflow.util.ActivityTestSupport;
-
 /**
+ * An enumeration which includes code so that each step is executable directly
+ * by the workflow
  * 
  * @version $Revision: $
  */
-public class SimpleWorkflowTest extends ActivityTestSupport {
+public enum RunnableSteps implements Runnable {
 
-    public void testWorkflow() throws Exception {
-        SimpleWorkflow workflow = new SimpleWorkflow();
-        workflow.start();
-
-        Thread.sleep(2000);
-
-        assertStopped(workflow);
+    START {
+        public void run() {
+            System.out.println("Start");
+        }
+    },
+    STEP1 {
+        public void run() {
+            System.out.println("Step 1");
+        }
+    },
+    STEP2 {
+        public void run() {
+            System.out.println("Step 2");
+        }
+    },
+    STOP {
+        public void run() {
+            System.out.println("Stop!");
+        }
     }
 }

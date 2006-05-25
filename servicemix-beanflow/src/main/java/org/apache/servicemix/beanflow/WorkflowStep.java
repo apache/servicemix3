@@ -15,20 +15,15 @@
  */
 package org.apache.servicemix.beanflow;
 
-import org.apache.servicemix.beanflow.util.ActivityTestSupport;
-
 /**
+ * Represents an arbitrary step on a workflow object which can be
+ * used by enumerations to define the workflow transitions and what happens at each
+ * transition.
  * 
  * @version $Revision: $
  */
-public class SimpleWorkflowTest extends ActivityTestSupport {
+public interface WorkflowStep<T> {
 
-    public void testWorkflow() throws Exception {
-        SimpleWorkflow workflow = new SimpleWorkflow();
-        workflow.start();
-
-        Thread.sleep(2000);
-
-        assertStopped(workflow);
-    }
+    public T execute(Workflow<T> workflow);
+    
 }

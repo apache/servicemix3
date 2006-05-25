@@ -21,10 +21,10 @@ import org.apache.servicemix.beanflow.util.ActivityTestSupport;
  * 
  * @version $Revision: $
  */
-public class SimpleWorkflowTest extends ActivityTestSupport {
+public class ExampleEnumStepsWorkflowTest extends ActivityTestSupport {
 
     public void testWorkflow() throws Exception {
-        SimpleWorkflow workflow = new SimpleWorkflow();
+        Workflow<ExampleEnumSteps> workflow = new Workflow<ExampleEnumSteps>(ExampleEnumSteps.class);
         workflow.start();
 
         Thread.sleep(2000);

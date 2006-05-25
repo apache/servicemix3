@@ -46,6 +46,19 @@ public class Workflow<T> extends JoinSupport {
     private Timer timer = new Timer();
     private AtomicBoolean suspended = new AtomicBoolean();
 
+    /**
+     * TODO is there a way to reference the parameter type of this class? 
+    
+    public Workflow() {
+        this(T);
+    }
+    */
+
+    @SuppressWarnings("unchecked")
+    public Workflow(Class<T> enumType) {
+        this((T) getFirstStep(enumType));
+    }
+
     public Workflow(T firstStep) {
         this(Executors.newSingleThreadExecutor(), firstStep);
     }
@@ -82,7 +95,7 @@ public class Workflow<T> extends JoinSupport {
             log.debug("About to execute step: " + nextStep);
 
             if (nextStep != null) {
-                interpreter.executeStep(nextStep.toString(), this);
+                interpreter.executeStep(nextStep, this);
 
                 nextStep();
             }
@@ -91,7 +104,9 @@ public class Workflow<T> extends JoinSupport {
 
     public void nextStep() {
         // lets fire any conditions
-        step.set(nextStep);
+        T temp = nextStep;
+        nextStep = null;
+        step.set(temp);
 
         // if we are not stoped lets add a task to re-evaluate ourself
         if (!isStopped() && !isSuspended()) {
@@ -157,6 +172,13 @@ public class Workflow<T> extends JoinSupport {
     }
 
     /**
+     * Returns true if this workflow has a next step to execute
+     */
+    public boolean isNextStepAvailable() {
+        return nextStep != null;
+    }
+    
+    /**
      * Creates a task which will move to the given step
      */
     public Runnable createGoToStepTask(final T joinedStep) {
@@ -183,13 +205,14 @@ public class Workflow<T> extends JoinSupport {
     }
 
     /**
-     * lets validate the steps exist
+     * Lets validate the steps exist on an enumerated type.
+     *  
+     * Thanks to Sam Pullara for this idea :)
      */
     protected void validateStepsExist(Class enumType) {
         Object[] values = null;
         try {
-            Method method = enumType.getMethod("values", NO_PARAMETER_TYPES);
-            values = (Object[]) method.invoke(null, NO_PARAMETER_VALUES);
+            values = getEnumValues(enumType);
         }
         catch (Exception e) {
             fail("Cannot get the values of the enumeration: " + enumType.getName(), e);
@@ -197,5 +220,22 @@ public class Workflow<T> extends JoinSupport {
         if (values != null) {
             interpreter.validateStepsExist(values, this);
         }
+    }
+
+    protected static Object getFirstStep(Class enumType) {
+        try {
+            Object[] values = getEnumValues(enumType);
+            return values[0];
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException("Could not find the values for the enumeration: " + enumType.getName()
+                    + ". Reason: " + e, e);
+        }
+    }
+
+    protected static Object[] getEnumValues(Class enumType) throws NoSuchMethodException, IllegalAccessException,
+            InvocationTargetException {
+        Method method = enumType.getMethod("values", NO_PARAMETER_TYPES);
+        return (Object[]) method.invoke(null, NO_PARAMETER_VALUES);
     }
 }

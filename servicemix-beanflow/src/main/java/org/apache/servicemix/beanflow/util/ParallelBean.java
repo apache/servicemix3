@@ -18,6 +18,7 @@ package org.apache.servicemix.beanflow.util;
 import org.apache.servicemix.beanflow.JoinAll;
 import org.apache.servicemix.beanflow.JoinSupport;
 import org.apache.servicemix.beanflow.ParallelActivity;
+import org.apache.servicemix.beanflow.annotations.Parallel;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;

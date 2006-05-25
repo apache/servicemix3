@@ -16,8 +16,6 @@
 package org.apache.servicemix.beanflow.util;
 
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 /**
  * 

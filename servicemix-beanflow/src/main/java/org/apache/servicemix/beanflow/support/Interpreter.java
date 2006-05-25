@@ -20,18 +20,19 @@ import org.apache.servicemix.beanflow.Workflow;
 /**
  * 
  * @version $Revision: $
+ * @param <T>
  */
-public interface Interpreter {
+public interface Interpreter<T> {
 
     /**
      * Executes the given step on the workflow
      */
-    void executeStep(String nextStep, Workflow workflow);
+    void executeStep(T nextStep, Workflow<T> workflow);
 
     /**
      * Validates that all the available step values (enumeration values) are
      * available on the given workflow
      */
-    void validateStepsExist(Object[] stepValues, Workflow workflow);
+    void validateStepsExist(Object[] stepValues, Workflow<T> workflow);
 
 }

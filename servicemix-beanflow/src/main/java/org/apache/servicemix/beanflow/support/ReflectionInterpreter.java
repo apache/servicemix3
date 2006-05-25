@@ -16,21 +16,66 @@
 package org.apache.servicemix.beanflow.support;
 
 import org.apache.servicemix.beanflow.Workflow;
+import org.apache.servicemix.beanflow.WorkflowStep;
 
 import java.lang.reflect.Method;
 
 /**
- * An interpreter strategy which uses reflection to map step names to method
- * names.
+ * An interpreter strategy which detects step objects of types
+ * 
+ * @{link Runnable} or {@link WorkflowStep} otherwise the step object is turned
+ *        into a String and reflection is used to map the step to a method on
+ *        the workflow object
+ * 
+ * Thanks to Brian Goetz for this idea :)
  * 
  * @version $Revision: $
  */
-public class ReflectionInterpreter implements Interpreter {
+public class ReflectionInterpreter<T> implements Interpreter<T> {
 
     protected static final Class[] NO_TYPE_ARGUMENTS = {};
     protected static final Object[] NO_PARAMETER_ARGUMENTS = {};
 
-    public void executeStep(String step, Workflow workflow) {
+    @SuppressWarnings("unchecked")
+    public void executeStep(T step, Workflow<T> workflow) {
+        if (step instanceof WorkflowStep) {
+            WorkflowStep<T> workflowStep = (WorkflowStep<T>) step;
+            T nextStep = workflowStep.execute(workflow);
+            if (nextStep != null) {
+                workflow.goTo(nextStep);
+            }
+            else {
+                workflow.suspend();
+            }
+        }
+        else if (step instanceof Runnable) {
+            Runnable runnable = (Runnable) step;
+            runnable.run();
+            goToNextSequence(step, workflow);
+        }
+        else if (step != null) {
+            String name = step.toString();
+            executeNamedStep(name, workflow);
+        }
+    }
+
+    /**
+     * If the workflow has been told to go to another step do nothing, else lets
+     * go to the next enumeration if we are not suspended, otherwise lets
+     * suspend.
+     * 
+     * @param workflow
+     * @param nextStep
+     */
+    protected void goToNextSequence(T nextStep, Workflow<T> workflow) {
+        //if (!workflow.isNextStepAvailable()) {
+
+            // TODO we could automatically go to the next step in the enum list?
+            workflow.suspend();
+        //}
+    }
+
+    public void executeNamedStep(String step, Workflow<T> workflow) {
         Class<? extends Workflow> type = workflow.getClass();
         try {
             Method method = type.getMethod(step, NO_TYPE_ARGUMENTS);
@@ -42,19 +87,29 @@ public class ReflectionInterpreter implements Interpreter {
         }
     }
 
-    public void validateStepsExist(Object[] stepValues, Workflow workflow) {
+    public void validateStepsExist(Object[] stepValues, Workflow<T> workflow) {
         Class<? extends Workflow> type = workflow.getClass();
         for (int i = 0; i < stepValues.length; i++) {
             Object value = stepValues[i];
-            String step = value.toString();
-            try {
-                type.getMethod(step, NO_TYPE_ARGUMENTS);
-            }
-            catch (Exception e) {
-                workflow.fail("No " + step + "() method is available in class: " + type.getName()
-                        + " so unable to bind the code to the enumeration of steps", e);
+            if (!isValidStep(value)) {
+                String step = value.toString();
+                try {
+                    type.getMethod(step, NO_TYPE_ARGUMENTS);
+                }
+                catch (Exception e) {
+                    workflow.fail("No " + step + "() method is available in class: " + type.getName()
+                            + " so unable to bind the code to the enumeration of steps", e);
+                }
             }
         }
+    }
+
+    /**
+     * Returns true if the step object is capable of being run directly as
+     * opposed to via reflection
+     */
+    protected boolean isValidStep(Object value) {
+        return value instanceof WorkflowStep || value instanceof Runnable;
     }
 
     @SuppressWarnings("unchecked")
@@ -66,5 +121,4 @@ public class ReflectionInterpreter implements Interpreter {
             workflow.suspend();
         }
     }
-
 }

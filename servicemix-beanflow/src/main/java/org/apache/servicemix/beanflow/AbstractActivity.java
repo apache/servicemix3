@@ -20,7 +20,6 @@ import org.apache.servicemix.beanflow.support.Introspector;
 
 import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.FutureTask;
 
 /**
  * A useful base class which allows simple bean activities to be written easily.
