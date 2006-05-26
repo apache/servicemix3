@@ -32,7 +32,7 @@ if not exist "%SERVICEMIX_HOME%" (
 )
 
 set LOCAL_CLASSPATH=%CLASSPATH%
-set DEFAULT_JAVA_OPTS=-server -Xmx512M -Dderby.system.home="%SERVICEMIX_HOME%\var" -Dderby.storage.fileSyncTransactionLog=true 
+set DEFAULT_JAVA_OPTS=-server -Xmx512M -Dderby.system.home="%SERVICEMIX_HOME%\var" -Dderby.storage.fileSyncTransactionLog=true -Dcom.sun.management.jmxremote
 set CLASSPATH=%LOCAL_CLASSPATH%;%SERVICEMIX_HOME%\conf
 set DEFAULT_JAVA_DEBUG_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005
 

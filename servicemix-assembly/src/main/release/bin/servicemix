@@ -159,7 +159,7 @@ setupDebugOptions() {
 }
 
 setupDefaults() {
-    DEFAULT_JAVA_OPTS="-Xms$JAVA_MIN_MEM -Xmx$JAVA_MAX_MEM -Dderby.system.home=$SERVICEMIX_HOME/var -Dderby.storage.fileSyncTransactionLog=true"
+    DEFAULT_JAVA_OPTS="-Xms$JAVA_MIN_MEM -Xmx$JAVA_MAX_MEM -Dderby.system.home=$SERVICEMIX_HOME/var -Dderby.storage.fileSyncTransactionLog=true -Dcom.sun.management.jmxremote"
 
     #Set the JVM_VENDOR specific JVM flags
     if [ "$JVM_VENDOR" = "SUN" ]; then
