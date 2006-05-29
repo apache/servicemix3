@@ -188,11 +188,13 @@
       <artifactId>axis</artifactId>
       <scope>test</scope>
     </dependency>
+    <!--  
     <dependency>
       <groupId>net.java.dev.saaj</groupId>
       <artifactId>saaj-impl</artifactId>
       <scope>test</scope>
     </dependency>
+    -->
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
@@ -217,6 +219,7 @@
           <excludes>
             <!--  exclude abstract tests -->
             <exclude>**/Abstract*.*</exclude>
+            <exclude>**/*$*</exclude>
 
             <!--  Need external resources -->
             <exclude>**/Jabber*.*</exclude>

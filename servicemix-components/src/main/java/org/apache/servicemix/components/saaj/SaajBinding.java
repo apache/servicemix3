@@ -15,6 +15,8 @@
  */
 package org.apache.servicemix.components.saaj;
 
+import java.io.ByteArrayOutputStream;
+
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
@@ -86,19 +88,27 @@ public class SaajBinding extends ComponentSupport implements MessageExchangeList
 
             SOAPMessage inMessage = marshaler.createSOAPMessage(exchange.getMessage("in"));
             if (soapAction != null) {
-				MimeHeaders mh = inMessage.getMimeHeaders();
-				if (mh.getHeader("SOAPAction") == null) {
-					mh.addHeader("SOAPAction", "\"" + soapAction + "\"");
-					inMessage.saveChanges();
-				}
-			}
+                MimeHeaders mh = inMessage.getMimeHeaders();
+                if (mh.getHeader("SOAPAction") == null) {
+                    mh.addHeader("SOAPAction", soapAction);
+                    inMessage.saveChanges();
+                }
+            }
+
+            if (log.isDebugEnabled()) {
+                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                inMessage.writeTo(buffer);
+                log.debug(new String(buffer.toByteArray()));
+            }
             
             SOAPMessage response = connection.call(inMessage, soapEndpoint);
-
-            NormalizedMessage outMessage = exchange.createMessage();
-            marshaler.toNMS(outMessage, response);
-
-            answer(exchange, outMessage);
+            if (response != null) {
+                NormalizedMessage outMessage = exchange.createMessage();
+                marshaler.toNMS(outMessage, response);
+                answer(exchange, outMessage);
+            } else {
+                done(exchange);
+            }
         }
         catch (Exception e) {
             fail(exchange, e);

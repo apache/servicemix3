@@ -59,10 +59,12 @@ public class SaajMarshalerTest extends TestCase {
 	}
 	*/
 	
+    /*
 	public void testSunToNMS() throws Exception {
 		MessageFactory messageFactory = new com.sun.xml.messaging.saaj.soap.MessageFactoryImpl();
 		testToNMS(messageFactory);
 	}
+    */
 	
 	/*
 	public void testSunCreateSOAPMessage() throws Exception {

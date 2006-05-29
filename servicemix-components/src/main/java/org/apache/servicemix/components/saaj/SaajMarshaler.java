@@ -146,11 +146,6 @@ public class SaajMarshaler {
 
         addSoapAttachments(soapMessage, normalizedMessage);
 
-        if (log.isDebugEnabled()) {
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-            soapMessage.writeTo(buffer);
-            log.debug(new String(buffer.toByteArray()));
-        }
         return soapMessage;
     }
 

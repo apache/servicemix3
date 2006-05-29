@@ -135,6 +135,7 @@ public class HttpConnector extends HttpInOutBinding {
      * shutdown
      */
     public void shutDown() throws JBIException {
+        super.shutDown();
         server = null;
     }
 
