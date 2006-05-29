@@ -42,7 +42,6 @@ import javax.swing.event.EventListenerList;
 import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
 
-import org.apache.activemq.util.IdGenerator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.geronimo.connector.work.GeronimoWorkManager;
@@ -53,6 +52,7 @@ import org.apache.servicemix.components.util.ComponentAdaptorMEListener;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.components.util.PojoLifecycleAdaptor;
 import org.apache.servicemix.components.util.PojoSupport;
+import org.apache.servicemix.id.IdGenerator;
 import org.apache.servicemix.jbi.event.ComponentListener;
 import org.apache.servicemix.jbi.event.EndpointListener;
 import org.apache.servicemix.jbi.event.ExchangeEvent;
