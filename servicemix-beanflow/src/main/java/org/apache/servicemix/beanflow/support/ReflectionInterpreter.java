@@ -42,7 +42,7 @@ public class ReflectionInterpreter<T> implements Interpreter<T> {
             WorkflowStep<T> workflowStep = (WorkflowStep<T>) step;
             T nextStep = workflowStep.execute(workflow);
             if (nextStep != null) {
-                workflow.goTo(nextStep);
+                workflow.setNextStep(nextStep);
             }
             else {
                 workflow.suspend();
@@ -115,7 +115,7 @@ public class ReflectionInterpreter<T> implements Interpreter<T> {
     @SuppressWarnings("unchecked")
     protected void handleStepResult(String step, Workflow workflow, Object result) {
         if (result != null) {
-            workflow.goTo(result);
+            workflow.setNextStep(result);
         }
         else {
             workflow.suspend();

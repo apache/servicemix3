@@ -81,7 +81,7 @@ public class Workflow<T> extends JoinSupport {
     /**
      * Sets the next step to be executed when the current step completes
      */
-    public void goTo(T stepName) {
+    public void setNextStep(T stepName) {
         this.nextStep = stepName;
         suspended.set(false);
         nextStep();
@@ -185,7 +185,7 @@ public class Workflow<T> extends JoinSupport {
         return new Runnable() {
 
             public void run() {
-                goTo(joinedStep);
+                setNextStep(joinedStep);
                 nextStep();
             }
         };
