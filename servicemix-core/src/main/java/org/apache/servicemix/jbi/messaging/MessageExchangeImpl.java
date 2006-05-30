@@ -675,7 +675,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             }
             if (getError() != null) {
                 sb.append("  error: ");
-                sb.append(getError().getMessage());
+                sb.append(getError());
                 sb.append('\n');
             }
             sb.append("]");
