@@ -109,8 +109,8 @@ public class FileUtil {
         if (!theFile.exists()) {
             throw new IOException(theFile.getAbsolutePath() + " does not exist");
         }
-        if (!targetDir.exists()) {
-            targetDir.mkdirs();
+        if (!buildDirectory(targetDir)) {
+            throw new IOException("Could not create directory: " + targetDir);
         }
         ZipFile zipFile;
         zipFile = new ZipFile(theFile);
@@ -119,10 +119,16 @@ public class FileUtil {
             File file = new File(targetDir, File.separator + entry.getName());
             // Take the sledgehammer approach to creating directories
             // to work around ZIP's that incorrectly miss directories
-            file.mkdirs();
-            file.delete();
-            if (!entry.isDirectory())
+            if (!buildDirectory(file.getParentFile())) {
+                throw new IOException("Could not create directory: " + file.getParentFile());
+            }
+            if (!entry.isDirectory()) {
                 copyInputStream(zipFile.getInputStream(entry), new BufferedOutputStream(new FileOutputStream(file)));
+            } else {
+                if (!buildDirectory(file)) {
+                    throw new IOException("Could not create directory: " + file);
+                }
+            }
         }
         zipFile.close();
         return theFile;
