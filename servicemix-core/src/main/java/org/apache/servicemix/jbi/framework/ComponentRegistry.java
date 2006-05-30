@@ -105,9 +105,11 @@ public class ComponentRegistry {
     }
     
     private Collection getReverseComponents() {
-        ArrayList l = new ArrayList(getComponents());
-        Collections.reverse(l);
-        return l;
+        synchronized (idMap) {
+            ArrayList l = new ArrayList(idMap.values());
+            Collections.reverse(l);
+            return l;
+        }
     }
 
     
@@ -125,16 +127,20 @@ public class ComponentRegistry {
      * @param id
      * @return the ComponentConnector or null
      */
-    public synchronized ComponentMBeanImpl getComponent(ComponentNameSpace id) {
-        return (ComponentMBeanImpl) idMap.get(id);
+    public ComponentMBeanImpl getComponent(ComponentNameSpace id) {
+        synchronized (idMap) {
+            return (ComponentMBeanImpl) idMap.get(id);
+        }
     }
     
     /**
      * 
      * @return Collection of ComponentConnectors held by the registry
      */
-    public synchronized Collection getComponents() {
-        return idMap.values();
+    public Collection getComponents() {
+        synchronized (idMap) {
+            return new ArrayList(idMap.values());
+        }
     }
 
     private boolean setInitialRunningStateFromStart() throws JBIException{
