@@ -59,7 +59,7 @@
   <distributionDirectory>/www/geronimo.apache.org/builds</distributionDirectory>
 
   <repository>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/servicemix/trunk/</connection>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/servicemix/trunk/</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/servicemix/trunk/</developerConnection>
     <url>https://svn.apache.org/repos/asf/incubator/servicemix/trunk/</url>
   </repository>
