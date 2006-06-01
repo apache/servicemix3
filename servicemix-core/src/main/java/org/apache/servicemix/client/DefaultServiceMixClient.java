@@ -139,6 +139,10 @@ public class DefaultServiceMixClient extends ComponentSupport implements Service
         return getDeliveryChannel().sendSync(exchange);
     }
 
+    public boolean sendSync(MessageExchange exchange, long timeout) throws MessagingException {
+        return getDeliveryChannel().sendSync(exchange, timeout);
+    }
+
     public MessageExchange receive() throws MessagingException {
         return getDeliveryChannel().accept();
     }

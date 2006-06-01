@@ -67,6 +67,18 @@ public interface ServiceMixClient {
     boolean sendSync(MessageExchange exchange) throws MessagingException;
 
     /**
+     * Sends the message exchange to the endpoint, blocking until the send has completed
+     * or the specified timeout has elapsed.
+     *
+     * @param exchange
+     * @param timeout
+     * @throws MessagingException
+     * @return true if the exchange has been processed and returned by the
+     *  servicing component, false otherwise.
+     */
+    boolean sendSync(MessageExchange exchange, long timeout) throws MessagingException;
+
+    /**
      * Receives an inbound message exchange, blocking forever until one is available.
      *
      * @return the received message exchange
