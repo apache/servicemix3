@@ -10,7 +10,7 @@
     </amq:transportConnectors>
   </amq:broker>
  
-  <sm:container id="jbi" flowName="jms?jmsURL=tcp://localhost:61616" embedded="true" useMBeanServer="false" depends-on="broker">
+  <sm:container id="jbi" flowName="jms?jmsURL=tcp://localhost:61616" embedded="true" useMBeanServer="false" createMBeanServer="false" depends-on="broker">
     <sm:activationSpecs>
 
       <sm:activationSpec componentName="receiver" service="foo:receiver">
