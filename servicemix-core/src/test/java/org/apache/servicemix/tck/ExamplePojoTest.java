@@ -38,6 +38,7 @@ public class ExamplePojoTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
+        container.setEmbedded(true);
         container.init();
         container.start();
         receiver = new ReceiverComponent();

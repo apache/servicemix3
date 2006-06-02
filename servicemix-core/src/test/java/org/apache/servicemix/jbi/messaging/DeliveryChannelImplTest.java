@@ -32,6 +32,7 @@ public class DeliveryChannelImplTest extends TestCase {
     
     protected void setUp() throws Exception {
         container = new JBIContainer();
+        container.setEmbedded(true);
         container.init();
         container.start();
         SenderComponent component = new SenderComponent();

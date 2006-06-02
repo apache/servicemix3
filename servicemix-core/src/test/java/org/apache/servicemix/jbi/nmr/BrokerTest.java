@@ -39,6 +39,7 @@ public class BrokerTest extends TestCase {
     
     public void testExternalRouting() throws Exception {
         JBIContainer container = new JBIContainer();
+        container.setEmbedded(true);
         container.init();
         container.start();
         ReceiverComponent receiver = new ReceiverComponent() {

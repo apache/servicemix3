@@ -36,6 +36,8 @@ public abstract class JbiTaskSupport extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         container.setCreateMBeanServer(true);
+        container.setMonitorDeploymentDirectory(false);
+        container.setMonitorInstallationDirectory(false);
         container.init();
         container.start();
         

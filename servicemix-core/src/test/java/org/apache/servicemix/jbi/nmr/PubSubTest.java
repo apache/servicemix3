@@ -34,8 +34,7 @@ public class PubSubTest extends TestCase {
 
     protected void setUp() throws Exception {
         container = new JBIContainer();
-        container.setUseMBeanServer(true);
-        container.setCreateMBeanServer(false);
+        container.setEmbedded(true);
         container.setFlowName("seda");
         container.init();
         container.start();

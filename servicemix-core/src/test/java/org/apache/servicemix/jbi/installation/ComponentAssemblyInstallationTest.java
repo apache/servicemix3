@@ -16,6 +16,7 @@
 package org.apache.servicemix.jbi.installation;
 
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.util.FileUtil;
 
 import java.io.File;
 import java.net.URL;
@@ -53,6 +54,8 @@ public class ComponentAssemblyInstallationTest extends TestCase {
 				+ tempRootDir.getAbsolutePath() + "]");
 
 		container.setRootDir(tempRootDir.getAbsolutePath());
+        container.setMonitorDeploymentDirectory(false);
+        container.setMonitorInstallationDirectory(false);
 		container.init();
 		container.start();
 
@@ -96,21 +99,7 @@ public class ComponentAssemblyInstallationTest extends TestCase {
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		container.shutDown();
-		deleteDir(tempRootDir);
+		FileUtil.deleteFile(tempRootDir);
 	}
 
-	public static boolean deleteDir(File dir) {
-		System.out.println("Deleting directory : " + dir.getAbsolutePath());
-		if (dir.isDirectory()) {
-			String[] children = dir.list();
-			for (int i = 0; i < children.length; i++) {
-				boolean success = deleteDir(new File(dir, children[i]));
-				if (!success) {
-					return false;
-				}
-			}
-		}
-		// The directory is now empty so delete it
-		return dir.delete();
-	}
 }

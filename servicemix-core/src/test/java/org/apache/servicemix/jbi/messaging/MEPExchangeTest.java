@@ -20,6 +20,7 @@ import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.ExchangeTimeoutException;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.tck.ExchangeCompletedListener;
 
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
@@ -44,6 +45,7 @@ public class MEPExchangeTest extends TestCase {
 	private JBIContainer container;
 	private TestComponent provider;
 	private TestComponent consumer;
+    private ExchangeCompletedListener listener;
 	
 	public static class TestComponent extends ComponentSupport {
 		public TestComponent(QName service, String endpoint) {
@@ -57,7 +59,10 @@ public class MEPExchangeTest extends TestCase {
 	public void setUp() throws Exception {
 		// Create jbi container
 		container = new JBIContainer();
+        container.setEmbedded(true);
 		container.setFlowName("st");
+        listener = new ExchangeCompletedListener();
+        container.addListener(listener);
 		container.init();
 		container.start();
 		// Create components
@@ -69,6 +74,9 @@ public class MEPExchangeTest extends TestCase {
 	}
 	
 	public void tearDown() throws Exception {
+        if (listener != null) {
+            listener.assertExchangeCompleted();
+        }
 		if (container != null) {
 			container.shutDown();
 		}

@@ -79,6 +79,7 @@ public class JCAFlowTest extends TestCase {
         senderFlow.setJmsURL("tcp://localhost:61216");
         senderFlow.setTransactionContextManager(tcm);
         senderContainer.setTransactionManager(tm);
+        senderContainer.setEmbedded(true);
         senderContainer.setName("senderContainer");
         senderContainer.setFlow(senderFlow);
         senderContainer.setMonitorInstallationDirectory(false);
@@ -90,6 +91,7 @@ public class JCAFlowTest extends TestCase {
         receiverFlow.setJmsURL("tcp://localhost:61216");
         receiverFlow.setTransactionContextManager(tcm);
         receiverContainer.setTransactionManager(tm);
+        receiverContainer.setEmbedded(true);
         receiverContainer.setName("receiverContainer");
         receiverContainer.setFlow(receiverFlow);
         receiverContainer.setMonitorInstallationDirectory(false);

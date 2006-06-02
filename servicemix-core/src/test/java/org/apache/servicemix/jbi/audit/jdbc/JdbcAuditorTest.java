@@ -60,6 +60,7 @@ public class JdbcAuditorTest extends TestCase {
     
     public void testInsertUpdate() throws Exception {
         jbi.setFlowName("st");
+        jbi.setEmbedded(true);
         jbi.init();
         jbi.start();
         SenderComponent sender = new SenderComponent();

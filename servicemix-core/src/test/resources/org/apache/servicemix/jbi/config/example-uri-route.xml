@@ -3,7 +3,7 @@
 	   xmlns:foo="http://servicemix.org/cheese/">
 
 	<!-- the JBI container -->
-	<container id="jbi" xmlns="http://servicemix.apache.org/config/1.0">
+	<container id="jbi" embedded="true" xmlns="http://servicemix.apache.org/config/1.0">
 		<activationSpecs>
 
 			<activationSpec componentName="sender" 

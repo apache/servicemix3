@@ -86,7 +86,7 @@ public abstract class AbstractTransactionTest extends TestCase {
         container.setName(name);
         container.setFlow(createFlow());
         container.setAutoEnlistInTransaction(true);
-        container.setMonitorInstallationDirectory(false);
+        container.setEmbedded(true);
         container.init();
         container.start();
         return container;

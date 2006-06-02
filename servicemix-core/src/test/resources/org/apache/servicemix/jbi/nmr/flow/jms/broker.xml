@@ -9,7 +9,7 @@ conf/spring-beans.xsd
 http://servicemix.apache.org/config/1.0 
 conf/servicemix.xsd"> 
 
-  <sm:container id="jbi" name ="service" flowName="cluster"> 
+  <sm:container id="jbi" name ="service" flowName="cluster" embedded="true"> 
     <sm:activationSpecs> 
       <sm:activationSpec componentName="pingService" 
 service="foo:pingService"> 

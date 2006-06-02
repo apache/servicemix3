@@ -4,6 +4,7 @@
   <!-- the JBI container -->
   <bean id="jbi"
     class="org.apache.servicemix.jbi.container.SpringJBIContainer">
+    <property name="embedded" value="true" />
     <property name="activationSpecs">
       <list>
         <bean class="org.apache.servicemix.jbi.container.ActivationSpec">

@@ -68,9 +68,7 @@ public class SubscriptionPropertyCopyTest extends TestCase {
             if (subscriptionFlowName != null) {
                 container.getDefaultBroker().getSubscriptionManager().setFlowName(subscriptionFlowName);
             }
-            // TODO: check why the following line is enabled, there is 
-            // a 5 seconds pause when Management stuff is initialized
-			//container.setCreateMBeanServer(true);
+            container.setEmbedded(true);
 			container.init();
 			container.start();
 			

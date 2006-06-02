@@ -42,6 +42,7 @@ public class SimpleClientTest extends TestCase {
 
     protected void setUp() throws Exception {
         container = new JBIContainer();
+        container.setEmbedded(true);
         container.init();
         container.start();
         out = new OutBinding() {
