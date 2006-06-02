@@ -83,6 +83,11 @@ public class RemoteServiceMixClient extends DefaultServiceMixClient {
             jmsFlow = new JMSFlow();
             jmsFlow.setJmsURL(uri);
             container.setFlow(jmsFlow);
+            container.setEmbedded(true);
+            container.setUseMBeanServer(false);
+            container.setCreateMBeanServer(false);
+            container.setMonitorDeploymentDirectory(false);
+            container.setMonitorInstallationDirectory(false);
             container.init();
             activationSpec.setComponent(this);
             container.activateComponent(activationSpec);
