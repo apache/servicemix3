@@ -131,11 +131,11 @@ public class DefaultBroker extends BaseSystemService implements Broker {
             flows = new Flow[names.length];
             for (int i = 0; i < names.length; i++) {
                 flows[i] = FlowProvider.getFlow(names[i]);
-                flows[i].init(this, names[i]);
+                flows[i].init(this);
             }
         } else {
             for (int i = 0; i < flows.length; i++) {
-                flows[i].init(this, null);
+                flows[i].init(this);
             }
         }
     	subscriptionManager.init(this, registry);

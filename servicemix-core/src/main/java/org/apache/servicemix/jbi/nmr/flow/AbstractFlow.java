@@ -60,9 +60,8 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      * @param broker
      * @throws JBIException
      */
-    public void init(Broker broker, String name) throws JBIException {
+    public void init(Broker broker) throws JBIException {
         this.broker = broker;
-        this.name = name;
 		// register self with the management context
         ObjectName objectName = broker.getContainer().getManagementContext().createObjectName(this);
         try {
@@ -160,9 +159,7 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      * @param packet
      * @throws MessagingException
      */
-    public void doRouting(MessageExchangeImpl me) throws MessagingException {
-    	if (log.isDebugEnabled())
-    		log.debug("Called Flow doRouting");
+    protected void doRouting(MessageExchangeImpl me) throws MessagingException {
         ComponentNameSpace id = me.getRole() == Role.PROVIDER ? me.getDestinationId() : me.getSourceId();
         //As the MessageExchange could come from another container - ensure we get the local Component
         ComponentMBeanImpl lcc = broker.getContainer().getRegistry().getComponent(id.getName());
@@ -256,6 +253,10 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
         } else {
             return this.name;
         }
+    }
+    
+    public void setName(String name) {
+        this.name = name;
     }
     
 }

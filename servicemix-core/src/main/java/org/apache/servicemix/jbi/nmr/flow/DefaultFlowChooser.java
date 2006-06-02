@@ -16,36 +16,39 @@
 package org.apache.servicemix.jbi.nmr.flow;
 
 import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.JbiConstants;
+import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 
 public class DefaultFlowChooser implements FlowChooser {
 
-    private static final Log log = LogFactory.getLog(DefaultFlowChooser.class); 
-    
     public DefaultFlowChooser() {
     }
 
-    public Flow chooseFlow(Flow[] flows, MessageExchange exchange) {
+    public Flow chooseFlow(Flow[] flows, MessageExchange exchange) throws MessagingException {
         // Check if flow was specified
         String flow = (String) exchange.getProperty(JbiConstants.FLOW_PROPERTY_NAME);
         if (flow != null) {
+            Flow foundFlow = null;
             for (int i = 0; i < flows.length; i++) {
-                if (flows[i].getName().equals(flow)) {
-                    if (flows[i].canHandle(exchange)) {
-                        return flows[i];
-                    } else {
-                        log.debug("Flow '" + flow + "' was specified but not able to handle exchange");
-                    }
+                if (flows[i].getName().equalsIgnoreCase(flow)) {
+                    foundFlow = flows[i];
+                    break;
                 }
             }
-            log.debug("Flow '" + flow + "' was specified but not found");
+            if (foundFlow == null) {
+                throw new MessagingException("Flow '" + flow + "' was specified but not found");
+            } if (foundFlow.canHandle(exchange)) {
+                return foundFlow;
+            } else {
+                throw new MessagingException("Flow '" + flow + "' was specified but not able to handle exchange");
+            }
         }
         // Check against flow capabilities
         for (int i = 0; i < flows.length; i++) {
             if (flows[i].canHandle(exchange)) {
+                ((MessageExchangeImpl) exchange).getPacket().setProperty(JbiConstants.FLOW_PROPERTY_NAME, flows[i].getName());
                 return flows[i];
             }
         }

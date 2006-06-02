@@ -53,6 +53,23 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     public static final int SYNC_STATE_ASYNC = 0;
     public static final int SYNC_STATE_SYNC_SENT = 1;
     public static final int SYNC_STATE_SYNC_RECEIVED = 2;
+    
+    /**
+     * Exchange is not transactional 
+     */
+    public static final int TX_STATE_NONE = 0;
+    /**
+     * Exchange has been enlisted in the current transaction.
+     * This means that the transaction must be commited for
+     * the exchange to be delivered.
+     */
+    public static final int TX_STATE_ENLISTED = 1;
+    /**
+     * Transaction is being conveyed by the exchange.
+     * The transaction context will be given to the
+     * target component.
+     */
+    public static final int TX_STATE_CONVEYED = 2;
 
     protected static final int CAN_SET_IN_MSG               = 0x00000001;
     protected static final int CAN_SET_OUT_MSG              = 0x00000002;
@@ -84,8 +101,11 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     protected PojoMarshaler marshaler;
     protected int state;
     protected int syncState = SYNC_STATE_ASYNC;
+    protected int txState = TX_STATE_NONE;
     protected int[][] states;
     protected MessageExchangeImpl mirror;
+    protected transient boolean pushDeliver;
+    protected transient Object txLock;
 
     /**
      * Constructor
@@ -108,10 +128,12 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     }
     
     protected void copyFrom(MessageExchangeImpl me) {
-        this.packet = me.packet;
-        this.state = me.state;
-        this.mirror.packet = me.packet;
-        this.mirror.state = me.mirror.state;
+        if (this != me) {
+            this.packet = me.packet;
+            this.state = me.state;
+            this.mirror.packet = me.packet;
+            this.mirror.state = me.mirror.state;
+        }
     }
     
     protected boolean can(int c) {
@@ -599,18 +621,54 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
         this.state = nextState;
     }
 
-    public int getSyncState() {
-        return syncState;
-    }
-
     public MessageExchangeImpl getMirror() {
         return mirror;
+    }
+
+    public int getSyncState() {
+        return syncState;
     }
 
     public void setSyncState(int syncState) {
         this.syncState = syncState;
     }
     
+    /**
+     * @return the txState
+     */
+    public int getTxState() {
+        return txState;
+    }
+
+    /**
+     * @param txState the txState to set
+     */
+    public void setTxState(int txState) {
+        this.txState = txState;
+    }
+
+    public boolean isPushDelivery() {
+        return this.pushDeliver;
+    }
+    
+    public void setPushDeliver(boolean b) {
+        this.pushDeliver = true;
+    }
+    
+    /**
+     * @return the txLock
+     */
+    public Object getTxLock() {
+        return txLock;
+    }
+
+    /**
+     * @param txLock the txLock to set
+     */
+    public void setTxLock(Object txLock) {
+        this.txLock = txLock;
+    }
+
     public String toString() {
         try {
             int maxSize = 1500;
@@ -685,5 +743,5 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             return null;
         }
     }
-    
+
 }

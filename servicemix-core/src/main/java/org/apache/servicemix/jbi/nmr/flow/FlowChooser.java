@@ -16,9 +16,18 @@
 package org.apache.servicemix.jbi.nmr.flow;
 
 import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
 
 public interface FlowChooser {
 
-    Flow chooseFlow(Flow[] flows, MessageExchange exchange);
+    /**
+     * Choose a flow amongst the available flows.
+     * 
+     * @param flows
+     * @param exchange
+     * @return the selected flow (must be non-null)
+     * @throws MessagingException if a flow can not be chosen
+     */
+    Flow chooseFlow(Flow[] flows, MessageExchange exchange) throws MessagingException;
     
 }

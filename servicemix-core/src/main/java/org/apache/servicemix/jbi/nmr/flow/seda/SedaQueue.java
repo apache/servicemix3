@@ -27,11 +27,14 @@ import org.apache.servicemix.jbi.util.BoundedLinkedQueue;
 
 import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.ObjectName;
 import javax.resource.spi.work.Work;
 import javax.resource.spi.work.WorkException;
+import javax.transaction.Transaction;
+import javax.transaction.TransactionManager;
 
 /**
  * A simple Straight through flow
@@ -128,8 +131,9 @@ public class SedaQueue extends BaseLifeCycle implements Work {
      * 
      * @param packet
      * @throws InterruptedException
+     * @throws MessagingException 
      */
-    public void enqueue(MessageExchange me) throws InterruptedException {
+    public void enqueue(MessageExchange me) throws InterruptedException, MessagingException {
         queue.put(me);
     }
 
@@ -277,4 +281,5 @@ public class SedaQueue extends BaseLifeCycle implements Work {
     public void setObjectName(ObjectName objectName) {
         this.objectName = objectName;
     }
+
 }

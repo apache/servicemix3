@@ -19,8 +19,10 @@ import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.flow.AbstractFlow;
 import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
 
+import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
+import javax.jbi.messaging.MessageExchange.Role;
 
 /**
  * A simple Straight through flow.
@@ -61,7 +63,19 @@ public class STFlow extends AbstractFlow {
      * @return true if this flow can handle the given exchange
      */
     public boolean canHandle(MessageExchange me) {
-        return !isPersistent(me) && !isClustered(me);
+        if (isPersistent(me)) {
+            return false;
+        }
+        if (isClustered(me)) {
+            return false;
+        }
+        // We can not handle transactional exchanges:
+        //  * asynchronous is a bit weird when the transaction is conveyed
+        //  * synchronous could lead to deadlock if the provider uses Push delivery
+        if (isTransacted(me)) {
+            return false;
+        }
+        return true;
     }
     
 }

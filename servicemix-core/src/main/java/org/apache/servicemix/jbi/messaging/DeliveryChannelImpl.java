@@ -21,6 +21,7 @@ import java.util.Map;
 
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
+import javax.jbi.component.ComponentLifeCycle;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
@@ -67,6 +68,12 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     private long lastReceiveTime = System.currentTimeMillis();
     private AtomicBoolean closed = new AtomicBoolean(false);
     private Map waiters = new ConcurrentHashMap();
+    
+    /**
+     * When using clustering and sendSync, the exchange received will not be the same
+     * as the one sent (because it has been serialized/deserialized.
+     * We thus need to keep the original exchange in a map and override its state.
+     */
     private Map exchangesById = new ConcurrentHashMap();
 
     /**
@@ -110,16 +117,14 @@ public class DeliveryChannelImpl implements DeliveryChannel {
      */
     public void close() throws MessagingException {
         if (this.closed.compareAndSet(false, true)) {
+            if (log.isDebugEnabled()) {
+                log.debug("Closing DeliveryChannel " + this);
+            }
             List pending = queue.closeAndFlush();
             for (Iterator iter = pending.iterator(); iter.hasNext();) {
                 MessageExchangeImpl messageExchange = (MessageExchangeImpl) iter.next();
                 if (messageExchange.getTransactionContext() != null && messageExchange.getMirror().getSyncState() == MessageExchangeImpl.SYNC_STATE_SYNC_SENT) {
-                    synchronized (messageExchange.getMirror()) {
-                        if (log.isDebugEnabled()) {
-                            log.debug("Notifying: " + messageExchange.getExchangeId());
-                        }
-                        messageExchange.getMirror().notify();
-                    }
+                    notifyExchange(messageExchange.getMirror(), messageExchange.getMirror(), "close");
                 }
             }
             // Interrupt all blocked thread
@@ -143,7 +148,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
 
     protected void checkNotClosed() throws MessagingException {
         if (closed.get()) {
-            throw new MessagingException("DeliveryChannel has been closed.");
+            throw new MessagingException(this + " has been closed.");
         }
     }
 
@@ -244,25 +249,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
      * @throws MessagingException
      */
     public MessageExchange accept() throws MessagingException {
-        try {
-            checkNotClosed();
-            MessageExchangeImpl me = (MessageExchangeImpl) queue.take();
-            if (log.isDebugEnabled()) {
-                log.debug("Accepting " + me.getExchangeId() + " in " + this);
-            }
-            resumeTx(me);
-            me.handleAccept();
-            if (log.isTraceEnabled()) {
-                log.trace("Accepted: " + me);
-            }
-            return me;
-        }
-        catch (IllegalStateException e) {
-            throw new MessagingException("DeliveryChannel has been closed.");
-        }
-        catch (InterruptedException e) {
-            throw new MessagingException("accept failed", e);
-        }
+        return accept(Long.MAX_VALUE);
     }
 
     /**
@@ -288,10 +275,29 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                     if (log.isDebugEnabled()) {
                         log.debug("Accepting " + me.getExchangeId() + " in " + this);
                     }
-                    resumeTx(me);
-                    me.handleAccept();
-                    if (log.isTraceEnabled()) {
-                        log.trace("Accepted: " + me);
+                    // If we have a tx lock and the exchange is not active, we need
+                    // to notify here without resuming transaction
+                    if (me.getTxLock() != null && me.getStatus() != ExchangeStatus.ACTIVE) {
+                        notifyExchange(me.getMirror(), me.getTxLock(), "acceptFinishedExchangeWithTxLock");
+                        me.handleAccept();
+                        if (log.isTraceEnabled()) {
+                            log.trace("Accepted: " + me);
+                        }
+                    }
+                    // We transactionnaly deliver a finished exchange
+                    else if (me.isTransacted() && me.getStatus() != ExchangeStatus.ACTIVE) {
+                        // Do not resume transaction
+                        me.handleAccept();
+                        if (log.isTraceEnabled()) {
+                            log.trace("Accepted: " + me);
+                        }
+                    } 
+                    else {
+                        resumeTx(me);
+                        me.handleAccept();
+                        if (log.isTraceEnabled()) {
+                            log.trace("Accepted: " + me);
+                        }
                     }
                 }
             }
@@ -301,101 +307,86 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             throw new MessagingException("accept failed", e);
         }
     }
+    
+    protected void autoSetPersistent(MessageExchangeImpl me) {
+        Boolean persistent = me.getPersistent();
+        if (persistent == null) {
+            if (context.getActivationSpec().getPersistent() != null) {
+                persistent = context.getActivationSpec().getPersistent();
+            } else {
+                persistent = Boolean.valueOf(context.getContainer().isPersistent());
+            }
+            me.setPersistent(persistent);
+        }
+    }
+    
+    protected void throttle() {
+        if (component.isExchangeThrottling()) {
+            if (component.getThrottlingInterval() > intervalCount) {
+                intervalCount = 0;
+                try {
+                    Thread.sleep(component.getThrottlingTimeout());
+                }
+                catch (InterruptedException e) {
+                    log.warn("throttling failed", e);
+                }
+            }
+            intervalCount++;
+        }
+    }
 
-    protected void doSend(MessageExchangeImpl messageExchange, boolean sync) throws MessagingException {
+    protected void doSend(MessageExchangeImpl me, boolean sync) throws MessagingException {
+        MessageExchangeImpl mirror = me.getMirror();
+        boolean finished = me.getStatus() != ExchangeStatus.ACTIVE;
         try {
             if (log.isTraceEnabled()) {
-                log.trace("Sent: " + messageExchange);
+                log.trace("Sent: " + me);
             }
-            // If the delivery channel has been closed
-            checkNotClosed();
             // If the message has timed out
-            if (messageExchange.getPacket().isAborted()) {
-                throw new ExchangeTimeoutException(messageExchange);
+            if (me.getPacket().isAborted()) {
+                throw new ExchangeTimeoutException(me);
             }
             // Auto enlist exchange in transaction
-            autoEnlistInTx(messageExchange);
+            autoEnlistInTx(me);
             // Update persistence info
-            Boolean persistent = messageExchange.getPersistent();
-            if (persistent == null) {
-                if (context.getActivationSpec().getPersistent() != null) {
-                    persistent = context.getActivationSpec().getPersistent();
-                } else {
-                    persistent = Boolean.valueOf(context.getContainer().isPersistent());
-                }
-                messageExchange.setPersistent(persistent);
-            }
-
-            if (component.isExchangeThrottling()) {
-                if (component.getThrottlingInterval() > intervalCount) {
-                    intervalCount = 0;
-                    try {
-                        Thread.sleep(component.getThrottlingTimeout());
-                    }
-                    catch (InterruptedException e) {
-                        log.warn("throttling failed", e);
-                    }
-                }
-                intervalCount++;
-            }
-
+            autoSetPersistent(me);
+            // Throttle if needed
+            throttle();
             // Update stats
-            MessagingStats messagingStats = component.getMessagingStats();
-            long currentTime = System.currentTimeMillis();
-            if (container.isNotifyStatistics()) {
-                long oldCount = messagingStats.getOutboundExchanges().getCount();
-                messagingStats.getOutboundExchanges().increment();
-                component.firePropertyChanged(
-                        "outboundExchangeCount",
-                        new Long(oldCount),
-                        new Long(messagingStats.getOutboundExchanges().getCount()));
-                double oldRate = messagingStats.getOutboundExchangeRate().getAverageTime();
-                messagingStats.getOutboundExchangeRate().addTime(currentTime - lastSendTime);
-                component.firePropertyChanged("outboundExchangeRate",
-                        new Double(oldRate),
-                        new Double(messagingStats.getOutboundExchangeRate().getAverageTime()));
-            } else {
-                messagingStats.getOutboundExchanges().increment();
-                messagingStats.getOutboundExchangeRate().addTime(currentTime - lastSendTime);
+            incrementOutboundStats();
+            // Store the consumer component
+            if (me.getRole() == Role.CONSUMER) {
+                me.setSourceId(component.getComponentNameSpace());
             }
-            lastSendTime = currentTime;
-
-            if (messageExchange.getRole() == Role.CONSUMER) {
-                messageExchange.setSourceId(component.getComponentNameSpace());
-            }
-
             // Call the listeners before the ownership changes
-            container.callListeners(messageExchange);
-            messageExchange.handleSend(sync);
-            container.sendExchange(messageExchange.getMirror());
+            container.callListeners(me);
+            me.handleSend(sync);
+            mirror.setTxState(MessageExchangeImpl.TX_STATE_NONE);
+            // If this is the DONE or ERROR status from a synchronous transactional exchange,
+            // it should not be part of the transaction, so remove the tx context
+            if (finished && 
+                me.getTxLock() == null &&
+                me.getTxState() == MessageExchangeImpl.TX_STATE_CONVEYED &&
+                me.isPushDelivery() == false) {
+                me.setTransactionContext(null);
+            }
+            container.sendExchange(mirror);
         } catch (MessagingException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Exception processing: " + messageExchange.getExchangeId() + " in " + this);
+                log.debug("Exception processing: " + me.getExchangeId() + " in " + this);
             }
             throw e;
         } finally {
-            if (messageExchange.getTransactionContext() != null) {
-                if (messageExchange.getMirror().getSyncState() == MessageExchangeImpl.SYNC_STATE_SYNC_SENT) {
-                    suspendTx(messageExchange);
-                    if (log.isDebugEnabled()) {
-                        log.debug("Notifying: " + messageExchange.getExchangeId() + " in " + this);
-                    }
-                    synchronized (messageExchange.getMirror()) {
-                        messageExchange.getMirror().notify();
-                    }
+            // If there is a tx lock, we need to suspend and notify
+            if (me.getTxLock() != null) {
+                if (mirror.getTxState() == MessageExchangeImpl.TX_STATE_ENLISTED) {
+                    suspendTx(mirror);
+                }
+                synchronized (me.getTxLock()) {
+                    notifyExchange(me, me.getTxLock(), "doSendWithTxLock");
                 }
             }
         }
-
-        /*
-        if (messageExchange.getMirror().getSyncState() == MessageExchangeImpl.SYNC_STATE_SYNC_SENT) {
-            synchronized (messageExchange.getMirror()) {
-                suspendTx(messageExchange);
-                messageExchange.getMirror().setSyncState(MessageExchangeImpl.SYNC_STATE_SYNC_RECEIVED);
-                messageExchange.getMirror().notify();
-            }
-        }
-        */
     }
 
     /**
@@ -405,9 +396,17 @@ public class DeliveryChannelImpl implements DeliveryChannel {
      * @throws MessagingException
      */
     public void send(MessageExchange messageExchange) throws MessagingException {
+        // If the delivery channel has been closed
+        checkNotClosed();
+        // Log call
+        if (log.isDebugEnabled()) {
+            log.debug("Send " + messageExchange.getExchangeId() + " in " + this);
+        }
+        // // JBI 5.5.2.1.3: remove sync property
         messageExchange.setProperty(JbiConstants.SEND_SYNC, null);
-        MessageExchangeImpl messageExchangeImpl = (MessageExchangeImpl) messageExchange;
-        doSend(messageExchangeImpl, false);
+        // Call doSend
+        MessageExchangeImpl me = (MessageExchangeImpl) messageExchange;
+        doSend(me, false);
     }
 
     /**
@@ -418,7 +417,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
      * @throws MessagingException
      */
     public boolean sendSync(MessageExchange messageExchange) throws MessagingException {
-        return sendSync(messageExchange, Long.MAX_VALUE);
+        return sendSync(messageExchange, 0);
     }
 
     /**
@@ -429,42 +428,55 @@ public class DeliveryChannelImpl implements DeliveryChannel {
      * @return true if processed
      * @throws MessagingException
      */
-    public boolean sendSync(MessageExchange messageExchange, long timeoutMS) throws MessagingException {
-        boolean result = false;
+    public boolean sendSync(MessageExchange messageExchange, long timeout) throws MessagingException {
+        // If the delivery channel has been closed
+        checkNotClosed();
+        // Log call
         if (log.isDebugEnabled()) {
-            log.debug("Sending " + messageExchange.getExchangeId() + " in " + this);
+            log.debug("SendSync " + messageExchange.getExchangeId() + " in " + this);
         }
+        boolean result = false;
         // JBI 5.5.2.1.3: set the sendSync property
         messageExchange.setProperty(JbiConstants.SEND_SYNC, Boolean.TRUE);
-        MessageExchangeImpl messageExchangeImpl = (MessageExchangeImpl) messageExchange;
-        exchangesById.put(messageExchange.getExchangeId(), messageExchange);
+        // Call doSend
+        MessageExchangeImpl me = (MessageExchangeImpl) messageExchange;
         try {
+            exchangesById.put(me.getExchangeId(), me);
             // Synchronously send a message and wait for the response
-            synchronized (messageExchangeImpl) {
-                doSend(messageExchangeImpl, true);
-                if (messageExchangeImpl.getSyncState() != MessageExchangeImpl.SYNC_STATE_SYNC_RECEIVED) {
-                    waiters.put(Thread.currentThread(), Boolean.TRUE);
-                    try {
-                        messageExchangeImpl.wait(timeoutMS);
-                    } finally {
-                        waiters.remove(Thread.currentThread());
+            synchronized (me) {
+                doSend(me, true);
+                if (me.getSyncState() != MessageExchangeImpl.SYNC_STATE_SYNC_RECEIVED) {
+                    waitForExchange(me, me, timeout, "sendSync");
+                } else {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Exchange " + messageExchange.getExchangeId() + " has already been answered (no need to wait)");
                     }
                 }
             }
-            if (messageExchangeImpl.getSyncState() == MessageExchangeImpl.SYNC_STATE_SYNC_RECEIVED) {
-                messageExchangeImpl.handleAccept();
-                resumeTx(messageExchangeImpl);
-                result= true;
+            if (me.getSyncState() == MessageExchangeImpl.SYNC_STATE_SYNC_RECEIVED) {
+                me.handleAccept();
+                // If the sender flag has been removed, it means
+                // the message has been delivered in the same thread
+                // so there is no need to resume the transaction
+                // See processInBound
+                //if (messageExchangeImpl.getSyncSenderThread() != null) {
+                    resumeTx(me);
+                //}
+                result = true;
             } else {
                 // JBI 5.5.2.1.3: the exchange should be set to ERROR status
-                messageExchangeImpl.getPacket().setAborted(true);
-                result =  false;
+                if (log.isDebugEnabled()) {
+                    log.debug("Exchange " + messageExchange.getExchangeId() + " has been aborted");
+                }
+                me.getPacket().setAborted(true);
+                result = false;
             }
         } catch (InterruptedException e) {
-            exchangesById.remove(messageExchange.getExchangeId());
             throw new MessagingException(e);
-        }
-        finally{
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
             exchangesById.remove(messageExchange.getExchangeId());
         }
         return result;
@@ -509,16 +521,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         this.context = context;
     }
 
-    /**
-     * Used internally for passing in a MessageExchange
-     * 
-     * @param me
-     * @throws MessagingException
-     */
-    public void processInBound(MessageExchangeImpl me) throws MessagingException {
-        checkNotClosed();
-
-        // Update stats
+    protected void incrementInboundStats() {
         MessagingStats messagingStats = component.getMessagingStats();
         long currentTime = System.currentTimeMillis();
         if (container.isNotifyStatistics()) {
@@ -538,68 +541,178 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             messagingStats.getInboundExchangeRate().addTime(currentTime - lastReceiveTime);
         }
         lastReceiveTime = currentTime;
-
-        // If the message has been sent synchronously
-        // this is the answer, so update the syncState and notify the waiter
-        // Here, we don't need to put the message in the queue
-        MessageExchangeImpl theOriginal = (MessageExchangeImpl) exchangesById.get(me.getExchangeId());
-        if (theOriginal != null && theOriginal.getSyncState() == MessageExchangeImpl.SYNC_STATE_SYNC_SENT &&
-            theOriginal.getRole() == me.getRole()) {
-            suspendTx(theOriginal);
-            synchronized (theOriginal) {
-                theOriginal.copyFrom(me);
-                theOriginal.setSyncState(MessageExchangeImpl.SYNC_STATE_SYNC_RECEIVED);
-                theOriginal.notify();
-            }
+    }
+    
+    protected void incrementOutboundStats() {
+        MessagingStats messagingStats = component.getMessagingStats();
+        long currentTime = System.currentTimeMillis();
+        if (container.isNotifyStatistics()) {
+            long oldCount = messagingStats.getOutboundExchanges().getCount();
+            messagingStats.getOutboundExchanges().increment();
+            component.firePropertyChanged(
+                    "outboundExchangeCount",
+                    new Long(oldCount),
+                    new Long(messagingStats.getOutboundExchanges().getCount()));
+            double oldRate = messagingStats.getOutboundExchangeRate().getAverageTime();
+            messagingStats.getOutboundExchangeRate().addTime(currentTime - lastSendTime);
+            component.firePropertyChanged("outboundExchangeRate",
+                    new Double(oldRate),
+                    new Double(messagingStats.getOutboundExchangeRate().getAverageTime()));
         } else {
-            Component component = this.component.getComponent();
-            // If the component implements the MessageExchangeListener,
-            // the delivery can be made synchronously, so we don't need
-            // to bother about transactions
-            if (component != null && component instanceof MessageExchangeListener) {
-                me.handleAccept();
-                if (log.isTraceEnabled()) {
-                    log.trace("Received: " + me);
-                }
-                ((MessageExchangeListener) component).onMessageExchange(me);
+            messagingStats.getOutboundExchanges().increment();
+            messagingStats.getOutboundExchangeRate().addTime(currentTime - lastSendTime);
+        }
+        lastSendTime = currentTime;
+    }
+    
+    /**
+     * Used internally for passing in a MessageExchange
+     * 
+     * @param me
+     * @throws MessagingException
+     */
+    public void processInBound(MessageExchangeImpl me) throws MessagingException {
+        if (log.isTraceEnabled()) {
+            log.trace("Processing inbound exchange: " + me);
+        }
+        // Check if the delivery channel has been closed
+        checkNotClosed();
+        // Update stats
+        incrementInboundStats();
+
+        // Retrieve the original exchange sent
+        MessageExchangeImpl original = (MessageExchangeImpl) exchangesById.get(me.getExchangeId());
+        if (original != null && me != original) {
+            original.copyFrom(me);
+            me = original;
+        }
+        // Check if the incoming exchange is a response to a synchronous exchange previously sent
+        // In this case, we do not have to queue it, but rather notify the waiting thread.
+        if (me.getSyncState() == MessageExchangeImpl.SYNC_STATE_SYNC_SENT) {
+            // If the mirror has been delivered using push, better wait until
+            // the push call return.  This can only work if not using clustered flows,
+            // but the flag is transient so we do not care.
+            /*if (!me.getMirror().isPushDelivery())*/ {
+                // Ensure that data is uptodate with the incoming exchange (in case the exchange has
+                // been serialized / deserialized by a clustered flow)
+                suspendTx(original);
+                me.setSyncState(MessageExchangeImpl.SYNC_STATE_SYNC_RECEIVED);
+                notifyExchange(original, original, "processInboundSynchronousExchange");
             }
-            else {
-                // Component uses async delivery
+            return;
+        }
+
+        // If the component implements the MessageExchangeListener,
+        // the delivery can be made synchronously, so we don't need
+        // to bother with transactions
+        MessageExchangeListener listener = getExchangeListener();
+        if (listener != null) {
+            me.handleAccept();
+            if (log.isTraceEnabled()) {
+                log.trace("Received: " + me);
+            }
+            // Set the flag the the exchange was delivered using push mode
+            // This is important for transaction boundaries
+            me.setPushDeliver(true);
+            // Deliver the exchange
+            listener.onMessageExchange(me);
+            // TODO: handle delayed exchange notifications 
+            return;
+        }
+        
+        // Component uses pull delivery.
+        
+        // If the exchange is transacted, special care should be taken.
+        // But if the exchange is no more ACTIVE, just queue it, as
+        // we will never have an answer back.
+        if (me.isTransacted() && me.getStatus() == ExchangeStatus.ACTIVE) {
+            // If the transaction is conveyed by the exchange
+            // We do not need to resume the transaction in this thread 
+            if (me.getTxState() == MessageExchangeImpl.TX_STATE_CONVEYED) {
                 try {
-                    if (me.isTransacted() && me.getStatus() == ExchangeStatus.DONE) {
-                        // Do nothing in this case
-                    } else if (me.isTransacted() && me.getMirror().getSyncState() == MessageExchangeImpl.SYNC_STATE_ASYNC) {
-                        suspendTx(me);
-                        synchronized (me.getMirror()) {
-                            me.getMirror().setSyncState(MessageExchangeImpl.SYNC_STATE_SYNC_SENT);
-                            if (log.isDebugEnabled()) {
-                                log.debug("Queuing: " + me.getExchangeId() + " in " + this);
-                            }
-                            queue.put(me);
-                            if (log.isDebugEnabled()) {
-                                log.debug("Waiting: " + me.getExchangeId() + " in " + this);
-                            }
-                            // If the channel is closed while here,
-                            // we must abort
-                            waiters.put(Thread.currentThread(), Boolean.TRUE);
-                            try {
-                                me.getMirror().wait();
-                            } finally {
-                                waiters.remove(Thread.currentThread());
-                            }
-                            if (log.isDebugEnabled()) {
-                                log.debug("Notified: " + me.getExchangeId() + " in " + this);
-                            }
-                        }
-                        resumeTx(me);
-                    } else {
+                    suspendTx(me);
+                    queue.put(me);
+                } catch (InterruptedException e) {
+                    log.debug("Exchange " + me.getExchangeId() + " aborted due to thread interruption", e);
+                    me.getPacket().setAborted(true);
+                }
+            }
+            // Else the delivery / send are enlisted in the current tx.
+            // We must suspend the transaction, queue it, and wait for the answer
+            // to be sent, at which time the tx should be suspended and resumed in
+            // this thread.
+            else {
+                Object lock = new Object();
+                synchronized (lock) {
+                    try {
+                        me.setTxLock(lock);
                         suspendTx(me);
                         queue.put(me);
+                        waitForExchange(me, lock, 0, "processInboundTransactionalExchange");
+                    } catch (InterruptedException e) {
+                        log.debug("Exchange " + me.getExchangeId() + " aborted due to thread interruption", e);
+                        me.getPacket().setAborted(true);
+                    } finally {
+                        me.setTxLock(null);
+                        resumeTx(me);
                     }
-                } catch (InterruptedException e) {
-                    throw new MessagingException(e);
                 }
             }
+        }
+        // If the exchange is ACTIVE, the transaction boundary will suspended when the 
+        // answer is sent
+        // Else just queue the exchange
+        else {
+            try {
+                queue.put(me);
+            } catch (InterruptedException e) {
+                log.debug("Exchange " + me.getExchangeId() + " aborted due to thread interruption", e);
+                me.getPacket().setAborted(true);
+            }
+        }
+    }
+    
+    protected MessageExchangeListener getExchangeListener() {
+        Component component = this.component.getComponent();
+        if (component instanceof MessageExchangeListener) {
+            return (MessageExchangeListener) component;
+        }
+        ComponentLifeCycle lifecycle = this.component.getLifeCycle();
+        if (lifecycle instanceof MessageExchangeListener) {
+            return (MessageExchangeListener) lifecycle;
+        }
+        return null;
+    }
+    
+    /**
+     * Synchronization must be performed on the given exchange when calling this method
+     * 
+     * @param me
+     * @throws InterruptedException
+     */
+    protected void waitForExchange(MessageExchangeImpl me, Object lock, long timeout, String from) throws InterruptedException {
+        // If the channel is closed while here, we must abort
+        if (log.isDebugEnabled()) {
+            log.debug("Waiting for exchange " + me.getExchangeId() + " (" + Integer.toHexString(me.hashCode()) + ") to be answered in " + this + " from " + from);
+        }
+        Thread th = Thread.currentThread();
+        try {
+            waiters.put(th, Boolean.TRUE);
+            lock.wait(timeout);
+        } finally {
+            waiters.remove(th);
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Notified: " + me.getExchangeId() + "(" + Integer.toHexString(me.hashCode()) + ") in " + this + " from " + from);
+        }
+    }
+    
+    protected void notifyExchange(MessageExchangeImpl me, Object lock, String from) {
+        if (log.isDebugEnabled()) {
+            log.debug("Notifying exchange " + me.getExchangeId() + "(" + Integer.toHexString(me.hashCode()) + ") in " + this + " from " + from);
+        }
+        synchronized (lock) {
+            lock.notify();
         }
     }
 
@@ -615,7 +728,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         return inboundFactory;
     }
 
-    protected void suspendTx(MessageExchangeImpl me) throws MessagingException {
+    protected void suspendTx(MessageExchangeImpl me) {
         try {
             Transaction oldTx = me.getTransactionContext();
             if (oldTx != null) {
@@ -631,7 +744,8 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                 }
             }
         } catch (Exception e) {
-            throw new MessagingException(e);
+            log.info("Exchange " + me.getExchangeId() + " aborted due to transaction exception", e);
+            me.getPacket().setAborted(true);
         }
     }
 

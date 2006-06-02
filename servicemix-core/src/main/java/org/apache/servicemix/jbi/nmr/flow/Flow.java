@@ -33,7 +33,7 @@ public interface Flow  extends LifeCycleMBean {
      * @param broker
      * @throws JBIException
      */
-    public void init(Broker broker, String name) throws JBIException;
+    public void init(Broker broker) throws JBIException;
     
     /**
      * The description of Flow

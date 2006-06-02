@@ -75,7 +75,7 @@ public class FlowProvider{
         }
     }
 
-    protected static String getFlowName(String str){
+    public static String getFlowName(String str){
         String result=str;
         int index=str.indexOf('?');
         if(index>=0){

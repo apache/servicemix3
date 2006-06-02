@@ -456,7 +456,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     }
 
     private void scheduleDirectoryTimer(){
-        if(!container.isEmbedded()&&(isMonitorInstallationDirectory()||isMonitorDeploymentDirectory())){
+        if (!container.isEmbedded() && (isMonitorInstallationDirectory() || isMonitorDeploymentDirectory())) {
             if(statsTimer==null){
                 statsTimer=new Timer(true);
             }

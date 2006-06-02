@@ -20,11 +20,14 @@ import java.util.Map;
 
 import javax.jbi.JBIException;
 import javax.jbi.management.LifeCycleMBean;
+import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.ObjectName;
+import javax.transaction.Transaction;
+import javax.transaction.TransactionManager;
 
 import org.apache.servicemix.jbi.event.ComponentAdapter;
 import org.apache.servicemix.jbi.event.ComponentEvent;
@@ -69,8 +72,8 @@ public class SedaFlow extends AbstractFlow {
      * @param broker
      * @throws JBIException
      */
-    public void init(Broker broker, String subType) throws JBIException {
-        super.init(broker, subType);
+    public void init(Broker broker) throws JBIException {
+        super.init(broker);
         listener = new ComponentAdapter() {
             public void componentShutDown(ComponentEvent event) {
                 onComponentShutdown(event.getComponent().getComponentNameSpace());
@@ -85,7 +88,21 @@ public class SedaFlow extends AbstractFlow {
      * @return true if this flow can handle the given exchange
      */
     public boolean canHandle(MessageExchange me) {
-        return !isPersistent(me) && !isClustered(me);
+        if (isPersistent(me)) {
+            return false;
+        }
+        if (isClustered(me)) {
+            return false;
+        }
+        if (isTransacted(me)) {
+            if (!isSynchronous(me)) {
+                // we have the mirror, so the role is the one for the target component
+                if (me.getStatus() == ExchangeStatus.ACTIVE) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     
     /**
@@ -146,14 +163,16 @@ public class SedaFlow extends AbstractFlow {
         if (me.getDestinationId() == null) {
             me.setDestinationId(((AbstractServiceEndpoint) me.getEndpoint()).getComponentNameSpace());
         }
-        if (me.getProperty(MessageExchange.JTA_TRANSACTION_PROPERTY_NAME) == null &&
-            me.getSyncState() == MessageExchangeImpl.SYNC_STATE_ASYNC &&
-            me.getMirror().getSyncState() == MessageExchangeImpl.SYNC_STATE_ASYNC) {
-        	enqueuePacket(me);
+        if (isTransacted(me)) {
+            me.setTxState(MessageExchangeImpl.TX_STATE_CONVEYED);
         }
-        else {
-            doRouting(me);
-        }
+        suspendTx(me);
+        enqueuePacket(me);
+    }
+    
+    protected void doRouting(MessageExchangeImpl me) throws MessagingException {
+        resumeTx(me);
+        super.doRouting(me);
     }
 
     /**
@@ -269,4 +288,42 @@ public class SedaFlow extends AbstractFlow {
         helper.addAttribute(getObjectToManage(), "queueNumber", "number of running SedaQueues");
         return AttributeInfoHelper.join(super.getAttributeInfos(), helper.getAttributeInfos());
     }
+
+    protected void suspendTx(MessageExchangeImpl me) throws MessagingException {
+        try {
+            Transaction oldTx = me.getTransactionContext();
+            if (oldTx != null) {
+                TransactionManager tm = (TransactionManager) getBroker().getContainer().getTransactionManager();
+                if (tm != null) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Suspending transaction for " + me.getExchangeId() + " in " + this);
+                    }
+                    Transaction tx = tm.suspend();
+                    if (tx != oldTx) {
+                        throw new IllegalStateException("the transaction context set in the messageExchange is not bound to the current thread");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new MessagingException(e);
+        }
+    }
+
+    protected void resumeTx(MessageExchangeImpl me) throws MessagingException {
+        try {
+            Transaction oldTx = me.getTransactionContext();
+            if (oldTx != null) {
+                TransactionManager tm = (TransactionManager) getBroker().getContainer().getTransactionManager();
+                if (tm != null) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Resuming transaction for " + me.getExchangeId() + " in " + this);
+                    }
+                    tm.resume(oldTx);
+                }
+            }
+        } catch (Exception e) {
+            throw new MessagingException(e);
+        }
+    }
+
 }

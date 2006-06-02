@@ -40,6 +40,7 @@ import javax.resource.spi.BootstrapContext;
 import javax.resource.spi.ConnectionManager;
 import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterInternalException;
+import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 
@@ -229,9 +230,9 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
      * @param broker
      * @throws JBIException
      */
-    public void init(Broker broker, String subType) throws JBIException {
+    public void init(Broker broker) throws JBIException {
         log.info(broker.getContainer().getName() + ": Initializing jca flow");
-        super.init(broker, subType);
+        super.init(broker);
         // Create and register endpoint listener
         endpointListener = new EndpointAdapter() {
             public void internalEndpointRegistered(EndpointEvent event) {
@@ -310,10 +311,13 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
                             Object obj = ((ObjectMessage) message).getObject();
                             if (obj instanceof EndpointEvent) {
                                 EndpointEvent event = (EndpointEvent) obj;
-                                if (event.getEventType() == EndpointEvent.INTERNAL_ENDPOINT_REGISTERED) {
-                                    onRemoteEndpointRegistered(event);
-                                } else if (event.getEventType() == EndpointEvent.INTERNAL_ENDPOINT_UNREGISTERED) {
-                                    onRemoteEndpointUnregistered(event);
+                                String container = ((InternalEndpoint) event.getEndpoint()).getComponentNameSpace().getContainerName();
+                                if (!getBroker().getContainer().getName().equals(container)) {
+                                    if (event.getEventType() == EndpointEvent.INTERNAL_ENDPOINT_REGISTERED) {
+                                        onRemoteEndpointRegistered(event);
+                                    } else if (event.getEventType() == EndpointEvent.INTERNAL_ENDPOINT_UNREGISTERED) {
+                                        onRemoteEndpointUnregistered(event);
+                                    }
                                 }
                             }
                         } catch (Exception e) {
@@ -550,9 +554,15 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
                     destination = INBOUND_PREFIX + me.getSourceId().getContainerName();
                 }
             }
+            if (me.isTransacted()) {
+                me.setTxState(MessageExchangeImpl.TX_STATE_ENLISTED);
+            }
             sendJmsMessage(new ActiveMQQueue(destination), me, isPersistent(me), me.isTransacted());
         } catch (JMSException e) {
             log.error("Failed to send exchange: " + me + " internal JMS Network", e);
+            throw new MessagingException(e);
+        } catch (SystemException e) {
+            log.error("Failed to send exchange: " + me + " transaction problem", e);
             throw new MessagingException(e);
         }
     }
@@ -679,7 +689,13 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
         return broker.getContainer().getName() + " JCAFlow";
     }
     
-    private void sendJmsMessage(Destination dest, Serializable object, boolean persistent, boolean transacted) throws JMSException {
+    private void sendJmsMessage(Destination dest, Serializable object, boolean persistent, boolean transacted) throws JMSException, SystemException {
+        if (transacted) {
+            TransactionManager tm = (TransactionManager) getBroker().getContainer().getTransactionManager();
+            if (tm.getStatus() == Status.STATUS_MARKED_ROLLBACK) {
+                return;
+            }
+        }
     	Connection connection = connectionFactory.createConnection();
     	try {
     		Session session = connection.createSession(transacted, transacted ? Session.SESSION_TRANSACTED : Session.AUTO_ACKNOWLEDGE);

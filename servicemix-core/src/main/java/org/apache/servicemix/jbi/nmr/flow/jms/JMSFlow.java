@@ -205,9 +205,9 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
      * @param broker
      * @throws JBIException
      */
-    public void init(Broker broker, String subType) throws JBIException {
+    public void init(Broker broker) throws JBIException {
         log.info(broker.getContainer().getName() + ": Initializing jms flow");
-        super.init(broker, subType);
+        super.init(broker);
         // Create and register endpoint listener
         endpointListener = new EndpointAdapter() {
             public void internalEndpointRegistered(EndpointEvent event) {
@@ -276,10 +276,13 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
                             Object obj = ((ObjectMessage) message).getObject();
                             if (obj instanceof EndpointEvent) {
                                 EndpointEvent event = (EndpointEvent) obj;
-                                if (event.getEventType() == EndpointEvent.INTERNAL_ENDPOINT_REGISTERED) {
-                                    onRemoteEndpointRegistered(event);
-                                } else if (event.getEventType() == EndpointEvent.INTERNAL_ENDPOINT_UNREGISTERED) {
-                                    onRemoteEndpointUnregistered(event);
+                                String container = ((InternalEndpoint) event.getEndpoint()).getComponentNameSpace().getContainerName();
+                                if (!getBroker().getContainer().getName().equals(container)) {
+                                    if (event.getEventType() == EndpointEvent.INTERNAL_ENDPOINT_REGISTERED) {
+                                        onRemoteEndpointRegistered(event);
+                                    } else if (event.getEventType() == EndpointEvent.INTERNAL_ENDPOINT_UNREGISTERED) {
+                                        onRemoteEndpointUnregistered(event);
+                                    }
                                 }
                             }
                         } catch (Exception e) {

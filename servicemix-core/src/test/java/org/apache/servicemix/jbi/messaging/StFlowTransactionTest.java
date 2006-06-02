@@ -26,4 +26,40 @@ public class StFlowTransactionTest extends AbstractTransactionTest {
 	protected Flow createFlow() {
 		return new STFlow();
 	}
+
+    public void testAsyncSendSyncReceive() throws Exception {
+        try {
+            super.testAsyncSendSyncReceive();
+            fail("ST flow does not handle asynchronous transactional exchanges");
+        } catch (Exception e) {
+            // ST flow does not handle asynchronous transactional exchanges
+        }
+    }
+
+    public void testAsyncSendAsyncReceive() throws Exception {
+        try {
+            super.testAsyncSendAsyncReceive();
+            fail("ST flow does not handle asynchronous transactional exchanges");
+        } catch (Exception e) {
+            // ST flow does not handle asynchronous transactional exchanges
+        }
+    }
+
+    public void testSyncSendAsyncReceive() throws Exception {
+        try {
+            super.testSyncSendAsyncReceive();
+            fail("ST flow does not handle synchronous transactional exchanges");
+        } catch (Exception e) {
+            // ST flow does not handle synchronous transactional exchanges
+        }
+    }
+
+    public void testSyncSendSyncReceive() throws Exception {
+        try {
+            super.testSyncSendSyncReceive();
+            fail("ST flow does not handle synchronous transactional exchanges");
+        } catch (Exception e) {
+            // ST flow does not handle synchronous transactional exchanges
+        }
+    }
 }

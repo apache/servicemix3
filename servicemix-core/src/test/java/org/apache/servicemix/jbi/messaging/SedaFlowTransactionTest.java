@@ -26,4 +26,23 @@ public class SedaFlowTransactionTest extends AbstractTransactionTest {
 	protected Flow createFlow() {
 		return new SedaFlow();
 	}
+
+    public void testAsyncSendSyncReceive() throws Exception {
+        try {
+            super.testAsyncSendSyncReceive();
+            fail("Seda flow does not handle asynchronous transactional exchanges");
+        } catch (Exception e) {
+            // Seda flow does not handle asynchronous transactional exchanges
+        }
+    }
+
+    public void testAsyncSendAsyncReceive() throws Exception {
+        try {
+            super.testAsyncSendAsyncReceive();
+            fail("Seda flow does not handle asynchronous transactional exchanges");
+        } catch (Exception e) {
+            // Seda flow does not handle asynchronous transactional exchanges
+        }
+    }
+
 }
