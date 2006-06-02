@@ -323,37 +323,6 @@
             <!--  exclude abstract tests -->
             <exclude>**/Abstract*.*</exclude>
             <exclude>**/*$*</exclude>
-
-            <!-- fails on some platforms due to ActiveCluster issue -->
-            <exclude>**/ClusterFlow*.*</exclude>
-            <exclude>**/JmsFlow*.*</exclude>
-            <exclude>**/JcaFlowPersistentTest.*</exclude>
-            <exclude>**/JcaFlowTransactionTest.*</exclude>
-
-            <!-- test cases hangs
-                        <exclude>**/SimpleClusterSendSyncTest.*</exclude>
-                        -->
-
-            <!-- fails in some linux platform due to missing lib libXp.so.6 -->
-            <exclude>**/ServiceMixComponentTest.*</exclude>
-            <exclude>**/ExplodedComponentInstallationTest.*</exclude>
-            <exclude>**/ComponentInstallationTest.*</exclude>
-            <exclude>**/ComponentAssemblyInstallationTest.*</exclude>
-            <exclude>**/DeploymentTest.*</exclude>
-
-            <!-- Succeed in Eclipse, but fail with maven, why ? 
-                             This may be realted to activemq jmx stuff
-                          -->
-            <exclude>**/AdminServiceTest.*</exclude>
-            <exclude>**/ManagementAttributesTest.*</exclude>
-            <exclude>**/ManagementContextTest.*</exclude>
-
-            <exclude>**/JbiTaskTest.*</exclude>
-            <exclude>**/InstallComponentTaskTest.*</exclude>
-            <exclude>**/StatelessJcaFlowTest.*</exclude>
-            <exclude>**/HotDeployTest.*</exclude>
-            <exclude>**/InstallationTest.*</exclude>
-            <exclude>**/DeploymentMessageTest.*</exclude>
           </excludes>
         </configuration>
       </plugin>

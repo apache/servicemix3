@@ -52,7 +52,7 @@ public class MultipleFlowsTest extends TestCase {
         remoteReceiver = (Receiver) remoteContainer.getBean("remoteReceiver");
         clusteredReceiver1 = (Receiver) localContainer.getBean("clusteredReceiver");
         clusteredReceiver2 = (Receiver) remoteContainer.getBean("clusteredReceiver");
-        Thread.sleep(1000);
+        Thread.sleep(5000);
     }
     
     protected void tearDown() throws Exception {
