@@ -52,6 +52,31 @@
       <artifactId>hsqldb</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derby</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>jencks</groupId>
+      <artifactId>jencks</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>tranql</groupId>
+      <artifactId>tranql-connector</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>geronimo</groupId>
+      <artifactId>geronimo-transaction</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>geronimo</groupId>
+      <artifactId>geronimo-connector</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>

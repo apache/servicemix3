@@ -67,6 +67,7 @@ public class DefaultJDBCAdapter implements JDBCAdapter {
     public void doCreateTables(Connection connection) throws SQLException, IOException {
         Statement s = null;
         try {
+            connection.setAutoCommit(false);
             
             // Check to see if the table already exists.  If it does, then don't log warnings during startup.
             // Need to run the scripts anyways since they may contain ALTER statements that upgrade a previous version of the table
@@ -78,6 +79,13 @@ public class DefaultJDBCAdapter implements JDBCAdapter {
             } catch (Throwable ignore) {
             } finally {
                 close(rs);
+            }
+            
+            // If the dataSource is a managed DataSource, executing a statement that throws
+            // an exception will make the connection unusable.
+            // So if the table already exists, do not try to re-create them
+            if (alreadyExists) {
+                return;
             }
             
             s = connection.createStatement();

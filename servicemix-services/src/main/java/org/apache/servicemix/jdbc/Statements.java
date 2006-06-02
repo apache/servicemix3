@@ -27,7 +27,7 @@ public class Statements {
     protected String storeTableName = "SM_STORE";
 
     protected String binaryDataType = "BLOB";
-    protected String idDataType = "VARCHAR(32)";
+    protected String idDataType = "VARCHAR(48)";
     private String storeDataStatement;
     private String updateDataStatement;
     private String removeDataStatement;

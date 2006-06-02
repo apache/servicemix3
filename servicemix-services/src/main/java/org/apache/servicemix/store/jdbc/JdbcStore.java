@@ -54,7 +54,6 @@ public class JdbcStore implements Store {
             out.close();
             connection = factory.getDataSource().getConnection();
             factory.getAdapter().doStoreData(connection, name + ":" + id, buffer.toByteArray());
-            connection.commit();
         } catch (Exception e) {
             throw (IOException) new IOException("Error storing object").initCause(e);
         } finally {
@@ -86,7 +85,6 @@ public class JdbcStore implements Store {
                 result = ois.readObject();
                 factory.getAdapter().doRemoveData(connection, name + ":" + id);
             }
-            connection.commit();
             return result;
         } catch (Exception e) {
             throw (IOException) new IOException("Error storing object").initCause(e);
