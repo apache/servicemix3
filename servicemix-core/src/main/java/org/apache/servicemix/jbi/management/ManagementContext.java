@@ -135,12 +135,15 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     
      */
     public void init(JBIContainer container, MBeanServer server) throws JBIException  {
-        //TODO - when activemq is up to date
-        //mbeanServerContext.setMBeanServer(server);
-        try{
+        if (container.isEmbedded() && server == null) {
+            mbeanServerContext.setUseMBeanServer(false);
+            mbeanServerContext.setCreateMBeanServer(false);
+        }
+        mbeanServerContext.setMBeanServer(server);
+        try {
             mbeanServerContext.start();
-        }catch(IOException e){
-           log.error("Failed to start mbeanServerContext",e);
+        } catch (IOException e) {
+            log.error("Failed to start mbeanServerContext", e);
         }
         this.executors = Executors.newCachedThreadPool();
         super.init(container);
