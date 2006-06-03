@@ -2,6 +2,8 @@ package org.apache.servicemix.jbi.messaging;
 
 import java.sql.Connection;
 
+import javax.jbi.JBIException;
+import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.InOut;
@@ -30,7 +32,6 @@ import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.components.util.ComponentSupport;
-import org.apache.servicemix.components.util.OutBinding;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.nmr.flow.Flow;
@@ -427,16 +428,40 @@ public class TransactionsTest extends TestCase {
         assertNotNull(store.load(me.getExchangeId()));
    }
     
-    protected class Async extends OutBinding {
+    protected class Async extends ComponentSupport implements Runnable {
         private boolean sync;
         private boolean rollback;
+        private Thread runner;
+        private boolean running;
         public Async(boolean sync, boolean rollback) {
             this.sync = sync;
             this.rollback = rollback;
             setService(new QName("service"));
             setEndpoint("endpoint");
         }
-        protected void process(MessageExchange exchange, NormalizedMessage message) throws Exception {
+        public synchronized void start() throws JBIException {
+            if (!running) {
+                running = true;
+                runner = new Thread(this);
+                runner.start();
+            }
+        }
+        public void run() {
+            while (running) {
+                try {
+                    DeliveryChannel deliveryChannel = getContext().getDeliveryChannel();
+                    MessageExchange messageExchange = deliveryChannel.accept();
+                    process(messageExchange);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        public synchronized void stop() throws JBIException {
+            running = false;
+        }
+        protected void process(MessageExchange exchange) throws Exception {
             if (exchange.getStatus() != ExchangeStatus.ACTIVE) {
                 return;
             }

@@ -367,7 +367,8 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             if (finished && 
                 me.getTxLock() == null &&
                 me.getTxState() == MessageExchangeImpl.TX_STATE_CONVEYED &&
-                me.isPushDelivery() == false) {
+                me.isPushDelivery() == false &&
+                me.getRole() == Role.CONSUMER) {
                 me.setTransactionContext(null);
             }
             container.sendExchange(mirror);
