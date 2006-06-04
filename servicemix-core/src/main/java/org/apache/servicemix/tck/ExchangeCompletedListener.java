@@ -65,8 +65,8 @@ public class ExchangeCompletedListener extends Assert implements ExchangeListene
                     break;
                 }
                 long remain = timeout - (System.currentTimeMillis() - start);
-                if (remain < 0) {
-                    assertTrue("Exchange is ACTIVE", active.getStatus() != ExchangeStatus.ACTIVE);
+                if (remain <= 0) {
+                    assertTrue("Exchange is ACTIVE: " + active, active.getStatus() != ExchangeStatus.ACTIVE);
                 } else {
                     exchanges.wait(remain);
                 }
