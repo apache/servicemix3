@@ -72,7 +72,6 @@ public class ExchangeCompletedListener extends Assert implements ExchangeListene
                 }
             }
         }
-        while (System.currentTimeMillis() - start < 1000);
     }
 
 }
