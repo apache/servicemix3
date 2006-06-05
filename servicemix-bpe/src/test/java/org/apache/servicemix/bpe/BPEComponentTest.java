@@ -49,9 +49,7 @@ public class BPEComponentTest extends TestCase {
     
     protected void setUp() throws Exception {
         jbi = new JBIContainer();
-        jbi.setFlowName("st");
         jbi.setEmbedded(true);
-        jbi.setUseMBeanServer(false);
         jbi.init();
         client = new DefaultServiceMixClient(jbi);
         bpe = new BPEComponent();
