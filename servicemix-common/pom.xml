@@ -48,5 +48,10 @@
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
     </dependency>
+    <dependency>
+      <groupId>incubator-activemq</groupId>
+      <artifactId>activemq-ra</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

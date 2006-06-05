@@ -49,10 +49,6 @@ public class TransactionsTest extends TestCase {
     private TransactionManager txManager;
     private Component component;
     private ServiceMixClient client;
-    private boolean setRollbackBefore = false;
-    private boolean setRollbackAfter = false;
-    private boolean throwExBefore = false;
-    private boolean throwExAfter = false;
     
     protected void setUp() throws Exception {
         broker = new BrokerService();
@@ -86,10 +82,6 @@ public class TransactionsTest extends TestCase {
     }
     
     public void testTxOkAsync() throws Exception {
-        setRollbackBefore = false;
-        setRollbackAfter = false;
-        throwExBefore = false;
-        throwExAfter = false;
         txManager.begin();
         InOnly me = client.createInOnlyExchange();
         me.setService(new QName("service"));
@@ -104,10 +96,6 @@ public class TransactionsTest extends TestCase {
     }
     
     public void testTxOkSync() throws Exception {
-        setRollbackBefore = false;
-        setRollbackAfter = false;
-        throwExBefore = false;
-        throwExAfter = false;
         txManager.begin();
         InOnly me = client.createInOnlyExchange();
         me.setService(new QName("service"));
@@ -116,48 +104,6 @@ public class TransactionsTest extends TestCase {
         assertEquals(Status.STATUS_ACTIVE, txManager.getStatus());
         assertEquals(ExchangeStatus.DONE, me.getStatus());
         txManager.commit();
-    }
-    
-    public void testTxRollbackBeforeAsync() throws Exception {
-        setRollbackBefore = true;
-        setRollbackAfter = false;
-        throwExBefore = false;
-        throwExAfter = false;
-        txManager.begin();
-        InOnly me = client.createInOnlyExchange();
-        me.setService(new QName("service"));
-        me.getInMessage().setContent(new StringSource("<hello>world</hello>"));
-        client.send(me);
-        assertEquals(Status.STATUS_MARKED_ROLLBACK, txManager.getStatus());
-        txManager.rollback();
-    }
-    
-    public void testTxRollbackBeforeSync() throws Exception {
-        setRollbackBefore = true;
-        setRollbackAfter = false;
-        throwExBefore = false;
-        throwExAfter = false;
-        txManager.begin();
-        InOnly me = client.createInOnlyExchange();
-        me.setService(new QName("service"));
-        me.getInMessage().setContent(new StringSource("<hello>world</hello>"));
-        client.sendSync(me);
-        assertEquals(Status.STATUS_MARKED_ROLLBACK, txManager.getStatus());
-        txManager.rollback();
-    }
-    
-    public void testTxThrowBefore() throws Exception {
-        setRollbackBefore = false;
-        setRollbackAfter = false;
-        throwExBefore = true;
-        throwExAfter = false;
-        txManager.begin();
-        InOnly me = client.createInOnlyExchange();
-        me.setService(new QName("service"));
-        me.getInMessage().setContent(new StringSource("<hello>world</hello>"));
-        client.send(me);
-        assertEquals(Status.STATUS_MARKED_ROLLBACK, txManager.getStatus());
-        txManager.rollback();
     }
     
     private class TestComponent extends BaseComponent {
@@ -212,19 +158,8 @@ public class TransactionsTest extends TestCase {
                 return Role.PROVIDER;
             }
             public void process(MessageExchange exchange) throws Exception {
-                if (setRollbackBefore) {
-                    txManager.setRollbackOnly();
-                    return;
-                } else if (throwExBefore) {
-                    throw new Exception("Error");
-                }
                 exchange.setStatus(ExchangeStatus.DONE);
                 getComponentContext().getDeliveryChannel().send(exchange);
-                if (setRollbackAfter) {
-                    txManager.setRollbackOnly();
-                } else if (throwExAfter) {
-                    throw new Exception("Error");
-                }
             }
             public void start() throws Exception {
             }
