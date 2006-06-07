@@ -4,7 +4,9 @@
 <beans>
 
   <!-- JMX server and connector -->
-  <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean"/>
+  <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
+    <property name="locateExistingServerIfPossible" value="true"/>
+  </bean>
   <bean id="registry" class="mx4j.tools.naming.NamingService" init-method="start">
     <property name="port" value="1099"/>
   </bean>
