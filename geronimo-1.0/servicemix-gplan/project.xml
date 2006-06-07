@@ -2,7 +2,7 @@
 <!DOCTYPE project>
 <project>
 	<pomVersion>3</pomVersion>
-	<extend>${basedir}/../etc/project.xml</extend>
+	<extend>${basedir}/../../etc/project.xml</extend>
 
 	<name>ServiceMix :: GPlan</name>
 	<id>servicemix-gplan</id>
@@ -38,6 +38,12 @@
 		<dependency>
 			<groupId>geronimo</groupId>
 			<artifactId>j2ee-system</artifactId>
+			<version>${geronimo_version}</version>
+			<type>car</type>
+		</dependency>
+		<dependency>
+			<groupId>geronimo</groupId>
+			<artifactId>j2ee-server</artifactId>
 			<version>${geronimo_version}</version>
 			<type>car</type>
 		</dependency>
