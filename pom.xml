@@ -261,11 +261,18 @@
   </pluginRepositories>
   
   <repositories>
+    <!-- keep the central repo so that it is first tried -->
+    <repository>
+      <id>central</id>
+      <url>http://ibiblio.org/maven2/</url>
+    </repository>
+    <!-- Dependencies not on central repo -->
     <repository>
       <id>servicemix-m2-repo</id>
       <name>Servicemix Maven2 Repository</name>
       <url>http://servicemix.org/m2-repo</url>
     </repository>
+    <!-- AMQ 4 release -->
     <repository>
       <id>activemq-tmp-repo</id>
       <name>ActiveMQ Maven2 Temp Repository</name>
