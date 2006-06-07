@@ -120,6 +120,10 @@ public class BPEDeployer extends AbstractDeployer {
         Collection msgs = rootDef.getMessages().values();
         for (Iterator iter = msgs.iterator(); iter.hasNext();) {
             Message msg = (Message) iter.next();
+            if (msg.isUndefined()) {
+                throw failure("deploy", 
+                        "WSDL Message '" + msg.getQName() + "' is undefined. Check namespaces.", null);
+            }
             if (msg.getParts().size() > 1) {
                 throw failure("deploy", 
                         "WSDL Message '" + msg.getQName() + "' has more than one part", null);
