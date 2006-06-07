@@ -21,7 +21,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarFile;
@@ -34,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.geronimo.common.DeploymentException;
 import org.apache.geronimo.deployment.ConfigurationBuilder;
 import org.apache.geronimo.deployment.DeploymentContext;
+import org.apache.geronimo.deployment.ModuleIDBuilder;
 import org.apache.geronimo.deployment.service.EnvironmentBuilder;
 import org.apache.geronimo.deployment.util.DeploymentUtil;
 import org.apache.geronimo.gbean.AbstractName;
@@ -46,6 +46,7 @@ import org.apache.geronimo.kernel.Kernel;
 import org.apache.geronimo.kernel.config.ConfigurationAlreadyExistsException;
 import org.apache.geronimo.kernel.config.ConfigurationModuleType;
 import org.apache.geronimo.kernel.config.ConfigurationStore;
+import org.apache.geronimo.kernel.config.ConfigurationUtil;
 import org.apache.geronimo.kernel.repository.Artifact;
 import org.apache.geronimo.kernel.repository.ArtifactResolver;
 import org.apache.geronimo.kernel.repository.Environment;
@@ -97,7 +98,7 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
      * @return the deployment plan, or null if this builder can not handle the module
      * @throws org.apache.geronimo.common.DeploymentException if there was a problem with the configuration
      */
-    public Object getDeploymentPlan(File planFile, JarFile module) throws DeploymentException {
+    public Object getDeploymentPlan(File planFile, JarFile module, ModuleIDBuilder idBuilder) throws DeploymentException {
         log.debug("Checking for ServiceMix deployment.");
         System.err.println("Checking for ServiceMix deployment.");
         if (module == null) {
@@ -128,7 +129,7 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
      * @throws IOException if there was a problem reading or writing the files
      * @throws org.apache.geronimo.common.DeploymentException if there was a problem with the configuration
      */
-    public Artifact getConfigurationID(Object plan, JarFile module) throws IOException, DeploymentException {
+    public Artifact getConfigurationID(Object plan, JarFile module, ModuleIDBuilder idBuilder) throws IOException, DeploymentException {
         Descriptor descriptor = (Descriptor) plan;
         if (descriptor.getComponent() != null) {
             return new Artifact("servicemix-components", descriptor.getComponent().getIdentification().getName(), (Version) null, "car");
@@ -191,9 +192,8 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
                             environment,
                             ConfigurationModuleType.SERVICE, 
                             kernel.getNaming(),
-                            repositories,
-                            configurationStores,
-                            artifactResolver);
+                            ConfigurationUtil.getConfigurationManager(kernel),
+                            repositories);
             if (descriptor.getComponent() != null) {
             	buildComponent(descriptor, context, jarFile);
             } else if (descriptor.getServiceAssembly() != null) {

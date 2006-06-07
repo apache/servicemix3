@@ -21,7 +21,7 @@
 <!--
 Configuration for ServiceMix deployer.
 -->
-<configuration xmlns="http://geronimo.apache.org/xml/ns/deployment-1.1">
+<module xmlns="http://geronimo.apache.org/xml/ns/deployment-1.1">
 
     <gbean name="ServiceMixThreadPool" class="org.apache.geronimo.pool.ThreadPool">
         <attribute name="keepAliveTime">5000</attribute>
@@ -55,4 +55,4 @@ Configuration for ServiceMix deployer.
         </reference>
     </gbean>
 
-</configuration>
+</module>

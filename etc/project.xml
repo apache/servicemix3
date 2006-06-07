@@ -28,7 +28,7 @@
 
   <name>ServiceMix</name>
   <id>servicemix</id>
-  <groupId>incubator-servicemix</groupId>
+  <groupId>org.apache.servicemix</groupId>
   <currentVersion>3.0-SNAPSHOT</currentVersion>
 
   <organization>

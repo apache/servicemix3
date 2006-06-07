@@ -21,7 +21,7 @@
 <!--
 Configuration for ServiceMix deployer.
 -->
-<configuration xmlns="http://geronimo.apache.org/xml/ns/deployment-1.1">
+<module xmlns="http://geronimo.apache.org/xml/ns/deployment-1.1">
 
     <gbean name="ServiceMixConfigBuilder" class="org.apache.geronimo.servicemix.ServiceMixConfigBuilder">
         <reference name="Repositories">
@@ -41,4 +41,4 @@ Configuration for ServiceMix deployer.
         </xml-attribute>
     </gbean>
 
-</configuration>
+</module>

@@ -53,7 +53,7 @@
             </properties>
         </dependency>
         <dependency>
-            <groupId>incubator-servicemix</groupId>
+            <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix</artifactId>
             <version>${servicemix_version}</version>
             <type>car</type>
@@ -63,7 +63,7 @@
         </dependency>
 
         <dependency>
-            <groupId>incubator-servicemix</groupId>
+            <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-jbi</artifactId>
             <version>${servicemix_version}</version>
             <properties>
@@ -71,7 +71,7 @@
             </properties>
         </dependency>
         <dependency>
-            <groupId>incubator-servicemix</groupId>
+            <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-core</artifactId>
             <version>${servicemix_version}</version>
             <properties>
@@ -80,7 +80,7 @@
             </properties>
         </dependency>
         <dependency>
-            <groupId>incubator-servicemix</groupId>
+            <groupId>org.apache.servicemix</groupId>
             <artifactId>geronimo-servicemix</artifactId>
             <version>${servicemix_version}</version>
             <properties>
@@ -89,7 +89,7 @@
             </properties>
         </dependency>
         <dependency>
-            <groupId>incubator-servicemix</groupId>
+            <groupId>org.apache.servicemix</groupId>
             <artifactId>geronimo-servicemix-builder</artifactId>
             <version>${servicemix_version}</version>
             <properties>

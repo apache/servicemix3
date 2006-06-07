@@ -19,5 +19,5 @@ This plugin installs the ServiceMix Deployer.</description>
     <dependency>springframework/spring//jar</dependency>
     <dependency>org.apache.xbean/xbean-spring//jar</dependency>
   </configuration>
-  <source-repository>http://cvs.apache.org/repository/</source-repository>
+  <source-repository>http://people.apache.org/repository/</source-repository>
 </geronimo-plugin>
