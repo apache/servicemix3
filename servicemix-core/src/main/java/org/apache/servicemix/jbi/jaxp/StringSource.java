@@ -15,14 +15,15 @@
  */
 package org.apache.servicemix.jbi.jaxp;
 
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 
 /**
  * A helper class which provides a JAXP {@link Source} from a String
@@ -33,7 +34,8 @@ import java.io.StringReader;
 public class StringSource extends StreamSource implements Serializable {
     
     private String text;
-
+    private String encoding="UTF-8";
+    
     public StringSource(String text) {
         this.text = text;
     }
@@ -43,8 +45,18 @@ public class StringSource extends StreamSource implements Serializable {
         setSystemId(systemId);
     }
 
+    public StringSource(String text, String systemId, String encoding) {
+        this.text = text;
+        this.encoding=encoding;
+        setSystemId(systemId);
+    }
+
     public InputStream getInputStream() {
-        return new ByteArrayInputStream(text.getBytes());
+        try {
+            return new ByteArrayInputStream(text.getBytes(encoding));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Reader getReader() {

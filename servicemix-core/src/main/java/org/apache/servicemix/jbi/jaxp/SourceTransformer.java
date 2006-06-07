@@ -15,16 +15,12 @@
  */
 package org.apache.servicemix.jbi.jaxp;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.xalan.xsltc.trax.DOM2SAX;
-import org.apache.xalan.xsltc.trax.SAX2DOM;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
 
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
@@ -42,13 +38,16 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.nio.charset.Charset;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.xalan.xsltc.trax.DOM2SAX;
+import org.apache.xalan.xsltc.trax.SAX2DOM;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * A helper class to transform from one type of {@link Source} to another
@@ -63,15 +62,8 @@ public class SourceTransformer {
     private DocumentBuilderFactory documentBuilderFactory;
     private TransformerFactory transformerFactory;
 
-    public static final String defaultCharEncodingName;
-    
-    static {
-        String canonName = new java.io.OutputStreamWriter( 
-                new java.io.ByteArrayOutputStream()).getEncoding();
+    public static final String defaultCharEncodingName = "UTF-8";
         
-        defaultCharEncodingName = Charset.forName(canonName).displayName();
-    }
-    
     public SourceTransformer() {
     }
 

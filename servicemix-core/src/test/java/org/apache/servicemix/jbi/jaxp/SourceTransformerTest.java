@@ -48,9 +48,6 @@ public class SourceTransformerTest extends TestCase {
         DOMSource domsource = transformer.toDOMSourceFromStream(new StringSource(
             "<definition xmlns:tns='http://foo.bar.com'><value>Jürgen</value></definition>"));
         assertNotNull(domsource);
-        
-        // 2006-04-28 JMa: You'll get a SAXParseException:
-        // [Fatal Error] :1:51: Invalid byte 1 of 1-byte UTF-8 sequence.
     }
 
 }
