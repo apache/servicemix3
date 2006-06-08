@@ -7,8 +7,8 @@
   <soapenv:Header>
     <wsse:Security soapenv:mustUnderstand="1">
       <wsse:UsernameToken>
-        <wsse:Username>cupareq</wsse:Username>
-        <wsse:Password>cupareq1</wsse:Password>
+        <wsse:Username>first</wsse:Username>
+        <wsse:Password>secret</wsse:Password>
       </wsse:UsernameToken>
     </wsse:Security>
   </soapenv:Header>
