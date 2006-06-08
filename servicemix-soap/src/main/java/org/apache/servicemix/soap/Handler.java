@@ -22,6 +22,12 @@ package org.apache.servicemix.soap;
  * @since 3.0
  */
 public interface Handler {
+    
+    public boolean requireDOM();
+    
+    public void setRequired(boolean required);
+    
+    public boolean isRequired();
 
 	public void onReceive(Context context) throws Exception;
     

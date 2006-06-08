@@ -25,6 +25,26 @@ import org.apache.servicemix.soap.Handler;
  * @since 3.0
  */
 public class AbstractHandler implements Handler {
+    
+    private boolean required;
+
+    /**
+     * @return the required
+     */
+    public boolean isRequired() {
+        return required;
+    }
+
+    /**
+     * @param required the required to set
+     */
+    public void setRequired(boolean required) {
+        this.required = required;
+    }
+    
+    public boolean requireDOM() {
+        return false;
+    }
 
     public void onReceive(Context context) throws Exception {
     }

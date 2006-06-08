@@ -1,0 +1,32 @@
+<soapenv:Envelope
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:q0="http://www.gawda.org/GAWDA/"
+  xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+  <soapenv:Header>
+    <wsse:Security soapenv:mustUnderstand="1">
+      <wsse:UsernameToken>
+        <wsse:Username>cupareq</wsse:Username>
+        <wsse:Password>cupareq1</wsse:Password>
+      </wsse:UsernameToken>
+    </wsse:Security>
+  </soapenv:Header>
+  <soapenv:Body>
+    <q0:PriceCheckRequest>
+      <q0:PriceCheckRequestHeader>
+        <q0:PriceCheckRequestID>Test Request</q0:PriceCheckRequestID>
+        <q0:PriceCheckRequestIssueDate>2005-11-15T15:22:42.296Z</q0:PriceCheckRequestIssueDate>
+        <q0:SellerDB>512001</q0:SellerDB>
+      </q0:PriceCheckRequestHeader>
+      <q0:PriceCheckRequestItemDetails>
+        <q0:PriceCheckRequestItemDetail>
+          <q0:BuyerLineItemNum>100</q0:BuyerLineItemNum>
+          <q0:ManufacturerItemNum>3M 1100</q0:ManufacturerItemNum>
+          <q0:RequestedQuantity>1</q0:RequestedQuantity>
+          <q0:UnitOfMeasurement>EA</q0:UnitOfMeasurement>
+        </q0:PriceCheckRequestItemDetail>
+      </q0:PriceCheckRequestItemDetails>
+    </q0:PriceCheckRequest>
+  </soapenv:Body>
+</soapenv:Envelope>

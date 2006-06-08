@@ -15,9 +15,9 @@
  */
 package org.apache.servicemix.soap;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 
 import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.MessageExchange.Role;
@@ -26,15 +26,14 @@ import javax.wsdl.Definition;
 import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.servicemix.common.Endpoint;
 import org.apache.servicemix.common.ExchangeProcessor;
 import org.apache.servicemix.common.wsdl1.JbiExtension;
 import org.apache.servicemix.common.xbean.XBeanServiceUnit;
+import org.apache.servicemix.soap.handlers.addressing.AddressingHandler;
 import org.springframework.core.io.Resource;
 import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 
 public abstract class SoapEndpoint extends Endpoint {
 
@@ -49,7 +48,24 @@ public abstract class SoapEndpoint extends Endpoint {
     protected QName targetInterfaceName;
     protected QName targetService;
     protected String targetEndpoint;
+    protected List policies;
     
+    public SoapEndpoint() {
+        policies = Collections.singletonList(new AddressingHandler());
+    }
+    
+    /**
+     * @return the policies
+     */
+    public List getPolicies() {
+        return policies;
+    }
+    /**
+     * @param policies the policies to set
+     */
+    public void setPolicies(List policies) {
+        this.policies = policies;
+    }
     /**
      * @return Returns the defaultMep.
      */
@@ -180,29 +196,18 @@ public abstract class SoapEndpoint extends Endpoint {
     protected void loadWsdl() {
         // Load WSDL from the resource
         if (description == null && wsdlResource != null) {
-            InputStream is = null;
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
             try {
                 if (serviceUnit instanceof XBeanServiceUnit) {
                     XBeanServiceUnit su = (XBeanServiceUnit) serviceUnit;
                     Thread.currentThread().setContextClassLoader(su.getKernel().getClassLoaderFor(su.getConfiguration()));
                 }
-                is = wsdlResource.getInputStream();
-                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                dbf.setNamespaceAware(true);
-                Definition def = WSDLFactory.newInstance().newWSDLReader().readWSDL(null, new InputSource(is));
+                Definition def = WSDLFactory.newInstance().newWSDLReader().readWSDL(wsdlResource.getURL().toString());
                 overrideDefinition(def);
             } catch (Exception e) {
                 logger.warn("Could not load description from resource", e);
             } finally {
                 Thread.currentThread().setContextClassLoader(cl);
-                if (is != null) {
-                    try {
-                        is.close();
-                    } catch (IOException e) {
-                        // Ignore
-                    }
-                }
             }
         }
         // If the endpoint is a consumer, try to find

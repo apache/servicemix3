@@ -16,7 +16,7 @@
 package org.apache.servicemix.soap;
 
 import java.net.URI;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +40,7 @@ import javax.xml.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.soap.marshalers.JBIMarshaler;
+import org.apache.servicemix.soap.marshalers.SoapMarshaler;
 import org.apache.servicemix.soap.marshalers.SoapMessage;
 import org.w3c.dom.Document;
 
@@ -61,23 +62,42 @@ public class SoapHelper {
     private SoapEndpoint endpoint;
     private List policies;
     private JBIMarshaler jbiMarshaler;
+    private SoapMarshaler soapMarshaler;
     private Map definitions;
 
     public SoapHelper(SoapEndpoint endpoint) {
-        this.policies = new ArrayList();
+        this.policies = endpoint.getPolicies();
+        if (this.policies == null) {
+            this.policies = Collections.EMPTY_LIST;
+        }
         this.definitions = new HashMap();
         this.jbiMarshaler = new JBIMarshaler();
         this.endpoint = endpoint;
+        boolean requireDom = false;
+        for (Iterator iter = policies.iterator(); iter.hasNext();) {
+            Handler handler = (Handler) iter.next();
+            requireDom |= handler.requireDOM();
+        }
+        this.soapMarshaler = new SoapMarshaler(endpoint.isSoap(), requireDom);
+        if (endpoint.isSoap() && "1.1".equals(endpoint.getSoapVersion())) {
+            this.soapMarshaler.setSoapUri(SoapMarshaler.SOAP_11_URI);
+        }
     }
-
-    public void addPolicy(Handler policy) {
-        policies.add(policy);
+    
+    public SoapMarshaler getSoapMarshaler() {
+        return this.soapMarshaler;
+    }
+    
+    public JBIMarshaler getJBIMarshaler() {
+        return this.jbiMarshaler;
     }
 
     public MessageExchange onReceive(Context context) throws Exception {
-        for (Iterator it = policies.iterator(); it.hasNext();) {
-            Handler policy = (Handler) it.next();
-            policy.onReceive(context);
+        if (policies != null) {
+            for (Iterator it = policies.iterator(); it.hasNext();) {
+                Handler policy = (Handler) it.next();
+                policy.onReceive(context);
+            }
         }
         URI mep = findMep(context);
         if (mep == null) {
@@ -130,9 +150,11 @@ public class SoapHelper {
         }
         jbiMarshaler.fromNMS(out, outMsg);
         context.setOutMessage(out);
-        for (Iterator it = policies.iterator(); it.hasNext();) {
-            Handler policy = (Handler) it.next();
-            policy.onReply(context);
+        if (policies != null) {
+            for (Iterator it = policies.iterator(); it.hasNext();) {
+                Handler policy = (Handler) it.next();
+                policy.onReply(context);
+            }
         }
         return out;
     }
@@ -147,9 +169,11 @@ public class SoapHelper {
             soapFault.setEnvelopeName(context.getInMessage().getEnvelopeName());
         }
         context.setFaultMessage(soapFault);
-        for (Iterator it = policies.iterator(); it.hasNext();) {
-            Handler policy = (Handler) it.next();
-            policy.onFault(context);
+        if (policies != null) {
+            for (Iterator it = policies.iterator(); it.hasNext();) {
+                Handler policy = (Handler) it.next();
+                policy.onFault(context);
+            }
         }
         return soapFault;
     }
