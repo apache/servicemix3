@@ -73,9 +73,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <wsdlDirectory>
-                        ${basedir}/src/main/resources
-                    </wsdlDirectory>
+                    <wsdlDirectory>${basedir}/src/main/resources</wsdlDirectory>
                     <wsdlFiles>person.wsdl</wsdlFiles>
                 </configuration>
             </plugin>
@@ -83,7 +81,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <descriptor>src/main/assembly/sa.xml</descriptor>
+                    <descriptors>
+                        <descriptor>src/main/assembly/sa.xml</descriptor>
+                        <descriptor>src/main/assembly/src.xml</descriptor>
+                    </descriptors>
                 </configuration>
                 <executions>
                     <execution>
