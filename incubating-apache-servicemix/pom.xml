@@ -29,7 +29,7 @@
     <version>3.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>incubating-servicemix</artifactId>
+  <artifactId>incubating-apache-servicemix</artifactId>
   <name>Servicemix :: Assembly</name>
 
   <dependencies>
