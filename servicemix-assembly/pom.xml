@@ -96,6 +96,10 @@
       <artifactId>servicemix-components</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.servicemix.samples</groupId>
+      <artifactId>wsdl-first</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-ejb_2.1_spec</artifactId>
     </dependency>
@@ -242,18 +246,25 @@
             </configuration>
           </execution>
           <execution>
-            <id>unpack-servicemix-web</id>
+            <id>unpack-samples</id>
             <phase>generate-resources</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
             <configuration>
-              <outputDirectory>target/servicemix-web</outputDirectory>
+              <outputDirectory>target/samples</outputDirectory>
               <artifactItems>
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>servicemix-web</artifactId>
                   <version>${pom.version}</version>
+                  <classifier>src</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.servicemix.samples</groupId>
+                  <artifactId>wsdl-first</artifactId>
+                  <version>3.0-SNAPSHOT</version>
                   <classifier>src</classifier>
                   <type>zip</type>
                 </artifactItem>

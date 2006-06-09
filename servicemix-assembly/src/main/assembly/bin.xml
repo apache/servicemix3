@@ -41,8 +41,12 @@
       <outputDirectory>components</outputDirectory>
     </fileSet>
     <fileSet>
-      <directory>target/servicemix-web/servicemix-web-${pom.version}</directory>
+      <directory>target/samples/servicemix-web-${pom.version}</directory>
       <outputDirectory>examples/servicemix-web</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/samples/wsdl-first-${pom.version}</directory>
+      <outputDirectory>examples/wsdl-first</outputDirectory>
     </fileSet>
   </fileSets>
   <dependencySets>
