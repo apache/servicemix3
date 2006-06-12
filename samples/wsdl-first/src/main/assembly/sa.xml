@@ -20,4 +20,14 @@
             </includes>
         </fileSet>
     </fileSets>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>/</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <includes>
+                <include>${pom.groupId}:wsdl-first-http</include>
+            </includes>        
+        </dependencySet>       
+    </dependencySets>
 </assembly>

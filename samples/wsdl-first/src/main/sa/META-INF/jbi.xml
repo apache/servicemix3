@@ -8,12 +8,22 @@
      </identification>
      <service-unit>
        <identification>
-         <name>wsdl-first-su</name>
+         <name>wsdl-first</name>
          <description>Contains the service</description>
        </identification>
        <target>
          <artifacts-zip>wsdl-first-3.0-SNAPSHOT.jar</artifacts-zip>
          <component-name>servicemix-jsr181</component-name>
+       </target>
+     </service-unit>
+     <service-unit>
+       <identification>
+         <name>wsdl-first-http</name>
+         <description>Contains the service</description>
+       </identification>
+       <target>
+         <artifacts-zip>wsdl-first-http-3.0-SNAPSHOT.jar</artifacts-zip>
+         <component-name>servicemix-http</component-name>
        </target>
      </service-unit>
    </service-assembly>

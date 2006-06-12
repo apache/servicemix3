@@ -1,0 +1,15 @@
+<projectDescription>
+  <name>wsdl-first-http</name>
+  <comment>ServiceMix is an open source ESB based on the Java Business
+    Integration framework - JSR-208</comment>
+  <projects/>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+      <arguments/>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

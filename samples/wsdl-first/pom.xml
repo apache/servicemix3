@@ -50,6 +50,11 @@
             <groupId>xfire</groupId>
             <artifactId>xfire-jsr181-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>wsdl-first-http</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
