@@ -47,6 +47,12 @@ public class HttpInvoker extends TransformComponentSupport implements MessageExc
         super.stop();
         connectionManager.shutdown();
     }
+    
+    public HttpInvoker() {
+        // By default, do not forward anything
+        setCopyAttachments(false);
+        setCopyProperties(false);
+    }
 
     protected boolean transform(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws MessagingException {
         PostMethod method = new PostMethod(url);
@@ -63,6 +69,7 @@ public class HttpInvoker extends TransformComponentSupport implements MessageExc
 
             // now lets grab the output and set it on the out message
             if (defaultInOut) {
+                copyPropertiesAndAttachments(exchange, in, out);
                 marshaler.toNMS(out, method);
             }
             return defaultInOut;
