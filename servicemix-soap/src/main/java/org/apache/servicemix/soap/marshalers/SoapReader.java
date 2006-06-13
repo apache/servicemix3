@@ -92,6 +92,7 @@ public class SoapReader {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         Document doc = factory.newDocumentBuilder().parse(is);
+        message.setDocument(doc);
         Element env = doc.getDocumentElement();
         QName envName = DOMUtil.getQName(env);
         if (!envName.getLocalPart().equals(SoapMarshaler.ENVELOPE)) {

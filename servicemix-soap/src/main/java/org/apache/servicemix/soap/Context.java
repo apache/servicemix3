@@ -35,6 +35,9 @@ public class Context {
 	public static final String OPERATION = "org.apache.servicemix.Operation";
 	public static final String SERVICE = "org.apache.servicemix.Service";
 	public static final String ENDPOINT = "org.apache.servicemix.Endpoint";
+    
+    public static final String AUTHENTICATION_SERVICE = "org.apache.servicemix.AuthenticationService";
+    public static final String KEYSTORE_MANAGER = "org.apache.servicemix.KeystoreManager";
 	
 	private Map properties;
 	

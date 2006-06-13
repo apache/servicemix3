@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
 import org.apache.servicemix.soap.SoapFault;
+import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 
 /**
@@ -43,8 +44,21 @@ public class SoapMessage {
 	private Map headers;
 	private SoapFault fault;
     private Subject subject;
+    private Document document;
 	
 	/**
+     * @return the document
+     */
+    public Document getDocument() {
+        return document;
+    }
+    /**
+     * @param document the document to set
+     */
+    public void setDocument(Document document) {
+        this.document = document;
+    }
+    /**
      * @return the subject
      */
     public Subject getSubject() {

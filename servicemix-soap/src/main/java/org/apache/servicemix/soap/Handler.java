@@ -34,8 +34,8 @@ public interface Handler {
     public void onReply(Context context) throws Exception;
 	
     public void onFault(Context context) throws Exception;
+
+    public void onSend(Context context) throws Exception;
     
-	public void onComplete(Context context);
-	
-	public void onException(Context context, Exception e);
+    public void onAnswer(Context context) throws Exception;
 }

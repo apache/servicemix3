@@ -161,7 +161,7 @@ public class SoapWriter {
         mime.writeTo(os, headers);
     }
 
-    private void writeSoapEnvelope(XMLStreamWriter writer) throws Exception {
+    public void writeSoapEnvelope(XMLStreamWriter writer) throws Exception {
         QName envelope = getEnvelopeName();
         String soapUri = envelope.getNamespaceURI();
         String soapPrefix = envelope.getPrefix();

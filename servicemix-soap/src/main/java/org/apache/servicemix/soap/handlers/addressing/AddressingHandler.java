@@ -118,10 +118,6 @@ public class AddressingHandler extends AbstractHandler {
         }
     }
     
-    public void onFault(Context context) throws Exception {
-        // TODO: handle MessageID ?
-    }
-    
     protected boolean isWSANamespace(String ns) {
         return WSA_NAMESPACE_200303.equals(ns) ||
                WSA_NAMESPACE_200403.equals(ns) ||

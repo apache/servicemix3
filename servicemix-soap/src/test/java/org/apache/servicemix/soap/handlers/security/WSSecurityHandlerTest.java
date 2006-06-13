@@ -22,14 +22,24 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.jaxp.W3CDOMStreamWriter;
+import org.apache.servicemix.jbi.security.auth.impl.JAASAuthenticationService;
+import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.servicemix.soap.Context;
+import org.apache.servicemix.soap.SoapFault;
 import org.apache.servicemix.soap.marshalers.SoapMarshaler;
 import org.apache.servicemix.soap.marshalers.SoapMessage;
 import org.apache.servicemix.soap.marshalers.SoapReader;
+import org.apache.servicemix.soap.marshalers.SoapWriter;
 import org.apache.ws.security.WSSecurityEngineResult;
 import org.apache.ws.security.WSUsernameTokenPrincipal;
 import org.apache.ws.security.handler.WSHandlerConstants;
 import org.apache.ws.security.handler.WSHandlerResult;
+import org.springframework.core.io.ClassPathResource;
+import org.w3c.dom.Document;
+
+import sun.security.x509.X500Name;
 
 public class WSSecurityHandlerTest extends TestCase {
     
@@ -53,6 +63,7 @@ public class WSSecurityHandlerTest extends TestCase {
         ctx.setInMessage(msg);
         
         WSSecurityHandler handler = new WSSecurityHandler();
+        handler.setAuthenticationService(new JAASAuthenticationService());
         handler.setReceiveAction(WSHandlerConstants.USERNAME_TOKEN);
         handler.onReceive(ctx);
         List l = (List) ctx.getProperty(WSHandlerConstants.RECV_RESULTS);
@@ -72,6 +83,109 @@ public class WSSecurityHandlerTest extends TestCase {
         assertNotNull(ctx.getInMessage().getSubject());
         assertNotNull(ctx.getInMessage().getSubject().getPrincipals());
         assertTrue(ctx.getInMessage().getSubject().getPrincipals().size() > 0);
+    }
+    
+    public void testSignatureRoundtrip() throws Exception {
+        SoapMarshaler marshaler = new SoapMarshaler(true, true);
+        SoapMessage msg = new SoapMessage();
+        Context ctx = new Context();
+        ctx.setInMessage(msg);
+        msg.setSource(new StringSource("<hello>world</hello>"));
+        SoapWriter writer = marshaler.createWriter(ctx.getInMessage());
+        W3CDOMStreamWriter domWriter = new W3CDOMStreamWriter(); 
+        writer.writeSoapEnvelope(domWriter);
+        ctx.getInMessage().setDocument(domWriter.getDocument());
+        
+        StandaloneCrypto crypto = new StandaloneCrypto();
+        crypto.setKeyStoreUrl(new ClassPathResource("privatestore.jks"));
+        crypto.setKeyStorePassword("keyStorePassword");
+        WSSecurityHandler handler = new WSSecurityHandler();
+        handler.setAuthenticationService(new JAASAuthenticationService());
+        handler.setCrypto(crypto);
+        handler.setUsername("myalias");
+        crypto.setKeyPassword("myAliasPassword");
+        handler.setSendAction(WSHandlerConstants.SIGNATURE);
+        handler.onSend(ctx);
+        
+        Document doc = ctx.getInMessage().getDocument();
+        System.err.println(DOMUtil.asXML(doc));
+        
+        handler.setReceiveAction(WSHandlerConstants.SIGNATURE);
+        handler.onReceive(ctx);
+        List l = (List) ctx.getProperty(WSHandlerConstants.RECV_RESULTS);
+        assertNotNull(l);
+        assertEquals(1, l.size());
+        WSHandlerResult result = (WSHandlerResult) l.get(0);
+        assertNotNull(result);
+        assertNotNull(result.getResults());
+        assertEquals(1, result.getResults().size());
+        WSSecurityEngineResult engResult = (WSSecurityEngineResult) result.getResults().get(0);
+        assertNotNull(engResult);
+        Principal principal = engResult.getPrincipal();
+        assertNotNull(principal);
+        assertTrue(principal instanceof X500Name);
+        assertEquals("CN=myAlias", ((X500Name) principal).getName());
+        assertNotNull(ctx.getInMessage().getSubject());
+        assertNotNull(ctx.getInMessage().getSubject().getPrincipals());
+        assertTrue(ctx.getInMessage().getSubject().getPrincipals().size() > 0);
+    }
+    
+    public void testSignatureServer() throws Exception {
+        SoapMarshaler marshaler = new SoapMarshaler(true, true);
+        SoapReader reader = marshaler.createReader();
+        SoapMessage msg = reader.read(getClass().getResourceAsStream("signed.xml"));
+        Context ctx = new Context();
+        ctx.setInMessage(msg);
+        
+        StandaloneCrypto crypto = new StandaloneCrypto();
+        crypto.setKeyStoreUrl(new ClassPathResource("privatestore.jks"));
+        crypto.setKeyStorePassword("keyStorePassword");
+        WSSecurityHandler handler = new WSSecurityHandler();
+        handler.setAuthenticationService(new JAASAuthenticationService());
+        handler.setCrypto(crypto);
+        handler.setUsername("myalias");
+        crypto.setKeyPassword("myAliasPassword");
+        handler.setReceiveAction(WSHandlerConstants.SIGNATURE);
+        handler.onReceive(ctx);
+        List l = (List) ctx.getProperty(WSHandlerConstants.RECV_RESULTS);
+        assertNotNull(l);
+        assertEquals(1, l.size());
+        WSHandlerResult result = (WSHandlerResult) l.get(0);
+        assertNotNull(result);
+        assertNotNull(result.getResults());
+        assertEquals(1, result.getResults().size());
+        WSSecurityEngineResult engResult = (WSSecurityEngineResult) result.getResults().get(0);
+        assertNotNull(engResult);
+        Principal principal = engResult.getPrincipal();
+        assertNotNull(principal);
+        assertTrue(principal instanceof X500Name);
+        assertEquals("CN=myAlias", ((X500Name) principal).getName());
+        assertNotNull(ctx.getInMessage().getSubject());
+        assertNotNull(ctx.getInMessage().getSubject().getPrincipals());
+        assertTrue(ctx.getInMessage().getSubject().getPrincipals().size() > 0);
+    }
+    
+    public void testBadSignatureServer() throws Exception {
+        SoapMarshaler marshaler = new SoapMarshaler(true, true);
+        SoapReader reader = marshaler.createReader();
+        SoapMessage msg = reader.read(getClass().getResourceAsStream("signed-bad.xml"));
+        Context ctx = new Context();
+        ctx.setInMessage(msg);
+        
+        StandaloneCrypto crypto = new StandaloneCrypto();
+        crypto.setKeyStoreUrl(new ClassPathResource("privatestore.jks"));
+        crypto.setKeyStorePassword("keyStorePassword");
+        WSSecurityHandler handler = new WSSecurityHandler();
+        handler.setCrypto(crypto);
+        handler.setUsername("myalias");
+        crypto.setKeyPassword("myAliasPassword");
+        handler.setReceiveAction(WSHandlerConstants.SIGNATURE);
+        try {
+            handler.onReceive(ctx);
+            fail("Signature verification should have failed");
+        } catch (SoapFault f) {
+            // ok
+        }
     }
     
 }

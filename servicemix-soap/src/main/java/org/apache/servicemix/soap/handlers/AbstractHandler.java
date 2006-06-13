@@ -55,10 +55,10 @@ public class AbstractHandler implements Handler {
     public void onFault(Context context) throws Exception {
     }
 
-	public void onComplete(Context context) {
+	public void onSend(Context context) {
 	}
 
-	public void onException(Context context, Exception e) {
+	public void onAnswer(Context context) {
 	}
 
 }

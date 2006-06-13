@@ -31,6 +31,8 @@ import org.apache.servicemix.common.Endpoint;
 import org.apache.servicemix.common.ExchangeProcessor;
 import org.apache.servicemix.common.wsdl1.JbiExtension;
 import org.apache.servicemix.common.xbean.XBeanServiceUnit;
+import org.apache.servicemix.jbi.security.auth.AuthenticationService;
+import org.apache.servicemix.jbi.security.keystore.KeystoreManager;
 import org.apache.servicemix.soap.handlers.addressing.AddressingHandler;
 import org.springframework.core.io.Resource;
 import org.w3c.dom.Document;
@@ -53,6 +55,10 @@ public abstract class SoapEndpoint extends Endpoint {
     public SoapEndpoint() {
         policies = Collections.singletonList(new AddressingHandler());
     }
+    
+    public abstract AuthenticationService getAuthenticationService();
+    
+    public abstract KeystoreManager getKeystoreManager();
     
     /**
      * @return the policies

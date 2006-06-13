@@ -55,7 +55,6 @@
       <groupId>wss4j</groupId>
       <artifactId>wss4j</artifactId>
     </dependency>
-    <!--
     <dependency>
       <groupId>bouncycastle</groupId>
       <artifactId>bcprov-jdk14</artifactId>
@@ -64,7 +63,6 @@
       <groupId>org.opensaml</groupId>
       <artifactId>opensaml</artifactId>
     </dependency>
-    -->
     <dependency>
       <groupId>xml-security</groupId>
       <artifactId>xmlsec</artifactId>

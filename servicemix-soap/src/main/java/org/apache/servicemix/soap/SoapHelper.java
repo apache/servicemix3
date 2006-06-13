@@ -39,9 +39,11 @@ import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.jaxp.W3CDOMStreamWriter;
 import org.apache.servicemix.soap.marshalers.JBIMarshaler;
 import org.apache.servicemix.soap.marshalers.SoapMarshaler;
 import org.apache.servicemix.soap.marshalers.SoapMessage;
+import org.apache.servicemix.soap.marshalers.SoapWriter;
 import org.w3c.dom.Document;
 
 /**
@@ -177,9 +179,35 @@ public class SoapHelper {
         }
         return soapFault;
     }
+    
+    public void onSend(Context context) throws Exception {
+        if (policies != null) {
+            for (Iterator it = policies.iterator(); it.hasNext();) {
+                Handler policy = (Handler) it.next();
+                if (policy.requireDOM()) {
+                    SoapWriter writer = soapMarshaler.createWriter(context.getInMessage());
+                    W3CDOMStreamWriter domWriter = new W3CDOMStreamWriter(); 
+                    writer.writeSoapEnvelope(domWriter);
+                    context.getInMessage().setDocument(domWriter.getDocument());
+                }
+                policy.onSend(context);
+            }
+        }
+    }
+    
+    public void onAnswer(Context context) throws Exception {
+        if (policies != null) {
+            for (Iterator it = policies.iterator(); it.hasNext();) {
+                Handler policy = (Handler) it.next();
+                policy.onAnswer(context);
+            }
+        }
+    }
 
     public Context createContext(SoapMessage message) {
         Context context = new Context();
+        context.setProperty(Context.AUTHENTICATION_SERVICE, endpoint.getAuthenticationService());
+        context.setProperty(Context.KEYSTORE_MANAGER, endpoint.getKeystoreManager());
         context.setInMessage(message);
         return context;
     }
