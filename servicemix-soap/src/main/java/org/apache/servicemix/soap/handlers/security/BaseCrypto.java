@@ -468,7 +468,7 @@ public abstract class BaseCrypto implements Crypto {
             CertPath path = this.getCertificateFactory().generateCertPath(certList);
 
             // Use the certificates in the keystore as TrustAnchors
-            Set<TrustAnchor> hashSet = new HashSet<TrustAnchor>();
+            Set hashSet = new HashSet();
             String[] aliases = getTrustCertificates();
             for (int i = 0; i < aliases.length; i++) {
                 Certificate cert = getCertificate(aliases[i]);
