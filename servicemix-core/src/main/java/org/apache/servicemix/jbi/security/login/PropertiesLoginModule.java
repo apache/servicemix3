@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.security;
+package org.apache.servicemix.jbi.security.login;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,9 +35,12 @@ import javax.security.auth.spi.LoginModule;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+import org.apache.servicemix.jbi.security.GroupPrincipal;
+import org.apache.servicemix.jbi.security.UserPrincipal;
 
 /**
+ * JAAS Login module for user / password, based on two properties files. 
+ * 
  * @version $Rev: $ $Date: $
  */
 public class PropertiesLoginModule implements LoginModule {

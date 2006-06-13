@@ -25,6 +25,7 @@ import javax.security.auth.Subject;
 
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.DefaultBroker;
+import org.apache.servicemix.jbi.security.acl.AuthorizationMap;
 
 /**
  * 

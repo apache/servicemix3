@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.security;
+package org.apache.servicemix.jbi.security.acl;
 
 import java.util.Set;
 

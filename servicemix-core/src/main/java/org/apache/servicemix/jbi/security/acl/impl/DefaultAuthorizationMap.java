@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.security;
+package org.apache.servicemix.jbi.security.acl.impl;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -23,6 +23,9 @@ import java.util.regex.Pattern;
 
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
+
+import org.apache.servicemix.jbi.security.acl.AuthorizationMap;
+
 
 /**
  * 

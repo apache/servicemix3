@@ -36,6 +36,9 @@ import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.security.acl.AuthorizationMap;
+import org.apache.servicemix.jbi.security.acl.impl.AuthorizationEntry;
+import org.apache.servicemix.jbi.security.acl.impl.DefaultAuthorizationMap;
 import org.apache.servicemix.tck.ReceiverComponent;
 
 public class SecuredBrokerTest extends TestCase {
