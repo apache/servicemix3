@@ -1,17 +1,6 @@
 /*
- * Copyright 2005-2006 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * This implementation comes from the XFire project
+ * https://svn.codehaus.org/xfire/trunk/xfire/xfire-core/src/main/org/codehaus/xfire/util/stax/
  */
 package org.apache.servicemix.jbi.jaxp;
 
@@ -36,11 +25,13 @@ public class W3CDOMStreamReader extends DOMStreamReader {
 
     private Document document;
 
+    private W3CNamespaceContext context;
+
     /**
      * @param element
      */
     public W3CDOMStreamReader(Element element) {
-        super(new ElementFrame(element));
+        super(new ElementFrame(element, null));
 
         this.document = element.getOwnerDocument();
     }
@@ -64,8 +55,14 @@ public class W3CDOMStreamReader extends DOMStreamReader {
         frame.prefixes = new ArrayList();
         frame.attributes = new ArrayList();
 
+        if (context == null)
+            context = new W3CNamespaceContext();
+
+        context.setElement(element);
+
         NamedNodeMap nodes = element.getAttributes();
 
+        String nsURI = element.getNamespaceURI();
         String ePrefix = element.getPrefix();
         if (ePrefix == null) {
             ePrefix = "";
@@ -77,6 +74,7 @@ public class W3CDOMStreamReader extends DOMStreamReader {
             String localName = node.getLocalName();
             String value = node.getNodeValue();
             String name = node.getNodeName();
+            String uri = node.getNamespaceURI();
 
             if (prefix == null)
                 prefix = "";
@@ -106,7 +104,7 @@ public class W3CDOMStreamReader extends DOMStreamReader {
     }
 
     protected ElementFrame getChildFrame(int currentChild) {
-        return new ElementFrame(getCurrentElement().getChildNodes().item(currentChild));
+        return new ElementFrame(getCurrentElement().getChildNodes().item(currentChild), getCurrentFrame());
     }
 
     protected int getChildCount() {
@@ -135,11 +133,18 @@ public class W3CDOMStreamReader extends DOMStreamReader {
     }
 
     public String getNamespaceURI(String prefix) {
-        int index = getCurrentFrame().prefixes.indexOf(prefix);
-        if (index == -1)
-            return null;
+        ElementFrame frame = getCurrentFrame();
 
-        return (String) getCurrentFrame().uris.get(index);
+        while (null != frame) {
+            int index = frame.prefixes.indexOf(prefix);
+            if (index != -1) {
+                return (String) frame.uris.get(index);
+            }
+
+            frame = frame.parent;
+        }
+
+        return null;
     }
 
     public String getAttributeValue(String ns, String local) {
@@ -227,7 +232,7 @@ public class W3CDOMStreamReader extends DOMStreamReader {
     }
 
     public NamespaceContext getNamespaceContext() {
-        throw new UnsupportedOperationException();
+        return context;
     }
 
     public String getText() {
