@@ -20,10 +20,14 @@ import org.apache.servicemix.components.util.TransformComponentSupport;
 import org.apache.servicemix.jbi.jaxp.BytesSource;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.springframework.core.io.Resource;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
@@ -31,6 +35,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -55,6 +60,21 @@ public class XsltComponent extends TransformComponentSupport implements MessageE
     private Templates templates;
     private boolean disableOutput;
     private boolean useStringBuffer = true;
+    private boolean forceDocIfDom = true;
+
+    /**
+     * @return the forceDocIfDom
+     */
+    public boolean isForceDocIfDom() {
+        return forceDocIfDom;
+    }
+
+    /**
+     * @param forceDocIfDom the forceDocIfDom to set
+     */
+    public void setForceDocIfDom(boolean forceDocIfDom) {
+        this.forceDocIfDom = forceDocIfDom;
+    }
 
     // Properties
     // -------------------------------------------------------------------------
@@ -117,6 +137,10 @@ public class XsltComponent extends TransformComponentSupport implements MessageE
             transformContent(transformer, exchange, in, out);
             return shouldOutputResult(transformer);
         }
+        catch (ParserConfigurationException e) {
+            e.printStackTrace();
+            throw new MessagingException("Failed to transform: " + e, e);
+        }
         catch (TransformerException e) {
             e.printStackTrace();
             throw new MessagingException("Failed to transform: " + e, e);
@@ -126,17 +150,26 @@ public class XsltComponent extends TransformComponentSupport implements MessageE
         }
     }
 
-    protected void transformContent(Transformer transformer, MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws TransformerException, MessagingException {
+    protected void transformContent(Transformer transformer, MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws TransformerException, MessagingException, ParserConfigurationException {
+        Source src = in.getContent();
+        if (forceDocIfDom && src instanceof DOMSource) {
+            Node n = ((DOMSource) src).getNode();
+            if (n instanceof Document == false) {
+                Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+                doc.appendChild(doc.importNode(n, true));
+                src = new DOMSource(doc);
+            }
+        }
         if (isUseStringBuffer()) {
             StringWriter buffer = new StringWriter();
             Result result = new StreamResult(buffer);
-            transformer.transform(in.getContent(), result);
+            transformer.transform(src, result);
             out.setContent(new StringSource(buffer.toString()));
         }
         else {
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             Result result = new StreamResult(buffer);
-            transformer.transform(in.getContent(), result);
+            transformer.transform(src, result);
             out.setContent(new BytesSource(buffer.toByteArray()));
         }
     }
