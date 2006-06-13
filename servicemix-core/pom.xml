@@ -270,6 +270,7 @@
           <include>**/*.properties</include>
           <include>**/*.x*</include>
           <include>**/*.wsdl</include>
+          <include>**/*.jks</include>
           <include>**/*.zip</include>
         </includes>
       </testResource>
