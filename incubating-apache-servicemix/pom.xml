@@ -31,6 +31,7 @@
 
   <artifactId>incubating-apache-servicemix</artifactId>
   <name>Servicemix :: Assembly</name>
+  <packaging>pom</packaging>
 
   <dependencies>
     <dependency>
@@ -282,7 +283,7 @@
             <id>bin</id>
             <phase>package</phase>
             <goals>
-              <goal>single</goal>
+              <goal>attached</goal>
             </goals>
             <configuration>
               <descriptors>
@@ -295,7 +296,7 @@
             <id>src</id>
             <phase>package</phase>
             <goals>
-              <goal>single</goal>
+              <goal>attached</goal>
             </goals>
             <configuration>
               <descriptors>
