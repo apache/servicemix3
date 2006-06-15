@@ -616,7 +616,13 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             // This is important for transaction boundaries
             me.setPushDeliver(true);
             // Deliver the exchange
-            listener.onMessageExchange(me);
+            ClassLoader old = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(component.getComponent().getClass().getClassLoader());
+                listener.onMessageExchange(me);
+            } finally {
+                Thread.currentThread().setContextClassLoader(old);
+            }
             // TODO: handle delayed exchange notifications 
             return;
         }
