@@ -32,6 +32,7 @@ import org.apache.xbean.kernel.Kernel;
 import org.apache.xbean.kernel.KernelFactory;
 import org.apache.xbean.kernel.ServiceName;
 import org.apache.xbean.server.repository.FileSystemRepository;
+import org.apache.xbean.server.spring.configuration.ClassLoaderXmlPreprocessor;
 import org.apache.xbean.server.spring.loader.SpringLoader;
 
 public class AbstractXBeanDeployer extends AbstractDeployer {
@@ -109,12 +110,17 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
             }
             return su;
         } catch (Exception e) {
+            // There is a chance the thread context classloader has been changed by the xbean kernel,
+            // so put back a good one
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
             kernel.destroy();
             if (e instanceof DeploymentException) {
                 throw ((DeploymentException) e);
             } else {
                 throw failure("deploy", "Could not deploy xbean service unit", e);
             }
+        } finally {
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         }
     }
     
