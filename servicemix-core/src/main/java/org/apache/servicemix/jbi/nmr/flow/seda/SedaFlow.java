@@ -49,6 +49,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
  * routed to components (where state may be being used) for example.
  * 
  * @version $Revision$
+ * @org.apache.xbean.XBean element="sedaFlow"
  */
 public class SedaFlow extends AbstractFlow {
 

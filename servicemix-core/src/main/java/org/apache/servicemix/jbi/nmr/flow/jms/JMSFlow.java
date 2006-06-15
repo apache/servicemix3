@@ -67,6 +67,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
  * Use for message routing among a network of containers. All routing/registration happens automatically.
  * 
  * @version $Revision$
+ * @org.apache.xbean.XBean element="jmsFlow"
  */
 public class JMSFlow extends AbstractFlow implements MessageListener {
 

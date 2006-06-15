@@ -33,6 +33,7 @@ import javax.jbi.messaging.MessageExchange.Role;
  * flows (no state) or embedding, or where latency needs to be as low as possible.
  * 
  * @version $Revision$
+ * @org.apache.xbean.XBean element="stFlow"
  */
 public class STFlow extends AbstractFlow {
     
