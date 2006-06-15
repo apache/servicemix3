@@ -63,12 +63,12 @@ public class SecuredBroker extends DefaultBroker {
             resolveAddress(exchange);
             ServiceEndpoint se = exchange.getEndpoint();
             if (se != null) {
-                Subject subject = exchange.getMessage("in").getSecuritySubject();
-                if (subject == null) {
-                    throw new SecurityException("User not authenticated");
-                }
                 Set acls = authorizationMap.getAcls(se);
                 if (!acls.contains(GroupPrincipal.ANY)) { 
+                    Subject subject = exchange.getMessage("in").getSecuritySubject();
+                    if (subject == null) {
+                        throw new SecurityException("User not authenticated");
+                    }
                     acls.retainAll(subject.getPrincipals());
                     if (acls.size() == 0) {
                         throw new SecurityException("Endpoint is not authorized for this user");
