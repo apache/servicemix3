@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:sm="http://servicemix.apache.org/config/1.0">
 
+  <sm:systemProperties>
+    <property name="properties">
+      <map>
+        <entry key="java.security.auth.login.config">
+          <bean class="org.springframework.util.ResourceUtils" factory-method="getFile">
+            <constructor-arg value="classpath:login.properties"/>
+          </bean>
+        </entry>
+      </map>
+    </property>
+  </sm:systemProperties>
+
   <import resource="classpath:jmx.xml" />
   <import resource="classpath:activemq.xml" />
   <import resource="classpath:jndi.xml" />
@@ -15,7 +27,19 @@
                 statsInterval="10" 
                 flowName="seda"
                 transactionManager="#transactionManager"
+                workManager="#workManager"
                 depends-on="jndi">
+                
+    <sm:broker>
+      <sm:securedBroker authorizationMap="#authorizationMap">
+        <sm:flows>
+          <sm:sedaFlow />
+          <sm:jcaFlow bootstrapContext="#bootstrapContext"
+                      connectionManager="#connectionManager"
+                      jmsURL="vm://localhost" />
+        </sm:flows>
+      </sm:securedBroker>
+    </sm:broker>
 
     <sm:activationSpecs>
 

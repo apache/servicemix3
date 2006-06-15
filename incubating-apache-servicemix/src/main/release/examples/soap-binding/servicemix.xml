@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:sm="http://servicemix.apache.org/config/1.0">
 
-  <!-- the JBI container -->
-  <sm:container id="jbi" 
-                rootDir="./wdir" 
-                installationDirPath="./install"
-                deploymentDirPath="./deploy"
-                flowName="seda">
+  <import resource="classpath:servicemix.xml" />
 
-    <sm:activationSpecs>
-		
-    </sm:activationSpecs>
-  </sm:container>
 </beans>

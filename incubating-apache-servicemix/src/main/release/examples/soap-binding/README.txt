@@ -27,3 +27,9 @@ NOTES:
        remove all the directories but the src one,
        type 'ant setup'
        run '../../bin/servicemix servicemix.xml'
+  * if you want to add authentication for this service,
+       just add an authMethod="basic" attribute on
+       the <http:endpoint> tag in the src/binding-su/xbean.xml
+       and rebuild the demo.  Before accessing the service,
+       you will need to enter a valid username / password
+       (smx / smx).

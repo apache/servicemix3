@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0">
+
+  <sm:authenticationService id="authenticationService" />
+  
+  <sm:authorizationMap id="authorizationMap">
+    <sm:authorizationEntries>
+      <sm:authorizationEntry service="*:*" roles="*" />
+    </sm:authorizationEntries>
+  </sm:authorizationMap>
+  
+  <sm:keystoreManager id="keystoreManager">
+    <sm:keystores>
+      <sm:keystore name="default"
+                   path="classpath:keystore.jks"
+                   keystorePassword="servicemix"
+                   keyPasswords="smx=smx" />
+    </sm:keystores>
+  </sm:keystoreManager>
+
+</beans>
+
