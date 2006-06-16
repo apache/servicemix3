@@ -15,26 +15,21 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<!-- $Rev: 356052 $ $Date: 2005-12-11 14:41:20 -0800 (dim., 11 déc. 2005) $ -->
-<project
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
-
+<!-- $Rev: 365333 $ $Date: 2006-01-02 12:21:09 +0100 (lun., 02 janv. 2006) $ -->
+<project 
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns="http://maven.apache.org/POM/4.0.0">
+    
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.servicemix.tooling</groupId>
-    <artifactId>maven2</artifactId>
+    <artifactId>maven2-archetypes</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>maven2-archetypes</artifactId>
-  <name>ServiceMix :: Maven2 :: Archetypes</name>
-  <packaging>pom</packaging>
-  <modules>
-    <module>servicemix-service-engine</module>
-    <module>servicemix-binding-component</module>
-    <module>servicemix-service-unit</module>
-    <module>servicemix-service-assembly</module>
-  </modules>
+  <artifactId>servicemix-service-unit</artifactId>
+  <name>ServiceMix :: Maven2 :: Archetypes :: Service Unit</name>
+
 </project>
