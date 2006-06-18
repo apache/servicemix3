@@ -30,6 +30,6 @@
   </parent>
 
   <artifactId>servicemix-service-assembly</artifactId>
-  <name>ServiceMix :: Maven2 :: Archetypes :: Service Assembly</name>
+  <name>ServiceMix :: Maven2 :: Archetypes :: ServiceAssembly</name>
 
 </project>
