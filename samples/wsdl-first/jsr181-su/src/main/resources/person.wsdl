@@ -10,14 +10,14 @@
 
 	<wsdl:types>
 		<xsd:schema targetNamespace="http://servicemix.apache.org/samples/wsdl-first/types">
-			<xsd:element name="getPersonRequest">
+			<xsd:element name="GetPersonRequest">
 			    <xsd:complexType>
 					<xsd:sequence>
 						<xsd:element name="personId" type="xsd:string"/>
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
-			<xsd:element name="getPersonResponse">
+			<xsd:element name="GetPersonResponse">
 			    <xsd:complexType>
 					<xsd:sequence>
 					    <xsd:element name="personId" type="xsd:string"/>
@@ -26,7 +26,7 @@
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
-			<xsd:element name="unknownPersonFault">
+			<xsd:element name="UnknownPersonFault">
 			    <xsd:complexType>
 					<xsd:sequence>
 					    <xsd:element name="personId" type="xsd:string"/>
@@ -34,26 +34,23 @@
 				</xsd:complexType>
 			</xsd:element>
 		</xsd:schema>
-        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-        targetNamespace="http://servicemix.apache.org/samples/wsdl-first">
-        <xsd:element name="getPersonRequest" type="xsd:string"></xsd:element></xsd:schema>
-    </wsdl:types>
+  </wsdl:types>
 	
-	<wsdl:message name="getPersonRequest">
-		<wsdl:part name="payload" element="typens:getPersonRequest"/>
+	<wsdl:message name="GetPersonRequest">
+		<wsdl:part name="payload" element="typens:GetPersonRequest"/>
 	</wsdl:message>
-	<wsdl:message name="getPersonResponse">
-		<wsdl:part name="payload" element="typens:getPersonResponse"/>
+	<wsdl:message name="GetPersonResponse">
+		<wsdl:part name="payload" element="typens:GetPersonResponse"/>
 	</wsdl:message>
-	<wsdl:message name="unknownPersonFault">
-		<wsdl:part name="payload" element="typens:unknownPersonFault"/>
+	<wsdl:message name="UnknownPersonFault">
+		<wsdl:part name="payload" element="typens:UnknownPersonFault"/>
 	</wsdl:message>
 
     <wsdl:portType name="Person">
 		<wsdl:operation name="getPerson">
-			<wsdl:input message="tns:getPersonRequest"/>
-			<wsdl:output message="tns:getPersonResponse"/>
-			<wsdl:fault name="UnknownPerson" message="tns:unknownPersonFault"/>
+			<wsdl:input message="tns:GetPersonRequest"/>
+			<wsdl:output message="tns:GetPersonResponse"/>
+			<wsdl:fault name="UnknownPerson" message="tns:UnknownPersonFault"/>
 		</wsdl:operation>
 	</wsdl:portType>
 	

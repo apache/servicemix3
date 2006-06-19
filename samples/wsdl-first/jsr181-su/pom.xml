@@ -36,14 +36,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.sun.xml</groupId>
-            <artifactId>jaxws-rt</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.jws</groupId>
-                    <artifactId>jsr181-api</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>javax.xml</groupId>
+            <artifactId>jaxws-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
         </dependency>
         <dependency>
             <groupId>xfire</groupId>
@@ -61,6 +59,46 @@
                 </configuration>
             </plugin>
             <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <tasks>
+                                <taskdef classname="org.codehaus.xfire.gen.WsGenTask" name="wsgen">
+                                    <classpath>
+                                        <pathelement path="${basedir}/target/classes" />
+                                        <path refid="maven.test.classpath" />
+                                    </classpath>
+                                </taskdef>
+                                <wsgen 
+                                  wsdl="${basedir}/src/main/resources/person.wsdl"
+                                  outputDirectory="${basedir}/target/jaxws" 
+                                  profile="org.codehaus.xfire.jaxws.gen.JAXWSProfile"
+                                  explicitAnnotation="true" />
+                            </tasks>
+                            <sourceRoot>${basedir}/target/jaxws</sourceRoot>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.xfire</groupId>
+                        <artifactId>xfire-generator</artifactId>
+                        <version>1.1.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.codehaus.xfire</groupId>
+                        <artifactId>xfire-jaxws</artifactId>
+                        <version>1.1.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+      <!--
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
                 <version>1.0-SNAPSHOT</version>
@@ -76,6 +114,7 @@
                     <wsdlFiles>person.wsdl</wsdlFiles>
                 </configuration>
             </plugin>
+        -->
         </plugins>
     </build>
 </project>
