@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://xbean.org/schemas/spring/1.0"
-	xmlns:sm="http://servicemix.apache.org/config/1.0"
-	xmlns:my="http://servicemix.apache.org/demo/"
-  xmlns:foo="http://servicemix.apache.org/demo/">
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+	     xmlns:my="http://servicemix.apache.org/demo/"
+       xmlns:foo="http://servicemix.apache.org/demo/">
 
   <!-- the JBI container -->
   <sm:container id="jbi"
@@ -22,7 +21,9 @@
       <!--  an example HTTP binding for use by the SpringBindingServlet  -->
       <!-- START SNIPPET: http -->
       <sm:activationSpec componentName="httpBinding" service="foo:httpBinding" destinationService="foo:echo">
-        <sm:component><bean class="org.apache.servicemix.components.http.HttpInOutBinding" /></sm:component>
+        <sm:component>
+          <bean class="org.apache.servicemix.components.http.HttpInOutBinding" />
+        </sm:component>
       </sm:activationSpec>
       <!-- END SNIPPET: http -->
 
@@ -39,22 +40,24 @@
       <sm:activationSpec componentName="timer" service="my:timer" destinationService="my:inputSender">
         <sm:component>
           <bean class="org.apache.servicemix.components.quartz.QuartzComponent">
-        <property name="triggers">
-          <map>
-            <entry>
-              <key>
-                <bean class="org.quartz.SimpleTrigger">
-                  <property name="repeatInterval" value="10000"/>
-                  <property name="repeatCount" value="-1"/>
-                </bean>
-              </key>
-                <bean class="org.quartz.JobDetail">
-                  <property name="name" value="My Example Job"/>
-                  <property name="group" value="ServiceMix"/>
-                </bean>
-            </entry>
-          </map>
-        </property>
+            <property name="triggers">
+              <map>
+              <!--
+                <entry>
+                  <key>
+                    <bean class="org.quartz.SimpleTrigger">
+                      <property name="repeatInterval" value="10000"/>
+                      <property name="repeatCount" value="-1"/>
+                    </bean>
+                  </key>
+                  <bean class="org.quartz.JobDetail">
+                    <property name="name" value="My Example Job"/>
+                    <property name="group" value="ServiceMix"/>
+                  </bean>
+                </entry>
+                -->
+              </map>
+            </property>
           </bean>
         </sm:component>
       </sm:activationSpec>
@@ -62,15 +65,15 @@
       <sm:activationSpec componentName="inputSender" service="my:inputSender">
         <sm:component>
           <bean class="org.apache.servicemix.components.jms.JmsSenderComponent">
-        <property name="template">
-          <bean class="org.springframework.jms.core.JmsTemplate">
-            <property name="connectionFactory">
-              <ref local="jmsFactory"/>
+            <property name="template">
+              <bean class="org.springframework.jms.core.JmsTemplate">
+                <property name="connectionFactory">
+                  <ref local="jmsFactory"/>
+                </property>
+                <property name="defaultDestinationName" value="demo.org.apache.servicemix.source"/>
+                <property name="pubSubDomain" value="true"/>
+              </bean>
             </property>
-            <property name="defaultDestinationName" value="demo.org.apache.servicemix.source"/>
-            <property name="pubSubDomain" value="true"/>
-          </bean>
-        </property>
           </bean>
         </sm:component>
       </sm:activationSpec>
@@ -80,13 +83,13 @@
       <sm:activationSpec componentName="inputReceiver" service="my:inputReceiver" destinationService="my:outputSender">
         <sm:component>
           <bean class="org.apache.servicemix.components.jms.JmsInUsingJCABinding">
-        <property name="jcaContainer" ref="jencks"/>
-        <property name="activationSpec">
-          <bean class="org.apache.activemq.ra.ActiveMQActivationSpec">
-            <property name="destination" value="demo.org.apache.servicemix.source"/>
-            <property name="destinationType" value="javax.jms.Topic"/>
-          </bean>
-        </property>
+            <property name="jcaContainer" ref="jencks"/>
+            <property name="activationSpec">
+              <bean class="org.apache.activemq.ra.ActiveMQActivationSpec">
+                <property name="destination" value="demo.org.apache.servicemix.source"/>
+                <property name="destinationType" value="javax.jms.Topic"/>
+              </bean>
+            </property>
           </bean>
         </sm:component>
       </sm:activationSpec>
@@ -95,15 +98,13 @@
       <sm:activationSpec componentName="outputSender" service="my:outputSender">
         <sm:component>
           <bean class="org.apache.servicemix.components.jms.JmsSenderComponent">
-        <property name="template">
-          <bean class="org.springframework.jms.core.JmsTemplate">
-            <property name="connectionFactory">
-              <ref local="jmsFactory"/>
+            <property name="template">
+              <bean class="org.springframework.jms.core.JmsTemplate">
+                <property name="connectionFactory" ref="jmsFactory"/>
+                <property name="defaultDestinationName" value="demo.org.apache.servicemix.result"/>
+                <property name="pubSubDomain" value="true"/>
+              </bean>
             </property>
-            <property name="defaultDestinationName" value="demo.org.apache.servicemix.result"/>
-            <property name="pubSubDomain" value="true"/>
-          </bean>
-        </property>
           </bean>
         </sm:component>
       </sm:activationSpec>
@@ -113,13 +114,13 @@
       <sm:activationSpec componentName="jmsTrace" service="my:jmsTrace" destinationService="my:trace">
         <sm:component>
           <bean class="org.apache.servicemix.components.jms.JmsInUsingJCABinding">
-        <property name="jcaContainer" ref="jencks"/>
-        <property name="activationSpec">
-          <bean class="org.apache.activemq.ra.ActiveMQActivationSpec">
-            <property name="destination" value="demo.org.apache.servicemix.result"/>
-            <property name="destinationType" value="javax.jms.Topic"/>
-          </bean>
-        </property>
+            <property name="jcaContainer" ref="jencks"/>
+            <property name="activationSpec">
+              <bean class="org.apache.activemq.ra.ActiveMQActivationSpec">
+                <property name="destination" value="demo.org.apache.servicemix.result"/>
+                <property name="destinationType" value="javax.jms.Topic"/>
+              </bean>
+            </property>
           </bean>
         </sm:component>
       </sm:activationSpec>
