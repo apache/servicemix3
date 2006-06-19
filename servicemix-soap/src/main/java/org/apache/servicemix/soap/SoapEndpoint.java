@@ -56,9 +56,13 @@ public abstract class SoapEndpoint extends Endpoint {
         policies = Collections.singletonList(new AddressingHandler());
     }
     
-    public abstract AuthenticationService getAuthenticationService();
+    public AuthenticationService getAuthenticationService() {
+        return null;
+    }
     
-    public abstract KeystoreManager getKeystoreManager();
+    public KeystoreManager getKeystoreManager() {
+        return null;
+    }
     
     /**
      * @return the policies
