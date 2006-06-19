@@ -59,7 +59,7 @@
   <!-- Connection manager for JCA -->
   <bean id="connectionTracker" class="org.apache.geronimo.connector.outbound.connectiontracking.ConnectionTrackingCoordinator"/>
   <bean id="poolingSupport" class="org.jencks.factory.SinglePoolFactoryBean">
-    <property name="maxSize" value="2"/>
+    <property name="maxSize" value="16"/>
     <property name="minSize" value="1"/>
     <property name="blockingTimeoutMilliseconds" value="60"/>
     <property name="idleTimeoutMinutes" value="60"/>
