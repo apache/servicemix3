@@ -215,7 +215,7 @@
     <module>servicemix-beanflow</module>
     <module>tooling</module>
     <module>samples</module>
-    <module>incubating-apache-servicemix</module>
+    <module>apache-servicemix</module>
   </modules>
   
   <properties>

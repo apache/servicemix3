@@ -29,7 +29,7 @@
     <version>3.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>incubating-apache-servicemix</artifactId>
+  <artifactId>apache-servicemix</artifactId>
   <name>Servicemix :: Assembly</name>
   <packaging>pom</packaging>
 
