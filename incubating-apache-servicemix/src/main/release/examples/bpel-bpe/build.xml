@@ -1,4 +1,4 @@
-<project name="jms-binding" default="run" basedir=".">
+<project name="bpel-bpe" default="run" basedir=".">
 
   <property name="build.dir" value="build"/>
   <property name="comp.build.dir" value="${build.dir}/components"/>
@@ -10,7 +10,7 @@
   <property name="su.bpe.src.dir" value="${src.dir}/bpe-su"/>
   <property name="su.lw.src.dir" value="${src.dir}/lw-su"/>
   <property name="sa.src.dir" value="${src.dir}/sa"/>
-
+  
   <target name="clean">
     <delete dir="target" quiet="true"/>
     <delete dir="${build.dir}" quiet="true"/>
@@ -21,6 +21,16 @@
     <mkdir dir="${comp.build.dir}"/>
     <mkdir dir="${client.build.dir}"/>
 
+    <get src="http://repo.mergere.com/maven2/lingo/lingo/1.0/lingo-1.0.jar"
+         dest="../../lib/optional/lingo-1.0.jar" 
+         usetimestamp="true" />
+    <get src="http://repo.mergere.com/maven2/commons-pool/commons-pool/1.2/commons-pool-1.2.jar"
+         dest="../../lib/optional/commons-pool-1.2.jar" 
+         usetimestamp="true" />
+    <get src="http://repo.mergere.com/maven2/commons-collections/commons-collections/3.1/commons-collections-3.1.jar"
+         dest="../../lib/optional/commons-collections-3.1.jar" 
+         usetimestamp="true" />
+
     <path id="javac.classpath">
       <pathelement path="${comp.build.dir}"/>
       <pathelement path="${client.build.dir}"/>
@@ -28,10 +38,11 @@
       <fileset dir="../../lib">
         <include name="**/*.jar"/>
       </fileset>
-      <fileset dir="../..">
+      <fileset dir="../../lib/optional">
         <include name="*.jar"/>
       </fileset>
     </path>
+    
   </target>
 
   <target name="build-components" depends="init" description="Build components">
@@ -69,6 +80,9 @@
       <fileset dir="../../components" includes="*lwcontainer*"/>
     </copy>
     <copy file="${build.dir}/bpe-demo-sa.zip" todir="deploy"/>
+    <copy todir="../../lib/optional">
+      <fileset dir="../../components/lib" includes="servicemix-components*.jar"/>
+    </copy>
   </target>
 
   <target name="build-client" depends="init" description="Build components">

@@ -6,6 +6,7 @@ post.
 
 To start the servicemix server using the sample configuration, just run:
 
+ant setup
 ../../bin/servicemix servicemix.xml
 
 This will start http server on port 8912 and wait for a request to come in

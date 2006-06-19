@@ -6,6 +6,7 @@ periodic events into the ServiceMix container.
 
 To start the servicemix server using the sample configuration, just run:
 
+ant setup
 ../../bin/servicemix servicemix.xml
 
 This will send a periodic event every 5 seconds into the container via 

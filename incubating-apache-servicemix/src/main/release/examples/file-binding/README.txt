@@ -4,6 +4,10 @@ Welcome to the ServiceMix File Binding Example
 This example shows how to use the File bindings to do a simple file 
 transfer.
 
+To download the needed dependencies, run
+
+ant setup
+
 To start the servicemix server using the sample configuration, just run:
 
 ../../bin/servicemix servicemix.xml

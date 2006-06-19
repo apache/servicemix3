@@ -6,7 +6,7 @@
 
 
 	<!-- the JBI container -->
-	<sm:container spring:id="jbi" rootDir="./wdir" useMBeanServer="true"
+	<sm:container spring:id="jbi" rootDir="./data/smx" useMBeanServer="true"
 		createMBeanServer="true" installationDirPath="./install"
 		monitorInstallationDirectory="true" dumpStats="true"
 		statsInterval="10" transactionManager="#transactionManager">

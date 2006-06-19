@@ -2,6 +2,20 @@
 
   <property name="class.dir" value="classes"/>
 
+  <target name="setup">
+
+    <get src="http://repo.mergere.com/maven2/commons-pool/commons-pool/1.2/commons-pool-1.2.jar"
+         dest="../../lib/optional/commons-pool-1.2.jar" 
+         usetimestamp="true" />
+    <get src="http://repo.mergere.com/maven2/commons-collections/commons-collections/3.1/commons-collections-3.1.jar"
+         dest="../../lib/optional/commons-collections-3.1.jar" 
+         usetimestamp="true" />
+    <copy todir="../../lib/optional">
+      <fileset dir="../../components/lib" includes="servicemix-components*.jar"/>
+    </copy>
+         
+  </target>
+
   <target name="clean">
     <delete dir="target" quiet="true"/>
     <delete dir="${class.dir}" quiet="true"/>

@@ -4,6 +4,9 @@ Welcome to the ServiceMix VFS Binding Example
 This example uses shows how to use the VFS bindings to do a simple 
 file transfer.
 
+To download the needed dependencies, run
+ant setup
+
 To start the servicemix server using the sample configuration, 
 just run:
 

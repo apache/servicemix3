@@ -1,9 +1,16 @@
-<project name="ws-notification" default="dep" basedir=".">
+<project name="ws-notification" default="setup" basedir=".">
 
-  <target name="dep">
-    <mkdir dir="lib"/>
-    <get verbose="true" usetimestamp="true" src="http://repo.mergere.com/maven2/junit/junit/3.8.1/junit-3.8.1.jar" dest="lib/junit-3.8.1.jar" />
-    <unzip dest=".">
+  <target name="setup">
+    <get src="http://repo.mergere.com/maven2/junit/junit/3.8.1/junit-3.8.1.jar" 
+         dest="../../lib/optional/junit-3.8.1.jar" 
+         usetimestamp="true" />
+    <get src="http://repo.mergere.com/maven2/quartz/quartz/1.5.1/quartz-1.5.1.jar" 
+         dest="../../lib/optional/quartz-1.5.1.jar" 
+         usetimestamp="true" />
+    <copy todir="../../lib/optional">
+      <fileset dir="../../components/lib" includes="servicemix-components*.jar"/>
+    </copy>
+    <unzip dest="../../lib/optional">
       <patternset>
         <include name="lib/*.jar"/>
       </patternset>

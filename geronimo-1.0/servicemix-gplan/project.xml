@@ -2,7 +2,7 @@
 <!DOCTYPE project>
 <project>
 	<pomVersion>3</pomVersion>
-	<extend>${basedir}/../../etc/project.xml</extend>
+	<extend>${basedir}/../project.xml</extend>
 
 	<name>ServiceMix :: GPlan</name>
 	<id>servicemix-gplan</id>
@@ -92,7 +92,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>incubator-servicemix</groupId>
+      <groupId>${pom.groupId}</groupId>
 			<artifactId>servicemix-jbi</artifactId>
 			<version>${pom.currentVersion}</version>
 			<properties>
@@ -100,7 +100,7 @@
 			</properties>
 		</dependency>
 		<dependency>
-			<groupId>incubator-servicemix</groupId>
+      <groupId>${pom.groupId}</groupId>
 			<artifactId>servicemix-core</artifactId>
 			<version>${pom.currentVersion}</version>
 			<properties>
@@ -108,7 +108,7 @@
 			</properties>
 		</dependency>
 		<dependency>
-			<groupId>incubator-servicemix</groupId>
+      <groupId>${pom.groupId}</groupId>
 			<artifactId>servicemix-gbean</artifactId>
 			<version>${pom.currentVersion}</version>
 			<properties>
@@ -116,7 +116,7 @@
 			</properties>
 		</dependency>
 		<dependency>
-			<groupId>incubator-servicemix</groupId>
+      <groupId>${pom.groupId}</groupId>
 			<artifactId>servicemix-components</artifactId>
 			<version>${pom.currentVersion}</version>
 			<properties>
@@ -124,7 +124,7 @@
 			</properties>
 		</dependency>
 		<dependency>
-			<groupId>springframework</groupId>
+			<groupId>org.springframework</groupId>
 			<artifactId>spring</artifactId>
 			<version>${spring_version}</version>
 			<properties>

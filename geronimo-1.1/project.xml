@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright 2005 The Apache Software Foundation
+    Copyright 2005-2006 The Apache Software Foundation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -19,9 +19,10 @@
 <!-- $Rev: 373179 $ $Date: 2006-01-28 17:56:43 +0100 (sam., 28 janv. 2006) $ -->
 
 <project>
-    <pomVersion>3</pomVersion>
-    <extend>../project.xml</extend>
-    <id>servicemix-geronimo</id>
-    <name>ServiceMix configuration</name>
+    
+  <pomVersion>3</pomVersion>
+  <id>servicemix-geronimo-1.1</id>
+  <groupId>org.apache.servicemix</groupId>
+  <name>ServiceMix configuration</name>
 
 </project>

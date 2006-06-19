@@ -20,7 +20,7 @@
 
 <project>
     <pomVersion>3</pomVersion>
-    <extend>../../etc/project.xml</extend>
+    <extend>${basedir}/../../project.xml</extend>
 
     <!-- ===================== -->
     <!-- Module Identification -->

@@ -20,6 +20,10 @@
     <mkdir dir="${comp.build.dir}"/>
     <mkdir dir="${client.build.dir}"/>
 
+    <get src="http://repo.mergere.com/maven2/lingo/lingo/1.0/lingo-1.0.jar"
+         dest="../../lib/optional/lingo-1.0.jar" 
+         usetimestamp="true" />
+
     <path id="javac.classpath">
       <pathelement path="${comp.build.dir}"/>
       <pathelement path="${client.build.dir}"/>

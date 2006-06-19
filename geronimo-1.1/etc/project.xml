@@ -20,7 +20,6 @@
 
 <project>
     <pomVersion>3</pomVersion>
-    <extend>../../etc/project.xml</extend>
     <id>servicemix-geronimo-parent</id>
     <name>ServiceMix configuration</name>
 

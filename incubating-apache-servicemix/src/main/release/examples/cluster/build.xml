@@ -1,0 +1,14 @@
+<project name="cluster" default="setup" basedir=".">
+
+  <target name="setup">
+
+    <get src="http://repo.mergere.com/maven2/jaxen/jaxen/1.1-beta-9/jaxen-1.1-beta-9.jar"
+         dest="../../lib/optional/jaxen-1.1-beta9.jar" 
+         usetimestamp="true" />
+    <copy todir="../../lib/optional">
+      <fileset dir="../../components/lib" includes="servicemix-components*.jar"/>
+    </copy>
+         
+  </target>
+  
+</project>

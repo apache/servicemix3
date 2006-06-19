@@ -5,6 +5,7 @@ This example uses shows how to connect the JMS bindings to a simple service comp
 
 To start the servicemix server using the sample configuration, just run:
 
+ant setup
 ../../bin/servicemix servicemix.xml
 
 This will start a component which listens for a JMS message on topic 'demo.org.servicemix.source' and then

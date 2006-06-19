@@ -279,6 +279,11 @@
       <name>ActiveMQ Maven2 Temp Repository</name>
       <url>http://people.apache.org/~chirino/incubator-activemq-4.0/maven2</url>
     </repository>
+    <!-- XBean 2.4 release -->
+    <repository>
+      <id>xbean-tmp-repo</id>
+      <url>http://people.apache.org/~gnodet/xbean-2.4/m2/</url>
+    </repository>
   </repositories>
   
   <dependencies>
@@ -400,6 +405,17 @@
           <version>2.0EA3</version>
       </dependency>
       <dependency>
+          <groupId>com.sun.xml.bind</groupId>
+          <artifactId>jaxb-impl</artifactId>
+          <version>2.0</version>
+          <exclusions>
+            <exclusion>
+              <groupId>javax.xml</groupId>
+              <artifactId>jsr173</artifactId>
+            </exclusion>
+          </exclusions>
+      </dependency>
+      <dependency>
         <groupId>com.sun.xml</groupId>
         <artifactId>jaxws-rt</artifactId>
         <version>2.0EA3</version>
@@ -420,6 +436,11 @@
             <artifactId>jsr181-api</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>javax.xml</groupId>
+        <artifactId>jaxws-api</artifactId>
+        <version>2.0EA3</version>
       </dependency>
       <dependency>
         <groupId>xfire</groupId>
@@ -1236,7 +1257,7 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring</artifactId>
-        <version>1.2.6</version>
+        <version>2.0-m5</version>
         <exclusions>
           <exclusion>
             <groupId>javax.mail</groupId>
@@ -1383,17 +1404,17 @@
       <dependency>
         <groupId>org.apache.xbean</groupId>
         <artifactId>xbean-kernel</artifactId>
-        <version>2.3</version>
+        <version>2.4</version>
       </dependency>
       <dependency>
         <groupId>org.apache.xbean</groupId>
         <artifactId>xbean-server</artifactId>
-        <version>2.3</version>
+        <version>2.4</version>
       </dependency>
       <dependency>
         <groupId>org.apache.xbean</groupId>
         <artifactId>xbean-spring</artifactId>
-        <version>2.3</version>
+        <version>2.4</version>
         <exclusions>
           <exclusion>
             <groupId>qdox</groupId>

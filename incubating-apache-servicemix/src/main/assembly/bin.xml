@@ -48,8 +48,19 @@
       <directory>target/samples/wsdl-first-${pom.version}</directory>
       <outputDirectory>examples/wsdl-first</outputDirectory>
     </fileSet>
+    <fileSet>
+      <directory>target/dummy</directory>
+      <outputDirectory>lib/optional</outputDirectory>
+    </fileSet>
   </fileSets>
   <dependencySets>
+    <dependencySet>
+      <outputDirectory>components/lib</outputDirectory>
+      <includes>
+        <include>org.apache.servicemix:servicemix-components</include>
+        <include>org.apache.servicemix:servicemix-beanflow</include>
+      </includes>
+    </dependencySet>
     <dependencySet>
       <outputDirectory>lib</outputDirectory>
       <includes>
@@ -102,6 +113,7 @@
         <include>org.apache.derby:derby</include>
       </includes>
     </dependencySet>
+        <!--
     <dependencySet>
       <outputDirectory>lib/optional</outputDirectory>
       <includes>
@@ -125,5 +137,6 @@
         <include>axis:axis-saaj</include>
       </includes>
     </dependencySet>
+        -->
   </dependencySets>
 </assembly>

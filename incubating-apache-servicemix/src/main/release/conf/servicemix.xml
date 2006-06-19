@@ -19,7 +19,7 @@
 
   <!-- the JBI container -->
   <sm:container id="jbi" 
-                rootDir="./wdir" 
+                rootDir="./data/smx" 
                 MBeanServer="#mbeanServer"
                 installationDirPath="./install"
                 deploymentDirPath="./deploy"

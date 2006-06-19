@@ -37,6 +37,5 @@
 
   <modules>
     <module>wsdl-first</module>
-    <module>wsdl-first-http</module>
   </modules>
 </project>

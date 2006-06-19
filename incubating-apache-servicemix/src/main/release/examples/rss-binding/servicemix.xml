@@ -16,7 +16,7 @@
         <property name="outputType" value="rss_2.0"/>
         <property name="period" value="5000"/>
         <property name="lastPolledDate">
-          <value>2005/aug/10</value>
+          <value>2005/08/10</value>
         </property>
 
 
@@ -52,7 +52,7 @@
             <constructor-arg index="0">
               <bean class="java.text.SimpleDateFormat">
                 <constructor-arg>
-                  <value>yyyy/MMM/dd</value>
+                  <value>yyyy/MM/dd</value>
                 </constructor-arg>
               </bean>
             </constructor-arg>
