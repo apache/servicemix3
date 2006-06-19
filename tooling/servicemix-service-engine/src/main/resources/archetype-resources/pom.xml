@@ -35,8 +35,8 @@
   </repositories>
   <properties>
     <servicemixVersion>3.0-SNAPSHOT</servicemixVersion>
-    <servicemixJbiPluginVersion>${pom.version}</servicemixJbiPluginVersion>
-    <xbeanPluginVersion>2.3</xbeanPluginVersion>
+    <servicemixJbiPluginVersion>1.0-SNAPSHOT</servicemixJbiPluginVersion>
+    <xbeanPluginVersion>2.4</xbeanPluginVersion>
   </properties>
   <dependencies>
     <dependency>
