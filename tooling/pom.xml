@@ -36,6 +36,10 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>maven2</module>
+    <module>servicemix-binding-component</module>
+    <module>servicemix-service-engine</module>
+    <module>servicemix-service-unit</module>
+    <module>servicemix-service-assembly</module>
+    <module>jbi-maven-plugin</module>
   </modules>
 </project>
