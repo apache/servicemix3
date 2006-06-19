@@ -97,6 +97,10 @@
       <artifactId>servicemix-components</artifactId>
     </dependency>
     <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-beanflow</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.servicemix.samples</groupId>
       <artifactId>wsdl-first</artifactId>
     </dependency>
