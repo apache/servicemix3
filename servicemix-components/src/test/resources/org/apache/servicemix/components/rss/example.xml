@@ -11,7 +11,7 @@
       					 service="foo:feedWriter">
       	<sm:component><bean class="org.apache.servicemix.components.rss.FeedWriter">
 
-	        <property name="feedFile" value="target/serviceMixFeed.xml" />
+	        <property name="feedFile" value="file:target/serviceMixFeed.xml" />
 	
 	        <!--  define expressions for the entry title and value -->
 	        <property name="entryTitle">
