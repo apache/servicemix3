@@ -57,6 +57,8 @@ public class JbiElementProcessor extends ElementProcessorSupport implements Elem
         moveToProperyListElement(bean, "path-element", "pathElements");
         moveToProperyListElement(bean, "service-unit", "serviceUnits");        
         moveToProperyListElement(bean, "connection", "connections");        
+        moveToProperyListElement(bean, "provides", "provides");        
+        moveToProperyListElement(bean, "consumes", "consumes");        
 
         processChildren(compositeProcessor, bean, beanDefinitionReader);
         
