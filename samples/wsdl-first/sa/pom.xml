@@ -25,13 +25,12 @@
 
     <parent>
         <groupId>org.apache.servicemix.samples</groupId>
-        <artifactId>samples</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <artifactId>wsdl-first</artifactId>
+        <version>3.0-M2-incubating</version>
     </parent>
 
     <groupId>org.apache.servicemix.samples.wsdl-first</groupId>
     <artifactId>sa</artifactId>
-    <version>3.0-SNAPSHOT</version>
     <name>ServiceMix :: Samples :: WSDL first :: SA</name>
     <packaging>pom</packaging>
     
@@ -39,12 +38,12 @@
       <dependency>
         <groupId>org.apache.servicemix.samples.wsdl-first</groupId>
         <artifactId>jsr181-su</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>3.0-M2-incubating</version>
       </dependency>
       <dependency>
         <groupId>org.apache.servicemix.samples.wsdl-first</groupId>
         <artifactId>http-su</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>3.0-M2-incubating</version>
       </dependency>
     </dependencies>
 
@@ -57,7 +56,7 @@
         <executions>        
           <execution>
             <id>bin</id>
-            <phase>install</phase>
+            <phase>package</phase>
             <goals>
               <goal>single</goal>
             </goals>

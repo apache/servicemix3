@@ -24,5 +24,6 @@
   <id>servicemix-geronimo-1.1</id>
   <groupId>org.apache.servicemix</groupId>
   <name>ServiceMix configuration</name>
+  <currentVersion>3.0-M2-incubating</currentVersion>
 
 </project>

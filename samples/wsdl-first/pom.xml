@@ -23,9 +23,14 @@
 
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>samples</artifactId>
+        <version>3.0-M2-incubating</version>
+    </parent>
+
     <groupId>org.apache.servicemix.samples</groupId>
     <artifactId>wsdl-first</artifactId>
-    <version>3.0-SNAPSHOT</version>
     <name>ServiceMix :: Samples :: WSDL first</name>
     <packaging>pom</packaging>
     
@@ -48,17 +53,19 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.1</version>
-                <configuration>
-                    <descriptors>
-                        <descriptor>src/main/assembly/src.xml</descriptor>
-                    </descriptors>
-                </configuration>
+                <inherited>false</inherited>
                 <executions>
                     <execution>
+                        <id>src</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/src.xml</descriptor>
+                            </descriptors>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

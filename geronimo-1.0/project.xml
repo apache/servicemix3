@@ -24,6 +24,6 @@
   <name>ServiceMix</name>
   <id>servicemix-geronimo-1.0</id>
   <groupId>org.apache.servicemix</groupId>
-  <currentVersion>3.0-SNAPSHOT</currentVersion>
+  <currentVersion>3.0-M2-incubating</currentVersion>
 
 </project>
