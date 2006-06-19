@@ -189,9 +189,9 @@
   </developers>
   
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/servicemix/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/servicemix/trunk</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/incubator/servicemix/trunk/</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/servicemix/tags/servicemix-3.0-M2-incubating</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/servicemix/tags/servicemix-3.0-M2-incubating</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/incubator/servicemix/tags/servicemix-3.0-M2-incubating</url>
   </scm>
   
   <modules>
@@ -1696,15 +1696,14 @@
   </dependencyManagement>
   
   <distributionManagement>
-  <!--
+    <repository>
+      <id>servicemix</id>
+      <name>Apache Release Distribution Repository</name>
+      <url>scp://minotaur.apache.org/www/incubator.apache.org/servicemix/dist/servicemix-${version}/m2</url>
+    </repository>
     <site>
-      <id>goopen.org</id>
-      <url>scp://goopen.org/home/projects/servicemix/public_html/maven/</url>
-    </site>
-    -->
-    <site>
-      <id>apache-website</id>
-      <url>scpexe://people.apache.org/www/incubator.apache.org/servicemix/maven/</url>
+      <id>servicemix</id>
+      <url>scp://minotaur.apache.org/www/incubator.apache.org/servicemix/dist/servicemix-${version}/site</url>
     </site>
   </distributionManagement>
   
@@ -1778,8 +1777,8 @@
               <goal>deploy-maven-one-repository</goal>
             </goals>
             <configuration>
-              <remoteRepositoryId>apache.m1.releases</remoteRepositoryId>
-              <remoteRepositoryUrl>scp://minotaur.apache.org/www/cvs.apache.org/repository</remoteRepositoryUrl>
+              <remoteRepositoryId>servicemix</remoteRepositoryId>
+              <remoteRepositoryUrl>scp://minotaur.apache.org/www/incubator.apache.org/servicemix/dist/servicemix-${version}/m1</remoteRepositoryUrl>
             </configuration>
           </execution>
         </executions>
