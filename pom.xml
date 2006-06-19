@@ -1679,7 +1679,7 @@
         <plugin>
           <groupId>org.apache.xbean</groupId>
           <artifactId>maven-xbean-plugin</artifactId>
-          <version>2.3</version>
+          <version>2.4</version>
         </plugin>
         <plugin>
           <groupId>org.mortbay.jetty</groupId>
