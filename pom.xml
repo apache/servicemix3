@@ -279,11 +279,6 @@
       <name>ActiveMQ Maven2 Temp Repository</name>
       <url>http://people.apache.org/~chirino/incubator-activemq-4.0/maven2</url>
     </repository>
-    <!-- XBean 2.4 release -->
-    <repository>
-      <id>xbean-tmp-repo</id>
-      <url>http://people.apache.org/~gnodet/xbean-2.4/m2/</url>
-    </repository>
   </repositories>
   
   <dependencies>
