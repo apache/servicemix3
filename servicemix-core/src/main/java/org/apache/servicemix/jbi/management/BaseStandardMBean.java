@@ -55,6 +55,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -304,7 +305,17 @@ public class BaseStandardMBean extends StandardMBean
      */
     public Object invoke(String name, Object[] params, String[] signature) throws MBeanException, ReflectionException {
         try {
-            return MethodUtils.invokeMethod(getImplementation(), name, params);
+            Class[] parameterTypes = new Class[signature.length];
+            for (int i = 0; i < parameterTypes.length; i++) {
+                parameterTypes[i] = (Class) primitiveClasses.get(signature[i]);
+                if (parameterTypes[i] == null) {
+                    parameterTypes[i] = Class.forName(signature[i]);
+                }
+            }
+            return MethodUtils.invokeMethod(getImplementation(), name, params, parameterTypes);
+        }
+        catch (ClassNotFoundException e) {
+            throw new ReflectionException(e);
         }
         catch (NoSuchMethodException e) {
             throw new ReflectionException(e);
@@ -322,6 +333,18 @@ public class BaseStandardMBean extends StandardMBean
         }
     }
 
+    private final static Hashtable primitiveClasses = new Hashtable(8);
+    {
+        primitiveClasses.put(Boolean.TYPE.toString(), Boolean.TYPE);
+        primitiveClasses.put(Character.TYPE.toString(), Character.TYPE);
+        primitiveClasses.put(Byte.TYPE.toString(), Byte.TYPE);
+        primitiveClasses.put(Short.TYPE.toString(), Short.TYPE);
+        primitiveClasses.put(Integer.TYPE.toString(), Integer.TYPE);
+        primitiveClasses.put(Long.TYPE.toString(), Long.TYPE);
+        primitiveClasses.put(Float.TYPE.toString(), Float.TYPE);
+        primitiveClasses.put(Double.TYPE.toString(), Double.TYPE);
+     }    
+    
     /**
      * Called at registration
      * 
