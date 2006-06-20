@@ -189,7 +189,7 @@
   </developers>
   
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/servicemix/trunk</connection>
+    <connection>http://svn.apache.org/repos/asf/incubator/servicemix/trunk</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/servicemix/trunk</developerConnection>
     <url>http://svn.apache.org/viewcvs.cgi/incubator/servicemix/trunk</url>
   </scm>
@@ -1699,7 +1699,7 @@
     <repository>
       <id>servicemix</id>
       <name>Apache Release Distribution Repository</name>
-      <url>scp://minotaur.apache.org/www/incubator.apache.org/servicemix/dist/servicemix-${version}/m2</url>
+      <url>scp://minotaur.apache.org/www/people.apache.org/maven-snapshot-repository</url>
     </repository>
     <site>
       <id>servicemix</id>
@@ -1778,7 +1778,7 @@
             </goals>
             <configuration>
               <remoteRepositoryId>servicemix</remoteRepositoryId>
-              <remoteRepositoryUrl>scp://minotaur.apache.org/www/incubator.apache.org/servicemix/dist/servicemix-${version}/m1</remoteRepositoryUrl>
+              <remoteRepositoryUrl>scp://minotaur.apache.org/www/people.apache.org/repository</remoteRepositoryUrl>
             </configuration>
           </execution>
         </executions>
