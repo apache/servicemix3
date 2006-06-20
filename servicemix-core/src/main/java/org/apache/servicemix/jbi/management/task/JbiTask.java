@@ -82,14 +82,8 @@ public abstract class JbiTask extends Task {
      * initialize the connection
      * @throws BuildException
      */
-    public void connect() throws BuildException {
-        try {
-            this.jmxConnector = getJMXConnector(getServiceURL());
-        }
-        catch (Throwable e) {
-            log("Failed to initialize the JbiTask: " + e.getMessage(), Project.MSG_ERR);
-            throw new BuildException(e);
-        }
+    public void connect() throws IOException {
+        this.jmxConnector = getJMXConnector(getServiceURL());
     }
     
     
@@ -267,9 +261,9 @@ public abstract class JbiTask extends Task {
      */
     public void execute() throws BuildException {
         AdminCommandsServiceMBean acs;
-        connect();
         try {
             log("Retrieving remote admin interface", Project.MSG_DEBUG);
+            connect();
             acs = getAdminCommandsService();
         } catch (Throwable e) {
             log("Error accessing ServiceMix administration: " + e.getMessage(), Project.MSG_WARN);

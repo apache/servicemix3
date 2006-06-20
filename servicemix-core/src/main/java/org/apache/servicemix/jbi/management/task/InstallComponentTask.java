@@ -57,7 +57,7 @@ public class InstallComponentTask extends JbiTask {
         this.paramsFile = paramsFile;
     }
     
-    public Param addParam() {
+    public Param createParam() {
         Param p = new Param();
         if (nestedParams == null) {
             nestedParams = new ArrayList();
@@ -93,13 +93,13 @@ public class InstallComponentTask extends JbiTask {
         if (nestedParams != null) {
             for (Iterator iter = nestedParams.iterator(); iter.hasNext();) {
                 Param p = (Param) iter.next();
-                props.setProperty(p.getValue(), p.getName());
+                props.setProperty(p.getName(), p.getValue());
             }
         }
         return props;
     }
     
-    private static class Param {
+    public static class Param {
         private String name;
         private String value;
         public String getName() {

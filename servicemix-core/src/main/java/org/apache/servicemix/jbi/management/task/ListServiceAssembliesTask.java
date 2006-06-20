@@ -29,6 +29,22 @@ public class ListServiceAssembliesTask extends JbiTask {
     private String state;
     private String componentName;
     private String serviceAssemblyName;
+    private String xmlOutput;
+
+    /**
+     * @return the xmlOutput
+     */
+    public String isXmlOutput() {
+        return xmlOutput;
+    }
+
+    /**
+     * @param xmlOutput the xmlOutput to set
+     */
+    public void setXmlOutput(String xmlOutput) {
+        this.xmlOutput = xmlOutput;
+    }
+
 
     /**
      *
@@ -85,6 +101,9 @@ public class ListServiceAssembliesTask extends JbiTask {
      */
     public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
         String result = acs.listServiceAssemblies(getState(), getComponentName(), getServiceAssemblyName());
+        if (xmlOutput != null) {
+            getProject().setProperty(xmlOutput, result);
+        }
         log(result, Project.MSG_WARN);
     }
     

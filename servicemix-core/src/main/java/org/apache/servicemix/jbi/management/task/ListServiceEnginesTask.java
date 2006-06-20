@@ -29,6 +29,22 @@ public class ListServiceEnginesTask extends JbiTask {
     private String state;
     private String serviceAssemblyName;
     private String sharedLibraryName;
+    private String xmlOutput;
+
+    /**
+     * @return the xmlOutput
+     */
+    public String isXmlOutput() {
+        return xmlOutput;
+    }
+
+    /**
+     * @param xmlOutput the xmlOutput to set
+     */
+    public void setXmlOutput(String xmlOutput) {
+        this.xmlOutput = xmlOutput;
+    }
+
 
     /**
      *
@@ -86,6 +102,9 @@ public class ListServiceEnginesTask extends JbiTask {
      */
     public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
         String result = acs.listComponents(false, true, true, getState(), getSharedLibraryName(), getServiceAssemblyName());
+        if (xmlOutput != null) {
+            getProject().setProperty(xmlOutput, result);
+        }
         log(result, Project.MSG_WARN);
     }
 

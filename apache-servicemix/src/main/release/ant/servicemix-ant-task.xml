@@ -149,15 +149,15 @@ This ant script contains the Servicemix ant tasks and the targets and properties
           
      </target>
      
-     <!-- shutdown-component -->
-     <target name="shutdown-component" description="shut downs a particular Servicemix component.">
-         <echo message=" shutdown-component" />
+     <!-- shut-down-component -->
+     <target name="shut-down-component" description="shut downs a particular Servicemix component.">
+         <echo message=" shut-down-component" />
          <echo message=" shuts down a particular component (service engine or binding component) in Servicemix" />
          <echo message="    host=${sm.host}" />
          <echo message="    port=${sm.port}" />
          <echo message="    name=${sm.component.name}" />
          
-         <jbi-shutdown-component
+         <jbi-shut-down-component
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
@@ -231,15 +231,15 @@ This ant script contains the Servicemix ant tasks and the targets and properties
          />     
      </target>
      
-     <!-- shutdown-service-assembly -->
-     <target name="shutdown-service-assembly" description="shuts down a particular service assembly in Servicemix.">
-         <echo message=" shutdown-service-assembly" />
+     <!-- shut-down-service-assembly -->
+     <target name="shut-down-service-assembly" description="shuts down a particular service assembly in Servicemix.">
+         <echo message=" shut-down-service-assembly" />
          <echo message=" shuts down a particular service assembly in Servicemix." />
          <echo message="    host=${sm.host}" />
          <echo message="    port=${sm.port}" />
          <echo message="    name=${sm.service.assembly.name}" /> 
 
-         <jbi-shutdown-service-assembly
+         <jbi-shut-down-service-assembly
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
@@ -423,18 +423,18 @@ This ant script contains the Servicemix ant tasks and the targets and properties
     ant -f servicemix-ant-task.xml -Dsm.component.name=componentname stop-component  
 
     ----------------------------------------------------------
-    target : shutdown-component 
-        - shutdown service engine or binding component in Servicemix.
+    target : shut-down-component 
+        - shut down service engine or binding component in Servicemix.
     
     options :        
         sm.username        : Servicemix user name.
         sm.password        : Servicemix password.
         sm.host            : host name where Servicemix is running.
         sm.port            : port where Servicemix is listening.
-        sm.component.name  : component name, service engine or binding component to shutdown.
+        sm.component.name  : component name, service engine or binding component to shut down.
     
     Example :
-    ant -f servicemix-ant-task.xml -Dsm.component.name=componentname shutdown-component  
+    ant -f servicemix-ant-task.xml -Dsm.component.name=componentname shut-down-component  
 
     ----------------------------------------------------------
     target : deploy-service-assembly 
@@ -493,18 +493,18 @@ This ant script contains the Servicemix ant tasks and the targets and properties
     ant -f servicemix-ant-task.xml -Dsm.service.assembly.name stop-service-assembly  
 
     ----------------------------------------------------------
-    target : shutdown-service-assembly 
-        - shutdowns service assembly in Servicemix.
+    target : shut-down-service-assembly 
+        - shuts down service assembly in Servicemix.
     
     options :        
         sm.username        : Servicemix user name.
         sm.password        : Servicemix password.
         sm.host            : host name where Servicemix is running.
         sm.port            : port where Servicemix is listening.
-        sm.service.assembly.name : service assembly name to shutdown.
+        sm.service.assembly.name : service assembly name to shut down.
     
     Example :
-    ant -f servicemix-ant-task.xml -Dsm.service.assembly.name shutdown-service-assembly  
+    ant -f servicemix-ant-task.xml -Dsm.service.assembly.name shut-down-service-assembly  
 
     ----------------------------------------------------------
     target : list-service-engines 

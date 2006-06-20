@@ -28,6 +28,22 @@ public class ListSharedLibrariesTask extends JbiTask {
     
     private String componentName;
     private String sharedLibraryName;
+    private String xmlOutput;
+
+    /**
+     * @return the xmlOutput
+     */
+    public String isXmlOutput() {
+        return xmlOutput;
+    }
+
+    /**
+     * @param xmlOutput the xmlOutput to set
+     */
+    public void setXmlOutput(String xmlOutput) {
+        this.xmlOutput = xmlOutput;
+    }
+
 
     /**
      *
@@ -68,6 +84,9 @@ public class ListSharedLibrariesTask extends JbiTask {
      */
     public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
         String result = acs.listSharedLibraries(getComponentName(), getSharedLibraryName());
+        if (xmlOutput != null) {
+            getProject().setProperty(xmlOutput, result);
+        }
         log(result, Project.MSG_WARN);
     }
     

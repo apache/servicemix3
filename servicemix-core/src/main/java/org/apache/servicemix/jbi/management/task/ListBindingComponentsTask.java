@@ -30,6 +30,21 @@ public class ListBindingComponentsTask extends JbiTask {
     private String serviceAssemblyName;
     private String bindingComponentName;
     private String state;
+    private String xmlOutput;
+
+    /**
+     * @return the xmlOutput
+     */
+    public String isXmlOutput() {
+        return xmlOutput;
+    }
+
+    /**
+     * @param xmlOutput the xmlOutput to set
+     */
+    public void setXmlOutput(String xmlOutput) {
+        this.xmlOutput = xmlOutput;
+    }
 
     /**
      *
@@ -102,6 +117,9 @@ public class ListBindingComponentsTask extends JbiTask {
      */
     public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
         String result = acs.listComponents(true, false, true, getState(), getSharedLibraryName(), getServiceAssemblyName());
+        if (xmlOutput != null) {
+            getProject().setProperty(xmlOutput, result);
+        }
         log(result, Project.MSG_WARN);
     }
     
