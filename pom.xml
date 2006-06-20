@@ -189,7 +189,7 @@
   </developers>
   
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/servicemix/tags/servicemix-3.0-M2-incubating</connection>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/servicemix/tags/servicemix-3.0-M2-incubating</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/servicemix/tags/servicemix-3.0-M2-incubating</developerConnection>
     <url>http://svn.apache.org/viewcvs.cgi/incubator/servicemix/tags/servicemix-3.0-M2-incubating</url>
   </scm>
