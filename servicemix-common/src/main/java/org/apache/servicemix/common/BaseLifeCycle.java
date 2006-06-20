@@ -46,7 +46,7 @@ public class BaseLifeCycle extends AsyncBaseLifeCycle implements MessageExchange
                 // If we are transacted and this is a runtime exception
                 // try to mark transaction as rollback
                 if (transactionManager != null && 
-                    transactionManager.getStatus() != Status.STATUS_ACTIVE && 
+                    transactionManager.getStatus() == Status.STATUS_ACTIVE && 
                     e instanceof RuntimeException) {
                     transactionManager.setRollbackOnly();
                 } else  {
