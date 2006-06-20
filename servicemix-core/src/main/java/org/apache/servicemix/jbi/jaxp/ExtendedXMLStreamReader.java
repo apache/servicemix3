@@ -101,7 +101,7 @@ public class ExtendedXMLStreamReader extends StreamReaderDelegate {
 
 		public String getNamespaceURI(String prefix) {
 			String uri = (String) namespaces.get(prefix);
-			if (uri == null) {
+			if (uri == null && parent != null) {
 				uri = parent.getNamespaceURI(prefix);
 			}
 			return uri;
