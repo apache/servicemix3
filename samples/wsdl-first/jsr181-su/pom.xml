@@ -31,7 +31,13 @@
 
     <groupId>org.apache.servicemix.samples.wsdl-first</groupId>
     <artifactId>jsr181-su</artifactId>
+    <packaging>jbi-service-unit</packaging>
     <name>ServiceMix :: Samples :: WSDL first :: JSR181</name>
+    
+    <properties>		    
+	    <servicemixJbiPluginVersion>1.0-SNAPSHOT</servicemixJbiPluginVersion>
+	    <jbiComponentName>servicemix-jsr181</jbiComponentName>
+  	</properties>
 
     <dependencies>
         <dependency>
@@ -96,6 +102,12 @@
                     </dependency>
                 </dependencies>
             </plugin>
+            <plugin>
+		        <groupId>org.apache.servicemix.tooling</groupId>
+		        <artifactId>jbi-maven-plugin</artifactId>
+		        <version>${servicemixJbiPluginVersion}</version>
+		        <extensions>true</extensions>				        		       
+    		</plugin>
       <!--
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

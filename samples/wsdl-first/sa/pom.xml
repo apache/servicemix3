@@ -31,45 +31,36 @@
 
     <groupId>org.apache.servicemix.samples.wsdl-first</groupId>
     <artifactId>sa</artifactId>
+    <packaging>jbi-service-assembly</packaging>
     <name>ServiceMix :: Samples :: WSDL first :: SA</name>
-    <packaging>pom</packaging>
+    
+    <properties>		    
+	    <servicemixJbiPluginVersion>1.0-SNAPSHOT</servicemixJbiPluginVersion>	   
+  	</properties>
     
     <dependencies>
       <dependency>
         <groupId>org.apache.servicemix.samples.wsdl-first</groupId>
         <artifactId>jsr181-su</artifactId>
+        <type>jbi-service-unit</type>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.servicemix.samples.wsdl-first</groupId>
         <artifactId>http-su</artifactId>
+        <type>jbi-service-unit</type>
         <version>${pom.version}</version>
       </dependency>
     </dependencies>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.1</version>
-        <executions>        
-          <execution>
-            <id>bin</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <descriptors>
-                <descriptor>src/main/assembly/bin.xml</descriptor>  
-              </descriptors>
-              <finalName>${pom.artifactId}-${pom.version}</finalName>
-              <appendAssemblyId>false</appendAssemblyId>
-            </configuration>
-          </execution>        
-        </executions>
-      </plugin>
+       	<plugin>
+	       <groupId>org.apache.servicemix.tooling</groupId>
+	       <artifactId>jbi-maven-plugin</artifactId>
+	       <version>${servicemixJbiPluginVersion}</version>
+	       <extensions>true</extensions>				        		       
+		</plugin>
     </plugins>
   </build>
   
