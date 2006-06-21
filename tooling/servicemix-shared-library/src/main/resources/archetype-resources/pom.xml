@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>${groupId}</groupId>
   <artifactId>${artifactId}</artifactId>
-  <packaging>jbi-service-unit</packaging>
+  <packaging>jbi-shared-library</packaging>
   <version>${version}</version>
   <name>A custom project</name>
   <url>http://www.myorganization.org</url>
@@ -34,10 +34,8 @@
     </repository>
   </repositories>
   <properties>
-    <servicemixVersion>3.0-M2-incubating</servicemixVersion>
-    <servicemixJbiPluginVersion>1.0-M2-incubating</servicemixJbiPluginVersion>
-    <xbeanPluginVersion>2.4</xbeanPluginVersion>
-    <jbiBindingComponent>myBindingComponent</jbiBindingComponent>
+    <servicemixVersion>3.0-incubating</servicemixVersion>
+    <servicemixJbiPluginVersion>1.0-incubating</servicemixJbiPluginVersion>        
   </properties>
   <dependencies>
     <dependency>
@@ -61,10 +59,7 @@
         <groupId>org.apache.servicemix.tooling</groupId>
         <artifactId>jbi-maven-plugin</artifactId>
         <version>${servicemixJbiPluginVersion}</version>
-        <extensions>true</extensions>
-        <configuration>
-          <type>service-unit</type>
-        </configuration>
+        <extensions>true</extensions>       
       </plugin>     
     </plugins>
   </build>
