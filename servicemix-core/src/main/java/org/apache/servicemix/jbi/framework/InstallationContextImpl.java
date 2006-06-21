@@ -15,17 +15,20 @@
  */
 package org.apache.servicemix.jbi.framework;
 
-import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
-
+import org.apache.servicemix.jbi.deployment.Component;
+import org.apache.servicemix.jbi.deployment.InstallationDescriptorExtension;
 import org.apache.servicemix.jbi.deployment.SharedLibraryList;
 import org.w3c.dom.DocumentFragment;
 
 import javax.jbi.component.Bootstrap;
-import javax.jbi.component.Component;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.component.InstallationContext;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -35,30 +38,42 @@ import java.util.List;
  * @version $Revision$
  */
 public class InstallationContextImpl implements InstallationContext {
-    private String componentName;
-    private String componentClassName;
-    private String componentDescription;
+    
+    private Component descriptor;
     private File installRoot;
-    private List classPathElements = new CopyOnWriteArrayList();
+    private List classPathElements = Collections.EMPTY_LIST;
     private ComponentContext context;
-    private DocumentFragment descriptorExtension;
-    private boolean binding;
-    private boolean engine;
     private boolean install = true;
-    private String[] sharedLibraries;
+    
+    public InstallationContextImpl(Component descriptor) {
+        this.descriptor = descriptor;
+        if (descriptor.getComponentClassPath() != null &&
+            descriptor.getComponentClassPath().getPathElements() != null &&
+            descriptor.getComponentClassPath().getPathElements().length > 0) {
+            String[] elems = descriptor.getComponentClassPath().getPathElements();
+            for (int i = 0; i < elems.length; i++) {
+                if (File.separatorChar == '\\') {
+                    elems[i] = elems[i].replace('/', '\\');
+                } else {
+                    elems[i] = elems[i].replace('\\', '/');
+                }
+            }
+            setClassPathElements(Arrays.asList(elems));
+        }
+    }
+
+    /**
+     * @return the descriptor
+     */
+    public Component getDescriptor() {
+        return descriptor;
+    }
 
     /**
      * @return the sharedLibraries
      */
     public String[] getSharedLibraries() {
-        return sharedLibraries;
-    }
-
-    /**
-     * @param sharedLibraries the sharedLibraries to set
-     */
-    public void setSharedLibraries(String[] sharedLibraries) {
-        this.sharedLibraries = sharedLibraries;
+        return getSharedLibraries(descriptor.getSharedLibraries());
     }
 
     /**
@@ -68,7 +83,7 @@ public class InstallationContextImpl implements InstallationContext {
      * @return the {@link Component}implementation class name, which must be non-null and non-empty.
      */
     public String getComponentClassName() {
-        return componentClassName;
+        return descriptor.getComponentClassName();
     }
 
     /**
@@ -92,7 +107,7 @@ public class InstallationContextImpl implements InstallationContext {
      * @return the unique component name, which must be non-null and non-empty.
      */
     public String getComponentName() {
-        return componentName;
+        return descriptor.getIdentification().getName();
     }
 
     /**
@@ -140,7 +155,8 @@ public class InstallationContextImpl implements InstallationContext {
      * <code>null</code> if none is present in the descriptor.
      */
     public DocumentFragment getInstallationDescriptorExtension() {
-        return descriptorExtension;
+        InstallationDescriptorExtension desc = descriptor.getDescriptorExtension();
+        return desc != null ? desc.getDescriptorExtension() : null;
     }
 
     /**
@@ -175,39 +191,32 @@ public class InstallationContextImpl implements InstallationContext {
      * ill-formed.
      */
     public void setClassPathElements(java.util.List classPathElements) {
-        this.classPathElements.addAll(classPathElements);
-    }
-    
-    
-    /**
-     * Set classpath elements from a String array
-     * @param elems
-     */
-    public void setClassPathElements(String[] elems){
-        if (elems != null){
-           for(int i =0; i < elems.length; i++){
-               this.classPathElements.add(elems[i]);
-           }
+        if (classPathElements == null) {
+            throw new IllegalArgumentException("classPathElements is null");
         }
+        if (classPathElements.isEmpty()) {
+            throw new IllegalArgumentException("classPathElements is empty");
+        }
+        for (Iterator iter = classPathElements.iterator(); iter.hasNext();) {
+            Object obj = iter.next();
+            if (obj instanceof String == false) {
+                throw new IllegalArgumentException("classPathElements must contain element of type String");
+            }
+            String element = (String) obj;
+            String sep = File.separator.equals("\\") ? "/" : "\\";
+            int offset = element.indexOf(sep);
+            if ( offset > -1 ) {
+                throw new IllegalArgumentException("classPathElements contains an invalid file separator '" + sep + "'"); 
+            }
+            File f = new File((String) element);
+            if (f.isAbsolute()) {
+                throw new IllegalArgumentException("classPathElements should not contain absolute paths");
+            }
+        }
+        this.classPathElements = new ArrayList(classPathElements);
     }
-    /**
-     * @return Returns the descriptorExtension.
-     */
-    public DocumentFragment getDescriptorExtension() {
-        return descriptorExtension;
-    }
-    /**
-     * @param descriptorExtension The descriptorExtension to set.
-     */
-    public void setDescriptorExtension(DocumentFragment descriptorExtension) {
-        this.descriptorExtension = descriptorExtension;
-    }
-    /**
-     * @param componentClassName The componentClassName to set.
-     */
-    public void setComponentClassName(String componentClassName) {
-        this.componentClassName = componentClassName;
-    }
+    
+    
     /**
      * @param context The context to set.
      */
@@ -227,45 +236,33 @@ public class InstallationContextImpl implements InstallationContext {
         this.installRoot = installRoot;
     }
     /**
-     * @param componentName The componentName to set.
-     */
-    public void setComponentName(String componentName) {
-        this.componentName = componentName;
-    }
-    /**
      * @return Returns the binding.
      */
     public boolean isBinding() {
-        return binding;
-    }
-    /**
-     * @param binding The binding to set.
-     */
-    public void setBinding(boolean binding) {
-        this.binding = binding;
+        return descriptor.isBindingComponent();
     }
     /**
      * @return Returns the engine.
      */
     public boolean isEngine() {
-        return engine;
-    }
-    /**
-     * @param engine The engine to set.
-     */
-    public void setEngine(boolean engine) {
-        this.engine = engine;
+        return descriptor.isServiceEngine();
     }
     /**
      * @return Returns the componentDescription.
      */
     public String getComponentDescription() {
-        return componentDescription;
+        return descriptor.getIdentification().getDescription();
     }
-    /**
-     * @param componentDescription The componentDescription to set.
-     */
-    public void setComponentDescription(String componentDescription) {
-        this.componentDescription = componentDescription;
+
+    private static String[] getSharedLibraries(SharedLibraryList[] sharedLibraries) {
+        if (sharedLibraries == null || sharedLibraries.length == 0) {
+            return null;
+        }
+        String[] names = new String[sharedLibraries.length];
+        for (int i = 0; i < names.length; i++) {
+            names[i] = sharedLibraries[i].getName();
+        }
+        return names;
     }
+
 }

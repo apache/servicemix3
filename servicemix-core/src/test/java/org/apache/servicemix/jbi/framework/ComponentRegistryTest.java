@@ -36,7 +36,8 @@ public class ComponentRegistryTest extends TestCase {
                               "description",
                               component,
                               false,
-                              false);
+                              false,
+                              null);
         assertNotNull(con);
         assertEquals(con, reg.getComponent(new ComponentNameSpace("container", "name")));
         assertEquals(component, reg.getComponent(new ComponentNameSpace("container", "name")).getComponent());

@@ -19,9 +19,6 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import org.apache.servicemix.jbi.loaders.ParentFirstClassLoader;
-import org.apache.servicemix.jbi.loaders.SelfFirstClassLoader;
-
 import junit.framework.TestCase;
 
 /**
@@ -34,14 +31,14 @@ public class ClassLoaderTest extends TestCase {
 	
 	public void testParentFirstClassLoader() throws Exception {
 		URLClassLoader pcl = (URLClassLoader) getClass().getClassLoader();
-		ClassLoader clsLoader = new ParentFirstClassLoader(pcl.getURLs(), pcl);
+		ClassLoader clsLoader = new JarFileClassLoader("", pcl.getURLs(), pcl, false, new String[0], new String[0]);
 		Class  clazz = clsLoader.loadClass(TestClass.class.getName());
 		assertSame(TestClass.class, clazz);
 	}
 	
 	public void testSelfFirstClassLoader() throws Exception {
 		URLClassLoader pcl = (URLClassLoader) getClass().getClassLoader();
-		ClassLoader clsLoader = new SelfFirstClassLoader(pcl.getURLs(), pcl);
+		ClassLoader clsLoader = new JarFileClassLoader("", pcl.getURLs(), pcl, true, new String[0], new String[0]);
 		Class  clazz = clsLoader.loadClass(TestClass.class.getName());
 		assertNotSame(TestClass.class, clazz);
 	}
@@ -50,7 +47,7 @@ public class ClassLoaderTest extends TestCase {
         URLClassLoader pcl = (URLClassLoader) getClass().getClassLoader();
         URL url = getClass().getResource("jndi.properties");
         url = new File(url.toURI()).getParentFile().toURL();
-        ClassLoader clsLoader = new ParentFirstClassLoader(new URL[] { url }, pcl);
+        ClassLoader clsLoader = new JarFileClassLoader("", new URL[] { url }, pcl, false, new String[0], new String[0]);
         URL res1 = clsLoader.getResource("jndi.properties");
         URL res2 = pcl.getResource("jndi.properties");
         assertEquals(res2, res1);
@@ -60,7 +57,7 @@ public class ClassLoaderTest extends TestCase {
         URLClassLoader pcl = (URLClassLoader) getClass().getClassLoader();
         URL url = getClass().getResource("jndi.properties");
         url = new File(url.toURI()).getParentFile().toURL();
-        ClassLoader clsLoader = new SelfFirstClassLoader(new URL[] { url }, pcl);
+        ClassLoader clsLoader = new JarFileClassLoader("", new URL[] { url }, pcl, true, new String[0], new String[0]);
         URL res1 = clsLoader.getResource("jndi.properties");
         URL res2 = pcl.getResource("jndi.properties");
         assertFalse(res2.equals(res1));
