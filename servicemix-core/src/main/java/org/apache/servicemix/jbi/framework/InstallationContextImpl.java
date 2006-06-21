@@ -17,6 +17,7 @@ package org.apache.servicemix.jbi.framework;
 
 import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
 
+import org.apache.servicemix.jbi.deployment.SharedLibraryList;
 import org.w3c.dom.DocumentFragment;
 
 import javax.jbi.component.Bootstrap;
@@ -44,9 +45,21 @@ public class InstallationContextImpl implements InstallationContext {
     private boolean binding;
     private boolean engine;
     private boolean install = true;
-    
-    
-   
+    private String[] sharedLibraries;
+
+    /**
+     * @return the sharedLibraries
+     */
+    public String[] getSharedLibraries() {
+        return sharedLibraries;
+    }
+
+    /**
+     * @param sharedLibraries the sharedLibraries to set
+     */
+    public void setSharedLibraries(String[] sharedLibraries) {
+        this.sharedLibraries = sharedLibraries;
+    }
 
     /**
      * Get the name of the class that implements the {@link Component}interface for this component. This must be the

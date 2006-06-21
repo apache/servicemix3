@@ -53,6 +53,7 @@ import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.components.util.PojoLifecycleAdaptor;
 import org.apache.servicemix.components.util.PojoSupport;
 import org.apache.servicemix.id.IdGenerator;
+import org.apache.servicemix.jbi.deployment.SharedLibraryList;
 import org.apache.servicemix.jbi.event.ComponentListener;
 import org.apache.servicemix.jbi.event.EndpointListener;
 import org.apache.servicemix.jbi.event.ExchangeEvent;
@@ -425,7 +426,7 @@ public class JBIContainer extends BaseLifeCycle {
      * @throws DeploymentException
      */
     public void installArchive(String url) throws DeploymentException {
-        installationService.install(url, true);
+        installationService.install(url, null, true);
     }
     
     /**
@@ -804,7 +805,11 @@ public class JBIContainer extends BaseLifeCycle {
      * @throws JBIException
      */
     public Logger getLogger(String suffix, String resourceBundleName) throws MissingResourceException, JBIException {
-        return Logger.getLogger(suffix, resourceBundleName);
+        try {
+            return Logger.getLogger(suffix, resourceBundleName);
+        } catch (IllegalArgumentException e) {
+            throw new JBIException("A logger can not be created using resource bundle " + resourceBundleName);
+        }
     }
 
     /**
@@ -943,7 +948,7 @@ public class JBIContainer extends BaseLifeCycle {
      * @throws JBIException
      */
     public ObjectName activateComponent(Component component, ActivationSpec activationSpec) throws JBIException {
-        return activateComponent(component, "POJO Component", activationSpec, true, false, false);
+        return activateComponent(component, "POJO Component", activationSpec, true, false, false, null);
     }
 
     /**
@@ -959,12 +964,13 @@ public class JBIContainer extends BaseLifeCycle {
      * @throws JBIException
      */
     public ObjectName activateComponent(File installDir, Component component, String description,
-                                        ComponentContextImpl context, boolean binding, boolean service) throws JBIException {
+                                        ComponentContextImpl context, boolean binding, boolean service,
+                                        String[] sharedLibraries) throws JBIException {
         ComponentNameSpace cns = context.getComponentNameSpace();
         ActivationSpec activationSpec = new ActivationSpec();
         activationSpec.setComponent(component);
         activationSpec.setComponentName(cns.getName());
-        return activateComponent(installDir, component, description, context, activationSpec, false, binding, service);
+        return activateComponent(installDir, component, description, context, activationSpec, false, binding, service, sharedLibraries);
     }
 
     /**
@@ -978,13 +984,14 @@ public class JBIContainer extends BaseLifeCycle {
      * @throws JBIException
      */
     public ObjectName activateComponent(Component component, String description, ActivationSpec activationSpec,
-                                        boolean pojo, boolean binding, boolean service) throws JBIException {
+                                        boolean pojo, boolean binding, boolean service,
+                                        String[] sharedLibraries) throws JBIException {
         ComponentNameSpace cns = new ComponentNameSpace(getName(), activationSpec.getComponentName());
         if (registry.getComponent(cns) != null) {
             throw new JBIException("A component is already registered for " + cns);
         }
         ComponentContextImpl context = new ComponentContextImpl(this, cns);
-        return activateComponent(new File("."), component, description, context, activationSpec, pojo, binding, service);
+        return activateComponent(new File("."), component, description, context, activationSpec, pojo, binding, service, sharedLibraries);
     }
 
     /**
@@ -1000,7 +1007,9 @@ public class JBIContainer extends BaseLifeCycle {
      * @throws JBIException
      */
     public ObjectName activateComponent(File installationDir, Component component, String description,
-                                        ComponentContextImpl context, ActivationSpec activationSpec, boolean pojo, boolean binding, boolean service)
+                                        ComponentContextImpl context, ActivationSpec activationSpec, 
+                                        boolean pojo, boolean binding, boolean service,
+                                        String[] sharedLibraries)
             throws JBIException {
         ObjectName result = null;
         ComponentNameSpace cns = new ComponentNameSpace(getName(), activationSpec.getComponentName());
@@ -1008,7 +1017,7 @@ public class JBIContainer extends BaseLifeCycle {
             log.info("Activating component for: " + cns + " with service: " + activationSpec.getService() + " component: "
                     + component);
         }
-        ComponentMBeanImpl lcc = registry.registerComponent(cns, description, component, binding, service);
+        ComponentMBeanImpl lcc = registry.registerComponent(cns, description, component, binding, service, sharedLibraries);
         if (lcc != null) {
             lcc.setPojo(pojo);
             ComponentEnvironment env = environmentContext.registerComponent(context.getEnvironment(),lcc);

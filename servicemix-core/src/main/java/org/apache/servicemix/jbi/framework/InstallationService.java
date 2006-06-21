@@ -18,6 +18,7 @@ package org.apache.servicemix.jbi.framework;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -46,25 +47,27 @@ import org.apache.servicemix.jbi.deployment.DescriptorFactory;
 import org.apache.servicemix.jbi.deployment.InstallationDescriptorExtension;
 import org.apache.servicemix.jbi.deployment.SharedLibrary;
 import org.apache.servicemix.jbi.deployment.SharedLibraryList;
-import org.apache.servicemix.jbi.loaders.ClassLoaderService;
-import org.apache.servicemix.jbi.loaders.InstallationClassLoader;
+import org.apache.servicemix.jbi.loaders.JarFileClassLoader;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.management.ManagementContext;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
 import org.apache.servicemix.jbi.management.ParameterHelper;
 import org.apache.servicemix.jbi.util.FileUtil;
+import org.apache.servicemix.jbi.util.FileVersionUtil;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+
 /**
  * Installation Service - installs/uninstalls archives
  * 
  * @version $Revision$
  */
 public class InstallationService extends BaseSystemService implements InstallationServiceMBean {
+    
     private static final Log log=LogFactory.getLog(InstallationService.class);
+    
     private EnvironmentContext environmentContext;
     private ManagementContext managementContext;
-    private ClassLoaderService classLoaderService=new ClassLoaderService();
     private Map installers=new ConcurrentHashMap();
     private Map nonLoadedInstallers = new ConcurrentHashMap();
 
@@ -164,13 +167,14 @@ public class InstallationService extends BaseSystemService implements Installati
         installationContext.setComponentDescription(descriptor.getIdentification().getDescription());
         installationContext.setInstallRoot(installationDir);
         installationContext.setComponentClassName(descriptor.getComponentClassName());
+        installationContext.setSharedLibraries(getSharedLibraries(descriptor.getSharedLibraries()));
         ClassPath cp = descriptor.getComponentClassPath();
         if (cp != null) {
             installationContext.setClassPathElements(cp.getPathElements());
         }
         // now build the ComponentContext
         File componentRoot = environmentContext.getComponentRootDir(componentName);
-        ComponentContextImpl context = buildComponentContext(componentRoot, componentName);
+        ComponentContextImpl context = buildComponentContext(componentRoot, installationDir, componentName);
         installationContext.setContext(context);
         InstallationDescriptorExtension desc = descriptor.getDescriptorExtension();
         if (desc != null) {
@@ -181,18 +185,24 @@ public class InstallationService extends BaseSystemService implements Installati
         // now we must initialize the boot strap class
         String bootstrapClassName = descriptor.getBootstrapClassName();
         ClassPath bootStrapClassPath = descriptor.getBootstrapClassPath();
-        InstallationClassLoader bootstrapLoader = null;
+        ClassLoader bootstrapLoader = null;
         if (bootstrapClassName != null && bootstrapClassName.length() > 0) {
             boolean parentFirst = descriptor.isBootstrapClassLoaderDelegationParentFirst();
-            bootstrapLoader = classLoaderService.buildClassLoader(
-                    installationDir, bootStrapClassPath.getPathElements(), parentFirst);
+            bootstrapLoader = buildClassLoader(
+                                        installationDir, 
+                                        bootStrapClassPath.getPathElements(), 
+                                        parentFirst,
+                                        null);
         }
         SharedLibraryList[] lists = descriptor.getSharedLibraries();
         String componentClassName = descriptor.getComponentClassName();
         ClassPath componentClassPath = descriptor.getComponentClassPath();
         boolean parentFirst = descriptor.isComponentClassLoaderDelegationParentFirst();
-        ClassLoader componentClassLoader = classLoaderService.buildClassLoader(installationDir, componentClassPath
-                        .getPathElements(), parentFirst, lists);
+        ClassLoader componentClassLoader = buildClassLoader(
+                                        installationDir, 
+                                        componentClassPath.getPathElements(), 
+                                        parentFirst, 
+                                        lists);
         InstallerMBeanImpl installer = new InstallerMBeanImpl(container,
                 installationContext, componentClassLoader,
                 componentClassName, bootstrapLoader,
@@ -210,7 +220,7 @@ public class InstallationService extends BaseSystemService implements Installati
      * @return - true if the operation was successful, otherwise false.
      */
     public boolean unloadInstaller(String componentName, boolean isToBeDeleted) {
-        boolean result=false;
+        boolean result = false;
         try {
             container.getBroker().suspend();
             InstallerMBeanImpl installer = (InstallerMBeanImpl) installers.remove(componentName);
@@ -268,7 +278,7 @@ public class InstallationService extends BaseSystemService implements Installati
     public boolean uninstallSharedLibrary(String aSharedLibName) {
         // TODO: should check existence of shared library
         // and that it is not currently in use
-        classLoaderService.removeSharedLibrary(aSharedLibName);
+        container.getRegistry().unregisterSharedLibrary(aSharedLibName);
         environmentContext.removeSharedLibraryDirectory(aSharedLibName);
         return true;
     }
@@ -295,35 +305,18 @@ public class InstallationService extends BaseSystemService implements Installati
      * Install an archive
      * 
      * @param location
-     * @throws DeploymentException
-     */
-    public void install(String location) throws DeploymentException {
-        install(location,false);
-    }
-
-    public void install(String location, Properties props) throws DeploymentException {
-        install(location, props, false);
-    }
-
-    /**
-     * Install an archive
-     * 
-     * @param location
+     * @param props
      * @param autoStart
      * @throws DeploymentException
      */
-    public void install(String location, boolean autoStart) throws DeploymentException {
-        install(location, null, autoStart);
-    }
-    
     public void install(String location, Properties props, boolean autoStart) throws DeploymentException {
-        File tmpDir=AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(),location);
-        if(tmpDir!=null){
-            Descriptor root=DescriptorFactory.buildDescriptor(tmpDir);
-            if(root!=null){
+        File tmpDir = AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(),location);
+        if (tmpDir != null) {
+            Descriptor root = DescriptorFactory.buildDescriptor(tmpDir);
+            if (root != null) {
                 install(tmpDir, props, root, autoStart);
             }else{
-                log.error("Could not find Descriptor from: "+location);
+                log.error("Could not find Descriptor from: " + location);
             }
         }else{
             log.warn("location: "+location+" isn't valid");
@@ -338,56 +331,51 @@ public class InstallationService extends BaseSystemService implements Installati
      * @param autoStart
      * @throws DeploymentException
      */
-    protected void install(File tmpDir, Descriptor root, boolean autoStart) throws DeploymentException {
-        install(tmpDir, null, root, autoStart);
-    }
-
     protected void install(File tmpDir, Properties props, Descriptor root, boolean autoStart) throws DeploymentException {
         if (root.getComponent() != null) {
             String componentName = root.getComponent().getIdentification().getName();
-            if (!installers.containsKey(componentName)) {
-                InstallerMBeanImpl installer = doInstallArchive(tmpDir,root);
-                if (installer != null) {
-                    try {
-                        if (props != null && props.size() > 0) {
-                            ObjectName on = installer.getInstallerConfigurationMBean();
-                            if (on == null ) {
-                                log.warn("Could not find installation configuration MBean. Installation properties will be ignored.");
-                            } else {
-                                MBeanServer mbs = managementContext.getMBeanServer();
-                                for (Iterator it = props.keySet().iterator(); it.hasNext();) {
-                                    String key = (String) it.next();
-                                    String val = props.getProperty(key);
-                                    try {
-                                        mbs.setAttribute(on, new Attribute(key, val));
-                                    } catch (JMException e) {
-                                        throw new DeploymentException("Could not set installation property: (" + key + " = " + val, e);
-                                    }
+            if (installers.containsKey(componentName)) {
+                throw new DeploymentException("Component " + componentName + " is already installed");
+            }
+            InstallerMBeanImpl installer = doInstallArchive(tmpDir,root);
+            if (installer != null) {
+                try {
+                    if (props != null && props.size() > 0) {
+                        ObjectName on = installer.getInstallerConfigurationMBean();
+                        if (on == null ) {
+                            log.warn("Could not find installation configuration MBean. Installation properties will be ignored.");
+                        } else {
+                            MBeanServer mbs = managementContext.getMBeanServer();
+                            for (Iterator it = props.keySet().iterator(); it.hasNext();) {
+                                String key = (String) it.next();
+                                String val = props.getProperty(key);
+                                try {
+                                    mbs.setAttribute(on, new Attribute(key, val));
+                                } catch (JMException e) {
+                                    throw new DeploymentException("Could not set installation property: (" + key + " = " + val, e);
                                 }
                             }
                         }
-                        installer.install();
-                    } catch(JBIException e) {
+                    }
+                    installer.install();
+                } catch(JBIException e) {
+                    throw new DeploymentException(e);
+                }
+                if (autoStart) {
+                    try{
+                        ComponentMBeanImpl lcc = container.getComponent(componentName);
+                        if (lcc != null) {
+                            lcc.start();
+                        }else{
+                            log.warn("No ComponentConnector found for Component "+componentName);
+                        }
+                    }catch(JBIException e){
+                        String errStr="Failed to start Component: "+componentName;
+                        log.error(errStr,e);
                         throw new DeploymentException(e);
                     }
-                    if (autoStart) {
-                        try{
-                            ComponentMBeanImpl lcc = container.getComponent(componentName);
-                            if (lcc != null) {
-                                lcc.start();
-                            }else{
-                                log.warn("No ComponentConnector found for Component "+componentName);
-                            }
-                        }catch(JBIException e){
-                            String errStr="Failed to start Component: "+componentName;
-                            log.error(errStr,e);
-                            throw new DeploymentException(e);
-                        }
-                    }
-                    installers.put(componentName,installer);
                 }
-            }else{
-                log.warn("Component "+componentName+" is already installed");
+                installers.put(componentName,installer);
             }
         }
     }
@@ -429,27 +417,28 @@ public class InstallationService extends BaseSystemService implements Installati
         return installer;
     }
 
-    protected String doInstallSharedLibrary(File tmpDirectory,SharedLibrary descriptor) throws DeploymentException{
-        String result=null;
-        if(descriptor!=null){
-            try{
-                result=descriptor.getIdentification().getName();
-                File installationDir=environmentContext.createSharedLibraryDirectory(result);
-                if(installationDir.exists()){
-                    FileUtil.deleteFile(installationDir);
-                }
-                if(!tmpDirectory.renameTo(installationDir)){
+    protected String doInstallSharedLibrary(File tmpDirectory, SharedLibrary descriptor) throws DeploymentException{
+        String result = null;
+        if (descriptor != null) {
+            File installationDir = null;
+            try {
+                result = descriptor.getIdentification().getName();
+                File rootDir = environmentContext.createSharedLibraryDirectory(result);
+                installationDir = FileVersionUtil.getNewVersionDirectory(rootDir);
+                if (!tmpDirectory.renameTo(installationDir)) {
                     throw new DeploymentException("Unable to rename " + tmpDirectory + " to " + installationDir);
                 }
                 if (log.isDebugEnabled()) {
                     log.debug("Moved " + tmpDirectory + " to " + installationDir);
                 }
-                classLoaderService.addSharedLibrary(installationDir, descriptor);
-            }catch(IOException e){
-                log.error("Deployment of Shared Library failed",e);
+                container.getRegistry().registerSharedLibrary(descriptor, installationDir);
+            } catch (Exception e) {
+                log.error("Deployment of Shared Library failed", e);
                 // remove any files created for installation
-                environmentContext.removeComponentRootDirectory(descriptor.getIdentification().getName());
+                FileUtil.deleteFile(installationDir);
                 throw new DeploymentException(e);
+            } finally {
+                FileUtil.deleteFile(tmpDirectory);
             }
         }
         return result;
@@ -490,12 +479,14 @@ public class InstallationService extends BaseSystemService implements Installati
             installationContext.setComponentDescription(descriptor.getIdentification().getDescription());
             installationContext.setInstallRoot(installationDir);
             installationContext.setComponentClassName(descriptor.getComponentClassName());
+            installationContext.setSharedLibraries(getSharedLibraries(descriptor.getSharedLibraries()));
             ClassPath cp=descriptor.getComponentClassPath();
             if(cp!=null){
                 installationContext.setClassPathElements(cp.getPathElements());
             }
             // now build the ComponentContext
-            installationContext.setContext(buildComponentContext(componentRoot,name));
+            ComponentContextImpl context = buildComponentContext(componentRoot, installationDir, name);
+            installationContext.setContext(context);
             InstallationDescriptorExtension desc=descriptor.getDescriptorExtension();
             if(desc!=null){
                 installationContext.setDescriptorExtension(desc.getDescriptorExtension());
@@ -505,18 +496,24 @@ public class InstallationService extends BaseSystemService implements Installati
             // now we must initialize the boot strap class
             String bootstrapClassName=descriptor.getBootstrapClassName();
             ClassPath bootStrapClassPath=descriptor.getBootstrapClassPath();
-            InstallationClassLoader bootstrapLoader=null;
+            ClassLoader bootstrapLoader=null;
             if(bootstrapClassName!=null&&bootstrapClassName.length()>0){
                 boolean parentFirst=descriptor.isBootstrapClassLoaderDelegationParentFirst();
-                bootstrapLoader=classLoaderService.buildClassLoader(installationDir,bootStrapClassPath
-                                .getPathElements(),parentFirst);
+                bootstrapLoader = buildClassLoader(
+                                        installationDir,
+                                        bootStrapClassPath.getPathElements(),
+                                        parentFirst,
+                                        null);
             }
             SharedLibraryList[] lists=descriptor.getSharedLibraries();
             String componentClassName=descriptor.getComponentClassName();
             ClassPath componentClassPath=descriptor.getComponentClassPath();
             boolean parentFirst=descriptor.isComponentClassLoaderDelegationParentFirst();
-            ClassLoader componentClassLoader=classLoaderService.buildClassLoader(installationDir,componentClassPath
-                            .getPathElements(),parentFirst,lists);
+            ClassLoader componentClassLoader = buildClassLoader(
+                                        installationDir,
+                                        componentClassPath.getPathElements(),
+                                        parentFirst,
+                                        lists);
             result=new InstallerMBeanImpl(container,installationContext,componentClassLoader,componentClassName,
                             bootstrapLoader,bootstrapClassName, false);
             // create an MBean for the installer
@@ -545,26 +542,29 @@ public class InstallationService extends BaseSystemService implements Installati
      * @return true/false
      */
     protected boolean containsSharedLibrary(String name){
-        return classLoaderService.containsSharedLibrary(name);
+        return container.getRegistry().getSharedLibrary(name) != null;
     }
 
     protected void buildSharedLibs(){
         // walk through shared libaries and add then to the ClassLoaderService
-        File top=environmentContext.getSharedLibDir();
-        if(top!=null&&top.exists()&&top.isDirectory()){
-            // directory structure is sharedlibraries/<lib name>stuff ...
-            File[] files=top.listFiles();
-            if(files!=null){
-                for(int i=0;i<files.length;i++){
-                    if(files[i].isDirectory()){
-                        Descriptor root=DescriptorFactory.buildDescriptor(files[i]);
-                        if(root!=null){
-                            SharedLibrary sl=root.getSharedLibrary();
-                            if(sl!=null){
-                                try{
-                                    classLoaderService.addSharedLibrary(files[i],sl);
-                                }catch(MalformedURLException e){
-                                    log.error("Failed to initialize sharted library",e);
+        File top = environmentContext.getSharedLibDir();
+        if (top != null && top.exists() && top.isDirectory()) {
+            // directory structure is sharedlibraries/<lib name>/version_x/stuff ...
+            File[] files = top.listFiles();
+            if (files != null) {
+                for (int i = 0; i < files.length; i++) {
+                    if (files[i].isDirectory()) {
+                        File dir = FileVersionUtil.getLatestVersionDirectory(files[i]);
+                        if (dir != null) {
+                            Descriptor root = DescriptorFactory.buildDescriptor(dir);
+                            if (root != null) {
+                                SharedLibrary sl = root.getSharedLibrary();
+                                if (sl != null) {
+                                    try {
+                                        container.getRegistry().registerSharedLibrary(sl, dir);
+                                    } catch (Exception e) {
+                                        log.error("Failed to initialize sharted library", e);
+                                    }
                                 }
                             }
                         }
@@ -630,7 +630,7 @@ public class InstallationService extends BaseSystemService implements Installati
         }
     }
 
-    protected ComponentContextImpl buildComponentContext(File componentRoot,String name) throws IOException{
+    protected ComponentContextImpl buildComponentContext(File componentRoot, File installRoot, String name) throws IOException{
         ComponentNameSpace cns=new ComponentNameSpace(container.getName(),name);
         ComponentContextImpl context=new ComponentContextImpl(container,cns);
         ComponentEnvironment env=new ComponentEnvironment();
@@ -638,8 +638,77 @@ public class InstallationService extends BaseSystemService implements Installati
         File privateWorkspace=environmentContext.createWorkspaceDirectory(name);
         env.setWorkspaceRoot(privateWorkspace);
         env.setComponentRoot(componentRoot);
+        env.setInstallRoot(installRoot);
         context.setEnvironment(env);
         return context;
+    }
+
+    /**
+     * Buld a Custom ClassLoader
+     * 
+     * @param dir
+     * @param classPathNames
+     * @param parentFirst
+     * @param list
+     * @return ClassLoader
+     * @throws MalformedURLException
+     * @throws MalformedURLException
+     * @throws DeploymentException
+     */
+    protected ClassLoader buildClassLoader(
+                    File dir,
+                    String[] classPathNames, 
+                    boolean parentFirst,
+                    SharedLibraryList[] list) throws MalformedURLException, DeploymentException {
+        
+        // Make the current ClassLoader the parent
+        ClassLoader[] parents;
+        
+        // Create a new parent if there are some shared libraries
+        if (list != null && list.length > 0) {
+            parents = new ClassLoader[list.length];
+            for (int i = 0; i < parents.length; i++) {
+                String name = list[i].getName();
+                org.apache.servicemix.jbi.framework.SharedLibrary sl = 
+                    container.getRegistry().getSharedLibrary(name);
+                if (sl == null) {
+                    throw new DeploymentException("Shared library " + name + " is not installed");
+                }
+                parents[i] = sl.getClassLoader();
+            }
+        } else {
+            parents = new ClassLoader[] { getClass().getClassLoader() };
+        }
+        
+        URL[] urls = new URL[classPathNames.length];
+        for (int i = 0; i < classPathNames.length; i++) {
+            File file = new File(dir, classPathNames[i]);
+            if (!file.exists()) {
+                throw new DeploymentException("Unable to add File " + file
+                        + " to class path as it doesn't exist: "
+                        + file.getAbsolutePath());
+            }
+            urls[i] = file.toURL();
+        }
+        
+        return new JarFileClassLoader(
+                        "Componnent ClassLoader",
+                        urls,
+                        parents, 
+                        !parentFirst,
+                        new String[0],
+                        new String[] { "java.", "javax." });
+    }
+
+    protected String[] getSharedLibraries(SharedLibraryList[] sharedLibraries) {
+        if (sharedLibraries == null || sharedLibraries.length == 0) {
+            return null;
+        }
+        String[] names = new String[sharedLibraries.length];
+        for (int i = 0; i < names.length; i++) {
+            names[i] = sharedLibraries[i].getName();
+        }
+        return names;
     }
 
 }

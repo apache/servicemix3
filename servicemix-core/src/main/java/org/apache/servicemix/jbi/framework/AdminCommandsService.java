@@ -17,11 +17,13 @@ package org.apache.servicemix.jbi.framework;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
 import javax.jbi.JBIException;
+import javax.jbi.management.LifeCycleMBean;
 import javax.management.JMException;
 import javax.management.MBeanOperationInfo;
 
@@ -61,7 +63,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
      */
     public String installComponent(String file, Properties props) throws Exception {
         try {
-            container.getInstallationService().install(file);
+            container.getInstallationService().install(file, props, false);
             return ManagementSupport.createSuccessMessage("installComponent", file);
         } catch (Exception e) {
             throw ManagementSupport.failure("installComponent", file, e);
@@ -75,6 +77,13 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
      * @return
      */
     public String uninstallComponent(String name) throws Exception {
+        ComponentMBeanImpl comp = container.getComponent(name); 
+        if (comp == null) {
+            throw ManagementSupport.failure("uninstallComponent", "Component '" + name + "' is not installed.");
+        }
+        if (!comp.isShutDown()) {
+            throw ManagementSupport.failure("uninstallComponent", "Component '" + name + "' is not shut down.");
+        }
         boolean success = container.getInstallationService().unloadInstaller(name, true);
         if (success) {
             return success("uninstallComponent", name);
@@ -100,6 +109,26 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
      * @return
      */
     public String uninstallSharedLibrary(String name) throws Exception {
+        // Check that the library is installed
+        SharedLibrary sl = container.getRegistry().getSharedLibrary(name);
+        if (sl == null) {
+            throw ManagementSupport.failure("uninstallSharedLibrary", "Shared library '" + name + "' is not installed.");
+        }
+        // Check that it is not used by a running component
+        Collection components = container.getRegistry().getComponents();
+        for (Iterator iter = components.iterator(); iter.hasNext();) {
+            ComponentMBeanImpl comp = (ComponentMBeanImpl) iter.next();
+            if (!comp.isShutDown()) {
+                String[] sls = comp.getSharedLibraries();
+                if (sls != null) {
+                    for (int i = 0; i < sls.length; i++) {
+                        if (name.equals(sls[i])) {
+                            throw ManagementSupport.failure("uninstallSharedLibrary", "Shared library '" + name + "' is used by component '" + comp.getName() + "'.");
+                        }
+                    }
+                }
+            }
+        }
         boolean success = container.getInstallationService().uninstallSharedLibrary(name);
         if (success) {
             return success("uninstallSharedLibrary", name);
@@ -249,6 +278,16 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
                                  String requiredState,
                                  String sharedLibraryName,
                                  String serviceAssemblyName) throws Exception {
+        // validate requiredState
+        if (requiredState != null && requiredState.length() > 0) {
+            if (!LifeCycleMBean.UNKNOWN.equalsIgnoreCase(requiredState) &&
+                !LifeCycleMBean.SHUTDOWN.equalsIgnoreCase(requiredState) &&
+                !LifeCycleMBean.STOPPED.equalsIgnoreCase(requiredState) &&
+                !LifeCycleMBean.STARTED.equalsIgnoreCase(requiredState)) {
+                throw ManagementSupport.failure("listComponents", "Required state '" + requiredState + "' is not a valid state.");
+            }
+        }
+        // Get components
         Collection connectors = container.getRegistry().getComponents();
         List components = new ArrayList();
         for (Iterator iter = connectors.iterator(); iter.hasNext();) {
@@ -266,7 +305,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
                 continue;
             }
             // Check status
-            if (requiredState != null && requiredState.length() > 0 && !requiredState.equals(component.getCurrentState())) {
+            if (requiredState != null && requiredState.length() > 0 && !requiredState.equalsIgnoreCase(component.getCurrentState())) {
                 continue;
             }
             // Check shared library
@@ -297,7 +336,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
         buffer.append("<component-info-list xmlns='http://java.sun.com/xml/ns/jbi/component-info-list' version='1.0'>\n");
         for (Iterator iter = components.iterator(); iter.hasNext();) {
             ComponentMBeanImpl component = (ComponentMBeanImpl) iter.next();
-            buffer.append("  <component-info>");
+            buffer.append("  <component-info");
             if (!component.isBinding() && component.isService()) {
                 buffer.append(" type='service-engine'");
             } else if (component.isBinding() && !component.isService()) {
@@ -308,7 +347,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
             if (component.getDescription() != null) {
                 buffer.append("    <description>");
                 buffer.append(component.getDescription());
-                buffer.append("<description>\n");
+                buffer.append("</description>\n");
             }
             buffer.append("  </component-info>\n");
         }
@@ -324,8 +363,37 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
      * @return
      */
     public String listSharedLibraries(String componentName, String sharedLibraryName) throws Exception {
-        // TODO Auto-generated method stub
-        return null;
+        Collection libs;
+        if (sharedLibraryName != null) {
+            SharedLibrary sl = container.getRegistry().getSharedLibrary(sharedLibraryName);
+            if (sl == null) {
+                libs = Collections.EMPTY_LIST;
+            } else {
+                libs = Collections.singletonList(sl);
+            }
+        } else if (componentName != null) {
+            // TODO: handle componentName
+            libs = container.getRegistry().getSharedLibraries();
+        } else {
+            libs = container.getRegistry().getSharedLibraries();
+        }
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("<?xml version='1.0'?>\n");
+        buffer.append("<component-info-list xmlns='http://java.sun.com/xml/ns/jbi/component-info-list' version='1.0'>\n");
+        for (Iterator iter = libs.iterator(); iter.hasNext();) {
+            SharedLibrary sl = (SharedLibrary) iter.next();
+            buffer.append("  <component-info type='shared-library' name='")
+                  .append(sl.getName())
+                  .append("' state='Started'>");
+            if (sl.getDescription() != null) {
+                buffer.append("    <description>");
+                buffer.append(sl.getDescription());
+                buffer.append("</description>\n");
+            }
+            buffer.append("  </component-info>\n");
+        }
+        buffer.append("</component-info-list>");
+        return buffer.toString();
     }
 
     /**
@@ -358,7 +426,7 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
 
         StringBuffer buffer = new StringBuffer();
         buffer.append("<?xml version='1.0'?>\n");
-        buffer.append("<service-assembly-info-list xmlns='http://java.sun.com/xml/ns/jbi/component-info-list' version='1.0'>\n");
+        buffer.append("<service-assembly-info-list xmlns='http://java.sun.com/xml/ns/jbi/service-assembly-info-list' version='1.0'>\n");
         for (Iterator iter = assemblies.iterator(); iter.hasNext();) {
             ServiceAssemblyLifeCycle sa = (ServiceAssemblyLifeCycle) iter.next();
             buffer.append("  <service-assembly-info");

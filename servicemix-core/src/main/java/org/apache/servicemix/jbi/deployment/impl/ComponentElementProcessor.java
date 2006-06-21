@@ -49,7 +49,7 @@ public class ComponentElementProcessor extends BeanPropertyElementProcessor {
         Element property = addPropertyElement(element, "sharedLibraries");
         Element list = addElement(property, "list");
 
-        DocumentFragment fragment = element.getOwnerDocument().createDocumentFragment();
+        DocumentFragment fragment = null;
 
         Node current = element.getFirstChild();
         while (current != null) {
@@ -59,6 +59,9 @@ public class ComponentElementProcessor extends BeanPropertyElementProcessor {
                 String uri = node.getNamespaceURI();
                 if (!JbiNamespaceProcessor.JBI_NAMESPACE.equals(uri) && node != property) {
                     element.removeChild(node);
+                    if (fragment == null) {
+                        fragment = element.getOwnerDocument().createDocumentFragment();
+                    }
                     fragment.appendChild(node);
                 }
                 else if ("shared-library".equals(node.getNodeName())) {
@@ -70,15 +73,17 @@ public class ComponentElementProcessor extends BeanPropertyElementProcessor {
             }
         }
 
-        Element descriptorProperty = addPropertyElement(element, "descriptorExtension");
-        descriptorProperty.setAttribute("ref", "installationDescriptorExtension");
-
-        // lets find all elements which are not in the JBI namespace
-        Map propertiesMap = new HashMap();
-        propertiesMap.put("descriptorExtension", fragment);
-        RootBeanDefinition definition = new RootBeanDefinition(InstallationDescriptorExtension.class, new MutablePropertyValues(propertiesMap));
-        beanDefinitionReader.getBeanFactory().registerBeanDefinition("installationDescriptorExtension", definition);
-
+        if (fragment != null) {
+            Element descriptorProperty = addPropertyElement(element, "descriptorExtension");
+            descriptorProperty.setAttribute("ref", "installationDescriptorExtension");
+    
+            // lets find all elements which are not in the JBI namespace
+            Map propertiesMap = new HashMap();
+            propertiesMap.put("descriptorExtension", fragment);
+            RootBeanDefinition definition = new RootBeanDefinition(InstallationDescriptorExtension.class, new MutablePropertyValues(propertiesMap));
+            beanDefinitionReader.getBeanFactory().registerBeanDefinition("installationDescriptorExtension", definition);
+        }
+        
         super.processElement(element, beanDefinitionReader);
     }
 }

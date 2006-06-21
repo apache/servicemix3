@@ -154,7 +154,7 @@ public class InstallerMBeanImpl implements InstallerMBean {
             if (componentClass != null){
                 Component component = (Component) componentClass.newInstance();
                 result = container.activateComponent(context.getInstallRootAsDir(), component, context.getComponentDescription(),(ComponentContextImpl) context.getContext(), context
-                        .isBinding(), context.isEngine());
+                        .isBinding(), context.isEngine(), context.getSharedLibraries());
             }
             else {
                 String err = "component class " + context.getComponentClassName() + " not found";

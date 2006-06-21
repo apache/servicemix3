@@ -41,6 +41,7 @@ import org.apache.servicemix.jbi.container.ServiceAssemblyEnvironment;
 import org.apache.servicemix.jbi.container.SubscriptionSpec;
 import org.apache.servicemix.jbi.deployment.ServiceAssembly;
 import org.apache.servicemix.jbi.deployment.ServiceUnit;
+import org.apache.servicemix.jbi.deployment.SharedLibraryList;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
@@ -68,8 +69,10 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     private EndpointRegistry endpointRegistry;
     private SubscriptionRegistry subscriptionRegistry;
     private ServiceAssemblyRegistry serviceAssemblyRegistry;
+    private Map sharedLibraries;
     private Map serviceUnits;
     private List pendingAssemblies;
+    private List pendingComponents;
 
     /**
      * Constructor
@@ -81,6 +84,8 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         this.serviceAssemblyRegistry = new ServiceAssemblyRegistry(this);
         this.serviceUnits = new ConcurrentHashMap();
         this.pendingAssemblies = new CopyOnWriteArrayList();
+        this.sharedLibraries = new ConcurrentHashMap();
+        this.pendingComponents = new CopyOnWriteArrayList();
     }
     
     /**
@@ -393,8 +398,9 @@ public class Registry extends BaseSystemService implements RegistryMBean {
                                                 String description,
                                                 Component component,
                                                 boolean binding, 
-                                                boolean service) throws JBIException {
-        return componentRegistry.registerComponent(name,description, component, binding, service);
+                                                boolean service,
+                                                String[] sharedLibraries) throws JBIException {
+        return componentRegistry.registerComponent(name,description, component, binding, service, sharedLibraries);
     }
 
     /**
@@ -698,6 +704,40 @@ public class Registry extends BaseSystemService implements RegistryMBean {
             }
         }
     }
+    
+    public void registerSharedLibrary(org.apache.servicemix.jbi.deployment.SharedLibrary sl,
+                                      File installationDir) {
+        SharedLibrary library = new SharedLibrary(sl, installationDir);
+        this.sharedLibraries.put(library.getName(), library);
+        try {
+            ObjectName objectName = getContainer().getManagementContext().createObjectName(library);
+            getContainer().getManagementContext().registerMBean(objectName, library, SharedLibraryMBean.class);
+        } catch (JMException e) {
+            log.error("Could not register MBean for service unit", e);
+        }
+        checkPendingComponents();
+    }
+    
+    public void unregisterSharedLibrary(String name) {
+        // TODO: check for components depending on this library,
+        // shutdown them and add them to the list of pending components
+        SharedLibrary sl = (SharedLibrary) this.sharedLibraries.remove(name);
+        if (sl != null) {
+            try {
+                getContainer().getManagementContext().unregisterMBean(sl);
+            } catch (JBIException e) {
+                log.error("Could not unregister MBean for shared library", e);
+            }
+        }
+    }
+    
+    public SharedLibrary getSharedLibrary(String name) {
+        return (SharedLibrary) sharedLibraries.get(name);
+    }
+    
+    public Collection getSharedLibraries() {
+        return sharedLibraries.values();
+    }
 
     public void registerEndpointConnection(QName fromSvc, String fromEp, QName toSvc, String toEp, String link) throws JBIException {
         endpointRegistry.registerEndpointConnection(fromSvc, fromEp, toSvc, toEp, link);
@@ -763,6 +803,33 @@ public class Registry extends BaseSystemService implements RegistryMBean {
                     log.error("Error trying to restore service assembly state", e);
                 }
             }
+        }
+    }
+
+    public void checkPendingComponents() {
+        try {
+            getContainer().getWorkManager().scheduleWork(new Work() {
+                public void release() {
+                }
+                public void run() {
+                    startPendingComponents();
+                }
+            });
+        } catch (WorkException e) {
+            log.error("Could not schedule work", e);
+        }
+    }
+
+    public void addPendingComponent(ComponentMBeanImpl comp) {
+        if (!pendingComponents.contains(comp)) {
+            pendingComponents.add(comp);
+        }
+    }
+    
+    protected synchronized void startPendingComponents() {
+        for (Iterator iter = pendingComponents.iterator(); iter.hasNext();) {
+            ComponentMBeanImpl comp = (ComponentMBeanImpl) iter.next();
+            // TODO: restore component state if 
         }
     }
 

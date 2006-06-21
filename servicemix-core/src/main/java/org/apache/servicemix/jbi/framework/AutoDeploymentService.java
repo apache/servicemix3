@@ -218,7 +218,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 	entry.type = "component";
                 	entry.name = componentName; 
                     installationService.unloadInstaller(componentName, true);
-                    installationService.install(tmpDir, root, autoStart);
+                    installationService.install(tmpDir, null, root, autoStart);
                     checkPendingSAs();
                 } else if (root.getSharedLibrary() != null) {
                 	String libraryName = root.getSharedLibrary().getIdentification().getName();

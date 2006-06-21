@@ -34,6 +34,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.deployment.SharedLibraryList;
 import org.apache.servicemix.jbi.event.ComponentEvent;
 import org.apache.servicemix.jbi.event.ComponentListener;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
@@ -71,6 +72,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
     private boolean binding;
     private boolean service;
     private File stateFile;
+    private String[] sharedLibraries;
 
     /**
      * Construct with it's id and delivery channel Id
@@ -87,7 +89,8 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
                               String description, 
                               Component component,
                               boolean binding, 
-                              boolean service) {
+                              boolean service,
+                              String[] sharedLibraries) {
         this.componentName = name;
         this.container = container;
         this.component = component;
@@ -96,6 +99,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
         this.service = service;
         this.componentStatsMBean = new ComponentStats(this);
         this.messagingStats = new MessagingStats(name.getName());
+        this.sharedLibraries = sharedLibraries;
     }
 
     /**
@@ -658,6 +662,13 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
 
     public boolean isEngine() {
         return service;
+    }
+
+    /**
+     * @return the sharedLibraries
+     */
+    public String[] getSharedLibraries() {
+        return sharedLibraries;
     }
 
 }

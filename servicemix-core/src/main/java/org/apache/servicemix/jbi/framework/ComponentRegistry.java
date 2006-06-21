@@ -25,6 +25,8 @@ import java.util.Map;
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
 
+import org.apache.servicemix.jbi.deployment.SharedLibraryList;
+
 /**
  * Registry for Components
  *
@@ -55,10 +57,11 @@ public class ComponentRegistry {
                     String description, 
                     Component component,
                     boolean binding, 
-                    boolean service) {
+                    boolean service,
+                    String[] sharedLibraries) {
         ComponentMBeanImpl result = null;
         if (!idMap.containsKey(name)) {
-            result = new ComponentMBeanImpl(registry.getContainer(), name, description, component, binding, service);
+            result = new ComponentMBeanImpl(registry.getContainer(), name, description, component, binding, service, sharedLibraries);
             idMap.put(name, result);
         }
         return result;
