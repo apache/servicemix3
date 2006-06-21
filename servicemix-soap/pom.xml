@@ -29,7 +29,7 @@
   </parent>
 
   <artifactId>servicemix-soap</artifactId>
-  <packaging>jar</packaging>
+  <packaging>jbi-shared-library</packaging>
   <name>ServiceMix :: SOAP</name>
   <description>SOAP Stack</description>
 
@@ -37,6 +37,7 @@
     <dependency>
       <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-common</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
@@ -86,6 +87,10 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.servicemix.tooling</groupId>
+        <artifactId>jbi-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
