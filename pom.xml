@@ -133,8 +133,8 @@
     <developer>
       <id>pdodds</id>
       <name>Philip Dodds</name>
-      <email>pdodds@unity-systems.com</email>
-      <organization>Unity Systems</organization>
+      <email>philip.dodds@gmail.com</email>
+      <organization>Five Clouds</organization>
     </developer>
     <developer>
       <id>jlim</id>
@@ -331,6 +331,12 @@
       </dependency>
       <dependency>
         <groupId>${pom.groupId}</groupId>
+        <artifactId>servicemix-common</artifactId>
+        <type>jbi-shared-library</type>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-console</artifactId>
         <version>${pom.version}</version>
       </dependency>
@@ -362,6 +368,12 @@
       <dependency>
         <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-soap</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${pom.groupId}</groupId>
+        <artifactId>servicemix-soap</artifactId>
+        <type>jbi-shared-library</type>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
