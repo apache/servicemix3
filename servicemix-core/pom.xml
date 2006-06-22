@@ -139,7 +139,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.servicemix.dependencies</groupId>
+      <groupId>jencks</groupId>
       <artifactId>jencks</artifactId>
     </dependency>
     <dependency>

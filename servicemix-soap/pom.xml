@@ -37,7 +37,6 @@
     <dependency>
       <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-common</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>

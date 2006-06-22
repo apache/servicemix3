@@ -41,6 +41,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.EnvironmentContext;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.deployment.Component;
 import org.apache.servicemix.jbi.deployment.Descriptor;
 import org.apache.servicemix.jbi.deployment.DescriptorFactory;
 import org.apache.servicemix.jbi.deployment.ServiceAssembly;
@@ -68,6 +69,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     private AtomicBoolean started = new AtomicBoolean(false);
     private Timer statsTimer;
     private TimerTask timerTask;
+    private Map pendingComponents = new ConcurrentHashMap();
     private Map pendingSAs = new ConcurrentHashMap();
     private Map installFileMap = null;
     private Map deployFileMap = null;
@@ -214,17 +216,52 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             try{
                 container.getBroker().suspend();
                 if (root.getComponent() != null) {
-                	String componentName = root.getComponent().getIdentification().getName();
+                    Component comp = root.getComponent();
+                	String componentName = comp.getIdentification().getName();
                 	entry.type = "component";
                 	entry.name = componentName; 
-                    installationService.unloadInstaller(componentName, true);
-                    installationService.install(tmpDir, null, root, autoStart);
-                    checkPendingSAs();
+                    try {
+                        if (container.getRegistry().getComponent(componentName) != null) {
+                            installationService.unloadInstaller(componentName, true);
+                        }
+                        // See if shared libraries are installed
+                        entry.dependencies = getSharedLibraryNames(comp);
+                        if (log.isDebugEnabled()) {
+                            log.debug("Component dependencies: " + entry.dependencies);
+                        }
+                        String missings = null;
+                        boolean canInstall = true;
+                        for (Iterator it = entry.dependencies.iterator(); it.hasNext();) {
+                            String libraryName = (String) it.next();
+                            if (container.getRegistry().getSharedLibrary(libraryName) == null) {
+                                canInstall = false;
+                                if (missings != null) {
+                                    missings += ", " + libraryName;
+                                } else {
+                                    missings = libraryName;
+                                }
+                            }
+                        }
+                        if (canInstall) {
+                            installationService.install(tmpDir, null, root, autoStart);
+                            checkPendingSAs();
+                        } else {
+                            entry.pending = true;
+                            log.info("Shared libraries " + missings + " are not installed yet - adding Component "
+                                            + componentName + " to pending list");
+                            pendingComponents.put(tmpDir, entry);
+                        }
+                    } catch (Exception e) {
+                        String errStr = "Failed to update Component: " + componentName;
+                        log.error(errStr, e);
+                        throw new DeploymentException(errStr, e);
+                    }
                 } else if (root.getSharedLibrary() != null) {
                 	String libraryName = root.getSharedLibrary().getIdentification().getName();
-                	entry.type = "component";
+                	entry.type = "library";
                 	entry.name = libraryName; 
                     installationService.doInstallSharedLibrary(tmpDir, root.getSharedLibrary());
+                    checkPendingComponents();
                 } else if (root.getServiceAssembly() != null) {
                     ServiceAssembly sa = root.getServiceAssembly();
                     String name = sa.getIdentification().getName();
@@ -234,43 +271,41 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                         if (deploymentService.isSaDeployed(name)) {
                             deploymentService.shutDown(name);
                             deploymentService.undeploy(name);
+                        }
+                        // see if components are installed
+                        entry.dependencies = getComponentNames(sa);
+                        if (log.isDebugEnabled()) {
+                            log.debug("SA dependencies: " + entry.dependencies);
+                        }
+                        String missings = null;
+                        boolean canDeploy = true;
+                        for (Iterator it = entry.dependencies.iterator(); it.hasNext();) {
+                        	String componentName = (String) it.next();
+                        	if (container.getComponent(componentName) == null) {
+                        		canDeploy = false;
+                        		if (missings != null) {
+                        			missings += ", " + componentName;
+                        		} else {
+                        			missings = componentName;
+                        		}
+                        	}
+                        }
+                        if (canDeploy) {
                             deploymentService.deployServiceAssembly(tmpDir, sa);
-                            if (autoStart) {
+                            if (autoStart){
                                 deploymentService.start(name);
                             }
                         } else {
-                            // see if components are installed
-                            entry.componentNames = getComponentNames(sa);
-                            String missings = null;
-                            boolean canDeploy = true;
-                            for (Iterator it = entry.componentNames.iterator(); it.hasNext();) {
-                            	String componentName = (String) it.next();
-                            	if (container.getComponent(componentName) == null) {
-                            		canDeploy = false;
-                            		if (missings != null) {
-                            			missings += ", " + componentName;
-                            		} else {
-                            			missings = componentName;
-                            		}
-                            	}
-                            }
-                            if (canDeploy) {
-                                deploymentService.deployServiceAssembly(tmpDir, sa);
-                                if (autoStart){
-                                    deploymentService.start(name);
-                                }
-                            } else {
-                                // TODO: check that the assembly is not already pending
-                            	entry.pending = true;
-                                log.info("Components " + missings + " are not installed yet - adding ServiceAssembly "
-                                                + name + " to pending list");
-                                pendingSAs.put(tmpDir, entry);
-                            }
+                            // TODO: check that the assembly is not already pending
+                        	entry.pending = true;
+                            log.info("Components " + missings + " are not installed yet - adding ServiceAssembly "
+                                            + name + " to pending list");
+                            pendingSAs.put(tmpDir, entry);
                         }
                     } catch (Exception e) {
-                        String errStr="Failed to update Service Assembly: "+name;
-                        log.error(errStr,e);
-                        throw new DeploymentException(errStr,e);
+                        String errStr = "Failed to update Service Assembly: " + name;
+                        log.error(errStr, e);
+                        throw new DeploymentException(errStr, e);
                     }
                 }
             } finally {
@@ -298,11 +333,20 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     }
 
     protected Set getComponentNames(ServiceAssembly sa) {
-        Set names = null;
+        Set names = new HashSet();
         if (sa.getServiceUnits() != null && sa.getServiceUnits().length > 0) {
-            names = new HashSet();
             for (int i = 0; i < sa.getServiceUnits().length; i++) {
                 names.add(sa.getServiceUnits()[i].getTarget().getComponentName());
+            }
+        }
+        return names;
+    }
+
+    protected Set getSharedLibraryNames(Component comp) {
+        Set names = new HashSet();
+        if (comp.getSharedLibraries() != null && comp.getSharedLibraries().length > 0) {
+            for (int i = 0; i < comp.getSharedLibraries().length; i++) {
+                names.add(comp.getSharedLibraries()[i].getName());
             }
         }
         return names;
@@ -348,9 +392,9 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     }
 
     /**
-     * Auto deploy an SA
-     * 
-     * @param componentName
+     * Called when a component has been installed to see
+     * if pending service assemblies have all component
+     * installed.
      */
     private void checkPendingSAs() {
     	Set deployedSas = new HashSet();
@@ -358,7 +402,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     		Map.Entry me = (Map.Entry) it.next();
     		ArchiveEntry entry = (ArchiveEntry) me.getValue();
             boolean canDeploy = true;
-            for (Iterator it2 = entry.componentNames.iterator(); it2.hasNext();) {
+            for (Iterator it2 = entry.dependencies.iterator(); it2.hasNext();) {
             	String componentName = (String) it2.next();
             	if (container.getComponent(componentName) == null) {
             		canDeploy = false;
@@ -388,6 +432,45 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
 	    	persistState(environmentContext.getDeploymentDir(), deployFileMap);
 	    	persistState(environmentContext.getInstallationDir(), installFileMap);
     	}
+    }
+    
+    private void checkPendingComponents() {
+        Set installedComponents = new HashSet();
+        for (Iterator it = pendingComponents.entrySet().iterator(); it.hasNext();) {
+            Map.Entry me = (Map.Entry) it.next();
+            ArchiveEntry entry = (ArchiveEntry) me.getValue();
+            boolean canInstall = true;
+            for (Iterator it2 = entry.dependencies.iterator(); it2.hasNext();) {
+                String libraryName = (String) it2.next();
+                if (container.getRegistry().getSharedLibrary(libraryName) == null) {
+                    canInstall = false;
+                    break;
+                }
+            }
+            if (canInstall) {
+                File tmp = (File) me.getKey();
+                installedComponents.add(tmp);
+                try {
+                    Descriptor root = DescriptorFactory.buildDescriptor(tmp);
+                    installationService.install(tmp, null, root, true);
+                } catch (Exception e) {
+                    String errStr = "Failed to update Component: " + tmp.getName();
+                    log.error(errStr, e);
+                }
+            }
+        }
+        if (!installedComponents.isEmpty()) {
+            // Remove SA from pending SAs
+            for (Iterator it = installedComponents.iterator(); it.hasNext();) {
+                ArchiveEntry entry = (ArchiveEntry) pendingComponents.remove(it.next());
+                entry.pending = false;
+            }
+            // Store new state
+            persistState(environmentContext.getDeploymentDir(), deployFileMap);
+            persistState(environmentContext.getInstallationDir(), installFileMap);
+            // Check for pending SAs
+            checkPendingSAs();
+        }
     }
 
     /**
@@ -607,6 +690,6 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     	public String type;
     	public String name;
     	public boolean pending;
-    	public transient Set componentNames;
+    	public transient Set dependencies;
     }
 }

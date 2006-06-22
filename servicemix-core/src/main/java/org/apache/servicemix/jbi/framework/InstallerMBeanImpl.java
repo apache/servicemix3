@@ -78,12 +78,12 @@ public class InstallerMBeanImpl implements InstallerMBean {
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         org.apache.servicemix.jbi.deployment.Component descriptor = context.getDescriptor();
         try {
-            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
             ClassLoader cl = buildClassLoader(
                                     context.getInstallRootAsDir(),
                                     descriptor.getBootstrapClassPath().getPathElements(),
                                     descriptor.isBootstrapClassLoaderDelegationParentFirst(),
                                     null);
+            Thread.currentThread().setContextClassLoader(cl);
             Class bootstrapClass = cl.loadClass(descriptor.getBootstrapClassName());
             this.bootstrap = (Bootstrap) bootstrapClass.newInstance();
             this.bootstrap.init(this.context);
@@ -158,12 +158,12 @@ public class InstallerMBeanImpl implements InstallerMBean {
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         org.apache.servicemix.jbi.deployment.Component descriptor = context.getDescriptor();
         try {
-            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
             ClassLoader cl = buildClassLoader(
                                     context.getInstallRootAsDir(),
                                     (String[]) context.getClassPathElements().toArray(new String[0]),
                                     descriptor.isComponentClassLoaderDelegationParentFirst(),
                                     context.getSharedLibraries());
+            Thread.currentThread().setContextClassLoader(cl);
             Class componentClass = cl.loadClass(descriptor.getComponentClassName());
             Component component = (Component) componentClass.newInstance();
             result = container.activateComponent(
@@ -177,6 +177,10 @@ public class InstallerMBeanImpl implements InstallerMBean {
         }
         catch (MalformedURLException e) {
             log.error("Could not create class loader", e);
+            throw new DeploymentException(e);
+        }
+        catch (NoClassDefFoundError e) {
+            log.error("Class not found: " + descriptor.getBootstrapClassName(), e);
             throw new DeploymentException(e);
         }
         catch (ClassNotFoundException e) {
@@ -312,14 +316,18 @@ public class InstallerMBeanImpl implements InstallerMBean {
             }
             urls.add(file.toURL());
         }
-        
-        return new JarFileClassLoader(
-                        "Componnent ClassLoader",
+
+        ClassLoader cl = new JarFileClassLoader(
+                        "Component ClassLoader",
                         (URL[]) urls.toArray(new URL[urls.size()]),
                         parents, 
                         !parentFirst,
                         new String[0],
-                        new String[] { "java.", "javax." });
+                        new String[] { "java.", "javax." }); 
+        if (log.isDebugEnabled()) {
+            log.debug("Component class loader: " + cl);
+        }
+        return cl;
     }
 
 }

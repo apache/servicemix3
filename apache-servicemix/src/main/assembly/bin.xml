@@ -91,7 +91,7 @@
         <include>org.apache.geronimo.specs:geronimo-activation_1.0.2_spec</include>
         <include>org.apache.geronimo.specs:geronimo-javamail_1.3.1_spec</include>
         
-        <include>org.apache.servicemix.dependencies:jencks</include>
+        <include>jencks:jencks</include>
         
         <include>geronimo:geronimo-connector</include>
         <include>geronimo:geronimo-transaction</include>

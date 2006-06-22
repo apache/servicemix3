@@ -20,7 +20,7 @@ package org.apache.servicemix.jbi.deployment;
  */
 public class SharedLibrary {
     private String classLoaderDelegation = "parent-first";
-    private double version;
+    private String version;
     private Identification identification;
     private ClassPath sharedLibraryClassPath;
 
@@ -35,11 +35,11 @@ public class SharedLibrary {
         this.classLoaderDelegation = classLoaderDelegation;
     }
 
-    public double getVersion() {
+    public String getVersion() {
         return version;
     }
 
-    public void setVersion(double version) {
+    public void setVersion(String version) {
         this.version = version;
     }
 
