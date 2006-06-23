@@ -26,12 +26,13 @@ import javax.jbi.component.Bootstrap;
 import javax.jbi.component.Component;
 import javax.jbi.management.DeploymentException;
 import javax.jbi.management.InstallerMBean;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanRegistrationException;
 import javax.management.ObjectName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.JBIContainer;
-import org.apache.servicemix.jbi.loaders.ClassLoaderUtil;
 import org.apache.servicemix.jbi.loaders.DestroyableClassLoader;
 import org.apache.servicemix.jbi.loaders.JarFileClassLoader;
 
@@ -44,37 +45,66 @@ import org.apache.servicemix.jbi.loaders.JarFileClassLoader;
 public class InstallerMBeanImpl implements InstallerMBean {
     private static final Log log = LogFactory.getLog(InstallerMBeanImpl.class);
     private InstallationContextImpl context;
-    private Bootstrap bootstrap;
-    private boolean installed;
     private JBIContainer container;
     private ObjectName objectName;
+    private ObjectName extensionMBeanName;
+    private Bootstrap bootstrap;
+    private boolean initialized;
 
     /**
      * Constructor for the InstallerMBean
      * 
      * @param container
      * @param ic
-     * @param componentLoader
-     * @param componentClassName
-     * @param bootstrapLoader
-     * @param bootstrapClassName
      * @throws DeploymentException
      */
     public InstallerMBeanImpl(JBIContainer container, 
-                              InstallationContextImpl ic, 
-                              boolean installed) throws DeploymentException {
+                              InstallationContextImpl ic) throws DeploymentException {
         this.container = container;
         this.context = ic;
-        this.installed = installed;
-        if (!installed) {
-            createBootstrap();
+        bootstrap = createBootstrap();
+        initBootstrap();
+    }
+    
+    protected void initBootstrap() throws DeploymentException {
+        try {
+            if (!initialized) {
+                // Unregister a previously registered extension mbean,
+                // in case the bootstrap has not done it
+                try {
+                    if (extensionMBeanName != null &&
+                        container.getMBeanServer() != null &&
+                        container.getMBeanServer().isRegistered(extensionMBeanName)) {
+                        container.getMBeanServer().unregisterMBean(extensionMBeanName);
+                    }
+                } catch (InstanceNotFoundException e) {
+                    // ignore
+                } catch (MBeanRegistrationException e) {
+                    // ignore
+                }
+                // Init bootstrap
+                bootstrap.init(this.context);
+                extensionMBeanName = bootstrap.getExtensionMBeanName();
+                initialized = true;
+            }
+        } catch (JBIException e) {
+            log.error("Could not initialize bootstrap", e);
+            throw new DeploymentException(e);
+        } 
+    }
+    
+    protected void cleanUpBootstrap() throws DeploymentException {
+        try {
+            bootstrap.cleanUp();
+        } catch (JBIException e) {
+            log.error("Could not initialize bootstrap", e);
+            throw new DeploymentException(e);
+        } finally {
+            initialized = false;
         }
     }
     
-    protected void createBootstrap() throws DeploymentException {
-        if (bootstrap != null) {
-            return;
-        }
+    protected Bootstrap createBootstrap() throws DeploymentException {
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         org.apache.servicemix.jbi.deployment.Component descriptor = context.getDescriptor();
         try {
@@ -85,8 +115,8 @@ public class InstallerMBeanImpl implements InstallerMBean {
                                     null);
             Thread.currentThread().setContextClassLoader(cl);
             Class bootstrapClass = cl.loadClass(descriptor.getBootstrapClassName());
-            this.bootstrap = (Bootstrap) bootstrapClass.newInstance();
-            this.bootstrap.init(this.context);
+            Bootstrap bootstrap = (Bootstrap) bootstrapClass.newInstance();
+            return bootstrap;
         }
         catch (MalformedURLException e) {
             log.error("Could not create class loader", e);
@@ -104,10 +134,6 @@ public class InstallerMBeanImpl implements InstallerMBean {
             log.error("Illegal access on: " + descriptor.getBootstrapClassName(), e);
             throw new DeploymentException(e);
         }
-        catch (JBIException e) {
-            log.error("Could not initialize : " + descriptor.getBootstrapClassName(), e);
-            throw new DeploymentException(e);
-        } 
         finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }
@@ -130,13 +156,11 @@ public class InstallerMBeanImpl implements InstallerMBean {
      * @throws javax.jbi.JBIException if the installation fails.
      */
     public ObjectName install() throws JBIException {
-        if (installed) {
+        if (isInstalled()) {
             throw new DeploymentException("Component is already installed");
         }
-        createBootstrap();
-        if (bootstrap != null) {
-            bootstrap.onInstall();
-        }
+        initBootstrap();
+        bootstrap.onInstall();
         // TODO: the bootstrap may change the class path for the component,
         // so we need to persist it somehow
         ObjectName result = null;
@@ -144,11 +168,9 @@ public class InstallerMBeanImpl implements InstallerMBean {
             result = activateComponent();
             ComponentMBeanImpl lcc = container.getComponent(context.getComponentName());
             lcc.persistRunningState();
-            installed = true;
+            context.setInstall(false);
         } finally {
-            if (bootstrap != null) {
-                bootstrap.cleanUp();
-            }
+            cleanUpBootstrap();
         }
         return result;
     }
@@ -211,7 +233,7 @@ public class InstallerMBeanImpl implements InstallerMBean {
      * @return true if this component is currently installed, false if not.
      */
     public boolean isInstalled() {
-        return installed;
+        return !context.isInstall();
     }
 
     /**
@@ -222,30 +244,20 @@ public class InstallerMBeanImpl implements InstallerMBean {
     public void uninstall() throws javax.jbi.JBIException {
         // TODO: check component status
         // the component must not be started and not have any SUs deployed
-        if (!installed) {
+        if (!isInstalled()) {
             throw new DeploymentException("Component is not installed");
         }
-        createBootstrap();
-        if (bootstrap != null){
-            bootstrap.onUninstall();
-        }
         String componentName = context.getComponentName();
-        container.deactivateComponent(componentName);
-        installed = false;
-        if (bootstrap != null){
-            bootstrap.cleanUp();
+        try {
+            container.deactivateComponent(componentName);
+            bootstrap.onUninstall();
+            context.setInstall(true);
+        } finally {
+            cleanUpBootstrap();
+            ((DestroyableClassLoader) bootstrap.getClass().getClassLoader()).destroy();
+            System.gc();
+            container.getEnvironmentContext().removeComponentRootDirectory(componentName);
         }
-        ClassLoader cl = bootstrap.getClass().getClassLoader();
-        if (cl instanceof DestroyableClassLoader) {
-            ((DestroyableClassLoader) cl).destroy();
-        } else {
-            ClassLoaderUtil.destroy(cl);
-        }
-        // TODO: destroy component class loader
-        bootstrap = null;
-        context = null;
-        System.gc();
-        container.getEnvironmentContext().removeComponentRootDirectory(componentName);
     }
 
     /**
@@ -255,7 +267,7 @@ public class InstallerMBeanImpl implements InstallerMBean {
      * @throws javax.jbi.JBIException if the component is not in the LOADED state or any error occurs during processing.
      */
     public ObjectName getInstallerConfigurationMBean() throws javax.jbi.JBIException {
-        return bootstrap != null ? bootstrap.getExtensionMBeanName() : null;
+        return extensionMBeanName;
     }
     /**
      * @return Returns the objectName.

@@ -162,8 +162,7 @@ public class InstallationService extends BaseSystemService implements Installati
         ComponentContextImpl context = buildComponentContext(componentRoot, installationDir, componentName);
         installationContext.setContext(context);
         InstallerMBeanImpl installer = new InstallerMBeanImpl(container,
-                                                              installationContext, 
-                                                              true);
+                                                              installationContext);
         return installer;
     }
 
@@ -437,8 +436,7 @@ public class InstallationService extends BaseSystemService implements Installati
             ComponentContextImpl context = buildComponentContext(componentRoot, installationDir, name);
             installationContext.setContext(context);
             result = new InstallerMBeanImpl(container,
-                                            installationContext,
-                                            false);
+                                            installationContext);
             // create an MBean for the installer
             ObjectName objectName = managementContext.createCustomComponentMBeanName("Installer", name);
             result.setObjectName(objectName);
