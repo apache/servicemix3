@@ -1132,6 +1132,11 @@
         <version>6.0.0beta17</version>
       </dependency>
       <dependency>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty-management</artifactId>
+        <version>6.0.0beta17</version>
+      </dependency>
+      <dependency>
         <groupId>jgroups</groupId>
         <artifactId>jgroups</artifactId>
         <version>2.2.5</version>
@@ -1720,6 +1725,7 @@
   </distributionManagement>
   
   <build>
+    <defaultGoal>install</defaultGoal>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
