@@ -32,11 +32,7 @@
          <enabled>false</enabled>
       </releases>
     </repository>
-  </repositories>
-  <properties>
-    <servicemixVersion>3.0-incubating</servicemixVersion>
-    <servicemixJbiPluginVersion>1.0-incubating</servicemixJbiPluginVersion>        
-  </properties>
+  </repositories> 
   <dependencies>
     <dependency>
       <groupId>junit</groupId>

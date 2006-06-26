@@ -40,7 +40,7 @@
     <module>servicemix-service-engine</module>
     <module>servicemix-service-unit</module>
     <module>servicemix-service-assembly</module>
-    <module>servicemix-shared-library</module>
+    <module>servicemix-shared-library</module>    
     <module>jbi-maven-plugin</module>
   </modules>
 </project>

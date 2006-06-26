@@ -33,12 +33,6 @@
       </releases>
     </repository>
   </repositories>
-  <properties>
-    <servicemixVersion>3.0-M2-incubating</servicemixVersion>
-    <servicemixJbiPluginVersion>1.0-M2-incubating</servicemixJbiPluginVersion>
-    <xbeanPluginVersion>2.4</xbeanPluginVersion>
-    <jbiBindingComponent>myBindingComponent</jbiBindingComponent>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -60,7 +54,6 @@
       <plugin>
         <groupId>org.apache.servicemix.tooling</groupId>
         <artifactId>jbi-maven-plugin</artifactId>
-        <version>${servicemixJbiPluginVersion}</version>
         <extensions>true</extensions>
         <configuration>
           <type>service-unit</type>
