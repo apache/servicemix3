@@ -20,7 +20,9 @@ import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.xml.namespace.QName;
 
+import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.MessageExchangeListener;
 
 /**
@@ -29,11 +31,18 @@ import org.apache.servicemix.MessageExchangeListener;
  * @version $Revision$
  */
 public abstract class TransformComponentSupport extends ComponentSupport implements MessageExchangeListener {
+    
     private boolean copyProperties = true;
     private boolean copyAttachments = true;
 
+    protected TransformComponentSupport() {
+    }
 
-    public void onMessageExchange(MessageExchange exchange) throws MessagingException {
+    protected TransformComponentSupport(QName service, String endpoint) {
+        super(service, endpoint);
+    }
+
+    public void onMessageExchange(MessageExchange exchange) {
         // Skip done exchanges
         if (exchange.getStatus() == ExchangeStatus.DONE) {
             return;
@@ -41,27 +50,51 @@ public abstract class TransformComponentSupport extends ComponentSupport impleme
         } else if (exchange.getStatus() == ExchangeStatus.ERROR) {
             return;
         }
-        NormalizedMessage in = getInMessage(exchange);
-        
-        NormalizedMessage out = exchange.createMessage();
         try {
+            InOnly outExchange = null;
+            NormalizedMessage in = getInMessage(exchange);
+            NormalizedMessage out;
+            if (isInAndOut(exchange)) {
+                out = exchange.createMessage();
+            } else {
+                outExchange = getExchangeFactory().createInOnlyExchange();
+                out = outExchange.createMessage();
+            }
+            boolean txSync = exchange.isTransacted() && Boolean.TRUE.equals(exchange.getProperty(JbiConstants.SEND_SYNC));
+            copyPropertiesAndAttachments(exchange, in, out);
             if (transform(exchange, in, out)) {
                 if (isInAndOut(exchange)) {
                     exchange.setMessage(out, "out");
+                    if (txSync) {
+                        getDeliveryChannel().sendSync(exchange);
+                    } else {
+                        getDeliveryChannel().send(exchange);
+                    }
                 }
                 else {
-                    InOnly outExchange = getExchangeFactory().createInOnlyExchange();
-                    outExchange.setInMessage(out);
-                    getDeliveryChannel().send(outExchange);
+                    outExchange.setMessage(out, "in");
+                    if (txSync) {
+                        getDeliveryChannel().sendSync(outExchange);
+                    } else {
+                        getDeliveryChannel().send(outExchange);
+                    }
                     exchange.setStatus(ExchangeStatus.DONE);
+                    getDeliveryChannel().send(exchange);
                 }
             } else {
                 exchange.setStatus(ExchangeStatus.DONE);
+                getDeliveryChannel().send(exchange);
             }
-            getDeliveryChannel().send(exchange);
         }
-        catch (MessagingException e) {
-            fail(exchange, e);
+        catch (Exception e) {
+            try {
+                fail(exchange, e);
+            } catch (Exception e2) {
+                logger.warn("Unable to handle error: " + e2, e2);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Original error: " + e, e);
+                }
+            }
         }
     }
 
@@ -72,7 +105,7 @@ public abstract class TransformComponentSupport extends ComponentSupport impleme
     /**
      * Transforms the given out message
      */
-    protected abstract boolean transform(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws MessagingException;
+    protected abstract boolean transform(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception;
 
 
     public boolean isCopyProperties() {

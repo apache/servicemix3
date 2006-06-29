@@ -22,7 +22,6 @@ import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 import org.apache.servicemix.jbi.framework.ComponentNameSpace;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.util.DOMUtil;
 import org.w3c.dom.Node;
 
 import javax.jbi.messaging.ExchangeStatus;
@@ -310,6 +309,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             if (packet.getIn() != null) {
                 throw new MessagingException("In message is already set");
             }
+            ((NormalizedMessageImpl) message).exchange = this;
             packet.setIn((NormalizedMessageImpl) message);
         } else if (OUT.equals(name)) {
             if (!can(CAN_SET_OUT_MSG)) {
@@ -318,6 +318,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             if (packet.getOut() != null) {
                 throw new MessagingException("Out message is already set");
             }
+            ((NormalizedMessageImpl) message).exchange = this;
             packet.setOut((NormalizedMessageImpl) message);
         } else if (FAULT.equals(name)) {
             if (!can(CAN_SET_FAULT_MSG)) {
@@ -329,7 +330,8 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             if (packet.getFault() != null) {
                 throw new MessagingException("Fault message is already set");
             }
-               packet.setFault((FaultImpl) message);
+            ((NormalizedMessageImpl) message).exchange = this;
+            packet.setFault((FaultImpl) message);
         } else {
             throw new MessagingException("Message name must be in, out or fault");
         }
@@ -689,12 +691,13 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             if (getOperation() != null) {
                 sb.append("  operation: ").append(getOperation()).append('\n');
             }
+            SourceTransformer st = new SourceTransformer(); 
             if (getMessage("in") != null) {
                 sb.append("  in: ");
                 if (getMessage("in").getContent() != null) {
-                    Node node = new SourceTransformer().toDOMNode(getMessage("in").getContent());
+                    Node node = st.toDOMNode(getMessage("in").getContent());
                     getMessage("in").setContent(new DOMSource(node));
-                    String str = DOMUtil.asXML(node);
+                    String str = st.toString(node);
                     if (str.length() > maxSize) {
                         sb.append(str.substring(0, maxSize)).append("...");
                     } else {
@@ -706,9 +709,9 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             if (getMessage("out") != null) {
                 sb.append("  out: ");
                 if (getMessage("out").getContent() != null) {
-                    Node node = new SourceTransformer().toDOMNode(getMessage("out").getContent());
+                    Node node = st.toDOMNode(getMessage("out").getContent());
                     getMessage("out").setContent(new DOMSource(node));
-                    String str = DOMUtil.asXML(node);
+                    String str = st.toString(node);
                     if (str.length() > maxSize) {
                         sb.append(str.substring(0, maxSize)).append("...");
                     } else {
@@ -720,9 +723,9 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             if (getMessage("fault") != null) {
                 sb.append("  fault: ");
                 if (getMessage("fault").getContent() != null) {
-                    Node node = new SourceTransformer().toDOMNode(getMessage("fault").getContent());
+                    Node node = st.toDOMNode(getMessage("fault").getContent());
                     getMessage("fault").setContent(new DOMSource(node));
-                    String str = DOMUtil.asXML(node);
+                    String str = st.toString(node);
                     if (str.length() > maxSize) {
                         sb.append(str.substring(0, maxSize)).append("...");
                     } else {

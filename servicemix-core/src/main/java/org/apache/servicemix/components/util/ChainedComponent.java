@@ -36,6 +36,7 @@ import org.apache.servicemix.jbi.FaultException;
  * All properties and attachments are maintained.
  * 
  * @author birchfieldj
+ * @deprecated use the StaticRoutingSlip pattern from the EIP component instead
  * 
  */
 public class ChainedComponent extends TransformComponentSupport {
