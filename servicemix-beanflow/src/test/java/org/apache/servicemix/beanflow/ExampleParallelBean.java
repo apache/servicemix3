@@ -63,7 +63,7 @@ public class ExampleParallelBean {
     public void assertCompleted() throws InterruptedException {
         latch.await(3000, TimeUnit.MILLISECONDS);
         if (latch.getCount() > 0) {
-            latch.await(300000, TimeUnit.MILLISECONDS);
+            latch.await(30000, TimeUnit.MILLISECONDS);
         }
         Assert.assertEquals("Count down latch value", 0, latch.getCount());
     }

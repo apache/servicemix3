@@ -47,12 +47,10 @@ public class Workflow<T> extends JoinSupport {
     private AtomicBoolean suspended = new AtomicBoolean();
 
     /**
-     * TODO is there a way to reference the parameter type of this class? 
-    
-    public Workflow() {
-        this(T);
-    }
-    */
+     * TODO is there a way to reference the parameter type of this class?
+     * 
+     * public Workflow() { this(T); }
+     */
 
     @SuppressWarnings("unchecked")
     public Workflow(Class<T> enumType) {
@@ -79,6 +77,13 @@ public class Workflow<T> extends JoinSupport {
     }
 
     /**
+     * Returns the next step which will be executed asynchronously
+     */
+    public T getNextStep() {
+        return nextStep;
+    }
+
+    /**
      * Sets the next step to be executed when the current step completes
      */
     public void setNextStep(T stepName) {
@@ -89,13 +94,22 @@ public class Workflow<T> extends JoinSupport {
 
     public void run() {
         if (!isSuspended() && !isStopped()) {
-            if (nextStep == null) {
-                nextStep = step.get();
-            }
-            log.debug("About to execute step: " + nextStep);
-
+            T stepToExecute = null;
             if (nextStep != null) {
-                interpreter.executeStep(nextStep, this);
+                stepToExecute = nextStep;
+                nextStep = null;
+                // lets fire any conditions
+                step.set(stepToExecute);
+            }
+            else {
+                stepToExecute = step.get();
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("About to execute step: " + stepToExecute);
+            }
+            
+            if (stepToExecute != null) {
+                interpreter.executeStep(stepToExecute, this);
 
                 nextStep();
             }
@@ -103,12 +117,7 @@ public class Workflow<T> extends JoinSupport {
     }
 
     public void nextStep() {
-        // lets fire any conditions
-        T temp = nextStep;
-        nextStep = null;
-        step.set(temp);
-
-        // if we are not stoped lets add a task to re-evaluate ourself
+        // if we are not stopped lets add a task to re-evaluate ourself
         if (!isStopped() && !isSuspended()) {
             executor.execute(this);
         }
@@ -177,7 +186,7 @@ public class Workflow<T> extends JoinSupport {
     public boolean isNextStepAvailable() {
         return nextStep != null;
     }
-    
+
     /**
      * Creates a task which will move to the given step
      */
@@ -206,7 +215,7 @@ public class Workflow<T> extends JoinSupport {
 
     /**
      * Lets validate the steps exist on an enumerated type.
-     *  
+     * 
      * Thanks to Sam Pullara for this idea :)
      */
     protected void validateStepsExist(Class enumType) {
@@ -228,13 +237,11 @@ public class Workflow<T> extends JoinSupport {
             return values[0];
         }
         catch (Exception e) {
-            throw new IllegalArgumentException("Could not find the values for the enumeration: " + enumType.getName()
-                    + ". Reason: " + e, e);
+            throw new IllegalArgumentException("Could not find the values for the enumeration: " + enumType.getName() + ". Reason: " + e, e);
         }
     }
 
-    protected static Object[] getEnumValues(Class enumType) throws NoSuchMethodException, IllegalAccessException,
-            InvocationTargetException {
+    protected static Object[] getEnumValues(Class enumType) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Method method = enumType.getMethod("values", NO_PARAMETER_TYPES);
         return (Object[]) method.invoke(null, NO_PARAMETER_VALUES);
     }

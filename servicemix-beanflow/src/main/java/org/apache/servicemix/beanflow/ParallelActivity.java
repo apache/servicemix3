@@ -89,8 +89,8 @@ public class ParallelActivity<T> extends ProxyActivity {
 
     @Override
     public void start() {
-        init();
         super.start();
+        init();
     }
 
     @Override
