@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
  * This Component splits a message according to a XPath expression.
  * 
  * @author george
- * 
+ * @deprecated use the XPathSplitter pattern from the EIP component instead
  */
 public class SplitterComponent extends TransformComponentSupport {
 

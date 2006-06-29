@@ -70,9 +70,9 @@ public class GroovyComponent extends ScriptComponent {
         this.documentBuilderFactory = documentBuilderFactory;
     }
 
-    protected void populateNamespace(Namespace namespace, MessageExchange exchange, NormalizedMessage message) throws MessagingException {
+    protected void populateNamespace(Namespace namespace, MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws MessagingException {
         try {
-            super.populateNamespace(namespace, exchange, message);
+            super.populateNamespace(namespace, exchange, in, out);
 
             // lets output a builder
             DocumentBuilder documentBuilder = getDocumentBuilder();

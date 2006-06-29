@@ -209,7 +209,6 @@ public class HttpsInvoker extends TransformComponentSupport implements MessageEx
 
             // now lets grab the output and set it on the out message
             if (defaultInOut) {
-                copyPropertiesAndAttachments(exchange, in, out);
                 marshaler.toNMS(out, method);
             }
             return defaultInOut;

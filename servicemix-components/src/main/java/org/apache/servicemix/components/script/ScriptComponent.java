@@ -15,12 +15,13 @@
  */
 package org.apache.servicemix.components.script;
 
-import org.apache.servicemix.MessageExchangeListener;
-import org.apache.servicemix.components.util.ComponentSupport;
-import org.springframework.core.io.Resource;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.jbi.JBIException;
-import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
@@ -32,11 +33,10 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.xml.namespace.QName;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.util.logging.Logger;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.apache.servicemix.components.util.TransformComponentSupport;
+import org.apache.servicemix.jbi.messaging.NormalizedMessageImpl;
+import org.springframework.core.io.Resource;
 
 /**
  * A component which is capable of invoking a compiledScript using
@@ -44,7 +44,7 @@ import java.util.Map;
  *
  * @version $Revision$
  */
-public class ScriptComponent extends ComponentSupport implements MessageExchangeListener {
+public class ScriptComponent extends TransformComponentSupport {
 
     public static final QName SERVICE = new QName("http://servicemix.org/example/", "receiver");
     public static final String ENDPOINT = "receiver";
@@ -91,13 +91,6 @@ public class ScriptComponent extends ComponentSupport implements MessageExchange
                 Compilable compilable = (Compilable) engine;
                 compileScript(compilable);
             }
-        }
-    }
-
-    public void onMessageExchange(MessageExchange exchange) throws MessagingException {
-        if (exchange.getStatus() == ExchangeStatus.ACTIVE) {
-            NormalizedMessage message = exchange.getMessage("in");
-            process(exchange, message);
         }
     }
 
@@ -212,23 +205,13 @@ public class ScriptComponent extends ComponentSupport implements MessageExchange
 
     // Implementation methods
     //-------------------------------------------------------------------------
-    protected void process(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
+    protected boolean transform(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
         Namespace namespace = engine.createNamespace();
         
-        populateNamespace(namespace, exchange, message);
-
+        populateNamespace(namespace, exchange, in, out);
         try {
             runScript(namespace);
-            if (isInAndOut(exchange)) {
-                // nothing to do: out message will be sent 
-            } else if (!isDisableOutput()) {
-                InOnly outExchange = (InOnly) namespace.get("outExchange");
-                getDeliveryChannel().sendSync(outExchange);
-                exchange.setStatus(ExchangeStatus.DONE);
-            } else {
-                exchange.setStatus(ExchangeStatus.DONE);
-            }
-            getDeliveryChannel().send(exchange);
+            return !isDisableOutput();
         }
         catch (ScriptException e) {
             System.out.println("Caught: " + e);
@@ -237,26 +220,24 @@ public class ScriptComponent extends ComponentSupport implements MessageExchange
         }
     }
 
-    protected void populateNamespace(Namespace namespace, MessageExchange exchange, NormalizedMessage message) throws MessagingException {
+    protected void populateNamespace(Namespace namespace, MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws MessagingException {
         namespace.put("componentContext", getContext());
         namespace.put("deliveryChannel", getDeliveryChannel());
         namespace.put("exchange", exchange);
-        namespace.put("inMessage", message);
+        namespace.put("inMessage", in);
         namespace.put("log", getScriptLogger());
         namespace.put("componentNamespace", namespace);
         namespace.put("bindings", bindings);
 
         InOnly outExchange = null;
         if (isInAndOut(exchange)) {
-            NormalizedMessage out = exchange.createMessage();
-            exchange.setMessage(out, "out");
             namespace.put("outMessage", out);
         }
         else if (!isDisableOutput()) {
             outExchange = getExchangeFactory().createInOnlyExchange();
-            namespace.put("outExchange", outExchange);
-            NormalizedMessage out = outExchange.createMessage();
-            outExchange.setInMessage(out);
+            if (out instanceof NormalizedMessageImpl) {
+                namespace.put("outExchange", ((NormalizedMessageImpl) out).getExchange());
+            }
             namespace.put("outMessage", out);
         }
     }

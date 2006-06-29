@@ -122,7 +122,7 @@ public class SaajSoapActionTest extends TestCase {
     
     public void testQuotesSoapActionAxis() throws Exception {
         String received = testSoapAction("\"\"", new org.apache.axis.soap.MessageFactoryImpl());
-        assertEquals("\"\"\"\"", received);
+        assertEquals("\"\"", received);
     }
     
     /*
@@ -134,7 +134,7 @@ public class SaajSoapActionTest extends TestCase {
     
     public void testWithSoapActionAxis() throws Exception {
         String received = testSoapAction("action", new org.apache.axis.soap.MessageFactoryImpl());
-        assertEquals("\"action\"", received);
+        assertEquals("action", received);
     }
     
     /*

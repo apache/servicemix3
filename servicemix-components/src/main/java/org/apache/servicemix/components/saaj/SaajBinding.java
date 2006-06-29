@@ -17,9 +17,7 @@ package org.apache.servicemix.components.saaj;
 
 import java.io.ByteArrayOutputStream;
 
-import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.soap.MimeHeaders;
 import javax.xml.soap.SOAPConnection;
@@ -30,7 +28,7 @@ import javax.xml.soap.SOAPMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.MessageExchangeListener;
-import org.apache.servicemix.components.util.ComponentSupport;
+import org.apache.servicemix.components.util.TransformComponentSupport;
 
 /**
  * Converts an inbound JBI message into a <a href="http://java.sun.com/xml/saaj/">SAAJ</a> (Soap With Attachments for Java)
@@ -39,7 +37,7 @@ import org.apache.servicemix.components.util.ComponentSupport;
  *
  * @version $Revision$
  */
-public class SaajBinding extends ComponentSupport implements MessageExchangeListener {
+public class SaajBinding extends TransformComponentSupport implements MessageExchangeListener {
 
     private static final transient Log log = LogFactory.getLog(SaajBinding.class);
 
@@ -76,23 +74,18 @@ public class SaajBinding extends ComponentSupport implements MessageExchangeList
         this.marshaler = marshaler;
     }
 
-    public void onMessageExchange(MessageExchange exchange) throws MessagingException {
-        if (exchange.getStatus() == ExchangeStatus.DONE) {
-            return;
-        } else if (exchange.getStatus() == ExchangeStatus.ERROR) {
-            return;
-        }
-        SOAPConnection connection = null;
+    protected boolean transform(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
+        SOAPConnection connection = getConnectionFactory().createConnection();
         try {
-            connection = getConnectionFactory().createConnection();
-
-            SOAPMessage inMessage = marshaler.createSOAPMessage(exchange.getMessage("in"));
-            if (soapAction != null) {
-                MimeHeaders mh = inMessage.getMimeHeaders();
-                if (mh.getHeader("SOAPAction") == null) {
+            SOAPMessage inMessage = marshaler.createSOAPMessage(in);
+            MimeHeaders mh = inMessage.getMimeHeaders();
+            if (mh.getHeader("SOAPAction") == null) {
+                if (soapAction != null && soapAction.length() > 0) {
                     mh.addHeader("SOAPAction", soapAction);
-                    inMessage.saveChanges();
+                } else {
+                    mh.addHeader("SOAPAction", "\"\"");
                 }
+                inMessage.saveChanges();
             }
 
             if (log.isDebugEnabled()) {
@@ -103,24 +96,18 @@ public class SaajBinding extends ComponentSupport implements MessageExchangeList
             
             SOAPMessage response = connection.call(inMessage, soapEndpoint);
             if (response != null) {
-                NormalizedMessage outMessage = exchange.createMessage();
-                marshaler.toNMS(outMessage, response);
-                answer(exchange, outMessage);
+                marshaler.toNMS(out, response);
+                return true;
             } else {
-                done(exchange);
+                return false;
             }
         }
-        catch (Exception e) {
-            fail(exchange, e);
-        }
         finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                }
-                catch (SOAPException e) {
-                    log.warn("Failed to close connection: " + e, e);
-                }
+            try {
+                connection.close();
+            }
+            catch (SOAPException e) {
+                log.warn("Failed to close connection: " + e, e);
             }
         }
     }
