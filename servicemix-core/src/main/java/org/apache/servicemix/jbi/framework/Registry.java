@@ -301,6 +301,12 @@ public class Registry extends BaseSystemService implements RegistryMBean {
                             String[] parts = split(uri);
                             return getInternalEndpoint(new QName(parts[0], parts[1]), parts[2]);
                         }
+                        else if (uri.startsWith("service:")) {
+                            uri = uri.substring("service:".length());
+                            String[] parts = splitService(uri);
+                            return getEndpoint(new QName(parts[0], parts[1]), parts[1]);
+                        }
+                        // TODO should we support interface: and operation: here?
                     }
                 }
             }
@@ -310,6 +316,20 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         return null;
     }
 
+    protected String[] splitService(String uri) {
+        char sep;
+        uri = uri.trim();
+        if (uri.indexOf('/') > 0) {
+            sep = '/';
+        } else {
+            sep = ':';
+        }
+        int idx1 = uri.lastIndexOf(sep);
+        String svcName = uri.substring(idx1 + 1);
+        String nsUri   = uri.substring(0, idx1);
+        return new String[] { nsUri, svcName };
+    }
+    
     protected String[] split(String uri) {
         char sep;
         uri = uri.trim();
