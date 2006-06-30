@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
 	   xmlns:amq="http://activemq.org/config/1.0"
-	   xmlns:foo="http://servicemix.org/cheese/">
+	   xmlns:foo="http://servicemix.org/cheese">
 
 
   <amq:broker id="broker" singleton="true" useJmx="false" persistent="false">

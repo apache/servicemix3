@@ -131,6 +131,10 @@ public class DefaultServiceMixClient extends ComponentSupport implements Service
         return exchange;
     }
 
+    public Destination createDestination(String uri) throws MessagingException {
+        return new DefaultDestination(this, uri);
+    }
+    
     public void send(MessageExchange exchange) throws MessagingException {
         getDeliveryChannel().send(exchange);
     }

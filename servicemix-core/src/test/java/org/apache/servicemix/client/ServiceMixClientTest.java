@@ -62,7 +62,7 @@ public class ServiceMixClientTest extends TestCase {
         message.setProperty("name", "James");
         message.setContent(new StreamSource(new StringReader("<hello>world</hello>")));
 
-        QName service = new QName("http://servicemix.org/cheese/", "receiver");
+        QName service = new QName("http://servicemix.org/cheese", "receiver");
         exchange.setService(service);
         client.send(exchange);
 
@@ -74,7 +74,7 @@ public class ServiceMixClientTest extends TestCase {
         Map properties = new HashMap();
         properties.put("name", "James");
 
-        QName service = new QName("http://servicemix.org/cheese/", "receiver");
+        QName service = new QName("http://servicemix.org/cheese", "receiver");
         EndpointResolver resolver = client.createResolverForService(service);
         client.send(resolver, null, properties, "<hello>world</hello>");
 
@@ -113,17 +113,17 @@ public class ServiceMixClientTest extends TestCase {
     // Request methods
     //-------------------------------------------------------------------------
     public void testRequestUsingJbiAPIsByServiceName() throws Exception {
-        QName service = new QName("http://servicemix.org/cheese/", "myService");
+        QName service = new QName("http://servicemix.org/cheese", "myService");
         assertRequestUsingJBIAPIs(service);
     }
 
     public void testRequestUsingMapAndPOJOsByServiceName() throws Exception {
-        QName service = new QName("http://servicemix.org/cheese/", "myService");
+        QName service = new QName("http://servicemix.org/cheese", "myService");
         assertRequestUsingMapAndPOJOByServiceName(service);
     }
 
     public void testRequestUsingPOJOWithXStreamMarshaling() throws Exception {
-        QName service = new QName("http://servicemix.org/cheese/", "myService");
+        QName service = new QName("http://servicemix.org/cheese", "myService");
 
         ServiceMixClient client = (ServiceMixClient) context.getBean("clientWithXStream");
 

@@ -16,6 +16,8 @@
 package org.apache.servicemix.client;
 
 
+import org.apache.servicemix.nms.Message;
+
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;

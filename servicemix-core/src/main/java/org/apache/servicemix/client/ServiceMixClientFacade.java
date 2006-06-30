@@ -136,6 +136,10 @@ public class ServiceMixClientFacade implements ServiceMixClient {
         return exchange;
     }
 
+    public Destination createDestination(String uri) throws MessagingException {
+        return new DefaultDestination(this, uri);
+    }
+
     public void send(MessageExchange exchange) throws MessagingException {
         getDeliveryChannel().send(exchange);
         done(exchange);

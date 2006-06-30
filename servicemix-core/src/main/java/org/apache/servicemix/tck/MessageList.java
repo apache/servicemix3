@@ -15,11 +15,14 @@
  */
 package org.apache.servicemix.tck;
 
+import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.client.Message;
+import org.apache.servicemix.client.MessageListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +34,12 @@ import junit.framework.Assert;
  *
  * @version $Revision$
  */
-public class MessageList extends Assert {
+public class MessageList extends Assert implements MessageListener {
 	
 	private static final Log log = LogFactory.getLog(MessageList.class); 
 	
     private List messages = new ArrayList();
+
     private Object semaphore;
 
     public MessageList() {
@@ -128,5 +132,11 @@ public class MessageList extends Assert {
 
     public boolean hasReceivedMessages(int messageCount) {
         return getMessageCount() >= messageCount;
+    }
+
+    // MessageListener interface
+    // -------------------------------------------------------------------------
+    public void onMessage(MessageExchange exchange, Message message) throws Exception {
+        addMessage(message);
     }
 }

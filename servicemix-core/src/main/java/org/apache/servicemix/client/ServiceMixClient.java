@@ -28,6 +28,7 @@ import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
+import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.messaging.RobustInOnly;
 import javax.xml.namespace.QName;
 
@@ -94,10 +95,6 @@ public interface ServiceMixClient {
      * @throws MessagingException
      */
     MessageExchange receive(long timeout) throws MessagingException;
-
-
-    // Helper methods to make JBI a little more concise to use from a client
-    //-------------------------------------------------------------------------
 
 
     /**
@@ -286,6 +283,15 @@ public interface ServiceMixClient {
     EndpointResolver createResolverForExternalInterface(QName service, String endpoint);
 
 
+    // Create a destination
+    //-------------------------------------------------------------------------
+    
+    /**
+     * Creates a destination which represents some JBI endpoint that message exchanges can be created with.
+     * @throws MessagingException 
+     */
+    Destination createDestination(String uri) throws MessagingException;
+    
 
     // Helper methods and access to the JBI context information
     //-------------------------------------------------------------------------
