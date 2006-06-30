@@ -52,6 +52,11 @@
             <groupId>xfire</groupId>
             <artifactId>xfire-jsr181-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix</groupId>
+            <artifactId>servicemix-jsr181</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

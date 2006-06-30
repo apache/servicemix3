@@ -34,19 +34,21 @@
     <packaging>jbi-service-unit</packaging>
     <name>ServiceMix :: Samples :: WSDL first :: HTTP</name>
     
-    <properties>		    
-	    <servicemixJbiPluginVersion>1.0-incubating-SNAPSHOT</servicemixJbiPluginVersion>
-	    <jbiComponentName>servicemix-http</jbiComponentName>
-  	</properties>
+    <dependencies>        
+        <dependency>
+            <groupId>org.apache.servicemix</groupId>
+            <artifactId>servicemix-http</artifactId>
+            <version>${project.version}</version>            
+        </dependency>
+    </dependencies>
 
-	<build>
+		<build>
         <plugins>           
             <plugin>
-		        <groupId>org.apache.servicemix.tooling</groupId>
-		        <artifactId>jbi-maven-plugin</artifactId>
-		        <version>${servicemixJbiPluginVersion}</version>
-		        <extensions>true</extensions>				        		       
-    		</plugin>
+			        <groupId>org.apache.servicemix.tooling</groupId>
+			        <artifactId>jbi-maven-plugin</artifactId>		        
+			        <extensions>true</extensions>				        		       
+    				</plugin>
         </plugins>
     </build>
 </project>
