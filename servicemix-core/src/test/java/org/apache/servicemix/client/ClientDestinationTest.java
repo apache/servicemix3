@@ -46,17 +46,19 @@ public class ClientDestinationTest extends TestCase {
     protected MessageList messageList = new MessageList();
 
     public void testInOnlyMessage() throws Exception {
+        // START SNIPPET: message
         Destination destination = client.createDestination("service:http://servicemix.org/cheese/receiver");
         Message message = destination.createInOnlyMessage();
         message.setProperty("name", "James");
         message.setBody("<hello>world</hello>");
         
         client.send(message);
-        
+        // END SNIPPET: message 
         messageList.assertMessagesReceived(1);
     }
     
     public void testInOnlyExchange() throws Exception {
+        // START SNIPPET: inOnly
         Destination destination = client.createDestination("service:http://servicemix.org/cheese/receiver");
         InOnly exchange = destination.createInOnlyExchange();
 
@@ -65,11 +67,13 @@ public class ClientDestinationTest extends TestCase {
         message.setContent(new StreamSource(new StringReader("<hello>world</hello>")));
 
         client.send(exchange);
+        // END SNIPPET: inOnly
 
         messageList.assertMessagesReceived(1);
     }
     
     public void testInOutExchange() throws Exception {
+        // START SNIPPET: inOut
         Destination destination = client.createDestination("service:http://servicemix.org/cheese/myService");
         InOut exchange = destination.createInOutExchange();
         
@@ -80,6 +84,7 @@ public class ClientDestinationTest extends TestCase {
         client.sendSync(exchange);
         
         NormalizedMessage response = exchange.getOutMessage();
+        // END SNIPPET: inOut
         
         assertNotNull("Should have returned a non-null response!", response);
 
