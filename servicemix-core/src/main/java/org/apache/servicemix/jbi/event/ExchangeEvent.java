@@ -15,6 +15,9 @@
  */
 package org.apache.servicemix.jbi.event;
 
+import org.apache.servicemix.jbi.framework.ComponentContextImpl;
+import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
+
 import java.util.EventObject;
 
 import javax.jbi.messaging.MessageExchange;
@@ -31,4 +34,14 @@ public class ExchangeEvent extends EventObject {
         return (MessageExchange) getSource();
     }
 
+    /**
+     * Returns the source context which created the message exchange
+     */
+    public ComponentContextImpl getExchangeSourceContext() {
+        return getExchangeImpl().getSourceContext();
+    }
+    
+    protected MessageExchangeImpl getExchangeImpl() {
+        return (MessageExchangeImpl) getSource();
+    }
 }
