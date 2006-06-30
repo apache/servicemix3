@@ -92,42 +92,21 @@ public class ClientDestinationTest extends TestCase {
     }
 
 
-    /*
-    public void testSendUsingMessage() throws Exception {
-        Message message = inOnlyDestination.createMessage();
-        message.setProperty("name", "James");
-        message.setContent(new StreamSource(new StringReader("<hello>world</hello>")));
-
-        inOnlyDestination.send(message);    
-
-        messageList.assertMessagesReceived(1);
-    }
-
-    public void testSendUsingMessageUsingPOJOWithXStreamMarshaling() throws Exception {
+    public void testInOnlyMessageUsingPOJOWithXStreamMarshaling() throws Exception {
         TestBean bean = new TestBean();
         bean.setName("James");
         bean.setLength(12);
         bean.getAddresses().addAll(Arrays.asList(new String[] { "London", "LA" }));
 
-        Message message = inOnlyDestination.createMessage(bean);
+        Destination destination = client.createDestination("service:http://servicemix.org/cheese/receiver");
+        Message message = destination.createInOnlyMessage();
         message.setProperty("name", "James");
+        message.setBody(bean);
 
-        inOnlyDestination.send(message);
+        client.send(message);
 
         messageList.assertMessagesReceived(1);
     }
-
-    public void testRequestResponse() throws Exception {
-        InOut exchange = inOutDestination.createInOutExchange();
-        Message request = inOutDestination.createMessage();
-        exchange.setInMessage(request);
-        Message response = inOutDestination.invoke(exchange);
-
-        assertNotNull("Should have returned a non-null response!", response);
-
-        log.info("Received result: " + response);
-    }
-    */
 
     protected void setUp() throws Exception {
         context = createBeanFactory();
