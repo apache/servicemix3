@@ -93,7 +93,7 @@ public abstract class PojoSupport extends BaseLifeCycle implements ComponentLife
     }
 
     /**
-     * Shut down the item. The releases resources, preparatory to uninstallation.
+     * Shut down the item. The releases resources, preparing to uninstall
      * 
      * @exception javax.jbi.JBIException if the item fails to shut down.
      */
