@@ -75,10 +75,15 @@ public class DefaultDestination implements Destination {
         return answer;
     }
 
+    public Message createInOnlyMessage() throws MessagingException {
+        return (Message) createInOnlyExchange().getInMessage();
+    }
+    
     protected void configure(MessageExchange exchange) throws MessagingException {
         if (endpoint == null) {
             endpoint = resolveEndpoint(client, destinationUri);
         }
         exchange.setEndpoint(endpoint);
     }
+
 }

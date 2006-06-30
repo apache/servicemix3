@@ -58,6 +58,13 @@ public interface ServiceMixClient {
     void send(MessageExchange exchange) throws MessagingException;
 
     /**
+     * Sends an In-Only message
+     * 
+     * @param message
+     */
+    void send(Message message) throws MessagingException;
+    
+    /**
      * Sends the message exchange to the endpoint, blocking until the send has completed.
      *
      * @param exchange
@@ -341,5 +348,6 @@ public interface ServiceMixClient {
      * @throws MessagingException
      */
     MessageExchangeFactory getExchangeFactory() throws MessagingException;
+
 
 }

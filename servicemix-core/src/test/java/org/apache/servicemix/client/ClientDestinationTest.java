@@ -44,13 +44,21 @@ public class ClientDestinationTest extends TestCase {
     protected AbstractXmlApplicationContext context;
     protected ServiceMixClient client;
     protected MessageList messageList = new MessageList();
-    protected Destination inOnlyDestination;
-    protected Destination inOutDestination;
-    protected String inOnlyUri = "service:http://servicemix.org/cheese/receiver";
-    protected String inOutUri = "service:http://servicemix.org/cheese/myService";
 
-    public void testSendUsingInOnlyExchange() throws Exception {
-        InOnly exchange = inOnlyDestination.createInOnlyExchange();
+    public void testInOnlyMessage() throws Exception {
+        Destination destination = client.createDestination("service:http://servicemix.org/cheese/receiver");
+        Message message = destination.createInOnlyMessage();
+        message.setProperty("name", "James");
+        message.setBody("<hello>world</hello>");
+        
+        client.send(message);
+        
+        messageList.assertMessagesReceived(1);
+    }
+    
+    public void testInOnlyExchange() throws Exception {
+        Destination destination = client.createDestination("service:http://servicemix.org/cheese/receiver");
+        InOnly exchange = destination.createInOnlyExchange();
 
         NormalizedMessage message = exchange.getInMessage();
         message.setProperty("name", "James");
@@ -61,8 +69,9 @@ public class ClientDestinationTest extends TestCase {
         messageList.assertMessagesReceived(1);
     }
     
-    public void testRequestResponse() throws Exception {
-        InOut exchange = inOutDestination.createInOutExchange();
+    public void testInOutExchange() throws Exception {
+        Destination destination = client.createDestination("service:http://servicemix.org/cheese/myService");
+        InOut exchange = destination.createInOutExchange();
         
         NormalizedMessage request = exchange.getInMessage();
         request.setProperty("name", "James");
@@ -118,10 +127,6 @@ public class ClientDestinationTest extends TestCase {
     protected void setUp() throws Exception {
         context = createBeanFactory();
         client = (ServiceMixClient) getBean("client");
-
-        inOnlyDestination = client.createDestination(inOnlyUri);
-        inOutDestination = client.createDestination(inOutUri);
-
         messageList = createMessageList();
     }
 

@@ -138,6 +138,10 @@ public class DefaultServiceMixClient extends ComponentSupport implements Service
     public void send(MessageExchange exchange) throws MessagingException {
         getDeliveryChannel().send(exchange);
     }
+    
+    public void send(Message message) throws MessagingException {
+        send(message.getExchange());
+    }
 
     public boolean sendSync(MessageExchange exchange) throws MessagingException {
         return getDeliveryChannel().sendSync(exchange);

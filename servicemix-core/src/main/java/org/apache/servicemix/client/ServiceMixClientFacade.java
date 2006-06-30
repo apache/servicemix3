@@ -144,6 +144,10 @@ public class ServiceMixClientFacade implements ServiceMixClient {
         getDeliveryChannel().send(exchange);
         done(exchange);
     }
+        
+    public void send(Message message) throws MessagingException {
+        send(message.getExchange());
+    }
 
     public boolean sendSync(MessageExchange exchange) throws MessagingException {
         return getDeliveryChannel().sendSync(exchange);

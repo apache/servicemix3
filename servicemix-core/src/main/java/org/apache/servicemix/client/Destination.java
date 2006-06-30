@@ -61,4 +61,10 @@ public interface Destination {
      */
     RobustInOnly createRobustInOnlyExchange() throws MessagingException;
 
+    /**
+     * Allows a Message to be created for an {@link InOnly} exchange for simpler one-way messaging.
+     * @throws MessagingException 
+     */
+    Message createInOnlyMessage() throws MessagingException;
+
 }
