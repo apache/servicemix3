@@ -67,7 +67,7 @@ public class BinaryFileMarshaler extends DefaultFileMarshaler {
 
 	public void writeMessage(MessageExchange exchange, NormalizedMessage message, OutputStream out, String path) throws IOException, JBIException {
 		DataHandler handler = message.getAttachment(attachment);
-		if (attachment == null) {
+		if (handler == null) {
 			throw new MessagingException("Could not find attachment: " + attachment);
 		}
 		InputStream is = handler.getInputStream();
