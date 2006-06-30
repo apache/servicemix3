@@ -15,9 +15,6 @@
  */
 package org.apache.servicemix.client;
 
-
-import org.apache.servicemix.nms.Message;
-
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
@@ -51,12 +48,12 @@ public class XPathHelper {
         setContent(content);
     }
 
-    public XPathHelper(Message message, Map namespaces) {
+    public XPathHelper(NormalizedMessage message, Map namespaces) {
         this(message);
         setNamespaces(namespaces);
     }
 
-    public XPathHelper(Message message, NamespaceContext namespaces) {
+    public XPathHelper(NormalizedMessage message, NamespaceContext namespaces) {
         this(message);
         setNamespaceContext(namespaces);
     }
