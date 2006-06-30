@@ -39,32 +39,19 @@
     </repository>
   </repositories>
   <properties>
-    <servicemixVersion>3.0-M2-incubating</servicemixVersion>
-    <servicemixJbiPluginVersion>1.0-M2-incubating</servicemixJbiPluginVersion>
+    <servicemixVersion>3.0-incubating-SNAPSHOT</servicemixVersion>   
     <xbeanPluginVersion>2.4</xbeanPluginVersion>
   </properties>
   <dependencies>
     <dependency>
       <groupId>org.apache.servicemix</groupId>
-      <artifactId>servicemix-jbi</artifactId>
-      <version>${servicemixVersion}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.servicemix</groupId>
-      <artifactId>servicemix-common</artifactId>
-      <version>${servicemixVersion}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.servicemix</groupId>
-      <artifactId>servicemix-soap</artifactId>
-      <version>${servicemixVersion}</version>
+      <artifactId>servicemix-common</artifactId>      
+      <version>${servicemixVersion}</version>      
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-core</artifactId>
       <version>${servicemixVersion}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -77,11 +64,10 @@
     <plugins>
       <plugin>
         <groupId>org.apache.servicemix.tooling</groupId>
-        <artifactId>jbi-maven-plugin</artifactId>
-        <version>${servicemixJbiPluginVersion}</version>
+        <artifactId>jbi-maven-plugin</artifactId>        
         <extensions>true</extensions>
-        <configuration>
-          <type>binding-component</type>
+        <configuration>   
+        	<type>binding-component</type>       
           <bootstrap>${packageName}.MyBootstrap</bootstrap>
           <component>${packageName}.MyComponent</component>
         </configuration>
