@@ -256,12 +256,14 @@
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>servicemix-common</artifactId>
                   <version>${pom.version}</version>
+                  <classifier>installer</classifier>
                   <type>zip</type>
                 </artifactItem>
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>servicemix-soap</artifactId>
                   <version>${pom.version}</version>
+                  <classifier>installer</classifier>
                   <type>zip</type>
                 </artifactItem>
               </artifactItems>
