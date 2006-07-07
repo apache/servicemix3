@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<beans xmlns:http="http://servicemix.apache.org/http/1.0"
+       xmlns:replaceMe="http://servicemix.apache.org/replaceMe">
+
+  <http:endpoint service="replaceMe:withYourService"
+                 endpoint="soap"
+                 role="consumer" 
+                 locationURI="http://localhost:8192/example/"
+                 defaultMep="http://www.w3.org/2004/08/wsdl/in-out"
+                 soap="true" />             
+
+</beans>
