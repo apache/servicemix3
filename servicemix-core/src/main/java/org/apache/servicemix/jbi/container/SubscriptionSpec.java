@@ -144,7 +144,11 @@ public class SubscriptionSpec implements Serializable {
                     }
                 }
             }
-
+        }
+        
+        // allow a match all subscription
+        if (service == null && interfaceName == null) {
+            result = true;
         }
         if (result && filter != null) {
             result = filter.matches(exchange);
