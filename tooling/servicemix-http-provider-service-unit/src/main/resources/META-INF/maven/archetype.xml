@@ -1,3 +1,6 @@
 <archetype>
   <id>servicemix-su</id>
+  <resources>
+    <resource>src/main/resources/xbean.xml</resource>
+  </resources>
 </archetype>
