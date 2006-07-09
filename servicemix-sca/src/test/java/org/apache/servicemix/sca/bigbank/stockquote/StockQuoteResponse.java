@@ -15,18 +15,18 @@
  */
 package org.apache.servicemix.sca.bigbank.stockquote;
 
-import javax.xml.bind.annotation.AccessType;
+import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlAccessorType(AccessType.FIELD)
+@XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = { "result" })
 @XmlRootElement(name = "StockQuoteResponse")
 public class StockQuoteResponse {
 
-    @XmlElement(name = "Result")
+	@XmlElement(name = "Result")
 	private float result;
 
 	public float getResult() {
@@ -36,5 +36,5 @@ public class StockQuoteResponse {
 	public void setResult(float result) {
 		this.result = result;
 	}
-	
+
 }

@@ -15,18 +15,18 @@
  */
 package org.apache.servicemix.sca.bigbank.stockquote;
 
-import javax.xml.bind.annotation.AccessType;
+import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlAccessorType(AccessType.FIELD)
+@XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = { "symbol" })
 @XmlRootElement(name = "StockQuoteRequest")
 public class StockQuoteRequest {
 
-    @XmlElement(name = "Symbol")
+	@XmlElement(name = "Symbol")
 	private String symbol;
 
 	public String getSymbol() {
@@ -36,5 +36,5 @@ public class StockQuoteRequest {
 	public void setSymbol(String symbol) {
 		this.symbol = symbol;
 	}
-	
+
 }

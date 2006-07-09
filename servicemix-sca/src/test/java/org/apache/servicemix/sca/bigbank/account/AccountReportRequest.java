@@ -15,20 +15,20 @@
  */
 package org.apache.servicemix.sca.bigbank.account;
 
-import javax.xml.bind.annotation.AccessType;
+import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlAccessorType(AccessType.FIELD)
+@XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = { "customerID" })
 @XmlRootElement(name = "AccountReportRequest")
 public class AccountReportRequest {
 
-    @XmlElement(name = "CustomerID")
+	@XmlElement(name = "CustomerID")
 	private String customerID;
-	
+
 	public String getCustomerID() {
 		return customerID;
 	}
@@ -36,5 +36,5 @@ public class AccountReportRequest {
 	public void setCustomerID(String customerID) {
 		this.customerID = customerID;
 	}
-	
+
 }

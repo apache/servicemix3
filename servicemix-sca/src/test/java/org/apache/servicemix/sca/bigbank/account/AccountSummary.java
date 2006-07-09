@@ -15,45 +15,51 @@
  */
 package org.apache.servicemix.sca.bigbank.account;
 
-import javax.xml.bind.annotation.AccessType;
+import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlAccessorType(AccessType.FIELD)
+@XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = { "accountNumber", "accountType", "balance" })
 @XmlRootElement(name = "AccountSummary")
 public class AccountSummary {
 
 	@XmlElement(name = "AccountNumber")
 	private String accountNumber;
+
 	@XmlElement(name = "AccountType")
 	private String accountType;
+
 	@XmlElement(name = "Balance")
 	private float balance;
-	
+
 	public AccountSummary() {
 	}
-	
+
 	public String getAccountNumber() {
 		return accountNumber;
 	}
+
 	public void setAccountNumber(String accountNumber) {
 		this.accountNumber = accountNumber;
 	}
+
 	public String getAccountType() {
 		return accountType;
 	}
+
 	public void setAccountType(String accountType) {
 		this.accountType = accountType;
 	}
+
 	public float getBalance() {
 		return balance;
 	}
+
 	public void setBalance(float balance) {
 		this.balance = balance;
 	}
-	
-}
 
+}
