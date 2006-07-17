@@ -1,6 +1,7 @@
 <archetype>
   <id>servicemix-su</id>
-   <resources>
+  <resources>
     <resource>src/main/resources/xbean.xml</resource>
+    <resource>src/main/resources/service.wsdl</resource>
   </resources>
 </archetype>
