@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mps>
+
+	 <property-set name="hello">
+	     
+	     <!-- set a static string value -->
+	     <property name="my-superdooper.property">
+	         <static-value><![CDATA[wishAusMadeItTotheFinals]]></static-value>
+	     </property>
+	 </property-set>
+	 
+	 
+	 <property-set name="propertySetOne">
+	     
+	     <!-- set a static string value -->
+	     <property name="property.1">
+	         <static-value><![CDATA[foobarAndCheese]]></static-value>
+	     </property>
+	     
+	     <!--
+	        xpath and a default string
+	     -->
+	     <property name="property.2">
+	         <xpath-expression>
+		 	      <![CDATA[/sample/@id]]>
+		 	 </xpath-expression>
+		 	 <static-value><![CDATA[sampleIdNotFound]]></static-value>
+	     </property>
+
+		<!-- 
+		   an xpath that doesn't work
+		 -->	     
+	     <property name="prop.xpath.or.keep.existing">
+	        <xpath-expression>
+		 	    <![CDATA[/someexpath/statement/that/wont/match]]>
+		 	</xpath-expression>
+		 	<existing-property/>
+	     </property>
+	     
+	     <property name="new.prop.name">
+		 	<existing-property name="other.property"/>
+	     </property>
+	     
+	     <property name="property.3">
+		 	<existing-property name="other.set.property"/>
+	     </property>
+	     	     
+	 </property-set>
+	 
+
+
+</mps>
