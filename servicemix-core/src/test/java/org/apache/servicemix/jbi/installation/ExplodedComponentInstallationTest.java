@@ -67,14 +67,8 @@ public class ExplodedComponentInstallationTest extends TestCase {
 					componentResource);
 			container.installArchive(componentResource.getFile());
 
-			// Give it is bit of time to deploy
-			Thread.sleep(3000);
-			
-			// Make sure it has
-			assertNotNull(container.getComponent("logger-component"));
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
+			fail("Component should be invalid");
+		} catch (Exception e) {					
 		}
 	}
 

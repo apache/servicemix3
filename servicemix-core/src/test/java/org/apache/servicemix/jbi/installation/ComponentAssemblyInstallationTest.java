@@ -29,7 +29,7 @@ import junit.framework.TestCase;
  * component that doesn't do anything though we are validating the parsing of
  * the component descriptor and its deployment
  * 
- * @version $Revision$
+ * @version $Revision: 411178 $
  */
 public class ComponentAssemblyInstallationTest extends TestCase {
 	protected JBIContainer container = new JBIContainer();
@@ -61,21 +61,15 @@ public class ComponentAssemblyInstallationTest extends TestCase {
 
 	}
 
-	public void testComponentInstallation() throws Exception {
-		try {
+	public void testInvalidComponentInstallation() throws Exception {
+		try {			
 			// Get the component
 			URL componentResource = getClass().getClassLoader().getResource("logger-component-1.0-jbi-installer.zip");
 			assertNotNull("The component JAR logger-component-1.0-jbi-installer is missing from the classpath", componentResource);
-			container.installArchive(componentResource.toExternalForm());
-
-            // Get the component
-			componentResource = getClass().getClassLoader().getResource("quartz-component-1.0-jbi-installer.zip");
-			assertNotNull("The component JAR quartz-component-1.0-jbi-installer is missing from the classpath", componentResource);
-			container.installArchive(componentResource.toExternalForm());
-            Thread.sleep(10000);
+			container.installArchive(componentResource.toExternalForm());            
+            fail("Missing bootstrap should have thrown exception?");
 		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
+			
 		}
 	}
 

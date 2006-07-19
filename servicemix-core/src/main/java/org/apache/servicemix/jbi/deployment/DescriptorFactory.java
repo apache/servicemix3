@@ -21,7 +21,9 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,80 +37,120 @@ import org.springframework.core.io.UrlResource;
  */
 public class DescriptorFactory {
 
-    public static final String DESCRIPTOR_FILE = "META-INF/jbi.xml";
+	public static final String DESCRIPTOR_FILE = "META-INF/jbi.xml";
 
-    private static Log log = LogFactory.getLog(DescriptorFactory.class);
-    
-    /**
-     * Build a jbi descriptor from a file archive
-     * 
-     * @param descriptorFile path to the jbi descriptor, or to the root directory
-     * @return the Descriptor object
-     */
-    public static Descriptor buildDescriptor(File descriptorFile) {
-        if (descriptorFile.isDirectory()) {
-            descriptorFile = new File(descriptorFile, DESCRIPTOR_FILE);
-        }
-        if (descriptorFile.isFile()) {
-            try {
-                return buildDescriptor(descriptorFile.toURL());
-            } catch (MalformedURLException e) {
-                throw new RuntimeException("There is a bug here...", e);
-            }
-        }
-        return null;
-    }
-    
-    /**
-     * Build a jbi descriptor from the specified URL
-     * 
-     * @param url url to the jbi descriptor
-     * @return the Descriptor object
-     */
-    public static Descriptor buildDescriptor(URL url) {
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        try {
-            Thread.currentThread().setContextClassLoader(DescriptorFactory.class.getClassLoader());
-            ResourceXmlApplicationContext context = new ResourceXmlApplicationContext(
-                    new UrlResource(url), 
-                    Arrays.asList(new Object[] { new XBeanProcessor() }));
-            Descriptor descriptor = (Descriptor) context.getBean("jbi");
-            return descriptor;
-        } finally {
-            Thread.currentThread().setContextClassLoader(cl);
-        }
-    }
-    
-    /**
-     * Check validity of the JBI descriptor
-     * @param descriptor the descriptor to check
-     * @throws Exception if the descriptor is not valid
-     */
-    public static void checkDescriptor(Descriptor descriptor) throws Exception {
-        // TODO
-    }
+	private static Log log = LogFactory.getLog(DescriptorFactory.class);
 
-    /**
-     * Retrieves the jbi descriptor as a string
-     * 
-     * @param descriptorFile path to the jbi descriptor, or to the root directory
-     * @return the contents of the jbi descriptor
-     */
-    public static String getDescriptorAsText(File descriptorFile) {
-        if (descriptorFile.isDirectory()) {
-            descriptorFile = new File(descriptorFile, DESCRIPTOR_FILE);
-        }
-        if (descriptorFile.isFile()) {
-            try {
-                ByteArrayOutputStream os = new ByteArrayOutputStream();
-                InputStream is = new FileInputStream(descriptorFile);
-                FileUtil.copyInputStream(is, os);
-                return os.toString();
-            } catch (Exception e) {
-                log.debug("Error reading jbi descritor: " + descriptorFile, e);
-            }
-        }
-        return null;
-    }
+	/**
+	 * Build a jbi descriptor from a file archive
+	 * 
+	 * @param descriptorFile
+	 *            path to the jbi descriptor, or to the root directory
+	 * @return the Descriptor object
+	 */
+	public static Descriptor buildDescriptor(File descriptorFile) {
+		if (descriptorFile.isDirectory()) {
+			descriptorFile = new File(descriptorFile, DESCRIPTOR_FILE);
+		}
+		if (descriptorFile.isFile()) {
+			try {
+				return buildDescriptor(descriptorFile.toURL());
+			} catch (MalformedURLException e) {
+				throw new RuntimeException("There is a bug here...", e);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Build a jbi descriptor from the specified URL
+	 * 
+	 * @param url
+	 *            url to the jbi descriptor
+	 * @return the Descriptor object
+	 */
+	public static Descriptor buildDescriptor(URL url) {
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		try {
+			Thread.currentThread().setContextClassLoader(
+					DescriptorFactory.class.getClassLoader());
+			ResourceXmlApplicationContext context = new ResourceXmlApplicationContext(
+					new UrlResource(url), Arrays
+							.asList(new Object[] { new XBeanProcessor() }));
+			Descriptor descriptor = (Descriptor) context.getBean("jbi");
+			checkDescriptor(descriptor);
+			return descriptor;
+		} finally {
+			Thread.currentThread().setContextClassLoader(cl);
+		}
+	}
+
+	/**
+	 * Check validity of the JBI descriptor
+	 * 
+	 * @param descriptor
+	 *            the descriptor to check
+	 * @throws Exception
+	 *             if the descriptor is not valid
+	 */
+	public static void checkDescriptor(Descriptor descriptor) {
+		// TODO Needs a log more validation
+		List voilations = new ArrayList();
+
+		if (descriptor.getComponent() != null) {
+			checkComponent(voilations, descriptor.getComponent());
+		}
+
+		if (voilations.size() > 0) {
+			throw new RuntimeException(
+					"The JBI descriptor is not valid, please correct these voilations "
+							+ voilations.toString() + "");
+		}
+	}
+
+	/**
+	 * Checks that the component is valid
+	 * 
+	 * @param voilations
+	 *            A list of voilations that the check can add to
+	 * 
+	 * @param component
+	 *            The component descriptor that is being checked
+	 */
+	private static void checkComponent(List voilations, Component component) {
+		if (component.getBootstrapClassName() == null) {
+			voilations
+					.add("The component has not defined a boot-strap class name");
+		}
+		if (component.getBootstrapClassPath() == null
+				|| component.getBootstrapClassPath().getPathElements() == null) {
+			voilations
+					.add("The component has not defined any boot-strap class path elements");
+		}
+	}
+
+	/**
+	 * Retrieves the jbi descriptor as a string
+	 * 
+	 * @param descriptorFile
+	 *            path to the jbi descriptor, or to the root directory
+	 * @return the contents of the jbi descriptor
+	 */
+	public static String getDescriptorAsText(File descriptorFile) {
+		if (descriptorFile.isDirectory()) {
+			descriptorFile = new File(descriptorFile, DESCRIPTOR_FILE);
+		}
+		if (descriptorFile.isFile()) {
+			try {
+				ByteArrayOutputStream os = new ByteArrayOutputStream();
+				InputStream is = new FileInputStream(descriptorFile);
+				FileUtil.copyInputStream(is, os);
+				return os.toString();
+			} catch (Exception e) {
+				log.debug("Error reading jbi descritor: " + descriptorFile, e);
+			}
+		}
+		return null;
+	}
 
 }
