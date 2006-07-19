@@ -4,7 +4,7 @@
 
   <http:endpoint service="replaceMe:withYourService"
                  endpoint="soap"
-                 role="consumer" 
+                 role="provider" 
                  locationURI="http://localhost:8192/example/"
                  defaultMep="http://www.w3.org/2004/08/wsdl/in-out"
                  soap="true" />             
