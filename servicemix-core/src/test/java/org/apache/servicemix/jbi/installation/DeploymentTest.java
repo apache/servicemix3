@@ -44,8 +44,8 @@ public class DeploymentTest extends AbstractManagementTest {
 	protected void setUp() throws Exception {
 		super.setUp();
         // Create mocks
-        bootstrapMock = ExtMockControl.createControl(Bootstrap.class);
-        bootstrap = (Bootstrap) bootstrapMock.getMock();
+        bootstrapMock = ExtMockControl.createControl(Bootstrap.class);                
+        bootstrap = (Bootstrap) bootstrapMock.getMock();        
         Bootstrap1.setDelegate(bootstrap);
         componentMock = ExtMockControl.createControl(Component.class);
         component = (Component) componentMock.getMock();
@@ -85,8 +85,10 @@ public class DeploymentTest extends AbstractManagementTest {
     	// configure mocks
     	reset();
         bootstrap.init(null);
-        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
+        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);       
         bootstrap.onInstall();
+        bootstrap.getExtensionMBeanName();
+        bootstrapMock.setReturnValue(null);
         bootstrap.cleanUp();
         replay();
         // test component installation
@@ -174,10 +176,12 @@ public class DeploymentTest extends AbstractManagementTest {
      */
     public void testDeployAndRestart() throws Exception {
     	// configure mocks
-    	reset();
-        bootstrap.init(null);
-        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
+    	reset();    	
+        bootstrap.init(null);        
+        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);        
         bootstrap.onInstall();
+        bootstrap.getExtensionMBeanName();
+        bootstrapMock.setReturnValue(null);
         bootstrap.cleanUp();
         replay();
         // test component installation
@@ -242,11 +246,16 @@ public class DeploymentTest extends AbstractManagementTest {
         
         // configure mocks
         reset();
+        // XXX Should the bootstrap re-init?
+        bootstrap.init(null);
+        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
+        bootstrap.getExtensionMBeanName();
+        bootstrapMock.setReturnValue(null);
         component.getLifeCycle();
         componentMock.setReturnValue(lifecycle, MockControl.ONE_OR_MORE);
         lifecycle.init(null);
         lifecycleMock.setMatcher(MockControl.ALWAYS_MATCHER);
-        lifecycle.start();
+        lifecycle.start();        
         component.getServiceUnitManager();
         componentMock.setReturnValue(manager, MockControl.ONE_OR_MORE);
         manager.init(null, null);
@@ -282,6 +291,8 @@ public class DeploymentTest extends AbstractManagementTest {
         bootstrap.init(null);
         bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
         bootstrap.onInstall();
+        bootstrap.getExtensionMBeanName();
+        bootstrapMock.setReturnValue(null);
         bootstrap.cleanUp();
         replay();
         // test component installation
@@ -359,7 +370,12 @@ public class DeploymentTest extends AbstractManagementTest {
         verify();
         
         // configure mocks
-        reset();
+        reset();  
+        // XXX Should the bootstrap re-init?
+        bootstrap.init(null);
+        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
+        bootstrap.getExtensionMBeanName();
+        bootstrapMock.setReturnValue(null);
         component.getLifeCycle();
         componentMock.setReturnValue(lifecycle, MockControl.ONE_OR_MORE);
         lifecycle.init(null);

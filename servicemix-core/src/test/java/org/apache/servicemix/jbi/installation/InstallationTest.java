@@ -45,6 +45,8 @@ public class InstallationTest extends AbstractManagementTest {
         // configure bootstrap
         bootstrap.init(null);
         bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
+        bootstrap.getExtensionMBeanName();
+        bootstrapMock.setReturnValue(null);
         bootstrapMock.replay();
         // test component installation
         startContainer(true);
@@ -79,6 +81,8 @@ public class InstallationTest extends AbstractManagementTest {
         // configure bootstrap
         bootstrap.init(null);
         bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
+        bootstrap.getExtensionMBeanName();
+        bootstrapMock.setReturnValue(null);       
         bootstrapMock.replay();
         // test component installation
         startContainer(true);
@@ -123,6 +127,9 @@ public class InstallationTest extends AbstractManagementTest {
         bootstrap.init(null);
         bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
         bootstrap.onInstall();
+        bootstrap.getExtensionMBeanName();
+        bootstrapMock.setReturnValue(null);     
+        bootstrapMock.setReturnValue(null);
         bootstrap.cleanUp();
         bootstrapMock.replay();
         // configure component
