@@ -254,7 +254,12 @@ public class InstallerMBeanImpl implements InstallerMBean {
             context.setInstall(true);
         } finally {
             cleanUpBootstrap();
-            ((DestroyableClassLoader) bootstrap.getClass().getClassLoader()).destroy();
+            
+            // If it was found by a destroyable classloader destroy it
+            // XXX Should we be holding the classloader as a member as always destroying it?
+            if (bootstrap.getClass().getClassLoader() instanceof DestroyableClassLoader) {
+            	((DestroyableClassLoader) bootstrap.getClass().getClassLoader()).destroy();
+            }
             System.gc();
             container.getEnvironmentContext().removeComponentRootDirectory(componentName);
         }
