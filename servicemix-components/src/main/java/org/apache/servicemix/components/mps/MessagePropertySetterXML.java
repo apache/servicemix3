@@ -29,7 +29,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.TransformComponentSupport;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.xpath.CachedXPathAPI;
@@ -126,9 +127,9 @@ import org.xml.sax.SAXException;
 public class MessagePropertySetterXML extends TransformComponentSupport  {
 	
 	/**
-	 * log4j logger
+	 * Apache commons logger
 	 */
-	private static final Logger _log = Logger.getLogger(MessagePropertySetterXML.class);
+	private final transient Log logger = LogFactory.getLog(getClass());
 
 	/**
 	 * The name of our JBI property we may have to interrogate to 
@@ -208,13 +209,13 @@ public class MessagePropertySetterXML extends TransformComponentSupport  {
 			} else {
 				return false;
 			}
-			_log.info("Applying properties from property-set [" + propertySetName + "]");
+			logger.info("Applying properties from property-set [" + propertySetName + "]");
 			getPropertySetByName(propertySetName).applyProperties(in,out);
 			return true;				
 		} catch (JBIException e) {
 			throw new MessagingException("Problem setting properties",e);
 		} catch (PropertySetNotFoundException e) {
-			_log.warn(e.getLocalizedMessage());
+			logger.warn(e.getLocalizedMessage());
 			return false;
 		}
 	}
@@ -232,7 +233,7 @@ public class MessagePropertySetterXML extends TransformComponentSupport  {
 		domFactory.setCoalescing(true); // convert CDATA to test nodes
         DocumentBuilder domBuilder;
 		try {
-			_log.info("Intialising MessagePropertySetterXML, loading settings from " + this.xmlConfiguration.getFile().getAbsolutePath());
+			logger.info("Intialising MessagePropertySetterXML, loading settings from " + this.xmlConfiguration.getFile().getAbsolutePath());
 			domBuilder = domFactory.newDocumentBuilder();
 			xmlMPSdom = domBuilder.parse(this.xmlConfiguration.getInputStream());
 		} catch (ParserConfigurationException e) {

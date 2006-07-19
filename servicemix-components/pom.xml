@@ -58,6 +58,10 @@
       <optional>true</optional>
     </dependency>
     <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>      
+    </dependency>
+    <dependency>
       <groupId>org.codehaus.xfire</groupId>
       <artifactId>xfire-all</artifactId>
       <optional>true</optional>
