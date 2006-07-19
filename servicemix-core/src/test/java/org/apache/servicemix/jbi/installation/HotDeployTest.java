@@ -102,6 +102,8 @@ public class HotDeployTest extends AbstractManagementTest {
     	reset();
         bootstrap.init(null);
         bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
+        bootstrap.getExtensionMBeanName();
+        bootstrapMock.setReturnValue(null);
         bootstrap.onInstall();
         bootstrap.cleanUp();
         component.getLifeCycle();
@@ -151,6 +153,8 @@ public class HotDeployTest extends AbstractManagementTest {
     	reset();
         bootstrap.init(null);
         bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
+        bootstrap.getExtensionMBeanName();
+        bootstrapMock.setReturnValue(null);
         bootstrap.onInstall();
         bootstrap.cleanUp();
         component.getLifeCycle();
@@ -213,7 +217,9 @@ public class HotDeployTest extends AbstractManagementTest {
     	});
     	reset();
         bootstrap.init(null);
-        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
+        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);        
+        bootstrap.getExtensionMBeanName();
+        bootstrapMock.setReturnValue(null);
         bootstrap.onInstall();
         bootstrap.cleanUp();
         component.getLifeCycle();
