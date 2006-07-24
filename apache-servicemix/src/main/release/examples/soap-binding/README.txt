@@ -22,7 +22,6 @@ http://incubator.apache.org/servicemix/soap+binding+example
 
 
 NOTES:
-  * currently, the demo does not work with FireFox
   * if you experience problems, try rebuilding the demo:
        remove all the directories but the src one,
        type 'ant setup'

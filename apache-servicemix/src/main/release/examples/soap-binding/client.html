@@ -25,7 +25,6 @@ function getHTTPObject() {
   /* on essaie de créer l'objet si ce n'est pas déjà fait */
   if (!xmlhttp && typeof XMLHttpRequest != 'undefined') {
      try {
-        netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
         xmlhttp = new XMLHttpRequest();
      } catch (e) {
         xmlhttp = false;
@@ -53,6 +52,7 @@ function send() {
   var request = document.getElementById("request");
   var response = document.getElementById("response");
   try {
+    netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
     xmlhttp.open("POST", "http://localhost:8192/Service/", true);
   } catch (e) {
     alert('error opening');

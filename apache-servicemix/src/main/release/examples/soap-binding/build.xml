@@ -67,6 +67,8 @@
     <copy todir="install">
       <fileset dir="../../components" includes="*jsr181*"/>
       <fileset dir="../../components" includes="*http*"/>
+      <fileset dir="../../components" includes="*common*"/>
+      <fileset dir="../../components" includes="*soap*"/>
     </copy>
     <copy file="${build.dir}/soap-demo-sa.zip" todir="deploy"/>
   </target>
