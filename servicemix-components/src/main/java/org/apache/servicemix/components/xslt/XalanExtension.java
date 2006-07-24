@@ -15,6 +15,7 @@
  */
 package org.apache.servicemix.components.xslt;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.components.util.CopyTransformer;
 import org.apache.servicemix.components.util.MarshalerSupport;
@@ -179,7 +180,21 @@ public class XalanExtension extends MarshalerSupport {
             throw new IllegalArgumentException("Must specify a 'select' attribute to set a property on the output message");
         }
         XObject answer = ExsltDynamic.evaluate(context.getTransformer().getXPathContext().getExpressionContext(), xpath);
-        String value = answer.str();
+        Object value;
+        try {
+            if (answer.getType() == XObject.CLASS_NUMBER) {
+                value = NumberUtils.createNumber(answer.str());
+            } else if (answer.getType() == XObject.CLASS_BOOLEAN) {
+                value = new Boolean(answer.bool());
+            } else {
+                // XObject guarantees we are never null.
+                value = answer.str();
+            }
+        } catch (TransformerException e) {
+            value = answer.str();
+        } catch (NumberFormatException e) {
+            value = answer.str();
+        }
         out.setProperty(name, value);
     }
 

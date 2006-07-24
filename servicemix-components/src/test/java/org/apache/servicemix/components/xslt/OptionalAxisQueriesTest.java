@@ -64,7 +64,7 @@ public class OptionalAxisQueriesTest extends TestSupport {
         assertMessageHeader(messageList2, 0, "foo", "17.25");
         assertMessageHeader(messageList3, 0, "foo", "EXP8514");
         assertMessageHeader(messageList4, 0, "foo", "10040300");
-        assertMessageHeader(messageList5, 0, "foo", "4");
+        assertMessageHeader(messageList5, 0, "foo", new Integer(4));
         assertMessageHeader(messageList6, 0, "foo", "PPR,CPY,20#,84B,LGL,WE");
 
     }
