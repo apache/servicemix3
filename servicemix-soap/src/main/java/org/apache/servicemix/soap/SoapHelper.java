@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.jbi.JBIException;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.MessageExchange;
@@ -31,6 +32,7 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.wsdl.Definition;
 import javax.wsdl.Operation;
+import javax.wsdl.Part;
 import javax.wsdl.PortType;
 import javax.wsdl.WSDLException;
 import javax.wsdl.factory.WSDLFactory;
@@ -66,6 +68,7 @@ public class SoapHelper {
     private JBIMarshaler jbiMarshaler;
     private SoapMarshaler soapMarshaler;
     private Map definitions;
+    private Map operationNames;
 
     public SoapHelper(SoapEndpoint endpoint) {
         this.policies = endpoint.getPolicies();
@@ -73,6 +76,7 @@ public class SoapHelper {
             this.policies = Collections.EMPTY_LIST;
         }
         this.definitions = new HashMap();
+        this.operationNames = new HashMap();
         this.jbiMarshaler = new JBIMarshaler();
         this.endpoint = endpoint;
         boolean requireDom = false;
@@ -101,18 +105,9 @@ public class SoapHelper {
                 policy.onReceive(context);
             }
         }
-        URI mep = findMep(context);
-        if (mep == null) {
-            mep = endpoint.getDefaultMep();
-        }
-        MessageExchange exchange = createExchange(mep);
+
         // If WS-A has not set informations, use the default ones
         if (context.getProperty(Context.SERVICE) == null && context.getProperty(Context.INTERFACE) == null) {
-            if (endpoint.getDefaultOperation() != null) {
-                context.setProperty(Context.OPERATION, endpoint.getDefaultOperation());
-            } else {
-                context.setProperty(Context.OPERATION, context.getInMessage().getBodyName());
-            }
             // If no target endpoint / service / interface is defined
             // we assume we use the same informations has defined on the
             // external endpoint
@@ -127,6 +122,28 @@ public class SoapHelper {
                 context.setProperty(Context.ENDPOINT, endpoint.getTargetEndpoint());
             }
         }
+        Operation operation = findOperation(context);
+        if (context.getProperty(Context.OPERATION) == null) {
+            if (operation != null) {
+                // the operation QName must be retrieved from the map
+                // so that we can have the right namespace
+                context.setProperty(Context.OPERATION, operationNames.get(operation));
+            } else if (endpoint.getDefaultOperation() != null) {
+                context.setProperty(Context.OPERATION, endpoint.getDefaultOperation());
+            } else {
+                // By default, use name of body element (i.e., RPC-style)
+                QName bodyName = context.getInMessage().getBodyName();
+                context.setProperty(Context.OPERATION, bodyName);
+            }
+        }
+        URI mep = null; 
+        if ( operation != null ) {
+            mep = getMep(operation);
+        }
+        if (mep == null) {
+            mep = endpoint.getDefaultMep();
+        }
+        MessageExchange exchange = createExchange(mep);
         exchange.setService((QName) context.getProperty(Context.SERVICE));
         exchange.setInterfaceName((QName) context.getProperty(Context.INTERFACE));
         exchange.setOperation((QName) context.getProperty(Context.OPERATION));
@@ -179,7 +196,7 @@ public class SoapHelper {
         }
         return soapFault;
     }
-    
+
     public void onSend(Context context) throws Exception {
         if (policies != null) {
             for (Iterator it = policies.iterator(); it.hasNext();) {
@@ -194,7 +211,7 @@ public class SoapHelper {
             }
         }
     }
-    
+
     public void onAnswer(Context context) throws Exception {
         if (policies != null) {
             for (Iterator it = policies.iterator(); it.hasNext();) {
@@ -220,12 +237,30 @@ public class SoapHelper {
         return exchange;
     }
 
-    protected URI findMep(Context context) throws Exception {
+    private URI getMep(Operation oper) {
+        URI mep = null;
+        if (oper != null) {
+            boolean output = oper.getOutput() != null && oper.getOutput().getMessage() != null
+                            && oper.getOutput().getMessage().getParts().size() > 0;
+            boolean faults = oper.getFaults().size() > 0;
+            if (output) {
+                mep = IN_OUT;
+            } else if (faults) {
+                mep = ROBUST_IN_ONLY;
+            } else {
+                mep = IN_ONLY;
+            }
+        }
+        return mep;
+    }        
+
+    protected Operation findOperation(Context context) throws Exception {
         QName interfaceName = (QName) context.getProperty(Context.INTERFACE);
         QName serviceName = (QName) context.getProperty(Context.SERVICE);
-        QName operationName = (QName) context.getProperty(Context.OPERATION);
         String endpointName = (String) context.getProperty(Context.ENDPOINT);
         ComponentContext componentContext = endpoint.getServiceUnit().getComponent().getComponentContext();
+        QName bodyName = context.getInMessage().getBodyName();
+        
         // Find target endpoint
         ServiceEndpoint se = null;
         if (serviceName != null && endpointName != null) {
@@ -237,6 +272,7 @@ public class SoapHelper {
                 se = ses[0];
             }
         }
+        
         // Find WSDL description
         Definition definition = null;
         if (se == null) {
@@ -244,6 +280,38 @@ public class SoapHelper {
             definition = endpoint.getDefinition();
         } else {
             // Find endpoint description from the component context
+            definition = getDefinition(se);
+        }
+
+        // Find operation matching 
+        if (interfaceName != null && definition != null) {
+            PortType portType = definition.getPortType(interfaceName);
+            if (portType != null) {
+                List list = portType.getOperations();
+                for (int i = 0; i < list.size(); i++) {
+                    Operation operation = (Operation) list.get(i);
+                    if (operation.getInput() != null && operation.getInput().getMessage() != null) {
+                        Map parts = operation.getInput().getMessage().getParts();
+                        Iterator iter = parts.values().iterator();
+                        while (iter.hasNext()) {
+                            Part part = (Part) iter.next();
+                            QName elementName = part.getElementName();
+                            if (elementName != null && elementName.equals(bodyName)) {
+                                // found
+                                operationNames.put(operation, new QName(portType.getQName().getNamespaceURI(), operation.getName()));
+                                return operation;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    protected Definition getDefinition(ServiceEndpoint se) throws WSDLException, JBIException {
+        Definition definition;
+        ComponentContext componentContext = endpoint.getServiceUnit().getComponent().getComponentContext();
             String key = se.getServiceName() + se.getEndpointName();
             synchronized (definitions) {
                 definition = (Definition) definitions.get(key);
@@ -268,29 +336,7 @@ public class SoapHelper {
                     definitions.put(key, definition);
                 }
             }
-        }
-
-        // Find operation within description
-        URI mep = null;
-        if (interfaceName != null && operationName != null && definition != null) {
-            PortType portType = definition.getPortType(interfaceName);
-            if (portType != null) {
-                Operation oper = portType.getOperation(operationName.getLocalPart(), null, null);
-                if (oper != null) {
-                    boolean output = oper.getOutput() != null && oper.getOutput().getMessage() != null
-                                    && oper.getOutput().getMessage().getParts().size() > 0;
-                    boolean faults = oper.getFaults().size() > 0;
-                    if (output) {
-                        mep = IN_OUT;
-                    } else if (faults) {
-                        mep = ROBUST_IN_ONLY;
-                    } else {
-                        mep = IN_ONLY;
-                    }
-                }
-            }
-        }
-        return mep;
+        return definition;
     }
 
 }
