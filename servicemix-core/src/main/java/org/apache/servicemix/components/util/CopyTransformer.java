@@ -47,6 +47,7 @@ public class CopyTransformer implements MessageTransformer {
     
     private boolean copyProperties = true;
     private boolean copyAttachments = true;
+    private boolean copySecuritySubject = true;
 
     /**
      * @return the copyAttachments
@@ -74,6 +75,20 @@ public class CopyTransformer implements MessageTransformer {
      */
     public void setCopyProperties(boolean copyProperties) {
         this.copyProperties = copyProperties;
+    }
+
+    /**
+     * @return the copySecuritySubject
+     */
+    public boolean isCopySecuritySubject() {
+        return copySecuritySubject;
+    }
+
+    /**
+     * @param copySecuritySubject the copySecuritySubject to set
+     */
+    public void setCopySecuritySubject(boolean copySecuritySubject) {
+        this.copySecuritySubject = copySecuritySubject;
     }
 
     /**
@@ -118,6 +133,11 @@ public class CopyTransformer implements MessageTransformer {
         if (copyAttachments) {
             copyAttachments(from, to);
         }
+        
+        if (copySecuritySubject) {
+            copySecuritySubject(from, to);
+        }
+        
         return true;
     }
 
@@ -149,4 +169,16 @@ public class CopyTransformer implements MessageTransformer {
             to.addAttachment(name, value);
         }
     }
+
+    /**
+     * Copies the subject from a message to another message
+     * 
+     * @param from the message with the subject
+     * @param to the message to which the subject is added
+     * @throws MessagingException if an attachment could not be added 
+     */
+    public static void copySecuritySubject(NormalizedMessage from, NormalizedMessage to) throws MessagingException {
+        to.setSecuritySubject(from.getSecuritySubject());
+    }
+    
 }
