@@ -20,9 +20,9 @@ public interface JbiConstants {
 
     String SEND_SYNC = "javax.jbi.messaging.sendSync";
     
-    String PROTOCOL_TYPE = "javax.jbi.protocol.type";
+    String PROTOCOL_TYPE = "javax.jbi.messaging.protocol.type";
     
-    String PROTOCOL_HEADERS = "javax.jbi.protocol.headers";
+    String PROTOCOL_HEADERS = "javax.jbi.messaging.protocol.headers";
     
     String SECURITY_SUBJECT = "javax.jbi.security.subject";
     
