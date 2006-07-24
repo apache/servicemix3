@@ -210,7 +210,7 @@ public class WSDLFlattener {
                         Collection imps = (Collection) itImp.next();
                         for (Iterator itSi = imps.iterator(); itSi.hasNext();) {
                             SchemaImport imp = (SchemaImport) itSi.next();
-                            schemas.read(imp.getSchemaLocationURI(), null);
+                            schemas.read(imp.getSchemaLocationURI(), new URI(def.getDocumentBaseURI()));
                         }
                     }
                 }
