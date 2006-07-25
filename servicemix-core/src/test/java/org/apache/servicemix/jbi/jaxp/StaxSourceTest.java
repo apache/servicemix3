@@ -18,6 +18,7 @@ package org.apache.servicemix.jbi.jaxp;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.Arrays;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
@@ -32,6 +33,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.StaxSource;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 import junit.framework.TestCase;
 
@@ -72,6 +76,34 @@ public class StaxSourceTest extends TestCase {
         DOMSource src = new SourceTransformer().toDOMSource(ss);
         assertNotNull(src);
         assertNotNull(src.getNode());
+        NodeList nl = ((Document) src.getNode()).getDocumentElement().getElementsByTagName("long");
+        assertEquals(1, nl.getLength());
+        Text txt = (Text) nl.item(0).getFirstChild();
+        System.out.println(txt.getTextContent());
+        
+        StringBuffer expected = new StringBuffer();
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 10; j++) {
+                for (int k = 0; k < 10; k++) {
+                    expected.append((char)('0' + j));
+                    expected.append((char)('0' + k));
+                    if (k != 9) {
+                        expected.append(' ');
+                    }
+                }
+                expected.append("\n");
+            }
+        }
+        /*
+        char[] c1 = txt.getTextContent().toCharArray();
+        char[] c2 = expected.toString().toCharArray();
+        for (int i = 0; i < c1.length; i++) {
+            if (c1[i] != c2[i]) {
+                fail("Expected '" + (int)c2[i] + "' but found '" + (int)c1[i] + "' at index " + i);
+            }
+        }
+        */
+        assertEquals(expected.toString(), txt.getTextContent());
     }
 
 }
