@@ -16,16 +16,14 @@
  */
 package org.apache.servicemix.client;
 
-import org.apache.servicemix.jbi.resolver.URIResolver;
-import org.w3c.dom.DocumentFragment;
-
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.InOptionalOut;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.RobustInOnly;
-import javax.jbi.servicedesc.ServiceEndpoint;
+
+import org.apache.servicemix.jbi.resolver.URIResolver;
 
 /**
  * 
@@ -34,17 +32,7 @@ import javax.jbi.servicedesc.ServiceEndpoint;
 public class DefaultDestination implements Destination {
 
     private ServiceMixClient client;
-    private ServiceEndpoint endpoint;
     private String destinationUri;
-
-    public static ServiceEndpoint resolveEndpoint(ServiceMixClient client, String destinationUri) throws MessagingException {
-        DocumentFragment epr = URIResolver.createWSAEPR(destinationUri);
-        ServiceEndpoint endpoint = client.getContext().resolveEndpointReference(epr);
-        if (endpoint == null) {
-            throw new MessagingException("Could not resolve uri '" + destinationUri + "' into a ServiceEndpoint");
-        }
-        return endpoint;
-    }
 
     public DefaultDestination(ServiceMixClient client, String destinationUri) throws MessagingException {
         this.client = client;
@@ -80,10 +68,7 @@ public class DefaultDestination implements Destination {
     }
     
     protected void configure(MessageExchange exchange) throws MessagingException {
-        if (endpoint == null) {
-            endpoint = resolveEndpoint(client, destinationUri);
-        }
-        exchange.setEndpoint(endpoint);
+        URIResolver.configureExchange(exchange, client.getContext(), destinationUri);
     }
 
 }

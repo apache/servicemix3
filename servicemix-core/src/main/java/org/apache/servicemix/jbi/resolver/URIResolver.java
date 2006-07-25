@@ -94,6 +94,42 @@ public class URIResolver extends EndpointResolverSupport {
         return epr;
     }
     
+    /**
+     * Configure a JBI exchange with the given URI as the target
+     * 
+     * @param exchange the exchange to configure
+     * @param context a component context used to resolve endpoints
+     * @param uri the target uri
+     */
+    public static void configureExchange(MessageExchange exchange, ComponentContext context, String uri) {
+        if (exchange == null) throw new NullPointerException("exchange is null");
+        if (context == null) throw new NullPointerException("context is null");
+        if (uri == null) throw new NullPointerException("uri is null");
+        if (uri.startsWith("interface:")) {
+            String uri2 = uri.substring(10);
+            String[] parts = URIResolver.split2(uri2);
+            exchange.setInterfaceName(new QName(parts[0], parts[1]));
+        } else if (uri.startsWith("operation:")) {
+            String uri2 = uri.substring(10);
+            String[] parts = URIResolver.split3(uri2);
+            exchange.setInterfaceName(new QName(parts[0], parts[1]));
+            exchange.setOperation(new QName(parts[0], parts[2]));
+        } else if (uri.startsWith("service:")) {
+            String uri2 = uri.substring(8);
+            String[] parts = URIResolver.split2(uri2);
+            exchange.setService(new QName(parts[0], parts[1]));
+        } else if (uri.startsWith("endpoint:")) {
+            String uri2 = uri.substring(9);
+            String[] parts = URIResolver.split3(uri2);
+            ServiceEndpoint se = context.getEndpoint(new QName(parts[0], parts[1]), parts[2]);
+            exchange.setEndpoint(se);
+        } else {
+            DocumentFragment epr = URIResolver.createWSAEPR(uri);
+            ServiceEndpoint se = context.resolveEndpointReference(epr);
+            exchange.setEndpoint(se);
+        }
+    }
+    
     public static String[] split3(String uri) {
         char sep;
         if (uri.indexOf('/') > 0) {
