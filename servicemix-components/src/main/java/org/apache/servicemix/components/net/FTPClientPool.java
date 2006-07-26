@@ -34,6 +34,7 @@ public class FTPClientPool extends SocketClientPoolSupport {
     private String username;
     private String password;
     private boolean binaryMode = true;
+    private boolean passiveMode = false;
     private FTPClientConfig config;
 
     public boolean validateObject(Object object) {
@@ -82,6 +83,20 @@ public class FTPClientPool extends SocketClientPoolSupport {
         this.binaryMode = binaryMode;
     }
 
+    /**
+     * @return the passiveMode
+     */
+    public boolean isPassiveMode() {
+        return passiveMode;
+    }
+
+    /**
+     * @param passiveMode the passiveMode to set
+     */
+    public void setPassiveMode(boolean passiveMode) {
+        this.passiveMode = passiveMode;
+    }
+
     public FTPClientConfig getConfig() {
         return config;
     }
@@ -111,6 +126,9 @@ public class FTPClientPool extends SocketClientPoolSupport {
         }
         if (isBinaryMode()) {
             ftp.setFileType(FTP.BINARY_FILE_TYPE);
+        }
+        if (isPassiveMode()) {
+            ftp.enterLocalPassiveMode();
         }
     }
 
