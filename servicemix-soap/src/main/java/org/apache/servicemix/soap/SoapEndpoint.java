@@ -17,14 +17,25 @@ package org.apache.servicemix.soap;
 
 import java.net.URI;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.wsdl.Definition;
+import javax.wsdl.Import;
+import javax.wsdl.Types;
+import javax.wsdl.WSDLException;
+import javax.wsdl.extensions.ExtensibilityElement;
+import javax.wsdl.extensions.ExtensionRegistry;
+import javax.wsdl.extensions.schema.Schema;
+import javax.wsdl.extensions.schema.SchemaImport;
 import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
+import javax.wsdl.xml.WSDLWriter;
 import javax.xml.namespace.QName;
 
 import org.apache.servicemix.common.Endpoint;
@@ -51,6 +62,7 @@ public abstract class SoapEndpoint extends Endpoint {
     protected QName targetService;
     protected String targetEndpoint;
     protected List policies;
+    protected Map wsdls = new HashMap();
     
     public SoapEndpoint() {
         policies = Collections.singletonList(new AddressingHandler());
@@ -243,6 +255,13 @@ public abstract class SoapEndpoint extends Endpoint {
                 logger.warn("Could not create wsdl definition from dom document", e);
             }
         }
+        if (definition != null) {
+            try {
+                mapDefinition(definition);
+            } catch (Exception e) {
+                logger.warn("Could not map wsdl definition to documents", e);
+            }
+        }
     }
 
     /**
@@ -361,5 +380,79 @@ public abstract class SoapEndpoint extends Endpoint {
     protected abstract ExchangeProcessor createConsumerProcessor();
     
     protected abstract ServiceEndpoint createExternalEndpoint();
+
+    protected WSDLReader createWsdlReader() throws WSDLException {
+        WSDLFactory factory = WSDLFactory.newInstance();
+        ExtensionRegistry registry = factory.newPopulatedExtensionRegistry();
+        registerExtensions(registry);
+        WSDLReader reader = factory.newWSDLReader();
+        reader.setExtensionRegistry(registry);
+        return reader;
+    }
+    
+    protected WSDLWriter createWsdlWriter() throws WSDLException {
+        WSDLFactory factory = WSDLFactory.newInstance();
+        ExtensionRegistry registry = factory.newPopulatedExtensionRegistry();
+        registerExtensions(registry);
+        WSDLWriter writer = factory.newWSDLWriter();
+        //writer.setExtensionRegistry(registry);
+        return writer;
+    }
+    
+    protected void registerExtensions(ExtensionRegistry registry) {
+        JbiExtension.register(registry);
+    }
+
+    
+    protected void mapDefinition(Definition def) throws WSDLException {
+        wsdls.put("main.wsdl", createWsdlWriter().getDocument(def));
+        mapImports(def);
+    }
+
+    protected void mapImports(Definition def) throws WSDLException {
+        // Add other imports to mapping
+        Map imports = def.getImports();
+        for (Iterator iter = imports.values().iterator(); iter.hasNext();) {
+            List imps = (List) iter.next();
+            for (Iterator iterator = imps.iterator(); iterator.hasNext();) {
+                Import imp = (Import) iterator.next();
+                Definition impDef = imp.getDefinition();
+                String impLoc = imp.getLocationURI();
+                if (impDef != null && impLoc != null && !URI.create(impLoc).isAbsolute()) {
+                    wsdls.put(impLoc, createWsdlWriter().getDocument(impDef));
+                    mapImports(impDef);
+                }
+            }
+        }
+        // Add schemas to mapping
+        Types types = def.getTypes();
+        if (types != null) {
+            for (Iterator it = types.getExtensibilityElements().iterator(); it.hasNext();) {
+                ExtensibilityElement ee = (ExtensibilityElement) it.next();
+                if (ee instanceof Schema) {
+                    Schema schema = (Schema) ee;
+                    Map schemaImports = schema.getImports();
+                    for (Iterator iter = schemaImports.values().iterator(); iter.hasNext();) {
+                        List imps = (List) iter.next();
+                        for (Iterator iterator = imps.iterator(); iterator.hasNext();) {
+                            SchemaImport schemaImport = (SchemaImport) iterator.next();
+                            Schema schemaImp = schemaImport.getReferencedSchema();
+                            String schemaLoc = schemaImport.getSchemaLocationURI();
+                            if (schemaLoc != null && schemaImp != null && schemaImp.getElement() != null && !URI.create(schemaLoc).isAbsolute()) {
+                                wsdls.put(schemaLoc, schemaImp.getElement());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @return Returns the wsdls.
+     */
+    public Map getWsdls() {
+        return wsdls;
+    }
     
 }

@@ -41,13 +41,17 @@ public class JbiExtension {
 
     public static void register(ExtensionRegistry registry) {
         registry.registerDeserializer(            
-                javax.wsdl.Port.class,
-                Q_ELEM_JBI_ENDPOINT,
-                new JbiEndpointDeserializer());
+                        javax.wsdl.Port.class,
+                        Q_ELEM_JBI_ENDPOINT,
+                        new JbiEndpointDeserializer());
+        registry.registerSerializer(            
+                        javax.wsdl.Port.class,
+                        Q_ELEM_JBI_ENDPOINT,
+                        new JbiEndpointSerializer());
         registry.mapExtensionTypes(
-                javax.wsdl.Port.class,
-                Q_ELEM_JBI_ENDPOINT,
-                JbiEndpoint.class);
+                        javax.wsdl.Port.class,
+                        Q_ELEM_JBI_ENDPOINT,
+                        JbiEndpoint.class);
     }
     
 }

@@ -63,7 +63,7 @@ public class HttpInvoker extends TransformComponentSupport implements MessageExc
             }
             int response = httpClient.executeMethod(hostConfiguration, method);
 
-            if (response != HttpStatus.SC_OK) {
+            if (response != HttpStatus.SC_OK && response != HttpStatus.SC_ACCEPTED) {
                 throw new InvalidStatusResponseException(response);
             }
 
