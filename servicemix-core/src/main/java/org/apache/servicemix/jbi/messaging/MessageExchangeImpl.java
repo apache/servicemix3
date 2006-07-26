@@ -675,7 +675,10 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
         try {
             int maxSize = 1500;
             StringBuffer sb = new StringBuffer();
-            sb.append("MessageExchange[\n");
+            String name = getClass().getName();
+            name = name.substring(name.lastIndexOf('.') + 1, name.length() - 4);
+            sb.append(name);
+            sb.append("[\n");
             sb.append("  id: ").append(getExchangeId()).append('\n');
             sb.append("  status: ").append(getStatus()).append('\n');
             sb.append("  role: ").append(getRole() == Role.CONSUMER ? "consumer" : "provider").append('\n');
@@ -746,5 +749,5 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             return null;
         }
     }
-
+    
 }
