@@ -41,6 +41,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.StringSource;
@@ -266,15 +267,15 @@ public class MimeMailMarshaler extends MailMarshalerSupport {
         try {
             // get attachment from property org.apache.servicemix.email.attachment
             String listAttachment = (String)getAttachments().evaluate(exchange, normalizedMessage);
-            if (listAttachment == null || listAttachment.equals(""))
-                return null;// no attachmnent
-            StringTokenizer st = new StringTokenizer(listAttachment, ",");
-            if (st == null)
-                return null; // no attachmnent
-            while (st.hasMoreTokens()) {
-                filePath = st.nextToken();
-                File file = new File(filePath);
-                attachments.put(file.getName(), new FileDataSource(file));
+            if (StringUtils.isNotBlank(listAttachment)) {
+                StringTokenizer st = new StringTokenizer(listAttachment, ",");
+                if (st != null) {
+                    while (st.hasMoreTokens()) {
+                        filePath = st.nextToken();
+                        File file = new File(filePath);
+                        attachments.put(file.getName(), new FileDataSource(file));
+                    }
+                }
             }
         } catch (MessagingException e) {
             log.warn("file not found for attachment : " + e.getMessage() + " : " + filePath);
