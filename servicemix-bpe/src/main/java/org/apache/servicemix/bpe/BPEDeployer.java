@@ -85,12 +85,12 @@ public class BPEDeployer extends AbstractDeployer {
 			su.setComponent(component);
             su.setName(serviceUnitName);
             su.setRootPath(serviceUnitRootPath);
-			Definition rootDef = loadMainWsdl(serviceUnitRootPath);
+            Definition rootDef = loadMainWsdl(serviceUnitRootPath);
             checkDefinition(rootDef, true);
             su.setDefinition(rootDef);
             WSDLWriter writer = WSDLFactory.newInstance().newWSDLWriter();
             WSDLFlattener flattener = new WSDLFlattener(rootDef);
-			for (Iterator it = rootDef.getServices().values().iterator(); it.hasNext();) {
+            for (Iterator it = rootDef.getServices().values().iterator(); it.hasNext();) {
 				Service svc = (Service) it.next();
 				for (Iterator it2 = svc.getPorts().values().iterator(); it2.hasNext();) {
 					Port pt = (Port) it2.next();
@@ -142,7 +142,7 @@ public class BPEDeployer extends AbstractDeployer {
 
     private Definition loadMainWsdl(String serviceUnitRootPath) throws WSDLException {
         File[] bpels = new File(serviceUnitRootPath).listFiles(filter);
-        String bpel = bpels[0].getAbsolutePath();
+        String bpel = bpels[0].getAbsoluteFile().toURI().toString();
         String wsdl = bpel.substring(0, bpel.length() - 4) + "wsdl";
 		WSDLReader reader = WSDLFactory.newInstance().newWSDLReader();
 	
