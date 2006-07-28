@@ -443,7 +443,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         // Call doSend
         MessageExchangeImpl me = (MessageExchangeImpl) messageExchange;
         try {
-            exchangesById.put(me.getExchangeId(), me);
+            exchangesById.put((me.getRole() == Role.CONSUMER ? "consumer:" : "provider:") + me.getExchangeId(), me);
             // Synchronously send a message and wait for the response
             synchronized (me) {
                 doSend(me, true);
@@ -583,7 +583,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         incrementInboundStats();
 
         // Retrieve the original exchange sent
-        MessageExchangeImpl original = (MessageExchangeImpl) exchangesById.get(me.getExchangeId());
+        MessageExchangeImpl original = (MessageExchangeImpl) exchangesById.get((me.getRole() == Role.CONSUMER ? "consumer:" : "provider:") + me.getExchangeId());
         if (original != null && me != original) {
             original.copyFrom(me);
             me = original;

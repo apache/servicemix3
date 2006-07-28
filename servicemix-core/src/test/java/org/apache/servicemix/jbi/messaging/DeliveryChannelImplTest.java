@@ -17,28 +17,30 @@
 package org.apache.servicemix.jbi.messaging;
 
 import javax.jbi.messaging.DeliveryChannel;
+import javax.jbi.messaging.ExchangeStatus;
+import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
+import javax.jbi.messaging.NormalizedMessage;
+import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
+import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.tck.SenderComponent;
 
 public class DeliveryChannelImplTest extends TestCase {
 
     protected JBIContainer container;
-    protected DeliveryChannel channel;
     
     protected void setUp() throws Exception {
         container = new JBIContainer();
         container.setEmbedded(true);
         container.init();
         container.start();
-        SenderComponent component = new SenderComponent();
-        container.activateComponent(new ActivationSpec("sender", component));
-        channel = component.getDeliveryChannel();
     }
     
     protected void tearDown() throws Exception {
@@ -46,12 +48,22 @@ public class DeliveryChannelImplTest extends TestCase {
     }
     
     public void testExchangeFactoryOnOpenChannel() throws Exception {
+        // Retrieve a delivery channel
+        TestComponent component = new TestComponent(null, null);
+        container.activateComponent(new ActivationSpec("component", component));
+        DeliveryChannel channel = component.getChannel();
+        // test
         MessageExchangeFactory mef = channel.createExchangeFactory();
         assertNotNull(mef);
         assertNotNull(mef.createInOnlyExchange());
     }
     
     public void testExchangeFactoryOnClosedChannel() throws Exception {
+        // Retrieve a delivery channel
+        TestComponent component = new TestComponent(null, null);
+        container.activateComponent(new ActivationSpec("component", component));
+        DeliveryChannel channel = component.getChannel();
+        // test
         channel.close();
         MessageExchangeFactory mef = channel.createExchangeFactory();
         assertNotNull(mef);
@@ -60,6 +72,48 @@ public class DeliveryChannelImplTest extends TestCase {
             fail("Exchange creation should have failed (JBI: 5.5.2.1.4)");
         } catch (MessagingException e) {
             // expected
+        }
+    }
+    
+    public void testSendSyncOnSameComponent() throws Exception {
+        // Retrieve a delivery channel
+        TestComponent component = new TestComponent(new QName("service"), "endpoint");
+        container.activateComponent(new ActivationSpec("component", component));
+        final DeliveryChannel channel = component.getChannel();
+
+        // Create another thread
+        new Thread() {
+            public void run() {
+                try {
+                    InOut me = (InOut) channel.accept(5000);
+                    NormalizedMessage nm = me.createMessage();
+                    nm.setContent(new StringSource("<response/>"));
+                    me.setOutMessage(nm);
+                    channel.sendSync(me);
+                } catch (MessagingException e) {
+                    e.printStackTrace();
+                    fail("Exception caught: " + e);
+                }
+            }
+        }.start();
+        
+        MessageExchangeFactory factory = channel.createExchangeFactoryForService(new QName("service"));
+        InOut me = factory.createInOutExchange();
+        NormalizedMessage nm = me.createMessage();
+        nm.setContent(new StringSource("<request/>"));
+        me.setInMessage(nm);
+        channel.sendSync(me);
+        assertEquals(ExchangeStatus.ACTIVE, me.getStatus());
+        me.setStatus(ExchangeStatus.DONE);
+        channel.send(me);
+    }
+    
+    public static class TestComponent extends ComponentSupport {
+        public TestComponent(QName service, String endpoint) {
+            super(service, endpoint);
+        }
+        public DeliveryChannel getChannel() throws MessagingException {
+            return getContext().getDeliveryChannel();
         }
     }
     
