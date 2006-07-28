@@ -21,8 +21,6 @@ import org.springframework.beans.factory.FactoryBean;
 /**
  * A factory bean to expose the current thread context class loader.
  * 
- * * @org.apache.xbean.XBean namespace="http://xbean.apache.org/schemas/server"
- *                         element="threadContextClassLoader" description="References the ClassLoader of the current thread context"
  * @version $Revision: 412595 $
  */
 public class ThreadContextClassLoaderFactoryBean implements FactoryBean {
