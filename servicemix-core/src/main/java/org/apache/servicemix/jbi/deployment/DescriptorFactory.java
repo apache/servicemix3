@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.config.spring.XBeanProcessor;
@@ -38,120 +39,185 @@ import org.springframework.core.io.UrlResource;
  */
 public class DescriptorFactory {
 
-	public static final String DESCRIPTOR_FILE = "META-INF/jbi.xml";
+    public static final String DESCRIPTOR_FILE = "META-INF/jbi.xml";
 
-	private static Log log = LogFactory.getLog(DescriptorFactory.class);
+    private static Log log = LogFactory.getLog(DescriptorFactory.class);
 
-	/**
-	 * Build a jbi descriptor from a file archive
-	 * 
-	 * @param descriptorFile
-	 *            path to the jbi descriptor, or to the root directory
-	 * @return the Descriptor object
-	 */
-	public static Descriptor buildDescriptor(File descriptorFile) {
-		if (descriptorFile.isDirectory()) {
-			descriptorFile = new File(descriptorFile, DESCRIPTOR_FILE);
-		}
-		if (descriptorFile.isFile()) {
-			try {
-				return buildDescriptor(descriptorFile.toURL());
-			} catch (MalformedURLException e) {
-				throw new RuntimeException("There is a bug here...", e);
-			}
-		}
-		return null;
-	}
+    /**
+     * Build a jbi descriptor from a file archive
+     * 
+     * @param descriptorFile
+     *            path to the jbi descriptor, or to the root directory
+     * @return the Descriptor object
+     */
+    public static Descriptor buildDescriptor(File descriptorFile) {
+        if (descriptorFile.isDirectory()) {
+            descriptorFile = new File(descriptorFile, DESCRIPTOR_FILE);
+        }
+        if (descriptorFile.isFile()) {
+            try {
+                return buildDescriptor(descriptorFile.toURL());
+            } catch (MalformedURLException e) {
+                throw new RuntimeException("There is a bug here...", e);
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * Build a jbi descriptor from the specified URL
-	 * 
-	 * @param url
-	 *            url to the jbi descriptor
-	 * @return the Descriptor object
-	 */
-	public static Descriptor buildDescriptor(URL url) {
-		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		try {
-			Thread.currentThread().setContextClassLoader(
-					DescriptorFactory.class.getClassLoader());
-			ResourceXmlApplicationContext context = new ResourceXmlApplicationContext(
-					new UrlResource(url), Arrays
-							.asList(new Object[] { new XBeanProcessor() }));
-			Descriptor descriptor = (Descriptor) context.getBean("jbi");
-			checkDescriptor(descriptor);
-			return descriptor;
-		} finally {
-			Thread.currentThread().setContextClassLoader(cl);
-		}
-	}
+    /**
+     * Build a jbi descriptor from the specified URL
+     * 
+     * @param url
+     *            url to the jbi descriptor
+     * @return the Descriptor object
+     */
+    public static Descriptor buildDescriptor(URL url) {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(DescriptorFactory.class.getClassLoader());
+            ResourceXmlApplicationContext context = new ResourceXmlApplicationContext(
+                            new UrlResource(url), 
+                            Arrays.asList(new Object[] { new XBeanProcessor() }));
+            Descriptor descriptor = (Descriptor) context.getBean("jbi");
+            checkDescriptor(descriptor);
+            return descriptor;
+        } finally {
+            Thread.currentThread().setContextClassLoader(cl);
+        }
+    }
 
-	/**
-	 * Check validity of the JBI descriptor
-	 * 
-	 * @param descriptor
-	 *            the descriptor to check
-	 * @throws Exception
-	 *             if the descriptor is not valid
-	 */
-	public static void checkDescriptor(Descriptor descriptor) {
-		// TODO Needs a log more validation
-		List voilations = new ArrayList();
+    /**
+     * Check validity of the JBI descriptor
+     * 
+     * @param descriptor
+     *            the descriptor to check
+     * @throws Exception
+     *             if the descriptor is not valid
+     */
+    public static void checkDescriptor(Descriptor descriptor) {
+        List violations = new ArrayList();
 
-		if (descriptor.getComponent() != null) {
-			checkComponent(voilations, descriptor.getComponent());
-		}
+        if (descriptor.getVersion() != 1.0) {
+            violations.add("JBI descriptor version should be set to '1.0'");
+        }
 
-		if (voilations.size() > 0) {
-			throw new RuntimeException(
-					"The JBI descriptor is not valid, please correct these voilations "
-							+ voilations.toString() + "");
-		}
-	}
+        if (descriptor.getComponent() != null) {
+            checkComponent(violations, descriptor.getComponent());
+        } else if (descriptor.getServiceAssembly() != null) {
+            checkServiceAssembly(violations, descriptor.getServiceAssembly());
+        } else if (descriptor.getServices() != null) {
+            checkServiceUnit(violations, descriptor.getServices());
+        } else if (descriptor.getSharedLibrary() != null) {
+            checkSharedLibrary(violations, descriptor.getSharedLibrary());
+        } else {
+            violations.add("The jbi descriptor does not contain any informations");
+        }
 
-	/**
-	 * Checks that the component is valid
-	 * 
-	 * @param voilations
-	 *            A list of voilations that the check can add to
-	 * 
-	 * @param component
-	 *            The component descriptor that is being checked
-	 */
-	private static void checkComponent(List voilations, Component component) {
-		if (component.getBootstrapClassName() == null) {
-			voilations
-					.add("The component has not defined a boot-strap class name");
-		}
-		if (component.getBootstrapClassPath() == null
-				|| component.getBootstrapClassPath().getPathElements() == null) {
-			voilations
-					.add("The component has not defined any boot-strap class path elements");
-		}
-	}
+        if (violations.size() > 0) {
+            throw new RuntimeException("The JBI descriptor is not valid, please correct these violations "
+                            + violations.toString());
+        }
+    }
 
-	/**
-	 * Retrieves the jbi descriptor as a string
-	 * 
-	 * @param descriptorFile
-	 *            path to the jbi descriptor, or to the root directory
-	 * @return the contents of the jbi descriptor
-	 */
-	public static String getDescriptorAsText(File descriptorFile) {
-		if (descriptorFile.isDirectory()) {
-			descriptorFile = new File(descriptorFile, DESCRIPTOR_FILE);
-		}
-		if (descriptorFile.isFile()) {
-			try {
-				ByteArrayOutputStream os = new ByteArrayOutputStream();
-				InputStream is = new FileInputStream(descriptorFile);
-				FileUtil.copyInputStream(is, os);
-				return os.toString();
-			} catch (Exception e) {
-				log.debug("Error reading jbi descritor: " + descriptorFile, e);
-			}
-		}
-		return null;
-	}
+    /**
+     * Checks that the component is valid
+     * 
+     * @param violations
+     *            A list of violations that the check can add to
+     * 
+     * @param component
+     *            The component descriptor that is being checked
+     */
+    private static void checkComponent(List violations, Component component) {
+        if (component.getIdentification() == null) {
+            violations.add("The component has not identification");
+        } else {
+            if (StringUtils.isBlank(component.getIdentification().getName())) {
+                violations.add("The component name is not set");
+            }
+        }
+        if (component.getBootstrapClassName() == null) {
+            violations.add("The component has not defined a boot-strap class name");
+        }
+        if (component.getBootstrapClassPath() == null || component.getBootstrapClassPath().getPathElements() == null) {
+            violations.add("The component has not defined any boot-strap class path elements");
+        }
+    }
+
+    /**
+     * Checks that the service assembly is valid
+     * 
+     * @param violations
+     *            A list of violations that the check can add to
+     * 
+     * @param serviceAssembly
+     *            The service assembly descriptor that is being checked
+     */
+    private static void checkServiceAssembly(List violations, ServiceAssembly serviceAssembly) {
+        if (serviceAssembly.getIdentification() == null) {
+            violations.add("The service assembly has not identification");
+        } else {
+            if (StringUtils.isBlank(serviceAssembly.getIdentification().getName())) {
+               violations.add("The service assembly name is not set"); 
+            }
+        }
+    }
+
+    /**
+     * Checks that the service unit is valid
+     * 
+     * @param violations
+     *            A list of violations that the check can add to
+     * 
+     * @param services
+     *            The service unit descriptor that is being checked
+     */
+    private static void checkServiceUnit(List violations, Services services) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /**
+     * Checks that the shared library is valid
+     * 
+     * @param violations
+     *            A list of violations that the check can add to
+     * 
+     * @param sharedLibrary
+     *            The shared library descriptor that is being checked
+     */
+    private static void checkSharedLibrary(List violations, SharedLibrary sharedLibrary) {
+        if (sharedLibrary.getIdentification() == null) {
+            violations.add("The shared library has not identification");
+        } else {
+            if (StringUtils.isBlank(sharedLibrary.getIdentification().getName())) {
+               violations.add("The shared library name is not set"); 
+            }
+        }
+    }
+
+    /**
+     * Retrieves the jbi descriptor as a string
+     * 
+     * @param descriptorFile
+     *            path to the jbi descriptor, or to the root directory
+     * @return the contents of the jbi descriptor
+     */
+    public static String getDescriptorAsText(File descriptorFile) {
+        if (descriptorFile.isDirectory()) {
+            descriptorFile = new File(descriptorFile, DESCRIPTOR_FILE);
+        }
+        if (descriptorFile.isFile()) {
+            try {
+                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                InputStream is = new FileInputStream(descriptorFile);
+                FileUtil.copyInputStream(is, os);
+                return os.toString();
+            } catch (Exception e) {
+                log.debug("Error reading jbi descritor: " + descriptorFile, e);
+            }
+        }
+        return null;
+    }
 
 }
