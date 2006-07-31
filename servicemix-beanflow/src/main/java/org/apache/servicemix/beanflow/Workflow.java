@@ -100,7 +100,10 @@ public class Workflow<T> extends JoinSupport {
                 stepToExecute = nextStep;
                 nextStep = null;
                 // lets fire any conditions
+                // This very function is a listener of step, so setting the step
+                // will trigger ourself.  We just need to return now.
                 step.set(stepToExecute);
+                return;
             }
             else {
                 stepToExecute = step.get();
