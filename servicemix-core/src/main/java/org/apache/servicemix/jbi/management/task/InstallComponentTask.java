@@ -79,11 +79,13 @@ public class InstallComponentTask extends JbiTask {
             throw new BuildException("file: " + file + " is not an archive");
         }
         File archive = new File(file);
+        String location = archive.getAbsolutePath();
         if (!archive.isFile()) {
-            throw new BuildException("file: " + file + " not found");
+            // if it's not a file, assume it's a url and pass it along
+            location = file;
         }
         Properties props = getProperties();
-        acs.installComponent(archive.getAbsolutePath(), props);
+        acs.installComponent(location, props);
     }
     
     private Properties getProperties() throws IOException {

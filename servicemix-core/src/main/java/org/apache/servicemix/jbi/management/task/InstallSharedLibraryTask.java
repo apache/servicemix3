@@ -54,10 +54,12 @@ public class InstallSharedLibraryTask extends JbiTask {
             throw new BuildException("file: " + file + " is not an archive");
         }
         File archive = new File(file);
+        String location = archive.getAbsolutePath();
         if (!archive.isFile()) {
-            throw new BuildException("file: " + file + " not found");
+            // if it's not a file, assume it's a url and pass it along
+            location = file;
         }
-        acs.installSharedLibrary(archive.getAbsolutePath());
+        acs.installSharedLibrary(location);
     }
     
 }
