@@ -97,7 +97,7 @@ public class DescriptorFactory {
         List violations = new ArrayList();
 
         if (descriptor.getVersion() != 1.0) {
-            violations.add("JBI descriptor version should be set to '1.0'");
+            violations.add("JBI descriptor version should be set to '1.0' but is " + descriptor.getVersion());
         }
 
         if (descriptor.getComponent() != null) {
