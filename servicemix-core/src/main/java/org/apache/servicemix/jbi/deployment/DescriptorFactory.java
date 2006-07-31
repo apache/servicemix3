@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.config.spring.XBeanProcessor;
@@ -132,7 +131,7 @@ public class DescriptorFactory {
         if (component.getIdentification() == null) {
             violations.add("The component has not identification");
         } else {
-            if (StringUtils.isBlank(component.getIdentification().getName())) {
+            if (isBlank(component.getIdentification().getName())) {
                 violations.add("The component name is not set");
             }
         }
@@ -157,7 +156,7 @@ public class DescriptorFactory {
         if (serviceAssembly.getIdentification() == null) {
             violations.add("The service assembly has not identification");
         } else {
-            if (StringUtils.isBlank(serviceAssembly.getIdentification().getName())) {
+            if (isBlank(serviceAssembly.getIdentification().getName())) {
                violations.add("The service assembly name is not set"); 
             }
         }
@@ -190,7 +189,7 @@ public class DescriptorFactory {
         if (sharedLibrary.getIdentification() == null) {
             violations.add("The shared library has not identification");
         } else {
-            if (StringUtils.isBlank(sharedLibrary.getIdentification().getName())) {
+            if (isBlank(sharedLibrary.getIdentification().getName())) {
                violations.add("The shared library name is not set"); 
             }
         }
@@ -218,6 +217,35 @@ public class DescriptorFactory {
             }
         }
         return null;
+    }
+
+    /**
+     * <p>Checks if a String is whitespace, empty ("") or null.</p>
+     *
+     * <pre>
+     * StringUtils.isBlank(null)      = true
+     * StringUtils.isBlank("")        = true
+     * StringUtils.isBlank(" ")       = true
+     * StringUtils.isBlank("bob")     = false
+     * StringUtils.isBlank("  bob  ") = false
+     * </pre>
+     *
+     * @param str  the String to check, may be null
+     * @return <code>true</code> if the String is null, empty or whitespace
+     * 
+     * Copied from org.apache.commons.lang.StringUtils#isBlanck
+     */
+    private static boolean isBlank(String str) {
+        int strLen;
+        if (str == null || (strLen = str.length()) == 0) {
+            return true;
+        }
+        for (int i = 0; i < strLen; i++) {
+            if ((Character.isWhitespace(str.charAt(i)) == false)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
