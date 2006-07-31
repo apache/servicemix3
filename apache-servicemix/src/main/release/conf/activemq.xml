@@ -4,7 +4,7 @@
   <broker useJmx="true" xmlns="http://activemq.org/config/1.0">
 
     <persistenceAdapter>
-      <journaledJDBC journalLogFiles="5" dataDirectory="./data/amq"/>
+      <journaledJDBC journalLogFiles="5" dataDirectory="file:./data/amq"/>
       <!-- To use a different datasource, use th following syntax : -->
       <!-- 
       <journaledJDBC journalLogFiles="5" dataDirectory="../data" dataSource="#postgres-ds"/>
