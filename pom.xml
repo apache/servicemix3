@@ -195,30 +195,6 @@
         <url>http://svn.apache.org/viewcvs.cgi/incubator/servicemix/trunk</url>
     </scm>
 
-    <modules>
-        <module>servicemix-jbi</module>
-        <module>servicemix-services</module>
-        <module>servicemix-core</module>
-        <module>servicemix-components</module>
-        <module>servicemix-common</module>
-        <module>servicemix-soap</module>
-        <module>servicemix-console</module>
-        <module>servicemix-bpe</module>
-        <module>servicemix-jms</module>
-        <module>servicemix-jsr181</module>
-        <module>servicemix-http</module>
-        <module>servicemix-wsn2005</module>
-        <module>servicemix-lwcontainer</module>
-        <module>servicemix-sca</module>
-        <module>servicemix-web</module>
-        <module>servicemix-eip</module>
-        <module>servicemix-itests</module>
-        <module>servicemix-beanflow</module>
-        <module>tooling</module>
-        <module>samples</module>
-        <module>apache-servicemix</module>
-    </modules>
-
     <properties>
         <qdox.version>1.5</qdox.version>
         <jaxws.tools.version>2.0EA3</jaxws.tools.version>
@@ -229,13 +205,130 @@
 
     <profiles>
         <profile>
-            <id>jdk1.5</id>
+            <id>all</id>
             <activation>
-                <jdk>1.5</jdk>
+                <activeByDefault>true</activeByDefault>
+                <!--
+                <property>
+                    <name>profile</name>
+                    <value>all</value>
+                </property>
+                -->
             </activation>
             <modules>
+                <module>servicemix-jbi</module>
+                <module>servicemix-services</module>
+                <module>servicemix-core</module>
+                <module>tooling</module>
+                <module>servicemix-beanflow</module>
+                <module>servicemix-components</module>
+                <module>servicemix-common</module>
+                <module>servicemix-soap</module>
+                <module>servicemix-console</module>
+                <module>servicemix-bpe</module>
+                <module>servicemix-jms</module>
+                <module>servicemix-jsr181</module>
+                <module>servicemix-http</module>
+                <module>servicemix-wsn2005</module>
+                <module>servicemix-lwcontainer</module>
+                <module>servicemix-sca</module>
+                <module>servicemix-web</module>
+                <module>servicemix-eip</module>
+                <module>servicemix-itests</module>
                 <module>servicemix-sca</module>
                 <module>servicemix-wsn2005</module>
+                <module>samples</module>
+                <module>apache-servicemix</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>step1</id>
+            <activation>
+                <property>
+                    <name>profile</name>
+                    <value>step1</value>
+                </property>
+            </activation>
+            <modules>
+                <module>servicemix-jbi</module>
+                <module>servicemix-services</module>
+                <module>servicemix-core</module>
+                <module>tooling</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>step2</id>
+            <activation>
+                <property>
+                    <name>profile</name>
+                    <value>step2</value>
+                </property>
+            </activation>
+            <modules>
+                <module>servicemix-beanflow</module>
+                <module>servicemix-components</module>
+                <module>servicemix-common</module>
+                <module>servicemix-soap</module>
+                <module>servicemix-console</module>
+                <module>servicemix-bpe</module>
+                <module>servicemix-jms</module>
+                <module>servicemix-jsr181</module>
+                <module>servicemix-http</module>
+                <module>servicemix-wsn2005</module>
+                <module>servicemix-lwcontainer</module>
+                <module>servicemix-sca</module>
+                <module>servicemix-web</module>
+                <module>servicemix-eip</module>
+                <module>servicemix-itests</module>
+                <module>servicemix-sca</module>
+                <module>servicemix-wsn2005</module>
+                <module>samples</module>
+                <module>apache-servicemix</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>container</id>
+            <activation>
+                <property>
+                    <name>profile</name>
+                    <value>container</value>
+                </property>
+            </activation>
+            <modules>
+                <module>servicemix-services</module>
+                <module>servicemix-jbi</module>
+                <module>servicemix-core</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>tooling</id>
+            <modules>
+                <module>tooling</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>components</id>
+            <modules>
+                <module>servicemix-beanflow</module>
+                <module>servicemix-components</module>
+                <module>servicemix-common</module>
+                <module>servicemix-bpe</module>
+                <module>servicemix-soap</module>
+                <module>servicemix-http</module>
+                <module>servicemix-jms</module>
+                <module>servicemix-eip</module>
+                <module>servicemix-jsr181</module>
+                <module>servicemix-sca</module>
+                <module>servicemix-wsn2005</module>
+                <module>servicemix-lwcontainer</module>
+                <module>servicemix-itests</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>assembly</id>
+            <modules>
+                <module>samples</module>
+                <module>apache-servicemix</module>
             </modules>
         </profile>
     </profiles>
