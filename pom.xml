@@ -223,7 +223,7 @@
         <qdox.version>1.5</qdox.version>
         <jaxws.tools.version>2.0EA3</jaxws.tools.version>
         <xfire.jsr181.api.version>1.0-M1</xfire.jsr181.api.version>
-        <xfire.version>1.1.1</xfire.version>
+        <xfire.version>1.2-RC</xfire.version>
         <mavenAssemblyPluginVersion>2.1</mavenAssemblyPluginVersion>
     </properties>
 
