@@ -133,6 +133,9 @@ public abstract class PollingComponentSupport extends ComponentSupport implement
     public synchronized void shutDown() throws JBIException {
         stop();
         scheduler.cancel();
+        scheduler = null;
+        scheduleIterator = null;
+        workManager = null;
         super.shutDown();
     }
 

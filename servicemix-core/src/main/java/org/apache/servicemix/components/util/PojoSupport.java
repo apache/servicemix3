@@ -102,6 +102,7 @@ public abstract class PojoSupport extends BaseLifeCycle implements ComponentLife
         if (serviceEndpoint != null) {
             context.deactivateEndpoint(serviceEndpoint);
         }
+        exchangeFactory = null;
         super.shutDown();
     }
 
