@@ -43,9 +43,9 @@
     </repositories>
     
     <modules>
-      <module>jsr181-su</module>
-      <module>http-su</module>
-      <module>sa</module>
+      <module>wsdl-first-jsr181-su</module>
+      <module>wsdl-first-http-su</module>
+      <module>wsdl-first-sa</module>
     </modules>
     
     <build>

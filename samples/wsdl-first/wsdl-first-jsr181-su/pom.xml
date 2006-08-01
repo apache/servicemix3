@@ -31,7 +31,7 @@
     </parent>
 
     <groupId>org.apache.servicemix.samples.wsdl-first</groupId>
-    <artifactId>jsr181-su</artifactId>
+    <artifactId>wsdl-first-jsr181-su</artifactId>
     <packaging>jbi-service-unit</packaging>
     <name>ServiceMix :: Samples :: WSDL first :: JSR181</name>
     

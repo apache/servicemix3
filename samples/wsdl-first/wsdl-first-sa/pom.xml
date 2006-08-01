@@ -38,12 +38,12 @@
     <dependencies>
       <dependency>
         <groupId>org.apache.servicemix.samples.wsdl-first</groupId>
-        <artifactId>jsr181-su</artifactId>        
+        <artifactId>wsdl-first-jsr181-su</artifactId>        
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.servicemix.samples.wsdl-first</groupId>
-        <artifactId>http-su</artifactId>        
+        <artifactId>wsdl-first-http-su</artifactId>        
         <version>${pom.version}</version>
       </dependency>
     </dependencies>
