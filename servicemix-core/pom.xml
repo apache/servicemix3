@@ -140,7 +140,7 @@
     </dependency>
 
     <dependency>
-      <groupId>jencks</groupId>
+      <groupId>org.jencks</groupId>
       <artifactId>jencks</artifactId>
     </dependency>
     <dependency>
