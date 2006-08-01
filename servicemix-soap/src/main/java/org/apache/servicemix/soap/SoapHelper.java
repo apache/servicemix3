@@ -31,10 +31,13 @@ import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
+import javax.wsdl.Binding;
 import javax.wsdl.Definition;
 import javax.wsdl.Operation;
 import javax.wsdl.Part;
+import javax.wsdl.Port;
 import javax.wsdl.PortType;
+import javax.wsdl.Service;
 import javax.wsdl.WSDLException;
 import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
@@ -285,24 +288,46 @@ public class SoapHelper {
         }
 
         // Find operation matching 
-        if (interfaceName != null && definition != null) {
-            PortType portType = definition.getPortType(interfaceName);
-            if (portType != null) {
-                List list = portType.getOperations();
-                for (int i = 0; i < list.size(); i++) {
-                    Operation operation = (Operation) list.get(i);
-                    if (operation.getInput() != null && operation.getInput().getMessage() != null) {
-                        Map parts = operation.getInput().getMessage().getParts();
-                        Iterator iter = parts.values().iterator();
-                        while (iter.hasNext()) {
-                            Part part = (Part) iter.next();
-                            QName elementName = part.getElementName();
-                            if (elementName != null && elementName.equals(bodyName)) {
-                                // found
-                                operationNames.put(operation, new QName(portType.getQName().getNamespaceURI(), operation.getName()));
-                                return operation;
-                            }
+        if (definition != null) {
+            if (interfaceName != null) {
+                PortType portType = definition.getPortType(interfaceName);
+                if (portType != null) {
+                    return findOperationFor(portType, bodyName);
+                }
+            } else if (definition.getService(serviceName) != null) {
+                Service service = definition.getService(serviceName);
+                Port port = service.getPort(endpointName);
+                if (port != null) {
+                    Binding binding = port.getBinding();
+                    if (binding != null) {
+                        PortType portType = binding.getPortType();
+                        if (portType != null) {
+                            return findOperationFor(portType, bodyName);
                         }
+                    }
+                }
+            } else if (definition.getPortTypes().size() == 1) {
+                PortType portType = (PortType) definition.getPortTypes().values().iterator().next();
+                return findOperationFor(portType, bodyName);
+            }
+        }
+        return null;
+    }
+    
+    protected Operation findOperationFor(PortType portType, QName bodyName) {
+        List list = portType.getOperations();
+        for (int i = 0; i < list.size(); i++) {
+            Operation operation = (Operation) list.get(i);
+            if (operation.getInput() != null && operation.getInput().getMessage() != null) {
+                Map parts = operation.getInput().getMessage().getParts();
+                Iterator iter = parts.values().iterator();
+                while (iter.hasNext()) {
+                    Part part = (Part) iter.next();
+                    QName elementName = part.getElementName();
+                    if (elementName != null && elementName.equals(bodyName)) {
+                        // found
+                        operationNames.put(operation, new QName(portType.getQName().getNamespaceURI(), operation.getName()));
+                        return operation;
                     }
                 }
             }
