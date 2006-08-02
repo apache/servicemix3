@@ -233,18 +233,18 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
                 sa.shutDown();
             } catch (Exception e) {
             }
+
             String result = null;
-            if (sa != null) {
-                String assemblyName = sa.getName();
-                registry.unregisterServiceAssembly(assemblyName);
-                ServiceUnitLifeCycle[] sus = sa.getDeployedSUs();
-                if (sus != null) {
-                    for (int i = 0;i < sus.length; i++) {
-                        undeployServiceUnit(sus[i]);
-                    }
+            String assemblyName = sa.getName();
+            registry.unregisterServiceAssembly(assemblyName);
+            ServiceUnitLifeCycle[] sus = sa.getDeployedSUs();
+            if (sus != null) {
+                for (int i = 0;i < sus.length; i++) {
+                    undeployServiceUnit(sus[i]);
                 }
-                FileUtil.deleteFile(sa.getEnvironment().getRootDir());
             }
+            FileUtil.deleteFile(sa.getEnvironment().getRootDir());
+
             return result;
         } catch (Exception e) {
             log.info("Unable to undeploy assembly", e);

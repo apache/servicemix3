@@ -208,7 +208,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     /**
      * Lookup a JBI Installable Component by its unique name.
      * 
-     * @param name - is the name of the BC or SE.
+     * @param componentName - is the name of the BC or SE.
      * @return the JMX object name of the component's LifeCycle MBean or null.
      */
     public ObjectName getComponentByName(String componentName) {
@@ -426,8 +426,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     
     /**
      * Create an ObjectName
-     * @param domain 
-     * 
+     * @param props
      * @return the ObjectName
      */
     public ObjectName createObjectName(Map props) {
@@ -562,6 +561,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      */
     public void registerSystemService(BaseSystemService service, Class interfaceType) throws JBIException {
         try {
+
             String name = service.getName();
             if (systemServices.containsKey(name)) {
                 throw new JBIException("A system service for the name " + name + " is already registered");
@@ -582,10 +582,28 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     }
 
     /**
+     * Unregister a System service
+     *
+     * @param service
+     * @throws JBIException
+     */
+    public void unregisterSystemService(BaseSystemService service) throws JBIException {
+        String name = service.getName();
+        if (!systemServices.containsKey(name)) {
+            throw new JBIException("A system service for the name " + name + " is not registered");
+        }
+        ObjectName objName = (ObjectName)systemServices.remove(name);
+        if (log.isDebugEnabled()) {
+            log.debug("Unregistering system service: " + objName);
+        }
+        unregisterMBean(objName);
+    }
+
+    /**
      * Unregister an MBean
      * 
      * @param name
-     * @throws JMException
+     * @throws JBIException
      */
     public void unregisterMBean(ObjectName name) throws JBIException {
         try{
@@ -601,7 +619,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * Unregister an MBean
      * 
      * @param bean
-     * @throws JMException
+     * @throws JBIException
      */
     public void unregisterMBean(Object bean) throws JBIException {
         for (Iterator i = beanMap.entrySet().iterator();i.hasNext();) {
@@ -626,7 +644,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     	AttributeInfoHelper helper = new AttributeInfoHelper();
     	helper.addAttribute(getObjectToManage(), "bindingComponents", "Get list of all binding components");
     	helper.addAttribute(getObjectToManage(), "engineComponents", "Get list of all engine components");
-    helper.addAttribute(getObjectToManage(), "pojoComponents", "Get list of all pojo components");
+        helper.addAttribute(getObjectToManage(), "pojoComponents", "Get list of all pojo components");
     	helper.addAttribute(getObjectToManage(), "systemInfo", "Return current version");
     	helper.addAttribute(getObjectToManage(), "systemServices", "Get list of system services");
     	return AttributeInfoHelper.join(super.getAttributeInfos(), helper.getAttributeInfos());

@@ -50,13 +50,14 @@ public abstract class BaseSystemService extends BaseLifeCycle {
     public void init(JBIContainer container) throws JBIException {
         this.container = container;
         container.getManagementContext().registerSystemService(this, getServiceMBean());
+        super.init();
     }
 
     public void shutDown() throws JBIException {
         stop();
         super.shutDown();
         if (container != null && container.getManagementContext() != null) {
-            container.getManagementContext().unregisterMBean(this);
+            container.getManagementContext().unregisterSystemService(this);
         }
     }
 
