@@ -47,6 +47,12 @@
             <version>${project.version}</version>            
         </dependency>
         <dependency>
+            <groupId>org.apache.servicemix</groupId>
+            <artifactId>servicemix-core</artifactId>
+            <version>${project.version}</version>            
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jms_1.1_spec</artifactId>
             <version>1.0.1</version>
