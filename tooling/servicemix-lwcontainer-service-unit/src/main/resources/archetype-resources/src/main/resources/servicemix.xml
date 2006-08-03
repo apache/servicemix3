@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+       xmlns:replaceMe="http://servicemix.apache.org/replaceMe">
+
+  <classpath>
+    <location>.</location>
+  </classpath>
+
+  <sm:serviceunit id="jbi">
+  
+    <!-- Put lw components here -->
+    <sm:activationSpec>
+      <sm:component>
+        <bean class="org.apache.servicemix.components.cache.CacheComponent">
+          <property name="cache">
+            <bean class="org.apache.servicemix.components.cache.LRUCache" />
+          </property>
+        </bean>
+      </sm:component>
+    </sm:activationSpec>
+  
+  </sm:serviceunit>
+
+</beans>

@@ -1,0 +1,6 @@
+<archetype>
+  <id>servicemix-su</id>
+  <resources>
+    <resource>src/main/resources/servicemix.xml</resource>
+  </resources>
+</archetype>
