@@ -200,70 +200,70 @@
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>servicemix-http</artifactId>
-                  <version>${pom.version}</version>
+                  <version>3.0-incubating-SNAPSHOT</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
                 </artifactItem>
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>servicemix-jms</artifactId>
-                  <version>${pom.version}</version>
+                  <version>3.0-incubating-SNAPSHOT</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
                 </artifactItem>
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>servicemix-wsn2005</artifactId>
-                  <version>${pom.version}</version>
+                  <version>3.0-incubating-SNAPSHOT</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
                 </artifactItem>
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>servicemix-bpe</artifactId>
-                  <version>${pom.version}</version>
+                  <version>3.0-incubating-SNAPSHOT</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
                 </artifactItem>
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>servicemix-sca</artifactId>
-                  <version>${pom.version}</version>
+                  <version>3.0-incubating-SNAPSHOT</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
                 </artifactItem>
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>servicemix-eip</artifactId>
-                  <version>${pom.version}</version>
+                  <version>3.0-incubating-SNAPSHOT</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
                 </artifactItem>
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>servicemix-jsr181</artifactId>
-                  <version>${pom.version}</version>
+                  <version>3.0-incubating-SNAPSHOT</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
                 </artifactItem>
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>servicemix-lwcontainer</artifactId>
-                  <version>${pom.version}</version>
+                  <version>3.0-incubating-SNAPSHOT</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
                 </artifactItem>
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>servicemix-common</artifactId>
-                  <version>${pom.version}</version>
+                  <version>3.0-incubating-SNAPSHOT</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
                 </artifactItem>
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>servicemix-soap</artifactId>
-                  <version>${pom.version}</version>
+                  <version>3.0-incubating-SNAPSHOT</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
                 </artifactItem>
@@ -282,14 +282,14 @@
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>servicemix-web</artifactId>
-                  <version>${pom.version}</version>
+                  <version>3.0-incubating-SNAPSHOT</version>
                   <classifier>src</classifier>
                   <type>zip</type>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.servicemix.samples</groupId>
                   <artifactId>wsdl-first</artifactId>
-                  <version>${pom.version}</version>
+                  <version>3.0-incubating-SNAPSHOT</version>
                   <classifier>src</classifier>
                   <type>zip</type>
                 </artifactItem>
