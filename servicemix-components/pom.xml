@@ -37,7 +37,7 @@
     <dependency>
       <groupId>${pom.groupId}</groupId>
       <artifactId>servicemix-core</artifactId>
-      <scope>provided</scope>      
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>commons-httpclient</groupId>
