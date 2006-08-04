@@ -25,21 +25,22 @@
 
   <parent>
     <groupId>org.apache.servicemix</groupId>
-    <artifactId>servicemix</artifactId>
+    <artifactId>samples</artifactId>
     <version>3.0-incubating-SNAPSHOT</version>
   </parent>
 
+  <groupId>org.apache.servicemix.samples</groupId>
   <artifactId>servicemix-web</artifactId>
   <packaging>war</packaging>
   <name>ServiceMix :: Web</name>
   
   <dependencies>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-components</artifactId>
     </dependency>
     <dependency>
@@ -98,7 +99,7 @@
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>
         <configuration>
-          <scanIntervalSeconds>10</scanIntervalSeconds>
+          <scanIntervalSeconds>1</scanIntervalSeconds>
           <webAppSourceDirectory>${basedir}/src/webapp</webAppSourceDirectory>
         </configuration>
       </plugin>

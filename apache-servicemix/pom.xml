@@ -36,74 +36,79 @@
 
   <dependencies>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-jbi</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-core</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-services</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-components</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-common</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-jms</artifactId>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-http</artifactId>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-jsr181</artifactId>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-lwcontainer</artifactId>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-sca</artifactId>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-wsn2005</artifactId>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-eip</artifactId>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
-      <artifactId>servicemix-web</artifactId>
-      <type>war</type>
-    </dependency>
-    <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-components</artifactId>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-beanflow</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix.samples</groupId>
+      <artifactId>servicemix-web</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.samples</groupId>
       <artifactId>wsdl-first</artifactId>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.samples</groupId>
+      <artifactId>loan-broker</artifactId>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.samples</groupId>
+      <artifactId>bridge</artifactId>
       <type>pom</type>
     </dependency>
     <dependency>
@@ -117,6 +122,10 @@
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-servlet_2.4_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-javamail_1.3.1_spec</artifactId>
     </dependency>
     <dependency>
       <groupId>classworlds</groupId>
@@ -280,7 +289,7 @@
               <outputDirectory>target/samples</outputDirectory>
               <artifactItems>
                 <artifactItem>
-                  <groupId>${pom.groupId}</groupId>
+                  <groupId>org.apache.servicemix.samples</groupId>
                   <artifactId>servicemix-web</artifactId>
                   <version>3.0-incubating-SNAPSHOT</version>
                   <classifier>src</classifier>
@@ -289,6 +298,20 @@
                 <artifactItem>
                   <groupId>org.apache.servicemix.samples</groupId>
                   <artifactId>wsdl-first</artifactId>
+                  <version>3.0-incubating-SNAPSHOT</version>
+                  <classifier>src</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.servicemix.samples</groupId>
+                  <artifactId>loan-broker</artifactId>
+                  <version>3.0-incubating-SNAPSHOT</version>
+                  <classifier>src</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.servicemix.samples</groupId>
+                  <artifactId>bridge</artifactId>
                   <version>3.0-incubating-SNAPSHOT</version>
                   <classifier>src</classifier>
                   <type>zip</type>

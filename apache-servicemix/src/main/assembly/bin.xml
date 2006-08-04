@@ -50,6 +50,14 @@
       <outputDirectory>examples/wsdl-first</outputDirectory>
     </fileSet>
     <fileSet>
+      <directory>target/samples/loan-broker-${pom.version}</directory>
+      <outputDirectory>examples/loan-broker</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/samples/bridge-${pom.version}</directory>
+      <outputDirectory>examples/bridge</outputDirectory>
+    </fileSet>
+    <fileSet>
       <directory>target/dummy</directory>
       <outputDirectory>lib/optional</outputDirectory>
     </fileSet>

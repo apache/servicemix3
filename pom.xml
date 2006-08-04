@@ -232,7 +232,6 @@
                 <module>servicemix-wsn2005</module>
                 <module>servicemix-lwcontainer</module>
                 <module>servicemix-sca</module>
-                <module>servicemix-web</module>
                 <module>servicemix-eip</module>
                 <module>servicemix-itests</module>
                 <module>servicemix-sca</module>
@@ -277,7 +276,6 @@
                 <module>servicemix-wsn2005</module>
                 <module>servicemix-lwcontainer</module>
                 <module>servicemix-sca</module>
-                <module>servicemix-web</module>
                 <module>servicemix-eip</module>
                 <module>servicemix-itests</module>
                 <module>servicemix-sca</module>
@@ -399,94 +397,94 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>${pom.groupId}</groupId>
+                <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-jbi</artifactId>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>${pom.groupId}</groupId>
+                <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-services</artifactId>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>${pom.groupId}</groupId>
+                <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-core</artifactId>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>${pom.groupId}</groupId>
+                <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-components</artifactId>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>${pom.groupId}</groupId>
+                <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-common</artifactId>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>${pom.groupId}</groupId>
+                <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-common</artifactId>
                 <type>jbi-shared-library</type>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>${pom.groupId}</groupId>
+                <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-console</artifactId>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>${pom.groupId}</groupId>
+                <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-gbean</artifactId>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>${pom.groupId}</groupId>
+                <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-jms</artifactId>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>${pom.groupId}</groupId>
+                <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-jsr181</artifactId>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>${pom.groupId}</groupId>
+                <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-http</artifactId>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>${pom.groupId}</groupId>
+                <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-sca</artifactId>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>${pom.groupId}</groupId>
+                <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-soap</artifactId>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>${pom.groupId}</groupId>
+                <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-soap</artifactId>
                 <type>jbi-shared-library</type>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>${pom.groupId}</groupId>
+                <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-wsn2005</artifactId>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>${pom.groupId}</groupId>
+                <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-lwcontainer</artifactId>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>${pom.groupId}</groupId>
+                <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-eip</artifactId>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>${pom.groupId}</groupId>
+                <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>servicemix-web</artifactId>
                 <version>3.0-incubating-SNAPSHOT</version>
                 <type>war</type>
@@ -498,7 +496,19 @@
                 <type>pom</type>
             </dependency>
             <dependency>
-                <groupId>${pom.groupId}</groupId>
+                <groupId>org.apache.servicemix.samples</groupId>
+                <artifactId>loan-broker</artifactId>
+                <version>3.0-incubating-SNAPSHOT</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.servicemix.samples</groupId>
+                <artifactId>bridge</artifactId>
+                <version>3.0-incubating-SNAPSHOT</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-beanflow</artifactId>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
