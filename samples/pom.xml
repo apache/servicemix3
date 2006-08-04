@@ -37,5 +37,7 @@
 
   <modules>
     <module>wsdl-first</module>
+    <module>loan-broker</module>
+    <module>bridge</module>
   </modules>
 </project>

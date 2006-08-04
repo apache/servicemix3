@@ -34,29 +34,17 @@
     <artifactId>wsdl-first-jsr181-su</artifactId>
     <packaging>jbi-service-unit</packaging>
     <name>ServiceMix :: Samples :: WSDL first :: JSR181</name>
-    
-    <properties>		    
-	    <servicemixJbiPluginVersion>1.0-incubating-SNAPSHOT</servicemixJbiPluginVersion>
-	    <jbiComponentName>servicemix-jsr181</jbiComponentName>
-  	</properties>
+
+    <properties>
+        <servicemixJbiPluginVersion>1.0-incubating-SNAPSHOT</servicemixJbiPluginVersion>
+        <jbiComponentName>servicemix-jsr181</jbiComponentName>
+    </properties>
 
     <dependencies>
         <dependency>
-            <groupId>javax.xml</groupId>
-            <artifactId>jaxws-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xfire</groupId>
-            <artifactId>xfire-jsr181-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-jsr181</artifactId>
-            <version>${project.version}</version>
+            <version>3.0-incubating-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
@@ -76,17 +64,19 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <tasks>
-                                <taskdef classname="org.codehaus.xfire.gen.WsGenTask" name="wsgen">
+                                <taskdef
+                                    classname="org.codehaus.xfire.gen.WsGenTask"
+                                    name="wsgen">
                                     <classpath>
                                         <pathelement path="${basedir}/target/classes" />
                                         <path refid="maven.test.classpath" />
                                     </classpath>
                                 </taskdef>
-                                <wsgen 
-                                  wsdl="${basedir}/src/main/resources/person.wsdl"
-                                  outputDirectory="${basedir}/target/jaxws" 
-                                  profile="org.codehaus.xfire.jaxws.gen.JAXWSProfile"
-                                  explicitAnnotation="true" />
+                                <wsgen
+                                    wsdl="${basedir}/src/main/resources/person.wsdl"
+                                    outputDirectory="${basedir}/target/jaxws"
+                                    profile="org.codehaus.xfire.jaxws.gen.JAXWSProfile"
+                                    explicitAnnotation="true" />
                             </tasks>
                             <sourceRoot>${basedir}/target/jaxws</sourceRoot>
                         </configuration>
@@ -109,29 +99,29 @@
                 </dependencies>
             </plugin>
             <plugin>
-		        <groupId>org.apache.servicemix.tooling</groupId>
-		        <artifactId>jbi-maven-plugin</artifactId>
-		        <version>${servicemixJbiPluginVersion}</version>
-		        <extensions>true</extensions>				        		       
-    		</plugin>
-      <!--
-            <plugin>
+                <groupId>org.apache.servicemix.tooling</groupId>
+                <artifactId>jbi-maven-plugin</artifactId>
+                <version>${servicemixJbiPluginVersion}</version>
+                <extensions>true</extensions>
+            </plugin>
+            <!--
+                <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
                 <version>1.0-SNAPSHOT</version>
                 <executions>
-                    <execution>
-                        <goals>
-                            <goal>wsimport</goal>
-                        </goals>
-                    </execution>
+                <execution>
+                <goals>
+                <goal>wsimport</goal>
+                </goals>
+                </execution>
                 </executions>
                 <configuration>
-                    <wsdlDirectory>${basedir}/src/main/resources</wsdlDirectory>
-                    <wsdlFiles>person.wsdl</wsdlFiles>
+                <wsdlDirectory>${basedir}/src/main/resources</wsdlDirectory>
+                <wsdlFiles>person.wsdl</wsdlFiles>
                 </configuration>
-            </plugin>
-        -->
+                </plugin>
+            -->
         </plugins>
     </build>
 </project>

@@ -33,29 +33,29 @@
     <groupId>org.apache.servicemix.samples.loan-broker</groupId>
     <artifactId>loan-broker-sa</artifactId>
     <packaging>jbi-service-assembly</packaging>
-    <name>ServiceMix :: Samples :: Loan Broker :: SA</name>    
-    
+    <name>ServiceMix :: Samples :: Loan Broker :: SA</name>
+
     <dependencies>
-      <dependency>
-        <groupId>org.apache.servicemix.samples.loan-broker</groupId>
-        <artifactId>loan-broker-bpe-su</artifactId>        
-        <version>3.0-incubating-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.servicemix.samples.loan-broker</groupId>
-        <artifactId>loan-broker-lw-su</artifactId>        
-        <version>3.0-incubating-SNAPSHOT</version>
-      </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.samples.loan-broker</groupId>
+            <artifactId>loan-broker-bpe-su</artifactId>
+            <version>3.0-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.samples.loan-broker</groupId>
+            <artifactId>loan-broker-lw-su</artifactId>
+            <version>3.0-incubating-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
-	  <build>
-	    <plugins>
-	       	<plugin>
-		       <groupId>org.apache.servicemix.tooling</groupId>
-		       <artifactId>jbi-maven-plugin</artifactId>	       
-		       <extensions>true</extensions>				        		       
-			</plugin>
-	    </plugins>
-	  </build>
-  
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.servicemix.tooling</groupId>
+                <artifactId>jbi-maven-plugin</artifactId>
+                <extensions>true</extensions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

@@ -34,22 +34,22 @@
     <artifactId>loan-broker-bpe-su</artifactId>
     <packaging>jbi-service-unit</packaging>
     <name>ServiceMix :: Samples :: Loan Broker :: BPE</name>
-    
-    <dependencies>        
+
+    <dependencies>
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-bpe</artifactId>
-            <version>${project.version}</version>            
+            <version>3.0-incubating-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
-		<build>
-        <plugins>           
+    <build>
+        <plugins>
             <plugin>
-			        <groupId>org.apache.servicemix.tooling</groupId>
-			        <artifactId>jbi-maven-plugin</artifactId>		        
-			        <extensions>true</extensions>				        		       
-    				</plugin>
+                <groupId>org.apache.servicemix.tooling</groupId>
+                <artifactId>jbi-maven-plugin</artifactId>
+                <extensions>true</extensions>
+            </plugin>
         </plugins>
     </build>
 </project>

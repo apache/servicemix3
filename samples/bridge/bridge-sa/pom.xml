@@ -36,35 +36,35 @@
     <name>ServiceMix :: Samples :: Bridge :: SA</name>
 
     <dependencies>
-      <dependency>
-        <groupId>org.apache.servicemix.samples.bridge</groupId>
-        <artifactId>bridge-http-su</artifactId>
-        <version>1.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.servicemix.samples.bridge</groupId>
-        <artifactId>bridge-eip-su</artifactId>
-        <version>1.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.servicemix.samples.bridge</groupId>
-        <artifactId>bridge-xslt-su</artifactId>
-        <version>1.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.servicemix.samples.bridge</groupId>
-        <artifactId>bridge-jms-su</artifactId>
-        <version>1.0-SNAPSHOT</version>
-      </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.samples.bridge</groupId>
+            <artifactId>bridge-http-su</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.samples.bridge</groupId>
+            <artifactId>bridge-eip-su</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.samples.bridge</groupId>
+            <artifactId>bridge-xslt-su</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.samples.bridge</groupId>
+            <artifactId>bridge-jms-su</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
-    
-		<build>
-        <plugins>           
+
+    <build>
+        <plugins>
             <plugin>
-			        <groupId>org.apache.servicemix.tooling</groupId>
-			        <artifactId>jbi-maven-plugin</artifactId>		        
-			        <extensions>true</extensions>				        		       
-    				</plugin>
+                <groupId>org.apache.servicemix.tooling</groupId>
+                <artifactId>jbi-maven-plugin</artifactId>
+                <extensions>true</extensions>
+            </plugin>
         </plugins>
     </build>
 </project>

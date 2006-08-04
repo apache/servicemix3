@@ -36,20 +36,20 @@
     <name>ServiceMix :: Samples :: Bridge :: XSLT</name>
 
     <dependencies>
-      <dependency>
-        <groupId>org.apache.servicemix</groupId>
-        <artifactId>servicemix-lwcontainer</artifactId>
-        <version>3.0-incubating-SNAPSHOT</version>      
-      </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix</groupId>
+            <artifactId>servicemix-lwcontainer</artifactId>
+            <version>3.0-incubating-SNAPSHOT</version>
+        </dependency>
     </dependencies>
-    
-		<build>
-        <plugins>           
+
+    <build>
+        <plugins>
             <plugin>
-			        <groupId>org.apache.servicemix.tooling</groupId>
-			        <artifactId>jbi-maven-plugin</artifactId>		        
-			        <extensions>true</extensions>				        		       
-    				</plugin>
+                <groupId>org.apache.servicemix.tooling</groupId>
+                <artifactId>jbi-maven-plugin</artifactId>
+                <extensions>true</extensions>
+            </plugin>
         </plugins>
     </build>
 </project>
