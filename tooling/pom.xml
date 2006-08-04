@@ -49,6 +49,7 @@
     <module>servicemix-jsr181-wsdl-first-service-unit</module>
     <module>servicemix-lwcontainer-service-unit</module>
     <module>servicemix-eip-service-unit</module>
+    <module>servicemix-embedded-simple</module>
     <module>jbi-maven-plugin</module>
   </modules>
 </project>
