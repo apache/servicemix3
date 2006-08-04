@@ -508,6 +508,12 @@
                 <type>pom</type>
             </dependency>
             <dependency>
+                <groupId>org.apache.servicemix.samples</groupId>
+                <artifactId>basic</artifactId>
+                <version>3.0-incubating-SNAPSHOT</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-beanflow</artifactId>
                 <version>3.0-incubating-SNAPSHOT</version>
