@@ -369,7 +369,7 @@
         <repository>
             <id>activemq-tmp-repo</id>
             <name>ActiveMQ Maven2 Temp Repository</name>
-            <url>http://people.apache.org/~chirino/incubator-activemq-4.0/maven2</url>
+            <url>http://people.apache.org/~chirino/incubator-activemq-4.0.2-RC2/maven2</url>
         </repository>
         <!-- XFire 1.1.1 release -->
         <repository>
@@ -609,22 +609,22 @@
             <dependency>
                 <groupId>incubator-activemq</groupId>
                 <artifactId>activeio-core</artifactId>
-                <version>3.0-beta3</version>
+                <version>3.0-beta4</version>
             </dependency>
             <dependency>
                 <groupId>incubator-activemq</groupId>
                 <artifactId>activemq-core</artifactId>
-                <version>4.0</version>
+                <version>4.0.2</version>
             </dependency>
             <dependency>
                 <groupId>incubator-activemq</groupId>
                 <artifactId>activemq-ra</artifactId>
-                <version>4.0</version>
+                <version>4.0.2</version>
             </dependency>
             <dependency>
                 <groupId>incubator-activemq</groupId>
                 <artifactId>activemq-web</artifactId>
-                <version>4.0</version>
+                <version>4.0.2</version>
             </dependency>
             <dependency>
                 <groupId>jivesoftware</groupId>
