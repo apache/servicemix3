@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<beans xmlns:http="http://servicemix.apache.org/http/1.0"
+       xmlns:b="http://servicemix.apache.org/samples/bridge">
+
+  <http:endpoint service="b:http"
+                 endpoint="endpoint"
+                 targetService="b:pipeline"
+                 role="consumer" 
+                 locationURI="http://localhost:8192/bridge/"
+                 defaultMep="http://www.w3.org/2004/08/wsdl/in-only" />
+
+</beans>

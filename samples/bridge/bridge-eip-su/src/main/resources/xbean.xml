@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<beans xmlns:eip="http://servicemix.apache.org/eip/1.0"
+       xmlns:b="http://servicemix.apache.org/samples/bridge">
+
+  <eip:pipeline service="b:pipeline" endpoint="endpoint">
+    <eip:transformer>
+      <eip:exchange-target service="b:xslt" />
+    </eip:transformer>
+    <eip:target>
+      <eip:exchange-target service="b:jms" />
+    </eip:target>
+  </eip:pipeline>
+
+</beans>

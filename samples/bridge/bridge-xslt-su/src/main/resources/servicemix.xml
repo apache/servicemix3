@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+       xmlns:b="http://servicemix.apache.org/samples/bridge">
+
+  <classpath>
+    <location>.</location>
+    <location>lib/servicemix-components-3.0-incubating-SNAPSHOT.jar</location>
+  </classpath>
+
+  <sm:serviceunit id="jbi">
+    <sm:activationSpecs>
+      <sm:activationSpec service="b:xslt" endpoint="endpoint">
+        <sm:component>
+          <bean class="org.apache.servicemix.components.xslt.XsltComponent">
+            <property name="xsltResource" value="classpath:bridge.xslt" />
+          </bean>
+        </sm:component>
+      </sm:activationSpec>
+    </sm:activationSpecs>
+  </sm:serviceunit>
+
+</beans>
