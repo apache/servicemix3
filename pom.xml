@@ -1786,7 +1786,7 @@
             <dependency>
                 <groupId>org.apache.ode</groupId>
                 <artifactId>bpe</artifactId>
-                <version>1.0-20060316</version>
+                <version>1.0-20060807</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
