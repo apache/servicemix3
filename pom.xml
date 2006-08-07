@@ -253,6 +253,7 @@
                 <module>servicemix-jbi</module>
                 <module>servicemix-services</module>
                 <module>servicemix-core</module>
+                <module>servicemix-common</module>
                 <module>tooling</module>
             </modules>
         </profile>
