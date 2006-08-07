@@ -300,12 +300,24 @@
         </profile>
         <profile>
             <id>tooling</id>
+            <activation>
+                <property>
+                    <name>profile</name>
+                    <value>tooling</value>
+                </property>
+            </activation>
             <modules>
                 <module>tooling</module>
             </modules>
         </profile>
         <profile>
             <id>components</id>
+            <activation>
+                <property>
+                    <name>profile</name>
+                    <value>components</value>
+                </property>
+            </activation>
             <modules>
                 <module>servicemix-beanflow</module>
                 <module>servicemix-components</module>
@@ -324,6 +336,12 @@
         </profile>
         <profile>
             <id>assembly</id>
+            <activation>
+                <property>
+                    <name>profile</name>
+                    <value>assembly</value>
+                </property>
+            </activation>
             <modules>
                 <module>samples</module>
                 <module>apache-servicemix</module>
