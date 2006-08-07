@@ -67,11 +67,31 @@ public class SaajBinding extends TransformComponentSupport implements MessageExc
         this.soapEndpoint = soapEndpoint;
     }
 
+    /**
+     * @deprecated use getMarshaler instead
+     */
     public SaajMarshaler getMarshaller() {
         return marshaler;
     }
 
+    /**
+     * @deprecated use setMarshaler instead
+     */
     public void setMarshaller(SaajMarshaler marshaler) {
+        this.marshaler = marshaler;
+    }
+
+    /**
+     * @return the marshaler
+     */
+    public SaajMarshaler getMarshaler() {
+        return marshaler;
+    }
+
+    /**
+     * @param marshaler the marshaler to set
+     */
+    public void setMarshaler(SaajMarshaler marshaler) {
         this.marshaler = marshaler;
     }
 

@@ -33,11 +33,31 @@ public class WSIFOutBinding extends OutBinding {
     private WSIFMarshaler marshaler = new WSIFMarshaler();
     private WSIFOperationMap operationMap;
 
+    /**
+     * @deprecated use getMarshaler instead
+     */
     public WSIFMarshaler getMarshaller() {
         return marshaler;
     }
 
+    /**
+     * @deprecated use setMarshaler instead
+     */
     public void setMarshaller(WSIFMarshaler marshaler) {
+        this.marshaler = marshaler;
+    }
+
+    /**
+     * @return the marshaler
+     */
+    public WSIFMarshaler getMarshaler() {
+        return marshaler;
+    }
+
+    /**
+     * @param marshaler the marshaler to set
+     */
+    public void setMarshaler(WSIFMarshaler marshaler) {
         this.marshaler = marshaler;
     }
 

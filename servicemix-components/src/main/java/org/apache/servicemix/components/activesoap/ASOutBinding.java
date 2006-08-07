@@ -38,11 +38,31 @@ public class ASOutBinding extends OutBinding {
         this.service = service;
     }
 
+    /**
+     * @deprecated use getMarshaler instead
+     */
     public ASMarshaler getMarshaller() {
         return marshaler;
     }
 
+    /**
+     * @deprecated use setMarshaler instead
+     */
     public void setMarshaller(ASMarshaler marshaler) {
+        this.marshaler = marshaler;
+    }
+
+    /**
+     * @return the marshaler
+     */
+    public ASMarshaler getMarshaler() {
+        return marshaler;
+    }
+
+    /**
+     * @param marshaler the marshaler to set
+     */
+    public void setMarshaler(ASMarshaler marshaler) {
         this.marshaler = marshaler;
     }
 

@@ -30,7 +30,7 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.stream.XMLStreamReader;
 
 public class XFireOutBinding extends OutBinding {
-    private XMarshaler marshaller;
+    private XMarshaler marshaler;
 
     private XFire xfire;
 
@@ -38,12 +38,12 @@ public class XFireOutBinding extends OutBinding {
     {
         super();
 
-        this.marshaller = new XMarshaler();
+        this.marshaler = new XMarshaler();
     }
     
     protected void process(MessageExchange messageExchange, NormalizedMessage nm) throws Exception {
         
-        XMLStreamReader reader = marshaller.createStreamReader(nm);
+        XMLStreamReader reader = marshaler.createStreamReader(nm);
         if (reader == null) {
             throw new JBIException("Could not get source as XMLStreamReader.");
         }

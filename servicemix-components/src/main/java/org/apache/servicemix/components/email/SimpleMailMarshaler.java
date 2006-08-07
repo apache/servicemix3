@@ -27,7 +27,7 @@ import javax.xml.transform.TransformerException;
 import org.springframework.mail.SimpleMailMessage;
 
 /**
- * The default marshaller from the {@link NormalizedMessage} to a {@link SimpleMailMessage} using
+ * The default marshaler from the {@link NormalizedMessage} to a {@link SimpleMailMessage} using
  * expressions for each field required on the email.
  *
  * @version $Revision$

@@ -61,7 +61,7 @@ public class SaajSoapActionTest extends TestCase {
         saaj.setSoapAction(soapAction);
         SaajMarshaler marshaler = new SaajMarshaler();
         marshaler.setMessageFactory(messageFactory);
-        saaj.setMarshaller(marshaler);
+        saaj.setMarshaler(marshaler);
         jbi.activateComponent(saaj, "saaj");
         
         http = new HttpConnector(new org.mortbay.jetty.nio.SelectChannelConnector());

@@ -48,7 +48,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 
 /**
- * The default marshaller from the {@link NormalizedMessage} to a Mime email using
+ * The default marshaler from the {@link NormalizedMessage} to a Mime email using
  * expressions for each field required on the email.
  *
  * @version $Revision$

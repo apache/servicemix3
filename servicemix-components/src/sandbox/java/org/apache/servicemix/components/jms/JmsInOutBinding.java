@@ -58,11 +58,11 @@ public class JmsInOutBinding extends ComponentSupport implements MessageListener
         this.destinationChooser = destinationChooser;
     }
 
-    public JmsMarshaler getMarshaller() {
+    public JmsMarshaler getMarshaler() {
         return marshaler;
     }
 
-    public void setMarshaller(JmsMarshaler marshaler) {
+    public void setMarshaler(JmsMarshaler marshaler) {
         this.marshaler = marshaler;
     }
 

@@ -76,11 +76,31 @@ public class JabberMarshaler {
 
     // Properties
     //-------------------------------------------------------------------------
+    /**
+     * @deprecated use getSourceMarshaler instead
+     */
     public SourceMarshaler getSourceMarshaller() {
         return sourceMarshaler;
     }
 
+    /**
+     * @deprecated use setSourceMashaler instead
+     */
     public void setSourceMarshaller(SourceMarshaler sourceMarshaler) {
+        this.sourceMarshaler = sourceMarshaler;
+    }
+
+    /**
+     * @return the sourceMarshaler
+     */
+    public SourceMarshaler getSourceMarshaler() {
+        return sourceMarshaler;
+    }
+
+    /**
+     * @param sourceMarshaler the sourceMarshaler to set
+     */
+    public void setSourceMarshaler(SourceMarshaler sourceMarshaler) {
         this.sourceMarshaler = sourceMarshaler;
     }
 

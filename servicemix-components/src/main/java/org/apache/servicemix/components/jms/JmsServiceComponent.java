@@ -165,16 +165,16 @@ public class JmsServiceComponent extends ComponentSupport implements MessageList
     }
 
     /**
-     * Get the JMSMarshaller
+     * Get the JMSMarshaler
      * 
-     * @return the Marshaller
+     * @return the marshaler
      */
     public JmsMarshaler getMarshaler() {
         return marshaler;
     }
 
     /**
-     * Set the JMSMarshaller
+     * Set the JMSMarshaler
      * 
      * @param marshaler
      */

@@ -90,10 +90,16 @@ public class WSIFBinding extends TransformComponentSupport {
         }
     }
 
+    /**
+     * @deprecated use getMarshaler instead
+     */
     public WSIFMarshaler getMarshaller() {
         return marshaler;
     }
 
+    /**
+     * @deprecated use setMarshaler instead
+     */
     public void setMarshaller(WSIFMarshaler marshaler) {
         this.marshaler = marshaler;
     }
