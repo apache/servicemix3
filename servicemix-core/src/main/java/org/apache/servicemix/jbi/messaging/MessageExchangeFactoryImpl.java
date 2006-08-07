@@ -249,17 +249,19 @@ public class MessageExchangeFactoryImpl implements MessageExchangeFactory {
 
     protected void setDefaults(MessageExchangeImpl exchange) {
         exchange.setOperation(getOperationName());
-        if (endpoint != null){
+        if (endpoint != null) {
             exchange.setEndpoint(getEndpoint());
-        }else {
+        } else {
             exchange.setService(serviceName);
             exchange.setInterfaceName(interfaceName);
         }
-        
-        exchange.setSourceContext(getContext());
-        PojoMarshaler marshaler = getContext().getActivationSpec().getMarshaler();
-        if (marshaler != null) {
-            exchange.setMarshaler(marshaler);
+
+        if (getContext() != null) {
+            exchange.setSourceContext(getContext());
+            PojoMarshaler marshaler = getContext().getActivationSpec().getMarshaler();
+            if (marshaler != null) {
+                exchange.setMarshaler(marshaler);
+            }
         }
         exchange.setProperty(JbiConstants.DATESTAMP_PROPERTY_NAME, Calendar.getInstance());
     }
