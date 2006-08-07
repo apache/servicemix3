@@ -224,6 +224,7 @@
                 <module>servicemix-components</module>
                 <module>servicemix-common</module>
                 <module>servicemix-soap</module>
+                <module>servicemix-shared</module>
                 <module>servicemix-console</module>
                 <module>servicemix-bpe</module>
                 <module>servicemix-jms</module>
@@ -441,8 +442,7 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
-                <artifactId>servicemix-common</artifactId>
-                <type>jbi-shared-library</type>
+                <artifactId>servicemix-common</artifactId>                
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
@@ -478,6 +478,11 @@
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-soap</artifactId>
+                <version>3.0-incubating-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.servicemix</groupId>
+                <artifactId>servicemix-shared</artifactId>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>

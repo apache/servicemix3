@@ -30,7 +30,7 @@
   </parent>
 
   <artifactId>servicemix-common</artifactId>
-  <packaging>jbi-shared-library</packaging>
+  <packaging>jar</packaging>
   <name>ServiceMix :: Common</name>
   <description>Common library for binding component and service engines</description>
   
@@ -77,13 +77,4 @@
     </dependency>
   </dependencies>
   
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.servicemix.tooling</groupId>
-        <artifactId>jbi-maven-plugin</artifactId>
-        <version>1.0-incubating-SNAPSHOT</version>
-      </plugin>
-    </plugins>
-  </build>
 </project>

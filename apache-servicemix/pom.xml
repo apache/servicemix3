@@ -266,17 +266,10 @@
                   <version>3.0-incubating-SNAPSHOT</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
-                </artifactItem>
+                </artifactItem>                
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
-                  <artifactId>servicemix-common</artifactId>
-                  <version>3.0-incubating-SNAPSHOT</version>
-                  <classifier>installer</classifier>
-                  <type>zip</type>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>${pom.groupId}</groupId>
-                  <artifactId>servicemix-soap</artifactId>
+                  <artifactId>servicemix-shared</artifactId>
                   <version>3.0-incubating-SNAPSHOT</version>
                   <classifier>installer</classifier>
                   <type>zip</type>

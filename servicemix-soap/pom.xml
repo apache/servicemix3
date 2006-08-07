@@ -30,7 +30,7 @@
   </parent>
 
   <artifactId>servicemix-soap</artifactId>
-  <packaging>jbi-shared-library</packaging>
+  <packaging>jar</packaging>
   <name>ServiceMix :: SOAP</name>
   <description>SOAP Stack</description>
 
