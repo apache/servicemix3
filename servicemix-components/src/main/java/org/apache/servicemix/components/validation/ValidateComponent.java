@@ -94,7 +94,8 @@ public class ValidateComponent extends TransformComponentSupport {
                     if (schemaResource == null) {
                         throw new JBIException("You must specify a schema, schemaSource or schemaResource property");
                     }
-                    schemaSource = new StreamSource(schemaResource.getInputStream());
+                    schemaSource = new StreamSource(schemaResource.getInputStream(),
+                                                    schemaResource.getURL().toExternalForm());
                 }
                 schema = factory.newSchema(schemaSource);
             }
