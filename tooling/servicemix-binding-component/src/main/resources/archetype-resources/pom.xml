@@ -45,7 +45,7 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.servicemix</groupId>
-      <artifactId>servicemix-common</artifactId>      
+      <artifactId>servicemix-shared</artifactId>      
       <version>${servicemixVersion}</version>      
     </dependency>
     <dependency>
