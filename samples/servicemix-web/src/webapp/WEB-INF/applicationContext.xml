@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+       xmlns:http="http://servicemix.apache.org/http/1.0"
 	     xmlns:my="http://servicemix.apache.org/demo/"
        xmlns:foo="http://servicemix.apache.org/demo/">
 
@@ -20,9 +21,19 @@
 
       <!--  an example HTTP binding for use by the SpringBindingServlet  -->
       <!-- START SNIPPET: http -->
-      <sm:activationSpec componentName="httpBinding" service="foo:httpBinding" destinationService="foo:echo">
+      <sm:activationSpec componentName="servicemix-http" service="foo:httpBinding" destinationService="foo:echo">
         <sm:component>
-          <bean class="org.apache.servicemix.components.http.HttpInOutBinding" />
+          <http:component>
+            <http:configuration managed="true" />
+            <http:endpoints>
+              <http:endpoint service="foo:httpBinding"
+                             endpoint="endpoint"
+                             targetService="foo:echo" 
+                             role="consumer"
+                             locationURI="http://localhost/exampleUri/"
+                             defaultMep="http://www.w3.org/2004/08/wsdl/in-out" />
+            </http:endpoints>
+          </http:component>
         </sm:component>
       </sm:activationSpec>
       <!-- END SNIPPET: http -->

@@ -44,6 +44,10 @@
       <artifactId>servicemix-components</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-http</artifactId>
+    </dependency>
+    <dependency>
       <groupId>quartz</groupId>
       <artifactId>quartz</artifactId>
     </dependency>

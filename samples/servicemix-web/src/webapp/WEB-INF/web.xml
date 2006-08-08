@@ -33,21 +33,17 @@
 
   <!--  the HTTP binding servlet -->
   
-  <!-- START SNIPPET: httpBinding -->
+  <!-- START SNIPPET: servicemix-http-->
   <servlet>
-    <servlet-name>BindingServlet</servlet-name>
+    <servlet-name>HttpManagedServlet</servlet-name>
     <servlet-class>
-      org.apache.servicemix.components.http.SpringBindingServlet
+      org.apache.servicemix.http.HttpManagedServlet
     </servlet-class>
-    <init-param>
-      <param-name>endpoint</param-name>
-      <param-value>httpBinding</param-value>
-    </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>BindingServlet</servlet-name>
+    <servlet-name>HttpManagedServlet</servlet-name>
     <url-pattern>/jbi/*</url-pattern>
   </servlet-mapping>
 
