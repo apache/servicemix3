@@ -159,15 +159,15 @@ public class SedaFlow extends AbstractFlow {
      * @throws JBIException
      */
     protected void doSend(MessageExchangeImpl me) throws JBIException {
-        // If the message has been sent synchronously, do not use seda
-        // as it would consume threads from the work manager in a useless
-        // way.  This could lead to deadlocks.
         if (me.getDestinationId() == null) {
             me.setDestinationId(((AbstractServiceEndpoint) me.getEndpoint()).getComponentNameSpace());
         }
         if (isTransacted(me)) {
             me.setTxState(MessageExchangeImpl.TX_STATE_CONVEYED);
         }
+        // If the message has been sent synchronously, do not use seda
+        // as it would consume threads from the work manager in a useless
+        // way.  This could lead to deadlocks.
         suspendTx(me);
         enqueuePacket(me);
     }

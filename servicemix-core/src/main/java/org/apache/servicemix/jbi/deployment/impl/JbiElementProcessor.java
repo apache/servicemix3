@@ -48,7 +48,7 @@ public class JbiElementProcessor extends ElementProcessorSupport implements Elem
 
         // lets remove the default namespace just in case
         beans.removeAttribute("xmlns");
-
+        
         String version = beans.getAttribute("version");
         if (version != null && version.length() != 0) {
             addPropertyElement(bean, "version", version);

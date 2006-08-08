@@ -35,7 +35,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
-import org.apache.servicemix.jbi.deployment.SharedLibraryList;
 import org.apache.servicemix.jbi.event.ComponentEvent;
 import org.apache.servicemix.jbi.event.ComponentListener;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;

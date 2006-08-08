@@ -34,8 +34,6 @@ import javax.management.MBeanAttributeInfo;
 import javax.management.ObjectName;
 import javax.resource.spi.work.Work;
 import javax.resource.spi.work.WorkException;
-import javax.transaction.Transaction;
-import javax.transaction.TransactionManager;
 
 /**
  * A simple Straight through flow
@@ -43,7 +41,9 @@ import javax.transaction.TransactionManager;
  * @version $Revision$
  */
 public class SedaQueue extends BaseLifeCycle implements Work {
+    
     private static final Log log = LogFactory.getLog(SedaQueue.class);
+    
     protected SedaFlow flow;
     protected ComponentNameSpace name;
     protected BoundedLinkedQueue queue;
