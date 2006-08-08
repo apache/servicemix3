@@ -20,13 +20,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jbi.messaging.MessageExchange;
+
 import org.apache.servicemix.common.Endpoint;
 import org.apache.servicemix.common.packaging.Provides;
 import org.apache.servicemix.common.packaging.ServiceUnitAnalyzer;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.FileSystemResource;
+import org.apache.xbean.spring.context.FileSystemXmlApplicationContext;
 
-public abstract class AbstractXBeanServiceUnitAnalzyer implements
+public abstract class AbstractXBeanServiceUnitAnalyzer implements
 		ServiceUnitAnalyzer {
 
 	List consumes = new ArrayList();
@@ -53,12 +54,17 @@ public abstract class AbstractXBeanServiceUnitAnalzyer implements
 		return provides;
 	}
 
-	protected Provides getProvides(Endpoint endpoint) {
-		Provides newProvide = new Provides();
-		newProvide.setEndpointName(endpoint.getEndpoint());
-		newProvide.setInterfaceName(endpoint.getInterfaceName());
-		newProvide.setServiceName(endpoint.getService());
-		return newProvide;
+	protected List getProvides(Endpoint endpoint) {
+		List providesList = new ArrayList();
+		if (endpoint.getRole().equals(MessageExchange.Role.PROVIDER)) {
+			Provides newProvide = new Provides();
+			newProvide.setEndpointName(endpoint.getEndpoint());
+			newProvide.setInterfaceName(endpoint.getInterfaceName());
+			newProvide.setServiceName(endpoint.getService());
+			providesList.add(newProvide);
+		}
+
+		return providesList;
 	}
 
 	protected abstract String getXBeanFile();
@@ -69,16 +75,17 @@ public abstract class AbstractXBeanServiceUnitAnalzyer implements
 	 * @see org.apache.servicemix.common.packaging.ServiceUnitAnalyzer#init(java.io.File)
 	 */
 	public void init(File explodedServiceUnitRoot) {
-		XmlBeanFactory factory = new XmlBeanFactory(new FileSystemResource(
-				new File(explodedServiceUnitRoot, getXBeanFile())));
+		FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(
+				explodedServiceUnitRoot.getAbsolutePath() + "/"
+						+ getXBeanFile());
 
-		for (int i = 0; i < factory.getBeanDefinitionNames().length; i++) {
-			Object bean = factory.getBean(factory.getBeanDefinitionNames()[i]);
+		for (int i = 0; i < context.getBeanDefinitionNames().length; i++) {
+			Object bean = context.getBean(context.getBeanDefinitionNames()[i]);
 			if (isValidEndpoint(bean)) {
 				// The provides are generic while the consumes need to
 				// be handled by the implementation
 				Endpoint endpoint = (Endpoint) bean;
-				provides.add(getProvides(endpoint));
+				provides.addAll(getProvides(endpoint));
 				consumes.addAll(getConsumes(endpoint));
 			}
 		}

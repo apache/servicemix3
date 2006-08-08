@@ -74,4 +74,8 @@ public class Consumes {
 	public void setServiceName(QName serviceName) {
 		this.serviceName = serviceName;
 	}
+
+	public boolean isValid() {
+		return (getInterfaceName() != null || getEndpointName() != null || getServiceName() != null);
+	}
 }
