@@ -289,6 +289,9 @@ public class ServiceMixClientFacade implements ServiceMixClient {
     public EndpointResolver createResolverForExternalInterface(QName service, String endpoint) {
         return new ServiceAndEndpointNameResolver(service, endpoint);
     }
+    
+    public void close() throws JBIException {
+    }
 
 
     // Properties

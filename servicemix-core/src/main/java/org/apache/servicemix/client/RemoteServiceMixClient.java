@@ -158,5 +158,9 @@ public class RemoteServiceMixClient extends DefaultServiceMixClient {
     public void setContainerName(String name) {
         container.setName(name);
     }
+    
+    public void close() throws JBIException {
+        shutDown();
+    }
 
 }

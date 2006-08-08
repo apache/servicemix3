@@ -59,10 +59,12 @@ public class DefaultServiceMixClient extends ComponentSupport implements Service
 
     private EndpointFilter filter = NullEndpointFilter.getInstance();
     private PojoMarshaler marshaler = new DefaultMarshaler();
+    private JBIContainer container;
+    private ActivationSpec activationSpec;
 
-    public DefaultServiceMixClient() {
+    protected DefaultServiceMixClient() {
     }
-
+    
     /**
      * Provides the JBI container used for message dispatch.
      */
@@ -76,6 +78,8 @@ public class DefaultServiceMixClient extends ComponentSupport implements Service
      * and the client endpoint metadata can be configured to allow services to talk to this client.
      */
     public DefaultServiceMixClient(JBIContainer container, ActivationSpec activationSpec) throws JBIException {
+        this.container = container;
+        this.activationSpec = activationSpec;
         activationSpec.setComponent(this);
         container.activateComponent(activationSpec);
     }
@@ -251,6 +255,10 @@ public class DefaultServiceMixClient extends ComponentSupport implements Service
 
     public EndpointResolver createResolverForExternalInterface(QName service, String endpoint) {
         return new ServiceAndEndpointNameResolver(service, endpoint);
+    }
+    
+    public void close() throws JBIException {
+        container.deactivateComponent(activationSpec.getComponentName());
     }
 
 

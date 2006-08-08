@@ -54,7 +54,6 @@ import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.components.util.PojoLifecycleAdaptor;
 import org.apache.servicemix.components.util.PojoSupport;
 import org.apache.servicemix.id.IdGenerator;
-import org.apache.servicemix.jbi.deployment.SharedLibraryList;
 import org.apache.servicemix.jbi.event.ComponentListener;
 import org.apache.servicemix.jbi.event.EndpointListener;
 import org.apache.servicemix.jbi.event.ExchangeEvent;
@@ -63,6 +62,7 @@ import org.apache.servicemix.jbi.event.ServiceAssemblyListener;
 import org.apache.servicemix.jbi.event.ServiceUnitListener;
 import org.apache.servicemix.jbi.framework.AdminCommandsService;
 import org.apache.servicemix.jbi.framework.AutoDeploymentService;
+import org.apache.servicemix.jbi.framework.ClientFactory;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.framework.ComponentNameSpace;
@@ -107,6 +107,7 @@ public class JBIContainer extends BaseLifeCycle {
     protected DeploymentService deploymentService = new DeploymentService();
     protected AutoDeploymentService autoDeployService = new AutoDeploymentService();
     protected AdminCommandsService adminCommandsService = new AdminCommandsService();
+    protected ClientFactory clientFactory = new ClientFactory();
     protected Registry registry = new Registry();
     protected WorkManager workManager;
     protected boolean isWorkManagerCreated;
@@ -483,6 +484,10 @@ public class JBIContainer extends BaseLifeCycle {
     public AdminCommandsService getAdminCommandsService() {
         return adminCommandsService;
     }
+    
+    public ClientFactory getClientFactory() {
+        return clientFactory;
+    }
 
 
     /**
@@ -519,6 +524,7 @@ public class JBIContainer extends BaseLifeCycle {
             deploymentService.init(this);
             autoDeployService.init(this);
             adminCommandsService.init(this);
+            clientFactory.init(this);
 
             // register self with the ManagementContext
             try {
@@ -558,6 +564,7 @@ public class JBIContainer extends BaseLifeCycle {
             deploymentService.start();
             autoDeployService.start();
             adminCommandsService.start();
+            clientFactory.start();
             super.start();
         }
     }
@@ -578,6 +585,7 @@ public class JBIContainer extends BaseLifeCycle {
             deploymentService.stop();
             autoDeployService.stop();
             adminCommandsService.stop();
+            clientFactory.stop();
             super.stop();
         }
     }
@@ -596,6 +604,7 @@ public class JBIContainer extends BaseLifeCycle {
             installationService.shutDown();
             deploymentService.shutDown();
             adminCommandsService.shutDown();
+            clientFactory.shutDown();
             // shutdown the management context last, because it will close the mbean server
             super.shutDown();
             managementContext.unregisterMBean(this);

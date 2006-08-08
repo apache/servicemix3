@@ -16,7 +16,7 @@
  */
 package org.apache.servicemix.client;
 
-import org.apache.servicemix.jbi.resolver.EndpointResolver;
+import java.util.Map;
 
 import javax.jbi.JBIException;
 import javax.jbi.component.ComponentContext;
@@ -29,21 +29,18 @@ import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
-import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.messaging.RobustInOnly;
 import javax.xml.namespace.QName;
 
-import java.util.Map;
+import org.apache.servicemix.jbi.resolver.EndpointResolver;
 
 /**
  * Represents a client  API which allows users to programatically send messages into the JBI
  * container or to receive them using the regular JBI API together with a collection of helper methods making it
  * easier to interact with the JBI API.
  *
- * 
  * @version $Revision$
  */
-// * @deprecated Please use the {@link Client} interface instead.
 public interface ServiceMixClient {
 
 
@@ -351,4 +348,10 @@ public interface ServiceMixClient {
     MessageExchangeFactory getExchangeFactory() throws MessagingException;
 
 
+    /**
+     * Close this client.
+     * 
+     * @throws JBIException
+     */
+    void close() throws JBIException;
 }

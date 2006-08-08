@@ -16,25 +16,23 @@
  */
 package org.apache.servicemix.client;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.client.TestBean;
-import org.apache.servicemix.jbi.container.SpringJBIContainer;
-import org.apache.servicemix.tck.MessageList;
-import org.apache.servicemix.tck.Receiver;
-import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
-import org.springframework.context.support.AbstractXmlApplicationContext;
+import java.io.StringReader;
+import java.util.Arrays;
 
-import javax.jbi.JBIException;
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.transform.stream.StreamSource;
 
-import java.io.StringReader;
-import java.util.Arrays;
-
 import junit.framework.TestCase;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.container.SpringJBIContainer;
+import org.apache.servicemix.tck.MessageList;
+import org.apache.servicemix.tck.Receiver;
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
  * @version $Revision$
