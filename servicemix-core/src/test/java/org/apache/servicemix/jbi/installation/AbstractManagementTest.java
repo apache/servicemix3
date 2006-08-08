@@ -114,6 +114,7 @@ public abstract class AbstractManagementTest extends TestCase {
         xsw.writeStartDocument();
         xsw.writeStartElement("jbi");
         xsw.writeAttribute("xmlns", "http://java.sun.com/xml/ns/jbi");
+        xsw.writeAttribute("version", "1.0");
           xsw.writeStartElement("service-assembly");
             xsw.writeStartElement("identification");
               xsw.writeStartElement("name");
