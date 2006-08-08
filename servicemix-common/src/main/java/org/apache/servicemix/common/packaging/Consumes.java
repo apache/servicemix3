@@ -76,6 +76,6 @@ public class Consumes {
 	}
 
 	public boolean isValid() {
-		return (getInterfaceName() != null || getEndpointName() != null || getServiceName() != null);
+		return (getServiceName() != null || getInterfaceName() != null);
 	}
 }
