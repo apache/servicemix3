@@ -1,0 +1,87 @@
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+       xmlns:http="http://servicemix.apache.org/http/1.0"
+       xmlns:soap="http://servicemix.apache.org/soap/1.0"
+       xmlns:ex="http://servicemix.org/example">
+
+  <sm:systemProperties>
+    <property name="properties">
+      <map>
+        <entry key="java.security.auth.login.config">
+          <bean class="org.springframework.util.ResourceUtils" factory-method="getFile">
+            <constructor-arg value="classpath:login.properties"/>
+          </bean>
+        </entry>
+      </map>
+    </property>
+  </sm:systemProperties>
+
+  <sm:container id="jbi" rootDir="./target/data/smx">
+  
+    <!-- Use a secured broker which will check the authenticated
+         user for the needed ACLs before granting access to a given
+         endpoint -->
+    <sm:broker>
+      <sm:securedBroker>
+        <sm:authorizationMap>
+  	      <sm:authorizationMap>
+  	        <!-- ACL list -->
+  	        <sm:authorizationEntries>
+  	          <!-- By default, only 'admin' role can access JBI endpoints -->
+  	          <sm:authorizationEntry service="*:*" roles="admin" />
+  	          <!-- ex:receiver service is authorized for role 'secure' -->
+  	          <sm:authorizationEntry service="ex:receiver" roles="secure" />
+  	        </sm:authorizationEntries>
+  	      </sm:authorizationMap>
+        </sm:authorizationMap>
+      </sm:securedBroker>
+    </sm:broker>
+    
+      
+    <sm:activationSpecs>
+
+  	  <sm:activationSpec id="http">
+  	    <sm:component>
+  	      <http:component>
+  	        <http:endpoints>
+  	        
+  	          <!-- Secured endpoint using http basic authentication -->
+  	          <http:endpoint service="ex:receiver"
+  	                         endpoint="http"
+  	                         targetService="ex:receiver"
+  	                         role="consumer"
+  	                         locationURI="http://localhost:8192/Service/"
+  	          				       authMethod="basic" 
+  	          				       defaultMep="http://www.w3.org/2004/08/wsdl/in-only">
+              </http:endpoint>
+                
+  	          <!-- Secured endpoint using ws-sec authentication -->
+              <http:endpoint service="ex:receiver"
+                             endpoint="http-wssec"
+                             targetService="ex:receiver"
+                             role="consumer"
+                             locationURI="http://localhost:8192/WSSec/"
+                             defaultMep="http://www.w3.org/2004/08/wsdl/in-only"
+                             soap="true">
+                 <http:policies>
+                   <soap:ws-addressing />
+                   <!-- Enable ws-sec with UsernameToken -->
+                   <soap:ws-security receiveAction="UsernameToken" />
+                 </http:policies>
+              </http:endpoint>
+              
+  	        </http:endpoints>
+  	      </http:component>
+  	    </sm:component>
+  	  </sm:activationSpec>
+
+      <!-- Secured endpoint -->
+      <sm:activationSpec id="receiver" service="ex:receiver">
+        <sm:component>
+          <bean class="org.apache.servicemix.tck.ReceiverComponent" />
+        </sm:component>
+      </sm:activationSpec>
+
+    </sm:activationSpecs>
+  </sm:container>
+
+</beans>
