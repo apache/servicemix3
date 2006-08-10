@@ -1586,17 +1586,17 @@
             <dependency>
                 <groupId>org.apache.xbean</groupId>
                 <artifactId>xbean-kernel</artifactId>
-                <version>2.5</version>
+                <version>2.6-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.xbean</groupId>
                 <artifactId>xbean-server</artifactId>
-                <version>2.5</version>
+                <version>2.6-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.xbean</groupId>
                 <artifactId>xbean-spring</artifactId>
-                <version>2.5</version>
+                <version>2.6-SNAPSHOT</version>
                 <exclusions>
                     <exclusion>
                         <groupId>qdox</groupId>
@@ -1913,7 +1913,7 @@
                 <plugin>
                     <groupId>org.apache.xbean</groupId>
                     <artifactId>maven-xbean-plugin</artifactId>
-                    <version>2.5</version>
+                    <version>2.6-SNAPSHOT</version>
                 </plugin>
                 <plugin>
                     <groupId>org.mortbay.jetty</groupId>
