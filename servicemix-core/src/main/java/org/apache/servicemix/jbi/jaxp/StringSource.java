@@ -33,16 +33,19 @@ import javax.xml.transform.stream.StreamSource;
  * @version $Revision$
  */
 public class StringSource extends StreamSource implements Serializable {
-    
-    private String text;
-    private String encoding="UTF-8";
-    
+
+    private final String text;
+    private String encoding = "UTF-8";
+
     public StringSource(String text) {
+        if (text == null) {
+            throw new NullPointerException("text can not be null");
+        }
         this.text = text;
     }
 
     public StringSource(String text, String systemId) {
-        this.text = text;
+        this(text);
         setSystemId(systemId);
     }
 
@@ -63,9 +66,9 @@ public class StringSource extends StreamSource implements Serializable {
     public Reader getReader() {
         return new StringReader(text);
     }
-    
+
     public String toString() {
-    	return "StringSource[" + text + "]";
+        return "StringSource[" + text + "]";
     }
 
     public String getText() {
