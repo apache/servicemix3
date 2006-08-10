@@ -389,7 +389,7 @@
         <repository>
             <id>activemq-tmp-repo</id>
             <name>ActiveMQ Maven2 Temp Repository</name>
-            <url>http://people.apache.org/~chirino/incubator-activemq-4.0.2-RC2/maven2</url>
+            <url>http://people.apache.org/~chirino/incubator-activemq-4.0.2-RC3/maven2</url>
         </repository>
         <!-- XFire 1.1.1 release -->
         <repository>
