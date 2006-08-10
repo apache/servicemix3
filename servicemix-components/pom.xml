@@ -256,7 +256,10 @@
             <exclude>**/BinaryFileTest.*</exclude>
             <exclude>**/FileTest.*</exclude>
             <exclude>**/CounterMonitorComponentTest.*</exclude>
-          </excludes>
+	    <!-- https://issues.apache.org/activemq/browse/SM-529 -->
+	    <exclude>**/MPSSettingTest.*</exclude>
+          
+	  </excludes>
         </configuration>
       </plugin>
     </plugins>
