@@ -31,7 +31,7 @@
   
   <groupId>org.apache.servicemix.tooling</groupId>
   <artifactId>tooling</artifactId>
-  <version>1.0-incubating-SNAPSHOT</version>
+  <version>3.0-incubating-SNAPSHOT</version>
   <name>ServiceMix :: Tooling</name>
   <url>http://servicemix.org</url>
   <packaging>pom</packaging>

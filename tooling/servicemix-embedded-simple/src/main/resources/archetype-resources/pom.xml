@@ -33,7 +33,7 @@
     </repository>
   </repositories>
   <properties>    
-    <servicemixJbiPluginVersion>1.0-incubating-SNAPSHOT</servicemixJbiPluginVersion>    
+    <servicemixJbiPluginVersion>3.0-incubating-SNAPSHOT</servicemixJbiPluginVersion>    
   </properties>
   <dependencies>   
   </dependencies>

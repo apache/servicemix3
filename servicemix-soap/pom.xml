@@ -91,7 +91,6 @@
       <plugin>
         <groupId>org.apache.servicemix.tooling</groupId>
         <artifactId>jbi-maven-plugin</artifactId>
-        <version>1.0-incubating-SNAPSHOT</version>
       </plugin>
     </plugins>
   </build>
