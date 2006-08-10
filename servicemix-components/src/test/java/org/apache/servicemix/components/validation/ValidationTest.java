@@ -20,16 +20,29 @@ import javax.jbi.messaging.Fault;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.NormalizedMessage;
 
-import org.apache.servicemix.tck.TestSupport;
-import org.springframework.context.support.AbstractXmlApplicationContext;
+import org.apache.servicemix.client.ServiceMixClient;
+import org.apache.servicemix.jbi.container.SpringJBIContainer;
+import org.apache.servicemix.tck.Receiver;
+import org.apache.servicemix.tck.SpringTestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
  * @version $Revision$
  */
-public class ValidationTest extends TestSupport {
+public class ValidationTest extends SpringTestSupport {
+    protected ServiceMixClient client;
+    protected Receiver receiver;
+
+	protected void setUp() throws Exception {
+		super.setUp();
+        SpringJBIContainer jbi = (SpringJBIContainer) getBean("jbi");
+        receiver = (Receiver) jbi.getBean("receiver");
+    }
 
     public void testValidMessage() throws Exception {
+    	client = (ServiceMixClient) getBean("defaultErrorHandlerClient");
+    	
         InOut exchange = client.createInOutExchange();
         exchange.getInMessage().setContent(getSourceFromClassPath("requestValid.xml"));
         client.sendSync(exchange);
@@ -45,7 +58,32 @@ public class ValidationTest extends TestSupport {
     }
 
     public void testInvalidMessage() throws Exception {
-        InOut exchange = client.createInOutExchange();
+    	client = (ServiceMixClient) getBean("defaultErrorHandlerClient");
+
+    	InOut exchange = client.createInOutExchange();
+        exchange.getInMessage().setContent(getSourceFromClassPath("requestInvalid.xml"));
+        client.sendSync(exchange);
+
+        NormalizedMessage out = exchange.getOutMessage();
+        Fault fault = exchange.getFault();
+        Exception error = exchange.getError();
+
+        assertEquals("out", null, out);
+        assertNotNull("Should have a fault", fault);
+
+        System.out.println("error is: " + error);
+
+        System.out.println("Fault is...");
+        System.out.println(transformer.toString(fault.getContent()));
+
+        // TODO?
+        //assertEquals("error", null, error);
+    }
+
+    public void testInvalidMessageWithMessageAwareErrorHandler() throws Exception {
+    	client = (ServiceMixClient) getBean("messageAwareErrorHandlerClient");
+    	
+    	InOut exchange = client.createInOutExchange();
         exchange.getInMessage().setContent(getSourceFromClassPath("requestInvalid.xml"));
         client.sendSync(exchange);
 

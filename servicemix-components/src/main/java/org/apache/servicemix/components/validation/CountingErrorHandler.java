@@ -16,6 +16,8 @@
  */
 package org.apache.servicemix.components.validation;
 
+import javax.jbi.messaging.MessagingException;
+
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
@@ -25,37 +27,79 @@ import org.xml.sax.SAXException;
  *
  * @version $Revision$
  */
-public class CountingErrorHandler implements ErrorHandler {
+public class CountingErrorHandler implements MessageAwareErrorHandler {
     private int warningCount;
     private int errorCount;
     private int fatalErrorCount;
 
-
+    /*  (non-Javadoc)
+     * @see org.apache.servicemix.components.validation.MessageAwareErrorHandler#hasErrors()
+     */
     public boolean hasErrors() {
         return getErrorCount() > 0 || getFatalErrorCount() > 0;
     }
 
+    /*  (non-Javadoc)
+     * @see org.apache.servicemix.components.validation.MessageAwareErrorHandler#getWarningCount()
+     */
     public int getWarningCount() {
         return warningCount;
     }
 
+    /*  (non-Javadoc)
+     * @see org.apache.servicemix.components.validation.MessageAwareErrorHandler#getErrorCount()
+     */
     public int getErrorCount() {
         return errorCount;
     }
 
+    /*  (non-Javadoc)
+     * @see org.apache.servicemix.components.validation.MessageAwareErrorHandler#getFatalErrorCount()
+     */
     public int getFatalErrorCount() {
         return fatalErrorCount;
     }
 
+    /*  (non-Javadoc)
+     * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
+     */
     public void warning(SAXParseException e) throws SAXException {
         ++warningCount;
     }
 
+    /*  (non-Javadoc)
+     * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
+     */
     public void error(SAXParseException e) throws SAXException {
         ++errorCount;
     }
 
+    /*  (non-Javadoc)
+     * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
+     */
     public void fatalError(SAXParseException e) throws SAXException {
         ++fatalErrorCount;
     }
+    
+    /*  (non-Javadoc)
+     * @see org.apache.servicemix.components.validation.MessageAwareErrorHandler#capturesMessages()
+     */
+    public boolean capturesMessages() {
+    	return false;
+    }
+
+	/* (non-Javadoc)
+	 * @see org.apache.servicemix.components.validation.MessageAwareErrorHandler#getMessagesAs(java.lang.Class)
+	 */
+	public Object getMessagesAs(Class format) throws MessagingException {
+		throw new MessagingException("Unsupported message format: " + format.getName());
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.servicemix.components.validation.MessageAwareErrorHandler#supportsMessageFormat(java.lang.Class)
+	 */
+	public boolean supportsMessageFormat(Class format) {
+		return false;
+	}
+    
 }

@@ -19,6 +19,7 @@ package org.apache.servicemix.components.validation;
 import org.apache.servicemix.components.util.TransformComponentSupport;
 import org.apache.servicemix.jbi.FaultException;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.springframework.core.io.Resource;
 import org.xml.sax.SAXException;
 
@@ -50,6 +51,7 @@ public class ValidateComponent extends TransformComponentSupport {
     private String schemaLanguage = "http://www.w3.org/2001/XMLSchema";
     private Source schemaSource;
     private Resource schemaResource;
+    private MessageAwareErrorHandler errorHandler = new CountingErrorHandler();
 
     public Schema getSchema() {
         return schema;
@@ -83,6 +85,14 @@ public class ValidateComponent extends TransformComponentSupport {
         this.schemaResource = schemaResource;
     }
    
+    public MessageAwareErrorHandler getErrorHandler() {
+		return errorHandler;
+	}
+
+	public void setErrorHandler(MessageAwareErrorHandler errorHandler) {
+		this.errorHandler = errorHandler;
+	}
+
     protected void init() throws JBIException {
         super.init();
 
@@ -94,8 +104,11 @@ public class ValidateComponent extends TransformComponentSupport {
                     if (schemaResource == null) {
                         throw new JBIException("You must specify a schema, schemaSource or schemaResource property");
                     }
-                    schemaSource = new StreamSource(schemaResource.getInputStream(),
-                                                    schemaResource.getURL().toExternalForm());
+                    if (schemaResource.getURL() == null) {
+                    	schemaSource = new StreamSource(schemaResource.getInputStream());
+                    } else {
+                    	schemaSource = new StreamSource(schemaResource.getInputStream(), schemaResource.getURL().toExternalForm());	
+                    }
                 }
                 schema = factory.newSchema(schemaSource);
             }
@@ -111,23 +124,60 @@ public class ValidateComponent extends TransformComponentSupport {
     protected boolean transform(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws MessagingException {
         Validator validator = schema.newValidator();
 
-        CountingErrorHandler errorHandler = new CountingErrorHandler();
         validator.setErrorHandler(errorHandler);
         DOMResult result = new DOMResult();
         // Transform first so that the input source will be parsed only once
         // if it is a StreamSource
         getMessageTransformer().transform(exchange, in, out);
         try {
+        	SourceTransformer sourceTransformer = new SourceTransformer();
         	// Only DOMSource and SAXSource are allowed for validating
         	// See http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/validation/Validator.html#validate(javax.xml.transform.Source,%20javax.xml.transform.Result)
         	// As we expect a DOMResult as output, we must ensure that the input is a 
         	// DOMSource
-        	DOMSource src = new SourceTransformer().toDOMSource(out.getContent());
+        	DOMSource src = sourceTransformer.toDOMSource(out.getContent());
         	doValidation(validator,src,result);
             if (errorHandler.hasErrors()) {
                 Fault fault = exchange.createFault();
+                
+                // set the schema and source document as properties on the fault
                 fault.setProperty("org.apache.servicemix.schema", schema);
-                fault.setContent(new DOMSource(result.getNode(), result.getSystemId()));
+                fault.setProperty("org.apache.servicemix.xml", src);
+                
+                /* 
+                 * check if this error handler supports the capturing of
+                 * error messages.
+                 */
+                if (errorHandler.capturesMessages()) {
+
+                	/* 
+                	 * In descending order of preference select a format to use. If
+                	 * neither DOMSource, StringSource or String are supported throw
+                	 * a messaging exception.
+                	 */
+                	if (errorHandler.supportsMessageFormat(DOMSource.class)) {
+                		fault.setContent(
+                				(DOMSource)errorHandler.getMessagesAs(DOMSource.class));
+                	} else if (errorHandler.supportsMessageFormat(StringSource.class)) {
+                		fault.setContent(sourceTransformer.toDOMSource(
+                				(StringSource)errorHandler.getMessagesAs(StringSource.class)));
+                	} else if (errorHandler.supportsMessageFormat(String.class)) {
+                		fault.setContent(
+                				sourceTransformer.toDOMSource(
+                						new StringSource(
+                								(String)errorHandler.getMessagesAs(String.class))));
+                	} else {
+                		throw new MessagingException("MessageAwareErrorHandler implementation " + 
+                				errorHandler.getClass().getName() +
+                				" does not support a compatible error message format.");
+                	}
+                } else {
+                	/* 
+                	 * we can't do much here if the ErrorHandler implementation does
+                	 * not support capturing messages
+                	 */
+                    fault.setContent(new DOMSource(result.getNode(), result.getSystemId()));
+                }
                 throw new FaultException("Failed to validate against schema: " + schema, exchange, fault);
             }
             else {
