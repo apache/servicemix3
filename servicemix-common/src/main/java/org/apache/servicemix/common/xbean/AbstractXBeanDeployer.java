@@ -71,24 +71,13 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
             su.setRootPath(serviceUnitRootPath);
             // Load configuration
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-            FileSystemRepository repository = new FileSystemRepository(new File(serviceUnitRootPath));
-            ClassLoaderXmlPreprocessor classLoaderXmlPreprocessor = new ClassLoaderXmlPreprocessor(repository);
-            List xmlPreprocessors = Collections.singletonList(classLoaderXmlPreprocessor);
+
             SpringLoader springLoader = new SpringLoader();
             springLoader.setKernel(kernel);
             springLoader.setBaseDir(new File(serviceUnitRootPath));
-            springLoader.setXmlPreprocessors(xmlPreprocessors);
+            springLoader.setXmlPreprocessors(getXmlPreProcessors(serviceUnitRootPath));
+            springLoader.setBeanFactoryPostProcessors(getBeanFactoryPostProcessors(serviceUnitRootPath));
             
-            PropertyPlaceholderConfigurer propertyPlaceholder = new PropertyPlaceholderConfigurer();
-			FileSystemResource propertiesFile = new FileSystemResource(
-					new File(serviceUnitRootPath) + "/" + getXBeanFile()
-							+ ".properties");
-			if (propertiesFile.getFile().exists()) {				
-				propertyPlaceholder.setLocation(propertiesFile);
-				springLoader.setBeanFactoryPostProcessors(Collections
-						.singletonList(propertyPlaceholder));
-			} 
-			
             ServiceName configurationName = springLoader.load(getXBeanFile());
             kernel.startService(configurationName);
             su.setConfiguration(configurationName);
@@ -132,5 +121,23 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
     protected boolean validate(Endpoint endpoint) throws DeploymentException {
         return true;
     }
-
+    
+    protected List getXmlPreProcessors(String serviceUnitRootPath) {
+        FileSystemRepository repository = new FileSystemRepository(new File(serviceUnitRootPath));
+        ClassLoaderXmlPreprocessor classLoaderXmlPreprocessor = new ClassLoaderXmlPreprocessor(repository);
+        return Collections.singletonList(classLoaderXmlPreprocessor);
+    }
+    
+    protected List getBeanFactoryPostProcessors(String serviceUnitRootPath) {
+        PropertyPlaceholderConfigurer propertyPlaceholder = new PropertyPlaceholderConfigurer();
+        FileSystemResource propertiesFile = new FileSystemResource(
+                new File(serviceUnitRootPath) + "/" + getXBeanFile()
+                        + ".properties");
+        if (propertiesFile.getFile().exists()) {                
+            propertyPlaceholder.setLocation(propertiesFile);
+            return Collections.singletonList(propertyPlaceholder);
+        } 
+        return Collections.EMPTY_LIST;
+    }
+    
 }
