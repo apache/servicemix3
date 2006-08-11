@@ -26,8 +26,6 @@ import java.util.Map;
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
 
-import org.apache.servicemix.jbi.deployment.SharedLibraryList;
-
 /**
  * Registry for Components
  *
