@@ -270,6 +270,7 @@
                 <module>servicemix-components</module>
                 <module>servicemix-common</module>
                 <module>servicemix-soap</module>
+                <module>servicemix-shared</module>
                 <module>servicemix-console</module>
                 <module>servicemix-bpe</module>
                 <module>servicemix-jms</module>
