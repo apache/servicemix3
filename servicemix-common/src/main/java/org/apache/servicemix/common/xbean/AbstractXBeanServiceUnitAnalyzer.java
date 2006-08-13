@@ -75,10 +75,11 @@ public abstract class AbstractXBeanServiceUnitAnalyzer implements
 	 * @see org.apache.servicemix.common.packaging.ServiceUnitAnalyzer#init(java.io.File)
 	 */
 	public void init(File explodedServiceUnitRoot) {
+		
 		FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(
-				explodedServiceUnitRoot.getAbsolutePath() + "/"
+		   "file:///" + explodedServiceUnitRoot.getAbsolutePath() + "/"
 						+ getXBeanFile());
-
+                
 		for (int i = 0; i < context.getBeanDefinitionNames().length; i++) {
 			Object bean = context.getBean(context.getBeanDefinitionNames()[i]);
 			if (isValidEndpoint(bean)) {
