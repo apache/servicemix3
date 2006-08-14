@@ -43,7 +43,7 @@ import org.apache.ode.bpe.action.external.ActionSystemException;
 import org.apache.ode.bpe.action.external.IExternalAction;
 import org.apache.ode.bpe.action.external.IURIResolver;
 import org.apache.ode.bpe.client.IFormattableValue;
-import org.apache.ode.bpe.interaction.XMLInteractionObject;
+import org.apache.ode.bpe.interaction.spiimpl.document.DocumentFormattableValue;
 import org.apache.ode.bpe.scope.service.BPRuntimeException;
 import org.apache.servicemix.bpe.BPEComponent;
 import org.apache.servicemix.bpe.BPEEndpoint;
@@ -225,17 +225,24 @@ public class JbiInvokeAction implements IExternalAction {
                     }
                     BPRuntimeException bpre = new BPRuntimeException(faultName, "");
                     bpre.setNameSpace(e.getNamespaceURI());
-                    XMLInteractionObject interaction = new XMLInteractionObject();
-                    interaction.setDocument(fault);
-                    bpre.addPartMessage(partName, interaction);
+                    /* We must use a type that implements BPE's IFormattableValue interface
+                     * since otherwise the value will get wrapped in a CannedFormattableValue
+                     * which has undesireable side effects.  
+                     */
+                    DocumentFormattableValue documentFormattableValue = new DocumentFormattableValue(fault);
+                    bpre.addPartMessage(partName, documentFormattableValue);
                     throw bpre;
                 } else {
                     try {
                         nm = me.getMessage("out");
                         if (nm != null) {
-                            XMLInteractionObject result = new XMLInteractionObject();
-                            result.setDocument((Document) transformer.toDOMNode(nm));
-                            output.put(outputPartName, result);
+                            /* We must use a type that implements BPE's IFormattableValue interface
+                             * since otherwise the value will get wrapped in a CannedFormattableValue
+                             * which has undesireable side effects.  
+                             */
+                            Document out = (Document) transformer.toDOMNode(nm);
+                            DocumentFormattableValue documentFormattableValue = new DocumentFormattableValue(out);
+                            output.put(outputPartName, documentFormattableValue);
                         }
                         me.setStatus(ExchangeStatus.DONE);
                     } catch (Exception e) {
