@@ -137,13 +137,13 @@ public abstract class AbstractActivity implements Runnable, Activity {
      * A helper method to block the calling thread until the activity completes
      */
     public void join() {
+        final CountDownLatch latch = new CountDownLatch(1);
+        onStop(new Runnable() {
+            public void run() {
+                latch.countDown();
+            }
+        });
         while (!isStopped()) {
-            final CountDownLatch latch = new CountDownLatch(1);
-            onStop(new Runnable() {
-                public void run() {
-                    latch.countDown();
-                }
-            });
             try {
                 latch.await();
             }
