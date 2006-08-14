@@ -197,7 +197,7 @@ public class MessagePropertySetterXML extends TransformComponentSupport  {
 			if (xpathForPropertySet != null) {
 				try {
 					CachedXPathAPI xpathApi = new org.apache.xpath.CachedXPathAPI();
-					Document doc = (Document) new SourceTransformer().toDOMNode(in);
+					Document doc = new SourceTransformer().toDOMDocument(in);
 					XObject propSetXO = xpathApi.eval(doc.getDocumentElement(),xpathForPropertySet);
 					propertySetName = propSetXO.str();
 				} catch (Exception e) {

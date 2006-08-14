@@ -200,7 +200,7 @@ public class JbiInvokeAction implements IExternalAction {
                 if (me.getFault() != null) {
                     Document fault;
                     try {
-                        fault = (Document) transformer.toDOMNode(me.getFault());
+                        fault = transformer.toDOMDocument(me.getFault());
                         me.setStatus(ExchangeStatus.DONE);
                     } catch (Exception e) {
                         me.setError(e);
@@ -240,7 +240,7 @@ public class JbiInvokeAction implements IExternalAction {
                              * since otherwise the value will get wrapped in a CannedFormattableValue
                              * which has undesireable side effects.  
                              */
-                            Document out = (Document) transformer.toDOMNode(nm);
+                            Document out = transformer.toDOMDocument(nm);
                             DocumentFormattableValue documentFormattableValue = new DocumentFormattableValue(out);
                             output.put(outputPartName, documentFormattableValue);
                         }

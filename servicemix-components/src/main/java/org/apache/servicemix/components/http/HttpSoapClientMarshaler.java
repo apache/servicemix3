@@ -82,15 +82,7 @@ public class HttpSoapClientMarshaler extends HttpClientMarshaler {
 
     public void fromNMS(PostMethod method, MessageExchange exchange, NormalizedMessage normalizedMessage) throws Exception {
         addHttpHeaders(method, normalizedMessage);
-        Node node = sourceTransformer.toDOMNode(normalizedMessage.getContent());
-        Element elem;
-        if (node instanceof Document) {
-            elem = ((Document) node).getDocumentElement();
-        } else if (node instanceof Element) {
-            elem = (Element) node;
-        } else {
-            throw new UnsupportedOperationException();
-        }
+        Element elem = sourceTransformer.toDOMElement(normalizedMessage.getContent());
         Document document = sourceTransformer.createDocument();
         Element env = document.createElementNS("http://schemas.xmlsoap.org/soap/envelope/", "env:Envelope");
         document.appendChild(env);

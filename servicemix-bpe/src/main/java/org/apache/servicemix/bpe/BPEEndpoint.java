@@ -119,7 +119,7 @@ public class BPEEndpoint extends Endpoint implements ExchangeProcessor {
 		SimpleRequestMessageEvent msg = new SimpleRequestMessageEvent();
 		msg.setStaticKey(bsk);
 		XMLInteractionObject interaction = new XMLInteractionObject();
-		interaction.setDocument((Document) transformer.toDOMNode(exchange.getMessage("in")));
+		interaction.setDocument(transformer.toDOMDocument(exchange.getMessage("in")));
 		msg.setPart(inputPartName, interaction);
         
         EventDirector ed = ((BPEComponent) getServiceUnit().getComponent()).getEventDirector();

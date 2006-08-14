@@ -64,21 +64,16 @@ public class WSIFMarshaler {
 
     public void fromNMS(WSIFOperationInfo operationInfo, WSIFMessage wsifMessage, NormalizedMessage nmsMessage, Object body) throws WSIFException, MessagingException {
         addWSIFProperties(wsifMessage, nmsMessage);
-
         try {
-            Document document = (Document) transformer.toDOMNode(nmsMessage);
-            if (document != null) {
-                Element element = document.getDocumentElement();
+            Element element = transformer.toDOMElement(nmsMessage);
+            Map parts = wsifMessage.getMessageDefinition().getParts();
+            for (Iterator iter = parts.entrySet().iterator(); iter.hasNext();) {
+                Map.Entry entry = (Map.Entry) iter.next();
+                String name = (String) entry.getKey();
+                Part part = (Part) entry.getValue();
 
-                Map parts = wsifMessage.getMessageDefinition().getParts();
-                for (Iterator iter = parts.entrySet().iterator(); iter.hasNext();) {
-                    Map.Entry entry = (Map.Entry) iter.next();
-                    String name = (String) entry.getKey();
-                    Part part = (Part) entry.getValue();
-
-                    Object value = getPartValue(name, part, nmsMessage, element);
-                    wsifMessage.setObjectPart(name, value);
-                }
+                Object value = getPartValue(name, part, nmsMessage, element);
+                wsifMessage.setObjectPart(name, value);
             }
         }
         catch (TransformerException e) {

@@ -49,7 +49,7 @@ public class XPathContentMessagePropertyValue implements PropertyValue {
 		if (msg.getContent() != null) {
 			CachedXPathAPI xpathApi = new CachedXPathAPI();
 			try {
-				Document doc = (Document) new SourceTransformer().toDOMNode(msg);
+				Document doc = new SourceTransformer().toDOMDocument(msg);
 				XObject result = xpathApi.eval(doc,xpath);
 
 				resultValue = result.toString();

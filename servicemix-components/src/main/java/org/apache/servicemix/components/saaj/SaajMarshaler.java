@@ -16,15 +16,9 @@
  */
 package org.apache.servicemix.components.saaj;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Iterator;
 
 import javax.activation.DataHandler;
 import javax.jbi.messaging.MessagingException;
@@ -43,9 +37,13 @@ import javax.xml.soap.SOAPPart;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Iterator;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.xml.sax.SAXException;
 
 /**
  * @version $Revision$
@@ -132,17 +130,7 @@ public class SaajMarshaler {
         //DOMResult result = new DOMResult(null);
         //transformer.toResult(normalizedMessage.getContent(), result);
         //Document document = (Document) result.getNode();
-        Node node = transformer.toDOMNode(normalizedMessage);
-        Document document = null;
-        if (node instanceof Document) {
-        	document = (Document) node;
-        } else if (node instanceof Element) {
-        	document = transformer.createDocument();
-        	document.appendChild(document.importNode(node,true));
-        } else {
-        	throw new TransformerException("Could not create Document from Source");
-        }
-        
+        Document document = transformer.toDOMDocument(normalizedMessage);
         body.addDocument(document);
 
         addSoapAttachments(soapMessage, normalizedMessage);

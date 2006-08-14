@@ -44,6 +44,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xalan.xsltc.trax.DOM2SAX;
 import org.apache.xalan.xsltc.trax.SAX2DOM;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -312,6 +313,125 @@ public class SourceTransformer {
             else {
                 return null;
             }
+        }
+    }
+    
+    /**
+     * Create a DOM element from the normalized message.
+     * 
+     * @param message
+     * @return
+     * @throws MessagingException
+     * @throws TransformerException
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public Element toDOMElement(NormalizedMessage message) throws MessagingException, TransformerException, ParserConfigurationException, IOException, SAXException {
+        Node node = toDOMNode(message);
+        return toDOMElement(node);
+    }
+    
+    /**
+     * Create a DOM element from the given source.
+     * 
+     * @param source
+     * @return
+     * @throws TransformerException
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public Element toDOMElement(Source source) throws TransformerException, ParserConfigurationException, IOException, SAXException {
+        Node node = toDOMNode(source);
+        return toDOMElement(node);
+    }
+    
+    /**
+     * Create a DOM element from the DOM node.
+     * Simply cast if the node is an Element, or
+     * return the root element if it is a Document.
+     * 
+     * @param node
+     * @return
+     * @throws TransformerException 
+     */
+    public Element toDOMElement(Node node) throws TransformerException {
+        Element elem;
+        // If the node is an document, return the root element
+        if (node instanceof Document) {
+            return ((Document) node).getDocumentElement();
+        // If the node is an element, just cast it
+        } else if (node instanceof Element) {
+            return (Element) node;
+        // Other node types are not handled
+        } else {
+            throw new TransformerException("Unable to convert DOM node to an Element");
+        }
+    }
+    
+    /**
+     * Create a DOM document from the given normalized message
+     * 
+     * @param message
+     * @return
+     * @throws MessagingException
+     * @throws TransformerException
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public Document toDOMDocument(NormalizedMessage message) throws MessagingException, TransformerException, ParserConfigurationException, IOException, SAXException {
+        Node node = toDOMNode(message);
+        return toDOMDocument(node);
+    }
+    
+    /**
+     * Create a DOM document from the given source.
+     * 
+     * @param source
+     * @return
+     * @throws TransformerException
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public Document toDOMDocument(Source source) throws TransformerException, ParserConfigurationException, IOException, SAXException {
+        Node node = toDOMNode(source);
+        return toDOMDocument(node);
+    }
+    
+    /**
+     * Create a DOM document from the given Node.
+     * If the node is an document, just cast it,
+     * if the node is an root element, retrieve its
+     * owner element or create a new document and import
+     * the node.
+     * 
+     * @param node
+     * @return
+     * @throws ParserConfigurationException
+     * @throws TransformerException 
+     */
+    public Document toDOMDocument(Node node) throws ParserConfigurationException, TransformerException {
+        // If the node is the document, just cast it
+        if (node instanceof Document) {
+            return (Document) node;
+        // If the node is an element
+        } else if (node instanceof Element) {
+            Element elem = (Element) node;
+            // If this is the root element, return its owner document
+            if (elem.getOwnerDocument().getDocumentElement() == elem) {
+                return elem.getOwnerDocument();
+            // else, create a new doc and copy the element inside it
+            } else {
+                Document doc = createDocument();
+                doc.appendChild(doc.importNode(node, true));
+                return doc;
+            }
+        // other element types are not handled
+        } else {
+            throw new TransformerException("Unable to convert DOM node to a Document");
         }
     }
 
