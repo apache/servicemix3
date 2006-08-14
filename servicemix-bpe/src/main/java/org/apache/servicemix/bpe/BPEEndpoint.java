@@ -170,10 +170,15 @@ public class BPEEndpoint extends Endpoint implements ExchangeProcessor {
             if (logger.isDebugEnabled()) {
                 logger.debug("Exception caught", e);
             }
-            IInteraction payload = (IInteraction) e.getPartMessage(BPEComponent.PART_PAYLOAD);
-            if (payload != null) {
+            Object payload = e.getPartMessage(BPEComponent.PART_PAYLOAD);
+            if (payload instanceof IInteraction) {
                 Fault fault = exchange.createFault();
-                fault.setContent(new DOMSource(getDocument(payload)));
+                fault.setContent(new DOMSource(getDocument((IInteraction) payload)));
+                exchange.setFault(fault);
+            } else if (payload instanceof IFormattableValue) {
+                Fault fault = exchange.createFault();
+                Document doc = (Document) ((IFormattableValue) payload).getValueAs(Document.class);
+                fault.setContent(new DOMSource(doc));
                 exchange.setFault(fault);
             } else {
                 exchange.setError(e);
