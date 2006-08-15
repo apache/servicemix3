@@ -56,6 +56,7 @@ import org.apache.ode.bpe.wsdl.extensions.BPEOutputSerializer;
 import org.apache.ode.bpe.wsdl.extensions.BPEVariableMap;
 import org.apache.ode.bpe.wsdl.extensions.BPEVariableMapSerializer;
 import org.apache.ode.bpe.wsdl.extensions.ExtentionConstants;
+import org.apache.ode.bpe.deployment.bpel.BPELDefinitionKey;
 import org.apache.servicemix.bpe.util.FileSystemJarInputStream;
 import org.apache.servicemix.common.AbstractDeployer;
 import org.apache.servicemix.common.ServiceUnit;
@@ -65,8 +66,9 @@ import org.w3c.dom.Document;
 public class BPEDeployer extends AbstractDeployer {
 
     protected FilenameFilter filter;
+    protected Collection defKeys;
     
-	public BPEDeployer(BPEComponent component) {
+    public BPEDeployer(BPEComponent component) {
 		super(component);
         filter = new BpelFilter();
 	}
@@ -80,7 +82,7 @@ public class BPEDeployer extends AbstractDeployer {
 		try {
 			EventDirector ed = ((BPEComponent) component).getEventDirector();
 			IDeployer deployer = ed.getDeployer(DeployTypeEnum.BPEL);
-			deployer.loadDefinition(new FileSystemJarInputStream(new File(serviceUnitRootPath)), false);
+			defKeys = deployer.loadDefinition(new FileSystemJarInputStream(new File(serviceUnitRootPath)), false);
 			// Build the Service Unit
 			BPEServiceUnit su = new BPEServiceUnit();
 			su.setComponent(component);
@@ -116,7 +118,22 @@ public class BPEDeployer extends AbstractDeployer {
 		}
 	}
 
-	protected void checkDefinition(Definition rootDef, boolean main) throws DeploymentException {
+    public void undeploy(ServiceUnit su) throws DeploymentException {
+        try {
+            EventDirector ed = ((BPEComponent) component).getEventDirector();
+            IDeployer deployer = ed.getDeployer(DeployTypeEnum.BPEL);
+            for (Iterator i = defKeys.iterator(); i.hasNext(); ) {
+                deployer.removeDefinition(((BPELDefinitionKey)i.next()).getKey());
+            }
+            su.shutDown();
+        } catch (DeploymentException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new DeploymentException(e);
+        }
+    }
+
+    protected void checkDefinition(Definition rootDef, boolean main) throws DeploymentException {
         // Check that messages have only one part named "payload"
         Collection msgs = rootDef.getMessages().values();
         for (Iterator iter = msgs.iterator(); iter.hasNext();) {
