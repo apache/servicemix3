@@ -126,6 +126,14 @@
         <include>org.apache.derby:derby</include>
       </includes>
     </dependencySet>
+    <!-- dependency Set added by ka, 15.08.2006 -->
+    <dependencySet>
+      <outputDirectory>lib/optional</outputDirectory>
+      <includes>
+        <include>commons-pool:commons-pool</include>
+        <include>commons-collections:commons-collections</include>
+      </includes>
+    </dependencySet>
         <!--
     <dependencySet>
       <outputDirectory>lib/optional</outputDirectory>
