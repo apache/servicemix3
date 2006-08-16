@@ -22,37 +22,228 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
 
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.apache.servicemix</groupId>
-    <artifactId>servicemix</artifactId>
-    <version>3.0-incubating-SNAPSHOT</version>
-  </parent>
+    <parent>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>servicemix</artifactId>
+        <version>3.0-incubating-SNAPSHOT</version>
+    </parent>
 
-  <groupId>org.apache.servicemix.geronimo</groupId>
-  <artifactId>geronimo</artifactId>
-  <name>Servicemix :: Geronimo</name>
-  <packaging>pom</packaging>
-  
-  <repositories>
-     <repository>
-        <id>ServiceMix M2</id>
-        <url>http://incubator.apache.org/servicemix/dist/servicemix-3.0-M3-incubating/m2/</url>
-     </repository>
-  </repositories>
+    <groupId>org.apache.servicemix.geronimo</groupId>
+    <artifactId>geronimo</artifactId>
+    <name>Servicemix :: Geronimo</name>
+    <packaging>pom</packaging>
   
     <properties>
         <servicemix-plugin-version>3.0-incubating-SNAPSHOT</servicemix-plugin-version>
         <geronimo-version>1.1</geronimo-version>
         <servicemix-version>3.0-incubating-SNAPSHOT</servicemix-version>
         <car-maven-plugin-version>1.2-SNAPSHOT</car-maven-plugin-version>
+        <xbean-version>2.6-SNAPSHOT</xbean-version>
+        <spring-version>2.0-rc1</spring-version>
+        <activemq-version>4.0.2</activemq-version>
+        <activeio-version>3.0-beta4</activeio-version>
+        <backport-util-concurrent-version>2.1</backport-util-concurrent-version>
+        <wsdl4j-version>1.5.2</wsdl4j-version>
+        <jencks-version>1.2</jencks-version>
+        <commons-beanutils-version>1.7.0</commons-beanutils-version>
     </properties>
+    
     <modules>
         <module>servicemix-service</module>
         <module>deployer-service</module>
         <module>servicemix</module>
         <module>deployer</module>
     </modules>
+
+    <!-- The purpose of the following dependencies
+         is only to force maven to download them
+         so that the car plugin can find all the 
+         needed jars/cars in the local maven repo -->
+    <dependencies>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-gbean-deployer</artifactId>
+            <version>${geronimo-version}</version>
+            <type>car</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>j2ee-server</artifactId>
+            <version>${geronimo-version}</version>
+            <type>car</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>j2ee-system</artifactId>
+            <version>${geronimo-version}</version>
+            <type>car</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>rmi-naming</artifactId>
+            <version>${geronimo-version}</version>
+            <type>car</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>j2ee-deployer</artifactId>
+            <version>${geronimo-version}</version>
+            <type>car</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-system</artifactId>
+            <version>${geronimo-version}</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-management</artifactId>
+            <version>${geronimo-version}</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-core</artifactId>
+            <version>${geronimo-version}</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-client</artifactId>
+            <version>${geronimo-version}</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-j2ee-schema</artifactId>
+            <version>${geronimo-version}</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-j2ee-builder</artifactId>
+            <version>${geronimo-version}</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-naming-builder</artifactId>
+            <version>${geronimo-version}</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-security-builder</artifactId>
+            <version>${geronimo-version}</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-web-builder</artifactId>
+            <version>${geronimo-version}</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-connector-builder</artifactId>
+            <version>${geronimo-version}</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-webservices</artifactId>
+            <version>${geronimo-version}</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-naming</artifactId>
+            <version>${geronimo-version}</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-security</artifactId>
+            <version>${geronimo-version}</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-util</artifactId>
+            <version>${geronimo-version}</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-transaction</artifactId>
+            <version>${geronimo-version}</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-connector</artifactId>
+            <version>${geronimo-version}</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>1.4.3</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>activeio</groupId>
+            <artifactId>activeio</artifactId>
+            <version>2.0-r118</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>howl</groupId>
+            <artifactId>howl-logger</artifactId>
+            <version>0.1.11</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jaxr_1.0_spec</artifactId>
+            <version>1.0.1</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jsp_2.0_spec</artifactId>
+            <version>1.0.1</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
     
 </project>
