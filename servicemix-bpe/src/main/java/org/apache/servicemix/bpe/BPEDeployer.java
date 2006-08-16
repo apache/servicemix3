@@ -66,7 +66,6 @@ import org.w3c.dom.Document;
 public class BPEDeployer extends AbstractDeployer {
 
     protected FilenameFilter filter;
-    protected Collection defKeys;
     
     public BPEDeployer(BPEComponent component) {
 		super(component);
@@ -82,12 +81,13 @@ public class BPEDeployer extends AbstractDeployer {
 		try {
 			EventDirector ed = ((BPEComponent) component).getEventDirector();
 			IDeployer deployer = ed.getDeployer(DeployTypeEnum.BPEL);
-			defKeys = deployer.loadDefinition(new FileSystemJarInputStream(new File(serviceUnitRootPath)), false);
+			Collection defKeys = deployer.loadDefinition(new FileSystemJarInputStream(new File(serviceUnitRootPath)), false);
 			// Build the Service Unit
 			BPEServiceUnit su = new BPEServiceUnit();
 			su.setComponent(component);
             su.setName(serviceUnitName);
             su.setRootPath(serviceUnitRootPath);
+            su.setDefinitionKeys(defKeys);
             Definition rootDef = loadMainWsdl(serviceUnitRootPath);
             checkDefinition(rootDef, true);
             su.setDefinition(rootDef);
@@ -120,9 +120,10 @@ public class BPEDeployer extends AbstractDeployer {
 
     public void undeploy(ServiceUnit su) throws DeploymentException {
         try {
+            BPEServiceUnit bpeSU = (BPEServiceUnit)su;
             EventDirector ed = ((BPEComponent) component).getEventDirector();
             IDeployer deployer = ed.getDeployer(DeployTypeEnum.BPEL);
-            for (Iterator i = defKeys.iterator(); i.hasNext(); ) {
+            for (Iterator i = bpeSU.getDefinitionKeys().iterator(); i.hasNext(); ) {
                 deployer.removeDefinition(((BPELDefinitionKey)i.next()).getKey());
             }
             su.shutDown();

@@ -20,9 +20,12 @@ import javax.wsdl.Definition;
 
 import org.apache.servicemix.common.ServiceUnit;
 
+import java.util.Collection;
+
 public class BPEServiceUnit extends ServiceUnit {
 
     private Definition definition;
+    private Collection definitionKeys;
 
     /**
      * @return Returns the definition.
@@ -37,5 +40,19 @@ public class BPEServiceUnit extends ServiceUnit {
     public void setDefinition(Definition definition) {
         this.definition = definition;
     }
-    
+
+    /**
+     * @return Returns the definitions keys
+     */
+    public Collection getDefinitionKeys() {
+        return definitionKeys;
+    }
+
+    /**
+     * @param definitionKeys The definition keys to set
+     */
+    public void setDefinitionKeys(Collection definitionKeys) {
+        this.definitionKeys = definitionKeys;
+    }
+
 }
