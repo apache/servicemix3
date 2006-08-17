@@ -674,7 +674,6 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
 
     public String toString() {
         try {
-            int maxSize = 1500;
             StringBuffer sb = new StringBuffer();
             String name = getClass().getName();
             name = name.substring(name.lastIndexOf('.') + 1, name.length() - 4);
@@ -696,48 +695,9 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
                 sb.append("  operation: ").append(getOperation()).append('\n');
             }
             SourceTransformer st = new SourceTransformer(); 
-            if (getMessage("in") != null) {
-                sb.append("  in: ");
-                if (getMessage("in").getContent() != null) {
-                    Node node = st.toDOMNode(getMessage("in").getContent());
-                    getMessage("in").setContent(new DOMSource(node));
-                    String str = st.toString(node);
-                    if (str.length() > maxSize) {
-                        sb.append(str.substring(0, maxSize)).append("...");
-                    } else {
-                        sb.append(str);
-                    }
-                }
-                sb.append('\n');
-            }
-            if (getMessage("out") != null) {
-                sb.append("  out: ");
-                if (getMessage("out").getContent() != null) {
-                    Node node = st.toDOMNode(getMessage("out").getContent());
-                    getMessage("out").setContent(new DOMSource(node));
-                    String str = st.toString(node);
-                    if (str.length() > maxSize) {
-                        sb.append(str.substring(0, maxSize)).append("...");
-                    } else {
-                        sb.append(str);
-                    }
-                }
-                sb.append('\n');
-            }
-            if (getMessage("fault") != null) {
-                sb.append("  fault: ");
-                if (getMessage("fault").getContent() != null) {
-                    Node node = st.toDOMNode(getMessage("fault").getContent());
-                    getMessage("fault").setContent(new DOMSource(node));
-                    String str = st.toString(node);
-                    if (str.length() > maxSize) {
-                        sb.append(str.substring(0, maxSize)).append("...");
-                    } else {
-                        sb.append(str);
-                    }
-                }
-                sb.append('\n');
-            }
+            display("in", sb, st);
+            display("out", sb, st);
+            display("fault", sb, st);
             if (getError() != null) {
                 sb.append("  error: ");
                 sb.append(getError());
@@ -748,6 +708,29 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
         } catch (Exception e) {
             log.trace("Error caught in toString", e);
             return null;
+        }
+    }
+    
+    public static final int maxMsgDisplaySize = 1500;
+    
+    private void display(String msg, StringBuffer sb, SourceTransformer st) {
+        if (getMessage(msg) != null) {
+            sb.append("  ").append(msg).append(": ");
+            try {
+                if (getMessage(msg).getContent() != null) {
+                    Node node = st.toDOMNode(getMessage(msg).getContent());
+                    getMessage(msg).setContent(new DOMSource(node));
+                    String str = st.toString(node);
+                    if (str.length() > maxMsgDisplaySize) {
+                        sb.append(str.substring(0, maxMsgDisplaySize)).append("...");
+                    } else {
+                        sb.append(str);
+                    }
+                }
+            } catch (Exception e) {
+                sb.append("Unable to display: ").append(e);
+            }
+            sb.append('\n');
         }
     }
     
