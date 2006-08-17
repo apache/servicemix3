@@ -99,7 +99,7 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
                 throw failure("deploy", "No endpoint found", null);
             }
             return su;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // There is a chance the thread context classloader has been changed by the xbean kernel,
             // so put back a good one
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());

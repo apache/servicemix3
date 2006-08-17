@@ -38,7 +38,7 @@ public abstract class AbstractDeployer implements Deployer {
         this.logger = component.logger;
     }
     
-    protected DeploymentException failure(String task, String info, Exception e) {
+    protected DeploymentException failure(String task, String info, Throwable e) {
         ManagementSupport.Message msg = new ManagementSupport.Message();
         msg.setComponent(component.getComponentName());
         msg.setTask(task);

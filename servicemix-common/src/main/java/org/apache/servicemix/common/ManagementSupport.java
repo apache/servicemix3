@@ -33,7 +33,7 @@ public class ManagementSupport {
         private String task;
         private String component;
         private String result;
-        private Exception exception;
+        private Throwable exception;
         private String type;
         private String message;
         
@@ -43,10 +43,10 @@ public class ManagementSupport {
         public void setComponent(String component) {
             this.component = component;
         }
-        public Exception getException() {
+        public Throwable getException() {
             return exception;
         }
-        public void setException(Exception exception) {
+        public void setException(Throwable exception) {
             this.exception = exception;
         }
         public String getResult() {
