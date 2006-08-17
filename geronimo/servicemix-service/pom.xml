@@ -28,7 +28,6 @@
         <groupId>org.apache.servicemix.geronimo</groupId>
         <artifactId>geronimo</artifactId>
         <version>3.0-incubating-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>servicemix-service</artifactId>
@@ -47,6 +46,11 @@
             <version>${geronimo-version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-transaction</artifactId>
+            <version>${geronimo-version}</version>
+        </dependency>
     </dependencies>
 
 </project>
