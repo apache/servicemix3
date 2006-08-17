@@ -2,9 +2,9 @@
 
 <!-- this file can only be parsed using the xbean-spring library -->
 <!-- START SNIPPET: xbean -->
-<beans xmlns="http://activemq.org/config/1.0">
+<beans>
 
-  <broker persistent="false" useJmx="false">
+  <broker xmlns="http://activemq.org/config/1.0" persistent="false" useJmx="false">
 
     <transportConnectors>
       <transportConnector uri="tcp://localhost:61216" />
