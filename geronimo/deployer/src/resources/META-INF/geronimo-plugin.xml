@@ -20,7 +20,7 @@
 <!-- $Rev: 359503 $ $Date: 2005-12-28 13:56:03 +0100 (mer., 28 déc. 2005) $ -->
 <geronimo-plugin xmlns="http://geronimo.apache.org/xml/ns/plugins-1.1">
   <name>Quartz Scheduler Integration</name>
-  <module-id>org.apache.servicemix.geronimo/deployer/${servicemix-plugin-version}/car</module-id>
+  <module-id>org.apache.servicemix.geronimo/deployer/${servicemix-version}/car</module-id>
   <category>Integration</category>
   <description>This plugin Apache ServiceMix JBI container to Geronimo.</description>
   <url>http://incubator.apache.org/servicemix</url>

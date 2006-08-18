@@ -26,14 +26,14 @@ Configuration for ServiceMix deployer.
         <moduleId>
             <groupId>org.apache.servicemix.geronimo</groupId>
             <artifactId>deployer</artifactId>
-            <version>${servicemix-plugin-version}</version>
+            <version>${servicemix-version}</version>
             <type>car</type>
         </moduleId>
         <dependencies>
             <dependency>
                 <groupId>org.apache.servicemix.geronimo</groupId>
                 <artifactId>servicemix</artifactId>
-                <version>${servicemix-plugin-version}</version>
+                <version>${servicemix-version}</version>
                 <type>car</type>
             </dependency>
             <dependency>
@@ -65,7 +65,7 @@ Configuration for ServiceMix deployer.
                     <dependency>
                         <groupId>org.apache.servicemix.geronimo</groupId>
                         <artifactId>servicemix</artifactId>
-                        <version>${servicemix-plugin-version}</version>
+                        <version>${servicemix-version}</version>
                         <type>car</type>
                     </dependency>
                 </dependencies>

@@ -33,6 +33,7 @@ import org.apache.geronimo.connector.outbound.connectionmanagerconfig.XATransact
 import org.apache.geronimo.transaction.context.GeronimoTransactionManager;
 import org.apache.geronimo.transaction.context.TransactionContextManager;
 import org.apache.geronimo.transaction.manager.TransactionManagerImpl;
+import org.apache.geronimo.transaction.manager.XidFactoryImpl;
 import org.apache.servicemix.store.Store;
 import org.apache.servicemix.store.StoreFactory;
 import org.tranql.connector.AllExceptionsAreFatalSorter;
@@ -46,7 +47,7 @@ public class JdbcStoreTransactionalTest extends TestCase {
     private TransactionManager tm;
 
     protected void setUp() throws Exception {
-        TransactionManagerImpl exTransactionManager = new TransactionManagerImpl(600, null, null);
+        TransactionManagerImpl exTransactionManager = new TransactionManagerImpl(600, new XidFactoryImpl(), null, null);
         TransactionContextManager transactionContextManager = new TransactionContextManager(exTransactionManager, exTransactionManager);
         tm = (TransactionManager) new GeronimoTransactionManager(transactionContextManager);
         

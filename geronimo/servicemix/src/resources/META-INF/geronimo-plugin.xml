@@ -20,7 +20,7 @@
 <!-- $Rev: 359503 $ $Date: 2005-12-28 13:56:03 +0100 (mer., 28 déc. 2005) $ -->
 <geronimo-plugin xmlns="http://geronimo.apache.org/xml/ns/plugins-1.1">
   <name>Quartz Scheduler Integration</name>
-  <module-id>org.apache.servicemix.geronimo/servicemix/${servicemix-plugin-version}/car</module-id>
+  <module-id>org.apache.servicemix.geronimo/servicemix/${servicemix-version}/car</module-id>
   <category>Integration</category>
   <description>This plugin Apache ServiceMix JBI container to Geronimo.</description>
   <url>http://incubator.apache.org/servicemix</url>
@@ -35,7 +35,7 @@
   <dependency>incubator-activemq/activeio-core//jar</dependency>
   <dependency>wsdl4j/wsdl4j//jar</dependency>
   <dependency>org.jencks/jencks//jar</dependency>
-  <dependency>commons-beanutils/commons-beanutils//jar</dependency>
+  <dependency>commons-beanutils/commons-beanutils-core//jar</dependency>
   <dependency>backport-util-concurrent/backport-util-concurrent//car</dependency>
   <dependency>org.springframework/spring//jar</dependency>
   <dependency>org.apache.xbean/xbean-spring//jar</dependency>

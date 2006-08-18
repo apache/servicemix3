@@ -33,6 +33,7 @@ import org.apache.activemq.broker.BrokerService;
 import org.apache.geronimo.transaction.context.GeronimoTransactionManager;
 import org.apache.geronimo.transaction.context.TransactionContextManager;
 import org.apache.geronimo.transaction.manager.TransactionManagerImpl;
+import org.apache.geronimo.transaction.manager.XidFactoryImpl;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.container.JBIContainer;
@@ -57,7 +58,7 @@ public class TransactionsTest extends TestCase {
         broker.addConnector("tcp://localhost:61616");
         broker.start();
         
-        exTransactionManager = new TransactionManagerImpl(600, null, null);
+        exTransactionManager = new TransactionManagerImpl(600, new XidFactoryImpl(), null, null);
         transactionContextManager = new TransactionContextManager(exTransactionManager, exTransactionManager);
         txManager = (TransactionManager) new GeronimoTransactionManager(transactionContextManager);
         

@@ -36,18 +36,7 @@
     <packaging>pom</packaging>
   
     <properties>
-        <servicemix-plugin-version>3.0-incubating-SNAPSHOT</servicemix-plugin-version>
-        <geronimo-version>1.1</geronimo-version>
-        <servicemix-version>3.0-incubating-SNAPSHOT</servicemix-version>
         <car-maven-plugin-version>1.2-SNAPSHOT</car-maven-plugin-version>
-        <xbean-version>2.6-SNAPSHOT</xbean-version>
-        <spring-version>2.0-rc1</spring-version>
-        <activemq-version>4.0.2</activemq-version>
-        <activeio-version>3.0-beta4</activeio-version>
-        <backport-util-concurrent-version>2.1</backport-util-concurrent-version>
-        <wsdl4j-version>1.5.2</wsdl4j-version>
-        <jencks-version>1.2</jencks-version>
-        <commons-beanutils-version>1.7.0</commons-beanutils-version>
     </properties>
     
     <modules>

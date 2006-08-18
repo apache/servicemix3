@@ -26,7 +26,7 @@ Configuration for ServiceMix container.
         <moduleId>
             <groupId>org.apache.servicemix.geronimo</groupId>
             <artifactId>servicemix</artifactId>
-            <version>${servicemix-plugin-version}</version>
+            <version>${servicemix-version}</version>
             <type>car</type>
         </moduleId>
         <dependencies>
@@ -86,7 +86,7 @@ Configuration for ServiceMix container.
             </dependency>
             <dependency>
                 <groupId>commons-beanutils</groupId>
-                <artifactId>commons-beanutils</artifactId>
+                <artifactId>commons-beanutils-core</artifactId>
                 <version>${commons-beanutils-version}</version>
                 <type>jar</type>
             </dependency>

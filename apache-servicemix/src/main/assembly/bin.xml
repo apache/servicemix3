@@ -109,6 +109,8 @@
         <include>geronimo:geronimo-connector</include>
         <include>geronimo:geronimo-transaction</include>
         <include>geronimo:geronimo-activation</include>
+        <include>geronimo:geronimo-core</include>
+        <include>geronimo:geronimo-system</include>
         
         <include>concurrent:concurrent</include>
         <include>xstream:xstream</include>

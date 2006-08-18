@@ -196,11 +196,22 @@
     </scm>
 
     <properties>
-        <qdox.version>1.5</qdox.version>
         <jaxws.tools.version>2.0EA3</jaxws.tools.version>
         <xfire.jsr181.api.version>1.0-M1</xfire.jsr181.api.version>
         <xfire.version>1.2-RC</xfire.version>
         <mavenAssemblyPluginVersion>2.1</mavenAssemblyPluginVersion>
+        
+        <xbean-version>2.6-SNAPSHOT</xbean-version>
+        <spring-version>2.0-rc2</spring-version>
+        <activemq-version>4.0.2</activemq-version>
+        <activeio-version>3.0-beta4</activeio-version>
+        <backport-util-concurrent-version>2.1</backport-util-concurrent-version>
+        <jencks-version>1.3-SNAPSHOT</jencks-version>
+        <jetty-version>6.0.0rc0</jetty-version>
+        <geronimo-version>1.1</geronimo-version>
+        <servicemix-version>3.0-incubating-SNAPSHOT</servicemix-version>
+        <wsdl4j-version>1.5.2</wsdl4j-version>
+        <commons-beanutils-version>1.7.0</commons-beanutils-version>
     </properties>
 
     <profiles>
@@ -208,12 +219,6 @@
             <id>all</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
-                <!--
-                <property>
-                    <name>profile</name>
-                    <value>all</value>
-                </property>
-                -->
             </activation>
             <modules>
                 <module>servicemix-jbi</module>
@@ -238,6 +243,7 @@
                 <module>servicemix-sca</module>
                 <module>servicemix-wsn2005</module>
                 <module>samples</module>
+                <module>geronimo</module>
                 <module>apache-servicemix</module>
             </modules>
         </profile>
@@ -284,6 +290,7 @@
                 <module>servicemix-sca</module>
                 <module>servicemix-wsn2005</module>
                 <module>samples</module>
+                <module>geronimo</module>
                 <module>apache-servicemix</module>
             </modules>
         </profile>
@@ -392,17 +399,13 @@
             <name>ActiveMQ Maven2 Temp Repository</name>
             <url>http://people.apache.org/~chirino/incubator-activemq-4.0.2-RC3/maven2</url>
         </repository>
-        <!-- XFire 1.1.1 release -->
+        <!-- Jencks rep -->
         <repository>
-            <id>codehaus</id>
-            <name>Codehaus repo</name>
-            <url>http://repository.codehaus.org</url>
-        </repository>
-        <repository>
-            <id>codehaus.m1</id>
-            <name>Codehaus M1 repo</name>
-            <url>http://dist.codehaus.org</url>
-            <layout>legacy</layout>
+            <id>codehaus-snapshot-repo</id>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <snapshots>
+               <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
@@ -634,22 +637,22 @@
             <dependency>
                 <groupId>incubator-activemq</groupId>
                 <artifactId>activeio-core</artifactId>
-                <version>3.0-beta4</version>
+                <version>${activeio-version}</version>
             </dependency>
             <dependency>
                 <groupId>incubator-activemq</groupId>
                 <artifactId>activemq-core</artifactId>
-                <version>4.0.2</version>
+                <version>${activemq-version}</version>
             </dependency>
             <dependency>
                 <groupId>incubator-activemq</groupId>
                 <artifactId>activemq-ra</artifactId>
-                <version>4.0.2</version>
+                <version>${activemq-version}</version>
             </dependency>
             <dependency>
                 <groupId>incubator-activemq</groupId>
                 <artifactId>activemq-web</artifactId>
-                <version>4.0.2</version>
+                <version>${activemq-version}</version>
             </dependency>
             <dependency>
                 <groupId>jivesoftware</groupId>
@@ -704,7 +707,7 @@
             <dependency>
                 <groupId>backport-util-concurrent</groupId>
                 <artifactId>backport-util-concurrent</artifactId>
-                <version>2.1</version>
+                <version>${backport-util-concurrent-version}</version>
             </dependency>
             <dependency>
                 <groupId>beehive</groupId>
@@ -760,31 +763,12 @@
             <dependency>
                 <groupId>commons-beanutils</groupId>
                 <artifactId>commons-beanutils-core</artifactId>
-                <version>1.7.0</version>
+                <version>${commons-beanutils-version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-beanutils</groupId>
                 <artifactId>commons-beanutils</artifactId>
                 <version>1.7.0</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-betwixt</groupId>
-                <artifactId>commons-betwixt</artifactId>
-                <version>0.7</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>xerces</groupId>
-                        <artifactId>xerces</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>commons-beanutils</groupId>
-                        <artifactId>commons-beanutils</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>xerces</groupId>
-                        <artifactId>xerces</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
@@ -800,17 +784,6 @@
                 <groupId>commons-dbcp</groupId>
                 <artifactId>commons-dbcp</artifactId>
                 <version>1.2</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-digester</groupId>
-                <artifactId>commons-digester</artifactId>
-                <version>1.6</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-beanutils</groupId>
-                        <artifactId>commons-beanutils</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>commons-discovery</groupId>
@@ -913,7 +886,7 @@
             <dependency>
                 <groupId>geronimo</groupId>
                 <artifactId>geronimo-activation</artifactId>
-                <version>1.0</version>
+                <version>${geronimo-version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>commons-jelly</groupId>
@@ -928,230 +901,127 @@
             <dependency>
                 <groupId>geronimo</groupId>
                 <artifactId>geronimo-common</artifactId>
-                <version>1.0</version>
+                <version>${geronimo-version}</version>
             </dependency>
             <dependency>
                 <groupId>geronimo</groupId>
                 <artifactId>geronimo-connector</artifactId>
-                <version>1.0</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>cglib</groupId>
-                        <artifactId>cglib-nodep</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>regexp</groupId>
-                        <artifactId>regexp</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>geronimo</groupId>
-                        <artifactId>geronimo-deployment</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>geronimo</groupId>
-                        <artifactId>geronimo-common</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>geronimo</groupId>
-                        <artifactId>geronimo-naming</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>geronimo</groupId>
-                        <artifactId>geronimo-security</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>commons-jelly</groupId>
-                        <artifactId>commons-jelly-tags-velocity</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>geronimo</groupId>
-                        <artifactId>geronimo-management</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>geronimo</groupId>
-                        <artifactId>geronimo-j2ee</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>velocity</groupId>
-                        <artifactId>velocity</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>geronimo</groupId>
-                        <artifactId>geronimo-transaction</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>geronimo</groupId>
-                        <artifactId>geronimo-kernel</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>tranql</groupId>
-                        <artifactId>tranql</artifactId>
-                    </exclusion>
-                </exclusions>
+                <version>${geronimo-version}</version>
             </dependency>
             <dependency>
                 <groupId>geronimo</groupId>
                 <artifactId>geronimo-core</artifactId>
-                <version>1.0</version>
+                <version>${geronimo-version}</version>
             </dependency>
             <dependency>
                 <groupId>geronimo</groupId>
                 <artifactId>geronimo-deployment</artifactId>
-                <version>1.0</version>
+                <version>${geronimo-version}</version>
             </dependency>
             <dependency>
                 <groupId>geronimo</groupId>
                 <artifactId>geronimo-j2ee</artifactId>
-                <version>1.0</version>
+                <version>${geronimo-version}</version>
             </dependency>
             <dependency>
                 <groupId>geronimo</groupId>
                 <artifactId>geronimo-kernel</artifactId>
-                <version>1.0</version>
+                <version>${geronimo-version}</version>
             </dependency>
             <dependency>
                 <groupId>geronimo</groupId>
                 <artifactId>geronimo-network</artifactId>
-                <version>1.0</version>
+                <version>${geronimo-version}</version>
             </dependency>
             <dependency>
                 <groupId>geronimo</groupId>
                 <artifactId>geronimo-remoting</artifactId>
-                <version>1.0</version>
+                <version>${geronimo-version}</version>
             </dependency>
             <dependency>
                 <groupId>geronimo</groupId>
                 <artifactId>geronimo-security</artifactId>
-                <version>1.0</version>
+                <version>${geronimo-version}</version>
             </dependency>
             <dependency>
                 <groupId>geronimo</groupId>
                 <artifactId>geronimo-system</artifactId>
-                <version>1.0</version>
+                <version>${geronimo-version}</version>
             </dependency>
             <dependency>
                 <groupId>geronimo</groupId>
                 <artifactId>geronimo-transaction</artifactId>
-                <version>1.0</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>howl</groupId>
-                        <artifactId>howl-logger</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>commons-jelly</groupId>
-                        <artifactId>commons-jelly-tags-velocity</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>geronimo</groupId>
-                        <artifactId>geronimo-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>geronimo</groupId>
-                        <artifactId>geronimo-kernel</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>velocity</groupId>
-                        <artifactId>velocity</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>geronimo</groupId>
-                        <artifactId>geronimo-system</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>geronimo</groupId>
-                        <artifactId>geronimo-j2ee</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-ejb_2.1_spec</artifactId>
-                    </exclusion>
-                </exclusions>
+                <version>${geronimo-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-activation_1.0.2_spec</artifactId>
-                <version>1.0</version>
+                <version>1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-ejb_2.1_spec</artifactId>
-                <version>1.0</version>
+                <version>1.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
-                <version>1.0</version>
+                <version>1.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-j2ee-jacc_1.0_spec</artifactId>
-                <version>1.0</version>
+                <version>1.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-jaxrpc_1.1_spec</artifactId>
-                <version>1.0</version>
+                <version>1.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-j2ee-management_1.0_spec</artifactId>
-                <version>1.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-j2ee_1.4_spec</artifactId>
-                <version>1.0</version>
+                <version>1.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-jms_1.1_spec</artifactId>
-                <version>1.0</version>
+                <version>1.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-jsp_2.0_spec</artifactId>
-                <version>1.0</version>
+                <version>1.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-saaj_1.1_spec</artifactId>
-                <version>1.0</version>
+                <version>1.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
-                <version>1.0</version>
+                <version>1.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-servlet_2.4_spec</artifactId>
-                <version>1.0</version>
+                <version>1.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-qname_1.1_spec</artifactId>
-                <version>1.0</version>
+                <version>1.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-javamail_1.3.1_spec</artifactId>
-                <version>1.1-20060323</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-commonj_1.1_spec</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.1</version>
             </dependency>
             <dependency>
                 <groupId>groovy</groupId>
                 <artifactId>groovy-all-1.0-jsr</artifactId>
                 <version>04</version>
-            </dependency>
-            <dependency>
-                <groupId>howl</groupId>
-                <artifactId>howl-logger</artifactId>
-                <version>0.1.8</version>
             </dependency>
             <dependency>
                 <groupId>hsqldb</groupId>
@@ -1206,7 +1076,7 @@
             <dependency>
                 <groupId>jaxen</groupId>
                 <artifactId>jaxen</artifactId>
-                <version>1.1-beta-8</version>
+                <version>1.1-beta-9</version>
                 <exclusions>
                     <exclusion>
                         <groupId>jaxme</groupId>
@@ -1254,17 +1124,17 @@
             <dependency>
                 <groupId>org.jencks</groupId>
                 <artifactId>jencks</artifactId>
-                <version>1.2</version>
+                <version>${jencks-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>jetty</artifactId>
-                <version>6.0.0rc0</version>
+                <version>${jetty-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>jetty-management</artifactId>
-                <version>6.0.0rc0</version>
+                <version>${jetty-version}</version>
             </dependency>
             <dependency>
                 <groupId>jgroups</groupId>
@@ -1378,11 +1248,6 @@
                 <version>3.0.1</version>
             </dependency>
             <dependency>
-                <groupId>openejb</groupId>
-                <artifactId>openejb-core</artifactId>
-                <version>2.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
                 <groupId>oro</groupId>
                 <artifactId>oro</artifactId>
                 <version>2.0.8</version>
@@ -1413,14 +1278,9 @@
                 <version>1.0</version>
             </dependency>
             <dependency>
-                <groupId>qdox</groupId>
-                <artifactId>qdox</artifactId>
-                <version>1.5</version>
-            </dependency>
-            <dependency>
                 <groupId>quartz</groupId>
                 <artifactId>quartz</artifactId>
-                <version>1.5.1</version>
+                <version>1.5.2</version>
             </dependency>
             <dependency>
                 <groupId>regexp</groupId>
@@ -1440,107 +1300,12 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring</artifactId>
-                <version>2.0-rc1</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.mail</groupId>
-                        <artifactId>mail</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.resource</groupId>
-                        <artifactId>connector</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.transaction</groupId>
-                        <artifactId>jta</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-support</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-orm</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-hibernate</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-remoting</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-beans</artifactId>
-                <version>1.2.5</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>1.2.5</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>1.2.5</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-remoting</artifactId>
-                <version>1.2.5</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.transaction</groupId>
-                        <artifactId>jta</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-support</artifactId>
-                <version>1.2.5</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.mail</groupId>
-                        <artifactId>mail</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.resource</groupId>
-                        <artifactId>connector</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.activation</groupId>
-                        <artifactId>activation</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-dao</artifactId>
-                <version>1.2.5</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.transaction</groupId>
-                        <artifactId>jta</artifactId>
-                    </exclusion>
-                </exclusions>
+                <version>${spring-version}</version>
             </dependency>
             <dependency>
                 <groupId>stax</groupId>
                 <artifactId>stax-api</artifactId>
                 <version>1.0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>stax-utils</groupId>
-                <artifactId>stax-utils</artifactId>
-                <version>snapshot-20060502</version>
             </dependency>
             <dependency>
                 <groupId>taglibs</groupId>
@@ -1575,7 +1340,7 @@
             <dependency>
                 <groupId>wsdl4j</groupId>
                 <artifactId>wsdl4j</artifactId>
-                <version>1.5.2</version>
+                <version>${wsdl4j-version}</version>
             </dependency>
             <dependency>
                 <groupId>xalan</groupId>
@@ -1587,17 +1352,17 @@
             <dependency>
                 <groupId>org.apache.xbean</groupId>
                 <artifactId>xbean-kernel</artifactId>
-                <version>2.6-SNAPSHOT</version>
+                <version>${xbean-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.xbean</groupId>
                 <artifactId>xbean-server</artifactId>
-                <version>2.6-SNAPSHOT</version>
+                <version>${xbean-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.xbean</groupId>
                 <artifactId>xbean-spring</artifactId>
-                <version>2.6-SNAPSHOT</version>
+                <version>${xbean-version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>qdox</groupId>
@@ -1779,19 +1544,9 @@
                 <version>2.1.0</version>
             </dependency>
             <dependency>
-                <groupId>xmlpull</groupId>
-                <artifactId>xmlpull</artifactId>
-                <version>1.1.3.4d_b4_min</version>
-            </dependency>
-            <dependency>
                 <groupId>xstream</groupId>
                 <artifactId>xstream</artifactId>
                 <version>1.1.2</version>
-            </dependency>
-            <dependency>
-                <groupId>yom</groupId>
-                <artifactId>yom</artifactId>
-                <version>1.0-alpha-2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.ws.commons</groupId>
@@ -1836,7 +1591,7 @@
             <dependency>
                 <groupId>org.opensaml</groupId>
                 <artifactId>opensaml</artifactId>
-                <version>1.0.1</version>
+                <version>1.1</version>
             </dependency>
             <dependency>
                 <groupId>xml-security</groupId>
@@ -1914,12 +1669,12 @@
                 <plugin>
                     <groupId>org.apache.xbean</groupId>
                     <artifactId>maven-xbean-plugin</artifactId>
-                    <version>2.6-SNAPSHOT</version>
+                    <version>${xbean-version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.mortbay.jetty</groupId>
                     <artifactId>maven-jetty6-plugin</artifactId>
-                    <version>6.0.0rc0</version>
+                    <version>${jetty-version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
