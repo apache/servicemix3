@@ -212,6 +212,7 @@
         <servicemix-version>3.0-incubating-SNAPSHOT</servicemix-version>
         <wsdl4j-version>1.5.2</wsdl4j-version>
         <commons-beanutils-version>1.7.0</commons-beanutils-version>
+        <woodstox-version>3.0.0</woodstox-version>
     </properties>
 
     <profiles>
@@ -1335,7 +1336,7 @@
             <dependency>
                 <groupId>woodstox</groupId>
                 <artifactId>wstx-asl</artifactId>
-                <version>2.9.3</version>
+                <version>${woodstox-version}</version>
             </dependency>
             <dependency>
                 <groupId>wsdl4j</groupId>
