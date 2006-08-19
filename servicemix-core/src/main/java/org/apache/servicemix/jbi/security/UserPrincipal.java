@@ -20,7 +20,7 @@ import java.security.Principal;
 
 
 /**
- * @version $Rev: $ $Date: $
+ *
  */
 public class UserPrincipal implements Principal {
 

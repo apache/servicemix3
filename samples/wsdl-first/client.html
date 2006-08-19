@@ -72,7 +72,7 @@ function send() {
   var response = document.getElementById("response");
   try {
     netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
-    xmlhttp.open("POST", "http://localhost:8192/bridge/", true);
+    xmlhttp.open("POST", "http://localhost:8192/PersonService/", true);
   } catch (e) {
     alert('error opening');
   }
@@ -94,15 +94,17 @@ Perform a POST into the HTTP binding <p>
   <tr>
     <td>
   <textarea id="request" style="width:600px;height:400px" onKeyUp="send();"><?xml version="1.0" encoding="UTF-8"?>
-<e:Envelope xmlns:e="http://schemas.xmlsoap.org/soap/envelope/">
-  <e:Body>
-    <ping>
-      <pingRequest>
-        <message xmlns="http://soap">hel lo</message>
-      </pingRequest>
-    </ping>
-  </e:Body>
-</e:Envelope>
+<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+              xmlns:ns="http://servicemix.apache.org/samples/wsdl-first"
+              xmlns:tns="http://servicemix.apache.org/samples/wsdl-first/types">
+	<env:Body>
+        <ns:getPerson>
+    		<tns:GetPersonRequest>
+    		    <personId>world</personId>
+    		</tns:GetPersonRequest>
+        </ns:getPerson>
+	</env:Body>
+</env:Envelope>
 
   </textarea>
     </td>

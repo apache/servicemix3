@@ -44,7 +44,6 @@ import org.apache.servicemix.jbi.security.UserPrincipal;
 /**
  * This login module authenticate users given an X509 certificate.
  * 
- * @version $Rev: $ $Date: $
  */
 public class CertificatesLoginModule implements LoginModule {
 

@@ -36,7 +36,6 @@ import org.apache.servicemix.jbi.security.login.CertificateCallback;
 /**
  * Implementation of the authentication service using JAAS. 
  *  
- * @version $Rev: $ $Date: $
  * @org.apache.xbean.XBean element="authenticationService"
  */
 public class JAASAuthenticationService implements AuthenticationService {

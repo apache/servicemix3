@@ -15,8 +15,8 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
 -->
-<!-- $Rev: 356052 $ $Date: 2005-12-11 14:41:20 -0800 (dim., 11 d√©c. 2005) $ -->
 <project
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -35,16 +35,11 @@
     <packaging>jbi-service-unit</packaging>
     <name>ServiceMix :: Samples :: WSDL first :: JSR181</name>
 
-    <properties>
-        <servicemixJbiPluginVersion>3.0-incubating-SNAPSHOT</servicemixJbiPluginVersion>
-        <jbiComponentName>servicemix-jsr181</jbiComponentName>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-jsr181</artifactId>
-            <version>3.0-incubating-SNAPSHOT</version>
+            <version>${servicemix-version}</version>
         </dependency>
     </dependencies>
 
@@ -89,39 +84,27 @@
                     <dependency>
                         <groupId>org.codehaus.xfire</groupId>
                         <artifactId>xfire-generator</artifactId>
-                        <version>1.1.1</version>
+                        <version>${xfire-version}</version>
+                        <exclusions>
+                          <exclusion>
+                            <groupId>javax.xml</groupId>
+                            <artifactId>jsr173</artifactId>
+                          </exclusion>
+                        </exclusions>
                     </dependency>
                     <dependency>
                         <groupId>org.codehaus.xfire</groupId>
                         <artifactId>xfire-jaxws</artifactId>
-                        <version>1.1.1</version>
+                        <version>${xfire-version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.servicemix.tooling</groupId>
                 <artifactId>jbi-maven-plugin</artifactId>
-                <version>${servicemixJbiPluginVersion}</version>
+                <version>${servicemix-version}</version>
                 <extensions>true</extensions>
             </plugin>
-            <!--
-                <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxws-maven-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
-                <executions>
-                <execution>
-                <goals>
-                <goal>wsimport</goal>
-                </goals>
-                </execution>
-                </executions>
-                <configuration>
-                <wsdlDirectory>${basedir}/src/main/resources</wsdlDirectory>
-                <wsdlFiles>person.wsdl</wsdlFiles>
-                </configuration>
-                </plugin>
-            -->
         </plugins>
     </build>
 </project>

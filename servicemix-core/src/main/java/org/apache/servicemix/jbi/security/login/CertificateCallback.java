@@ -25,7 +25,6 @@ import javax.security.auth.callback.Callback;
  * This class is mainly used from the related login module.
  * 
  * @see CertificatesLoginModule
- * @version $Rev: $ $Date: $
  */
 public class CertificateCallback implements Callback {
     

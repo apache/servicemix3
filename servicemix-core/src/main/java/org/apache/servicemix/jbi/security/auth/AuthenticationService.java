@@ -23,7 +23,6 @@ import javax.security.auth.Subject;
 /**
  * Interface for the authentication service.
  * 
- * @version $Rev: $ $Date: $
  */
 public interface AuthenticationService {
 

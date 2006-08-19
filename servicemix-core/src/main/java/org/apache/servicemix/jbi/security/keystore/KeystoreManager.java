@@ -28,7 +28,6 @@ import javax.net.ssl.SSLSocketFactory;
 /**
  * Based on http://svn.apache.org/repos/asf/geronimo/trunk/modules/management/src/java/org/apache/geronimo/management/geronimo/KeystoreManager.java
  * 
- * @version $Rev: $ $Date: $
  */
 public interface KeystoreManager {
 

@@ -42,7 +42,6 @@ import org.apache.servicemix.jbi.security.UserPrincipal;
 /**
  * JAAS Login module for user / password, based on two properties files. 
  * 
- * @version $Rev: $ $Date: $
  */
 public class PropertiesLoginModule implements LoginModule {
 

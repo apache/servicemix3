@@ -23,7 +23,6 @@ import java.security.Principal;
  * This principal represents a group against which authorizations are
  * usually checked.
  *  
- * @version $Rev: $ $Date: $
  */
 public class GroupPrincipal implements Principal {
 
