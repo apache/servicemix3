@@ -55,7 +55,7 @@ public class QuartzComponent extends ComponentSupport implements MessageExchange
 
     public void start() throws JBIException {
         try {
-            scheduler.resumeAll();
+            scheduler.start();
             super.start();
         } catch (SchedulerException e) {
             throw new JBIException(e);
@@ -65,7 +65,7 @@ public class QuartzComponent extends ComponentSupport implements MessageExchange
     public void stop() throws JBIException {
         try {
             super.stop();
-            scheduler.pauseAll();
+            scheduler.standby();
         } catch (SchedulerException e) {
             throw new JBIException(e);
         }
@@ -174,8 +174,6 @@ public class QuartzComponent extends ComponentSupport implements MessageExchange
                     factory = new StdSchedulerFactory();
                 }
                 scheduler = factory.getScheduler();
-                scheduler.pauseAll();
-                scheduler.start();
             }
         }
         catch (SchedulerException e) {
