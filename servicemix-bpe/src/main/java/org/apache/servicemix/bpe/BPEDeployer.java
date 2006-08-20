@@ -63,6 +63,8 @@ import org.apache.servicemix.common.ServiceUnit;
 import org.apache.servicemix.common.tools.wsdl.WSDLFlattener;
 import org.w3c.dom.Document;
 
+import com.ibm.wsdl.Constants;
+
 public class BPEDeployer extends AbstractDeployer {
 
     protected FilenameFilter filter;
@@ -164,12 +166,8 @@ public class BPEDeployer extends AbstractDeployer {
         String bpel = bpels[0].getAbsoluteFile().toURI().toString();
         String wsdl = bpel.substring(0, bpel.length() - 4) + "wsdl";
 		WSDLReader reader = WSDLFactory.newInstance().newWSDLReader();
-	
-		reader.setFeature("javax.wsdl.verbose",true);
-		reader.setFeature("javax.wsdl.importDocuments",true);
-					
+		reader.setFeature(Constants.FEATURE_VERBOSE, false);
 		reader.setExtensionRegistry(getExtentionRegistry());
-	
 		// Parse the document and include any imported WSDL documents
 		Definition ret = reader.readWSDL(null, wsdl);
 		return ret;

@@ -52,6 +52,8 @@ import org.apache.servicemix.soap.marshalers.SoapMessage;
 import org.apache.servicemix.soap.marshalers.SoapWriter;
 import org.w3c.dom.Document;
 
+import com.ibm.wsdl.Constants;
+
 /**
  * Helper class for working with soap endpoints
  * 
@@ -346,7 +348,8 @@ public class SoapHelper {
                     Document description = componentContext.getEndpointDescriptor(se);
                     if (description != null) {
                         // Parse WSDL
-                        WSDLReader reader = factory.newWSDLReader();
+                        WSDLReader reader = factory.newWSDLReader(); 
+                        reader.setFeature(Constants.FEATURE_VERBOSE, false);
                         try {
                             definition = reader.readWSDL(null, description);
                         } catch (WSDLException e) {

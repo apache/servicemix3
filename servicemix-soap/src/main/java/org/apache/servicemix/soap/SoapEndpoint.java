@@ -49,6 +49,8 @@ import org.apache.servicemix.soap.handlers.addressing.AddressingHandler;
 import org.springframework.core.io.Resource;
 import org.w3c.dom.Document;
 
+import com.ibm.wsdl.Constants;
+
 public abstract class SoapEndpoint extends Endpoint {
 
     protected ServiceEndpoint activated;
@@ -225,7 +227,9 @@ public abstract class SoapEndpoint extends Endpoint {
                     XBeanServiceUnit su = (XBeanServiceUnit) serviceUnit;
                     Thread.currentThread().setContextClassLoader(su.getKernel().getClassLoaderFor(su.getConfiguration()));
                 }
-                Definition def = WSDLFactory.newInstance().newWSDLReader().readWSDL(wsdlResource.getURL().toString());
+                WSDLReader reader = WSDLFactory.newInstance().newWSDLReader(); 
+                reader.setFeature(Constants.FEATURE_VERBOSE, false);
+                Definition def = reader.readWSDL(wsdlResource.getURL().toString());
                 overrideDefinition(def);
             } catch (Exception e) {
                 logger.warn("Could not load description from resource", e);
@@ -310,7 +314,8 @@ public abstract class SoapEndpoint extends Endpoint {
             if (ep != null) {
                 Document doc = ctx.getEndpointDescriptor(ep);
                 if (doc != null) {
-                    WSDLReader reader = WSDLFactory.newInstance().newWSDLReader();
+                    WSDLReader reader = WSDLFactory.newInstance().newWSDLReader(); 
+                    reader.setFeature(Constants.FEATURE_VERBOSE, false);
                     Definition def = reader.readWSDL(null, doc);
                     if (def != null) {
                         overrideDefinition(def);
@@ -387,6 +392,7 @@ public abstract class SoapEndpoint extends Endpoint {
         ExtensionRegistry registry = factory.newPopulatedExtensionRegistry();
         registerExtensions(registry);
         WSDLReader reader = factory.newWSDLReader();
+        reader.setFeature(Constants.FEATURE_VERBOSE, false);
         reader.setExtensionRegistry(registry);
         return reader;
     }

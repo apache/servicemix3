@@ -33,6 +33,7 @@ import javax.wsdl.Port;
 import javax.wsdl.PortType;
 import javax.wsdl.Service;
 import javax.wsdl.factory.WSDLFactory;
+import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
@@ -46,6 +47,8 @@ import org.apache.servicemix.jbi.servicedesc.ExternalEndpoint;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 import org.apache.servicemix.jbi.servicedesc.LinkedEndpoint;
 import org.w3c.dom.Document;
+
+import com.ibm.wsdl.Constants;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 
@@ -241,7 +244,9 @@ public class EndpointRegistry {
                 }
                 return;
             }
-            Definition definition = WSDLFactory.newInstance().newWSDLReader().readWSDL(null, document);
+            WSDLReader reader = WSDLFactory.newInstance().newWSDLReader();
+            reader.setFeature(Constants.FEATURE_VERBOSE, false);
+            Definition definition = reader.readWSDL(null, document);
             // Check if the wsdl is only a port type
             // In these cases, only the port type is used, as the service name and endpoint name
             // are provided on the jbi endpoint
