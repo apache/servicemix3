@@ -33,8 +33,6 @@
       <excludes>
         <exclude>**/target</exclude>
         <exclude>**/target/**/*</exclude>
-        <exclude>**/build</exclude>
-        <exclude>**/build/**/*</exclude>
         <exclude>**/.settings</exclude>
         <exclude>**/.settings/**/*</exclude>
         <exclude>**/.classpath</exclude>
