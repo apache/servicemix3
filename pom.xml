@@ -222,6 +222,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>build</module>
                 <module>servicemix-jbi</module>
                 <module>servicemix-services</module>
                 <module>servicemix-core</module>
@@ -257,6 +258,7 @@
                 </property>
             </activation>
             <modules>
+                <module>build</module>
                 <module>servicemix-jbi</module>
                 <module>servicemix-services</module>
                 <module>servicemix-core</module>
@@ -1696,6 +1698,17 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.servicemix</groupId>
+                        <artifactId>build</artifactId>
+                        <version>3.0-incubating-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
     </build>
     <reporting>
@@ -1712,9 +1725,17 @@
                 <artifactId>surefire-report-maven-plugin</artifactId>
             </plugin>
             <plugin>
-	        <groupId>org.codehaus.mojo</groupId>
-	        <artifactId>cobertura-maven-plugin</artifactId>
-	    </plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <configLocation>build/checkstyle.xml</configLocation>
+                    <headerLocation>build/header.txt</headerLocation>
+                </configuration>
+            </plugin>
         </plugins>
     </reporting>
 </project>
