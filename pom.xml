@@ -1733,7 +1733,6 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <configuration>
                     <configLocation>build/checkstyle.xml</configLocation>
-                    <headerLocation>build/header.txt</headerLocation>
                 </configuration>
             </plugin>
         </plugins>
