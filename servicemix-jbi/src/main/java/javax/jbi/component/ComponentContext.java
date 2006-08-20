@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 package javax.jbi.component;
- 
+
 import java.util.MissingResourceException;
 import java.util.logging.Logger;
 
