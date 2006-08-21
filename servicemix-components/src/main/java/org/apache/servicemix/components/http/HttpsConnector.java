@@ -55,7 +55,8 @@ public class HttpsConnector extends HttpInOutBinding {
     private String keyStorePassword;
     private String keyStoreType = "JKS"; // type of the key store
     private String protocol = "TLS";
-    private String algorithm = "SunX509"; // cert algorithm
+    private String keyManagerFactoryAlgorithm = "SunX509"; // cert algorithm
+    private String trustManagerFactoryAlgorithm = "SunX509"; // cert algorithm
     private boolean wantClientAuth = false;
     private boolean needClientAuth = false;
 
@@ -129,7 +130,8 @@ public class HttpsConnector extends HttpInOutBinding {
         listener.setWantClientAuth(wantClientAuth);
         listener.setNeedClientAuth(needClientAuth);
         listener.setProtocol(protocol);
-        listener.setAlgorithm(algorithm);
+        listener.setSslKeyManagerFactoryAlgorithm(keyManagerFactoryAlgorithm);
+        listener.setSslTrustManagerFactoryAlgorithm(trustManagerFactoryAlgorithm);
         listener.setKeystoreType(keyStoreType);
         server = new Server();
         BoundedThreadPool btp = new BoundedThreadPool();
@@ -227,15 +229,29 @@ public class HttpsConnector extends HttpInOutBinding {
     /**
      * @return Returns the algorithm.
      */
-    public String getAlgorithm() {
-        return algorithm;
+    public String getKeyManagerFactoryAlgorithm() {
+        return keyManagerFactoryAlgorithm;
     }
 
     /**
      * @param algorithm The algorithm to set.
      */
-    public void setAlgorithm(String algorithm) {
-        this.algorithm = algorithm;
+    public void setKeyManagerFactoryAlgorithm(String algorithm) {
+        this.keyManagerFactoryAlgorithm = algorithm;
+    }
+
+    /**
+     * @return Returns the algorithm.
+     */
+    public String getTrustManagerFactoryAlgorithm() {
+        return trustManagerFactoryAlgorithm;
+    }
+
+    /**
+     * @param algorithm The algorithm to set.
+     */
+    public void setTrustManagerFactoryAlgorithm(String algorithm) {
+        this.trustManagerFactoryAlgorithm = algorithm;
     }
 
     /**
