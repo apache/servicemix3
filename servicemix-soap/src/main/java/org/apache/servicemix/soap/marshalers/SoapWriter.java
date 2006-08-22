@@ -138,7 +138,7 @@ public class SoapWriter {
             parts.addBodyPart(part);
         }
         mime.setContent(parts);
-        mime.setHeader("Content-Type", getContentType());
+        mime.setHeader(SoapMarshaler.MIME_CONTENT_TYPE, getContentType());
         // We do not want headers, so 
         //  * retrieve all headers
         //  * skip first 2 bytes (CRLF)

@@ -30,6 +30,7 @@ import org.apache.servicemix.jbi.jaxp.StAXSourceTransformer;
  */
 public class SoapMarshaler {
 
+    public static final String MIME_CONTENT_TYPE = "Content-Type";
 	public static final String MULTIPART_CONTENT = "multipart/";
 	public static final String SOAP_PART_ID = "soap-request";
 	public static final String SOAP_11_URI = "http://schemas.xmlsoap.org/soap/envelope/";

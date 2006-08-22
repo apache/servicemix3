@@ -67,7 +67,7 @@ public class SoapReader {
 			Session session = Session.getDefaultInstance(new Properties());
             is = new SequenceInputStream(new ByteArrayInputStream(new byte[] { 13, 10 }), is);
 			MimeMessage mime = new MimeMessage(session, is);
-			mime.setHeader("Content-Type", contentType);
+			mime.setHeader(SoapMarshaler.MIME_CONTENT_TYPE, contentType);
 			return read(mime);
 		} else {
 			return read(is);
