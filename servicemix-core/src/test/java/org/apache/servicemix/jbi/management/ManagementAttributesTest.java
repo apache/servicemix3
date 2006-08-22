@@ -54,7 +54,6 @@ public class ManagementAttributesTest extends TestCase {
     	container.setRmiPort(namingPort);
     	container.setCreateMBeanServer(true);
     	container.init();
-        Thread.sleep(5000);
     }
     
     protected void tearDown() throws Exception {
