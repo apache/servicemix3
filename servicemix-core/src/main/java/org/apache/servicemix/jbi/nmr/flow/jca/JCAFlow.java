@@ -268,7 +268,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
         	containerConnector.setActivationSpec(ac);
         	containerConnector.setResourceAdapter(resourceAdapter);
         	containerConnector.setEndpointFactory(new SingletonEndpointFactory(this, getTransactionManager()));
-        	containerConnector.afterPropertiesSet();
+        	containerConnector.start();
         	
         	// Outbound connector
         	ActiveMQManagedConnectionFactory mcf = new ActiveMQManagedConnectionFactory();
@@ -327,7 +327,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
                         }
                     }
                 }));
-                broadcastConnector.afterPropertiesSet();
+                broadcastConnector.start();
                 
                 advisoryConsumer = broadcastSession.createConsumer(advisoryTopic);
                 advisoryConsumer.setMessageListener(new MessageListener() {
@@ -436,7 +436,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
                 connector.setActivationSpec(ac);
                 connector.setResourceAdapter(resourceAdapter);
                 connector.setEndpointFactory(new SingletonEndpointFactory(this, getTransactionManager()));
-                connector.afterPropertiesSet();
+                connector.start();
                 connectorMap.put(key, connector);
             }
             // broadcast change to the network
@@ -481,7 +481,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
                 connector.setActivationSpec(ac);
                 connector.setResourceAdapter(resourceAdapter);
                 connector.setEndpointFactory(new SingletonEndpointFactory(this, getTransactionManager()));
-                connector.afterPropertiesSet();
+                connector.start();
                 connectorMap.put(key, connector);
             }
         } catch (Exception e) {
