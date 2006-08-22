@@ -228,10 +228,15 @@ public class SoapHelper {
     }
 
     public Context createContext(SoapMessage message) {
+        Context context = createContext();
+        context.setInMessage(message);
+        return context;
+    }
+    
+    public Context createContext() {
         Context context = new Context();
         context.setProperty(Context.AUTHENTICATION_SERVICE, endpoint.getAuthenticationService());
         context.setProperty(Context.KEYSTORE_MANAGER, endpoint.getKeystoreManager());
-        context.setInMessage(message);
         return context;
     }
 
