@@ -2,6 +2,7 @@ package org.apache.servicemix.jbi.installation;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilterOutputStream;
 import java.io.InputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
@@ -102,7 +103,7 @@ public abstract class AbstractManagementTest extends TestCase {
                                             new String[] { suName }, 
                                             new String[] { compName }); 
     }
-
+    
     protected File createServiceAssemblyArchive(String saName, String[] suName, String[] compName) throws Exception {
         File jar = File.createTempFile("jbi", ".zip");
         JarOutputStream jos = new JarOutputStream(new FileOutputStream(jar));
@@ -110,7 +111,9 @@ public abstract class AbstractManagementTest extends TestCase {
         jos.putNextEntry(new ZipEntry("META-INF/jbi.xml"));
         XMLOutputFactory xof = XMLOutputFactory.newInstance();
         //xof.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
-        XMLStreamWriter xsw = xof.createXMLStreamWriter(jos);
+        XMLStreamWriter xsw = xof.createXMLStreamWriter(new FilterOutputStream(jos) {
+            public void close() {}
+        });
         xsw.writeStartDocument();
         xsw.writeStartElement("jbi");
         xsw.writeAttribute("xmlns", "http://java.sun.com/xml/ns/jbi");
