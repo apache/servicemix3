@@ -374,7 +374,8 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
     
     public void processExchange(MessageExchange exchange) throws Exception {
         if (logger.isDebugEnabled()) {
-            logger.debug("Received exchange: status: " + exchange.getStatus() + ", role: " + exchange.getRole());
+            logger.debug("Received exchange: status: " + exchange.getStatus() + ", role: " + 
+                                (exchange.getRole() == Role.CONSUMER ? "consumer" : "provider"));
         }
         if (exchange.getRole() == Role.PROVIDER) {
             boolean dynamic = false;
