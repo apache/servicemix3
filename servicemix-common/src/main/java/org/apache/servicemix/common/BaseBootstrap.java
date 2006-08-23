@@ -27,9 +27,14 @@ import javax.management.ObjectName;
 
 /**
  * Base class for components bootstrap.
+ * Due to classloading mechanism in JBI, Shared Libraries are
+ * not available at bootstrap time, so this class should be
+ * copied in your own component and modified directly, instead
+ * of inheriting it.
  * 
  * @author Guillaume Nodet
  * @version $Revision$
+ * @deprecated
  * @since 3.0
  */
 public class BaseBootstrap implements Bootstrap {

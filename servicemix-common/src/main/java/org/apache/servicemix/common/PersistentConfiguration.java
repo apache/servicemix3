@@ -22,8 +22,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-// TODO: should inherit org.servicemix.jbi.management.BaseStandardMBean
-//     or equivalent (to not depend on core)
+/**
+ * Base class for component configuration.
+ * Due to classloading mechanism in JBI, Shared Libraries are
+ * not available at bootstrap time, so this class should be
+ * copied in your own component and modified directly, instead
+ * of inheriting it.  This only apply if the bootstrap uses the
+ * configuration.
+ * 
+ * @author Guillaume Nodet
+ * @deprecated
+ * @since 3.0
+ */
 public class PersistentConfiguration {
     
     public final static String CONFIG_FILE = "component.properties"; 
