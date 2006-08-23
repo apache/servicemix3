@@ -30,7 +30,7 @@
 
     <appender name="FILE" class="org.apache.log4j.FileAppender">
         <param name="threshold" value="DEBUG"/>
-        <param name="File" value="servicemix.log"/>
+        <param name="File" value="data/log/servicemix.log"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ABSOLUTE} | %-5p | %-10t | %-24.24c{1} | %-30.30C %4L | %m%n"/>
         </layout>
@@ -39,13 +39,12 @@
     <logger name="org.apache">
         <level value="WARN"/>
     </logger>
-
     <logger name="org.springframework">
         <level value="WARN"/>
     </logger>
-
     <logger name="org.apache.servicemix">
-        <level value="DEBUG"/>
+        <!-- To enable debug logging, replace the INFO by DEBUG -->
+        <level value="INFO"/>
     </logger>
     <logger name="org.apache.servicemix.jbi.config">
         <level value="WARN"/>
