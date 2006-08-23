@@ -18,6 +18,7 @@ package org.apache.servicemix.common;
 
 import org.apache.commons.logging.Log;
 
+import javax.jbi.JBIException;
 import javax.jbi.management.DeploymentException;
 
 /**
@@ -48,8 +49,16 @@ public abstract class AbstractDeployer implements Deployer {
         msg.setException(e);
         return new DeploymentException(ManagementSupport.createComponentMessage(msg));
     }
-    
+
     public void undeploy(ServiceUnit su) throws DeploymentException {
+        // Force a shutdown of the SU
+        // There is no initialized state, so after deployment, the SU
+        // is shutdown but may need a cleanup.
+        try {
+            su.shutDown();
+        } catch (JBIException e) {
+            throw new DeploymentException("Unable to shutDown service unit", e);
+        }
     }
-    
+
 }
