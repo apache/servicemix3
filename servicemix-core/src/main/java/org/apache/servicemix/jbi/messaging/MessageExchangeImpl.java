@@ -707,24 +707,30 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             return sb.toString();
         } catch (Exception e) {
             log.trace("Error caught in toString", e);
-            return null;
+            return super.toString();
         }
     }
-    
+
     public static final int maxMsgDisplaySize = 1500;
-    
+
+    public static final boolean preserveContent = Boolean.getBoolean("org.apache.servicemix.preserveContent");
+
     private void display(String msg, StringBuffer sb, SourceTransformer st) {
         if (getMessage(msg) != null) {
             sb.append("  ").append(msg).append(": ");
             try {
-                if (getMessage(msg).getContent() != null) {
-                    Node node = st.toDOMNode(getMessage(msg).getContent());
-                    getMessage(msg).setContent(new DOMSource(node));
-                    String str = st.toString(node);
-                    if (str.length() > maxMsgDisplaySize) {
-                        sb.append(str.substring(0, maxMsgDisplaySize)).append("...");
-                    } else {
-                        sb.append(str);
+                if (preserveContent) {
+                    sb.append(getMessage(msg).getContent().getClass());
+                } else {
+                    if (getMessage(msg).getContent() != null) {
+                        Node node = st.toDOMNode(getMessage(msg).getContent());
+                        getMessage(msg).setContent(new DOMSource(node));
+                        String str = st.toString(node);
+                        if (str.length() > maxMsgDisplaySize) {
+                            sb.append(str.substring(0, maxMsgDisplaySize)).append("...");
+                        } else {
+                            sb.append(str);
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -733,5 +739,5 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             sb.append('\n');
         }
     }
-    
+
 }
