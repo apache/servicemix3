@@ -338,14 +338,15 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
         } catch (Exception e) {
             logger.error("Error processing exchange " + exchange, e);
             try {
-                // If we are transacted and this is a runtime exception
-                // try to mark transaction as rollback
-                if (tx != null && e instanceof RuntimeException) {
+                // If we are transacted, check if this exception should
+                // rollback the transaction
+                if (transactionManager != null && 
+                    transactionManager.getStatus() == Status.STATUS_ACTIVE && 
+                    exceptionShouldRollbackTx(e)) {
                     transactionManager.setRollbackOnly();
-                } else  {
-                    exchange.setError(e);
-                    channel.send(exchange);
                 }
+                exchange.setError(e);
+                channel.send(exchange);
             } catch (Exception inner) {
                 logger.error("Error setting exchange status to ERROR", inner);
             }
@@ -370,6 +371,10 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
                 logger.error("Error checking transaction status.", t);
             }
         }
+    }
+    
+    protected boolean exceptionShouldRollbackTx(Exception e) {
+        return false;
     }
     
     public void processExchange(MessageExchange exchange) throws Exception {
