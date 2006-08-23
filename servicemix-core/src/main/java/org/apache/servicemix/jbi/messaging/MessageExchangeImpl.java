@@ -719,10 +719,10 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
         if (getMessage(msg) != null) {
             sb.append("  ").append(msg).append(": ");
             try {
-                if (preserveContent) {
-                    sb.append(getMessage(msg).getContent().getClass());
-                } else {
-                    if (getMessage(msg).getContent() != null) {
+                if (getMessage(msg).getContent() != null) {
+                    if (preserveContent) {
+                        sb.append(getMessage(msg).getContent().getClass());
+                    } else {
                         Node node = st.toDOMNode(getMessage(msg).getContent());
                         getMessage(msg).setContent(new DOMSource(node));
                         String str = st.toString(node);
@@ -732,6 +732,8 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
                             sb.append(str);
                         }
                     }
+                } else {
+                    sb.append("null");
                 }
             } catch (Exception e) {
                 sb.append("Unable to display: ").append(e);
