@@ -61,7 +61,7 @@
   </bean>
   -->
   
-  <!-- MySql DataSource Sample Setup -->
+  <!-- MySql DataSource Sample Setup using the Commons DBCP pooler (http://jakarta.apache.org/commons/dbcp/) -->
   <!-- 
   <bean id="mysql-ds" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
     <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
@@ -71,6 +71,19 @@
     <property name="poolPreparedStatements" value="true"/>
   </bean>
   -->  
+
+  <!-- MySql DataSource Sample Setup using the c3p0 pooler (http://sf.net/projects/c3p0) -->
+  <!-- 
+  <bean id="mysql-ds" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+    <property name="driverClass" value="com.mysql.jdbc.Driver">
+    <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/activemq">
+    <property name="user" value="activemq">
+    <property name="password" value="activemq">
+    <property name="minPoolSize" value="5">
+    <property name="maxPoolSize" value="10">
+    <property name="acquireIncrement" value="3">
+  </bean>
+  -->
    
   <!-- Embedded Derby DataSource Sample Setup -->
   <!-- 
