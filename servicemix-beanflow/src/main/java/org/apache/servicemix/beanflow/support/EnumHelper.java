@@ -14,18 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.beanflow;
+package org.apache.servicemix.beanflow.support;
 
-import org.apache.servicemix.beanflow.util.ActivityTestSupport;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
+ * A helper class for working with enums
  * 
- * @version $Revision: $
+ * @version $Revision$
  */
-public class BadWorkflowTest extends ActivityTestSupport {
+public class EnumHelper {
+    private static final Class[] NO_PARAMETER_TYPES = {};
+    private static final Object[] NO_PARAMETER_VALUES = {};
 
-    public void testWorkflow() throws Exception {
-        BadWorkflow workflow = new BadWorkflow();
-        assertFailed(workflow);
+    public static Object[] getEnumValues(Class enumType) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Method method = enumType.getMethod("values", NO_PARAMETER_TYPES);
+        return (Object[]) method.invoke(null, NO_PARAMETER_VALUES);
     }
 }

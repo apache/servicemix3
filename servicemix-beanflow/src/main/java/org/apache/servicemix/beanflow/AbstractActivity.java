@@ -21,6 +21,7 @@ import org.apache.servicemix.beanflow.support.Introspector;
 
 import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A useful base class which allows simple bean activities to be written easily.
@@ -145,12 +146,36 @@ public abstract class AbstractActivity implements Runnable, Activity {
         });
         while (!isStopped()) {
             try {
-                latch.await();
+                latch.await(2, TimeUnit.SECONDS);
             }
             catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
+    }
+    
+    /**
+     * A helper method to block the calling thread up until some maximum timeout until the activity
+     * completes or the timeout expires
+     * 
+     * @return true if the activity stopped within the given time or false if not.
+     */
+    public boolean join(int time, TimeUnit unit) {
+        final CountDownLatch latch = new CountDownLatch(1);
+        onStop(new Runnable() {
+            public void run() {
+                latch.countDown();
+            }
+        });
+        if (!isStopped()) {
+            try {
+                latch.await(time, unit);
+            }
+            catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        return isStopped();
     }
 
     // Implementation methods

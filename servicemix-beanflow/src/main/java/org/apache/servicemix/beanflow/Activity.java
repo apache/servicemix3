@@ -17,6 +17,7 @@
 package org.apache.servicemix.beanflow;
 
 import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Represents an activity (step) in a workflow written typically using regular
@@ -105,4 +106,12 @@ public interface Activity {
      * similar to {@link Thread#join()}
      */
     public void join();
+
+    /**
+     * A helper method to block the calling thread up until some maximum timeout until the activity
+     * completes or the timeout expires
+     * 
+     * @return true if the activity stopped within the given time or false if not.
+     */
+    public boolean join(int time, TimeUnit unit);
 }

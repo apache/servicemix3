@@ -20,6 +20,7 @@ import org.apache.servicemix.beanflow.util.ActivityTestSupport;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 
@@ -38,7 +39,8 @@ public class ParallelActivityTest extends ActivityTestSupport {
         activity.startWithTimeout(timer, 20000);
         // END SNIPPET: example
 
-        activity.join();
+        activity.join(10, TimeUnit.SECONDS);
+
         parallelBean.assertCompleted();
         assertStopped(activity);
     }

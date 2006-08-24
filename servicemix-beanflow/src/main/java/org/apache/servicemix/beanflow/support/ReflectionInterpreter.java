@@ -69,11 +69,25 @@ public class ReflectionInterpreter<T> implements Interpreter<T> {
      * @param nextStep
      */
     protected void goToNextSequence(T nextStep, Workflow<T> workflow) {
-        //if (!workflow.isNextStepAvailable()) {
-
-            // TODO we could automatically go to the next step in the enum list?
+        if (nextStep instanceof Enum) {
+            Enum step = (Enum) nextStep;
+            try {
+                Object[] enumValues = EnumHelper.getEnumValues(step.getClass());
+                int index = step.ordinal();
+                if (++index < enumValues.length) {
+                    workflow.setNextStep((T) enumValues[index]);
+                }
+                else {
+                    workflow.stop();
+                }
+            }
+            catch (Exception e) {
+                workflow.fail("Could not extract the values of the enum: " + nextStep + " due to: " + e, e);
+            }
+        }
+        else {
             workflow.suspend();
-        //}
+        }
     }
 
     public void executeNamedStep(String step, Workflow<T> workflow) {

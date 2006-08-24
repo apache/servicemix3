@@ -20,6 +20,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.beanflow.util.ActivityTestSupport;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * 
  * @version $Revision: $
@@ -43,7 +45,7 @@ public class WorkflowTest extends ActivityTestSupport {
 
         workflow.userEntered("foo@bar.com");
 
-        Thread.sleep(5000);
+        workflow.join(10, TimeUnit.SECONDS);
 
         assertStopped(workflow);
     }

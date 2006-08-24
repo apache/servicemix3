@@ -17,6 +17,7 @@
 package org.apache.servicemix.beanflow;
 
 import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A simple proxy to an underlying activity making it easy to compose activities
@@ -78,6 +79,10 @@ public class ProxyActivity implements Activity {
 
     public void join() {
         getProxy().join();
+    }
+    
+    public boolean join(int time, TimeUnit unit) {
+        return getProxy().join(time, unit);
     }
 
     protected Activity getProxy() {

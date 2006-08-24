@@ -30,7 +30,7 @@ public class ExampleStringWorkflow extends Workflow<String> {
     private static final Log log = LogFactory.getLog(ExampleStringWorkflow.class);
 
     private int loopCount;
-    private long timeout = 500;
+    private long timeout = 1000;
     private String userEmailAddress;
 
     public ExampleStringWorkflow() {

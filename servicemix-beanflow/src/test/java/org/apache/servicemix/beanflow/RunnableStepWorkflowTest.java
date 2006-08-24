@@ -18,6 +18,8 @@ package org.apache.servicemix.beanflow;
 
 import org.apache.servicemix.beanflow.util.ActivityTestSupport;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * 
  * @version $Revision: $
@@ -28,9 +30,8 @@ public class RunnableStepWorkflowTest extends ActivityTestSupport {
         Workflow<RunnableSteps> workflow = new Workflow<RunnableSteps>(RunnableSteps.class);
         workflow.start();
 
-        Thread.sleep(2000);
-
-        // TODO FIXME
-        //assertStopped(workflow);
+        workflow.join(10, TimeUnit.SECONDS);
+        
+        assertStopped(workflow);
     }
 }

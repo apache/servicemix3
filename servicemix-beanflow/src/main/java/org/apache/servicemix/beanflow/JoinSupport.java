@@ -34,13 +34,15 @@ public abstract class JoinSupport extends TimeoutActivity {
 
     public JoinSupport(List<Activity> activities) {
         for (Activity activity : activities) {
-            fork(activity);
+            activity.getState().addRunnable(this);
+            children.add(activity);
         }
     }
 
     public JoinSupport(Activity... activities) {
         for (Activity activity : activities) {
-            fork(activity);
+            activity.getState().addRunnable(this);
+            children.add(activity);
         }
     }
 

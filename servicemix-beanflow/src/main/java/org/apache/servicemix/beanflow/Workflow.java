@@ -18,11 +18,10 @@ package org.apache.servicemix.beanflow;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.beanflow.support.EnumHelper;
 import org.apache.servicemix.beanflow.support.Interpreter;
 import org.apache.servicemix.beanflow.support.ReflectionInterpreter;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -36,9 +35,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class Workflow<T> extends JoinSupport {
     private static final Log log = LogFactory.getLog(Workflow.class);
-
-    private static final Class[] NO_PARAMETER_TYPES = {};
-    private static final Object[] NO_PARAMETER_VALUES = {};
 
     private Executor executor;
     private Interpreter interpreter;
@@ -161,11 +157,11 @@ public class Workflow<T> extends JoinSupport {
      * the join
      */
     public void join(JoinSupport joinFlow, T joinedStep, long timeout) {
-        // start the join activity and register the timeout
-        fork(timeout, joinFlow);
-
         // when the join completes move to the next step
         joinFlow.onStop(createGoToStepTask(joinedStep));
+        
+        // start the join activity and register the timeout
+        fork(timeout, joinFlow);
     }
 
     /**
@@ -225,7 +221,7 @@ public class Workflow<T> extends JoinSupport {
     protected void validateStepsExist(Class enumType) {
         Object[] values = null;
         try {
-            values = getEnumValues(enumType);
+            values = EnumHelper.getEnumValues(enumType);
         }
         catch (Exception e) {
             fail("Cannot get the values of the enumeration: " + enumType.getName(), e);
@@ -237,7 +233,7 @@ public class Workflow<T> extends JoinSupport {
 
     protected static Object getFirstStep(Class enumType) {
         try {
-            Object[] values = getEnumValues(enumType);
+            Object[] values = EnumHelper.getEnumValues(enumType);
             return values[0];
         }
         catch (Exception e) {
@@ -245,8 +241,4 @@ public class Workflow<T> extends JoinSupport {
         }
     }
 
-    protected static Object[] getEnumValues(Class enumType) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Method method = enumType.getMethod("values", NO_PARAMETER_TYPES);
-        return (Object[]) method.invoke(null, NO_PARAMETER_VALUES);
-    }
 }
