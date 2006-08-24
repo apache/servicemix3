@@ -20,8 +20,6 @@ import org.apache.servicemix.beanflow.util.ActivityTestSupport;
 
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.TestCase;
-
 /**
  * 
  * @version $Revision$

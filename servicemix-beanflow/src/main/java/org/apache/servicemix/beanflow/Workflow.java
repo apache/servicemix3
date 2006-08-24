@@ -91,32 +91,28 @@ public class Workflow<T> extends JoinSupport {
 
     public void run() {
         if (!isSuspended() && !isStopped()) {
-            T stepToExecute = null;
-            if (nextStep != null) {
-                stepToExecute = nextStep;
-                nextStep = null;
-                // lets fire any conditions
-                // This very function is a listener of step, so setting the step
-                // will trigger ourself.  We just need to return now.
-                step.set(stepToExecute);
-                return;
-            }
-            else {
-                stepToExecute = step.get();
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("About to execute step: " + stepToExecute);
-            }
-            
+            T stepToExecute = step.get();
             if (stepToExecute != null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("About to execute step: " + stepToExecute);
+                }
+                
                 interpreter.executeStep(stepToExecute, this);
-
                 nextStep();
             }
         }
     }
 
     public void nextStep() {
+        if (nextStep != null) {
+            T stepToExecute = nextStep;
+            nextStep = null;
+            // lets fire any conditions
+            // This very function is a listener of step, so setting the step
+            // will trigger ourself.  We just need to return now.
+            step.set(stepToExecute);
+        }
+
         // if we are not stopped lets add a task to re-evaluate ourself
         if (!isStopped() && !isSuspended()) {
             executor.execute(this);
@@ -195,7 +191,7 @@ public class Workflow<T> extends JoinSupport {
 
             public void run() {
                 setNextStep(joinedStep);
-                nextStep();
+                //nextStep();
             }
         };
     }
