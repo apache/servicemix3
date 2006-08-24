@@ -22,8 +22,8 @@ import javax.jbi.messaging.NormalizedMessage;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.w3c.dom.Document;
 
-import com.sun.org.apache.xpath.internal.CachedXPathAPI;
-import com.sun.org.apache.xpath.internal.objects.XObject;
+import org.apache.xpath.CachedXPathAPI;
+import org.apache.xpath.objects.XObject;
 
 /**
  * Get the Value of a property from the message given the XPath Statement.
