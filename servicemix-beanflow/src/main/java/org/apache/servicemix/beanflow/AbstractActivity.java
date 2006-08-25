@@ -45,7 +45,7 @@ public abstract class AbstractActivity implements Runnable, Activity {
     public void start() {
         if (state.compareAndSet(Transitions.Initialised, Transitions.Starting)) {
             doStart();
-            state.set(Transitions.Started);
+            state.compareAndSet(Transitions.Starting, Transitions.Started);
         }
     }
 

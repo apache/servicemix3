@@ -23,8 +23,10 @@ import org.apache.servicemix.beanflow.support.Interpreter;
 import org.apache.servicemix.beanflow.support.ReflectionInterpreter;
 
 import java.util.Timer;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -38,10 +40,9 @@ public class Workflow<T> extends JoinSupport {
 
     private Executor executor;
     private Interpreter interpreter;
-    private State<T> step;
-    private T nextStep;
     private Timer timer = new Timer();
     private AtomicBoolean suspended = new AtomicBoolean();
+    private BlockingQueue<T> queue = new LinkedBlockingQueue<T>();
 
     /**
      * TODO is there a way to reference the parameter type of this class?
@@ -57,65 +58,53 @@ public class Workflow<T> extends JoinSupport {
     public Workflow(T firstStep) {
         this(Executors.newSingleThreadExecutor(), firstStep);
     }
-
+    
     public Workflow(Executor executor, T firstStep) {
-        this(executor, new ReflectionInterpreter(), new DefaultState<T>(firstStep));
+        this(executor, new ReflectionInterpreter(), firstStep);
     }
-
-    public Workflow(Executor executor, Interpreter interpreter, State<T> step) {
+    
+    public Workflow(Executor executor, Interpreter interpreter, T firstStep) {
         this.executor = executor;
         this.interpreter = interpreter;
-        this.step = step;
-
-        T firstStep = step.get();
+        
         if (firstStep instanceof Enum) {
             validateStepsExist(firstStep.getClass());
         }
+        setNextStep(firstStep);
     }
 
     /**
      * Returns the next step which will be executed asynchronously
      */
     public T getNextStep() {
-        return nextStep;
+        return queue.peek();
     }
 
     /**
      * Sets the next step to be executed when the current step completes
      */
     public void setNextStep(T stepName) {
-        this.nextStep = stepName;
-        suspended.set(false);
-        nextStep();
+        queue.add(stepName);
+        executor.execute(this);
     }
 
     public void run() {
-        if (!isSuspended() && !isStopped()) {
-            T stepToExecute = step.get();
-            if (stepToExecute != null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("About to execute step: " + stepToExecute);
+        while (!isStopped()) {
+            try {
+                T stepToExecute = queue.poll();
+                if (stepToExecute != null) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("About to execute step: " + stepToExecute);
+                    }
+                    interpreter.executeStep(stepToExecute, this);
                 }
-                
-                interpreter.executeStep(stepToExecute, this);
-                nextStep();
+                else { 
+                    break;
+                }
             }
-        }
-    }
-
-    public void nextStep() {
-        if (nextStep != null) {
-            T stepToExecute = nextStep;
-            nextStep = null;
-            // lets fire any conditions
-            // This very function is a listener of step, so setting the step
-            // will trigger ourself.  We just need to return now.
-            step.set(stepToExecute);
-        }
-
-        // if we are not stopped lets add a task to re-evaluate ourself
-        if (!isStopped() && !isSuspended()) {
-            executor.execute(this);
+            catch (RuntimeException e) {
+                log.warn("Caught: " + e, e);
+            }
         }
     }
 
@@ -180,7 +169,7 @@ public class Workflow<T> extends JoinSupport {
      * Returns true if this workflow has a next step to execute
      */
     public boolean isNextStepAvailable() {
-        return nextStep != null;
+        return !queue.isEmpty();
     }
 
     /**
@@ -188,10 +177,8 @@ public class Workflow<T> extends JoinSupport {
      */
     public Runnable createGoToStepTask(final T joinedStep) {
         return new Runnable() {
-
             public void run() {
                 setNextStep(joinedStep);
-                //nextStep();
             }
         };
     }

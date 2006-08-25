@@ -17,7 +17,9 @@
 package org.apache.servicemix.beanflow;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A useful base class for a activity which joins on the success of a collection
@@ -28,6 +30,7 @@ import java.util.List;
 public abstract class JoinSupport extends TimeoutActivity {
 
     private List<Activity> children = new ArrayList<Activity>();
+    private Set<Activity> toBeStarted = new HashSet();
 
     public JoinSupport() {
     }
@@ -37,6 +40,7 @@ public abstract class JoinSupport extends TimeoutActivity {
             for (Activity activity : activities) {
                 activity.getState().addRunnable(this);
                 children.add(activity);
+                toBeStarted.add(activity);
             }
         }
     }
@@ -46,6 +50,7 @@ public abstract class JoinSupport extends TimeoutActivity {
             for (Activity activity : activities) {
                 activity.getState().addRunnable(this);
                 children.add(activity);
+                toBeStarted.add(activity);
             }
         }
     }
@@ -91,9 +96,10 @@ public abstract class JoinSupport extends TimeoutActivity {
 
         // lets make sure that the child activities are started properly
         synchronized (children) {
-            for (Activity child : children) {
+            for (Activity child : toBeStarted) {
                 child.start();
             }
+            toBeStarted.clear();
         }
     }
 

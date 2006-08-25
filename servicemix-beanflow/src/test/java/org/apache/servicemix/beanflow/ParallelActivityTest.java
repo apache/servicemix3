@@ -36,7 +36,7 @@ public class ParallelActivityTest extends ActivityTestSupport {
         // START SNIPPET: example
         ExampleParallelBean parallelBean = new ExampleParallelBean();
         ParallelActivity activity = ParallelActivity.newParallelMethodActivity(executor, parallelBean);
-        activity.startWithTimeout(timer, 20000);
+        activity.startWithTimeout(timer, 2000);
         // END SNIPPET: example
 
         activity.join(10, TimeUnit.SECONDS);
