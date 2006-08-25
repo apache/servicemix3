@@ -514,17 +514,16 @@ public class JBIContainer extends BaseLifeCycle {
                     }
                 }
             }
-            this.managementContext.init(this, getMBeanServer());
-            this.mbeanServer = this.managementContext.getMBeanServer();// just in case ManagementContext creates it
+            managementContext.init(this, getMBeanServer());
+            mbeanServer = this.managementContext.getMBeanServer();// just in case ManagementContext creates it
             environmentContext.init(this, rootDir);
+            clientFactory.init(this);
             registry.init(this);
             broker.init(this);
-            
             installationService.init(this);
             deploymentService.init(this);
             autoDeployService.init(this);
             adminCommandsService.init(this);
-            clientFactory.init(this);
 
             // register self with the ManagementContext
             try {
@@ -556,15 +555,15 @@ public class JBIContainer extends BaseLifeCycle {
     public void start() throws JBIException {
         checkInitialized();
         if (started.compareAndSet(false, true)) {
-            registry.start();
-            broker.start();
             managementContext.start();
             environmentContext.start();
+            clientFactory.start();
+            registry.start();
+            broker.start();
             installationService.start();
             deploymentService.start();
             autoDeployService.start();
             adminCommandsService.start();
-            clientFactory.start();
             super.start();
         }
     }
@@ -577,15 +576,15 @@ public class JBIContainer extends BaseLifeCycle {
     public void stop() throws JBIException {
         checkInitialized();
         if (started.compareAndSet(true, false)) {
+            adminCommandsService.stop();
+            autoDeployService.stop();
+            deploymentService.stop();
+            installationService.stop();
             registry.stop();
             broker.stop();
-            managementContext.stop();
-            environmentContext.stop();
-            installationService.stop();
-            deploymentService.stop();
-            autoDeployService.stop();
-            adminCommandsService.stop();
             clientFactory.stop();
+            environmentContext.stop();
+            managementContext.stop();
             super.stop();
         }
     }
@@ -597,14 +596,14 @@ public class JBIContainer extends BaseLifeCycle {
      */
     public void shutDown() throws JBIException {
         if (containerInitialized.compareAndSet(true, false)) {
+            adminCommandsService.shutDown();
             autoDeployService.shutDown();
+            deploymentService.shutDown();
+            installationService.shutDown();
             registry.shutDown();
             broker.shutDown();
-            environmentContext.shutDown();
-            installationService.shutDown();
-            deploymentService.shutDown();
-            adminCommandsService.shutDown();
             clientFactory.shutDown();
+            environmentContext.shutDown();
             // shutdown the management context last, because it will close the mbean server
             super.shutDown();
             managementContext.unregisterMBean(this);
