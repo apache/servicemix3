@@ -105,7 +105,13 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
             }
             this.context = context;
             this.channel = context.getDeliveryChannel();
-            this.transactionManager = (TransactionManager) context.getTransactionManager();
+            try {
+                this.transactionManager = (TransactionManager) context.getTransactionManager();
+            } catch (Throwable e) {
+              // Ignore, this is just a safeguard against non compliant 
+              // JBI implementation which throws an exception instead of
+              // return null
+            }
             doInit();
             if (logger.isDebugEnabled()) {
                 logger.debug("Component initialized");

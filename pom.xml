@@ -339,6 +339,7 @@
                 <module>servicemix-beanflow</module>
                 <module>servicemix-components</module>
                 <module>servicemix-common</module>
+                <module>servicemix-shared</module>
                 <module>servicemix-bpe</module>
                 <module>servicemix-soap</module>
                 <module>servicemix-http</module>
@@ -500,7 +501,6 @@
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-soap</artifactId>
-                <type>jbi-shared-library</type>
                 <version>3.0-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>

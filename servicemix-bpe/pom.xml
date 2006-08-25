@@ -128,6 +128,10 @@
           <type>service-engine</type>
           <bootstrap>org.apache.servicemix.bpe.BPEBootstrap</bootstrap>
           <component>org.apache.servicemix.bpe.BPEComponent</component>
+          <!-- 
+               make sure self first delegation 
+            -->
+          <componentClassLoaderDelegation>self-first</componentClassLoaderDelegation>
         </configuration>
       </plugin>
       <plugin>
