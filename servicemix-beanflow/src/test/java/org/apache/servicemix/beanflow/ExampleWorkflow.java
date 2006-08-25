@@ -47,7 +47,7 @@ public class ExampleWorkflow extends Workflow<ExampleWorkflow.Step> {
     public void startStep() {
         // lets use an explicit goTo() to tell the workflow
         // which step to go to next; though we can just return Strings
-        setNextStep(Step.loopStep);
+        addStep(Step.loopStep);
     }
 
     // lets use the return value to specify the next step
@@ -104,7 +104,7 @@ public class ExampleWorkflow extends Workflow<ExampleWorkflow.Step> {
             this.userEmailAddress = emailAddress;
 
             log.info("Lets re-start the suspended workflow");
-            setNextStep(Step.afterEnteredEmailStep);
+            addStep(Step.afterEnteredEmailStep);
         }
     }
 }

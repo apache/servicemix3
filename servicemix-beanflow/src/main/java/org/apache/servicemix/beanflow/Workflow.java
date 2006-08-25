@@ -70,7 +70,7 @@ public class Workflow<T> extends JoinSupport {
         if (firstStep instanceof Enum) {
             validateStepsExist(firstStep.getClass());
         }
-        setNextStep(firstStep);
+        addStep(firstStep);
     }
 
     /**
@@ -81,9 +81,10 @@ public class Workflow<T> extends JoinSupport {
     }
 
     /**
-     * Sets the next step to be executed when the current step completes
+     * Adds a step to be executed after the current step completes processing
      */
-    public void setNextStep(T stepName) {
+    public void addStep(T stepName) {
+        suspended.set(false);
         queue.add(stepName);
         executor.execute(this);
     }
@@ -178,7 +179,7 @@ public class Workflow<T> extends JoinSupport {
     public Runnable createGoToStepTask(final T joinedStep) {
         return new Runnable() {
             public void run() {
-                setNextStep(joinedStep);
+                addStep(joinedStep);
             }
         };
     }
