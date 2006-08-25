@@ -36,11 +36,11 @@
 
   <dependencies>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-common</artifactId>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-soap</artifactId>
     </dependency>    
   </dependencies>
@@ -50,6 +50,13 @@
       <plugin>
         <groupId>org.apache.servicemix.tooling</groupId>
         <artifactId>jbi-maven-plugin</artifactId>
+        <configuration>
+          <!-- 
+               make sure parent first delegation is used because 
+               we include duplicates libraries shipped with servicemix
+            -->
+          <classLoaderDelegation>parent-first</classLoaderDelegation>
+        </configuration>
       </plugin>
     </plugins>
   </build>
