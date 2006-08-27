@@ -43,23 +43,23 @@
       <outputDirectory>components</outputDirectory>
     </fileSet>
     <fileSet>
-      <directory>target/samples/servicemix-web-${pom.version}</directory>
+      <directory>target/samples/servicemix-web-${servicemix-version}</directory>
       <outputDirectory>examples/servicemix-web</outputDirectory>
     </fileSet>
     <fileSet>
-      <directory>target/samples/wsdl-first-${pom.version}</directory>
+      <directory>target/samples/wsdl-first-${servicemix-version}</directory>
       <outputDirectory>examples/wsdl-first</outputDirectory>
     </fileSet>
     <fileSet>
-      <directory>target/samples/loan-broker-${pom.version}</directory>
+      <directory>target/samples/loan-broker-${servicemix-version}</directory>
       <outputDirectory>examples/loan-broker</outputDirectory>
     </fileSet>
     <fileSet>
-      <directory>target/samples/bridge-${pom.version}</directory>
+      <directory>target/samples/bridge-${servicemix-version}</directory>
       <outputDirectory>examples/bridge</outputDirectory>
     </fileSet>
     <fileSet>
-      <directory>target/samples/basic-${pom.version}</directory>
+      <directory>target/samples/basic-${servicemix-version}</directory>
       <outputDirectory>examples/basic</outputDirectory>
     </fileSet>
     <fileSet>
@@ -67,6 +67,20 @@
       <outputDirectory>lib/optional</outputDirectory>
     </fileSet>
   </fileSets>
+  <files>
+    <file>
+      <source>target/sas/bridge-sa-${servicemix-version}.zip</source>
+      <outputDirectory>examples/bridge</outputDirectory>
+    </file>
+    <file>
+      <source>target/sas/wsdl-first-sa-${servicemix-version}.zip</source>
+      <outputDirectory>examples/wsdl-first</outputDirectory>
+    </file>
+    <file>
+      <source>target/sas/loan-broker-sa-${servicemix-version}.zip</source>
+      <outputDirectory>examples/loan-broker</outputDirectory>
+    </file>
+  </files>
   <dependencySets>
     <dependencySet>
       <outputDirectory>components/lib</outputDirectory>
