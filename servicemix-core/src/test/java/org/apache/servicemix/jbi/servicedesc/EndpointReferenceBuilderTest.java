@@ -16,16 +16,16 @@
  */
 package org.apache.servicemix.jbi.servicedesc;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.servicedesc.EndpointReferenceBuilder;
-import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
-import org.w3c.dom.DocumentFragment;
-
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.util.DOMUtil;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Element;
 
 public class EndpointReferenceBuilderTest extends TestCase {
 
@@ -39,6 +39,12 @@ public class EndpointReferenceBuilderTest extends TestCase {
         DocumentFragment df = EndpointReferenceBuilder.getReference(endpoint);
         assertNotNull(df);
         log.info(new SourceTransformer().toString(df));
+        Element e = (Element) df.getFirstChild();
+        assertEquals("http://java.sun.com/jbi/end-point-reference", e.getNamespaceURI());
+        assertEquals("end-point-reference", e.getNodeName());
+        assertEquals("myEndpoint", e.getAttributeNodeNS("http://java.sun.com/jbi/end-point-reference", "end-point-name"));
+        assertEquals(new QName("http://foo.bar.com", "myService"),
+                     DOMUtil.createQName(e, e.getAttributeNS("http://java.sun.com/jbi/end-point-reference", "service-name")));
     }
 
 }

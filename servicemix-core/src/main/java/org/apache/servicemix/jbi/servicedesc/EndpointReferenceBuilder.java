@@ -16,24 +16,28 @@
  */
 package org.apache.servicemix.jbi.servicedesc;
 
+import javax.jbi.servicedesc.ServiceEndpoint;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 
-import javax.jbi.servicedesc.ServiceEndpoint;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 public class EndpointReferenceBuilder {
 
-    public static final String JBI_NAMESPACE = "http://java.sun.com/xml/ns/jbi";
+    public static final String JBI_NAMESPACE = "http://java.sun.com/jbi/end-point-reference";
+    public static final String XMLNS_NAMESPACE = "http://www.w3.org/2000/xmlns/";
     
     public static DocumentFragment getReference(ServiceEndpoint endpoint) {
         try {
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(true);
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.newDocument();
             DocumentFragment fragment = doc.createDocumentFragment();
             Element epr = doc.createElementNS(JBI_NAMESPACE, "jbi:end-point-reference");
-            epr.setAttribute("xmlns:jbi", JBI_NAMESPACE);
-            epr.setAttribute("xmlns:sns", endpoint.getServiceName().getNamespaceURI());
+            epr.setAttributeNS(XMLNS_NAMESPACE,"xmlns:sns", endpoint.getServiceName().getNamespaceURI());
             epr.setAttributeNS(JBI_NAMESPACE, "jbi:service-name", "sns:" + endpoint.getServiceName().getLocalPart());
             epr.setAttributeNS(JBI_NAMESPACE, "jbi:end-point-name", endpoint.getEndpointName());
             fragment.appendChild(epr);
