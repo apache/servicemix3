@@ -245,7 +245,61 @@ public class Registry extends BaseSystemService implements RegistryMBean {
                 return new DynamicEndpoint(connector.getComponentNameSpace(), se, epr);  
             }
         }
+        ServiceEndpoint se = resolveInternalEPR(epr);
+        if (se != null) {
+            return se;
+        }
         return resolveStandardEPR(epr);
+    }
+    
+    /**
+     * <p>
+     * Resolve an internal JBI EPR conforming to the format defined in the JBI specification.
+     * </p>
+     * 
+     * <p>The EPR would look like:
+     * <pre>
+     * <jbi:end-point-reference xmlns:jbi="http://java.sun.com/xml/ns/jbi/end-point-reference"
+     *      jbi:end-point-name="endpointName" 
+     *      jbi:service-name="foo:serviceName" 
+     *      xmlns:foo="urn:FooNamespace"/>
+     * </pre>
+     * </p>
+     * 
+     * @author Maciej Szefler m s z e f l e r @ g m a i l . c o m 
+     * @param epr EPR fragment
+     * @return internal service endpoint corresponding to the EPR, or <code>null</code>
+     *         if the EPR is not an internal EPR or if the EPR cannot be resolved
+     */
+    public ServiceEndpoint resolveInternalEPR(DocumentFragment epr) {
+        if (epr == null) {
+            throw new NullPointerException("resolveInternalEPR(epr) called with null epr.");
+        }
+        NodeList nl = epr.getChildNodes();
+        for (int i = 0 ; i < nl.getLength(); ++i) {
+            Node n = nl.item(i);
+            if (n.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
+            Element el = (Element) n;
+            // Namespace should be "http://java.sun.com/jbi/end-point-reference"
+            if (el.getNamespaceURI() == null || 
+                !el.getNamespaceURI().equals("http://java.sun.com/jbi/end-point-reference")) 
+            {
+                continue;
+            }
+            if (el.getLocalName() == null || !el.getLocalName().equals("end-point-reference")) {
+                continue;
+            }
+            String serviceName = el.getAttributeNS(el.getNamespaceURI(), "service-name");
+            // Now the DOM pain-in-the-you-know-what: we need to come up with QName for this; 
+            // fortunately, there is only one place where the xmlns:xxx attribute could be, on 
+            // the end-point-reference element!
+            QName serviceQName = DOMUtil.createQName(el, serviceName);
+            String endpointName = el.getAttributeNS(el.getNamespaceURI(), "end-point-name");
+            return getInternalEndpoint(serviceQName, endpointName);
+        }
+        return null;
     }
     
     /**
