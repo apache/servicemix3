@@ -28,4 +28,14 @@
                  locationURI="http://localhost:8192/Broker/"
                  defaultMep="http://www.w3.org/2004/08/wsdl/in-out" 
                  soap="true"/>	               
+
+  <http:endpoint service="wsn:CreatePullPoint"
+                 endpoint="http-binding2"
+                 targetService="wsn:CreatePullPoint"
+                 targetEndpoint="Broker"
+                 role="consumer"
+                 locationURI="http://localhost:8192/CreatePullPoint/"
+                 defaultMep="http://www.w3.org/2004/08/wsdl/in-out"
+                 soap="true"/>
+
 </beans>

@@ -53,6 +53,7 @@
     <copy todir="install">
       <fileset dir="../../components" includes="*wsn*"/>
       <fileset dir="../../components" includes="*http*"/>
+      <fileset dir="../../components" includes="*shared*"/>
     </copy>
     <copy file="${build.dir}/soap-demo-sa.zip" todir="deploy"/>
   </target>
