@@ -61,10 +61,6 @@
           <type>service-engine</type>
           <bootstrap>org.apache.servicemix.lwcontainer.LwContainerBootstrap</bootstrap>
           <component>org.apache.servicemix.lwcontainer.LwContainerComponent</component>
-          <!-- 
-               make sure self first delegation 
-            -->
-          <componentClassLoaderDelegation>self-first</componentClassLoaderDelegation>
         </configuration>
       </plugin>
     </plugins>

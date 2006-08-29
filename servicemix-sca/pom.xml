@@ -145,10 +145,6 @@
           <type>service-engine</type>
           <bootstrap>org.apache.servicemix.sca.ScaBootstrap</bootstrap>
           <component>org.apache.servicemix.sca.ScaComponent</component>
-          <!-- 
-               make sure self first delegation 
-            -->
-          <componentClassLoaderDelegation>self-first</componentClassLoaderDelegation>
         </configuration>
       </plugin>
     </plugins>

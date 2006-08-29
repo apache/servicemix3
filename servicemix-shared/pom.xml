@@ -42,7 +42,7 @@
     <dependency>
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-soap</artifactId>
-    </dependency>    
+    </dependency>
   </dependencies>
 
   <build>
