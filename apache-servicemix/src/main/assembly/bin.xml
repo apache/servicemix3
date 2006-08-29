@@ -69,15 +69,15 @@
   </fileSets>
   <files>
     <file>
-      <source>target/sas/bridge-sa-${servicemix-version}.zip</source>
+      <source>${basedir}/target/sas/bridge-sa-${servicemix-version}.zip</source>
       <outputDirectory>examples/bridge</outputDirectory>
     </file>
     <file>
-      <source>target/sas/wsdl-first-sa-${servicemix-version}.zip</source>
+      <source>${basedir}/target/sas/wsdl-first-sa-${servicemix-version}.zip</source>
       <outputDirectory>examples/wsdl-first</outputDirectory>
     </file>
     <file>
-      <source>target/sas/loan-broker-sa-${servicemix-version}.zip</source>
+      <source>${basedir}/target/sas/loan-broker-sa-${servicemix-version}.zip</source>
       <outputDirectory>examples/loan-broker</outputDirectory>
     </file>
   </files>
