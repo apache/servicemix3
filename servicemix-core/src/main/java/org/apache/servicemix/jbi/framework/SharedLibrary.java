@@ -28,7 +28,7 @@ import javax.management.MBeanOperationInfo;
 import org.apache.servicemix.jbi.deployment.ClassPath;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.MBeanInfoProvider;
-import org.apache.xbean.server.classloader.JarFileClassLoader;
+import org.apache.xbean.classloader.JarFileClassLoader;
 
 public class SharedLibrary implements SharedLibraryMBean, MBeanInfoProvider {
 

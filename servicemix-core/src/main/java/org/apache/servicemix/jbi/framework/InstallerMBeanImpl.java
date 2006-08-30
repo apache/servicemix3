@@ -34,8 +34,8 @@ import javax.management.ObjectName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.JBIContainer;
-import org.apache.xbean.server.classloader.DestroyableClassLoader;
-import org.apache.xbean.server.classloader.JarFileClassLoader;
+import org.apache.xbean.classloader.DestroyableClassLoader;
+import org.apache.xbean.classloader.JarFileClassLoader;
 
 /**
  * InstallerMBean defines standard installation and uninstallation controls for Binding Components and Service Engines.
