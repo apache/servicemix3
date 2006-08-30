@@ -104,6 +104,7 @@
         <include>org.apache.servicemix:servicemix-services</include>
         <include>org.apache.servicemix:servicemix-core</include>
         <include>org.apache.xbean:xbean-spring</include>
+        <include>org.apache.xbean:xbean-classloader</include>
         <include>org.apache.xbean:xbean-server</include>
         <include>org.apache.xbean:xbean-kernel</include>
         <include>wsdl4j:wsdl4j</include>
