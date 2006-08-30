@@ -208,7 +208,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
      * @throws JBIException
      */
     public void init(Broker broker) throws JBIException {
-        log.info(broker.getContainer().getName() + ": Initializing jms flow");
+        log.debug(broker.getContainer().getName() + ": Initializing jms flow");
         super.init(broker);
         // Create and register endpoint listener
         endpointListener = new EndpointAdapter() {
@@ -268,7 +268,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
      */
     public void start() throws JBIException {
         if (started.compareAndSet(false, true)) {
-            log.info(broker.getContainer().getName() + ": Starting jms flow");
+            log.debug(broker.getContainer().getName() + ": Starting jms flow");
             super.start();
             try {
                 broadcastConsumer = broadcastSession.createConsumer(broadcastTopic, null, true);
@@ -331,7 +331,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
      */
     public void stop() throws JBIException {
         if (started.compareAndSet(true, false)) {
-            log.info(broker.getContainer().getName() + ": Stopping jms flow");
+            log.debug(broker.getContainer().getName() + ": Stopping jms flow");
             super.stop();
             for (Iterator it = subscriberSet.iterator(); it.hasNext();) {
                 String id = (String) it.next();
@@ -386,7 +386,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
                 consumerMap.put(key, consumer);
             }
             if (broadcast) {
-                log.info(broker.getContainer().getName() + ": broadcasting info for " + event);
+                log.debug(broker.getContainer().getName() + ": broadcasting info for " + event);
                 ObjectMessage msg = broadcastSession.createObjectMessage(event);
                 topicProducer.send(msg);
             }
@@ -404,7 +404,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
             }
             if (broadcast) {
                 ObjectMessage msg = broadcastSession.createObjectMessage(event);
-                log.info(broker.getContainer().getName() + ": broadcasting info for " + event);
+                log.debug(broker.getContainer().getName() + ": broadcasting info for " + event);
                 topicProducer.send(msg);
             }
         } catch (Exception e) {
@@ -442,12 +442,12 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
     }
 
     public void onRemoteEndpointRegistered(EndpointEvent event) {
-        log.info(broker.getContainer().getName() + ": adding remote endpoint: " + event.getEndpoint());
+        log.debug(broker.getContainer().getName() + ": adding remote endpoint: " + event.getEndpoint());
         broker.getContainer().getRegistry().registerRemoteEndpoint(event.getEndpoint());
     }
 
     public void onRemoteEndpointUnregistered(EndpointEvent event) {
-        log.info(broker.getContainer().getName() + ": removing remote endpoint: " + event.getEndpoint());
+        log.debug(broker.getContainer().getName() + ": removing remote endpoint: " + event.getEndpoint());
         broker.getContainer().getRegistry().unregisterRemoteEndpoint(event.getEndpoint());
     }
 

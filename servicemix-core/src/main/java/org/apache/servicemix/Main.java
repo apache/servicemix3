@@ -18,7 +18,6 @@ package org.apache.servicemix;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.servicemix.jbi.config.spring.XBeanProcessor;

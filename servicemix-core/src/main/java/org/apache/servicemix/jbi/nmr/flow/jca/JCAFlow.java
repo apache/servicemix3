@@ -233,7 +233,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
      * @throws JBIException
      */
     public void init(Broker broker) throws JBIException {
-        log.info(broker.getContainer().getName() + ": Initializing jca flow");
+        log.debug(broker.getContainer().getName() + ": Initializing jca flow");
         super.init(broker);
         // Create and register endpoint listener
         endpointListener = new EndpointAdapter() {
@@ -441,7 +441,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
             }
             // broadcast change to the network
             if (broadcast) {
-                log.info(broker.getContainer().getName() + ": broadcasting info for " + event);
+                log.debug(broker.getContainer().getName() + ": broadcasting info for " + event);
                 sendJmsMessage(broadcastTopic, event, false, false);
             }
         } catch (Exception e) {
@@ -458,7 +458,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
             }
             // broadcast change to the network
             if (broadcast) {
-                log.info(broker.getContainer().getName() + ": broadcasting info for " + event);
+                log.debug(broker.getContainer().getName() + ": broadcasting info for " + event);
                 sendJmsMessage(broadcastTopic, event, false, false);
             }
         } catch (Exception e) {
