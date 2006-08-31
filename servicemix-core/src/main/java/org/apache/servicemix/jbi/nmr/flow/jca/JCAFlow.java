@@ -502,12 +502,12 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
     }
 
     public void onRemoteEndpointRegistered(EndpointEvent event) {
-        log.info(broker.getContainer().getName() + ": adding remote endpoint: " + event.getEndpoint());
+        log.debug(broker.getContainer().getName() + ": adding remote endpoint: " + event.getEndpoint());
         broker.getContainer().getRegistry().registerRemoteEndpoint(event.getEndpoint());
     }
 
     public void onRemoteEndpointUnregistered(EndpointEvent event) {
-        log.info(broker.getContainer().getName() + ": removing remote endpoint: " + event.getEndpoint());
+        log.debug(broker.getContainer().getName() + ": removing remote endpoint: " + event.getEndpoint());
         broker.getContainer().getRegistry().unregisterRemoteEndpoint(event.getEndpoint());
     }
 

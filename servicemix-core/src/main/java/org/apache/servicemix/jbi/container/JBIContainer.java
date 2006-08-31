@@ -117,6 +117,8 @@ public class JBIContainer extends BaseLifeCycle {
     protected boolean notifyStatistics = false;
     protected EventListenerList listeners = new EventListenerList();
     protected EventListener[] configuredListeners;
+    protected boolean useShutdownHook = true;
+    protected transient Thread shutdownHook;
     
     /**
      * Default Constructor
@@ -187,16 +189,16 @@ public class JBIContainer extends BaseLifeCycle {
      * @return the subscriptionFlowName
      */
     public String getSubscriptionFlowName() {
-		return getDefaultBroker().getSubscriptionFlowName();
-	}
+        return getDefaultBroker().getSubscriptionFlowName();
+    }
 
     /**
      * Set the subscription flow name
      * @param subscriptionFlowName
      */
-	public void setSubscriptionFlowName(String subscriptionFlowName) {
+    public void setSubscriptionFlowName(String subscriptionFlowName) {
         getDefaultBroker().setSubscriptionFlowName(subscriptionFlowName);
-	}
+    }
 
     /**
      * Set the broker message flow
@@ -235,6 +237,19 @@ public class JBIContainer extends BaseLifeCycle {
      */
     public Flow[] getFlows() {
         return getDefaultBroker().getFlows();
+    }
+
+    public boolean isUseShutdownHook() {
+        return useShutdownHook;
+    }
+
+    /**
+     * Sets whether or not we should use a shutdown handler to close down the
+     * broker cleanly if the JVM is terminated. It is recommended you leave this
+     * enabled.
+     */
+    public void setUseShutdownHook(boolean useShutdownHook) {
+        this.useShutdownHook = useShutdownHook;
     }
 
     /**
@@ -497,6 +512,11 @@ public class JBIContainer extends BaseLifeCycle {
      */
     public void init() throws JBIException {
         if (containerInitialized.compareAndSet(false, true)) {
+            log.info("ServiceMix " + 
+                     EnvironmentContext.getVersion() +
+                     " JBI Container (" + getName() + ") is starting");
+            log.info("For help or more informations please see: http://incubator.apache.org/servicemix/");
+            addShutdownHook();
             if (this.workManager == null) {
                 this.workManager = createWorkManager();
                 this.isWorkManagerCreated = true;
@@ -541,9 +561,6 @@ public class JBIContainer extends BaseLifeCycle {
                     addListener(listener);
                 }
             }
-            
-            log.info("ServiceMix JBI Container (http://servicemix.org/) name: " + getName() + " running version: "
-                    + EnvironmentContext.getVersion());
         }
     }
 
@@ -565,6 +582,7 @@ public class JBIContainer extends BaseLifeCycle {
             autoDeployService.start();
             adminCommandsService.start();
             super.start();
+            log.info("ServiceMix JBI Container (" + getName() + ") started");
         }
     }
 
@@ -576,6 +594,7 @@ public class JBIContainer extends BaseLifeCycle {
     public void stop() throws JBIException {
         checkInitialized();
         if (started.compareAndSet(true, false)) {
+            log.info("ServiceMix JBI Container (" + getName() + ") stopping");
             adminCommandsService.stop();
             autoDeployService.stop();
             deploymentService.stop();
@@ -596,6 +615,7 @@ public class JBIContainer extends BaseLifeCycle {
      */
     public void shutDown() throws JBIException {
         if (containerInitialized.compareAndSet(true, false)) {
+            removeShutdownHook();
             adminCommandsService.shutDown();
             autoDeployService.shutDown();
             deploymentService.shutDown();
@@ -615,10 +635,45 @@ public class JBIContainer extends BaseLifeCycle {
                     throw new JBIException("Could not stop workManager", e);
                 }
             }
+            log.info("ServiceMix JBI Container (" + getName() + ") stopped");
         }
     }
 
     
+    protected void addShutdownHook() {
+        if (useShutdownHook) {
+            shutdownHook = new Thread("ServiceMix ShutdownHook") {
+                public void run() {
+                    containerShutdown();
+                }
+            };
+            Runtime.getRuntime().addShutdownHook(shutdownHook);
+        }
+    }
+
+    protected void removeShutdownHook() {
+        if (shutdownHook != null) {
+            try {
+                Runtime.getRuntime().removeShutdownHook(shutdownHook);
+            }
+            catch (Exception e) {
+                log.debug("Caught exception, must be shutting down: " + e);
+            }
+        }
+    }
+
+    /**
+     * Causes a clean shutdown of the container when the VM is being shut down
+     */
+    protected void containerShutdown() {
+        try {
+            stop();
+            shutDown();
+        }
+        catch (Exception e) {
+            System.err.println("Failed to shut down: " + e);
+        }
+    }
 
     /**
      * @return theMBean server assocated with the JBI

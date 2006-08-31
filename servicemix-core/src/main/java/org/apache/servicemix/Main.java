@@ -43,7 +43,7 @@ public class Main {
             if (p != null) {
                 version = ": " + p.getImplementationVersion();
             }
-            System.out.println("Apache ServiceMix ESB" + version);
+            System.out.println("Starting Apache ServiceMix ESB" + version);
             System.out.println();
 
             ApplicationContext context = null;
