@@ -41,6 +41,7 @@
                 MBeanServer="#mbeanServer"
                 installationDirPath="./install"
                 deploymentDirPath="./deploy"
+                monitorInterval="1"
                 dumpStats="true"
                 statsInterval="10" 
                 flowName="seda"
