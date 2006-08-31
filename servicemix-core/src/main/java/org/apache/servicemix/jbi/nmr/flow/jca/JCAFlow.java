@@ -356,8 +356,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
                 advisoryConsumer.close();
             }
             catch (JMSException e) {
-                JBIException jbiEx = new JBIException("JMSException caught in stop: " + e.getMessage());
-                throw jbiEx;
+                log.debug("JMSException caught in stop" ,e);
             }
         }
     }
@@ -375,18 +374,18 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
         	try {
         		connector.destroy();
         	} catch (Exception e) {
-        		log.warn("error closing jca connector", e);
+        		log.debug("Error closing jca connector", e);
         	}
         }
         try {
         	containerConnector.destroy();
     	} catch (Exception e) {
-    		log.warn("error closing jca connector", e);
+    		log.debug("Error closing jca connector", e);
         }
         try {
         	broadcastConnector.destroy();
     	} catch (Exception e) {
-    		log.warn("error closing jca connector", e);
+    		log.debug("Error closing jca connector", e);
         }
         // Destroy the resource adapter
     	resourceAdapter.stop();
@@ -395,7 +394,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
                 this.connection.close();
             }
             catch (JMSException e) {
-                log.warn("error closing JMS Connection", e);
+                log.debug("Error closing JMS Connection", e);
             }
         }
     }

@@ -620,8 +620,10 @@ public class JBIContainer extends BaseLifeCycle {
             autoDeployService.shutDown();
             deploymentService.shutDown();
             installationService.shutDown();
-            registry.shutDown();
+            // Shutdown broker before registry to avoid the JCA/JMS flow to send
+            // lots of messages when components and endpoints are stopped.
             broker.shutDown();
+            registry.shutDown();
             clientFactory.shutDown();
             environmentContext.shutDown();
             // shutdown the management context last, because it will close the mbean server
@@ -667,7 +669,6 @@ public class JBIContainer extends BaseLifeCycle {
      */
     protected void containerShutdown() {
         try {
-            stop();
             shutDown();
         }
         catch (Exception e) {

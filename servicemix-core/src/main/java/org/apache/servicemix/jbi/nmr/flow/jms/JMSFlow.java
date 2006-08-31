@@ -342,8 +342,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
                 advisoryConsumer.close();
                 broadcastConsumer.close();
             } catch (JMSException e) {
-                JBIException jbiEx = new JBIException("JMSException caught in stop: " + e.getMessage());
-                throw jbiEx;
+                log.debug("JMSException caught in stop", e);
             }
         }
     }
