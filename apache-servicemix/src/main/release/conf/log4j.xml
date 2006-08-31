@@ -42,6 +42,15 @@
     <logger name="org.springframework">
         <level value="WARN"/>
     </logger>
+    <logger name="org.jencks">
+        <level value="WARN"/>
+    </logger>
+    <logger name="org.apache.activemq">
+        <level value="WARN"/>
+    </logger>
+    <logger name="org.apache.activemq.transport.discovery">
+        <level value="ERROR"/>
+    </logger>
     <logger name="org.apache.servicemix">
         <!-- To enable debug logging, replace the INFO by DEBUG -->
         <level value="INFO"/>

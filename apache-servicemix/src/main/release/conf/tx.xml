@@ -17,33 +17,17 @@
     limitations under the License.
 
 -->
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
+
+  <!-- XID factory -->
+  <bean id="xidFactory" class="org.apache.geronimo.transaction.manager.XidFactoryImpl" />
 
   <!-- Transaction log -->
   <bean id="transactionLog" class="org.apache.geronimo.transaction.log.UnrecoverableLog" />
   <!--
-  <bean id="transactionLog" class="org.apache.geronimo.transaction.log.HOWLLog">
-    <contructor-arg value="org.objectweb.howl.log.BlockLogBuffer"/> 
-    <contructor-arg value="32"/> 
-    <construcor-arg value="true"/>
-    <construcor-arg value="50"/> 
-    <construcor-arg value="var/txlog"/> 
-    <construcor-arg value="log"/> 
-    <construcor-arg value="howl"/>
-    <construcor-arg value="-1"/>
-    <construcor-arg value="0"/> 
-    <construcor-arg value="2"/> 
-    <construcor-arg value="4"/> 
-    <construcor-arg value="-1"/> 
-    <construcor-arg> 
-      <bean class="org.apache.geronimo.transaction.manager.XidFactoryImpl"/>
-    </constructor-arg>
-    <construcor-arg> 
-      <bean class="org.apache.geronimo.system.serverinfo.ServerInfo">
-          <constructor-arg value="var/geronimo"/>
-      </bean>
-    </constructor-arg>
+  <bean id="transactionLog" class="org.jencks.factory.HowlLogFactoryBean">
+    <property name="logFileDir" value="./data/txlog" />
+    <property name="xidFactory" ref="xidFactory" />
   </bean>
   -->
   
@@ -56,6 +40,7 @@
   <!-- Transaction context manager -->
   <bean id="transactionContextManager" class="org.jencks.factory.TransactionContextManagerFactoryBean">
     <property name="transactionManager" ref="extendedTransactionManager"/>
+    <property name="xidFactory" ref="xidFactory" />
   </bean>
   
   <!-- Public transaction manager -->
