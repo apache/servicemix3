@@ -20,7 +20,7 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import org.apache.xbean.server.classloader.JarFileClassLoader;
+import org.apache.xbean.classloader.JarFileClassLoader;
 
 import junit.framework.TestCase;
 
