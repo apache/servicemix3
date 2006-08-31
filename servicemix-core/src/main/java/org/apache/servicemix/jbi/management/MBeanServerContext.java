@@ -32,7 +32,6 @@ import javax.management.remote.JMXConnectorServer;
 import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXServiceURL;
 
-import org.apache.activemq.broker.jmx.ManagementContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -297,7 +296,7 @@ class MBeanServerContext {
                 result=createMBeanServer();
             }
         }catch(NoClassDefFoundError e){
-            log.error("Couldnot load MBeanServer",e);
+            log.error("Could not load MBeanServer",e);
         }catch(Throwable e){
             // probably don't have access to system properties
             log.error("Failed to initialize MBeanServer",e);
@@ -391,7 +390,7 @@ class MBeanServerContext {
         String serviceURL="service:jmx:rmi:///jndi/rmi://localhost:"+connectorPort+connectorPath;
         JMXServiceURL url=new JMXServiceURL(serviceURL);
         connectorServer=JMXConnectorServerFactory.newJMXConnectorServer(url,null,mbeanServer);
-        // log.info("JMX consoles can connect to serviceURL: " + serviceURL);
+        log.info("JMX connector available at: " + serviceURL);
     }
 
     public String getConnectorPath(){
