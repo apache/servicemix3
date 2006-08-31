@@ -168,7 +168,7 @@ public class DOMUtil {
      * @param parent
      * @return
      */
-    public static Element getFirstChildElement(Element parent) {
+    public static Element getFirstChildElement(Node parent) {
         NodeList childs = parent.getChildNodes();
         for (int i = 0; i < childs.getLength(); i++) {
             Node child = childs.item(i);
