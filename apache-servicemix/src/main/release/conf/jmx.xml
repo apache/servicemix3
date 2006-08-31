@@ -25,10 +25,10 @@
   <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
     <property name="locateExistingServerIfPossible" value="true"/>
   </bean>
-  <bean id="registry" class="mx4j.tools.naming.NamingService" init-method="start">
+  <bean id="registry" class="org.apache.servicemix.jbi.management.RmiRegistryFactoryBean">
     <property name="port" value="1099"/>
   </bean>
-  <bean id="serverConnector" class="org.springframework.jmx.support.ConnectorServerFactoryBean" depends-on="registry">
+  <bean id="serverConnector" class="org.apache.servicemix.jbi.management.ConnectorServerFactoryBean" depends-on="registry">
     <property name="objectName" value="connector:name=rmi"/>
     <property name="serviceUrl" value="service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi"/>
     <property name="threaded" value="true"/>
@@ -36,20 +36,15 @@
     <property name="environment">
       <map>
         <!-- Uncomment the following line to enable authentication for jmx
-        <entry key="jmx.remote.authenticator" value-ref="jmxRemoteAuthenticator" />
+        <entry key="jmx.remote.authenticator">
+          <bean id="jmxRemoteAuthenticator" class="org.apache.servicemix.jbi.management.PasswordAuthenticatorFactoryBean">
+            <property name="passwords" value="classpath:passwords.txt" />
+          </bean>
+        </entry>
          -->
       </map>
     </property>
   </bean>
-  <bean id="jmxRemoteAuthenticator" class="mx4j.tools.remote.PasswordAuthenticator">
-    <constructor-arg>
-      <bean factory-method="getInputStream" factory-bean="jmxRemotePasswords" />
-    </constructor-arg>
-  </bean>
-  <bean id="jmxRemotePasswords"  factory-method="getResource" factory-bean="resourceLoader">
-    <constructor-arg value="classpath:passwords.txt"/>
-  </bean>
-  <bean id="resourceLoader" class="org.springframework.core.io.DefaultResourceLoader" />
 
 </beans>
 <!-- END SNIPPET: jndi -->
