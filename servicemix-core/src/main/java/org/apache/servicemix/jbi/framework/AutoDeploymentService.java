@@ -248,8 +248,8 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                             checkPendingSAs();
                         } else {
                             entry.pending = true;
-                            log.info("Shared libraries " + missings + " are not installed yet - adding Component "
-                                            + componentName + " to pending list");
+                            log.warn("Shared libraries " + missings + " are not installed yet: the component" + componentName + 
+                                     " installation is suspended and will be resumed once the listed shared libraries are installed");
                             pendingComponents.put(tmpDir, entry);
                         }
                     } catch (Exception e) {
@@ -299,8 +299,8 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                         } else {
                             // TODO: check that the assembly is not already pending
                         	entry.pending = true;
-                            log.info("Components " + missings + " are not installed yet - adding ServiceAssembly "
-                                            + name + " to pending list");
+                            log.warn("Components " + missings + " are not installed yet: the service assembly " + name + 
+                                     " deployment is suspended and will be resumed once the listed components are installed");
                             pendingSAs.put(tmpDir, entry);
                         }
                     } catch (Exception e) {
