@@ -41,8 +41,6 @@ public class StaxSource extends SAXSource implements XMLReader {
 
     private ContentHandler contentHandler;
 
-    private char[] chars = new char[1024];
-
     public StaxSource(XMLStreamReader streamReader) {
         this.streamReader = streamReader;
         setInputSource(new InputSource());
@@ -148,7 +146,7 @@ public class StaxSource extends SAXSource implements XMLReader {
             }
             // Default namespace
             if (prefix == null || prefix.length() == 0) {
-                attrs.addAttribute(null, 
+                attrs.addAttribute(XMLConstants.DEFAULT_NS_PREFIX, 
                                    null, 
                                    XMLConstants.XMLNS_ATTRIBUTE, 
                                    "CDATA", 
