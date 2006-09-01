@@ -140,11 +140,13 @@ public class AuthorizationEntry {
     
     public String getRoles() {
         StringBuffer sb = new StringBuffer();
-        for (Iterator iter = this.acls.iterator(); iter.hasNext();) {
-            GroupPrincipal p = (GroupPrincipal) iter.next();
-            sb.append(p);
-            if (iter.hasNext()) {
-                sb.append(",");
+        if (this.acls != null) {
+            for (Iterator iter = this.acls.iterator(); iter.hasNext();) {
+                GroupPrincipal p = (GroupPrincipal) iter.next();
+                sb.append(p);
+                if (iter.hasNext()) {
+                    sb.append(",");
+                }
             }
         }
         return sb.toString();
