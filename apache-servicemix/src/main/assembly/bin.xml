@@ -37,6 +37,14 @@
     <fileSet>
       <directory>src/main/release</directory>
       <outputDirectory>/</outputDirectory>
+      <excludes>
+        <exclude>bin</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/release/bin</directory>
+      <outputDirectory>/bin</outputDirectory>
+      <fileMode>755</fileMode>
     </fileSet>
     <fileSet>
       <directory>target/components</directory>
