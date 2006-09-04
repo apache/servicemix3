@@ -51,6 +51,7 @@
     <module>servicemix-eip-service-unit</module>
     <module>servicemix-embedded-simple</module>
     <module>jbi-maven-plugin</module>
+    <module>servicemix-archetypes-itests</module>
   </modules>
 
 </project>
