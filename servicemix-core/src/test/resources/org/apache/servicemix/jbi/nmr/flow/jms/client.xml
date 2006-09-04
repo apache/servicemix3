@@ -27,7 +27,6 @@ conf/servicemix.xsd">
 
   <sm:container id="jbi" 
       flowName="cluster" 
-      name="jbi"
       embedded="true" /> 
 
   <bean id="client" 

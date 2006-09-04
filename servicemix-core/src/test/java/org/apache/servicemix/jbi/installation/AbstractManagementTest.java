@@ -50,10 +50,10 @@ public abstract class AbstractManagementTest extends TestCase {
         shutdownContainer();
         if (clean) {
             Thread.sleep(1000);
-            assertTrue(FileUtil.deleteFile(new File("testWDR")));
+            assertTrue(FileUtil.deleteFile(new File("target/testWDR")));
         }
         container = new JBIContainer();
-        container.setRootDir("testWDR");
+        container.setRootDir("target/testWDR");
         initContainer();
         container.init();
         container.start();

@@ -68,7 +68,6 @@ public class ManagementContextTest extends TestCase {
     }
 
     public void testRemote() throws Exception {
-        Thread.sleep(5000);
         // The address of the connector server
         JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://"
                 + namingHost + ":" + namingPort + jndiPath);
@@ -98,7 +97,6 @@ public class ManagementContextTest extends TestCase {
         log.info("STATE = " + mc.getCurrentState());
         mc.stop();
         log.info("STATE = " + mc.getCurrentState());
-        mc.shutDown();
     }
     
     public void testComponent() throws Exception {

@@ -32,7 +32,7 @@ public class DeployAndListServiceAssemblyTasksTest extends JbiTaskSupport {
 
 	private DeployServiceAssemblyTask deployServiceAssembliesTask;
 
-	private File rootDir = new File("testWDIR");
+	private File rootDir = new File("target/testWDIR");
 
 	private ListServiceAssembliesTask listServiceAssembliesTask;
 

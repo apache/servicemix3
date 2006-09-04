@@ -16,6 +16,7 @@
  */
 package org.apache.servicemix.jbi.management;
 
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -28,7 +29,38 @@ public class RmiRegistryFactoryBean implements FactoryBean, InitializingBean, Di
 
     private int port = Registry.REGISTRY_PORT;
     private Registry registry;
+    private boolean locate = false;
+    private boolean create = true;
+    private boolean locallyCreated = false;
     
+    /**
+     * @return the create
+     */
+    public boolean isCreate() {
+        return create;
+    }
+
+    /**
+     * @param create the create to set
+     */
+    public void setCreate(boolean create) {
+        this.create = create;
+    }
+
+    /**
+     * @return the locate
+     */
+    public boolean isLocate() {
+        return locate;
+    }
+
+    /**
+     * @param locate the locate to set
+     */
+    public void setLocate(boolean locate) {
+        this.locate = locate;
+    }
+
     /**
      * @return the port
      */
@@ -55,13 +87,27 @@ public class RmiRegistryFactoryBean implements FactoryBean, InitializingBean, Di
         return true;
     }
 
-    public void afterPropertiesSet() throws Exception {
-        registry = LocateRegistry.createRegistry(getPort());
+    public void afterPropertiesSet() throws RemoteException {
+        if (registry == null && locate) {
+            try {
+                Registry reg = LocateRegistry.getRegistry(getPort());
+                reg.list();
+                registry = reg;
+            } catch (RemoteException e) {
+                // ignore
+            }
+        }
+        if (registry == null && create) {
+            registry = LocateRegistry.createRegistry(getPort());
+            locallyCreated = true;
+        }
     }
 
-    public void destroy() throws Exception {
-        if (registry != null) {
-            UnicastRemoteObject.unexportObject(registry, true);
+    public void destroy() throws RemoteException {
+        if (registry != null && locallyCreated) {
+            Registry reg = registry;
+            registry = null;
+            UnicastRemoteObject.unexportObject(reg, true);
         }
     }
 

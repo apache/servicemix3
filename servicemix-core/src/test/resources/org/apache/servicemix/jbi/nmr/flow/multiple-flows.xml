@@ -22,27 +22,27 @@
 
   <sm:container name="local" flowNames="seda,jms" embedded="true"> 
     <sm:activationSpecs> 
-      <sm:activationSpec id="localSender" endpoint="localSender" destinationService="localReceiver"> 
+      <sm:activationSpec sm:id="localSender" endpoint="localSender" destinationService="localReceiver"> 
         <sm:component> 
           <bean class="org.apache.servicemix.tck.SenderComponent" /> 
         </sm:component> 
       </sm:activationSpec> 
-      <sm:activationSpec id="remoteSender" endpoint="remoteSender" destinationService="remoteReceiver"> 
+      <sm:activationSpec sm:id="remoteSender" endpoint="remoteSender" destinationService="remoteReceiver"> 
         <sm:component> 
           <bean class="org.apache.servicemix.tck.SenderComponent" /> 
         </sm:component> 
       </sm:activationSpec> 
-      <sm:activationSpec id="clusteredSender" endpoint="clusteredSender" destinationService="clusteredReceiver"> 
+      <sm:activationSpec sm:id="clusteredSender" endpoint="clusteredSender" destinationService="clusteredReceiver"> 
         <sm:component> 
           <bean class="org.apache.servicemix.tck.SenderComponent" /> 
         </sm:component> 
       </sm:activationSpec> 
-      <sm:activationSpec id="localReceiver" service="localReceiver"> 
+      <sm:activationSpec sm:id="localReceiver" service="localReceiver"> 
         <sm:component> 
           <bean class="org.apache.servicemix.tck.ReceiverComponent" /> 
         </sm:component> 
       </sm:activationSpec> 
-      <sm:activationSpec id="clusteredReceiver" service="clusteredReceiver"> 
+      <sm:activationSpec sm:id="clusteredReceiver" service="clusteredReceiver"> 
         <sm:component> 
           <bean class="org.apache.servicemix.tck.ReceiverComponent" /> 
         </sm:component> 
@@ -52,12 +52,12 @@
   
   <sm:container name="remote" flowNames="seda,jms" embedded="true"> 
     <sm:activationSpecs> 
-      <sm:activationSpec id="remoteReceiver" service="remoteReceiver"> 
+      <sm:activationSpec sm:id="remoteReceiver" service="remoteReceiver"> 
         <sm:component> 
           <bean class="org.apache.servicemix.tck.ReceiverComponent" /> 
         </sm:component> 
       </sm:activationSpec> 
-      <sm:activationSpec id="clusteredReceiver" service="clusteredReceiver"> 
+      <sm:activationSpec sm:id="clusteredReceiver" service="clusteredReceiver"> 
         <sm:component> 
           <bean class="org.apache.servicemix.tck.ReceiverComponent" /> 
         </sm:component> 

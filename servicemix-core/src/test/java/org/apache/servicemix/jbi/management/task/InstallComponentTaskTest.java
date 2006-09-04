@@ -17,8 +17,18 @@
 package org.apache.servicemix.jbi.management.task;
 
 import java.io.File;
-import java.net.URL;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.jar.JarOutputStream;
+import java.util.zip.ZipEntry;
 
+import javax.jbi.JBIException;
+import javax.jbi.component.Bootstrap;
+import javax.jbi.component.InstallationContext;
+import javax.management.ObjectName;
+
+import org.apache.servicemix.jbi.installation.AbstractManagementTest;
+import org.apache.servicemix.jbi.installation.Bootstrap1;
 import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.tools.ant.Project;
 
@@ -30,7 +40,7 @@ public class InstallComponentTaskTest extends JbiTaskSupport {
     
     
     private InstallComponentTask installComponentTask;
-    private File rootDir = new File("testWDIR");
+    private File rootDir = new File("target/testWDIR");
     /*
      * @see TestCase#setUp()
      */
@@ -52,16 +62,40 @@ public class InstallComponentTaskTest extends JbiTaskSupport {
     }
     
     public void testInstallation() throws Exception {
-        URL url = getClass().getClassLoader().getResource("org/apache/servicemix/jbi/installation/testarchive.jar");
-        if (url != null) {
-            String file = url.getFile();
-            installComponentTask.setFile(file);
-            installComponentTask.init();
-            installComponentTask.execute();
-            File testFile = new File(rootDir, "components" + File.separator
-                    + "ComponentTest");
-            assertTrue(testFile.exists());
-            FileUtil.deleteFile(rootDir);
-        }
+        Bootstrap1.setDelegate(new Bootstrap() {
+            public void cleanUp() throws JBIException {
+            }
+            public ObjectName getExtensionMBeanName() {
+                return null;
+            }
+            public void init(InstallationContext installContext) throws JBIException {
+            }
+            public void onInstall() throws JBIException {
+            }
+            public void onUninstall() throws JBIException {
+            }
+        });
+        String installJarUrl = createInstallerArchive("component1").getAbsolutePath();
+        installComponentTask.setFile(installJarUrl);
+        installComponentTask.init();
+        installComponentTask.execute();
+        File testFile = new File(rootDir, "components" + File.separator
+                + "component1");
+        assertTrue(testFile.exists());
+        FileUtil.deleteFile(rootDir);
+    }
+
+    protected File createInstallerArchive(String jbi) throws Exception {
+        InputStream is = AbstractManagementTest.class.getResourceAsStream(jbi + "-jbi.xml");
+        File jar = File.createTempFile("jbi", ".zip");
+        JarOutputStream jos = new JarOutputStream(new FileOutputStream(jar));
+        jos.putNextEntry(new ZipEntry("META-INF/jbi.xml"));
+        byte[] buffer = new byte[is.available()];
+        is.read(buffer);
+        jos.write(buffer);
+        jos.closeEntry();
+        jos.close();
+        is.close();
+        return jar;
     }
 }

@@ -41,8 +41,8 @@ public class EndpointReferenceBuilderTest extends TestCase {
         log.info(new SourceTransformer().toString(df));
         Element e = (Element) df.getFirstChild();
         assertEquals("http://java.sun.com/jbi/end-point-reference", e.getNamespaceURI());
-        assertEquals("end-point-reference", e.getNodeName());
-        assertEquals("myEndpoint", e.getAttributeNodeNS("http://java.sun.com/jbi/end-point-reference", "end-point-name"));
+        assertEquals("end-point-reference", e.getLocalName());
+        assertEquals("myEndpoint", e.getAttributeNodeNS("http://java.sun.com/jbi/end-point-reference", "end-point-name").getValue());
         assertEquals(new QName("http://foo.bar.com", "myService"),
                      DOMUtil.createQName(e, e.getAttributeNS("http://java.sun.com/jbi/end-point-reference", "service-name")));
     }

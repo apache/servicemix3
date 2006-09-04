@@ -18,19 +18,14 @@ package org.apache.servicemix.jbi.management;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.rmi.registry.LocateRegistry;
+import java.rmi.RemoteException;
 import java.util.List;
 
-import javax.management.Attribute;
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
-import javax.management.remote.JMXConnectorServer;
-import javax.management.remote.JMXConnectorServerFactory;
-import javax.management.remote.JMXServiceURL;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -60,8 +55,8 @@ class MBeanServerContext {
     private int connectorPort=1099;
     private String connectorPath="/jmxrmi";
     private AtomicBoolean started=new AtomicBoolean(false);
-    private JMXConnectorServer connectorServer;
-    private ObjectName namingServiceObjectName;
+    private ConnectorServerFactoryBean connectorServerFactoryBean;
+    private RmiRegistryFactoryBean rmiRegistryFactoryBean;
 
     public MBeanServerContext(){
         this(null);
@@ -75,47 +70,60 @@ class MBeanServerContext {
         // lets force the MBeanServer to be created if needed
         if (started.compareAndSet(false, true)) {
             getMBeanServer();
-            if (connectorServer != null) {
+            if (createConnector) {
                 try {
-                    getMBeanServer().invoke(namingServiceObjectName, "start", null, null);
-                }
-                catch (Throwable ignore) {
-                }
-                Thread t = new Thread("JMX connector") {
-                    public void run() {
-                        try {
-                            JMXConnectorServer server = connectorServer;
-                            if (started.get() && server != null) {
-                                server.start();
-                                log.info("JMX consoles can connect to " + server.getAddress());
-                            }
-                        }
-                        catch (IOException e) {
-                            log.warn("Failed to start jmx connector: " + e.getMessage());
-                        }
+                    rmiRegistryFactoryBean = new RmiRegistryFactoryBean();
+                    rmiRegistryFactoryBean.setPort(connectorPort);
+                    rmiRegistryFactoryBean.afterPropertiesSet();
+                } catch (Exception e) {
+                    log.warn("Failed to start rmi registry: " + e.getMessage());
+                    if (log.isDebugEnabled()) {
+                        log.debug("Failed to start rmi registry", e);
                     }
-                };
-                t.setDaemon(true);
-                t.start();
+                }
+                try {
+                    connectorServerFactoryBean = new ConnectorServerFactoryBean();
+                    //connectorServerFactoryBean.setDaemon(true);
+                    connectorServerFactoryBean.setObjectName("connector:name=rmi");
+                    //connectorServerFactoryBean.setThreaded(true);
+                    connectorServerFactoryBean.setServer(getMBeanServer());
+                    String serviceUrl = "service:jmx:rmi:///jndi/rmi://localhost:" + connectorPort + connectorPath;
+                    connectorServerFactoryBean.setServiceUrl(serviceUrl);
+                    connectorServerFactoryBean.afterPropertiesSet();
+                } catch (Exception e) {
+                    log.warn("Failed to start jmx connector: " + e.getMessage());
+                    if (log.isDebugEnabled()) {
+                        log.debug("Failed to create jmx connector", e);
+                    }
+                }
             }
-        }
+        }   
     }
 
     public void stop() throws IOException {
         if (started.compareAndSet(true, false)) {
-            JMXConnectorServer server = connectorServer;
-            connectorServer = null;
-            if (server != null) {
+            if (connectorServerFactoryBean != null) {
                 try {
-                    server.stop();
-                }
-                catch (IOException e) {
+                    connectorServerFactoryBean.destroy();
+                } catch (Exception e) {
                     log.warn("Failed to stop jmx connector: " + e.getMessage());
+                    if (log.isDebugEnabled()) {
+                        log.debug("Failed to stop jmx connector", e);
+                    }
+                } finally {
+                    connectorServerFactoryBean = null;
                 }
+            }
+            if (rmiRegistryFactoryBean != null) {
                 try {
-                    getMBeanServer().invoke(namingServiceObjectName, "stop", null, null);
-                }
-                catch (Throwable ignore) {
+                    rmiRegistryFactoryBean.destroy();
+                } catch (RemoteException e) {
+                    log.warn("Failed to stop rmi registry: " + e.getMessage());
+                    if (log.isDebugEnabled()) {
+                        log.debug("Failed to stop rmi registry", e);
+                    }
+                } finally {
+                    rmiRegistryFactoryBean = null;
                 }
             }
             if (locallyCreateMBeanServer && beanServer != null) {
@@ -356,41 +364,7 @@ class MBeanServerContext {
     protected MBeanServer createMBeanServer() throws MalformedObjectNameException,IOException{
         MBeanServer mbeanServer=MBeanServerFactory.createMBeanServer(jmxDomainName);
         locallyCreateMBeanServer=true;
-        if(createConnector){
-            createConnector(mbeanServer);
-        }
         return mbeanServer;
-    }
-
-    /**
-     * @param mbeanServer
-     * @throws MalformedObjectNameException
-     * @throws MalformedURLException
-     * @throws IOException
-     */
-    private void createConnector(MBeanServer mbeanServer) throws MalformedObjectNameException,MalformedURLException,
-                    IOException{
-        // Create the NamingService, needed by JSR 160
-        try{
-            LocateRegistry.createRegistry(connectorPort);
-            namingServiceObjectName=ObjectName.getInstance("naming:type=rmiregistry");
-            // Do not use the createMBean as the mx4j jar may not be in the
-            // same class loader than the server
-            Class cl=Class.forName("mx4j.tools.naming.NamingService");
-            mbeanServer.registerMBean(cl.newInstance(),namingServiceObjectName);
-            // mbeanServer.createMBean("mx4j.tools.naming.NamingService", namingServiceObjectName, null);
-            // set the naming port
-            Attribute attr=new Attribute("Port",new Integer(connectorPort));
-            mbeanServer.setAttribute(namingServiceObjectName,attr);
-            mbeanServer.invoke(namingServiceObjectName, "start", null, null);
-        }catch(Throwable e){
-            log.debug("Failed to create local registry",e);
-        }
-        // Create the JMXConnectorServer
-        String serviceURL="service:jmx:rmi:///jndi/rmi://localhost:"+connectorPort+connectorPath;
-        JMXServiceURL url=new JMXServiceURL(serviceURL);
-        connectorServer=JMXConnectorServerFactory.newJMXConnectorServer(url,null,mbeanServer);
-        log.info("JMX connector available at: " + serviceURL);
     }
 
     public String getConnectorPath(){

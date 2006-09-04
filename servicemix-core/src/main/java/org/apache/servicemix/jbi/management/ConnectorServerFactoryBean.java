@@ -27,19 +27,29 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.core.Constants;
+import org.springframework.jmx.support.MBeanRegistrationSupport;
 
 public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean, DisposableBean{
 
     private Log log = LogFactory.getLog(ConnectorServerFactoryBean.class);
+    private org.springframework.jmx.support.ConnectorServerFactoryBean csfb = new org.springframework.jmx.support.ConnectorServerFactoryBean();
     private String serviceUrl = org.springframework.jmx.support.ConnectorServerFactoryBean.DEFAULT_SERVICE_URL;
-    private org.springframework.jmx.support.ConnectorServerFactoryBean csfb = new org.springframework.jmx.support.ConnectorServerFactoryBean(); 
+    private boolean daemon = false;
+    private boolean threaded = false;
+    private Map environment;
+    private String objectName;
+    private int registrationBehavior;
+    private MBeanServer server;
+    private static final Constants constants = new Constants(MBeanRegistrationSupport.class);
+    
 
     /**
      * @param daemon
      * @see org.springframework.jmx.support.ConnectorServerFactoryBean#setDaemon(boolean)
      */
     public void setDaemon(boolean daemon) {
-        csfb.setDaemon(daemon);
+        this.daemon = daemon;
     }
 
     /**
@@ -47,7 +57,7 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
      * @see org.springframework.jmx.support.ConnectorServerFactoryBean#setEnvironment(java.util.Properties)
      */
     public void setEnvironment(Properties environment) {
-        csfb.setEnvironment(environment);
+        this.environment = environment;
     }
 
     /**
@@ -55,7 +65,7 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
      * @see org.springframework.jmx.support.ConnectorServerFactoryBean#setEnvironmentMap(java.util.Map)
      */
     public void setEnvironmentMap(Map environment) {
-        csfb.setEnvironmentMap(environment);
+        this.environment = environment;
     }
 
     /**
@@ -64,7 +74,7 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
      * @see org.springframework.jmx.support.ConnectorServerFactoryBean#setObjectName(java.lang.String)
      */
     public void setObjectName(String objectName) throws MalformedObjectNameException {
-        csfb.setObjectName(objectName);
+        this.objectName = objectName;
     }
 
     /**
@@ -72,7 +82,7 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
      * @see org.springframework.jmx.support.MBeanRegistrationSupport#setRegistrationBehavior(int)
      */
     public void setRegistrationBehavior(int registrationBehavior) {
-        csfb.setRegistrationBehavior(registrationBehavior);
+        this.registrationBehavior = registrationBehavior;
     }
 
     /**
@@ -80,7 +90,7 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
      * @see org.springframework.jmx.support.MBeanRegistrationSupport#setRegistrationBehaviorName(java.lang.String)
      */
     public void setRegistrationBehaviorName(String registrationBehavior) {
-        csfb.setRegistrationBehaviorName(registrationBehavior);
+        setRegistrationBehavior(constants.asNumber(registrationBehavior).intValue());
     }
 
     /**
@@ -88,7 +98,7 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
      * @see org.springframework.jmx.support.MBeanRegistrationSupport#setServer(javax.management.MBeanServer)
      */
     public void setServer(MBeanServer server) {
-        csfb.setServer(server);
+        this.server = server;
     }
 
     /**
@@ -120,13 +130,26 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
     }
 
     public void afterPropertiesSet() throws Exception {
+        csfb = new org.springframework.jmx.support.ConnectorServerFactoryBean();
+        csfb.setDaemon(daemon);
+        csfb.setThreaded(threaded);
+        csfb.setRegistrationBehavior(registrationBehavior);
+        csfb.setEnvironmentMap(environment);
+        csfb.setObjectName(objectName);
         csfb.setServiceUrl(serviceUrl);
+        csfb.setServer(server);
         csfb.afterPropertiesSet();
         log.info("JMX connector available at: " + serviceUrl);
     }
 
     public void destroy() throws Exception {
-        csfb.destroy();
+        if (csfb != null) {
+            try {
+                csfb.destroy();
+            } finally {
+                csfb = null;
+            }
+        }
     }
 
 }
