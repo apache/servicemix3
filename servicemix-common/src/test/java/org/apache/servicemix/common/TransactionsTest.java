@@ -172,7 +172,7 @@ public class TransactionsTest extends TestCase {
         assertTrue(ok);
         assertEquals(Status.STATUS_MARKED_ROLLBACK, txManager.getStatus());
         assertEquals(ExchangeStatus.ERROR, me.getStatus());
-        txManager.commit();
+        txManager.rollback();
     }
     
     private class TestComponent extends BaseComponent {
