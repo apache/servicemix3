@@ -245,9 +245,7 @@
                 <module>servicemix-sca</module>
                 <module>servicemix-wsn2005</module>
                 <module>samples</module>
-                <!--
                 <module>geronimo</module>
-                -->
                 <module>apache-servicemix</module>
             </modules>
         </profile>
@@ -295,9 +293,7 @@
                 <module>servicemix-sca</module>
                 <module>servicemix-wsn2005</module>
                 <module>samples</module>
-                <!--
                 <module>geronimo</module>
-                -->
                 <module>apache-servicemix</module>
             </modules>
         </profile>
