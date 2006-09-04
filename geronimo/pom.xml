@@ -35,7 +35,7 @@
     <packaging>pom</packaging>
   
     <properties>
-        <car-maven-plugin-version>1.2-SNAPSHOT</car-maven-plugin-version>
+        <car-maven-plugin-version>1.1</car-maven-plugin-version>
     </properties>
     
     <modules>
