@@ -24,7 +24,7 @@
                  endpoint="endpoint"
                  targetService="b:pipeline"
                  role="consumer" 
-                 locationURI="http://localhost:8192/bridge/"
+                 locationURI="http://0.0.0.0:8192/bridge/"
                  defaultMep="http://www.w3.org/2004/08/wsdl/in-only" />
 
 </beans>
