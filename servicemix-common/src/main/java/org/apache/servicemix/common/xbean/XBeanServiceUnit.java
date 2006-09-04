@@ -18,9 +18,9 @@ package org.apache.servicemix.common.xbean;
 
 import org.apache.servicemix.common.ServiceUnit;
 import org.apache.xbean.kernel.Kernel;
+import org.apache.xbean.kernel.ServiceFactory;
 import org.apache.xbean.kernel.ServiceName;
 import org.apache.xbean.kernel.ServiceNotFoundException;
-import org.apache.xbean.server.spring.configuration.SpringConfigurationServiceFactory;
 
 import javax.jbi.JBIException;
 
@@ -64,9 +64,8 @@ public class XBeanServiceUnit extends ServiceUnit {
     public ClassLoader getConfigurationClassLoader() throws ServiceNotFoundException {
         ClassLoader cl = null;
         if (kernel != null) {
-            Object o = kernel.getServiceFactory(configuration);
-            SpringConfigurationServiceFactory scsf = (SpringConfigurationServiceFactory) o;
-            cl = scsf.getApplicationContext().getClassLoader();
+            ServiceFactory sf = kernel.getServiceFactory(configuration);
+            cl = sf.getClassLoader();
         } 
         if (cl == null) {
             cl = Thread.currentThread().getContextClassLoader();
