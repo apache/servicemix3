@@ -20,6 +20,7 @@ import org.apache.servicemix.jbi.jaxp.BytesSource;
 import org.apache.servicemix.jbi.jaxp.ResourceSource;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.messaging.PojoMarshaler;
 import org.xml.sax.SAXException;
 
 import javax.activation.DataHandler;
@@ -151,8 +152,13 @@ public class CopyTransformer implements MessageTransformer {
     public static void copyProperties(NormalizedMessage from, NormalizedMessage to) {
         for (Iterator iter = from.getPropertyNames().iterator(); iter.hasNext();) {
             String name = (String) iter.next();
-            Object value = from.getProperty(name);
-            to.setProperty(name, value);
+            // Do not copy transient properties
+            if (!SourceTransformer.CONTENT_DOCUMENT_PROPERTY.equals(name) && 
+                !PojoMarshaler.BODY.equals(name))
+            {
+                Object value = from.getProperty(name);
+                to.setProperty(name, value);
+            }
         }
     }
 
