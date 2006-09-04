@@ -196,6 +196,10 @@
       <groupId>commons-discovery</groupId>
       <artifactId>commons-discovery</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.objectweb.howl</groupId>
+      <artifactId>howl</artifactId>
+    </dependency>
     
   </dependencies>
 

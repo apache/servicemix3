@@ -129,6 +129,7 @@
         <include>org.apache.geronimo.specs:geronimo-javamail_1.3.1_spec</include>
         
         <include>org.jencks:jencks</include>
+        <include>org.objectweb.howl:howl</include>
         
         <include>geronimo:geronimo-connector</include>
         <include>geronimo:geronimo-transaction</include>

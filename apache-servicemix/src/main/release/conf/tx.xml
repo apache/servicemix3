@@ -23,13 +23,13 @@
   <bean id="xidFactory" class="org.apache.geronimo.transaction.manager.XidFactoryImpl" />
 
   <!-- Transaction log -->
-  <bean id="transactionLog" class="org.apache.geronimo.transaction.log.UnrecoverableLog" />
   <!--
+  <bean id="transactionLog" class="org.apache.geronimo.transaction.log.UnrecoverableLog" />
+  -->
   <bean id="transactionLog" class="org.jencks.factory.HowlLogFactoryBean">
     <property name="logFileDir" value="./data/txlog" />
     <property name="xidFactory" ref="xidFactory" />
   </bean>
-  -->
   
   <!-- Internal transaction manager -->
   <bean id="extendedTransactionManager" class="org.jencks.factory.TransactionManagerFactoryBean">
