@@ -29,6 +29,8 @@ import javax.management.ObjectName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.jmx.ConnectorServerFactoryBean;
+import org.apache.servicemix.jbi.jmx.RmiRegistryFactoryBean;
 
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
 

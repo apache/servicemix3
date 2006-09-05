@@ -14,11 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.management;
+package org.apache.servicemix.jbi.jmx;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.io.Resource;
 
+/**
+ * 
+ * @author gnodet
+ * @org.apache.xbean.XBean element="jmxPasswordAuthenticator"
+ */
 public class PasswordAuthenticatorFactoryBean implements FactoryBean {
 
     private Resource passwords;

@@ -14,10 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.management;
+package org.apache.servicemix.jbi.jmx;
 
 import java.util.Map;
-import java.util.Properties;
 
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
@@ -30,7 +29,21 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.Constants;
 import org.springframework.jmx.support.MBeanRegistrationSupport;
 
-public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean, DisposableBean{
+/**
+ * <code>FactoryBean</code> that creates a JSR-160 <code>JMXConnectorServer</code>,
+ * optionally registers it with the <code>MBeanServer</code> and then starts it.
+ *
+ * <p>The <code>JMXConnectorServer</code> can be started in a separate thread by setting the
+ * <code>threaded</code> property to <code>true</code>. You can configure this thread to be a
+ * daemon thread by setting the <code>daemon</code> property to <code>true</code>.
+ *
+ * This xbean-enabled factory is a wrapper on top of the existing Spring
+ * factory bean.  It also logs the serviceUrl when starting.
+ * 
+ * @author gnodet
+ * @org.apache.xbean.XBean element="jmxConnector"
+ */
+public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean, DisposableBean {
 
     private Log log = LogFactory.getLog(ConnectorServerFactoryBean.class);
     private org.springframework.jmx.support.ConnectorServerFactoryBean csfb = new org.springframework.jmx.support.ConnectorServerFactoryBean();
@@ -45,6 +58,8 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
     
 
     /**
+     * Set whether any threads started for the <code>JMXConnectorServer</code> should be
+     * started as daemon threads.
      * @param daemon
      * @see org.springframework.jmx.support.ConnectorServerFactoryBean#setDaemon(boolean)
      */
@@ -53,24 +68,20 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
     }
 
     /**
-     * @param environment
-     * @see org.springframework.jmx.support.ConnectorServerFactoryBean#setEnvironment(java.util.Properties)
-     */
-    public void setEnvironment(Properties environment) {
-        this.environment = environment;
-    }
-
-    /**
+     * Set the environment properties used to construct the <code>JMXConnector</code>
+     * as a <code>Map</code> of String keys and arbitrary Object values.
      * @param environment
      * @see org.springframework.jmx.support.ConnectorServerFactoryBean#setEnvironmentMap(java.util.Map)
      */
-    public void setEnvironmentMap(Map environment) {
+    public void setEnvironment(Map environment) {
         this.environment = environment;
     }
 
     /**
+     * Set the <code>ObjectName</code> used to register the <code>JMXConnectorServer</code>
+     * itself with the <code>MBeanServer</code>.
      * @param objectName
-     * @throws MalformedObjectNameException
+     * @throws MalformedObjectNameException if the <code>ObjectName</code> is malformed
      * @see org.springframework.jmx.support.ConnectorServerFactoryBean#setObjectName(java.lang.String)
      */
     public void setObjectName(String objectName) throws MalformedObjectNameException {
@@ -78,6 +89,13 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
     }
 
     /**
+     * Specify  what action should be taken when attempting to register an MBean
+     * under an {@link javax.management.ObjectName} that already exists.
+     * <p>Default is REGISTRATION_FAIL_ON_EXISTING.
+     * @see #setRegistrationBehaviorName(String)
+     * @see #REGISTRATION_FAIL_ON_EXISTING
+     * @see #REGISTRATION_IGNORE_EXISTING
+     * @see #REGISTRATION_REPLACE_EXISTING
      * @param registrationBehavior
      * @see org.springframework.jmx.support.MBeanRegistrationSupport#setRegistrationBehavior(int)
      */
@@ -86,6 +104,12 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
     }
 
     /**
+     * Set the registration behavior by the name of the corresponding constant,
+     * e.g. "REGISTRATION_IGNORE_EXISTING".
+     * @see #setRegistrationBehavior
+     * @see #REGISTRATION_FAIL_ON_EXISTING
+     * @see #REGISTRATION_IGNORE_EXISTING
+     * @see #REGISTRATION_REPLACE_EXISTING
      * @param registrationBehavior
      * @see org.springframework.jmx.support.MBeanRegistrationSupport#setRegistrationBehaviorName(java.lang.String)
      */
@@ -94,6 +118,9 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
     }
 
     /**
+     * Specify the <code>MBeanServer</code> instance with which all beans should
+     * be registered. The <code>MBeanExporter</code> will attempt to locate an
+     * existing <code>MBeanServer</code> if none is supplied.
      * @param server
      * @see org.springframework.jmx.support.MBeanRegistrationSupport#setServer(javax.management.MBeanServer)
      */
@@ -102,6 +129,7 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
     }
 
     /**
+     * Set the service URL for the <code>JMXConnectorServer</code>.
      * @param serviceUrl
      * @see org.springframework.jmx.support.ConnectorServerFactoryBean#setServiceUrl(java.lang.String)
      */
@@ -110,6 +138,7 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
     }
 
     /**
+     * Set whether the <code>JMXConnectorServer</code> should be started in a separate thread.
      * @param threaded
      * @see org.springframework.jmx.support.ConnectorServerFactoryBean#setThreaded(boolean)
      */

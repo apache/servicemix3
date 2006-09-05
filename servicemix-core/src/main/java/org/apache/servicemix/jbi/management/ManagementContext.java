@@ -126,6 +126,14 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     public int getNamingPort() {
         return mbeanServerContext.getConnectorPort();
     }
+    
+    public boolean isCreateJmxConnector() {
+        return mbeanServerContext.isCreateConnector();
+    }
+    
+    public void setCreateJmxConnector(boolean createJmxConnector) {
+        mbeanServerContext.setCreateConnector(createJmxConnector);
+    }
 
     /**
      * Initialize the ManagementContext

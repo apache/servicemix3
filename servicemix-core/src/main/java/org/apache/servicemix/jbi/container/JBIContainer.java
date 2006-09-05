@@ -331,6 +331,20 @@ public class JBIContainer extends BaseLifeCycle {
     }
 
     /**
+     * @return Returns the useMBeanServer.
+     */
+    public boolean isCreateJmxConnector() {
+        return managementContext.isCreateJmxConnector();
+    }
+
+    /**
+     * @param useMBeanServer The useMBeanServer to set.
+     */
+    public void setCreateJmxConnector(boolean createJmxConnector) {
+        managementContext.setCreateJmxConnector(createJmxConnector);
+    }
+
+    /**
      * @return Returns the monitorInstallationDirectory.
      */
     public boolean isMonitorInstallationDirectory() {

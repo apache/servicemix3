@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.management;
+package org.apache.servicemix.jbi.jmx;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -25,6 +25,11 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
+/**
+ * 
+ * @author gnodet
+ * @org.apache.xbean.XBean element="rmiRegistry"
+ */
 public class RmiRegistryFactoryBean implements FactoryBean, InitializingBean, DisposableBean{
 
     private int port = Registry.REGISTRY_PORT;
