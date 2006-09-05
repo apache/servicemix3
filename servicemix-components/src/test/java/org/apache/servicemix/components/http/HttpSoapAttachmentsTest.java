@@ -28,16 +28,15 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.servicemix.components.http.HttpSoapConnector;
 import org.apache.servicemix.components.util.EchoComponent;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.codehaus.xfire.attachments.JavaMailAttachments;
 import org.codehaus.xfire.attachments.SimpleAttachment;
-
-import com.meterware.httpunit.PostMethodWebRequest;
-import com.meterware.httpunit.WebConversation;
-import com.meterware.httpunit.WebResponse;
 
 public class HttpSoapAttachmentsTest extends TestCase {
 
@@ -81,10 +80,11 @@ public class HttpSoapAttachmentsTest extends TestCase {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         sendAtts.write(bos);
         InputStream is = new ByteArrayInputStream(bos.toByteArray());
-        PostMethodWebRequest req = new PostMethodWebRequest(
-                "http://localhost:" + PORT, is, sendAtts.getContentType());
-        WebResponse response = new WebConversation().getResponse(req);
-        System.out.println(response.getText());
+        PostMethod method = new PostMethod("http://localhost:" + PORT);
+        method.setRequestEntity(new InputStreamRequestEntity(is));
+        method.setRequestHeader("Content-Type", sendAtts.getContentType());
+        new HttpClient().executeMethod(method);
+        System.out.println(method.getResponseBodyAsString());
     }
 
     private DataHandler createDataHandler(String name) throws MessagingException {

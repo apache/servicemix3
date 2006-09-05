@@ -29,10 +29,9 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
-import org.apache.servicemix.components.http.HttpSoapClientMarshaler;
-import org.apache.servicemix.components.http.HttpSoapConnector;
 import org.apache.servicemix.components.util.EchoComponent;
 import org.apache.servicemix.components.util.MockServiceComponent;
 import org.apache.servicemix.components.util.TraceComponent;
@@ -49,10 +48,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
-
-import com.meterware.httpunit.PostMethodWebRequest;
-import com.meterware.httpunit.WebConversation;
-import com.meterware.httpunit.WebResponse;
 
 public class HttpSoapTest extends TestCase {
     
@@ -115,10 +110,10 @@ public class HttpSoapTest extends TestCase {
         as.setDestinationService(new QName("trace"));
         container.activateComponent(as);
 
-        PostMethodWebRequest req = new PostMethodWebRequest(
-                "http://localhost:" + PORT + "/?name=Guillaume", getClass().getResourceAsStream("soap-request.xml"), null);
-        WebResponse response = new WebConversation().getResponse(req);
-        System.out.println(response.getText());
+        PostMethod method = new PostMethod("http://localhost:" + PORT + "/?name=Guillaume");
+        method.setRequestEntity(new InputStreamRequestEntity(getClass().getResourceAsStream("soap-request.xml")));
+        new HttpClient().executeMethod(method);
+        System.out.println(method.getResponseBodyAsString());
     }
 
     public void testMarhaler() throws Exception {
