@@ -19,6 +19,7 @@
 -->
 <beans xmlns:sm="http://servicemix.apache.org/config/1.0">
 
+  <!-- System properties -->
   <sm:systemProperties>
     <property name="properties">
       <map>
@@ -31,6 +32,7 @@
     </property>
   </sm:systemProperties>
 
+  <import resource="classpath:security.xml" />
   <import resource="classpath:jmx.xml" />
   <import resource="classpath:activemq.xml" />
   <import resource="classpath:jndi.xml" />
@@ -38,15 +40,15 @@
   <!-- the JBI container -->
   <sm:container id="jbi" 
                 rootDir="./data/smx" 
-                MBeanServer="#mbeanServer"
+                MBeanServer="#jmxServer"
                 installationDirPath="./install"
                 deploymentDirPath="./deploy"
                 monitorInterval="1"
                 dumpStats="true"
                 statsInterval="10" 
-                flowName="seda"
                 transactionManager="#transactionManager"
                 workManager="#workManager"
+                createJmxConnector="false"
                 depends-on="jndi">
                 
     <sm:broker>

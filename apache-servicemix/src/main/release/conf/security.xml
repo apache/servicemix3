@@ -19,14 +19,10 @@
 -->
 <beans xmlns:sm="http://servicemix.apache.org/config/1.0">
 
+  <!-- Authentication service -->
   <sm:authenticationService id="authenticationService" />
   
-  <sm:authorizationMap id="authorizationMap">
-    <sm:authorizationEntries>
-      <sm:authorizationEntry service="*:*" roles="*" />
-    </sm:authorizationEntries>
-  </sm:authorizationMap>
-  
+  <!-- KeyStore manager -->
   <sm:keystoreManager id="keystoreManager">
     <sm:keystores>
       <sm:keystore name="default"
@@ -35,6 +31,13 @@
                    keyPasswords="smx=smx" />
     </sm:keystores>
   </sm:keystoreManager>
+
+  <!-- ServiceMix authorization map -->
+  <sm:authorizationMap id="authorizationMap">
+    <sm:authorizationEntries>
+      <sm:authorizationEntry service="*:*" roles="*" />
+    </sm:authorizationEntries>
+  </sm:authorizationMap>
 
 </beans>
 

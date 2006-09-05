@@ -17,7 +17,7 @@
     limitations under the License.
 
 -->
-<beans>
+<beans xmlns:jencks="http://jencks.org/1.3">
 
   <!-- XID factory -->
   <bean id="xidFactory" class="org.apache.geronimo.transaction.manager.XidFactoryImpl" />
@@ -26,60 +26,60 @@
   <!--
   <bean id="transactionLog" class="org.apache.geronimo.transaction.log.UnrecoverableLog" />
   -->
-  <bean id="transactionLog" class="org.jencks.factory.HowlLogFactoryBean">
-    <property name="logFileDir" value="./data/txlog" />
-    <property name="xidFactory" ref="xidFactory" />
-  </bean>
+  <jencks:howlLog 
+            id="transactionLog"
+            logFileDir="./data/txlog"
+            xidFactory="#xidFactory" />
   
   <!-- Internal transaction manager -->
-  <bean id="extendedTransactionManager" class="org.jencks.factory.TransactionManagerFactoryBean">
-    <property name="transactionLog" ref="transactionLog" />
-    <property name="defaultTransactionTimeoutSeconds" value="600"/>
-  </bean>
+  <jencks:transactionManagerFactory 
+            id="extendedTransactionManager"
+            transactionLog="#transactionLog"
+            defaultTransactionTimeoutSeconds="600" />
   
   <!-- Transaction context manager -->
-  <bean id="transactionContextManager" class="org.jencks.factory.TransactionContextManagerFactoryBean">
-    <property name="transactionManager" ref="extendedTransactionManager"/>
-    <property name="xidFactory" ref="xidFactory" />
-  </bean>
+  <jencks:transactionContextManagerFactory
+            id="transactionContextManager" 
+            transactionManager="#extendedTransactionManager"
+            xidFactory="#xidFactory" />
   
   <!-- Public transaction manager -->
-  <bean id="transactionManager" class="org.jencks.factory.GeronimoTransactionManagerFactoryBean">
-    <property name="transactionContextManager" ref="transactionContextManager"/>
-  </bean>
+  <jencks:geronimoTransactionManagerFactory
+            id="transactionManager"
+            transactionContextManager="#transactionContextManager" />
   
   <!-- Work manager -->
-  <bean id="workManager" class="org.jencks.factory.WorkManagerFactoryBean">
-    <property name="threadPoolSize" value="30"/>
-    <property name="transactionContextManager" ref="transactionContextManager"/>
-  </bean>
+  <jencks:workManagerFactory
+            id="workManager"
+            threadPoolSize="200"
+            transactionContextManager="#transactionContextManager" />
   
   <!-- Bootstrap context for JCA -->
-  <bean id="bootstrapContext" class="org.jencks.factory.BootstrapContextFactoryBean">
-    <property name="workManager" ref="workManager"/>
-  </bean>
+  <jencks:bootstrapContextFactory
+            id="bootstrapContext"
+            workManager="#workManager" />
   
   <!-- Connection manager for JCA -->
   <bean id="connectionTracker" class="org.apache.geronimo.connector.outbound.connectiontracking.ConnectionTrackingCoordinator"/>
-  <bean id="poolingSupport" class="org.jencks.factory.SinglePoolFactoryBean">
-    <property name="maxSize" value="16"/>
-    <property name="minSize" value="1"/>
-    <property name="blockingTimeoutMilliseconds" value="60"/>
-    <property name="idleTimeoutMinutes" value="60"/>
-    <property name="matchOne" value="true"/>
-    <property name="matchAll" value="true"/>
-    <property name="selectOneAssumeMatch" value="true"/>
-  </bean>
-  <bean id="transactionSupport" class="org.jencks.factory.XATransactionFactoryBean">
-    <property name="useTransactionCaching" value="true"/>
-    <property name="useThreadCaching" value="true"/>
-  </bean>
-  <bean id="connectionManager" class="org.jencks.factory.ConnectionManagerFactoryBean">
-    <property name="containerManagedSecurity" value="false"/>
-    <property name="transactionContextManager" ref="transactionContextManager"/>
-    <property name="poolingSupport" ref="poolingSupport"/>
-    <property name="transactionSupport" ref="transactionSupport"/>
-    <property name="connectionTracker" ref="connectionTracker"/>
-  </bean>
+  <jencks:singlePoolFactory 
+            id="poolingSupport"
+            maxSize="16"
+            minSize="1"
+            blockingTimeoutMilliseconds="60"
+            idleTimeoutMinutes="60"
+            matchOne="true"
+            matchAll="true"
+            selectOneAssumeMatch="true" />
+  <jencks:xATransactionFactory
+            id="transactionSupport"
+            useTransactionCaching="true"
+            useThreadCaching="true" />
+  <jencks:connectionManagerFactory 
+            id="connectionManager"
+            containerManagedSecurity="false"
+            transactionContextManager="#transactionContextManager"
+            poolingSupport="#poolingSupport"
+            transactionSupport="#transactionSupport"
+            connectionTracker="#connectionTracker" />
   
 </beans>

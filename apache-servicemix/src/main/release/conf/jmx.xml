@@ -18,33 +18,34 @@
 
 -->
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
-<!-- START SNIPPET: jndi -->
-<beans>
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0">
 
-  <!-- JMX server and connector -->
-  <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
-    <property name="locateExistingServerIfPossible" value="true"/>
-  </bean>
-  <bean id="registry" class="org.apache.servicemix.jbi.management.RmiRegistryFactoryBean">
-    <property name="port" value="1099"/>
-  </bean>
-  <bean id="serverConnector" class="org.apache.servicemix.jbi.management.ConnectorServerFactoryBean" depends-on="registry">
-    <property name="objectName" value="connector:name=rmi"/>
-    <property name="serviceUrl" value="service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi"/>
-    <property name="threaded" value="true"/>
-    <property name="daemon" value="true"/>
+  <!-- RMI registry -->
+  <sm:rmiRegistry id="rmiRegistry" port="1099" />
+  
+  <!-- JMX server -->
+  <sm:jmxServer id="jmxServer" locateExistingServerIfPossible="true" />
+  
+  <!-- JMX Remote connector -->
+  <sm:jmxConnector objectName="connector:name=rmi"
+                   serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi"
+                   threaded="true"
+                   daemon="true" 
+                   depends-on="rmiRegistry">
     <property name="environment">
       <map>
-        <!-- Uncomment the following line to enable authentication for jmx
+        <!-- Comment the following lines to disable JAAS authentication for jmx
+         -->
         <entry key="jmx.remote.authenticator">
-          <bean id="jmxRemoteAuthenticator" class="org.apache.servicemix.jbi.management.PasswordAuthenticatorFactoryBean">
-            <property name="passwords" value="classpath:passwords.txt" />
-          </bean>
+          <sm:jmxJaasAuthenticator authenticationService="#authenticationService"/>
+        </entry>
+        <!-- Uncomment the following lines to enable file based authentication for jmx
+        <entry key="jmx.remote.authenticator">
+          <sm:jmxPasswordAuthenticator passwords="classpath:passwords.txt" />
         </entry>
          -->
       </map>
     </property>
-  </bean>
+  </sm:jmxConnector>  
 
 </beans>
-<!-- END SNIPPET: jndi -->
