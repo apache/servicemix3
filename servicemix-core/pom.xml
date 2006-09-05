@@ -35,11 +35,11 @@
 
   <dependencies>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-jbi</artifactId>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-services</artifactId>
     </dependency>
     <dependency>

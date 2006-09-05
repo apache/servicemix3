@@ -43,7 +43,7 @@
   <dependencies>
 
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-shared</artifactId>
     </dependency>
 
@@ -111,9 +111,8 @@
     </dependency>
     
     <dependency>
-      <groupId>com.sun.xml</groupId>
+      <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>
-      <version>2.0EA3</version>
     </dependency>
 
     <dependency>
@@ -122,7 +121,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-core</artifactId>
       <scope>provided</scope>
     </dependency>

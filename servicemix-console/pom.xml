@@ -34,11 +34,11 @@
   <name>ServiceMix :: Console</name>
   <dependencies>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-jbi</artifactId>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-core</artifactId>
     </dependency>
     <dependency>

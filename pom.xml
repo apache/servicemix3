@@ -195,12 +195,9 @@
     </scm>
 
     <properties>
-        <jaxws.tools.version>2.0EA3</jaxws.tools.version>
-        <xfire.jsr181.api.version>1.0-M1</xfire.jsr181.api.version>
-        <xfire.version>1.2</xfire.version>
+        <xfire-jsr181-api-version>1.0-M1</xfire-jsr181-api-version>
         <xfire-version>1.2</xfire-version>
         <mavenAssemblyPluginVersion>2.1</mavenAssemblyPluginVersion>
-        
         <xbean-version>2.6</xbean-version>
         <spring-version>2.0-rc3</spring-version>
         <activemq-version>4.0.2</activemq-version>
@@ -389,7 +386,7 @@
         <!-- keep the central repo so that it is first tried -->
         <repository>
             <id>central</id>
-            <url>http://ibiblio.org/maven2/</url>
+            <url>http://repo.mergere.com/maven2/</url>
         </repository>
         <!-- Dependencies not on central repo -->
         <repository>
@@ -402,11 +399,6 @@
             <id>activemq-tmp-repo</id>
             <name>ActiveMQ Maven2 Temp Repository</name>
             <url>http://people.apache.org/~chirino/incubator-activemq-4.0.2-RC3/maven2</url>
-        </repository>
-        <!-- Jencks rep -->
-        <repository>
-            <id>codehaus-repo</id>
-            <url>http://repository.codehaus.org</url>
         </repository>
     </repositories>
 
@@ -563,11 +555,6 @@
                 <version>2.0.1_IB3</version>
             </dependency>
             <dependency>
-                <groupId>com.sun.xml</groupId>
-                <artifactId>jaxb-impl</artifactId>
-                <version>2.0EA3</version>
-            </dependency>
-            <dependency>
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-impl</artifactId>
                 <version>2.0.1</version>
@@ -602,36 +589,14 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>com.sun.xml</groupId>
-                <artifactId>jaxws-rt</artifactId>
-                <version>2.0EA3</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.jws</groupId>
-                        <artifactId>jsr181-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml</groupId>
-                <artifactId>jaxws-tools</artifactId>
-                <version>2.0EA3</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.jws</groupId>
-                        <artifactId>jsr181-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>javax.xml</groupId>
+                <groupId>javax.xml.ws</groupId>
                 <artifactId>jaxws-api</artifactId>
-                <version>2.0EA3</version>
+                <version>2.0</version>
             </dependency>
             <dependency>
                 <groupId>xfire</groupId>
                 <artifactId>xfire-jsr181-api</artifactId>
-                <version>${xfire.jsr181.api.version}</version>
+                <version>${xfire-jsr181-api-version}</version>
             </dependency>
 
             <dependency>
@@ -700,29 +665,9 @@
                 <version>1.3</version>
             </dependency>
             <dependency>
-                <groupId>backport175</groupId>
-                <artifactId>backport175</artifactId>
-                <version>1.0.RC1</version>
-            </dependency>
-            <dependency>
                 <groupId>backport-util-concurrent</groupId>
                 <artifactId>backport-util-concurrent</artifactId>
                 <version>${backport-util-concurrent-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>beehive</groupId>
-                <artifactId>wsm</artifactId>
-                <version>1.0-alpha</version>
-            </dependency>
-            <dependency>
-                <groupId>berkeleydb</groupId>
-                <artifactId>berkeleydb</artifactId>
-                <version>1.5.1</version>
-            </dependency>
-            <dependency>
-                <groupId>berkeleydb</groupId>
-                <artifactId>berkeleydb-native</artifactId>
-                <version>4.2</version>
             </dependency>
             <dependency>
                 <groupId>castor</groupId>
@@ -887,16 +832,6 @@
                 <groupId>geronimo</groupId>
                 <artifactId>geronimo-activation</artifactId>
                 <version>${geronimo-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-jelly</groupId>
-                        <artifactId>commons-jelly-tags-velocity</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>velocity</groupId>
-                        <artifactId>velocity</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>geronimo</groupId>
@@ -1029,49 +964,9 @@
                 <version>1.7.3.3</version>
             </dependency>
             <dependency>
-                <groupId>httpunit</groupId>
-                <artifactId>httpunit</artifactId>
-                <version>1.6</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>jtidy</groupId>
-                        <artifactId>jtidy</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.activation</groupId>
-                        <artifactId>activation</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.mail</groupId>
-                        <artifactId>mail</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>servlet-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>rhino</groupId>
-                        <artifactId>js</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>nekohtml</groupId>
-                        <artifactId>nekohtml</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>xerces</groupId>
-                        <artifactId>xmlParserAPIs</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
                 <groupId>janino</groupId>
                 <artifactId>janino</artifactId>
                 <version>2.3.2</version>
-            </dependency>
-            <dependency>
-                <groupId>javacc</groupId>
-                <artifactId>javacc</artifactId>
-                <version>2.1</version>
             </dependency>
             <dependency>
                 <groupId>jaxen</groupId>
@@ -1112,11 +1007,6 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>jdbm</groupId>
-                <artifactId>jdbm</artifactId>
-                <version>0.20-dev</version>
-            </dependency>
-            <dependency>
                 <groupId>jdom</groupId>
                 <artifactId>jdom</artifactId>
                 <version>1.0</version>
@@ -1137,26 +1027,6 @@
                 <version>${jetty-version}</version>
             </dependency>
             <dependency>
-                <groupId>jgroups</groupId>
-                <artifactId>jgroups</artifactId>
-                <version>2.2.5</version>
-            </dependency>
-            <dependency>
-                <groupId>jmock</groupId>
-                <artifactId>jmock</artifactId>
-                <version>1.0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>jmock</groupId>
-                <artifactId>jmock-cglib</artifactId>
-                <version>1.0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>jrms</groupId>
-                <artifactId>jrms</artifactId>
-                <version>1.1</version>
-            </dependency>
-            <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>jstl</artifactId>
                 <version>1.1.1</version>
@@ -1165,11 +1035,6 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>3.8.1</version>
-            </dependency>
-            <dependency>
-                <groupId>jxta</groupId>
-                <artifactId>jxta</artifactId>
-                <version>2.0</version>
             </dependency>
             <dependency>
                 <groupId>lingo</groupId>
@@ -1228,11 +1093,6 @@
                 <version>1.2.12</version>
             </dependency>
             <dependency>
-                <groupId>mule</groupId>
-                <artifactId>mule</artifactId>
-                <version>1.0</version>
-            </dependency>
-            <dependency>
                 <groupId>mx4j</groupId>
                 <artifactId>mx4j</artifactId>
                 <version>3.0.1</version>
@@ -1241,21 +1101,6 @@
                 <groupId>mx4j</groupId>
                 <artifactId>mx4j-remote</artifactId>
                 <version>3.0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>mx4j</groupId>
-                <artifactId>mx4j-tools</artifactId>
-                <version>3.0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>oro</groupId>
-                <artifactId>oro</artifactId>
-                <version>2.0.8</version>
-            </dependency>
-            <dependency>
-                <groupId>p2psockets</groupId>
-                <artifactId>p2psockets</artifactId>
-                <version>1.1.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pluto</groupId>
@@ -1283,19 +1128,9 @@
                 <version>1.5.2</version>
             </dependency>
             <dependency>
-                <groupId>regexp</groupId>
-                <artifactId>regexp</artifactId>
-                <version>1.3</version>
-            </dependency>
-            <dependency>
                 <groupId>rome</groupId>
                 <artifactId>rome</artifactId>
                 <version>0.5</version>
-            </dependency>
-            <dependency>
-                <groupId>simple-jndi</groupId>
-                <artifactId>simple-jndi</artifactId>
-                <version>0.11.1</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -1311,26 +1146,6 @@
                 <groupId>taglibs</groupId>
                 <artifactId>standard</artifactId>
                 <version>1.1.1</version>
-            </dependency>
-            <dependency>
-                <groupId>tomcat</groupId>
-                <artifactId>jasper-compiler-jdt</artifactId>
-                <version>5.5.9</version>
-            </dependency>
-            <dependency>
-                <groupId>tomcat</groupId>
-                <artifactId>jasper-compiler</artifactId>
-                <version>5.0.28</version>
-            </dependency>
-            <dependency>
-                <groupId>tomcat</groupId>
-                <artifactId>jasper-runtime</artifactId>
-                <version>5.5.9</version>
-            </dependency>
-            <dependency>
-                <groupId>velocity</groupId>
-                <artifactId>velocity</artifactId>
-                <version>1.4-rc1</version>
             </dependency>
             <dependency>
                 <groupId>woodstox</groupId>
@@ -1363,12 +1178,6 @@
                 <groupId>org.apache.xbean</groupId>
                 <artifactId>xbean-spring</artifactId>
                 <version>${xbean-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>qdox</groupId>
-                        <artifactId>qdox</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>xerces</groupId>
@@ -1378,7 +1187,7 @@
             <dependency>
                 <groupId>org.codehaus.xfire</groupId>
                 <artifactId>xfire-all</artifactId>
-                <version>${xfire.version}</version>
+                <version>${xfire-version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.mail</groupId>
@@ -1429,7 +1238,7 @@
             <dependency>
                 <groupId>org.codehaus.xfire</groupId>
                 <artifactId>xfire-jaxb2</artifactId>
-                <version>${xfire.version}</version>
+                <version>${xfire-version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>httpunit</groupId>
@@ -1472,7 +1281,7 @@
             <dependency>
                 <groupId>org.codehaus.xfire</groupId>
                 <artifactId>xfire-xmlbeans</artifactId>
-                <version>${xfire.version}</version>
+                <version>${xfire-version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>httpunit</groupId>
@@ -1511,12 +1320,12 @@
             <dependency>
                 <groupId>org.codehaus.xfire</groupId>
                 <artifactId>xfire-castor</artifactId>
-                <version>${xfire.version}</version>
+                <version>${xfire-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.xfire</groupId>
                 <artifactId>xfire-jibx</artifactId>
-                <version>${xfire.version}</version>
+                <version>${xfire-version}</version>
             </dependency>
             <dependency>
                 <groupId>xml-apis</groupId>

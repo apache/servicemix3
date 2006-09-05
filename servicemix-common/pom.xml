@@ -36,12 +36,12 @@
   
   <dependencies>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-jbi</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-core</artifactId>
       <scope>provided</scope>
     </dependency>

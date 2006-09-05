@@ -153,10 +153,6 @@
       <artifactId>hsqldb</artifactId>
     </dependency>
     <dependency>
-      <groupId>mx4j</groupId>
-      <artifactId>mx4j-tools</artifactId>
-    </dependency>
-    <dependency>
       <groupId>quartz</groupId>
       <artifactId>quartz</artifactId>
     </dependency>    
