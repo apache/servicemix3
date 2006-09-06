@@ -215,7 +215,10 @@ public class SedaFlow extends AbstractFlow {
                 unregisterQueue(queue);
             }
             catch (JBIException e) {
-                log.error("Caught exception stopping SedaQueue: " + queue);
+                log.error("Failed to stop SedaQueue: " + queue + ": " + e);
+                if (log.isDebugEnabled()) {
+                    log.debug("Failed to stop SedaQueue: " + queue, e);
+                }
             }
         }
     }
@@ -265,7 +268,10 @@ public class SedaFlow extends AbstractFlow {
             broker.getContainer().getManagementContext().registerMBean(objectName, queue, LifeCycleMBean.class);
         }
         catch (JMException e) {
-            log.error("Failed to register SedaQueue: " + queue + " with the ManagementContext");
+            log.error("Failed to register SedaQueue: " + queue + " with the ManagementContext: " + e);
+            if (log.isDebugEnabled()) {
+                log.debug("Failed to register SedaQueue: " + queue + " with the ManagementContext", e);
+            }
         }
     }
 
@@ -275,6 +281,9 @@ public class SedaFlow extends AbstractFlow {
         }
         catch (JBIException e) {
             log.error("Failed to unregister SedaQueue: " + queue + " from the ManagementContext");
+            if (log.isDebugEnabled()) {
+                log.debug("Failed to unregister SedaQueue: " + queue + " with the ManagementContext", e);
+            }
         }
     }
 
