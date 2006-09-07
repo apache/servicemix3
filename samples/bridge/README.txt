@@ -31,5 +31,5 @@ To start this sample, run:
   mvn jbi:projectDeploy
 
 For more information on running this example please see:
-  http://incubator.apache.org/servicemix/creating-a-protocol-bridge.html
+  http://incubator.apache.org/servicemix/sm30ug/bridge.html
 

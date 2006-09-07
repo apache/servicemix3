@@ -33,4 +33,4 @@ To run this sample, launch the following commands:
   mvn jbi:projectDeploy
 
 For more information on this example please see
-  http://incubator.apache.org/servicemix/loan-broker-example.html
+  http://incubator.apache.org/servicemix/sm30ug/loan-broker-bpel.html
