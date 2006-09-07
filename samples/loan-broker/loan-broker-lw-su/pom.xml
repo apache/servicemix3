@@ -27,7 +27,7 @@
     <parent>
         <groupId>org.apache.servicemix.samples</groupId>
         <artifactId>loan-broker</artifactId>
-        <version>3.0-incubating-SNAPSHOT</version>
+        <version>3.0-incubating</version>
     </parent>
 
     <groupId>org.apache.servicemix.samples.loan-broker</groupId>
@@ -39,17 +39,17 @@
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-lwcontainer</artifactId>
-            <version>3.0-incubating-SNAPSHOT</version>
+            <version>3.0-incubating</version>
         </dependency>
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-components</artifactId>
-            <version>3.0-incubating-SNAPSHOT</version>
+            <version>3.0-incubating</version>
         </dependency>
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-core</artifactId>
-            <version>3.0-incubating-SNAPSHOT</version>
+            <version>3.0-incubating</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
