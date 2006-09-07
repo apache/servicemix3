@@ -54,9 +54,27 @@ public class JmsInUsingJCABinding extends JmsInBinding {
         jcaConnector.setEndpointFactory(new SingletonEndpointFactory(this, transactionManager));
         try {
         	jcaConnector.afterPropertiesSet();
+        } catch (Exception e) {
+        	throw new JBIException("Unable to initialize jca connector", e);
+        }
+        super.init();
+    }
+    
+    public void start() throws JBIException {
+        try {
             jcaConnector.start();
         } catch (Exception e) {
-        	throw new JBIException("Unable to start jca connector", e);
+            throw new JBIException("Unable to start jca connector", e);
+        }
+        super.start();
+    }
+    
+    public void stop() throws JBIException {
+        super.stop();
+        try {
+            jcaConnector.destroy();
+        } catch (Exception e) {
+            throw new JBIException("Unable to stop jca connector", e);
         }
     }
 

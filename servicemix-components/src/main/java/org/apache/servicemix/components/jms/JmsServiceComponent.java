@@ -34,11 +34,11 @@ import javax.resource.spi.work.Work;
 import javax.resource.spi.work.WorkException;
 import javax.resource.spi.work.WorkManager;
 import javax.xml.transform.TransformerException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
@@ -51,7 +51,7 @@ import org.springframework.jms.core.MessageCreator;
  * 
  * @version $Revision$
  */
-public class JmsServiceComponent extends ComponentSupport implements MessageListener, InitializingBean, DisposableBean {
+public class JmsServiceComponent extends ComponentSupport implements MessageListener, InitializingBean {
     private static final Log log = LogFactory.getLog(JmsServiceComponent.class);
     private DestinationChooser destinationChooser;
     private JmsMarshaler marshaler = new JmsMarshaler();
@@ -115,16 +115,20 @@ public class JmsServiceComponent extends ComponentSupport implements MessageList
         } else { // JMS 1.1 style
             consumer = session.createConsumer(defaultDestination, selector);
         }
-
-        consumer.setMessageListener(this);
-        connection.start();
     }
 
-    /**
-     *  called by spring framework on disposal
-     * @throws Exception 
-     */
-    public void destroy() throws Exception {
+    public void start() throws JBIException {
+        // Start receiving messages only when the component has actually been started.
+        super.start();
+        try {
+            connection.start();
+            consumer.setMessageListener(this);
+        } catch (JMSException e) {
+            throw new JBIException("Unable to start jms component");
+        }
+    }
+
+    public void stop() throws JBIException {
         try {
             if (connection != null) {
                 connection.close();
@@ -133,6 +137,8 @@ public class JmsServiceComponent extends ComponentSupport implements MessageList
             } else if (consumer != null) {
                 consumer.close();
             }
+        } catch (JMSException e) {
+            throw new JBIException("Unable to stop jms component");
         } finally {
             connection = null;
             session = null;

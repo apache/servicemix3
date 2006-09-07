@@ -16,15 +16,16 @@
  */
 package org.apache.servicemix.components.jms;
 
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.jms.core.JmsTemplate;
-
+import javax.jbi.JBIException;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
+import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
+
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.jms.core.JmsTemplate;
 
 /**
  * A component which uses a {@link JmsTemplate} to consume messages from a
@@ -32,7 +33,7 @@ import javax.jms.Session;
  *
  * @version $Revision$
  */
-public class JmsReceiverComponent extends JmsInBinding implements InitializingBean, DisposableBean {
+public class JmsReceiverComponent extends JmsInBinding implements InitializingBean {
     private JmsTemplate template;
     private String selector;
     private MessageConsumer consumer;
@@ -88,12 +89,20 @@ public class JmsReceiverComponent extends JmsInBinding implements InitializingBe
         } else { // JMS 1.1 style
             consumer = session.createConsumer(defaultDestination, selector);
         }
-
-        consumer.setMessageListener(this);
-        connection.start();
+    }
+    
+    public void start() throws JBIException {
+        // Start receiving messages only when the component has actually been started.
+        super.start();
+        try {
+            connection.start();
+            consumer.setMessageListener(this);
+        } catch (JMSException e) {
+            throw new JBIException("Unable to start jms component");
+        }
     }
 
-    public void destroy() throws Exception {
+    public void stop() throws JBIException {
         try {
             if (connection != null) {
                 connection.close();
@@ -102,6 +111,8 @@ public class JmsReceiverComponent extends JmsInBinding implements InitializingBe
             } else if (consumer != null) {
                 consumer.close();
             }
+        } catch (JMSException e) {
+            throw new JBIException("Unable to stop jms component");
         } finally {
             connection = null;
             session = null;
