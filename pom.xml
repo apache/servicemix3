@@ -364,7 +364,7 @@
         <!-- keep the central repo so that it is first tried -->
         <repository>
             <id>central</id>
-            <url>http://repo.mergere.com/maven2/</url>
+            <url>http://www.ibiblio.org/maven2</url>
         </repository>
         <!-- Dependencies not on central repo -->
         <repository>
