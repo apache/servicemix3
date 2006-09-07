@@ -24,6 +24,7 @@
     </classpath>
   
     <jsr181:endpoint pojoClass="org.apache.servicemix.samples.wsdl_first.PersonImpl"
-                     wsdlResource="classpath:person.wsdl" />
+                     wsdlResource="classpath:person.wsdl"
+                     style="document" />
 
 </beans>

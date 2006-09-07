@@ -28,8 +28,9 @@
 	targetNamespace="http://servicemix.apache.org/samples/wsdl-first">
 
 	<wsdl:types>
-		<xsd:schema targetNamespace="http://servicemix.apache.org/samples/wsdl-first/types">
-			<xsd:element name="GetPersonRequest">
+		<xsd:schema targetNamespace="http://servicemix.apache.org/samples/wsdl-first/types"
+		            elementFormDefault="qualified">
+			<xsd:element name="GetPerson">
 			  <xsd:complexType>
 					<xsd:sequence>
 						<xsd:element name="personId" type="xsd:string"/>
@@ -56,7 +57,7 @@
   </wsdl:types>
 	
 	<wsdl:message name="GetPersonRequest">
-		<wsdl:part name="payload" element="typens:GetPersonRequest"/>
+		<wsdl:part name="payload" element="typens:GetPerson"/>
 	</wsdl:message>
 	<wsdl:message name="GetPersonResponse">
 		<wsdl:part name="payload" element="typens:GetPersonResponse"/>
@@ -66,7 +67,7 @@
 	</wsdl:message>
 
     <wsdl:portType name="Person">
-		<wsdl:operation name="getPerson">
+		<wsdl:operation name="GetPerson">
 			<wsdl:input message="tns:GetPersonRequest"/>
 			<wsdl:output message="tns:GetPersonResponse"/>
 			<wsdl:fault name="UnknownPerson" message="tns:UnknownPersonFault"/>
@@ -75,7 +76,7 @@
 	
     <wsdl:binding name="PersonSOAPBinding" type="tns:Person">
     	<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
-		<wsdl:operation name="getPerson">
+		<wsdl:operation name="GetPerson">
 			<wsdl:input>
 				<soap:body use="literal" />
 			</wsdl:input>

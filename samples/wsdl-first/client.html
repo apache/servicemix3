@@ -95,15 +95,12 @@ Perform a POST into the HTTP binding <p>
     <td>
   <textarea id="request" style="width:600px;height:400px" onKeyUp="send();"><?xml version="1.0" encoding="UTF-8"?>
 <env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
-              xmlns:ns="http://servicemix.apache.org/samples/wsdl-first"
               xmlns:tns="http://servicemix.apache.org/samples/wsdl-first/types">
-	<env:Body>
-        <ns:getPerson>
-    		<tns:GetPersonRequest>
-    		    <personId>world</personId>
-    		</tns:GetPersonRequest>
-        </ns:getPerson>
-	</env:Body>
+  <env:Body>
+    <tns:GetPerson>
+      <tns:personId>world</tns:personId>
+    </tns:GetPerson>
+  </env:Body>
 </env:Envelope>
 
   </textarea>
