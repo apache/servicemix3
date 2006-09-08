@@ -23,4 +23,5 @@ To quickly run it, just launch
    
 and browse the application at
    http://localhost:8080/servicemix-web
-
+and
+   http://localhost:8080/servicemix-web/examples/

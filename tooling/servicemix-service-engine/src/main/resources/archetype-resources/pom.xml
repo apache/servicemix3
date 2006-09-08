@@ -54,7 +54,7 @@
   </repositories>
 	<properties>
 	  <xbean-version>2.6</xbean-version>
-	  <servicemix-version>3.0-incubating-SNAPSHOT</servicemix-version>
+	  <servicemix-version>3.1-incubating-SNAPSHOT</servicemix-version>
 	</properties>
   <dependencies>
     <dependency>

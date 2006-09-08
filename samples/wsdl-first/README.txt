@@ -30,3 +30,9 @@ To run this sample, launch the following commands:
   cd wsdl-first-sa
   mvn jbi:projectDeploy
 
+You can browse the WSDL at
+  http://localhost:8192/PersonService/main.wsdl
+  
+You can also open the client.html page in a browser
+to send a request to the service.
+

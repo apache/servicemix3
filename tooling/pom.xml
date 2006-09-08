@@ -26,12 +26,12 @@
   <parent>
     <groupId>org.apache.servicemix</groupId>
     <artifactId>servicemix</artifactId>
-    <version>3.0-incubating-SNAPSHOT</version>
+    <version>3.1-incubating-SNAPSHOT</version>
   </parent>
   
   <groupId>org.apache.servicemix.tooling</groupId>
   <artifactId>tooling</artifactId>
-  <version>3.0-incubating-SNAPSHOT</version>
+  <version>3.1-incubating-SNAPSHOT</version>
   <name>ServiceMix :: Tooling</name>
   <url>http://servicemix.org</url>
   <packaging>pom</packaging>

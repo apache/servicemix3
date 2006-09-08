@@ -57,7 +57,7 @@
           <sm:sedaFlow />
           <sm:jcaFlow bootstrapContext="#bootstrapContext"
                       connectionManager="#connectionManager"
-                      jmsURL="vm://ServiceMix" />
+                      jmsURL="tcp://localhost:61616" />
         </sm:flows>
       </sm:securedBroker>
     </sm:broker>

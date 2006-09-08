@@ -26,8 +26,8 @@
 
   <!-- the JBI container -->
   <sm:container id="jbi" 
-                rootDir="./wdir" 
-                MBeanServer="#mbeanServer"
+                rootDir="./data" 
+                MBeanServer="#jmxServer"
                 installationDirPath="./install"
                 deploymentDirPath="./deploy"
                 dumpStats="true"

@@ -55,7 +55,7 @@
 	</repositories>
 	<properties>
 	  <xfire-version>1.2.1</xfire-version>
-	  <servicemix-version>3.0-incubating-SNAPSHOT</servicemix-version>
+	  <servicemix-version>3.1-incubating-SNAPSHOT</servicemix-version>
 	</properties>
 	<dependencies>
 		<dependency>
