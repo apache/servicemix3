@@ -22,7 +22,7 @@
 
   <classpath>
     <location>.</location>
-    <location>lib/servicemix-components-3.0-incubating-SNAPSHOT.jar</location>
+    <location>lib/servicemix-components-3.0-incubating.jar</location>
   </classpath>
 
   <sm:serviceunit id="jbi">
