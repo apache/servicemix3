@@ -60,10 +60,6 @@
     </fileSet>
     <fileSet>
       <directory>target/samples/loan-broker-${servicemix-version}</directory>
-      <outputDirectory>examples/loan-broker</outputDirectory>
-    </fileSet>
-    <fileSet>
-      <directory>target/samples/loan-broker-${servicemix-version}</directory>
       <outputDirectory>examples/loan-broker-bpel</outputDirectory>
     </fileSet>
     <fileSet>
