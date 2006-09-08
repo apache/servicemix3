@@ -26,15 +26,17 @@ ant setup
 
 To start the servicemix servers using the sample configurations, just run:
 
-../../bin/servicemix servicemix-poller.xml
+cd poller
+../../../bin/servicemix servicemix-poller.xml
 
 and
 
-../../bin/servicemix servicemix-writer.xml
+cd writer
+../../../bin/servicemix servicemix-writer.xml
 
 This will start two ServiceMix containers.
 
 One server have a file poller component, and the other one a file writer component.
-Just drop the test-file.xml in the inbox directory.
-It should be moved to the outbox directory.
+Just drop the test-file.xml in the poller/inbox directory.
+It should be moved to the writer/outbox directory.
 
