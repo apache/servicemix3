@@ -27,7 +27,7 @@
 
   <sm:serviceunit id="jbi">
     <sm:activationSpecs>
-      <sm:activationSpec service="b:xslt" endpoint="endpoint">
+      <sm:activationSpec id="xslt" service="b:xslt" endpoint="endpoint">
         <sm:component>
           <bean class="org.apache.servicemix.components.xslt.XsltComponent">
             <property name="xsltResource" value="classpath:bridge.xslt" />
