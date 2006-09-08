@@ -22,6 +22,20 @@
 <head>
 <title>ServiceMix Web Examples</title>
 <link rel="stylesheet" href="../style.css" type="text/css">
+</link>
+<script type="text/javascript">
+function post() {
+  var xmlhttp = new XMLHttpRequest();
+  xmlhttp.onreadystatechange=function() {
+    if (xmlhttp.readyState == 4) { /* 4 : état "complete" */
+       var response = document.getElementById("response");
+       response.value = "STATUS: " + xmlhttp.status + "\n" + xmlhttp.responseText
+    }
+  }
+  xmlhttp.open("POST", "../jbi/exampleUri/", true);
+  xmlhttp.send("<hello>" + document.getElementById("name").value + "</hello>");
+}
+</script>
 </head>
 
 <body>
@@ -30,11 +44,13 @@
 
 <p>Welcome to the web examples for ServiceMix</p>
 
-Perform a GET into the HTTP binding <p>
-<form method="get" action="../jbi/exampleUri">
-  <input type="text" name="name" value="James">
-  <input type="submit" value="Submit">
-</form>
+Perform a GET into the HTTP binding 
+<p>
+  <input type="text" id="name" name="name" value="James" onKeyUp="post();"></input>
+  <input type="submit" value="Submit" onClick="post();"></input>
+</p>
+<textarea id="response" style="width:400px;height:100px">
+</textarea>
 
 </body>
 </html>

@@ -62,20 +62,6 @@
     <dependency>
       <groupId>org.apache.xbean</groupId>
       <artifactId>xbean-spring</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.xbean</groupId>
-          <artifactId>xbean-spring-common</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.xbean</groupId>
-          <artifactId>xbean-spring-v1</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.xbean</groupId>
-          <artifactId>xbean-spring-v2</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -85,6 +71,10 @@
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-servlet_2.4_spec</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-javamail_1.3.1_spec</artifactId>
     </dependency>
     <dependency>
       <groupId>org.mortbay.jetty</groupId>

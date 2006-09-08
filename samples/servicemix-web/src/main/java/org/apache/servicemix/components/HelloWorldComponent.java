@@ -29,7 +29,7 @@ public class HelloWorldComponent extends TransformComponentSupport {
     
     protected boolean transform(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out)
             throws MessagingException {
-        out.setContent(new StringSource("<hello>" + in.getProperty(property) + "</hello>"));
+        out.setContent(in.getContent());
         return true;
     }
 
