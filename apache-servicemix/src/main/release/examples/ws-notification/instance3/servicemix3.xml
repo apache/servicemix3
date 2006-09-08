@@ -23,11 +23,10 @@
 	   xmlns:my="http://servicemix.apache.org/demo">
 
 	<classpath>
-	  <location>../lib/junit-3.8.1.jar</location>
-	  <location>../lib/servicemix-wsn2005-3.0-SNAPSHOT.jar</location>
-	  <location>../lib/servicemix-common-3.0-SNAPSHOT.jar</location>
-	  <location>../lib/jaxb-api-2.0EA3.jar</location>
-	  <location>../lib/jaxb-impl-2.0EA3.jar</location>
+	  <location>../lib/servicemix-wsn2005-3.0-incubating.jar</location>
+	  <location>../lib/servicemix-common-3.0-incubating.jar</location>
+	  <location>../lib/jaxb-api-2.0.jar</location>
+	  <location>../lib/jaxb-impl-2.0.1.jar</location>
 	  <location>../lib/xfire-jsr181-api-1.0-M1.jar</location>
 	</classpath>
 	   
@@ -35,7 +34,7 @@
   <sm:container id="jbi" 
                 name="wsn3"
                 embedded="true" 
-                MBeanServer="#mbeanServer">
+                MBeanServer="#jmxServer">
     <sm:flow>
       <bean class="org.apache.servicemix.jbi.nmr.flow.jms.JMSFlow">
         <property name="connectionFactory" ref="connectionFactory" />
@@ -94,17 +93,13 @@
   </sm:container>
   
   <!-- JMX server and connector -->
-  <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean"/>
-  
-  <bean id="registry" class="mx4j.tools.naming.NamingService" init-method="start">
-    <property name="port" value="1093"/>
-  </bean>
-  <bean id="serverConnector" class="org.springframework.jmx.support.ConnectorServerFactoryBean" depends-on="registry">
-    <property name="objectName" value="connector:name=rmi"/>
-    <property name="serviceUrl" value="service:jmx:rmi:///jndi/rmi://localhost:1093/jmxrmi"/>
-    <property name="threaded" value="true"/>
-    <property name="daemon" value="true"/>
-  </bean>
+  <sm:rmiRegistry id="rmiRegistry" port="1093" />
+  <sm:jmxServer id="jmxServer" locateExistingServerIfPossible="true" />
+  <sm:jmxConnector objectName="connector:name=rmi"
+                   serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1093/jmxrmi"
+                   threaded="true"
+                   daemon="true" 
+                   depends-on="rmiRegistry" />
 
   <bean id="connectionFactory" 
         class="org.apache.activemq.ActiveMQConnectionFactory">

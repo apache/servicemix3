@@ -20,6 +20,7 @@
 <project name="ws-notification" default="setup" basedir=".">
 
   <target name="setup">
+    <mkdir dir="lib" />
     <get src="http://repo.mergere.com/maven2/junit/junit/3.8.1/junit-3.8.1.jar" 
          dest="../../lib/optional/junit-3.8.1.jar" 
          usetimestamp="true" />
@@ -29,14 +30,18 @@
     <copy todir="../../lib/optional">
       <fileset dir="../../components/lib" includes="servicemix-components*.jar"/>
     </copy>
-    <unzip dest="../../lib/optional">
+    <unzip dest="lib">
       <patternset>
         <include name="lib/*.jar"/>
       </patternset>
       <fileset dir="../../components">
         <include name="*wsn2005*"/>
+        <include name="*shared*"/>
       </fileset>
     </unzip>
+    <move todir="lib">
+      <fileset dir="lib/lib" />
+    </move>
   </target>
 
 </project>
