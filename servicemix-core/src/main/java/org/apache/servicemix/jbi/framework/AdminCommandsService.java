@@ -52,8 +52,9 @@ public class AdminCommandsService extends BaseSystemService implements
 	 * @param file
 	 * @return
 	 */
-	public String installComponent(String file) throws Exception {
-		return installComponent(file, null);
+	public String installComponent(String file, boolean deferExceptions)
+			throws Exception {
+		return installComponent(file, null, deferExceptions);
 	}
 
 	/**
@@ -65,10 +66,14 @@ public class AdminCommandsService extends BaseSystemService implements
 	 *            installation properties
 	 * @return
 	 */
-	public String installComponent(String file, Properties props)
-			throws Exception {
+	public String installComponent(String file, Properties props,
+			boolean deferException) throws Exception {
 		try {
-			container.getInstallationService().install(file, props, false);
+			if (deferException) {
+				container.updateExternalArchive(file);
+			} else {
+				container.getInstallationService().install(file, props, false);
+			}
 			return ManagementSupport.createSuccessMessage("installComponent",
 					file);
 		} catch (Exception e) {
@@ -96,9 +101,10 @@ public class AdminCommandsService extends BaseSystemService implements
 		boolean success = container.getInstallationService().unloadInstaller(
 				name, true);
 		if (success) {
-			return success("uninstallComponent", name);
+			return ManagementSupport.createSuccessMessage("uninstallComponent",
+					name);
 		} else {
-			return failure("uninstallComponent", name, null);
+			throw ManagementSupport.failure("uninstallComponent", name);
 		}
 	}
 
@@ -108,8 +114,16 @@ public class AdminCommandsService extends BaseSystemService implements
 	 * @param file
 	 * @return
 	 */
-	public String installSharedLibrary(String file) throws Exception {
-		return container.getInstallationService().installSharedLibrary(file);
+	public String installSharedLibrary(String file, boolean deferException)
+			throws Exception {
+		if (deferException) {
+			container.updateExternalArchive(file);
+			return ManagementSupport.createSuccessMessage(
+					"installSharedLibrary", file);
+		} else {
+			return container.getInstallationService()
+					.installSharedLibrary(file);
+		}
 	}
 
 	/**
@@ -147,9 +161,10 @@ public class AdminCommandsService extends BaseSystemService implements
 		boolean success = container.getInstallationService()
 				.uninstallSharedLibrary(name);
 		if (success) {
-			return success("uninstallSharedLibrary", name);
+			return ManagementSupport.createSuccessMessage(
+					"uninstallSharedLibrary", name);
 		} else {
-			return failure("uninstallSharedLibrary", name, null);
+			throw ManagementSupport.failure("uninstallSharedLibrary", name);
 		}
 	}
 
@@ -166,9 +181,10 @@ public class AdminCommandsService extends BaseSystemService implements
 				throw new JBIException("Component " + name + " not found");
 			}
 			lcc.start();
-			return success("startComponent", name);
+			return ManagementSupport.createSuccessMessage("startComponent",
+					name);
 		} catch (JBIException e) {
-			throw new RuntimeException(failure("startComponent", name, e));
+			throw ManagementSupport.failure("startComponent", name, e);
 		}
 	}
 
@@ -185,9 +201,10 @@ public class AdminCommandsService extends BaseSystemService implements
 				throw new JBIException("Component " + name + " not found");
 			}
 			lcc.stop();
-			return success("stopComponent", name);
+			return ManagementSupport
+					.createSuccessMessage("stopComponent", name);
 		} catch (JBIException e) {
-			throw new RuntimeException(failure("stopComponent", name, e));
+			throw ManagementSupport.failure("stopComponent", name, e);
 		}
 	}
 
@@ -204,9 +221,10 @@ public class AdminCommandsService extends BaseSystemService implements
 				throw new JBIException("Component " + name + " not found");
 			}
 			lcc.shutDown();
-			return success("shutdownComponent", name);
+			return ManagementSupport.createSuccessMessage("shutdownComponent",
+					name);
 		} catch (JBIException e) {
-			throw new RuntimeException(failure("shutdownComponent", name, e));
+			throw ManagementSupport.failure("shutdownComponent", name, e);
 		}
 	}
 
@@ -216,8 +234,15 @@ public class AdminCommandsService extends BaseSystemService implements
 	 * @param file
 	 * @return
 	 */
-	public String deployServiceAssembly(String file) throws Exception {
-		return container.getDeploymentService().deploy(file);
+	public String deployServiceAssembly(String file, boolean deferException)
+			throws Exception {
+		if (deferException) {
+			container.updateExternalArchive(file);
+			return ManagementSupport.createSuccessMessage(
+					"deployServiceAssembly", file);
+		} else {
+			return container.getDeploymentService().deploy(file);
+		}
 	}
 
 	/**
@@ -273,11 +298,10 @@ public class AdminCommandsService extends BaseSystemService implements
 	public String installArchive(String location) throws Exception {
 		try {
 			container.updateExternalArchive(location);
-			return success("installArchive", location);
-
+			return ManagementSupport.createSuccessMessage("installComponent",
+					location);
 		} catch (Exception e) {
-			throw new RuntimeException(failure("shutdownServiceAssembly",
-					location, e));
+			throw ManagementSupport.failure("installComponent", location, e);
 		}
 	}
 
@@ -493,24 +517,6 @@ public class AdminCommandsService extends BaseSystemService implements
 		buffer.append("</service-assembly-info-list>");
 
 		return buffer.toString();
-	}
-
-	public String failure(String task, String location, Exception e) {
-		ManagementSupport.Message msg = new ManagementSupport.Message();
-		msg.setTask(task);
-		msg.setResult("FAILED");
-		msg.setType("ERROR");
-		msg.setException(e);
-		msg.setMessage(location);
-		return ManagementSupport.createFrameworkMessage(msg, (List) null);
-	}
-
-	public String success(String task, String location) {
-		ManagementSupport.Message msg = new ManagementSupport.Message();
-		msg.setTask(task);
-		msg.setMessage(location);
-		msg.setResult("SUCCESS");
-		return ManagementSupport.createFrameworkMessage(msg, (List) null);
 	}
 
 	public MBeanOperationInfo[] getOperationInfos() throws JMException {

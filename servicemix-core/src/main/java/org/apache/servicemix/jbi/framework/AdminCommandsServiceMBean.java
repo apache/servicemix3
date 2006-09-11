@@ -26,13 +26,13 @@ import java.util.Properties;
  */
 public interface AdminCommandsServiceMBean extends LifeCycleMBean {
     
-    String installComponent(String file) throws Exception;
+    String installComponent(String file, boolean deferException) throws Exception;
 
-    String installComponent(String file,Properties properties) throws Exception;
+    String installComponent(String file,Properties properties, boolean deferException) throws Exception;
 
     String uninstallComponent(String name) throws Exception;
 
-    String installSharedLibrary(String file) throws Exception;
+    String installSharedLibrary(String file, boolean deferException) throws Exception;
 
     String uninstallSharedLibrary(String name) throws Exception;
 
@@ -42,7 +42,7 @@ public interface AdminCommandsServiceMBean extends LifeCycleMBean {
 
     String shutdownComponent(String name) throws Exception;
 
-    String deployServiceAssembly(String file) throws Exception;
+    String deployServiceAssembly(String file, boolean deferException) throws Exception;
 
     String undeployServiceAssembly(String name) throws Exception;
 

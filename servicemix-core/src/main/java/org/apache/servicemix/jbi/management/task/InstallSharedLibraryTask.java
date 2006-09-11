@@ -23,43 +23,57 @@ import org.apache.tools.ant.BuildException;
 
 /**
  * Install a shared library
+ * 
  * @version $Revision: 359151 $
  */
 public class InstallSharedLibraryTask extends JbiTask {
-    
-    private String file; //shared library URI to install
-    
-    /**
-     * @return Returns the file.
-     */
-    public String getFile() {
-        return file;
-    }
-    /**
-     * @param file The shared library URI to set.
-     */
-    public void setFile(String file) {
-        this.file = file;
-    }
-    
-    /**
-     * execute the task
-     * @throws BuildException
-     */
-    public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
-        if (file == null){
-            throw new BuildException("null file - file should be an archive");
-        }
-        if (!file.endsWith(".zip") && !file.endsWith(".jar")) {
-            throw new BuildException("file: " + file + " is not an archive");
-        }
-        File archive = new File(file);
-        String location = archive.getAbsolutePath();
-        if (!archive.isFile()) {
-            // if it's not a file, assume it's a url and pass it along
-            location = file;
-        }
-        acs.installSharedLibrary(location);
-    }
-    
+
+	private String file; // shared library URI to install
+
+	private boolean deferExceptions = false;
+
+	public boolean isDeferExceptions() {
+		return deferExceptions;
+	}
+
+	public void setDeferExceptions(boolean deferExceptions) {
+		this.deferExceptions = deferExceptions;
+	}
+
+	/**
+	 * @return Returns the file.
+	 */
+	public String getFile() {
+		return file;
+	}
+
+	/**
+	 * @param file
+	 *            The shared library URI to set.
+	 */
+	public void setFile(String file) {
+		this.file = file;
+	}
+
+	/**
+	 * execute the task
+	 * 
+	 * @throws BuildException
+	 */
+	public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
+		if (file == null) {
+			throw new BuildException("null file - file should be an archive");
+		}
+		if (!file.endsWith(".zip") && !file.endsWith(".jar")) {
+			throw new BuildException("file: " + file + " is not an archive");
+		}
+		File archive = new File(file);
+		String location = archive.getAbsolutePath();
+		if (!archive.isFile()) {
+			// if it's not a file, assume it's a url and pass it along
+			location = file;
+		}
+		acs.installSharedLibrary(location, deferExceptions);
+	}
+
 }
