@@ -1,8 +1,0 @@
-connector=org.apache.servicemix.components.mule.JBIConnector
-dispatcher.factory=org.mule.providers.jbi.JBIMessageDispatcherFactory
-message.receiver=org.mule.providers.jbi.JBIMessageReceiver
-message.adapter=org.mule.providers.jbi.JBIMessageAdapter
-inbound.transformer=org.mule.providers.jbi.JBIMessageTransformer
-outbound.transformer=org.mule.providers.jbi.JBIMessageTransformer
-#service.error=Cannot create JBI connector using current service descriptor
-endpoint.builder=org.mule.impl.endpoint.ResourceNameEndpointBuilder

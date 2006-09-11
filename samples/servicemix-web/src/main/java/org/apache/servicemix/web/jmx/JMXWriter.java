@@ -94,7 +94,7 @@ public class JMXWriter {
             writer.print(domain);
 
             writer.print("<ul>");
-            outputHtmlNamesByProperty(names, "type");
+            outputHtmlNamesByProperty(names, "Type");
             writer.print("</ul>");
             writer.print("</li>");
         }
