@@ -442,8 +442,9 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         messageExchange.setProperty(JbiConstants.SEND_SYNC, Boolean.TRUE);
         // Call doSend
         MessageExchangeImpl me = (MessageExchangeImpl) messageExchange;
+        String exchangeKey = getKeyForExchange(me);
         try {
-            exchangesById.put((me.getRole() == Role.CONSUMER ? "consumer:" : "provider:") + me.getExchangeId(), me);
+            exchangesById.put(exchangeKey, me);
             // Synchronously send a message and wait for the response
             synchronized (me) {
                 doSend(me, true);
@@ -479,7 +480,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             e.printStackTrace();
             throw e;
         } finally {
-            exchangesById.remove(messageExchange.getExchangeId());
+            exchangesById.remove(exchangeKey);
         }
         return result;
     }
@@ -583,7 +584,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         incrementInboundStats();
 
         // Retrieve the original exchange sent
-        MessageExchangeImpl original = (MessageExchangeImpl) exchangesById.get((me.getRole() == Role.CONSUMER ? "consumer:" : "provider:") + me.getExchangeId());
+        MessageExchangeImpl original = (MessageExchangeImpl) exchangesById.get(getKeyForExchange(me));
         if (original != null && me != original) {
             original.copyFrom(me);
             me = original;
@@ -808,5 +809,9 @@ public class DeliveryChannelImpl implements DeliveryChannel {
      */
     public String toString() {
         return "DeliveryChannel{" + component.getName() + "}";
+    }
+    
+    private String getKeyForExchange(MessageExchangeImpl me) {
+        return (me.getRole() == Role.CONSUMER ? "consumer:" : "provider:") + me.getExchangeId();
     }
 }
