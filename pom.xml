@@ -361,7 +361,6 @@
     </profiles>
 
     <repositories>
-        <!-- keep the central repo so that it is first tried -->
         <repository>
             <id>central</id>
             <url>http://www.ibiblio.org/maven2</url>

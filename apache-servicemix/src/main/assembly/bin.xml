@@ -142,10 +142,6 @@
         <include>xerces:xercesImpl</include>
         <include>xalan:xalan</include>
 
-        <include>mx4j:mx4j</include>
-        <include>mx4j:mx4j-remote</include>
-        <include>mx4j:mx4j-tools</include>
-        
         <include>stax:stax-api</include>
         <include>woodstox:wstx-asl</include>
         <include>xml-apis:xml-apis</include>
