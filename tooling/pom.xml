@@ -50,6 +50,7 @@
     <module>servicemix-lwcontainer-service-unit</module>
     <module>servicemix-eip-service-unit</module>
     <module>servicemix-embedded-simple</module>
+    <module>servicemix-ode-service-unit</module>
     <module>jbi-maven-plugin</module>
     <module>servicemix-archetypes-itests</module>
   </modules>
