@@ -286,12 +286,13 @@ public class SoapHelper {
         
         // Find WSDL description
         Definition definition = null;
-        if (se == null) {
-            // Get this endpoint definition
-            definition = endpoint.getDefinition();
-        } else {
+        if (se != null) {
             // Find endpoint description from the component context
             definition = getDefinition(se);
+        }
+        if (definition == null) {
+            // Get this endpoint definition
+            definition = endpoint.getDefinition();
         }
 
         // Find operation matching 
@@ -357,6 +358,7 @@ public class SoapHelper {
                         reader.setFeature(Constants.FEATURE_VERBOSE, false);
                         try {
                             definition = reader.readWSDL(null, description);
+                            definitions.put(key, definition);
                         } catch (WSDLException e) {
                             logger.info("Could not read wsdl from endpoint descriptor: " + e.getMessage());
                             if (logger.isDebugEnabled()) {
@@ -364,10 +366,6 @@ public class SoapHelper {
                             }
                         }
                     }
-                    if (definition == null) {
-                        definition = factory.newDefinition();
-                    }
-                    definitions.put(key, definition);
                 }
             }
         return definition;
