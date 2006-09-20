@@ -78,16 +78,14 @@ public class SourceTransformer {
      * Converts the given input Source into the required result
      */
     public void toResult(Source source, Result result) throws TransformerException {
+        if (source == null) {
+            return;
+        }
         Transformer transformer = createTransfomer();
         if (transformer == null) {
             throw new TransformerException("Could not create a transformer - JAXP is misconfigured!");
         }
-        if (source != null) {
-            transformer.transform(source, result);
-        }
-        else {
-            log.warn("No Source available");
-        }
+        transformer.transform(source, result);
     }
 
 
