@@ -25,6 +25,7 @@ import org.jencks.factory.TransactionContextManagerFactoryBean;
 import org.jencks.factory.TransactionManagerFactoryBean;
 import org.jencks.factory.WorkManagerFactoryBean;
 import org.logicblaze.lingo.jms.Requestor;
+import org.logicblaze.lingo.jms.JmsProducerConfig;
 import org.logicblaze.lingo.jms.impl.MultiplexingRequestor;
 
 import javax.jms.ConnectionFactory;
@@ -51,8 +52,8 @@ public class JMSClient implements Work {
         System.out.println("Connecting to JMS server.");
         factory = new ActiveMQConnectionFactory("tcp://localhost:61616");
         Destination inQueue = new ActiveMQQueue("demo.org.servicemix.source");
-        Destination outQueue = new ActiveMQQueue("demo.org.servicemix.output");
-        requestor = MultiplexingRequestor.newInstance(factory, inQueue, outQueue); 
+        Destination outQueue = new ActiveMQQueue("demo.org.servicemix.output" + (int)(1000*Math.random()));
+        requestor = MultiplexingRequestor.newInstance(factory, new JmsProducerConfig(), inQueue, outQueue); 
         
         if (args.length == 0) {
             new JMSClient().run();
