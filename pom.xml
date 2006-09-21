@@ -210,6 +210,7 @@
         <wsdl4j-version>1.5.2</wsdl4j-version>
         <commons-beanutils-version>1.7.0</commons-beanutils-version>
         <woodstox-version>3.0.0</woodstox-version>
+        <msv-version>20050913</msv-version>
     </properties>
 
     <profiles>
@@ -1388,6 +1389,21 @@
                 <groupId>org.objectweb.howl</groupId>
                 <artifactId>howl</artifactId>
                 <version>1.0.1-1</version>
+            </dependency>
+            <dependency>
+                <groupId>msv</groupId>
+                <artifactId>msv</artifactId>
+                <version>${msv-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>msv</groupId>
+                <artifactId>relaxngDatatype</artifactId>
+                <version>${msv-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>msv</groupId>
+                <artifactId>xsdlib</artifactId>
+                <version>${msv-version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
