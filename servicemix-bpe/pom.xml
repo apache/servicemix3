@@ -117,6 +117,18 @@
       <artifactId>xbean-spring</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>msv</groupId>
+      <artifactId>msv</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>msv</groupId>
+      <artifactId>relaxngDatatype</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>msv</groupId>
+      <artifactId>xsdlib</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
