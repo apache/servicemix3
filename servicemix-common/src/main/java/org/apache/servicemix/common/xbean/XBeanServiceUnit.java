@@ -61,11 +61,15 @@ public class XBeanServiceUnit extends ServiceUnit {
         }
     }
     
-    public ClassLoader getConfigurationClassLoader() throws ServiceNotFoundException {
+    public ClassLoader getConfigurationClassLoader() {
         ClassLoader cl = null;
         if (kernel != null) {
-            ServiceFactory sf = kernel.getServiceFactory(configuration);
-            cl = sf.getClassLoader();
+            try {
+                ServiceFactory sf = kernel.getServiceFactory(configuration);
+                cl = sf.getClassLoader();
+            } catch (ServiceNotFoundException e) {
+                // This should never happen
+            }
         } 
         if (cl == null) {
             cl = Thread.currentThread().getContextClassLoader();

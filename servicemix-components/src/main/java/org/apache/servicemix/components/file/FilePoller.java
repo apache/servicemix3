@@ -27,8 +27,6 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
 import javax.jbi.JBIException;
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.resource.spi.work.Work;
-import javax.resource.spi.work.WorkException;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileFilter;
@@ -141,11 +139,11 @@ public class FilePoller extends PollingComponentSupport {
         super.init();
     }
 
-    protected void pollFileOrDirectory(File fileOrDirectory) throws WorkException {
+    protected void pollFileOrDirectory(File fileOrDirectory) {
     	pollFileOrDirectory(fileOrDirectory, true);
     }
     
-    protected void pollFileOrDirectory(File fileOrDirectory, boolean processDir) throws WorkException {
+    protected void pollFileOrDirectory(File fileOrDirectory, boolean processDir) {
         if (!fileOrDirectory.isDirectory()) {
             pollFile(fileOrDirectory); // process the file
         } else if (processDir) {
@@ -159,18 +157,18 @@ public class FilePoller extends PollingComponentSupport {
         } 
     }
 
-    protected void pollFile(final File aFile) throws WorkException {
-        if (!workingSet.contains(aFile)) {
-            workingSet.add(aFile);
+    protected void pollFile(final File aFile) {
+        if (workingSet.add(aFile)) {
             if (log.isDebugEnabled()) {
                 log.debug("Scheduling file " + aFile + " for processing");
             }
-            getWorkManager().scheduleWork(new Work() {
+            getExecutor().execute(new Runnable() {
                 public void run() {
-                    processFileAndDelete(aFile);
-                }
-
-                public void release() {
+                    try {
+                        processFileAndDelete(aFile);
+                    } finally {
+                        workingSet.remove(aFile);
+                    }
                 }
             });
         }
@@ -192,9 +190,6 @@ public class FilePoller extends PollingComponentSupport {
         }
         catch (Exception e) {
             log.error("Failed to process file: " + aFile + ". Reason: " + e, e);
-        }
-        finally {
-            workingSet.remove(aFile);
         }
     }
 

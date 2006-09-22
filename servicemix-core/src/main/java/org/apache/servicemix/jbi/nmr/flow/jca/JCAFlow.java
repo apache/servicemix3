@@ -19,6 +19,7 @@ package org.apache.servicemix.jbi.nmr.flow.jca;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
 
 import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
@@ -31,20 +32,22 @@ import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
-import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
-import javax.jms.Topic;
+import javax.resource.ResourceException;
 import javax.resource.spi.BootstrapContext;
 import javax.resource.spi.ConnectionManager;
-import javax.resource.spi.ResourceAdapter;
-import javax.resource.spi.ResourceAdapterInternalException;
+import javax.resource.spi.UnavailableException;
+import javax.resource.spi.XATerminator;
+import javax.resource.spi.endpoint.MessageEndpointFactory;
+import javax.resource.spi.work.WorkManager;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.advisory.AdvisorySupport;
 import org.apache.activemq.command.ActiveMQDestination;
 import org.apache.activemq.command.ActiveMQMessage;
@@ -56,12 +59,13 @@ import org.apache.activemq.command.RemoveInfo;
 import org.apache.activemq.ra.ActiveMQActivationSpec;
 import org.apache.activemq.ra.ActiveMQManagedConnectionFactory;
 import org.apache.activemq.ra.ActiveMQResourceAdapter;
-import org.apache.geronimo.connector.BootstrapContextImpl;
 import org.apache.geronimo.connector.outbound.connectionmanagerconfig.SinglePool;
 import org.apache.geronimo.connector.outbound.connectionmanagerconfig.XATransactions;
-import org.apache.geronimo.connector.work.GeronimoWorkManager;
 import org.apache.geronimo.transaction.context.TransactionContextManager;
 import org.apache.servicemix.JbiConstants;
+import org.apache.servicemix.executors.Executor;
+import org.apache.servicemix.executors.ExecutorFactory;
+import org.apache.servicemix.executors.WorkManagerWrapper;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.apache.servicemix.jbi.event.ComponentAdapter;
 import org.apache.servicemix.jbi.event.ComponentEvent;
@@ -74,7 +78,6 @@ import org.apache.servicemix.jbi.nmr.Broker;
 import org.apache.servicemix.jbi.nmr.flow.AbstractFlow;
 import org.apache.servicemix.jbi.servicedesc.EndpointSupport;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
-import org.jencks.JCAConnector;
 import org.jencks.SingletonEndpointFactory;
 import org.jencks.factory.ConnectionManagerFactoryBean;
 import org.springframework.context.ApplicationContext;
@@ -93,27 +96,20 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
     
     private static final String INBOUND_PREFIX = "org.apache.servicemix.jca.";
     private String jmsURL = "tcp://localhost:61616";
-    private String userName;
-    private String password;
-    private ConnectionFactory connectionFactory;
-    private Connection connection;
+    private ActiveMQConnectionFactory connectionFactory;
+    private ConnectionFactory managedConnectionFactory;
     private String broadcastDestinationName = "org.apache.servicemix.JCAFlow";
-    private Topic broadcastTopic;
+    private ActiveMQTopic broadcastTopic;
     private Map connectorMap = new ConcurrentHashMap();
     private AtomicBoolean started = new AtomicBoolean(false);
-    private Set subscriberSet=new CopyOnWriteArraySet();
+    private Set subscriberSet = new CopyOnWriteArraySet();
     private TransactionContextManager transactionContextManager;
     private ConnectionManager connectionManager;
-    private BootstrapContext bootstrapContext;
-    private ResourceAdapter resourceAdapter;
-    private JCAConnector containerConnector;
-    private JCAConnector broadcastConnector;
-    private Session broadcastSession;
-    private Topic advisoryTopic;
-    private MessageConsumer advisoryConsumer;
-
+    private Connector containerConnector;
+    private Connector broadcastConnector;
+    private Connector advisoryConnector;
+    private ActiveMQTopic advisoryTopic;
     private EndpointListener endpointListener;
-
     private ComponentListener componentListener;
 
     /**
@@ -144,47 +140,11 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
     }
 
     /**
-     * Returns the password for this flow
-     * 
-     * @return Returns the password.
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * Sets the password for this flow
-     * 
-     * @param password The password to set.
-     */
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    /**
-     * Sets the User Name for this flow
-     * 
-     * @return Returns the userName.
-     */
-    public String getUserName() {
-        return userName;
-    }
-
-    /**
-     * Returns the User Name for this flow
-     * 
-     * @param userName The userName to set.
-     */
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    /**
      * Returns the ConnectionFactory for this flow
      * 
      * @return Returns the connectionFactory.
      */
-    public ConnectionFactory getConnectionFactory() {
+    public ActiveMQConnectionFactory getConnectionFactory() {
         return connectionFactory;
     }
 
@@ -193,8 +153,8 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
      * 
      * @param connectionFactory The connectionFactory to set.
      */
-    public void setConnectionFactory(ConnectionFactory connectoFactory) {
-        this.connectionFactory = connectoFactory;
+    public void setConnectionFactory(ActiveMQConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
     }
 
     /**
@@ -215,13 +175,6 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
         this.broadcastDestinationName = broadcastDestinationName;
     }
 
-    protected ResourceAdapter createResourceAdapter() throws ResourceAdapterInternalException {
-    	ActiveMQResourceAdapter ra = new ActiveMQResourceAdapter();
-    	ra.setServerUrl(jmsURL);
-    	ra.start(getBootstrapContext());
-    	return ra;
-    }
-    
     public TransactionManager getTransactionManager() {
     	return (TransactionManager) broker.getContainer().getTransactionManager();
     }
@@ -257,32 +210,25 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
         };
         broker.getContainer().addListener(componentListener);
         try {
-        	resourceAdapter = createResourceAdapter();
-        	
+            if (connectionFactory == null) {
+                connectionFactory = new ActiveMQConnectionFactory(jmsURL);
+            }
+            
         	// Inbound connector
-        	ActiveMQActivationSpec ac = new ActiveMQActivationSpec();
-        	ac.setDestinationType("javax.jms.Queue");
-        	ac.setDestination(INBOUND_PREFIX + broker.getContainer().getName());
-        	containerConnector = new JCAConnector();
-        	containerConnector.setBootstrapContext(getBootstrapContext());
-        	containerConnector.setActivationSpec(ac);
-        	containerConnector.setResourceAdapter(resourceAdapter);
-        	containerConnector.setEndpointFactory(new SingletonEndpointFactory(this, getTransactionManager()));
-        	containerConnector.start();
+            ActiveMQDestination dest = new ActiveMQQueue(INBOUND_PREFIX + broker.getContainer().getName());
+            containerConnector = new Connector(dest, this, true);
+            containerConnector.start();
         	
         	// Outbound connector
-        	ActiveMQManagedConnectionFactory mcf = new ActiveMQManagedConnectionFactory();
-        	mcf.setResourceAdapter(resourceAdapter);
-        	connectionFactory = (ConnectionFactory) mcf.createConnectionFactory(getConnectionManager());
-        	
-        	// Outbound broadcast
-        	connection = ((ActiveMQResourceAdapter) resourceAdapter).makeConnection();
-        	connection.start();
-        	broadcastTopic = new ActiveMQTopic(broadcastDestinationName);
-            
-            broadcastSession=connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
+            ActiveMQResourceAdapter outboundRa = new ActiveMQResourceAdapter();
+            outboundRa.setConnectionFactory(connectionFactory);
+            ActiveMQManagedConnectionFactory mcf = new ActiveMQManagedConnectionFactory();
+            mcf.setResourceAdapter(outboundRa);
+            managedConnectionFactory = (ConnectionFactory) mcf.createConnectionFactory(getConnectionManager());
+
+            // Inbound broadcast
             broadcastTopic = new ActiveMQTopic(broadcastDestinationName);
-            advisoryTopic=AdvisorySupport.getConsumerAdvisoryTopic((ActiveMQDestination) broadcastTopic);
+            advisoryTopic = AdvisorySupport.getConsumerAdvisoryTopic((ActiveMQDestination) broadcastTopic);
         }
         catch (Exception e) {
             log.error("Failed to initialize JCAFlow", e);
@@ -300,14 +246,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
             super.start();
             try {
                 // Inbound broadcast
-                ActiveMQActivationSpec ac = new ActiveMQActivationSpec();
-                ac.setDestinationType("javax.jms.Topic");
-                ac.setDestination(broadcastDestinationName);
-                broadcastConnector = new JCAConnector();
-                broadcastConnector.setBootstrapContext(getBootstrapContext());
-                broadcastConnector.setActivationSpec(ac);
-                broadcastConnector.setResourceAdapter(resourceAdapter);
-                broadcastConnector.setEndpointFactory(new SingletonEndpointFactory(new MessageListener() {
+                MessageListener listener = new MessageListener() {
                     public void onMessage(Message message) {
                         try {
                             Object obj = ((ObjectMessage) message).getObject();
@@ -326,17 +265,19 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
                             log.error("Error processing incoming broadcast message", e);
                         }
                     }
-                }));
+                };
+                broadcastConnector = new Connector(broadcastTopic, listener, false); 
                 broadcastConnector.start();
                 
-                advisoryConsumer = broadcastSession.createConsumer(advisoryTopic);
-                advisoryConsumer.setMessageListener(new MessageListener() {
+                listener = new MessageListener() {
                     public void onMessage(Message message) {
                         if (started.get()) {
                             onAdvisoryMessage(((ActiveMQMessage) message).getDataStructure());
                         }
                     }
-                });
+                };
+                advisoryConnector = new Connector(advisoryTopic, listener, false);
+                advisoryConnector.start();
             }
             catch (Exception e) {
                 throw new JBIException("JMSException caught in start: " + e.getMessage(), e);
@@ -353,10 +294,14 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
         if (started.compareAndSet(true, false)) {
             super.stop();
             try {
-                advisoryConsumer.close();
+                broadcastConnector.stop();
+            } catch (Exception e) {
+                log.debug("Error closing jca connector", e);
             }
-            catch (JMSException e) {
-                log.debug("JMSException caught in stop" ,e);
+            try {
+                advisoryConnector.stop();
+            } catch (Exception e) {
+                log.debug("Error closing jca connector", e);
             }
         }
     }
@@ -370,32 +315,17 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
         broker.getContainer().removeListener(componentListener);
         // Destroy connectors
         while (!connectorMap.isEmpty()) {
-        	JCAConnector connector = (JCAConnector) connectorMap.remove(connectorMap.keySet().iterator().next());
+        	Connector connector = (Connector) connectorMap.remove(connectorMap.keySet().iterator().next());
         	try {
-        		connector.destroy();
+        		connector.stop();
         	} catch (Exception e) {
         		log.debug("Error closing jca connector", e);
         	}
         }
         try {
-        	containerConnector.destroy();
+        	containerConnector.stop();
     	} catch (Exception e) {
     		log.debug("Error closing jca connector", e);
-        }
-        try {
-        	broadcastConnector.destroy();
-    	} catch (Exception e) {
-    		log.debug("Error closing jca connector", e);
-        }
-        // Destroy the resource adapter
-    	resourceAdapter.stop();
-        if (this.connection != null) {
-            try {
-                this.connection.close();
-            }
-            catch (JMSException e) {
-                log.debug("Error closing JMS Connection", e);
-            }
         }
     }
 
@@ -426,15 +356,9 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
         }
         try {
             String key = EndpointSupport.getKey(event.getEndpoint());
-            if(!connectorMap.containsKey(key)){
-                ActiveMQActivationSpec ac = new ActiveMQActivationSpec();
-                ac.setDestinationType("javax.jms.Queue");
-                ac.setDestination(INBOUND_PREFIX + key);
-                JCAConnector connector = new JCAConnector();
-                connector.setBootstrapContext(getBootstrapContext());
-                connector.setActivationSpec(ac);
-                connector.setResourceAdapter(resourceAdapter);
-                connector.setEndpointFactory(new SingletonEndpointFactory(this, getTransactionManager()));
+            if (!connectorMap.containsKey(key)){
+                ActiveMQDestination dest = new ActiveMQQueue(INBOUND_PREFIX + key);
+                Connector connector = new Connector(dest, this, true);
                 connector.start();
                 connectorMap.put(key, connector);
             }
@@ -451,9 +375,9 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
     public void onInternalEndpointUnregistered(EndpointEvent event, boolean broadcast) {
         try{
             String key = EndpointSupport.getKey(event.getEndpoint());
-            JCAConnector connector=(JCAConnector) connectorMap.remove(key);
-            if(connector!=null){
-                connector.destroy();
+            Connector connector = (Connector) connectorMap.remove(key);
+            if (connector != null) {
+                connector.stop();
             }
             // broadcast change to the network
             if (broadcast) {
@@ -471,15 +395,9 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
         }
         try {
             String key = event.getComponent().getName();
-            if(!connectorMap.containsKey(key)){
-                ActiveMQActivationSpec ac = new ActiveMQActivationSpec();
-                ac.setDestinationType("javax.jms.Queue");
-                ac.setDestination(INBOUND_PREFIX + key);
-                JCAConnector connector = new JCAConnector();
-                connector.setBootstrapContext(getBootstrapContext());
-                connector.setActivationSpec(ac);
-                connector.setResourceAdapter(resourceAdapter);
-                connector.setEndpointFactory(new SingletonEndpointFactory(this, getTransactionManager()));
+            if (!connectorMap.containsKey(key)) {
+                ActiveMQDestination dest = new ActiveMQQueue(INBOUND_PREFIX + key);
+                Connector connector = new Connector(dest, this, true);
                 connector.start();
                 connectorMap.put(key, connector);
             }
@@ -491,9 +409,9 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
     public void onComponentStopped(ComponentEvent event) {
         try {
             String key = event.getComponent().getName();
-            JCAConnector connector = (JCAConnector) connectorMap.remove(key);
+            Connector connector = (Connector) connectorMap.remove(key);
             if (connector != null){
-                connector.destroy();
+                connector.stop();
             }
         } catch (Exception e) {
             log.error("Cannot destroy consumer for component " + event.getComponent().getName(), e);
@@ -674,18 +592,6 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
 		this.transactionContextManager = transactionContextManager;
 	}
 
-	public BootstrapContext getBootstrapContext() {
-		if (bootstrapContext == null) {
-	    	GeronimoWorkManager wm = (GeronimoWorkManager) broker.getContainer().getWorkManager();
-	    	bootstrapContext = new BootstrapContextImpl(wm);
-		}
-		return bootstrapContext;
-	}
-
-	public void setBootstrapContext(BootstrapContext bootstrapContext) {
-		this.bootstrapContext = bootstrapContext;
-	}
-    
     public String toString(){
         return broker.getContainer().getName() + " JCAFlow";
     }
@@ -697,7 +603,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
                 return;
             }
         }
-    	Connection connection = connectionFactory.createConnection();
+    	Connection connection = managedConnectionFactory.createConnection();
     	try {
     		Session session = connection.createSession(transacted, transacted ? Session.SESSION_TRANSACTED : Session.AUTO_ACKNOWLEDGE);
     		ObjectMessage msg = session.createObjectMessage(object);
@@ -707,6 +613,50 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
     	} finally {
     		connection.close();
     	}
+    }
+    
+    class Connector {
+        private ActiveMQResourceAdapter ra;
+        private MessageEndpointFactory endpointFactory;
+        private ActiveMQActivationSpec spec;
+        private Executor executor;
+        public Connector(ActiveMQDestination destination, MessageListener listener, boolean transacted) {
+            ra = new ActiveMQResourceAdapter();
+            ra.setConnectionFactory(connectionFactory);
+            endpointFactory = new SingletonEndpointFactory(listener, transacted ? getTransactionManager() : null);
+            spec = new ActiveMQActivationSpec();
+            spec.setActiveMQDestination(destination);
+        }
+        public void start() throws ResourceException {
+            ExecutorFactory factory = broker.getContainer().getExecutorFactory();
+            executor = factory.createExecutor("flow.jca." + spec.getDestination());
+            BootstrapContext context = new SimpleBootstrapContext(new WorkManagerWrapper(executor));
+            ra.start(context);
+            spec.setResourceAdapter(ra);
+            ra.endpointActivation(endpointFactory, spec);
+        }
+        public void stop() {
+            ra.endpointDeactivation(endpointFactory, spec);
+            ra.stop();
+            executor.shutdown();
+        }
+    }
+    
+    class SimpleBootstrapContext implements BootstrapContext {
+        private final WorkManager workManager;
+        public SimpleBootstrapContext(WorkManager workManager) {
+            this.workManager = workManager;
+        }
+        public Timer createTimer() throws UnavailableException {
+            throw new UnsupportedOperationException();
+        }
+        public WorkManager getWorkManager() {
+            return workManager;
+        }
+        public XATerminator getXATerminator() {
+            throw new UnsupportedOperationException();
+        }
+        
     }
 
 }

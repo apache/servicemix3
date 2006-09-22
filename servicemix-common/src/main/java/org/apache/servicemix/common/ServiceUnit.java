@@ -26,126 +26,122 @@ import java.util.Map;
 import javax.jbi.JBIException;
 import javax.jbi.management.LifeCycleMBean;
 
-import org.apache.xbean.kernel.ServiceNotFoundException;
-
 public class ServiceUnit {
 
-	protected BaseComponent component;
+    protected BaseComponent component;
 
-	protected String name;
+    protected String name;
 
-	protected String rootPath;
+    protected String rootPath;
 
-	protected String status = LifeCycleMBean.SHUTDOWN;
+    protected String status = LifeCycleMBean.SHUTDOWN;
 
-	protected Map endpoints = new HashMap();
+    protected Map endpoints = new HashMap();
 
-	public ServiceUnit() {
-	}
+    public ServiceUnit() {
+    }
 
-	public ServiceUnit(BaseComponent component) {
-		this.component = component;
-	}
+    public ServiceUnit(BaseComponent component) {
+        this.component = component;
+    }
 
-	public void start() throws Exception {
-		// Activate endpoints
-		List activated = new ArrayList();
-		try {
-			for (Iterator iter = getEndpoints().iterator(); iter.hasNext();) {
-				Endpoint endpoint = (Endpoint) iter.next();
-				endpoint.activate();
-				activated.add(endpoint);
-			}
-			this.status = LifeCycleMBean.STARTED;
-		} catch (Exception e) {
-			// Deactivate activated endpoints
-			for (Iterator iter = activated.iterator(); iter.hasNext();) {
-				try {
-					Endpoint endpoint = (Endpoint) iter.next();
-					endpoint.deactivate();
-				} catch (Exception e2) {
-					// do nothing
-				}
-			}
-			throw e;
-		}
-	}
+    public void start() throws Exception {
+        // Activate endpoints
+        List activated = new ArrayList();
+        try {
+            for (Iterator iter = getEndpoints().iterator(); iter.hasNext();) {
+                Endpoint endpoint = (Endpoint) iter.next();
+                endpoint.activate();
+                activated.add(endpoint);
+            }
+            this.status = LifeCycleMBean.STARTED;
+        } catch (Exception e) {
+            // Deactivate activated endpoints
+            for (Iterator iter = activated.iterator(); iter.hasNext();) {
+                try {
+                    Endpoint endpoint = (Endpoint) iter.next();
+                    endpoint.deactivate();
+                } catch (Exception e2) {
+                    // do nothing
+                }
+            }
+            throw e;
+        }
+    }
 
-	public void stop() throws Exception {
-		this.status = LifeCycleMBean.STOPPED;
-		// Deactivate endpoints
-		Exception exception = null;
-		for (Iterator iter = getEndpoints().iterator(); iter.hasNext();) {
-			Endpoint endpoint = (Endpoint) iter.next();
-			try {
-				endpoint.deactivate();
-			} catch (Exception e) {
-				exception = e;
-			}
-		}
-		if (exception != null) {
-			throw exception;
-		}
-	}
+    public void stop() throws Exception {
+        this.status = LifeCycleMBean.STOPPED;
+        // Deactivate endpoints
+        Exception exception = null;
+        for (Iterator iter = getEndpoints().iterator(); iter.hasNext();) {
+            Endpoint endpoint = (Endpoint) iter.next();
+            try {
+                endpoint.deactivate();
+            } catch (Exception e) {
+                exception = e;
+            }
+        }
+        if (exception != null) {
+            throw exception;
+        }
+    }
 
-	public void shutDown() throws JBIException {
-		this.status = LifeCycleMBean.SHUTDOWN;
-	}
+    public void shutDown() throws JBIException {
+        this.status = LifeCycleMBean.SHUTDOWN;
+    }
 
-	public String getCurrentState() {
-		return status;
-	}
+    public String getCurrentState() {
+        return status;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getRootPath() {
-		return rootPath;
-	}
+    public String getRootPath() {
+        return rootPath;
+    }
 
-	public void setRootPath(String rootPath) {
-		this.rootPath = rootPath;
-	}
+    public void setRootPath(String rootPath) {
+        this.rootPath = rootPath;
+    }
 
-	/**
-	 * @return Returns the component.
-	 */
-	public BaseComponent getComponent() {
-		return component;
-	}
+    /**
+     * @return Returns the component.
+     */
+    public BaseComponent getComponent() {
+        return component;
+    }
 
-	/**
-	 * @param component
-	 *            The component to set.
-	 */
-	public void setComponent(BaseComponent component) {
-		this.component = component;
-	}
+    /**
+     * @param component
+     *            The component to set.
+     */
+    public void setComponent(BaseComponent component) {
+        this.component = component;
+    }
 
-	public Collection getEndpoints() {
-		return this.endpoints.values();
-	}
+    public Collection getEndpoints() {
+        return this.endpoints.values();
+    }
 
-	public void addEndpoint(Endpoint endpoint) {
-		String key = EndpointSupport.getKey(endpoint);
-		if (this.endpoints.put(key, endpoint) != null) {
-			throw new IllegalStateException(
-					"More than one endpoint found in the SU for key: " + key);
-		}
-	}
+    public void addEndpoint(Endpoint endpoint) {
+        String key = EndpointSupport.getKey(endpoint);
+        if (this.endpoints.put(key, endpoint) != null) {
+            throw new IllegalStateException("More than one endpoint found in the SU for key: " + key);
+        }
+    }
 
-	public Endpoint getEndpoint(String key) {
-		return (Endpoint) this.endpoints.get(key);
-	}
+    public Endpoint getEndpoint(String key) {
+        return (Endpoint) this.endpoints.get(key);
+    }
 
-	public ClassLoader getConfigurationClassLoader()
-			throws ServiceNotFoundException {
-		return null;
-	}
+    public ClassLoader getConfigurationClassLoader() {
+        return null;
+    }
 
 }

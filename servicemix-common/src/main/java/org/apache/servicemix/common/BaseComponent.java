@@ -18,6 +18,7 @@ package org.apache.servicemix.common;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.executors.Executor;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 
@@ -28,7 +29,6 @@ import javax.jbi.component.ServiceUnitManager;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.servicedesc.ServiceEndpoint;
-import javax.resource.spi.work.WorkManager;
 
 /**
  * Base class for a component.
@@ -166,10 +166,6 @@ public abstract class BaseComponent implements Component {
         return getComponentContext().getComponentName();
     }
     
-    public WorkManager getWorkManager() {
-        return lifeCycle.workManager;
-    }
-    
     /**
      * @return Returns the logger.
      */
@@ -182,6 +178,15 @@ public abstract class BaseComponent implements Component {
      */
     public Registry getRegistry() {
         return registry;
+    }
+    
+    /**
+     * Shortcut to retrieve this component's executor.
+     * 
+     * @return the executor for this component
+     */
+    public Executor getExecutor() {
+        return lifeCycle.getExecutor();
     }
     
 }

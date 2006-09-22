@@ -30,14 +30,14 @@ import javax.jbi.management.DeploymentException;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.JMException;
 import javax.management.ObjectName;
-import javax.resource.spi.work.Work;
-import javax.resource.spi.work.WorkException;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.executors.Executor;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.EnvironmentContext;
+import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.container.ServiceAssemblyEnvironment;
 import org.apache.servicemix.jbi.container.SubscriptionSpec;
 import org.apache.servicemix.jbi.deployment.ServiceAssembly;
@@ -73,6 +73,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     private Map serviceUnits;
     private List pendingAssemblies;
     private List pendingComponents;
+    private Executor executor;
 
     /**
      * Constructor
@@ -109,13 +110,17 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         return endpointRegistry;
     }
 
+    public void init(JBIContainer container) throws JBIException {
+        super.init(container);
+        executor = container.getExecutorFactory().createExecutor("services.registry");
+    }
+    
     /**
      * start brokering
      * 
      * @throws JBIException
      */
     public void start() throws JBIException {
-
         componentRegistry.start();
         serviceAssemblyRegistry.start();
         super.start();
@@ -142,6 +147,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         componentRegistry.shutDown();
         super.shutDown();
         container.getManagementContext().unregisterMBean(this);
+        executor.shutdown();
     }
     
     /**
@@ -838,17 +844,11 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     }
 
     public void checkPendingAssemblies() {
-        try {
-            getContainer().getWorkManager().scheduleWork(new Work() {
-                public void release() {
-                }
-                public void run() {
-                    startPendingAssemblies();
-                }
-            });
-        } catch (WorkException e) {
-            log.error("Could not schedule work", e);
-        }
+        executor.execute(new Runnable() {
+            public void run() {
+                startPendingAssemblies();
+            }
+        });
     }
 
     public void addPendingAssembly(ServiceAssemblyLifeCycle sa) {
@@ -881,17 +881,11 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     }
 
     public void checkPendingComponents() {
-        try {
-            getContainer().getWorkManager().scheduleWork(new Work() {
-                public void release() {
-                }
-                public void run() {
-                    startPendingComponents();
-                }
-            });
-        } catch (WorkException e) {
-            log.error("Could not schedule work", e);
-        }
+        executor.execute(new Runnable() {
+            public void run() {
+                startPendingComponents();
+            }
+        });
     }
 
     public void addPendingComponent(ComponentMBeanImpl comp) {

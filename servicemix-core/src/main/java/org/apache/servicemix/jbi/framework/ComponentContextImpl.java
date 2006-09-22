@@ -29,7 +29,6 @@ import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.naming.InitialContext;
-import javax.resource.spi.work.WorkManager;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
@@ -111,15 +110,6 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      */
     public Component getComponent() {
         return component;
-    }
-
-    /**
-     * Get WorkManager
-     * 
-     * @return the Container's WorkManager
-     */
-    public WorkManager getWorkManager() {
-        return container.getWorkManager();
     }
 
     /**

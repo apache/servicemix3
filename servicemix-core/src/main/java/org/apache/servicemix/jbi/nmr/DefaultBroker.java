@@ -27,7 +27,6 @@ import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.JMException;
 import javax.management.MBeanOperationInfo;
-import javax.resource.spi.work.WorkManager;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
@@ -67,7 +66,6 @@ public class DefaultBroker extends BaseSystemService implements Broker {
     private Registry registry;
     private String flowNames = "seda";
     private String subscriptionFlowName = null;
-    private WorkManager workManager;
     private Flow[] flows;
     private final static Log log = LogFactory.getLog(DefaultBroker.class);
     private EndpointChooser defaultServiceChooser = new FirstChoicePolicy();
@@ -90,21 +88,6 @@ public class DefaultBroker extends BaseSystemService implements Broker {
         return "Normalized Message Router";
     }
 
-    /**
-     * @return Returns the workManager.
-     */
-    public WorkManager getWorkManager() {
-        return workManager;
-    }
-
-    /**
-     * @param workManager
-     *            The workManager to set.
-     */
-    public void setWorkManager(WorkManager workManager) {
-        this.workManager = workManager;
-    }
-
     public SubscriptionManager getSubscriptionManager() {
         return subscriptionManager;
     }
@@ -124,7 +107,6 @@ public class DefaultBroker extends BaseSystemService implements Broker {
      */
     public void init(JBIContainer container) throws JBIException {
         super.init(container);
-        this.workManager = container.getWorkManager();
         this.registry = container.getRegistry();
         // Create and initialize flows
         if (this.flows == null) {

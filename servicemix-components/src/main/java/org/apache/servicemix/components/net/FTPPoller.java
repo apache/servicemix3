@@ -16,6 +16,14 @@
  */
 package org.apache.servicemix.components.net;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Set;
+
+import javax.jbi.JBIException;
+import javax.jbi.messaging.InOnly;
+import javax.jbi.messaging.NormalizedMessage;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.net.SocketClient;
@@ -26,14 +34,6 @@ import org.apache.servicemix.components.util.FileMarshaler;
 import org.apache.servicemix.components.util.PollingComponentSupport;
 
 import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
-
-import javax.jbi.JBIException;
-import javax.jbi.messaging.InOnly;
-import javax.jbi.messaging.NormalizedMessage;
-import javax.resource.spi.work.Work;
-import java.util.Set;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * A  component which polls for files to arrive on an FTP server
@@ -60,17 +60,7 @@ public class FTPPoller extends PollingComponentSupport {
         try {
             FTPFile[] files = ftp.listFiles(getWorkingPath());
             for (int i = 0; i < files.length; i++) {
-                final FTPFile file = files[i];
-                workingSet.add(file);
-                getWorkManager().scheduleWork(new Work() {
-                    public void run() {
-                        processFile(file);
-                    }
-
-                    public void release() {
-                        workingSet.remove(file);
-                    }
-                });
+                pollFile(files[i]);
             }
         }
         finally {
@@ -120,6 +110,23 @@ public class FTPPoller extends PollingComponentSupport {
             throw new IllegalArgumentException("You must initialise the clientPool property");
         }
         super.init();
+    }
+
+    protected void pollFile(final FTPFile aFile) {
+        if (workingSet.add(aFile)) {
+            if (log.isDebugEnabled()) {
+                log.debug("Scheduling file " + aFile + " for processing");
+            }
+            getExecutor().execute(new Runnable() {
+                public void run() {
+                    try {
+                        processFile(aFile);
+                    } finally {
+                        workingSet.remove(aFile);
+                    }
+                }
+            });
+        }
     }
 
     protected void processFile(FTPFile file) {

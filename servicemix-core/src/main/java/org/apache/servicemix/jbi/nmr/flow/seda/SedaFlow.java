@@ -55,7 +55,6 @@ import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
 public class SedaFlow extends AbstractFlow {
 
     protected Map queueMap = new ConcurrentHashMap();
-    protected int capacity = 100;
     protected AtomicBoolean started = new AtomicBoolean(false);
     protected ComponentListener listener;
 
@@ -186,13 +185,7 @@ public class SedaFlow extends AbstractFlow {
         ComponentNameSpace cns = me.getDestinationId();
         SedaQueue queue = (SedaQueue) queueMap.get(cns);
         if (queue == null) {
-            queue = new SedaQueue(cns);
-            queueMap.put(cns, queue);
-            queue.init(this, capacity);
-            registerQueue(cns, queue);
-            if (started.get()) {
-                queue.start();
-            }
+            queue = createQueue(cns);
         }
         try {
             queue.enqueue(me);
@@ -200,6 +193,20 @@ public class SedaFlow extends AbstractFlow {
         catch (InterruptedException e) {
             throw new MessagingException(queue + " Failed to enqueue exchange: " + me, e);
         }
+    }
+    
+    protected synchronized SedaQueue createQueue(ComponentNameSpace cns) throws JBIException {
+        SedaQueue queue = (SedaQueue) queueMap.get(cns);
+        if (queue == null) {
+            queue = new SedaQueue(cns);
+            queue.init(this);
+            registerQueue(cns, queue);
+            if (started.get()) {
+                queue.start();
+            }
+            queueMap.put(cns, queue);
+        }
+        return queue;
     }
     
     /**
@@ -233,20 +240,6 @@ public class SedaFlow extends AbstractFlow {
             queueMap.remove(queue.getComponentNameSpace());
             unregisterQueue(queue);
         }
-    }
-
-    /**
-     * @return Returns the capacity.
-     */
-    public int getCapacity() {
-        return capacity;
-    }
-
-    /**
-     * @param capacity The capacity to set.
-     */
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
     }
 
     /**
@@ -295,7 +288,6 @@ public class SedaFlow extends AbstractFlow {
      */
     public MBeanAttributeInfo[] getAttributeInfos() throws JMException {
         AttributeInfoHelper helper = new AttributeInfoHelper();
-        helper.addAttribute(getObjectToManage(), "capacity", "default  capacity of a SedaQueue");
         helper.addAttribute(getObjectToManage(), "queueNumber", "number of running SedaQueues");
         return AttributeInfoHelper.join(super.getAttributeInfos(), helper.getAttributeInfos());
     }

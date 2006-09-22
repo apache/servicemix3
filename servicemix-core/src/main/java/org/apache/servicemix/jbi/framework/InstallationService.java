@@ -31,8 +31,6 @@ import javax.management.JMException;
 import javax.management.MBeanOperationInfo;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
-import javax.resource.spi.work.Work;
-import javax.resource.spi.work.WorkException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -507,20 +505,8 @@ public class InstallationService extends BaseSystemService implements Installati
                     if(files[i].isDirectory()){
                         final File directory=files[i];
                         try{
-                            container.getWorkManager().doWork(new Work(){
-                                public void release(){}
-
-                                public void run(){
-                                    try{
-                                        buildComponent(directory);
-                                    }catch(DeploymentException e){
-                                        log.error("Could not build Component: "+directory.getName(),e);
-                                        log.warn("Deleting Component directory: "+directory);
-                                        FileUtil.deleteFile(directory);
-                                    }
-                                }
-                            });
-                        }catch(WorkException e){
+                            buildComponent(directory);
+                        }catch(DeploymentException e){
                             log.error("Could not build Component: "+directory.getName(),e);
                             log.warn("Deleting Component directory: "+directory);
                             FileUtil.deleteFile(directory);

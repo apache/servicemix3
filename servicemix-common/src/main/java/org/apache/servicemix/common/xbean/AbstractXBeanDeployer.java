@@ -81,6 +81,8 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
             ServiceName configurationName = springLoader.load(getXBeanFile());
             kernel.startService(configurationName);
             su.setConfiguration(configurationName);
+            // Use SU classloader
+            Thread.currentThread().setContextClassLoader(su.getConfigurationClassLoader());
             // Retrieve endpoints
             List services = getServices(kernel);
             if (services == null || services.size() == 0) {

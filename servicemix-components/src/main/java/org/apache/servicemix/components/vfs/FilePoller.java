@@ -31,7 +31,6 @@ import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
 import javax.jbi.JBIException;
 import javax.jbi.messaging.RobustInOnly;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.resource.spi.work.Work;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,18 +64,7 @@ public class FilePoller extends PollingComponentSupport {
             files = directory.getChildren();
         }
         for (int i = 0; i < files.length; i++) {
-            final FileObject file = files[i];
-            if (!workingSet.contains(file)) {
-                workingSet.add(file);
-                getWorkManager().scheduleWork(new Work() {
-                    public void run() {
-                        processFileAndDelete(file);
-                    }
-
-                    public void release() {
-                    }
-                });
-            }
+            pollFile(files[i]);
         }
     }
 
@@ -152,6 +140,23 @@ public class FilePoller extends PollingComponentSupport {
         super.init();
     }
 
+    protected void pollFile(final FileObject aFile) {
+        if (workingSet.add(aFile)) {
+            if (log.isDebugEnabled()) {
+                log.debug("Scheduling file " + aFile + " for processing");
+            }
+            getExecutor().execute(new Runnable() {
+                public void run() {
+                    try {
+                        processFileAndDelete(aFile);
+                    } finally {
+                        workingSet.remove(aFile);
+                    }
+                }
+            });
+        }
+    }
+
     protected void processFileAndDelete(FileObject file) {
         try {
             processFile(file);
@@ -163,9 +168,6 @@ public class FilePoller extends PollingComponentSupport {
         }
         catch (Exception e) {
             log.error("Failed to process file: " + file + ". Reason: " + e, e);
-        }
-        finally {
-            workingSet.remove(file);
         }
     }
 

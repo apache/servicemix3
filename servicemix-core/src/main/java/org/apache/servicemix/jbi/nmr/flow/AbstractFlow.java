@@ -29,6 +29,7 @@ import javax.management.ObjectName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.JbiConstants;
+import org.apache.servicemix.executors.ExecutorFactory;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.framework.ComponentNameSpace;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
@@ -51,6 +52,7 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
     protected final Log log = LogFactory.getLog(getClass());
     
     protected Broker broker;
+    protected ExecutorFactory executorFactory;
     private ReadWriteLock lock = new ReentrantReadWriteLock();
     private Thread suspendThread = null;
     private String name;
@@ -63,7 +65,8 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      */
     public void init(Broker broker) throws JBIException {
         this.broker = broker;
-		// register self with the management context
+        this.executorFactory = broker.getContainer().getExecutorFactory();
+        // register self with the management context
         ObjectName objectName = broker.getContainer().getManagementContext().createObjectName(this);
         try {
             broker.getContainer().getManagementContext().registerMBean(objectName, this, LifeCycleMBean.class);
@@ -258,6 +261,13 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
     
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * @return the executorFactory
+     */
+    public ExecutorFactory getExecutorFactory() {
+        return executorFactory;
     }
     
 }

@@ -20,13 +20,14 @@ import java.util.Date;
 
 import javax.jbi.JBIException;
 import javax.resource.spi.work.Work;
-import javax.resource.spi.work.WorkManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.varscheduler.ScheduleIterator;
 import org.apache.servicemix.components.varscheduler.Scheduler;
 import org.apache.servicemix.components.varscheduler.SchedulerTask;
+import org.apache.servicemix.executors.Executor;
+import org.apache.servicemix.executors.ExecutorFactory;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 
 /**
@@ -37,7 +38,7 @@ import org.apache.servicemix.jbi.framework.ComponentContextImpl;
  */
 public abstract class PollingComponentSupport extends ComponentSupport implements Work {
     private static final Log log = LogFactory.getLog(PollingComponentSupport.class);
-    private WorkManager workManager;
+    private Executor executor;
     private Scheduler scheduler;
     private Date firstTime;
     private long period = 5000;
@@ -68,12 +69,8 @@ public abstract class PollingComponentSupport extends ComponentSupport implement
 
     // Properties
     // -------------------------------------------------------------------------
-    public WorkManager getWorkManager() {
-        return workManager;
-    }
-
-    public void setWorkManager(WorkManager workManager) {
-        this.workManager = workManager;
+    public Executor getExecutor() {
+        return executor;
     }
 
     public long getDelay() {
@@ -133,9 +130,10 @@ public abstract class PollingComponentSupport extends ComponentSupport implement
     public synchronized void shutDown() throws JBIException {
         stop();
         scheduler.cancel();
+        executor.shutdown();
         scheduler = null;
         scheduleIterator = null;
-        workManager = null;
+        executor = null;
         super.shutDown();
     }
 
@@ -148,9 +146,10 @@ public abstract class PollingComponentSupport extends ComponentSupport implement
         if (scheduleIterator == null) {
         	scheduleIterator = new PollScheduleIterator();
         }
-        if (workManager == null) {
+        if (executor == null) {
             ComponentContextImpl context = (ComponentContextImpl) getContext();
-            workManager = context.getWorkManager();
+            ExecutorFactory factory = context.getContainer().getExecutorFactory();
+            executor = factory.createExecutor("component." + context.getComponentName());
         }
         super.init();
        
@@ -161,7 +160,7 @@ public abstract class PollingComponentSupport extends ComponentSupport implement
 	        try {
 	            // lets run the work inside the JCA worker pools to ensure
 	            // the threads are setup correctly when we actually do stuff
-	            getWorkManager().doWork(PollingComponentSupport.this);
+	            getExecutor().execute(PollingComponentSupport.this);
 	        }
 	        catch (Throwable e) {
 	            log.error("Failed to schedule work: " + e, e);

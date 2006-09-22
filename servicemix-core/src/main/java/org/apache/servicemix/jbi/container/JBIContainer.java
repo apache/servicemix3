@@ -38,14 +38,12 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.resource.spi.work.WorkManager;
 import javax.swing.event.EventListenerList;
 import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.geronimo.connector.work.GeronimoWorkManager;
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.components.util.ComponentAdaptor;
@@ -53,6 +51,8 @@ import org.apache.servicemix.components.util.ComponentAdaptorMEListener;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.components.util.PojoLifecycleAdaptor;
 import org.apache.servicemix.components.util.PojoSupport;
+import org.apache.servicemix.executors.ExecutorFactory;
+import org.apache.servicemix.executors.impl.ExecutorFactoryImpl;
 import org.apache.servicemix.id.IdGenerator;
 import org.apache.servicemix.jbi.event.ComponentListener;
 import org.apache.servicemix.jbi.event.EndpointListener;
@@ -75,7 +75,6 @@ import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.Broker;
 import org.apache.servicemix.jbi.nmr.DefaultBroker;
 import org.apache.servicemix.jbi.nmr.flow.Flow;
-import org.jencks.factory.WorkManagerFactoryBean;
 import org.w3c.dom.DocumentFragment;
 
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
@@ -109,8 +108,6 @@ public class JBIContainer extends BaseLifeCycle {
     protected AdminCommandsService adminCommandsService = new AdminCommandsService();
     protected ClientFactory clientFactory = new ClientFactory();
     protected Registry registry = new Registry();
-    protected WorkManager workManager;
-    protected boolean isWorkManagerCreated;
     protected boolean autoEnlistInTransaction = false;
     protected boolean persistent = false;
     protected boolean embedded = false;
@@ -119,6 +116,7 @@ public class JBIContainer extends BaseLifeCycle {
     protected EventListener[] configuredListeners;
     protected boolean useShutdownHook = true;
     protected transient Thread shutdownHook;
+    protected ExecutorFactory executorFactory; 
     
     /**
      * Default Constructor
@@ -531,9 +529,8 @@ public class JBIContainer extends BaseLifeCycle {
                      " JBI Container (" + getName() + ") is starting");
             log.info("For help or more informations please see: http://incubator.apache.org/servicemix/");
             addShutdownHook();
-            if (this.workManager == null) {
-                this.workManager = createWorkManager();
-                this.isWorkManagerCreated = true;
+            if (this.executorFactory == null) {
+                this.executorFactory = createExecutorFactory();
             }
             if (this.namingContext == null) {
                 try {
@@ -644,13 +641,6 @@ public class JBIContainer extends BaseLifeCycle {
             super.shutDown();
             managementContext.unregisterMBean(this);
             managementContext.shutDown();
-            if (isWorkManagerCreated && workManager instanceof GeronimoWorkManager) {
-                try {
-                    ((GeronimoWorkManager) workManager).doStop();
-                } catch (Exception e) {
-                    throw new JBIException("Could not stop workManager", e);
-                }
-            }
             log.info("ServiceMix JBI Container (" + getName() + ") stopped");
         }
     }
@@ -766,20 +756,6 @@ public class JBIContainer extends BaseLifeCycle {
      */
     public synchronized void setRootDir(String root) {
         this.rootDir = root;
-    }
-
-    /**
-     * @return Returns the workManager.
-     */
-    public WorkManager getWorkManager() {
-        return workManager;
-    }
-
-    /**
-     * @param workManager The workManager to set.
-     */
-    public void setWorkManager(WorkManager workManager) {
-        this.workManager = workManager;
     }
 
     /**
@@ -1140,19 +1116,8 @@ public class JBIContainer extends BaseLifeCycle {
         }
     }
 
-    /**
-     * Factory method to create a new work manager instance
-     *
-     * @return a newly created work manager
-     */
-    protected WorkManager createWorkManager() throws JBIException {
-        WorkManagerFactoryBean factory = new WorkManagerFactoryBean();
-        try {
-            return factory.getWorkManager();
-        }
-        catch (Exception e) {
-            throw new JBIException("Failed to start WorkManager: " + e, e);
-        }
+    protected ExecutorFactory createExecutorFactory() throws JBIException {
+        return new ExecutorFactoryImpl();
     }
 
 
@@ -1337,4 +1302,19 @@ public class JBIContainer extends BaseLifeCycle {
     public void setNotifyStatistics(boolean notifyStatistics) {
         this.notifyStatistics = notifyStatistics;
     }
+
+    /**
+     * @return the executorFactory
+     */
+    public ExecutorFactory getExecutorFactory() {
+        return executorFactory;
+    }
+
+    /**
+     * @param executorFactory the executorFactory to set
+     */
+    public void setExecutorFactory(ExecutorFactory executorFactory) {
+        this.executorFactory = executorFactory;
+    }
+
 }

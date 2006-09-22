@@ -16,42 +16,39 @@
  */
 package org.apache.servicemix.jbi.nmr.flow.seda;
 
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.framework.ComponentNameSpace;
-import org.apache.servicemix.jbi.management.AttributeInfoHelper;
-import org.apache.servicemix.jbi.management.BaseLifeCycle;
-import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
-import org.apache.servicemix.jbi.util.BoundedLinkedQueue;
-
 import javax.jbi.JBIException;
-import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.ObjectName;
-import javax.resource.spi.work.Work;
-import javax.resource.spi.work.WorkException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.executors.Executor;
+import org.apache.servicemix.jbi.framework.ComponentNameSpace;
+import org.apache.servicemix.jbi.management.AttributeInfoHelper;
+import org.apache.servicemix.jbi.management.BaseLifeCycle;
+import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
+
+import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * A simple Straight through flow
  * 
  * @version $Revision$
  */
-public class SedaQueue extends BaseLifeCycle implements Work {
+public class SedaQueue extends BaseLifeCycle {
     
     private static final Log log = LogFactory.getLog(SedaQueue.class);
     
     protected SedaFlow flow;
     protected ComponentNameSpace name;
-    protected BoundedLinkedQueue queue;
     protected AtomicBoolean started = new AtomicBoolean(false);
     protected AtomicBoolean running = new AtomicBoolean(false);
     protected ObjectName objectName;
     protected String subType;
     protected Thread thread;
+    protected Executor executor;
 
     /**
      * SedaQueue name
@@ -95,36 +92,29 @@ public class SedaQueue extends BaseLifeCycle implements Work {
      * Initialize the Region
      * 
      * @param flow
-     * @param capacity
      */
-    public void init(SedaFlow flow, int capacity) {
+    public void init(SedaFlow flow) {
         this.flow = flow;
-        this.queue = new BoundedLinkedQueue(capacity);
-    }
-
-    /**
-     * Set the capacity of the Queue
-     * 
-     * @param value
-     */
-    public void setCapacity(int value) {
-        int oldValue = queue.capacity();
-        this.queue.setCapacity(value);
-        super.firePropertyChanged("capacity", new Integer(oldValue), new Integer(value));
     }
 
     /**
      * @return the capacity of the Queue
      */
     public int getCapacity() {
-        return this.queue.capacity();
+        if (executor == null) {
+            return -1;
+        }
+        return this.executor.capacity();
     }
 
     /**
      * @return size of the Queue
      */
     public int getSize() {
-        return this.queue.size();
+        if (executor == null) {
+            return -1;
+        }
+        return this.executor.size();
     }
 
     /**
@@ -134,8 +124,20 @@ public class SedaQueue extends BaseLifeCycle implements Work {
      * @throws InterruptedException
      * @throws MessagingException 
      */
-    public void enqueue(MessageExchange me) throws InterruptedException, MessagingException {
-        queue.put(me);
+    public void enqueue(final MessageExchangeImpl me) throws InterruptedException, MessagingException {
+        executor.execute(new Runnable() {
+            public void run() {
+                try {
+                    if (log.isDebugEnabled()) {
+                        log.debug(this + " dequeued exchange: " + me);
+                    }
+                    flow.doRouting(me);
+                }
+                catch (Throwable e) {
+                    log.error(this + " got error processing " + me, e);
+                }
+            }
+        });
     }
 
     /**
@@ -144,16 +146,8 @@ public class SedaQueue extends BaseLifeCycle implements Work {
      * @throws JBIException
      */
     public void start() throws JBIException {
-        synchronized (running) {
-            try {
-                started.set(true);
-                flow.getBroker().getContainer().getWorkManager().startWork(this);
-                running.wait();
-                super.start();
-            } catch (Exception e) {
-                throw new JBIException("Unable to start queue work", e);
-            }
-        }
+        this.executor = flow.getExecutorFactory().createExecutor("flow.seda." + getName());
+        super.start();
     }
 
     /**
@@ -162,20 +156,8 @@ public class SedaQueue extends BaseLifeCycle implements Work {
      * @throws JBIException
      */
     public void stop() throws JBIException {
-        started.set(false);
-        synchronized (running) {
-            if (thread != null && running.get()) {
-                try {
-                    thread.interrupt();
-                    running.wait();
-                } catch (Exception e) {
-                    log.warn("Error stopping thread", e);
-                } finally {
-                    thread = null;
-                }
-            }
-        }
         super.stop();
+        this.executor.shutdown();
     }
 
     /**
@@ -186,67 +168,6 @@ public class SedaQueue extends BaseLifeCycle implements Work {
     public void shutDown() throws JBIException {
         stop();
         super.shutDown();
-    }
-
-    /**
-     * Asked by the WorkManager to give up
-     */
-    public void release() {
-        log.info("SedaQueue " + name + " asked to be released");
-        try {
-            shutDown();
-        }
-        catch (JBIException e) {
-            log.warn("Caught an exception shutting down", e);
-        }
-        flow.release(this);
-    }
-    
-    /**
-     * do processing
-     */
-    public void run() {
-        thread = Thread.currentThread();
-        synchronized (running) { 
-            running.set(true);
-            running.notify();
-        }
-        while (started.get()) {
-            final MessageExchangeImpl me;
-            try {
-                me = (MessageExchangeImpl) queue.poll(1000);
-                if (me != null) {
-                    flow.getBroker().getContainer().getWorkManager().scheduleWork(new Work() {
-                        public void release() {
-                        }
-                        public void run() {
-                            try {
-                                if (log.isDebugEnabled()) {
-                                    log.debug(this + " dequeued exchange: " + me);
-                                }
-                                flow.doRouting(me);
-                            }
-                            catch (Throwable e) {
-                                log.error(this + " got error processing " + me, e);
-                            }
-                        }
-                        
-                    });
-                }
-            }
-            catch (InterruptedException e) {
-                if (!started.get()) {
-                    break;
-                }
-                log.warn(this + " interrupted", e);
-            } catch (WorkException e) {
-                log.error(this + " got error processing exchange", e);
-            }
-        }
-        synchronized (running) { 
-            running.set(false);
-            running.notify();
-        }
     }
 
     /**

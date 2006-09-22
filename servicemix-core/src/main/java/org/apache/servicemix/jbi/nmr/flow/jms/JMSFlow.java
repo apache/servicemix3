@@ -35,8 +35,6 @@ import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.Topic;
-import javax.resource.spi.work.Work;
-import javax.resource.spi.work.WorkException;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -47,6 +45,7 @@ import org.apache.activemq.command.ConsumerId;
 import org.apache.activemq.command.ConsumerInfo;
 import org.apache.activemq.command.RemoveInfo;
 import org.apache.servicemix.JbiConstants;
+import org.apache.servicemix.executors.Executor;
 import org.apache.servicemix.jbi.event.ComponentAdapter;
 import org.apache.servicemix.jbi.event.ComponentEvent;
 import org.apache.servicemix.jbi.event.ComponentListener;
@@ -109,6 +108,8 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
     private EndpointListener endpointListener;
     
     private ComponentListener componentListener;
+    
+    private Executor executor;
 
     /**
      * The type of Flow
@@ -210,6 +211,8 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
     public void init(Broker broker) throws JBIException {
         log.debug(broker.getContainer().getName() + ": Initializing jms flow");
         super.init(broker);
+        // Find executor
+        executor = broker.getContainer().getExecutorFactory().createExecutor("flow.jms");
         // Create and register endpoint listener
         endpointListener = new EndpointAdapter() {
             public void internalEndpointRegistered(EndpointEvent event) {
@@ -518,10 +521,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
                 // Dispatch the message in another thread so as to free the jms session
                 // else if a component do a sendSync into the jms flow, the whole
                 // flow is deadlocked 
-                broker.getContainer().getWorkManager().scheduleWork(new Work() {
-                    public void release() {
-                    }
-
+                executor.execute(new Runnable() {
                     public void run() {
                         try {
                             if (me.getDestinationId() == null) {
@@ -540,8 +540,6 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
             }
         } catch (JMSException jmsEx) {
             log.error("Caught an exception unpacking JMS Message: ", jmsEx);
-        } catch (WorkException e) {
-            log.error("Caught an exception routing ExchangePacket: ", e);
         }
     }
 

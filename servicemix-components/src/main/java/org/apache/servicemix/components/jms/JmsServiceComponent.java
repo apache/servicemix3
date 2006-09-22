@@ -30,14 +30,13 @@ import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.Session;
-import javax.resource.spi.work.Work;
-import javax.resource.spi.work.WorkException;
-import javax.resource.spi.work.WorkManager;
 import javax.xml.transform.TransformerException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.ComponentSupport;
+import org.apache.servicemix.executors.Executor;
+import org.apache.servicemix.executors.ExecutorFactory;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jms.JmsException;
@@ -61,7 +60,7 @@ public class JmsServiceComponent extends ComponentSupport implements MessageList
     private ConnectionFactory connectionFactory;
     private Connection connection;
     private Session session;
-    private WorkManager workManager;
+    private Executor executor;
 
     /**
      * called by Spring framework after initialization
@@ -149,10 +148,9 @@ public class JmsServiceComponent extends ComponentSupport implements MessageList
     }
 
     protected void init() throws JBIException {
-        if (workManager == null) {
-            ComponentContextImpl context = (ComponentContextImpl) getContext();
-            workManager = context.getWorkManager();
-        }
+        ComponentContextImpl context = (ComponentContextImpl) getContext();
+        ExecutorFactory factory = context.getContainer().getExecutorFactory();
+        executor = factory.createExecutor("component." + context.getComponentName());
         super.init();
     }
 
@@ -222,30 +220,16 @@ public class JmsServiceComponent extends ComponentSupport implements MessageList
         this.selector = selector;
     }
 
-     public WorkManager getWorkManager() {
-        return workManager;
-    }
-
-    public void setWorkManager(WorkManager workManager) {
-        this.workManager = workManager;
-    }
-
     /**
      * MessageListener implementation
      * @param jmsMessage 
      */
     public void onMessage(final Message jmsMessage) {
-        try {
-            workManager.scheduleWork(new Work() {
-                public void release() {
-                }
-                public void run() {
-                    handleMessage(jmsMessage);
-                }
-            });
-        } catch (WorkException e) {
-            log.error(e);
-        }
+        executor.execute(new Runnable() {
+            public void run() {
+                handleMessage(jmsMessage);
+            }
+        });
     }
     
     protected void handleMessage(final Message jmsMessage) {

@@ -35,8 +35,6 @@ import javax.jbi.JBIException;
 import javax.jbi.management.DeploymentException;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
-import javax.resource.spi.work.Work;
-import javax.resource.spi.work.WorkException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -53,6 +51,7 @@ import org.apache.servicemix.jbi.util.XmlPersistenceSupport;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Monitors install and deploy directories to auto install/deploy archives
  * 
@@ -584,24 +583,14 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                             	entry.location = file.getName();
                             	entry.lastModified = new Date(file.lastModified());
                             	fileMap.put(file.getName(), entry);
-                                container.getWorkManager().doWork(new Work(){
-                                    public void run(){
-                                        log.info("Directory: "+root.getName()+": Archive changed: processing "
-                                                        +file.getName()+" ...");
-                                        try{
-                                            updateArchive(file.getAbsolutePath(), entry, true);
-                                            log.info("Directory: "+root.getName()+": Finished installation of archive:  "
-                                                    +file.getName());
-                                        }catch(Exception e){
-                                            log.warn("Directory: "+root.getName()+": Automatic install of "+file
-                                                            +" failed",e);
-                                        }
-                                    }
-
-                                    public void release(){}
-                                });
-                            }catch(WorkException e){
-                                log.warn("Automatic install of "+file+" failed",e);
+                                log.info("Directory: "+root.getName()+": Archive changed: processing "
+                                                +file.getName()+" ...");
+                                updateArchive(file.getAbsolutePath(), entry, true);
+                                log.info("Directory: "+root.getName()+": Finished installation of archive:  "
+                                        +file.getName());
+                            }catch(Exception e){
+                                log.warn("Directory: "+root.getName()+": Automatic install of "+file
+                                                +" failed",e);
                             }finally{
                                 persistState(root, fileMap);
                             }
