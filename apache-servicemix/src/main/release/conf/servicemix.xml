@@ -47,7 +47,6 @@
                 dumpStats="true"
                 statsInterval="10" 
                 transactionManager="#transactionManager"
-                workManager="#workManager"
                 createJmxConnector="false"
                 depends-on="jndi">
                 
