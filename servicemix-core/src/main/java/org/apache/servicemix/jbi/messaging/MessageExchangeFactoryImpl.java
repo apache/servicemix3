@@ -18,8 +18,8 @@ package org.apache.servicemix.jbi.messaging;
 
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.activemq.util.IdGenerator;
 import org.apache.servicemix.JbiConstants;
+import org.apache.servicemix.id.IdGenerator;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 
 import javax.jbi.messaging.InOnly;

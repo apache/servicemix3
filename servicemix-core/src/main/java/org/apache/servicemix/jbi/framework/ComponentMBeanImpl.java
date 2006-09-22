@@ -68,6 +68,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
     private MessagingStats messagingStats;
     private ComponentNameSpace componentName;
     private String description = "POJO Component";
+    private int queueCapacity = 1024;
     private boolean pojo;
     private boolean binding;
     private boolean service;
@@ -404,12 +405,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      * @return the capacity of the inbound queue
      */
     public int getInboundQueueCapacity(){
-        // TODO: should not be on the delivery channel
-        if (getDeliveryChannel() != null) {
-            return getDeliveryChannel().getQueueCapacity();
-        } else {
-            return 0;
-        }
+        return queueCapacity;
     }
     
     /**
@@ -417,10 +413,10 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      * @param value
      */
     public void setInboundQueueCapacity(int value){
-        // TODO: should not be on the delivery channel
         if (getDeliveryChannel() != null) {
-            getDeliveryChannel().setQueueCapacity(value);
+            throw new IllegalStateException("The component must be shut down before changing queue capacity");
         }
+        this.queueCapacity = value;
     }
     
     /**

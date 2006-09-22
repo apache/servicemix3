@@ -16,6 +16,7 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,19 +35,21 @@ import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
 
-import org.apache.activemq.util.IdGenerator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.MessageExchangeListener;
+import org.apache.servicemix.id.IdGenerator;
 import org.apache.servicemix.jbi.ExchangeTimeoutException;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
-import org.apache.servicemix.jbi.util.BoundedLinkedQueue;
 
+import edu.emory.mathcs.backport.java.util.concurrent.ArrayBlockingQueue;
+import edu.emory.mathcs.backport.java.util.concurrent.BlockingQueue;
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -61,7 +64,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     private JBIContainer container;
     private ComponentContextImpl context;
     private ComponentMBeanImpl component;
-    private BoundedLinkedQueue queue = new BoundedLinkedQueue();
+    private BlockingQueue queue;
     private IdGenerator idGenerator = new IdGenerator();
     private MessageExchangeFactory inboundFactory;
     private int intervalCount = 0;
@@ -86,6 +89,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     public DeliveryChannelImpl(ComponentMBeanImpl component) {
         this.component = component;
         this.container = component.getContainer();
+        this.queue = new ArrayBlockingQueue(component.getInboundQueueCapacity());
     }
 
     /**
@@ -93,22 +97,6 @@ public class DeliveryChannelImpl implements DeliveryChannel {
      */
     public int getQueueSize() {
         return queue.size();
-    }
-
-    /**
-     * @return the capacity of the inbound queue
-     */
-    public int getQueueCapacity() {
-        return queue.capacity();
-    }
-
-    /**
-     * Set the inbound queue capacity
-     * 
-     * @param value
-     */
-    public void setQueueCapacity(int value) {
-        queue.setCapacity(value);
     }
 
     /**
@@ -121,7 +109,8 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             if (log.isDebugEnabled()) {
                 log.debug("Closing DeliveryChannel " + this);
             }
-            List pending = queue.closeAndFlush();
+            List pending = new ArrayList(queue.size());
+            queue.drainTo(pending);
             for (Iterator iter = pending.iterator(); iter.hasNext();) {
                 MessageExchangeImpl messageExchange = (MessageExchangeImpl) iter.next();
                 if (messageExchange.getTransactionContext() != null && messageExchange.getMirror().getSyncState() == MessageExchangeImpl.SYNC_STATE_SYNC_SENT) {
@@ -263,7 +252,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     public MessageExchange accept(long timeoutMS) throws MessagingException {
         try {
             checkNotClosed();
-            MessageExchangeImpl me = (MessageExchangeImpl) queue.poll(timeoutMS);
+            MessageExchangeImpl me = (MessageExchangeImpl) queue.poll(timeoutMS, TimeUnit.MILLISECONDS);
             if (me != null) {
                 // If the exchange has already timed out,
                 // do not give it to the component
