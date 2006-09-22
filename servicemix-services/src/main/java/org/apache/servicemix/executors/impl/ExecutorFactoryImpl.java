@@ -35,7 +35,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
 /**
  * Default implementation of the ExecutorFactory.
  * 
- * Configuration can be done heierachically.
+ * Configuration can be done hierachically.
  * When an executor is created with an id of <code>foo.bar</code>,
  * the factory will look for a configuration in the following
  * way:
