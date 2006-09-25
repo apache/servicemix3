@@ -24,6 +24,7 @@ import javax.servlet.ServletException;
 import javax.jbi.JBIException;
 import javax.jbi.messaging.NormalizedMessage;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 
 /**
@@ -59,7 +60,13 @@ public abstract class HttpBindingSupport extends ComponentSupport implements Htt
 
     protected void outputException(HttpServletResponse response, Exception e) throws IOException {
         response.setStatus(BAD_REQUEST_STATUS_CODE);
-        PrintWriter writer = response.getWriter();
+        PrintWriter writer = null;
+        try {
+            writer = response.getWriter();
+        } catch (IllegalStateException ise) {
+            OutputStream os = response.getOutputStream();
+            writer = new PrintWriter (os);
+        }
         writer.println("Request failed with error: " + e);
         e.printStackTrace(writer);
     }
