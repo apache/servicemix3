@@ -16,11 +16,21 @@
  */
 package org.apache.servicemix.itests;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.StringWriter;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.wsdl.Definition;
 import javax.wsdl.factory.WSDLFactory;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpMethodRetryHandler;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.servicemix.tck.SpringTestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
@@ -31,12 +41,38 @@ public class Jsr181HttpTest extends SpringTestSupport {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/itests/jsr181http.xml");
     }
     
-    public void test() throws Exception {
+    public void testWSDL() throws Exception {
         WSDLFactory wsdlFactory = WSDLFactory.newInstance();
         Definition def = wsdlFactory.newWSDLReader().readWSDL("http://localhost:8194/Service/?wsdl");
         StringWriter writer = new StringWriter();
         wsdlFactory.newWSDLWriter().writeWSDL(def, writer);
         System.err.println(writer.toString());
+    }
+    
+    public void testRequest() throws Exception {
+        PostMethod method = new PostMethod("http://localhost:8194/Service/");
+        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new HttpMethodRetryHandler() {
+            public boolean retryMethod(HttpMethod method, IOException exception, int executionCount) {
+                return false;
+            }
+        });
+        method.setRequestEntity(new StringRequestEntity(
+                        "<env:Envelope xmlns:env='http://www.w3.org/2003/05/soap-envelope'>" + 
+                        "  <env:Body>" + 
+                        "    <echo xmlns='http://servicemix.org/test/'>" + 
+                        "      <req>" + 
+                        "        <msg xmlns='http://beans.itests.servicemix.apache.org'>" +
+                        "          world" +
+                        "        </msg>" +
+                        "      </req>" +
+                        "    </echo>" +
+                        "  </env:body" +
+                        "</env:Envelope>"));
+        int state = new HttpClient().executeMethod(method);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        FileUtil.copyInputStream(method.getResponseBodyAsStream(), baos);
+        System.err.println(baos.toString());
+        assertEquals(HttpServletResponse.SC_OK, state);
     }
 
 }

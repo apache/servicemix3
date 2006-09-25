@@ -21,9 +21,31 @@ import javax.jws.WebService;
 
 @WebService
 public class Echo {
+    
+    public static class Request {
+        private String msg;
+        public String getMsg() {
+            return msg;
+        }
+        public void setMsg(String msg) {
+            this.msg = msg;
+        }
+    }
+
+    public static class Response {
+        private String msg;
+        public String getMsg() {
+            return msg;
+        }
+        public void setMsg(String msg) {
+            this.msg = msg;
+        }
+    }
 
     @WebMethod
-    public String echo(String msg) {
-        return "Hello: " + msg;
+    public Response echo(Request req) {
+        Response r = new Response();
+        r.setMsg("Hello: " + req.getMsg());
+        return r;
     }
 }
