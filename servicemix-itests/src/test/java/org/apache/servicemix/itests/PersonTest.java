@@ -68,19 +68,4 @@ public class PersonTest extends SpringTestSupport {
         System.err.println(method.getResponseBodyAsString());;
     }
 
-    public void testFault2() throws Exception {
-        PostMethod method = new PostMethod("http://localhost:8192/PersonService/");
-        String req = "<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
-                     "              xmlns:tns=\"http://servicemix.apache.org/samples/wsdl-first/types\">" +
-                     "  <env:Body>" +
-                     "    <tns:GetPerson>" +
-                     "       <tns:personI></tns:personId>" +
-                     "    </tns:GetPerson>" +
-                     "  </env:Body>" +
-                     "</env:Envelope>";
-        method.setRequestEntity(new StringRequestEntity(req));
-        new HttpClient().executeMethod(method);
-        System.err.println(method.getResponseBodyAsString());;
-    }
-
 }
