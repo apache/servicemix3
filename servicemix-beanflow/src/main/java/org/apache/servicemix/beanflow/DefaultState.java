@@ -78,6 +78,7 @@ public class DefaultState<T> implements State<T> {
         synchronized (lock) {
             if (equals(value, expected)) {
                 this.value = newValue;
+                notifier.run();
                 return true;
             }
         }
