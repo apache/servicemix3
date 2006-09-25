@@ -116,7 +116,7 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
         }
     }
     
-    protected List getServices(Kernel kernel) {
+    protected List getServices(Kernel kernel) throws DeploymentException {
         return kernel.getServices(Endpoint.class);
     }
     
