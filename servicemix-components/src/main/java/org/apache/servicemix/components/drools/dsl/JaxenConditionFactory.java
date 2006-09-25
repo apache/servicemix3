@@ -39,8 +39,10 @@ public class JaxenConditionFactory implements ConditionFactory {
             throw new FactoryException("No XPath provided!");
         }
         try {
-            JaxenXPathExpression expression = new JaxenXPathExpression(text);
+            JaxenXPathExpression expression = new JaxenXPathExpression();
+            expression.setXpath(text);
             expression.setNamespaceContext(createNamespaceContext(configuration));
+            expression.afterPropertiesSet();
             return new Condition[]{ new JaxenCondition(rule, expression) };
         }
         catch (Exception e) {
