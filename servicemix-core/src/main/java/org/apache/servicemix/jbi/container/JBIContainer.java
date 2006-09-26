@@ -586,8 +586,8 @@ public class JBIContainer extends BaseLifeCycle {
             managementContext.start();
             environmentContext.start();
             clientFactory.start();
-            registry.start();
             broker.start();
+            registry.start();
             installationService.start();
             deploymentService.start();
             autoDeployService.start();
