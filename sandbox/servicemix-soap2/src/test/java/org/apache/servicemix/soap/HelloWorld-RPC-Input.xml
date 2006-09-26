@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+
+  <SOAP-ENV:Header>
+    <HelloHeader1 xmlns="uri:HelloWorld">
+      <id1>abcdefghij</id1>
+    </HelloHeader1>
+    
+    <HelloHeader2 xmlns="uri:HelloWorld">
+      <id2>1234567890</id2>
+    </HelloHeader2>
+  </SOAP-ENV:Header>
+  
+  <SOAP-ENV:Body>
+    <Hello xmlns="uri:HelloWorld">
+      <param1 xmlns="uri:HelloWorld">foo</param1>
+      <param2 xmlns="uri:HelloWorld">bar</param2>
+    </Hello>
+  </SOAP-ENV:Body>
+
+</SOAP-ENV:Envelope>
