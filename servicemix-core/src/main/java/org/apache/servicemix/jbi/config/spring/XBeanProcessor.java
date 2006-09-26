@@ -187,12 +187,15 @@ public class XBeanProcessor implements SpringXmlPreprocessor {
         // lets load the file    
         BufferedReader reader = null;    
         try {    
-            reader = new BufferedReader(new InputStreamReader(in));      
-            String line = reader.readLine();     
-            if (line == null) {      
-                throw new BeanDefinitionStoreException("Empty file found for: " + uri);      
-            }    
-            line = line.trim();      
+            reader = new BufferedReader(new InputStreamReader(in));
+            String line;
+            do {
+                line = reader.readLine();     
+                if (line == null) {      
+                    throw new BeanDefinitionStoreException("Empty file found for: " + uri);      
+                }    
+                line = line.trim();
+            } while (line.startsWith("#"));
             Class answer = null;     
             try {    
                 answer = loadClass(line);    
