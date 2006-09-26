@@ -20,7 +20,6 @@ import java.io.File;
 import java.util.Collection;
 
 import javax.jbi.JBIException;
-import javax.resource.spi.work.WorkManager;
 import javax.transaction.TransactionManager;
 
 import org.apache.commons.logging.Log;
@@ -47,7 +46,6 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
     private String name;
     private String directory;
     private TransactionContextManager transactionContextManager;
-    private WorkManager workManager;
     private Kernel kernel;
     private Collection jndiResources;
 
@@ -59,9 +57,8 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
         infoFactory.addAttribute("name", String.class, true);
         infoFactory.addAttribute("directory", String.class, true);
         infoFactory.addReference("transactionContextManager", TransactionContextManager.class);
-        infoFactory.addReference("workManager", WorkManager.class);
         infoFactory.addAttribute("kernel", Kernel.class, false);
-        infoFactory.setConstructor(new String[]{"name", "directory", "transactionContextManager", "workManager", "kernel"});
+        infoFactory.setConstructor(new String[]{"name", "directory", "transactionContextManager", "kernel"});
         GBEAN_INFO = infoFactory.getBeanInfo();
     }
 
@@ -72,12 +69,10 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
     public ServiceMixGBean(String name, 
     					   String directory, 
     					   TransactionContextManager transactionContextManager, 
-    					   WorkManager workManager,
     					   Kernel kernel) {
         this.name = name;
         this.directory = directory;
         this.transactionContextManager = transactionContextManager;
-        this.workManager = workManager;
         this.kernel = kernel;
         if (log.isDebugEnabled()) {
             log.debug("ServiceMixGBean created");
@@ -162,7 +157,6 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
         container.setTransactionManager(getTransactionManager());
         container.setMonitorInstallationDirectory(false);
         container.setMonitorDeploymentDirectory(false);
-        container.setWorkManager(workManager);
         return container;
     }
     

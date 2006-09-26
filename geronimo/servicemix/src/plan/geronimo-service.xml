@@ -117,35 +117,11 @@ Configuration for ServiceMix container.
         </dependencies>
     </environment>
 
-    <gbean name="ServiceMixThreadPool" class="org.apache.geronimo.pool.ThreadPool">
-        <attribute name="keepAliveTime">5000</attribute>
-        <attribute name="poolSize">30</attribute>
-        <attribute name="poolName">ServiceMixThreadPool</attribute>
-    </gbean>
-
-    <gbean name="ServiceMixWorkManager" class="org.apache.geronimo.connector.work.GeronimoWorkManagerGBean">
-        <reference name="SyncPool">
-            <name>ConnectorThreadPool</name>
-        </reference>
-        <reference name="StartPool">
-            <name>ConnectorThreadPool</name>
-        </reference>
-        <reference name="ScheduledPool">
-            <name>ConnectorThreadPool</name>
-        </reference>
-        <reference name="TransactionContextManager">
-            <name>TransactionContextManager</name>
-        </reference>
-    </gbean>
-
     <gbean name="ServiceMixJBIContainer" class="org.apache.servicemix.geronimo.ServiceMixGBean">
         <attribute name="name">servicemix</attribute>
         <attribute name="directory">var/servicemix</attribute>
         <reference name="transactionContextManager">
           <name>TransactionContextManager</name>
-        </reference>
-        <reference name="workManager">
-          <name>ServiceMixWorkManager</name>
         </reference>
     </gbean>
 
