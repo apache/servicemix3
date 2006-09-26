@@ -26,6 +26,9 @@ import org.jaxen.JaxenException;
  */
 public class JaxenStringXPathExpression extends JaxenXPathExpression {
 
+    public JaxenStringXPathExpression() {
+    }
+    
     public JaxenStringXPathExpression(String xpath) throws Exception {
         super(xpath);
     }
