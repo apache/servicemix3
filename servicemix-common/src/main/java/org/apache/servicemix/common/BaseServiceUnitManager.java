@@ -131,6 +131,7 @@ public class BaseServiceUnitManager implements ServiceUnitManager {
      * @see javax.jbi.component.ServiceUnitManager#start(java.lang.String)
      */
     public synchronized void start(String serviceUnitName) throws DeploymentException {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("Starting service unit");
@@ -146,6 +147,7 @@ public class BaseServiceUnitManager implements ServiceUnitManager {
                 !LifeCycleMBean.SHUTDOWN.equals(su.getCurrentState())) {
                 throw failure("start", "ServiceUnit should be in a SHUTDOWN or STOPPED state", null);
             }
+            Thread.currentThread().setContextClassLoader(su.getConfigurationClassLoader());
             su.start();
             if (logger.isDebugEnabled()) {
                 logger.debug("Service unit started");
@@ -154,6 +156,8 @@ public class BaseServiceUnitManager implements ServiceUnitManager {
             throw e;
         } catch (Exception e) {
             throw failure("start", "Unable to start service unit", e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(cl);
         }
     }
 
@@ -161,6 +165,7 @@ public class BaseServiceUnitManager implements ServiceUnitManager {
      * @see javax.jbi.component.ServiceUnitManager#stop(java.lang.String)
      */
     public synchronized void stop(String serviceUnitName) throws DeploymentException {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("Stopping service unit");
@@ -175,6 +180,7 @@ public class BaseServiceUnitManager implements ServiceUnitManager {
             if (!LifeCycleMBean.STARTED.equals(su.getCurrentState())) {
                 throw failure("stop", "ServiceUnit should be in a SHUTDOWN state", null);
             }
+            Thread.currentThread().setContextClassLoader(su.getConfigurationClassLoader());
             su.stop();
             if (logger.isDebugEnabled()) {
                 logger.debug("Service unit stopped");
@@ -183,6 +189,8 @@ public class BaseServiceUnitManager implements ServiceUnitManager {
             throw e;
         } catch (Exception e) {
             throw failure("stop", "Unable to stop service unit", e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(cl);
         }
     }
 
@@ -190,6 +198,7 @@ public class BaseServiceUnitManager implements ServiceUnitManager {
      * @see javax.jbi.component.ServiceUnitManager#shutDown(java.lang.String)
      */
     public synchronized void shutDown(String serviceUnitName) throws DeploymentException {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("Shutting down service unit");
@@ -201,6 +210,7 @@ public class BaseServiceUnitManager implements ServiceUnitManager {
             if (su == null) {
                 throw failure("shutDown", "Service Unit '" + serviceUnitName + "' is not deployed", null);
             }
+            Thread.currentThread().setContextClassLoader(su.getConfigurationClassLoader());
             su.shutDown();
             if (logger.isDebugEnabled()) {
                 logger.debug("Service unit shut down");
@@ -209,6 +219,8 @@ public class BaseServiceUnitManager implements ServiceUnitManager {
             throw e;
         } catch (Exception e) {
             throw failure("shutDown", "Unable to shutdown service unit", e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(cl);
         }
     }
 
@@ -216,6 +228,7 @@ public class BaseServiceUnitManager implements ServiceUnitManager {
      * @see javax.jbi.component.ServiceUnitManager#undeploy(java.lang.String, java.lang.String)
      */
     public synchronized String undeploy(String serviceUnitName, String serviceUnitRootPath) throws DeploymentException {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("Undeploying service unit");
@@ -233,6 +246,7 @@ public class BaseServiceUnitManager implements ServiceUnitManager {
             if (!LifeCycleMBean.SHUTDOWN.equals(su.getCurrentState())) {
                 throw failure("undeploy", "ServiceUnit should be in a SHUTDOWN state", null);
             }
+            Thread.currentThread().setContextClassLoader(su.getConfigurationClassLoader());
             doUndeploy(su);
             component.getRegistry().unregisterServiceUnit(su);
             if (logger.isDebugEnabled()) {
@@ -243,6 +257,8 @@ public class BaseServiceUnitManager implements ServiceUnitManager {
             throw e;
         } catch (Exception e) {
             throw failure("undeploy", "Unable to undeploy service unit", e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(cl);
         }
     }
 

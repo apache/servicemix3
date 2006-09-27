@@ -19,6 +19,7 @@ package org.apache.servicemix.common;
 import org.apache.commons.logging.Log;
 import org.w3c.dom.Document;
 
+import javax.jbi.management.DeploymentException;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessageExchange.Role;
 import javax.wsdl.Definition;
@@ -127,6 +128,14 @@ public abstract class Endpoint {
                         "role: " + (getRole() == Role.PROVIDER ? "provider" : "consumer") + "]";
     }
 
+    /**
+     * Validate
+     * @return
+     * @throws DeploymentException
+     */
+    public void validate() throws DeploymentException {
+    }
+    
     public Definition getDefinition() {
         return definition;
     }

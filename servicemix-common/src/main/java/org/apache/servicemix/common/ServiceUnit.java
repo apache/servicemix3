@@ -141,7 +141,7 @@ public class ServiceUnit {
     }
 
     public ClassLoader getConfigurationClassLoader() {
-        return null;
+        return component.getClass().getClassLoader();
     }
 
 }
