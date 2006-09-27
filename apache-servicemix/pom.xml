@@ -84,6 +84,10 @@
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-saxon</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-components</artifactId>
     </dependency>
     <dependency>
@@ -253,6 +257,13 @@
                 <artifactItem>
                   <groupId>org.apache.servicemix</groupId>
                   <artifactId>servicemix-eip</artifactId>
+                  <version>${servicemix-version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.servicemix</groupId>
+                  <artifactId>servicemix-saxon</artifactId>
                   <version>${servicemix-version}</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
