@@ -38,12 +38,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.servicemix</groupId>
-            <artifactId>servicemix-lwcontainer</artifactId>
-            <version>3.1-incubating-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.servicemix</groupId>
-            <artifactId>servicemix-components</artifactId>
+            <artifactId>servicemix-saxon</artifactId>
             <version>3.1-incubating-SNAPSHOT</version>
         </dependency>
     </dependencies>
