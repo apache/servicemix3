@@ -240,6 +240,7 @@
                 <module>servicemix-sca</module>
                 <module>servicemix-eip</module>
                 <module>servicemix-itests</module>
+                <module>servicemix-saxon</module>
                 <module>servicemix-sca</module>
                 <module>servicemix-wsn2005</module>
                 <module>samples</module>
@@ -289,6 +290,7 @@
                 <module>servicemix-eip</module>
                 <module>servicemix-itests</module>
                 <module>servicemix-sca</module>
+                <module>servicemix-saxon</module>
                 <module>servicemix-wsn2005</module>
                 <module>samples</module>
                 <module>geronimo</module>
@@ -340,6 +342,7 @@
                 <module>servicemix-jms</module>
                 <module>servicemix-eip</module>
                 <module>servicemix-jsr181</module>
+                <module>servicemix-saxon</module>
                 <module>servicemix-sca</module>
                 <module>servicemix-wsn2005</module>
                 <module>servicemix-lwcontainer</module>
