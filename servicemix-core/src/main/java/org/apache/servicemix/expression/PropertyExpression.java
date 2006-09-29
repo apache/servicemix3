@@ -28,6 +28,9 @@ import javax.jbi.messaging.NormalizedMessage;
 public class PropertyExpression implements Expression {
     private String property;
     private Object defaultValue;
+    
+    public PropertyExpression() {
+    }
 
     public PropertyExpression(String property) {
         this.property = property;
@@ -36,6 +39,34 @@ public class PropertyExpression implements Expression {
     public PropertyExpression(String property, Object defaultValue) {
         this.property = property;
         this.defaultValue = defaultValue;
+    }
+
+    /**
+     * @return the defaultValue
+     */
+    public Object getDefaultValue() {
+        return defaultValue;
+    }
+
+    /**
+     * @param defaultValue the defaultValue to set
+     */
+    public void setDefaultValue(Object defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    /**
+     * @return the property
+     */
+    public String getProperty() {
+        return property;
+    }
+
+    /**
+     * @param property the property to set
+     */
+    public void setProperty(String property) {
+        this.property = property;
     }
 
     public Object evaluate(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
