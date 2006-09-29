@@ -18,7 +18,7 @@
 
 -->
 <jbi version="1" xmlns="http://java.sun.com/xml/ns/jbi"
-	 xmlns:csi="http://www.gaiati.com/emee/ns/csi">
+	 xmlns:csi="urn:csi" xmlns:ems="urn:ems">
 	<service-assembly>
 		<identification>
 			<name>ServiceAssembly_041207153211-0800_saId</name>

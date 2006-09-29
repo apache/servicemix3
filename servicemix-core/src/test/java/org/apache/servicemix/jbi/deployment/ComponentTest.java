@@ -16,37 +16,27 @@
  */
 package org.apache.servicemix.jbi.deployment;
 
-import org.apache.servicemix.jbi.config.DebugClassPathXmlApplicationContext;
-import org.apache.servicemix.jbi.config.spring.XBeanProcessor;
-import org.apache.servicemix.jbi.deployment.ClassPath;
-import org.apache.servicemix.jbi.deployment.Component;
-import org.apache.servicemix.jbi.deployment.Descriptor;
-import org.apache.servicemix.jbi.deployment.Identification;
-import org.apache.servicemix.jbi.deployment.InstallationDescriptorExtension;
-import org.apache.servicemix.jbi.deployment.SharedLibraryList;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.springframework.context.support.AbstractXmlApplicationContext;
-import org.w3c.dom.DocumentFragment;
+import java.util.Arrays;
 
 import javax.xml.transform.dom.DOMSource;
 
-import java.util.Arrays;
-
 import junit.framework.TestCase;
+
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.w3c.dom.DocumentFragment;
 
 /**
  * @version $Revision$
  */
-public class DeploymentTest extends TestCase {
+public class ComponentTest extends TestCase {
 
-    protected AbstractXmlApplicationContext context;
     protected SourceTransformer transformer = new SourceTransformer();
 
     public void testParse() throws Exception {
 
         // lets force the JBI container to be constructed first
-        Descriptor root = (Descriptor) context.getBean("jbi");
-        assertNotNull("JBI Container not found in spring!", root);
+        Descriptor root = DescriptorFactory.buildDescriptor(getClass().getResource("component.xml"));
+        assertNotNull("Unable to parse descriptor", root);
 
         // component stuff
         Component component = root.getComponent();
@@ -93,15 +83,6 @@ public class DeploymentTest extends TestCase {
         }
         buffer.append("]");
         return buffer.toString();
-    }
-
-    protected void setUp() throws Exception {
-        context = createBeanFactory();
-    }
-
-    protected AbstractXmlApplicationContext createBeanFactory() throws Exception {
-        return new DebugClassPathXmlApplicationContext("org/apache/servicemix/jbi/deployment/example.xml",
-                                                       Arrays.asList(new Object[] { new XBeanProcessor() }));
     }
 
 }

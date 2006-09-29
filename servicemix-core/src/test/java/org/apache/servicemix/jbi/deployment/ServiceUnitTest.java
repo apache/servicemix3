@@ -14,22 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.config.spring;
+package org.apache.servicemix.jbi.deployment;
 
-import org.springframework.beans.factory.support.BeanDefinitionReader;
-import org.w3c.dom.Element;
+import junit.framework.TestCase;
+
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 
 /**
- * A strategy pattern allowing component providers to hook into the standard Spring contexts and
- * add new XML languages which are macros that map down to regular spring semantics (beans, properties, values etc).
- *
- * @author James Strachan
- * @version $Revision$
+ * @version $Revision: 426415 $
  */
-public interface ElementProcessor {
-    
-    /**
-     * Processes the configuration element prior to the Spring configuration mechanism taking place.
-     */
-    void processElement(Element element, BeanDefinitionReader reader);
+public class ServiceUnitTest extends TestCase {
+
+    protected SourceTransformer transformer = new SourceTransformer();
+
+    public void testParse() throws Exception {
+
+        // lets force the JBI container to be constructed first
+        Descriptor root = DescriptorFactory.buildDescriptor(getClass().getResource("serviceUnit.xml"));
+        assertNotNull("Unable to parse descriptor", root);
+
+        Services services = root.getServices();
+        Consumes[] consumes = services.getConsumes();
+        assertNotNull("consumes are null", consumes);
+        assertEquals("consumes size", 1, consumes.length);
+        
+    }
+
 }

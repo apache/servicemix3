@@ -16,28 +16,20 @@
  */
 package org.apache.servicemix.jbi.deployment;
 
-import org.apache.servicemix.jbi.config.DebugClassPathXmlApplicationContext;
-import org.apache.servicemix.jbi.config.spring.XBeanProcessor;
-import org.apache.servicemix.jbi.deployment.Descriptor;
-import org.apache.servicemix.jbi.deployment.Identification;
-import org.apache.servicemix.jbi.deployment.ServiceAssembly;
-import org.apache.servicemix.jbi.deployment.ServiceUnit;
-import org.springframework.context.support.AbstractXmlApplicationContext;
-
-import java.util.Arrays;
-
 import javax.xml.namespace.QName;
+
+import junit.framework.TestCase;
 
 /**
  * @version $Revision$
  */
-public class ServiceAssemblyTest extends DeploymentTest {
+public class ServiceAssemblyTest extends TestCase {
 
     public void testParse() throws Exception {
 
         // lets force the JBI container to be constructed first
-        Descriptor root = (Descriptor) context.getBean("jbi");
-        assertNotNull("JBI Container not found in spring!", root);
+        Descriptor root = DescriptorFactory.buildDescriptor(getClass().getResource("serviceAssembly.xml"));
+        assertNotNull("Unable to parse descriptor", root);
 
         ServiceAssembly serviceAssembly = root.getServiceAssembly();
         assertNotNull("serviceAssembly is null", serviceAssembly);
@@ -65,12 +57,7 @@ public class ServiceAssemblyTest extends DeploymentTest {
         assertNotNull("connections are null", connections);
         assertEquals("connections size", 2, connections.length);
         
-        assertEquals("getConsumer().getServiceName() for 0", new QName("http://www.gaiati.com/emee/ns/csi", "csi-service"), connections[0].getConsumer().getServiceName());
-    }
-
-    protected AbstractXmlApplicationContext createBeanFactory() throws Exception {
-        return new DebugClassPathXmlApplicationContext("org/apache/servicemix/jbi/deployment/serviceAssembly.xml",
-                                                       Arrays.asList(new Object[] { new XBeanProcessor() }));
+        assertEquals("getConsumer().getServiceName() for 0", new QName("urn:csi", "csi-service"), connections[0].getConsumer().getServiceName());
     }
 
 }

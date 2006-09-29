@@ -16,6 +16,7 @@
  */
 package org.apache.servicemix.jbi.deployment;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,20 +24,36 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.config.spring.XBeanProcessor;
+import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.servicemix.jbi.util.FileUtil;
-import org.apache.xbean.spring.context.ResourceXmlApplicationContext;
-import org.springframework.core.io.UrlResource;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Element;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * @version $Revision: 359151 $
  */
 public class DescriptorFactory {
+
+    /**
+     * JAXP attribute value indicating the XSD schema language.
+     */
+    private static final String XSD_SCHEMA_LANGUAGE = "http://www.w3.org/2001/XMLSchema";
 
     public static final String DESCRIPTOR_FILE = "META-INF/jbi.xml";
 
@@ -70,19 +87,226 @@ public class DescriptorFactory {
      *            url to the jbi descriptor
      * @return the Descriptor object
      */
-    public static Descriptor buildDescriptor(URL url) {
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    public static Descriptor buildDescriptor(final URL url) {
         try {
-            Thread.currentThread().setContextClassLoader(DescriptorFactory.class.getClassLoader());
-            ResourceXmlApplicationContext context = new ResourceXmlApplicationContext(
-                            new UrlResource(url), 
-                            Arrays.asList(new Object[] { new XBeanProcessor() }));
-            Descriptor descriptor = (Descriptor) context.getBean("jbi");
-            checkDescriptor(descriptor);
-            return descriptor;
-        } finally {
-            Thread.currentThread().setContextClassLoader(cl);
+            // Read descriptor
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            FileUtil.copyInputStream(url.openStream(), baos);
+            // Validate descriptor
+            SchemaFactory schemaFactory = SchemaFactory.newInstance(XSD_SCHEMA_LANGUAGE);
+            Schema schema = schemaFactory.newSchema(DescriptorFactory.class.getResource("/jbi-descriptor.xsd"));
+            Validator validator = schema.newValidator();
+            validator.setErrorHandler(new ErrorHandler() {
+                public void warning(SAXParseException exception) throws SAXException {
+                    log.debug("Validation warning on " + url + ": " + exception);
+                }
+                public void error(SAXParseException exception) throws SAXException {
+                    log.info("Validation error on " + url + ": " + exception);
+                }
+                public void fatalError(SAXParseException exception) throws SAXException {
+                    throw exception;
+                }
+            });
+            validator.validate(new StreamSource(new ByteArrayInputStream(baos.toByteArray())));
+            // Parse descriptor
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true);
+            DocumentBuilder docBuilder = factory.newDocumentBuilder();
+            Document doc = docBuilder.parse(new ByteArrayInputStream(baos.toByteArray()));
+            Element jbi = doc.getDocumentElement();
+            Descriptor desc = new Descriptor();
+            desc.setVersion(Double.parseDouble(getAttribute(jbi, "version")));
+            Element child = DOMUtil.getFirstChildElement(jbi);
+            if ("component".equals(child.getLocalName())) {
+                Component component = new Component();
+                component.setType(child.getAttribute("type"));
+                component.setComponentClassLoaderDelegation(getAttribute(child, "component-class-loader-delegation"));
+                component.setBootstrapClassLoaderDelegation(getAttribute(child, "bootstrap-class-loader-delegation"));
+                ArrayList sls = new ArrayList();
+                DocumentFragment ext = null;
+                for (Element e = DOMUtil.getFirstChildElement(child); e != null; e = DOMUtil.getNextSiblingElement(e)) {
+                    if ("identification".equals(e.getLocalName())) {
+                        component.setIdentification(readIdentification(e));
+                    } else if ("component-class-name".equals(e.getLocalName())) {
+                        component.setComponentClassName(getText(e));
+                        component.setDescription(getAttribute(e, "description"));
+                    } else if ("component-class-path".equals(e.getLocalName())) {
+                        ClassPath componentClassPath = new ClassPath();
+                        ArrayList l = new ArrayList();
+                        for (Element e2 = DOMUtil.getFirstChildElement(e); e2 != null; e2 = DOMUtil.getNextSiblingElement(e2)) {
+                            if ("path-element".equals(e2.getLocalName())) {
+                                l.add(getText(e2));
+                            }
+                        }
+                        componentClassPath.setPathList(l);
+                        component.setComponentClassPath(componentClassPath);
+                    } else if ("bootstrap-class-name".equals(e.getLocalName())) {
+                        component.setBootstrapClassName(getText(e));
+                    } else if ("bootstrap-class-path".equals(e.getLocalName())) {
+                        ClassPath bootstrapClassPath = new ClassPath();
+                        ArrayList l = new ArrayList();
+                        for (Element e2 = DOMUtil.getFirstChildElement(e); e2 != null; e2 = DOMUtil.getNextSiblingElement(e2)) {
+                            if ("path-element".equals(e2.getLocalName())) {
+                                l.add(getText(e2));
+                            }
+                        }
+                        bootstrapClassPath.setPathList(l);
+                        component.setBootstrapClassPath(bootstrapClassPath);
+                    } else if ("shared-library".equals(e.getLocalName())) {
+                        SharedLibraryList sl = new SharedLibraryList();
+                        sl.setName(getText(e));
+                        sl.setVersion(getAttribute(e, "version"));
+                        sls.add(sl);
+                    } else {
+                        if (ext == null) {
+                            ext = doc.createDocumentFragment();
+                        }
+                        ext.appendChild(e);
+                    }
+                }
+                component.setSharedLibraries((SharedLibraryList[]) sls.toArray(new SharedLibraryList[sls.size()]));
+                if (ext != null) {
+                    InstallationDescriptorExtension descriptorExtension = new InstallationDescriptorExtension();
+                    descriptorExtension.setDescriptorExtension(ext);
+                    component.setDescriptorExtension(descriptorExtension);
+                }
+                desc.setComponent(component);
+            } else if ("shared-library".equals(child.getLocalName())) {
+                SharedLibrary sharedLibrary = new SharedLibrary();
+                sharedLibrary.setClassLoaderDelegation(getAttribute(child, "class-loader-delegation"));
+                sharedLibrary.setVersion(getAttribute(child, "version"));
+                for (Element e = DOMUtil.getFirstChildElement(child); e != null; e = DOMUtil.getNextSiblingElement(e)) {
+                    if ("identification".equals(e.getLocalName())) {
+                        sharedLibrary.setIdentification(readIdentification(e));
+                    } else if ("shared-library-class-path".equals(e.getLocalName())) {
+                        ClassPath sharedLibraryClassPath = new ClassPath();
+                        ArrayList l = new ArrayList();
+                        for (Element e2 = DOMUtil.getFirstChildElement(e); e2 != null; e2 = DOMUtil.getNextSiblingElement(e2)) {
+                            if ("path-element".equals(e2.getLocalName())) {
+                                l.add(getText(e2));
+                            }
+                        }
+                        sharedLibraryClassPath.setPathList(l);
+                        sharedLibrary.setSharedLibraryClassPath(sharedLibraryClassPath);
+                    }
+                }
+                desc.setSharedLibrary(sharedLibrary);
+            } else if ("service-assembly".equals(child.getLocalName())) {
+                ServiceAssembly serviceAssembly = new ServiceAssembly();
+                ArrayList sus = new ArrayList();
+                for (Element e = DOMUtil.getFirstChildElement(child); e != null; e = DOMUtil.getNextSiblingElement(e)) {
+                    if ("identification".equals(e.getLocalName())) {
+                        serviceAssembly.setIdentification(readIdentification(e));
+                    } else if ("service-unit".equals(e.getLocalName())) {
+                        ServiceUnit su = new ServiceUnit();
+                        for (Element e2 = DOMUtil.getFirstChildElement(e); e2 != null; e2 = DOMUtil.getNextSiblingElement(e2)) {
+                            if ("identification".equals(e2.getLocalName())) {
+                                su.setIdentification(readIdentification(e2));
+                            } else if ("target".equals(e2.getLocalName())) {
+                                Target target = new Target();
+                                for (Element e3 = DOMUtil.getFirstChildElement(e2); e3 != null; e3 = DOMUtil.getNextSiblingElement(e3)) {
+                                    if ("artifacts-zip".equals(e3.getLocalName())) {
+                                        target.setArtifactsZip(getText(e3));
+                                    } else if ("component-name".equals(e3.getLocalName())) {
+                                        target.setComponentName(getText(e3));
+                                    }
+                                }
+                                su.setTarget(target);
+                            }
+                        }
+                        sus.add(su);
+                    } else if ("connections".equals(e.getLocalName())) {
+                        Connections connections = new Connections();
+                        ArrayList cns = new ArrayList();
+                        for (Element e2 = DOMUtil.getFirstChildElement(e); e2 != null; e2 = DOMUtil.getNextSiblingElement(e2)) {
+                            if ("connection".equals(e2.getLocalName())) {
+                                Connection cn = new Connection();
+                                for (Element e3 = DOMUtil.getFirstChildElement(e2); e3 != null; e3 = DOMUtil.getNextSiblingElement(e3)) {
+                                    if ("consumer".equals(e3.getLocalName())) {
+                                        Consumer consumer = new Consumer();
+                                        consumer.setInterfaceName(readAttributeQName(e3, "interface-name"));
+                                        consumer.setServiceName(readAttributeQName(e3, "service-name"));
+                                        consumer.setEndpointName(getAttribute(e3, "endpoint-name"));
+                                        cn.setConsumer(consumer);
+                                    } else if ("provider".equals(e3.getLocalName())) {
+                                        Provider provider = new Provider();
+                                        provider.setServiceName(readAttributeQName(e3, "service-name"));
+                                        provider.setEndpointName(getAttribute(e3, "endpoint-name"));
+                                        cn.setProvider(provider);
+                                    }
+                                }
+                                cns.add(cn);
+                            }
+                        }
+                        connections.setConnections(((Connection[]) cns.toArray(new Connection[cns.size()])));
+                        serviceAssembly.setConnections(connections);
+                    }
+                }
+                serviceAssembly.setServiceUnits(((ServiceUnit[]) sus.toArray(new ServiceUnit[sus.size()])));
+                desc.setServiceAssembly(serviceAssembly);
+            } else if ("services".equals(child.getLocalName())) {
+                Services services = new Services();
+                services.setBindingComponent(Boolean.parseBoolean(getAttribute(child, "binding-component")));
+                ArrayList provides = new ArrayList();
+                ArrayList consumes = new ArrayList();
+                for (Element e = DOMUtil.getFirstChildElement(child); e != null; e = DOMUtil.getNextSiblingElement(e)) {
+                    if ("provides".equals(e.getLocalName())) {
+                        Provides p = new Provides();
+                        p.setInterfaceName(readAttributeQName(e, "interface-name"));
+                        p.setServiceName(readAttributeQName(e, "service-name"));
+                        p.setEndpointName(getAttribute(e, "endpoint-name"));
+                        provides.add(p);
+                    } else if ("consumes".equals(e.getLocalName())) {
+                        Consumes c = new Consumes();
+                        c.setInterfaceName(readAttributeQName(e, "interface-name"));
+                        c.setServiceName(readAttributeQName(e, "service-name"));
+                        c.setEndpointName(getAttribute(e, "endpoint-name"));
+                        c.setLinkType(getAttribute(e, "link-type"));
+                        consumes.add(c);
+                    }
+                }
+                services.setProvides((Provides[]) provides.toArray(new Provides[provides.size()]));
+                services.setConsumes((Consumes[]) consumes.toArray(new Consumes[consumes.size()]));
+                desc.setServices(services);
+            }
+            checkDescriptor(desc);
+            return desc;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+    }
+    
+    private static String getAttribute(Element e, String name) {
+        if (e.hasAttribute(name)) {
+            return e.getAttribute(name);
+        } else {
+            return null;
+        }
+    }
+    
+    private static QName readAttributeQName(Element e, String name) {
+        String attr = getAttribute(e, name);
+        if (attr != null) {
+            return DOMUtil.createQName(e, attr);
+        } else {
+            return null;
+        }
+    }
+    
+    private static String getText(Element e) {
+        return DOMUtil.getElementText(e).trim();
+    }
+    
+    private static Identification readIdentification(Element e) {
+        Identification ident = new Identification();
+        for (Element e2 = DOMUtil.getFirstChildElement(e); e2 != null; e2 = DOMUtil.getNextSiblingElement(e2)) {
+            if ("name".equals(e2.getLocalName())) {
+                ident.setName(DOMUtil.getElementText(e2));
+            } else if ("description".equals(e2.getLocalName())) {
+                ident.setDescription(DOMUtil.getElementText(e2));
+            }
+        }
+        return ident;
     }
 
     /**

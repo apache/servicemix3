@@ -16,62 +16,28 @@
  */
 package org.apache.servicemix.jbi.deployment;
 
-import org.apache.servicemix.jbi.config.DebugClassPathXmlApplicationContext;
-import org.apache.servicemix.jbi.config.spring.XBeanProcessor;
-import org.apache.servicemix.jbi.deployment.Descriptor;
-import org.apache.servicemix.jbi.deployment.Identification;
-import org.apache.servicemix.jbi.deployment.SharedLibrary;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.springframework.context.support.AbstractXmlApplicationContext;
-
-import java.util.Arrays;
-
 import junit.framework.TestCase;
+
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 
 /**
  * @version $Revision$
  */
 public class SharedLibraryTest extends TestCase {
 
-    protected AbstractXmlApplicationContext context;
     protected SourceTransformer transformer = new SourceTransformer();
 
     public void testParse() throws Exception {
 
         // lets force the JBI container to be constructed first
-        Descriptor root = (Descriptor) context.getBeansOfType(Descriptor.class).values().iterator().next();
-        assertNotNull("JBI Container not found in spring!", root);
+        Descriptor root = DescriptorFactory.buildDescriptor(getClass().getResource("SharedLibrary.xml"));
+        assertNotNull("Unable to parse descriptor", root);
 
         SharedLibrary sl = root.getSharedLibrary();
         Identification identification = sl.getIdentification();
         assertEquals("getName", "TestSharedLibrary", identification.getName());
         assertEquals("getDescription", "This is a test shared library.", identification.getDescription());
         
-    }
-
-    protected String toString(Object[] objects) {
-        if (objects == null) {
-            return "null Object[]";
-        }
-        StringBuffer buffer = new StringBuffer("[");
-        for (int i = 0; i < objects.length; i++) {
-            Object object = objects[i];
-            if (i > 0) {
-                buffer.append(", ");
-            }
-            buffer.append(object);
-        }
-        buffer.append("]");
-        return buffer.toString();
-    }
-
-    protected void setUp() throws Exception {
-        context = createBeanFactory();
-    }
-
-    protected AbstractXmlApplicationContext createBeanFactory() throws Exception {
-        return new DebugClassPathXmlApplicationContext("org/apache/servicemix/jbi/deployment/SharedLibrary.xml",
-                                                       Arrays.asList(new Object[] { new XBeanProcessor() }));
     }
 
 }
