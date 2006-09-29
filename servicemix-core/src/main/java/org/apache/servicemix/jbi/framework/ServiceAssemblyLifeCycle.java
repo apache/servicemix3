@@ -470,8 +470,11 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
     }
 
     public ObjectName[] getServiceUnits() {
-        // TODO Auto-generated method stub
-        return null;
+        ObjectName[] names = new ObjectName[sus.length];
+        for (int i = 0; i < names.length; i++) {
+            names[i] = registry.getContainer().getManagementContext().createObjectName(sus[i]);
+        }
+        return names;
     }
     
     public ServiceAssemblyEnvironment getEnvironment() {
