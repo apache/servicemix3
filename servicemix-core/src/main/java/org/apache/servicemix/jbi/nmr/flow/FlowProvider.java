@@ -20,9 +20,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
 import javax.jbi.JBIException;
-import org.apache.activeio.util.FactoryFinder;
-import org.apache.activemq.util.IntrospectionSupport;
-import org.apache.activemq.util.URISupport;
+import org.apache.servicemix.jbi.util.FactoryFinder;
+import org.apache.servicemix.jbi.util.IntrospectionSupport;
+import org.apache.servicemix.jbi.util.URISupport;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
