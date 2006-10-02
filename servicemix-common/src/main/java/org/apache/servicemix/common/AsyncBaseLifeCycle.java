@@ -87,6 +87,7 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
     }
 
     public AsyncBaseLifeCycle(ServiceMixComponent component) {
+        this();
         setComponent(component);
     }
 
