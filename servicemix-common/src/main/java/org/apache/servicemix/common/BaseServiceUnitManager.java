@@ -35,19 +35,19 @@ public class BaseServiceUnitManager implements ServiceUnitManager {
 
     protected final transient Log logger;
     
-    protected BaseComponent component;
+    protected ServiceMixComponent component;
     
     protected Deployer[] deployers;
     
     protected boolean persistent;
     
-    public BaseServiceUnitManager(BaseComponent component, Deployer[] deployers) {
+    public BaseServiceUnitManager(ServiceMixComponent component, Deployer[] deployers) {
         this(component, deployers, false);
     }
 
-    public BaseServiceUnitManager(BaseComponent component, Deployer[] deployers, boolean persistent) {
+    public BaseServiceUnitManager(ServiceMixComponent component, Deployer[] deployers, boolean persistent) {
         this.component = component;
-        this.logger = component.logger;
+        this.logger = component.getLogger();
         this.deployers = deployers;
         this.persistent = persistent;
     }

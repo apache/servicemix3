@@ -32,11 +32,11 @@ public abstract class AbstractDeployer implements Deployer {
 
     protected final transient Log logger;
     
-    protected BaseComponent component;
+    protected ServiceMixComponent component;
     
-    public AbstractDeployer(BaseComponent component) {
+    public AbstractDeployer(ServiceMixComponent component) {
         this.component = component;
-        this.logger = component.logger;
+        this.logger = component.getLogger();
     }
     
     protected DeploymentException failure(String task, String info, Throwable e) {

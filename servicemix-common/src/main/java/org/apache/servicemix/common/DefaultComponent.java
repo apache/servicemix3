@@ -1,4 +1,5 @@
-/*
+/**
+ *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -6,7 +7,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,44 +19,44 @@ package org.apache.servicemix.common;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.executors.Executor;
+import org.apache.servicemix.common.xbean.XBeanServiceUnit;
+import org.apache.servicemix.common.xbean.BaseXBeanDeployer;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 
-import javax.jbi.component.Component;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.component.ComponentLifeCycle;
 import javax.jbi.component.ServiceUnitManager;
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.servicedesc.ServiceEndpoint;
+import java.util.Arrays;
 
 /**
- * Base class for a component.
- * 
- * @author Guillaume Nodet
+ * A useful base class for writing new JBI components which includes the {@link ComponentLifeCycle} interface methods so that
+ * you can write a new component in a single class with minimal overloading.
+ *
  * @version $Revision$
- * @since 3.0
  */
-public abstract class BaseComponent implements ServiceMixComponent {
+public abstract class DefaultComponent extends BaseLifeCycle implements ServiceMixComponent {
 
     protected final transient Log logger = LogFactory.getLog(getClass());
-    
-    protected BaseLifeCycle lifeCycle;
+
     protected Registry registry;
     protected BaseServiceUnitManager serviceUnitManager;
-    
-    public BaseComponent() {
-        lifeCycle = createLifeCycle();
+    protected ServiceUnit serviceUnit;
+    private Endpoint[] endpoints;
+
+    public DefaultComponent() {
+        setComponent(this);
         registry = createRegistry();
         serviceUnitManager = createServiceUnitManager();
     }
-    
+
     /* (non-Javadoc)
      * @see javax.jbi.component.Component#getLifeCycle()
      */
     public ComponentLifeCycle getLifeCycle() {
-        return lifeCycle;
+        return this;
     }
 
     /* (non-Javadoc)
@@ -82,7 +83,8 @@ public abstract class BaseComponent implements ServiceMixComponent {
                 }
             }
             return doc;
-        } else {
+        }
+        else {
             if (logger.isDebugEnabled()) {
                 logger.debug("No endpoint found for " + key);
             }
@@ -97,15 +99,17 @@ public abstract class BaseComponent implements ServiceMixComponent {
         String key = EndpointSupport.getKey(endpoint);
         Endpoint ep = this.registry.getEndpoint(key);
         if (ep != null) {
-            if (ep.getRole() != Role.PROVIDER) {
+            if (ep.getRole() != MessageExchange.Role.PROVIDER) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Endpoint " + key + " is a consumer. Refusing exchange with consumer.");
                 }
                 return false;
-            } else {
+            }
+            else {
                 return ep.isExchangeOkay(exchange);
             }
-        } else {
+        }
+        else {
             if (logger.isDebugEnabled()) {
                 logger.debug("No endpoint found for " + key + ". Refusing exchange with consumer.");
             }
@@ -127,45 +131,45 @@ public abstract class BaseComponent implements ServiceMixComponent {
     public ServiceEndpoint resolveEndpointReference(DocumentFragment epr) {
         return null;
     }
-    
-    /**
-     * Create the life cycle object.
-     * Derived classes should override this method to be able to
-     * use a custom life cycle implementation.
-     * 
-     * @return a life cycle object
-     */
-    protected BaseLifeCycle createLifeCycle() {
-        return new BaseLifeCycle(this);
-    }
+
 
     /**
      * Create the service unit manager.
-     * Derived classes should override this method and return a 
-     * BaseServiceUnitManager so that the component is able to 
+     * Derived classes should override this method and return a
+     * BaseServiceUnitManager so that the component is able to
      * handle service unit deployment.
-     * 
-     * @return a service unit manager
+     *
+     * The default implementation will create a @{link BaseXBeanDeployer} instance
+     * using the value of @{link #getEndpointClasses()} if that method returns a non-null value
+     * otherwise it returns null.
+     *
+     * @return a newly created service unit manager
      */
     protected BaseServiceUnitManager createServiceUnitManager() {
-        return null;
+        Class[] classes = getEndpointClasses();
+        if (classes == null) {
+            return null;
+        }
+        Deployer[] deployers = new Deployer[] { new BaseXBeanDeployer(this, classes) };
+        return new BaseServiceUnitManager(this, deployers);
     }
-    
+
+
     protected Registry createRegistry() {
         return new Registry(this);
     }
 
     public ComponentContext getComponentContext() {
-        return lifeCycle.getContext();
+        return getContext();
     }
-    
+
     public String getComponentName() {
         if (getComponentContext() == null) {
             return "Component (" + getClass().getName() + ") not yet initialized";
         }
         return getComponentContext().getComponentName();
     }
-    
+
     /**
      * @return Returns the logger.
      */
@@ -179,14 +183,106 @@ public abstract class BaseComponent implements ServiceMixComponent {
     public Registry getRegistry() {
         return registry;
     }
-    
+
     /**
-     * Shortcut to retrieve this component's executor.
-     * 
-     * @return the executor for this component
+     * Returns the statically defined endpoints of this component
      */
-    public Executor getExecutor() {
-        return lifeCycle.getExecutor();
+    public Endpoint[] getEndpoints() {
+        return endpoints;
     }
-    
+
+    public void setEndpoints(Endpoint[] endpoints) {
+        for (int i = 0; i < endpoints.length; i++) {
+            Endpoint endpoint = endpoints[i];
+            validateEndpoint(endpoint);
+        }
+        this.endpoints = endpoints;
+    }
+
+    /**
+     * Provides a hook to validate the statically configured endpoint
+     */
+    protected void validateEndpoint(Endpoint endpoint) {
+        Class[] endpointClasses = getEndpointClasses();
+        if (endpointClasses != null) {
+            boolean valid = false;
+            for (int i = 0; i < endpointClasses.length; i++) {
+                Class endpointClass = endpointClasses[i];
+                if (endpointClass.isInstance(endpoint)) {
+                    valid = true;
+                }
+            }
+            if (!valid) {
+                throw new IllegalArgumentException("The endpoint: " + endpoint
+                        + " is not an instance of any of the allowable types: " + Arrays.asList(endpointClasses));
+            }
+        }
+    }
+
+    /**
+     * Returns the service unit if applicable
+     *
+     * @return the service unit if one is being used.
+     */
+    public ServiceUnit getServiceUnit() {
+        return serviceUnit;
+    }
+
+    /**
+     * Returns a list of valid endpoint classes or null if the component does not wish to programmatically
+     * restrict the list of possible endpoint classes
+     *
+     * @return the endpoint classes used to validate configuration or null to disable the validation
+     */
+    protected abstract Class[] getEndpointClasses();
+
+    /* (non-Javadoc)
+    * @see org.servicemix.common.BaseLifeCycle#doInit()
+    */
+    protected void doInit() throws Exception {
+        super.doInit();
+        Endpoint[] endpoints = getEndpoints();
+        if (endpoints != null && endpoints.length > 0) {
+            serviceUnit = new XBeanServiceUnit();
+            serviceUnit.setComponent(this);
+            for (int i = 0; i < endpoints.length; i++) {
+                endpoints[i].setServiceUnit(serviceUnit);
+                endpoints[i].validate();
+                serviceUnit.addEndpoint(endpoints[i]);
+            }
+            getRegistry().registerServiceUnit(serviceUnit);
+        }
+    }
+
+    /* (non-Javadoc)
+    * @see org.servicemix.common.BaseLifeCycle#doStart()
+    */
+    protected void doStart() throws Exception {
+        super.doStart();
+        if (serviceUnit != null) {
+            serviceUnit.start();
+        }
+    }
+
+    /* (non-Javadoc)
+    * @see org.servicemix.common.BaseLifeCycle#doStop()
+    */
+    protected void doStop() throws Exception {
+        if (serviceUnit != null) {
+            serviceUnit.stop();
+        }
+        super.doStop();
+    }
+
+    /* (non-Javadoc)
+    * @see org.servicemix.common.BaseLifeCycle#doShutDown()
+    */
+    protected void doShutDown() throws Exception {
+        if (serviceUnit != null) {
+            serviceUnit.shutDown();
+        }
+        super.doShutDown();
+    }
+
+
 }

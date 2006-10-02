@@ -28,7 +28,7 @@ import javax.jbi.management.LifeCycleMBean;
 
 public class ServiceUnit {
 
-    protected BaseComponent component;
+    protected ServiceMixComponent component;
 
     protected String name;
 
@@ -41,7 +41,7 @@ public class ServiceUnit {
     public ServiceUnit() {
     }
 
-    public ServiceUnit(BaseComponent component) {
+    public ServiceUnit(ServiceMixComponent component) {
         this.component = component;
     }
 
@@ -113,7 +113,7 @@ public class ServiceUnit {
     /**
      * @return Returns the component.
      */
-    public BaseComponent getComponent() {
+    public ServiceMixComponent getComponent() {
         return component;
     }
 
@@ -121,7 +121,7 @@ public class ServiceUnit {
      * @param component
      *            The component to set.
      */
-    public void setComponent(BaseComponent component) {
+    public void setComponent(ServiceMixComponent component) {
         this.component = component;
     }
 

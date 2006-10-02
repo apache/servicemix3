@@ -54,9 +54,9 @@ import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
  */
 public class AsyncBaseLifeCycle implements ComponentLifeCycle {
 
-    protected final transient Log logger;
+    protected transient Log logger;
 
-    protected BaseComponent component;
+    protected ServiceMixComponent component;
 
     protected ComponentContext context;
 
@@ -80,12 +80,19 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
 
     protected Map processors = new ConcurrentHashMap();
 
-    public AsyncBaseLifeCycle(BaseComponent component) {
-        this.component = component;
-        this.logger = component.logger;
+    public AsyncBaseLifeCycle() {
         this.running = new AtomicBoolean(false);
         this.polling = new AtomicBoolean(false);
         this.processors = new ConcurrentHashMap();
+    }
+
+    public AsyncBaseLifeCycle(ServiceMixComponent component) {
+        setComponent(component);
+    }
+
+    protected void setComponent(ServiceMixComponent component) {
+        this.component = component;
+        this.logger = component.getLogger();
     }
 
     /*

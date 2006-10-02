@@ -108,7 +108,7 @@ public abstract class Endpoint {
      */
     public void setServiceUnit(ServiceUnit serviceUnit) {
         this.serviceUnit = serviceUnit;
-        this.logger = serviceUnit.component.logger;
+        this.logger = serviceUnit.component.getLogger();
     }
 
     public boolean isExchangeOkay(MessageExchange exchange) {

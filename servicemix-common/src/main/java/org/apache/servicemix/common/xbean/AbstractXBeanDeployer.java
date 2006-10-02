@@ -16,29 +16,28 @@
  */
 package org.apache.servicemix.common.xbean;
 
-import java.io.File;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.jbi.management.DeploymentException;
-
 import org.apache.servicemix.common.AbstractDeployer;
-import org.apache.servicemix.common.BaseComponent;
 import org.apache.servicemix.common.Endpoint;
+import org.apache.servicemix.common.ServiceMixComponent;
 import org.apache.servicemix.common.ServiceUnit;
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
-import org.springframework.core.io.FileSystemResource;
 import org.apache.xbean.kernel.Kernel;
 import org.apache.xbean.kernel.KernelFactory;
 import org.apache.xbean.kernel.ServiceName;
 import org.apache.xbean.server.repository.FileSystemRepository;
 import org.apache.xbean.server.spring.configuration.ClassLoaderXmlPreprocessor;
 import org.apache.xbean.server.spring.loader.SpringLoader;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
+import org.springframework.core.io.FileSystemResource;
+
+import javax.jbi.management.DeploymentException;
+import java.io.File;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 public class AbstractXBeanDeployer extends AbstractDeployer {
 
-    public AbstractXBeanDeployer(BaseComponent component) {
+    public AbstractXBeanDeployer(ServiceMixComponent component) {
         super(component);
     }
     

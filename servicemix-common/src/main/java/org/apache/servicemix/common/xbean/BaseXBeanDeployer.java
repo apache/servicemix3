@@ -16,24 +16,24 @@
  */
 package org.apache.servicemix.common.xbean;
 
-import javax.jbi.management.DeploymentException;
-
-import org.apache.servicemix.common.BaseComponent;
 import org.apache.servicemix.common.Endpoint;
+import org.apache.servicemix.common.ServiceMixComponent;
+
+import javax.jbi.management.DeploymentException;
 
 public class BaseXBeanDeployer extends AbstractXBeanDeployer {
 
     private final Class[] endpointClasses;
     
-    public BaseXBeanDeployer(BaseComponent component) {
+    public BaseXBeanDeployer(ServiceMixComponent component) {
         this(component, new Class[0]);
     }
     
-    public BaseXBeanDeployer(BaseComponent component, Class endpointClass) {
+    public BaseXBeanDeployer(ServiceMixComponent component, Class endpointClass) {
         this(component, new Class[] { endpointClass });
     }
     
-    public BaseXBeanDeployer(BaseComponent component, Class[] endpointClasses) {
+    public BaseXBeanDeployer(ServiceMixComponent component, Class[] endpointClasses) {
         super(component);
         if (endpointClasses == null) {
             throw new NullPointerException("endpointClasses must be non null");

@@ -16,6 +16,7 @@
  */
 package org.apache.servicemix.common;
 
+import javax.jbi.component.Component;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,11 +24,11 @@ import java.util.Map;
 
 public class Registry {
 
-    protected BaseComponent component;
+    protected ServiceMixComponent component;
     protected Map endpoints;
     protected Map serviceUnits;
     
-    public Registry(BaseComponent component) {
+    public Registry(ServiceMixComponent component) {
         this.component = component;
         this.endpoints = new HashMap();
         this.serviceUnits = new HashMap();

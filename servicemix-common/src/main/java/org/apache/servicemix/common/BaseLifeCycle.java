@@ -31,7 +31,10 @@ import org.apache.servicemix.MessageExchangeListener;
  */
 public class BaseLifeCycle extends AsyncBaseLifeCycle implements MessageExchangeListener {
 
-    public BaseLifeCycle(BaseComponent component) {
+    protected BaseLifeCycle() {
+    }
+    
+    public BaseLifeCycle(ServiceMixComponent component) {
         super(component);
     }
     
