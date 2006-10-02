@@ -129,7 +129,7 @@ public class DefaultFileMarshaler extends MarshalerSupport implements FileMarsha
      *
      * @param message the message who's content we are about to write
      * @param out     the destination of the output
-     * @param name    the name of the output resource (file, uri, url)
+     * @param path    the name of the output resource (file, uri, url)
      */
     protected void writeMessageContent(MessageExchange exchange, NormalizedMessage message, OutputStream out, String path) throws MessagingException {
         Source content = null;
