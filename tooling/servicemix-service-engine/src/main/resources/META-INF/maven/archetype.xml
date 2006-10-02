@@ -29,5 +29,6 @@
   </testSources>
   <testResources>
     <resource>src/test/resources/spring.xml</resource>
+    <resource>src/test/resources/log4j.properties</resource>
   </testResources>
 </archetype>
