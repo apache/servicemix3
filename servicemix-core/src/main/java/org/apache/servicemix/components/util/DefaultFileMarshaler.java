@@ -43,6 +43,7 @@ import java.io.OutputStreamWriter;
  * A default file transformer which assumes the file is already in XML format and
  * requires no transformation other than to be wrapped in a normalized message..
  *
+ * @org.apache.xbean.XBean
  * @version $Revision$
  */
 public class DefaultFileMarshaler extends MarshalerSupport implements FileMarshaler {

@@ -34,6 +34,8 @@ import org.apache.servicemix.jbi.util.StreamDataSource;
 /**
  * A FileMarshaler that converts the given input stream into a binary attachment.
  * 
+ * @org.apache.xbean.XBean
+ *  
  * @author Guillaume Nodet
  * @since 3.0
  */

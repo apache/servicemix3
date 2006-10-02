@@ -37,6 +37,8 @@ import java.io.IOException;
 /**
  * Evalutes an XPath expression on the given message using JAXP
  *
+ * @org.apache.xbean.XBean element="xpath"
+ *  
  * @version $Revision$
  */
 public class JAXPXPathExpression implements Expression, InitializingBean {
