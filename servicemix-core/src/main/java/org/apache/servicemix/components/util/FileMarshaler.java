@@ -39,7 +39,7 @@ public interface FileMarshaler {
      * @param exchange the message exchange
      * @param message  the message to populate
      * @param in       the input stream
-     * @param name     the name of the file, URI or URL
+     * @param path     the name of the file, URI or URL
      */
     void readMessage(MessageExchange exchange, NormalizedMessage message, InputStream in, String path) throws IOException, JBIException;
 
