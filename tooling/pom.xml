@@ -52,6 +52,8 @@
     <module>servicemix-embedded-simple</module>
     <module>servicemix-ode-service-unit</module>
     <module>servicemix-jsr181-annotated-service-unit</module>
+    <module>servicemix-saxon-xquery-service-unit</module>
+    <module>servicemix-saxon-xslt-service-unit</module>
     <module>jbi-maven-plugin</module>
     <module>servicemix-archetypes-itests</module>
   </modules>
