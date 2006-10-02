@@ -507,7 +507,7 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
     /**
      * Handle an exchange sent to an EPR resolved by this component
      * 
-     * @param exchange
+     * @param ep the service endpoint
      * @return an endpoint to use for handling the exchange
      * @throws Exception
      */
