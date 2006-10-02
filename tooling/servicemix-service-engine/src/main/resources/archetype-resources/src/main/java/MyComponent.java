@@ -19,7 +19,8 @@ package ${packageName};
 import org.apache.servicemix.common.DefaultComponent;
 
 /**
- *
+ * @org.apache.xbean.XBean element="component"
+ *                  description="My Component"
  */
 public class MyComponent extends DefaultComponent {
 
