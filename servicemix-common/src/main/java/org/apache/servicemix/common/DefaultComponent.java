@@ -27,6 +27,7 @@ import org.w3c.dom.DocumentFragment;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.component.ComponentLifeCycle;
 import javax.jbi.component.ServiceUnitManager;
+import javax.jbi.management.DeploymentException;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import java.util.Arrays;
@@ -191,7 +192,7 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
         return endpoints;
     }
 
-    public void setEndpoints(Endpoint[] endpoints) {
+    public void setEndpoints(Endpoint[] endpoints) throws DeploymentException {
         for (int i = 0; i < endpoints.length; i++) {
             Endpoint endpoint = endpoints[i];
             validateEndpoint(endpoint);
@@ -202,7 +203,7 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
     /**
      * Provides a hook to validate the statically configured endpoint
      */
-    protected void validateEndpoint(Endpoint endpoint) {
+    protected void validateEndpoint(Endpoint endpoint) throws DeploymentException {
         Class[] endpointClasses = getEndpointClasses();
         if (endpointClasses != null) {
             boolean valid = false;
@@ -213,7 +214,7 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
                 }
             }
             if (!valid) {
-                throw new IllegalArgumentException("The endpoint: " + endpoint
+                throw new DeploymentException("The endpoint: " + endpoint
                         + " is not an instance of any of the allowable types: " + Arrays.asList(endpointClasses));
             }
         }
