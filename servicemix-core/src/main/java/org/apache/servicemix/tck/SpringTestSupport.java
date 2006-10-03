@@ -30,6 +30,8 @@ import org.xml.sax.SAXException;
 
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.ExchangeStatus;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
@@ -123,6 +125,21 @@ public abstract class SpringTestSupport extends TestCase {
             NormalizedMessage message = (NormalizedMessage) iter.next();
             log.info("Message " + (counter++) + " is: " + message);
             log.info(transformer.contentToString(message));
+        }
+    }
+
+
+    protected void assertExchangeWorked(MessageExchange me) throws Exception {
+        if (me.getStatus() == ExchangeStatus.ERROR) {
+            if (me.getError() != null) {
+                throw me.getError();
+            }
+            else {
+                fail("Received ERROR status");
+            }
+        }
+        else if (me.getFault() != null) {
+            fail("Received fault: " + new SourceTransformer().toString(me.getFault().getContent()));
         }
     }
 }
