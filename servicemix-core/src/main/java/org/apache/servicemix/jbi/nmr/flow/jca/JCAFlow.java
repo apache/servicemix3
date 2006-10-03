@@ -267,7 +267,9 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
         	containerConnector.setBootstrapContext(getBootstrapContext());
         	containerConnector.setActivationSpec(ac);
         	containerConnector.setResourceAdapter(resourceAdapter);
-        	containerConnector.setEndpointFactory(new SingletonEndpointFactory(this, getTransactionManager()));
+        	SingletonEndpointFactory ef = new SingletonEndpointFactory(this, getTransactionManager());
+          ef.setName(INBOUND_PREFIX + broker.getContainer().getName());
+        	containerConnector.setEndpointFactory(ef);
         	containerConnector.start();
         	
         	// Outbound connector
@@ -307,7 +309,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
                 broadcastConnector.setBootstrapContext(getBootstrapContext());
                 broadcastConnector.setActivationSpec(ac);
                 broadcastConnector.setResourceAdapter(resourceAdapter);
-                broadcastConnector.setEndpointFactory(new SingletonEndpointFactory(new MessageListener() {
+              	SingletonEndpointFactory ef = new SingletonEndpointFactory(new MessageListener() {
                     public void onMessage(Message message) {
                         try {
                             Object obj = ((ObjectMessage) message).getObject();
@@ -326,7 +328,9 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
                             log.error("Error processing incoming broadcast message", e);
                         }
                     }
-                }));
+                });
+                ef.setName(INBOUND_PREFIX + broker.getContainer().getName());
+              	broadcastConnector.setEndpointFactory(ef);
                 broadcastConnector.start();
                 
                 advisoryConsumer = broadcastSession.createConsumer(advisoryTopic);
@@ -434,7 +438,9 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
                 connector.setBootstrapContext(getBootstrapContext());
                 connector.setActivationSpec(ac);
                 connector.setResourceAdapter(resourceAdapter);
-                connector.setEndpointFactory(new SingletonEndpointFactory(this, getTransactionManager()));
+                SingletonEndpointFactory ef = new SingletonEndpointFactory(this, getTransactionManager());
+                ef.setName(INBOUND_PREFIX + broker.getContainer().getName());
+                connector.setEndpointFactory(ef);
                 connector.start();
                 connectorMap.put(key, connector);
             }
