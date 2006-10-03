@@ -15,12 +15,26 @@ import javax.jbi.messaging.RobustInOnly;
 import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.jbi.JBIException;
+import javax.xml.namespace.QName;
 
 public abstract class ProviderEndpoint extends Endpoint implements ExchangeProcessor {
 
     private ServiceEndpoint activated;
     private DeliveryChannel channel;
     private MessageExchangeFactory exchangeFactory;
+
+
+    public ProviderEndpoint() {
+    }
+
+    public ProviderEndpoint(ServiceUnit serviceUnit, QName service, String endpoint) {
+        super(serviceUnit, service, endpoint);
+    }
+
+    public ProviderEndpoint(DefaultComponent component, ServiceEndpoint endpoint) {
+        super(component.getServiceUnit(), endpoint.getServiceName(), endpoint.getEndpointName());
+        logger = component.getLogger();
+    }
 
     /* (non-Javadoc)
      * @see org.apache.servicemix.common.Endpoint#getRole()
