@@ -221,11 +221,15 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
     }
 
     /**
-     * Returns the service unit if applicable
+     * Returns the service unit, lazily creating one on demand
      *
      * @return the service unit if one is being used.
      */
     public ServiceUnit getServiceUnit() {
+        if (serviceUnit == null) {
+            serviceUnit = new XBeanServiceUnit();
+            serviceUnit.setComponent(this);
+        }
         return serviceUnit;
     }
 
@@ -244,14 +248,13 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
         super.doInit();
         Endpoint[] endpoints = getEndpoints();
         if (endpoints != null && endpoints.length > 0) {
-            serviceUnit = new XBeanServiceUnit();
-            serviceUnit.setComponent(this);
+            ServiceUnit su = getServiceUnit();
             for (int i = 0; i < endpoints.length; i++) {
-                endpoints[i].setServiceUnit(serviceUnit);
+                endpoints[i].setServiceUnit(su);
                 endpoints[i].validate();
-                serviceUnit.addEndpoint(endpoints[i]);
+                su.addEndpoint(endpoints[i]);
             }
-            getRegistry().registerServiceUnit(serviceUnit);
+            getRegistry().registerServiceUnit(su);
         }
     }
 
