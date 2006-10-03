@@ -129,8 +129,8 @@ public abstract class Endpoint {
     }
 
     /**
-     * Validate
-     * @return
+     * Validate the endpoint at either deployment time for statically defined endpoints or at runtime for dynamic endpoints
+     * 
      * @throws DeploymentException
      */
     public void validate() throws DeploymentException {
