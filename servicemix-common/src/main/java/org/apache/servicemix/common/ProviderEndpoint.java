@@ -1,5 +1,8 @@
 package org.apache.servicemix.common;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
@@ -36,6 +39,9 @@ public abstract class ProviderEndpoint extends Endpoint implements ExchangeProce
 
     public void deactivate() throws Exception {
         stop();
+        if (activated == null) {
+            throw new IllegalStateException("Endpoint not activated: " + this);
+        }
         ServiceEndpoint ep = activated;
         activated = null;
         ComponentContext ctx = getServiceUnit().getComponent().getComponentContext();
