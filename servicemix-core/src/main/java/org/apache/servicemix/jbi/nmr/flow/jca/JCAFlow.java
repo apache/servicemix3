@@ -623,7 +623,9 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
         public Connector(ActiveMQDestination destination, MessageListener listener, boolean transacted) {
             ra = new ActiveMQResourceAdapter();
             ra.setConnectionFactory(connectionFactory);
-            endpointFactory = new SingletonEndpointFactory(listener, transacted ? getTransactionManager() : null);
+            SingletonEndpointFactory ef = new SingletonEndpointFactory(listener, transacted ? getTransactionManager() : null);
+            ef.setName(INBOUND_PREFIX + broker.getContainer().getName());
+            endpointFactory = ef;
             spec = new ActiveMQActivationSpec();
             spec.setActiveMQDestination(destination);
         }
