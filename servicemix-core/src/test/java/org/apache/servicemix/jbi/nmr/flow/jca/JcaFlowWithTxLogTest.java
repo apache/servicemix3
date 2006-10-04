@@ -110,7 +110,7 @@ public class JcaFlowWithTxLogTest extends TestCase {
         senderContainer.setName("senderContainer");
         senderContainer.setFlows(new Flow[] { senderFlow} );
         senderContainer.setMonitorInstallationDirectory(false);
-        senderContainer.setAutoEnlistInTransaction(false);
+        senderContainer.setAutoEnlistInTransaction(true);
         senderContainer.init();
         senderContainer.start();
         
@@ -135,20 +135,24 @@ public class JcaFlowWithTxLogTest extends TestCase {
     }
     
     public void testClusteredInOut() throws Exception {
-		QName service = new QName("http://org.echo", "echo");
-		MyEchoComponent echoComponent = new MyEchoComponent();
-		echoComponent.setService(service);
-		echoComponent.setEndpoint("echo");
-		ActivationSpec activationSpec = new ActivationSpec("echo", echoComponent);
-		activationSpec.setService(service);
-		receiverContainer.activateComponent(activationSpec);
-		DefaultServiceMixClient client = new DefaultServiceMixClient(senderContainer);
-		InOut inOut = client.createInOutExchange(service, null, null);
-		NormalizedMessage inMessage = inOut.createMessage();
-		inMessage.setContent(new StringSource("<test/>"));
-		inOut.setInMessage(inMessage);
-		client.sendSync(inOut, 1000);
-		assertNotNull(inOut.getOutMessage());
-	}
+        QName service = new QName("http://org.echo", "echo");
+        MyEchoComponent echoComponent = new MyEchoComponent();
+        echoComponent.setService(service);
+        echoComponent.setEndpoint("echo");
+        ActivationSpec activationSpec = new ActivationSpec("echo", echoComponent);
+        activationSpec.setService(service);
+        receiverContainer.activateComponent(activationSpec);
+        DefaultServiceMixClient client = new DefaultServiceMixClient(senderContainer);
+        for (int i = 0; i < 10; i++) {
+            InOut inOut = client.createInOutExchange(service, null, null);
+            NormalizedMessage inMessage = inOut.createMessage();
+            inMessage.setContent(new StringSource("<test id='" + i + "'/>"));
+            inOut.setInMessage(inMessage);
+            client.send(inOut);
+            inOut = (InOut) client.receive(1000);
+            assertNotNull(inOut.getOutMessage());
+            client.done(inOut);
+        }
+    }
     
 }

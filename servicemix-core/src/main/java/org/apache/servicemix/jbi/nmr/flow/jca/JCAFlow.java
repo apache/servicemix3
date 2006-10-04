@@ -344,7 +344,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
      * @return true if this flow can handle the given exchange
      */
     public boolean canHandle(MessageExchange me) {
-        if (isTransacted(me) && isSynchronous(me)) {
+        if (isSynchronous(me)) {
             return false;
         }
         return true;
