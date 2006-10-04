@@ -29,6 +29,9 @@ import javax.management.ObjectName;
  * Maven JBI plugin to provide a standard implementation of a Bootstrap
  * when a component does not provide one
  * 
+ * @deprecated Due to JBI classloader mechanism, component should not
+ *    use this class directly, but copy it, or rely on the maven-jbi-plugin
+ *    to provide a default implementation.
  */
 public class DefaultBootstrap implements Bootstrap
 {

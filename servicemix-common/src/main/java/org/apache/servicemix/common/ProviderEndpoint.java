@@ -1,20 +1,32 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.servicemix.common;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
+import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.RobustInOnly;
 import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.servicedesc.ServiceEndpoint;
-import javax.jbi.JBIException;
 import javax.xml.namespace.QName;
 
 public abstract class ProviderEndpoint extends Endpoint implements ExchangeProcessor {
@@ -122,11 +134,15 @@ public abstract class ProviderEndpoint extends Endpoint implements ExchangeProce
                 return;
             // Exchange is active
             } else {
+                NormalizedMessage in;
+                // Fault message
+                if (exchange.getFault() != null) {
+                    done(exchange);
                 // In message
-                NormalizedMessage in = exchange.getMessage("in");
-                if (in != null) {
+                } else if ((in = exchange.getMessage("in")) != null) {
                     if (exchange instanceof InOnly || exchange instanceof RobustInOnly) {
                         processInOnly(exchange, in);
+                        done(exchange);
                     }
                     else {
                         NormalizedMessage out = exchange.getMessage("out");
@@ -135,12 +151,8 @@ public abstract class ProviderEndpoint extends Endpoint implements ExchangeProce
                             exchange.setMessage(out, "out");
                         }
                         processInOut(exchange, in, out);
+                        send(exchange);
                     }
-                    send(exchange);
-
-                // Fault message
-                } else if (exchange.getFault() != null) {
-                    done(exchange);
                 // This is not compliant with the default MEPs
                 } else {
                     throw new IllegalStateException("Provider exchange is ACTIVE, but no in or fault is provided");

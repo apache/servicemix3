@@ -16,7 +16,6 @@
  */
 package org.apache.servicemix.common;
 
-import javax.jbi.component.Component;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;

@@ -26,6 +26,12 @@ import javax.resource.spi.work.WorkException;
 import javax.resource.spi.work.WorkListener;
 import javax.resource.spi.work.WorkManager;
 
+/**
+ * A simple WorkManager implementation on top of java.util.concurrent thread pool.
+ * 
+ * @deprecated Components should use the executor on the ServiceMixComponent
+ *      for thread pools
+ */
 public class BasicWorkManager implements WorkManager {
 
     private final ExecutorService executor;

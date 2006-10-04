@@ -22,7 +22,6 @@ import org.apache.servicemix.executors.Executor;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 
-import javax.jbi.component.Component;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.component.ComponentLifeCycle;
 import javax.jbi.component.ServiceUnitManager;
