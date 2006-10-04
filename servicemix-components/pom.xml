@@ -250,9 +250,23 @@
             <exclude>**/XsltPublisherTest.*</exclude>
             <exclude>**/BinaryFileTest.*</exclude>
             <exclude>**/FileTest.*</exclude>
-            <exclude>**/CounterMonitorComponentTest.*</exclude>
-	    <!-- https://issues.apache.org/activemq/browse/SM-529 -->
-	    <exclude>**/MPSSettingTest.*</exclude>
+			<exclude>**/CounterMonitorComponentTest.*</exclude>
+            <exclude>**/OptionalAxisQueriesTest.*</exclude>
+			<exclude>**/JmsBindingTest.*</exclude>
+			<exclude>**/WsifTest.*</exclude>
+			<exclude>**/HttpSoapAndSaajTest.*</exclude>
+			<exclude>**/JmsBindingClusterTest.*</exclude>
+			<exclude>**/JmsBindingUsingEndpointSubscriptionTest.*</exclude>
+			<exclude>**/GroovyTransformTest.*</exclude>
+			<exclude>**/TransformComponentTest.*</exclude>
+
+			
+            
+			<!-- Hangs -->
+			<exclude>**/SaajSoapActionTest.*</exclude>
+	        
+			<!-- https://issues.apache.org/activemq/browse/SM-529 -->
+	        <exclude>**/MPSSettingTest.*</exclude>
           
 	  </excludes>
         </configuration>
