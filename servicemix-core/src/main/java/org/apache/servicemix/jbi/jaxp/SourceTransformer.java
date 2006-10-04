@@ -39,8 +39,6 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xalan.xsltc.trax.DOM2SAX;
 import org.apache.xalan.xsltc.trax.SAX2DOM;
 import org.w3c.dom.Document;
@@ -58,8 +56,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class SourceTransformer {
     public static final String CONTENT_DOCUMENT_PROPERTY = "org.apache.servicemix.content.document";
-
-    private static final transient Log log = LogFactory.getLog(SourceTransformer.class);
 
     private DocumentBuilderFactory documentBuilderFactory;
     private TransformerFactory transformerFactory;
@@ -355,7 +351,6 @@ public class SourceTransformer {
      * @throws TransformerException 
      */
     public Element toDOMElement(Node node) throws TransformerException {
-        Element elem;
         // If the node is an document, return the root element
         if (node instanceof Document) {
             return ((Document) node).getDocumentElement();
