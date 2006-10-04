@@ -386,7 +386,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         File instDir   = FileVersionUtil.getNewVersionDirectory(rootDir);
         File workDir   = FileUtil.getDirectoryPath(rootDir, "workspace");
         File stateFile = FileUtil.getDirectoryPath(rootDir, "state.xml");
-        File statsFile = FileUtil.getDirectoryPath(rootDir, "stats.cvs");
+        File statsFile = FileUtil.getDirectoryPath(rootDir, "stats.csv");
         ComponentEnvironment env = new ComponentEnvironment();
         env.setComponentRoot(rootDir);
         env.setInstallRoot(instDir);
@@ -401,7 +401,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         File instDir   = FileVersionUtil.getLatestVersionDirectory(rootDir);
         File workDir   = FileUtil.getDirectoryPath(rootDir, "workspace");
         File stateFile = FileUtil.getDirectoryPath(rootDir, "state.xml");
-        File statsFile = FileUtil.getDirectoryPath(rootDir, "stats.cvs");
+        File statsFile = FileUtil.getDirectoryPath(rootDir, "stats.csv");
         ComponentEnvironment env = new ComponentEnvironment();
         env.setComponentRoot(rootDir);
         env.setInstallRoot(instDir);
