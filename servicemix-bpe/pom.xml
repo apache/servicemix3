@@ -168,6 +168,8 @@
             <exclude>**/Abstract*.*</exclude>
             
             <exclude>**/FileSystemJarInputStreamTest.*</exclude>
+			<exclude>**/BPEDeployerTest.*</exclude>
+
           </excludes>
         </configuration>
       </plugin>
