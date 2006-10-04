@@ -54,6 +54,7 @@
       <sm:securedBroker authorizationMap="#authorizationMap">
         <sm:flows>
           <sm:sedaFlow />
+          <sm:jmsFlow jmsURL="tcp://localhost:61616" />
           <sm:jcaFlow connectionManager="#connectionManager"
                       jmsURL="tcp://localhost:61616" />
         </sm:flows>
