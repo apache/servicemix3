@@ -51,7 +51,7 @@ public class ValidateComponent extends TransformComponentSupport {
     private String schemaLanguage = "http://www.w3.org/2001/XMLSchema";
     private Source schemaSource;
     private Resource schemaResource;
-    private MessageAwareErrorHandler errorHandler = new CountingErrorHandler();
+    private MessageAwareErrorHandlerFactory errorHandlerFactory = new CountingErrorHandlerFactory();
 
     public Schema getSchema() {
         return schema;
@@ -85,13 +85,13 @@ public class ValidateComponent extends TransformComponentSupport {
         this.schemaResource = schemaResource;
     }
    
-    public MessageAwareErrorHandler getErrorHandler() {
-		return errorHandler;
-	}
+    public MessageAwareErrorHandlerFactory getErrorHandlerFactory() {
+        return errorHandlerFactory;
+    }
 
-	public void setErrorHandler(MessageAwareErrorHandler errorHandler) {
-		this.errorHandler = errorHandler;
-	}
+    public void setErrorHandlerFactory(MessageAwareErrorHandlerFactory errorHandlerFactory) {
+        this.errorHandlerFactory = errorHandlerFactory;
+    }
 
     protected void init() throws JBIException {
         super.init();
@@ -105,9 +105,9 @@ public class ValidateComponent extends TransformComponentSupport {
                         throw new JBIException("You must specify a schema, schemaSource or schemaResource property");
                     }
                     if (schemaResource.getURL() == null) {
-                    	schemaSource = new StreamSource(schemaResource.getInputStream());
+                        schemaSource = new StreamSource(schemaResource.getInputStream());
                     } else {
-                    	schemaSource = new StreamSource(schemaResource.getInputStream(), schemaResource.getURL().toExternalForm());	
+                        schemaSource = new StreamSource(schemaResource.getInputStream(), schemaResource.getURL().toExternalForm()); 
                     }
                 }
                 schema = factory.newSchema(schemaSource);
@@ -124,19 +124,22 @@ public class ValidateComponent extends TransformComponentSupport {
     protected boolean transform(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws MessagingException {
         Validator validator = schema.newValidator();
 
+        // create a new errorHandler and set it on the validator
+        MessageAwareErrorHandler errorHandler = errorHandlerFactory.createMessageAwareErrorHandler();
         validator.setErrorHandler(errorHandler);
         DOMResult result = new DOMResult();
+        
         // Transform first so that the input source will be parsed only once
         // if it is a StreamSource
         getMessageTransformer().transform(exchange, in, out);
         try {
-        	SourceTransformer sourceTransformer = new SourceTransformer();
-        	// Only DOMSource and SAXSource are allowed for validating
-        	// See http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/validation/Validator.html#validate(javax.xml.transform.Source,%20javax.xml.transform.Result)
-        	// As we expect a DOMResult as output, we must ensure that the input is a 
-        	// DOMSource
-        	DOMSource src = sourceTransformer.toDOMSource(out.getContent());
-        	doValidation(validator,src,result);
+            SourceTransformer sourceTransformer = new SourceTransformer();
+            // Only DOMSource and SAXSource are allowed for validating
+            // See http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/validation/Validator.html#validate(javax.xml.transform.Source,%20javax.xml.transform.Result)
+            // As we expect a DOMResult as output, we must ensure that the input is a 
+            // DOMSource
+            DOMSource src = sourceTransformer.toDOMSource(out.getContent());
+            doValidation(validator,src,result);
             if (errorHandler.hasErrors()) {
                 Fault fault = exchange.createFault();
                 
@@ -150,40 +153,40 @@ public class ValidateComponent extends TransformComponentSupport {
                  */
                 if (errorHandler.capturesMessages()) {
 
-                	/* 
-                	 * In descending order of preference select a format to use. If
-                	 * neither DOMSource, StringSource or String are supported throw
-                	 * a messaging exception.
-                	 */
-                	if (errorHandler.supportsMessageFormat(DOMSource.class)) {
-                		fault.setContent(
-                				(DOMSource)errorHandler.getMessagesAs(DOMSource.class));
-                	} else if (errorHandler.supportsMessageFormat(StringSource.class)) {
-                		fault.setContent(sourceTransformer.toDOMSource(
-                				(StringSource)errorHandler.getMessagesAs(StringSource.class)));
-                	} else if (errorHandler.supportsMessageFormat(String.class)) {
-                		fault.setContent(
-                				sourceTransformer.toDOMSource(
-                						new StringSource(
-                								(String)errorHandler.getMessagesAs(String.class))));
-                	} else {
-                		throw new MessagingException("MessageAwareErrorHandler implementation " + 
-                				errorHandler.getClass().getName() +
-                				" does not support a compatible error message format.");
-                	}
+                    /* 
+                     * In descending order of preference select a format to use. If
+                     * neither DOMSource, StringSource or String are supported throw
+                     * a messaging exception.
+                     */
+                    if (errorHandler.supportsMessageFormat(DOMSource.class)) {
+                        fault.setContent(
+                                (DOMSource)errorHandler.getMessagesAs(DOMSource.class));
+                    } else if (errorHandler.supportsMessageFormat(StringSource.class)) {
+                        fault.setContent(sourceTransformer.toDOMSource(
+                                (StringSource)errorHandler.getMessagesAs(StringSource.class)));
+                    } else if (errorHandler.supportsMessageFormat(String.class)) {
+                        fault.setContent(
+                                sourceTransformer.toDOMSource(
+                                        new StringSource(
+                                                (String)errorHandler.getMessagesAs(String.class))));
+                    } else {
+                        throw new MessagingException("MessageAwareErrorHandler implementation " + 
+                                errorHandler.getClass().getName() +
+                                " does not support a compatible error message format.");
+                    }
                 } else {
-                	/* 
-                	 * we can't do much here if the ErrorHandler implementation does
-                	 * not support capturing messages
-                	 */
+                    /* 
+                     * we can't do much here if the ErrorHandler implementation does
+                     * not support capturing messages
+                     */
                     fault.setContent(new DOMSource(result.getNode(), result.getSystemId()));
                 }
                 throw new FaultException("Failed to validate against schema: " + schema, exchange, fault);
             }
             else {
-            	// Retrieve the ouput of the validation
-            	// as it may have been changed by the validator
-            	out.setContent(new DOMSource(result.getNode(), result.getSystemId()));
+                // Retrieve the ouput of the validation
+                // as it may have been changed by the validator
+                out.setContent(new DOMSource(result.getNode(), result.getSystemId()));
                 return true;
              }
         }
@@ -195,13 +198,13 @@ public class ValidateComponent extends TransformComponentSupport {
         } 
         catch (ParserConfigurationException e) {
             throw new MessagingException(e);
-		} 
+        } 
         catch (TransformerException e) {
             throw new MessagingException(e);
-		}
+        }
     }
     
     protected void doValidation(Validator validator, DOMSource src, DOMResult result) throws SAXException, IOException {
-    	validator.validate(src,result);
+        validator.validate(src,result);
     }
 }

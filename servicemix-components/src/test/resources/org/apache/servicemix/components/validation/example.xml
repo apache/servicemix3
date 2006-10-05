@@ -18,7 +18,7 @@
 
 -->
 <beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
-	   xmlns:foo="http://servicemix.org/cheese/">
+       xmlns:foo="http://servicemix.org/cheese/">
 
   <!-- the JBI container -->
   <sm:container id="jbi" embedded="true">
@@ -33,10 +33,10 @@
 
       <sm:activationSpec componentName="myMessageAwareErrorHandlerService" service="foo:myMessageAwareErrorHandlerService" endpoint="myMessageAwareErrorHandlerService" destinationService="foo:myServiceImpl">
         <sm:component>
-        	<bean class="org.apache.servicemix.components.validation.ValidateComponent">
-          		<property name="schemaResource" value="classpath:org/apache/servicemix/components/validation/schema.xsd"/>
-          		<property name="errorHandler" ref="messageAggregatingErrorHandler"/>
-           	</bean>
+            <bean class="org.apache.servicemix.components.validation.ValidateComponent">
+                <property name="schemaResource" value="classpath:org/apache/servicemix/components/validation/schema.xsd"/>
+                <property name="errorHandlerFactory" ref="messageAggregatingErrorHandlerFactory"/>
+            </bean>
         </sm:component>
       </sm:activationSpec>
 
@@ -68,9 +68,9 @@ outMessage.bodyText = "<response counter='$bindings.counter' date='$date'></resp
     </sm:activationSpecs>
   </sm:container>
 
-  <bean id="messageAggregatingErrorHandler" class="org.apache.servicemix.components.validation.MessageAggregatingErrorHandler">
-    <constructor-arg index="0" value="Fault/payload/messages"/>
-    <constructor-arg index="1" value="http://www.servicemix.org/fault"/>
+  <bean id="messageAggregatingErrorHandlerFactory" class="org.apache.servicemix.components.validation.MessageAggregatingErrorHandlerFactory">
+    <property name="rootPath" value="Fault/payload/messages"/>
+    <property name="namespace" value="http://www.servicemix.org/fault"/>
   </bean>
 
   <bean id="defaultErrorHandlerClient" class="org.apache.servicemix.client.DefaultServiceMixClient">
