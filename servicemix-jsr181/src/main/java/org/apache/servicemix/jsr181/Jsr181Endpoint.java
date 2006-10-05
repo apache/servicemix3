@@ -199,7 +199,8 @@ public class Jsr181Endpoint extends Endpoint {
         ObjectServiceFactory factory = ServiceFactoryHelper.findServiceFactory(xfire, pojo.getClass(), annotations, typeMapping);
         Class serviceClass = pojo.getClass();
         if (serviceInterface != null) {
-            serviceClass = Class.forName(serviceInterface);
+            ClassLoader classLoader = ((XBeanServiceUnit) getServiceUnit()).getConfigurationClassLoader();
+            serviceClass = Class.forName(serviceInterface, true, classLoader);
         }
 
         this.definition = loadDefinition();
