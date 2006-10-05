@@ -383,7 +383,21 @@
         </repository>
     </repositories>
 
-    <dependencies>
+	<pluginRepositories>
+	    <pluginRepository>
+          <id>apache.snapshots</id>
+          <name>Logicblaze Maven2 Repository</name>
+          <url>http://people.apache.org/maven-snapshot-repository</url>
+	      <releases>
+            <enabled>false</enabled>
+          </releases>
+	      <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+	    </pluginRepository>
+    </pluginRepositories>
+    
+	<dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
