@@ -82,9 +82,6 @@ public class DeliveryChannelImpl implements DeliveryChannel {
 
     /**
      * Constructor
-     * 
-     * @param container
-     * @param componentName
      */
     public DeliveryChannelImpl(ComponentMBeanImpl component) {
         this.component = component;
@@ -415,7 +412,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
      * routes a MessageExchange
      * 
      * @param messageExchange
-     * @param timeoutMS
+     * @param timeout
      * @return true if processed
      * @throws MessagingException
      */
@@ -768,7 +765,6 @@ public class DeliveryChannelImpl implements DeliveryChannel {
      * If the jbi container configured to do so, the message exchange will
      * automatically be enlisted in the current transaction, if exists. 
      * 
-     * @param messageExchange
      * @throws MessagingException
      */
     protected void autoEnlistInTx(MessageExchangeImpl me) throws MessagingException {
