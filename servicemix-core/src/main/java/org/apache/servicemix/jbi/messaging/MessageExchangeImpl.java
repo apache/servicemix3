@@ -220,7 +220,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
      */
     public void setError(Exception exception) {
         if (!can(CAN_OWNER)) {
-            throw new IllegalStateException("component is not owner");
+            throw new IllegalStateException("component is not owner when trying to set error: " + exception, exception);
         }
         this.packet.setError(exception);
     }
