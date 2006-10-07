@@ -19,8 +19,9 @@
 <!-- $Rev: 356052 $ $Date: 2005-12-11 14:41:20 -0800 (dim., 11 dv©c. 2005) $ -->
 <html>
 <head>
-<title>ServiceMix SOAP Binding Example</title>
+<title>ServiceMix Bridge Example</title>
 <script type="text/javascript">
+var urlToOpen = "http://localhost:8192/bridge/"; //default URL to open
 
 function getHTTPObject() {
   var xmlhttp = false;
@@ -55,7 +56,13 @@ function getHTTPObject() {
      xmlhttp.onreadystatechange=function() {
         if (xmlhttp.readyState == 4) { /* 4 : état "complete" */
            var response = document.getElementById("response");
-           response.value = "STATUS: " + xmlhttp.status + "\n" + xmlhttp.responseText
+           var responseStatus = "";
+           try {
+             responseStatus = xmlhttp.status + "";
+           } catch (e) {
+             responseStatus = "ERROR WHILE RETRIEVING STATUS; MAYBE UNABLE TO CONNECT.";
+           }
+           response.value = "STATUS: " + responseStatus + "\n" + xmlhttp.responseText;
         }
      }
   }
@@ -63,18 +70,25 @@ function getHTTPObject() {
 }
 
 function send() {
+  if ((document.getElementById("urlToOpen").value != urlToOpen) && (document.getElementById("urlToOpen").value != "")) {
+    //use user entry only if it at least can be okay
+    urlToOpen = document.getElementById("urlToOpen").value;
+  }  
   var xmlhttp = getHTTPObject();
   if (!xmlhttp) {
     alert('cound not create XMLHttpRequest object');
     return;
   }
   var request = document.getElementById("request");
-  var response = document.getElementById("response");
+  var response = document.getElementById("response");  
   try {
     netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
-    xmlhttp.open("POST", "http://localhost:8192/bridge/", true);
   } catch (e) {
-    alert('error opening');
+  }
+  try {
+    xmlhttp.open("POST", urlToOpen, true);
+  } catch (e) {
+    alert('Error opening connection');
   }
   xmlhttp.send(request.value);
 }
@@ -84,11 +98,13 @@ function send() {
 
 <body>
 
-<h1>ServiceMix SOAP Binding Example</h1>
+<h1>ServiceMix Bridge Example</h1>
 
-<p>Welcome to the soap binding example for ServiceMix</p>
+<p>Welcome to the Bridge example for ServiceMix.</p>
 
-Perform a POST into the HTTP binding <p>
+<p>Perform a POST into the HTTP binding. This requires JavaScript.</p> 
+<p>Target: <input type="text" size="50" id="urlToOpen" value=""><script type="text/javascript">document.getElementById("urlToOpen").value = urlToOpen;</script>.</p>
+
 
 <table>
   <tr>
