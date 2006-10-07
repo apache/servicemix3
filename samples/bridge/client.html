@@ -83,6 +83,9 @@ function send() {
   var response = document.getElementById("response");  
   try {
     netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
+  } catch (e) {
+  }
+  try {
     xmlhttp.open("POST", urlToOpen, true);
   } catch (e) {
     alert('Error opening connection');

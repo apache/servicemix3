@@ -18,8 +18,9 @@
 -->
 <html>
 <head>
-<title>ServiceMix SOAP Binding Example</title>
+<title>ServiceMix WS-Security Example</title>
 <script type="text/javascript">
+var urlToOpen = "http://localhost:8192/Service/"; //default URL to open
 
 function getHTTPObject() {
   var xmlhttp = false;
@@ -54,7 +55,13 @@ function getHTTPObject() {
      xmlhttp.onreadystatechange=function() {
         if (xmlhttp.readyState == 4) { /* 4 : état "complete" */
            var response = document.getElementById("response");
-           response.value = "STATUS: " + xmlhttp.status + "\n" + xmlhttp.responseText
+           var responseStatus = "";
+           try {
+             responseStatus = xmlhttp.status + "";
+           } catch (e) {
+             responseStatus = "ERROR WHILE RETRIEVING STATUS; MAYBE UNABLE TO CONNECT.";
+           }
+           response.value = "STATUS: " + responseStatus + "\n" + xmlhttp.responseText;
         }
      }
   }
@@ -71,7 +78,10 @@ function send() {
   var response = document.getElementById("response");
   try {
     netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead UniversalBrowserWrite");
-    xmlhttp.open("POST", "http://localhost:8192/Service/", true);
+  } catch (e) {
+  }
+  try {
+    xmlhttp.open("POST", urlToOpen, true);
   } catch (e) {
     alert('error opening');
   }
@@ -83,11 +93,12 @@ function send() {
 
 <body>
 
-<h1>ServiceMix SOAP Binding Example</h1>
+<h1>ServiceMix WS-Security Example</h1>
 
-<p>Welcome to the soap binding example for ServiceMix</p>
+<p>Welcome to the WS-Security example for ServiceMix</p>
 
-Perform a POST into the HTTP binding <p>
+<p>Perform a POST into the HTTP binding. This requires JavaScript.</p> 
+<p>Target: <input type="text" size="50" id="urlToOpen" value=""><script type="text/javascript">document.getElementById("urlToOpen").value = urlToOpen;</script>.</p>
 
 <table>
   <tr>
