@@ -27,11 +27,27 @@ public class EndpointSupport {
     }
     
     public static String getKey(ServiceEndpoint endpoint) {
-        return getKey(endpoint.getServiceName(), endpoint.getEndpointName());
+        QName serviceName = endpoint.getServiceName();
+        if (serviceName == null) {
+            throw new IllegalArgumentException("Endpoint: " + endpoint + " has no serviceName defined");
+        }
+        String endpointName = endpoint.getEndpointName();
+        if (endpointName == null) {
+            throw new IllegalArgumentException("Endpoint: " + endpoint + " has no endpointName defined");
+        }
+        return getKey(serviceName, endpointName);
     }
     
     public static String getKey(Endpoint endpoint) {
-        return getKey(endpoint.getService(), endpoint.getEndpoint());
+        QName serviceName = endpoint.getService();
+        if (serviceName == null) {
+            throw new IllegalArgumentException("Endpoint: " + endpoint + " has no service name defined");
+        }
+        String endpointName = endpoint.getEndpoint();
+        if (endpointName == null) {
+            throw new IllegalArgumentException("Endpoint: " + endpoint + " has no endpoint name defined");
+        }
+        return getKey(serviceName, endpointName);
     }
     
 }
