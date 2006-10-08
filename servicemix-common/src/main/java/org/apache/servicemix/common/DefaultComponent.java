@@ -31,6 +31,9 @@ import javax.jbi.management.DeploymentException;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Iterator;
+import java.util.Collections;
 
 /**
  * A useful base class for writing new JBI components which includes the {@link ComponentLifeCycle} interface methods so that
@@ -45,7 +48,6 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
     protected Registry registry;
     protected BaseServiceUnitManager serviceUnitManager;
     protected ServiceUnit serviceUnit;
-    private Endpoint[] endpoints;
 
     public DefaultComponent() {
         setComponent(this);
@@ -185,20 +187,67 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
         return registry;
     }
 
+
     /**
-     * Returns the statically defined endpoints of this component
+     * Returns the service unit, lazily creating one on demand
+     *
+     * @return the service unit if one is being used.
      */
-    public Endpoint[] getEndpoints() {
-        return endpoints;
+    public ServiceUnit getServiceUnit() {
+        if (serviceUnit == null) {
+            serviceUnit = new XBeanServiceUnit();
+            serviceUnit.setComponent(this);
+        }
+        return serviceUnit;
     }
 
-    public void setEndpoints(Endpoint[] endpoints) throws DeploymentException {
-        for (int i = 0; i < endpoints.length; i++) {
-            Endpoint endpoint = endpoints[i];
-            validateEndpoint(endpoint);
+    /**
+     * Returns an array of configured endpoints for the component or null if there are no configured endpoints
+     */
+    protected abstract List getConfiguredEndpoints();
+
+    /**
+     * Returns a list of valid endpoint classes or null if the component does not wish to programmatically
+     * restrict the list of possible endpoint classes
+     *
+     * @return the endpoint classes used to validate configuration or null to disable the validation
+     */
+    protected abstract Class[] getEndpointClasses();
+
+    /**
+     * A little helper method to turn a possibly null list of endpoitns into a list of endpoints
+     */
+    protected List asList(Endpoint[] endpoints) {
+        if (endpoints == null) {
+            return Collections.EMPTY_LIST;
         }
-        this.endpoints = endpoints;
+        return Arrays.asList(endpoints);
     }
+
+    /* (non-Javadoc)
+    * @see org.servicemix.common.BaseLifeCycle#doInit()
+    */
+    protected void doInit() throws Exception {
+        super.doInit();
+        List endpoints = getConfiguredEndpoints();
+        if (endpoints != null && !endpoints.isEmpty()) {
+            ServiceUnit su = getServiceUnit();
+            Iterator iter = endpoints.iterator();
+            while (iter.hasNext()) {
+                Endpoint endpoint = (Endpoint) iter.next();
+                if (endpoint == null) {
+                    logger.warn("Ignoring null endpoint in list: " + endpoints);
+                    continue;
+                }
+                endpoint.setServiceUnit(su);
+                validateEndpoint(endpoint);
+                endpoint.validate();
+                su.addEndpoint(endpoint);
+            }
+            getRegistry().registerServiceUnit(su);
+        }
+    }
+
 
     /**
      * Provides a hook to validate the statically configured endpoint
@@ -220,43 +269,6 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
         }
     }
 
-    /**
-     * Returns the service unit, lazily creating one on demand
-     *
-     * @return the service unit if one is being used.
-     */
-    public ServiceUnit getServiceUnit() {
-        if (serviceUnit == null) {
-            serviceUnit = new XBeanServiceUnit();
-            serviceUnit.setComponent(this);
-        }
-        return serviceUnit;
-    }
-
-    /**
-     * Returns a list of valid endpoint classes or null if the component does not wish to programmatically
-     * restrict the list of possible endpoint classes
-     *
-     * @return the endpoint classes used to validate configuration or null to disable the validation
-     */
-    protected abstract Class[] getEndpointClasses();
-
-    /* (non-Javadoc)
-    * @see org.servicemix.common.BaseLifeCycle#doInit()
-    */
-    protected void doInit() throws Exception {
-        super.doInit();
-        Endpoint[] endpoints = getEndpoints();
-        if (endpoints != null && endpoints.length > 0) {
-            ServiceUnit su = getServiceUnit();
-            for (int i = 0; i < endpoints.length; i++) {
-                endpoints[i].setServiceUnit(su);
-                endpoints[i].validate();
-                su.addEndpoint(endpoints[i]);
-            }
-            getRegistry().registerServiceUnit(su);
-        }
-    }
 
     /* (non-Javadoc)
     * @see org.servicemix.common.BaseLifeCycle#doStart()
