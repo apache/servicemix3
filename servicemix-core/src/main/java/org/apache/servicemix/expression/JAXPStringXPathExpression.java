@@ -31,7 +31,7 @@ public class JAXPStringXPathExpression extends JAXPXPathExpression {
     public JAXPStringXPathExpression() {
     }
 
-    public JAXPStringXPathExpression(String xpath) throws Exception {
+    public JAXPStringXPathExpression(String xpath) {
         super(xpath);
     }
 

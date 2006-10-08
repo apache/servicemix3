@@ -56,7 +56,7 @@ public class JAXPXPathExpression implements Expression, InitializingBean {
     /**
      * A helper constructor to make a fully created expression. 
      */
-    public JAXPXPathExpression(String xpath) throws Exception {
+    public JAXPXPathExpression(String xpath) {
         this.xpath = xpath;
     }
 
