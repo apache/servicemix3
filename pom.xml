@@ -224,25 +224,27 @@
                 <module>servicemix-jbi</module>
                 <module>servicemix-services</module>
                 <module>servicemix-core</module>
-                <module>tooling</module>
+                <module>servicemix-bean</module>
                 <module>servicemix-beanflow</module>
                 <module>servicemix-components</module>
                 <module>servicemix-common</module>
-                <module>servicemix-soap</module>
-                <module>servicemix-shared</module>
                 <module>servicemix-console</module>
                 <module>servicemix-bpe</module>
+                <module>servicemix-eip</module>
+                <module>servicemix-file</module>
+                <module>servicemix-ftp</module>
+                <module>servicemix-http</module>
+                <module>servicemix-itests</module>
+                <module>servicemix-jabber</module>
                 <module>servicemix-jms</module>
                 <module>servicemix-jsr181</module>
-                <module>servicemix-http</module>
-                <module>servicemix-wsn2005</module>
                 <module>servicemix-lwcontainer</module>
-                <module>servicemix-sca</module>
-                <module>servicemix-eip</module>
-                <module>servicemix-itests</module>
                 <module>servicemix-saxon</module>
                 <module>servicemix-sca</module>
+                <module>servicemix-shared</module>
+                <module>servicemix-soap</module>
                 <module>servicemix-wsn2005</module>
+                <module>tooling</module>
                 <module>samples</module>
                 <module>geronimo</module>
                 <module>apache-servicemix</module>
