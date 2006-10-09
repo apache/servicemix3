@@ -223,10 +223,7 @@ public abstract class SoapEndpoint extends Endpoint {
         if (description == null && wsdlResource != null) {
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
             try {
-                if (serviceUnit instanceof XBeanServiceUnit) {
-                    XBeanServiceUnit su = (XBeanServiceUnit) serviceUnit;
-                    Thread.currentThread().setContextClassLoader(su.getKernel().getClassLoaderFor(su.getConfiguration()));
-                }
+                Thread.currentThread().setContextClassLoader(serviceUnit.getConfigurationClassLoader());
                 WSDLReader reader = WSDLFactory.newInstance().newWSDLReader(); 
                 reader.setFeature(Constants.FEATURE_VERBOSE, false);
                 Definition def = reader.readWSDL(wsdlResource.getURL().toString());
