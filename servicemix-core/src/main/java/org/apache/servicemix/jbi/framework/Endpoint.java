@@ -17,13 +17,20 @@
 package org.apache.servicemix.jbi.framework;
 
 import java.beans.PropertyChangeListener;
+import java.net.URI;
 
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.NormalizedMessage;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanOperationInfo;
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerException;
 
+import org.apache.servicemix.client.ServiceMixClient;
+import org.apache.servicemix.jbi.FaultException;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.MBeanInfoProvider;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
@@ -32,6 +39,7 @@ import org.apache.servicemix.jbi.servicedesc.ExternalEndpoint;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 import org.apache.servicemix.jbi.servicedesc.LinkedEndpoint;
 import org.apache.servicemix.jbi.util.DOMUtil;
+import org.apache.servicemix.jbi.util.QNameUtil;
 
 public class Endpoint implements EndpointMBean, MBeanInfoProvider {
 
@@ -127,6 +135,31 @@ public class Endpoint implements EndpointMBean, MBeanInfoProvider {
 
     protected AbstractServiceEndpoint getEndpoint() {
         return endpoint;
+    }
+
+    public String send(String content, String operation, String mep) {
+        try {
+            ServiceMixClient client = registry.getContainer().getClientFactory().createClient();
+            MessageExchange me = client.getExchangeFactory().createExchange(URI.create(mep));
+            NormalizedMessage nm = me.createMessage();
+            me.setMessage(nm, "in");
+            nm.setContent(new StringSource(content));
+            me.setEndpoint(endpoint);
+            if (operation != null) {
+                me.setOperation(QNameUtil.parse(operation));
+            }
+            client.sendSync(me);
+            if (me.getError() != null) {
+                throw me.getError();
+            } else if (me.getFault() != null) {
+                throw FaultException.newInstance(me);
+            } else if (me.getMessage("out") != null) {
+                return new SourceTransformer().contentToString(me.getMessage("out"));
+            }
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
