@@ -35,7 +35,7 @@ import loanbroker.CreditAgency;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.http.HttpEndpoint;
-import org.apache.servicemix.http.HttpSpringComponent;
+import org.apache.servicemix.http.HttpComponent;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
@@ -81,7 +81,7 @@ public class BPEComponentTest extends TestCase {
     
     
     protected void registerHttp() throws Exception {
-        HttpSpringComponent http = new HttpSpringComponent();
+        HttpComponent http = new HttpComponent();
         HttpEndpoint ep = new HttpEndpoint();
         ep.setSoap(true);
         ep.setDefaultMep(MessageExchangeSupport.IN_OUT);
