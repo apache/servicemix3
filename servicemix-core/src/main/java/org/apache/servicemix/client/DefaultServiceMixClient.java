@@ -23,16 +23,11 @@ import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.messaging.DefaultMarshaler;
 import org.apache.servicemix.jbi.messaging.PojoMarshaler;
-import org.apache.servicemix.jbi.resolver.EndpointFilter;
-import org.apache.servicemix.jbi.resolver.EndpointResolver;
-import org.apache.servicemix.jbi.resolver.ExternalInterfaceNameEndpointResolver;
-import org.apache.servicemix.jbi.resolver.ExternalServiceNameEndpointResolver;
-import org.apache.servicemix.jbi.resolver.InterfaceNameEndpointResolver;
-import org.apache.servicemix.jbi.resolver.NullEndpointFilter;
-import org.apache.servicemix.jbi.resolver.ServiceAndEndpointNameResolver;
-import org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver;
+import org.apache.servicemix.jbi.resolver.*;
+import org.w3c.dom.DocumentFragment;
 
 import javax.jbi.JBIException;
+import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.Fault;
@@ -235,6 +230,15 @@ public class DefaultServiceMixClient extends ComponentSupport implements Service
             throw new NoOutMessageAvailableException(exchange);
         }
         return getMarshaler().unmarshal(exchange, outMessage);
+    }
+
+    /**
+     * Resolves a WS-Addressing endpoint reference String into a JBI {@link ServiceEndpoint}
+     * reference so that message exchanges can be directed to an endpoint
+     */
+    public ServiceEndpoint resolveEndpointReference(String uri) {
+        DocumentFragment epr = URIResolver.createWSAEPR(uri);
+        return getContext().resolveEndpointReference(epr);
     }
 
     public EndpointResolver createResolverForService(QName service) {

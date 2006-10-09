@@ -16,23 +16,14 @@
  */
 package org.apache.servicemix.client;
 
-import java.util.Map;
+import org.apache.servicemix.jbi.resolver.EndpointResolver;
 
 import javax.jbi.JBIException;
+import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.jbi.component.ComponentContext;
-import javax.jbi.messaging.DeliveryChannel;
-import javax.jbi.messaging.ExchangeStatus;
-import javax.jbi.messaging.Fault;
-import javax.jbi.messaging.InOnly;
-import javax.jbi.messaging.InOptionalOut;
-import javax.jbi.messaging.InOut;
-import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessageExchangeFactory;
-import javax.jbi.messaging.MessagingException;
-import javax.jbi.messaging.RobustInOnly;
+import javax.jbi.messaging.*;
 import javax.xml.namespace.QName;
-
-import org.apache.servicemix.jbi.resolver.EndpointResolver;
+import java.util.Map;
 
 /**
  * Represents a client  API which allows users to programatically send messages into the JBI
@@ -243,6 +234,16 @@ public interface ServiceMixClient {
 
 
 
+
+    /**
+     * Resolves a WS-Addressing endpoint reference String into a JBI {@link javax.jbi.servicedesc.ServiceEndpoint}
+     * reference so that message exchanges can be directed to an endpoint
+     *
+     * @param uri the WS-Addressing endpoint reference string
+     */
+    ServiceEndpoint resolveEndpointReference(String uri);
+
+
     // Helper methods to get an endpoint resolver
     //-------------------------------------------------------------------------
 
@@ -354,4 +355,6 @@ public interface ServiceMixClient {
      * @throws JBIException
      */
     void close() throws JBIException;
+
+
 }
