@@ -19,7 +19,10 @@
 -->
 <archetype>
   <id>servicemix-su</id>
-   <resources>
+  <sources>
+    <source>src/main/java/Main.java</source> 
+  </sources>
+  <resources>
     <resource>src/main/resources/servicemix.xml</resource>
   </resources>
 </archetype>
