@@ -19,6 +19,7 @@ package org.apache.servicemix.common.wsdl1;
 import org.apache.servicemix.common.AbstractDeployer;
 import org.apache.servicemix.common.BaseComponent;
 import org.apache.servicemix.common.Endpoint;
+import org.apache.servicemix.common.ServiceMixComponent;
 import org.apache.servicemix.common.ServiceUnit;
 import org.w3c.dom.Document;
 
@@ -45,7 +46,7 @@ public abstract class AbstractWsdl1Deployer extends AbstractDeployer {
 
     protected FilenameFilter filter;
     
-    public AbstractWsdl1Deployer(BaseComponent component) {
+    public AbstractWsdl1Deployer(ServiceMixComponent component) {
         super(component);
         filter = new WsdlFilter();
     }
