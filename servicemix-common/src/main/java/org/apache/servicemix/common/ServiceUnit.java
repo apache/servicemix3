@@ -18,8 +18,8 @@ package org.apache.servicemix.common;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +36,7 @@ public class ServiceUnit {
 
     protected String status = LifeCycleMBean.SHUTDOWN;
 
-    protected Map endpoints = new HashMap();
+    protected Map endpoints = new LinkedHashMap();
 
     public ServiceUnit() {
     }
