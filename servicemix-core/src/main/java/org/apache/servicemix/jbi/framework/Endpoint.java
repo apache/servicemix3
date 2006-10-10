@@ -27,6 +27,8 @@ import javax.management.MBeanOperationInfo;
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.FaultException;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
@@ -41,8 +43,12 @@ import org.apache.servicemix.jbi.servicedesc.LinkedEndpoint;
 import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.servicemix.jbi.util.QNameUtil;
 
+import sun.security.action.GetLongAction;
+
 public class Endpoint implements EndpointMBean, MBeanInfoProvider {
 
+    private static final Log log = LogFactory.getLog(Endpoint.class);
+    
     private AbstractServiceEndpoint endpoint;
     private Registry registry;
     
@@ -100,6 +106,7 @@ public class Endpoint implements EndpointMBean, MBeanInfoProvider {
         OperationInfoHelper helper = new OperationInfoHelper();
         helper.addOperation(getObjectToManage(), "getReference", "retrieve the endpoint reference");
         helper.addOperation(getObjectToManage(), "getWSDL", "retrieve the wsdl description of this endpoint");
+        helper.addOperation(getObjectToManage(), "send", "send a simple message exchange to test this endpoint");
         return helper.getOperationInfos();
     }
 
@@ -138,8 +145,9 @@ public class Endpoint implements EndpointMBean, MBeanInfoProvider {
     }
 
     public String send(String content, String operation, String mep) {
+        ServiceMixClient client = null;
         try {
-            ServiceMixClient client = registry.getContainer().getClientFactory().createClient();
+            client = registry.getContainer().getClientFactory().createClient();
             MessageExchange me = client.getExchangeFactory().createExchange(URI.create(mep));
             NormalizedMessage nm = me.createMessage();
             me.setMessage(nm, "in");
@@ -158,7 +166,16 @@ public class Endpoint implements EndpointMBean, MBeanInfoProvider {
             }
             return null;
         } catch (Exception e) {
+            log.debug("Error processing test exchange", e);
             throw new RuntimeException(e);
+        } finally {
+            if (client != null) {
+                try {
+                    client.close();
+                } catch (Exception e) {
+                    // ignore
+                }
+            }
         }
     }
 
