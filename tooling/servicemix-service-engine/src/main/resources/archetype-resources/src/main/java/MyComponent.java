@@ -18,12 +18,28 @@ package ${packageName};
 
 import org.apache.servicemix.common.DefaultComponent;
 
+import java.util.List;
+
 /**
  * @org.apache.xbean.XBean element="component"
  *                  description="My Component"
  */
 public class MyComponent extends DefaultComponent {
 
+    private MyEndpoint[] endpoints;
+	
+	public MyEndpoint[] getEndpoints() {
+	    return endpoints;
+	}
+	
+	public void setEndpoints(MyEndpoint[] endpoints) {
+		this.endpoints = endpoints;
+	}
+	
+	protected List getConfiguredEndpoints() {
+	    return asList(endpoints);
+	}
+	
     protected Class[] getEndpointClasses() {
         return new Class[] { MyEndpoint.class };
     }
