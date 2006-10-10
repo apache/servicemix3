@@ -17,11 +17,12 @@
  */
 package org.apache.servicemix.common;
 
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.apache.servicemix.jbi.resolver.URIResolver;
 import org.apache.servicemix.jbi.util.DOMUtil;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
@@ -36,6 +37,9 @@ public class ResolvedEndpoint implements ServiceEndpoint {
     private QName serviceName;
     private QName[] interfaces = null;
 
+    public ResolvedEndpoint(String uri, QName serviceName) {
+        this(URIResolver.createWSAEPR(uri), uri, serviceName);
+    }
 
     public ResolvedEndpoint(DocumentFragment reference, String epName, QName serviceName) {
         this.reference = reference;
@@ -77,8 +81,9 @@ public class ResolvedEndpoint implements ServiceEndpoint {
                 // Check simple endpoints
                 if (eprUri.equals(nsUri) && eprName.equals(name)) {
                     return new ResolvedEndpoint(epr, DOMUtil.getElementText(elem), serviceName);
-                // Check WSA endpoints
-                } else {
+                    // Check WSA endpoints
+                }
+                else {
                     NodeList nl = elem.getElementsByTagNameNS("http://www.w3.org/2005/08/addressing", "Address");
                     if (nl.getLength() == 1) {
                         Element address = (Element) nl.item(0);
