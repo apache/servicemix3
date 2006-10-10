@@ -235,7 +235,6 @@
                 <module>servicemix-ftp</module>
                 <module>servicemix-http</module>
                 <module>servicemix-itests</module>
-                <module>servicemix-jabber</module>
                 <module>servicemix-jms</module>
                 <module>servicemix-jsr181</module>
                 <module>servicemix-lwcontainer</module>
@@ -244,6 +243,7 @@
                 <module>servicemix-shared</module>
                 <module>servicemix-soap</module>
                 <module>servicemix-wsn2005</module>
+                <module>servicemix-xmpp</module>
                 <module>tooling</module>
                 <module>samples</module>
                 <module>geronimo</module>
