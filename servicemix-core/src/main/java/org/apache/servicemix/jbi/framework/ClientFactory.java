@@ -82,7 +82,7 @@ public class ClientFactory extends BaseSystemService implements ClientFactoryMBe
             getContainer().getNamingContext().bind(jndiName, this);
             super.start();
         } catch (NamingException e) {
-            logger.error("Cound not start ClientFactory: " + e);
+            logger.warn("Cound not start ClientFactory: " + e);
             if (logger.isDebugEnabled()) {
                 logger.debug("Could not start ClientFactory", e);
             }
@@ -99,7 +99,7 @@ public class ClientFactory extends BaseSystemService implements ClientFactoryMBe
             super.stop();
             getContainer().getNamingContext().unbind(jndiName);
         } catch (NamingException e) {
-            logger.error("Cound not stop ClientFactory: " + e);
+            logger.warn("Cound not stop ClientFactory: " + e);
             if (logger.isDebugEnabled()) {
                 logger.debug("Could not stop ClientFactory", e);
             }
