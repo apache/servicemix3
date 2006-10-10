@@ -16,35 +16,35 @@
  */
 package org.apache.servicemix.components.xslt;
 
-import org.apache.servicemix.MessageExchangeListener;
-import org.apache.servicemix.components.util.TransformComponentSupport;
-import org.apache.servicemix.jbi.jaxp.BytesSource;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.springframework.core.io.Resource;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.net.URL;
+import java.util.Iterator;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.net.URL;
-import java.util.Iterator;
+import org.apache.servicemix.MessageExchangeListener;
+import org.apache.servicemix.components.util.TransformComponentSupport;
+import org.apache.servicemix.jbi.jaxp.BytesSource;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.springframework.core.io.Resource;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 /**
  * An <a href="http://www.w3.org/TR/xslt">XSLT</a> based JBI component using <a
@@ -90,11 +90,11 @@ public class XsltComponent extends TransformComponentSupport implements MessageE
         this.transformerFactory = transformerFactory;
     }
 
-    public Source getXsltSource() throws IOException {
+    public Source getXsltSource() throws Exception {
         if (xsltSource == null) {
             // lets create a new one each time
             // as we can only read a stream once
-            return createXsltSource();
+            xsltSource = createXsltSource();
         }
         return xsltSource;
     }
@@ -138,16 +138,8 @@ public class XsltComponent extends TransformComponentSupport implements MessageE
             transformContent(transformer, exchange, in, out);
             return shouldOutputResult(transformer);
         }
-        catch (ParserConfigurationException e) {
-            e.printStackTrace();
+        catch (Exception e) {
             throw new MessagingException("Failed to transform: " + e, e);
-        }
-        catch (TransformerException e) {
-            e.printStackTrace();
-            throw new MessagingException("Failed to transform: " + e, e);
-        }
-        catch (IOException e) {
-            throw new MessagingException("Failed to load transform: " + e, e);
         }
     }
 
@@ -189,20 +181,26 @@ public class XsltComponent extends TransformComponentSupport implements MessageE
          */
     }
 
-    protected Source createXsltSource() throws IOException {
+    protected Source createXsltSource() throws Exception {
         if (xsltResource != null) {
-            URL url = xsltResource.getURL();
-            if (url == null) {
-                return new StreamSource(xsltResource.getInputStream());
-            }
-            else {
-                return new StreamSource(xsltResource.getInputStream(), url.toExternalForm());
-            }
+            return new DOMSource(parse(xsltResource));
         }
         return null;
     }
 
-    public Templates getTemplates() throws IOException, TransformerConfigurationException {
+    protected Document parse(Resource res) throws Exception {
+        URL url = null;
+        try {
+            res.getURL();
+        } catch (IOException e) {
+            // Ignore
+        }
+        DocumentBuilder builder = new SourceTransformer().createDocumentBuilder();
+        return builder.parse(res.getInputStream(), url != null ? url.toExternalForm() : null);
+    }
+
+    
+    public Templates getTemplates() throws Exception {
         if (templates == null) {
             templates = createTemplates();
         }
@@ -212,7 +210,7 @@ public class XsltComponent extends TransformComponentSupport implements MessageE
     /**
      * Factory method to create a new transformer instance
      */
-    protected Templates createTemplates() throws TransformerConfigurationException, IOException {
+    protected Templates createTemplates() throws Exception {
         Source source = getXsltSource();
         return getTransformerFactory().newTemplates(source);
     }
@@ -221,7 +219,7 @@ public class XsltComponent extends TransformComponentSupport implements MessageE
      * Factory method to create a new transformer instance
      */
     protected Transformer createTransformer(MessageExchange exchange, NormalizedMessage in)
-            throws TransformerConfigurationException, IOException {
+            throws Exception {
         Source source = getXsltSource();
         if (source == null) {
             return getTransformerFactory().newTransformer();
