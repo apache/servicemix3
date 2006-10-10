@@ -346,6 +346,7 @@
 			<exclude>**/StatelessJmsFlowTest.*</exclude>
 			<exclude>**/StatelessJcaFlowTest.*</exclude>
 			<exclude>**/ClientFactoryTest.*</exclude>
+			<exclude>**/JcaFlowWithTxLogTest.*</exclude>
 
 			<!-- fails in linux OS -->
             <exclude>**/StaxSourceTest.*</exclude>
