@@ -27,40 +27,53 @@ import org.apache.tools.ant.BuildException;
  * @version $Revision$
  */
 public class DeployServiceAssemblyTask extends JbiTask {
-    
-    private String file; //archivePath to install
-    
-    /**
-     * @return Returns the archivePath.
-     */
-    public String getFile() {
-        return file;
-    }
-    /**
-     * @param file The archivePath to set.
-     */
-    public void setFile(String file) {
-        this.file = file;
-    }
-    
-    /**
-     * execute the task
-     * @throws BuildException
-     */
-    public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
-        if (file == null){
-            throw new BuildException("null file - file should be an archive");
-        }
-        if (!file.endsWith(".zip") && !file.endsWith(".jar")) {
-            throw new BuildException("file: " + file + " is not an archive");
-        }
-        File archive = new File(file);
-        String location = archive.getAbsolutePath();
-        if (!archive.isFile()) {
-            // if it's not a file, assume it's a url and pass it along
-            location = file;
-        }
-        acs.deployServiceAssembly(location);
-    }
-    
+
+	private String file; // archivePath to install
+
+	private boolean deferExceptions = false;
+
+	public boolean isDeferExceptions() {
+		return deferExceptions;
+	}
+
+	public void setDeferExceptions(boolean deferExceptions) {
+		this.deferExceptions = deferExceptions;
+	}
+
+	/**
+	 * @return Returns the archivePath.
+	 */
+	public String getFile() {
+		return file;
+	}
+
+	/**
+	 * @param file
+	 *            The archivePath to set.
+	 */
+	public void setFile(String file) {
+		this.file = file;
+	}
+
+	/**
+	 * execute the task
+	 * 
+	 * @throws BuildException
+	 */
+	public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
+		if (file == null) {
+			throw new BuildException("null file - file should be an archive");
+		}
+		if (!file.endsWith(".zip") && !file.endsWith(".jar")) {
+			throw new BuildException("file: " + file + " is not an archive");
+		}
+		File archive = new File(file);
+		String location = archive.getAbsolutePath();
+		if (!archive.isFile()) {
+			// if it's not a file, assume it's a url and pass it along
+			location = file;
+		}
+		acs.deployServiceAssembly(location, deferExceptions);
+	}
+
 }
