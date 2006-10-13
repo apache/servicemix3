@@ -16,32 +16,19 @@
  */
 package org.apache.servicemix.components.util;
 
-import javax.jbi.JBIException;
-import javax.jbi.component.ComponentContext;
-import javax.jbi.component.ComponentLifeCycle;
-import javax.jbi.messaging.DeliveryChannel;
-import javax.jbi.messaging.ExchangeStatus;
-import javax.jbi.messaging.Fault;
-import javax.jbi.messaging.InOnly;
-import javax.jbi.messaging.InOptionalOut;
-import javax.jbi.messaging.InOut;
-import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessageExchangeFactory;
-import javax.jbi.messaging.MessagingException;
-import javax.jbi.messaging.NormalizedMessage;
-import javax.jbi.servicedesc.ServiceEndpoint;
-import javax.management.ObjectName;
-import javax.xml.namespace.QName;
-import javax.xml.transform.Source;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.JavaSource;
 import org.apache.servicemix.jbi.FaultException;
 import org.apache.servicemix.jbi.NotInitialisedYetException;
 import org.apache.servicemix.jbi.management.BaseLifeCycle;
-import org.apache.servicemix.jbi.messaging.NormalizedMessageImpl;
-import org.apache.servicemix.jbi.messaging.PojoMarshaler;
+
+import javax.jbi.JBIException;
+import javax.jbi.component.ComponentContext;
+import javax.jbi.component.ComponentLifeCycle;
+import javax.jbi.messaging.*;
+import javax.jbi.servicedesc.ServiceEndpoint;
+import javax.management.ObjectName;
+import javax.xml.namespace.QName;
 
 /**
  * A useful base class for a POJO based JBI component which contains most of the basic plumbing
@@ -118,15 +105,7 @@ public abstract class PojoSupport extends BaseLifeCycle implements ComponentLife
      * @throws MessagingException
      */
     public Object getBody(NormalizedMessage message) throws MessagingException {
-        Source content = message.getContent();
-        if (content instanceof JavaSource) {
-            JavaSource source = (JavaSource) content;
-            return source.getObject();
-        }
-        if (message instanceof NormalizedMessageImpl) {
-            return ((NormalizedMessageImpl) message).getBody();
-        }
-        return message.getProperty(PojoMarshaler.BODY);
+        return MessageHelper.getBody(message);
     }
 
     /**
@@ -137,17 +116,7 @@ public abstract class PojoSupport extends BaseLifeCycle implements ComponentLife
      * @throws MessagingException
      */
     public void setBody(NormalizedMessage message, Object body) throws MessagingException {
-        Source content = message.getContent();
-        if (content instanceof JavaSource) {
-            JavaSource source = (JavaSource) content;
-            source.setObject(body);
-        }
-        else if (message instanceof NormalizedMessageImpl) {
-            ((NormalizedMessageImpl) message).setBody(body);
-        }
-        else {
-            message.setProperty(PojoMarshaler.BODY, body);
-        }
+        MessageHelper.setBody(message, body);
     }
 
 

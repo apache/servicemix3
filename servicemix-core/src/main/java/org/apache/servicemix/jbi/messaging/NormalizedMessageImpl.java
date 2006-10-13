@@ -16,16 +16,14 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
-import java.io.ByteArrayOutputStream;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import org.apache.servicemix.client.Message;
+import org.apache.servicemix.jbi.RuntimeJBIException;
+import org.apache.servicemix.jbi.jaxp.BytesSource;
+import org.apache.servicemix.jbi.jaxp.ResourceSource;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.util.ByteArrayDataSource;
+import org.apache.servicemix.jbi.util.FileUtil;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -38,15 +36,8 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
-
-import org.apache.servicemix.client.Message;
-import org.apache.servicemix.jbi.RuntimeJBIException;
-import org.apache.servicemix.jbi.jaxp.BytesSource;
-import org.apache.servicemix.jbi.jaxp.ResourceSource;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.util.ByteArrayDataSource;
-import org.apache.servicemix.jbi.util.FileUtil;
+import java.io.*;
+import java.util.*;
 
 /**
  * Represents a JBI NormalizedMessage.
@@ -232,6 +223,10 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
             body = getMarshaler().unmarshal(exchange, this);
         }
         return body;
+    }
+
+    public Object getBody(PojoMarshaler marshaler) throws MessagingException {
+        return marshaler.unmarshal(exchange, this);
     }
 
     public void setBody(Object body) throws MessagingException {
