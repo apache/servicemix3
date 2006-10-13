@@ -166,7 +166,7 @@ public class Endpoint implements EndpointMBean, MBeanInfoProvider {
             }
             return null;
         } catch (Exception e) {
-            log.debug("Error processing test exchange", e);
+            log.debug("Error proces test exchange", e);
             throw new RuntimeException(e);
         } finally {
             if (client != null) {

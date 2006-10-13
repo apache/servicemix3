@@ -121,7 +121,7 @@ public class MessageUtil {
         dest.setMessage(destMsg, name);
     }
     
-    private static class NormalizedMessageImpl implements NormalizedMessage, Serializable {
+    public static class NormalizedMessageImpl implements NormalizedMessage, Serializable {
 
         private static final long serialVersionUID = -5813947566001096708L;
         
@@ -129,6 +129,9 @@ public class MessageUtil {
         private Source content;
         private Map properties = new HashMap();
         private Map attachments = new HashMap();
+        
+        public NormalizedMessageImpl() {
+        }
         
         public NormalizedMessageImpl(NormalizedMessage message) throws Exception {
             String str = new SourceTransformer().contentToString(message);
@@ -201,9 +204,12 @@ public class MessageUtil {
         
     }
     
-    private static class FaultImpl extends NormalizedMessageImpl implements Fault {
+    public static class FaultImpl extends NormalizedMessageImpl implements Fault {
         private static final long serialVersionUID = -6076815664102825860L;
 
+        public FaultImpl() {
+        }
+        
         public FaultImpl(Fault fault) throws Exception {
             super(fault);
         }
