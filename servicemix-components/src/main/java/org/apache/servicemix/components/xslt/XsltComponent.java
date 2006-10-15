@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
@@ -62,6 +63,7 @@ public class XsltComponent extends TransformComponentSupport implements MessageE
     private boolean disableOutput;
     private boolean useStringBuffer = true;
     private boolean forceDocIfDom = true;
+    private Map xsltParameters;
 
     /**
      * @return the forceDocIfDom
@@ -125,6 +127,20 @@ public class XsltComponent extends TransformComponentSupport implements MessageE
 
     public void setUseStringBuffer(boolean useStringBuffer) {
         this.useStringBuffer = useStringBuffer;
+    }
+
+    /**
+     * @return the xsltParameters
+     */
+    public Map getXsltParameters() {
+        return xsltParameters;
+    }
+
+    /**
+     * @param xsltParameters the xsltParameters to set
+     */
+    public void setXsltParameters(Map xsltParameters) {
+        this.xsltParameters = xsltParameters;
     }
 
     // Implementation methods
@@ -243,6 +259,13 @@ public class XsltComponent extends TransformComponentSupport implements MessageE
             String name = (String) iter.next();
             Object value = in.getProperty(name);
             transformer.setParameter(name, value);
+        }
+        if (xsltParameters != null) {
+            for (Iterator iter = xsltParameters.keySet().iterator(); iter.hasNext();) {
+                String name = (String) iter.next();
+                Object value = xsltParameters.get(name);
+                transformer.setParameter(name, value);
+            }
         }
         transformer.setParameter("exchange", exchange);
         transformer.setParameter("in", in);
