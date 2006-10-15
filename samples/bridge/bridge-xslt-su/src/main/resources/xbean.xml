@@ -25,6 +25,10 @@
   </classpath>
 
   <saxon:xslt service="b:xslt" endpoint="endpoint"
+              result="string"
               resource="classpath:bridge.xslt" />
+  <!-- saxon is bugged when dealing with xmlns="xxx" attributes
+       see http://sourceforge.net/tracker/index.php?func=detail&aid=1558133&group_id=29872&atid=397617
+       so just use string instead of DOM output for now -->
 
 </beans>
