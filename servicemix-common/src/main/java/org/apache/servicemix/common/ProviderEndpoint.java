@@ -34,6 +34,7 @@ public abstract class ProviderEndpoint extends Endpoint implements ExchangeProce
     private ServiceEndpoint activated;
     private DeliveryChannel channel;
     private MessageExchangeFactory exchangeFactory;
+    private ComponentContext context;
 
 
     public ProviderEndpoint() {
@@ -57,7 +58,8 @@ public abstract class ProviderEndpoint extends Endpoint implements ExchangeProce
 
     public void activate() throws Exception {
         ComponentContext ctx = getServiceUnit().getComponent().getComponentContext();
-        channel = ctx.getDeliveryChannel();
+        context = new EndpointComponentContext(this);
+        channel = context.getDeliveryChannel();
         exchangeFactory = channel.createExchangeFactory();
         activated = ctx.activateEndpoint(service, endpoint);
         start();

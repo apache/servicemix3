@@ -17,19 +17,18 @@
  */
 package org.apache.servicemix.common;
 
+import java.util.Date;
+
+import javax.jbi.JBIException;
+import javax.jbi.messaging.DeliveryChannel;
+import javax.jbi.messaging.MessagingException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.varscheduler.ScheduleIterator;
 import org.apache.servicemix.components.varscheduler.Scheduler;
 import org.apache.servicemix.components.varscheduler.SchedulerTask;
 import org.apache.servicemix.executors.Executor;
-
-import javax.jbi.JBIException;
-import javax.jbi.messaging.DeliveryChannel;
-import javax.jbi.messaging.MessagingException;
-import javax.jbi.management.DeploymentException;
-import javax.resource.spi.work.Work;
-import java.util.Date;
 
 /**
  * An implementation inheritence class for an endpoint which polls some resource at periodic intervals to decide if
@@ -150,10 +149,7 @@ public abstract class PollingEndpoint extends ProviderEndpoint {
             try {
                 // lets run the work inside the JCA worker pools to ensure
                 // the threads are setup correctly when we actually do stuff
-                getExecutor().execute(new Work() {
-                    public void release() {
-                    }
-
+                getExecutor().execute(new Runnable() {
                     public void run() {
                         try {
                             poll();

@@ -34,11 +34,13 @@ import org.w3c.dom.DocumentFragment;
 
 public class EndpointComponentContext implements ComponentContext {
 
+    private Endpoint endpoint;
     private ComponentContext context;
     private DeliveryChannel channel;
     
-    public EndpointComponentContext(ComponentContext context) {
-        this.context = context;
+    public EndpointComponentContext(Endpoint endpoint) {
+        this.endpoint = endpoint;
+        this.context = endpoint.getServiceUnit().getComponent().getComponentContext();
     }
 
     public ServiceEndpoint activateEndpoint(QName serviceName, String endpointName) throws JBIException {
@@ -59,7 +61,7 @@ public class EndpointComponentContext implements ComponentContext {
 
     public DeliveryChannel getDeliveryChannel() throws MessagingException {
         if (this.channel == null) {
-            this.channel = new EndpointDeliveryChannel(context.getDeliveryChannel());
+            this.channel = new EndpointDeliveryChannel(endpoint);
         }
         return this.channel;
     }
