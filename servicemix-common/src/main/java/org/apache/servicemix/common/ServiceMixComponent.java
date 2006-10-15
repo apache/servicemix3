@@ -22,6 +22,8 @@ import org.apache.servicemix.executors.Executor;
 
 import javax.jbi.component.Component;
 import javax.jbi.component.ComponentContext;
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
 
 /**
  * Represents an extended JBI Component implementation which exposes some extra features
@@ -54,4 +56,13 @@ public interface ServiceMixComponent extends Component {
      * @return Returns the name of the component
      */
     public String getComponentName();
+    
+    /**
+     * Sends a consumer exchange from the given endpoint. 
+     * 
+     * @param exchange the exchange to send
+     * @param endpoint the endpoint sending the exchange
+     * @throws MessagingException
+     */
+    public void sendConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException;
 }

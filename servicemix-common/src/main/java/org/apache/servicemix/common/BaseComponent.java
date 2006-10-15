@@ -26,6 +26,7 @@ import javax.jbi.component.ComponentContext;
 import javax.jbi.component.ComponentLifeCycle;
 import javax.jbi.component.ServiceUnitManager;
 import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.servicedesc.ServiceEndpoint;
 
@@ -187,5 +188,9 @@ public abstract class BaseComponent implements ServiceMixComponent {
     public Executor getExecutor() {
         return lifeCycle.getExecutor();
     }
-    
+
+    public void sendConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException {
+        lifeCycle.sendConsumerExchange(exchange, endpoint);
+    }
+
 }
