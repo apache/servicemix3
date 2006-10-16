@@ -22,6 +22,8 @@ import org.apache.commons.logging.LogFactory;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import javax.jbi.management.DeploymentException;
+
 /**
  * ManagementMessageHelper is a class that ease the building of management messages. 
  */
@@ -29,53 +31,22 @@ public class ManagementSupport {
     
     private static final Log logger = LogFactory.getLog(ManagementSupport.class);
 
-    public static class Message {
-        private String task;
-        private String component;
-        private String result;
-        private Throwable exception;
-        private String type;
-        private String message;
-        
-        public String getComponent() {
-            return component;
+    public static DeploymentException failure(String task, String component, String info, Throwable e) {
+        Message msg = new Message();
+        msg.setComponent(component);
+        msg.setTask(task);
+        msg.setResult("FAILED");
+        msg.setType("ERROR");
+        if (info != null) {
+            msg.setMessage(info);
+        } else if (e != null) {
+            msg.setMessage(e.toString());
         }
-        public void setComponent(String component) {
-            this.component = component;
-        }
-        public Throwable getException() {
-            return exception;
-        }
-        public void setException(Throwable exception) {
-            this.exception = exception;
-        }
-        public String getResult() {
-            return result;
-        }
-        public void setResult(String result) {
-            this.result = result;
-        }
-        public String getTask() {
-            return task;
-        }
-        public void setTask(String task) {
-            this.task = task;
-        }
-        public String getType() {
-            return type;
-        }
-        public void setType(String type) {
-            this.type = type;
-        }
-        public String getMessage() {
-            return message;
-        }
-        public void setMessage(String message) {
-            this.message = message;
-        }
+        msg.setException(e);
+        return new DeploymentException(createComponentMessage(msg));
     }
-    
-    public static String createComponentMessage(Message msg) {
+
+     public static String createComponentMessage(Message msg) {
         try {
             StringBuffer sw = new StringBuffer();
             // component-task-result
@@ -167,4 +138,50 @@ public class ManagementSupport {
         }
     }
     
+     public static class Message {
+         private String task;
+         private String component;
+         private String result;
+         private Throwable exception;
+         private String type;
+         private String message;
+         
+         public String getComponent() {
+             return component;
+         }
+         public void setComponent(String component) {
+             this.component = component;
+         }
+         public Throwable getException() {
+             return exception;
+         }
+         public void setException(Throwable exception) {
+             this.exception = exception;
+         }
+         public String getResult() {
+             return result;
+         }
+         public void setResult(String result) {
+             this.result = result;
+         }
+         public String getTask() {
+             return task;
+         }
+         public void setTask(String task) {
+             this.task = task;
+         }
+         public String getType() {
+             return type;
+         }
+         public void setType(String type) {
+             this.type = type;
+         }
+         public String getMessage() {
+             return message;
+         }
+         public void setMessage(String message) {
+             this.message = message;
+         }
+     }
+     
 }

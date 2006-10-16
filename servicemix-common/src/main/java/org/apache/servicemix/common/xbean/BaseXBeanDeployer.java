@@ -21,6 +21,12 @@ import org.apache.servicemix.common.ServiceMixComponent;
 
 import javax.jbi.management.DeploymentException;
 
+/**
+ * A useful XBean deployer which check that the endpoints inherit one of
+ * the given allowed endpoint classes.
+ * 
+ * @author gnodet
+ */
 public class BaseXBeanDeployer extends AbstractXBeanDeployer {
 
     private final Class[] endpointClasses;
@@ -44,8 +50,7 @@ public class BaseXBeanDeployer extends AbstractXBeanDeployer {
     protected boolean validate(Endpoint endpoint) throws DeploymentException {
         for (int i = 0; i < endpointClasses.length; i++) {
             if (endpointClasses[i].isInstance(endpoint)) {
-                endpoint.validate();
-                return true;
+                return super.validate(endpoint);
             }
         }
         return false;

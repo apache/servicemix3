@@ -120,6 +120,7 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
     }
     
     protected boolean validate(Endpoint endpoint) throws DeploymentException {
+        endpoint.validate();
         return true;
     }
     

@@ -40,14 +40,7 @@ public abstract class AbstractDeployer implements Deployer {
     }
     
     protected DeploymentException failure(String task, String info, Throwable e) {
-        ManagementSupport.Message msg = new ManagementSupport.Message();
-        msg.setComponent(component.getComponentName());
-        msg.setTask(task);
-        msg.setResult("FAILED");
-        msg.setType("ERROR");
-        msg.setMessage(info);
-        msg.setException(e);
-        return new DeploymentException(ManagementSupport.createComponentMessage(msg));
+        return ManagementSupport.failure(task, component.getComponentName(), info, e);
     }
 
     public void undeploy(ServiceUnit su) throws DeploymentException {

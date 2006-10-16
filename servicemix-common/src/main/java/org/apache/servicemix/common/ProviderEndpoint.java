@@ -81,13 +81,7 @@ public abstract class ProviderEndpoint extends Endpoint implements ExchangeProce
     }
 
     protected void send(MessageExchange me) throws MessagingException {
-        if (me.getRole() == MessageExchange.Role.CONSUMER &&
-            me.getStatus() == ExchangeStatus.ACTIVE) {
-            BaseLifeCycle lf = (BaseLifeCycle) getServiceUnit().getComponent().getLifeCycle();
-            lf.sendConsumerExchange(me, (Endpoint) this);
-        } else {
-            channel.send(me);
-        }
+        channel.send(me);
     }
     
     protected void done(MessageExchange me) throws MessagingException {

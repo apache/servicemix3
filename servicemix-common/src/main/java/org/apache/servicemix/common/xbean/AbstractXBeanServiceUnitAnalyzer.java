@@ -18,6 +18,8 @@ package org.apache.servicemix.common.xbean;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.jbi.messaging.MessageExchange;
@@ -26,6 +28,7 @@ import org.apache.servicemix.common.Endpoint;
 import org.apache.servicemix.common.packaging.Provides;
 import org.apache.servicemix.common.packaging.ServiceUnitAnalyzer;
 import org.apache.xbean.spring.context.FileSystemXmlApplicationContext;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 
 public abstract class AbstractXBeanServiceUnitAnalyzer implements
 		ServiceUnitAnalyzer {
@@ -75,10 +78,14 @@ public abstract class AbstractXBeanServiceUnitAnalyzer implements
 	 * @see org.apache.servicemix.common.packaging.ServiceUnitAnalyzer#init(java.io.File)
 	 */
 	public void init(File explodedServiceUnitRoot) {
-		
 		FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(
 		   "file:///" + explodedServiceUnitRoot.getAbsolutePath() + "/"
 						+ getXBeanFile());
+        List beanFactoryPostProcessors = getBeanFactoryPostProcessors(explodedServiceUnitRoot.getAbsolutePath());
+        for (Iterator iter = beanFactoryPostProcessors.iterator(); iter.hasNext();) {
+            BeanFactoryPostProcessor processor = (BeanFactoryPostProcessor) iter.next();
+            context.addBeanFactoryPostProcessor(processor);
+        }
                 
 		for (int i = 0; i < context.getBeanDefinitionNames().length; i++) {
 			Object bean = context.getBean(context.getBeanDefinitionNames()[i]);
@@ -92,6 +99,10 @@ public abstract class AbstractXBeanServiceUnitAnalyzer implements
 		}
 	}
 
-	protected abstract boolean isValidEndpoint(Object bean);
+	protected List getBeanFactoryPostProcessors(String absolutePath) {
+        return Collections.EMPTY_LIST;
+    }
+
+    protected abstract boolean isValidEndpoint(Object bean);
 
 }

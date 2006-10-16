@@ -23,8 +23,6 @@ import javax.jbi.JBIException;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.MessagingException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.varscheduler.ScheduleIterator;
 import org.apache.servicemix.components.varscheduler.Scheduler;
 import org.apache.servicemix.components.varscheduler.SchedulerTask;
@@ -37,7 +35,7 @@ import org.apache.servicemix.executors.Executor;
  * @version $Revision$
  */
 public abstract class PollingEndpoint extends ProviderEndpoint {
-    private static final Log log = LogFactory.getLog(PollingEndpoint.class);
+    
     private Executor executor;
     private Scheduler scheduler;
     private Date firstTime;
@@ -161,13 +159,13 @@ public abstract class PollingEndpoint extends ProviderEndpoint {
                 });
             }
             catch (Throwable e) {
-                log.error("Failed to schedule work: " + e, e);
+                logger.error("Failed to schedule work: " + e, e);
             }
         }
     }
 
     protected void handlePollException(Exception e) {
-        log.error("Caught exception while polling: " + e, e);
+        logger.error("Caught exception while polling: " + e, e);
     }
 
 
