@@ -199,7 +199,7 @@
         <xfire-version>1.2.1</xfire-version>
         <mavenAssemblyPluginVersion>2.1</mavenAssemblyPluginVersion>
         <xbean-version>2.7-SNAPSHOT</xbean-version>
-        <spring-version>2.0-rc3</spring-version>
+        <spring-version>2.0</spring-version>
         <activemq-version>4.0.2</activemq-version>
         <activeio-version>3.0-beta4</activeio-version>
         <backport-util-concurrent-version>2.1</backport-util-concurrent-version>
@@ -385,7 +385,7 @@
         <repository>
             <id>activemq-tmp-repo</id>
             <name>ActiveMQ Maven2 Temp Repository</name>
-            <url>http://people.apache.org/~chirino/incubator-activemq-4.0.2-RC3/maven2</url>
+            <url>http://people.apache.org/~chirino/incubator-activemq-4.0.2-RC4/maven2</url>
         </repository>
     </repositories>
 
