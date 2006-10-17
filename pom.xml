@@ -289,6 +289,8 @@
                 <module>servicemix-wsn2005</module>
                 <module>servicemix-lwcontainer</module>
                 <module>servicemix-sca</module>
+                <module>servicemix-script</module>
+                <module>servicemix-file</module>
                 <module>servicemix-eip</module>
                 <module>servicemix-itests</module>
                 <module>servicemix-sca</module>
@@ -342,6 +344,8 @@
                 <module>servicemix-soap</module>
                 <module>servicemix-http</module>
                 <module>servicemix-jms</module>
+                <module>servicemix-script</module>
+                <module>servicemix-file</module>
                 <module>servicemix-eip</module>
                 <module>servicemix-jsr181</module>
                 <module>servicemix-saxon</module>
@@ -498,6 +502,16 @@
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-eip</artifactId>
+                <version>3.1-incubating-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.servicemix</groupId>
+                <artifactId>servicemix-script</artifactId>
+                <version>3.1-incubating-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.servicemix</groupId>
+                <artifactId>servicemix-file</artifactId>
                 <version>3.1-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
