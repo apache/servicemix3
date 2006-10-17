@@ -90,8 +90,9 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      * @throws JBIException
      */
     public void stop() throws JBIException{
-    	if (log.isDebugEnabled())
-    		log.debug("Called Flow stop");
+        if (log.isDebugEnabled()) {
+            log.debug("Called Flow stop");
+        }
         if (suspendThread != null){
             suspendThread.interrupt();
         }
@@ -103,9 +104,10 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      * @throws JBIException
      */
     public void shutDown() throws JBIException{
-    	if (log.isDebugEnabled()) {
-    		log.debug("Called Flow shutdown");
+        if (log.isDebugEnabled()) {
+            log.debug("Called Flow shutdown");
         }
+        broker.getContainer().getManagementContext().unregisterMBean(this);
         super.shutDown();
     }
     
@@ -115,8 +117,8 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      * @throws JBIException
      */
     public void send(MessageExchange me) throws JBIException{
-    	if (log.isDebugEnabled()) {
-    		log.debug("Called Flow send");
+        if (log.isDebugEnabled()) {
+            log.debug("Called Flow send");
         }
     	// do send
         try {
@@ -131,8 +133,8 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      * suspend the flow to prevent any message exchanges
      */
     public synchronized void suspend(){
-    	if (log.isDebugEnabled()) {
-    		log.debug("Called Flow suspend");
+        if (log.isDebugEnabled()) {
+            log.debug("Called Flow suspend");
         }
         lock.writeLock().lock();
         suspendThread = Thread.currentThread();
@@ -143,8 +145,8 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      * resume message exchange processing
      */
     public synchronized void resume(){
-    	if (log.isDebugEnabled()) {
-    		log.debug("Called Flow resume");
+        if (log.isDebugEnabled()) {
+            log.debug("Called Flow resume");
         }
         lock.writeLock().unlock();
         suspendThread = null;
