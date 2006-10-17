@@ -44,6 +44,8 @@ import java.util.Set;
  */
 public class SubscriptionManager extends ComponentSupport implements MessageExchangeListener {
     
+    public static final String COMPONENT_NAME = "#SubscriptionManager#";
+    
     private Registry registry;
     private String flowName;
     private static Log log = LogFactory.getLog(SubscriptionManager.class);
@@ -58,7 +60,7 @@ public class SubscriptionManager extends ComponentSupport implements MessageExch
      */
     public void init(Broker broker, Registry registry) throws JBIException {
         this.registry = registry; 
-        broker.getContainer().activateComponent(this, "#SubscriptionManager#");
+        broker.getContainer().activateComponent(this, COMPONENT_NAME);
     }
 
     /**

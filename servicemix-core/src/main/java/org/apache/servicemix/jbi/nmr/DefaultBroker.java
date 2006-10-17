@@ -207,6 +207,7 @@ public class DefaultBroker extends BaseSystemService implements Broker {
         for (int i = 0; i < flows.length; i++) {
             flows[i].shutDown();
         }
+        container.deactivateComponent(SubscriptionManager.COMPONENT_NAME);
         super.shutDown();
         container.getManagementContext().unregisterMBean(this);
     }
