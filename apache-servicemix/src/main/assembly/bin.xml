@@ -125,17 +125,17 @@
         <include>org.apache.geronimo.specs:geronimo-j2ee-connector_1.5_spec</include>
         <include>org.apache.geronimo.specs:geronimo-ejb_2.1_spec</include>
         <include>org.apache.geronimo.specs:geronimo-servlet_2.4_spec</include>
-        <include>org.apache.geronimo.specs:geronimo-activation_1.0.2_spec</include>
-        <include>org.apache.geronimo.specs:geronimo-javamail_1.3.1_spec</include>
         
         <include>org.jencks:jencks</include>
         <include>org.objectweb.howl:howl</include>
         
         <include>geronimo:geronimo-connector</include>
         <include>geronimo:geronimo-transaction</include>
-        <include>geronimo:geronimo-activation</include>
         <include>geronimo:geronimo-core</include>
         <include>geronimo:geronimo-system</include>
+
+        <include>javax.activation:activation</include>
+        <include>javax.mail:mail</include>
         
         <include>concurrent:concurrent</include>
         <include>xstream:xstream</include>
