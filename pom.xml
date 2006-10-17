@@ -209,7 +209,7 @@
         <servicemix-version>3.0.1-incubating-SNAPSHOT</servicemix-version>
         <wsdl4j-version>1.5.2</wsdl4j-version>
         <commons-beanutils-version>1.7.0</commons-beanutils-version>
-        <woodstox-version>3.0.0</woodstox-version>
+        <woodstox-version>3.0.2</woodstox-version>
         <msv-version>20050913</msv-version>
     </properties>
 
