@@ -220,7 +220,10 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>apache-servicemix</module>
                 <module>build</module>
+                <module>geronimo</module>
+                <module>samples</module>
                 <module>servicemix-jbi</module>
                 <module>servicemix-services</module>
                 <module>servicemix-core</module>
@@ -240,14 +243,12 @@
                 <module>servicemix-lwcontainer</module>
                 <module>servicemix-saxon</module>
                 <module>servicemix-sca</module>
+                <module>servicemix-script</module>
                 <module>servicemix-shared</module>
                 <module>servicemix-soap</module>
                 <module>servicemix-wsn2005</module>
                 <module>servicemix-xmpp</module>
                 <module>tooling</module>
-                <module>samples</module>
-                <module>geronimo</module>
-                <module>apache-servicemix</module>
             </modules>
         </profile>
         <profile>
