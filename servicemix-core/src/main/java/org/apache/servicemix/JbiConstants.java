@@ -40,5 +40,7 @@ public interface JbiConstants {
     String STATELESS_PROVIDER = "org.apache.servicemix.provider.stateless";
     
     String SENDER_ENDPOINT = "org.apache.servicemix.senderEndpoint";
+
+    String HTTP_DESTINATION_URI = "org.apache.servicemix.http.destination.uri";
     
 }
