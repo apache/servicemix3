@@ -379,6 +379,17 @@
             <name>ActiveMQ Maven2 Temp Repository</name>
             <url>http://people.apache.org/~chirino/incubator-activemq-4.0.2-RC4/maven2</url>
         </repository>
+        <!-- Apache snapshot -->
+        <repository>
+            <id>apache-snapshots</id>
+            <name>Apache Snapshot repository</name>
+            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
     </repositories>
 
     <dependencies>
