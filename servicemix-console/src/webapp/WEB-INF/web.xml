@@ -22,13 +22,33 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
          version="2.4">
 
-    <display-name>ServiceMix Console</display-name>
+  <display-name>ServiceMix Console</display-name>
 
-    <servlet>
-        <display-name>Geronimo Console</display-name>
-        <servlet-name>se-console</servlet-name>
-        <servlet-class>org.apache.pluto.portalImpl.Servlet</servlet-class>
-    </servlet>
+  <context-param>
+    <param-name>servicemixJmxUrl</param-name>
+    <param-value>service:jmx:rmi:///jndi/rmi://localhost/JMXConnector</param-value>
+  </context-param>
+  <context-param>
+    <param-name>servicemixJmxUsername</param-name>
+    <param-value>system</param-value>
+  </context-param>
+  <context-param>
+    <param-name>servicemixJmxPassword</param-name>
+    <param-value>manager</param-value>
+  </context-param>
+  <context-param>
+    <param-name>servicemixContainerName</param-name>
+    <param-value>servicemix</param-value>
+  </context-param>
+  <listener>
+    <listener-class>org.apache.servicemix.console.ContextLoaderListener</listener-class>
+  </listener>
+
+  <servlet>
+      <display-name>Geronimo Console</display-name>
+      <servlet-name>se-console</servlet-name>
+      <servlet-class>org.apache.pluto.portalImpl.Servlet</servlet-class>
+  </servlet>
 
   <servlet>
     <description>Portlet Invoker Servlet</description>

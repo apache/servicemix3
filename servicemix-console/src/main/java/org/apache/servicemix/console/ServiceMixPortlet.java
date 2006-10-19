@@ -45,9 +45,12 @@ import javax.portlet.PortletRequestDispatcher;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.WindowState;
+import javax.servlet.ServletContext;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class ServiceMixPortlet extends GenericPortlet {
 
@@ -61,20 +64,29 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
     private String namingHost = "localhost";
     private String containerName = JBIContainer.DEFAULT_NAME;
     private String jmxDomainName = ManagementContext.DEFAULT_DOMAIN;
+    private String jmxUrl;
     private int namingPort = ManagementContext.DEFAULT_CONNECTOR_PORT;
     private String jndiPath = ManagementContext.DEFAULT_CONNECTOR_PATH;
+    private String username;
+    private String password;
 
     /**
      * Get the JMXServiceURL - built from the protocol used and host names
      * @return the url
      */
-    public JMXServiceURL getServiceURL(){
+    public JMXServiceURL getServiceURL() {
         JMXServiceURL url = null;
-        try {
-            url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://" + namingHost + ":" + namingPort + jndiPath);
-        }
-        catch (MalformedURLException e) {
-            log.error("error creating serviceURL: ",e);
+        if (url == null) {
+            try {
+                String jmxUrl = this.jmxUrl;
+                if (jmxUrl == null) {
+                    jmxUrl = "service:jmx:rmi:///jndi/rmi://" + namingHost + ":" + namingPort + jndiPath;
+                }
+                url = new JMXServiceURL(jmxUrl);
+            }
+            catch (MalformedURLException e) {
+                log.error("error creating serviceURL: ", e);
+            }
         }
         return url;
     }
@@ -87,7 +99,10 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
      */
     public JMXConnector getJMXConnector (JMXServiceURL url) throws IOException {
         log.info("Connecting to JBI Container at: " + url);
-        return JMXConnectorFactory.connect(url);
+        String[] credentials = new String[] { username, password };
+        Map environment = new HashMap();
+        environment.put(JMXConnector.CREDENTIALS, credentials);
+        return JMXConnectorFactory.connect(url, environment);
     }
     
     protected void doHelp(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
@@ -116,6 +131,7 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
             throw e;
         } catch (Exception e) {
             try {
+                log.debug("Error rendering portlet", e);
                 renderRequest.setAttribute("exception", e);
                 errorView.include(renderRequest, renderResponse);
             } finally {
@@ -139,7 +155,7 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
      * @return the object name
      */
     protected  ObjectName getObjectName (Class systemClass){
-        return ManagementContext.getSystemObjectName(jmxDomainName, containerName, systemClass);
+        return ManagementContext.getSystemObjectName(jmxDomainName, getContainerName(), systemClass);
     }
     
     
@@ -153,6 +169,22 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
         normalView = pc.getRequestDispatcher("/WEB-INF/view/" + getPortletName() + "/view.jsp");
         helpView = pc.getRequestDispatcher("/WEB-INF/view/" + getPortletName() + "/help.jsp");
         errorView = pc.getRequestDispatcher("/WEB-INF/view/error.jsp");
+
+        jmxUrl = getConfigString("servicemixJmxUrl", jmxUrl);
+        username = getConfigString("servicemixJmxUsername", username);
+        password = getConfigString("servicemixJmxPassword", password);
+        containerName = getConfigString("servicemixContainerName", containerName);
+    }
+    
+    protected String getConfigString(String name, String defValue) {
+        ServletContext ctx = ContextLoaderListener.getServletContext();
+        if (ctx != null) {
+            String v = ctx.getInitParameter(name);
+            if (v != null) {
+                return v;
+            }
+        }
+        return defValue;
     }
 
     public void processAction(ActionRequest actionRequest, ActionResponse actionResponse) throws PortletException, IOException {
@@ -256,4 +288,32 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
         this.containerName = containerName;
     }
     
+    /**
+     * @return the password
+     */
+    protected String getPassword() {
+        return password;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    protected void setPassword(String password) {
+        this.password = password;
+    }
+
+    /**
+     * @return the username
+     */
+    protected String getUsername() {
+        return username;
+    }
+
+    /**
+     * @param username the username to set
+     */
+    protected void setUsername(String username) {
+        this.username = username;
+    }
+
 }
