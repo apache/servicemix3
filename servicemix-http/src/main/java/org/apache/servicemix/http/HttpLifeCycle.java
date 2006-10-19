@@ -43,7 +43,11 @@ public class HttpLifeCycle extends BaseLifeCycle {
     protected HttpClient client;
     protected MultiThreadedHttpConnectionManager connectionManager;
     protected HttpConfiguration configuration = new HttpConfiguration();
-    
+    protected String protocol;
+    protected String host;
+    protected int port = 80;
+    protected String path;
+
     public HttpLifeCycle(BaseComponent component) {
         super(component);
     }
@@ -63,7 +67,7 @@ public class HttpLifeCycle extends BaseLifeCycle {
     public void setClient(HttpClient client) {
         this.client = client;
     }
-    
+
     /**
      * @return Returns the configuration.
      */
@@ -148,11 +152,11 @@ public class HttpLifeCycle extends BaseLifeCycle {
         super.doStop();
         server.stop();
     }
-    
+
     protected QName getEPRServiceName() {
         return HttpResolvedEndpoint.EPR_SERVICE;
     }
-    
+
     protected Endpoint getResolvedEPR(ServiceEndpoint ep) throws Exception {
         // We receive an exchange for an EPR that has not been used yet.
         // Register a provider endpoint and restart processing.
@@ -209,6 +213,38 @@ public class HttpLifeCycle extends BaseLifeCycle {
      */
     public HttpProcessor getMainProcessor() {
         return server.getMainProcessor();
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
 }
