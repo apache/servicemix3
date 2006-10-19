@@ -215,7 +215,7 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
     protected abstract Class[] getEndpointClasses();
 
     /**
-     * A little helper method to turn a possibly null list of endpoitns into a list of endpoints
+     * A little helper method to turn a possibly null list of endpoints into a list of endpoints
      */
     protected List asList(Endpoint[] endpoints) {
         if (endpoints == null) {

@@ -40,6 +40,7 @@ public abstract class Endpoint {
     
     public Endpoint(ServiceUnit serviceUnit, QName service, String endpoint) {
         this.serviceUnit = serviceUnit;
+        this.logger = serviceUnit.getComponent().getLogger();
         this.service = service;
         this.endpoint = endpoint;
     }
