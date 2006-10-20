@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.jbi.JBIException;
+import javax.jbi.management.DeploymentException;
 import javax.jbi.management.LifeCycleMBean;
 
 public class ServiceUnit {
@@ -129,10 +130,18 @@ public class ServiceUnit {
         return this.endpoints.values();
     }
 
-    public void addEndpoint(Endpoint endpoint) {
+    public void addEndpoint(Endpoint endpoint) throws DeploymentException {
         String key = EndpointSupport.getKey(endpoint);
         if (this.endpoints.put(key, endpoint) != null) {
-            throw new IllegalStateException("More than one endpoint found in the SU for key: " + key);
+            throw new DeploymentException(
+                    "More than one endpoint found in the SU for key: " + key);
+        }
+        if (this.status == LifeCycleMBean.STARTED) {
+            try {
+                endpoint.activate();
+            } catch (Exception e) {
+                throw new DeploymentException(e);
+            }
         }
     }
 
