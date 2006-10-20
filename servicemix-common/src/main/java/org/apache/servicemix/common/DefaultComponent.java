@@ -231,7 +231,6 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
         super.doInit();
         List endpoints = getConfiguredEndpoints();
         if (endpoints != null && !endpoints.isEmpty()) {
-            ServiceUnit su = getServiceUnit();
             Iterator iter = endpoints.iterator();
             while (iter.hasNext()) {
                 Endpoint endpoint = (Endpoint) iter.next();
@@ -239,13 +238,21 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
                     logger.warn("Ignoring null endpoint in list: " + endpoints);
                     continue;
                 }
-                endpoint.setServiceUnit(su);
-                validateEndpoint(endpoint);
-                endpoint.validate();
-                su.addEndpoint(endpoint);
+                addEndpoint(endpoint);
             }
-            getRegistry().registerServiceUnit(su);
+            getRegistry().registerServiceUnit(getServiceUnit());
         }
+    }
+
+    /**
+     * Dynamically adds a new endpoint
+     */
+    protected void addEndpoint(Endpoint endpoint) throws DeploymentException {
+        ServiceUnit su = getServiceUnit();
+        endpoint.setServiceUnit(su);
+        validateEndpoint(endpoint);
+        endpoint.validate();
+        su.addEndpoint(endpoint);
     }
 
 
