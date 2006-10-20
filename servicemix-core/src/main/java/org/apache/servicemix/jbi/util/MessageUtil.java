@@ -43,7 +43,7 @@ import org.apache.servicemix.jbi.util.FileUtil;
  */
 public class MessageUtil {
 
-    public static void transfer(NormalizedMessage source, NormalizedMessage dest) throws Exception {
+    public static void transfer(NormalizedMessage source, NormalizedMessage dest) throws MessagingException {
         dest.setContent(source.getContent());
         for (Iterator it = source.getPropertyNames().iterator(); it.hasNext();) {
             String name = (String) it.next();
@@ -56,7 +56,7 @@ public class MessageUtil {
         dest.setSecuritySubject(source.getSecuritySubject());
     }
     
-    public static NormalizedMessage copy(NormalizedMessage source) throws Exception {
+    public static NormalizedMessage copy(NormalizedMessage source) throws MessagingException {
         if (source instanceof Fault) {
             return new FaultImpl((Fault) source);
         } else {
@@ -64,57 +64,57 @@ public class MessageUtil {
         }
     }
     
-    public static NormalizedMessage copyIn(MessageExchange exchange) throws Exception {
+    public static NormalizedMessage copyIn(MessageExchange exchange) throws MessagingException {
         return copy(exchange.getMessage("in"));
     }
     
-    public static NormalizedMessage copyOut(MessageExchange exchange) throws Exception {
+    public static NormalizedMessage copyOut(MessageExchange exchange) throws MessagingException {
         return copy(exchange.getMessage("out"));
     }
     
-    public static Fault copyFault(MessageExchange exchange) throws Exception {
+    public static Fault copyFault(MessageExchange exchange) throws MessagingException {
         return (Fault) copy(exchange.getMessage("fault"));
     }
     
-    public static void transferInToIn(MessageExchange source, MessageExchange dest) throws Exception {
+    public static void transferInToIn(MessageExchange source, MessageExchange dest) throws MessagingException {
         transferToIn(source.getMessage("in"), dest);
     }
     
-    public static void transferOutToIn(MessageExchange source, MessageExchange dest) throws Exception {
+    public static void transferOutToIn(MessageExchange source, MessageExchange dest) throws MessagingException {
         transferToIn(source.getMessage("out"), dest);
     }
     
-    public static void transferToIn(NormalizedMessage sourceMsg, MessageExchange dest) throws Exception {
+    public static void transferToIn(NormalizedMessage sourceMsg, MessageExchange dest) throws MessagingException {
         transferTo(sourceMsg, dest, "in");
     }
     
-    public static void transferOutToOut(MessageExchange source, MessageExchange dest) throws Exception {
+    public static void transferOutToOut(MessageExchange source, MessageExchange dest) throws MessagingException {
         transferToOut(source.getMessage("out"), dest);
     }
     
-    public static void transferInToOut(MessageExchange source, MessageExchange dest) throws Exception {
+    public static void transferInToOut(MessageExchange source, MessageExchange dest) throws MessagingException {
         transferToOut(source.getMessage("in"), dest);
     }
     
-    public static void transferToOut(NormalizedMessage sourceMsg, MessageExchange dest) throws Exception {
+    public static void transferToOut(NormalizedMessage sourceMsg, MessageExchange dest) throws MessagingException {
         transferTo(sourceMsg, dest, "out");
     }
     
-    public static void transferFaultToFault(MessageExchange source, MessageExchange dest) throws Exception {
+    public static void transferFaultToFault(MessageExchange source, MessageExchange dest) throws MessagingException {
         transferToFault(source.getFault(), dest);
     }
     
-    public static void transferToFault(Fault fault, MessageExchange dest) throws Exception {
+    public static void transferToFault(Fault fault, MessageExchange dest) throws MessagingException {
         transferTo(fault, dest, "fault");
     }
     
-    public static void transferTo(NormalizedMessage sourceMsg, MessageExchange dest, String name) throws Exception {
+    public static void transferTo(NormalizedMessage sourceMsg, MessageExchange dest, String name) throws MessagingException {
         NormalizedMessage destMsg = (sourceMsg instanceof Fault) ? dest.createFault() : dest.createMessage();
         transfer(sourceMsg, destMsg);
         dest.setMessage(destMsg, name);
     }
     
-    public static void transferTo(MessageExchange source, MessageExchange dest, String name) throws Exception {
+    public static void transferTo(MessageExchange source, MessageExchange dest, String name) throws MessagingException {
         NormalizedMessage sourceMsg = source.getMessage(name);
         NormalizedMessage destMsg = (sourceMsg instanceof Fault) ? dest.createFault() : dest.createMessage();
         transfer(sourceMsg, destMsg);
@@ -133,29 +133,35 @@ public class MessageUtil {
         public NormalizedMessageImpl() {
         }
         
-        public NormalizedMessageImpl(NormalizedMessage message) throws Exception {
-            String str = new SourceTransformer().contentToString(message);
-            if (str != null) {
-                this.content = new StringSource(str);
-            }
-            for (Iterator it = message.getPropertyNames().iterator(); it.hasNext();) {
-                String name = (String) it.next();
-                this.properties.put(name, message.getProperty(name));
-            }
-            for (Iterator it = message.getAttachmentNames().iterator(); it.hasNext();) {
-                String name = (String) it.next();
-                DataHandler dh = message.getAttachment(name);
-                DataSource ds = dh.getDataSource();
-                if (ds instanceof ByteArrayDataSource == false) {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    FileUtil.copyInputStream(ds.getInputStream(), baos);
-                    ByteArrayDataSource bads = new ByteArrayDataSource(baos.toByteArray(), ds.getContentType());
-                    bads.setName(ds.getName());
-                    dh = new DataHandler(bads);
+        public NormalizedMessageImpl(NormalizedMessage message) throws MessagingException {
+            try {
+                String str = new SourceTransformer().contentToString(message);
+                if (str != null) {
+                    this.content = new StringSource(str);
                 }
-                this.attachments.put(name, dh);
+                for (Iterator it = message.getPropertyNames().iterator(); it.hasNext();) {
+                    String name = (String) it.next();
+                    this.properties.put(name, message.getProperty(name));
+                }
+                for (Iterator it = message.getAttachmentNames().iterator(); it.hasNext();) {
+                    String name = (String) it.next();
+                    DataHandler dh = message.getAttachment(name);
+                    DataSource ds = dh.getDataSource();
+                    if (ds instanceof ByteArrayDataSource == false) {
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        FileUtil.copyInputStream(ds.getInputStream(), baos);
+                        ByteArrayDataSource bads = new ByteArrayDataSource(baos.toByteArray(), ds.getContentType());
+                        bads.setName(ds.getName());
+                        dh = new DataHandler(bads);
+                    }
+                    this.attachments.put(name, dh);
+                }
+                this.subject = message.getSecuritySubject();
+            } catch (MessagingException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new MessagingException(e);
             }
-            this.subject = message.getSecuritySubject();
         }
         
         public void addAttachment(String id, DataHandler content) throws MessagingException {
@@ -210,7 +216,7 @@ public class MessageUtil {
         public FaultImpl() {
         }
         
-        public FaultImpl(Fault fault) throws Exception {
+        public FaultImpl(Fault fault) throws MessagingException {
             super(fault);
         }
     }
