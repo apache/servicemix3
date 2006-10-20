@@ -198,7 +198,7 @@
         <xfire-jsr181-api-version>1.0-M1</xfire-jsr181-api-version>
         <xfire-version>1.2.2</xfire-version>
         <mavenAssemblyPluginVersion>2.1</mavenAssemblyPluginVersion>
-        <xbean-version>2.7-SNAPSHOT</xbean-version>
+        <xbean-version>2.7</xbean-version>
         <spring-version>2.0</spring-version>
         <activemq-version>4.0.2</activemq-version>
         <activeio-version>3.0-beta4</activeio-version>
@@ -386,22 +386,59 @@
         <repository>
             <id>activemq-tmp-repo</id>
             <name>ActiveMQ Maven2 Temp Repository</name>
-            <url>http://people.apache.org/~chirino/incubator-activemq-4.0.2-RC4/maven2</url>
+            <url>http://people.apache.org/~chirino/incubator-activemq-4.0.2-RC5/maven2</url>
+        </repository>
+        <!-- Apache releases -->
+        <repository>
+            <id>apache-releases</id>
+            <name>Apache Releases repository</name>
+            <url>http://people.apache.org/repo/m2-ibiblio-rsync-repository</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <!-- Apache snapshots -->
+        <repository>
+            <id>apache-snapshots</id>
+            <name>Apache Snapshot repository</name>
+            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
-	<pluginRepositories>
-	    <pluginRepository>
-          <id>apache.snapshots</id>
-          <name>Logicblaze Maven2 Repository</name>
-          <url>http://people.apache.org/maven-snapshot-repository</url>
-	      <releases>
-            <enabled>false</enabled>
-          </releases>
-	      <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-	    </pluginRepository>
+    <pluginRepositories>
+        <!-- Apache releases -->
+        <pluginRepository>
+            <id>apache-releases</id>
+            <name>Apache Releases repository</name>
+            <url>http://people.apache.org/repo/m2-ibiblio-rsync-repository</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+        <!-- Apache snapshot -->
+        <pluginRepository>
+            <id>apache-snapshots</id>
+            <name>Apache Snapshot repository</name>
+            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
     </pluginRepositories>
     
 	<dependencies>
