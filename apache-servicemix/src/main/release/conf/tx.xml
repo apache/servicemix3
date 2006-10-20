@@ -17,69 +17,38 @@
     limitations under the License.
 
 -->
-<beans xmlns:jencks="http://jencks.org/1.3">
+<beans xmlns:jencks="http://jencks.org/2.0">
 
-  <!-- XID factory -->
-  <bean id="xidFactory" class="org.apache.geronimo.transaction.manager.XidFactoryImpl" />
-
-  <!-- Transaction log -->
-  <!--
-  <bean id="transactionLog" class="org.apache.geronimo.transaction.log.UnrecoverableLog" />
-  -->
-  <jencks:howlLog 
-            id="transactionLog"
-            logFileDir="./data/txlog"
-            xidFactory="#xidFactory" />
-  
-  <!-- Internal transaction manager -->
-  <jencks:transactionManagerFactory 
-            id="extendedTransactionManager"
-            transactionLog="#transactionLog"
+  <!-- Transaction manager -->
+  <jencks:transactionManager
+            id="transactionManager"
+            transactionLogDir="./data/txlog"
             defaultTransactionTimeoutSeconds="600" />
   
-  <!-- Transaction context manager -->
-  <jencks:transactionContextManagerFactory
-            id="transactionContextManager" 
-            transactionManager="#extendedTransactionManager"
-            xidFactory="#xidFactory" />
-  
-  <!-- Public transaction manager -->
-  <jencks:geronimoTransactionManagerFactory
-            id="transactionManager"
-            transactionContextManager="#transactionContextManager" />
-  
   <!-- Work manager -->
-  <jencks:workManagerFactory
+  <jencks:workManager
             id="workManager"
             threadPoolSize="200"
-            transactionContextManager="#transactionContextManager" />
+            transactionManager="#transactionManager" />
   
   <!-- Bootstrap context for JCA -->
-  <jencks:bootstrapContextFactory
+  <jencks:bootstrapContext
             id="bootstrapContext"
-            workManager="#workManager" />
+            workManager="#workManager"
+            transactionManager="#transactionManager" />
   
   <!-- Connection manager for JCA -->
-  <bean id="connectionTracker" class="org.apache.geronimo.connector.outbound.connectiontracking.ConnectionTrackingCoordinator"/>
-  <jencks:singlePoolFactory 
-            id="poolingSupport"
-            maxSize="16"
-            minSize="1"
-            blockingTimeoutMilliseconds="60"
-            idleTimeoutMinutes="60"
-            matchOne="true"
-            matchAll="true"
-            selectOneAssumeMatch="true" />
-  <jencks:xATransactionFactory
-            id="transactionSupport"
-            useTransactionCaching="true"
-            useThreadCaching="true" />
-  <jencks:connectionManagerFactory 
+  <jencks:connectionTracker id="connectionTracker" geronimoTransactionManager="#transactionManager" />
+  
+  <jencks:poolingSupport 
+            id="poolingSupport" />
+            
+  <jencks:connectionManager
             id="connectionManager"
             containerManagedSecurity="false"
-            transactionContextManager="#transactionContextManager"
+            transaction="xa"
+            transactionManager="#transactionManager"
             poolingSupport="#poolingSupport"
-            transactionSupport="#transactionSupport"
             connectionTracker="#connectionTracker" />
   
 </beans>

@@ -16,16 +16,14 @@
  */
 package org.apache.servicemix.jbi.nmr.flow.jms;
 
+import junit.framework.TestCase;
+
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.xbean.BrokerFactoryBean;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.nmr.flow.Flow;
-import org.apache.servicemix.jbi.nmr.flow.jms.JMSFlow;
 import org.apache.servicemix.tck.ReceiverComponent;
-import org.apache.servicemix.tck.SenderComponent;
 import org.springframework.core.io.ClassPathResource;
-
-import junit.framework.TestCase;
 
 public class MultipleJMSFlowTest extends TestCase {
 

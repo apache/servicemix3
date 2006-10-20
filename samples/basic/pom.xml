@@ -98,11 +98,11 @@
             <artifactId>quartz</artifactId>
         </dependency>
         <dependency>
-            <groupId>incubator-activemq</groupId>
+            <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-ra</artifactId>
         </dependency>
         <dependency>
-            <groupId>incubator-activemq</groupId>
+            <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-core</artifactId>
         </dependency>
     </dependencies>

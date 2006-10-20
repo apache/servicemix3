@@ -18,7 +18,8 @@
 
 -->
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
-<beans xmlns:sm="http://servicemix.apache.org/config/1.0">
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+       xmlns:util="http://www.springframework.org/schema/util">
 
   <!-- RMI registry -->
   <sm:rmiRegistry id="rmiRegistry" port="1099" />
@@ -31,21 +32,20 @@
                    serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi"
                    threaded="true"
                    daemon="true" 
-                   depends-on="rmiRegistry">
-    <property name="environment">
-      <map>
-        <!-- Comment the following lines to disable JAAS authentication for jmx
-         -->
-        <entry key="jmx.remote.authenticator">
-          <sm:jmxJaasAuthenticator authenticationService="#authenticationService"/>
-        </entry>
-        <!-- Uncomment the following lines to enable file based authentication for jmx
-        <entry key="jmx.remote.authenticator">
-          <sm:jmxPasswordAuthenticator passwords="classpath:passwords.txt" />
-        </entry>
-         -->
-      </map>
-    </property>
-  </sm:jmxConnector>  
+                   depends-on="rmiRegistry, jndi"
+                   environment="#jmxConnectorEnvironment" />
+                   
+  <util:map id="jmxConnectorEnvironment">
+      <!-- Comment the following lines to disable JAAS authentication for jmx
+       -->
+      <entry key="jmx.remote.authenticator">
+        <sm:jmxJaasAuthenticator authenticationService="#authenticationService"/>
+      </entry>
+      <!-- Uncomment the following lines to enable file based authentication for jmx
+      <entry key="jmx.remote.authenticator">
+        <sm:jmxPasswordAuthenticator passwords="classpath:passwords.txt" />
+      </entry>
+       -->
+  </util:map>
 
 </beans>

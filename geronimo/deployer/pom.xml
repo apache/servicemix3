@@ -50,21 +50,21 @@
             <type>car</type>
         </dependency>
         <dependency>
-            <groupId>geronimo</groupId>
+            <groupId>org.apache.geronimo.configs</groupId>
             <artifactId>geronimo-gbean-deployer</artifactId>
             <version>${geronimo-version}</version>
             <type>car</type>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>geronimo</groupId>
+            <groupId>org.apache.geronimo.configs</groupId>
             <artifactId>j2ee-server</artifactId>
             <version>${geronimo-version}</version>
             <type>car</type>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>geronimo</groupId>
+            <groupId>org.apache.geronimo.configs</groupId>
             <artifactId>j2ee-deployer</artifactId>
             <version>${geronimo-version}</version>
             <type>car</type>

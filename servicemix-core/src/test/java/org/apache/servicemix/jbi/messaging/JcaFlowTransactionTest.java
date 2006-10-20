@@ -42,9 +42,7 @@ public class JcaFlowTransactionTest extends AbstractClusteredTransactionTest {
     }
     
     protected Flow createFlow() {
-    	JCAFlow flow = new JCAFlow();
-    	flow.setJmsURL("tcp://localhost:61216");
-    	flow.setTransactionContextManager(tcm);
+    	JCAFlow flow = new JCAFlow("tcp://localhost:61216");
     	return flow;
     }
 

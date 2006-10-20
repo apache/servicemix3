@@ -18,8 +18,6 @@ package org.apache.servicemix.jbi.nmr.flow.jca;
 
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.xbean.BrokerFactoryBean;
-import org.apache.geronimo.transaction.ExtendedTransactionManager;
-import org.apache.geronimo.transaction.context.TransactionContextManager;
 import org.apache.servicemix.jbi.RuntimeJBIException;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
@@ -27,18 +25,13 @@ import org.apache.servicemix.jbi.nmr.flow.jca.JCAFlow;
 import org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver;
 import org.apache.servicemix.tck.ReceiverComponent;
 import org.apache.servicemix.tck.SenderComponent;
-import org.jencks.factory.GeronimoTransactionManagerFactoryBean;
-import org.jencks.factory.TransactionContextManagerFactoryBean;
-import org.jencks.factory.TransactionManagerFactoryBean;
+import org.jencks.GeronimoPlatformTransactionManager;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.jta.JtaTransactionManager;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.jbi.JBIException;
-import javax.transaction.TransactionManager;
-import javax.transaction.UserTransaction;
 
 import junit.framework.TestCase;
 
@@ -58,18 +51,8 @@ public class JCAFlowTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         
-        TransactionManagerFactoryBean tmcf = new TransactionManagerFactoryBean();
-        tmcf.afterPropertiesSet();
-        ExtendedTransactionManager etm = (ExtendedTransactionManager) tmcf.getObject();
-        TransactionContextManagerFactoryBean tcmfb = new TransactionContextManagerFactoryBean();
-        tcmfb.setTransactionManager(etm);
-        tcmfb.afterPropertiesSet();
-        TransactionContextManager tcm = (TransactionContextManager) tcmfb.getObject();
-        GeronimoTransactionManagerFactoryBean gtmfb = new GeronimoTransactionManagerFactoryBean();
-        gtmfb.setTransactionContextManager(tcm);
-        gtmfb.afterPropertiesSet();
-        TransactionManager tm = (TransactionManager) gtmfb.getObject();
-        tt = new TransactionTemplate(new JtaTransactionManager((UserTransaction) tm));
+        GeronimoPlatformTransactionManager tm = new GeronimoPlatformTransactionManager();
+        tt = new TransactionTemplate(tm);
        
         BrokerFactoryBean bfb = new BrokerFactoryBean(new ClassPathResource("org/apache/servicemix/jbi/nmr/flow/jca/broker.xml"));
         bfb.afterPropertiesSet();
@@ -78,7 +61,6 @@ public class JCAFlowTest extends TestCase {
         
         JCAFlow senderFlow = new JCAFlow();
         senderFlow.setJmsURL("tcp://localhost:61216");
-        senderFlow.setTransactionContextManager(tcm);
         senderContainer.setTransactionManager(tm);
         senderContainer.setEmbedded(true);
         senderContainer.setName("senderContainer");
@@ -90,7 +72,6 @@ public class JCAFlowTest extends TestCase {
         
         JCAFlow receiverFlow = new JCAFlow();
         receiverFlow.setJmsURL("tcp://localhost:61216");
-        receiverFlow.setTransactionContextManager(tcm);
         receiverContainer.setTransactionManager(tm);
         receiverContainer.setEmbedded(true);
         receiverContainer.setName("receiverContainer");

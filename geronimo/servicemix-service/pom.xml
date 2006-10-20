@@ -39,22 +39,22 @@
             <version>${servicemix-version}</version>
         </dependency>
         <dependency>
-            <groupId>geronimo</groupId>
+            <groupId>org.apache.geronimo.modules</groupId>
             <artifactId>geronimo-kernel</artifactId>
             <version>${geronimo-version}</version>
         </dependency>
         <dependency>
-            <groupId>geronimo</groupId>
+            <groupId>org.apache.geronimo.modules</groupId>
             <artifactId>geronimo-transaction</artifactId>
             <version>${geronimo-version}</version>
         </dependency>
         <dependency>
-            <groupId>geronimo</groupId>
+            <groupId>org.apache.geronimo.modules</groupId>
             <artifactId>geronimo-connector</artifactId>
             <version>${geronimo-version}</version>
         </dependency>
         <dependency>
-            <groupId>geronimo</groupId>
+            <groupId>org.apache.geronimo.modules</groupId>
             <artifactId>geronimo-transaction</artifactId>
             <version>${geronimo-version}</version>
         </dependency>

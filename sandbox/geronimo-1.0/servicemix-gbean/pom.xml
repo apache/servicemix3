@@ -40,17 +40,17 @@
           <artifactId>servicemix-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>geronimo</groupId>
+            <groupId>org.apache.geronimo.modules</groupId>
             <artifactId>geronimo-kernel</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>geronimo</groupId>
+            <groupId>org.apache.geronimo.modules</groupId>
             <artifactId>geronimo-deployment</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>geronimo</groupId>
+            <groupId>org.apache.geronimo.modules</groupId>
             <artifactId>geronimo-j2ee</artifactId>
             <scope>provided</scope>
         </dependency>

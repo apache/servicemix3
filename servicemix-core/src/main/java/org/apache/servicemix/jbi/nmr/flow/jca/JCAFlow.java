@@ -61,12 +61,10 @@ import org.apache.activemq.ra.ActiveMQManagedConnectionFactory;
 import org.apache.activemq.ra.ActiveMQResourceAdapter;
 import org.apache.geronimo.connector.outbound.connectionmanagerconfig.SinglePool;
 import org.apache.geronimo.connector.outbound.connectionmanagerconfig.XATransactions;
-import org.apache.geronimo.transaction.context.TransactionContextManager;
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.executors.Executor;
 import org.apache.servicemix.executors.ExecutorFactory;
 import org.apache.servicemix.executors.WorkManagerWrapper;
-import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.apache.servicemix.jbi.event.ComponentAdapter;
 import org.apache.servicemix.jbi.event.ComponentEvent;
 import org.apache.servicemix.jbi.event.ComponentListener;
@@ -80,7 +78,6 @@ import org.apache.servicemix.jbi.servicedesc.EndpointSupport;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 import org.jencks.SingletonEndpointFactory;
 import org.jencks.factory.ConnectionManagerFactoryBean;
-import org.springframework.context.ApplicationContext;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
@@ -103,7 +100,6 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
     private Map connectorMap = new ConcurrentHashMap();
     private AtomicBoolean started = new AtomicBoolean(false);
     private Set subscriberSet = new CopyOnWriteArraySet();
-    private TransactionContextManager transactionContextManager;
     private ConnectionManager connectionManager;
     private Connector containerConnector;
     private Connector broadcastConnector;
@@ -112,6 +108,13 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
     private EndpointListener endpointListener;
     private ComponentListener componentListener;
 
+    public JCAFlow() {
+    }
+    
+    public JCAFlow(String jmsURL) {
+    	this.jmsURL = jmsURL;
+    }
+    
     /**
      * The type of Flow
      * 
@@ -550,18 +553,8 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
 	public ConnectionManager getConnectionManager() throws Exception {
 		if (connectionManager == null) {
         	ConnectionManagerFactoryBean cmfb = new ConnectionManagerFactoryBean();
-        	cmfb.setTransactionContextManager(getTransactionContextManager());
-        	cmfb.setPoolingSupport(new SinglePool(
-        			16, // max size 
-        			0, // min size
-        			100, // blockingTimeoutMilliseconds
-                    1, // idleTimeoutMinutes 
-                    true, // matchOne
-                    true,  // matchAll
-                    true)); // selectOneAssumeMatch
-        	cmfb.setTransactionSupport(new XATransactions(
-        			true, // useTransactionCaching
-        			false)); // useThreadCaching
+        	cmfb.setTransactionManager((TransactionManager) broker.getContainer().getTransactionManager());
+        	cmfb.setTransaction("xa");
         	cmfb.afterPropertiesSet();
 			connectionManager = (ConnectionManager) cmfb.getObject();
 		}
@@ -570,26 +563,6 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
 
 	public void setConnectionManager(ConnectionManager connectionManager) {
 		this.connectionManager = connectionManager;
-	}
-
-	public TransactionContextManager getTransactionContextManager() {
-        if (transactionContextManager == null) {
-            if (broker != null && broker.getContainer() instanceof SpringJBIContainer) {
-                ApplicationContext applicationContext = ((SpringJBIContainer) broker.getContainer()).getApplicationContext();
-                if (applicationContext != null) {
-                    Map map = applicationContext.getBeansOfType(TransactionContextManager.class);
-                    if( map.size() == 1) {
-                        transactionContextManager = (TransactionContextManager) map.values().iterator().next();
-                    }
-                }
-            }
-        }
-		return transactionContextManager;
-	}
-
-	public void setTransactionContextManager(
-			TransactionContextManager transactionContextManager) {
-		this.transactionContextManager = transactionContextManager;
 	}
 
     public String toString(){

@@ -30,10 +30,6 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 import org.apache.activemq.broker.BrokerService;
-import org.apache.geronimo.transaction.context.GeronimoTransactionManager;
-import org.apache.geronimo.transaction.context.TransactionContextManager;
-import org.apache.geronimo.transaction.manager.TransactionManagerImpl;
-import org.apache.geronimo.transaction.manager.XidFactoryImpl;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.container.JBIContainer;
@@ -41,13 +37,12 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.nmr.flow.Flow;
 import org.apache.servicemix.jbi.nmr.flow.jca.JCAFlow;
 import org.apache.servicemix.jbi.nmr.flow.seda.SedaFlow;
+import org.jencks.GeronimoPlatformTransactionManager;
 
 public class TransactionsTest extends TestCase {
 
     private JBIContainer jbi;
     private BrokerService broker;
-    private TransactionManagerImpl exTransactionManager;
-    private TransactionContextManager transactionContextManager;
     private TransactionManager txManager;
     private Component component;
     private ServiceMixClient client;
@@ -63,15 +58,10 @@ public class TransactionsTest extends TestCase {
         broker.addConnector("tcp://localhost:61616");
         broker.start();
         
-        exTransactionManager = new TransactionManagerImpl(600, new XidFactoryImpl(), null, null);
-        transactionContextManager = new TransactionContextManager(exTransactionManager, exTransactionManager);
-        txManager = (TransactionManager) new GeronimoTransactionManager(transactionContextManager);
-        
-        JCAFlow jcaFlow = new JCAFlow();
-        jcaFlow.setTransactionContextManager(transactionContextManager);
+        txManager = (TransactionManager) new GeronimoPlatformTransactionManager();
         
         jbi = new JBIContainer();
-        jbi.setFlows(new Flow[] { new SedaFlow(), jcaFlow });
+        jbi.setFlows(new Flow[] { new SedaFlow(), new JCAFlow() });
         jbi.setEmbedded(true);
         jbi.setUseMBeanServer(false);
         jbi.setTransactionManager(txManager);

@@ -103,9 +103,9 @@
         <include>classworlds:classworlds</include>
 
         <include>backport-util-concurrent:backport-util-concurrent</include>
-        <include>incubator-activemq:activemq-core</include>
-        <include>incubator-activemq:activemq-ra</include>
-        <include>incubator-activemq:activeio-core</include>
+        <include>org.apache.activemq:activemq-core</include>
+        <include>org.apache.activemq:activemq-ra</include>
+        <include>org.apache.activemq:activeio-core</include>
         <include>commons-logging:commons-logging</include>
         <include>commons-beanutils:commons-beanutils-core</include>
         <include>org.apache.servicemix:servicemix-jbi</include>
@@ -129,15 +129,12 @@
         <include>org.jencks:jencks</include>
         <include>org.objectweb.howl:howl</include>
         
-        <include>geronimo:geronimo-connector</include>
-        <include>geronimo:geronimo-transaction</include>
-        <include>geronimo:geronimo-core</include>
-        <include>geronimo:geronimo-system</include>
+        <include>org.apache.geronimo.modules:geronimo-connector</include>
+        <include>org.apache.geronimo.modules:geronimo-transaction</include>
 
         <include>javax.activation:activation</include>
         <include>javax.mail:mail</include>
         
-        <include>concurrent:concurrent</include>
         <include>xstream:xstream</include>
         <include>xerces:xercesImpl</include>
         <include>xalan:xalan</include>

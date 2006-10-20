@@ -45,7 +45,7 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>geronimo</groupId>
+      <groupId>org.apache.geronimo.modules</groupId>
       <artifactId>geronimo-activation</artifactId>
       <scope>provided</scope>
     </dependency>

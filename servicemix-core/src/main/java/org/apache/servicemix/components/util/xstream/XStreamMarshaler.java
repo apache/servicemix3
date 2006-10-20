@@ -16,17 +16,6 @@
  */
 package org.apache.servicemix.components.util.xstream;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomReader;
-import com.thoughtworks.xstream.io.xml.DomWriter;
-
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.messaging.DefaultMarshaler;
-import org.apache.servicemix.jbi.messaging.PojoMarshaler;
-import org.logicblaze.lingo.LingoInvocation;
-import org.w3c.dom.Document;
-
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
@@ -36,6 +25,16 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
+
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.messaging.DefaultMarshaler;
+import org.apache.servicemix.jbi.messaging.PojoMarshaler;
+import org.w3c.dom.Document;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomReader;
+import com.thoughtworks.xstream.io.xml.DomWriter;
 
 /**
  * A {@link PojoMarshaler} for <a href="http://xStream.codehaus.org/">XStream</a> which
@@ -136,7 +135,11 @@ public class XStreamMarshaler extends DefaultMarshaler {
 
     protected XStream createXStream() {
         XStream answer = new XStream();
-        answer.alias("invoke", LingoInvocation.class);
+        try {
+        	answer.alias("invoke", Class.forName("org.logicblaze.lingo.LingoInvocation"));
+        } catch (ClassNotFoundException e) {
+        	// Ignore
+        }
         return answer;
     }
 

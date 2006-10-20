@@ -43,14 +43,14 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>geronimo</groupId>
+            <groupId>org.apache.geronimo.configs</groupId>
             <artifactId>geronimo-gbean-deployer</artifactId>
             <version>${geronimo-version}</version>
             <type>car</type>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>geronimo</groupId>
+            <groupId>org.apache.geronimo.configs</groupId>
             <artifactId>j2ee-server</artifactId>
             <version>${geronimo-version}</version>
             <type>car</type>
@@ -77,9 +77,9 @@
                 <extensions>true</extensions>
                 <configuration>
                     <deploymentConfigs>
-                        <deploymentConfig>geronimo/geronimo-gbean-deployer/${geronimo-version}/car</deploymentConfig>
+                        <deploymentConfig>org.apache.geronimo.configs/geronimo-gbean-deployer/${geronimo-version}/car</deploymentConfig>
                     </deploymentConfigs>
-                    <deployerName>geronimo/geronimo-gbean-deployer/${geronimo-version}/car?j2eeType=Deployer,name=Deployer</deployerName>
+                    <deployerName>org.apache.geronimo.configs/geronimo-gbean-deployer/${geronimo-version}/car?j2eeType=Deployer,name=Deployer</deployerName>
                     <planFileName>geronimo-service.xml</planFileName>
                     <moduleFile>${settings.localRepository}/org/apache/servicemix/geronimo/servicemix-service/${pom.version}/servicemix-service-${pom.version}.jar</moduleFile>
                 </configuration>

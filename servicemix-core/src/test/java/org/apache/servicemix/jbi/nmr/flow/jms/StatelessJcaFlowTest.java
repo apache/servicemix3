@@ -18,40 +18,23 @@ package org.apache.servicemix.jbi.nmr.flow.jms;
 
 import javax.transaction.TransactionManager;
 
-import org.apache.geronimo.transaction.ExtendedTransactionManager;
-import org.apache.geronimo.transaction.context.TransactionContextManager;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.nmr.flow.jca.JCAFlow;
-import org.jencks.factory.GeronimoTransactionManagerFactoryBean;
-import org.jencks.factory.TransactionContextManagerFactoryBean;
-import org.jencks.factory.TransactionManagerFactoryBean;
+import org.jencks.GeronimoPlatformTransactionManager;
 
 public class StatelessJcaFlowTest extends StatelessJmsFlowTest {
 
-    private TransactionContextManager tcm;
     private TransactionManager tm;
     
     protected void setUp() throws Exception {
-        TransactionManagerFactoryBean tmcf = new TransactionManagerFactoryBean();
-        tmcf.afterPropertiesSet();
-        ExtendedTransactionManager etm = (ExtendedTransactionManager) tmcf.getObject();
-        TransactionContextManagerFactoryBean tcmfb = new TransactionContextManagerFactoryBean();
-        tcmfb.setTransactionManager(etm);
-        tcmfb.afterPropertiesSet();
-        tcm = (TransactionContextManager) tcmfb.getObject();
-        GeronimoTransactionManagerFactoryBean gtmfb = new GeronimoTransactionManagerFactoryBean();
-        gtmfb.setTransactionContextManager(tcm);
-        gtmfb.afterPropertiesSet();
-        tm = (TransactionManager) gtmfb.getObject();
+    	tm = new GeronimoPlatformTransactionManager();
         super.setUp();
     }
     
     protected JBIContainer createContainer(String name) throws Exception {
         JBIContainer container = new JBIContainer();
         container.setName(name);
-        JCAFlow flow = new JCAFlow();
-        flow.setJmsURL("tcp://localhost:61616");
-        flow.setTransactionContextManager(tcm);
+        JCAFlow flow = new JCAFlow("tcp://localhost:61616");
         container.setTransactionManager(tm);
         container.setFlow(flow);
         container.setUseMBeanServer(false);

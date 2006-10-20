@@ -35,6 +35,7 @@
   <import resource="classpath:security.xml" />
   <import resource="classpath:jmx.xml" />
   <import resource="classpath:activemq.xml" />
+  <import resource="classpath:tx.xml" />
   <import resource="classpath:jndi.xml" />
 
   <!-- the JBI container -->

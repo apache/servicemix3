@@ -36,7 +36,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>incubator-activemq</groupId>
+      <groupId>org.apache.activemq</groupId>
       <artifactId>activeio-core</artifactId>
       <optional>true</optional>
     </dependency>
@@ -74,12 +74,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>geronimo</groupId>
+      <groupId>org.apache.geronimo.modules</groupId>
       <artifactId>geronimo-transaction</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>geronimo</groupId>
+      <groupId>org.apache.geronimo.modules</groupId>
       <artifactId>geronimo-connector</artifactId>
       <scope>test</scope>
     </dependency>

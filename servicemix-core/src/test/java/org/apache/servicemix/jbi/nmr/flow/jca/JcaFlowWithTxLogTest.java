@@ -22,17 +22,12 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.naming.Context;
-import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.store.memory.MemoryPersistenceAdapter;
-import org.apache.geronimo.transaction.ExtendedTransactionManager;
-import org.apache.geronimo.transaction.context.TransactionContextManager;
-import org.apache.geronimo.transaction.manager.TransactionLog;
-import org.apache.geronimo.transaction.manager.XidFactoryImpl;
 import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.components.util.ComponentSupport;
@@ -41,9 +36,7 @@ import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.nmr.flow.Flow;
 import org.apache.xbean.spring.jndi.SpringInitialContextFactory;
-import org.jencks.factory.GeronimoTransactionManagerFactoryBean;
-import org.jencks.factory.HowlLogFactoryBean;
-import org.jencks.factory.TransactionContextManagerFactoryBean;
+import org.jencks.GeronimoPlatformTransactionManager;
 import org.jencks.factory.TransactionManagerFactoryBean;
 
 /**
@@ -54,7 +47,7 @@ public class JcaFlowWithTxLogTest extends TestCase {
 	private JBIContainer senderContainer = new JBIContainer();
     private JBIContainer receiverContainer = new JBIContainer();
     private BrokerService broker;
-	private TransactionManager tm;
+	private GeronimoPlatformTransactionManager tm;
     
 	public class MyEchoComponent extends ComponentSupport implements MessageExchangeListener {
 
@@ -80,22 +73,9 @@ public class JcaFlowWithTxLogTest extends TestCase {
         System.setProperty(Context.INITIAL_CONTEXT_FACTORY, SpringInitialContextFactory.class.getName());
         System.setProperty(Context.PROVIDER_URL, "jndi.xml");
 
-        XidFactoryImpl xidFactory = new XidFactoryImpl();
-        HowlLogFactoryBean howlLogFactoryBean = new HowlLogFactoryBean();
-        howlLogFactoryBean.setXidFactory(xidFactory);
-        howlLogFactoryBean.setLogFileDir("target/txlog");
-        TransactionManagerFactoryBean tmcf = new TransactionManagerFactoryBean();
-        tmcf.setTransactionLog((TransactionLog) howlLogFactoryBean.getObject());
-        tmcf.afterPropertiesSet();
-        ExtendedTransactionManager etm = (ExtendedTransactionManager) tmcf.getObject();
-        TransactionContextManagerFactoryBean tcmfb = new TransactionContextManagerFactoryBean();
-        tcmfb.setTransactionManager(etm);
-        tcmfb.afterPropertiesSet();
-        TransactionContextManager tcm = (TransactionContextManager) tcmfb.getObject();
-        GeronimoTransactionManagerFactoryBean gtmfb = new GeronimoTransactionManagerFactoryBean();
-        gtmfb.setTransactionContextManager(tcm);
-        gtmfb.afterPropertiesSet();
-        tm = (TransactionManager) gtmfb.getObject();
+        TransactionManagerFactoryBean factory = new TransactionManagerFactoryBean();
+        factory.setTransactionLogDir("target/txlog");
+        tm = (GeronimoPlatformTransactionManager) factory.getObject();
        
         broker = new BrokerService();
         broker.setPersistenceAdapter(new MemoryPersistenceAdapter());
@@ -104,7 +84,6 @@ public class JcaFlowWithTxLogTest extends TestCase {
         
         JCAFlow senderFlow = new JCAFlow();
         senderFlow.setJmsURL("tcp://localhost:61616");
-        senderFlow.setTransactionContextManager(tcm);
         senderContainer.setTransactionManager(tm);
         senderContainer.setEmbedded(true);
         senderContainer.setName("senderContainer");
@@ -117,7 +96,6 @@ public class JcaFlowWithTxLogTest extends TestCase {
         
         JCAFlow receiverFlow = new JCAFlow();
         receiverFlow.setJmsURL("tcp://localhost:61616");
-        receiverFlow.setTransactionContextManager(tcm);
         receiverContainer.setTransactionManager(tm);
         receiverContainer.setEmbedded(true);
         receiverContainer.setName("receiverContainer");

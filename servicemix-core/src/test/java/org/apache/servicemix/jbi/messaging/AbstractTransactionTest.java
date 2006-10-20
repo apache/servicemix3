@@ -16,8 +16,11 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
-import org.apache.geronimo.transaction.ExtendedTransactionManager;
-import org.apache.geronimo.transaction.context.TransactionContextManager;
+import javax.jbi.JBIException;
+import javax.transaction.TransactionManager;
+
+import junit.framework.TestCase;
+
 import org.apache.servicemix.jbi.RuntimeJBIException;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
@@ -27,19 +30,10 @@ import org.apache.servicemix.tck.AsyncReceiverPojo;
 import org.apache.servicemix.tck.Receiver;
 import org.apache.servicemix.tck.ReceiverComponent;
 import org.apache.servicemix.tck.SenderComponent;
-import org.jencks.factory.GeronimoTransactionManagerFactoryBean;
-import org.jencks.factory.TransactionContextManagerFactoryBean;
-import org.jencks.factory.TransactionManagerFactoryBean;
+import org.jencks.GeronimoPlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.jta.JtaTransactionManager;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
-
-import javax.jbi.JBIException;
-import javax.transaction.TransactionManager;
-import javax.transaction.UserTransaction;
-
-import junit.framework.TestCase;
 
 /**
  * @version $Revision$
@@ -50,7 +44,6 @@ public abstract class AbstractTransactionTest extends TestCase {
     
     protected TransactionTemplate tt;
     protected TransactionManager tm;
-    protected TransactionContextManager tcm;
     protected JBIContainer senderContainer;
     
     /*
@@ -67,18 +60,9 @@ public abstract class AbstractTransactionTest extends TestCase {
     }
     
     protected void createTransactionLayer() throws Exception {
-        TransactionManagerFactoryBean tmcf = new TransactionManagerFactoryBean();
-        tmcf.afterPropertiesSet();
-        ExtendedTransactionManager etm = (ExtendedTransactionManager) tmcf.getObject();
-        TransactionContextManagerFactoryBean tcmfb = new TransactionContextManagerFactoryBean();
-        tcmfb.setTransactionManager(etm);
-        tcmfb.afterPropertiesSet();
-        tcm = (TransactionContextManager) tcmfb.getObject();
-        GeronimoTransactionManagerFactoryBean gtmfb = new GeronimoTransactionManagerFactoryBean();
-        gtmfb.setTransactionContextManager(tcm);
-        gtmfb.afterPropertiesSet();
-        tm = (TransactionManager) gtmfb.getObject();
-        tt = new TransactionTemplate(new JtaTransactionManager((UserTransaction) tm));
+    	GeronimoPlatformTransactionManager gtm = new GeronimoPlatformTransactionManager();
+    	tm = gtm;
+        tt = new TransactionTemplate(gtm);
     }
     
     protected JBIContainer createJbiContainer(String name) throws Exception {

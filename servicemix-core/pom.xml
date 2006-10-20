@@ -52,22 +52,22 @@
       <artifactId>xml-apis</artifactId>
     </dependency>
     <dependency>
-      <groupId>geronimo</groupId>
+      <groupId>org.apache.geronimo.modules</groupId>
       <artifactId>geronimo-connector</artifactId>
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>geronimo</groupId>
+      <groupId>org.apache.geronimo.modules</groupId>
       <artifactId>geronimo-transaction</artifactId>
       <optional>true</optional>
     </dependency>
 
     <dependency>
-      <groupId>incubator-activemq</groupId>
+      <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>incubator-activemq</groupId>
+      <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-ra</artifactId>
       <optional>true</optional>
     </dependency>
@@ -140,11 +140,11 @@
       <artifactId>jencks</artifactId>
     </dependency>
     <dependency>
-      <groupId>geronimo</groupId>
+      <groupId>org.apache.geronimo.modules</groupId>
       <artifactId>geronimo-connector</artifactId>
     </dependency>
     <dependency>
-      <groupId>geronimo</groupId>
+      <groupId>org.apache.geronimo.modules</groupId>
       <artifactId>geronimo-transaction</artifactId>
     </dependency>
     <dependency>
@@ -196,15 +196,17 @@
     <dependency>
       <groupId>xmlbeans</groupId>
       <artifactId>xmlpublic</artifactId>
+      <scope>optional</scope>
     </dependency>
     <dependency>
       <groupId>xmlbeans</groupId>
       <artifactId>xbean</artifactId>
+      <scope>optional</scope>
     </dependency>
-
     <dependency>
       <groupId>lingo</groupId>
       <artifactId>lingo</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
