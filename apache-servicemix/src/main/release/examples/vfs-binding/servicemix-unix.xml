@@ -43,7 +43,7 @@
       		<bean class="org.apache.servicemix.components.vfs.FileWriter">
 		        <property name="path" value="file://tmp/servicemix-outbox"/>
 		        <property name="marshaler">
-		           <bean class="org.sapache.ervicemix.components.util.DefaultFileMarshaler">
+		           <bean class="org.apache.servicemix.components.util.DefaultFileMarshaler">
 		              <property name="fileName">
 		                  <bean class="org.apache.servicemix.expression.JaxenStringXPathExpression">
 		                     <constructor-arg value="concat('sample_', /sample/@id, '.xml')"/>
