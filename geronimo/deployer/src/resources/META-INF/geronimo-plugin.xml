@@ -32,8 +32,9 @@
   <dependency>geronimo/j2ee-server//car</dependency>
   <dependency>geronimo/j2ee-deployer//car</dependency>
   <obsoletes>org.apache.servicemix.geronimo/deployer//car</obsoletes>
+  <source-repository>http://servicemix.org/m2-repo/</source-repository>
   <source-repository>http://people.apache.org/repo/m2-incubating-repository/</source-repository>
   <source-repository>http://people.apache.org/repo/m2-ibiblio-rsync-repository/</source-repository>
   <source-repository>http://people.apache.org/~chirino/incubator-activemq-4.0.2-RC5/maven2/</source-repository>
-  <source-repository>http://www.ibiblio.org/maven2/</source-repository>
+  <source-repository>http://repo.mergere.com/maven2/</source-repository>
 </geronimo-plugin>

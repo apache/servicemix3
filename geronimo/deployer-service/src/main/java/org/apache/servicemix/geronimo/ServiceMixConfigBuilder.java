@@ -146,10 +146,10 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
         Descriptor descriptor = (Descriptor) plan;
         if (descriptor.getComponent() != null) {
             return new Artifact("servicemix-components", descriptor.getComponent().getIdentification().getName(),
-                            (Version) null, "car");
+                            "0.0", "car");
         } else if (descriptor.getServiceAssembly() != null) {
             return new Artifact("servicemix-assemblies", descriptor.getServiceAssembly().getIdentification().getName(),
-                            (Version) null, "car");
+                            "0.0", "car");
         } else if (descriptor.getSharedLibrary() != null) {
             return new Artifact("servicemix-libraries", descriptor.getSharedLibrary().getIdentification().getName(),
                             descriptor.getSharedLibrary().getVersion(), "car");
@@ -250,17 +250,7 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
             String[] pathElements = descriptor.getComponent().getComponentClassPath().getPathElements();
             if (pathElements != null) {
                 for (int i = 0; i < pathElements.length; i++) {
-                    // We can not add includes directly, so move the file and
-                    // include it
-                    File include = new File(targetDir, pathElements[i]);
-                    File temp = new File(workDir, pathElements[i]);
-                    if (!include.isFile()) {
-                        throw new Exception("Classpath element '" + pathElements[i] + "' not found");
-                    }
-                    temp.getParentFile().mkdirs();
-                    include.renameTo(temp);
-                    context.addInclude(new URI("install/").resolve(pathElements[i]), temp);
-                    temp.delete();
+                    context.getConfiguration().addToClassPath(new URI("install/").resolve(pathElements[i]).toString());
                 }
             }
         }

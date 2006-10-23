@@ -120,6 +120,17 @@ Configuration for ServiceMix container.
                 <version>${xbean-version}</version>
                 <type>jar</type>
             </dependency>
+            <dependency>
+                <groupId>stax</groupId>
+                <artifactId>stax-api</artifactId>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>woodstox</groupId>
+                <artifactId>wstx-asl</artifactId>
+                <version>${woodstox-version}</version>
+                <type>jar</type>
+            </dependency>
         </dependencies>
     </environment>
 
