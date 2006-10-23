@@ -25,7 +25,8 @@
   <sm:container id="jbi" 
                 name="wsn1"
                 embedded="true"
-                MBeanServer="#jmxServer">
+                MBeanServer="#jmxServer"
+                depends-on="jmxConnector">
 
     <!-- Use a SEDA flow + JMS flow for clustering. -->
     <sm:flows>
@@ -40,16 +41,24 @@
   <!-- JMX server and connector -->
   <sm:rmiRegistry id="rmiRegistry" port="1091" />
   <sm:jmxServer id="jmxServer" locateExistingServerIfPossible="true" />
-  <sm:jmxConnector objectName="connector:name=rmi"
+  <sm:jmxConnector id="jmxConnector"
+                   objectName="connector:name=rmi"
                    serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1091/jmxrmi"
                    threaded="true"
                    daemon="true" 
-                   depends-on="rmiRegistry" />
+                   depends-on="jndi,rmiRegistry" />
 
   <!-- JMS connection factory -->
   <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
     <!-- We use an embedded non persistent broker with multicast discovery (peer:// protocol) -->
     <property name="brokerURL" value="peer://localhost/wsnbroker1?broker.persistent=false" />
+  </bean>
+
+  <!-- JNDI -->
+  <bean id="jndi" 
+        class="org.apache.xbean.spring.jndi.SpringInitialContextFactory" 
+        factory-method="makeInitialContext"
+        scope="singleton">
   </bean>
 
 </beans>
