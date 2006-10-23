@@ -71,18 +71,4 @@ public class ExternalEndpoint extends AbstractServiceEndpoint {
         return se.getServiceName();
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object obj) {
-        return se.equals(obj);
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        return se.hashCode();
-    }
-
 }

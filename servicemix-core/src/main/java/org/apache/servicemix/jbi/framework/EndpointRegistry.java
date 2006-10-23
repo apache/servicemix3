@@ -197,7 +197,7 @@ public class EndpointRegistry {
         } else {
             String key = getKey(serviceEndpoint);
             internalEndpoints.remove(key);
-            unregisterEndpoint(key);
+            unregisterEndpoint(serviceEndpoint);
         }
         fireEvent(serviceEndpoint, EndpointEvent.INTERNAL_ENDPOINT_UNREGISTERED);
     }
@@ -369,8 +369,8 @@ public class EndpointRegistry {
      * @param externalEndpoint the external endpoint to be deregistered; must be non-null.
      */
     public void unregisterExternalEndpoint(ComponentNameSpace cns, ServiceEndpoint externalEndpoint) {
-        externalEndpoints.remove(getKey(externalEndpoint));
-        unregisterEndpoint(getKey(externalEndpoint));
+        ExternalEndpoint ep = (ExternalEndpoint) externalEndpoints.remove(getKey(externalEndpoint));
+        unregisterEndpoint(ep);
         fireEvent(externalEndpoint, EndpointEvent.EXTERNAL_ENDPOINT_UNREGISTERED);
     }
 
@@ -498,8 +498,8 @@ public class EndpointRegistry {
      * @param fromEp
      */
     public void unregisterEndpointConnection(QName fromSvc, String fromEp) {
-        unregisterEndpoint(getKey(fromSvc, fromEp));
         LinkedEndpoint ep = (LinkedEndpoint) linkedEndpoints.remove(getKey(fromSvc, fromEp));
+        unregisterEndpoint(ep);
         fireEvent(ep, EndpointEvent.LINKED_ENDPOINT_UNREGISTERED);
     }
     
@@ -529,25 +529,22 @@ public class EndpointRegistry {
     }
     
     private void registerEndpoint(AbstractServiceEndpoint serviceEndpoint) {
-        String key = getKey(serviceEndpoint);
         try {
             Endpoint endpoint = new Endpoint(serviceEndpoint, registry);
             ObjectName objectName = registry.getContainer().getManagementContext().createObjectName(endpoint);
             registry.getContainer().getManagementContext().registerMBean(objectName, endpoint, EndpointMBean.class);
-            endpointMBeans.put(key, endpoint);
+            endpointMBeans.put(serviceEndpoint, endpoint);
         } catch (JMException e) {
             logger.error("Could not register MBean for endpoint", e);
         }
     }
     
-    private void unregisterEndpoint(String key) {
-        Endpoint ep = (Endpoint) endpointMBeans.remove(key);
-        if (ep != null) {
-            try {
-                registry.getContainer().getManagementContext().unregisterMBean(ep);
-            } catch (JBIException e) {
-                logger.error("Could not unregister MBean for endpoint", e);
-            }
+    private void unregisterEndpoint(AbstractServiceEndpoint se) {
+        Endpoint ep = (Endpoint) endpointMBeans.remove(se);
+        try {
+            registry.getContainer().getManagementContext().unregisterMBean(ep);
+        } catch (JBIException e) {
+            logger.error("Could not unregister MBean for endpoint", e);
         }
     }
 

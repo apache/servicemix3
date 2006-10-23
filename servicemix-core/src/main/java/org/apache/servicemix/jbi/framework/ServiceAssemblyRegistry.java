@@ -122,6 +122,12 @@ public class ServiceAssemblyRegistry {
         ServiceAssemblyLifeCycle salc = (ServiceAssemblyLifeCycle) serviceAssemblies.remove(name);
         if (salc != null) {
             try {
+                ServiceUnitLifeCycle[] sus = salc.getDeployedSUs();
+                if (sus != null) {
+                    for (int i = 0; i < sus.length; i++) {
+                        registry.unregisterServiceUnit(sus[i].getKey());
+                    }
+                }
                 registry.getContainer().getManagementContext().unregisterMBean(salc);
             } catch (JBIException e) {
                 log.error("Unable to unregister MBean for service assembly", e);
