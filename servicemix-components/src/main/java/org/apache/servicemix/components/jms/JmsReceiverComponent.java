@@ -98,7 +98,7 @@ public class JmsReceiverComponent extends JmsInBinding implements InitializingBe
             connection.start();
             consumer.setMessageListener(this);
         } catch (JMSException e) {
-            throw new JBIException("Unable to start jms component");
+            throw new JBIException("Unable to start jms component", e);
         }
     }
 
@@ -114,7 +114,7 @@ public class JmsReceiverComponent extends JmsInBinding implements InitializingBe
                 connection.close();
             }
         } catch (JMSException e) {
-            throw new JBIException("Unable to stop jms component");
+            throw new JBIException("Unable to stop jms component", e);
         } finally {
             connection = null;
             session = null;
