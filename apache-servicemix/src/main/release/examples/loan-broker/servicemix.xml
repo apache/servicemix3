@@ -21,10 +21,11 @@
 
   <!-- the JBI container -->
   <sm:container id="jbi" 
-                rootDir="./wdir" 
+                rootDir="./data/smx" 
                 installationDirPath="./install"
                 deploymentDirPath="./deploy"
-                flowName="seda">
+                flowName="seda"
+                depends-on="broker">
 
     <sm:activationSpecs>
 
