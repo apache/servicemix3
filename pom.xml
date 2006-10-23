@@ -406,6 +406,18 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+        <!-- Codehaus snapshots -->
+        <repository>
+            <id>codehaus-snapshots</id>
+            <name>Codehaus Snapshots repository</name>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
     <pluginRepositories>
