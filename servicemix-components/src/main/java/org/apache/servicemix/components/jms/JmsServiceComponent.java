@@ -123,7 +123,7 @@ public class JmsServiceComponent extends ComponentSupport implements MessageList
             connection.start();
             consumer.setMessageListener(this);
         } catch (JMSException e) {
-            throw new JBIException("Unable to start jms component");
+            throw new JBIException("Unable to start jms component", e);
         }
     }
 
@@ -139,7 +139,7 @@ public class JmsServiceComponent extends ComponentSupport implements MessageList
                 connection.close();
             }
         } catch (JMSException e) {
-            throw new JBIException("Unable to stop jms component");
+            throw new JBIException("Unable to stop jms component", e);
         } finally {
             connection = null;
             session = null;
