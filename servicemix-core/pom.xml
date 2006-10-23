@@ -201,7 +201,7 @@
     <dependency>
       <groupId>xmlbeans</groupId>
       <artifactId>xbean</artifactId>
-      <scope>optional</scope>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>lingo</groupId>
