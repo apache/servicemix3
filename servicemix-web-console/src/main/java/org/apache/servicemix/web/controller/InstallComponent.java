@@ -27,7 +27,6 @@ import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.apache.servicemix.jbi.util.FileUtil;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 public class InstallComponent extends SimpleFormController {
@@ -38,7 +37,7 @@ public class InstallComponent extends SimpleFormController {
         this.adminCommandsService = adminCommandsService;
     }
     
-    protected ModelAndView onSubmit(Object command) throws Exception {
+    protected void doSubmitAction(Object command) throws Exception {
         // cast the bean
         FileUploadBean bean = (FileUploadBean) command;
         // let's see if there's content there
@@ -54,7 +53,6 @@ public class InstallComponent extends SimpleFormController {
         } finally {
             f.delete();
         }
-        return new ModelAndView("redirect:components.jsp");
     }
     
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws ServletException {

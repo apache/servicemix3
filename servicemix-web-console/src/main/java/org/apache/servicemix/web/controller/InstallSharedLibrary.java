@@ -22,14 +22,11 @@ import java.io.FileOutputStream;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.apache.servicemix.jbi.util.FileUtil;
-import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 public class InstallSharedLibrary extends SimpleFormController {
@@ -40,8 +37,7 @@ public class InstallSharedLibrary extends SimpleFormController {
         this.adminCommandsService = adminCommandsService;
     }
     
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command,
-                    BindException errors) throws Exception {
+    protected void doSubmitAction(Object command) throws Exception {
         // cast the bean
         FileUploadBean bean = (FileUploadBean) command;
         // let's see if there's content there
@@ -57,8 +53,6 @@ public class InstallSharedLibrary extends SimpleFormController {
         } finally {
             f.delete();
         }
-        // well, let's do nothing with the bean for now and return
-        return super.onSubmit(request, response, command, errors);
     }
 
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws ServletException {

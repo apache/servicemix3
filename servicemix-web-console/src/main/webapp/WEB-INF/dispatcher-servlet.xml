@@ -48,10 +48,14 @@
 
   <bean name="/installSharedLibrary.action" class="org.apache.servicemix.web.controller.InstallSharedLibrary" autowire="constructor"  singleton="false">
     <property name="commandClass" value="org.apache.servicemix.web.controller.FileUploadBean" />
+    <property name="formView" value="redirect:/shared-libraries.jsp" />
+    <property name="successView" value="redirect:/shared-libraries.jsp" />
   </bean>
 
   <bean name="/deployServiceAssembly.action" class="org.apache.servicemix.web.controller.DeployServiceAssembly" autowire="constructor"  singleton="false">
     <property name="commandClass" value="org.apache.servicemix.web.controller.FileUploadBean" />
+    <property name="formView" value="redirect:/service-assemblies.jsp" />
+    <property name="successView" value="redirect:/service-assemblies.jsp" />
   </bean>
   <bean name="/startServiceAssembly.action" class="org.apache.servicemix.web.controller.ServiceAssemblyLifeCycle" singleton="false">
     <constructor-arg ref="adminCommandsServiceMBean" />
