@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+   
+    http://www.apache.org/licenses/LICENSE-2.0
+   
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+  <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
+  
+  <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+  </bean>
+  
+  <bean id="server" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean">
+    <property name="serviceUrl" value="service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi" />
+    <property name="environmentMap">
+      <map>
+        <entry key="jmx.remote.credentials">
+          <bean class="org.springframework.util.StringUtils" factory-method="commaDelimitedListToStringArray">
+            <constructor-arg value="smx,smx" />
+          </bean>
+        </entry>
+      </map>
+    </property>
+  </bean>
+  
+  <bean id="adminCommandsServiceMBean" class="org.springframework.jmx.access.MBeanProxyFactoryBean">
+    <property name="objectName" value="org.apache.servicemix:ContainerName=ServiceMix,Type=SystemService,Name=AdminCommandsService" />
+    <property name="proxyInterface" value="org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean" />
+    <property name="server" ref="server"/>
+    <property name="useStrictCasing" value="false" />
+  </bean>
+  
+  <bean id="registryMBean" class="org.springframework.jmx.access.MBeanProxyFactoryBean">
+    <property name="objectName" value="org.apache.servicemix:ContainerName=ServiceMix,Type=SystemService,Name=Registry" />
+    <property name="proxyInterface" value="org.apache.servicemix.jbi.framework.RegistryMBean" />
+    <property name="server" ref="server"/>
+    <property name="useStrictCasing" value="false" />
+  </bean>
+  
+  <bean id="proxyManager" class="org.apache.servicemix.web.model.ProxyManager">
+    <constructor-arg ref="server" />
+  </bean>
+  
+  <bean id="registry" class="org.apache.servicemix.web.model.Registry">
+    <constructor-arg ref="proxyManager" />
+    <constructor-arg ref="registryMBean" />
+  </bean>
+  
+  <bean id="components" factory-bean="registry" factory-method="getComponents" singleton="false" />
+  <bean id="endpoints" factory-bean="registry" factory-method="getEndpoints" singleton="false" />
+  <bean id="serviceAssemblies" factory-bean="registry" factory-method="getServiceAssemblies" singleton="false" />
+  <bean id="serviceUnits" factory-bean="registry" factory-method="getServiceUnits" singleton="false" />
+  <bean id="sharedLibraries" factory-bean="registry" factory-method="getSharedLibraries" singleton="false" />
+  <bean id="component" class="org.apache.servicemix.web.ComponentFactoryBean">
+    <property name="registry" ref="registry" />
+  </bean>
+  <bean id="endpoint" class="org.apache.servicemix.web.EndpointFactoryBean">
+    <property name="registry" ref="registry" />
+  </bean>
+  <bean id="serviceUnit" class="org.apache.servicemix.web.ServiceUnitFactoryBean">
+    <property name="registry" ref="registry" />
+  </bean>
+  <bean id="serviceAssembly" class="org.apache.servicemix.web.ServiceAssemblyFactoryBean">
+    <property name="registry" ref="registry" />
+  </bean>
+  <bean id="sharedLibrary" class="org.apache.servicemix.web.SharedLibraryFactoryBean">
+    <property name="registry" ref="registry" />
+  </bean>
+  
+</beans>
