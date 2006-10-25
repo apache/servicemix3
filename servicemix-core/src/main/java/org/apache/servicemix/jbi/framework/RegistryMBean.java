@@ -17,7 +17,18 @@
 package org.apache.servicemix.jbi.framework;
 
 import javax.jbi.management.LifeCycleMBean;
+import javax.management.ObjectName;
 
 public interface RegistryMBean extends LifeCycleMBean {
 
+    ObjectName[] getComponentNames();
+    
+    ObjectName[] getServiceUnitNames();
+    
+    ObjectName[] getServiceAssemblyNames();
+    
+    ObjectName[] getSharedLibraryNames();
+    
+    ObjectName[] getEndpointNames();
+    
 }

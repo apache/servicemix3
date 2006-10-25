@@ -24,6 +24,16 @@ import javax.management.ObjectName;
  */
 public interface ComponentMBean extends ComponentLifeCycleMBean {
     
+    public static final String TYPE_SERVICE_ENGINE = "service-engine";
+    public static final String TYPE_BINDING_COMPONENT = "binding-component";
+    public static final String TYPE_POJO = "pojo";
+    
+    /**
+     * Get the name of this component
+     * @return the name of this component
+     */
+    public String getName();
+    
     /**
      * Is MessageExchange sender throttling enabled ?
      * @return true if throttling enabled
@@ -39,7 +49,7 @@ public interface ComponentMBean extends ComponentLifeCycleMBean {
     
     /**
      * Get the throttling timeout
-     * @return throttling tomeout (ms)
+     * @return throttling timeout (ms)
      */
     public long getThrottlingTimeout();
     
@@ -67,4 +77,9 @@ public interface ComponentMBean extends ComponentLifeCycleMBean {
      * @return the ObjectName for the stats MBean for this Component - or null if it doesn't exist
      */
     public ObjectName getStatsMBeanName();
+    
+    /**
+     * @return the component type (service-engine, binding-component)
+     */
+    public String getComponentType();
 }

@@ -17,6 +17,7 @@
 package org.apache.servicemix.jbi.framework;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -232,6 +233,15 @@ public class ServiceAssemblyRegistry {
            }
        }
        return result;
+   }
+   
+   /**
+    * Returns a list of service assemblies.
+    * 
+    * @return list of service assemblies
+    */
+   public Collection getServiceAssemblies() {
+       return serviceAssemblies.values();
    }
    
 }

@@ -525,6 +525,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      */
     public MBeanAttributeInfo[] getAttributeInfos() throws JMException {
         AttributeInfoHelper helper = new AttributeInfoHelper();
+        helper.addAttribute(getObjectToManage(), "componentType", "the type of this component (BC, SE, POJO)");
         helper.addAttribute(getObjectToManage(), "inboundQueueCapacity", "capacity of the inbound queue");
         helper.addAttribute(getObjectToManage(), "exchangeThrottling", "apply throttling");
         helper.addAttribute(getObjectToManage(), "throttlingTimeout", "timeout for throttling");
@@ -665,6 +666,13 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      */
     public String[] getSharedLibraries() {
         return sharedLibraries;
+    }
+
+    /**
+     * @return the component type
+     */
+    public String getComponentType() {
+        return isBinding() ? "binding-component" : isEngine() ? "service-engine" : "pojo";
     }
 
 }

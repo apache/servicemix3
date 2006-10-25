@@ -87,14 +87,19 @@ public class SharedLibrary implements SharedLibraryMBean, MBeanInfoProvider {
         return library.getIdentification().getName();
     }
 
+    public String getVersion() {
+        return library.getVersion();
+    }
+
     public Object getObjectToManage() {
         return this;
     }
 
     public MBeanAttributeInfo[] getAttributeInfos() throws JMException {
         AttributeInfoHelper helper = new AttributeInfoHelper();
-        helper.addAttribute(getObjectToManage(), "name", "name of the service unit");
-        helper.addAttribute(getObjectToManage(), "description", "description of the service unit");
+        helper.addAttribute(getObjectToManage(), "name", "name of the shared library");
+        helper.addAttribute(getObjectToManage(), "description", "description of this shared library");
+        helper.addAttribute(getObjectToManage(), "version", "version of this shared library");
         return helper.getAttributeInfos();
     }
 
@@ -114,5 +119,5 @@ public class SharedLibrary implements SharedLibraryMBean, MBeanInfoProvider {
         // We do not fire property events, so need to keep
         // a reference
     }
-
+    
 }

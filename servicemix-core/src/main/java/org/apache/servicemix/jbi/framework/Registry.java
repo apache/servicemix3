@@ -29,6 +29,7 @@ import javax.jbi.component.ComponentContext;
 import javax.jbi.management.DeploymentException;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.JMException;
+import javax.management.MBeanAttributeInfo;
 import javax.management.ObjectName;
 import javax.xml.namespace.QName;
 
@@ -42,6 +43,7 @@ import org.apache.servicemix.jbi.container.ServiceAssemblyEnvironment;
 import org.apache.servicemix.jbi.container.SubscriptionSpec;
 import org.apache.servicemix.jbi.deployment.ServiceAssembly;
 import org.apache.servicemix.jbi.deployment.ServiceUnit;
+import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
@@ -570,7 +572,6 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         result = new ObjectName[tmpList.size()];
         tmpList.toArray(result);
         return result;
-        
     }
     
     /**
@@ -696,6 +697,19 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         return result;
     }
 
+    /**
+     * Return a list of all service units.
+     * 
+     * @return list of all service units
+     */
+    public Collection getServiceUnits() {
+        return serviceUnits.values();
+    }
+    
+    public Collection getServiceAssemblies() {
+        return serviceAssemblyRegistry.getServiceAssemblies();
+    }
+    
     /**
      * Returns a list of Service Assemblies deployed to the JBI enviroment.
      * 
@@ -899,6 +913,67 @@ public class Registry extends BaseSystemService implements RegistryMBean {
             ComponentMBeanImpl comp = (ComponentMBeanImpl) iter.next();
             // TODO: restore component state if 
         }
+    }
+
+    public ObjectName[] getComponentNames() {
+        List tmpList = new ArrayList();
+        for (Iterator i = getComponents().iterator(); i.hasNext();){
+            ComponentMBeanImpl lcc = (ComponentMBeanImpl) i.next();
+            tmpList.add(container.getManagementContext().createObjectName(lcc));
+        }
+        return (ObjectName[]) tmpList.toArray(new ObjectName[tmpList.size()]);
+    }
+    
+    public ObjectName[] getEndpointNames() {
+        List tmpList = new ArrayList();
+        for (Iterator i = container.getRegistry().getEndpointRegistry().getEndpointMBeans().iterator(); i.hasNext();){
+            Endpoint ep = (Endpoint) i.next();
+            tmpList.add(container.getManagementContext().createObjectName(ep));
+        }
+        return (ObjectName[]) tmpList.toArray(new ObjectName[tmpList.size()]);
+    }
+
+    public ObjectName[] getServiceAssemblyNames() {
+        List tmpList = new ArrayList();
+        for (Iterator i = getServiceAssemblies().iterator(); i.hasNext();){
+            ServiceAssemblyLifeCycle sa = (ServiceAssemblyLifeCycle) i.next();
+            tmpList.add(container.getManagementContext().createObjectName(sa));
+        }
+        return (ObjectName[]) tmpList.toArray(new ObjectName[tmpList.size()]);
+    }
+
+    public ObjectName[] getServiceUnitNames() {
+        List tmpList = new ArrayList();
+        for (Iterator i = serviceUnits.values().iterator(); i.hasNext();){
+            ServiceUnitLifeCycle su = (ServiceUnitLifeCycle) i.next();
+            tmpList.add(container.getManagementContext().createObjectName(su));
+        }
+        return (ObjectName[]) tmpList.toArray(new ObjectName[tmpList.size()]);
+    }
+
+    public ObjectName[] getSharedLibraryNames() {
+        List tmpList = new ArrayList();
+        for (Iterator i = sharedLibraries.values().iterator(); i.hasNext();){
+            SharedLibrary sl = (SharedLibrary) i.next();
+            tmpList.add(container.getManagementContext().createObjectName(sl));
+        }
+        return (ObjectName[]) tmpList.toArray(new ObjectName[tmpList.size()]);
+    } 
+    
+    /**
+     * Get an array of MBeanAttributeInfo
+     * 
+     * @return array of AttributeInfos
+     * @throws JMException
+     */
+    public MBeanAttributeInfo[] getAttributeInfos() throws JMException {
+        AttributeInfoHelper helper = new AttributeInfoHelper();
+        helper.addAttribute(getObjectToManage(), "componentNames", "list of components");
+        helper.addAttribute(getObjectToManage(), "serviceUnitNames", "list of service units");
+        helper.addAttribute(getObjectToManage(), "serviceAssemblyNames", "list of service assemblies");
+        helper.addAttribute(getObjectToManage(), "endpointNames", "list of endpoints");
+        helper.addAttribute(getObjectToManage(), "sharedLibraryNames", "list of shared libraries");
+        return AttributeInfoHelper.join(super.getAttributeInfos(), helper.getAttributeInfos());
     }
 
 }

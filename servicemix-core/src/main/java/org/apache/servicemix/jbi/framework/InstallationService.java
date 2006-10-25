@@ -210,12 +210,17 @@ public class InstallationService extends BaseSystemService implements Installati
             File tmpDir=AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(),aSharedLibURI);
             if(tmpDir!=null){
                 Descriptor root=DescriptorFactory.buildDescriptor(tmpDir);
+                if (root == null) {
+                    throw new DeploymentException("Could not find JBI descriptor");
+                }
                 SharedLibrary sl=root.getSharedLibrary();
                 if(sl!=null){
                     result=doInstallSharedLibrary(tmpDir,sl);
+                } else {
+                    throw new DeploymentException("JBI descriptor is not a SharedLibrary descriptor");
                 }
             }else{
-                log.warn("location: "+aSharedLibURI+" isn't valid");
+                throw new DeploymentException("Could not find JBI descriptor");
             }
         }catch(DeploymentException e){
             log.error("Deployment failed",e);
@@ -269,12 +274,15 @@ public class InstallationService extends BaseSystemService implements Installati
         if (tmpDir != null) {
             Descriptor root = DescriptorFactory.buildDescriptor(tmpDir);
             if (root != null) {
+                if (root.getComponent() == null) {
+                    throw new DeploymentException("JBI descriptor is not a component descriptor");
+                }
                 install(tmpDir, props, root, autoStart);
-            }else{
-                log.error("Could not find Descriptor from: " + location);
+            } else {
+                throw new DeploymentException("Could not find JBI descriptor");
             }
-        }else{
-            log.warn("location: "+location+" isn't valid");
+        } else {
+            throw new DeploymentException("Could not find JBI descriptor");
         }
     }
 

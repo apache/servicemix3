@@ -18,4 +18,9 @@ package org.apache.servicemix.jbi.framework;
 
 public interface SharedLibraryMBean {
 
+    public String getName();
+    
+    public String getDescription();
+    
+    public String getVersion();
 }

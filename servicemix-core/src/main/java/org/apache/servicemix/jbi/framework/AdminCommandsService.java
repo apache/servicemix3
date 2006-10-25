@@ -522,8 +522,9 @@ public class AdminCommandsService extends BaseSystemService implements
 	public MBeanOperationInfo[] getOperationInfos() throws JMException {
 		OperationInfoHelper helper = new OperationInfoHelper();
 		ParameterHelper ph = helper.addOperation(getObjectToManage(),
-				"installComponent", 1, "install a component");
-		ph.setDescription(0, "file", "location of JBI Component to install");
+				"installComponent", 2, "install a component");
+        ph.setDescription(0, "file", "location of JBI Component to install");
+        ph.setDescription(1, "deferExceptions", "true if exceptions due to missing dependencies should be differed");
 
 		ph = helper.addOperation(getObjectToManage(), "uninstallComponent", 1,
 				"uninstall a component");
