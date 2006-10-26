@@ -83,11 +83,9 @@ public class DotViewEndpointListener extends EndpointViewRenderer implements Con
     protected void generateFile(PrintWriter writer) throws Exception {
         writer.println("digraph \"Apache ServiceMix\" {");
         writer.println();
-        writer.println("node [style = \"rounded,filled\", fillcolor = yellow, fontname=\"Helvetica-Oblique\"];");
+        writer.println("node [ shape = box, style = \"rounded,filled\", fontname = \"Helvetica-Oblique\", fontsize = 8 ];");
         writer.println();
-        writer.println("jbi [label=\"Apache ServiceMix: " + container.getName() + "\"];");
-        writer.println();
-        writer.println("node [fillcolor = green];");
+        writer.println("jbi [ fillcolor = \"#FFFF99\", label=\"Apache ServiceMix: " + container.getName() + "\" ];");
         writer.println();
 
         List brokerLinks = new ArrayList();
@@ -99,7 +97,7 @@ public class DotViewEndpointListener extends EndpointViewRenderer implements Con
             String id = encode(name);
 
             writer.print(id);
-            writer.print(" [ label=\"");
+            writer.print(" [ fillcolor = gray, label = \"");
             writer.print(name);
             writer.println("\" ];");
 
@@ -108,7 +106,6 @@ public class DotViewEndpointListener extends EndpointViewRenderer implements Con
         writer.println();
         generateLinks(writer, brokerLinks);
 
-        writer.println("node [fillcolor = red];");
         writer.println();
 
         List componentEndpointLinks = new ArrayList();
@@ -122,8 +119,25 @@ public class DotViewEndpointListener extends EndpointViewRenderer implements Con
             String componentName = encode(endpoint.getComponentName());
             String id = encode(key);
             writer.print(id);
-            writer.print(" [ label=\"");
-            writer.print(formatEndpoint(key));
+            String epname = formatEndpoint(key);
+            String color = "lightgray";
+            if (epname.startsWith("internal")) {
+                epname = epname.substring(10);
+                color = "#6699ff";
+            } else if (epname.startsWith("external")) {
+                epname = epname.substring(10);
+                color = "#66ccff";
+            } else if (epname.startsWith("dynamic")) {
+                epname = epname.substring(9);
+                color = "#6666ff";
+            } else if (epname.startsWith("linked")) {
+                epname = epname.substring(8);
+                color = "#66ffff";
+            } else {
+                color = "#f3f3f3";
+            }
+            writer.print(" [ fillcolor = \"" + color + "\", label = \"");
+            writer.print(epname);
             writer.println("\" ];");
             
             componentEndpointLinks.add(componentName + " -> " + id);

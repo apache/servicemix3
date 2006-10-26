@@ -55,12 +55,16 @@ public class DotViewFlowListener extends DotViewEndpointListener
 
     private Map flow;
     private Set flowLinks;
-    private boolean displayComponents;
+    private Set usedComponents;
+    private Set componentsAsConsumer;
+    private boolean displayComponents = true;
     
     public DotViewFlowListener() {
         setFile("ServiceMixFlow.dot");
         flow = new ConcurrentHashMap();
         flowLinks = new CopyOnWriteArraySet();
+        usedComponents = new CopyOnWriteArraySet();
+        componentsAsConsumer = new CopyOnWriteArraySet();
     }
 
     // Implementation methods
@@ -70,7 +74,7 @@ public class DotViewFlowListener extends DotViewEndpointListener
         writer.println("digraph \"Apache ServiceMix\" {");
         writer.println();
         writer.println("label = \"Apache ServiceMix flow\";");
-        writer.println("node [style = \"rounded,filled\", fillcolor = yellow, fontname=\"Helvetica-Oblique\"];");
+        writer.println("node [ shape = box, style = \"rounded,filled\", fontname = \"Helvetica-Oblique\", fontsize = 8 ];");
         writer.println();
 
         List brokerLinks = new ArrayList();
@@ -80,6 +84,9 @@ public class DotViewFlowListener extends DotViewEndpointListener
             ComponentMBeanImpl component = (ComponentMBeanImpl) iter.next();
             ServiceEndpoint[] ses = registry.getEndpointRegistry().getAllEndpointsForComponent(component.getComponentNameSpace());
             String name = component.getName();
+            if (!usedComponents.contains(name)) {
+                continue;
+            }
             // If we want to display components, create
             // a sub graph, grouping all the components
             // endpoints
@@ -87,9 +94,9 @@ public class DotViewFlowListener extends DotViewEndpointListener
                 String id = encode(name);
                 writer.println("subgraph cluster_" + id + " {");
                 writer.println("  label=\"" + name + "\";");
-                writer.println("  node [fillcolor = green];");
-                writer.println("  " + id + " [label=\"" + name + "\"];");
-                writer.println("  node [fillcolor = red];");
+                if (componentsAsConsumer.contains(name)) {
+                    writer.println("  " + id + " [ fillcolor = gray, label = \"" + name + "\" ];");
+                }
             }
             for (int i = 0; i < ses.length; i++) {
                 String key = EndpointSupport.getUniqueKey(ses[i]);
@@ -97,8 +104,24 @@ public class DotViewFlowListener extends DotViewEndpointListener
                 if (!isDisplayComponents()) {
                     epname += "\\n" + name;
                 }
+                String color = "lightgray";
+                if (epname.startsWith("internal")) {
+                    epname = epname.substring(10);
+                    color = "#6699ff";
+                } else if (epname.startsWith("external")) {
+                    epname = epname.substring(10);
+                    color = "#66ccff";
+                } else if (epname.startsWith("dynamic")) {
+                    epname = epname.substring(9);
+                    color = "#6666ff";
+                } else if (epname.startsWith("linked")) {
+                    epname = epname.substring(8);
+                    color = "#66ffff";
+                } else {
+                    color = "#f3f3f3";
+                }
                 String epid = encode(key);
-                writer.println("  " + epid + " [label=\"" + epname + "\"];");
+                writer.println("  " + epid + " [fillcolor = \"" + color + "\", label=\"" + epname + "\"];");
             }
             if (isDisplayComponents()) {
                 writer.println("}");
@@ -122,6 +145,7 @@ public class DotViewFlowListener extends DotViewEndpointListener
             String source = (String) me.getProperty(JbiConstants.SENDER_ENDPOINT);
             if (source == null) {
                 source = mei.getSourceId().getName();
+                componentsAsConsumer.add(source);
             } else {
                 ServiceEndpoint[] ses = getContainer().getRegistry().getEndpointRegistry().getAllEndpointsForComponent(mei.getSourceId());
                 for (int i = 0; i < ses.length; i++) {
@@ -131,6 +155,8 @@ public class DotViewFlowListener extends DotViewEndpointListener
                     }
                 }
             }
+            usedComponents.add(mei.getSourceId().getName());
+            usedComponents.add(mei.getDestinationId().getName());
             String dest = EndpointSupport.getUniqueKey(mei.getEndpoint());
             Map componentFlow = createSource(source);
             if (componentFlow.put(dest, Boolean.TRUE) == null) {
