@@ -41,14 +41,20 @@
       <tr>
         <th>Action</th>
         <td>
-          <!--
-          <form method="post" action=${componentAction}>
-            <input type="hidden" name="componentObjectName" value="${model.component.objectName}" />
-            <input type="hidden" name="componentName" value="${model.component.name}" />
-            <input type="hidden" name="command" value="executecomponentaction" />
-            <web:actions actions="${model.component.actions}" bundle="jbicomponents" />
-          </form>
-          -->
+          <table class="align"><tr>
+          <c:if test="${requestContext.component.status != 'Started'}">
+            <td class="align"><form method="post" action="startComponent.action?view=redirect:/component.jsp?name=${requestContext.component.name}"><input type="hidden" name="name" value="${requestContext.component.name}"/><input type="submit" value="Start"/></form></td>
+          </c:if> 
+          <c:if test="${requestContext.component.status == 'Started'}">
+            <td class="align"><form method="post" action="stopComponent.action?view=redirect:/component.jsp?name=${requestContext.component.name}"><input type="hidden" name="name" value="${requestContext.component.name}"/><input type="submit" value="Stop"/></form></td>
+          </c:if> 
+          <c:if test="${requestContext.component.status == 'Stopped'}">
+            <td class="align"><form method="post" action="shutdownComponent.action?view=redirect:/component.jsp?name=${requestContext.component.name}"><input type="hidden" name="name" value="${requestContext.component.name}"/><input type="submit" value="Shutdown"/></form></td>
+          </c:if> 
+          <c:if test="${requestContext.component.status == 'Shutdown'}">
+            <td class="align"><form method="post" action="uninstallComponent.action?view=redirect:/component.jsp?name=${requestContext.component.name}"><input type="hidden" name="name" value="${requestContext.component.name}"/><input type="submit" value="Uninstall"/></form></td> 
+          </c:if> 
+          </tr></table>
         </td>
       </tr>
     </tbody>
@@ -91,7 +97,7 @@
       <c:forEach items="${requestContext.component.endpoints}" var="row">
         <tr>
           <td>
-            <a href="endpoint.jsp?name=${row.name}">${row.name}</a>
+            <a href="endpoint.jsp?objectName=${row.objectName}">${row.name}</a>
           </td>
         </tr>
       </c:forEach>

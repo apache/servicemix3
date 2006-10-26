@@ -25,14 +25,18 @@
   <thead>
     <tr>
       <th>Name</th>
+      <th>Status</th>
       <th>Component</th>
+      <th>Service Assembly</th>
     </tr>
   </thead>
   <tbody>
     <c:forEach items="${requestContext.serviceUnits}" var="row">
       <tr>
-        <td><a href="service-unit.jsp?objectName=${row.objectName}">${row.name}</a></td>
-        <td><a href="component.jsp?objectName=${row.component.objectName}">${row.component.name}</a></td>
+        <td><a href="service-unit.jsp?name=${row.name}">${row.name}</a></td>
+        <td>${row.status}</td>
+        <td><a href="component.jsp?name=${row.component.name}">${row.component.name}</a></td>
+        <td><a href="service-assembly.jsp?name=${row.serviceAssembly.name}">${row.serviceAssembly.name}</a></td>
       </tr>
     </c:forEach>
   </tbody>

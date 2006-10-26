@@ -32,12 +32,14 @@
   <thead>
     <tr>
       <th>Name</th>
+      <th>Version</th>
     </tr>
   </thead>
   <tbody>
     <c:forEach items="${requestContext.sharedLibraries}" var="row">
       <tr>
         <td><a href="shared-library.jsp?name=${row.name}">${row.name}</a></td>
+        <td>${row.version}</td>
       </tr>
     </c:forEach>
   </tbody>

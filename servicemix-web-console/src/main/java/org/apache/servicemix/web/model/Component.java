@@ -39,7 +39,7 @@ public class Component {
     }
 
     public String getName() {
-        return mbean.getName();
+        return objectName.getKeyProperty("Name");
     }
 
     public String getType() {

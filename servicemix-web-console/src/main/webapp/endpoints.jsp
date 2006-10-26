@@ -32,7 +32,7 @@
   <tbody>
     <c:forEach items="${requestContext.endpoints}" var="row">
       <tr>
-        <td><a href="endpoint.jsp?name=${row.name}">${row.name}</a></td>
+        <td><a href="endpoint.jsp?objectName=${row.objectName}">${row.name}</a></td>
         <td>${row.type}</td>
         <td><a href="component.jsp?name=${row.component.name}">${row.component.name}</a></td>
       </tr>

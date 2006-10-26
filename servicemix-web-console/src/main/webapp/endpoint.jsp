@@ -27,19 +27,39 @@
   <table>
     <tbody>
       <tr>
-        <td>Name</td>
+        <th>Name</td>
         <td><div class="field">${requestContext.endpoint.name}</div></td>
       </tr>
       <tr>
-        <td>Type</td>
+        <th>Type</td>
         <td><div class="field">${requestContext.endpoint.type}</div></td>
       </tr>
       <tr>
-        <td>Component</td>
+        <th>Component</td>
         <td><div class="field"><a href="component.jsp?name=${requestContext.endpoint.component.name}">${requestContext.endpoint.component.name}</a></div></td>
+      </tr>
+      <tr>
+        <th>Interfaces</th>
+        <td><div class="field">
+          <c:forEach items="${requestContext.endpoint.interfaces}" var="row">
+            ${row}
+          </c:forEach>
+        </div></td>
       </tr>
     </tbody>
   </table>
+</fieldset>
+
+<fieldset>
+  <legend> WSDL &nbsp; 
+    <small>
+       <c:if test="${requestContext.endpoint.showWsdl}">(<a href="endpoint.jsp?objectName=${requestContext.endpoint.objectName}&amp;showWsdl=false">hide</a>)</c:if>
+       <c:if test="${!requestContext.endpoint.showWsdl}">(<a href="endpoint.jsp?objectName=${requestContext.endpoint.objectName}&amp;showWsdl=true">show</a>)</c:if>
+    </small>
+  </legend>
+  <c:if test="${requestContext.endpoint.showWsdl}">
+    <div id="error" style="height: 25em;"><pre>${requestContext.endpoint.wsdl}</pre></div>
+  </c:if>
 </fieldset>
 
 </body>

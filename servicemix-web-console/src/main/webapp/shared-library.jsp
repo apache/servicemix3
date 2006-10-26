@@ -36,7 +36,7 @@
       </tr>
       <tr>
         <th>Version</th>
-        <td><div class="field">TODO</div></td>
+        <td><div class="field">${requestContext.sharedLibrary.version}</div></td>
       </tr>
     </tbody>
   </table>

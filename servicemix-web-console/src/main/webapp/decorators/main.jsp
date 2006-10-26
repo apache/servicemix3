@@ -58,14 +58,16 @@
         <div id="menu-page">
           <ul>
               <li><a href="<c:url value='/index.jsp'/>" title="Home<"><span>Home</span></a></li>
-              <li><a href="<c:url value='/services.jsp'/>" title="Services"><span>Services</span></a></li>
               <li><a href="<c:url value='/components.jsp'/>" title="Components"><span>Components</span></a></li>
               <li><a href="<c:url value='/shared-libraries.jsp'/>" title="Shared Libraries"><span>Shared Libraries</span></a></li>
               <li><a href="<c:url value='/service-assemblies.jsp'/>" title="Service Assemblies"><span>Service Assemblies</span></a></li>
               <li><a href="<c:url value='/service-units.jsp'/>" title="Service Units"><span>Service Units</span></a></li>
               <li><a href="<c:url value='/endpoints.jsp'/>" title="Endpoints"><span>Endpoints</span></a></li>
               <li><a href="<c:url value='/audit.jsp'/>" title="Audit"><span>Audit</span></a></li>
+              <li><a href="<c:url value='/view.jsp'/>" title="View"><span>View</span></a></li>
           </ul>
+          <br/>
+          <br/>
           <br/>
           <br/>
           <br/>

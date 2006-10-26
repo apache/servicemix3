@@ -39,7 +39,7 @@
   <tbody>
     <c:forEach items="${requestContext.serviceAssemblies}" var="row">
       <tr>
-        <td><a href="service-assembly.jsp?objectName=${row.objectName}">${row.name}</a></td>
+        <td><a href="service-assembly.jsp?name=${row.name}">${row.name}</a></td>
         <td>${row.status}</td>
         <td>
           <table class="align"><tr>

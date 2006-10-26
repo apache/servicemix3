@@ -36,6 +36,13 @@
     </property>
   </bean>
   
+  <bean id="jdbcAuditorMBean" class="org.springframework.jmx.access.MBeanProxyFactoryBean">
+    <property name="objectName" value="org.apache.servicemix:ContainerName=ServiceMix,Type=SystemService,Name=JdbcAuditor" />
+    <property name="proxyInterface" value="org.apache.servicemix.jbi.audit.AuditorMBean" />
+    <property name="server" ref="server"/>
+    <property name="useStrictCasing" value="false" />
+  </bean>
+  
   <bean id="adminCommandsServiceMBean" class="org.springframework.jmx.access.MBeanProxyFactoryBean">
     <property name="objectName" value="org.apache.servicemix:ContainerName=ServiceMix,Type=SystemService,Name=AdminCommandsService" />
     <property name="proxyInterface" value="org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean" />
@@ -50,6 +57,13 @@
     <property name="useStrictCasing" value="false" />
   </bean>
   
+  <bean id="dotViewServiceMBean" class="org.springframework.jmx.access.MBeanProxyFactoryBean">
+    <property name="objectName" value="org.apache.servicemix:ContainerName=ServiceMix,Type=SystemService,Name=DotViewService" />
+    <property name="proxyInterface" value="org.apache.servicemix.jbi.view.DotViewServiceMBean" />
+    <property name="server" ref="server"/>
+    <property name="useStrictCasing" value="false" />
+  </bean>
+  
   <bean id="proxyManager" class="org.apache.servicemix.web.model.ProxyManager">
     <constructor-arg ref="server" />
   </bean>
@@ -59,6 +73,9 @@
     <constructor-arg ref="registryMBean" />
   </bean>
   
+  <bean id="auditor" class="org.apache.servicemix.web.Auditor" singleton="false">
+    <constructor-arg ref="jdbcAuditorMBean" />
+  </bean>
   <bean id="components" factory-bean="registry" factory-method="getComponents" singleton="false" />
   <bean id="endpoints" factory-bean="registry" factory-method="getEndpoints" singleton="false" />
   <bean id="serviceAssemblies" factory-bean="registry" factory-method="getServiceAssemblies" singleton="false" />

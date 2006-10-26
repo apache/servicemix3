@@ -78,6 +78,18 @@
     <property name="view" value="redirect:/service-assemblies.jsp" />
   </bean>
   
+  <bean name="/dot-flow.svg" class="org.apache.servicemix.web.controller.DotViewController" singleton="false">
+    <constructor-arg ref="dotViewServiceMBean" />
+    <property name="type" value="flow" />
+    <property name="view" ref="dotView" />
+  </bean>
+  
+  <bean name="/dot-endpoints.svg" class="org.apache.servicemix.web.controller.DotViewController" singleton="false">
+    <constructor-arg ref="dotViewServiceMBean" />
+    <property name="type" value="endpoints" />
+    <property name="view" ref="dotView" />
+  </bean>
+  
   <!--
     - This bean resolves specific types of exception to corresponding error views.
     - The default behaviour of DispatcherServlet is to propagate all exceptions to the
@@ -87,6 +99,10 @@
     <property name="exceptionMappings">
       <props><!-- <prop key="org.springframework.dao.DataAccessException">dataAccessFailure</prop> --></props>
     </property>
+  </bean>
+  
+  <bean id="dotView" class="org.apache.servicemix.web.view.DotView">
+    <property name="dotFormat" value="svg" />
   </bean>
 
 </beans>

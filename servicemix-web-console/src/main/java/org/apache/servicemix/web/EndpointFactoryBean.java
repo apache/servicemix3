@@ -16,9 +16,13 @@
  */
 package org.apache.servicemix.web;
 
+import javax.management.MalformedObjectNameException;
+
 import org.apache.servicemix.web.filter.Factory;
+import org.apache.servicemix.web.model.Endpoint;
 import org.apache.servicemix.web.model.Registry;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.jmx.support.ObjectNameManager;
 
 public class EndpointFactoryBean implements FactoryBean {
 
@@ -26,13 +30,24 @@ public class EndpointFactoryBean implements FactoryBean {
     
     public Object getObject() throws Exception {
         return new Factory() {
-            private String name;
-            @SuppressWarnings("unused")
-            public void setName(String name) {
-                this.name = name;
-            }
+            private String objectName;
+            private boolean showWsdl;
             public Object getBean() {
-                return registry.getEndpoint(name);
+                try {
+                    Endpoint ep = registry.getEndpoint(ObjectNameManager.getInstance(objectName));
+                    ep.setShowWsdl(showWsdl);
+                    return ep;
+                } catch (MalformedObjectNameException e) {
+                    return null;
+                }
+            }
+            @SuppressWarnings("unused")
+            public void setObjectName(String objectName) {
+                this.objectName = objectName;
+            }
+            @SuppressWarnings("unused")
+            public void setShowWsdl(boolean showWsdl) {
+                this.showWsdl = showWsdl;
             }
         };
     }

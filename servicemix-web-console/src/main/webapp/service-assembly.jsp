@@ -38,6 +38,25 @@
         <th>Status</th>
         <td><div class="field">${requestContext.serviceAssembly.status}</div></td>
       </tr>
+      <tr>
+        <th>Actions</th>
+        <td>
+          <table class="align"><tr>
+          <c:if test="${requestContext.serviceAssembly.status != 'Started'}">
+            <td class="align"><form method="post" action="startServiceAssembly.action?view=redirect:/service-assembly.jsp?name=${requestContext.serviceAssembly.name}"><input type="hidden" name="name" value="${requestContext.serviceAssembly.name}"/><input type="submit" value="Start"/></form></td>
+          </c:if> 
+          <c:if test="${requestContext.serviceAssembly.status == 'Started'}">
+            <td class="align"><form method="post" action="stopServiceAssembly.action?view=redirect:/service-assembly.jsp?name=${requestContext.serviceAssembly.name}"><input type="hidden" name="name" value="${requestContext.serviceAssembly.name}"/><input type="submit" value="Stop"/></form></td>
+          </c:if> 
+          <c:if test="${requestContext.serviceAssembly.status == 'Stopped'}">
+            <td class="align"><form method="post" action="shutdownServiceAssembly.action?view=redirect:/service-assembly.jsp?name=${requestContext.serviceAssembly.name}"><input type="hidden" name="name" value="${requestContext.serviceAssembly.name}"/><input type="submit" value="Shutdown"/></form></td>
+          </c:if> 
+          <c:if test="${requestContext.serviceAssembly.status == 'Shutdown'}">
+            <td class="align"><form method="post" action="uninstallServiceAssembly.action?view=redirect:/service-assembly.jsp?name=${requestContext.serviceAssembly.name}"><input type="hidden" name="name" value="${requestContext.serviceAssembly.name}"/><input type="submit" value="Uninstall"/></form></td> 
+          </c:if> 
+          </tr></table>
+        </td>
+      </tr>
     </tbody>
   </table>
 </fieldset>

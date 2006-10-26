@@ -39,7 +39,7 @@ public class ServiceUnit {
     }
 
     public String getName() {
-        return mbean.getName();
+        return objectName.getKeyProperty("Name");
     }
     
     public Component getComponent() {
@@ -48,6 +48,10 @@ public class ServiceUnit {
     
     public ServiceAssembly getServiceAssembly() {
         return registry.getServiceAssembly(mbean.getServiceAssembly());
+    }
+    
+    public String getStatus() {
+        return mbean.getCurrentState();
     }
     
     public boolean equals(Object o) {

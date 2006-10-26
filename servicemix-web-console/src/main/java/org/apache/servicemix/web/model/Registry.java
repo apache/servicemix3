@@ -77,9 +77,9 @@ public class Registry {
         return endpoints;
     }
 
-    public Endpoint getEndpoint(String name) {
+    public Endpoint getEndpoint(ObjectName objectName) {
         for (Endpoint endpoint : getEndpoints()) {
-            if (endpoint.getName().equals(name)) {
+            if (endpoint.getObjectName().equals(objectName)) {
                 return endpoint;
             }
         }

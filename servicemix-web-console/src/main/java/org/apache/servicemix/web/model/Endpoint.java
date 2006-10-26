@@ -16,7 +16,12 @@
  */
 package org.apache.servicemix.web.model;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import javax.management.ObjectName;
+import javax.xml.namespace.QName;
 
 import org.apache.servicemix.jbi.framework.EndpointMBean;
 
@@ -27,6 +32,8 @@ public class Endpoint {
     private EndpointMBean mbean;
 
     private ObjectName objectName;
+    
+    private boolean showWsdl;
 
     public Endpoint(Registry registry, EndpointMBean mbean, ObjectName objectName) {
         this.registry = registry;
@@ -60,6 +67,27 @@ public class Endpoint {
     
     public int hashCode() {
         return objectName.hashCode();
+    }
+
+    public boolean isShowWsdl() {
+        return showWsdl;
+    }
+
+    public void setShowWsdl(boolean showWsdl) {
+        this.showWsdl = showWsdl;
+    }
+    
+    public String getWsdl() {
+        return mbean.loadWSDL().replace("<", "&lt;");
+    }
+    
+    public List<QName> getInterfaces() {
+        QName[] names = mbean.getInterfaces();
+        if (names != null) {
+            return Arrays.asList(names);
+        } else {
+            return Collections.emptyList(); 
+        }
     }
 
 }
