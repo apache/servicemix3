@@ -36,11 +36,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>activeio-core</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
       <optional>true</optional>

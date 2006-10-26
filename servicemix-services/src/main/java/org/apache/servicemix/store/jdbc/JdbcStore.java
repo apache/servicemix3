@@ -16,13 +16,13 @@
  */
 package org.apache.servicemix.store.jdbc;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.sql.Connection;
 
-import org.apache.activeio.util.ByteArrayInputStream;
-import org.apache.activeio.util.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.store.Store;

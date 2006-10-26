@@ -19,9 +19,9 @@ package org.apache.servicemix.jdbc;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.apache.activeio.util.FactoryFinder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.finder.FactoryFinder;
 import org.apache.servicemix.jdbc.adapter.DefaultJDBCAdapter;
 
 public class JDBCAdapterFactory {
