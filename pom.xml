@@ -298,7 +298,7 @@
                 <module>servicemix-saxon</module>
                 <module>servicemix-wsn2005</module>
                 <module>samples</module>
-                <module>geronimo</module>
+                <!--module>geronimo</module-->
                 <module>apache-servicemix</module>
             </modules>
         </profile>
@@ -432,6 +432,12 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
+        </pluginRepository>
+        <!-- Dependencies not on central repo -->
+        <pluginRepository>
+            <id>servicemix-m2-repo</id>
+            <name>Servicemix Maven2 Repository</name>
+            <url>http://servicemix.org/m2-repo</url>
         </pluginRepository>
         <!-- Apache snapshot -->
         <pluginRepository>
