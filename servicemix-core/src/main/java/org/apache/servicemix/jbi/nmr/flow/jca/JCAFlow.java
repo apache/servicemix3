@@ -59,8 +59,6 @@ import org.apache.activemq.command.RemoveInfo;
 import org.apache.activemq.ra.ActiveMQActivationSpec;
 import org.apache.activemq.ra.ActiveMQManagedConnectionFactory;
 import org.apache.activemq.ra.ActiveMQResourceAdapter;
-import org.apache.geronimo.connector.outbound.connectionmanagerconfig.SinglePool;
-import org.apache.geronimo.connector.outbound.connectionmanagerconfig.XATransactions;
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.executors.Executor;
 import org.apache.servicemix.executors.ExecutorFactory;
