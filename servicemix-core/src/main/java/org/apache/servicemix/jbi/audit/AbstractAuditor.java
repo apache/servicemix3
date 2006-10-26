@@ -100,6 +100,8 @@ public abstract class AbstractAuditor extends BaseSystemService implements Audit
         ParameterHelper ph = helper.addOperation(getObjectToManage(), "getExchanges", 2, "retrieve a bunch messages");
         ph.setDescription(0, "fromIndex", "lower index of message (start from 0)");
         ph.setDescription(1, "toIndex", "upper index of message (exclusive, > fromIndex)");
+        ph = helper.addOperation(getObjectToManage(), "getExchange", 1, "retrieve an exchange given its id");
+        ph.setDescription(0, "id", "id of the exchange to retrieve");
         return OperationInfoHelper.join(super.getOperationInfos(), helper.getOperationInfos());
     }
     
