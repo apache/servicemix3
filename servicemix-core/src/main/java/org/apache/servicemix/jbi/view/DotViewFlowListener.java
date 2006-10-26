@@ -55,6 +55,7 @@ public class DotViewFlowListener extends DotViewEndpointListener
 
     private Map flow;
     private Set flowLinks;
+    private boolean displayComponents;
     
     public DotViewFlowListener() {
         setFile("ServiceMixFlow.dot");
@@ -77,24 +78,31 @@ public class DotViewFlowListener extends DotViewEndpointListener
         Collection components = registry.getComponents();
         for (Iterator iter = components.iterator(); iter.hasNext();) {
             ComponentMBeanImpl component = (ComponentMBeanImpl) iter.next();
-            ServiceEndpoint[] ses = registry.getEndpointsForComponent(component.getComponentNameSpace());
-
+            ServiceEndpoint[] ses = registry.getEndpointRegistry().getAllEndpointsForComponent(component.getComponentNameSpace());
             String name = component.getName();
-            String id = encode(name);
-
-            writer.println("subgraph cluster_" + id + " {");
-            writer.println("  label=\"" + name + "\";");
-            writer.println("  node [fillcolor = green];");
-            writer.println("  " + id + " [label=\"" + name + "\"];");
-            writer.println("  node [fillcolor = red];");
-            
+            // If we want to display components, create
+            // a sub graph, grouping all the components
+            // endpoints
+            if (isDisplayComponents()) {
+                String id = encode(name);
+                writer.println("subgraph cluster_" + id + " {");
+                writer.println("  label=\"" + name + "\";");
+                writer.println("  node [fillcolor = green];");
+                writer.println("  " + id + " [label=\"" + name + "\"];");
+                writer.println("  node [fillcolor = red];");
+            }
             for (int i = 0; i < ses.length; i++) {
-                String epname = EndpointSupport.getKey(ses[i]);
-                String epid = encode(epname);
+                String key = EndpointSupport.getUniqueKey(ses[i]);
+                String epname = formatEndpoint(key);
+                if (!isDisplayComponents()) {
+                    epname += "\\n" + name;
+                }
+                String epid = encode(key);
                 writer.println("  " + epid + " [label=\"" + epname + "\"];");
             }
-            
-            writer.println("}");
+            if (isDisplayComponents()) {
+                writer.println("}");
+            }
         }
         writer.println();
         generateLinks(writer, brokerLinks);
@@ -104,9 +112,8 @@ public class DotViewFlowListener extends DotViewEndpointListener
         generateLinks(writer, flowLinks);
         
         writer.println("}");
-        
     }
-
+    
     public void exchangeSent(ExchangeEvent event) {
         MessageExchange me = event.getExchange();
         if (me.getEndpoint() != null &&
@@ -115,41 +122,49 @@ public class DotViewFlowListener extends DotViewEndpointListener
             String source = (String) me.getProperty(JbiConstants.SENDER_ENDPOINT);
             if (source == null) {
                 source = mei.getSourceId().getName();
+            } else {
+                ServiceEndpoint[] ses = getContainer().getRegistry().getEndpointRegistry().getAllEndpointsForComponent(mei.getSourceId());
+                for (int i = 0; i < ses.length; i++) {
+                    if (EndpointSupport.getKey(ses[i]).equals(source)) {
+                        source = EndpointSupport.getUniqueKey(ses[i]);
+                        break;
+                    }
+                }
             }
-            String dest = EndpointSupport.getKey(mei.getEndpoint());
-            Map componentFlow = (Map) flow.get(source);
+            String dest = EndpointSupport.getUniqueKey(mei.getEndpoint());
+            Map componentFlow = createSource(source);
             if (componentFlow.put(dest, Boolean.TRUE) == null) {
                 flowLinks.add(encode(source) + " -> " + encode(dest));
                 viewIsDirty(mei.getEndpoint());
             }
         }
-        
     }
     
-    protected void createSource(String name) {
+    protected Map createSource(String name) {
         synchronized (flow) {
             Map componentFlow = (Map) flow.get(name);
             if (componentFlow == null) {
                 componentFlow = new ConcurrentHashMap();
                 flow.put(name, componentFlow);
             }
+            return componentFlow;
         }
     }
 
     public void internalEndpointRegistered(EndpointEvent event) {
-        String key = EndpointSupport.getKey(event.getEndpoint());
+        String key = EndpointSupport.getUniqueKey(event.getEndpoint());
         createSource(key);
         super.internalEndpointRegistered(event);
     }
     
     public void externalEndpointRegistered(EndpointEvent event) {
-        String key = EndpointSupport.getKey(event.getEndpoint());
+        String key = EndpointSupport.getUniqueKey(event.getEndpoint());
         createSource(key);
         super.externalEndpointRegistered(event);
     }
     
     public void linkedEndpointRegistered(EndpointEvent event) {
-        String key = EndpointSupport.getKey(event.getEndpoint());
+        String key = EndpointSupport.getUniqueKey(event.getEndpoint());
         createSource(key);
         super.linkedEndpointRegistered(event);
     }
@@ -169,6 +184,14 @@ public class DotViewFlowListener extends DotViewEndpointListener
     }
 
     public void componentUninstalled(ComponentEvent event) {
+    }
+
+    public boolean isDisplayComponents() {
+        return displayComponents;
+    }
+
+    public void setDisplayComponents(boolean displayComponents) {
+        this.displayComponents = displayComponents;
     }
 
 }

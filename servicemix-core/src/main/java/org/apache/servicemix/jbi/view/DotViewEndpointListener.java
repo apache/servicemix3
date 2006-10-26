@@ -115,12 +115,15 @@ public class DotViewEndpointListener extends EndpointViewRenderer implements Con
         Collection endpointMBeans = registry.getEndpointRegistry().getEndpointMBeans();
         for (Iterator iter = endpointMBeans.iterator(); iter.hasNext();) {
             Endpoint endpoint = (Endpoint) iter.next();
-            String name = endpoint.getEndpointName();
+            String key = endpoint.getSubType().toLowerCase() + ":{" + 
+                                endpoint.getServiceName().getNamespaceURI() + "}" + 
+                                endpoint.getServiceName().getLocalPart() + ":" + 
+                                endpoint.getEndpointName(); 
             String componentName = encode(endpoint.getComponentName());
-            String id = encode(name);
+            String id = encode(key);
             writer.print(id);
             writer.print(" [ label=\"");
-            writer.print(name);
+            writer.print(formatEndpoint(key));
             writer.println("\" ];");
             
             componentEndpointLinks.add(componentName + " -> " + id);
@@ -128,6 +131,21 @@ public class DotViewEndpointListener extends EndpointViewRenderer implements Con
         generateLinks(writer, componentEndpointLinks);
         
         writer.println("}");
+    }
+
+    protected String formatEndpoint(String key) {
+        int i1 = key.indexOf('{');
+        int i2 = key.indexOf('}');
+        int i3 = key.indexOf(':', i2);
+        String type = key.charAt(i1 - 1) == ':' ? key.substring(0, i1 - 1) : null;
+        String uri = key.substring(i1 + 1, i2);
+        String svc = key.substring(i2 + 1, i3);
+        String ep = key.substring(i3 + 1);
+        if (type != null) {
+            return type + "\\n" + uri + "\\n" + svc + "\\n" + ep;
+        } else {
+            return uri + "\\n" + svc + "\\n" + ep;
+        }
     }
 
     protected void generateLinks(PrintWriter writer, Collection lines, String style) {

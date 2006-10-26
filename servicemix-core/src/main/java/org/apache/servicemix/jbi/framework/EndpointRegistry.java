@@ -98,6 +98,23 @@ public class EndpointRegistry {
         return asEndpointArray(endpoints);
     }
     
+    public ServiceEndpoint[] getAllEndpointsForComponent(ComponentNameSpace cns) {
+        Collection endpoints = new ArrayList();
+        for (Iterator iter = getInternalEndpoints().iterator(); iter.hasNext();) {
+            InternalEndpoint endpoint = (InternalEndpoint) iter.next();
+            if (cns.equals(endpoint.getComponentNameSpace())) {
+                endpoints.add(endpoint);
+            }
+        }
+        for (Iterator iter = getExternalEndpoints().iterator(); iter.hasNext();) {
+            ExternalEndpoint endpoint = (ExternalEndpoint) iter.next();
+            if (cns.equals(endpoint.getComponentNameSpace())) {
+                endpoints.add(endpoint);
+            }
+        }
+        return asEndpointArray(endpoints);
+    }
+    
     /**
      * Returns a collection of Endpoint objects
      */

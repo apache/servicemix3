@@ -37,4 +37,18 @@ public class EndpointSupport {
         return getKey(endpoint.getServiceName(), endpoint.getEndpointName());
     }
     
+    public static String getUniqueKey(ServiceEndpoint endpoint) {
+        if (endpoint instanceof InternalEndpoint) {
+            return "internal:" + getKey(endpoint);
+        } else if (endpoint instanceof ExternalEndpoint) {
+            return "external:" + getKey(endpoint);
+        } else if (endpoint instanceof DynamicEndpoint) {
+            return "dynamic:" + getKey(endpoint);
+        } else if (endpoint instanceof LinkedEndpoint) {
+            return "linked:" + getKey(endpoint);
+        } else {
+            return endpoint.getClass().getName() + ":" + getKey(endpoint);
+        }
+    }
+    
 }
