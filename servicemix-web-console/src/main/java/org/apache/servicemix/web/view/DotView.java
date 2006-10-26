@@ -68,11 +68,8 @@ public class DotView extends AbstractView {
             dotImg = File.createTempFile("smx_", ".dot." + getDotFormat());
             
             String cmd = getDotPath() + " -T" + getDotFormat() + " \"" + dotSrc.getCanonicalPath() + "\" -o\"" + dotImg.getAbsolutePath() + "\"";
-            System.err.println("Executing: " + cmd);
             Process p = Runtime.getRuntime().exec(cmd);
             p.waitFor();
-            FileUtil.copyInputStream(p.getErrorStream(), System.err);
-            FileUtil.copyInputStream(p.getInputStream(), System.out);
             
             InputStream is = new FileInputStream(dotImg);
             if (is.available() == 0) {

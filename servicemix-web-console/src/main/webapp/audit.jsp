@@ -22,43 +22,131 @@
 
 <h2>Audit</h2>
 
-<table class="autostripe">
-  <thead>
-    <tr>
-      <th>Id</th>
-      <th>Date</th>
-      <th>Status</th>
-      <th>MEP</th>
-    </tr>
-  </thead>
-  <tbody>
-    <c:forEach var="exchange" items="${requestContext.auditor.exchanges}">
+<fieldset>
+  <legend>Exchanges</legend>
+  <table class="autostripe">
+    <thead>
       <tr>
-        <td>${exchange.id}</td>
-        <td>${exchange.date}</td>
-        <td>${exchange.status}</td>
-        <td>${exchange.mep}</td>
+        <th>Id</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>MEP</th>
       </tr>
-    </c:forEach>
-  </tbody>
-  <tfooter>
-    <tr>
-      <td colspan="4">
-        <c:forEach var="i" begin="0" end="${requestContext.auditor.count / 10}">
-          <c:choose>
-            <c:when test="${i == requestContext.auditor.page}">
-              ${i}
-            </c:when>
-            <c:otherwise>
-              <a href="audit.jsp?page=${i}">${i}</a>
-            </c:otherwise>
-          </c:choose>
-          &nbsp;
-        </c:forEach>
-      </td>
-    </tr>
-  </tfooter>
-</table>
+    </thead>
+    <tbody>
+      <c:forEach var="exchange" items="${requestContext.auditor.exchanges}">
+        <tr>
+          <td><a href="audit.jsp?page=${requestContext.auditor.page}&amp;exchangeId=${exchange.id}">${exchange.id}</a></td>
+          <td>${exchange.date}</td>
+          <td>${exchange.status}</td>
+          <td>${exchange.mep}</td>
+        </tr>
+      </c:forEach>
+    </tbody>
+    <tfooter>
+      <tr>
+        <td colspan="4">
+          <c:forEach var="i" begin="0" end="${(requestContext.auditor.count - 1) / 10}">
+            <c:choose>
+              <c:when test="${i == requestContext.auditor.page}">
+                ${i}
+              </c:when>
+              <c:otherwise>
+                <a href="audit.jsp?page=${i}">${i}</a>
+              </c:otherwise>
+            </c:choose>
+            &nbsp;
+          </c:forEach>
+        </td>
+      </tr>
+    </tfooter>
+  </table>
+</fieldset>
+
+<c:if test="${requestContext.auditor.selectedExchange != null}">
+<fieldset>
+  <legend>Exchange details</legend>
+  <table>
+    <tbody>
+      <tr>
+        <th>Id</th>
+        <td>${requestContext.auditor.selectedExchange.id}</td>
+      </tr>
+      <tr>
+        <th>Date</th>
+        <td>${requestContext.auditor.selectedExchange.date}</td>
+      </tr>
+      <tr>
+        <th>Status</th>
+        <td>${requestContext.auditor.selectedExchange.status}</td>
+      </tr>
+      <tr>
+        <th>Mep</th>
+        <td>${requestContext.auditor.selectedExchange.mep}</td>
+      </tr>
+      <tr>
+        <th>Properties</th>
+        <td><pre>${requestContext.auditor.selectedExchange.properties}</pre></td>
+      </tr>
+      <tr>
+        <th>Endpoint</th>
+        <td><pre>${requestContext.auditor.selectedExchange.endpoint}</pre></td>
+      </tr>
+    </tbody>
+  </table>
+  <c:if test="${requestContext.auditor.selectedExchange.in != null}">
+    <fieldset>
+      <legend>In</legend>
+      <table>
+        <tbody>
+        <tr>
+          <th>Properties</th>
+          <td><pre>${requestContext.auditor.selectedExchange.in.properties}</pre></td>
+        </tr>
+        <tr>
+          <th>Content</th>
+          <td><pre>${requestContext.auditor.selectedExchange.in.content}</pre></td>
+        </tr>
+        </tbody>
+      </table>
+    </fieldset>
+  </c:if>
+  <c:if test="${requestContext.auditor.selectedExchange.out != null}">
+    <fieldset>
+      <legend>Out</legend>
+      <table>
+        <tbody>
+        <tr>
+          <th>Properties</th>
+          <td><pre>${requestContext.auditor.selectedExchange.out.properties}</pre></td>
+        </tr>
+        <tr>
+          <th>Content</th>
+          <td><pre>${requestContext.auditor.selectedExchange.out.content}</pre></td>
+        </tr>
+        </tbody>
+      </table>
+    </fieldset>
+  </c:if>
+  <c:if test="${requestContext.auditor.selectedExchange.fault != null}">
+    <fieldset>
+      <legend>Fault</legend>
+      <table>
+        <tbody>
+        <tr>
+          <th>Properties</th>
+          <td><pre>${requestContext.auditor.selectedExchange.fault.properties}</pre></td>
+        </tr>
+        <tr>
+          <th>Content</th>
+          <td><pre>${requestContext.auditor.selectedExchange.fault.content}</pre></td>
+        </tr>
+        </tbody>
+      </table>
+    </fieldset>
+  </c:if>
+</fieldset>
+</c:if>
 
 </body>
 </html>
