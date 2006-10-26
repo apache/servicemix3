@@ -143,7 +143,6 @@ public class ServiceMixClientFacade implements ServiceMixClient {
 
     public void send(MessageExchange exchange) throws MessagingException {
         getDeliveryChannel().send(exchange);
-        done(exchange);
     }
         
     public void send(Message message) throws MessagingException {
@@ -204,7 +203,6 @@ public class ServiceMixClientFacade implements ServiceMixClient {
      */
     public void fail(MessageExchange exchange, Fault fault) throws MessagingException {
         exchange.setFault(fault);
-        exchange.setStatus(ExchangeStatus.ERROR);
         getDeliveryChannel().send(exchange);
     }
 
@@ -212,10 +210,11 @@ public class ServiceMixClientFacade implements ServiceMixClient {
      * A helper method which fails and completes the given exchange with the specified error
      */
     public void fail(MessageExchange exchange, Exception error) throws MessagingException {
-        exchange.setError(error);
         if (error instanceof FaultException) {
             FaultException faultException = (FaultException) error;
             exchange.setFault(faultException.getFault());
+        } else {
+            exchange.setError(error);
         }
         getDeliveryChannel().send(exchange);
     }
@@ -267,7 +266,9 @@ public class ServiceMixClientFacade implements ServiceMixClient {
         if (outMessage == null) {
             throw new NoOutMessageAvailableException(exchange);
         }
-        return getMarshaler().unmarshal(exchange, outMessage);
+        Object result = getMarshaler().unmarshal(exchange, outMessage);
+        done(exchange);
+        return result;
     }
 
     public EndpointResolver createResolverForService(QName service) {
