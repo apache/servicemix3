@@ -20,7 +20,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
 import javax.jbi.JBIException;
-import org.apache.servicemix.jbi.util.FactoryFinder;
+
+import org.apache.servicemix.finder.FactoryFinder;
 import org.apache.servicemix.jbi.util.IntrospectionSupport;
 import org.apache.servicemix.jbi.util.URISupport;
 import org.apache.commons.logging.Log;
