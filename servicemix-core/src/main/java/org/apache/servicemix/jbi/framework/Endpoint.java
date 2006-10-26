@@ -43,8 +43,6 @@ import org.apache.servicemix.jbi.servicedesc.LinkedEndpoint;
 import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.servicemix.jbi.util.QNameUtil;
 
-import sun.security.action.GetLongAction;
-
 public class Endpoint implements EndpointMBean, MBeanInfoProvider {
 
     private static final Log log = LogFactory.getLog(Endpoint.class);
@@ -69,7 +67,7 @@ public class Endpoint implements EndpointMBean, MBeanInfoProvider {
         return endpoint.getServiceName();
     }
     
-    public String getReference() {
+    public String loadReference() {
         try {
             return DOMUtil.asIndentedXML(endpoint.getAsReference(null));
         } catch (TransformerException e) {
@@ -77,7 +75,7 @@ public class Endpoint implements EndpointMBean, MBeanInfoProvider {
         }
     }
     
-    public String getWSDL() {
+    public String loadWSDL() {
         try {
             return DOMUtil.asXML(registry.getEndpointDescriptor(endpoint));
         } catch (Exception e) {
@@ -104,8 +102,8 @@ public class Endpoint implements EndpointMBean, MBeanInfoProvider {
 
     public MBeanOperationInfo[] getOperationInfos() throws JMException {
         OperationInfoHelper helper = new OperationInfoHelper();
-        helper.addOperation(getObjectToManage(), "getReference", "retrieve the endpoint reference");
-        helper.addOperation(getObjectToManage(), "getWSDL", "retrieve the wsdl description of this endpoint");
+        helper.addOperation(getObjectToManage(), "loadReference", "retrieve the endpoint reference");
+        helper.addOperation(getObjectToManage(), "loadWSDL", "retrieve the wsdl description of this endpoint");
         helper.addOperation(getObjectToManage(), "send", "send a simple message exchange to test this endpoint");
         return helper.getOperationInfos();
     }

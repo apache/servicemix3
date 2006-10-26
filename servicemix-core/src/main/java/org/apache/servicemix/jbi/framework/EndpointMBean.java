@@ -16,8 +16,6 @@
  */
 package org.apache.servicemix.jbi.framework;
 
-import java.net.URI;
-
 import javax.xml.namespace.QName;
 
 public interface EndpointMBean {
@@ -30,9 +28,9 @@ public interface EndpointMBean {
     
     public String getComponentName();
     
-    public String getReference();
+    public String loadReference();
     
-    public String getWSDL();
+    public String loadWSDL();
     
     public String send(String content, String operation, String mep);
 
