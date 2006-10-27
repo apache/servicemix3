@@ -22,7 +22,7 @@
 
 <h2>View</h2>
 
-<fieldset style="height:15em">
+<fieldset style="height:25em">
   <legend>Endpoints &nbsp; <small>(<a href="dot-endpoints.svg">full page</a>)</small></legend>
   <object width="100%" height="90%" type="image/svg+xml" codetype="image/svg+xml" data="dot-endpoints.svg">
     <span style="background-color:#FFFF20;padding-top:1pt;padding-bottom:1pt;">
@@ -35,7 +35,7 @@
   </object>
 </fieldset>
 
-<fieldset style="height:15em">
+<fieldset style="height:25em">
   <legend>Flow &nbsp; <small>(<a href="dot-flow.svg">full page</a>)</small></legend>
   <object width="100%" height="90%" type="image/svg+xml" codetype="image/svg+xml" data="dot-flow.svg">
     <span style="background-color:#FFFF20;padding-top:1pt;padding-bottom:1pt;">
