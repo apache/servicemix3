@@ -17,9 +17,9 @@
 package org.apache.servicemix.jbi.jaxp;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.Arrays;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
@@ -30,15 +30,14 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.jaxp.StaxSource;
+import org.apache.servicemix.jbi.util.FileUtil;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
-
-import junit.framework.TestCase;
 
 public class StaxSourceTest extends TestCase {
 
@@ -46,15 +45,29 @@ public class StaxSourceTest extends TestCase {
 
     public void testStaxSourceOnStream() throws Exception {
         InputStream is = getClass().getResourceAsStream("test.xml");
-        XMLStreamReader xsr = XMLInputFactory.newInstance().createXMLStreamReader(is);
+        XMLInputFactory factory = XMLInputFactory.newInstance();
+        factory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
+        XMLStreamReader xsr = factory.createXMLStreamReader(is);
         StaxSource ss = new StaxSource(xsr);
         StringWriter buffer = new StringWriter();
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.transform(ss, new StreamResult(buffer));
         log.info(buffer.toString());
+        
+        /*
+         * Attribute ordering is not preserved, so we can not compare the strings
+         * 
+        is = getClass().getResourceAsStream("test.xml");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        FileUtil.copyInputStream(is, baos);
+        compare(baos.toString().replaceAll("\r", ""), buffer.toString().replaceAll("\r", ""));
+        */
+        
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         Document doc = dbf.newDocumentBuilder().parse(new ByteArrayInputStream(buffer.toString().getBytes()));
+        checkDomResult(doc);
+        
         StringWriter buffer2 = new StringWriter();
         transformer.transform(new DOMSource(doc), new StreamResult(buffer2));
         log.info(buffer2.toString());
@@ -68,6 +81,7 @@ public class StaxSourceTest extends TestCase {
         DOMResult result = new DOMResult();
         transformer.transform(ss, result);
         assertNotNull(result.getNode());
+        checkDomResult((Document) result.getNode());
     }
 
     public void testStaxToDOM() throws Exception {
@@ -77,11 +91,22 @@ public class StaxSourceTest extends TestCase {
         DOMSource src = new SourceTransformer().toDOMSource(ss);
         assertNotNull(src);
         assertNotNull(src.getNode());
-        NodeList nl = ((Document) src.getNode()).getDocumentElement().getElementsByTagName("long");
-        assertEquals(1, nl.getLength());
-        Text txt = (Text) nl.item(0).getFirstChild();
-        System.out.println(txt.getTextContent());
-        
+        checkDomResult((Document) src.getNode());
+    }
+    
+    protected void checkDomResult(Document doc) {
+        // Whitespace only elements must be preserved
+        NodeList l = doc.getElementsByTagName("child4");
+        assertEquals(1, l.getLength());
+        assertEquals(1, l.item(0).getChildNodes().getLength());
+        Text txt = (Text) l.item(0).getFirstChild();
+        assertEquals("   ", txt.getTextContent());
+
+        // Check long string
+        l = doc.getDocumentElement().getElementsByTagName("long");
+        assertEquals(1, l.getLength());
+        assertEquals(1, l.item(0).getChildNodes().getLength());
+        txt = (Text) l.item(0).getFirstChild();
         StringBuffer expected = new StringBuffer();
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 10; j++) {
@@ -95,16 +120,23 @@ public class StaxSourceTest extends TestCase {
                 expected.append("\n");
             }
         }
-        /*
-        char[] c1 = txt.getTextContent().toCharArray();
-        char[] c2 = expected.toString().toCharArray();
+        assertEquals(expected.toString(), txt.getTextContent());
+    }
+    
+    protected void compare(String s1, String s2) {
+        char[] c1 = s1.toCharArray();
+        char[] c2 = s2.toCharArray();
         for (int i = 0; i < c1.length; i++) {
             if (c1[i] != c2[i]) {
-                fail("Expected '" + (int)c2[i] + "' but found '" + (int)c1[i] + "' at index " + i);
+                fail("Expected '" + (int)c2[i] + "' but found '" + (int)c1[i] + "' at index " + i + ". Expected '" + build(c2, i) + "' but found '" + build(c1, i) + "'.");
             }
         }
-        */
-        assertEquals(expected.toString(), txt.getTextContent());
+    }
+    
+    protected String build(char[] c, int i) {
+        int min = Math.max(0, i - 10);
+        int cnt = Math.min(20, c.length - min);
+        return new String(c, min, cnt);
     }
 
 }
