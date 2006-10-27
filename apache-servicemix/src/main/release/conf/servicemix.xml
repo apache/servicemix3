@@ -67,4 +67,15 @@
     </sm:activationSpecs>
   </sm:container>
 
+  <sm:jdbcAuditor container="#jbi" autoStart="false">
+    <sm:dataSource> 
+      <bean class="org.apache.derby.jdbc.EmbeddedDataSource">
+        <property name="databaseName" value="servicemixDB"/>
+        <property name="createDatabase" value="create"/>
+      </bean>
+    </sm:dataSource> 
+  </sm:jdbcAuditor>
+  
+  <sm:dotViewService container="#jbi" autoStart="true" />
+
 </beans>
