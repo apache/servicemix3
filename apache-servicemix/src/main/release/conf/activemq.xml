@@ -22,11 +22,11 @@
   
   <amq:broker depends-on="jmxServer">
 
-    <managementContext>
+    <amq:managementContext>
       <bean class="org.apache.activemq.broker.jmx.ManagementContext">
         <property name="createConnector" value="false" />
       </bean>
-    </managementContext>
+    </amq:managementContext>
 
     <amq:persistenceAdapter>
       <amq:journaledJDBC journalLogFiles="5" dataDirectory="./data/amq"/>
