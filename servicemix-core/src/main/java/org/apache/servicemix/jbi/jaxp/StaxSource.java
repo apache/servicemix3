@@ -33,6 +33,7 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
+import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class StaxSource extends SAXSource implements XMLReader {
@@ -40,6 +41,8 @@ public class StaxSource extends SAXSource implements XMLReader {
     private XMLStreamReader streamReader;
 
     private ContentHandler contentHandler;
+    
+    private LexicalHandler lexicalHandler;
 
     public StaxSource(XMLStreamReader streamReader) {
         this.streamReader = streamReader;
@@ -52,29 +55,49 @@ public class StaxSource extends SAXSource implements XMLReader {
 
     protected void parse() throws SAXException {
         try {
-            contentHandler.startDocument();
             while (true) {
                 switch (streamReader.getEventType()) {
+                // Attributes are handled in START_ELEMENT
                 case XMLStreamConstants.ATTRIBUTE:
-                case XMLStreamConstants.CDATA:
                     break;
+                case XMLStreamConstants.CDATA:
+                {
+                    if (lexicalHandler != null) {
+                        lexicalHandler.startCDATA();
+                    }
+                    int length = streamReader.getTextLength();
+                    int start = streamReader.getTextStart();
+                    char[] chars = streamReader.getTextCharacters();
+                    contentHandler.characters(chars, start, length);
+                    if (lexicalHandler != null) {
+                        lexicalHandler.endCDATA();
+                    }
+                    break;
+                }
                 case XMLStreamConstants.CHARACTERS:
-                    if (!streamReader.isWhiteSpace()) {
-                        
+                {
+                    int length = streamReader.getTextLength();
+                    int start = streamReader.getTextStart();
+                    char[] chars = streamReader.getTextCharacters();
+                    contentHandler.characters(chars, start, length);
+                    break;
+                }
+                case XMLStreamConstants.SPACE:
+                {
+                    int length = streamReader.getTextLength();
+                    int start = streamReader.getTextStart();
+                    char[] chars = streamReader.getTextCharacters();
+                    contentHandler.ignorableWhitespace(chars, start, length);
+                    break;
+                }
+                case XMLStreamConstants.COMMENT:
+                    if (lexicalHandler != null) {
                         int length = streamReader.getTextLength();
                         int start = streamReader.getTextStart();
                         char[] chars = streamReader.getTextCharacters();
-                        contentHandler.characters(chars, start, length);
-                        /*
-                        for (int textLength = streamReader.getTextLength(); textLength > 0; textLength -= chars.length) {
-                            int l = Math.min(textLength, chars.length);
-                            streamReader.getTextCharacters(0, chars, 0, l);
-                            contentHandler.characters(chars, 0, l);
-                        }
-                        */
+                        lexicalHandler.comment(chars, start, length);
                     }
                     break;
-                case XMLStreamConstants.COMMENT:
                 case XMLStreamConstants.DTD:
                     break;
                 case XMLStreamConstants.END_DOCUMENT:
@@ -95,9 +118,11 @@ public class StaxSource extends SAXSource implements XMLReader {
                 case XMLStreamConstants.ENTITY_REFERENCE:
                 case XMLStreamConstants.NAMESPACE:
                 case XMLStreamConstants.NOTATION_DECLARATION:
+                    break;
                 case XMLStreamConstants.PROCESSING_INSTRUCTION:
-                case XMLStreamConstants.SPACE:
+                    break;
                 case XMLStreamConstants.START_DOCUMENT:
+                    contentHandler.startDocument();
                     break;
                 case XMLStreamConstants.START_ELEMENT: {
                     for (int i = 0; i < streamReader.getNamespaceCount(); i++) {
@@ -191,6 +216,11 @@ public class StaxSource extends SAXSource implements XMLReader {
     }
 
     public void setProperty(String name, Object value) throws SAXNotRecognizedException, SAXNotSupportedException {
+        if( "http://xml.org/sax/properties/lexical-handler".equals(name) ) {
+            lexicalHandler = (LexicalHandler) value;
+        } else {
+            throw new SAXNotRecognizedException(name);
+        }
     }
 
     public void setEntityResolver(EntityResolver resolver) {
