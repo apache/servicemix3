@@ -29,6 +29,7 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.servicedesc.ServiceEndpoint;
+import javax.xml.namespace.QName;
 
 /**
  * Base class for a component.
@@ -193,4 +194,8 @@ public abstract class BaseComponent implements ServiceMixComponent {
         lifeCycle.sendConsumerExchange(exchange, endpoint);
     }
 
+    public QName getEPRElementName() {
+        return null;
+    }
+    
 }

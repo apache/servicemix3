@@ -113,7 +113,7 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
         return this.context.getMBeanNames().createCustomComponentMBeanName("Configuration");
     }
 
-    protected QName getEPRServiceName() {
+    public QName getEPRServiceName() {
         return null;
     }
 

@@ -14,27 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.common;
+package org.apache.servicemix.common.endpoints;
 
 import javax.jbi.component.ComponentContext;
-import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessageExchangeFactory;
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.messaging.RobustInOnly;
 import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
-public abstract class ProviderEndpoint extends Endpoint implements ExchangeProcessor {
+import org.apache.servicemix.common.DefaultComponent;
+import org.apache.servicemix.common.ServiceUnit;
+
+public abstract class ProviderEndpoint extends SimpleEndpoint {
 
     private ServiceEndpoint activated;
-    private DeliveryChannel channel;
-    private MessageExchangeFactory exchangeFactory;
-    private ComponentContext context;
 
 
     public ProviderEndpoint() {
@@ -46,7 +43,6 @@ public abstract class ProviderEndpoint extends Endpoint implements ExchangeProce
 
     public ProviderEndpoint(DefaultComponent component, ServiceEndpoint endpoint) {
         super(component.getServiceUnit(), endpoint.getServiceName(), endpoint.getEndpointName());
-        logger = component.getLogger();
     }
 
     /* (non-Javadoc)
@@ -56,17 +52,12 @@ public abstract class ProviderEndpoint extends Endpoint implements ExchangeProce
         return Role.PROVIDER;
     }
 
-    public void activate() throws Exception {
+    public void start() throws Exception {
         ComponentContext ctx = getServiceUnit().getComponent().getComponentContext();
-        context = new EndpointComponentContext(this);
-        channel = context.getDeliveryChannel();
-        exchangeFactory = channel.createExchangeFactory();
         activated = ctx.activateEndpoint(service, endpoint);
-        start();
     }
 
-    public void deactivate() throws Exception {
-        stop();
+    public void stop() throws Exception {
         if (activated == null) {
             throw new IllegalStateException("Endpoint not activated: " + this);
         }
@@ -75,38 +66,6 @@ public abstract class ProviderEndpoint extends Endpoint implements ExchangeProce
         ComponentContext ctx = getServiceUnit().getComponent().getComponentContext();
         ctx.deactivateEndpoint(ep);
     }
-
-    public ExchangeProcessor getProcessor() {
-        return this;
-    }
-
-    protected void send(MessageExchange me) throws MessagingException {
-        channel.send(me);
-    }
-    
-    protected void done(MessageExchange me) throws MessagingException {
-        me.setStatus(ExchangeStatus.DONE);
-        send(me);
-    }
-    
-    protected void fail(MessageExchange me, Exception error) throws MessagingException {
-        me.setError(error);
-        send(me);
-    }
-    
-    /**
-     * @return the exchangeFactory
-     */
-    public MessageExchangeFactory getExchangeFactory() {
-        return exchangeFactory;
-    }
-
-    public void start() throws Exception {
-    }
-    
-    public void stop() throws Exception {
-    }
-
 
     /**
      * A default implementation of the message processor which checks the status of the exchange

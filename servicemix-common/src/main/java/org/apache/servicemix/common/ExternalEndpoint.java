@@ -27,28 +27,31 @@ import org.w3c.dom.Text;
 
 public class ExternalEndpoint implements ServiceEndpoint {
 
-    private String eprUri;
-    private String eprName;
-    private String uri;
-    private String endpointName;
+    private QName eprElement;
+    private String locationUri;
     private QName serviceName;
+    private String endpointName;
     private QName[] interfaces = null;
     
-    public ExternalEndpoint(String eprUri, String eprName, String uri, 
-                            String epName, QName serviceName, QName[] interfaces) {
-        this.eprUri = eprUri;
-        this.eprName = eprName;
-        this.uri = uri;
+    public ExternalEndpoint(QName eprElement, 
+                            String locationUri,
+                            QName serviceName, 
+                            String epName, 
+                            QName[] interfaces) {
+        this.eprElement = eprElement;
+        this.locationUri = locationUri;
         this.endpointName = epName;
         this.serviceName = serviceName;
         this.interfaces = interfaces;
     }
 
-    public ExternalEndpoint(String eprUri, String eprName, String uri, 
-                            String epName, QName serviceName, QName interfaceName) {
-        this.eprUri = eprUri;
-        this.eprName = eprName;
-        this.uri = uri;
+    public ExternalEndpoint(QName eprElement, 
+                            String locationUri,
+                            QName serviceName, 
+                            String epName, 
+                            QName interfaceName) {
+        this.eprElement = eprElement;
+        this.locationUri = locationUri;
         this.endpointName = epName;
         this.serviceName = serviceName;
         if (interfaceName != null) {
@@ -62,8 +65,8 @@ public class ExternalEndpoint implements ServiceEndpoint {
             dbf.setNamespaceAware(true);
             Document doc = dbf.newDocumentBuilder().newDocument();
             DocumentFragment df = doc.createDocumentFragment();
-            Element e = doc.createElementNS(eprUri, eprName);
-            Text t = doc.createTextNode(uri);
+            Element e = doc.createElementNS(eprElement.getNamespaceURI(), eprElement.getLocalPart());
+            Text t = doc.createTextNode(locationUri);
             e.appendChild(t);
             df.appendChild(e);
             return df;
@@ -72,16 +75,16 @@ public class ExternalEndpoint implements ServiceEndpoint {
         }
     }
 
+    public QName getServiceName() {
+        return serviceName;
+    }
+
     public String getEndpointName() {
         return endpointName;
     }
 
     public QName[] getInterfaces() {
         return interfaces;
-    }
-
-    public QName getServiceName() {
-        return serviceName;
     }
 
 }

@@ -24,6 +24,7 @@ import javax.jbi.component.Component;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
+import javax.xml.namespace.QName;
 
 /**
  * Represents an extended JBI Component implementation which exposes some extra features
@@ -65,4 +66,9 @@ public interface ServiceMixComponent extends Component {
      * @throws MessagingException
      */
     public void sendConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException;
+
+    /**
+     * @return the QName of the element used in EPR
+     */
+    public QName getEPRElementName();
 }

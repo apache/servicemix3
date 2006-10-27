@@ -30,6 +30,8 @@ import javax.jbi.component.ServiceUnitManager;
 import javax.jbi.management.DeploymentException;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.servicedesc.ServiceEndpoint;
+import javax.xml.namespace.QName;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Iterator;
@@ -128,10 +130,54 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
         return true;
     }
 
+    public QName getEPRServiceName() {
+        return new QName(getEPRUri(), getEPRComponentName());
+    }
+    
+    public QName getEPRElementName() {
+        return new QName(getEPRUri(), "epr");
+    }
+    
+    protected String[] getEPRProtocols() {
+        String protocol = getEPRStrippedComponentName().toLowerCase() + ":";
+        return new String[] { protocol };
+    }
+    
+    private String getEPRComponentName() {
+        String suffix = getClass().getName();
+        suffix = suffix.substring(suffix.lastIndexOf('.') + 1);
+        if (suffix.lastIndexOf('$') > 0) {
+            suffix = suffix.substring(suffix.lastIndexOf('$') + 1);
+        }
+        return suffix;
+    }
+    
+    private String getEPRStrippedComponentName() {
+        String suffix = getEPRComponentName();
+        if (suffix.endsWith("Component")) {
+            suffix = suffix.substring(0, suffix.length() - 9);
+        }
+        return suffix;
+    }
+    
+    private String getEPRUri() {
+        String uri = "urn:servicemix:" + getEPRStrippedComponentName().toLowerCase();
+        return uri;
+    }
+
     /* (non-Javadoc)
      * @see javax.jbi.component.Component#resolveEndpointReference(org.w3c.dom.DocumentFragment)
      */
     public ServiceEndpoint resolveEndpointReference(DocumentFragment epr) {
+        String[] protocols = getEPRProtocols();
+        QName elementName = getEPRElementName();
+        QName serviceName = getEPRServiceName();
+        for (int i = 0; i < protocols.length; i++) {
+            ServiceEndpoint ep = ResolvedEndpoint.resolveEndpoint(epr, elementName, serviceName, protocols[i]);
+            if (ep != null) {
+                return ep;
+            }
+        }
         return null;
     }
 

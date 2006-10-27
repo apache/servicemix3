@@ -71,7 +71,7 @@ public class ResolvedEndpoint implements ServiceEndpoint {
         return interfaces;
     }
 
-    public static ServiceEndpoint resolveEndpoint(DocumentFragment epr, String eprUri, String eprName, QName serviceName, String uriPrefix) {
+    public static ServiceEndpoint resolveEndpoint(DocumentFragment epr, QName elementName, QName serviceName, String uriPrefix) {
         if (epr.getChildNodes().getLength() == 1) {
             Node child = epr.getFirstChild();
             if (child instanceof Element) {
@@ -79,7 +79,7 @@ public class ResolvedEndpoint implements ServiceEndpoint {
                 String nsUri = elem.getNamespaceURI();
                 String name = elem.getLocalName();
                 // Check simple endpoints
-                if (eprUri.equals(nsUri) && eprName.equals(name)) {
+                if (elementName.getNamespaceURI().equals(nsUri) && elementName.getLocalPart().equals(name)) {
                     return new ResolvedEndpoint(epr, DOMUtil.getElementText(elem), serviceName);
                     // Check WSA endpoints
                 }
