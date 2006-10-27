@@ -25,8 +25,8 @@ import junit.framework.TestCase;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
+import org.apache.servicemix.http.HttpComponent;
 import org.apache.servicemix.http.HttpEndpoint;
-import org.apache.servicemix.http.HttpSpringComponent;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
@@ -80,7 +80,7 @@ public class WSNComponentTest extends TestCase {
     }
 
     public void testDynamicSubscription() throws Exception {
-        HttpSpringComponent httpComponent = new HttpSpringComponent();
+        HttpComponent httpComponent = new HttpComponent();
 
         HttpEndpoint httpWSNBroker = new HttpEndpoint();
         httpWSNBroker.setService(new QName("http://servicemix.org/wsnotification", "NotificationBroker"));
