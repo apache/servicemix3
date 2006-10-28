@@ -15,76 +15,81 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
-<beans>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+  
+  <bean id="handlerMapping" class="org.apache.servicemix.web.handler.BindingBeanNameUrlHandlerMapping" />
 
-  <bean id="handlerMapping" class="org.apache.servicemix.web.handler.BindingBeanNameUrlHandlerMapping" singleton="false" />
-
-  <bean name="/installComponent.action" class="org.apache.servicemix.web.controller.InstallComponent" autowire="constructor"  singleton="false">
+  <bean name="/installComponent.action" class="org.apache.servicemix.web.controller.InstallComponent" scope="request">
+    <constructor-arg ref="adminCommandsServiceMBean" />
     <property name="commandClass" value="org.apache.servicemix.web.controller.FileUploadBean" />
     <property name="formView" value="redirect:/components.jsp" />
     <property name="successView" value="redirect:/components.jsp" />
   </bean>
-  <bean name="/startComponent.action" class="org.apache.servicemix.web.controller.ComponentLifeCycle" singleton="false">
+  <bean name="/startComponent.action" class="org.apache.servicemix.web.controller.ComponentLifeCycle" scope="request">
     <constructor-arg ref="adminCommandsServiceMBean" />
     <constructor-arg value="start" />
     <property name="view" value="redirect:/components.jsp" />
   </bean>
-  <bean name="/stopComponent.action" class="org.apache.servicemix.web.controller.ComponentLifeCycle" singleton="false">
+  <bean name="/stopComponent.action" class="org.apache.servicemix.web.controller.ComponentLifeCycle" scope="request">
     <constructor-arg ref="adminCommandsServiceMBean" />
     <constructor-arg value="stop" />
     <property name="view" value="redirect:/components.jsp" />
   </bean>
-  <bean name="/shutdownComponent.action" class="org.apache.servicemix.web.controller.ComponentLifeCycle" singleton="false">
+  <bean name="/shutdownComponent.action" class="org.apache.servicemix.web.controller.ComponentLifeCycle" scope="request">
     <constructor-arg ref="adminCommandsServiceMBean" />
     <constructor-arg value="shutdown" />
     <property name="view" value="redirect:/components.jsp" />
   </bean>
-  <bean name="/uninstallComponent.action" class="org.apache.servicemix.web.controller.ComponentLifeCycle" singleton="false">
+  <bean name="/uninstallComponent.action" class="org.apache.servicemix.web.controller.ComponentLifeCycle" scope="request">
     <constructor-arg ref="adminCommandsServiceMBean" />
     <constructor-arg value="uninstall" />
     <property name="view" value="redirect:/components.jsp" />
   </bean>
 
-  <bean name="/installSharedLibrary.action" class="org.apache.servicemix.web.controller.InstallSharedLibrary" autowire="constructor"  singleton="false">
+  <bean name="/installSharedLibrary.action" class="org.apache.servicemix.web.controller.InstallSharedLibrary" scope="request">
+    <constructor-arg ref="adminCommandsServiceMBean" />
     <property name="commandClass" value="org.apache.servicemix.web.controller.FileUploadBean" />
     <property name="formView" value="redirect:/shared-libraries.jsp" />
     <property name="successView" value="redirect:/shared-libraries.jsp" />
   </bean>
 
-  <bean name="/deployServiceAssembly.action" class="org.apache.servicemix.web.controller.DeployServiceAssembly" autowire="constructor"  singleton="false">
+  <bean name="/deployServiceAssembly.action" class="org.apache.servicemix.web.controller.DeployServiceAssembly" scope="request">
+    <constructor-arg ref="adminCommandsServiceMBean" />
     <property name="commandClass" value="org.apache.servicemix.web.controller.FileUploadBean" />
     <property name="formView" value="redirect:/service-assemblies.jsp" />
     <property name="successView" value="redirect:/service-assemblies.jsp" />
   </bean>
-  <bean name="/startServiceAssembly.action" class="org.apache.servicemix.web.controller.ServiceAssemblyLifeCycle" singleton="false">
+  <bean name="/startServiceAssembly.action" class="org.apache.servicemix.web.controller.ServiceAssemblyLifeCycle" scope="request">
     <constructor-arg ref="adminCommandsServiceMBean" />
     <constructor-arg value="start" />
     <property name="view" value="redirect:/service-assemblies.jsp" />
   </bean>
-  <bean name="/stopServiceAssembly.action" class="org.apache.servicemix.web.controller.ServiceAssemblyLifeCycle" singleton="false">
+  <bean name="/stopServiceAssembly.action" class="org.apache.servicemix.web.controller.ServiceAssemblyLifeCycle" scope="request">
     <constructor-arg ref="adminCommandsServiceMBean" />
     <constructor-arg value="stop" />
     <property name="view" value="redirect:/service-assemblies.jsp" />
   </bean>
-  <bean name="/shutdownServiceAssembly.action" class="org.apache.servicemix.web.controller.ServiceAssemblyLifeCycle" singleton="false">
+  <bean name="/shutdownServiceAssembly.action" class="org.apache.servicemix.web.controller.ServiceAssemblyLifeCycle" scope="request">
     <constructor-arg ref="adminCommandsServiceMBean" />
     <constructor-arg value="shutdown" />
     <property name="view" value="redirect:/service-assemblies.jsp" />
   </bean>
-  <bean name="/uninstallServiceAssembly.action" class="org.apache.servicemix.web.controller.ServiceAssemblyLifeCycle" singleton="false">
+  <bean name="/uninstallServiceAssembly.action" class="org.apache.servicemix.web.controller.ServiceAssemblyLifeCycle" scope="request">
     <constructor-arg ref="adminCommandsServiceMBean" />
     <constructor-arg value="uninstall" />
     <property name="view" value="redirect:/service-assemblies.jsp" />
   </bean>
   
-  <bean name="/dot-flow.svg" class="org.apache.servicemix.web.controller.DotViewController" singleton="false">
+  <bean name="/dot-flow.svg" class="org.apache.servicemix.web.controller.DotViewController" scope="session">
     <constructor-arg ref="dotViewServiceMBean" />
     <property name="type" value="flow" />
     <property name="view" ref="dotView" />
   </bean>
   
-  <bean name="/dot-endpoints.svg" class="org.apache.servicemix.web.controller.DotViewController" singleton="false">
+  <bean name="/dot-endpoints.svg" class="org.apache.servicemix.web.controller.DotViewController" scope="request">
     <constructor-arg ref="dotViewServiceMBean" />
     <property name="type" value="endpoints" />
     <property name="view" ref="dotView" />

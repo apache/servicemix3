@@ -15,53 +15,55 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
-<beans>
-
-  <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+  
+  <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="location" value="classpath:servicemix-web-console.properties" />
+  </bean>
   
   <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
   </bean>
   
   <bean id="server" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean">
-    <property name="serviceUrl" value="service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi" />
+    <property name="serviceUrl" value="${jmx-service-url}" />
     <property name="environmentMap">
       <map>
         <entry key="jmx.remote.credentials">
           <bean class="org.springframework.util.StringUtils" factory-method="commaDelimitedListToStringArray">
-            <constructor-arg value="smx,smx" />
+            <constructor-arg value="${jmx-username},${jmx-password}" />
           </bean>
         </entry>
       </map>
     </property>
   </bean>
   
-  <bean id="jdbcAuditorMBean" class="org.springframework.jmx.access.MBeanProxyFactoryBean">
-    <property name="objectName" value="org.apache.servicemix:ContainerName=ServiceMix,Type=SystemService,Name=JdbcAuditor" />
+  <bean id="jmxProxy" abstract="true" class="org.springframework.jmx.access.MBeanProxyFactoryBean">
+    <property name="server" ref="server"/>
+    <property name="useStrictCasing" value="false" />
+    <property name="connectOnStartup" value="false" />
+  </bean>
+  
+  <bean id="jdbcAuditorMBean" parent="jmxProxy">
+    <property name="objectName" value="${jdbc-auditor-mbean-name}" />
     <property name="proxyInterface" value="org.apache.servicemix.jbi.audit.AuditorMBean" />
-    <property name="server" ref="server"/>
-    <property name="useStrictCasing" value="false" />
   </bean>
   
-  <bean id="adminCommandsServiceMBean" class="org.springframework.jmx.access.MBeanProxyFactoryBean">
-    <property name="objectName" value="org.apache.servicemix:ContainerName=ServiceMix,Type=SystemService,Name=AdminCommandsService" />
+  <bean id="adminCommandsServiceMBean" parent="jmxProxy">
+    <property name="objectName" value="${admin-commands-service-mbean-name}" />
     <property name="proxyInterface" value="org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean" />
-    <property name="server" ref="server"/>
-    <property name="useStrictCasing" value="false" />
   </bean>
   
-  <bean id="registryMBean" class="org.springframework.jmx.access.MBeanProxyFactoryBean">
-    <property name="objectName" value="org.apache.servicemix:ContainerName=ServiceMix,Type=SystemService,Name=Registry" />
+  <bean id="registryMBean" parent="jmxProxy">
+    <property name="objectName" value="${registry-mbean-service-name}" />
     <property name="proxyInterface" value="org.apache.servicemix.jbi.framework.RegistryMBean" />
-    <property name="server" ref="server"/>
-    <property name="useStrictCasing" value="false" />
   </bean>
   
-  <bean id="dotViewServiceMBean" class="org.springframework.jmx.access.MBeanProxyFactoryBean">
-    <property name="objectName" value="org.apache.servicemix:ContainerName=ServiceMix,Type=SystemService,Name=DotViewService" />
+  <bean id="dotViewServiceMBean" parent="jmxProxy">
+    <property name="objectName" value="${dot-view-mbean-service-name}" />
     <property name="proxyInterface" value="org.apache.servicemix.jbi.view.DotViewServiceMBean" />
-    <property name="server" ref="server"/>
-    <property name="useStrictCasing" value="false" />
   </bean>
   
   <bean id="proxyManager" class="org.apache.servicemix.web.model.ProxyManager">
@@ -73,14 +75,14 @@
     <constructor-arg ref="registryMBean" />
   </bean>
   
-  <bean id="auditor" class="org.apache.servicemix.web.Auditor" singleton="false">
+  <bean id="auditor" class="org.apache.servicemix.web.Auditor" scope="prototype">
     <constructor-arg ref="jdbcAuditorMBean" />
   </bean>
-  <bean id="components" factory-bean="registry" factory-method="getComponents" singleton="false" />
-  <bean id="endpoints" factory-bean="registry" factory-method="getEndpoints" singleton="false" />
-  <bean id="serviceAssemblies" factory-bean="registry" factory-method="getServiceAssemblies" singleton="false" />
-  <bean id="serviceUnits" factory-bean="registry" factory-method="getServiceUnits" singleton="false" />
-  <bean id="sharedLibraries" factory-bean="registry" factory-method="getSharedLibraries" singleton="false" />
+  <bean id="components" factory-bean="registry" factory-method="getComponents" scope="prototype" />
+  <bean id="endpoints" factory-bean="registry" factory-method="getEndpoints" scope="prototype" />
+  <bean id="serviceAssemblies" factory-bean="registry" factory-method="getServiceAssemblies" scope="prototype" />
+  <bean id="serviceUnits" factory-bean="registry" factory-method="getServiceUnits" scope="prototype" />
+  <bean id="sharedLibraries" factory-bean="registry" factory-method="getSharedLibraries" scope="prototype" />
   <bean id="component" class="org.apache.servicemix.web.ComponentFactoryBean">
     <property name="registry" ref="registry" />
   </bean>
