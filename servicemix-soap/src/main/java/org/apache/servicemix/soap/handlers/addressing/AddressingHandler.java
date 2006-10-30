@@ -21,7 +21,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.apache.activemq.util.IdGenerator;
+import org.apache.servicemix.id.IdGenerator;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.servicemix.soap.Context;
