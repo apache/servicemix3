@@ -20,24 +20,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
                            http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
   
-  <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-    <property name="location" value="classpath:servicemix-web-console.properties" />
-  </bean>
-  
   <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-  </bean>
-  
-  <bean id="server" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean">
-    <property name="serviceUrl" value="${jmx-service-url}" />
-    <property name="environmentMap">
-      <map>
-        <entry key="jmx.remote.credentials">
-          <bean class="org.springframework.util.StringUtils" factory-method="commaDelimitedListToStringArray">
-            <constructor-arg value="${jmx-username},${jmx-password}" />
-          </bean>
-        </entry>
-      </map>
-    </property>
   </bean>
   
   <bean id="jmxProxy" abstract="true" class="org.springframework.jmx.access.MBeanProxyFactoryBean">
