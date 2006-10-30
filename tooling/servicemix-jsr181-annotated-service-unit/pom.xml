@@ -31,6 +31,6 @@
   </parent>
 
   <artifactId>servicemix-jsr181-annotated-service-unit</artifactId>
-  <name>ServiceMix :: Maven2 :: Archetypes :: Jsr181AnnotatedServiceUnit</name>
+  <name>ServiceMix :: Archetypes :: Jsr181AnnotatedServiceUnit</name>
 
 </project>

@@ -31,6 +31,6 @@
   </parent>
 
   <artifactId>servicemix-eip-service-unit</artifactId>
-  <name>ServiceMix :: Maven2 :: Archetypes :: EIPServiceUnit</name>
+  <name>ServiceMix :: Archetypes :: EIPServiceUnit</name>
 
 </project>

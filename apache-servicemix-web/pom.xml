@@ -39,60 +39,10 @@
     <dependency>
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-web-console</artifactId>
-      <version>3.1-incubating-SNAPSHOT</version>
       <type>war</type>
     </dependency>
-    <!--
-    <dependency>
-      <groupId>org.apache.xbean</groupId>
-      <artifactId>xbean-spring</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.xbean</groupId>
-      <artifactId>xbean-server</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.xbean</groupId>
-      <artifactId>xbean-kernel</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.xbean</groupId>
-      <artifactId>xbean-classloader</artifactId>
-      <version>${xbean-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.geronimo.specs</groupId>
-      <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.geronimo.specs</groupId>
-      <artifactId>geronimo-j2ee-management_1.0_spec</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.geronimo.specs</groupId>
-      <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>wsdl4j</groupId>
-      <artifactId>wsdl4j</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>xstream</groupId>
-      <artifactId>xstream</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>stax</groupId>
-      <artifactId>stax-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>woodstox</groupId>
-      <artifactId>wstx-asl</artifactId>
-    </dependency>
-    -->
+    <!-- It seems to be needed to avoid including this jar inside the war 
+         Need to find where it comes from -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>

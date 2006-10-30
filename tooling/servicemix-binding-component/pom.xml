@@ -31,6 +31,6 @@
   </parent>
 
   <artifactId>servicemix-binding-component</artifactId>
-  <name>ServiceMix :: Maven2 :: Archetypes :: BindingComponent</name>
+  <name>ServiceMix :: Archetypes :: BindingComponent</name>
 
 </project>

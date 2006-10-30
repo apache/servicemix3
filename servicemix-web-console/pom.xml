@@ -147,7 +147,6 @@
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>servlet-api-2.5</artifactId>
-      <version>${jetty-version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -167,26 +166,22 @@
     <dependency>
       <groupId>opensymphony</groupId>
       <artifactId>sitemesh</artifactId>
-      <version>2.2.1</version>
     </dependency>
 
     <!-- JSTL support -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
-      <version>1.0</version>
     </dependency>
     <dependency>
       <groupId>taglibs</groupId>
       <artifactId>standard</artifactId>
-      <version>1.1.2</version>
     </dependency>
     
     <!-- File upload -->
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
-      <version>1.1.1</version>
     </dependency>
 
   </dependencies>

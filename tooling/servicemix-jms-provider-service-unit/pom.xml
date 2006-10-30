@@ -31,6 +31,6 @@
   </parent>
 
   <artifactId>servicemix-jms-provider-service-unit</artifactId>
-  <name>ServiceMix :: Maven2 :: Archetypes :: JmsProviderServiceUnit</name>
+  <name>ServiceMix :: Archetypes :: JmsProviderServiceUnit</name>
 
 </project>

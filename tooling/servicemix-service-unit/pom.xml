@@ -31,6 +31,6 @@
   </parent>
 
   <artifactId>servicemix-service-unit</artifactId>
-  <name>ServiceMix :: Maven2 :: Archetypes :: ServiceUnit</name>
+  <name>ServiceMix :: Archetypes :: ServiceUnit</name>
 
 </project>

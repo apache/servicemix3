@@ -31,6 +31,6 @@
   </parent>
 
   <artifactId>servicemix-embedded-simple</artifactId>
-  <name>ServiceMix :: Maven2 :: Archetypes :: EmbeddedSimple</name>
+  <name>ServiceMix :: Archetypes :: EmbeddedSimple</name>
 
 </project>

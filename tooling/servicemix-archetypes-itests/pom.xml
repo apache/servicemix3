@@ -31,7 +31,7 @@
   </parent>
 
   <artifactId>servicemix-archetypes-itests</artifactId>
-  <name>ServiceMix :: Maven2 :: Archetypes :: ITests</name>
+  <name>ServiceMix :: Archetypes :: ITests</name>
   
   <dependencies>
     <dependency>

@@ -31,6 +31,6 @@
   </parent>
 
   <artifactId>servicemix-shared-library</artifactId>
-  <name>ServiceMix :: Maven2 :: Archetypes :: SharedLibrary</name>
+  <name>ServiceMix :: Archetypes :: SharedLibrary</name>
 
 </project>

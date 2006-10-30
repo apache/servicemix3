@@ -31,6 +31,6 @@
   </parent>
 
   <artifactId>servicemix-http-consumer-service-unit</artifactId>
-  <name>ServiceMix :: Maven2 :: Archetypes :: HttpConsumerServiceUnit</name>
+  <name>ServiceMix :: Archetypes :: HttpConsumerServiceUnit</name>
 
 </project>

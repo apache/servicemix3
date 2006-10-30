@@ -31,6 +31,6 @@
   </parent>
 
   <artifactId>servicemix-http-provider-service-unit</artifactId>
-  <name>ServiceMix :: Maven2 :: Archetypes :: HttpProviderServiceUnit</name>
+  <name>ServiceMix :: Archetypes :: HttpProviderServiceUnit</name>
 
 </project>
