@@ -19,7 +19,11 @@ package org.apache.servicemix.common.endpoints;
 import java.util.Date;
 
 import javax.jbi.JBIException;
+import javax.jbi.servicedesc.ServiceEndpoint;
+import javax.xml.namespace.QName;
 
+import org.apache.servicemix.common.DefaultComponent;
+import org.apache.servicemix.common.ServiceUnit;
 import org.apache.servicemix.components.varscheduler.ScheduleIterator;
 import org.apache.servicemix.components.varscheduler.Scheduler;
 import org.apache.servicemix.components.varscheduler.SchedulerTask;
@@ -42,6 +46,17 @@ public abstract class PollingEndpoint extends ConsumerEndpoint {
     private ScheduleIterator scheduleIterator;
     private boolean started;
     private boolean scheduleExecutedFlag;
+
+    public PollingEndpoint() {
+    }
+
+    public PollingEndpoint(ServiceUnit serviceUnit, QName service, String endpoint) {
+        super(serviceUnit, service, endpoint);
+    }
+
+    public PollingEndpoint(DefaultComponent component, ServiceEndpoint endpoint) {
+        super(component.getServiceUnit(), endpoint.getServiceName(), endpoint.getEndpointName());
+    }
 
     /**
      * Polls the underlying resource to see if some event is required
