@@ -23,29 +23,23 @@ import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
-public class ServiceAssemblyLifeCycle implements Controller {
+public class SharedLibraryLifeCycle implements Controller {
 
-    public static final String START = "start";
-    public static final String STOP = "stop";
-    public static final String SHUTDOWN = "shutdown";
-    public static final String UNDEPLOY = "undeploy";
+    public static final String UNINSTALL = "uninstall";
     
     private AdminCommandsServiceMBean adminCommandsService;
     private String name;
     private String view;
     private String action;
     
-    public ServiceAssemblyLifeCycle(AdminCommandsServiceMBean adminCommandsService, String action) {
+    public SharedLibraryLifeCycle(AdminCommandsServiceMBean adminCommandsService, String action) {
         if (adminCommandsService == null) {
             throw new IllegalArgumentException("adminCommandsServiceMBean is null");
         }
         if (action == null) {
             throw new IllegalArgumentException("action is null");
-        } else if (!START.equals(action) && 
-                   !STOP.equals(action) && 
-                   !SHUTDOWN.equals(action) &&
-                   !UNDEPLOY.equals(action)) {
-            throw new IllegalArgumentException("action must be start, stop, shutdown or undeploy");
+        } else if (!UNINSTALL.equals(action)) {
+            throw new IllegalArgumentException("action must be uninstall");
         }
         
         this.adminCommandsService = adminCommandsService;
@@ -53,14 +47,8 @@ public class ServiceAssemblyLifeCycle implements Controller {
     }
     
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        if (START.equals(action)) {
-            adminCommandsService.startServiceAssembly(name);
-        } else if (STOP.equals(action)) {
-            adminCommandsService.stopServiceAssembly(name);
-        } else if (SHUTDOWN.equals(action)) {
-            adminCommandsService.shutdownServiceAssembly(name);
-        } else if (UNDEPLOY.equals(action)) {
-            adminCommandsService.undeployServiceAssembly(name);
+        if (UNINSTALL.equals(action)) {
+            adminCommandsService.uninstallSharedLibrary(name);
         }
         return new ModelAndView(getView());
     }

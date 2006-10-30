@@ -38,6 +38,12 @@
         <th>Version</th>
         <td><div class="field">${requestContext.sharedLibrary.version}</div></td>
       </tr>
+      <tr>
+        <th>Actions</th>
+        <td>
+          <form method="post" action="uninstallSharedLibrary.action"><input type="hidden" name="name" value="${row.name}"/><input type="submit" value="Uninstall"/></form> 
+        </td>
+      </tr>
     </tbody>
   </table>
 </fieldset>

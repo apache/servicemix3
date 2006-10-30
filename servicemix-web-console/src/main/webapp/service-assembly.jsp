@@ -52,7 +52,7 @@
             <td class="align"><form method="post" action="shutdownServiceAssembly.action?view=redirect:/service-assembly.jsp?name=${requestContext.serviceAssembly.name}"><input type="hidden" name="name" value="${requestContext.serviceAssembly.name}"/><input type="submit" value="Shutdown"/></form></td>
           </c:if> 
           <c:if test="${requestContext.serviceAssembly.status == 'Shutdown'}">
-            <td class="align"><form method="post" action="uninstallServiceAssembly.action?view=redirect:/service-assembly.jsp?name=${requestContext.serviceAssembly.name}"><input type="hidden" name="name" value="${requestContext.serviceAssembly.name}"/><input type="submit" value="Uninstall"/></form></td> 
+            <td class="align"><form method="post" action="undeployServiceAssembly.action?name=${requestContext.serviceAssembly.name}"><input type="hidden" name="name" value="${requestContext.serviceAssembly.name}"/><input type="submit" value="Undeploy"/></form></td> 
           </c:if> 
           </tr></table>
         </td>

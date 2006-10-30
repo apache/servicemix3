@@ -55,6 +55,11 @@
     <property name="formView" value="redirect:/shared-libraries.jsp" />
     <property name="successView" value="redirect:/shared-libraries.jsp" />
   </bean>
+  <bean name="/uninstallSharedLibrary.action" class="org.apache.servicemix.web.controller.SharedLibraryLifeCycle" scope="request">
+    <constructor-arg ref="adminCommandsServiceMBean" />
+    <constructor-arg value="uninstall" />
+    <property name="view" value="redirect:/shared-libraries.jsp" />
+  </bean>
 
   <bean name="/deployServiceAssembly.action" class="org.apache.servicemix.web.controller.DeployServiceAssembly" scope="request">
     <constructor-arg ref="adminCommandsServiceMBean" />
@@ -77,9 +82,9 @@
     <constructor-arg value="shutdown" />
     <property name="view" value="redirect:/service-assemblies.jsp" />
   </bean>
-  <bean name="/uninstallServiceAssembly.action" class="org.apache.servicemix.web.controller.ServiceAssemblyLifeCycle" scope="request">
+  <bean name="/undeployServiceAssembly.action" class="org.apache.servicemix.web.controller.ServiceAssemblyLifeCycle" scope="request">
     <constructor-arg ref="adminCommandsServiceMBean" />
-    <constructor-arg value="uninstall" />
+    <constructor-arg value="undeploy" />
     <property name="view" value="redirect:/service-assemblies.jsp" />
   </bean>
   

@@ -52,7 +52,7 @@
             <td class="align"><form method="post" action="shutdownComponent.action?view=redirect:/component.jsp?name=${requestContext.component.name}"><input type="hidden" name="name" value="${requestContext.component.name}"/><input type="submit" value="Shutdown"/></form></td>
           </c:if> 
           <c:if test="${requestContext.component.status == 'Shutdown'}">
-            <td class="align"><form method="post" action="uninstallComponent.action?view=redirect:/component.jsp?name=${requestContext.component.name}"><input type="hidden" name="name" value="${requestContext.component.name}"/><input type="submit" value="Uninstall"/></form></td> 
+            <td class="align"><form method="post" action="uninstallComponent.action?name=${requestContext.component.name}"><input type="hidden" name="name" value="${requestContext.component.name}"/><input type="submit" value="Uninstall"/></form></td> 
           </c:if> 
           </tr></table>
         </td>

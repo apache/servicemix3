@@ -33,6 +33,7 @@
     <tr>
       <th>Name</th>
       <th>Version</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -40,6 +41,9 @@
       <tr>
         <td><a href="shared-library.jsp?name=${row.name}">${row.name}</a></td>
         <td>${row.version}</td>
+        <td>
+            <form method="post" action="uninstallSharedLibrary.action"><input type="hidden" name="name" value="${row.name}"/><input type="submit" value="Uninstall"/></form> 
+        </td>
       </tr>
     </c:forEach>
   </tbody>
