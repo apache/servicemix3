@@ -202,7 +202,7 @@
         <spring-version>2.0</spring-version>
         <activemq-version>4.1-incubator-SNAPSHOT</activemq-version>
         <activeio-version>3.0-SNAPSHOT</activeio-version>
-        <backport-util-concurrent-version>2.1</backport-util-concurrent-version>
+        <backport-util-concurrent-version>2.2</backport-util-concurrent-version>
         <jencks-version>2.0-SNAPSHOT</jencks-version>
         <jetty-version>6.0.1</jetty-version>
         <geronimo-version>1.2-SNAPSHOT</geronimo-version>
