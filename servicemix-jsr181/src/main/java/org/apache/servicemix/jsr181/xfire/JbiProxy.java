@@ -82,7 +82,7 @@ public class JbiProxy {
     public Object getProxy() throws Exception {
         if (proxy == null) {
             ServiceFactory factory = ServiceFactoryHelper.findServiceFactory(xfire, serviceClass, null, null);
-            Service service = factory.create(serviceClass, null, getDescription(), null);
+            Service service = factory.create(serviceClass, null);
             JBIClient client = new JBIClient(xfire, service);
             if (interfaceName != null) {
                 client.getService().setProperty(JbiChannel.JBI_INTERFACE_NAME, interfaceName);
