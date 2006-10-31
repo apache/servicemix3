@@ -21,6 +21,7 @@ import java.net.URL;
 
 import org.apache.servicemix.common.BaseComponent;
 import org.apache.servicemix.common.ServiceUnit;
+import org.apache.xbean.classloader.JarFileClassLoader;
 
 import junit.framework.TestCase;
 
@@ -41,6 +42,39 @@ public class XBeanDeployerTest extends TestCase {
         assertEquals(1, su.getEndpoints().size());
         XBeanEndpoint ep = (XBeanEndpoint) su.getEndpoints().iterator().next();
         assertEquals("value", ep.getProp());
+    }
+    
+    public void testDeployWithClasspathXml() throws Exception {
+        MyXBeanDeployer deployer = new MyXBeanDeployer(new BaseComponent() { });
+        ServiceUnit su = deployer.deploy("xbean-cp", getServiceUnitPath("xbean-cp"));
+        assertNotNull(su);
+        ClassLoader cl = su.getConfigurationClassLoader();
+        assertNotNull(cl);
+        assertTrue(cl instanceof JarFileClassLoader);
+        assertEquals(2, ((JarFileClassLoader) cl).getURLs().length);
+        assertNotNull(cl.getResource("test.xml"));
+    }
+    
+    public void testDeployWithInlineClasspath() throws Exception {
+        MyXBeanDeployer deployer = new MyXBeanDeployer(new BaseComponent() { });
+        ServiceUnit su = deployer.deploy("xbean-inline", getServiceUnitPath("xbean-inline"));
+        assertNotNull(su);
+        ClassLoader cl = su.getConfigurationClassLoader();
+        assertNotNull(cl);
+        assertTrue(cl instanceof JarFileClassLoader);
+        assertEquals(2, ((JarFileClassLoader) cl).getURLs().length);
+        assertNotNull(cl.getResource("test.xml"));
+    }
+    
+    public void testDeployWithDefaultClasspath() throws Exception {
+        MyXBeanDeployer deployer = new MyXBeanDeployer(new BaseComponent() { });
+        ServiceUnit su = deployer.deploy("xbean-lib", getServiceUnitPath("xbean-lib"));
+        assertNotNull(su);
+        ClassLoader cl = su.getConfigurationClassLoader();
+        assertNotNull(cl);
+        assertTrue(cl instanceof JarFileClassLoader);
+        assertEquals(2, ((JarFileClassLoader) cl).getURLs().length);
+        assertNotNull(cl.getResource("test.xml"));
     }
     
     public static class MyXBeanDeployer extends AbstractXBeanDeployer {
