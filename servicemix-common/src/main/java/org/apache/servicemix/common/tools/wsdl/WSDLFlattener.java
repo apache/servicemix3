@@ -222,6 +222,9 @@ public class WSDLFlattener {
                 ExtensibilityElement element = (ExtensibilityElement) iter.next();
                 if (element instanceof javax.wsdl.extensions.schema.Schema) {
                     javax.wsdl.extensions.schema.Schema schema = (javax.wsdl.extensions.schema.Schema) element;
+                    if (schema.getElement() != null) {
+                        schemas.read(schema.getElement(), schema.getDocumentBaseURI() != null ? new URI(schema.getDocumentBaseURI()) : null);
+                    }
                     for (Iterator itImp = schema.getImports().values().iterator(); itImp.hasNext();) {
                         Collection imps = (Collection) itImp.next();
                         for (Iterator itSi = imps.iterator(); itSi.hasNext();) {
