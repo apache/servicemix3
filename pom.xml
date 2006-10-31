@@ -931,6 +931,12 @@
                 <groupId>org.apache.geronimo.modules</groupId>
                 <artifactId>geronimo-connector</artifactId>
                 <version>${geronimo-version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.geronimo.modules</groupId>
+                        <artifactId>geronimo-kernel</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.modules</groupId>
@@ -976,6 +982,16 @@
                 <groupId>org.apache.geronimo.modules</groupId>
                 <artifactId>geronimo-transaction</artifactId>
                 <version>${geronimo-version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.geronimo.modules</groupId>
+                        <artifactId>geronimo-j2ee</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.geronimo.modules</groupId>
+                        <artifactId>geronimo-core</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
