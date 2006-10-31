@@ -1668,22 +1668,6 @@
         </pluginManagement>
         <plugins>
             <plugin>
-                <artifactId>maven-one-plugin</artifactId>
-                <version>1.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>install-maven-one-repository</goal>
-                            <goal>deploy-maven-one-repository</goal>
-                        </goals>
-                        <configuration>
-                            <remoteRepositoryId>servicemix</remoteRepositoryId>
-                            <remoteRepositoryUrl>scpexe://people.apache.org/www/people.apache.org/repository</remoteRepositoryUrl>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <dependencies>
