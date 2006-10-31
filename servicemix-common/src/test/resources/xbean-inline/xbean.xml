@@ -19,10 +19,7 @@
 -->
 <beans>
 
-  <classpath>
-    <location>.</location>
-    <location>lib/classpath.zip</location>
-  </classpath>
+  <classpath inverse="true" />
   
   <bean class="org.apache.servicemix.common.xbean.XBeanEndpoint">
     <property name="service" value="service"/>
