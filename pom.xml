@@ -306,7 +306,7 @@
                 <module>servicemix-xmpp</module>
                 <module>samples</module>
                 <!--module>geronimo</module-->
-                <module>servicemix-webconsole</module>
+                <module>servicemix-web-console</module>
                 <module>apache-servicemix</module>
                 <module>apache-servicemix-web</module>
             </modules>
