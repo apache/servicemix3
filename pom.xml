@@ -206,7 +206,7 @@
         <jencks-version>1.3</jencks-version>
         <jetty-version>6.0.1</jetty-version>
         <geronimo-version>1.1</geronimo-version>
-        <servicemix-version>3.0.1-incubating-SNAPSHOT</servicemix-version>
+        <servicemix-version>3.0.1-incubating</servicemix-version>
         <wsdl4j-version>1.5.2</wsdl4j-version>
         <commons-beanutils-version>1.7.0</commons-beanutils-version>
         <woodstox-version>3.0.2</woodstox-version>
