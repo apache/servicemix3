@@ -5,7 +5,7 @@
   <parent>
     <artifactId>servicemix</artifactId>
     <groupId>org.apache.servicemix</groupId>
-    <version>3.0.1-incubating</version>
+    <version>3.0.2-incubating-SNAPSHOT</version>
   </parent>
 
   <artifactId>servicemix-http</artifactId>
