@@ -36,6 +36,7 @@ import org.apache.servicemix.jbi.event.ExchangeListener;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.framework.Registry;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
+import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
 import org.apache.servicemix.jbi.servicedesc.EndpointSupport;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
@@ -139,8 +140,7 @@ public class DotViewFlowListener extends DotViewEndpointListener
     
     public void exchangeSent(ExchangeEvent event) {
         MessageExchange me = event.getExchange();
-        if (me.getEndpoint() != null &&
-            me instanceof MessageExchangeImpl) {
+        if (me.getEndpoint() instanceof AbstractServiceEndpoint && me instanceof MessageExchangeImpl) {
             MessageExchangeImpl mei = (MessageExchangeImpl) me;
             String source = (String) me.getProperty(JbiConstants.SENDER_ENDPOINT);
             if (source == null) {
@@ -156,7 +156,7 @@ public class DotViewFlowListener extends DotViewEndpointListener
                 }
             }
             usedComponents.add(mei.getSourceId().getName());
-            usedComponents.add(mei.getDestinationId().getName());
+            usedComponents.add(((AbstractServiceEndpoint) mei.getEndpoint()).getComponentNameSpace().getName());
             String dest = EndpointSupport.getUniqueKey(mei.getEndpoint());
             Map componentFlow = createSource(source);
             if (componentFlow.put(dest, Boolean.TRUE) == null) {
