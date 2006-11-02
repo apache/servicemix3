@@ -25,6 +25,7 @@ import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
 import java.util.Iterator;
@@ -44,6 +45,13 @@ public class MockServiceComponent extends TransformComponentSupport implements M
     private Resource responseResource;
     private Map responseProperties;
 
+    public MockServiceComponent() {
+    }
+    
+    public MockServiceComponent(QName service, String endpoint) {
+        super(service, endpoint);
+    }
+    
     public Source getResponseContent() {
         if (responseContent == null) {
             if (responseXml != null) {

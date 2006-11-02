@@ -35,7 +35,11 @@ public class ReceiverComponent extends ComponentSupport implements MessageExchan
     private MessageList messageList = new MessageList();
 
     public ReceiverComponent() {
-        super(SERVICE, ENDPOINT);
+        this(SERVICE, ENDPOINT);
+    }
+    
+    public ReceiverComponent(QName service, String endpoint) {
+        super(service, endpoint);
     }
 
     // MessageExchangeListener interface
