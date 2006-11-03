@@ -75,7 +75,7 @@
     </repository>
   </repositories>
 	<properties>
-	  <servicemix-version>3.0.1-incubating</servicemix-version>
+	  <servicemix-version>3.0.2-incubating-SNAPSHOT</servicemix-version>
 	</properties>
   <dependencies>    
     <dependency>

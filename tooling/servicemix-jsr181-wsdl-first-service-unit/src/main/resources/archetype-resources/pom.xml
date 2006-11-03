@@ -77,7 +77,7 @@
   </repositories>
 	<properties>
 	  <xfire-version>1.2.1</xfire-version>
-	  <servicemix-version>3.0.1-incubating</servicemix-version>
+	  <servicemix-version>3.0.2-incubating-SNAPSHOT</servicemix-version>
 	</properties>
 	<dependencies>
 		<dependency>

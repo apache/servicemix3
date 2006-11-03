@@ -77,7 +77,7 @@
   </dependencies>
 	<properties>
 	  <xbean-version>2.6</xbean-version>
-	  <servicemix-version>3.0.1-incubating</servicemix-version>
+	  <servicemix-version>3.0.2-incubating-SNAPSHOT</servicemix-version>
 	</properties>
   <build>
   	<resources>
