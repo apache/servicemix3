@@ -224,37 +224,14 @@
             </activation>
             <modules>
                 <module>build</module>
-                <module>servicemix-jbi</module>
-                <module>servicemix-services</module>
-                <module>servicemix-core</module>
+                <module>core</module>
+                <module>common</module>
                 <module>tooling</module>
-                <module>servicemix-bean</module>
-                <module>servicemix-beanflow</module>
-                <module>servicemix-components</module>
-                <module>servicemix-common</module>
-                <module>servicemix-console</module>
-                <module>servicemix-bpe</module>
-                <module>servicemix-drools</module>
-                <module>servicemix-eip</module>
-                <module>servicemix-file</module>
-                <module>servicemix-ftp</module>
-                <module>servicemix-http</module>
-                <module>servicemix-itests</module>
-                <module>servicemix-jms</module>
-                <module>servicemix-jsr181</module>
-                <module>servicemix-lwcontainer</module>
-                <module>servicemix-saxon</module>
-                <module>servicemix-sca</module>
-                <module>servicemix-script</module>
-                <module>servicemix-shared</module>
-                <module>servicemix-soap</module>
-                <module>servicemix-wsn2005</module>
-                <module>servicemix-xmpp</module>
+                <module>deployables</module>
                 <module>samples</module>
-                <!--module>geronimo</module-->
-                <module>servicemix-web-console</module>
-                <module>apache-servicemix</module>
-                <module>apache-servicemix-web</module>
+                <module>web</module>
+                <module>platforms</module>
+                <module>distributions</module>
             </modules>
         </profile>
         <profile>
@@ -267,10 +244,8 @@
             </activation>
             <modules>
                 <module>build</module>
-                <module>servicemix-jbi</module>
-                <module>servicemix-services</module>
-                <module>servicemix-core</module>
-                <module>servicemix-common</module>
+                <module>core</module>
+                <module>common</module>
                 <module>tooling</module>
             </modules>
         </profile>
@@ -283,106 +258,11 @@
                 </property>
             </activation>
             <modules>
-                <module>servicemix-beanflow</module>
-                <module>servicemix-components</module>
-                <module>servicemix-common</module>
-                <module>servicemix-soap</module>
-                <module>servicemix-shared</module>
-                <module>servicemix-console</module>
-                <module>servicemix-bpe</module>
-                <module>servicemix-drools</module>
-                <module>servicemix-jms</module>
-                <module>servicemix-jsr181</module>
-                <module>servicemix-http</module>
-                <module>servicemix-wsn2005</module>
-                <module>servicemix-lwcontainer</module>
-                <module>servicemix-sca</module>
-                <module>servicemix-script</module>
-                <module>servicemix-file</module>
-                <module>servicemix-ftp</module>
-                <module>servicemix-eip</module>
-                <module>servicemix-itests</module>
-                <module>servicemix-sca</module>
-                <module>servicemix-saxon</module>
-                <module>servicemix-wsn2005</module>
-                <module>servicemix-xmpp</module>
+                <module>deployables</module>
                 <module>samples</module>
-                <!--module>geronimo</module-->
-                <module>servicemix-web-console</module>
-                <module>apache-servicemix</module>
-                <module>apache-servicemix-web</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>container</id>
-            <activation>
-                <property>
-                    <name>profile</name>
-                    <value>container</value>
-                </property>
-            </activation>
-            <modules>
-                <module>servicemix-services</module>
-                <module>servicemix-jbi</module>
-                <module>servicemix-core</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>tooling</id>
-            <activation>
-                <property>
-                    <name>profile</name>
-                    <value>tooling</value>
-                </property>
-            </activation>
-            <modules>
-                <module>tooling</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>components</id>
-            <activation>
-                <property>
-                    <name>profile</name>
-                    <value>components</value>
-                </property>
-            </activation>
-            <modules>
-                <module>servicemix-beanflow</module>
-                <module>servicemix-components</module>
-                <module>servicemix-common</module>
-                <module>servicemix-shared</module>
-                <module>servicemix-bpe</module>
-                <module>servicemix-drools</module>
-                <module>servicemix-soap</module>
-                <module>servicemix-http</module>
-                <module>servicemix-jms</module>
-                <module>servicemix-script</module>
-                <module>servicemix-file</module>
-                <module>servicemix-eip</module>
-                <module>servicemix-jsr181</module>
-                <module>servicemix-saxon</module>
-                <module>servicemix-sca</module>
-                <module>servicemix-wsn2005</module>
-                <module>servicemix-lwcontainer</module>
-                <module>servicemix-itests</module>
-                <module>servicemix-ftp</module>
-                <module>servicemix-xmpp</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>assembly</id>
-            <activation>
-                <property>
-                    <name>profile</name>
-                    <value>assembly</value>
-                </property>
-            </activation>
-            <modules>
-                <module>samples</module>
-                <module>servicemix-web-console</module>
-                <module>apache-servicemix-web</module>
-                <module>apache-servicemix</module>
+                <module>web</module>
+                <module>platforms</module>
+                <module>distributions</module>
             </modules>
         </profile>
     </profiles>

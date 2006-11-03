@@ -29,15 +29,15 @@
     <version>3.1-incubating-SNAPSHOT</version>
   </parent>
   
-  <groupId>org.apache.servicemix.tooling</groupId>
-  <artifactId>tooling</artifactId>
+  <groupId>org.apache.servicemix</groupId>
+  <artifactId>assemblies</artifactId>
   <version>3.1-incubating-SNAPSHOT</version>
-  <name>ServiceMix :: Tooling</name>
-  <url>http://servicemix.org</url>
+  <name>ServiceMix :: Assemblies</name>
   <packaging>pom</packaging>
 
   <modules>
-    <module>jbi-maven-plugin</module>
+    <module>apache-servicemix</module>
+    <module>apache-servicemix-web</module>
   </modules>
 
 </project>

@@ -25,19 +25,27 @@
 
   <parent>
     <groupId>org.apache.servicemix</groupId>
-    <artifactId>servicemix</artifactId>
+    <artifactId>deployables</artifactId>
     <version>3.1-incubating-SNAPSHOT</version>
   </parent>
   
-  <groupId>org.apache.servicemix.tooling</groupId>
-  <artifactId>tooling</artifactId>
+  <groupId>org.apache.servicemix</groupId>
+  <artifactId>serviceengines</artifactId>
   <version>3.1-incubating-SNAPSHOT</version>
-  <name>ServiceMix :: Tooling</name>
-  <url>http://servicemix.org</url>
+  <name>ServiceMix :: Service Engines</name>
   <packaging>pom</packaging>
 
   <modules>
-    <module>jbi-maven-plugin</module>
+    <module>servicemix-bean</module>
+    <module>servicemix-bpe</module>
+    <module>servicemix-drools</module>
+    <module>servicemix-eip</module>
+    <module>servicemix-jsr181</module>
+    <module>servicemix-lwcontainer</module>
+    <module>servicemix-saxon</module>
+    <module>servicemix-sca</module>
+    <module>servicemix-script</module>
+    <module>servicemix-wsn2005</module>
   </modules>
 
 </project>
