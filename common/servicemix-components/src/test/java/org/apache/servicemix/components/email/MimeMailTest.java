@@ -65,6 +65,35 @@ public class MimeMailTest extends TestSupport {
 
         assertEquals("subject", "Hello from JUnit!", mail.getSubject());
     }
+    
+    public void testSendUsingMessagePropertiesWithMultipleRecipients() throws Exception {
+
+        // START SNIPPET: email
+        InOnly exchange = client.createInOnlyExchange();
+        NormalizedMessage message = exchange.getInMessage();
+
+        message.setProperty("org.apache.servicemix.email.to", "scm@servicemix.org,foo@servicemix.org");
+        message.setProperty("org.apache.servicemix.email.cc", "bar@servicemix.org,baz@servicemix.org");
+        message.setProperty("org.apache.servicemix.email.bcc", "guinness@servicemix.org,harper@servicemix.org");
+        message.setProperty("org.apache.servicemix.email.from", "junit@servicemix.org");
+        message.setProperty("org.apache.servicemix.email.subject", "Hello from JUnit!");
+        message.setProperty("org.apache.servicemix.email.text", "Hi from test case: " + getName() + " running at: " + new Date());
+
+        client.send(exchange);
+        // END SNIPPET: email
+
+        // lest find the test sender
+        StubJavaMailSender sender = (StubJavaMailSender) getBean("javaMailSender");
+        sender.assertMessagesReceived(1);
+        List messages = sender.getMessages();
+        assertEquals("message size: " + messages, 1, messages.size());
+
+        MimeMessage mail = (MimeMessage) messages.get(0);
+
+        System.out.println("Created message: " + message);
+
+        assertEquals("subject", "Hello from JUnit!", mail.getSubject());
+    }
 
     public void testUsingXPathExpressionsInEmail() throws Exception {
 

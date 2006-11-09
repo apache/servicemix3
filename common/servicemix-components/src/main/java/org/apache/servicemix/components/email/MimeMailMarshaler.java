@@ -153,17 +153,17 @@ public class MimeMailMarshaler extends MailMarshalerSupport {
      */
     public void prepareMessage(MimeMessage mimeMessage, MessageExchange exchange, NormalizedMessage normalizedMessage) throws javax.mail.MessagingException {
         try {
-            Address to = getTo(exchange, normalizedMessage);
+            Address[] to = getTo(exchange, normalizedMessage);
             if (to != null) {
-                mimeMessage.setRecipient(Message.RecipientType.TO, to);
+                mimeMessage.setRecipients(Message.RecipientType.TO, to);
             }
-            Address cc = getCc(exchange, normalizedMessage);
+            Address[] cc = getCc(exchange, normalizedMessage);
             if (cc != null) {
-                mimeMessage.setRecipient(Message.RecipientType.CC, cc);
+                mimeMessage.setRecipients(Message.RecipientType.CC, cc);
             }
-            Address bcc = getBcc(exchange, normalizedMessage);
+            Address[] bcc = getBcc(exchange, normalizedMessage);
             if (bcc != null) {
-                mimeMessage.setRecipient(Message.RecipientType.BCC, bcc);
+                mimeMessage.setRecipients(Message.RecipientType.BCC, bcc);
             }
             Address from = getFrom(exchange, normalizedMessage);
             if (from != null) {
@@ -245,16 +245,16 @@ public class MimeMailMarshaler extends MailMarshalerSupport {
         return asAddress(getFrom().evaluate(exchange, normalizedMessage));
     }
 
-    protected Address getTo(MessageExchange exchange, NormalizedMessage normalizedMessage) throws MessagingException, AddressException {
-        return asAddress(getTo().evaluate(exchange, normalizedMessage));
+    protected Address[] getTo(MessageExchange exchange, NormalizedMessage normalizedMessage) throws MessagingException, AddressException {
+        return asAddressArray(getTo().evaluate(exchange, normalizedMessage));
     }
 
-    protected Address getCc(MessageExchange exchange, NormalizedMessage normalizedMessage) throws MessagingException, AddressException {
-        return asAddress(getCc().evaluate(exchange, normalizedMessage));
+    protected Address[] getCc(MessageExchange exchange, NormalizedMessage normalizedMessage) throws MessagingException, AddressException {
+        return asAddressArray(getCc().evaluate(exchange, normalizedMessage));
     }
 
-    protected Address getBcc(MessageExchange exchange, NormalizedMessage normalizedMessage) throws MessagingException, AddressException {
-        return asAddress(getBcc().evaluate(exchange, normalizedMessage));
+    protected Address[] getBcc(MessageExchange exchange, NormalizedMessage normalizedMessage) throws MessagingException, AddressException {
+        return asAddressArray(getBcc().evaluate(exchange, normalizedMessage));
     }
 
     protected Address[] getReplyTo(MessageExchange exchange, NormalizedMessage normalizedMessage) throws MessagingException, AddressException {

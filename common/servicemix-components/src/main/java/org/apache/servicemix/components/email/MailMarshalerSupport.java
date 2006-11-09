@@ -201,6 +201,10 @@ public abstract class MailMarshalerSupport extends MarshalerSupport {
     }
 
     protected Address[] asAddressArray(Object value) throws AddressException {
+    	if (value instanceof String) {
+    		Address[] addresses = InternetAddress.parse((String)value);
+    		return addresses;
+    	}
         if (value instanceof Address[]) {
             return (Address[]) value;
         }
