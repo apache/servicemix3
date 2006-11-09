@@ -471,7 +471,7 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
     private void doProcess(Endpoint ep, ExchangeProcessor processor, MessageExchange exchange) throws Exception {
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         try {
-            if (ep.getServiceUnit().getConfigurationClassLoader() != null) {
+            if (ep != null && ep.getServiceUnit().getConfigurationClassLoader() != null) {
                 ClassLoader classLoader = ep.getServiceUnit().getConfigurationClassLoader();
                 Thread.currentThread().setContextClassLoader(classLoader);
             }
