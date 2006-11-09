@@ -39,6 +39,7 @@
     <module>servicemix-jbi</module>
     <module>servicemix-services</module>
     <module>servicemix-core</module>
+    <module>servicemix-audit</module>
   </modules>
 
 </project>
