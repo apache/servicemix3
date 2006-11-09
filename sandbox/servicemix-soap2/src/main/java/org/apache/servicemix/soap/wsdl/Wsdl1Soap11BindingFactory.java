@@ -48,13 +48,9 @@ import org.apache.servicemix.soap.bindings.soap.impl.Wsdl1SoapPartImpl;
 import org.apache.servicemix.soap.bindings.soap.model.wsdl1.Wsdl1SoapBinding;
 import org.apache.servicemix.soap.bindings.soap.model.wsdl1.Wsdl1SoapBinding.Style;
 import org.apache.servicemix.soap.interceptors.jbi.JbiConstants;
-import org.apache.servicemix.soap.util.QNameUtil;
 
 public class Wsdl1Soap11BindingFactory {
 
-    public static final String STYLE_RPC = "rpc";
-    public static final String STYLE_DOCUMENT = "document";
-    
     public static Wsdl1SoapBinding createWsdl1SoapBinding(Port wsdlPort) {
         Wsdl1SoapBindingImpl binding = new Wsdl1SoapBindingImpl(Soap11.getInstance());
         // Find infos from port
@@ -218,9 +214,9 @@ public class Wsdl1Soap11BindingFactory {
     }
     
     private static Style getStyle(String str) {
-        if (STYLE_DOCUMENT.equalsIgnoreCase(str)) {
+        if (WSDLUtils.WSDL1_STYLE_RPC.equalsIgnoreCase(str)) {
             return Style.DOCUMENT;
-        } else if (STYLE_RPC.equalsIgnoreCase(str)) {
+        } else if (WSDLUtils.WSDL1_STYLE_RPC.equalsIgnoreCase(str)) {
             return Style.RPC;
         } else {
             return null;

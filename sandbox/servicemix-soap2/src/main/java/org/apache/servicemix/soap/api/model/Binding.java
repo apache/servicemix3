@@ -20,10 +20,18 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import org.apache.servicemix.soap.api.Message;
+import org.apache.servicemix.soap.api.InterceptorChain;
 import org.apache.servicemix.soap.api.InterceptorProvider;
 
 public interface Binding<T extends Operation> extends InterceptorProvider {
 
+    public Message createMessage();
+    
+    public Message createMessage(Message request);
+    
+    public InterceptorChain getInterceptorChain(Phase phase);
+    
     public Collection<T> getOperations();
     
     public T getOperation(QName name);

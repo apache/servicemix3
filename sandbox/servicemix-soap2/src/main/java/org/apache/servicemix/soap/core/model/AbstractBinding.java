@@ -22,9 +22,13 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.servicemix.soap.api.InterceptorChain;
+import org.apache.servicemix.soap.api.Message;
 import org.apache.servicemix.soap.api.model.Binding;
 import org.apache.servicemix.soap.api.model.Operation;
 import org.apache.servicemix.soap.core.AbstractInterceptorProvider;
+import org.apache.servicemix.soap.core.MessageImpl;
+import org.apache.servicemix.soap.core.PhaseInterceptorChain;
 
 /**
  * @author <a href="mailto:gnodet [at] gmail.com">Guillaume Nodet</a>
@@ -37,6 +41,25 @@ public class AbstractBinding<T extends Operation> extends AbstractInterceptorPro
     
     public AbstractBinding() {
         operations = new HashMap<QName, T>();
+    }
+    
+    public Message createMessage() {
+        Message in = new MessageImpl();
+        in.put(Binding.class, this);
+        return in;
+    }
+    
+    public Message createMessage(Message request) {
+        Message out = new MessageImpl();
+        out.put(Binding.class, this);
+        out.put(Operation.class, request.get(Operation.class));
+        return out;
+    }
+    
+    public InterceptorChain getInterceptorChain(Phase phase) {
+        InterceptorChain chain = new PhaseInterceptorChain();
+        chain.add(getInterceptors(Phase.ClientOut));
+        return chain;
     }
     
     public T getOperation(QName name) {

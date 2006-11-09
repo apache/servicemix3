@@ -75,10 +75,6 @@ public class WSIBPValidator {
         DOCUMENT,
     }
     
-    public static final String STYLE_RPC = "rpc";
-    public static final String STYLE_DOCUMENT = "document";
-    public static final String USE_LITERAL = "literal";
-
     private Definition definition;
     private Set<String> errors;
     private ResourceBundle bundle;
@@ -86,7 +82,7 @@ public class WSIBPValidator {
     public WSIBPValidator(Definition definition) {
         this.definition = definition;
         this.errors = new HashSet<String>();
-        this.bundle = ResourceBundle.getBundle("org.apache.servicemix.soap.wsdl.WSIBP");
+        this.bundle = ResourceBundle.getBundle("org.apache.servicemix.soap.wsdl.validator.WSIBP");
     }
     
     protected void error(Code code, Binding binding) {
@@ -356,22 +352,22 @@ public class WSIBPValidator {
         // R2707: use attribute defaults to "literal" 
         List<ElementExtensible> els = WSDLUtils.getElements(operation);
         for (SOAPBody sb : WSDLUtils.getExtensions(els, SOAPBody.class)) {
-            if (sb.getUse() == null || !USE_LITERAL.equals(sb.getUse())) {
+            if (sb.getUse() == null || !WSDLUtils.WSDL1_USE_LITERAL.equals(sb.getUse())) {
                 return false;
             }
         }
         for (SOAPHeader sh : WSDLUtils.getExtensions(els, SOAPHeader.class)) {
-            if (sh.getUse() == null || !USE_LITERAL.equals(sh.getUse())) {
+            if (sh.getUse() == null || !WSDLUtils.WSDL1_USE_LITERAL.equals(sh.getUse())) {
                 return false;
             }
             for (SOAPHeaderFault shf : WSDLUtils.getSOAPHeaderFaults(sh)) {
-                if (shf.getUse() == null || !USE_LITERAL.equals(shf.getUse())) {
+                if (shf.getUse() == null || !WSDLUtils.WSDL1_USE_LITERAL.equals(shf.getUse())) {
                     return false;
                 }
             }
         }
         for (SOAPFault sf : WSDLUtils.getExtensions(els, SOAPFault.class)) {
-            if (sf.getUse() == null || !USE_LITERAL.equals(sf.getUse())) {
+            if (sf.getUse() == null || !WSDLUtils.WSDL1_USE_LITERAL.equals(sf.getUse())) {
                 return false;
             }
         }
@@ -421,9 +417,9 @@ public class WSIBPValidator {
     }
     
     private Style getStyle(String str) {
-        if (STYLE_DOCUMENT.equalsIgnoreCase(str)) {
+        if (WSDLUtils.WSDL1_STYLE_DOCUMENT.equalsIgnoreCase(str)) {
             return Style.DOCUMENT;
-        } else if (STYLE_RPC.equalsIgnoreCase(str)) {
+        } else if (WSDLUtils.WSDL1_STYLE_RPC.equalsIgnoreCase(str)) {
             return Style.RPC;
         } else {
             return null;

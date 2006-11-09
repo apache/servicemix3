@@ -33,10 +33,10 @@ import javax.wsdl.Part;
 import javax.wsdl.Port;
 import javax.wsdl.PortType;
 import javax.wsdl.extensions.ExtensibilityElement;
-import javax.wsdl.extensions.soap12.SOAP12Body;
-import javax.wsdl.extensions.soap12.SOAP12Header;
 import javax.wsdl.extensions.soap12.SOAP12Address;
 import javax.wsdl.extensions.soap12.SOAP12Binding;
+import javax.wsdl.extensions.soap12.SOAP12Body;
+import javax.wsdl.extensions.soap12.SOAP12Header;
 import javax.wsdl.extensions.soap12.SOAP12Operation;
 import javax.xml.namespace.QName;
 
@@ -48,7 +48,6 @@ import org.apache.servicemix.soap.bindings.soap.impl.Wsdl1SoapPartImpl;
 import org.apache.servicemix.soap.bindings.soap.model.wsdl1.Wsdl1SoapBinding;
 import org.apache.servicemix.soap.bindings.soap.model.wsdl1.Wsdl1SoapBinding.Style;
 import org.apache.servicemix.soap.interceptors.jbi.JbiConstants;
-import org.apache.servicemix.soap.util.QNameUtil;
 
 public class Wsdl1Soap12BindingFactory {
 

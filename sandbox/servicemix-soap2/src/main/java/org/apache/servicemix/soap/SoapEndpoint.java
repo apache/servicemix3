@@ -46,6 +46,9 @@ import org.apache.servicemix.jbi.security.auth.AuthenticationService;
 import org.apache.servicemix.jbi.security.keystore.KeystoreManager;
 import org.apache.servicemix.soap.api.Policy;
 import org.apache.servicemix.soap.api.model.Binding;
+import org.apache.servicemix.soap.api.model.Message;
+import org.apache.servicemix.soap.api.model.Operation;
+import org.apache.servicemix.soap.core.model.AbstractBinding;
 import org.apache.servicemix.soap.ws.addressing.WsAddressingPolicy;
 import org.springframework.core.io.Resource;
 import org.w3c.dom.Document;
@@ -473,4 +476,7 @@ public abstract class SoapEndpoint extends Endpoint {
         return wsdls;
     }
     
+    public static class NonWsdlBinding extends AbstractBinding<Operation<Message>> {
+    }
+
 }
