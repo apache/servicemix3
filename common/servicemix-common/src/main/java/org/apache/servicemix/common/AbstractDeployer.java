@@ -54,4 +54,7 @@ public abstract class AbstractDeployer implements Deployer {
         }
     }
 
+    protected void validate(Endpoint endpoint) throws DeploymentException {
+        endpoint.validate();
+    }
 }

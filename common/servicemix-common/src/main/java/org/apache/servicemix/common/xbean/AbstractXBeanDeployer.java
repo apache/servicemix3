@@ -89,11 +89,8 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
             for (Iterator iter = services.iterator(); iter.hasNext();) {
                 Endpoint endpoint = (Endpoint) iter.next();
                 endpoint.setServiceUnit(su);
-                if (validate(endpoint)) {
-                    su.addEndpoint(endpoint);
-                } else {
-                    logger.warn("Endpoint " + endpoint + "has not been validated");
-                }
+                validate(endpoint);
+                su.addEndpoint(endpoint);
             }
             if (su.getEndpoints().size() == 0) {
                 throw failure("deploy", "No endpoint found", null);
@@ -116,11 +113,6 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
     
     protected List getServices(Kernel kernel) throws DeploymentException {
         return kernel.getServices(Endpoint.class);
-    }
-    
-    protected boolean validate(Endpoint endpoint) throws DeploymentException {
-        endpoint.validate();
-        return true;
     }
     
     protected List getXmlPreProcessors(String serviceUnitRootPath) {

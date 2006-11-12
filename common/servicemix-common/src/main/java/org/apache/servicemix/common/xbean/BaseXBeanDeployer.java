@@ -47,13 +47,12 @@ public class BaseXBeanDeployer extends AbstractXBeanDeployer {
         this.endpointClasses = endpointClasses;
     }
     
-    protected boolean validate(Endpoint endpoint) throws DeploymentException {
+    protected void validate(Endpoint endpoint) throws DeploymentException {
         for (int i = 0; i < endpointClasses.length; i++) {
             if (endpointClasses[i].isInstance(endpoint)) {
-                return super.validate(endpoint);
+                super.validate(endpoint);
             }
         }
-        return false;
     }
     
 }

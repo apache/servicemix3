@@ -109,6 +109,7 @@ public class BPEDeployer extends AbstractDeployer {
                     ep.setDefinition(def);
                     ep.setDescription(desc);
                     // Retrieve wsdl
+                    validate(ep);
 					su.addEndpoint(ep);
 				}
 			}

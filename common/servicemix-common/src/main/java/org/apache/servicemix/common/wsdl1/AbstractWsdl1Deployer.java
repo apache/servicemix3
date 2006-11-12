@@ -138,6 +138,7 @@ public abstract class AbstractWsdl1Deployer extends AbstractDeployer {
                         ep.setService(svc.getQName());
                         ep.setEndpoint(port.getName());
                         ep.setInterfaceName(binding.getPortType().getQName());
+                        validate(ep);
                         su.addEndpoint(ep);
                     }
                 }
