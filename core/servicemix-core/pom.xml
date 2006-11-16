@@ -312,7 +312,7 @@
           <execution>
             <configuration>
               <namespace>http://servicemix.apache.org/config/1.0</namespace>
-              <schema>target/servicemix.xsd</schema>
+              <schema>target/xbean/servicemix.xsd</schema>
             </configuration>
             <goals>
               <goal>mapping</goal>
