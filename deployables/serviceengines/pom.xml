@@ -42,6 +42,7 @@
     <module>servicemix-eip</module>
     <module>servicemix-jsr181</module>
     <module>servicemix-lwcontainer</module>
+    <module>servicemix-quartz</module>
     <module>servicemix-saxon</module>
     <module>servicemix-sca</module>
     <module>servicemix-script</module>
