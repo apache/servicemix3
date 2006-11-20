@@ -17,7 +17,8 @@
     limitations under the License.
 
 -->
-<beans xmlns:sm="http://servicemix.apache.org/config/1.0">
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+       xmlns:audit="http://servicemix.apache.org/audit/1.0">
 
   <!-- System properties -->
   <sm:systemProperties>
@@ -67,14 +68,14 @@
     </sm:activationSpecs>
   </sm:container>
 
-  <sm:jdbcAuditor container="#jbi" autoStart="false">
-    <sm:dataSource> 
+  <audit:jdbcAuditor container="#jbi" autoStart="false">
+    <audit:dataSource> 
       <bean class="org.apache.derby.jdbc.EmbeddedDataSource">
         <property name="databaseName" value="servicemixDB"/>
         <property name="createDatabase" value="create"/>
       </bean>
-    </sm:dataSource> 
-  </sm:jdbcAuditor>
+    </audit:dataSource> 
+  </audit:jdbcAuditor>
   
   <sm:dotViewService container="#jbi" autoStart="true" />
 
