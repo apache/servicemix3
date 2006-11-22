@@ -135,7 +135,6 @@ public abstract class PollingEndpoint extends ConsumerEndpoint {
         scheduleExecutedFlag = false;
         started = false;
         scheduler.cancel();
-        executor.shutdown();
         scheduler = null;
         scheduleIterator = null;
         executor = null;
