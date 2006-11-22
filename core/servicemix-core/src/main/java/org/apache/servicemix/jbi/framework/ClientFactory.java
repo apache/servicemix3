@@ -16,6 +16,8 @@
  */
 package org.apache.servicemix.jbi.framework;
 
+import java.io.Serializable;
+
 import javax.jbi.JBIException;
 import javax.management.JMException;
 import javax.management.MBeanOperationInfo;
@@ -31,7 +33,7 @@ import org.apache.servicemix.jbi.management.OperationInfoHelper;
 /**
  * @author <a href="mailto:gnodet [at] apache.org">Guillaume Nodet</a>
  */
-public class ClientFactory extends BaseSystemService implements ClientFactoryMBean {
+public class ClientFactory extends BaseSystemService implements ClientFactoryMBean, Serializable {
 
     private static final Log logger = LogFactory.getLog(ClientFactory.class);
     
