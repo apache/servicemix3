@@ -43,4 +43,12 @@ public interface JbiConstants {
 
     String HTTP_DESTINATION_URI = "org.apache.servicemix.http.destination.uri";
     
+    /**
+     * This property should be set when a consumer endpoint creates an exchange
+     * related to another provider exchange.  The value of the property should
+     * be set to the value of this property in the provider exchange,
+     * or to the id of the provider exchange if the property does not exist.
+     */
+    String CORRELATION_ID = "org.apache.servicemix.correlationId";
+    
 }

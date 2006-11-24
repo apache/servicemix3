@@ -78,12 +78,15 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
 
     protected boolean workManagerCreated;
 
-    protected Map processors = new ConcurrentHashMap();
+    protected Map processors;
+    
+    protected ThreadLocal correlationId;
 
     public AsyncBaseLifeCycle() {
         this.running = new AtomicBoolean(false);
         this.polling = new AtomicBoolean(false);
         this.processors = new ConcurrentHashMap();
+        this.correlationId = new ThreadLocal();
     }
 
     public AsyncBaseLifeCycle(ServiceMixComponent component) {
@@ -475,12 +478,21 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
                 ClassLoader classLoader = ep.getServiceUnit().getConfigurationClassLoader();
                 Thread.currentThread().setContextClassLoader(classLoader);
             }
-
+            // Read the correlation id from the exchange and set it in the correlation id property
+            String correlationID = (String)exchange.getProperty(JbiConstants.CORRELATION_ID);
+            if (correlationID != null) {
+                // Set the id in threadlocal variable
+                correlationId.set(correlationID);
+            }
+            if (logger.isDebugEnabled()) {
+                logger.debug("Retrieved correlation id: " + correlationID);
+            }
             processor.process(exchange);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
+            // Clean the threadlocal variable
+            correlationId.set(null);
         }
-
     }
 
     /**
@@ -507,8 +519,31 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
      * @throws MessagingException
      */
     public void sendConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException {
+        // Check if a correlation id is already set on the exchange, otherwise create it
+        String correlationIDValue = (String) exchange.getProperty(JbiConstants.CORRELATION_ID);
+        if (correlationIDValue == null) {
+            // Retrieve correlation id from thread local variable, if exist
+            correlationIDValue = (String) correlationId.get();
+            if (correlationIDValue == null) {
+                // Set a correlation id property that have to be propagated in all components
+                // to trace the process instance
+                correlationIDValue = exchange.getExchangeId();
+                exchange.setProperty(JbiConstants.CORRELATION_ID, exchange.getExchangeId());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Created correlation id: " + correlationIDValue);
+                }
+            } else {
+                // Use correlation id retrieved from previous message exchange
+                exchange.setProperty(JbiConstants.CORRELATION_ID, correlationIDValue);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Correlation id retrieved from ThreadLocal: " + correlationIDValue);
+                }
+            }
+        }
+        // Set the sender endpoint property
         String key = EndpointSupport.getKey(endpoint);
         exchange.setProperty(JbiConstants.SENDER_ENDPOINT, key);
+        // Send the exchange
         channel.send(exchange);
     }
 
