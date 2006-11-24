@@ -30,6 +30,7 @@ import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 
+import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.components.util.OutBinding;
 import org.drools.FactException;
 import org.drools.RuleBase;
@@ -80,6 +81,10 @@ public class DroolsComponent extends OutBinding {
         DeliveryChannel channel = getDeliveryChannel();
         MessageExchangeFactory factory = channel.createExchangeFactoryForService(name);
         InOnly outExchange = factory.createInOnlyExchange();
+        String processCorrelationId = (String)exchange.getProperty(JbiConstants.CORRELATION_ID);
+        if (processCorrelationId != null) {
+            outExchange.setProperty(JbiConstants.CORRELATION_ID, processCorrelationId);
+        }
         forwardToExchange(exchange, outExchange, in);
     }
 
@@ -88,6 +93,10 @@ public class DroolsComponent extends OutBinding {
         DeliveryChannel channel = getDeliveryChannel();
         MessageExchangeFactory factory = channel.createExchangeFactory(name);
         InOnly outExchange = factory.createInOnlyExchange();
+        String processCorrelationId = (String)exchange.getProperty(JbiConstants.CORRELATION_ID);
+        if (processCorrelationId != null) {
+            outExchange.setProperty(JbiConstants.CORRELATION_ID, processCorrelationId);
+        }
         forwardToExchange(exchange, outExchange, in);
     }
 
