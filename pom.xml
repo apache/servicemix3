@@ -607,6 +607,16 @@
                 <groupId>org.apache.activemq</groupId>
                 <artifactId>activemq-ra</artifactId>
                 <version>${activemq-version}</version>
+                <exclusions>
+                  <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring</artifactId>
+                  </exclusion>
+                  <exclusion>
+                    <groupId>activemq</groupId>
+                    <artifactId>jmdns</artifactId>
+                  </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.activemq</groupId>
@@ -1125,7 +1135,7 @@
                         <artifactId>concurrent</artifactId>
                     </exclusion>
                     <exclusion>
-                        <groupId>springframework</groupId>
+                        <groupId>org.springframework</groupId>
                         <artifactId>spring</artifactId>
                     </exclusion>
                     <exclusion>
@@ -1268,6 +1278,12 @@
                 <groupId>org.apache.xbean</groupId>
                 <artifactId>xbean-server</artifactId>
                 <version>${xbean-version}</version>
+                <exclusions>
+                  <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring</artifactId>
+                  </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.xbean</groupId>
