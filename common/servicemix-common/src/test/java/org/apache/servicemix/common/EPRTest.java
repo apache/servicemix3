@@ -19,12 +19,10 @@ public class EPRTest extends TestCase {
     
     public static class DummyComponent extends DefaultComponent {
 
-        @Override
         protected List getConfiguredEndpoints() {
             return null;
         }
 
-        @Override
         protected Class[] getEndpointClasses() {
             return null;
         }

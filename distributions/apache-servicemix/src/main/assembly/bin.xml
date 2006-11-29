@@ -117,7 +117,11 @@
         <include>org.apache.xbean:xbean-server</include>
         <include>org.apache.xbean:xbean-kernel</include>
         <include>wsdl4j:wsdl4j</include>
-        <include>org.springframework:spring</include>
+        <include>org.springframework:spring-core</include>
+        <include>org.springframework:spring-beans</include>
+        <include>org.springframework:spring-context</include>
+        <include>org.springframework:spring-jmx</include>
+        <include>org.springframework:spring-dao</include>
         
         <include>org.apache.geronimo.specs:geronimo-jms_1.1_spec</include>
         <include>org.apache.geronimo.specs:geronimo-jta_1.0.1B_spec</include>

@@ -130,7 +130,7 @@ public class DeploymentTest extends AbstractManagementTest {
         assertTrue(getDeploymentService().canDeployToComponent("component1"));
         File installSaUrl = createServiceAssemblyArchive("sa", "su", "component1");
         String result = getDeploymentService().deploy(installSaUrl.getAbsolutePath());
-        System.err.println(result);
+        logger.debug(result);
         String[] sas = getDeploymentService().getDeployedServiceAssemblies();
         assertNotNull(sas);
         assertEquals(1, sas.length);

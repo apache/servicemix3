@@ -73,4 +73,13 @@ public class SimpleBeanFactory implements BeanFactory {
         }
         return true;
     }
+    public boolean isTypeMatch(String name, Class targetType) throws NoSuchBeanDefinitionException {
+        if (!beans.containsKey(name)) {
+            throw new NoSuchBeanDefinitionException(name);
+        }
+        if (targetType == null || Object.class.equals(targetType)) {
+            return true;
+        }
+        return targetType.isAssignableFrom(beans.get(name).getClass());
+    }
 }
