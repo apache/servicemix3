@@ -1508,6 +1508,14 @@
                     <groupId>axion</groupId>
                     <artifactId>axion</artifactId>
                   </exclusion>
+                  <exclusion>
+                    <groupId>geronimo-spec</groupId>
+                    <artifactId>geronimo-spec-jta</artifactId>
+                  </exclusion>
+                  <exclusion>
+                    <groupId>geronimo-spec</groupId>
+                    <artifactId>geronimo-spec-j2ee-connector</artifactId>
+                  </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
