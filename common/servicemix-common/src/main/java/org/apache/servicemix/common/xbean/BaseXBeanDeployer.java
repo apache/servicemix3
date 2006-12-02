@@ -16,6 +16,8 @@
  */
 package org.apache.servicemix.common.xbean;
 
+import java.util.Arrays;
+
 import org.apache.servicemix.common.Endpoint;
 import org.apache.servicemix.common.ServiceMixComponent;
 
@@ -51,8 +53,10 @@ public class BaseXBeanDeployer extends AbstractXBeanDeployer {
         for (int i = 0; i < endpointClasses.length; i++) {
             if (endpointClasses[i].isInstance(endpoint)) {
                 super.validate(endpoint);
+                return;
             }
         }
+        throw new DeploymentException("Endpoint is not of type: " + Arrays.asList(endpointClasses) + " but is of type: " + endpoint.getClass());
     }
     
 }
