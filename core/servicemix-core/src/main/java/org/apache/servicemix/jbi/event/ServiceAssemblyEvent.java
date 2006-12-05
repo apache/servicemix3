@@ -20,6 +20,11 @@ import java.util.EventObject;
 
 import org.apache.servicemix.jbi.framework.ServiceAssemblyLifeCycle;
 
+/**
+ * Event sent for service assembly lifecycle.
+ * 
+ * @author gnodet
+ */
 public class ServiceAssemblyEvent extends EventObject {
 
     private static final long serialVersionUID = 8441830155548563543L;

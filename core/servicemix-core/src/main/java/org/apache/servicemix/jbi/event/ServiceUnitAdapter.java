@@ -16,6 +16,16 @@
  */
 package org.apache.servicemix.jbi.event;
 
+/**
+ * An abstract adapter class for receiving service units events.
+ * The methods in this class are empty. This class exists as a
+ * convenience for creating listener objects.
+ * 
+ * @see ServiceUnitEvent
+ * @see ServiceUnitListener
+ * 
+ * @author gnodet
+ */
 public class ServiceUnitAdapter implements ServiceUnitListener {
 
     public void unitDeployed(ServiceUnitEvent event) {

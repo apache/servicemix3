@@ -16,34 +16,21 @@
  */
 package org.apache.servicemix.jbi.event;
 
+import org.apache.servicemix.jbi.container.JBIContainer;
+
 /**
- * An abstract adapter class for receiving component events.
- * The methods in this class are empty. This class exists as a
- * convenience for creating listener objects.
+ * An interface for listeners which are aware of the container to which they are attached.
  * 
- * @see ComponentEvent
- * @see ComponentListener
- * 
- * @author gnodet
+ * @version $Revision$
  */
-public abstract class ComponentAdapter implements ComponentListener {
+public interface ContainerAware {
 
-    public void componentInstalled(ComponentEvent event) {
-    }
-
-    public void componentInitialized(ComponentEvent event) {
-    }
-
-    public void componentStarted(ComponentEvent event) {
-    }
-
-    public void componentStopped(ComponentEvent event) {
-    }
-
-    public void componentShutDown(ComponentEvent event) {
-    }
-
-    public void componentUninstalled(ComponentEvent event) {
-    }
+    /**
+     * This method is called when the listener is registered
+     * on the JBI container.
+     * 
+     * @param container the container where this listener is registered
+     */
+    public void setContainer(JBIContainer container);
 
 }

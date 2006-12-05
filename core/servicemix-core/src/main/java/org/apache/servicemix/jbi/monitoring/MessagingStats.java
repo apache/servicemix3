@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.messaging;
+package org.apache.servicemix.jbi.monitoring;
 
-import org.apache.servicemix.jbi.management.stats.CountStatisticImpl;
-import org.apache.servicemix.jbi.management.stats.StatsImpl;
-import org.apache.servicemix.jbi.management.stats.TimeStatisticImpl;
+import org.apache.servicemix.jbi.monitoring.stats.CountStatisticImpl;
+import org.apache.servicemix.jbi.monitoring.stats.StatsImpl;
+import org.apache.servicemix.jbi.monitoring.stats.TimeStatisticImpl;
 import org.apache.servicemix.jbi.util.IndentPrinter;
 
 
@@ -28,7 +28,7 @@ import org.apache.servicemix.jbi.util.IndentPrinter;
  * @version $Revision$
  */
 public class MessagingStats extends StatsImpl {
-    private String componentName;
+    private String name;
     protected CountStatisticImpl inboundExchanges;
     protected CountStatisticImpl outboundExchanges;
     protected TimeStatisticImpl inboundExchangeRate;
@@ -36,10 +36,10 @@ public class MessagingStats extends StatsImpl {
 
     /**
      * Default Constructor
-     * @param componentName
+     * @param name
      */
-    public MessagingStats(String componentName) {
-        this.componentName = componentName;
+    public MessagingStats(String name) {
+        this.name = name;
         inboundExchanges = new CountStatisticImpl("inboundExchanges", "Number of Inbound MessageExchanges");
         outboundExchanges = new CountStatisticImpl("outboundExchanges", "Number of Outbound MessageExchanges");
         inboundExchangeRate = new TimeStatisticImpl("inboundExchangeRate", "time taken to process an Exchange");
@@ -51,10 +51,26 @@ public class MessagingStats extends StatsImpl {
     }
     
     /**
-     * @return Returns the componentName.
+     * Default Constructor
+     * @param name
      */
-    public String getComponentName() {
-        return componentName;
+    public MessagingStats(String name, MessagingStats parent) {
+        this.name = name;
+        inboundExchanges = new CountStatisticImpl(parent.inboundExchanges, "inboundExchanges", "Number of Inbound MessageExchanges");
+        outboundExchanges = new CountStatisticImpl(parent.outboundExchanges, "outboundExchanges", "Number of Outbound MessageExchanges");
+        inboundExchangeRate = new TimeStatisticImpl(parent.inboundExchangeRate, "inboundExchangeRate", "time taken to process an Exchange");
+        outboundExchangeRate = new TimeStatisticImpl(parent.outboundExchangeRate, "outboundExchangeRate", "time taken to send an Exchange");
+        addStatistic("inboundExchanges", inboundExchanges);
+        addStatistic("outboundExchanges", outboundExchanges);
+        addStatistic("inboundExchangeRate", inboundExchangeRate);
+        addStatistic("outboundExchangeRate", outboundExchangeRate);
+    }
+    
+    /**
+     * @return Returns the name.
+     */
+    public String getName() {
+        return name;
     }
     /**
      * @return Returns the inboundExchangeRate.
@@ -97,8 +113,8 @@ public class MessagingStats extends StatsImpl {
      */
     public String toString() {
         StringBuffer buffer = new StringBuffer();
-        buffer.append("Component: ");
-        buffer.append(componentName);
+        buffer.append("Statistics: ");
+        buffer.append(name);
         buffer.append(" { ");
         buffer.append(inboundExchanges);
         buffer.append(" ");
@@ -118,8 +134,8 @@ public class MessagingStats extends StatsImpl {
      */
     public void dump(IndentPrinter out) {
         out.printIndent();
-        out.println("Component: ");
-        out.print(componentName);
+        out.println("Statistics: ");
+        out.print(name);
         out.println(" {");
         out.incrementIndent();
         out.println(inboundExchanges);

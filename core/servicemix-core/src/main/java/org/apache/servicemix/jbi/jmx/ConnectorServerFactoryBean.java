@@ -45,6 +45,26 @@ import org.springframework.jmx.support.MBeanRegistrationSupport;
  */
 public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean, DisposableBean {
 
+    /**
+     * Constant indicating that registration should fail when
+     * attempting to register an MBean under a name that already exists.
+     * <p>This is the default registration behavior.
+     */
+    public static final int REGISTRATION_FAIL_ON_EXISTING = 0;
+
+    /**
+     * Constant indicating that registration should ignore the affected MBean
+     * when attempting to register an MBean under a name that already exists.
+     */
+    public static final int REGISTRATION_IGNORE_EXISTING = 1;
+
+    /**
+     * Constant indicating that registration should replace the affected MBean
+     * when attempting to register an MBean under a name that already exists.
+     */
+    public static final int REGISTRATION_REPLACE_EXISTING = 2;
+
+
     private Log log = LogFactory.getLog(ConnectorServerFactoryBean.class);
     private org.springframework.jmx.support.ConnectorServerFactoryBean csfb = new org.springframework.jmx.support.ConnectorServerFactoryBean();
     private String serviceUrl = org.springframework.jmx.support.ConnectorServerFactoryBean.DEFAULT_SERVICE_URL;
@@ -52,9 +72,9 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
     private boolean threaded = false;
     private Map environment;
     private String objectName;
-    private int registrationBehavior;
+    private int registrationBehavior = REGISTRATION_FAIL_ON_EXISTING;
     private MBeanServer server;
-    private static final Constants constants = new Constants(MBeanRegistrationSupport.class);
+    private static final Constants constants = new Constants(ConnectorServerFactoryBean.class);
     
 
     /**

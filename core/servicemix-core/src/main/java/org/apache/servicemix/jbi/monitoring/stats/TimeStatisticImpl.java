@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.management.stats;
+package org.apache.servicemix.jbi.monitoring.stats;
 
 /**
  * A time statistic implementation
  *
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class TimeStatisticImpl extends StatisticImpl {
     private long count;
@@ -54,6 +54,7 @@ public class TimeStatisticImpl extends StatisticImpl {
     }
 
     public synchronized void addTime(long time) {
+        updateSampleTime();
         count++;
         totalTime += time;
         if (time > maxTime) {
@@ -62,7 +63,23 @@ public class TimeStatisticImpl extends StatisticImpl {
         if (time < minTime || minTime == 0) {
             minTime = time;
         }
+        if (parent != null) {
+            parent.addTime(time);
+        }
+    }
+    
+    public synchronized void addTime() {
+        long time = getLastSampleTime();
         updateSampleTime();
+        time = getLastSampleTime() - time;
+        count++;
+        totalTime += time;
+        if (time > maxTime) {
+            maxTime = time;
+        }
+        if (time < minTime || minTime == 0) {
+            minTime = time;
+        }
         if (parent != null) {
             parent.addTime(time);
         }

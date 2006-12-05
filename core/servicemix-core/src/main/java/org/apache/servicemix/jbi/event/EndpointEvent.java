@@ -20,6 +20,11 @@ import java.util.EventObject;
 
 import javax.jbi.servicedesc.ServiceEndpoint;
 
+/**
+ * Event sent for endpoint lifeycle.
+ * 
+ * @author gnodet
+ */
 public class EndpointEvent extends EventObject {
 
     private static final long serialVersionUID = -4480619483039133388L;

@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.management.stats;
+package org.apache.servicemix.jbi.monitoring.stats;
 
 import javax.management.j2ee.statistics.Statistic;
 
 /**
  * Base class for a Statistic implementation
  *
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class StatisticImpl implements Statistic, Resettable {
     private String name;

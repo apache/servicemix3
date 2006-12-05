@@ -16,6 +16,16 @@
  */
 package org.apache.servicemix.jbi.event;
 
+/**
+ * An abstract adapter class for receiving endpoint events.
+ * The methods in this class are empty. This class exists as a
+ * convenience for creating listener objects.
+ * 
+ * @see EndpointEvent
+ * @see EndpointListener
+ * 
+ * @author gnodet
+ */
 public class EndpointAdapter implements EndpointListener {
 
     public void internalEndpointRegistered(EndpointEvent event) {

@@ -43,6 +43,8 @@ import org.apache.servicemix.id.IdGenerator;
 import org.apache.servicemix.jbi.ExchangeTimeoutException;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.event.ExchangeEvent;
+import org.apache.servicemix.jbi.event.ExchangeListener;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 
@@ -68,8 +70,6 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     private IdGenerator idGenerator = new IdGenerator();
     private MessageExchangeFactory inboundFactory;
     private int intervalCount = 0;
-    private long lastSendTime = System.currentTimeMillis();
-    private long lastReceiveTime = System.currentTimeMillis();
     private AtomicBoolean closed = new AtomicBoolean(false);
     private Map waiters = new ConcurrentHashMap();
     
@@ -288,6 +288,18 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                     }
                 }
             }
+            if (me != null) {
+                // Call input listeners
+                ExchangeListener[] l = (ExchangeListener[]) container.getListeners(ExchangeListener.class);
+                ExchangeEvent event = new ExchangeEvent(me, ExchangeEvent.EXCHANGE_ACCEPTED);
+                for (int i = 0; i < l.length; i++) {
+                    try {
+                        l[i].exchangeAccepted(event);
+                    } catch (Exception e) {
+                        log.warn("Error calling listener: " + e.getMessage(), e);
+                    }
+                }
+            }
             return me;
         }
         catch (InterruptedException e) {
@@ -339,14 +351,22 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             autoSetPersistent(me);
             // Throttle if needed
             throttle();
-            // Update stats
-            incrementOutboundStats();
             // Store the consumer component
             if (me.getRole() == Role.CONSUMER) {
                 me.setSourceId(component.getComponentNameSpace());
             }
             // Call the listeners before the ownership changes
-            container.callListeners(me);
+            // Call input listeners
+            ExchangeListener[] l = (ExchangeListener[]) container.getListeners(ExchangeListener.class);
+            ExchangeEvent event = new ExchangeEvent(me, ExchangeEvent.EXCHANGE_SENT);
+            for (int i = 0; i < l.length; i++) {
+                try {
+                    l[i].exchangeSent(event);
+                } catch (Exception e) {
+                    log.warn("Error calling listener: " + e.getMessage(), e);
+                }
+            }
+            // Change ownership
             me.handleSend(sync);
             mirror.setTxState(MessageExchangeImpl.TX_STATE_NONE);
             // If this is the DONE or ERROR status from a synchronous transactional exchange,
@@ -510,50 +530,6 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         this.context = context;
     }
 
-    protected void incrementInboundStats() {
-        MessagingStats messagingStats = component.getMessagingStats();
-        long currentTime = System.currentTimeMillis();
-        if (container.isNotifyStatistics()) {
-            long oldCount = messagingStats.getInboundExchanges().getCount();
-            messagingStats.getInboundExchanges().increment();
-            component.firePropertyChanged(
-                    "inboundExchangeCount",
-                    new Long(oldCount),
-                    new Long(messagingStats.getInboundExchanges().getCount()));
-            double oldRate = messagingStats.getInboundExchangeRate().getAverageTime();
-            messagingStats.getInboundExchangeRate().addTime(currentTime - lastReceiveTime);
-            component.firePropertyChanged("inboundExchangeRate",
-                    new Double(oldRate),
-                    new Double(messagingStats.getInboundExchangeRate().getAverageTime()));
-        } else {
-            messagingStats.getInboundExchanges().increment();
-            messagingStats.getInboundExchangeRate().addTime(currentTime - lastReceiveTime);
-        }
-        lastReceiveTime = currentTime;
-    }
-    
-    protected void incrementOutboundStats() {
-        MessagingStats messagingStats = component.getMessagingStats();
-        long currentTime = System.currentTimeMillis();
-        if (container.isNotifyStatistics()) {
-            long oldCount = messagingStats.getOutboundExchanges().getCount();
-            messagingStats.getOutboundExchanges().increment();
-            component.firePropertyChanged(
-                    "outboundExchangeCount",
-                    new Long(oldCount),
-                    new Long(messagingStats.getOutboundExchanges().getCount()));
-            double oldRate = messagingStats.getOutboundExchangeRate().getAverageTime();
-            messagingStats.getOutboundExchangeRate().addTime(currentTime - lastSendTime);
-            component.firePropertyChanged("outboundExchangeRate",
-                    new Double(oldRate),
-                    new Double(messagingStats.getOutboundExchangeRate().getAverageTime()));
-        } else {
-            messagingStats.getOutboundExchanges().increment();
-            messagingStats.getOutboundExchangeRate().addTime(currentTime - lastSendTime);
-        }
-        lastSendTime = currentTime;
-    }
-    
     /**
      * Used internally for passing in a MessageExchange
      * 
@@ -566,9 +542,6 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         }
         // Check if the delivery channel has been closed
         checkNotClosed();
-        // Update stats
-        incrementInboundStats();
-
         // Retrieve the original exchange sent
         MessageExchangeImpl original = (MessageExchangeImpl) exchangesById.get(getKeyForExchange(me));
         if (original != null && me != original) {
@@ -599,6 +572,16 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             me.handleAccept();
             if (log.isTraceEnabled()) {
                 log.trace("Received: " + me);
+            }
+            // Call input listeners
+            ExchangeListener[] l = (ExchangeListener[]) container.getListeners(ExchangeListener.class);
+            ExchangeEvent event = new ExchangeEvent(me, ExchangeEvent.EXCHANGE_ACCEPTED);
+            for (int i = 0; i < l.length; i++) {
+                try {
+                    l[i].exchangeAccepted(event);
+                } catch (Exception e) {
+                    log.warn("Error calling listener: " + e.getMessage(), e);
+                }
             }
             // Set the flag the the exchange was delivered using push mode
             // This is important for transaction boundaries

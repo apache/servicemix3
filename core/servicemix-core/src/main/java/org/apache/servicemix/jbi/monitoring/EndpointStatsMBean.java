@@ -14,15 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.framework;
+package org.apache.servicemix.jbi.monitoring;
 
+public interface EndpointStatsMBean {
 
-/**
- * Defines basic operations on the Compomnent
- */
-public interface ComponentStatsMBean {
-    
-    
     /**
      * Get the Inbound MessageExchange count
      * 
@@ -51,11 +46,6 @@ public interface ComponentStatsMBean {
      */
     public double getOutboundExchangeRate();
     
-    /**
-     * @return size of the inbound Queue
-     */
-    public int getInboundQueueSize();
-
     /**
      * reset all stats counters
      */

@@ -16,6 +16,16 @@
  */
 package org.apache.servicemix.jbi.event;
 
+/**
+ * An abstract adapter class for receiving service assemblies events.
+ * The methods in this class are empty. This class exists as a
+ * convenience for creating listener objects.
+ * 
+ * @see ServiceAssemblyEvent
+ * @see ServiceAssemblyListener
+ * 
+ * @author gnodet
+ */
 public class ServiceAssemblyAdapter implements ServiceAssemblyListener {
 
     public void assemblyDeployed(ServiceAssemblyEvent event) {

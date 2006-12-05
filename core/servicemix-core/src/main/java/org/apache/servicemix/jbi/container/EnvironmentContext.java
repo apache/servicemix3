@@ -18,19 +18,13 @@ package org.apache.servicemix.jbi.container;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.jbi.JBIException;
-import javax.management.JMException;
-import javax.management.MBeanAttributeInfo;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
-import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.servicemix.jbi.util.FileVersionUtil;
@@ -64,12 +58,8 @@ public class EnvironmentContext extends BaseSystemService implements Environment
     private File sharedLibDir;
     private File serviceAssembliesDir;
     private File tmpDir;
-    private int statsInterval = 5;
     private Map envMap = new ConcurrentHashMap();
     private AtomicBoolean started = new AtomicBoolean(false);
-    private boolean dumpStats = false;
-    private Timer statsTimer;
-    private TimerTask timerTask;
 
 
     /**
@@ -179,9 +169,8 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @exception javax.jbi.JBIException if the item fails to start.
      */
     public void start() throws javax.jbi.JBIException {
-        super.start();
         if (started.compareAndSet(false, true)) {
-            scheduleStatsTimer();
+            super.start();
         }
     }
 
@@ -193,9 +182,6 @@ public class EnvironmentContext extends BaseSystemService implements Environment
     public void stop() throws javax.jbi.JBIException {
         if (started.compareAndSet(true, false)) {
             super.stop();
-            if (timerTask != null) {
-                timerTask.cancel();
-            }
         }
     }
 
@@ -206,65 +192,8 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      */
     public void shutDown() throws javax.jbi.JBIException {
         super.shutDown();
-        for (Iterator i = envMap.values().iterator();i.hasNext();) {
-            ComponentEnvironment ce = (ComponentEnvironment) i.next();
-            ce.close();
-        }
-        if (timerTask != null) {
-            timerTask.cancel();
-        }
-        if (statsTimer != null) {
-            statsTimer.cancel();
-        }
         envMap.clear();
         container.getManagementContext().unregisterMBean(this);
-    }
-
-    /**
-     * @return Returns the statsInterval (in secs).
-     */
-    public int getStatsInterval() {
-        return statsInterval;
-    }
-
-    /**
-     * @param statsInterval The statsInterval to set (in secs).
-     */
-    public void setStatsInterval(int statsInterval) {
-        this.statsInterval = statsInterval;
-        scheduleStatsTimer();
-    }
-
-    /**
-     * @return Returns the dumpStats.
-     */
-    public boolean isDumpStats() {
-        return dumpStats;
-    }
-
-    /**
-     * @param value The dumpStats to set.
-     */
-    public void setDumpStats(boolean value) {
-        if (dumpStats && !value) {
-            if (timerTask != null) {
-                timerTask.cancel();
-            }
-        }
-        else if (!dumpStats && value) {
-            dumpStats = value;//scheduleStatsTimer relies on dumpStats value
-            scheduleStatsTimer();
-        }
-        dumpStats = value;
-    }
-
-    protected void doDumpStats() {
-        if (isDumpStats()) {
-            for (Iterator i = envMap.values().iterator();i.hasNext();) {
-                ComponentEnvironment ce = (ComponentEnvironment) i.next();
-                ce.dumpStats();
-            }
-        }
     }
 
     /**
@@ -313,10 +242,6 @@ public class EnvironmentContext extends BaseSystemService implements Environment
             } catch (IOException e) {
                 throw new JBIException(e);
             }
-        }
-        if (result.getStatsFile() == null) {
-            File statsFile = FileUtil.getDirectoryPath(result.getComponentRoot(), "stats.cvs");
-            result.setStatsFile(statsFile);
         }
         result.setLocalConnector(connector);
         envMap.put(connector, result);
@@ -386,13 +311,11 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         File instDir   = FileVersionUtil.getNewVersionDirectory(rootDir);
         File workDir   = FileUtil.getDirectoryPath(rootDir, "workspace");
         File stateFile = FileUtil.getDirectoryPath(rootDir, "state.xml");
-        File statsFile = FileUtil.getDirectoryPath(rootDir, "stats.csv");
         ComponentEnvironment env = new ComponentEnvironment();
         env.setComponentRoot(rootDir);
         env.setInstallRoot(instDir);
         env.setWorkspaceRoot(workDir);
         env.setStateFile(stateFile);
-        env.setStatsFile(statsFile);
         return env;
     }
     
@@ -401,13 +324,11 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         File instDir   = FileVersionUtil.getLatestVersionDirectory(rootDir);
         File workDir   = FileUtil.getDirectoryPath(rootDir, "workspace");
         File stateFile = FileUtil.getDirectoryPath(rootDir, "state.xml");
-        File statsFile = FileUtil.getDirectoryPath(rootDir, "stats.csv");
         ComponentEnvironment env = new ComponentEnvironment();
         env.setComponentRoot(rootDir);
         env.setInstallRoot(instDir);
         env.setWorkspaceRoot(workDir);
         env.setStateFile(stateFile);
-        env.setStatsFile(statsFile);
         return env;
     }
     
@@ -460,10 +381,6 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @param doDelete true if component is to be deleted
      */
     public void unreregister(ComponentMBeanImpl connector) {
-        ComponentEnvironment ce = (ComponentEnvironment) envMap.remove(connector);
-        if (ce != null) {
-            ce.close();
-        }
     }
 
     /**
@@ -546,40 +463,6 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         }
     }
 
-    private void scheduleStatsTimer() {
-        if (isDumpStats()) {
-            if (statsTimer == null) {
-                statsTimer = new Timer(true);
-            }
-            if (timerTask != null) {
-                timerTask.cancel();
-            }
-            timerTask = new TimerTask() {
-                public void run() {
-                    doDumpStats();
-                }
-            };
-            long interval = statsInterval * 1000;
-            statsTimer.scheduleAtFixedRate(timerTask, interval, interval);
-        }
-    }
-    
-    
-    
-   
-
-    /**
-     * Get an array of MBeanAttributeInfo
-     * 
-     * @return array of AttributeInfos
-     * @throws JMException
-     */
-    public MBeanAttributeInfo[] getAttributeInfos() throws JMException {
-        AttributeInfoHelper helper = new AttributeInfoHelper();
-        helper.addAttribute(getObjectToManage(), "dumpStats", "Periodically dump Component statistics");
-        helper.addAttribute(getObjectToManage(), "statsInterval", "Interval (secs) before dumping statistics");
-        return AttributeInfoHelper.join(super.getAttributeInfos(), helper.getAttributeInfos());
-    }
 
     public File getJbiRootDir() {
         return jbiRootDir;

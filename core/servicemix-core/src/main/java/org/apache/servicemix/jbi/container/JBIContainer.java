@@ -55,6 +55,7 @@ import org.apache.servicemix.executors.ExecutorFactory;
 import org.apache.servicemix.executors.impl.ExecutorFactoryImpl;
 import org.apache.servicemix.id.IdGenerator;
 import org.apache.servicemix.jbi.event.ComponentListener;
+import org.apache.servicemix.jbi.event.ContainerAware;
 import org.apache.servicemix.jbi.event.EndpointListener;
 import org.apache.servicemix.jbi.event.ExchangeEvent;
 import org.apache.servicemix.jbi.event.ExchangeListener;
@@ -70,6 +71,7 @@ import org.apache.servicemix.jbi.framework.DeploymentService;
 import org.apache.servicemix.jbi.framework.InstallationService;
 import org.apache.servicemix.jbi.framework.Registry;
 import org.apache.servicemix.jbi.management.BaseLifeCycle;
+import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.management.ManagementContext;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.Broker;
@@ -106,6 +108,7 @@ public class JBIContainer extends BaseLifeCycle {
     protected DeploymentService deploymentService = new DeploymentService();
     protected AutoDeploymentService autoDeployService = new AutoDeploymentService();
     protected AdminCommandsService adminCommandsService = new AdminCommandsService();
+    protected BaseSystemService[] services;
     protected ClientFactory clientFactory = new ClientFactory();
     protected Registry registry = new Registry();
     protected boolean autoEnlistInTransaction = false;
@@ -248,6 +251,20 @@ public class JBIContainer extends BaseLifeCycle {
      */
     public void setUseShutdownHook(boolean useShutdownHook) {
         this.useShutdownHook = useShutdownHook;
+    }
+
+    /**
+     * @return the services
+     */
+    public BaseSystemService[] getServices() {
+        return services;
+    }
+
+    /**
+     * @param services the services to set
+     */
+    public void setServices(BaseSystemService[] services) {
+        this.services = services;
     }
 
     /**
@@ -407,20 +424,6 @@ public class JBIContainer extends BaseLifeCycle {
     }
 
     /**
-     * @return Returns the statsInterval (in secs).
-     */
-    public int getStatsInterval() {
-        return environmentContext.getStatsInterval();
-    }
-
-    /**
-     * @param statsInterval The statsInterval to set (in secs).
-     */
-    public void setStatsInterval(int statsInterval) {
-        environmentContext.setStatsInterval(statsInterval);
-    }
-    
-    /**
      * @return Returns the monitorInterval (in secs).
      */
     public int getMonitorInterval() {
@@ -432,20 +435,6 @@ public class JBIContainer extends BaseLifeCycle {
      */
     public void setMonitorInterval(int monitorInterval) {
     	autoDeployService.setMonitorInterval(monitorInterval);
-    }
-
-    /**
-     * @return Returns the dumpStats.
-     */
-    public boolean isDumpStats() {
-        return environmentContext.isDumpStats();
-    }
-
-    /**
-     * @param value The dumpStats to set.
-     */
-    public void setDumpStats(boolean value) {
-        environmentContext.setDumpStats(value);
     }
 
     /**
@@ -549,6 +538,11 @@ public class JBIContainer extends BaseLifeCycle {
             mbeanServer = this.managementContext.getMBeanServer();// just in case ManagementContext creates it
             environmentContext.init(this, rootDir);
             clientFactory.init(this);
+            if (services != null) {
+                for (int i = 0; i < services.length; i++) {
+                    services[i].init(this);
+                }
+            }
             registry.init(this);
             broker.init(this);
             installationService.init(this);
@@ -586,6 +580,11 @@ public class JBIContainer extends BaseLifeCycle {
             managementContext.start();
             environmentContext.start();
             clientFactory.start();
+            if (services != null) {
+                for (int i = 0; i < services.length; i++) {
+                    services[i].start();
+                }
+            }
             broker.start();
             registry.start();
             installationService.start();
@@ -612,6 +611,11 @@ public class JBIContainer extends BaseLifeCycle {
             installationService.stop();
             registry.stop();
             broker.stop();
+            if (services != null) {
+                for (int i = services.length - 1; i >= 0; i--) {
+                    services[i].stop();
+                }
+            }
             clientFactory.stop();
             environmentContext.stop();
             managementContext.stop();
@@ -635,6 +639,11 @@ public class JBIContainer extends BaseLifeCycle {
             // lots of messages when components and endpoints are stopped.
             broker.shutDown();
             registry.shutDown();
+            if (services != null) {
+                for (int i = services.length - 1; i >= 0; i--) {
+                    services[i].shutDown();
+                }
+            }
             clientFactory.shutDown();
             environmentContext.shutDown();
             // shutdown the management context last, because it will close the mbean server
@@ -1245,18 +1254,6 @@ public class JBIContainer extends BaseLifeCycle {
         configuredListeners = listeners;
     }
     
-    public void callListeners(MessageExchange exchange) {
-        ExchangeListener[] l = (ExchangeListener[]) listeners.getListeners(ExchangeListener.class);
-        ExchangeEvent event = new ExchangeEvent(exchange);
-        for (int i = 0; i < l.length; i++) {
-            try {
-                l[i].exchangeSent(event);
-            } catch (Exception e) {
-                log.warn("Error calling listener: " + e.getMessage(), e);
-            }
-        }
-    }
-
     public void resendExchange(MessageExchange exchange) throws JBIException {
         if (exchange instanceof MessageExchangeImpl == false) {
             throw new IllegalArgumentException("exchange should be a MessageExchangeImpl");
@@ -1268,7 +1265,15 @@ public class JBIContainer extends BaseLifeCycle {
         me.getPacket().setError(null);
         me.getPacket().setStatus(ExchangeStatus.ACTIVE);
         me.getPacket().setProperty(JbiConstants.DATESTAMP_PROPERTY_NAME, Calendar.getInstance());
-        callListeners(me);
+        ExchangeListener[] l = (ExchangeListener[]) listeners.getListeners(ExchangeListener.class);
+        ExchangeEvent event = new ExchangeEvent(me, ExchangeEvent.EXCHANGE_SENT);
+        for (int i = 0; i < l.length; i++) {
+            try {
+                l[i].exchangeSent(event);
+            } catch (Exception e) {
+                log.warn("Error calling listener: " + e.getMessage(), e);
+            }
+        }
         me.handleSend(false);
         sendExchange(me.getMirror());
     }

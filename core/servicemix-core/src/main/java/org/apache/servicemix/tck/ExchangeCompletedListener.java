@@ -48,6 +48,9 @@ public class ExchangeCompletedListener extends Assert implements ExchangeListene
             exchanges.notify();
         }
     }
+    
+    public void exchangeAccepted(ExchangeEvent event) {
+    }
 
     public void assertExchangeCompleted() throws Exception {
         long start = System.currentTimeMillis();

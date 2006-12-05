@@ -14,36 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.event;
+package org.apache.servicemix.jbi.monitoring.stats;
 
 /**
- * An abstract adapter class for receiving component events.
- * The methods in this class are empty. This class exists as a
- * convenience for creating listener objects.
- * 
- * @see ComponentEvent
- * @see ComponentListener
- * 
- * @author gnodet
+ * Represents some statistic that is capable of being reset
+ *
+ * @version $Revision$
  */
-public abstract class ComponentAdapter implements ComponentListener {
+public interface Resettable {
 
-    public void componentInstalled(ComponentEvent event) {
-    }
-
-    public void componentInitialized(ComponentEvent event) {
-    }
-
-    public void componentStarted(ComponentEvent event) {
-    }
-
-    public void componentStopped(ComponentEvent event) {
-    }
-
-    public void componentShutDown(ComponentEvent event) {
-    }
-
-    public void componentUninstalled(ComponentEvent event) {
-    }
-
+    /**
+     * Reset the statistic
+     */
+    public void reset();
 }

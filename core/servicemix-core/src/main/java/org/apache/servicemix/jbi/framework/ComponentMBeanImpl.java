@@ -42,7 +42,6 @@ import org.apache.servicemix.jbi.management.BaseLifeCycle;
 import org.apache.servicemix.jbi.management.ManagementContext;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
 import org.apache.servicemix.jbi.messaging.DeliveryChannelImpl;
-import org.apache.servicemix.jbi.messaging.MessagingStats;
 import org.apache.servicemix.jbi.util.XmlPersistenceSupport;
 
 /**
@@ -62,10 +61,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
     private ComponentContextImpl context;
     private ActivationSpec activationSpec;
     private ObjectName mBeanName;
-    private ComponentStats componentStatsMBean;
-    private ObjectName componentStatsMBeanName;
     private JBIContainer container;
-    private MessagingStats messagingStats;
     private ComponentNameSpace componentName;
     private String description = "POJO Component";
     private int queueCapacity = 1024;
@@ -98,8 +94,6 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
         this.description = description;
         this.binding = binding;
         this.service = service;
-        this.componentStatsMBean = new ComponentStats(this);
-        this.messagingStats = new MessagingStats(name.getName());
         this.sharedLibraries = sharedLibraries;
     }
 
@@ -113,8 +107,6 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
         try{
             mBeanName = context.createObjectName(this);
             context.registerMBean(mBeanName, this, ComponentMBean.class);
-            componentStatsMBeanName = context.createObjectName(componentStatsMBean);
-            context.registerMBean(componentStatsMBeanName, componentStatsMBean, ComponentStatsMBean.class);
             return mBeanName;
         }catch(Exception e){
             String errorStr="Failed to register MBeans";
@@ -130,7 +122,6 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      */
     public void unregisterMbeans(ManagementContext context) throws JBIException{
         context.unregisterMBean(mBeanName);
-        context.unregisterMBean(componentStatsMBeanName);
     }
 
     /**
@@ -191,6 +182,8 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
             DeliveryChannelImpl channel = new DeliveryChannelImpl(this);
             channel.setContext(context);
             context.setDeliveryChannel(channel);
+            super.init();
+            fireEvent(ComponentEvent.COMPONENT_INITIALIZED);
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(getLifeCycle().getClass().getClassLoader());
@@ -199,7 +192,6 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
                 Thread.currentThread().setContextClassLoader(loader);
             }
         }
-        super.init();
     }
     
     /**
@@ -512,12 +504,6 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
     }
 
     /**
-     * @return the ObjectName for the stats MBean for this Component - or null if it doesn't exist
-     */
-    public ObjectName getStatsMBeanName(){
-        return componentStatsMBeanName;
-    }
-    /**
      * Get an array of MBeanAttributeInfo
      * 
      * @return array of AttributeInfos
@@ -531,7 +517,6 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
         helper.addAttribute(getObjectToManage(), "throttlingTimeout", "timeout for throttling");
         helper.addAttribute(getObjectToManage(), "throttlingInterval", "exchange intervals before throttling");
         helper.addAttribute(getObjectToManage(), "extensionMBeanName", "extension mbean name");
-        helper.addAttribute(getObjectToManage(), "statsMBeanName", "Statistics mbean name");
         return AttributeInfoHelper.join(super.getAttributeInfos(), helper.getAttributeInfos());
     }
 
@@ -593,6 +578,9 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
         ComponentListener[] listeners = (ComponentListener[]) getContainer().getListeners(ComponentListener.class);
         for (int i = 0; i < listeners.length; i++) {
             switch (type) {
+            case ComponentEvent.COMPONENT_INITIALIZED:
+                listeners[i].componentInitialized(event);
+                break;
             case ComponentEvent.COMPONENT_STARTED:
                 listeners[i].componentStarted(event);
                 break;
@@ -623,13 +611,6 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
 
     public JBIContainer getContainer() {
         return container;
-    }
-
-    /**
-     * @return Returns the messagingStats.
-     */
-    public MessagingStats getMessagingStats() {
-        return messagingStats;
     }
 
     public Component getComponent() {

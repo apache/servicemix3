@@ -18,8 +18,8 @@ package org.apache.servicemix.jbi.view;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.container.ContainerAware;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.event.ContainerAware;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.framework.Endpoint;
 import org.apache.servicemix.jbi.framework.Registry;

@@ -14,17 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.management.stats;
+package org.apache.servicemix.jbi.event;
 
 /**
- * Represents some statistic that is capable of being reset
- *
- * @version $Revision: 1.2 $
+ * An abstract adapter class for receiving exchange events.
+ * The methods in this class are empty. This class exists as a
+ * convenience for creating listener objects.
+ * 
+ * @see ExchangeEvent
+ * @see ExchangeListener
+ * 
+ * @author gnodet
  */
-public interface Resettable {
+public class ExchangeAdapter implements ExchangeListener {
 
-    /**
-     * Reset the statistic
-     */
-    public void reset();
+    public void exchangeAccepted(ExchangeEvent event) {
+    }
+
+    public void exchangeSent(ExchangeEvent event) {
+    }
+
 }

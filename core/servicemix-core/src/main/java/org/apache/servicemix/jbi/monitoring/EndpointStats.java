@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.framework;
+package org.apache.servicemix.jbi.monitoring;
 
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
@@ -23,41 +23,51 @@ import javax.management.MBeanOperationInfo;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseLifeCycle;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
+import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
+import org.apache.servicemix.jbi.servicedesc.EndpointSupport;
 
-/**
- * Defines basic statistics on the Component
- */
-public class ComponentStats extends BaseLifeCycle implements ComponentStatsMBean {
+public class EndpointStats extends BaseLifeCycle implements EndpointStatsMBean {
 
-    private ComponentMBeanImpl component;
-
-    /**
-     * Constructor
-     * 
-     * @param lcc
-     */
-    public ComponentStats(ComponentMBeanImpl component) {
-        this.component = component;
+    private AbstractServiceEndpoint endpoint;
+    private MessagingStats stats;
+    
+    public EndpointStats(AbstractServiceEndpoint endpoint, MessagingStats componentStats) {
+        this.endpoint = endpoint;
+        this.stats = new MessagingStats(EndpointSupport.getUniqueKey(endpoint), componentStats);
     }
-
+    
+    MessagingStats getMessagingStats() {
+        return stats;
+    }
+    
+    void incrementInbound() {
+        stats.getInboundExchanges().increment();
+        stats.getInboundExchangeRate().addTime();
+    }
+    
+    void incrementOutbound() {
+        stats.getOutboundExchanges().increment();
+        stats.getOutboundExchangeRate().addTime();
+    }
+    
     /**
      * Get the type of the item
      * @return the type
      */
     public String getType() {
-        return "Component";
-    }
-
-    public String getSubType() {
         return "Statistics";
     }
 
+    public String getSubType() {
+        return "Endpoint";
+    }
+    
     /**
      * Get the name of the item
      * @return the name
      */
     public String getName() {
-        return component.getName();
+        return EndpointSupport.getUniqueKey(endpoint);
     }
 
     /**
@@ -65,61 +75,30 @@ public class ComponentStats extends BaseLifeCycle implements ComponentStatsMBean
      * @return the description
      */
     public String getDescription() {
-        return "Statistics for " + component.getDescription();
+        return "Statistics for endpoint " + EndpointSupport.getUniqueKey(endpoint);
     }
 
-    /**
-     * Get the Inbound MessageExchange count
-     * 
-     * @return inbound count
-     */
     public long getInboundExchangeCount() {
-        return component.getMessagingStats().getInboundExchanges().getCount();
+        return stats.getInboundExchanges().getCount();
     }
 
-    /**
-     * Get the Inbound MessageExchange rate (number/sec)
-     * 
-     * @return the inbound exchange rate
-     */
     public double getInboundExchangeRate() {
-        return component.getMessagingStats().getInboundExchangeRate().getAverageTime();
+        return stats.getInboundExchangeRate().getAveragePerSecond();
     }
 
-    /**
-     * Get the Outbound MessageExchange count
-     * 
-     * @return outbound count
-     */
     public long getOutboundExchangeCount() {
-        return component.getMessagingStats().getOutboundExchanges().getCount();
+        return stats.getOutboundExchanges().getCount();
     }
 
-    /**
-     * Get the Outbound MessageExchange rate (number/sec)
-     * 
-     * @return the outbound exchange rate
-     */
     public double getOutboundExchangeRate() {
-        return component.getMessagingStats().getOutboundExchangeRate().getAverageTime();
-    }
-
-    /**
-     * @return size of the inbound Queue
-     */
-    public int getInboundQueueSize() {
-        if (component.getDeliveryChannel() != null) {
-            return component.getDeliveryChannel().getQueueSize();
-        } else {
-            return 0;
-        }
+        return stats.getOutboundExchangeRate().getAveragePerSecond();
     }
 
     /**
      * Reset all stats counters
      */
     public void reset() {
-        component.getMessagingStats().reset();
+        stats.reset();
     }
 
     /**
@@ -130,7 +109,6 @@ public class ComponentStats extends BaseLifeCycle implements ComponentStatsMBean
      */
     public MBeanAttributeInfo[] getAttributeInfos() throws JMException {
         AttributeInfoHelper helper = new AttributeInfoHelper();
-        helper.addAttribute(getObjectToManage(), "inboundQueueSize", "size of the inbound queue");
         helper.addAttribute(getObjectToManage(), "inboundExchangeCount", "count of inbound exchanges");
         helper.addAttribute(getObjectToManage(), "outboundExchangeCount", "count of outbound exchanges");
         helper.addAttribute(getObjectToManage(), "inboundExchangeRate", "rate of inbound exchanges/sec");

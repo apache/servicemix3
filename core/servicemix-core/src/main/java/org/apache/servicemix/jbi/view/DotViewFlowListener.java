@@ -166,6 +166,9 @@ public class DotViewFlowListener extends DotViewEndpointListener
         }
     }
     
+    public void exchangeAccepted(ExchangeEvent event) {
+    }
+    
     protected Map createSource(String name) {
         synchronized (flow) {
             Map componentFlow = (Map) flow.get(name);
@@ -198,9 +201,12 @@ public class DotViewFlowListener extends DotViewEndpointListener
     public void componentInstalled(ComponentEvent event) {
         createSource(event.getComponent().getName());
     }
+    
+    public void componentInitialized(ComponentEvent event) {
+        createSource(event.getComponent().getName());
+    }
 
     public void componentStarted(ComponentEvent event) {
-        createSource(event.getComponent().getName());
     }
 
     public void componentStopped(ComponentEvent event) {

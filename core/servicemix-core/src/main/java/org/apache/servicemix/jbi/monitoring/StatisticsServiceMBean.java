@@ -14,14 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.container;
+package org.apache.servicemix.jbi.monitoring;
 
-/**
- * An interface for components which are aware of the container to which they are attached.
- * 
- * @version $Revision$
- */
-public interface ContainerAware {
+public interface StatisticsServiceMBean {
 
-    public void setContainer(JBIContainer container);
+    /**
+     * @return the statsInterval
+     */
+    public long getStatsInterval();
+
+    /**
+     * @param statsInterval the statsInterval to set
+     */
+    public void setStatsInterval(long statsInterval);
+
+    /**
+     * @return the dumpStats
+     */
+    public boolean isDumpStats();
+
+    /**
+     * @param dumpStats the dumpStats to set
+     */
+    public void setDumpStats(boolean value);
+    
+    /**
+     * Reset all statistics
+     */
+    public void resetAllStats();
 }

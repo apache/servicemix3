@@ -20,10 +20,8 @@ import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.flow.AbstractFlow;
 import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
 
-import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
-import javax.jbi.messaging.MessageExchange.Role;
 
 /**
  * A simple Straight through flow.

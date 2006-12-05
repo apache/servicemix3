@@ -21,6 +21,8 @@ import java.util.EventListener;
 public interface ComponentListener extends EventListener {
     
     public void componentInstalled(ComponentEvent event);
+    
+    public void componentInitialized(ComponentEvent event);
 
     public void componentStarted(ComponentEvent event);
 

@@ -20,6 +20,11 @@ import java.util.EventObject;
 
 import org.apache.servicemix.jbi.framework.ServiceUnitLifeCycle;
 
+/**
+ * Event sent for service unit lifecycle.
+ * 
+ * @author gnodet
+ */
 public class ServiceUnitEvent extends EventObject {
 
     private static final long serialVersionUID = 7825652001472392923L;

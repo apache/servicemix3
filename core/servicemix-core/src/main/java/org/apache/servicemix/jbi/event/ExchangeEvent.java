@@ -23,26 +23,40 @@ import java.util.EventObject;
 
 import javax.jbi.messaging.MessageExchange;
 
+/**
+ * Event sent when an exchange is received or accepted by a component.
+ * 
+ * @author gnodet
+ */
 public class ExchangeEvent extends EventObject {
 
     private static final long serialVersionUID = -8349785806912334977L;
 
-    public ExchangeEvent(MessageExchange exchange) {
+    public static final int EXCHANGE_SENT = 0;
+    public static final int EXCHANGE_ACCEPTED = 1;
+    
+    private MessageExchange exchange;
+    private int type;
+    
+    public ExchangeEvent(MessageExchange exchange, int type) {
         super(exchange);
+        this.exchange = exchange;
+        this.type = type;
     }
     
     public MessageExchange getExchange() {
-        return (MessageExchange) getSource();
+        return exchange;
+    }
+    
+    public int getType() {
+        return type;
     }
 
     /**
      * Returns the source context which created the message exchange
      */
     public ComponentContextImpl getExchangeSourceContext() {
-        return getExchangeImpl().getSourceContext();
+        return ((MessageExchangeImpl) exchange).getSourceContext();
     }
-    
-    protected MessageExchangeImpl getExchangeImpl() {
-        return (MessageExchangeImpl) getSource();
-    }
+
 }

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.management.stats;
+package org.apache.servicemix.jbi.monitoring.stats;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,9 +27,9 @@ import javax.management.j2ee.statistics.Stats;
 /**
  * Base class for a Stats implementation
  *
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
-public class StatsImpl extends StatisticImpl implements Stats, Resettable{
+public class StatsImpl extends StatisticImpl implements Stats, Resettable {
     private Map map;
 
     public StatsImpl() {

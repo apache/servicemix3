@@ -17,7 +17,6 @@
 package org.apache.servicemix.jbi.framework;
 
 import javax.jbi.management.ComponentLifeCycleMBean;
-import javax.management.ObjectName;
 
 /**
  * Defines basic operations on the Compomnent
@@ -72,11 +71,6 @@ public interface ComponentMBean extends ComponentLifeCycleMBean {
      * @param value
      */
     public void setThrottlingInterval(int value);
-    
-    /**
-     * @return the ObjectName for the stats MBean for this Component - or null if it doesn't exist
-     */
-    public ObjectName getStatsMBeanName();
     
     /**
      * @return the component type (service-engine, binding-component)

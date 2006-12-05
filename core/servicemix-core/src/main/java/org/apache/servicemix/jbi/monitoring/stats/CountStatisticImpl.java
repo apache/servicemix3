@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.management.stats;
+package org.apache.servicemix.jbi.monitoring.stats;
 
 import javax.management.j2ee.statistics.CountStatistic;
 
@@ -23,7 +23,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicLong;
 /**
  * A count statistic implementation
  *
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
 public class CountStatisticImpl extends StatisticImpl implements CountStatistic {
 

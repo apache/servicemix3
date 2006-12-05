@@ -22,4 +22,6 @@ public interface ExchangeListener extends EventListener {
 
     public void exchangeSent(ExchangeEvent event);
     
+    public void exchangeAccepted(ExchangeEvent event);
+    
 }
