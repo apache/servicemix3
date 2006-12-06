@@ -49,20 +49,23 @@ public class AuthorizationEntry {
     private Set acls;
     private QName service;
     private String endpoint;
+    private QName operation;
     private String type = TYPE_ADD;
 
     public AuthorizationEntry() {
     }
     
-    public AuthorizationEntry(QName service, String endpoint, String roles) {
+    public AuthorizationEntry(QName service, String endpoint, QName operation, String roles) {
         this.service = service;
         this.endpoint = endpoint;
+        this.operation = operation;
         setRoles(roles);
     }
     
-    public AuthorizationEntry(QName service, String endpoint, String roles, String type) {
+    public AuthorizationEntry(QName service, String endpoint, QName operation, String roles, String type) {
         this.service = service;
         this.endpoint = endpoint;
+        this.operation = operation;
         setRoles(roles);
         this.type = type;
     }
@@ -113,6 +116,20 @@ public class AuthorizationEntry {
             service = new QName(service.getPrefix(), service.getLocalPart());
         }
         this.service = service;
+    }
+
+    /**
+     * @return the operation
+     */
+    public QName getOperation() {
+        return operation;
+    }
+
+    /**
+     * @param operation the operation to set
+     */
+    public void setOperation(QName operation) {
+        this.operation = operation;
     }
 
     /**

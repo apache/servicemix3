@@ -74,14 +74,14 @@ public class DefaultAuthorizationMap implements AuthorizationMap {
         this.defaultEntry = defaultEntry;
     }
 
-    public Set getAcls(ServiceEndpoint endpoint) {
+    public Set getAcls(ServiceEndpoint endpoint, QName operation) {
         Set acls = new HashSet();
         if (defaultEntry != null) {
             acls.add(defaultEntry);
         }
         for (Iterator iter = authorizationEntries.iterator(); iter.hasNext();) {
             AuthorizationEntry entry = (AuthorizationEntry) iter.next();
-            if (match(entry, endpoint)) {
+            if (match(entry, endpoint, operation)) {
                 if (AuthorizationEntry.TYPE_ADD.equalsIgnoreCase(entry.getType())) {
                     acls.addAll(entry.getAcls());
                 } else if (AuthorizationEntry.TYPE_SET.equalsIgnoreCase(entry.getType())) {
@@ -95,9 +95,10 @@ public class DefaultAuthorizationMap implements AuthorizationMap {
         return acls;
     }
 
-    protected boolean match(AuthorizationEntry entry, ServiceEndpoint endpoint) {
+    protected boolean match(AuthorizationEntry entry, ServiceEndpoint endpoint, QName operation) {
         return match(entry.getService(), endpoint.getServiceName()) &&
-               match(entry.getEndpoint(), endpoint.getEndpointName());
+               match(entry.getEndpoint(), endpoint.getEndpointName()) &&
+               (entry.getOperation() == null || operation == null || match(entry.getOperation(), operation));
     }
 
     private boolean match(QName acl, QName target) {
