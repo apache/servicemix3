@@ -21,7 +21,6 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.jbi.management.DeploymentServiceMBean;
 import javax.management.MBeanServerInvocationHandler;
 import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
@@ -30,7 +29,6 @@ import javax.management.remote.JMXServiceURL;
 
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
-import org.apache.servicemix.jbi.framework.DeploymentService;
 import org.apache.servicemix.jbi.management.ManagementContext;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -125,19 +123,6 @@ public abstract class JbiTask extends Task {
         return (AdminCommandsServiceMBean) MBeanServerInvocationHandler.newProxyInstance(jmxConnector.getMBeanServerConnection(), objectName,
                 AdminCommandsServiceMBean.class, true);
     }
-    
-    /**
-     * Get the DeploymentServiceMBean 
-     * @return the deployment service mbean
-     * @throws IOException
-     */
-    public DeploymentServiceMBean getDeploymentService() throws IOException{
-        ObjectName objectName = getObjectName(DeploymentService.class);
-        
-        return (DeploymentServiceMBean) MBeanServerInvocationHandler.newProxyInstance(jmxConnector.getMBeanServerConnection(), objectName,
-                DeploymentServiceMBean.class, true);
-    }
-    
     
     /**
      * @return Returns the containerName.
