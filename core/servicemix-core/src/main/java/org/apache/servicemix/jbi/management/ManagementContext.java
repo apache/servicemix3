@@ -448,11 +448,24 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * @return the ObjectName
      */
     public Map createObjectNameProps(MBeanInfoProvider provider){
+        return createObjectNameProps(provider, false);
+    }
+
+    /**
+     * Create a String used to create an ObjectName
+     * 
+     * @param provider
+     * @return the ObjectName
+     */
+    public Map createObjectNameProps(MBeanInfoProvider provider, boolean subTypeBeforeName) {
         Map result = new LinkedHashMap();
         result.put("ContainerName", container.getName());
         result.put("Type", sanitizeString(provider.getType()));
+        if (subTypeBeforeName && provider.getSubType() != null) {
+            result.put("SubType", sanitizeString(provider.getSubType()));
+        }
         result.put("Name", sanitizeString(provider.getName()));
-        if (provider.getSubType() != null) {
+        if (!subTypeBeforeName && provider.getSubType() != null) {
             result.put("SubType", sanitizeString(provider.getSubType()));
         }
         return result;
