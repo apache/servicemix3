@@ -22,10 +22,10 @@ import javax.jbi.component.Component;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.container.ContainerAware;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.event.ComponentEvent;
 import org.apache.servicemix.jbi.event.ComponentListener;
+import org.apache.servicemix.jbi.event.ContainerAware;
 
 /**
  * This ComponentListener is a hack to automatically configure
@@ -73,6 +73,9 @@ public class HttpComponentListener implements ComponentListener, ContainerAware 
     }
 
     public void componentShutDown(ComponentEvent event) {
+    }
+
+    public void componentInitialized(ComponentEvent event) {
     }
 
     public void componentStarted(ComponentEvent event) {
