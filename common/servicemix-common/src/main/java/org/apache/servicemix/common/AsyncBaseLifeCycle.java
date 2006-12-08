@@ -396,8 +396,7 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
                     // component
                     // must have answered.
                     if (status != Status.STATUS_NO_TRANSACTION) {
-                        logger
-                                        .error("Transaction is still active after exchange processing. Trying to rollback transaction.");
+                        logger.error("Transaction is still active after exchange processing. Trying to rollback transaction.");
                         try {
                             transactionManager.rollback();
                         } catch (Throwable t) {
