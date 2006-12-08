@@ -25,6 +25,7 @@ import javax.management.MBeanOperationInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.event.ExchangeEvent;
 import org.apache.servicemix.jbi.event.ExchangeListener;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseSystemService;
@@ -232,4 +233,8 @@ public abstract class AbstractAuditor extends BaseSystemService implements Audit
     public void setAsContainerListener(boolean addToContainer) {
         this.asContainerListener = addToContainer;
     }
+
+    public void exchangeAccepted(ExchangeEvent event) {
+    }
+
 }
