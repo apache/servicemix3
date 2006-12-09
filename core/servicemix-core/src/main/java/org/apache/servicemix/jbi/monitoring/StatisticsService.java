@@ -51,6 +51,11 @@ import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
 import org.apache.servicemix.jbi.servicedesc.EndpointSupport;
 
+/**
+ * 
+ * @author gnodet
+ * @org.apache.xbean.XBean element="statistics"
+ */
 public class StatisticsService extends BaseSystemService implements StatisticsServiceMBean {
 
     private static final Log log = LogFactory.getLog(StatisticsService.class);
