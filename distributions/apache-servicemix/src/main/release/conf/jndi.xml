@@ -25,9 +25,9 @@
        xmlns:util="http://www.springframework.org/schema/util">
 
   <bean id="jndi" 
-    class="org.apache.xbean.spring.jndi.SpringInitialContextFactory" 
-    factory-method="makeInitialContext"
-    singleton="true">
+        class="org.apache.xbean.spring.jndi.SpringInitialContextFactory" 
+        factory-method="makeInitialContext"
+        singleton="true">
     <property name="entries" ref="jndiEntries" />
   </bean>
 

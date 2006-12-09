@@ -17,7 +17,6 @@
     limitations under the License.
 
 -->
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans xmlns:sm="http://servicemix.apache.org/config/1.0"
        xmlns:util="http://www.springframework.org/schema/util">
 

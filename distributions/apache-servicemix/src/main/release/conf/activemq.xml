@@ -17,17 +17,20 @@
     limitations under the License.
 
 -->
-<!-- START SNIPPET: xbean -->
 <beans xmlns:amq="http://activemq.org/config/1.0">
   
+  <!-- ActiveMQ JMS Broker configuration -->
   <amq:broker depends-on="jmxServer">
 
+    <!-- Disable creation of the jmx connector 
+         which is created in the jmx.xml configuration file -->
     <amq:managementContext>
       <bean class="org.apache.activemq.broker.jmx.ManagementContext">
         <property name="createConnector" value="false" />
       </bean>
     </amq:managementContext>
 
+    <!-- Use journaled JDBC persistence -->
     <amq:persistenceAdapter>
       <amq:journaledJDBC journalLogFiles="5" dataDirectory="./data/amq"/>
       <!-- To use a different datasource, use th following syntax : -->
@@ -37,6 +40,11 @@
     </amq:persistenceAdapter>
   
     <amq:transportConnectors>
+       <!-- Activate a TCP connector with multicast discovery.
+            Note that multicast may be disabled if your computer
+            is not on a network, which may prevent the broker to start.
+            In such a case, just remove the discoveryUri attribute.  
+         -->
        <amq:transportConnector uri="tcp://localhost:61616" discoveryUri="multicast://default"/>
     </amq:transportConnectors>
     
@@ -99,4 +107,3 @@
   -->  
 
 </beans>
-<!-- END SNIPPET: xbean -->
