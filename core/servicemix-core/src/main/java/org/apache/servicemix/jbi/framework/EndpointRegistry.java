@@ -388,7 +388,7 @@ public class EndpointRegistry {
     public void unregisterExternalEndpoint(ComponentNameSpace cns, ServiceEndpoint externalEndpoint) {
         ExternalEndpoint ep = (ExternalEndpoint) externalEndpoints.remove(getKey(externalEndpoint));
         unregisterEndpoint(ep);
-        fireEvent(externalEndpoint, EndpointEvent.EXTERNAL_ENDPOINT_UNREGISTERED);
+        fireEvent(ep, EndpointEvent.EXTERNAL_ENDPOINT_UNREGISTERED);
     }
 
     /**
