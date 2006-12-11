@@ -46,6 +46,11 @@
             <artifactId>loan-broker-lw-su</artifactId>
             <version>3.1-incubating-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.samples.loan-broker</groupId>
+            <artifactId>loan-broker-jms-su</artifactId>
+            <version>3.1-incubating-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
