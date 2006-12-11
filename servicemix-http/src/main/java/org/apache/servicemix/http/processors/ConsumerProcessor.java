@@ -137,7 +137,7 @@ public class ConsumerProcessor implements ExchangeProcessor, HttpProcessor {
 
             // Set protocol, host, and port in the lifecycle object
             HttpLifeCycle lf = (HttpLifeCycle) endpoint.getServiceUnit().getComponent().getLifeCycle();
-            lf.setProtocol(request.getProtocol());
+            lf.setProtocol(request.getScheme());
             lf.setHost(request.getServerName());
             lf.setPort(request.getServerPort());
             lf.setPath(request.getContextPath());
