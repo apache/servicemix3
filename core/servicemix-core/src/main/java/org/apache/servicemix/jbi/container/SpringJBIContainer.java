@@ -17,7 +17,6 @@
 package org.apache.servicemix.jbi.container;
 
 import javax.jbi.JBIException;
-import javax.jbi.component.ServiceUnitManager;
 import javax.resource.spi.work.WorkManager;
 
 import org.apache.geronimo.transaction.manager.GeronimoTransactionManager;
@@ -111,6 +110,9 @@ public class SpringJBIContainer extends JBIContainer
 
     // Properties
     //-------------------------------------------------------------------------
+    /**
+     * @org.apache.xbean.Property hidden="true"
+     */
     public BeanFactory getBeanFactory() {
         return beanFactory;
     }
@@ -127,14 +129,6 @@ public class SpringJBIContainer extends JBIContainer
         this.componentNames = componentNames;
     }
 
-    public ServiceUnitManager getServiceManager() {
-        return serviceManager;
-    }
-
-    public void setServiceManager(ServiceUnitManager serviceManager) {
-        this.serviceManager = serviceManager;
-    }
-    
     public ActivationSpec[] getActivationSpecs() {
         return activationSpecs;
     }
@@ -162,18 +156,22 @@ public class SpringJBIContainer extends JBIContainer
         return bean;
     }
 
-	public ApplicationContext getApplicationContext() {
-		return applicationContext;
-	}
+    /**
+     * @return
+     * @org.apache.xbean.Property hidden="true"
+     */
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
 
-	public void setApplicationContext(ApplicationContext applicationContext) {
-		this.applicationContext = applicationContext;
-	}
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
-	protected WorkManager createWorkManager() throws JBIException {
+    protected WorkManager createWorkManager() throws JBIException {
         WorkManagerFactoryBean factory = new WorkManagerFactoryBean();
         if (getTransactionManager() instanceof GeronimoTransactionManager) {
-        	factory.setTransactionManager((GeronimoTransactionManager) getTransactionManager());
+            factory.setTransactionManager((GeronimoTransactionManager) getTransactionManager());
         }
         try {
             return (WorkManager) factory.getObject();
@@ -181,7 +179,7 @@ public class SpringJBIContainer extends JBIContainer
         catch (Exception e) {
             throw new JBIException("Failed to start WorkManager: " + e, e);
         }
-	}
+    }
 
     public void destroy() throws Exception {
         super.shutDown();
@@ -195,6 +193,10 @@ public class SpringJBIContainer extends JBIContainer
         }
     }
 
+    /**
+     * @param lock
+     * @org.apache.xbean.Property hidden="true"
+     */
     public void setShutdownLock(Object lock) {
         this.shutdownLock = lock;
     }

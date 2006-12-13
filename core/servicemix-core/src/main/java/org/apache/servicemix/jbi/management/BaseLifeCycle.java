@@ -109,6 +109,7 @@ public abstract class BaseLifeCycle implements LifeCycleMBean, MBeanInfoProvider
      * 
      * @return the current state of this managed component (must be one of the string constants defined by this
      * interface)
+     * @org.apache.xbean.Property hidden="true"
      */
     public String getCurrentState() {
         return currentState;
@@ -199,6 +200,7 @@ public abstract class BaseLifeCycle implements LifeCycleMBean, MBeanInfoProvider
     /**
      * Register for propertyChange events
      * @param l
+     * @org.apache.xbean.Property hidden="true"
      */
     public void setPropertyChangeListener(PropertyChangeListener l){
         this.listener = l;
