@@ -260,8 +260,18 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 	String libraryName = root.getSharedLibrary().getIdentification().getName();
                 	entry.type = "library";
                 	entry.name = libraryName; 
-                    installationService.doInstallSharedLibrary(tmpDir, root.getSharedLibrary());
-                    checkPendingComponents();
+                    try {
+                        if (container.getRegistry().getSharedLibrary(libraryName) != null) {
+                            container.getRegistry().unregisterSharedLibrary(libraryName);
+                            environmentContext.removeSharedLibraryDirectory(libraryName);
+                        }
+                        installationService.doInstallSharedLibrary(tmpDir, root.getSharedLibrary());
+                        checkPendingComponents();
+                    } catch (Exception e) {
+                        String errStr = "Failed to update SharedLibrary: " + libraryName;
+                        log.error(errStr, e);
+                        throw new DeploymentException(errStr, e);
+                    }
                 } else if (root.getServiceAssembly() != null) {
                     ServiceAssembly sa = root.getServiceAssembly();
                     String name = sa.getIdentification().getName();
