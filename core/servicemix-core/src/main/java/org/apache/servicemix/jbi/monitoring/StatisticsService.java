@@ -215,12 +215,15 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
         ComponentMBeanImpl component = event.getComponent();
         String key = component.getName();
         ComponentStats stats = (ComponentStats) componentStats.remove(key);
+        if (stats == null) {
+            return;
+        }
         // Register MBean
         ManagementContext context= container.getManagementContext();
         try {
             context.unregisterMBean(context.createObjectName(context.createObjectNameProps(stats, true)));
         } catch (Exception e) {
-            log.info("Unable to unregister component statistics MBean: " + e.getMessage());
+            log.info("Unable to unregister component statistics MBean: " + e);
             if (log.isDebugEnabled()) {
                 log.debug("Unable to unregister component statistics MBean", e);
             }
