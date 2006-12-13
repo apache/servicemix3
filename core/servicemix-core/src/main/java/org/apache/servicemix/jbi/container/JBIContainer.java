@@ -889,6 +889,7 @@ public class JBIContainer extends BaseLifeCycle {
         	component.unregisterMbeans(managementContext);
             registry.deregisterComponent(component);
             environmentContext.unreregister(component);
+            component.dispose();
             log.info("Deactivating component " + name);
         }
         else {
