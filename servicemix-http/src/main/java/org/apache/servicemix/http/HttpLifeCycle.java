@@ -140,6 +140,8 @@ public class HttpLifeCycle extends BaseLifeCycle {
         }
         if (connectionManager != null) {
             connectionManager.shutdown();
+            connectionManager = null;
+            client = null;
         }
     }
 
