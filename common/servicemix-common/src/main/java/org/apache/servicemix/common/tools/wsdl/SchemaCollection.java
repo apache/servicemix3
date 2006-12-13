@@ -17,6 +17,7 @@
 package org.apache.servicemix.common.tools.wsdl;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -142,4 +143,19 @@ public class SchemaCollection {
         return base.resolve(location);
     }
 
+    public int getSize() {
+        if (schemas != null) {
+           return schemas.size();
+        } else {
+           return 0;
+        }
+     }
+     
+     public Collection getSchemas() {
+        if (schemas != null) {
+           return schemas.values();
+        } else {
+           return java.util.Collections.EMPTY_SET;
+        }
+     }
 }

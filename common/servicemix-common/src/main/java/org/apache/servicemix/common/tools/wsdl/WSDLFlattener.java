@@ -181,37 +181,19 @@ public class WSDLFlattener {
             }
             flatPort.addOperation(flatOper);
         }
-        // Get all needed direct schemas
-        Set namespaces = new HashSet();
-        for (Iterator itMsg = flat.getMessages().values().iterator(); itMsg.hasNext();) {
-            Message msg = (Message) itMsg.next();
-            for (Iterator itPart = msg.getParts().values().iterator(); itPart.hasNext();) {
-                Part part = (Part) itPart.next();
-                QName elemName = part.getElementName();
-                if (elemName != null) {
-                    namespaces.add(elemName.getNamespaceURI());
-                    Schema schema = schemas.getSchema(elemName.getNamespaceURI());
-                    if (schema.getImports() != null) {
-                        for (Iterator iter = schema.getImports().iterator(); iter.hasNext();) {
-                            String ns = (String) iter.next();
-                            namespaces.add(ns);
-                        }
-                    }
-                }
-            }
-        }
+        
         // Import schemas in definition
-        if (namespaces.size() > 0) {
-            Types types = flat.createTypes();
-            for (Iterator iter = namespaces.iterator(); iter.hasNext();) {
-                String ns = (String) iter.next();
-                javax.wsdl.extensions.schema.Schema imp = new SchemaImpl();
-                imp.setElement(schemas.getSchema(ns).getRoot());
-                imp.setElementType(new QName("http://www.w3.org/2001/XMLSchema", "schema"));
-                types.addExtensibilityElement(imp);
-            }
-            flat.setTypes(types);
+        if (schemas.getSize() > 0) {
+           Types types = flat.createTypes();
+           for (Iterator it = schemas.getSchemas().iterator(); it.hasNext();) {
+              javax.wsdl.extensions.schema.Schema imp = new SchemaImpl();
+              imp.setElement(((Schema)it.next()).getRoot());
+              imp.setElementType(new QName("http://www.w3.org/2001/XMLSchema", "schema"));
+              types.addExtensibilityElement(imp);
+           }
+           flat.setTypes(types);
         }
+        
         flat.addPortType(flatPort);
         return flat;
     }
