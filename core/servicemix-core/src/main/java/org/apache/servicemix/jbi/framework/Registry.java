@@ -819,6 +819,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         if (sl != null) {
             try {
                 getContainer().getManagementContext().unregisterMBean(sl);
+                sl.dispose();
             } catch (JBIException e) {
                 log.error("Could not unregister MBean for shared library", e);
             }

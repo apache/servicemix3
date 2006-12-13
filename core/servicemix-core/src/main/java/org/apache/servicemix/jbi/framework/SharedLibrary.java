@@ -28,6 +28,7 @@ import javax.management.MBeanOperationInfo;
 import org.apache.servicemix.jbi.deployment.ClassPath;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.MBeanInfoProvider;
+import org.apache.xbean.classloader.DestroyableClassLoader;
 import org.apache.xbean.classloader.JarFileClassLoader;
 
 public class SharedLibrary implements SharedLibraryMBean, MBeanInfoProvider {
@@ -41,6 +42,13 @@ public class SharedLibrary implements SharedLibraryMBean, MBeanInfoProvider {
         this.library = library;
         this.installationDir = installationDir;
         this.classLoader = createClassLoader();
+    }
+    
+    public void dispose() {
+        if (classLoader instanceof DestroyableClassLoader) {
+            ((DestroyableClassLoader) classLoader).destroy();
+        }
+        classLoader = null;
     }
 
     /**
