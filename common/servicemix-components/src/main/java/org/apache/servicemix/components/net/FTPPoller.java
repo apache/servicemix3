@@ -154,13 +154,13 @@ public class FTPPoller extends PollingComponentSupport {
     protected void processFile(FTPClient client, FTPFile file) throws Exception {
         String name = file.getName();
         InputStream in = client.retrieveFileStream(getWorkingPath() + name);
-        client.completePendingCommand();
         InOnly exchange = getExchangeFactory().createInOnlyExchange();
         NormalizedMessage message = exchange.createMessage();
         exchange.setInMessage(message);
         marshaler.readMessage(exchange, message, in, name);
         getDeliveryChannel().sendSync(exchange);
         in.close();
+        client.completePendingCommand();
     }
 
 
