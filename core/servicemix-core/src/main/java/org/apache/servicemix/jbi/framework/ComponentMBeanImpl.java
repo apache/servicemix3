@@ -43,6 +43,7 @@ import org.apache.servicemix.jbi.management.ManagementContext;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
 import org.apache.servicemix.jbi.messaging.DeliveryChannelImpl;
 import org.apache.servicemix.jbi.util.XmlPersistenceSupport;
+import org.apache.xbean.classloader.DestroyableClassLoader;
 
 /**
  * Defines basic statistics on the Component
@@ -95,6 +96,16 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
         this.binding = binding;
         this.service = service;
         this.sharedLibraries = sharedLibraries;
+    }
+    
+    public void dispose() {
+        ClassLoader cl = component.getClass().getClassLoader();
+        lifeCycle = null;
+        suManager = null;
+        component = null;
+        if (cl instanceof DestroyableClassLoader) {
+            ((DestroyableClassLoader) cl).destroy();
+        }
     }
 
     /**
@@ -333,6 +344,8 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
                 getDeliveryChannel().close();
                 setDeliveryChannel(null);
             }
+            lifeCycle = null;
+            suManager = null;
         }
         super.shutDown();
         fireEvent(ComponentEvent.COMPONENT_SHUTDOWN);
