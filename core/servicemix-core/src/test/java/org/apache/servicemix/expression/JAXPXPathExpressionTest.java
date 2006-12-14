@@ -16,7 +16,9 @@
  */
 package org.apache.servicemix.expression;
 
+import org.apache.servicemix.client.DefaultNamespaceContext;
 import org.apache.servicemix.expression.JAXPStringXPathExpression;
+import org.apache.xalan.extensions.XPathFunctionResolverImpl;
 
 
 /**
@@ -44,4 +46,19 @@ public class JAXPXPathExpressionTest extends XPathExpressionTest {
             assertExpression(new JAXPStringXPathExpression("$name"), "James", "<foo><bar xyz='cheese'/></foo>");
         }
     }
+
+    public void testUsingJavaExtensions() throws Exception {
+        JAXPStringXPathExpression exp = new JAXPStringXPathExpression();
+        exp.setXPath("java:org.apache.servicemix.expression.JAXPXPathExpressionTest.func(string(/header/value))");
+        DefaultNamespaceContext namespaceContext = new DefaultNamespaceContext();
+        namespaceContext.add("java", "http://xml.apache.org/xalan/java");
+        exp.setNamespaceContext(namespaceContext);
+        exp.setFunctionResolver(new XPathFunctionResolverImpl());
+        assertExpression(exp, "modified12", "<header><value>12</value></header>");
+    }
+
+    public static String func(String s) {
+        return "modified" + s;
+    }
+
 }
