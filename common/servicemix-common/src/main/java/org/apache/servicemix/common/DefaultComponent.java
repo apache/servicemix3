@@ -263,7 +263,7 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
     /**
      * A little helper method to turn a possibly null list of endpoints into a list of endpoints
      */
-    protected List asList(Endpoint[] endpoints) {
+    protected static List asList(Object[] endpoints) {
         if (endpoints == null) {
             return Collections.EMPTY_LIST;
         }
