@@ -1618,6 +1618,7 @@
                         <useFile>true</useFile>
                         <forkMode>once</forkMode>
                         <childDelegation>false</childDelegation>
+                        <argLine>-Xmx512M</argLine>
                         <workingDir>${basedir}</workingDir>
                         <systemProperties>
                             <property>
