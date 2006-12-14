@@ -64,7 +64,7 @@ public class SecuredBrokerTest extends TestCase {
         jbi.setUseMBeanServer(false);
         jbi.setEmbedded(true);
         List entries = new ArrayList();
-        entries.add(new AuthorizationEntry(ReceiverComponent.SERVICE, null, "programmers"));
+        entries.add(new AuthorizationEntry(ReceiverComponent.SERVICE, null, null, "programmers"));
         AuthorizationMap map = new DefaultAuthorizationMap(entries);
         SecuredBroker broker = new SecuredBroker(map);
         jbi.setBroker(broker);

@@ -16,8 +16,6 @@
  */
 package org.apache.servicemix.jbi.management.task;
 
-import javax.jbi.management.DeploymentServiceMBean;
-
 import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.apache.tools.ant.Project;
 
@@ -53,12 +51,6 @@ public class JbiTaskTest extends JbiTaskSupport {
         super.tearDown();
     }
 
-    public void testGetDeploymentService() throws Exception {
-        DeploymentServiceMBean mbean = jbiTask.getDeploymentService();
-        assertNotNull(mbean);
-        mbean.getDeployedServiceAssemblies();
-    }
-    
     public void testGetAdminCommandsService() throws Exception {
         AdminCommandsServiceMBean mbean = jbiTask.getAdminCommandsService();
         assertNotNull(mbean);
