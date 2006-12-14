@@ -21,41 +21,6 @@ Configuration for ServiceMix deployer.
 -->
 <module xmlns="http://geronimo.apache.org/xml/ns/deployment-1.1">
 
-    <environment>
-        <moduleId>
-            <groupId>org.apache.servicemix.geronimo</groupId>
-            <artifactId>deployer</artifactId>
-            <version>${servicemix-version}</version>
-            <type>car</type>
-        </moduleId>
-        <dependencies>
-            <dependency>
-                <groupId>org.apache.servicemix.geronimo</groupId>
-                <artifactId>servicemix</artifactId>
-                <version>${servicemix-version}</version>
-                <type>car</type>
-            </dependency>
-            <dependency>
-                <groupId>geronimo</groupId>
-                <artifactId>geronimo-gbean-deployer</artifactId>
-                <version>${geronimo-version}</version>
-                <type>car</type>
-            </dependency>
-            <dependency>
-                <groupId>geronimo</groupId>
-                <artifactId>j2ee-server</artifactId>
-                <version>${geronimo-version}</version>
-                <type>car</type>
-            </dependency>
-            <dependency>
-                <groupId>geronimo</groupId>
-                <artifactId>j2ee-deployer</artifactId>
-                <version>${geronimo-version}</version>
-                <type>car</type>
-            </dependency>
-        </dependencies>
-    </environment>
-
     <gbean name="ServiceMixConfigBuilder" class="org.apache.servicemix.geronimo.ServiceMixConfigBuilder">
         <reference name="Repositories" />
         <xml-attribute name="defaultEnvironment">

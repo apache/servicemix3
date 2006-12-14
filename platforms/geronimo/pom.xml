@@ -35,14 +35,16 @@
     <packaging>pom</packaging>
   
     <properties>
-        <car-maven-plugin-version>${geronimo-version}</car-maven-plugin-version>
         <geronimoVersion>${geronimo-version}</geronimoVersion>
+        <car-maven-plugin-version>${geronimo-version}</car-maven-plugin-version>
         <geronimoSchemaVersion>1.2</geronimoSchemaVersion>
+        <gbeanDeployer>org.apache.geronimo.configs/geronimo-gbean-deployer/${version}/car</gbeanDeployer>
     </properties>
     
     <modules>
         <module>servicemix-service</module>
         <module>deployer-service</module>
+        <module>dependencies</module>
         <module>servicemix</module>
         <module>deployer</module>
     </modules>

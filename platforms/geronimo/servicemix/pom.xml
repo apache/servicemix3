@@ -34,27 +34,41 @@
     <packaging>car</packaging>
 
     <dependencies>
+        <!-- Needed to download dependencies -->
+        <dependency>
+            <groupId>org.apache.servicemix.geronimo</groupId>
+            <artifactId>dependencies</artifactId>
+            <version>3.1-incubating-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- For build ordering -->
         <dependency>
             <groupId>org.apache.servicemix.geronimo</groupId>
             <artifactId>servicemix-service</artifactId>
             <version>3.1-incubating-SNAPSHOT</version>
-            <scope>provided</scope>
-            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix</groupId>
+            <artifactId>servicemix-jbi</artifactId>
+            <version>3.1-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix</groupId>
+            <artifactId>servicemix-core</artifactId>
+            <version>3.1-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.geronimo.configs</groupId>
             <artifactId>geronimo-gbean-deployer</artifactId>
             <version>${geronimo-version}</version>
-            <type>car</type>
             <scope>provided</scope>
+            <type>car</type>
         </dependency>
         <dependency>
             <groupId>org.apache.geronimo.configs</groupId>
-            <artifactId>j2ee-server</artifactId>
+            <artifactId>transaction</artifactId>
             <version>${geronimo-version}</version>
             <type>car</type>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -76,12 +90,7 @@
                 <version>${car-maven-plugin-version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <deploymentConfigs>
-                        <deploymentConfig>org.apache.geronimo.configs/geronimo-gbean-deployer/${geronimo-version}/car</deploymentConfig>
-                    </deploymentConfigs>
-                    <deployerName>org.apache.geronimo.configs/geronimo-gbean-deployer/${geronimo-version}/car?j2eeType=Deployer,name=Deployer</deployerName>
                     <planFileName>geronimo-service.xml</planFileName>
-                    <moduleFile>${settings.localRepository}/org/apache/servicemix/geronimo/servicemix-service/${pom.version}/servicemix-service-${pom.version}.jar</moduleFile>
                 </configuration>
             </plugin>
         </plugins>

@@ -22,6 +22,8 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarFile;
@@ -200,8 +202,11 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
         DeploymentContext context = null;
         try {
             Descriptor descriptor = (Descriptor) plan;
+            Map name = new HashMap();
+            name.put("Config", configId.toString());
             context = new DeploymentContext(configurationDir,
                             inPlaceDeployment ? DeploymentUtil.toFile(jarFile) : null, environment,
+                            new AbstractName(configId, name),
                             ConfigurationModuleType.SERVICE, kernel.getNaming(), ConfigurationUtil
                                             .getConfigurationManager(kernel), repositories);
             if (descriptor.getComponent() != null) {
