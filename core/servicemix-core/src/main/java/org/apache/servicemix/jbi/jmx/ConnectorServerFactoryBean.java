@@ -27,7 +27,6 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.Constants;
-import org.springframework.jmx.support.MBeanRegistrationSupport;
 
 /**
  * <code>FactoryBean</code> that creates a JSR-160 <code>JMXConnectorServer</code>,
