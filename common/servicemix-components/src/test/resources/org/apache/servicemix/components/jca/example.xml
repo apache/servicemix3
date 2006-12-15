@@ -19,7 +19,7 @@
 -->
 <!-- START SNIPPET: config -->
 <beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
-	   xmlns:foo="http://servicemix.org/cheese/">
+	     xmlns:foo="http://servicemix.org/cheese/">
 
   <!--
   || ActiveMQ Broker
@@ -35,6 +35,7 @@
     <property name="bootstrapContext">
       <bean class="org.jencks.factory.BootstrapContextFactoryBean">
         <property name="threadPoolSize" value="25"/>
+        <property name="transactionManager" ref="transactionManager"/>
       </bean>
     </property>
 
@@ -47,9 +48,13 @@
     </property>
   </bean>
   <!-- END SNIPPET: jca -->
+  
+  <bean id="transactionManager" class="org.jencks.factory.TransactionManagerFactoryBean">
+    <property name="transactionLogDir" value="target/txlog"/>
+  </bean>
 
   <!-- the JBI container -->
-  <sm:container id="jbi" depends-on="broker" embedded="true">
+  <sm:container id="jbi" depends-on="broker" embedded="true" transactionManager="#transactionManager">
     <sm:activationSpecs>
 
       <sm:activationSpec componentName="myJmsSender" service="foo:myJmsSender">

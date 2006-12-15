@@ -42,6 +42,21 @@ public class JmsInBinding extends ComponentSupport implements MessageListener, M
     private static final Log log = LogFactory.getLog(JmsInBinding.class);
 
     private JmsMarshaler marshaler = new JmsMarshaler();
+    private boolean synchronous = false;
+
+    /**
+     * @return the synchronous
+     */
+    public boolean isSynchronous() {
+        return synchronous;
+    }
+
+    /**
+     * @param synchronous the synchronous to set
+     */
+    public void setSynchronous(boolean synchronous) {
+        this.synchronous = synchronous;
+    }
 
     public JmsMarshaler getMarshaler() {
         return marshaler;
@@ -64,7 +79,11 @@ public class JmsInBinding extends ComponentSupport implements MessageListener, M
                 marshaler.toNMS(inMessage, jmsMessage);
 
                 messageExchange.setInMessage(inMessage);
-                getDeliveryChannel().send(messageExchange);
+                if (synchronous) {
+                    getDeliveryChannel().sendSync(messageExchange);
+                } else {
+                    getDeliveryChannel().send(messageExchange);
+                }
             }
             catch (JMSException e) {
                 messageExchange.setError(e);

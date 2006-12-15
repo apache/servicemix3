@@ -23,18 +23,20 @@ import javax.transaction.TransactionManager;
 import org.jencks.JCAConnector;
 import org.jencks.JCAContainer;
 import org.jencks.SingletonEndpointFactory;
+import org.springframework.beans.factory.BeanNameAware;
 
 /**
  * Uses the JCA Container for better inbound subscription.
  *
  * @version $Revision$
  */
-public class JmsInUsingJCABinding extends JmsInBinding {
+public class JmsInUsingJCABinding extends JmsInBinding implements BeanNameAware {
 
     private JCAContainer jcaContainer;
     private ActivationSpec activationSpec;
     private TransactionManager transactionManager;
     private JCAConnector jcaConnector;
+    private String name;
 
     protected void init() throws JBIException {
         if (jcaContainer == null) {
@@ -51,7 +53,9 @@ public class JmsInUsingJCABinding extends JmsInBinding {
         if (transactionManager != null) {
             jcaConnector.setTransactionManager(transactionManager);
         }
-        jcaConnector.setEndpointFactory(new SingletonEndpointFactory(this, transactionManager));
+        SingletonEndpointFactory ef = new SingletonEndpointFactory(this, transactionManager);
+        ef.setName(name);
+        jcaConnector.setEndpointFactory(ef);
         try {
         	jcaConnector.afterPropertiesSet();
         } catch (Exception e) {
@@ -104,5 +108,9 @@ public class JmsInUsingJCABinding extends JmsInBinding {
 
     public JCAConnector getJcaConnector() {
         return jcaConnector;
+    }
+
+    public void setBeanName(String name) {
+        this.name = name;
     }
 }

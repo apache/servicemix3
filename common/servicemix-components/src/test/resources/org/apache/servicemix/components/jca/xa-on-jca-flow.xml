@@ -34,6 +34,7 @@
     <property name="bootstrapContext">
       <bean class="org.jencks.factory.BootstrapContextFactoryBean">
         <property name="threadPoolSize" value="25"/>
+        <property name="transactionManager" ref="transactionManager" />
       </bean>
     </property>
 
@@ -48,24 +49,25 @@
   <!-- END SNIPPET: jca -->
 
   <!-- START SNIPPET: tm -->
-  <bean id="transactionContextManager" class="org.jencks.factory.TransactionContextManagerFactoryBean"/>
-  <bean id="userTransaction" class="org.jencks.factory.GeronimoTransactionManagerFactoryBean" />
+  <bean id="transactionManager" class="org.jencks.factory.TransactionManagerFactoryBean">
+    <property name="transactionLogDir" value="target/txlog" />
+  </bean>
   <!-- END SNIPPET: tm -->
 
   <!-- the JBI container -->
-  <sm:container id="jbi" depends-on="broker" embedded="true">
+  <sm:container id="jbi" depends-on="broker">
 
     <!-- use JCA flow -->
   	<property name="flow">
   		<bean class="org.apache.servicemix.jbi.nmr.flow.jca.JCAFlow">
-  			<property name="transactionContextManager" ref="transactionContextManager" />
   			<property name="jmsURL" value="tcp://localhost:61626" />
   		</bean>
   	</property>
     <!-- use XA transactions -->
-    <property name="transactionManager" ref="userTransaction"/>
+    <property name="transactionManager" ref="transactionManager"/>
     <!--  use autoEnlistInTransaction -->
     <property name="autoEnlistInTransaction" value="true"/>
+    <property name="embedded" value="true" />
   
     <sm:activationSpecs>
 
@@ -95,7 +97,7 @@
           </property>
 
           <!-- use XA transactions -->
-          <property name="transactionManager" ref="userTransaction"/>
+          <property name="transactionManager" ref="transactionManager"/>
         </bean></sm:component>
       </sm:activationSpec>
       <!-- END SNIPPET: receive -->
