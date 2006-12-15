@@ -200,8 +200,8 @@
         <mavenAssemblyPluginVersion>2.1</mavenAssemblyPluginVersion>
         <xbean-version>2.8-SNAPSHOT</xbean-version>
         <spring-version>2.0.1</spring-version>
-        <activemq-version>4.1-incubator-SNAPSHOT</activemq-version>
-        <activeio-version>3.0-SNAPSHOT</activeio-version>
+        <activemq-version>4.1.0-incubator</activemq-version>
+        <activeio-version>3.0.0-incubator</activeio-version>
         <backport-util-concurrent-version>2.2</backport-util-concurrent-version>
         <jencks-version>2.0-SNAPSHOT</jencks-version>
         <jetty-version>6.0.1</jetty-version>
@@ -277,6 +277,18 @@
             <id>servicemix-m2-repo</id>
             <name>Servicemix Maven2 Repository</name>
             <url>http://servicemix.org/m2-repo</url>
+        </repository>
+        <!-- Apache incubating -->
+        <repository>
+            <id>apache-incubating</id>
+            <name>Apache Incubating Repository</name>
+            <url>http://people.apache.org/repo/m2-incubating-repository</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <!-- Apache snapshots -->
         <repository>
