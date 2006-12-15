@@ -34,7 +34,7 @@
     <packaging>car</packaging>
 
     <dependencies>
-        <!-- Needed to download dependencies -->
+        <!-- Needed to download Geronimo dependencies -->
         <dependency>
             <groupId>org.apache.servicemix.geronimo</groupId>
             <artifactId>dependencies</artifactId>
@@ -58,16 +58,87 @@
             <version>3.1-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.geronimo.configs</groupId>
-            <artifactId>geronimo-gbean-deployer</artifactId>
-            <version>${geronimo-version}</version>
-            <scope>provided</scope>
-            <type>car</type>
+            <groupId>org.apache.servicemix</groupId>
+            <artifactId>servicemix-services</artifactId>
+            <version>3.1-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activeio-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>wsdl4j</groupId>
+            <artifactId>wsdl4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jencks</groupId>
+            <artifactId>jencks</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>backport-util-concurrent</groupId>
+            <artifactId>backport-util-concurrent</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-dao</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jmx</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xbean</groupId>
+            <artifactId>xbean-spring</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xbean</groupId>
+            <artifactId>xbean-kernel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xbean</groupId>
+            <artifactId>xbean-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xbean</groupId>
+            <artifactId>xbean-classloader</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.geronimo.configs</groupId>
             <artifactId>transaction</artifactId>
             <version>${geronimo-version}</version>
+            <type>car</type>
+        </dependency>
+        <!-- Only needed to build the car -->
+        <dependency>
+            <groupId>org.apache.geronimo.configs</groupId>
+            <artifactId>geronimo-gbean-deployer</artifactId>
+            <version>${geronimo-version}</version>
+            <scope>provided</scope>
             <type>car</type>
         </dependency>
     </dependencies>
