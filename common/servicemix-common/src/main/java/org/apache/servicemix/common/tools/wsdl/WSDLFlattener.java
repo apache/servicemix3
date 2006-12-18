@@ -19,11 +19,9 @@ package org.apache.servicemix.common.tools.wsdl;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.wsdl.Definition;
 import javax.wsdl.Fault;
@@ -75,11 +73,7 @@ public class WSDLFlattener {
     public void initialize() throws Exception {
         if (!initialized) {
             if (schemas == null) {
-                URI uri = null;
-                if (this.definition.getDocumentBaseURI() != null) {
-                    uri = URI.create(this.definition.getDocumentBaseURI());
-                }
-                this.schemas = new SchemaCollection(uri);
+                this.schemas = new SchemaCollection(getUri(this.definition.getDocumentBaseURI()));
             }
             parseSchemas(this.definition);
             initialized = true;
@@ -205,13 +199,13 @@ public class WSDLFlattener {
                 if (element instanceof javax.wsdl.extensions.schema.Schema) {
                     javax.wsdl.extensions.schema.Schema schema = (javax.wsdl.extensions.schema.Schema) element;
                     if (schema.getElement() != null) {
-                        schemas.read(schema.getElement(), schema.getDocumentBaseURI() != null ? new URI(schema.getDocumentBaseURI()) : null);
+                        schemas.read(schema.getElement(), getUri(schema.getDocumentBaseURI()));
                     }
                     for (Iterator itImp = schema.getImports().values().iterator(); itImp.hasNext();) {
                         Collection imps = (Collection) itImp.next();
                         for (Iterator itSi = imps.iterator(); itSi.hasNext();) {
                             SchemaImport imp = (SchemaImport) itSi.next();
-                            schemas.read(imp.getSchemaLocationURI(), new URI(def.getDocumentBaseURI()));
+                            schemas.read(imp.getSchemaLocationURI(), getUri(def.getDocumentBaseURI()));
                         }
                     }
                 }
@@ -257,6 +251,14 @@ public class WSDLFlattener {
             flatMsg.addPart(flatPart);
         }
         return flatMsg;
+    }
+
+    private URI getUri(String str) {
+        if (str != null) {
+            str = str.replaceAll(" ", "%20");
+            return URI.create(str);
+        }
+        return null;
     }
 
 }
