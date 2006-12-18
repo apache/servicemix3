@@ -29,9 +29,12 @@
 				<sm:component>
 					<jsr181:component>
 						<jsr181:endpoints>
-						  <jsr181:endpoint pojoClass="org.apache.servicemix.samples.wsdl_first.PersonImpl"
+						  <jsr181:endpoint pojo="#service"
 						    wsdlResource="classpath:org/apache/servicemix/itests/person.wsdl"
-						    style="document" />
+						    style="document"
+						    annotations="java5"
+						    typeMapping="jaxb2"
+						    serviceInterface="org.apache.servicemix.samples.wsdl_first.Person" />
 						</jsr181:endpoints>
 					</jsr181:component>
 				</sm:component>
@@ -53,4 +56,11 @@
 
 		</sm:activationSpecs>
 	</sm:container>
+	
+  <bean id="service" class="org.springframework.aop.framework.ProxyFactoryBean">
+    <property name="target">
+      <bean class="org.apache.servicemix.samples.wsdl_first.PersonImpl" />
+    </property>
+  </bean>
+  
 </beans>
