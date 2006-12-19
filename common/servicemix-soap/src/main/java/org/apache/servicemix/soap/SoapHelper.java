@@ -304,8 +304,19 @@ public class SoapHelper {
                 }
             } else if (definition.getService(serviceName) != null) {
                 Service service = definition.getService(serviceName);
-                Port port = service.getPort(endpointName);
-                if (port != null) {
+                if (endpointName != null) {
+                    Port port = service.getPort(endpointName);
+                    if (port != null) {
+                        Binding binding = port.getBinding();
+                        if (binding != null) {
+                            PortType portType = binding.getPortType();
+                            if (portType != null) {
+                                return findOperationFor(portType, bodyName);
+                            }
+                        }
+                    }
+                } else if (service.getPorts().size() == 1) {
+                    Port port = (Port) service.getPorts().values().iterator().next();
                     Binding binding = port.getBinding();
                     if (binding != null) {
                         PortType portType = binding.getPortType();
