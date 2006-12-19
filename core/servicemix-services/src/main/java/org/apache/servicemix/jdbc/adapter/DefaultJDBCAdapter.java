@@ -285,7 +285,7 @@ public class DefaultJDBCAdapter implements JDBCAdapter {
             List ids = new ArrayList();
             s = connection.prepareStatement(statements.getFindAllIdsStatement());
             rs = s.executeQuery();
-            while (!rs.next()) {
+            while (rs.next()) {
                 ids.add(rs.getString(1));
             }
             return (String[]) ids.toArray(new String[ids.size()]);
