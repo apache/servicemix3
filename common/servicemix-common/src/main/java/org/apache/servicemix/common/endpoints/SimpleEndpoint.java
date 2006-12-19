@@ -68,7 +68,9 @@ public abstract class SimpleEndpoint extends Endpoint implements ExchangeProcess
     }
     
     protected void sendSync(MessageExchange me) throws MessagingException {
-        channel.sendSync(me);
+        if (!channel.sendSync(me)) {
+            throw new MessagingException("SendSync failed");
+        }
     }
     
     protected void done(MessageExchange me) throws MessagingException {
