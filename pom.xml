@@ -207,13 +207,14 @@
         <jetty-version>6.0.1</jetty-version>
         <geronimo-version>1.2-SNAPSHOT</geronimo-version>
         <servicemix-version>3.1-incubating-SNAPSHOT</servicemix-version>
-        <wsdl4j-version>1.5.2</wsdl4j-version>
+        <wsdl4j-version>1.6.1</wsdl4j-version>
         <commons-beanutils-version>1.7.0</commons-beanutils-version>
         <commons-fileupload-version>1.1.1</commons-fileupload-version>
         <woodstox-version>3.0.2</woodstox-version>
         <msv-version>20050913</msv-version>
         <oro-version>2.0.8</oro-version>
         <sitemesh-version>2.2.1</sitemesh-version>
+        <woden-version>20061220</woden-version>
     </properties>
 
     <profiles>
@@ -1489,7 +1490,7 @@
             <dependency>
                 <groupId>org.apache.ws.commons</groupId>
                 <artifactId>XmlSchema</artifactId>
-                <version>1.0</version>
+                <version>1.1</version>
             </dependency>
             <dependency>
                 <groupId>lucene</groupId>
