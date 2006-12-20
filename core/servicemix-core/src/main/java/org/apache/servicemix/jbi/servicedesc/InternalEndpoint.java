@@ -16,10 +16,10 @@
  */
 package org.apache.servicemix.jbi.servicedesc;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -40,7 +40,7 @@ public class InternalEndpoint extends AbstractServiceEndpoint {
     
     private String endpointName;
     private QName serviceName;
-    private List interfaces = new ArrayList();
+    private Set interfaces = new HashSet();
     private transient Map remotes = new HashMap();
     
 

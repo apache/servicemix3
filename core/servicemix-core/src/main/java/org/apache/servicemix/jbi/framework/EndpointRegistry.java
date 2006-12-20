@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,27 +29,17 @@ import javax.jbi.component.ComponentContext;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.JMException;
 import javax.management.ObjectName;
-import javax.wsdl.Definition;
-import javax.wsdl.Port;
-import javax.wsdl.PortType;
-import javax.wsdl.Service;
-import javax.wsdl.factory.WSDLFactory;
-import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.deployment.Provides;
-import org.apache.servicemix.jbi.deployment.Services;
 import org.apache.servicemix.jbi.event.EndpointEvent;
 import org.apache.servicemix.jbi.event.EndpointListener;
+import org.apache.servicemix.jbi.framework.support.EndpointProcessor;
 import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
 import org.apache.servicemix.jbi.servicedesc.ExternalEndpoint;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 import org.apache.servicemix.jbi.servicedesc.LinkedEndpoint;
-import org.w3c.dom.Document;
-
-import com.ibm.wsdl.Constants;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 
@@ -73,6 +64,8 @@ public class EndpointRegistry {
     
     private Map interfaceConnections;
     
+    private List endpointProcessors;
+    
     /**
      * Constructor
      * 
@@ -85,6 +78,24 @@ public class EndpointRegistry {
         this.externalEndpoints = new ConcurrentHashMap();
         this.linkedEndpoints = new ConcurrentHashMap();
         this.interfaceConnections = new ConcurrentHashMap();
+        this.endpointProcessors = getEndpointProcessors();
+    }
+    
+    protected List getEndpointProcessors() {
+        List l = new ArrayList();
+        String[] classes = { "org.apache.servicemix.jbi.framework.support.SUDescriptorProcessor",
+                             "org.apache.servicemix.jbi.framework.support.WSDL1Processor",
+                             "org.apache.servicemix.jbi.framework.support.WSDL2Processor" };
+        for (int i = 0; i < classes.length; i++) {
+            try {
+                EndpointProcessor p = (EndpointProcessor) Class.forName(classes[i]).newInstance();
+                p.init(registry);
+                l.add(p);
+            } catch (Throwable e) {
+                logger.warn("Disabled endpoint processor '" + classes[i] + "': " + e);
+            }
+        }
+        return l;
     }
     
     public ServiceEndpoint[] getEndpointsForComponent(ComponentNameSpace cns) {
@@ -183,10 +194,11 @@ public class EndpointRegistry {
         if (provider.getActivationSpec().getInterfaceName() != null) {
             serviceEndpoint.addInterface(provider.getActivationSpec().getInterfaceName());
         }
-        // Get interface from SU jbi descriptor
-        retrieveInterfaceFromSUDescriptor(serviceEndpoint);
-        // Get interfaces from WSDL
-        retrieveInterfacesFromDescription(serviceEndpoint);
+        // Get interfaces
+        for (Iterator it = endpointProcessors.iterator(); it.hasNext();) {
+            EndpointProcessor p = (EndpointProcessor) it.next();
+            p.process(serviceEndpoint);
+        }
         // Set remote namespaces
         if (registered != null) {
             InternalEndpoint[] remote = registered.getRemoteEndpoints();
@@ -209,102 +221,14 @@ public class EndpointRegistry {
      */
     public void unregisterInternalEndpoint(ComponentContext provider, InternalEndpoint serviceEndpoint) {
         if (serviceEndpoint.isClustered()) {
+            fireEvent(serviceEndpoint, EndpointEvent.INTERNAL_ENDPOINT_UNREGISTERED);
             // set endpoint to be no more local
             serviceEndpoint.setComponentName(null);
         } else {
             String key = getKey(serviceEndpoint);
             internalEndpoints.remove(key);
             unregisterEndpoint(serviceEndpoint);
-        }
-        fireEvent(serviceEndpoint, EndpointEvent.INTERNAL_ENDPOINT_UNREGISTERED);
-    }
-    
-    /**
-     * Retrieve interface implemented by the given endpoint using the SU jbi descriptors.
-     * 
-     * @param serviceEndpoint the endpoint being checked
-     */
-    protected void retrieveInterfaceFromSUDescriptor(InternalEndpoint serviceEndpoint) {
-        ServiceUnitLifeCycle[] sus = registry.getDeployedServiceUnits(serviceEndpoint.getComponentNameSpace().getName());
-        for (int i = 0; i < sus.length; i++) {
-            Services services = sus[i].getServices();
-            if (services != null) {
-                Provides[] provides = services.getProvides();
-                if (provides != null) {
-                    for (int j = 0; j < provides.length; j++) {
-                        if (provides[j].getInterfaceName() != null &&
-                            serviceEndpoint.getServiceName().equals(provides[j].getServiceName()) &&
-                            serviceEndpoint.getEndpointName().equals(provides[j].getEndpointName())) {
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("Endpoint " + serviceEndpoint + " is provided by SU " + sus[i].getName());
-                                logger.debug("Endpoint " + serviceEndpoint + " implements interface " + provides[j].getInterfaceName());
-                            }
-                            serviceEndpoint.addInterface(provides[j].getInterfaceName());
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Retrieve interfaces implemented by the given endpoint using its WSDL description.
-     * 
-     * @param serviceEndpoint the endpoint being checked
-     */
-    protected void retrieveInterfacesFromDescription(InternalEndpoint serviceEndpoint) {
-        try {
-            Document document = registry.getEndpointDescriptor(serviceEndpoint);
-            if (document == null) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Endpoint " + serviceEndpoint + " has no service description");
-                }
-                return;
-            }
-            WSDLReader reader = WSDLFactory.newInstance().newWSDLReader();
-            reader.setFeature(Constants.FEATURE_VERBOSE, false);
-            Definition definition = reader.readWSDL(null, document);
-            // Check if the wsdl is only a port type
-            // In these cases, only the port type is used, as the service name and endpoint name
-            // are provided on the jbi endpoint
-            if (definition.getPortTypes().keySet().size() == 1 &&
-                definition.getServices().keySet().size() == 0) {
-                PortType portType = (PortType) definition.getPortTypes().values().iterator().next();
-                QName interfaceName = portType.getQName();
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Endpoint " + serviceEndpoint + " implements interface " + interfaceName);
-                }
-                serviceEndpoint.addInterface(interfaceName);
-            } else {
-                Service service = definition.getService(serviceEndpoint.getServiceName());
-                if (service == null) {
-                    logger.info("Endpoint " + serviceEndpoint + " has a service description, but no matching service found in " + definition.getServices().keySet());
-                    return;
-                }
-                Port port = service.getPort(serviceEndpoint.getEndpointName());
-                if (port == null) {
-                    logger.info("Endpoint " + serviceEndpoint + " has a service description, but no matching endpoint found in " + service.getPorts().keySet());
-                    return;
-                }
-                if (port.getBinding() == null) {
-                    logger.info("Endpoint " + serviceEndpoint + " has a service description, but no binding found");
-                    return;
-                }
-                if (port.getBinding().getPortType() == null) {
-                    logger.info("Endpoint " + serviceEndpoint + " has a service description, but no port type found");
-                    return;
-                }
-                QName interfaceName = port.getBinding().getPortType().getQName();
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Endpoint " + serviceEndpoint + " implements interface " + interfaceName);
-                }
-                serviceEndpoint.addInterface(interfaceName);
-            }
-        } catch (Exception e) {
-            logger.warn("Error retrieving interfaces from service description: " + e.getMessage());
-            if (logger.isDebugEnabled()) {
-                logger.debug("Error retrieving interfaces from service description", e);
-            }
+            fireEvent(serviceEndpoint, EndpointEvent.INTERNAL_ENDPOINT_UNREGISTERED);
         }
     }
     
@@ -331,9 +255,14 @@ public class EndpointRegistry {
      * @param remote
      */
     public void unregisterRemoteEndpoint(InternalEndpoint remote) {
-        InternalEndpoint endpoint = (InternalEndpoint) internalEndpoints.get(getKey(remote));
+        String key = getKey(remote);
+        InternalEndpoint endpoint = (InternalEndpoint) internalEndpoints.get(key);
         if (endpoint != null) {
             endpoint.removeRemoteEndpoint(remote);
+            if (!endpoint.isClustered() && !endpoint.isLocal()) {
+                internalEndpoints.remove(key);
+                unregisterEndpoint(endpoint);
+            }
             fireEvent(remote, EndpointEvent.REMOTE_ENDPOINT_UNREGISTERED);
         }
     }

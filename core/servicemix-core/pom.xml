@@ -166,6 +166,13 @@
     <dependency>
       <groupId>wsdl4j</groupId>
       <artifactId>wsdl4j</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.woden</groupId>
+      <artifactId>woden</artifactId>
+      <version>${woden-version}</version>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>jaxen</groupId>
