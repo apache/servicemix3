@@ -357,6 +357,9 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
         broker.getContainer().removeListener(endpointListener);
         // Remove component listener
         broker.getContainer().removeListener(componentListener);
+        // Shutdown executor
+        executor.shutdown();
+        // Close connection
         if (this.connection != null) {
             try {
                 this.connection.close();
