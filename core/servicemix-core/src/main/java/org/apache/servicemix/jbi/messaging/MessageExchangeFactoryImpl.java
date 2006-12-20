@@ -76,16 +76,20 @@ public class MessageExchangeFactoryImpl implements MessageExchangeFactory {
         checkNotClosed();
         MessageExchange result = null;
         if (pattern != null) {
-            if (pattern.equals(MessageExchangeSupport.IN_ONLY)) {
+            if (pattern.equals(MessageExchangeSupport.IN_ONLY) ||
+                pattern.equals(MessageExchangeSupport.WSDL2_IN_ONLY)) {
                 result = createInOnlyExchange();
             }
-            else if (pattern.equals(MessageExchangeSupport.IN_OUT)) {
+            else if (pattern.equals(MessageExchangeSupport.IN_OUT) ||
+                     pattern.equals(MessageExchangeSupport.WSDL2_IN_OUT)) {
                 result = createInOutExchange();
             }
-            else if (pattern.equals(MessageExchangeSupport.IN_OPTIONAL_OUT)) {
+            else if (pattern.equals(MessageExchangeSupport.IN_OPTIONAL_OUT) ||
+                     pattern.equals(MessageExchangeSupport.WSDL2_IN_OPTIONAL_OUT)) {
                 result = createInOptionalOutExchange();
             }
-            else if (pattern.equals(MessageExchangeSupport.ROBUST_IN_ONLY)) {
+            else if (pattern.equals(MessageExchangeSupport.ROBUST_IN_ONLY) ||
+                     pattern.equals(MessageExchangeSupport.WSDL2_ROBUST_IN_ONLY)) {
                 result = createRobustInOnlyExchange();
             }
         }
