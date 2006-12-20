@@ -101,6 +101,7 @@ public class JcaFlowWithTxLogTest extends TestCase {
         receiverContainer.setName("receiverContainer");
         receiverContainer.setFlows(new Flow[] { receiverFlow} );
         receiverContainer.setMonitorInstallationDirectory(false);
+        receiverContainer.setAutoEnlistInTransaction(true);
         receiverContainer.init();
         receiverContainer.start();
     }
