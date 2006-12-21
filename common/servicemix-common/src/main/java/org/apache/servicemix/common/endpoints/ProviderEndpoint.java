@@ -26,6 +26,7 @@ import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
+import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
 
@@ -106,7 +107,12 @@ public abstract class ProviderEndpoint extends SimpleEndpoint {
                             exchange.setMessage(out, "out");
                         }
                         processInOut(exchange, in, out);
-                        send(exchange);
+                        boolean txSync = exchange.isTransacted() && Boolean.TRUE.equals(exchange.getProperty(JbiConstants.SEND_SYNC));
+                        if (txSync) {
+                            sendSync(exchange);
+                        } else {
+                            send(exchange);
+                        }
                     }
                 // This is not compliant with the default MEPs
                 } else {
