@@ -198,14 +198,14 @@
         <xfire-jsr181-api-version>1.0-M1</xfire-jsr181-api-version>
         <xfire-version>1.2.2</xfire-version>
         <mavenAssemblyPluginVersion>2.1</mavenAssemblyPluginVersion>
-        <xbean-version>2.8-SNAPSHOT</xbean-version>
+        <xbean-version>2.8</xbean-version>
         <spring-version>2.0.1</spring-version>
         <activemq-version>4.1.0-incubator</activemq-version>
         <activeio-version>3.0.0-incubator</activeio-version>
         <backport-util-concurrent-version>2.2</backport-util-concurrent-version>
         <jencks-version>2.0-SNAPSHOT</jencks-version>
         <jetty-version>6.0.1</jetty-version>
-        <geronimo-version>1.2-SNAPSHOT</geronimo-version>
+        <geronimo-version>1.2-beta</geronimo-version>
         <servicemix-version>3.1-incubating-SNAPSHOT</servicemix-version>
         <wsdl4j-version>1.6.1</wsdl4j-version>
         <commons-beanutils-version>1.7.0</commons-beanutils-version>
