@@ -68,8 +68,6 @@ public class DefaultJDBCAdapter implements JDBCAdapter {
     public void doCreateTables(Connection connection) throws SQLException, IOException {
         Statement s = null;
         try {
-            connection.setAutoCommit(false);
-            
             // Check to see if the table already exists.  If it does, then don't log warnings during startup.
             // Need to run the scripts anyways since they may contain ALTER statements that upgrade a previous version of the table
             boolean alreadyExists = false;
@@ -111,8 +109,6 @@ public class DefaultJDBCAdapter implements JDBCAdapter {
                     }
                 }
             }
-            connection.commit();
-            
         }
         finally {
             close(s);
@@ -137,7 +133,6 @@ public class DefaultJDBCAdapter implements JDBCAdapter {
                     JDBCAdapterFactory.log("Failure details: ", e);
                 }
             }
-            connection.commit();
         }
         finally {
             close(s);

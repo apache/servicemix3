@@ -58,13 +58,7 @@ public class JdbcStore implements Store {
         } catch (Exception e) {
             throw (IOException) new IOException("Error storing object").initCause(e);
         } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (Exception e) {
-                    throw (IOException) new IOException("Error closing connection").initCause(e);
-                }
-            }
+            close(connection);
         }
     }
 
@@ -90,12 +84,16 @@ public class JdbcStore implements Store {
         } catch (Exception e) {
             throw (IOException) new IOException("Error storing object").initCause(e);
         } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (Exception e) {
-                    throw (IOException) new IOException("Error closing connection").initCause(e);
-                }
+            close(connection);
+        }
+    }
+
+    protected void close(Connection connection) throws IOException {
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (Exception e) {
+                throw (IOException) new IOException("Error closing connection").initCause(e);
             }
         }
     }

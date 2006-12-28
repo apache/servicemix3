@@ -81,8 +81,13 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
             statements.setStoreTableName(tableName);
         }
         Connection connection = null;
+        boolean restoreAutoCommit = false;
         try {
             connection = getDataSource().getConnection();
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+                restoreAutoCommit = true;
+            }
             adapter = JDBCAdapterFactory.getAdapter(connection);
             if (statements == null) {
                 statements = new Statements();
@@ -96,12 +101,7 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
         } catch (SQLException e) {
             throw (IOException) new IOException("Exception while creating database").initCause(e); 
         } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (Exception e) {
-                }
-            }
+            close(connection, restoreAutoCommit);
         }
         init(getContainer());
         if (autoStart) {
@@ -120,28 +120,24 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
             ExchangePacket packet = ((MessageExchangeImpl) exchange).getPacket();
             String id = packet.getExchangeId();
             byte[] data = packet.getData();
-            Connection connection = dataSource.getConnection();
+            Connection connection = null;
+            boolean restoreAutoCommit = false;
             try {
+                connection = dataSource.getConnection();
+                if (connection.getAutoCommit()) {
+                    connection.setAutoCommit(false);
+                    restoreAutoCommit = true;
+                }
                 store(connection, id, data);
                 connection.commit();
             } finally {
-                close(connection);
+                close(connection, restoreAutoCommit);
             }
         } catch (Exception e) {
             log.error("Could not persist exchange", e);
         }
     }
     
-    private static void close(Connection connection) {
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-            }
-        }
-        
-    }
-
     protected void store(Connection connection, String id, byte[] data) throws Exception {
         if (adapter.doLoadData(connection, id) != null) {
             adapter.doUpdateData(connection, id, data);
@@ -169,7 +165,7 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
         } catch (Exception e) {
             throw new AuditorException("Could not retrieve exchange count", e);
         } finally {
-            close(connection);
+            close(connection, false);
         }
     }
 
@@ -195,7 +191,7 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
         } catch (Exception e) {
             throw new AuditorException("Could not retrieve exchange ids", e);
         } finally {
-            close(connection);
+            close(connection, false);
         }
     }
 
@@ -214,7 +210,7 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
         } catch (Exception e) {
             throw new AuditorException("Could not retrieve exchanges", e);
         } finally {
-            close(connection);
+            close(connection, false);
         }
     }
 
@@ -223,16 +219,22 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
      */
     public int deleteExchanges(String[] ids) throws AuditorException {
         Connection connection = null;
+        boolean restoreAutoCommit = false;
         try {
             connection = dataSource.getConnection();
+            if (connection.getAutoCommit()) {
+                connection.setAutoCommit(false);
+                restoreAutoCommit = true;
+            }
             for (int row = 0; row < ids.length; row++) {
                 adapter.doRemoveData(connection, ids[row]);
             }
+            connection.commit();
             return -1;
         } catch (Exception e) {
             throw new AuditorException("Could not delete exchanges", e);
         } finally {
-            close(connection);
+            close(connection, restoreAutoCommit);
         }
     }
     
@@ -266,5 +268,16 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
         this.autoStart = autoStart;
     }
 
-    
+    private static void close(Connection connection, boolean restoreAutoCommit) {
+        if (connection != null) {
+            try {
+                if (restoreAutoCommit) {
+                    connection.setAutoCommit(true);
+                }
+                connection.close();
+            } catch (SQLException e) {
+            }
+        }
+    }
+
 }
