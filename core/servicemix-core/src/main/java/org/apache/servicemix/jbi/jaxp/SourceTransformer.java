@@ -28,6 +28,7 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -56,11 +57,12 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class SourceTransformer {
     public static final String CONTENT_DOCUMENT_PROPERTY = "org.apache.servicemix.content.document";
+    public static final String DEFAULT_CHARSET_PROPERTY = "org.apache.servicemix.default.charset";
 
     private DocumentBuilderFactory documentBuilderFactory;
     private TransformerFactory transformerFactory;
 
-    public static final String defaultCharEncodingName = "UTF-8";
+    public static String defaultCharset = System.getProperty(DEFAULT_CHARSET_PROPERTY, "UTF-8");
         
     public SourceTransformer() {
     }
@@ -81,6 +83,7 @@ public class SourceTransformer {
         if (transformer == null) {
             throw new TransformerException("Could not create a transformer - JAXP is misconfigured!");
         }
+        transformer.setOutputProperty(OutputKeys.ENCODING, defaultCharset);
         transformer.transform(source, result);
     }
 
@@ -214,17 +217,15 @@ public class SourceTransformer {
         DocumentBuilder builder = createDocumentBuilder();
         String systemId = source.getSystemId();
         Document document = null;
-        InputStream inputStream = source.getInputStream();
-        if (inputStream != null) {
-            InputSource inputsource = new InputSource(inputStream);
-            inputsource.setSystemId(systemId);
-            inputsource.setEncoding(defaultCharEncodingName);
-            document = builder.parse(inputsource);
-        }
-        else {
-            Reader reader = source.getReader();
-            if (reader != null) {
-                document = builder.parse(new InputSource(reader));
+        Reader reader = source.getReader();
+        if (reader != null) {
+            document = builder.parse(new InputSource(reader));
+        } else {
+            InputStream inputStream = source.getInputStream();
+            if (inputStream != null) {
+                InputSource inputsource = new InputSource(inputStream);
+                inputsource.setSystemId(systemId);
+                document = builder.parse(inputsource);
             }
             else {
                 throw new IOException("No input stream or reader available");
