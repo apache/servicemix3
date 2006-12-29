@@ -293,8 +293,8 @@ public class ScriptComponent extends TransformComponentSupport {
     }
 
     protected void checkScriptTextAvailable() throws JBIException {
-        if (scriptText == null) {
-            throw new JBIException("If no 'compiledScript' is specified you must specify the 'scriptText'");
+        if (scriptText == null && script == null) {
+            throw new JBIException("If no 'compiledScript' is specified you must specify the 'scriptText' or 'script'");
         }
     }
 }
