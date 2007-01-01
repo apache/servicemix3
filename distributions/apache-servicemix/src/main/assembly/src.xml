@@ -25,7 +25,7 @@
   </formats>
   <fileSets>
     <fileSet>
-      <directory>..</directory>
+      <directory>../..</directory>
       <outputDirectory>src</outputDirectory>
       <includes>
         <include>**/*</include>
