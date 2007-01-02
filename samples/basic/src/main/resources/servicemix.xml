@@ -21,7 +21,8 @@
 	     xmlns:sm="http://servicemix.apache.org/config/1.0"
 	     xmlns:jms="http://servicemix.apache.org/jms/1.0"
 	     xmlns:amq="http://activemq.org/config/1.0"
-	     xmlns:my="http://servicemix.apache.org/demo/">
+	     xmlns:my="http://servicemix.apache.org/demo/"
+       xmlns:jencks="http://jencks.org/2.0">
 
 
 	<!-- the JBI container -->
@@ -201,8 +202,7 @@
 		</amq:transportConnectors>
 	</amq:broker>
 
-	<bean id="transactionContextManager"  class="org.jencks.factory.TransactionContextManagerFactoryBean"/>
-	<bean id="transactionManager" class="org.jencks.factory.GeronimoTransactionManagerFactoryBean" />
+	<jencks:transactionManager id="transactionManager" />
 
 	<bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory" depends-on="broker">
 		<property name="connectionFactory">
