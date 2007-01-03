@@ -112,18 +112,22 @@
         <dependency>
             <groupId>org.apache.xbean</groupId>
             <artifactId>xbean-spring</artifactId>
+            <version>${xbean-version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.xbean</groupId>
             <artifactId>xbean-kernel</artifactId>
+            <version>${xbean-version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.xbean</groupId>
             <artifactId>xbean-server</artifactId>
+            <version>${xbean-version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.xbean</groupId>
             <artifactId>xbean-classloader</artifactId>
+            <version>${xbean-version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.geronimo.configs</groupId>
