@@ -198,10 +198,10 @@
         <mavenAssemblyPluginVersion>2.1</mavenAssemblyPluginVersion>
         <xbean-version>2.8</xbean-version>
         <spring-version>2.0.1</spring-version>
-        <activemq-version>4.1.0-incubator</activemq-version>
+        <activemq-version>4.1-incubator-20070103</activemq-version>
         <activeio-version>3.0.0-incubator</activeio-version>
         <backport-util-concurrent-version>2.2</backport-util-concurrent-version>
-        <jencks-version>2.0-SNAPSHOT</jencks-version>
+        <jencks-version>2.0</jencks-version>
         <jetty-version>6.0.1</jetty-version>
         <geronimo-version>1.2-beta</geronimo-version>
         <servicemix-version>3.1-incubating-SNAPSHOT</servicemix-version>
@@ -353,35 +353,11 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <!-- Apache snapshots -->
+        <!-- Codehaus -->
         <repository>
-            <id>apache-snapshots</id>
-            <name>Apache Snapshots Repository</name>
-            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <!-- Apache releases -->
-        <repository>
-            <id>apache-releases</id>
-            <name>Apache Releases repository</name>
-            <url>http://people.apache.org/repo/m2-ibiblio-rsync-repository</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <!-- Codehaus snapshots -->
-        <repository>
-            <id>codehaus-snapshots</id>
-            <name>Codehaus Snapshots repository</name>
-            <url>http://snapshots.repository.codehaus.org</url>
+            <id>codehaus</id>
+            <name>Codehaus repository</name>
+            <url>http://repository.codehaus.org</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
