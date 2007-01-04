@@ -104,7 +104,7 @@ public class JBIAuditPortlet extends ServiceMixPortlet {
         int count = auditor.getExchangeCount();
         request.setAttribute("count", new Integer(count));
         request.setAttribute("page", new Integer(page));
-        MessageExchange[] exchanges = auditor.getExchanges(page * 10, Math.min((page + 1) * 10, count));
+        MessageExchange[] exchanges = auditor.getExchangesByRange(page * 10, Math.min((page + 1) * 10, count));
         request.setAttribute("exchanges", prepare(exchanges));
         super.fillViewRequest(request);
     }
