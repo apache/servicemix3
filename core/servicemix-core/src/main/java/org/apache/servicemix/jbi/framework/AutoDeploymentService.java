@@ -44,6 +44,8 @@ import org.apache.servicemix.jbi.deployment.Component;
 import org.apache.servicemix.jbi.deployment.Descriptor;
 import org.apache.servicemix.jbi.deployment.DescriptorFactory;
 import org.apache.servicemix.jbi.deployment.ServiceAssembly;
+import org.apache.servicemix.jbi.event.DeploymentEvent;
+import org.apache.servicemix.jbi.event.DeploymentListener;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.util.FileUtil;
@@ -66,6 +68,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     private boolean monitorInstallationDirectory = true;
     private boolean monitorDeploymentDirectory = true;
     private int monitorInterval = 10;
+    private String extensions = ".zip,.jar";
     private AtomicBoolean started = new AtomicBoolean(false);
     private Timer statsTimer;
     private TimerTask timerTask;
@@ -73,6 +76,20 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     private Map pendingSAs = new ConcurrentHashMap();
     private Map installFileMap = null;
     private Map deployFileMap = null;
+
+    /**
+     * @return the extensions
+     */
+    public String getExtensions() {
+        return extensions;
+    }
+
+    /**
+     * @param extensions the extensions to set
+     */
+    public void setExtensions(String extensions) {
+        this.extensions = extensions;
+    }
 
     /**
      * @return a description of this
@@ -193,6 +210,19 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
      * @throws DeploymentException
      */
     public void updateArchive(String location, ArchiveEntry entry, boolean autoStart) throws DeploymentException {
+        // Call listeners
+        try {
+            DeploymentListener[] listeners = (DeploymentListener[]) container.getListeners(DeploymentListener.class);
+            DeploymentEvent event = new DeploymentEvent(new File(location), DeploymentEvent.FILE_CHANGED);
+            for (int i = 0; i < listeners.length; i++) {
+                if (listeners[i].fileChanged(event)) {
+                    return;
+                }
+            }
+        } catch (IOException e) {
+            throw failure("deploy", "Error when deploying: " + location, e);
+        }
+        // Standard processing
         File tmpDir = null;
         try {
             tmpDir = AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(), location);
@@ -369,6 +399,19 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
      * @throws DeploymentException
      */
     public void removeArchive(ArchiveEntry entry) throws DeploymentException {
+        // Call listeners
+        try {
+            DeploymentListener[] listeners = (DeploymentListener[]) container.getListeners(DeploymentListener.class);
+            DeploymentEvent event = new DeploymentEvent(new File(entry.location), DeploymentEvent.FILE_REMOVED);
+            for (int i = 0; i < listeners.length; i++) {
+                if (listeners[i].fileRemoved(event)) {
+                    return;
+                }
+            }
+        } catch (IOException e) {
+            throw failure("deploy", "Error when deploying: " + entry.location, e);
+        }
+        // Standard processing
         log.info("Attempting to remove archive at: " + entry.location);
         try{
             container.getBroker().suspend();
@@ -527,7 +570,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 try{
                     URL url = new URL(location);
                     String fileName = url.getFile();
-                    if (fileName == null || (!fileName.endsWith(".zip") && !fileName.endsWith(".jar"))) {
+                    if (fileName == null) {
                         throw new DeploymentException("Location: " + location + " is not an archive");
                     }
                     file = FileUtil.unpackArchive(url,tmpRoot);
@@ -572,12 +615,16 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     }
 
 
-    private void monitorDirectory(final File root,final Map fileMap){
-        if(root!=null)
-            log.debug("Monitoring directory "+root.getAbsolutePath()+" for new or modified archives");
-        else
-            log.debug("No directory to monitor for new or modified archives for "+""
-                            +((fileMap==installFileMap)?"Installation":"Deployment")+".");
+    private void monitorDirectory(final File root, final Map fileMap) {
+        /*
+        if (log.isTraceEnabled()) {
+            if (root != null)
+                log.trace("Monitoring directory " + root.getAbsolutePath() + " for new or modified archives");
+            else
+                log.trace("No directory to monitor for new or modified archives for "
+                                + ((fileMap==installFileMap) ? "Installation" : "Deployment") + ".");
+        }
+        */
         List tmpList=new ArrayList();
         if(root!=null&&root.exists()&&root.isDirectory()){
             File[] files=root.listFiles();
@@ -585,7 +632,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 for(int i=0;i<files.length;i++){
                     final File file=files[i];
                     tmpList.add(file.getName());
-                    if(file.getPath().endsWith(".jar")||file.getPath().endsWith(".zip")){
+                    if (isAllowedExtension(file.getName())) {
                         ArchiveEntry lastEntry = (ArchiveEntry) fileMap.get(file.getName());
                         if(lastEntry == null || file.lastModified() > lastEntry.lastModified.getTime()){
                             try{
@@ -626,6 +673,16 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 persistState(root, fileMap);
             }
         }
+    }
+
+    private boolean isAllowedExtension(String file) {
+        String[] extensions = this.extensions.split(",");
+        for (int i = 0; i < extensions.length; i++) {
+            if (file.endsWith(extensions[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void persistState(File root, Map map) {

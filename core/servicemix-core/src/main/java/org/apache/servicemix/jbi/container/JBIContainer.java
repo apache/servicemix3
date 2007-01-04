@@ -56,6 +56,7 @@ import org.apache.servicemix.executors.impl.ExecutorFactoryImpl;
 import org.apache.servicemix.id.IdGenerator;
 import org.apache.servicemix.jbi.event.ComponentListener;
 import org.apache.servicemix.jbi.event.ContainerAware;
+import org.apache.servicemix.jbi.event.DeploymentListener;
 import org.apache.servicemix.jbi.event.EndpointListener;
 import org.apache.servicemix.jbi.event.ExchangeEvent;
 import org.apache.servicemix.jbi.event.ExchangeListener;
@@ -435,6 +436,20 @@ public class JBIContainer extends BaseLifeCycle {
      */
     public void setMonitorInterval(int monitorInterval) {
     	autoDeployService.setMonitorInterval(monitorInterval);
+    }
+
+    /**
+     * @return the deploymentExtensions
+     */
+    public String getDeploymentExtensions() {
+        return autoDeployService.getExtensions();
+    }
+
+    /**
+     * @param deploymentExtensions the deploymentExtensions to set
+     */
+    public void setDeploymentExtensions(String deploymentExtensions) {
+        autoDeployService.setExtensions(deploymentExtensions);
     }
 
     /**
@@ -1208,6 +1223,7 @@ public class JBIContainer extends BaseLifeCycle {
 	}
     
     public void addListener(EventListener listener) {
+        log.debug("Adding listener: " + listener.getClass());
         if (listener instanceof ContainerAware) {
             ContainerAware containerAware = (ContainerAware) listener;
             containerAware.setContainer(this);
@@ -1227,9 +1243,13 @@ public class JBIContainer extends BaseLifeCycle {
         if (listener instanceof EndpointListener) {
             listeners.add(EndpointListener.class, (EndpointListener) listener);
         }
+        if (listener instanceof DeploymentListener) {
+            listeners.add(DeploymentListener.class, (DeploymentListener) listener);
+        }
     }
     
     public void removeListener(EventListener listener) {
+        log.debug("Removing listener: " + listener.getClass());
         if (listener instanceof ExchangeListener) {
             listeners.remove(ExchangeListener.class, (ExchangeListener) listener);
         }
@@ -1244,6 +1264,9 @@ public class JBIContainer extends BaseLifeCycle {
         }
         if (listener instanceof EndpointListener) {
             listeners.remove(EndpointListener.class, (EndpointListener) listener);
+        }
+        if (listener instanceof DeploymentListener) {
+            listeners.remove(DeploymentListener.class, (DeploymentListener) listener);
         }
     }
     
