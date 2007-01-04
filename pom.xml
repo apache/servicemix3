@@ -229,6 +229,7 @@
                 <module>common</module>
                 <module>tooling</module>
                 <module>deployables</module>
+                <module>servicemix-itests</module>
                 <module>samples</module>
                 <module>web</module>
                 <module>platforms</module>
@@ -260,6 +261,7 @@
             </activation>
             <modules>
                 <module>deployables</module>
+                <module>servicemix-itests</module>
                 <module>samples</module>
                 <module>web</module>
                 <module>platforms</module>
