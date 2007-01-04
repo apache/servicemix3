@@ -43,6 +43,11 @@ public class Auditor {
         this.mbean = mbean;
     }
     
+    public String getStatus() {
+        String status = mbean.getCurrentState();
+        return status;
+    }
+    
     public int getPage() {
         return page;
     }
@@ -65,7 +70,7 @@ public class Auditor {
     }
 
     public List<ExchangeInfo> getExchanges() throws AuditorException {
-        MessageExchange[] exchanges = mbean.getExchanges(page * 10, Math.min((page + 1) * 10, getCount()));
+        MessageExchange[] exchanges = mbean.getExchangesByRange(page * 10, Math.min((page + 1) * 10, getCount()));
         ExchangeInfo[] infos = prepare(exchanges);
         return Arrays.asList(infos);
     }
@@ -74,7 +79,7 @@ public class Auditor {
         if (exchangeId == null) {
             return null;
         }
-        MessageExchange exchange = mbean.getExchange(exchangeId);
+        MessageExchange exchange = mbean.getExchangeById(exchangeId);
         if (exchange != null) {
             return new ExchangeInfo(exchange);
         } else {

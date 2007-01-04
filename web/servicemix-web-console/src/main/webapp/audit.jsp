@@ -23,6 +23,18 @@
 <h2>Audit</h2>
 
 <fieldset>
+  <legend>Service</legend>
+  <table class="align"><tr>
+  <c:if test="${requestContext.auditor.status == 'Started'}">
+    <td class="align"><form method="post" action="stopAuditor.action"><input type="submit" value="Stop"/></form></td>
+  </c:if> 
+  <c:if test="${requestContext.auditor.status == 'Stopped'}">
+    <td class="align"><form method="post" action="startAuditor.action"><input type="submit" value="Start"/></form></td>
+  </c:if> 
+  </tr></table>
+</fieldset>
+
+<fieldset>
   <legend>Exchanges</legend>
   <table class="autostripe">
     <thead>

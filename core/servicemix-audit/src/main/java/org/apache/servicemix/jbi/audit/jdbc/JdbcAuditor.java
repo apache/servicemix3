@@ -172,7 +172,7 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#getExchangeIds(int, int)
      */
-    public String[] getExchangeIds(int fromIndex, int toIndex) throws AuditorException {
+    public String[] getExchangeIdsByRange(int fromIndex, int toIndex) throws AuditorException {
         if (fromIndex < 0) {
             throw new IllegalArgumentException("fromIndex should be greater or equal to zero");
         }
@@ -198,7 +198,7 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#getExchanges(java.lang.String[])
      */
-    public MessageExchange[] getExchanges(String[] ids) throws AuditorException {
+    public MessageExchange[] getExchangesByIds(String[] ids) throws AuditorException {
         MessageExchange[] exchanges = new MessageExchange[ids.length];
         Connection connection = null;
         try {
@@ -217,7 +217,7 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#deleteExchanges(java.lang.String[])
      */
-    public int deleteExchanges(String[] ids) throws AuditorException {
+    public int deleteExchangesByIds(String[] ids) throws AuditorException {
         Connection connection = null;
         boolean restoreAutoCommit = false;
         try {

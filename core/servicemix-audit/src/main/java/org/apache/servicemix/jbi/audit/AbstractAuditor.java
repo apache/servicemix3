@@ -98,10 +98,10 @@ public abstract class AbstractAuditor extends BaseSystemService implements Audit
     public MBeanOperationInfo[] getOperationInfos() throws JMException {
         // TODO: add other operations infos
         OperationInfoHelper helper = new OperationInfoHelper();
-        ParameterHelper ph = helper.addOperation(getObjectToManage(), "getExchanges", 2, "retrieve a bunch messages");
+        ParameterHelper ph = helper.addOperation(getObjectToManage(), "getExchangesByRange", 2, "retrieve a bunch messages");
         ph.setDescription(0, "fromIndex", "lower index of message (start from 0)");
         ph.setDescription(1, "toIndex", "upper index of message (exclusive, > fromIndex)");
-        ph = helper.addOperation(getObjectToManage(), "getExchange", 1, "retrieve an exchange given its id");
+        ph = helper.addOperation(getObjectToManage(), "getExchangeById", 1, "retrieve an exchange given its id");
         ph.setDescription(0, "id", "id of the exchange to retrieve");
         return OperationInfoHelper.join(super.getOperationInfos(), helper.getOperationInfos());
     }
@@ -114,99 +114,99 @@ public abstract class AbstractAuditor extends BaseSystemService implements Audit
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#getExchangeId(int)
      */
-    public String getExchangeId(int index) throws AuditorException {
+    public String getExchangeIdByIndex(int index) throws AuditorException {
         if (index < 0) {
             throw new IllegalArgumentException("index should be greater or equal to zero");
         }
-        return getExchangeIds(index, index + 1)[0];
+        return getExchangeIdsByRange(index, index + 1)[0];
     }
     
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#getExchangeIds()
      */
-    public String[] getExchangeIds() throws AuditorException {
-        return getExchangeIds(0, getExchangeCount());
+    public String[] getAllExchangeIds() throws AuditorException {
+        return getExchangeIdsByRange(0, getExchangeCount());
     }
     
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#getExchangeIds(int, int)
      */
-    public abstract String[] getExchangeIds(int fromIndex, int toIndex)  throws AuditorException;
+    public abstract String[] getExchangeIdsByRange(int fromIndex, int toIndex)  throws AuditorException;
     
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#getExchange(int)
      */
-    public MessageExchange getExchange(int index) throws AuditorException {
+    public MessageExchange getExchangeByIndex(int index) throws AuditorException {
         if (index < 0) {
             throw new IllegalArgumentException("index should be greater or equal to zero");
         }
-        return getExchanges(index, index + 1)[0];
+        return getExchangesByRange(index, index + 1)[0];
     }
     
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#getExchange(java.lang.String)
      */
-    public MessageExchange getExchange(String id) throws AuditorException {
+    public MessageExchange getExchangeById(String id) throws AuditorException {
         if (id == null || id.length() == 0) {
             throw new IllegalArgumentException("id should be non null and non empty");
         }
-        return getExchanges(new String[] { id })[0];
+        return getExchangesByIds(new String[] { id })[0];
     }
     
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#getExchanges()
      */
-    public MessageExchange[] getExchanges() throws AuditorException {
-        return getExchanges(0, getExchangeCount());
+    public MessageExchange[] getAllExchanges() throws AuditorException {
+        return getExchangesByRange(0, getExchangeCount());
     }
     
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#getExchanges(int, int)
      */
-    public MessageExchange[] getExchanges(int fromIndex, int toIndex) throws AuditorException {
-        return getExchanges(getExchangeIds(fromIndex, toIndex));
+    public MessageExchange[] getExchangesByRange(int fromIndex, int toIndex) throws AuditorException {
+        return getExchangesByIds(getExchangeIdsByRange(fromIndex, toIndex));
     }
 
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#getExchanges(java.lang.String[])
      */
-    public abstract MessageExchange[] getExchanges(String[] ids) throws AuditorException;
+    public abstract MessageExchange[] getExchangesByIds(String[] ids) throws AuditorException;
 
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#deleteExchanges()
      */
-    public int deleteExchanges() throws AuditorException {
-        return deleteExchanges(0, getExchangeCount());
+    public int deleteAllExchanges() throws AuditorException {
+        return deleteExchangesByRange(0, getExchangeCount());
     }
     
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#deleteExchange(int)
      */
-    public boolean deleteExchange(int index) throws AuditorException {
+    public boolean deleteExchangeByIndex(int index) throws AuditorException {
         if (index < 0) {
             throw new IllegalArgumentException("index should be greater or equal to zero");
         }
-        return deleteExchanges(index, index + 1) == 1;
+        return deleteExchangesByRange(index, index + 1) == 1;
     }
     
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#deleteExchange(java.lang.String)
      */
-    public boolean deleteExchange(String id) throws AuditorException {
-        return deleteExchanges(new String[] { id }) == 1;
+    public boolean deleteExchangeById(String id) throws AuditorException {
+        return deleteExchangesByIds(new String[] { id }) == 1;
     }
     
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#deleteExchanges(int, int)
      */
-    public int deleteExchanges(int fromIndex, int toIndex) throws AuditorException {
-        return deleteExchanges(getExchangeIds(fromIndex, toIndex));
+    public int deleteExchangesByRange(int fromIndex, int toIndex) throws AuditorException {
+        return deleteExchangesByIds(getExchangeIdsByRange(fromIndex, toIndex));
     }
     
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#deleteExchanges(java.lang.String[])
      */
-    public abstract int deleteExchanges(String[] ids) throws AuditorException;
+    public abstract int deleteExchangesByIds(String[] ids) throws AuditorException;
     
     /* (non-Javadoc)
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#resendExchange(javax.jbi.messaging.MessageExchange)

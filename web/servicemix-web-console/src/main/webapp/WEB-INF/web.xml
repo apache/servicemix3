@@ -31,6 +31,10 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>/WEB-INF/applicationContext.xml /WEB-INF/servicemix.xml</param-value>
     </context-param>
+    <context-param>
+        <param-name>contextClass</param-name>
+        <param-value>org.apache.xbean.spring.context.XmlWebApplicationContext</param-value>
+    </context-param>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!--              Configuration of the SiteMesh Filter.                                                                 -->

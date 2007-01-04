@@ -76,9 +76,6 @@ public class HttpComponentListener implements ComponentListener, ContainerAware 
     }
 
     public void componentInitialized(ComponentEvent event) {
-    }
-
-    public void componentStarted(ComponentEvent event) {
         if (getName().equals(event.getComponent().getName())) {
             try {
                 Component component = event.getComponent().getComponent();
@@ -89,13 +86,15 @@ public class HttpComponentListener implements ComponentListener, ContainerAware 
                 if (!b.booleanValue()) {
                     m = cfg.getClass().getMethod("setManaged", new Class[] { boolean.class });
                     m.invoke(cfg, new Object[] { Boolean.TRUE });
-                    event.getComponent().shutDown();
-                    event.getComponent().start();
                 }
+                log.info("Component " + getName() + " configured.");
             } catch (Exception e) {
                 log.error("Unable to update component configuration", e);
             }
         }
+    }
+
+    public void componentStarted(ComponentEvent event) {
     }
 
     public void componentStopped(ComponentEvent event) {

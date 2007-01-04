@@ -55,7 +55,7 @@ public interface AuditorMBean extends LifeCycleMBean {
      * @throws AuditorException if an error occurs accessing the data store.
      * @throws IllegalArgumentException if index is less than zero
      */
-    String getExchangeId(int index) throws AuditorException;
+    String getExchangeIdByIndex(int index) throws AuditorException;
     
     /**
      * Retrieve all exchanges ids from the data store.
@@ -63,7 +63,7 @@ public interface AuditorMBean extends LifeCycleMBean {
      * @return an array of exchange ids
      * @throws AuditorException if an error occurs accessing the data store.
      */
-    String[] getExchangeIds() throws AuditorException;
+    String[] getAllExchangeIds() throws AuditorException;
     
     /**
      * Retrieve a range of message exchange ids.
@@ -86,7 +86,7 @@ public interface AuditorMBean extends LifeCycleMBean {
      * @throws IllegalArgumentException if fromIndex is less than zero or if toIndex is 
      *                                  less than fromIndex.
      */
-    String[] getExchangeIds(int fromIndex, int toIndex)  throws AuditorException;
+    String[] getExchangeIdsByRange(int fromIndex, int toIndex)  throws AuditorException;
     
     /**
      * Retrieve the exchange at the specified index.
@@ -100,7 +100,7 @@ public interface AuditorMBean extends LifeCycleMBean {
      * @throws AuditorException if an error occurs accessing the data store.
      * @throws IllegalArgumentException if index is less than zero
      */
-    MessageExchange getExchange(int index) throws AuditorException;
+    MessageExchange getExchangeByIndex(int index) throws AuditorException;
     
     /**
      * Retrieve the exchange for a specified id.
@@ -112,7 +112,7 @@ public interface AuditorMBean extends LifeCycleMBean {
      * @throws AuditorException if an error occurs accessing the data store.
      * @throws IllegalArgumentException if id is null or empty 
      */
-    MessageExchange getExchange(String id) throws AuditorException;
+    MessageExchange getExchangeById(String id) throws AuditorException;
     
     /**
      * Retrieve all exchanges =from the data store.
@@ -120,7 +120,7 @@ public interface AuditorMBean extends LifeCycleMBean {
      * @return an array of exchange
      * @throws AuditorException if an error occurs accessing the data store.
      */
-    MessageExchange[] getExchanges() throws AuditorException;
+    MessageExchange[] getAllExchanges() throws AuditorException;
     
     /**
      * Retrieve a range of message exchange.
@@ -143,7 +143,7 @@ public interface AuditorMBean extends LifeCycleMBean {
      * @throws IllegalArgumentException if fromIndex is less than zero or if toIndex is 
      *                                  less than fromIndex.
      */
-    MessageExchange[] getExchanges(int fromIndex, int toIndex) throws AuditorException;
+    MessageExchange[] getExchangesByRange(int fromIndex, int toIndex) throws AuditorException;
 
     /**
      * Retrieve exchanges for the specified ids.
@@ -157,7 +157,7 @@ public interface AuditorMBean extends LifeCycleMBean {
      * @throws IllegalArgumentException if ids is null, or one of its
      *         element is null or empty.
      */
-    MessageExchange[] getExchanges(String[] ids) throws AuditorException;
+    MessageExchange[] getExchangesByIds(String[] ids) throws AuditorException;
     
     /**
      * Delete all exchanges =from the data store.
@@ -166,7 +166,7 @@ public interface AuditorMBean extends LifeCycleMBean {
      *         can not be provided
      * @throws AuditorException if an error occurs accessing the data store.
      */
-    int deleteExchanges() throws AuditorException;
+    int deleteAllExchanges() throws AuditorException;
     
     /**
      * Delete a message, given its index.
@@ -181,7 +181,7 @@ public interface AuditorMBean extends LifeCycleMBean {
      * @throws AuditorException if an error occurs accessing the data store.
      * @throws IllegalArgumentException if index is less than zero
      */
-    boolean deleteExchange(int index) throws AuditorException;
+    boolean deleteExchangeByIndex(int index) throws AuditorException;
     
     /**
      * Delete the exchange with the specified id.
@@ -193,7 +193,7 @@ public interface AuditorMBean extends LifeCycleMBean {
      * @throws AuditorException if an error occurs accessing the data store.
      * @throws IllegalArgumentException if id is null or empty 
      */
-    boolean deleteExchange(String id) throws AuditorException;
+    boolean deleteExchangeById(String id) throws AuditorException;
 
     /**
      * Delete exchanges ranging from fromIndex to toIndex.
@@ -207,7 +207,7 @@ public interface AuditorMBean extends LifeCycleMBean {
      * @throws IllegalArgumentException if fromIndex is less than zero or if toIndex is 
      *                                  less than fromIndex.
      */
-    int deleteExchanges(int fromIndex, int toIndex) throws AuditorException;
+    int deleteExchangesByRange(int fromIndex, int toIndex) throws AuditorException;
 
     /**
      * Delete exchanges given their ids.
@@ -219,7 +219,7 @@ public interface AuditorMBean extends LifeCycleMBean {
      * @throws IllegalArgumentException if ids is null, or one of its
      *         element is null or empty.
      */
-    int deleteExchanges(String[] ids) throws AuditorException;
+    int deleteExchangesByIds(String[] ids) throws AuditorException;
 
     /**
      * Resend an exchange on behalf of the consumer component that initiated this exchange.
@@ -235,5 +235,5 @@ public interface AuditorMBean extends LifeCycleMBean {
      * @param exchange the exchange to be sent
      * @throws JBIException if an error occurs re-sending the exchange
      */
-    void resendExchange(MessageExchange exchange)throws JBIException;
+    void resendExchange(MessageExchange exchange) throws JBIException;
 }

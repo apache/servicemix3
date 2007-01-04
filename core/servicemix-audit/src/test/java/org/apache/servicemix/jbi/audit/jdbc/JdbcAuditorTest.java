@@ -81,7 +81,7 @@ public class JdbcAuditorTest extends TestCase {
         
         int nbMessages = auditor.getExchangeCount();
         assertEquals(1, nbMessages);
-        MessageExchange[] exchanges = auditor.getExchanges(0, 1);
+        MessageExchange[] exchanges = auditor.getExchangesByRange(0, 1);
         assertNotNull(exchanges);
         assertEquals(1, exchanges.length);
         assertEquals(ExchangeStatus.DONE, exchanges[0].getStatus());
@@ -90,7 +90,7 @@ public class JdbcAuditorTest extends TestCase {
 
         nbMessages = auditor.getExchangeCount();
         assertEquals(2, nbMessages);
-        MessageExchange exchange = auditor.getExchange(1);
+        MessageExchange exchange = auditor.getExchangeByIndex(1);
         assertNotNull(exchange);
         assertEquals(ExchangeStatus.DONE, exchange.getStatus());
         

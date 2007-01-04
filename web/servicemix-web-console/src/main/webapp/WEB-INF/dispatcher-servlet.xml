@@ -87,6 +87,16 @@
     <constructor-arg value="undeploy" />
     <property name="view" value="redirect:/service-assemblies.jsp" />
   </bean>
+  <bean name="/startAuditor.action" class="org.apache.servicemix.web.controller.ServiceLifeCycle" scope="request">
+    <constructor-arg ref="jdbcAuditorMBean" />
+    <constructor-arg value="start" />
+    <property name="view" value="redirect:/audit.jsp" />
+  </bean>
+  <bean name="/stopAuditor.action" class="org.apache.servicemix.web.controller.ServiceLifeCycle" scope="request">
+    <constructor-arg ref="jdbcAuditorMBean" />
+    <constructor-arg value="stop" />
+    <property name="view" value="redirect:/audit.jsp" />
+  </bean>
   
   <bean name="/dot-flow.svg" class="org.apache.servicemix.web.controller.DotViewController" scope="session">
     <constructor-arg ref="dotViewServiceMBean" />

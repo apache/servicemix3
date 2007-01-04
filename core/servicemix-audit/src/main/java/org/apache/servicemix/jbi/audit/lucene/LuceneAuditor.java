@@ -108,26 +108,26 @@ public class LuceneAuditor extends AbstractAuditor implements AuditorQueryMBean 
 		return this.delegatedAuditor.getExchangeCount();
 	}
 
-	public String[] getExchangeIds(int fromIndex, int toIndex) throws AuditorException {
-		return this.delegatedAuditor.getExchangeIds(fromIndex,toIndex);
+	public String[] getExchangeIdsByRange(int fromIndex, int toIndex) throws AuditorException {
+		return this.delegatedAuditor.getExchangeIdsByRange(fromIndex,toIndex);
 	}
 
-	public MessageExchange[] getExchanges(String[] ids) throws AuditorException {
-		return this.delegatedAuditor.getExchanges(ids);
+	public MessageExchange[] getExchangesByIds(String[] ids) throws AuditorException {
+		return this.delegatedAuditor.getExchangesByIds(ids);
 	}
 
-	public int deleteExchanges(int fromIndex, int toIndex) throws AuditorException {
+	public int deleteExchangesByRange(int fromIndex, int toIndex) throws AuditorException {
 		//TODO: Remove ids from Lucene Index
-		return this.delegatedAuditor.deleteExchanges(fromIndex,toIndex);
+		return this.delegatedAuditor.deleteExchangesByRange(fromIndex,toIndex);
 	}
 
-	public int deleteExchanges(String[] ids) throws AuditorException {
+	public int deleteExchangesByIds(String[] ids) throws AuditorException {
 		try {
 			this.luceneIndexer.remove(ids);
 		} catch (IOException io) {
 			throw new AuditorException(io);
 		}
-		return this.delegatedAuditor.deleteExchanges(ids);
+		return this.delegatedAuditor.deleteExchangesByIds(ids);
 	}
 
     public void exchangeSent(ExchangeEvent event) {
