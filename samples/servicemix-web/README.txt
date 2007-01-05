@@ -25,3 +25,6 @@ and browse the application at
    http://localhost:8080/servicemix-web
 and
    http://localhost:8080/servicemix-web/examples/
+
+See http://incubator.apache.org/servicemix/servicemix-web.html for more 
+informations.

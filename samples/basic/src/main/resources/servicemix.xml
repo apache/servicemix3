@@ -21,8 +21,10 @@
 	     xmlns:sm="http://servicemix.apache.org/config/1.0"
 	     xmlns:jms="http://servicemix.apache.org/jms/1.0"
 	     xmlns:amq="http://activemq.org/config/1.0"
-	     xmlns:my="http://servicemix.apache.org/demo/"
-       xmlns:jencks="http://jencks.org/2.0">
+	     xmlns:amqra="http://activemq.org/ra/1.0"
+	     xmlns:amqpool="http://jencks.org/amqpool/2.0"
+       xmlns:jencks="http://jencks.org/2.0"
+	     xmlns:my="http://servicemix.apache.org/demo/">
 
 
 	<!-- the JBI container -->
@@ -30,8 +32,6 @@
                 rootDir="./target/data/smx" 
                 useMBeanServer="true"
 		            createMBeanServer="true" 
-                dumpStats="true"
-		            statsInterval="10" 
                 transactionManager="#transactionManager" 
                 flowName="seda"
                 autoEnlistInTransaction="true">
@@ -105,14 +105,12 @@
                             processorName="jca"
                             bootstrapContext="#bootstrapContext"
                             resourceAdapter="#activeMQResourceAdapter"
-                            connectionFactory="#managedJmsFactory"
+                            connectionFactory="#jmsFactory"
                             defaultMep="http://www.w3.org/2004/08/wsdl/in-only"
                             synchronous="true">
                 <jms:activationSpec>
-    							<bean class="org.apache.activemq.ra.ActiveMQActivationSpec">
-    								<property name="destination" value="servicemix.source" />
-    								<property name="destinationType" value="javax.jms.Topic" />
-    							</bean>
+    							<amqra:activationSpec destination="servicemix.source"
+                                        destinationType="javax.jms.Topic" />
                 </jms:activationSpec>
               </jms:endpoint>
             </jms:endpoints>
@@ -132,7 +130,7 @@
                             endpoint="endpoint"
                             role="provider"
                             processorName="jca"
-                            connectionFactory="#managedJmsFactory"
+                            connectionFactory="#jmsFactory"
                             jmsProviderDestinationName="servicemix.result"
                             destinationStyle="topic" />
             </jms:endpoints>
@@ -158,14 +156,12 @@
                             targetService="my:trace"
                             bootstrapContext="#bootstrapContext"
                             resourceAdapter="#activeMQResourceAdapter"
-                            connectionFactory="#managedJmsFactory"
+                            connectionFactory="#jmsFactory"
                             defaultMep="http://www.w3.org/2004/08/wsdl/in-only"
                             synchronous="true">
                 <jms:activationSpec>
-    							<bean class="org.apache.activemq.ra.ActiveMQActivationSpec">
-    								<property name="destination" value="servicemix.result" />
-    								<property name="destinationType" value="javax.jms.Topic" />
-    							</bean>
+    							<amqra:activationSpec destination="servicemix.result"
+    								                    destinationType="javax.jms.Topic" />
                 </jms:activationSpec>
               </jms:endpoint>
             </jms:endpoints>
@@ -184,16 +180,23 @@
 		</sm:activationSpecs>
 	</sm:container>
 
+  <!-- Transaction Manager -->
+	<jencks:transactionManager id="transactionManager" />
 
-	<!-- the JCA container -->
-	<bean id="bootstrapContext" class="org.jencks.factory.BootstrapContextFactoryBean">
-		<property name="threadPoolSize" value="25" />
-	</bean>
+  <!-- Work manager -->
+  <jencks:workManager
+            id="workManager"
+            threadPoolSize="25"
+            transactionManager="#transactionManager" />
+  
+  <!-- Bootstrap context for JCA -->
+  <jencks:bootstrapContext
+            id="bootstrapContext"
+            workManager="#workManager"
+            transactionManager="#transactionManager" />
 
 	<!-- the JCA Resource Adapter -->
-	<bean id="activeMQResourceAdapter" class="org.apache.activemq.ra.ActiveMQResourceAdapter" singleton="true">
-		<property name="serverUrl" value="tcp://localhost:61616" />
-	</bean>
+	<amqra:resourceAdapter id="activeMQResourceAdapter" serverUrl="tcp://localhost:61616" />
 
 	<!-- message broker -->
 	<amq:broker id="broker" persistent="false">
@@ -201,28 +204,13 @@
 			<amq:transportConnector uri="tcp://localhost:61616" />
 		</amq:transportConnectors>
 	</amq:broker>
+	
+	<!-- JMS Xa-enabled pooled factory -->
+	<amqpool:jcaPooledConnectionFactory 
+          name="jmsFactory"
+          transactionManager="#transactionManager"
+          maxConnections="10"
+          brokerURL="tcp://localhost:61616"
+          depends-on="broker" />
 
-	<jencks:transactionManager id="transactionManager" />
-
-	<bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory" depends-on="broker">
-		<property name="connectionFactory">
-			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
-				<property name="brokerURL" value="tcp://localhost:61616" />
-			</bean>
-		</property>
-	</bean>
-
-  <!-- A managed JMS ConnectionFactory for ActiveMQ -->
-  <bean id="activemqMCF" class="org.apache.activemq.ra.ActiveMQManagedConnectionFactory">
-    <property name="resourceAdapter">
-      <bean class="org.apache.activemq.ra.ActiveMQResourceAdapter">
-        <property name="serverUrl" value="tcp://localhost:61616"/>
-      </bean>
-    </property>
-  </bean>
-  <bean id="managedJmsFactory" class="org.springframework.jca.support.LocalConnectionFactoryBean">
-    <property name="managedConnectionFactory" ref="activemqMCF"/>
-    <property name="connectionManager" ref="connectionManager"/>
-  </bean>
-  <bean id="connectionManager" class="org.jencks.factory.ConnectionManagerFactoryBean" />
 </beans>

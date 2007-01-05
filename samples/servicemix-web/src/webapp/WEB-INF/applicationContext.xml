@@ -26,12 +26,11 @@
   <sm:container id="jbi"
       rootDir="#rootDir"
       useMBeanServer="true"
-		  createMBeanServer="true" 
+		  createMBeanServer="false"
+      MBeanServer="#jmxServer" 
       installationDirPath="#installDir"
       deploymentDirPath="#deployDir"
 		  monitorInstallationDirectory="true" 
-      dumpStats="true"
-		  statsInterval="10" 
       transactionManager="#transactionManager"
       depends-on="broker">
 
@@ -170,6 +169,7 @@
     <property name="bootstrapContext">
       <bean class="org.jencks.factory.BootstrapContextFactoryBean">
         <property name="threadPoolSize" value="25"/>
+        <property name="transactionManager" ref="transactionManager"/>
       </bean>
     </property>
 

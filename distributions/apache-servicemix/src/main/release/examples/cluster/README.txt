@@ -22,17 +22,17 @@ This example uses shows how to connect two ServiceMix containers in a cluster.
 
 Before starting this example, run
 
-ant setup
+  ant setup
 
 To start the servicemix servers using the sample configurations, just run:
 
-cd poller
-../../../bin/servicemix servicemix-poller.xml
+  cd poller
+  ../../../bin/servicemix servicemix-poller.xml
 
 and
 
-cd writer
-../../../bin/servicemix servicemix-writer.xml
+  cd writer
+  ../../../bin/servicemix servicemix-writer.xml
 
 This will start two ServiceMix containers.
 

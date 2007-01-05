@@ -29,7 +29,7 @@
 
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>/WEB-INF/applicationContext.xml /WEB-INF/activemq.xml</param-value>
+    <param-value>/WEB-INF/jmx.xml /WEB-INF/applicationContext.xml /WEB-INF/activemq.xml</param-value>
   </context-param>
   <context-param>
     <param-name>contextClass</param-name>

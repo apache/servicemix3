@@ -28,9 +28,7 @@ First start a ServiceMix server (if not already started) by running
 in the root dir of this ditribution.
 
 To run this sample, launch the following commands:
-  mvn install
-  cd loan-broker-sa
-  mvn jbi:projectDeploy
+  mvn install jbi:projectDeploy
 
 For more information on this example please see
-  http://incubator.apache.org/servicemix/sm30ug/loan-broker-bpel.html
+  http://incubator.apache.org/servicemix/loan-broker-bpel.html

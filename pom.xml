@@ -228,6 +228,7 @@
                 <module>core</module>
                 <module>common</module>
                 <module>tooling</module>
+                <module>archetypes</module>
                 <module>deployables</module>
                 <module>servicemix-itests</module>
                 <module>samples</module>
@@ -260,6 +261,7 @@
                 </property>
             </activation>
             <modules>
+                <module>archetypes</module>
                 <module>deployables</module>
                 <module>servicemix-itests</module>
                 <module>samples</module>

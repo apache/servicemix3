@@ -20,7 +20,13 @@
 <!-- START SNIPPET: xbean -->
 <beans xmlns:amq="http://activemq.org/config/1.0">
   
-  <amq:broker id="broker" useJmx="true">
+  <amq:broker id="broker" depends-on="jmxServer">
+
+    <amq:managementContext>
+      <bean class="org.apache.activemq.broker.jmx.ManagementContext">
+        <property name="createConnector" value="false" />
+      </bean>
+    </amq:managementContext>
 
     <amq:persistenceAdapter>
       <amq:journaledJDBC journalLogFiles="5" dataDirectory="#dataDir"/>

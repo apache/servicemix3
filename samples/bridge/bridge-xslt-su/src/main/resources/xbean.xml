@@ -20,10 +20,6 @@
 <beans xmlns:saxon="http://servicemix.apache.org/saxon/1.0"
        xmlns:b="http://servicemix.apache.org/samples/bridge">
 
-  <classpath>
-    <location>.</location>
-  </classpath>
-
   <saxon:xslt service="b:xslt" endpoint="endpoint"
               result="string"
               resource="classpath:bridge.xslt" />
