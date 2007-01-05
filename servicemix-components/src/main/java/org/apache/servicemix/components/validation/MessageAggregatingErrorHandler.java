@@ -39,26 +39,26 @@ import org.xml.sax.SAXException;
  */
 public class MessageAggregatingErrorHandler implements MessageAwareErrorHandler {
     
-	private static final String openCDATA = "<![CDATA[";
-	private static final String closeCDATA = "]]>";
-	private static final String openError = "<error>";
-	private static final String closeError = "</error>";
-	private static final String openFatalError = "<fatalError>";
-	private static final String closeFatalError = "</fataError>";
-	private static final String openWarning = "<warning>";
-	private static final String closeWarning = "</warning>";
-	
-	private String openRootElement;
-	private String closeRootElement;
+    private static final String openCDATA = "<![CDATA[";
+    private static final String closeCDATA = "]]>";
+    private static final String openError = "<error>";
+    private static final String closeError = "</error>";
+    private static final String openFatalError = "<fatalError>";
+    private static final String closeFatalError = "</fataError>";
+    private static final String openWarning = "<warning>";
+    private static final String closeWarning = "</warning>";
+    
+    private String openRootElement;
+    private String closeRootElement;
 
-	/**
+    /**
      * Number of warnings.
      */
-	private int warningCount;
-	
-	/**
-	 * Number of errors.
-	 */
+    private int warningCount;
+    
+    /**
+     * Number of errors.
+     */
     private int errorCount;
     
     /**
@@ -88,92 +88,66 @@ public class MessageAggregatingErrorHandler implements MessageAwareErrorHandler 
     
     private SourceTransformer sourceTransformer = new SourceTransformer();
     
-	/**
-     * Constructor.
-     * 
-     * @param rootElement
-     * 		The root element name of the fault xml message 
-     * @param namespace
-     * 		The namespace for the fault xml message
-     */
-    public MessageAggregatingErrorHandler(String rootPath, String namespace) throws IllegalArgumentException {
-    	if (rootPath == null || rootPath.trim().length() == 0) {
-    		throw new IllegalArgumentException("rootPath must not be null or an empty string");
-    	}
-    	this.rootPath = rootPath;
-    	this.namespace = namespace;
-    	createRootElementTags();
-    }
-
     /**
      * Constructor.
      * 
      * @param rootElement
-     * 		The root element name of the fault xml message 
+     *      The root element name of the fault xml message 
      * @param namespace
-     * 		The namespace for the fault xml message
+     *      The namespace for the fault xml message
      * @param includeStackTraces
-     * 		Include stracktraces in the final output
+     *      Include stracktraces in the final output
      */
     public MessageAggregatingErrorHandler(String rootPath, String namespace, boolean includeStackTraces) throws IllegalArgumentException {
-    	this(rootPath, namespace);
-    	this.includeStackTraces = includeStackTraces;
+        if (rootPath == null || rootPath.trim().length() == 0) {
+            throw new IllegalArgumentException("rootPath must not be null or an empty string");
+        }
+        this.rootPath = rootPath;
+        this.namespace = namespace;
+        this.includeStackTraces = includeStackTraces;
+        createRootElementTags();
     }
 
     /**
-	 * @return Returns the sourceTransformer.
-	 */
-	public SourceTransformer getSourceTransformer() {
-		return sourceTransformer;
-	}
-
-	/**
-	 * @param sourceTransformer The sourceTransformer to set.
-	 */
-	public void setSourceTransformer(SourceTransformer sourceTransformer) {
-		this.sourceTransformer = sourceTransformer;
-	}
-
-	/**
      * Creates the root element tags for later use down to n depth.
      * Note: the rootPath here is of the form:
      * 
-     * 		<code>rootElementName/elementName-1/../elementName-n</code>
+     *      <code>rootElementName/elementName-1/../elementName-n</code>
      * 
      * The namespace will be appended to the root element if it is not
      * null or empty.
      */
-	private void createRootElementTags() {
-		/* 
-		 * since the rootPath is constrained to be not null or empty
-		 * then we have at least one path element.
-		 */
-		String[] pathElements = rootPath.split("/");
+    private void createRootElementTags() {
+        /* 
+         * since the rootPath is constrained to be not null or empty
+         * then we have at least one path element.
+         */
+        String[] pathElements = rootPath.split("/");
 
-		StringBuffer openRootElementSB = new StringBuffer().append("<").append(pathElements[0]);
-		StringBuffer closeRootElementSB = new StringBuffer();
-		
-		if (namespace != null && namespace.trim().length() > 0) {
-			openRootElementSB.append(" xmlns=\"").append(namespace).append("\">"); 
-		} else {
-			openRootElementSB.append(">");
-		}
-		
-		if (pathElements.length > 0) {
-			for (int i = 1, j = pathElements.length - 1; i < pathElements.length; i++, j--) {
-				openRootElementSB.append("<").append(pathElements[i]).append(">");
-				closeRootElementSB.append("</").append(pathElements[j]).append(">");
-			}
-		}
-    	
-    	// create the closing root element tag
-    	closeRootElementSB.append("</").append(pathElements[0]).append(">");
-    	
-    	openRootElement = openRootElementSB.toString();
-    	closeRootElement = closeRootElementSB.toString();
+        StringBuffer openRootElementSB = new StringBuffer().append("<").append(pathElements[0]);
+        StringBuffer closeRootElementSB = new StringBuffer();
+        
+        if (namespace != null && namespace.trim().length() > 0) {
+            openRootElementSB.append(" xmlns=\"").append(namespace).append("\">"); 
+        } else {
+            openRootElementSB.append(">");
+        }
+        
+        if (pathElements.length > 0) {
+            for (int i = 1, j = pathElements.length - 1; i < pathElements.length; i++, j--) {
+                openRootElementSB.append("<").append(pathElements[i]).append(">");
+                closeRootElementSB.append("</").append(pathElements[j]).append(">");
+            }
+        }
+        
+        // create the closing root element tag
+        closeRootElementSB.append("</").append(pathElements[0]).append(">");
+        
+        openRootElement = openRootElementSB.toString();
+        closeRootElement = closeRootElementSB.toString();
     }
     
-	/*  (non-Javadoc)
+    /*  (non-Javadoc)
      * @see org.apache.servicemix.components.validation.MessageAwareErrorHandler#hasErrors()
      */
     public boolean hasErrors() {
@@ -209,7 +183,7 @@ public class MessageAggregatingErrorHandler implements MessageAwareErrorHandler 
 
         // open warning and CDATA tags
         messages.append(openWarning).append(openCDATA);
-    	
+        
         // append the fatal error message
         appendErrorMessage(e);
         
@@ -225,7 +199,7 @@ public class MessageAggregatingErrorHandler implements MessageAwareErrorHandler 
 
         // open fatal error and CDATA tags
         messages.append(openError).append(openCDATA);
-    	
+        
         // append the error message
         appendErrorMessage(e);
         
@@ -238,10 +212,10 @@ public class MessageAggregatingErrorHandler implements MessageAwareErrorHandler 
      */
     public void fatalError(SAXParseException e) throws SAXException {
         ++fatalErrorCount;
-    	
+        
         // open fatal error and CDATA tags
         messages.append(openFatalError).append(openCDATA);
-    	
+        
         // append the fatal error message
         appendErrorMessage(e);
         
@@ -260,7 +234,7 @@ public class MessageAggregatingErrorHandler implements MessageAwareErrorHandler 
             e.printStackTrace(new PrintWriter(sw));
             messages.append(sw.toString());
         } else {
-        	messages.append(e.getLocalizedMessage());
+            messages.append(e.getLocalizedMessage());
         }
     }
     
@@ -268,73 +242,73 @@ public class MessageAggregatingErrorHandler implements MessageAwareErrorHandler 
      * @see org.apache.servicemix.components.validation.MessageAwareErrorHandler#capturesMessages()
      */
     public boolean capturesMessages() {
-    	return true;
+        return true;
     }
 
-	/* (non-Javadoc)
-	 * @see org.apache.servicemix.components.validation.MessageAwareErrorHandler#getMessagesAs(java.lang.Class)
-	 */
-	public Object getMessagesAs(Class format) throws MessagingException {
-		if (format == DOMSource.class) {
-			return getDOMSource();
-		} else if (format == StringSource.class) {
-			return getStringSource();
-		} else if (format == String.class) {
-			return getMessagesWithRootElement();
-		}
-		throw new MessagingException("Unsupported message format: " + format.getName());
-	}
+    /* (non-Javadoc)
+     * @see org.apache.servicemix.components.validation.MessageAwareErrorHandler#getMessagesAs(java.lang.Class)
+     */
+    public Object getMessagesAs(Class format) throws MessagingException {
+        if (format == DOMSource.class) {
+            return getDOMSource();
+        } else if (format == StringSource.class) {
+            return getStringSource();
+        } else if (format == String.class) {
+            return getMessagesWithRootElement();
+        }
+        throw new MessagingException("Unsupported message format: " + format.getName());
+    }
 
-	/* (non-Javadoc)
-	 * @see org.apache.servicemix.components.validation.MessageAwareErrorHandler#supportsMessageFormat(java.lang.Class)
-	 */
-	public boolean supportsMessageFormat(Class format) {
-		if (format == DOMSource.class) {
-			return true;
-		} else if (format == StringSource.class) {
-			return true;
-		} else if (format == String.class) {
-			return true;
-		}
-		return false;
-	}
+    /* (non-Javadoc)
+     * @see org.apache.servicemix.components.validation.MessageAwareErrorHandler#supportsMessageFormat(java.lang.Class)
+     */
+    public boolean supportsMessageFormat(Class format) {
+        if (format == DOMSource.class) {
+            return true;
+        } else if (format == StringSource.class) {
+            return true;
+        } else if (format == String.class) {
+            return true;
+        }
+        return false;
+    }
     
-	/**
-	 * Return the messages encapsulated with the root element.
-	 * 
-	 * @return
-	 */
-	private String getMessagesWithRootElement() {
-		return new StringBuffer().append(openRootElement).append(messages).append(closeRootElement).toString();
-	}
-	
-	/**
-	 * Get the error messages as a String Source.
-	 * 
-	 * @return
-	 */
-	private StringSource getStringSource() {
-		return new StringSource(getMessagesWithRootElement());
-	}
-	
-	/**
-	 * Get the error messages as a DOMSource.
-	 * 
-	 * @return
-	 * @throws MessagingException
-	 */
-	private DOMSource getDOMSource() throws MessagingException {
-		try {
-			return sourceTransformer.toDOMSource(getStringSource());
-		} catch (ParserConfigurationException e) {
-			throw new MessagingException("Failed to create DOMSource for Schema validation messages: " + e, e);
-		} catch (IOException e) {
-			throw new MessagingException("Failed to create DOMSource for Schema validation messages: " + e, e);
-		} catch (SAXException e) {
-			throw new MessagingException("Failed to create DOMSource for Schema validation messages: " + e, e);
-		} catch (TransformerException e) {
-			throw new MessagingException("Failed to create DOMSource for Schema validation messages: " + e, e);
-		}
-	}
+    /**
+     * Return the messages encapsulated with the root element.
+     * 
+     * @return
+     */
+    private String getMessagesWithRootElement() {
+        return new StringBuffer().append(openRootElement).append(messages).append(closeRootElement).toString();
+    }
+    
+    /**
+     * Get the error messages as a String Source.
+     * 
+     * @return
+     */
+    private StringSource getStringSource() {
+        return new StringSource(getMessagesWithRootElement());
+    }
+    
+    /**
+     * Get the error messages as a DOMSource.
+     * 
+     * @return
+     * @throws MessagingException
+     */
+    private DOMSource getDOMSource() throws MessagingException {
+        try {
+            return sourceTransformer.toDOMSource(getStringSource());
+        } catch (ParserConfigurationException e) {
+            throw new MessagingException("Failed to create DOMSource for Schema validation messages: " + e, e);
+        } catch (IOException e) {
+            throw new MessagingException("Failed to create DOMSource for Schema validation messages: " + e, e);
+        } catch (SAXException e) {
+            throw new MessagingException("Failed to create DOMSource for Schema validation messages: " + e, e);
+        } catch (TransformerException e) {
+            throw new MessagingException("Failed to create DOMSource for Schema validation messages: " + e, e);
+        }
+    }
     
 }
