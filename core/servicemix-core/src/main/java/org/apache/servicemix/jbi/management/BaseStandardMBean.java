@@ -305,6 +305,7 @@ public class BaseStandardMBean extends StandardMBean
      * @throws ReflectionException
      */
     public Object invoke(String name, Object[] params, String[] signature) throws MBeanException, ReflectionException {
+        ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         try {
             Class[] parameterTypes = new Class[signature.length];
             for (int i = 0; i < parameterTypes.length; i++) {
@@ -313,6 +314,7 @@ public class BaseStandardMBean extends StandardMBean
                     parameterTypes[i] = Class.forName(signature[i]);
                 }
             }
+            Thread.currentThread().setContextClassLoader(getImplementation().getClass().getClassLoader());
             return MethodUtils.invokeMethod(getImplementation(), name, params, parameterTypes);
         }
         catch (ClassNotFoundException e) {
@@ -331,6 +333,8 @@ public class BaseStandardMBean extends StandardMBean
             } else {
                 throw new MBeanException(e);
             }
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldCl);
         }
     }
 
