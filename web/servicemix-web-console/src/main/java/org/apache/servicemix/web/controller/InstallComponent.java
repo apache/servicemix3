@@ -48,7 +48,7 @@ public class InstallComponent extends SimpleFormController {
         File f = File.createTempFile("smx-comp", ".zip");
         try {
             FileUtil.copyInputStream(new ByteArrayInputStream(file), new FileOutputStream(f));
-            String result = adminCommandsService.installComponent(f.toURL().toString(), false);
+            String result = adminCommandsService.installComponent(f.toURL().toString(), null, false);
             System.err.println(result);
         } finally {
             f.delete();
