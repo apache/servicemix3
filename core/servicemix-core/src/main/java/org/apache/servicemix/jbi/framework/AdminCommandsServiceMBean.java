@@ -26,9 +26,7 @@ import java.util.Properties;
  */
 public interface AdminCommandsServiceMBean extends LifeCycleMBean {
     
-    String installComponent(String file, boolean deferException) throws Exception;
-
-    String installComponent(String file,Properties properties, boolean deferException) throws Exception;
+    String installComponent(String file, Properties properties, boolean deferException) throws Exception;
 
     String uninstallComponent(String name) throws Exception;
 

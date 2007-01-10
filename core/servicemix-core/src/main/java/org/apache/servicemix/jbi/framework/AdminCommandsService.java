@@ -50,17 +50,6 @@ public class AdminCommandsService extends BaseSystemService implements
 	 * Install a JBI component (a Service Engine or Binding Component)
 	 * 
 	 * @param file
-	 * @return
-	 */
-	public String installComponent(String file, boolean deferExceptions)
-			throws Exception {
-		return installComponent(file, null, deferExceptions);
-	}
-
-	/**
-	 * Install a JBI component (a Service Engine or Binding Component)
-	 * 
-	 * @param file
 	 *            jbi component archive to install
 	 * @param props
 	 *            installation properties
@@ -522,8 +511,9 @@ public class AdminCommandsService extends BaseSystemService implements
 	public MBeanOperationInfo[] getOperationInfos() throws JMException {
 		OperationInfoHelper helper = new OperationInfoHelper();
 		ParameterHelper ph = helper.addOperation(getObjectToManage(),
-				"installComponent", 2, "install a component");
+				"installComponent", 3, "install a component");
         ph.setDescription(0, "file", "location of JBI Component to install");
+        ph.setDescription(1, "properties", "component installation properties");
         ph.setDescription(1, "deferExceptions", "true if exceptions due to missing dependencies should be differed");
 
 		ph = helper.addOperation(getObjectToManage(), "uninstallComponent", 1,
