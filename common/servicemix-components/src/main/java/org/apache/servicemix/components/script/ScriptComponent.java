@@ -228,7 +228,7 @@ public class ScriptComponent extends TransformComponentSupport {
         bindings.put("inMessage", in);
         bindings.put("log", getScriptLogger());
         bindings.put("componentNamespace", bindings);
-        bindings.put("bindings", bindings);
+        bindings.put("bindings", this.bindings);
 
         InOnly outExchange = null;
         if (isInAndOut(exchange)) {
