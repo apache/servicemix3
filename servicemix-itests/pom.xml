@@ -78,6 +78,11 @@
       <artifactId>servicemix-eip</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-servlet_2.4_spec</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -96,10 +101,11 @@
         <configuration>
           <excludes>
             <exclude>**/DeadlockTest.*</exclude>
-			<exclude>**/WSNComponentTest.*</exclude>
-			<exclude>**/Jsr181HttpTest.*</exclude>
-			<exclude>**/HttpJmsRoundtripTest.*</exclude>
-			<exclude>**/EIPAndXsltTest.*</exclude>
+            <exclude>**/WSNComponentTest.*</exclude>
+            <exclude>**/Jsr181HttpTest.*</exclude>
+            <exclude>**/HttpJmsRoundtripTest.*</exclude>
+            <exclude>**/EIPAndXsltTest.*</exclude>
+            <exclude>**/PersonTest.*</exclude>
           </excludes>
         </configuration>
       </plugin>
