@@ -23,7 +23,7 @@ import org.apache.servicemix.components.script.ScriptComponent;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.script.Namespace;
+import javax.script.Bindings;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -71,13 +71,13 @@ public class GroovyComponent extends ScriptComponent {
         this.documentBuilderFactory = documentBuilderFactory;
     }
 
-    protected void populateNamespace(Namespace namespace, MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws MessagingException {
+    protected void populateBindings(Bindings bindings, MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws MessagingException {
         try {
-            super.populateNamespace(namespace, exchange, in, out);
+            super.populateBindings(bindings, exchange, in, out);
 
             // lets output a builder
             DocumentBuilder documentBuilder = getDocumentBuilder();
-            namespace.put("builder", new DOMBuilder(documentBuilder));
+            bindings.put("builder", new DOMBuilder(documentBuilder));
         }
         catch (ParserConfigurationException e) {
             throw new MessagingException("Failed to create DOM DocumentBuilder: " + e, e);

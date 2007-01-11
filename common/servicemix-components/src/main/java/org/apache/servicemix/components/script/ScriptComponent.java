@@ -27,9 +27,9 @@ import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
-import javax.script.Namespace;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -207,11 +207,11 @@ public class ScriptComponent extends TransformComponentSupport {
     // Implementation methods
     //-------------------------------------------------------------------------
     protected boolean transform(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
-        Namespace namespace = engine.createNamespace();
+        Bindings bindings = engine.createBindings();
         
-        populateNamespace(namespace, exchange, in, out);
+        populateBindings(bindings, exchange, in, out);
         try {
-            runScript(namespace);
+            runScript(bindings);
             return !isDisableOutput();
         }
         catch (ScriptException e) {
@@ -221,25 +221,25 @@ public class ScriptComponent extends TransformComponentSupport {
         }
     }
 
-    protected void populateNamespace(Namespace namespace, MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws MessagingException {
-        namespace.put("componentContext", getContext());
-        namespace.put("deliveryChannel", getDeliveryChannel());
-        namespace.put("exchange", exchange);
-        namespace.put("inMessage", in);
-        namespace.put("log", getScriptLogger());
-        namespace.put("componentNamespace", namespace);
-        namespace.put("bindings", bindings);
+    protected void populateBindings(Bindings bindings, MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws MessagingException {
+        bindings.put("componentContext", getContext());
+        bindings.put("deliveryChannel", getDeliveryChannel());
+        bindings.put("exchange", exchange);
+        bindings.put("inMessage", in);
+        bindings.put("log", getScriptLogger());
+        bindings.put("componentNamespace", bindings);
+        bindings.put("bindings", bindings);
 
         InOnly outExchange = null;
         if (isInAndOut(exchange)) {
-            namespace.put("outMessage", out);
+            bindings.put("outMessage", out);
         }
         else if (!isDisableOutput()) {
             outExchange = getExchangeFactory().createInOnlyExchange();
             if (out instanceof NormalizedMessageImpl) {
-                namespace.put("outExchange", ((NormalizedMessageImpl) out).getExchange());
+                bindings.put("outExchange", ((NormalizedMessageImpl) out).getExchange());
             }
-            namespace.put("outMessage", out);
+            bindings.put("outMessage", out);
         }
     }
 
@@ -256,17 +256,17 @@ public class ScriptComponent extends TransformComponentSupport {
         return Logger.getLogger(getClass().getName());
         }    }
 
-    protected void runScript(Namespace namespace) throws ScriptException {
+    protected void runScript(Bindings bindings) throws ScriptException {
         if (compiledScript != null) {
-            compiledScript.eval(namespace);
+            compiledScript.eval(bindings);
         }
         else {
-            evaluteScript(namespace);
+            evaluteScript(bindings);
         }
     }
 
-    protected void evaluteScript(Namespace namespace) throws ScriptException {
-        engine.eval(scriptText, namespace);
+    protected void evaluteScript(Bindings bindings) throws ScriptException {
+        engine.eval(scriptText, bindings);
     }
 
     protected void compileScript(Compilable compilable) throws JBIException {

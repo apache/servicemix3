@@ -163,8 +163,15 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix.dependencies</groupId>
-      <artifactId>jsr-223</artifactId>
+      <groupId>org.livetribe</groupId>
+      <artifactId>livetribe-jsr223</artifactId>
+      <version>2.0.0</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.script</groupId>
+      <artifactId>groovy-engine</artifactId>
+      <version>20070110</version>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -247,6 +254,13 @@
       <optional>true</optional>
     </dependency>
   </dependencies>
+  
+  <repositories>
+    <repository>
+      <id>codehaus-snapshots</id>
+      <url>http://repository.codehaus.org</url>
+    </repository>
+  </repositories>
 
   <build>
     <plugins>
@@ -284,25 +298,25 @@
             <exclude>**/XsltPublisherTest.*</exclude>
             <exclude>**/BinaryFileTest.*</exclude>
             <exclude>**/FileTest.*</exclude>
-			<exclude>**/CounterMonitorComponentTest.*</exclude>
+            <exclude>**/CounterMonitorComponentTest.*</exclude>
             <exclude>**/OptionalAxisQueriesTest.*</exclude>
-			<exclude>**/JmsBindingTest.*</exclude>
-			<exclude>**/WsifTest.*</exclude>
-			<exclude>**/HttpSoapAndSaajTest.*</exclude>
-			<exclude>**/JmsBindingClusterTest.*</exclude>
-			<exclude>**/JmsBindingUsingEndpointSubscriptionTest.*</exclude>
-			<exclude>**/GroovyTransformTest.*</exclude>
-			<exclude>**/TransformComponentTest.*</exclude>
+            <exclude>**/JmsBindingTest.*</exclude>
+            <exclude>**/WsifTest.*</exclude>
+            <exclude>**/HttpSoapAndSaajTest.*</exclude>
+            <exclude>**/JmsBindingClusterTest.*</exclude>
+            <exclude>**/JmsBindingUsingEndpointSubscriptionTest.*</exclude>
+            <exclude>**/GroovyTransformTest.*</exclude>
+            <exclude>**/TransformComponentTest.*</exclude>
 
 			
             
-			<!-- Hangs -->
-			<exclude>**/SaajSoapActionTest.*</exclude>
+            <!-- Hangs -->
+            <exclude>**/SaajSoapActionTest.*</exclude>
 	        
-			<!-- https://issues.apache.org/activemq/browse/SM-529 -->
-	        <exclude>**/MPSSettingTest.*</exclude>
+            <!-- https://issues.apache.org/activemq/browse/SM-529 -->
+            <exclude>**/MPSSettingTest.*</exclude>
           
-	  </excludes>
+          </excludes>
         </configuration>
       </plugin>
     </plugins>
