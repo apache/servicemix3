@@ -117,6 +117,7 @@
         <include>org.apache.xbean:xbean-server</include>
         <include>org.apache.xbean:xbean-kernel</include>
         <include>wsdl4j:wsdl4j</include>
+        <include>org.apache.woden:woden</include>
         <include>org.springframework:spring-core</include>
         <include>org.springframework:spring-beans</include>
         <include>org.springframework:spring-context</include>
@@ -145,7 +146,7 @@
         <include>xalan:xalan</include>
 
         <include>stax:stax-api</include>
-        <include>woodstox:wstx-asl</include>
+        <include>org.codehaus.woodstox:wstx-asl</include>
         <include>xml-apis:xml-apis</include>
         <include>log4j:log4j</include>
         <include>org.apache.derby:derby</include>
