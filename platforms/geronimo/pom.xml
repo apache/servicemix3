@@ -40,19 +40,6 @@
         <gbeanDeployer>org.apache.geronimo.configs/geronimo-gbean-deployer/${version}/car</gbeanDeployer>
     </properties>
     
-    <repositories>
-      <repository>
-        <id>dain</id>
-        <url>http://people.apache.org/~dain/stage</url>
-      </repository>
-    </repositories>
-    <pluginRepositories>
-      <pluginRepository>
-        <id>dain</id>
-        <url>http://people.apache.org/~dain/stage</url>
-      </pluginRepository>
-    </pluginRepositories>
-    
     <modules>
         <module>servicemix-service</module>
         <module>deployer-service</module>

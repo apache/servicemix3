@@ -130,6 +130,15 @@
             <version>${xbean-version}</version>
         </dependency>
         <dependency>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+            <version>${woodstox-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.geronimo.configs</groupId>
             <artifactId>transaction</artifactId>
             <version>${geronimo-version}</version>
