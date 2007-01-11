@@ -21,7 +21,7 @@
        xmlns:util="http://www.springframework.org/schema/util">
 
   <!-- RMI registry -->
-  <sm:rmiRegistry id="rmiRegistry" port="1099" />
+  <sm:rmiRegistry id="rmiRegistry" port="${rmi.port}" />
   
   <!-- JMX server -->
   <sm:jmxServer id="jmxServer" locateExistingServerIfPossible="true" />

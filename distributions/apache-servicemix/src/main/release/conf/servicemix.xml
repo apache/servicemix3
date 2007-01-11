@@ -33,6 +33,11 @@
     </property>
   </sm:systemProperties>
 
+  <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+      <property name="location" value="classpath:servicemix.properties" />
+  </bean>
+
+  <!-- Include other resources -->
   <import resource="classpath:security.xml" />
   <import resource="classpath:jmx.xml" />
   <import resource="classpath:activemq.xml" />
@@ -49,14 +54,16 @@
                 transactionManager="#transactionManager"
                 createJmxConnector="false"
                 depends-on="jndi">
-                
+               
+    <!-- Use a secured broker (see security.xml)
+         and define the 3 standard flows --> 
     <sm:broker>
       <sm:securedBroker authorizationMap="#authorizationMap">
         <sm:flows>
           <sm:sedaFlow />
-          <sm:jmsFlow jmsURL="tcp://localhost:61616" />
+          <sm:jmsFlow jmsURL="${activemq.url}" />
           <sm:jcaFlow connectionManager="#connectionManager"
-                      jmsURL="tcp://localhost:61616" />
+                      jmsURL="${activemq.url}" />
         </sm:flows>
       </sm:securedBroker>
     </sm:broker>
@@ -64,6 +71,18 @@
     <sm:services>
       <sm:statistics statsInterval="10" dumpStats="true" />
     </sm:services>
+    
+    <sm:executorFactory>
+      <bean class="org.apache.servicemix.executors.impl.ExecutorFactoryImpl">
+        <property name="defaultConfig">
+            <bean class="org.apache.servicemix.executors.impl.ExecutorConfig">
+              <property name="corePoolSize" value="${servicemix.corePoolSize}"/>
+              <property name="maximumPoolSize" value="${servicemix.maximumPoolSize}"/>
+              <property name="queueSize" value="${servicemix.queueSize}"/>
+            </bean>
+        </property>
+      </bean>
+    </sm:executorFactory>
 
     <sm:activationSpecs>
 
