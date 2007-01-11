@@ -16,12 +16,13 @@
  */
 package org.apache.servicemix.jbi.jaxp;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.Constructor;
 
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
@@ -35,20 +36,18 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.xalan.xsltc.trax.DOM2SAX;
-import org.apache.xalan.xsltc.trax.SAX2DOM;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * A helper class to transform from one type of {@link Source} to another
@@ -149,7 +148,7 @@ public class SourceTransformer {
      * Converts the source instance to a {@link SAXSource} or returns null if the conversion is not
      * supported (making it easy to derive from this class to add new kinds of conversion).
      */
-    public SAXSource toSAXSource(Source source) throws IOException, SAXException {
+    public SAXSource toSAXSource(Source source) throws IOException, SAXException, TransformerException {
         if (source instanceof SAXSource) {
             return (SAXSource) source;
         }
@@ -179,24 +178,29 @@ public class SourceTransformer {
     public StreamSource toStreamSourceFromSAX(SAXSource source) throws TransformerException {
         InputSource inputSource = source.getInputSource();
         if (inputSource != null) {
-            if (inputSource.getByteStream() != null) {
-                return new StreamSource(inputSource.getByteStream());
-            }
             if (inputSource.getCharacterStream() != null) {
                 return new StreamSource(inputSource.getCharacterStream());
             }
+            if (inputSource.getByteStream() != null) {
+                return new StreamSource(inputSource.getByteStream());
+            }
         }
         String result = toString(source);
-        return new StreamSource(new ByteArrayInputStream(result.getBytes()));
+        return new StringSource(result);
     }
 
     public StreamSource toStreamSourceFromDOM(DOMSource source) throws TransformerException {
         String result = toString(source);
-        return new StreamSource(new ByteArrayInputStream(result.getBytes()));
+        return new StringSource(result);
     }
 
     public SAXSource toSAXSourceFromStream(StreamSource source) {
-        InputSource inputSource = new InputSource(source.getInputStream());
+        InputSource inputSource;
+        if (source.getReader() != null) {
+            inputSource = new InputSource(source.getReader());
+        } else {
+            inputSource = new InputSource(source.getInputStream());
+        }
         inputSource.setSystemId(source.getSystemId());
         inputSource.setPublicId(source.getPublicId());
         return new SAXSource(inputSource);
@@ -211,8 +215,7 @@ public class SourceTransformer {
         return r;
     }
 
-    public DOMSource toDOMSourceFromStream(StreamSource source) throws ParserConfigurationException, IOException,
-            SAXException {
+    public DOMSource toDOMSourceFromStream(StreamSource source) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilder builder = createDocumentBuilder();
         String systemId = source.getSystemId();
         Document document = null;
@@ -233,38 +236,48 @@ public class SourceTransformer {
         return new DOMSource(document, systemId);
     }
 
-    public SAXSource toSAXSourceFromDOM(DOMSource source) {
-        DOM2SAX converter = new DOM2SAX(source.getNode());
-        String systemId = converter.getSystemId();
-        return new SAXSource(converter, new InputSource(systemId));
+    /*
+     * When converting a DOM tree to a SAXSource,
+     * we try to use Xalan internal DOM parser if
+     * available.  Else, transform the DOM tree
+     * to a String and build a SAXSource on top of
+     * it.
+     */
+    private static final Class dom2SaxClass;
+    
+    static {
+        Class cl = null;
+        try {
+            cl = Class.forName("org.apache.xalan.xsltc.trax.DOM2SAX");
+        } catch (Throwable t) {}
+        dom2SaxClass = cl;
+    }
+    
+    public SAXSource toSAXSourceFromDOM(DOMSource source) throws TransformerException {
+        if (dom2SaxClass != null) {
+            try {
+                Constructor cns = dom2SaxClass.getConstructor(new Class[] { Node.class });
+                XMLReader converter = (XMLReader) cns.newInstance(new Object[] { source.getNode() });
+                return new SAXSource(converter, new InputSource());
+            } catch (Exception e) {
+                throw new TransformerException(e);
+            }
+        } else {
+            String str = toString(source);
+            StringReader reader = new StringReader(str);
+            return new SAXSource(new InputSource(reader));
+        }
     }
 
-    public DOMSource toDOMSourceFromSAX(SAXSource source) throws IOException, SAXException, ParserConfigurationException {
+    public DOMSource toDOMSourceFromSAX(SAXSource source) throws IOException, SAXException, ParserConfigurationException, TransformerException {
         return new DOMSource(toDOMNodeFromSAX(source));
     }
 
-    public Node toDOMNodeFromSAX(SAXSource source) throws ParserConfigurationException, IOException, SAXException {
-        SAX2DOM converter = new SAX2DOM(createDocument());
-        XMLReader xmlReader = source.getXMLReader();
-        if (xmlReader == null) {
-            xmlReader = createXMLReader();
-        }
-        xmlReader.setContentHandler(converter);
-        xmlReader.parse(source.getInputSource());
-        return converter.getDOM();
+    public Node toDOMNodeFromSAX(SAXSource source) throws ParserConfigurationException, IOException, SAXException, TransformerException {
+        DOMResult result = new DOMResult();
+        toResult(source, result);
+        return result.getNode();
     }
-
-    private XMLReader createXMLReader() throws SAXException {
-        // In JDK 1.4, the xml reader factory does not look for META-INF services
-        // If the org.xml.sax.driver system property is not defined, and exception will be thrown.
-        // In these cases, default to xerces parser
-        try {
-            return XMLReaderFactory.createXMLReader();
-        } catch (Exception e) {
-            return XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
-        }
-    }
-
 
     /**
      * Converts the given TRaX Source into a W3C DOM node

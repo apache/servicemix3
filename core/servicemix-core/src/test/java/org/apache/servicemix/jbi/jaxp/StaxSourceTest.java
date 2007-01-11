@@ -28,7 +28,9 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.TestCase;
 
@@ -38,6 +40,7 @@ import org.apache.servicemix.jbi.util.FileUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+import org.xml.sax.InputSource;
 
 public class StaxSourceTest extends TestCase {
 
@@ -93,7 +96,17 @@ public class StaxSourceTest extends TestCase {
         assertNotNull(src.getNode());
         checkDomResult((Document) src.getNode());
     }
-    
+
+    public void testEncoding() throws Exception {
+        final String msg = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><hello>едц</hello>";
+        StringSource src = new StringSource(msg);
+        DOMSource dom = new SourceTransformer().toDOMSource(src);
+        StreamSource stream = new SourceTransformer().toStreamSource(dom);
+        System.err.println(new SourceTransformer().toString(stream));
+        SAXSource sax = new SourceTransformer().toSAXSource(dom);
+        System.err.println(new SourceTransformer().toString(sax));
+    }
+
     protected void checkDomResult(Document doc) {
         // Whitespace only elements must be preserved
         NodeList l = doc.getElementsByTagName("child4");

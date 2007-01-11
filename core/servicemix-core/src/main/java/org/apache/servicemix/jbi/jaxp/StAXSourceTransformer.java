@@ -88,7 +88,7 @@ public class StAXSourceTransformer extends SourceTransformer {
         return answer;
     }
 
-    public SAXSource toSAXSource(Source source) throws IOException, SAXException {
+    public SAXSource toSAXSource(Source source) throws IOException, SAXException, TransformerException {
         SAXSource answer = super.toSAXSource(source);
         if (answer == null && source instanceof StaxSource) {
             answer = toSAXSourceFromStax((StaxSource) source);
