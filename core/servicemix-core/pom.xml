@@ -349,28 +349,26 @@
             <exclude>**/Abstract*.*</exclude>
             <exclude>**/*$*</exclude>
 
-			<exclude>**/MultipleJMSFlowTest.*</exclude>
-			<exclude>**/MultipleFlowsTest.*</exclude>
-			<exclude>**/RemoteServiceMixClientTest.*</exclude>
-			<exclude>**/JCAFlowTest.*</exclude>
-			<exclude>**/JMSFlowTest.*</exclude>
-			<exclude>**/TransactionsTest.*</exclude>
-			<exclude>**/JcaFlowTransactionTest.*</exclude>
-			<exclude>**/JcaFlowPersistentTest.*</exclude>
-			<exclude>**/StatelessJmsFlowTest.*</exclude>
-			<exclude>**/StatelessJcaFlowTest.*</exclude>
-			<exclude>**/ClientFactoryTest.*</exclude>
-			<exclude>**/JcaFlowWithTxLogTest.*</exclude>
+            <exclude>**/MultipleJMSFlowTest.*</exclude>
+            <exclude>**/MultipleFlowsTest.*</exclude>
+            <exclude>**/RemoteServiceMixClientTest.*</exclude>
+            <exclude>**/JCAFlowTest.*</exclude>
+            <exclude>**/JMSFlowTest.*</exclude>
+            <exclude>**/TransactionsTest.*</exclude>
+            <exclude>**/JcaFlowTransactionTest.*</exclude>
+            <exclude>**/JcaFlowPersistentTest.*</exclude>
+            <exclude>**/StatelessJmsFlowTest.*</exclude>
+            <exclude>**/StatelessJcaFlowTest.*</exclude>
+            <exclude>**/ClientFactoryTest.*</exclude>
+            <exclude>**/JcaFlowWithTxLogTest.*</exclude>
 
-			<!-- fails in linux OS -->
-            <exclude>**/StaxSourceTest.*</exclude>
-			<exclude>**/ClassLoaderTest.*</exclude>
-			<exclude>**/JbiTaskTest.*</exclude>
-			<exclude>**/DeploymentMessageTest.*</exclude>
-			<exclude>**/AdminServiceTest.*</exclude>
-			<exclude>**/ManagementContextTest.*</exclude>
-			<exclude>**/ServiceUnitTest.*</exclude>
-			
+            <!-- fails in linux OS -->
+            <exclude>**/ClassLoaderTest.*</exclude>
+            <exclude>**/JbiTaskTest.*</exclude>
+            <exclude>**/DeploymentMessageTest.*</exclude>
+            <exclude>**/AdminServiceTest.*</exclude>
+            <exclude>**/ManagementContextTest.*</exclude>
+            <exclude>**/ServiceUnitTest.*</exclude>
 
           </excludes>
         </configuration>

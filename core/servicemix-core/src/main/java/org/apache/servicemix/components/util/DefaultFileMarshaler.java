@@ -19,8 +19,6 @@ package org.apache.servicemix.components.util;
 import org.apache.servicemix.expression.Expression;
 import org.apache.servicemix.expression.PropertyExpression;
 import org.apache.servicemix.jbi.NoMessageContentAvailableException;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.w3c.dom.Node;
 
 import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
@@ -28,7 +26,6 @@ import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -133,14 +130,7 @@ public class DefaultFileMarshaler extends MarshalerSupport implements FileMarsha
      * @param path    the name of the output resource (file, uri, url)
      */
     protected void writeMessageContent(MessageExchange exchange, NormalizedMessage message, OutputStream out, String path) throws MessagingException {
-        Source content = null;
-        Node document = (Node) message.getProperty(SourceTransformer.CONTENT_DOCUMENT_PROPERTY);
-        if (document != null) {
-            content = new DOMSource(document);
-        }
-        else {
-            content = message.getContent();
-        }
+        Source content = message.getContent();
         if (content == null) {
             throw new NoMessageContentAvailableException(exchange);
         }

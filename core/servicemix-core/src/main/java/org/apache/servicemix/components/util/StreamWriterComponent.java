@@ -16,19 +16,14 @@
  */
 package org.apache.servicemix.components.util;
 
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.w3c.dom.Node;
+import java.io.OutputStream;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import java.io.OutputStream;
 
 /**
  * A Component that dumps a message to a stream
@@ -63,15 +58,7 @@ public class StreamWriterComponent extends OutBinding {
         TransformerFactory tFactory = TransformerFactory.newInstance();
         Transformer transformer = tFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        Source content = null;
-        Node document = (Node) message.getProperty(SourceTransformer.CONTENT_DOCUMENT_PROPERTY);
-        if (document != null) {
-            content = new DOMSource(document);
-        }
-        else {
-            content = message.getContent();
-        }
-        transformer.transform(content, new StreamResult(out));
+        transformer.transform(message.getContent(), new StreamResult(out));
         done(exchange);
     }
 }

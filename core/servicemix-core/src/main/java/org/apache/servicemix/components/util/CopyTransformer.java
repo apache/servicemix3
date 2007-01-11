@@ -153,8 +153,7 @@ public class CopyTransformer implements MessageTransformer {
         for (Iterator iter = from.getPropertyNames().iterator(); iter.hasNext();) {
             String name = (String) iter.next();
             // Do not copy transient properties
-            if (!SourceTransformer.CONTENT_DOCUMENT_PROPERTY.equals(name) && 
-                !PojoMarshaler.BODY.equals(name))
+            if (!PojoMarshaler.BODY.equals(name))
             {
                 Object value = from.getProperty(name);
                 to.setProperty(name, value);

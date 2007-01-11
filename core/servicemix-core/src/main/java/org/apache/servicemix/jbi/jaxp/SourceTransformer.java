@@ -56,7 +56,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @version $Revision$
  */
 public class SourceTransformer {
-    public static final String CONTENT_DOCUMENT_PROPERTY = "org.apache.servicemix.content.document";
     public static final String DEFAULT_CHARSET_PROPERTY = "org.apache.servicemix.default.charset";
 
     private DocumentBuilderFactory documentBuilderFactory;
@@ -274,7 +273,8 @@ public class SourceTransformer {
      * @throws ParserConfigurationException 
      */
     public Node toDOMNode(Source source) throws TransformerException, ParserConfigurationException, IOException, SAXException {
-        return toDOMSource(source).getNode();
+        DOMSource domSrc = toDOMSource(source);
+        return domSrc != null ? domSrc.getNode() :  null;
     }
 
     /**
@@ -289,26 +289,9 @@ public class SourceTransformer {
      * @throws ParserConfigurationException 
      */
     public Node toDOMNode(NormalizedMessage message) throws MessagingException, TransformerException, ParserConfigurationException, IOException, SAXException {
-        Object value = message.getProperty(CONTENT_DOCUMENT_PROPERTY);
-        if (value != null) {
-            if (value instanceof Node) {
-                return (Node) value;
-            }
-            else {
-                throw new MessagingException("Invalid property type: Expected W3C DOM node but found: " + value.getClass().getName() + " with value: " + value);
-            }
-        }
-        else {
-            Source content = message.getContent();
-            if (content != null) {
-                Node node = toDOMNode(content);
-                message.setProperty(CONTENT_DOCUMENT_PROPERTY, node);
-                return node;
-            }
-            else {
-                return null;
-            }
-        }
+        Source content = message.getContent();
+        Node node = toDOMNode(content);
+        return node;
     }
     
     /**
