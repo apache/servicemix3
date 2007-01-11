@@ -16,25 +16,30 @@
  */
 package org.apache.servicemix.components.jdbc;
 
-import org.apache.servicemix.MessageExchangeListener;
-import org.apache.servicemix.components.util.TransformComponentSupport;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
-import org.apache.xpath.CachedXPathAPI;
-import org.w3c.dom.Node;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.sql.DataSource;
 import javax.xml.transform.Source;
-import java.sql.Connection;
-import java.sql.Statement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.ResultSetMetaData;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.MessageExchangeListener;
+import org.apache.servicemix.components.util.TransformComponentSupport;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.xpath.CachedXPathAPI;
+import org.w3c.dom.Node;
 
 public class JdbcComponent extends TransformComponentSupport implements MessageExchangeListener {
     private static final Log log = LogFactory.getLog(JdbcComponent.class);
@@ -176,16 +181,14 @@ public class JdbcComponent extends TransformComponentSupport implements MessageE
         ResultSetMetaData meta = rs.getMetaData();
         int colCount = meta.getColumnCount();
 
+        String[] colNames = getUniqueColumnNames(meta);
+        
         StringBuffer buff = new StringBuffer("");
 
         while (rs.next()) {
             buff.append("<row ");
             for (int i=1; i<=colCount; i++) {
-                String colName = meta.getColumnName(i);
-                if (colName.equals("")) {
-                    colName = "__unknown_column__";
-                }
-                buff.append(colName.toLowerCase() + "='" + rs.getString(i) + "' ");
+                buff.append(colNames[i].toLowerCase() + "='" + rs.getString(i) + "' ");
             }
             buff.append("/>");
         }
@@ -200,6 +203,45 @@ public class JdbcComponent extends TransformComponentSupport implements MessageE
         }
 
         return new StringSource(buff.toString());
+    }
+
+    /**
+     * Returns a String[] containing unique ColNames. 
+     */
+    protected String[] getUniqueColumnNames(ResultSetMetaData metaData) throws SQLException {
+
+        List colNames = new LinkedList();
+        Map chanedNames = new HashMap();
+
+        for (int i = 0; i < metaData.getColumnCount(); i++) {
+            String name = metaData.getColumnName(i);
+
+            if (name.equals("")) {
+                name = "__unknown_column__";
+            }
+
+            if (colNames.contains(name)) {
+
+                int count;
+                if (chanedNames.containsKey(name)) {
+                    Integer integer = (Integer) chanedNames.get(name);
+                    Integer newInteger = new Integer(integer.intValue() + 1);
+                    chanedNames.put(name, newInteger);
+                    count = newInteger.intValue();
+                } else {
+                    chanedNames.put(name, new Integer(1));
+                    count = 1;
+                }
+
+                name = name + "_" + count;
+
+            }
+
+            colNames.add(name);
+
+        }
+
+        return (String[]) colNames.toArray(new String[colNames.size()]);
     }
 
     protected Source toXmlSource(int updateCount) throws Exception {
