@@ -19,7 +19,6 @@ package org.apache.servicemix.jbi.monitoring;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jbi.JBIException;
 import javax.jbi.messaging.ExchangeStatus;
@@ -50,6 +49,8 @@ import org.apache.servicemix.jbi.management.OperationInfoHelper;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
 import org.apache.servicemix.jbi.servicedesc.EndpointSupport;
+
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 
