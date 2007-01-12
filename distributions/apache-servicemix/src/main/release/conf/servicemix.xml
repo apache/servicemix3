@@ -54,7 +54,7 @@
                 transactionManager="#transactionManager"
                 createJmxConnector="false"
                 depends-on="jndi">
-               
+
     <!-- Use a secured broker (see security.xml)
          and define the 3 standard flows --> 
     <sm:broker>
@@ -67,11 +67,11 @@
         </sm:flows>
       </sm:securedBroker>
     </sm:broker>
-    
+
     <sm:services>
       <sm:statistics statsInterval="10" dumpStats="true" />
     </sm:services>
-    
+
     <sm:executorFactory>
       <bean class="org.apache.servicemix.executors.impl.ExecutorFactoryImpl">
         <property name="defaultConfig">
@@ -97,7 +97,9 @@
       </bean>
     </audit:dataSource> 
   </audit:jdbcAuditor>
-  
+
   <sm:dotViewService container="#jbi" autoStart="true" />
+
+  <sm:logService container="#jbi" autoStart="true" refreshPeriod="60" />
 
 </beans>
