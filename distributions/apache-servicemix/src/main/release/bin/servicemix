@@ -56,16 +56,19 @@ detectOS() {
     cygwin=false;
     darwin=false;
     aix=false;
+    os400=false;
     case "`uname`" in
         CYGWIN*)
             cygwin=true
             ;;
-        
         Darwin*)
             darwin=true
             ;;
         AIX*)
             aix=true
+            ;;
+        OS400*)
+            os400=true
             ;;
     esac
     # For AIX, set an environment variable
@@ -150,7 +153,7 @@ detectJVM() {
    echo "`$JAVA -version`"
    # This service should call `java -version`, 
    # read stdout, and look for hints
-   if $JAVA -version 2>&1 | grep "^IBM" ; then
+   if $JAVA -version 2>&1 | grep "^IBM" | $os400; then
        JVM_VENDOR="IBM"
    else
        JVM_VENDOR="SUN"
@@ -182,11 +185,15 @@ setupDefaults() {
     if [ "$JVM_VENDOR" = "SUN" ]; then
         DEFAULT_JAVA_OPTS="-server $DEFAULT_JAVA_OPTS"
     elif [ "$JVM_VENDOR" = "IBM" ]; then
-        DEFAULT_JAVA_OPTS="-Xverify:none $DEFAULT_JAVA_OPTS"
-        if $aix; then
+        if $os400; then
+            DEFAULT_JAVA_OPTS="$DEFAULT_JAVA_OPTS"
+        elif $aix; then
             DEFAULT_JAVA_OPTS="-Xlp $DEFAULT_JAVA_OPTS"
+        else
+            DEFAULT_JAVA_OPTS="-Xverify:none $DEFAULT_JAVA_OPTS"
         fi
     fi
+
     # Add the conf directory so it picks up the Log4J config
     CLASSPATH="$CLASSPATH:$SERVICEMIX_HOME/conf"
     DEFAULT_JAVA_DEBUG_OPTS="-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"
