@@ -17,7 +17,9 @@
 package org.apache.servicemix.components.email;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.activation.DataHandler;
 import javax.jbi.messaging.InOnly;
@@ -154,16 +156,19 @@ public class MimeMailTest extends TestSupport {
         assertEquals(contentMP.getCount(), 3); // first attachement for text body and second for file attached
         Part part = contentMP.getBodyPart(0);
         assertTrue(part.isMimeType("text/plain"));
+        Set names = new HashSet();
         part = contentMP.getBodyPart(1);
         String disposition = part.getDisposition();
         assertTrue(disposition.equalsIgnoreCase(Part.ATTACHMENT));
         DataHandler att = part.getDataHandler();
-        assertEquals("example.xml", att.getName().toLowerCase());
+        names.add(att.getName().toLowerCase());
         part = contentMP.getBodyPart(2);
         disposition = part.getDisposition();
         assertTrue(disposition.equalsIgnoreCase(Part.ATTACHMENT));
         att = part.getDataHandler();
-        assertEquals("id", att.getName().toLowerCase());
+        names.add(att.getName().toLowerCase());
+        assertTrue(names.contains("example.xml"));
+        assertTrue(names.contains("id"));
         assertEquals("subject", "Drink a beer James", message.getSubject());
     }
 

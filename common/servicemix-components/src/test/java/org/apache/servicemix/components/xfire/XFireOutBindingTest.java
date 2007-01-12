@@ -38,7 +38,7 @@ public class XFireOutBindingTest extends TestSupport {
         sendFile(new QName("http://xfire.components.servicemix.org", "OneWayService"),
                 "/org/apache/servicemix/components/xfire/oneway.xml"); 
 
-        receiverService.getMessageList().assertMessagesReceived(1);
+        receiverService.messageList.assertMessagesReceived(1);
     }
 
     protected void sendFile(QName serviceName, String fileOnClassPath) throws JBIException {
