@@ -171,7 +171,7 @@
     <dependency>
       <groupId>com.sun.script</groupId>
       <artifactId>groovy-engine</artifactId>
-      <version>20070110</version>
+      <version>20070112</version>
       <optional>true</optional>
     </dependency>
     <dependency>
