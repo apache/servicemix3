@@ -79,10 +79,6 @@
         </exclusion>
         <exclusion>
           <groupId>org.apache.xbean</groupId>
-          <artifactId>xbean-spring</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.xbean</groupId>
           <artifactId>xbean-server</artifactId>
         </exclusion>
         <exclusion>
