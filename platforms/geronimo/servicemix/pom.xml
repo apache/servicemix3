@@ -130,6 +130,10 @@
             <version>${xbean-version}</version>
         </dependency>
         <dependency>
+            <groupId>stax</groupId>
+            <artifactId>stax-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
             <version>${woodstox-version}</version>
