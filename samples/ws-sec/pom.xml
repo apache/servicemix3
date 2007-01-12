@@ -45,7 +45,7 @@
         </releases>
       </pluginRepository>
       <pluginRepository>
-        <id>apache</id>
+        <id>apache.incubating</id>
         <name>Apache Incubating Repository</name>
         <url>http://people.apache.org/repo/m2-incubating-repository</url>
         <snapshots>
@@ -69,7 +69,7 @@
         </releases>
       </repository>
       <repository>
-        <id>apache.snapshots</id>
+        <id>apache.incubating</id>
         <name>Apache Incubating Repository</name>
         <url>http://people.apache.org/repo/m2-incubating-repository</url>
         <snapshots>
