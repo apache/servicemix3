@@ -33,4 +33,4 @@ Just execute 'ant' from the current directory to run the JMS client.
 
 
 For more information on this example please see
-    http://incubator.apache.org/servicemix/sm30ug/loan-broker.html
+    http://incubator.apache.org/servicemix/loan-broker.html

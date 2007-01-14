@@ -18,11 +18,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CountDownLatch;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQQueue;
-import org.apache.geronimo.connector.work.GeronimoWorkManager;
-import org.apache.geronimo.transaction.ExtendedTransactionManager;
-import org.apache.geronimo.transaction.context.TransactionContextManager;
-import org.jencks.factory.TransactionContextManagerFactoryBean;
-import org.jencks.factory.TransactionManagerFactoryBean;
+import org.jencks.GeronimoPlatformTransactionManager;
 import org.jencks.factory.WorkManagerFactoryBean;
 import org.logicblaze.lingo.jms.Requestor;
 import org.logicblaze.lingo.jms.JmsProducerConfig;
@@ -76,13 +72,8 @@ public class JMSClient implements Work {
     }
     
     protected static GeronimoWorkManager createWorkManager(int poolSize) throws Exception {
-        TransactionManagerFactoryBean tmfb = new TransactionManagerFactoryBean();
-        tmfb.afterPropertiesSet();
-        TransactionContextManagerFactoryBean tcmfb = new TransactionContextManagerFactoryBean();
-        tcmfb.setTransactionManager((ExtendedTransactionManager) tmfb.getObject());
-        tcmfb.afterPropertiesSet();
         WorkManagerFactoryBean wmfb = new WorkManagerFactoryBean();
-        wmfb.setTransactionContextManager((TransactionContextManager) tcmfb.getObject());
+        wmfb.setManager(new GeronimoPlatformTransactionManager());
         wmfb.setThreadPoolSize(poolSize);
         wmfb.afterPropertiesSet();
         GeronimoWorkManager wm = wmfb.getWorkManager();

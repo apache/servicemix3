@@ -20,9 +20,11 @@
 <beans xmlns:sm="http://servicemix.apache.org/config/1.0"
 	     xmlns:my="http://servicemix.apache.org/demo/">
 
+  <bean id="jndi" class="org.apache.xbean.spring.jndi.SpringInitialContextFactory" 
+        factory-method="makeInitialContext" singleton="true" />
+
 	<!-- the JBI container -->
-	<sm:container id="jbi" useMBeanServer="true"
-		createMBeanServer="true" dumpStats="true" statsInterval="10">
+	<sm:container id="jbi" useMBeanServer="true" createMBeanServer="true">
 
 		<sm:activationSpecs>
 

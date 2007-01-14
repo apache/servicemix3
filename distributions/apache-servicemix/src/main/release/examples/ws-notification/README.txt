@@ -43,3 +43,6 @@ ServiceMix instance2 will receive these messages because it is subscribed to
 the topic named MyTopic.
 
 WS-Notification demand publishing and filters will be added soon. 
+
+See http://incubator.apache.org/servicemix/ws-notification-clustered.html
+for more informations.

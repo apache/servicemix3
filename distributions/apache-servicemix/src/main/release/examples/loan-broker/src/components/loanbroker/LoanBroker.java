@@ -17,7 +17,7 @@
  */
 package loanbroker;
 
-import EDU.oswego.cs.dl.util.concurrent.ConcurrentHashMap;
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

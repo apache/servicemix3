@@ -39,14 +39,17 @@
     <mkdir dir="${comp.build.dir}"/>
     <mkdir dir="${client.build.dir}"/>
 
-    <get src="http://repo.mergere.com/maven2/lingo/lingo/1.1/lingo-1.1.jar"
-         dest="../../lib/optional/lingo-1.1.jar" 
+    <get src="http://repo.mergere.com/maven2/org/logicblaze/lingo/lingo/1.3/lingo-1.3.jar"
+         dest="../../lib/optional/lingo-1.3.jar" 
          usetimestamp="true" />
     <get src="http://repo.mergere.com/maven2/commons-pool/commons-pool/1.2/commons-pool-1.2.jar"
          dest="../../lib/optional/commons-pool-1.2.jar" 
          usetimestamp="true" />
     <get src="http://repo.mergere.com/maven2/commons-collections/commons-collections/3.1/commons-collections-3.1.jar"
          dest="../../lib/optional/commons-collections-3.1.jar" 
+         usetimestamp="true" />
+    <get src="http://repo.mergere.com/maven2/org/springframework/spring-jms/2.0.1/spring-jms-2.0.1.jar"
+         dest="../../lib/optional/spring-jms-2.0.1.jar" 
          usetimestamp="true" />
     <copy todir="../../lib/optional">
       <fileset dir="../../components/lib" includes="servicemix-components*.jar"/>

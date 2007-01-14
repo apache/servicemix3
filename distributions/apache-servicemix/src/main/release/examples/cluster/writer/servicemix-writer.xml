@@ -20,14 +20,15 @@
 <beans xmlns:sm="http://servicemix.apache.org/config/1.0"
 	     xmlns:foo="http://servicemix.org/demo/">
 
+  <bean id="jndi" class="org.apache.xbean.spring.jndi.SpringInitialContextFactory" 
+        factory-method="makeInitialContext" singleton="true" />
+
 	<!-- the JBI container -->
 	<sm:container id="jbi" 
                 name="writer" 
                 flowName="jms" 
                 useMBeanServer="true"
 		            createMBeanServer="true" 
-                dumpStats="true" 
-                statsInterval="10" 
                 rmiPort="1111">
 
 		<sm:activationSpecs>
@@ -53,10 +54,5 @@
 
 		</sm:activationSpecs>
 	</sm:container>
-
-	<!-- the work manager (thread pool) for this container -->
-	<bean id="workManager" class="org.jencks.factory.WorkManagerFactoryBean">
-		<property name="threadPoolSize" value="30" />
-	</bean>
 
 </beans>

@@ -20,9 +20,11 @@
 <beans xmlns:sm="http://servicemix.apache.org/config/1.0"
 	     xmlns:foo="http://servicemix.org/demo/">
 
+  <bean id="jndi" class="org.apache.xbean.spring.jndi.SpringInitialContextFactory" 
+        factory-method="makeInitialContext" singleton="true" />
+
 	<!-- the JBI container -->
-	<sm:container id="jbi" useMBeanServer="true"
-		createMBeanServer="true" dumpStats="true" statsInterval="10">
+	<sm:container id="jbi" useMBeanServer="true" createMBeanServer="true">
 
 		<sm:activationSpecs>
 
@@ -53,7 +55,6 @@
 				destinationService="foo:fileSender" service="foo:filePoller">
 				<sm:component>
 					<bean class="org.apache.servicemix.components.file.FilePoller">
-						<property name="workManager" ref="workManager" />
 						<property name="file" value="inbox" />
 						<property name="period" value="1000" />
 					</bean>
@@ -61,11 +62,5 @@
 			</sm:activationSpec>
 		</sm:activationSpecs>
 	</sm:container>
-
-	<!-- the work manager (thread pool) for this container -->
-	<bean id="workManager"
-		class="org.jencks.factory.WorkManagerFactoryBean">
-		<property name="threadPoolSize" value="30" />
-	</bean>
 
 </beans>
