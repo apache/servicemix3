@@ -79,14 +79,14 @@ public abstract class AbstractXBeanServiceUnitAnalyzer implements
 	 */
 	public void init(File explodedServiceUnitRoot) {
 		FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(
-		   "file:///" + explodedServiceUnitRoot.getAbsolutePath() + "/"
-						+ getXBeanFile());
+		   new String[] { "file:///" + explodedServiceUnitRoot.getAbsolutePath() + "/" + getXBeanFile() }, 
+           false);
         List beanFactoryPostProcessors = getBeanFactoryPostProcessors(explodedServiceUnitRoot.getAbsolutePath());
         for (Iterator iter = beanFactoryPostProcessors.iterator(); iter.hasNext();) {
             BeanFactoryPostProcessor processor = (BeanFactoryPostProcessor) iter.next();
             context.addBeanFactoryPostProcessor(processor);
         }
-                
+        context.refresh();
 		for (int i = 0; i < context.getBeanDefinitionNames().length; i++) {
 			Object bean = context.getBean(context.getBeanDefinitionNames()[i]);
 			if (isValidEndpoint(bean)) {
