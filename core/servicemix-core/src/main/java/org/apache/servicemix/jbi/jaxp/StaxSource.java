@@ -133,6 +133,7 @@ public class StaxSource extends SAXSource implements XMLReader {
                     String localName = streamReader.getLocalName();
                     String prefix = streamReader.getPrefix();
                     String qname = prefix != null && prefix.length() > 0 ? prefix + ":" + localName : localName;
+
                     contentHandler.startElement(uri == null ? "" : uri, localName, qname, getAttributes());
                     break;
                 }
@@ -202,7 +203,8 @@ public class StaxSource extends SAXSource implements XMLReader {
             if (value == null) {
                 value = "";
             }
-            attrs.addAttribute(uri, localName, qName, type, value);
+
+            attrs.addAttribute(uri == null ? "" : uri, localName, qName, type, value);
         }
         return attrs;
     }
