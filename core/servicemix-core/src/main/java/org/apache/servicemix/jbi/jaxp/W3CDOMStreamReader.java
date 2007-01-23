@@ -217,14 +217,7 @@ public class W3CDOMStreamReader extends DOMStreamReader {
     }
 
     public String getAttributeType(int i) {
-        return toStaxType(getAttribute(i).getNodeType());
-    }
-
-    public static String toStaxType(short jdom) {
-        switch (jdom) {
-        default:
-            return null;
-        }
+        return "CDATA";
     }
 
     public String getAttributeValue(int i) {
