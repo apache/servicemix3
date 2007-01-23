@@ -17,19 +17,19 @@
 --%>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-	<title><decorator:title default="ServiceMix Console" /></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title><decorator:title default="ServiceMix Console" /></title>
     <style type="text/css" media="screen">
         @import url(<c:url value="/styles/style.css"/>);
         @import url(<c:url value="/styles/sorttable.css"/>);
     </style>
     <c:if test="${!disableJavaScript}">
-	    <script type='text/javascript' src='<c:url value="/js/common.js"/>'/>
-	    <script type='text/javascript' src='<c:url value="/js/css.js"/>'/>
-	    <script type='text/javascript' src='<c:url value="/js/standardista-table-sorting.js"/>'/>
+        <script type='text/javascript' src='<c:url value="/js/common.js"/>'></script>
+        <script type='text/javascript' src='<c:url value="/js/css.js"/>'></script>
+        <script type='text/javascript' src='<c:url value="/js/standardista-table-sorting.js"/>'></script>
     </c:if>
 
-	<decorator:head />
+    <decorator:head />
 </head>
 
 <body>
@@ -89,4 +89,4 @@
 
 </body>
 </html>
-	
+
