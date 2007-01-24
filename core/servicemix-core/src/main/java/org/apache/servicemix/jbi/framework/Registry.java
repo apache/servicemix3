@@ -347,29 +347,31 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      */
     public ServiceEndpoint resolveStandardEPR(DocumentFragment epr) {
         try {
-            if (epr.getChildNodes().getLength() == 1) {
-                Node child = epr.getFirstChild();
-                if (child instanceof Element) {
-                    Element elem = (Element) child;
-                    NodeList nl = elem.getElementsByTagNameNS("http://www.w3.org/2005/08/addressing", "Address");
-                    if (nl.getLength() == 1) {
-                        Element address = (Element) nl.item(0);
-                        String uri = DOMUtil.getElementText(address);
-                        if (uri != null) {
-                            uri = uri.trim();
-                        }
-                        if (uri.startsWith("endpoint:")) {
-                            uri = uri.substring("endpoint:".length());
-                            String[] parts = split(uri);
-                            return getInternalEndpoint(new QName(parts[0], parts[1]), parts[2]);
-                        }
-                        else if (uri.startsWith("service:")) {
-                            uri = uri.substring("service:".length());
-                            String[] parts = splitService(uri);
-                            return getEndpoint(new QName(parts[0], parts[1]), parts[1]);
-                        }
-                        // TODO should we support interface: and operation: here?
+            NodeList children = epr.getChildNodes();
+            for (int i = 0 ; i < children.getLength(); ++i) {
+                Node n = children.item(i);
+                if (n.getNodeType() != Node.ELEMENT_NODE) {
+                    continue;
+                }
+                Element elem = (Element) n;
+                NodeList nl = elem.getElementsByTagNameNS("http://www.w3.org/2005/08/addressing", "Address");
+                if (nl.getLength() == 1) {
+                    Element address = (Element) nl.item(0);
+                    String uri = DOMUtil.getElementText(address);
+                    if (uri != null) {
+                        uri = uri.trim();
                     }
+                    if (uri.startsWith("endpoint:")) {
+                        uri = uri.substring("endpoint:".length());
+                        String[] parts = split(uri);
+                        return getInternalEndpoint(new QName(parts[0], parts[1]), parts[2]);
+                    }
+                    else if (uri.startsWith("service:")) {
+                        uri = uri.substring("service:".length());
+                        String[] parts = splitService(uri);
+                        return getEndpoint(new QName(parts[0], parts[1]), parts[1]);
+                    }
+                    // TODO should we support interface: and operation: here?
                 }
             }
         } catch (Exception e) {
