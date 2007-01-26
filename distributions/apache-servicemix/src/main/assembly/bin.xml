@@ -25,13 +25,14 @@
   </formats>
   <fileSets>
     <fileSet>
-      <directory>..</directory>
+      <directory>../..</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
-        <include>README</include>      
-        <include>LICENSE</include>      
-        <include>NOTICE</include>      
-        <include>DISCLAIMER</include>      
+        <include>README</include>
+        <include>LICENSE</include>
+        <include>NOTICE</include>
+        <include>DISCLAIMER</include>
+        <include>RELEASE-NOTES</include>
       </includes>
     </fileSet>
     <fileSet>
