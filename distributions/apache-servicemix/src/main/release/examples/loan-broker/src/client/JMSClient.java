@@ -18,21 +18,19 @@ import edu.emory.mathcs.backport.java.util.concurrent.CountDownLatch;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQQueue;
-import org.jencks.GeronimoPlatformTransactionManager;
-import org.jencks.factory.WorkManagerFactoryBean;
 import org.logicblaze.lingo.jms.Requestor;
 import org.logicblaze.lingo.jms.JmsProducerConfig;
 import org.logicblaze.lingo.jms.impl.MultiplexingRequestor;
-
+import edu.emory.mathcs.backport.java.util.concurrent.ExecutorService;
+import edu.emory.mathcs.backport.java.util.concurrent.Executors;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.Message;
-import javax.resource.spi.work.Work;
 
 /**
  * @version $Revision$
  */
-public class JMSClient implements Work {
+public class JMSClient implements Runnable {
     
     private static ConnectionFactory factory;
     private static CountDownLatch latch;
@@ -59,27 +57,17 @@ public class JMSClient implements Work {
             if (args.length > 1) {
                 th = Integer.parseInt(args[1]);
             }
-            GeronimoWorkManager wm = createWorkManager(th);
             latch = new CountDownLatch(nb);
+            ExecutorService threadPool = Executors.newFixedThreadPool(th);
             for (int i = 0; i < nb; i++) {
-                wm.scheduleWork(new JMSClient());
+                threadPool.submit(new JMSClient());
             }
             latch.await();
-            wm.doStop();
         }
         System.out.println("Closing.");
         requestor.close();
     }
     
-    protected static GeronimoWorkManager createWorkManager(int poolSize) throws Exception {
-        WorkManagerFactoryBean wmfb = new WorkManagerFactoryBean();
-        wmfb.setManager(new GeronimoPlatformTransactionManager());
-        wmfb.setThreadPoolSize(poolSize);
-        wmfb.afterPropertiesSet();
-        GeronimoWorkManager wm = wmfb.getWorkManager();
-        return wm;
-    }
-
     public void run() {
         try {
             System.out.println("Sending request.");
@@ -103,6 +91,4 @@ public class JMSClient implements Work {
         }
     }
 
-    public void release() {
-    }
 }
