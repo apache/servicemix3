@@ -77,8 +77,8 @@
             <post>servicemix-dev@geronimo.apache.org</post>
             <archive>http://www.nabble.com/ServiceMix---Dev-f12051.html</archive>
             <otherArchives>
-                <archive>http://dir.gmane.org/gmane.comp.java.servicemix.devel</archive>
-                <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-dev/</archive>
+                <otherArchive>http://dir.gmane.org/gmane.comp.java.servicemix.devel</otherArchive>
+                <otherArchive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-dev/</otherArchive>
             </otherArchives>
         </mailingList>
         <mailingList>
@@ -88,8 +88,8 @@
             <post>servicemix-users@geronimo.apache.org</post>
             <archive>http://www.nabble.com/ServiceMix---User-f12050.html</archive>
             <otherArchives>
-                <archive>http://dir.gmane.org/gmane.comp.java.servicemix.user</archive>
-                <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-users/</archive>
+                <otherArchive>http://dir.gmane.org/gmane.comp.java.servicemix.user</otherArchive>
+                <otherArchive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-users/</otherArchive>
             </otherArchives>
         </mailingList>
         <mailingList>
