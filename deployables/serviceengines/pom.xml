@@ -24,12 +24,12 @@
   <parent>
     <groupId>org.apache.servicemix</groupId>
     <artifactId>deployables</artifactId>
-    <version>3.1-incubating-SNAPSHOT</version>
+    <version>3.2-incubating-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.servicemix</groupId>
   <artifactId>serviceengines</artifactId>
-  <version>3.1-incubating-SNAPSHOT</version>
+  <version>3.2-incubating-SNAPSHOT</version>
   <name>ServiceMix :: Service Engines</name>
   <packaging>pom</packaging>
 
