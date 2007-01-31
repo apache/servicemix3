@@ -17,7 +17,7 @@
     limitations under the License.
 
 -->
-<geronimo-plugin-list xmlns="http://geronimo.apache.org/xml/ns/plugins-1.2">
+<geronimo-plugin-list xmlns="http://geronimo.apache.org/xml/ns/plugins-1.1">
     <plugin>
         <name>ServiceMix Integration</name>
         <module-id>org.apache.servicemix.geronimo/servicemix/3.1-incubating/car</module-id>
