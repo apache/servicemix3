@@ -23,12 +23,12 @@
     <parent>
         <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix</artifactId>
-        <version>3.1-incubating-SNAPSHOT</version>
+        <version>3.1-incubating</version>
     </parent>
 
     <groupId>org.apache.servicemix</groupId>
     <artifactId>common</artifactId>
-    <version>3.1-incubating-SNAPSHOT</version>
+    <version>3.1-incubating</version>
     <name>ServiceMix :: Common</name>
     <packaging>pom</packaging>
 
