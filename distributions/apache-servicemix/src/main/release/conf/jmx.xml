@@ -28,7 +28,7 @@
   
   <!-- JMX Remote connector -->
   <sm:jmxConnector objectName="connector:name=rmi"
-                   serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi"
+                   serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:${rmi.port}/jmxrmi"
                    threaded="true"
                    daemon="true" 
                    depends-on="rmiRegistry, jndi"
