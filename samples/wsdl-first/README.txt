@@ -26,9 +26,7 @@ First start a ServiceMix server (if not already started) by running
 in the root dir of this distribution.
 
 To run this sample, launch the following commands:
-  mvn install
-  cd wsdl-first-sa
-  mvn jbi:projectDeploy
+  mvn install jbi:projectDeploy
 
 You can browse the WSDL at
   http://localhost:8192/PersonService/main.wsdl
