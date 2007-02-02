@@ -25,18 +25,31 @@
 
   <!-- We need to include the WS-Notification component dependencies in the classpath -->
   <classpath>
-    <location>../lib/servicemix-wsn2005-3.1-incubating-SNAPSHOT.jar</location>
-    <location>../lib/servicemix-common-3.1-incubating-SNAPSHOT.jar</location>
+    <location>../lib/servicemix-wsn2005-3.1-incubating.jar</location>
+    <location>../lib/servicemix-common-3.1-incubating.jar</location>
     <location>../lib/jaxb-api-2.0.jar</location>
     <location>../lib/jaxb-impl-2.0.1.jar</location>
     <location>../lib/xfire-jsr181-api-1.0-M1.jar</location>
   </classpath>
 
+  <bean id="jndi" class="org.apache.xbean.spring.jndi.SpringInitialContextFactory" 
+        factory-method="makeInitialContext" singleton="true" />
+
+  <!-- JMX server and connector -->
+  <sm:rmiRegistry id="rmiRegistry" port="1092" />
+  <sm:jmxServer id="jmxServer" locateExistingServerIfPossible="true" />
+  <sm:jmxConnector objectName="connector:name=rmi"
+                   serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1092/jmxrmi"
+                   threaded="true"
+                   daemon="true" 
+                   depends-on="rmiRegistry jmxServer" />
+
   <!-- the JBI container -->
   <sm:container id="jbi" 
                 name="wsn2"
                 embedded="true"
-                MBeanServer="#jmxServer">
+                MBeanServer="#jmxServer"
+                createJmxConnector="false">
 
     <!-- Use a SEDA flow + JMS flow for clustering. -->
     <sm:flows>
@@ -81,15 +94,6 @@
 
     </sm:activationSpecs>
   </sm:container>
-
-  <!-- JMX server and connector -->
-  <sm:rmiRegistry id="rmiRegistry" port="1092" />
-  <sm:jmxServer id="jmxServer" locateExistingServerIfPossible="true" />
-  <sm:jmxConnector objectName="connector:name=rmi"
-                   serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1092/jmxrmi"
-                   threaded="true"
-                   daemon="true" 
-                   depends-on="rmiRegistry" />
 
   <!-- JMS connection factory -->
   <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
