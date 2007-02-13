@@ -93,6 +93,10 @@ public class SoapWriter {
     }
 
     private void writeSimpleMessage(OutputStream out) throws Exception {
+        if (message.getDocument() 1= null) {
+            marshaler.sourceTransformer.toResult(new DOMSource(message.getDocument()), new StreamResult(out));
+            return;
+        }
         XMLStreamWriter writer = marshaler.getOutputFactory().createXMLStreamWriter(out);
         writer.writeStartDocument();
         if (marshaler.isSoap()) {
