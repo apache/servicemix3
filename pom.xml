@@ -576,7 +576,7 @@
                         <artifactId>jsr181-api</artifactId>
                     </exclusion>
                     <exclusion>
-                        <groupId>javax.activation</groupId>
+                        <groupId>3.1.1-incubating-SNAPSHOT</groupId>
                         <artifactId>activation</artifactId>
                     </exclusion>
                 </exclusions>
@@ -591,7 +591,7 @@
                         <artifactId>jsr173</artifactId>
                     </exclusion>
                     <exclusion>
-                        <groupId>javax.activation</groupId>
+                        <groupId>3.1.1-incubating-SNAPSHOT</groupId>
                         <artifactId>activation</artifactId>
                     </exclusion>
                 </exclusions>
@@ -1398,7 +1398,7 @@
                         <artifactId>mail</artifactId>
                     </exclusion>
                     <exclusion>
-                        <groupId>javax.activation</groupId>
+                        <groupId>3.1.1-incubating-SNAPSHOT</groupId>
                         <artifactId>activation</artifactId>
                     </exclusion>
                     <exclusion>
@@ -1441,7 +1441,7 @@
                         <artifactId>mail</artifactId>
                     </exclusion>
                     <exclusion>
-                        <groupId>javax.activation</groupId>
+                        <groupId>3.1.1-incubating-SNAPSHOT</groupId>
                         <artifactId>activation</artifactId>
                     </exclusion>
                     <exclusion>
