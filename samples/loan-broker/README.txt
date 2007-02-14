@@ -30,5 +30,8 @@ in the root dir of this ditribution.
 To run this sample, launch the following commands:
   mvn install jbi:projectDeploy
 
+To test this sample, launch the following commands:
+  ant run
+
 For more information on this example please see
   http://incubator.apache.org/servicemix/loan-broker-bpel.html
