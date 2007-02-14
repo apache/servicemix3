@@ -27,7 +27,8 @@
                 role="consumer"
                 connectionFactory="#jmsFactory"
                 destinationStyle="queue"
-                jmsProviderDestinationName="demo.org.servicemix.source" />
+                jmsProviderDestinationName="demo.org.servicemix.source"
+                defaultMep="http://www.w3.org/2004/08/wsdl/in-out" />
 
   <bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
     <property name="connectionFactory">
