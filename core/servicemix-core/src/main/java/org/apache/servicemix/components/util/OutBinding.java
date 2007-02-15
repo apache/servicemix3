@@ -36,7 +36,7 @@ import javax.jbi.messaging.NormalizedMessage;
  */
 public abstract class OutBinding extends ComponentSupport implements Runnable, MessageExchangeListener {
     private static final Log log = LogFactory.getLog(OutBinding.class);
-    private AtomicBoolean stop = new AtomicBoolean(false);
+    private AtomicBoolean stop = new AtomicBoolean(true);
     private Thread runnable;
 
     public OutBinding() {
@@ -75,7 +75,12 @@ public abstract class OutBinding extends ComponentSupport implements Runnable, M
             }
         }
         catch (MessagingException e) {
-            log.error("run failed", e);
+            // Only log exception if the component really fails
+            // i.e. the exception has not been thrown to interrupt
+            // this thread
+            if (!stop.get()) {
+                log.error("run failed", e);
+            }
         }
     }
 
@@ -93,7 +98,7 @@ public abstract class OutBinding extends ComponentSupport implements Runnable, M
      * @throws JBIException
      */
     public void stop() throws JBIException {
-        stop.compareAndSet(true, false);
+        stop.compareAndSet(false, true);
         if (runnable != null) {
             runnable.interrupt();
             try {
@@ -109,7 +114,7 @@ public abstract class OutBinding extends ComponentSupport implements Runnable, M
      * start
      */
     public void start() throws JBIException {
-        if (stop.compareAndSet(false, true)) {
+        if (stop.compareAndSet(true, false)) {
             runnable = new Thread(this);
             runnable.setDaemon(true);
             runnable.start();
