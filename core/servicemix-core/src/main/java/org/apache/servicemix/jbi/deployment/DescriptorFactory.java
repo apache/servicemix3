@@ -246,7 +246,7 @@ public class DescriptorFactory {
                 desc.setServiceAssembly(serviceAssembly);
             } else if ("services".equals(child.getLocalName())) {
                 Services services = new Services();
-                services.setBindingComponent(Boolean.parseBoolean(getAttribute(child, "binding-component")));
+                services.setBindingComponent(Boolean.valueOf(getAttribute(child, "binding-component")).booleanValue());
                 ArrayList provides = new ArrayList();
                 ArrayList consumes = new ArrayList();
                 for (Element e = DOMUtil.getFirstChildElement(child); e != null; e = DOMUtil.getNextSiblingElement(e)) {
