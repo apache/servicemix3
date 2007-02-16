@@ -15,7 +15,7 @@
     limitations under the License.
 --%>
 <%@ page isErrorPage="true" %>
-<%@ taglib uri="WEB-INF/tags/sitemesh-page.tld" prefix="page" %>
+<%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page" %>
 <%@ page import="java.io.*" %>
 <html>
 <head>
