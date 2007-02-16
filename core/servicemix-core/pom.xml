@@ -241,6 +241,11 @@
       <artifactId>ant</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <optional>true</optional>
+    </dependency>
     
     <dependency>
       <groupId>tranql</groupId>
@@ -283,6 +288,8 @@
           <include>**/*.wsdl</include>
           <include>**/*.jks</include>
           <include>**/*.zip</include>
+          <include>**/*.txt</include>
+          <include>**/*.csv</include>
         </includes>
       </testResource>
       <testResource>
