@@ -48,8 +48,12 @@ if not exist "%SERVICEMIX_HOME%" (
     goto END
 )
 
+if "%JAVA_MAX_MEM%" == "" set JAVA_MAX_MEM=512M 
+
+if "%JAVA_MIN_MEM%" == "" set JAVA_MIN_MEM=128M 
+
 set LOCAL_CLASSPATH=%CLASSPATH%
-set DEFAULT_JAVA_OPTS=-server -Xmx512M -Dderby.system.home="%SERVICEMIX_HOME%\var" -Dderby.storage.fileSyncTransactionLog=true -Dcom.sun.management.jmxremote
+set DEFAULT_JAVA_OPTS=-server -Xms%JAVA_MIN_MEM% -Xmx%JAVA_MAX_MEM% -Dderby.system.home="%SERVICEMIX_HOME%\var" -Dderby.storage.fileSyncTransactionLog=true -Dcom.sun.management.jmxremote
 set CLASSPATH=%LOCAL_CLASSPATH%;%SERVICEMIX_HOME%\conf
 set DEFAULT_JAVA_DEBUG_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005
 
