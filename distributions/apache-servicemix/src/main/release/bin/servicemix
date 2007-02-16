@@ -86,7 +86,7 @@ unlimitFD() {
     fi
     
     # Increase the maximum file descriptors if we can
-    if !($cygwin | $os400); then
+    if [ "$os400" = "false" ] && [ "$cygwin" = "false" ]; then
         MAX_FD_LIMIT=`ulimit -H -n`
         if [ $? -eq 0 ]; then
             if [ "$MAX_FD" = "maximum" -o "$MAX_FD" = "max" ]; then
@@ -153,7 +153,10 @@ detectJVM() {
    echo "`$JAVA -version`"
    # This service should call `java -version`, 
    # read stdout, and look for hints
-   if $JAVA -version 2>&1 | grep "^IBM" | $os400; then
+   if $JAVA -version 2>&1 | grep "^IBM" ; then
+       JVM_VENDOR="IBM"
+   # on OS/400, java -version does not contain IBM explicitly
+   elif $os400; then
        JVM_VENDOR="IBM"
    else
        JVM_VENDOR="SUN"
@@ -188,7 +191,7 @@ setupDefaults() {
         if $os400; then
             DEFAULT_JAVA_OPTS="$DEFAULT_JAVA_OPTS"
         elif $aix; then
-            DEFAULT_JAVA_OPTS="-Xlp $DEFAULT_JAVA_OPTS"
+            DEFAULT_JAVA_OPTS="-Xverify:none -Xlp $DEFAULT_JAVA_OPTS"
         else
             DEFAULT_JAVA_OPTS="-Xverify:none $DEFAULT_JAVA_OPTS"
         fi
@@ -307,4 +310,5 @@ main() {
 }
 
 main $@
+
 
