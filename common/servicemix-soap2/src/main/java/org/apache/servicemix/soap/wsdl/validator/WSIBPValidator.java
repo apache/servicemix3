@@ -187,7 +187,7 @@ public class WSIBPValidator {
             for (Iterator itBop = binding.getBindingOperations().iterator(); itBop.hasNext();) {
                 BindingOperation bop = (BindingOperation) itBop.next();
                 SOAPOperation soapBop = WSDLUtils.getExtension(bop, SOAPOperation.class);
-                Style opStyle = getStyle(soapBop.getStyle());
+                Style opStyle = soapBop != null ? getStyle(soapBop.getStyle()) : null;
                 if (opStyle == null) {
                     opStyle = getStyle(soapBinding.getStyle());
                     if (opStyle == null) {

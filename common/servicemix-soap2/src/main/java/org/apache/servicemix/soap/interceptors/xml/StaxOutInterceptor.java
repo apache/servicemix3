@@ -18,8 +18,11 @@ package org.apache.servicemix.soap.interceptors.xml;
 
 import java.io.OutputStream;
 
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.servicemix.soap.api.Fault;
+import org.apache.servicemix.soap.api.InterceptorChain;
 import org.apache.servicemix.soap.api.Message;
 import org.apache.servicemix.soap.core.AbstractInterceptor;
 import org.apache.servicemix.soap.util.stax.StaxUtil;
@@ -39,9 +42,16 @@ public class StaxOutInterceptor extends AbstractInterceptor {
         if (os == null) {
             throw new NullPointerException("OutputStream content not found");
         }
-        // TODO: handle encoding
-        XMLStreamWriter writer = StaxUtil.createWriter(os);
-        message.setContent(XMLStreamWriter.class, writer);
+        try {
+            // TODO: handle encoding
+            XMLStreamWriter writer = StaxUtil.createWriter(os);
+            message.setContent(XMLStreamWriter.class, writer);
+            InterceptorChain chain = message.get(InterceptorChain.class);
+            chain.doIntercept(message);
+            writer.flush();
+        } catch (XMLStreamException e) {
+            throw new Fault(e);
+        }
     }
 
 }

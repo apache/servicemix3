@@ -43,6 +43,9 @@ import com.ibm.wsdl.Constants;
 
 public class WSDLUtils {
 
+    public static final String WSDL1_NAMESPACE = "http://schemas.xmlsoap.org/wsdl/";
+    public static final String WSDL2_NAMESPACE = "http://www.w3.org/2006/01/wsdl";
+    
     public static final String WSDL1_STYLE_RPC = "rpc";
     public static final String WSDL1_STYLE_DOCUMENT = "document";
     public static final String WSDL1_USE_LITERAL = "literal";

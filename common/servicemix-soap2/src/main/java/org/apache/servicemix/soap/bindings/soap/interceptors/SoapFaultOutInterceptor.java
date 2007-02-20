@@ -27,9 +27,11 @@ import javax.xml.transform.Source;
 
 import org.apache.servicemix.soap.api.Fault;
 import org.apache.servicemix.soap.api.Message;
+import org.apache.servicemix.soap.bindings.soap.Soap11;
 import org.apache.servicemix.soap.bindings.soap.SoapConstants;
 import org.apache.servicemix.soap.bindings.soap.SoapFault;
 import org.apache.servicemix.soap.bindings.soap.SoapVersion;
+import org.apache.servicemix.soap.bindings.soap.SoapVersionFactory;
 import org.apache.servicemix.soap.core.AbstractInterceptor;
 import org.apache.servicemix.soap.util.stax.StaxUtil;
 
@@ -45,6 +47,9 @@ public class SoapFaultOutInterceptor extends AbstractInterceptor {
         try {
             if (exception instanceof SoapFault) {
                 SoapFault fault = (SoapFault) exception;
+                if (soapVersion == null) {
+                    //soapVersion = Soap11.getInstance();
+                }
                 if (soapVersion.getVersion() == 1.1) {
                     writeSoap11Fault(writer, fault, soapVersion);
                 } else if (soapVersion.getVersion() == 1.2) {

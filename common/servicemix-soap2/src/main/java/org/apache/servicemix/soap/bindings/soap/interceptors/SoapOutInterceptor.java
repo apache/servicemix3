@@ -51,9 +51,9 @@ public class SoapOutInterceptor extends AbstractInterceptor {
         if (writer == null) {
             throw new NullPointerException("XMLStreamWriter content not found");
         }
-        SoapVersion soapVersion = this.soapVersion; 
+        SoapVersion soapVersion = message.get(SoapVersion.class); 
         if (soapVersion == null) {
-            soapVersion = message.get(SoapVersion.class);
+            soapVersion = this.soapVersion;
             if (soapVersion == null) {
                 throw new IllegalStateException("No soap version specified");
             }
@@ -79,7 +79,6 @@ public class SoapOutInterceptor extends AbstractInterceptor {
             // Close elements
             writer.writeEndElement();
             writer.writeEndElement();
-            writer.flush();
         } catch (XMLStreamException e) {
             throw new Fault(e);
         }

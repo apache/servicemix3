@@ -26,7 +26,6 @@ public class AbstractWsdl2Message extends AbstractMessage implements Wsdl2Messag
 
     private ContentModel contentModel;
     private XmlSchemaElement elementDeclaration;
-    private String label;
     
     /**
      * @return the contentModel

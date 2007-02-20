@@ -56,6 +56,15 @@ public class JbiInWsdl1Interceptor extends AbstractInterceptor {
         if (message.getContent(Exception.class) != null) {
             return;
         }
+        // Check if we should not use the JBI wrapper
+        if (message.get(JbiConstants.USE_JBI_WRAPPER) instanceof Boolean && ((Boolean) message.get(JbiConstants.USE_JBI_WRAPPER)) == false) {
+            XMLStreamReader xmlReader = message.getContent(XMLStreamReader.class);
+            if (xmlReader != null) {
+                message.setContent(Source.class, StaxUtil.createSource(xmlReader));
+            }
+            return;
+        }
+        
         Wsdl1SoapOperation wsdlOperation = getOperation(message);
         Wsdl1SoapMessage wsdlMessage = server ? wsdlOperation.getInput() : wsdlOperation.getOutput();
 

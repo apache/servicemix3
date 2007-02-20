@@ -147,21 +147,21 @@ public class DomUtil {
         Element element;
         if (name.getPrefix() != null && name.getPrefix().length() > 0) {
             element = doc.createElementNS(name.getNamespaceURI(), name.getPrefix() + ":" + name.getLocalPart());
-            String attr = recursiveGetAttributeValue(element, XMLConstants.XMLNS_ATTRIBUTE + ":" + name.getPrefix());
+            String attr = recursiveGetAttributeValue(parent, XMLConstants.XMLNS_ATTRIBUTE + ":" + name.getPrefix());
             if (attr == null || !attr.equals(name.getNamespaceURI())) {
                 element.setAttribute(XMLConstants.XMLNS_ATTRIBUTE + ":" + name.getPrefix(), 
                                      name.getNamespaceURI());
             }
         } else if (name.getNamespaceURI() != null && name.getNamespaceURI().length() > 0) {
             element = doc.createElementNS(name.getNamespaceURI(), name.getLocalPart());
-            String attr = recursiveGetAttributeValue(element, XMLConstants.XMLNS_ATTRIBUTE);
+            String attr = recursiveGetAttributeValue(parent, XMLConstants.XMLNS_ATTRIBUTE);
             if (attr == null || !attr.equals(name.getNamespaceURI())) {
                 element.setAttribute(XMLConstants.XMLNS_ATTRIBUTE, 
                                      name.getNamespaceURI());
             }
         } else {
             element = doc.createElementNS(null, name.getLocalPart());
-            String attr = recursiveGetAttributeValue(element, XMLConstants.XMLNS_ATTRIBUTE);
+            String attr = recursiveGetAttributeValue(parent, XMLConstants.XMLNS_ATTRIBUTE);
             if (attr == null || attr.length() > 0) {
                 element.setAttribute(XMLConstants.XMLNS_ATTRIBUTE, 
                                      "");
@@ -198,15 +198,20 @@ public class DomUtil {
     /**
      * Recursive method to find a given attribute value
      */
-    public static String recursiveGetAttributeValue(Element element, String attributeName) {
-        String answer = element.getAttribute(attributeName);
-        if (answer == null || answer.length() == 0) {
-            Node parentNode = element.getParentNode();
-            if (parentNode instanceof Element) {
-                return recursiveGetAttributeValue((Element) parentNode, attributeName);
+    public static String recursiveGetAttributeValue(Node parent, String attributeName) {
+        if (parent instanceof Element) {
+            Element element = (Element) parent;
+            String answer = element.getAttribute(attributeName);
+            if (answer == null || answer.length() == 0) {
+                Node parentNode = element.getParentNode();
+                if (parentNode instanceof Element) {
+                    return recursiveGetAttributeValue((Element) parentNode, attributeName);
+                }
             }
+            return answer;
+        } else {
+            return null;
         }
-        return answer;
     }
 
     protected static String getUniquePrefix(Element element) {

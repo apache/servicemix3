@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 
 import org.apache.servicemix.soap.util.DomUtil;
 import org.apache.servicemix.soap.util.IoUtil;
@@ -30,6 +31,8 @@ import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaSequence;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * @author <a href=""mailto:gnodet [at] gmail.com">Guillaume Nodet</a>
@@ -239,6 +242,61 @@ public class IriDecoderHelper {
         return doc;
     }
     
+    public static Document interopolateParams(Document doc, XmlSchemaElement element, List<Param> params) {
+        XmlSchemaComplexType cplxType = (XmlSchemaComplexType)element.getSchemaType();
+        XmlSchemaSequence seq = (XmlSchemaSequence)cplxType.getParticle();
+        Element root = doc.getDocumentElement();
+        if (root == null) {
+            root = doc.createElementNS(element.getQName().getNamespaceURI(), 
+                                    element.getQName().getLocalPart());
+            root.setAttribute(XMLConstants.XMLNS_ATTRIBUTE, element.getQName().getNamespaceURI());
+            doc.appendChild(root);
+        }
+        
+        for (int i = 0; i < seq.getItems().getCount(); i++) {
+            XmlSchemaElement elChild = (XmlSchemaElement)seq.getItems().getItem(i);
+            Param param = null;
+            for (Param p : params) {
+                if (p.getName().equals(elChild.getQName().getLocalPart())) {
+                    param = p;
+                    break;
+                }
+            }
+            if (param == null) {
+                continue;
+            }
+            
+            Element ec = getElement(root, elChild.getQName());
+            if (ec == null) {
+                ec = doc.createElementNS(elChild.getQName().getNamespaceURI(), elChild.getQName()
+                                         .getLocalPart());
+                if (!elChild.getQName().getNamespaceURI().equals(element.getQName().getNamespaceURI())) {
+                    ec.setAttribute(XMLConstants.XMLNS_ATTRIBUTE, elChild.getQName().getNamespaceURI());
+                }
+                
+                // insert the element at the appropriate position
+                Element insertBeforeEl = getIndexedElement(root, i);
+                if (insertBeforeEl != null) {
+                    root.insertBefore(ec, insertBeforeEl);
+                } else {
+                    root.appendChild(ec);
+                }
+            } else {
+                NodeList childNodes = ec.getChildNodes();
+                for (int j = 0; j < childNodes.getLength(); j++) {
+                    Node n = childNodes.item(j);
+                    ec.removeChild(n);
+                }
+            }
+            
+            if (param != null) {
+                params.remove(param);
+                ec.appendChild(doc.createTextNode(param.getValue()));
+            }
+        }
+        return doc;
+    }
+
     public static List<Param> decode(String uri, String loc, InputStream is) {
         List<Param> params = IriDecoderHelper.decodeIri(uri, loc);
         if (is != null) {
@@ -247,6 +305,34 @@ public class IriDecoderHelper {
             IriDecoderHelper.addParams(baos.toString(), 0, baos.size(), params);
         }
         return params;
+    }
+
+    private static Element getIndexedElement(Element e, int i) {
+        NodeList childNodes = e.getChildNodes();
+        int elNum = 0;
+        for (int j = 0; j < childNodes.getLength(); j++) {
+            Node n = childNodes.item(j);
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                if (i == elNum) {
+                    return (Element) n;
+                }
+                elNum++;
+            }
+        }
+        return null;
+    }
+
+    private static Element getElement(Element element, QName name) {
+        NodeList childNodes = element.getChildNodes();
+        for (int j = 0; j < childNodes.getLength(); j++) {
+            Node n = childNodes.item(j);
+            if (n.getNodeType() == Node.ELEMENT_NODE
+                && n.getLocalName().equals(name.getLocalPart())
+                && n.getNamespaceURI().equals(name.getNamespaceURI())) {
+                return (Element)n;
+            }
+        }
+        return null;
     }
 
 }

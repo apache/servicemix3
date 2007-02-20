@@ -26,13 +26,15 @@ import javax.xml.namespace.QName;
 import org.apache.servicemix.soap.api.Message;
 import org.apache.servicemix.soap.bindings.soap.SoapInterceptor;
 import org.apache.servicemix.soap.core.AbstractInterceptor;
-import org.apache.ws.security.WSConstants;
+//import org.apache.ws.security.WSConstants;
 
 public class WsSecurityInInterceptor extends AbstractInterceptor implements SoapInterceptor {
 
     public static QName[] HEADERS = {
+    /*
         new QName(WSConstants.WSSE_NS, WSConstants.WSSE_LN),  
-        new QName(WSConstants.WSSE11_NS, WSConstants.WSSE_LN),  
+        new QName(WSConstants.WSSE11_NS, WSConstants.WSSE_LN),
+    */  
     };
     
     private final WsSecurityPolicy policy;

@@ -126,6 +126,8 @@ public class SoapFault extends Fault {
                 code = SoapConstants.SOAP_11_CODE_SERVER;
             } else if (SoapConstants.SOAP_12_CODE_SENDER.equals(code)) {
                 code = SoapConstants.SOAP_11_CODE_CLIENT;
+            } else if (SoapConstants.SOAP_12_CODE_VERSIONMISMATCH.equals(code)) {
+                code = SoapConstants.SOAP_11_CODE_VERSIONMISMATCH;
             }
         } else {
             code = SoapConstants.SOAP_11_CODE_SERVER;

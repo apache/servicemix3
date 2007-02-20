@@ -25,6 +25,7 @@ import junit.framework.TestCase;
 
 import org.apache.servicemix.soap.api.Message;
 import org.apache.servicemix.soap.core.MessageImpl;
+import org.apache.servicemix.soap.core.PhaseInterceptorChain;
 
 public class StaxOutInterceptorTest extends TestCase {
 
@@ -42,7 +43,9 @@ public class StaxOutInterceptorTest extends TestCase {
     public void testValidInput() throws Exception {
         Message msg = new MessageImpl();
         msg.setContent(OutputStream.class, new ByteArrayOutputStream());
-        interceptor.handleMessage(msg);
+        PhaseInterceptorChain chain = new PhaseInterceptorChain();
+        chain.add(interceptor);
+        chain.doIntercept(msg);
         XMLStreamWriter writer = msg.getContent(XMLStreamWriter.class); 
         assertNotNull(writer);
     }

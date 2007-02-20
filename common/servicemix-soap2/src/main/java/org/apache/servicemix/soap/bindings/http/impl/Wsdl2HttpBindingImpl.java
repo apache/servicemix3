@@ -24,7 +24,12 @@ import org.apache.servicemix.soap.bindings.http.interceptors.HttpInOperationInte
 import org.apache.servicemix.soap.bindings.http.model.Wsdl2HttpBinding;
 import org.apache.servicemix.soap.bindings.http.model.Wsdl2HttpOperation;
 import org.apache.servicemix.soap.core.model.AbstractBinding;
+import org.apache.servicemix.soap.interceptors.jbi.JbiFaultOutInterceptor;
 import org.apache.servicemix.soap.interceptors.jbi.JbiInInterceptor;
+import org.apache.servicemix.soap.interceptors.jbi.JbiOutInterceptor;
+import org.apache.servicemix.soap.interceptors.mime.AttachmentsOutInterceptor;
+import org.apache.servicemix.soap.interceptors.xml.BodyOutInterceptor;
+import org.apache.servicemix.soap.interceptors.xml.StaxOutInterceptor;
 
 public class Wsdl2HttpBindingImpl extends AbstractBinding<Wsdl2HttpOperation> implements Wsdl2HttpBinding {
 
@@ -47,6 +52,11 @@ public class Wsdl2HttpBindingImpl extends AbstractBinding<Wsdl2HttpOperation> im
         
         // ServerOut phase
         phase = getInterceptors(Phase.ServerOut);
+        phase.add(new JbiFaultOutInterceptor());
+        phase.add(new JbiOutInterceptor(true));
+        phase.add(new AttachmentsOutInterceptor());
+        phase.add(new StaxOutInterceptor());
+        phase.add(new BodyOutInterceptor());
         
         // ClientOut phase
         phase = getInterceptors(Phase.ClientOut);

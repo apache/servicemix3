@@ -38,6 +38,8 @@ public interface JbiConstants {
     
     public static final String PROTOCOL_HEADERS = "javax.jbi.messaging.protocol.headers";
 
+    public static final String USE_JBI_WRAPPER = "useJbiWrapper";
+    
     public static final String WSDL11_WRAPPER_NAMESPACE = "http://java.sun.com/xml/ns/jbi/wsdl-11-wrapper";
     public static final String WSDL11_WRAPPER_PREFIX = "jbi";
     public static final String WSDL11_WRAPPER_MESSAGE_LOCALNAME = "message";

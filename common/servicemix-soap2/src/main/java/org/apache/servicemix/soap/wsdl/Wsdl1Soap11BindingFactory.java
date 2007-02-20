@@ -139,9 +139,12 @@ public class Wsdl1Soap11BindingFactory {
             part.setName(wsdlPart.getName());
             part.setType(wsdlPart.getTypeName());
             part.setElement(wsdlPart.getElementName());
-            if (wsdlSoapBody.getParts().contains(part.getName())) {
+            if ((wsdlSoapBody.getParts() == null && wsdlInput.getMessage().getOrderedParts(null).size() == 1) ||
+                wsdlSoapBody.getParts().contains(part.getName())) {
                 part.setBody(true);
-                input.setElementName(wsdlPart.getElementName());
+                if (operation.getStyle() == Style.DOCUMENT) {
+                    input.setElementName(wsdlPart.getElementName());
+                }
             } else {
                 boolean header = false;
                 for (SOAPHeader h : wsdlSoapHeaders) {
@@ -214,7 +217,7 @@ public class Wsdl1Soap11BindingFactory {
     }
     
     private static Style getStyle(String str) {
-        if (WSDLUtils.WSDL1_STYLE_RPC.equalsIgnoreCase(str)) {
+        if (WSDLUtils.WSDL1_STYLE_DOCUMENT.equalsIgnoreCase(str)) {
             return Style.DOCUMENT;
         } else if (WSDLUtils.WSDL1_STYLE_RPC.equalsIgnoreCase(str)) {
             return Style.RPC;

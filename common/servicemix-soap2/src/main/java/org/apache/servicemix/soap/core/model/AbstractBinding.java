@@ -58,7 +58,7 @@ public class AbstractBinding<T extends Operation> extends AbstractInterceptorPro
     
     public InterceptorChain getInterceptorChain(Phase phase) {
         InterceptorChain chain = new PhaseInterceptorChain();
-        chain.add(getInterceptors(Phase.ClientOut));
+        chain.add(getInterceptors(phase));
         return chain;
     }
     

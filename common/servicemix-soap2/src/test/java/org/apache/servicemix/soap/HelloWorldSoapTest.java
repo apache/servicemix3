@@ -33,6 +33,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.PropertyConfigurator;
 import org.apache.servicemix.soap.api.Message;
 import org.apache.servicemix.soap.api.InterceptorProvider.Phase;
 import org.apache.servicemix.soap.api.model.Binding;
@@ -54,6 +55,14 @@ import org.w3c.dom.Element;
 
 public class HelloWorldSoapTest extends TestCase {
 
+    static {
+        String conf = System.getProperty("log4j.configuration");
+        System.err.println("Configuring log4j with: " + conf);
+        if (conf != null) {
+            PropertyConfigurator.configure(conf);
+        }
+    }
+    
     public void testDocLitInput() throws Exception {
         Binding<?> binding = getBinding("HelloWorld-DOC.wsdl");
         PhaseInterceptorChain phaseIn = new PhaseInterceptorChain();

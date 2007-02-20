@@ -56,6 +56,10 @@ public class JbiOutWsdl1Interceptor extends AbstractInterceptor {
         if (message.getContent(Exception.class) != null) {
             return;
         }
+        // Check if we should not use the JBI wrapper
+        if (message.get(JbiConstants.USE_JBI_WRAPPER) instanceof Boolean && ((Boolean) message.get(JbiConstants.USE_JBI_WRAPPER)) == false) {
+            return;
+        }
         Source source = message.getContent(Source.class);
         Element element = DomUtil.parse(source).getDocumentElement();
         if (!JbiConstants.WSDL11_WRAPPER_NAMESPACE.equals(element.getNamespaceURI()) ||
@@ -66,9 +70,10 @@ public class JbiOutWsdl1Interceptor extends AbstractInterceptor {
         List<NodeList> partsContent = new ArrayList<NodeList>();
         Element partWrapper = DomUtil.getFirstChildElement(element);
         while (partWrapper != null) {
-            if (!"part".equals(partWrapper.getLocalName())) {
-                throw new Fault("Unexpected part wrapper element '" + partWrapper.getLocalName()
-                        + "' expected 'part'");
+            if (!JbiConstants.WSDL11_WRAPPER_NAMESPACE.equals(element.getNamespaceURI()) ||
+                !JbiConstants.WSDL11_WRAPPER_PART_LOCALNAME.equals(partWrapper.getLocalName())) {
+                throw new Fault("Unexpected part wrapper element '" + QNameUtil.toString(element)
+                        + "' expected '{" + JbiConstants.WSDL11_WRAPPER_NAMESPACE + "}part'");
             }
             NodeList nodes = partWrapper.getChildNodes();
             partsContent.add(nodes);
@@ -93,13 +98,20 @@ public class JbiOutWsdl1Interceptor extends AbstractInterceptor {
             NodeList nodes =  partsContent.get(idxPart++);
             if (part.isBody()) {
                 if (wsdlOperation.getStyle() == Style.DOCUMENT) {
-                    if (nodes.getLength() != 1) {
-                        throw new Fault("Body part '" + part.getName() + "' contains more than one node; expected a single element.");
+                    Element e = null;
+                    for (int i = 0; i < nodes.getLength(); i++) {
+                        Node n = nodes.item(i);
+                        if (n instanceof Element) {
+                            if (e != null) {
+                                throw new Fault("Body part '" + part.getName() + "' contains more than one element; expected a single element.");
+                            } else {
+                                e = (Element) n;
+                            }
+                        }
                     }
-                    if (nodes.item(0) instanceof Element == false) {
-                        throw new Fault("Body part '" + part.getName() + "' must be a single element");
+                    if (e == null) {
+                        throw new Fault("Body part '" + part.getName() + "' contains no element; expected a single element.");
                     }
-                    Element e = (Element) nodes.item(0);
                     if (!wsdlMessage.getElementName().equals(DomUtil.getQName(e))) {
                         throw new Fault("Body part '" + part.getName() + "' element '" + DomUtil.getQName(e) + " doesn't match expected element '" + QNameUtil.toString(wsdlMessage.getElementName()) + "'");
                     }
@@ -115,14 +127,21 @@ public class JbiOutWsdl1Interceptor extends AbstractInterceptor {
                 }
             } else {
                 DocumentFragment frag = document.createDocumentFragment();
-                if (nodes.getLength() != 1) {
-                    throw new Fault("Header part '" + part.getName() + "' contains more than one node; expected a single element.");
+                Element e = null;
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    Node n = nodes.item(i);
+                    if (n instanceof Element) {
+                        if (e != null) {
+                            throw new Fault("Header part '" + part.getName() + "' contains more than one element; expected a single element.");
+                        } else {
+                            e = (Element) n;
+                        }
+                    }
                 }
-                if (nodes.item(0) instanceof Element == false) {
-                    throw new Fault("Header part '" + part.getName() + "' must be a single element");
+                if (e == null) {
+                    throw new Fault("Header part '" + part.getName() + "' contains no element; expected a single element.");
                 }
                 QName headerName = part.getElement();
-                Element e = (Element) nodes.item(0);
                 if (!headerName.equals(DomUtil.getQName(e))) {
                     throw new Fault("Header part '" + part.getName() + "' element '" + DomUtil.getQName(e) + " doesn't match expected element '" + QNameUtil.toString(headerName) + "'");
                 }

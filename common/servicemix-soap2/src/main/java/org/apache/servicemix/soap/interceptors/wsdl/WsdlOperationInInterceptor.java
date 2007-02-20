@@ -23,9 +23,11 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.servicemix.soap.api.Fault;
 import org.apache.servicemix.soap.api.Message;
 import org.apache.servicemix.soap.api.model.Binding;
 import org.apache.servicemix.soap.api.model.Operation;
+import org.apache.servicemix.soap.bindings.soap.SoapFault;
 import org.apache.servicemix.soap.core.AbstractInterceptor;
 
 /**
@@ -52,6 +54,18 @@ public class WsdlOperationInInterceptor extends AbstractInterceptor {
         if (matching.size() == 1) {
             Operation op = matching.get(0);
             message.put(Operation.class, op);
+        } else {
+            StringBuilder sb = new StringBuilder();
+            sb.append("No matching operation found for element: ");
+            sb.append(name);
+            sb.append("\n");
+            sb.append("Expected one of: \n");
+            for (Operation<?> oper : binding.getOperations()) {
+                sb.append("  - ");
+                sb.append(oper.getInput().getElementName());
+                sb.append("\n");
+            }
+            throw new SoapFault(SoapFault.SENDER, sb.toString());
         }
     }
 

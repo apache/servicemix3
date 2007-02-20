@@ -62,9 +62,11 @@ public class SoapInInterceptor extends AbstractInterceptor {
             }
             if (soapVersion == null) {
                 soapVersion = SoapVersionFactory.getInstance().getSoapVersion(name);
+            } else {
+                soapVersion = soapVersion.getDerivedVersion(name.getPrefix());
             }
             if (soapVersion == null) {
-                throw new SoapFault(SoapFault.SENDER, "Unrecognized namespace: "
+                throw new SoapFault(SoapConstants.SOAP_12_CODE_VERSIONMISMATCH, "Unrecognized namespace: "
                                 + xmlReader.getNamespaceURI() + " at ["
                                 + xmlReader.getLocation().getLineNumber() + ","
                                 + xmlReader.getLocation().getColumnNumber()
@@ -76,7 +78,7 @@ public class SoapInInterceptor extends AbstractInterceptor {
                     throw new SoapFault(SoapConstants.SOAP_12_CODE_VERSIONMISMATCH, 
                           "Expected a SOAP " + soapVersion.getVersion() + " request");
                 }
-                throw new SoapFault(SoapFault.SENDER, "Unrecognized element: "
+                throw new SoapFault(SoapConstants.SOAP_12_CODE_VERSIONMISMATCH, "Unrecognized element: "
                                 + xmlReader.getName() + " at ["
                                 + xmlReader.getLocation().getLineNumber() + ","
                                 + xmlReader.getLocation().getColumnNumber()
