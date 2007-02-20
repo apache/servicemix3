@@ -156,7 +156,9 @@ public class DotViewFlowListener extends DotViewEndpointListener
                 }
             }
             usedComponents.add(mei.getSourceId().getName());
-            usedComponents.add(((AbstractServiceEndpoint) mei.getEndpoint()).getComponentNameSpace().getName());
+            if (((AbstractServiceEndpoint) mei.getEndpoint()).getComponentNameSpace() != null) {
+                usedComponents.add(((AbstractServiceEndpoint) mei.getEndpoint()).getComponentNameSpace().getName());
+            }
             String dest = EndpointSupport.getUniqueKey(mei.getEndpoint());
             Map componentFlow = createSource(source);
             if (componentFlow.put(dest, Boolean.TRUE) == null) {
