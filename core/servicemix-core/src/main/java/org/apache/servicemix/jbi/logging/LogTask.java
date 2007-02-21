@@ -55,7 +55,7 @@ public class LogTask extends TimerTask {
             if (lastConfigured < lastModified && url != null && xml) {
                 DOMConfigurator.configure(url);
                 lastConfigured = System.currentTimeMillis();
-                logger.info("log4j system reconfigured");
+                logger.info("Logging system reconfigured using file: " + url.toString());
             }
         } catch (Exception ex) {
             logger.error(ex);
