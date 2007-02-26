@@ -50,14 +50,14 @@
     <ciManagement>
         <system>continuum</system>
         <notifiers>
-            <notifier>
+            <!--notifier>
                 <type>mail</type>
                 <configuration>
                     <address>servicemix-commits@geronimo.apache.org</address>
                 </configuration>
                 <sendOnSuccess>false</sendOnSuccess>
             </notifier>
-            <!--notifier>
+            <notifier>
               <type>irc</type>
               <configuration>
                 <host>irc.codehaus.org</host>
@@ -478,6 +478,11 @@
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-soap</artifactId>
+                <version>3.2-incubating-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.servicemix</groupId>
+                <artifactId>servicemix-soap2</artifactId>
                 <version>3.2-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
