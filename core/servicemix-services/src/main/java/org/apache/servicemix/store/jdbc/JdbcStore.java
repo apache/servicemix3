@@ -56,7 +56,6 @@ public class JdbcStore implements Store {
             connection = factory.getDataSource().getConnection();
             factory.getAdapter().doStoreData(connection, name + ":" + id, buffer.toByteArray());
         } catch (Exception e) {
-            e.printStackTrace();
             throw (IOException) new IOException("Error storing object").initCause(e);
         } finally {
             close(connection);
