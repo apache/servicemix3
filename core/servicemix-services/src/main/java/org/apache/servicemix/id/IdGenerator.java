@@ -56,7 +56,7 @@ public class IdGenerator{
 			try {
 				hostName = InetAddress.getLocalHost().getHostName();
 				ServerSocket ss = new ServerSocket(0);
-				stub=hostName + "-" + ss.getLocalPort() + "-" + System.currentTimeMillis() + "-";
+				stub=hostName + "-" + Long.toHexString(ss.getLocalPort() ^ System.currentTimeMillis()) + "-";
 				Thread.sleep(100);
 				ss.close();
 			}catch(Exception ioe){
@@ -64,7 +64,7 @@ public class IdGenerator{
 			}
 		}else{
             hostName="localhost";
-			stub = hostName + "-1-" +System.currentTimeMillis() +"-";
+			stub = hostName + Long.toHexString(System.currentTimeMillis()) +"-";
 		}
 		UNIQUE_STUB = stub;
 	}
