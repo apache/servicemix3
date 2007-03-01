@@ -16,10 +16,12 @@
  */
 package org.apache.servicemix.itests;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletResponse;
 import javax.wsdl.Definition;
 import javax.wsdl.factory.WSDLFactory;
@@ -31,6 +33,9 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.servicemix.jbi.util.FileUtil;
+import org.apache.servicemix.soap.marshalers.SoapMarshaler;
+import org.apache.servicemix.soap.marshalers.SoapMessage;
+import org.apache.servicemix.soap.util.IoUtil;
 import org.apache.servicemix.tck.SpringTestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
@@ -73,6 +78,34 @@ public class Jsr181HttpTest extends SpringTestSupport {
         FileUtil.copyInputStream(method.getResponseBodyAsStream(), baos);
         System.err.println(baos.toString());
         assertEquals(HttpServletResponse.SC_OK, state);
+    }
+
+    public void testMtom() throws Exception {
+        PostMethod method = new PostMethod("http://localhost:8194/Service/");
+        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new HttpMethodRetryHandler() {
+            public boolean retryMethod(HttpMethod method, IOException exception, int executionCount) {
+                return false;
+            }
+        });
+        method.setRequestEntity(new StringRequestEntity(
+                        "<env:Envelope xmlns:env='http://www.w3.org/2003/05/soap-envelope'>" + 
+                        "  <env:Body>" + 
+                        "    <mtom xmlns='http://servicemix.org/test/'>" + 
+                        "      <id>10</id>" +
+                        "    </mtom>" +
+                        "  </env:body" +
+                        "</env:Envelope>"));
+        int state = new HttpClient().executeMethod(method);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        FileUtil.copyInputStream(method.getResponseBodyAsStream(), baos);
+        System.err.println(baos.toString());
+        assertEquals(HttpServletResponse.SC_OK, state);
+        SoapMessage msg = new SoapMarshaler().createReader().read(new ByteArrayInputStream(baos.toByteArray()), method.getResponseHeader("Content-Type").getValue());
+        DataHandler att = (DataHandler) msg.getAttachments().values().iterator().next();
+        ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
+        IoUtil.copyStream(att.getInputStream(), baos2);
+        assertEquals("<xsl:stylesheet />", baos2.toString());
+        assertEquals(1, msg.getAttachments().size());
     }
 
 }

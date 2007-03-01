@@ -16,8 +16,11 @@
  */
 package org.apache.servicemix.itests.beans;
 
+import javax.activation.DataSource;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
+
+import org.apache.servicemix.jbi.util.ByteArrayDataSource;
 
 @WebService
 public class Echo {
@@ -47,5 +50,10 @@ public class Echo {
         Response r = new Response();
         r.setMsg("Hello: " + req.getMsg());
         return r;
+    }
+    
+    @WebMethod
+    public DataSource mtom(int id) {
+        return new ByteArrayDataSource("<xsl:stylesheet />".getBytes(), "text/xml");
     }
 }
