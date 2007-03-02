@@ -518,6 +518,12 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
      * @throws MessagingException
      */
     public void sendConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException {
+        prepareConsumerExchange(exchange, endpoint);
+        // Send the exchange
+        channel.send(exchange);
+    }
+    
+    public void prepareConsumerExchange(MessageExchange exchange, Endpoint endpoint) {
         // Check if a correlation id is already set on the exchange, otherwise create it
         String correlationIDValue = (String) exchange.getProperty(JbiConstants.CORRELATION_ID);
         if (correlationIDValue == null) {
@@ -542,8 +548,6 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
         // Set the sender endpoint property
         String key = EndpointSupport.getKey(endpoint);
         exchange.setProperty(JbiConstants.SENDER_ENDPOINT, key);
-        // Send the exchange
-        channel.send(exchange);
     }
 
     /**

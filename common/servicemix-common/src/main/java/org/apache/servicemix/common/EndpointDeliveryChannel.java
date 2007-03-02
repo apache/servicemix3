@@ -74,17 +74,24 @@ public class EndpointDeliveryChannel implements DeliveryChannel {
     public void send(MessageExchange exchange) throws MessagingException {
         if (exchange.getStatus() == ExchangeStatus.ACTIVE && exchange.getRole() == Role.CONSUMER) {
             ServiceMixComponent comp = endpoint.getServiceUnit().getComponent();
-            comp.sendConsumerExchange(exchange, endpoint);
-        } else {
-            channel.send(exchange);
+            comp.prepareConsumerExchange(exchange, endpoint);
         }
+        channel.send(exchange);
     }
 
     public boolean sendSync(MessageExchange exchange, long timeout) throws MessagingException {
+        if (exchange.getStatus() == ExchangeStatus.ACTIVE && exchange.getRole() == Role.CONSUMER) {
+            ServiceMixComponent comp = endpoint.getServiceUnit().getComponent();
+            comp.prepareConsumerExchange(exchange, endpoint);
+        }
         return channel.sendSync(exchange, timeout);
     }
 
     public boolean sendSync(MessageExchange exchange) throws MessagingException {
+        if (exchange.getStatus() == ExchangeStatus.ACTIVE && exchange.getRole() == Role.CONSUMER) {
+            ServiceMixComponent comp = endpoint.getServiceUnit().getComponent();
+            comp.prepareConsumerExchange(exchange, endpoint);
+        }
         return channel.sendSync(exchange);
     }
 }
