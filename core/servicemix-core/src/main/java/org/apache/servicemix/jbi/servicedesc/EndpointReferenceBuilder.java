@@ -17,24 +17,23 @@
 package org.apache.servicemix.jbi.servicedesc;
 
 import javax.jbi.servicedesc.ServiceEndpoint;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.util.DOMUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 
 public class EndpointReferenceBuilder {
+    private static final Log log = LogFactory.getLog(EndpointReferenceBuilder.class);
 
     public static final String JBI_NAMESPACE = "http://java.sun.com/jbi/end-point-reference";
     public static final String XMLNS_NAMESPACE = "http://www.w3.org/2000/xmlns/";
     
     public static DocumentFragment getReference(ServiceEndpoint endpoint) {
         try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.newDocument();
+            Document doc = DOMUtil.newDocument();
             DocumentFragment fragment = doc.createDocumentFragment();
             Element epr = doc.createElementNS(JBI_NAMESPACE, "jbi:end-point-reference");
             epr.setAttributeNS(XMLNS_NAMESPACE,"xmlns:sns", endpoint.getServiceName().getNamespaceURI());
@@ -43,6 +42,7 @@ public class EndpointReferenceBuilder {
             fragment.appendChild(epr);
             return fragment;
         } catch (Exception e) {
+            log.warn("Unable to create reference for ServiceEndpoint " + endpoint, e);
             return null;
         }
     }

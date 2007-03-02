@@ -25,7 +25,13 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.emory.mathcs.backport.java.util.Queue;
+import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentLinkedQueue;
+
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -207,5 +213,36 @@ public class DOMUtil {
             return new QName(el.getNamespaceURI(), el.getLocalName());
         }
     }
-    
+
+    private static DocumentBuilderFactory dbf = null;
+    private static Queue builders = new ConcurrentLinkedQueue();
+
+    public static DocumentBuilder getBuilder() throws ParserConfigurationException {
+        DocumentBuilder builder = (DocumentBuilder) builders.poll();
+        if (builder == null) {
+            if (dbf == null) {
+                dbf = DocumentBuilderFactory.newInstance();
+                dbf.setNamespaceAware(true);
+            }
+            builder = dbf.newDocumentBuilder();
+        }
+        return builder;
+    }
+
+    public static void releaseBuilder(DocumentBuilder builder) {
+        builders.add(builder);
+    }
+
+    /**
+     * Return a new document, ready to populate.
+     * @return
+     * @throws ParserConfigurationException
+     */
+    public static Document newDocument() throws ParserConfigurationException {
+        DocumentBuilder builder = getBuilder();
+        Document doc = builder.newDocument();
+        releaseBuilder(builder);
+        return doc;
+    }
+
 }
