@@ -151,7 +151,7 @@ public abstract class BaseComponent implements ServiceMixComponent {
     protected BaseServiceUnitManager createServiceUnitManager() {
         return null;
     }
-    
+
     protected Registry createRegistry() {
         return new Registry(this);
     }
@@ -159,14 +159,14 @@ public abstract class BaseComponent implements ServiceMixComponent {
     public ComponentContext getComponentContext() {
         return lifeCycle.getContext();
     }
-    
+
     public String getComponentName() {
         if (getComponentContext() == null) {
             return "Component (" + getClass().getName() + ") not yet initialized";
         }
         return getComponentContext().getComponentName();
     }
-    
+
     /**
      * @return Returns the logger.
      */
@@ -180,7 +180,7 @@ public abstract class BaseComponent implements ServiceMixComponent {
     public Registry getRegistry() {
         return registry;
     }
-    
+
     /**
      * Shortcut to retrieve this component's executor.
      * 
@@ -194,8 +194,12 @@ public abstract class BaseComponent implements ServiceMixComponent {
         lifeCycle.sendConsumerExchange(exchange, endpoint);
     }
 
+    public void prepareConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException {
+        lifeCycle.prepareConsumerExchange(exchange, endpoint);
+    }
+
     public QName getEPRElementName() {
         return null;
     }
-    
+
 }
