@@ -72,6 +72,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     private int intervalCount = 0;
     private AtomicBoolean closed = new AtomicBoolean(false);
     private Map waiters = new ConcurrentHashMap();
+    private TransactionManager transactionManager = null;
     
     /**
      * When using clustering and sendSync, the exchange received will not be the same
@@ -87,6 +88,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         this.component = component;
         this.container = component.getContainer();
         this.queue = new ArrayBlockingQueue(component.getInboundQueueCapacity());
+        this.transactionManager = (TransactionManager) this.container.getTransactionManager();
     }
 
     /**
@@ -707,40 +709,38 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     }
 
     protected void suspendTx(MessageExchangeImpl me) {
-        try {
-            Transaction oldTx = me.getTransactionContext();
-            if (oldTx != null) {
-                TransactionManager tm = (TransactionManager) container.getTransactionManager();
-                if (tm != null) {
+        if (transactionManager != null) {
+            try {
+                Transaction oldTx = me.getTransactionContext();
+                if (oldTx != null) {
                     if (log.isDebugEnabled()) {
                         log.debug("Suspending transaction for " + me.getExchangeId() + " in " + this);
                     }
-                    Transaction tx = tm.suspend();
+                    Transaction tx = transactionManager.suspend();
                     if (tx != oldTx) {
                         throw new IllegalStateException("the transaction context set in the messageExchange is not bound to the current thread");
                     }
                 }
+            } catch (Exception e) {
+                log.info("Exchange " + me.getExchangeId() + " aborted due to transaction exception", e);
+                me.getPacket().setAborted(true);
             }
-        } catch (Exception e) {
-            log.info("Exchange " + me.getExchangeId() + " aborted due to transaction exception", e);
-            me.getPacket().setAborted(true);
         }
     }
 
     protected void resumeTx(MessageExchangeImpl me) throws MessagingException {
-        try {
-            Transaction oldTx = me.getTransactionContext();
-            if (oldTx != null) {
-                TransactionManager tm = (TransactionManager) container.getTransactionManager();
-                if (tm != null) {
+        if (transactionManager != null) {
+            try {
+                Transaction oldTx = me.getTransactionContext();
+                if (oldTx != null) {
                     if (log.isDebugEnabled()) {
                         log.debug("Resuming transaction for " + me.getExchangeId() + " in " + this);
                     }
-                    tm.resume(oldTx);
+                    transactionManager.resume(oldTx);
                 }
+            } catch (Exception e) {
+                throw new MessagingException(e);
             }
-        } catch (Exception e) {
-            throw new MessagingException(e);
         }
     }
 
@@ -751,24 +751,21 @@ public class DeliveryChannelImpl implements DeliveryChannel {
      * @throws MessagingException
      */
     protected void autoEnlistInTx(MessageExchangeImpl me) throws MessagingException {
-        try {
-            if (container.isAutoEnlistInTransaction()) {
-                TransactionManager tm = (TransactionManager) container.getTransactionManager();
-                if (tm != null) {
-                    Transaction tx = tm.getTransaction();
-                    if (tx != null) {
-                        Object oldTx = me.getTransactionContext();
-                        if (oldTx == null) {
-                            me.setTransactionContext(tx);
-                        } else if (oldTx != tx) {
-                            throw new IllegalStateException(
-                                    "the transaction context set in the messageExchange is not bound to the current thread");
-                        }
+        if (transactionManager != null && container.isAutoEnlistInTransaction()) {
+            try {
+                Transaction tx = transactionManager.getTransaction();
+                if (tx != null) {
+                    Object oldTx = me.getTransactionContext();
+                    if (oldTx == null) {
+                        me.setTransactionContext(tx);
+                    } else if (oldTx != tx) {
+                        throw new IllegalStateException(
+                                "the transaction context set in the messageExchange is not bound to the current thread");
                     }
                 }
+            } catch (Exception e) {
+                throw new MessagingException(e);
             }
-        } catch (Exception e) {
-            throw new MessagingException(e);
         }
     }
 
