@@ -17,12 +17,9 @@
 package org.apache.servicemix.jbi.container;
 
 import javax.jbi.JBIException;
-import javax.resource.spi.work.WorkManager;
 
-import org.apache.geronimo.transaction.manager.GeronimoTransactionManager;
 import org.apache.servicemix.components.util.ComponentAdaptor;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
-import org.jencks.factory.WorkManagerFactoryBean;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -166,19 +163,6 @@ public class SpringJBIContainer extends JBIContainer
 
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
-    }
-
-    protected WorkManager createWorkManager() throws JBIException {
-        WorkManagerFactoryBean factory = new WorkManagerFactoryBean();
-        if (getTransactionManager() instanceof GeronimoTransactionManager) {
-            factory.setTransactionManager((GeronimoTransactionManager) getTransactionManager());
-        }
-        try {
-            return (WorkManager) factory.getObject();
-        }
-        catch (Exception e) {
-            throw new JBIException("Failed to start WorkManager: " + e, e);
-        }
     }
 
     public void destroy() throws Exception {
