@@ -17,16 +17,45 @@
     limitations under the License.
 
 -->
-<beans xmlns:sm="http://servicemix.apache.org/config/1.0">
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+       xmlns:amq="http://activemq.org/config/1.0"
+       xmlns:util="http://www.springframework.org/schema/util">
 
-  <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-      <property name="location" value="classpath:servicemix.properties" />
+  <sm:rmiRegistry id="rmiRegistry" port="1099" />
+  
+  <!-- JMX server -->
+  <sm:jmxServer id="jmxServer" locateExistingServerIfPossible="true" />
+  
+  <!-- JMX Remote connector -->
+  <sm:jmxConnector objectName="connector:name=rmi"
+                   serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi"
+                   threaded="true"
+                   daemon="true" 
+                   depends-on="rmiRegistry, jndi" />
+
+  <bean id="jndi" 
+        class="org.apache.xbean.spring.jndi.SpringInitialContextFactory" 
+        factory-method="makeInitialContext"
+        singleton="true">
+    <property name="entries" ref="jndiEntries" />
   </bean>
 
-  <import resource="classpath:tx.xml" />
-  <import resource="classpath:jndi.xml" />
-  <import resource="classpath:jmx.xml" />
-  <import resource="classpath:activemq.xml" />
+  <util:map id="jndiEntries">
+    <entry key="java:comp/env/jms/wsnotificationCF">
+      <amq:connectionFactory brokerURL="tcp://localhost:61616" />
+    </entry>
+  </util:map>
+
+  <amq:broker depends-on="jmxServer">
+    <amq:managementContext>
+      <bean class="org.apache.activemq.broker.jmx.ManagementContext">
+        <property name="createConnector" value="false" />
+      </bean>
+    </amq:managementContext>
+    <amq:transportConnectors>
+       <amq:transportConnector uri="tcp://localhost:61616" />
+    </amq:transportConnectors>
+  </amq:broker>
 
   <!-- the JBI container -->
   <sm:container id="jbi" 
@@ -34,11 +63,10 @@
                 MBeanServer="#jmxServer"
                 installationDirPath="./install"
                 deploymentDirPath="./deploy"
-                flowName="seda"
-                transactionManager="#transactionManager">
+                flowName="seda">
 
     <sm:activationSpecs>
-		
+
     </sm:activationSpecs>
   </sm:container>
 
