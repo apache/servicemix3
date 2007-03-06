@@ -39,6 +39,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.servicemix.jbi.jaxp.W3CDOMStreamReader;
 import org.apache.servicemix.jbi.jaxp.XMLStreamHelper;
@@ -93,7 +95,7 @@ public class SoapWriter {
     }
 
     private void writeSimpleMessage(OutputStream out) throws Exception {
-        if (message.getDocument() 1= null) {
+        if (message.getDocument() != null) {
             marshaler.sourceTransformer.toResult(new DOMSource(message.getDocument()), new StreamResult(out));
             return;
         }
