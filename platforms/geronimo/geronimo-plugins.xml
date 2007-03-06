@@ -20,7 +20,7 @@
 <geronimo-plugin-list xmlns="http://geronimo.apache.org/xml/ns/plugins-1.1">
     <plugin>
         <name>ServiceMix Integration</name>
-        <module-id>org.apache.servicemix.geronimo/servicemix/3.1-incubating/car</module-id>
+        <module-id>org.apache.servicemix.geronimo/servicemix/3.1.1-incubating-SNAPSHOT/car</module-id>
         <category>Integration</category>
         <description>This plugin integrates Apache ServiceMix JBI container to Apache Geronimo.</description>
         <url>http://incubator.apache.org/servicemix</url>
@@ -50,7 +50,7 @@
     </plugin>
     <plugin>
         <name>ServiceMix Deployer</name>
-        <module-id>org.apache.servicemix.geronimo/deployer/3.1-incubating/car</module-id>
+        <module-id>org.apache.servicemix.geronimo/deployer/3.1.1-incubating-SNAPSHOT/car</module-id>
         <category>Integration</category>
         <description>JBI artifacts deployer for Apache ServiceMix JBI container.</description>
         <url>http://incubator.apache.org/servicemix</url>
