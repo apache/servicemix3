@@ -371,6 +371,11 @@
             <exclude>**/AdminServiceTest.*</exclude>
             <exclude>**/ManagementContextTest.*</exclude>
             <exclude>**/ServiceUnitTest.*</exclude>
+            
+            <exclude>**/SimpleClusterSendSyncTest.*</exclude>
+            <exclude>**/InstallComponentTaskTest.*</exclude>
+            <exclude>**/DeployAndListServiceAssemblyTasksTest.*</exclude>
+            <exclude>**/ManagementAttributesTest.*</exclude>
 
           </excludes>
         </configuration>
