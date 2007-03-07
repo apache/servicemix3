@@ -63,6 +63,9 @@ public class StAXSourceTransformer extends SourceTransformer {
     }
     
     public XMLStreamReader toXMLStreamReader(Source source) throws XMLStreamException, TransformerException {
+        if (source instanceof StaxSource) {
+            return ((StaxSource) source).getXMLStreamReader();
+        }
         // It seems that woodstox 2.9.3 throws some NPE in the servicemix-soap
         // when using DOM, so use our own dom / stax parser
         if (source instanceof DOMSource) {
