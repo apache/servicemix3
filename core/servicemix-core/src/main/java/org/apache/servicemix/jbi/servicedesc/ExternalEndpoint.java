@@ -71,4 +71,8 @@ public class ExternalEndpoint extends AbstractServiceEndpoint {
         return se.getServiceName();
     }
 
+    protected String getClassifier() {
+        return "external";
+    }
+
 }

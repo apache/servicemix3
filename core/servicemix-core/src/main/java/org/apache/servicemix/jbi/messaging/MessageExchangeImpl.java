@@ -106,6 +106,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     protected MessageExchangeImpl mirror;
     protected transient boolean pushDeliver;
     protected transient Object txLock;
+    protected transient String key;
 
     /**
      * Constructor
@@ -302,8 +303,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
         if (name == null) {
             throw new IllegalArgumentException("name should not be null");
         }
-        name = name.toLowerCase();
-        if (IN.equals(name)) {
+        if (IN.equalsIgnoreCase(name)) {
             if (!can(CAN_SET_IN_MSG)) {
                 throw new MessagingException("In not supported");
             }
@@ -312,7 +312,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             }
             ((NormalizedMessageImpl) message).exchange = this;
             packet.setIn((NormalizedMessageImpl) message);
-        } else if (OUT.equals(name)) {
+        } else if (OUT.equalsIgnoreCase(name)) {
             if (!can(CAN_SET_OUT_MSG)) {
                 throw new MessagingException("Out not supported");
             }
@@ -321,7 +321,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             }
             ((NormalizedMessageImpl) message).exchange = this;
             packet.setOut((NormalizedMessageImpl) message);
-        } else if (FAULT.equals(name)) {
+        } else if (FAULT.equalsIgnoreCase(name)) {
             if (!can(CAN_SET_FAULT_MSG)) {
                 throw new MessagingException("Fault not supported");
             }
@@ -742,4 +742,19 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
         }
     }
 
+    /**
+     * Compute a unique key for this exchange proxy.
+     * It has to be different for the two sides of the exchange, so
+     * we include the role + the exchange id.
+     * Obviously, it works, because the role never change for
+     * a given proxy.
+     * 
+     * @return
+     */
+    public String getKey() {
+        if (key == null) {
+            key = (getRole() == Role.CONSUMER ? "consumer" : "provider") + ":" + getExchangeId();
+        }
+        return key;
+    }
 }

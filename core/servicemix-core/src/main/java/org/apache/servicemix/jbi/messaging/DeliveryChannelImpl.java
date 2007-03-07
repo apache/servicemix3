@@ -450,7 +450,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         messageExchange.setProperty(JbiConstants.SEND_SYNC, Boolean.TRUE);
         // Call doSend
         MessageExchangeImpl me = (MessageExchangeImpl) messageExchange;
-        String exchangeKey = getKeyForExchange(me);
+        String exchangeKey = me.getKey();
         try {
             exchangesById.put(exchangeKey, me);
             // Synchronously send a message and wait for the response
@@ -545,7 +545,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         // Check if the delivery channel has been closed
         checkNotClosed();
         // Retrieve the original exchange sent
-        MessageExchangeImpl original = (MessageExchangeImpl) exchangesById.get(getKeyForExchange(me));
+        MessageExchangeImpl original = (MessageExchangeImpl) exchangesById.get(me.getKey());
         if (original != null && me != original) {
             original.copyFrom(me);
             me = original;
@@ -775,8 +775,5 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     public String toString() {
         return "DeliveryChannel{" + component.getName() + "}";
     }
-    
-    private String getKeyForExchange(MessageExchangeImpl me) {
-        return (me.getRole() == Role.CONSUMER ? "consumer:" : "provider:") + me.getExchangeId();
-    }
+
 }

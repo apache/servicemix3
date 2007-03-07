@@ -102,4 +102,8 @@ public class LinkedEndpoint extends AbstractServiceEndpoint {
         return toService;
     }
 
+    protected String getClassifier() {
+        return "linked";
+    }
+
 }
