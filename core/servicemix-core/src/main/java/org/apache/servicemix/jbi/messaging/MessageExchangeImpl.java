@@ -753,7 +753,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
      */
     public String getKey() {
         if (key == null) {
-            key = (getRole() == Role.CONSUMER ? "consumer" : "provider") + ":" + getExchangeId();
+            key = (getRole() == Role.CONSUMER ? "consumer:" : "provider:") + getExchangeId();
         }
         return key;
     }

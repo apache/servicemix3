@@ -28,6 +28,7 @@ public class XBeanServiceUnit extends ServiceUnit {
 
     private Kernel kernel;
     private ServiceName configuration;
+    private ClassLoader classLoader;
 
     /**
      * @return Returns the kernel.
@@ -56,21 +57,22 @@ public class XBeanServiceUnit extends ServiceUnit {
      */
     public void shutDown() throws JBIException {
         super.shutDown();
+        classLoader = null;
         if (kernel != null) {
             kernel.destroy();
         }
     }
     
     public ClassLoader getConfigurationClassLoader() {
-        ClassLoader cl = null;
-        if (kernel != null) {
+        if (classLoader == null && kernel != null && configuration != null) {
             try {
                 ServiceFactory sf = kernel.getServiceFactory(configuration);
-                cl = sf.getClassLoader();
+                classLoader = sf.getClassLoader();
             } catch (ServiceNotFoundException e) {
                 // This should never happen
             }
-        } 
+        }
+        ClassLoader cl = classLoader;
         if (cl == null) {
             cl = Thread.currentThread().getContextClassLoader();
         }

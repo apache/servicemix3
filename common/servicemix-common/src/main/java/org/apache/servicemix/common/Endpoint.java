@@ -34,6 +34,7 @@ public abstract class Endpoint {
     protected Definition definition;
     protected ServiceUnit serviceUnit;
     protected Log logger;
+    private String key;
     
     public Endpoint() {
     }
@@ -56,6 +57,7 @@ public abstract class Endpoint {
      */
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
+        this.key = null;
     }
     /**
      * @return Returns the service.
@@ -68,6 +70,7 @@ public abstract class Endpoint {
      */
     public void setService(QName service) {
         this.service = service;
+        this.key = null;
     }
     /**
      * @return Returns the role.
@@ -143,6 +146,19 @@ public abstract class Endpoint {
 
     public void setDefinition(Definition definition) {
         this.definition = definition;
+    }
+    
+    String getKey() {
+        if (key == null) {
+            if (service == null) {
+                throw new IllegalArgumentException("Endpoint: " + this + " has no service name defined");
+            }
+            if (endpoint == null) {
+                throw new IllegalArgumentException("Endpoint: " + this + " has no endpoint name defined");
+            }
+            key = EndpointSupport.getKey(service, endpoint);
+        }
+        return key;
     }
 
 }

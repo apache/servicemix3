@@ -14,24 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.common;
+package org.apache.servicemix.soap.marshalers;
 
-import javax.jbi.servicedesc.ServiceEndpoint;
-import javax.xml.namespace.QName;
+import junit.framework.TestCase;
 
+public class SoapReaderTest extends TestCase {
 
-public class EndpointSupport {
-
-    public static String getKey(QName service, String endpoint) {
-        return org.apache.servicemix.jbi.servicedesc.EndpointSupport.getKey(service, endpoint);
+    public void testStartsWithCaseInsensitive() {
+        assertTrue(SoapReader.startsWithCaseInsensitive("abcdef", "ab"));
+        assertFalse(SoapReader.startsWithCaseInsensitive("abcdef", "abs"));
+        assertFalse(SoapReader.startsWithCaseInsensitive("abcdef", "abS"));
+        assertTrue(SoapReader.startsWithCaseInsensitive("abcdef", "aB"));
+        assertTrue(SoapReader.startsWithCaseInsensitive("aBcdef", "ab"));
     }
-    
-    public static String getKey(ServiceEndpoint endpoint) {
-        return org.apache.servicemix.jbi.servicedesc.EndpointSupport.getKey(endpoint);
-    }
-    
-    public static String getKey(Endpoint endpoint) {
-        return endpoint.getKey();
-    }
-    
 }
