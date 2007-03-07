@@ -194,6 +194,10 @@ public abstract class BaseComponent implements ServiceMixComponent {
         lifeCycle.sendConsumerExchange(exchange, endpoint);
     }
 
+    public void prepareConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException {
+        lifeCycle.prepareConsumerExchange(exchange, endpoint);
+    }
+
     public QName getEPRElementName() {
         return null;
     }
