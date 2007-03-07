@@ -27,15 +27,7 @@ public class EndpointSupport {
     }
     
     public static String getKey(ServiceEndpoint endpoint) {
-        QName serviceName = endpoint.getServiceName();
-        if (serviceName == null) {
-            throw new IllegalArgumentException("Endpoint: " + endpoint + " has no serviceName defined");
-        }
-        String endpointName = endpoint.getEndpointName();
-        if (endpointName == null) {
-            throw new IllegalArgumentException("Endpoint: " + endpoint + " has no endpointName defined");
-        }
-        return getKey(serviceName, endpointName);
+        return org.apache.servicemix.jbi.servicedesc.EndpointSupport.getKey(endpoint);
     }
     
     public static String getKey(Endpoint endpoint) {
