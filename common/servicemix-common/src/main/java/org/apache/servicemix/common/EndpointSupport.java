@@ -31,15 +31,7 @@ public class EndpointSupport {
     }
     
     public static String getKey(Endpoint endpoint) {
-        QName serviceName = endpoint.getService();
-        if (serviceName == null) {
-            throw new IllegalArgumentException("Endpoint: " + endpoint + " has no service name defined");
-        }
-        String endpointName = endpoint.getEndpoint();
-        if (endpointName == null) {
-            throw new IllegalArgumentException("Endpoint: " + endpoint + " has no endpoint name defined");
-        }
-        return getKey(serviceName, endpointName);
+        return endpoint.getKey();
     }
     
 }

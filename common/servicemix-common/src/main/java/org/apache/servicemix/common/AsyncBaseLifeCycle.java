@@ -473,9 +473,9 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
     private void doProcess(Endpoint ep, ExchangeProcessor processor, MessageExchange exchange) throws Exception {
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         try {
-            if (ep != null && ep.getServiceUnit().getConfigurationClassLoader() != null) {
-                ClassLoader classLoader = ep.getServiceUnit().getConfigurationClassLoader();
-                Thread.currentThread().setContextClassLoader(classLoader);
+            ClassLoader cl = (ep != null) ? ep.getServiceUnit().getConfigurationClassLoader() : null;
+            if (cl != null) {
+                Thread.currentThread().setContextClassLoader(cl);
             }
             // Read the correlation id from the exchange and set it in the correlation id property
             String correlationID = (String)exchange.getProperty(JbiConstants.CORRELATION_ID);
