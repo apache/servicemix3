@@ -63,7 +63,7 @@ public class SoapReader {
 
 	public SoapMessage read(InputStream is, String contentType)
 			throws Exception {
-		if (contentType != null && contentType.toLowerCase().startsWith(SoapMarshaler.MULTIPART_CONTENT)) {
+		if (contentType != null && startsWithCaseInsensitive(contentType, SoapMarshaler.MULTIPART_CONTENT)) {
 			Session session = Session.getDefaultInstance(new Properties());
             is = new SequenceInputStream(new ByteArrayInputStream(new byte[] { 13, 10 }), is);
 			MimeMessage mime = new MimeMessage(session, is);
@@ -73,6 +73,10 @@ public class SoapReader {
 			return read(is);
 		}
 	}
+    
+    static boolean startsWithCaseInsensitive(String s1, String s2) {
+        return s1.regionMatches(true, 0, s2, 0, s2.length());
+    }
 
 	public SoapMessage read(InputStream is) throws Exception {
 		if (marshaler.isSoap()) {
