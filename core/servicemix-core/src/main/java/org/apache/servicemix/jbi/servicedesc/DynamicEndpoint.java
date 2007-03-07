@@ -73,4 +73,8 @@ public class DynamicEndpoint extends AbstractServiceEndpoint {
         return serviceName;
     }
 
+    protected String getClassifier() {
+        return "dynamic";
+    }
+
 }

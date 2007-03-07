@@ -168,4 +168,9 @@ public class InternalEndpoint extends AbstractServiceEndpoint {
     public String toString() {
         return "ServiceEndpoint[service=" + serviceName + ",endpoint=" + endpointName + "]";
     }
+
+    protected String getClassifier() {
+        return "internal";
+    }
+
 }

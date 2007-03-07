@@ -25,6 +25,8 @@ import java.io.Serializable;
 public abstract class AbstractServiceEndpoint implements ServiceEndpoint, Serializable {
 
     private ComponentNameSpace componentName;
+    private String key;
+    private String uniqueKey;
     
     public AbstractServiceEndpoint(ComponentNameSpace componentName) {
         this.componentName = componentName;
@@ -45,4 +47,19 @@ public abstract class AbstractServiceEndpoint implements ServiceEndpoint, Serial
         this.componentName = componentName;
     }
 
+    public String getKey() {
+        if (key == null) {
+            key = EndpointSupport.getKey(getServiceName(), getEndpointName());
+        }
+        return key;
+    }
+
+    public String getUniqueKey() {
+        if (uniqueKey == null) {
+            uniqueKey = getClassifier() + ":" + getKey();
+        }
+        return uniqueKey;
+    }
+
+    protected abstract String getClassifier();
 }
