@@ -56,6 +56,10 @@ public class FragmentStreamReader extends StreamReaderDelegate implements XMLStr
 		return event;
 	}
 
+    public boolean hasNext() throws XMLStreamException {
+        return event != END_DOCUMENT;
+    }
+
 	public int next() throws XMLStreamException {
 		switch (state) {
 		case STATE_START_DOC:

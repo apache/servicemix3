@@ -53,6 +53,10 @@ public class StaxSource extends SAXSource implements XMLReader {
         return this;
     }
 
+    public XMLStreamReader getXMLStreamReader() {
+        return streamReader;
+    }
+
     protected void parse() throws SAXException {
         try {
             while (true) {
