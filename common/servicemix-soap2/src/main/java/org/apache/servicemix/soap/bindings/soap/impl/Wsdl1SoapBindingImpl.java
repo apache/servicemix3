@@ -19,6 +19,7 @@ package org.apache.servicemix.soap.bindings.soap.impl;
 import java.util.List;
 
 import org.apache.servicemix.soap.api.Interceptor;
+import org.apache.servicemix.soap.api.Message;
 import org.apache.servicemix.soap.bindings.soap.SoapVersion;
 import org.apache.servicemix.soap.bindings.soap.interceptors.MustUnderstandInterceptor;
 import org.apache.servicemix.soap.bindings.soap.interceptors.SoapFaultInInterceptor;
@@ -43,6 +44,7 @@ import org.apache.servicemix.soap.interceptors.xml.StaxOutInterceptor;
 
 public class Wsdl1SoapBindingImpl extends AbstractBinding<Wsdl1SoapOperation> implements Wsdl1SoapBinding {
 
+    private SoapVersion soapVersion;
     private String locationURI;
     private String transportURI;
     private Style style;
@@ -52,6 +54,8 @@ public class Wsdl1SoapBindingImpl extends AbstractBinding<Wsdl1SoapOperation> im
     }
     
     public Wsdl1SoapBindingImpl(SoapVersion soapVersion) {
+        this.soapVersion = soapVersion;
+        
         List<Interceptor> phase;
         
         // ServerIn phase
@@ -141,5 +145,23 @@ public class Wsdl1SoapBindingImpl extends AbstractBinding<Wsdl1SoapOperation> im
         this.style = style;
     }
 
+    public Message createMessage() {
+        Message msg = super.createMessage();
+        if (msg.get(SoapVersion.class) == null && soapVersion != null) {
+            msg.put(SoapVersion.class, soapVersion);
+        }
+        return msg;
+    }
+    
+    public Message createMessage(Message request) {
+        Message msg = super.createMessage(request);
+        if (msg.get(SoapVersion.class) == null && request.get(SoapVersion.class) != null) {
+            msg.put(SoapVersion.class, request.get(SoapVersion.class));
+        }
+        if (msg.get(SoapVersion.class) == null && soapVersion != null) {
+            msg.put(SoapVersion.class, soapVersion);
+        }
+        return msg;
+    }
     
 }

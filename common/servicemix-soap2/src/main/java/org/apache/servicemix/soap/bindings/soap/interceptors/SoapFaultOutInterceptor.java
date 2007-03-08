@@ -48,7 +48,7 @@ public class SoapFaultOutInterceptor extends AbstractInterceptor {
             if (exception instanceof SoapFault) {
                 SoapFault fault = (SoapFault) exception;
                 if (soapVersion == null) {
-                    //soapVersion = Soap11.getInstance();
+                    soapVersion = Soap11.getInstance();
                 }
                 if (soapVersion.getVersion() == 1.1) {
                     writeSoap11Fault(writer, fault, soapVersion);

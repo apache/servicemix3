@@ -37,6 +37,7 @@
         <module>servicemix-common</module>
         <module>servicemix-components</module>
         <module>servicemix-soap</module>
+        <module>servicemix-soap2</module>
         <module>servicemix-beanflow</module>
     </modules>
 

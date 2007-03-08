@@ -142,7 +142,8 @@ public class Wsdl1Soap12BindingFactory {
             part.setName(wsdlPart.getName());
             part.setType(wsdlPart.getTypeName());
             part.setElement(wsdlPart.getElementName());
-            if (wsdlSoapBody.getParts().contains(part.getName())) {
+            if ((wsdlSoapBody.getParts() == null && wsdlInput.getMessage().getOrderedParts(null).size() == 1) ||
+                    wsdlSoapBody.getParts().contains(part.getName())) {
                 part.setBody(true);
                 input.setElementName(wsdlPart.getElementName());
             } else {
@@ -181,18 +182,14 @@ public class Wsdl1Soap12BindingFactory {
         }
         output.setMessageName(outputName);
         
-        List<String> bodyParts = WSDLUtils.getParts(wsdlSoapBody);
-        if (bodyParts == null) {
-            bodyParts = new ArrayList<String>();
-        }
-        
         for (Iterator itPart = wsdlOutput.getMessage().getOrderedParts(null).iterator(); itPart.hasNext();) {
             Part wsdlPart = (Part) itPart.next();
             Wsdl1SoapPartImpl part = new Wsdl1SoapPartImpl();
             part.setName(wsdlPart.getName());
             part.setType(wsdlPart.getTypeName());
             part.setElement(wsdlPart.getElementName());
-            if (bodyParts.contains(part.getName())) {
+            if ((wsdlSoapBody.getParts() == null && wsdlOutput.getMessage().getOrderedParts(null).size() == 1) ||
+                    wsdlSoapBody.getParts().contains(part.getName())) {
                 part.setBody(true);
                 output.setElementName(wsdlPart.getElementName());
             } else {
