@@ -44,6 +44,8 @@ import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.Destination;
 import org.apache.servicemix.client.ServiceMixClient;
@@ -67,6 +69,7 @@ import org.w3c.dom.Node;
 import com.ibm.wsdl.util.xml.DOMUtils;
 
 public class HttpSoapTest extends TestCase {
+    private static Log logger =  LogFactory.getLog(HttpSoapTest.class);
 
     protected JBIContainer container;
     
@@ -177,7 +180,7 @@ public class HttpSoapTest extends TestCase {
         assertEquals(ExchangeStatus.ACTIVE, me.getStatus());
         String str = new SourceTransformer().contentToString(me.getOutMessage());
         client.done(me);
-        System.err.println(str);
+        logger.info(str);
     }
 
     public void testSoapRoundtripProviderConsumerProvider() throws Exception {
@@ -230,7 +233,7 @@ public class HttpSoapTest extends TestCase {
         assertEquals(HttpServletResponse.SC_OK, state);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         FileUtil.copyInputStream(method.getResponseBodyAsStream(), baos);
-        System.err.println(baos.toString());
+        logger.info(baos.toString());
     }
 
     public void testSoapFault12() throws Exception {
@@ -286,13 +289,41 @@ public class HttpSoapTest extends TestCase {
         assertEquals(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, state);
         SourceTransformer st = new SourceTransformer();
         Node node = st.toDOMNode(new StreamSource(method.getResponseBodyAsStream()));
-        System.err.println(st.toString(node));
+        logger.info(st.toString(node));
 
         Element e = ((Document) node).getDocumentElement();
         assertEquals(new QName(SoapMarshaler.SOAP_12_URI, SoapMarshaler.ENVELOPE), DOMUtil.getQName(e));
         e = DOMUtil.getFirstChildElement(e);
         assertEquals(new QName(SoapMarshaler.SOAP_12_URI, SoapMarshaler.BODY), DOMUtil.getQName(e));
         e = DOMUtil.getFirstChildElement(e);
+        assertEquals(new QName(SoapMarshaler.SOAP_12_URI, SoapMarshaler.FAULT), DOMUtil.getQName(e));
+
+        method = new PostMethod("http://localhost:8193/ep2/");
+        method.setRequestBody("hello");
+        state = new HttpClient().executeMethod(method);
+        String str = method.getResponseBodyAsString();
+        logger.info(str);
+        assertEquals(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, state);
+        node = st.toDOMNode(new StringSource(str));
+        e = ((Document) node).getDocumentElement();
+        assertEquals(new QName(SoapMarshaler.SOAP_12_URI, SoapMarshaler.ENVELOPE), DOMUtil.getQName(e));
+        e = DOMUtil.getFirstChildElement(e);
+        assertEquals(new QName(SoapMarshaler.SOAP_12_URI, SoapMarshaler.BODY), DOMUtil.getQName(e));
+        e = DOMUtil.getFirstChildElement(e);
+        assertEquals(new QName(SoapMarshaler.SOAP_12_URI, SoapMarshaler.FAULT), DOMUtil.getQName(e));
+
+        method = new PostMethod("http://localhost:8193/ep2/");
+        method.setRequestBody("<hello/>");
+        state = new HttpClient().executeMethod(method);
+        str = method.getResponseBodyAsString();
+        logger.info(str);
+        assertEquals(HttpServletResponse.SC_BAD_REQUEST, state);
+        node = st.toDOMNode(new StringSource(str));
+        e = ((Document) node).getDocumentElement();
+        assertEquals(new QName(SoapMarshaler.SOAP_12_URI, SoapMarshaler.ENVELOPE), DOMUtil.getQName(e));
+        e = DOMUtils.getFirstChildElement(e);
+        assertEquals(new QName(SoapMarshaler.SOAP_12_URI, SoapMarshaler.BODY), DOMUtil.getQName(e));
+        e = DOMUtils.getFirstChildElement(e);
         assertEquals(new QName(SoapMarshaler.SOAP_12_URI, SoapMarshaler.FAULT), DOMUtil.getQName(e));
     }
     
@@ -318,6 +349,7 @@ public class HttpSoapTest extends TestCase {
         ep1.setRoleAsString("consumer");
         ep1.setDefaultMep(URI.create("http://www.w3.org/2004/08/wsdl/in-out"));
         ep1.setSoap(true);
+        ep1.setSoapVersion("1.1");
         
         HttpEndpoint ep2 = new HttpEndpoint();
         ep2.setService(new QName("urn:test", "http"));
@@ -328,6 +360,7 @@ public class HttpSoapTest extends TestCase {
         ep2.setRoleAsString("consumer");
         ep2.setDefaultMep(URI.create("http://www.w3.org/2004/08/wsdl/in-out"));
         ep2.setSoap(true);
+        ep2.setSoapVersion("1.1");
         
         HttpEndpoint ep3 = new HttpEndpoint();
         ep3.setService(new QName("urn:test", "http"));
@@ -336,6 +369,7 @@ public class HttpSoapTest extends TestCase {
         ep3.setRoleAsString("provider");
         ep3.setDefaultMep(URI.create("http://www.w3.org/2004/08/wsdl/in-out"));
         ep3.setSoap(true);
+        ep3.setSoapVersion("1.1");
         
         HttpComponent http = new HttpComponent();
         http.setEndpoints(new HttpEndpoint[] { ep1, ep2, ep3 });
@@ -347,12 +381,40 @@ public class HttpSoapTest extends TestCase {
         method.setRequestEntity(new InputStreamRequestEntity(getClass().getResourceAsStream("soap-request.xml")));
         int state = new HttpClient().executeMethod(method);
         String str = method.getResponseBodyAsString();
-        System.err.println(str);
+        logger.info(str);
         assertEquals(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, state);
         SourceTransformer st = new SourceTransformer();
         Node node = st.toDOMNode(new StringSource(str));
 
         Element e = ((Document) node).getDocumentElement();
+        assertEquals(new QName(SoapMarshaler.SOAP_11_URI, SoapMarshaler.ENVELOPE), DOMUtil.getQName(e));
+        e = DOMUtils.getFirstChildElement(e);
+        assertEquals(new QName(SoapMarshaler.SOAP_11_URI, SoapMarshaler.BODY), DOMUtil.getQName(e));
+        e = DOMUtils.getFirstChildElement(e);
+        assertEquals(new QName(SoapMarshaler.SOAP_11_URI, SoapMarshaler.FAULT), DOMUtil.getQName(e));
+        
+        method = new PostMethod("http://localhost:8194/ep2/");
+        method.setRequestBody("hello");
+        state = new HttpClient().executeMethod(method);
+        str = method.getResponseBodyAsString();
+        logger.info(str);
+        assertEquals(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, state);
+        node = st.toDOMNode(new StringSource(str));
+        e = ((Document) node).getDocumentElement();
+        assertEquals(new QName(SoapMarshaler.SOAP_11_URI, SoapMarshaler.ENVELOPE), DOMUtil.getQName(e));
+        e = DOMUtils.getFirstChildElement(e);
+        assertEquals(new QName(SoapMarshaler.SOAP_11_URI, SoapMarshaler.BODY), DOMUtil.getQName(e));
+        e = DOMUtils.getFirstChildElement(e);
+        assertEquals(new QName(SoapMarshaler.SOAP_11_URI, SoapMarshaler.FAULT), DOMUtil.getQName(e));
+
+        method = new PostMethod("http://localhost:8194/ep2/");
+        method.setRequestBody("<hello/>");
+        state = new HttpClient().executeMethod(method);
+        str = method.getResponseBodyAsString();
+        logger.info(str);
+        assertEquals(HttpServletResponse.SC_BAD_REQUEST, state);
+        node = st.toDOMNode(new StringSource(str));
+        e = ((Document) node).getDocumentElement();
         assertEquals(new QName(SoapMarshaler.SOAP_11_URI, SoapMarshaler.ENVELOPE), DOMUtil.getQName(e));
         e = DOMUtils.getFirstChildElement(e);
         assertEquals(new QName(SoapMarshaler.SOAP_11_URI, SoapMarshaler.BODY), DOMUtil.getQName(e));
@@ -410,7 +472,7 @@ public class HttpSoapTest extends TestCase {
         SourceTransformer st = new SourceTransformer();
         Element e = st.toDOMElement(msg);
         String strMsg = DOMUtil.asXML(e);
-        System.err.println(strMsg);
+        logger.info(strMsg);
 
         assertEquals(new QName(SoapMarshaler.SOAP_12_URI, SoapMarshaler.ENVELOPE), DOMUtil.getQName(e));
         e = DOMUtil.getFirstChildElement(e);
