@@ -74,6 +74,10 @@
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-bean</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-sca</artifactId>
     </dependency>
     <dependency>
@@ -387,6 +391,13 @@
                 <artifactItem>
                   <groupId>org.apache.servicemix</groupId>
                   <artifactId>servicemix-lwcontainer</artifactId>
+                  <version>${servicemix-version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>                
+                <artifactItem>
+                  <groupId>org.apache.servicemix</groupId>
+                  <artifactId>servicemix-bean</artifactId>
                   <version>${servicemix-version}</version>
                   <classifier>installer</classifier>
                   <type>zip</type>

@@ -196,7 +196,7 @@
         <xfire-jsr181-api-version>1.0-M1</xfire-jsr181-api-version>
         <xfire-version>1.2.2</xfire-version>
         <mavenAssemblyPluginVersion>2.1</mavenAssemblyPluginVersion>
-        <xbean-version>2.8</xbean-version>
+        <xbean-version>3.0-SNAPSHOT</xbean-version>
         <spring-version>2.0.1</spring-version>
         <activemq-version>4.1-incubator-20070103</activemq-version>
         <activeio-version>3.0.0-incubator</activeio-version>
@@ -498,6 +498,11 @@
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-lwcontainer</artifactId>
+                <version>3.2-incubating-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.servicemix</groupId>
+                <artifactId>servicemix-bean</artifactId>
                 <version>3.2-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
