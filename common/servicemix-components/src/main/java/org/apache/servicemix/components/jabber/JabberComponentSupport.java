@@ -24,6 +24,7 @@ import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.XMPPError;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.jbi.JBIException;
@@ -67,10 +68,23 @@ public abstract class JabberComponentSupport extends OutBinding implements Initi
             if (login && !connection.isAuthenticated()) {
                 if (user != null) {
                     AccountManager accountManager = new AccountManager(connection);
-                    accountManager.createAccount(user, password);
-
-                    log.info("Logging in to Jabber as user: " + user + " on connection: " + connection);
-                    connection.login(user, password, resource);
+                    try {
+                        log.info("Logging in to Jabber as user: " + user + " on connection: " + connection);
+                        connection.login(user, password, resource);
+                    } catch (XMPPException e) {
+                        final XMPPError error = e.getXMPPError();
+                        // 401 == Not Authorized
+                        if (error != null && error.getCode() == 401) {
+                            // is ist possible to create Accounts?
+                            if (accountManager.supportsAccountCreation()) {
+                                //try to create the Account (maybe it wasn't there)
+                                accountManager.createAccount(user, password);
+                                log.info("Logging in to Jabber as user: " + user + " on connection: " + connection);
+                                // try to login again (if this fails we are screwed and fail ultimatively)
+                                connection.login(user, password, resource);
+                            }
+                        }
+                    }
                 }
                 else {
                     log.info("Logging in anonymously to Jabber on connection: " + connection);
