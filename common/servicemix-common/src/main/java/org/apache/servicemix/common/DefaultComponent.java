@@ -286,7 +286,9 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
                 }
                 addEndpoint(endpoint);
             }
-            getRegistry().registerServiceUnit(getServiceUnit());
+        }
+        if (serviceUnit != null) {
+            getRegistry().registerServiceUnit(serviceUnit);
         }
     }
 
@@ -299,6 +301,9 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
         validateEndpoint(endpoint);
         endpoint.validate();
         su.addEndpoint(endpoint);
+        if (registry.getServiceUnit(su.getName()) != null) {
+            registry.registerEndpoint(endpoint);
+        }
     }
 
 
@@ -329,6 +334,9 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
     protected void doStart() throws Exception {
         super.doStart();
         if (serviceUnit != null) {
+            if (registry.getServiceUnit(serviceUnit.getName()) == null) {
+                registry.registerServiceUnit(serviceUnit);
+            }
             serviceUnit.start();
         }
     }
