@@ -16,10 +16,20 @@
  */
 package org.apache.servicemix.jbi.container;
 
+import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import javax.jbi.JBIException;
+import javax.jbi.component.Component;
 
 import org.apache.servicemix.components.util.ComponentAdaptor;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
+import org.apache.xbean.spring.context.impl.NamespaceHelper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -27,6 +37,8 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
+import org.springframework.util.ClassUtils;
 
 
 /**
@@ -47,6 +59,8 @@ public class SpringJBIContainer extends JBIContainer
     private ApplicationContext applicationContext;
     private String[] deployArchives;
     private Object shutdownLock;
+    private Map components;
+    private Map endpoints;
 
     public void afterPropertiesSet() throws Exception {
         init();
@@ -72,8 +86,110 @@ public class SpringJBIContainer extends JBIContainer
                 installArchive(archive);
             }
         }
+        
+        if (components != null) {
+            for (Iterator it = components.entrySet().iterator(); it.hasNext();) {
+                Map.Entry e = (Map.Entry) it.next();
+                if (e.getKey() instanceof String == false) {
+                    throw new JBIException("Component must have a non null string name");
+                }
+                if (e.getValue() instanceof Component == false) {
+                    throw new JBIException("Component is not a known component");
+                }
+                String name = (String) e.getKey();
+                activateComponent((Component) e.getValue(), name);
+                getComponent(name).init();
+            }
+        }
+        
+        if (endpoints != null) {
+            if (components == null) {
+                components = new LinkedHashMap();
+            }
+            Class componentClass = Class.forName("org.apache.servicemix.common.DefaultComponent");
+            Class endpointClass = Class.forName("org.apache.servicemix.common.Endpoint");
+            Method addEndpointMethod = componentClass.getDeclaredMethod("addEndpoint", new Class[] { endpointClass });
+            addEndpointMethod.setAccessible(true);
+            Method getEndpointClassesMethod = componentClass.getDeclaredMethod("getEndpointClasses", null);
+            getEndpointClassesMethod.setAccessible(true);
+            for (Iterator it = endpoints.entrySet().iterator(); it.hasNext();) {
+                Map.Entry e = (Map.Entry) it.next();
+                String key = (String) e.getKey();
+                List l = (List) e.getValue();
+                for (Iterator itEp = l.iterator(); itEp.hasNext();) {
+                    Object endpoint = itEp.next();
+                    Component c = null;
+                    if (key.length() > 0) {
+                        Component comp = (Component) components.get(key);
+                        if (comp == null) {
+                            throw new JBIException("Could not find component '" + key + "' specified for endpoint");
+                        }
+                        c = comp;
+                    } else {
+                        for (Iterator itCmp = components.values().iterator(); itCmp.hasNext();) {
+                            Component comp = (Component) itCmp.next();
+                            Class[] endpointClasses = (Class[]) getEndpointClassesMethod.invoke(comp, null);
+                            if (isKnownEndpoint(endpoint, endpointClasses)) {
+                                c = comp;
+                                break;
+                            }
+                        }
+                        if (c == null) {
+                            Properties namespaces = PropertiesLoaderUtils.loadAllProperties("META-INF/spring.handlers");
+                            for (Iterator itNs = namespaces.keySet().iterator(); itNs.hasNext();) {
+                                String namespaceURI = (String) itNs.next();
+                                String uri = NamespaceHelper.createDiscoveryPathName(namespaceURI);
+                                Properties props = PropertiesLoaderUtils.loadAllProperties(uri);
+                                String compClassName = props.getProperty("component");
+                                if (compClassName != null) {
+                                    Class compClass = ClassUtils.forName(compClassName);
+                                    Component comp = (Component) BeanUtils.instantiateClass(compClass);
+                                    Class[] endpointClasses = (Class[]) getEndpointClassesMethod.invoke(comp, null);
+                                    if (isKnownEndpoint(endpoint, endpointClasses)) {
+                                        c = comp;
+                                        String name = chooseComponentName(c);
+                                        activateComponent(c, name);
+                                        components.put(name, c);
+                                        break;
+                                    }
+                                }
+                            }
+                            if (c == null) {
+                                throw new JBIException("Unable to find a component for endpoint class: " + endpoint.getClass());
+                            }
+                        }
+                    }
+                    addEndpointMethod.invoke(c, new Object[] { endpoint });
+                }
+            }
+        }
 
         start();
+    }
+    
+    private String chooseComponentName(Object c) {
+        String className = c.getClass().getName();
+        if (className.startsWith("org.apache.servicemix.")) {
+            int idx1 = className.lastIndexOf('.');
+            int idx0 = className.lastIndexOf('.', idx1 - 1);
+            String name = "servicemix-" + className.substring(idx0 + 1, idx1);
+            if (registry.getComponent(name) == null) {
+                return name;
+            }
+        }
+        return createComponentID();
+    }
+    
+    private boolean isKnownEndpoint(Object endpoint, Class[] knownClasses) {
+        if (knownClasses != null) {
+            boolean valid = false;
+            for (int i = 0; i < knownClasses.length; i++) {
+                if (knownClasses[i].isInstance(endpoint)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void stop() throws JBIException {
@@ -183,6 +299,28 @@ public class SpringJBIContainer extends JBIContainer
      */
     public void setShutdownLock(Object lock) {
         this.shutdownLock = lock;
+    }
+
+    /**
+     * @org.apache.xbean.Map flat="true" keyName="name" 
+     */
+    public Map getComponents() {
+        return components;
+    }
+
+    public void setComponents(Map components) {
+        this.components = components;
+    }
+
+    /**
+     * @org.apache.xbean.Map flat="true" dups="always" keyName="component" defaultKey=""
+     */
+    public Map getEndpoints() {
+        return endpoints;
+    }
+
+    public void setEndpoints(Map endpoints) {
+        this.endpoints = endpoints;
     }
 
 }
