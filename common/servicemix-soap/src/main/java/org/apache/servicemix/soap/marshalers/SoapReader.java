@@ -28,7 +28,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Source;
@@ -94,11 +94,14 @@ public class SoapReader {
 
     private SoapMessage readSoapUsingDom(InputStream is) throws Exception {
         SoapMessage message = new SoapMessage();
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-        Document doc = factory.newDocumentBuilder().parse(is);
+        DocumentBuilder builder = DOMUtil.getBuilder();
+        try {
+            Document doc = builder.parse(is);
         message.setDocument(doc);
-        Element env = doc.getDocumentElement();
+        } finally {
+            DOMUtil.releaseBuilder(builder);
+        }
+        Element env = message.getDocument().getDocumentElement();
         QName envName = DOMUtil.getQName(env);
         if (!envName.getLocalPart().equals(SoapMarshaler.ENVELOPE)) {
             throw new SoapFault(SoapFault.SENDER, "Unrecognized element: "
