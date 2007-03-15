@@ -37,6 +37,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.apache.servicemix.jbi.util.ByteArrayDataSource;
 import org.apache.servicemix.soap.api.Fault;
 import org.apache.servicemix.soap.api.InterceptorChain;
 import org.apache.servicemix.soap.api.Message;
@@ -90,10 +91,10 @@ public class AttachmentsOutInterceptor extends AbstractInterceptor {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             message.setContent(OutputStream.class, baos);
+            message.put(Message.CONTENT_TYPE, "multipart/related; type=\"text/xml\"; start=\"<" + SOAP_PART_ID + ">\"");
             InterceptorChain chain = message.get(InterceptorChain.class);
             chain.doIntercept(message);
-            InputStream data = new ByteArrayInputStream(baos.toByteArray());
-            writeMultipartMessage(message, os, data);
+            writeMultipartMessage(message, os, baos.toByteArray());
         } catch (MessagingException e) {
             throw new Fault(e);
         } catch (IOException e) {
@@ -113,14 +114,15 @@ public class AttachmentsOutInterceptor extends AbstractInterceptor {
     }
 
     @SuppressWarnings("unchecked")
-    private void writeMultipartMessage(Message message, OutputStream out, InputStream data) throws MessagingException, IOException {
+    private void writeMultipartMessage(Message message, OutputStream out, byte[] data) throws MessagingException, IOException {
         MimeMultipart parts = new MimeMultipart("related; type=\"text/xml\"; start=\"<" + SOAP_PART_ID + ">\"");
         Session session = Session.getDefaultInstance(new Properties(), null);
         MimeMessage mime = new MimeMessage(session);
         // Add soap part
         MimeBodyPart soapPart = new MimeBodyPart();
         soapPart.setContentID("<" + SOAP_PART_ID + ">");
-        soapPart.setDataHandler(new DataHandler(new StreamDataSource(data, "text/xml")));
+        soapPart.addHeader("Content-Transfer-Encoding", "8bit");
+        soapPart.setDataHandler(new DataHandler(new ByteArrayDataSource(data, "text/xml")));
         parts.addBodyPart(soapPart);
         // Add attachments
         for (Iterator itr = message.getAttachments().entrySet().iterator(); itr.hasNext();) {
@@ -130,6 +132,7 @@ public class AttachmentsOutInterceptor extends AbstractInterceptor {
             MimeBodyPart part = new MimeBodyPart();
             part.setDataHandler(dh);
             part.setContentID("<" + id + ">");
+            part.addHeader("Content-Transfer-Encoding", "binary");
             parts.addBodyPart(part);
         }
         mime.setContent(parts);

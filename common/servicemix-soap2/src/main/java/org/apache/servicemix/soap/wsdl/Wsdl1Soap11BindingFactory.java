@@ -121,6 +121,9 @@ public class Wsdl1Soap11BindingFactory {
     private static void createInput(Wsdl1SoapOperationImpl operation, BindingOperation wsdlBindingOperation) {
         Operation wsdlOperation = wsdlBindingOperation.getOperation();
         Input wsdlInput = wsdlOperation.getInput();
+        if (wsdlInput == null) {
+            return;
+        }
         BindingInput wsdlBindingInput = wsdlBindingOperation.getBindingInput();
         SOAPBody wsdlSoapBody = WSDLUtils.getExtension(wsdlBindingInput, SOAPBody.class);
         List<SOAPHeader> wsdlSoapHeaders = WSDLUtils.getExtensions(wsdlBindingInput, SOAPHeader.class);
@@ -169,6 +172,9 @@ public class Wsdl1Soap11BindingFactory {
     private static void createOutput(Wsdl1SoapOperationImpl operation, BindingOperation wsdlBindingOperation) {
         Operation wsdlOperation = wsdlBindingOperation.getOperation();
         Output wsdlOutput = wsdlOperation.getOutput();
+        if (wsdlOutput == null) {
+            return;
+        }
         BindingOutput wsdlBindingOutput = wsdlBindingOperation.getBindingOutput();
         SOAPBody wsdlSoapBody = WSDLUtils.getExtension(wsdlBindingOutput, SOAPBody.class);
         List<SOAPHeader> wsdlSoapHeaders = WSDLUtils.getExtensions(wsdlBindingOutput, SOAPHeader.class);
