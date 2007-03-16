@@ -16,11 +16,9 @@
  */
 package org.apache.servicemix.soap.interceptors.mime;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -42,7 +40,6 @@ import org.apache.servicemix.soap.api.Fault;
 import org.apache.servicemix.soap.api.InterceptorChain;
 import org.apache.servicemix.soap.api.Message;
 import org.apache.servicemix.soap.core.AbstractInterceptor;
-import org.apache.servicemix.soap.util.StreamDataSource;
 
 /**
  * @author <a href="mailto:gnodet [at] gmail.com">Guillaume Nodet</a>
@@ -61,33 +58,6 @@ public class AttachmentsOutInterceptor extends AbstractInterceptor {
         if (os == null) {
             throw new NullPointerException("OutputStream content not found");
         }
-        /*
-         * TODO: implement piped stream to be able to handle big messages
-         * without keeping everything in memory
-         * 
-        boolean pipe = getBoolean(message, PIPE_ATTACHMENT_STREAM, true);
-        Executor executor = message.get(Executor.class);
-        InputStream data;
-        if (pipe && executor != null) {
-            PipedInputStream pis = new PipedInputStream();
-            PipedOutputStream pos = new PipedOutputStream(pis);
-            message.setContent(OutputStream.class, pos);
-            executor.execute(new Runnable() {
-                public void run() {
-                    InterceptorChain chain = message.get(InterceptorChain.class);
-                    chain.doIntercept(message);
-                }
-            });
-            data = pis;
-        } else {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            message.setContent(OutputStream.class, baos);
-            InterceptorChain chain = message.get(InterceptorChain.class);
-            chain.doIntercept(message);
-            data = new ByteArrayInputStream(baos.toByteArray());
-        }
-        writeMultipartMessage(message, os, data);
-        */
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             message.setContent(OutputStream.class, baos);
