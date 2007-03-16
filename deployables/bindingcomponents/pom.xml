@@ -38,6 +38,7 @@
     <module>servicemix-ftp</module>
     <module>servicemix-http</module>
     <module>servicemix-jms</module>
+    <module>servicemix-truezip</module>
     <module>servicemix-xmpp</module>
   </modules>
 
