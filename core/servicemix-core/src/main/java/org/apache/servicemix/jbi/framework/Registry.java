@@ -46,10 +46,12 @@ import org.apache.servicemix.jbi.deployment.ServiceUnit;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
+import org.apache.servicemix.jbi.resolver.URIResolver;
 import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
 import org.apache.servicemix.jbi.servicedesc.DynamicEndpoint;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 import org.apache.servicemix.jbi.util.DOMUtil;
+import org.apache.servicemix.jbi.util.WSAddressingConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
@@ -354,8 +356,19 @@ public class Registry extends BaseSystemService implements RegistryMBean {
                     continue;
                 }
                 Element elem = (Element) n;
-                NodeList nl = elem.getElementsByTagNameNS("http://www.w3.org/2005/08/addressing", "Address");
-                if (nl.getLength() == 1) {
+                String[] namespaces = new String[] { WSAddressingConstants.WSA_NAMESPACE_200508,
+                                                     WSAddressingConstants.WSA_NAMESPACE_200408,
+                                                     WSAddressingConstants.WSA_NAMESPACE_200403,
+                                                     WSAddressingConstants.WSA_NAMESPACE_200303 };
+                NodeList nl = null;
+                for (int ns = 0; ns < namespaces.length; ns++) {
+                    NodeList tnl = elem.getElementsByTagNameNS(namespaces[ns], WSAddressingConstants.EL_ADDRESS);
+                    if (tnl.getLength() == 1) {
+                        nl = tnl;
+                        break;
+                    }
+                }
+                if (nl != null) {
                     Element address = (Element) nl.item(0);
                     String uri = DOMUtil.getElementText(address);
                     if (uri != null) {
@@ -363,53 +376,23 @@ public class Registry extends BaseSystemService implements RegistryMBean {
                     }
                     if (uri.startsWith("endpoint:")) {
                         uri = uri.substring("endpoint:".length());
-                        String[] parts = split(uri);
+                        String[] parts = URIResolver.split3(uri);
                         return getInternalEndpoint(new QName(parts[0], parts[1]), parts[2]);
                     }
                     else if (uri.startsWith("service:")) {
                         uri = uri.substring("service:".length());
-                        String[] parts = splitService(uri);
+                        String[] parts = URIResolver.split2(uri);
                         return getEndpoint(new QName(parts[0], parts[1]), parts[1]);
                     }
                     // TODO should we support interface: and operation: here?
                 }
             }
         } catch (Exception e) {
-            // Ignored
+            log.debug("Unable to resolve EPR: " + e);
         }
         return null;
     }
 
-    protected String[] splitService(String uri) {
-        char sep;
-        uri = uri.trim();
-        if (uri.indexOf('/') > 0) {
-            sep = '/';
-        } else {
-            sep = ':';
-        }
-        int idx1 = uri.lastIndexOf(sep);
-        String svcName = uri.substring(idx1 + 1);
-        String nsUri   = uri.substring(0, idx1);
-        return new String[] { nsUri, svcName };
-    }
-    
-    protected String[] split(String uri) {
-        char sep;
-        uri = uri.trim();
-        if (uri.indexOf('/') > 0) {
-            sep = '/';
-        } else {
-            sep = ':';
-        }
-        int idx1 = uri.lastIndexOf(sep);
-        int idx2 = uri.lastIndexOf(sep, idx1 - 1);
-        String epName = uri.substring(idx1 + 1);
-        String svcName = uri.substring(idx2 + 1, idx1);
-        String nsUri   = uri.substring(0, idx2);
-        return new String[] { nsUri, svcName, epName };
-    }
-    
     /**
      * @param provider
      * @param externalEndpoint the external endpoint to be registered, must be non-null.

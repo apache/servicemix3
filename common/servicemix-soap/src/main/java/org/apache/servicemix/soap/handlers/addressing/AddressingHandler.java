@@ -23,7 +23,9 @@ import javax.xml.namespace.QName;
 
 import org.apache.servicemix.id.IdGenerator;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.resolver.URIResolver;
 import org.apache.servicemix.jbi.util.DOMUtil;
+import org.apache.servicemix.jbi.util.WSAddressingConstants;
 import org.apache.servicemix.soap.Context;
 import org.apache.servicemix.soap.SoapFault;
 import org.apache.servicemix.soap.handlers.AbstractHandler;
@@ -42,24 +44,6 @@ import org.w3c.dom.Element;
  */
 public class AddressingHandler extends AbstractHandler {
 
-    public static final String WSA_NAMESPACE_200303 = "http://schemas.xmlsoap.org/ws/2003/03/addressing";
-    public static final String WSA_NAMESPACE_200403 = "http://schemas.xmlsoap.org/ws/2004/03/addressing";
-    public static final String WSA_NAMESPACE_200408 = "http://schemas.xmlsoap.org/ws/2004/08/addressing";
-    public static final String WSA_NAMESPACE_200508 = "http://www.w3.org/2005/08/addressing";
-    
-    public static final String WSA_PREFIX = "wsa";
-    
-    public static final String EL_ACTION = "Action";
-    public static final String EL_ADDRESS = "Address";
-    public static final String EL_FAULT_TO = "FaultTo";
-    public static final String EL_FROM = "From";
-    public static final String EL_MESSAGE_ID = "MessageID";
-    public static final String EL_METADATA = "Metadata";
-    public static final String EL_REFERENCE_PARAMETERS = "ReferenceParameters";
-    public static final String EL_RELATES_TO = "RelatesTo";
-    public static final String EL_REPLY_TO = "ReplyTo";
-    public static final String EL_TO = "To";
-    
     protected final SourceTransformer sourceTransformer = new SourceTransformer();
     protected final IdGenerator idGenerator = new IdGenerator();
     
@@ -79,14 +63,14 @@ public class AddressingHandler extends AbstractHandler {
 	    			} else if (!nsUri.equals(qname.getNamespaceURI())) {
 	    				throw new SoapFault(SoapFault.SENDER, "Inconsistent use of wsa namespaces");
 	    			}
-		    		if (EL_ACTION.equals(qname.getLocalPart())) {
+		    		if (WSAddressingConstants.EL_ACTION.equals(qname.getLocalPart())) {
 		    			action = getHeaderText(value);
-		        		String[] parts = split(action);
+		        		String[] parts = URIResolver.split3(action);
 		        		context.setProperty(Context.INTERFACE, new QName(parts[0], parts[1]));
 		        		context.setProperty(Context.OPERATION, new QName(parts[0], parts[2]));
-		    		} else if (EL_TO.equals(qname.getLocalPart())) {
+		    		} else if (WSAddressingConstants.EL_TO.equals(qname.getLocalPart())) {
                         to = getHeaderText(value);
-		        		String[] parts = split(to);
+		        		String[] parts = URIResolver.split3(to);
 		        		context.setProperty(Context.SERVICE, new QName(parts[0], parts[1]));
 		        		context.setProperty(Context.ENDPOINT, parts[2]);
 		    		} else {
@@ -106,11 +90,11 @@ public class AddressingHandler extends AbstractHandler {
                 QName qname = (QName) it.next();
                 Object value = headers.get(qname);
                 if (isWSANamespace(qname.getNamespaceURI())) {
-                    if (EL_MESSAGE_ID.equals(qname.getLocalPart())) {
-                        QName name = new QName(qname.getNamespaceURI(), EL_MESSAGE_ID, qname.getPrefix() != null ? qname.getPrefix() : WSA_PREFIX);
+                    if (WSAddressingConstants.EL_MESSAGE_ID.equals(qname.getLocalPart())) {
+                        QName name = new QName(qname.getNamespaceURI(), WSAddressingConstants.EL_MESSAGE_ID, qname.getPrefix() != null ? qname.getPrefix() : WSAddressingConstants.WSA_PREFIX);
                         DocumentFragment df = createHeader(name, idGenerator.generateSanitizedId());
                         out.addHeader(name, df);
-                        name = new QName(qname.getNamespaceURI(), EL_RELATES_TO, qname.getPrefix() != null ? qname.getPrefix() : WSA_PREFIX);
+                        name = new QName(qname.getNamespaceURI(), WSAddressingConstants.EL_RELATES_TO, qname.getPrefix() != null ? qname.getPrefix() : WSAddressingConstants.WSA_PREFIX);
                         df = createHeader(name, getHeaderText(value));
                         out.addHeader(name, df);
                     }
@@ -120,10 +104,10 @@ public class AddressingHandler extends AbstractHandler {
     }
     
     protected boolean isWSANamespace(String ns) {
-        return WSA_NAMESPACE_200303.equals(ns) ||
-               WSA_NAMESPACE_200403.equals(ns) ||
-               WSA_NAMESPACE_200408.equals(ns) ||
-               WSA_NAMESPACE_200508.equals(ns);
+        return WSAddressingConstants.WSA_NAMESPACE_200303.equals(ns) ||
+               WSAddressingConstants.WSA_NAMESPACE_200403.equals(ns) ||
+               WSAddressingConstants.WSA_NAMESPACE_200408.equals(ns) ||
+               WSAddressingConstants.WSA_NAMESPACE_200508.equals(ns);
     }
     
     protected String getHeaderText(Object header) {
@@ -138,22 +122,6 @@ public class AddressingHandler extends AbstractHandler {
         el.appendChild(doc.createTextNode(value));
         df.appendChild(el);
         return df;
-    }
-    
-    protected String[] split(String uri) {
-		char sep;
-        uri = uri.trim();
-		if (uri.indexOf('/') > 0) {
-			sep = '/';
-		} else {
-			sep = ':';
-		}
-		int idx1 = uri.lastIndexOf(sep);
-		int idx2 = uri.lastIndexOf(sep, idx1 - 1);
-		String epName = uri.substring(idx1 + 1);
-		String svcName = uri.substring(idx2 + 1, idx1);
-		String nsUri   = uri.substring(0, idx2);
-    	return new String[] { nsUri, svcName, epName };
     }
     
 }

@@ -22,8 +22,8 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 import org.apache.servicemix.components.util.EchoComponent;
-import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.resolver.URIResolver;
 import org.w3c.dom.DocumentFragment;
 
 public class RegistryTest extends TestCase {
@@ -40,7 +40,20 @@ public class RegistryTest extends TestCase {
         DocumentFragment epr = ep.getAsReference(null);
         ServiceEndpoint ep2 = component.getContext().resolveEndpointReference(epr);
         assertSame(ep, ep2);
-
+    }
+    
+    public void testResolveWSAEPR() throws Exception {
+        JBIContainer container = new JBIContainer();
+        container.setEmbedded(true);
+        container.init();
+        container.start();
+        
+        EchoComponent component = new EchoComponent();
+        container.activateComponent(component, "component");
+        ServiceEndpoint ep = component.getContext().activateEndpoint(new QName("http://foo.bar.com", "myService"), "myEndpoint");
+        DocumentFragment epr = URIResolver.createWSAEPR("endpoint:http://foo.bar.com/myService/myEndpoint");
+        ServiceEndpoint ep2 = component.getContext().resolveEndpointReference(epr);
+        assertSame(ep, ep2);
     }
     
 }

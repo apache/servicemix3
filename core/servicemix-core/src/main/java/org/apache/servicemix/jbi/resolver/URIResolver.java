@@ -23,6 +23,7 @@ import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.util.WSAddressingConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
@@ -102,7 +103,8 @@ public class URIResolver extends EndpointResolverSupport {
         }
         DocumentFragment epr = doc.createDocumentFragment();
         Element root = doc.createElement("epr");
-        Element address = doc.createElementNS("http://www.w3.org/2005/08/addressing", "wsa:Address");
+        Element address = doc.createElementNS(WSAddressingConstants.WSA_NAMESPACE_200508, 
+                                              WSAddressingConstants.WSA_PREFIX + ":" + WSAddressingConstants.EL_ADDRESS);
         Text txt = doc.createTextNode(uri);
         address.appendChild(txt);
         root.appendChild(address);
@@ -155,6 +157,9 @@ public class URIResolver extends EndpointResolverSupport {
         }
         int idx1 = uri.lastIndexOf(sep);
         int idx2 = uri.lastIndexOf(sep, idx1 - 1);
+        if (idx1 < 0 || idx2 < 0) {
+            throw new IllegalArgumentException("Bad syntax: expected [part0][sep][part1][sep][part2]");
+        }
         String epName = uri.substring(idx1 + 1);
         String svcName = uri.substring(idx2 + 1, idx1);
         String nsUri   = uri.substring(0, idx2);
@@ -169,6 +174,9 @@ public class URIResolver extends EndpointResolverSupport {
             sep = ':';
         }
         int idx1 = uri.lastIndexOf(sep);
+        if (idx1 < 0) {
+            throw new IllegalArgumentException("Bad syntax: expected [part0][sep][part1]");
+        }
         String svcName = uri.substring(idx1 + 1);
         String nsUri   = uri.substring(0, idx1);
         return new String[] { nsUri, svcName };

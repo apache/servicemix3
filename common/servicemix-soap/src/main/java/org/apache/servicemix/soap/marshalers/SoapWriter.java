@@ -132,6 +132,7 @@ public class SoapWriter {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         writeSimpleMessage(baos);
         soapPart.setDataHandler(new DataHandler(new ByteArrayDataSource(baos.toByteArray(), "text/xml")));
+        soapPart.addHeader("Content-Transfer-Encoding", "8bit");
         parts.addBodyPart(soapPart);
         // Add attachments
         for (Iterator itr = message.getAttachments().entrySet().iterator(); itr.hasNext();) {
@@ -141,6 +142,7 @@ public class SoapWriter {
             MimeBodyPart part = new MimeBodyPart();
             part.setDataHandler(dh);
             part.setContentID("<" + id + ">");
+            part.addHeader("Content-Transfer-Encoding", "binary");
             parts.addBodyPart(part);
         }
         mime.setContent(parts);
