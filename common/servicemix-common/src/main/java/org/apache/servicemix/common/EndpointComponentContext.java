@@ -42,6 +42,14 @@ public class EndpointComponentContext implements ComponentContext {
         this.endpoint = endpoint;
         this.context = endpoint.getServiceUnit().getComponent().getComponentContext();
     }
+    
+    public Endpoint getEndpoint() {
+        return endpoint;
+    }
+    
+    public ComponentContext getComponentContext() {
+        return context;
+    }
 
     public ServiceEndpoint activateEndpoint(QName serviceName, String endpointName) throws JBIException {
         throw new UnsupportedOperationException();
