@@ -261,8 +261,10 @@ public class DefaultServiceMixClient extends ComponentSupport implements Service
         return new ServiceAndEndpointNameResolver(service, endpoint);
     }
     
-    public void close() throws JBIException {
-        container.deactivateComponent(activationSpec.getComponentName());
+    public void close() throws JBIException{
+        if(container!=null){
+            container.deactivateComponent(activationSpec.getComponentName());
+        }
     }
 
 
