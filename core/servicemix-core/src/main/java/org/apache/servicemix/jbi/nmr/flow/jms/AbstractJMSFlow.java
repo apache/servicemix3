@@ -76,17 +76,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
 
     private String broadcastDestinationName = "org.apache.servicemix.JMSFlow";
 
-    private MessageProducer queueProducer;
-
-    private MessageProducer topicProducer;
-
-    protected Topic broadcastTopic;
-
-    protected Session broadcastSession;
-
     private MessageConsumer broadcastConsumer;
-
-    private Session inboundSession;
 
     protected Set subscriberSet = new CopyOnWriteArraySet();
 
@@ -231,15 +221,10 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
             }
             connection.setClientID(broker.getContainer().getName());
             connection.start();
-            inboundSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Session inboundSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             Queue queue = inboundSession.createQueue(INBOUND_PREFIX + broker.getContainer().getName());
             MessageConsumer inboundQueue = inboundSession.createConsumer(queue);
             inboundQueue.setMessageListener(this);
-            queueProducer = inboundSession.createProducer(null);
-            broadcastSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            broadcastTopic = broadcastSession.createTopic(broadcastDestinationName);
-            topicProducer = broadcastSession.createProducer(broadcastTopic);
-            topicProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
         } catch (JMSException e) {
             log.error("Failed to initialize JMSFlow", e);
             throw new JBIException(e);
@@ -271,6 +256,8 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
             log.debug(broker.getContainer().getName() + ": Starting jms flow");
             super.start();
             try {
+                Session broadcastSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+                Topic broadcastTopic = broadcastSession.createTopic(broadcastDestinationName);
                 broadcastConsumer = broadcastSession.createConsumer(broadcastTopic, null, true);
                 broadcastConsumer.setMessageListener(new MessageListener() {
                     public void onMessage(Message message) {
@@ -373,15 +360,14 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
         try {
             String key = EndpointSupport.getKey(event.getEndpoint());
             if (!consumerMap.containsKey(key)) {
+                Session inboundSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
                 Queue queue = inboundSession.createQueue(INBOUND_PREFIX + key);
                 MessageConsumer consumer = inboundSession.createConsumer(queue);
                 consumer.setMessageListener(this);
                 consumerMap.put(key, consumer);
             }
             if (broadcast) {
-                log.debug(broker.getContainer().getName() + ": broadcasting info for " + event);
-                ObjectMessage msg = broadcastSession.createObjectMessage(event);
-                topicProducer.send(msg);
+                broadcast(event);
             }
         } catch (Exception e) {
             log.error("Cannot create consumer for " + event.getEndpoint(), e);
@@ -396,12 +382,26 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
                 consumer.close();
             }
             if (broadcast) {
-                ObjectMessage msg = broadcastSession.createObjectMessage(event);
-                log.debug(broker.getContainer().getName() + ": broadcasting info for " + event);
-                topicProducer.send(msg);
+                broadcast(event);
             }
         } catch (Exception e) {
             log.error("Cannot destroy consumer for " + event, e);
+        }
+    }
+    
+    protected void broadcast(EndpointEvent event) throws Exception {
+        if (log.isDebugEnabled()) {
+            log.debug(broker.getContainer().getName() + ": broadcasting info for " + event);
+        }
+        Session broadcastSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        try {
+            ObjectMessage msg = broadcastSession.createObjectMessage(event);
+            Topic broadcastTopic = broadcastSession.createTopic(broadcastDestinationName);
+            MessageProducer topicProducer = broadcastSession.createProducer(broadcastTopic);
+            topicProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+            topicProducer.send(msg);
+        } finally {
+            broadcastSession.close();
         }
     }
 
@@ -412,6 +412,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
         try {
             String key = event.getComponent().getName();
             if (!consumerMap.containsKey(key)) {
+                Session inboundSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
                 Queue queue = inboundSession.createQueue(INBOUND_PREFIX + key);
                 MessageConsumer consumer = inboundSession.createConsumer(queue);
                 consumer.setMessageListener(this);
@@ -493,15 +494,21 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
                 }
             }
 
-            Queue queue = inboundSession.createQueue(destination);
-            ObjectMessage msg = inboundSession.createObjectMessage(me);
-            queueProducer.send(queue, msg);
+            Session inboundSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            try {
+                Queue queue = inboundSession.createQueue(destination);
+                ObjectMessage msg = inboundSession.createObjectMessage(me);
+                MessageProducer queueProducer = inboundSession.createProducer(queue);
+                queueProducer.send(msg);
+            } finally {
+                inboundSession.close();
+            }
         } catch (JMSException e) {
             log.error("Failed to send exchange: " + me + " internal JMS Network", e);
             throw new MessagingException(e);
         }
     }
-
+    
     /**
      * MessageListener implementation
      * 

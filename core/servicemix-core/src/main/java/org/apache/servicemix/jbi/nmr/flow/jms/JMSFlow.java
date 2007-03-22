@@ -20,15 +20,16 @@ import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.Session;
 import javax.jms.Topic;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.advisory.AdvisorySupport;
 import org.apache.activemq.command.ActiveMQDestination;
 import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ConsumerId;
 import org.apache.activemq.command.ConsumerInfo;
 import org.apache.activemq.command.RemoveInfo;
+import org.apache.activemq.pool.PooledConnectionFactory;
 
 /**
  * Use for message routing among a network of containers. All
@@ -40,7 +41,7 @@ import org.apache.activemq.command.RemoveInfo;
 public class JMSFlow extends AbstractJMSFlow {
 
     protected ConnectionFactory createConnectionFactoryFromUrl(String jmsURL) {
-        return (jmsURL != null) ? new ActiveMQConnectionFactory(jmsURL) : new ActiveMQConnectionFactory();
+        return (jmsURL != null) ? new PooledConnectionFactory(jmsURL) : new PooledConnectionFactory();
     }
 
     /**
@@ -61,6 +62,8 @@ public class JMSFlow extends AbstractJMSFlow {
     }
 
     public void startConsumerMonitor() throws JMSException {
+        Session broadcastSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        Topic broadcastTopic = broadcastSession.createTopic(getBroadcastDestinationName());
         Topic advisoryTopic = AdvisorySupport.getConsumerAdvisoryTopic((ActiveMQDestination) broadcastTopic);
         monitorMessageConsumer = broadcastSession.createConsumer(advisoryTopic);
         monitorMessageConsumer.setMessageListener(new MessageListener() {

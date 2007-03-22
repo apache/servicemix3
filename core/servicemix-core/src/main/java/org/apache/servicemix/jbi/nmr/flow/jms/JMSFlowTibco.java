@@ -22,6 +22,7 @@ import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.Session;
 import javax.jms.Topic;
 
 /**
@@ -70,7 +71,7 @@ public class JMSFlowTibco extends AbstractJMSFlow {
             String connectionId = "" + message.getLongProperty(PROPERTY_NAME_CONN_CONNID);
             String targetDestName = message.getStringProperty(PROPERTY_NAME_TARGET_DEST_NAME);
             String eventClass = message.getStringProperty(PROPERTY_NAME_EVENT_CLASS);
-            if (broadcastTopic.getTopicName().equals(targetDestName)) {
+            if (getBroadcastDestinationName().equals(targetDestName)) {
                 if (EVENT_CLASS_CONSUMER_CREATE.equals(eventClass)) {
                     addClusterNode(connectionId);
                 } else {
@@ -83,6 +84,7 @@ public class JMSFlowTibco extends AbstractJMSFlow {
     }
 
     public void startConsumerMonitor() throws JMSException {
+        Session broadcastSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         Topic createTopic = broadcastSession.createTopic(TOPIC_NAME_MONITOR_CONSUMER);
         monitorMessageConsumer = broadcastSession.createConsumer(createTopic);
         monitorMessageConsumer.setMessageListener(new MessageListener() {
