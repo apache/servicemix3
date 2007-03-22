@@ -393,7 +393,9 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
             if (broadcast) {
                 log.debug(broker.getContainer().getName() + ": broadcasting info for " + event);
                 ObjectMessage msg = broadcastSession.createObjectMessage(event);
-                topicProducer.send(msg);
+                synchronized (topicProducer) {}
+                    topicProducer.send(msg);
+                }
             }
         } catch (Exception e) {
             log.error("Cannot create consumer for " + event.getEndpoint(), e);
@@ -410,7 +412,9 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
             if (broadcast) {
                 ObjectMessage msg = broadcastSession.createObjectMessage(event);
                 log.debug(broker.getContainer().getName() + ": broadcasting info for " + event);
-                topicProducer.send(msg);
+                synchronized (topicProducer) {}
+                    topicProducer.send(msg);
+                }
             }
         } catch (Exception e) {
             log.error("Cannot destroy consumer for " + event, e);
@@ -504,7 +508,9 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
                 
             Queue queue = inboundSession.createQueue(destination);
             ObjectMessage msg = inboundSession.createObjectMessage(me);
-            queueProducer.send(queue, msg);
+            synchronized (queueProducer) {}
+                queueProducer.send(queue, msg);
+            }
         } catch (JMSException e) {
             log.error("Failed to send exchange: " + me + " internal JMS Network", e);
             throw new MessagingException(e);
