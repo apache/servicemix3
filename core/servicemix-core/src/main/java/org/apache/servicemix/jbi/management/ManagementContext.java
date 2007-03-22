@@ -191,7 +191,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         Object[] beans = beanMap.keySet().toArray();
         for (int i = 0; i < beans.length; i++) {
             try {
-                unregisterMBean(beans[i]);
+                unregisterMBean((ObjectName) beans[i]);
             } catch (Exception e) {
                 log.debug("Could not unregister mbean", e);
             }
