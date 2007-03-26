@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.jbi.JBIException;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.component.ComponentLifeCycle;
+import javax.jbi.management.LifeCycleMBean;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
@@ -54,6 +55,8 @@ import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
  */
 public class AsyncBaseLifeCycle implements ComponentLifeCycle {
 
+    public static final String INITIALIZED = "Initialized";
+
     protected transient Log logger;
 
     protected ServiceMixComponent component;
@@ -81,6 +84,8 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
     protected Map processors;
     
     protected ThreadLocal correlationId;
+    
+    protected String currentState = LifeCycleMBean.UNKNOWN;
 
     public AsyncBaseLifeCycle() {
         this.running = new AtomicBoolean(false);
@@ -120,6 +125,46 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
         return null;
     }
 
+    public String getCurrentState() {
+        return currentState;
+    }
+    
+    protected void setCurrentState(String currentState) {
+        this.currentState = currentState;
+    }
+    
+    public boolean isStarted(){
+        return currentState != null && currentState.equals(LifeCycleMBean.STARTED);
+    }
+    
+    /**
+    * @return true if the object is stopped
+    */
+   public boolean isStopped(){
+       return currentState != null && currentState.equals(LifeCycleMBean.STOPPED);
+   }
+   
+   /**
+    * @return true if the object is shutDown
+    */
+   public boolean isShutDown(){
+       return currentState != null && currentState.equals(LifeCycleMBean.SHUTDOWN);
+   }
+   
+   /**
+    * @return true if the object is shutDown
+    */
+   public boolean isInitialized(){
+       return currentState != null && currentState.equals(INITIALIZED);
+   }
+   
+   /**
+    * @return true if the object is shutDown
+    */
+   public boolean isUnknown(){
+       return currentState == null || currentState.equals(LifeCycleMBean.UNKNOWN);
+   }
+
     /*
      * (non-Javadoc)
      * 
@@ -140,6 +185,7 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
                 // return null
             }
             doInit();
+            setCurrentState(INITIALIZED);
             if (logger.isDebugEnabled()) {
                 logger.debug("Component initialized");
             }
@@ -194,6 +240,7 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
                 logger.debug("Shutting down component");
             }
             doShutDown();
+            setCurrentState(LifeCycleMBean.SHUTDOWN);
             this.context = null;
             if (logger.isDebugEnabled()) {
                 logger.debug("Component shut down");
@@ -233,6 +280,7 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
             }
             if (this.running.compareAndSet(false, true)) {
                 doStart();
+                setCurrentState(LifeCycleMBean.STARTED);
             }
             if (logger.isDebugEnabled()) {
                 logger.debug("Component started");
@@ -309,6 +357,7 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
             }
             if (this.running.compareAndSet(true, false)) {
                 doStop();
+                setCurrentState(LifeCycleMBean.STOPPED);
             }
             if (logger.isDebugEnabled()) {
                 logger.debug("Component stopped");

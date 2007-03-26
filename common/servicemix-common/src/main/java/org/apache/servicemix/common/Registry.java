@@ -37,6 +37,14 @@ public class Registry {
         return (Endpoint) this.endpoints.get(key);
     }
     
+    public boolean isRegistered(ServiceUnit su) {
+        return isServiceUnitRegistered(su.getName());
+    }
+    
+    public boolean isServiceUnitRegistered(String name) {
+        return this.serviceUnits.containsKey(name);
+    }
+    
     public ServiceUnit getServiceUnit(String name) {
         return (ServiceUnit) this.serviceUnits.get(name);
     }
