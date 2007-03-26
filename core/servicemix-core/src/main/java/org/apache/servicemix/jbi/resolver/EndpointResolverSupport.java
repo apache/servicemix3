@@ -32,6 +32,9 @@ public abstract class EndpointResolverSupport implements EndpointResolver {
 
     public ServiceEndpoint resolveEndpoint(ComponentContext context, MessageExchange exchange, EndpointFilter filter) throws JBIException {
         ServiceEndpoint[] endpoints = resolveAvailableEndpoints(context, exchange);
+        if (endpoints == null) {
+            return null;
+        }
         if (endpoints.length > 0) {
             endpoints = filterEndpoints(endpoints, exchange, filter);
         }
