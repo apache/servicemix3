@@ -393,7 +393,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
             if (broadcast) {
                 log.debug(broker.getContainer().getName() + ": broadcasting info for " + event);
                 ObjectMessage msg = broadcastSession.createObjectMessage(event);
-                synchronized (topicProducer) {}
+                synchronized (topicProducer) {
                     topicProducer.send(msg);
                 }
             }
@@ -412,7 +412,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
             if (broadcast) {
                 ObjectMessage msg = broadcastSession.createObjectMessage(event);
                 log.debug(broker.getContainer().getName() + ": broadcasting info for " + event);
-                synchronized (topicProducer) {}
+                synchronized (topicProducer) {
                     topicProducer.send(msg);
                 }
             }
@@ -508,7 +508,7 @@ public class JMSFlow extends AbstractFlow implements MessageListener {
                 
             Queue queue = inboundSession.createQueue(destination);
             ObjectMessage msg = inboundSession.createObjectMessage(me);
-            synchronized (queueProducer) {}
+            synchronized (queueProducer) {
                 queueProducer.send(queue, msg);
             }
         } catch (JMSException e) {
