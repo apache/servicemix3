@@ -288,9 +288,6 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
                 addEndpoint(endpoint);
             }
         }
-        if (serviceUnit != null) {
-            getRegistry().registerServiceUnit(serviceUnit);
-        }
     }
 
     /**
