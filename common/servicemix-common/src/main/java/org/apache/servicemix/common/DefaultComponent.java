@@ -296,7 +296,7 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
     /**
      * Dynamically adds a new endpoint
      */
-    protected void addEndpoint(Endpoint endpoint) throws Exception {
+    public void addEndpoint(Endpoint endpoint) throws Exception {
         ServiceUnit su = getServiceUnit();
         endpoint.setServiceUnit(su);
         validateEndpoint(endpoint);
