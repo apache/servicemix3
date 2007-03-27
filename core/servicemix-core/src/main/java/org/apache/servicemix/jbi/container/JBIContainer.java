@@ -522,7 +522,7 @@ public class JBIContainer extends BaseLifeCycle {
 
 
     /**
-     * light weight initialization - default values for mbeanSErver, TransactionManager etc are null
+     * light weight initialization - default values for mbeanServer, TransactionManager etc are null
      *
      * @throws JBIException
      */
@@ -750,7 +750,7 @@ public class JBIContainer extends BaseLifeCycle {
                     transactionManager = (TransactionManager) namingContext.lookup("javax.transaction.TransactionManager");
                 }
                 catch (NamingException e1) {
-                    log.debug("No transaction manager found from naming context: " + e.getMessage());
+                    log.debug("No transaction manager found from naming context: " + e1.getMessage());
                 }
             }
         }

@@ -244,7 +244,7 @@ public class ExchangePacket implements Externalizable {
 
     /**
      * @param name
-     * @return the proerty from the exchange
+     * @return the property from the exchange
      */
     public Object getProperty(String name) {
         if (properties != null) {

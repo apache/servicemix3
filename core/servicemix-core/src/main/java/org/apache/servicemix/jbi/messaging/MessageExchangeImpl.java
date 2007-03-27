@@ -177,7 +177,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     }
     
     /**
-     * @return URI of pattenr exchange
+     * @return URI of pattern exchange
      */
     public URI getPattern() {
         return packet.getPattern();
@@ -340,7 +340,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
 
     /**
      * @param name
-     * @return the proerty from the exchange
+     * @return the property from the exchange
      */
     public Object getProperty(String name) {
     	if (JTA_TRANSACTION_PROPERTY_NAME.equals(name)) {
