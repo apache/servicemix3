@@ -43,7 +43,7 @@ public class WSDL2Processor implements EndpointProcessor {
     public static final String WSDL2_NAMESPACE = "http://www.w3.org/2006/01/wsdl";
 
     
-    private static final Log logger = LogFactory.getLog(WSDL1Processor.class);
+    private static final Log logger = LogFactory.getLog(WSDL2Processor.class);
     
     private Registry registry;
     
