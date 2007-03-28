@@ -204,14 +204,18 @@ public class DefaultJDBCAdapter implements JDBCAdapter {
     
     static private void close(Statement s) {
         try {
-            s.close();
+            if (s != null) {
+                s.close();
+            }
         } catch (Throwable e) {
         }
     }
 
     static private void close(ResultSet rs) {
         try {
-            rs.close();
+            if (rs != null) {
+                rs.close();
+            }
         } catch (Throwable e) {
         }
     }
