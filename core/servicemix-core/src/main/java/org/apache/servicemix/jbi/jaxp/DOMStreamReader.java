@@ -45,7 +45,7 @@ public abstract class DOMStreamReader implements XMLStreamReader {
 
     private ElementFrame frame;
 
-    private int currentEvent = XMLStreamConstants.START_DOCUMENT;
+    protected int currentEvent = XMLStreamConstants.START_DOCUMENT;
 
     /**
      *     

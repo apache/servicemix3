@@ -145,7 +145,12 @@ public class W3CDOMStreamReader extends DOMStreamReader {
     }
 
     public String getElementText() throws XMLStreamException {
-        return getText();
+        getCurrentFrame().ended = true;
+        currentEvent = END_ELEMENT;
+        endElement();
+        String result = getContent(getCurrentElement());
+        // we should not return null according to the StAx API javadoc
+        return result != null ? result : "";
     }
 
     public String getNamespaceURI(String prefix) {
@@ -164,10 +169,14 @@ public class W3CDOMStreamReader extends DOMStreamReader {
     }
 
     public String getAttributeValue(String ns, String local) {
+        Attr attr;
         if (ns == null || ns.equals(""))
-            return getCurrentElement().getAttribute(local);
+            attr = getCurrentElement().getAttributeNode(local);
         else
-            return getCurrentElement().getAttributeNS(ns, local);
+            attr = getCurrentElement().getAttributeNodeNS(ns, local);
+        if (attr != null)
+            return attr.getValue();
+        return null;
     }
 
     public int getAttributeCount() {
@@ -306,4 +315,31 @@ public class W3CDOMStreamReader extends DOMStreamReader {
     public String getPIData() {
         throw new UnsupportedOperationException();
     }
+
+    /**
+     * Get the trimed text content of a node or null if there is no text
+     */
+    public static String getContent(Node n) {
+        if (n == null)
+            return null;
+        Node n1 = getChild(n, Node.TEXT_NODE);
+        if (n1 == null)
+            return null;
+        String s1 = n1.getNodeValue();
+        return s1.trim();
+    }
+
+    /**
+     * Get the first direct child with a given type
+     */
+    public static Node getChild(Node parent, int type) {
+        Node n = parent.getFirstChild();
+        while (n != null && type != n.getNodeType()) {
+            n = n.getNextSibling();
+        }
+        if (n == null)
+            return null;
+        return n;
+    }
+
 }
