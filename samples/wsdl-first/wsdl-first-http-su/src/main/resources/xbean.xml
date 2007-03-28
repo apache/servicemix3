@@ -22,10 +22,9 @@
 
   <http:endpoint service="person:PersonService"
                  endpoint="soap"
+                 targetService="person:PersonService"
                  role="consumer" 
                  locationURI="http://0.0.0.0:8192/PersonService/"
-                 defaultMep="http://www.w3.org/2004/08/wsdl/in-out"
-                 soap="true" 
-                 soapAction="getPerson"/>             
+                 soap="true" />
 
 </beans>
