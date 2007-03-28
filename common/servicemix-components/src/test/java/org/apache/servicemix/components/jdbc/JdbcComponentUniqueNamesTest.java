@@ -139,6 +139,14 @@ public class JdbcComponentUniqueNamesTest extends TestCase {
 			throw new RuntimeException("not implemented");
 		}
 
+		public boolean isWrapperFor(Class arg0) throws SQLException {
+			throw new RuntimeException("not implemented");
+		}
+
+		public Object unwrap(Class arg0) throws SQLException {
+			throw new RuntimeException("not implemented");
+		}
+
 	}
 
 }
