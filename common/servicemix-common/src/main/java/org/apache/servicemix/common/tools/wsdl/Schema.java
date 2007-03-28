@@ -32,7 +32,7 @@ public class Schema {
     private Element root;
     private String namespace;
     private List imports;
-    private URI sourceUri;
+    private List sourceUris;
     
     /**
      * Add a reference to an imported namespace.
@@ -90,15 +90,18 @@ public class Schema {
     /**
      * @return Returns the sourceUri.
      */
-    public URI getSourceUri() {
-        return sourceUri;
+    public List getSourceUris() {
+        return sourceUris;
     }
 
     /**
      * @param sourceUri The sourceUri to set.
      */
-    public void setSourceUri(URI sourceUri) {
-        this.sourceUri = sourceUri;
+    public void addSourceUri(URI sourceUri) {
+    	if (sourceUris == null) {
+    		sourceUris = new ArrayList();
+    	}
+        sourceUris.add(sourceUri);
     }
 
 }
