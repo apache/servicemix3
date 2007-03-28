@@ -64,12 +64,22 @@ public class SchemaCollection {
     }
     
     public void read(Element elem, URI sourceUri) throws Exception {
-        Schema schema = new Schema();
-        schema.setSourceUri(sourceUri);
-        schema.setRoot(elem);
-        schema.setNamespace(elem.getAttribute("targetNamespace"));
-        schemas.put(schema.getNamespace(), schema);
-        handleImports(schema);
+    	String namespace = elem.getAttribute("targetNamespace");
+    	Schema schema = (Schema) schemas.get(namespace);
+    	if (schema == null) {
+	        schema = new Schema();
+	        schema.addSourceUri(sourceUri);
+	        schema.setRoot(elem);
+	        schema.setNamespace(elem.getAttribute("targetNamespace"));
+	        schemas.put(schema.getNamespace(), schema);
+    	} else if (!schema.getSourceUris().contains(sourceUri)) {
+    		NodeList nodes = elem.getChildNodes();
+    		for (int i = 0; i < nodes.getLength(); i++) {
+    			schema.getRoot().appendChild(schema.getRoot().getOwnerDocument().importNode(nodes.item(i), true));
+    		}
+    		schema.addSourceUri(sourceUri);
+    	}
+        handleImports(schema, sourceUri);
     }
     
     public void read(String location, URI baseUri) throws Exception {
@@ -106,9 +116,10 @@ public class SchemaCollection {
              inputSource.getSystemId() != null ? new URI(inputSource.getSystemId()) : null);
     }
     
-    protected void handleImports(Schema schema) throws Exception {
+    protected void handleImports(Schema schema, URI baseUri) throws Exception {
         NodeList children = schema.getRoot().getChildNodes();
         List imports = new ArrayList();
+        List includes = new ArrayList();
         for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
             if (child instanceof Element) {
@@ -116,20 +127,29 @@ public class SchemaCollection {
                 if ("http://www.w3.org/2001/XMLSchema".equals(ce.getNamespaceURI()) &&
                     "import".equals(ce.getLocalName())) {
                     imports.add(ce);
+                } else if ("http://www.w3.org/2001/XMLSchema".equals(ce.getNamespaceURI()) &&
+                           "include".equals(ce.getLocalName())) {
+                	includes.add(ce);
                 }
             }
         }
         for (Iterator iter = imports.iterator(); iter.hasNext();) {
             Element ce = (Element) iter.next();
             String namespace = ce.getAttribute("namespace");
-            if (schemas.get(namespace) == null) {
-                String location = ce.getAttribute("schemaLocation");
-                if (location != null && !"".equals(location)) {
-                    read(location, schema.getSourceUri());
-                }
-            }
+            String location = ce.getAttribute("schemaLocation");
             schema.addImport(namespace);
             schema.getRoot().removeChild(ce);
+            if (location != null && !"".equals(location)) {
+            	read(location, baseUri);
+            }
+        }
+        for (Iterator iter = includes.iterator(); iter.hasNext();) {
+            Element ce = (Element) iter.next();
+	        String location = ce.getAttribute("schemaLocation");
+            schema.getRoot().removeChild(ce);
+	        if (location != null && !"".equals(location)) {
+	            read(location, baseUri);
+	        }
         }
     }
     
