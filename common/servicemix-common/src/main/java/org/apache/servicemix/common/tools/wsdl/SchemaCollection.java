@@ -19,6 +19,7 @@ package org.apache.servicemix.common.tools.wsdl;
 import java.net.URI;
 import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -44,7 +45,7 @@ public class SchemaCollection {
 
     private static Log log = LogFactory.getLog(SchemaCollection.class);
     
-    private Map schemas;
+    private Map<String, Schema> schemas;
     private URI baseUri;
     
     public SchemaCollection() {
@@ -56,16 +57,16 @@ public class SchemaCollection {
             log.debug("Initializing schema collection with baseUri: " + baseUri);
         }
         this.baseUri = baseUri;
-        this.schemas = new HashMap();
+        this.schemas = new HashMap<String, Schema>();
     }
     
     public Schema getSchema(String namespaceURI) {
-        return (Schema) schemas.get(namespaceURI);
+        return schemas.get(namespaceURI);
     }
     
     public void read(Element elem, URI sourceUri) throws Exception {
     	String namespace = elem.getAttribute("targetNamespace");
-    	Schema schema = (Schema) schemas.get(namespace);
+    	Schema schema = schemas.get(namespace);
     	if (schema == null) {
 	        schema = new Schema();
 	        schema.addSourceUri(sourceUri);
@@ -118,8 +119,8 @@ public class SchemaCollection {
     
     protected void handleImports(Schema schema, URI baseUri) throws Exception {
         NodeList children = schema.getRoot().getChildNodes();
-        List imports = new ArrayList();
-        List includes = new ArrayList();
+        List<Element> imports = new ArrayList<Element>();
+        List<Element> includes = new ArrayList<Element>();
         for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
             if (child instanceof Element) {
@@ -133,8 +134,8 @@ public class SchemaCollection {
                 }
             }
         }
-        for (Iterator iter = imports.iterator(); iter.hasNext();) {
-            Element ce = (Element) iter.next();
+        for (Iterator<Element> iter = imports.iterator(); iter.hasNext();) {
+            Element ce = iter.next();
             String namespace = ce.getAttribute("namespace");
             String location = ce.getAttribute("schemaLocation");
             schema.addImport(namespace);
@@ -143,8 +144,8 @@ public class SchemaCollection {
             	read(location, baseUri);
             }
         }
-        for (Iterator iter = includes.iterator(); iter.hasNext();) {
-            Element ce = (Element) iter.next();
+        for (Iterator<Element> iter = includes.iterator(); iter.hasNext();) {
+            Element ce = iter.next();
 	        String location = ce.getAttribute("schemaLocation");
             schema.getRoot().removeChild(ce);
 	        if (location != null && !"".equals(location)) {
@@ -171,11 +172,11 @@ public class SchemaCollection {
         }
      }
      
-     public Collection getSchemas() {
+     public Collection<Schema> getSchemas() {
         if (schemas != null) {
            return schemas.values();
         } else {
-           return java.util.Collections.EMPTY_SET;
+           return Collections.emptySet();
         }
      }
 }

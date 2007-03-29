@@ -38,18 +38,13 @@ import javax.wsdl.extensions.schema.SchemaImport;
 import javax.wsdl.factory.WSDLFactory;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.ibm.wsdl.extensions.schema.SchemaImpl;
 
 public class WSDLFlattener {
 
-    private static Log log = LogFactory.getLog(WSDLFlattener.class);
-    
     private Definition definition;
     private SchemaCollection schemas;
-    private Map flattened;
+    private Map<QName, Definition> flattened;
     private boolean initialized;
     
     public WSDLFlattener() {
@@ -62,7 +57,7 @@ public class WSDLFlattener {
         
     public WSDLFlattener(Definition definition, SchemaCollection schemas) {
         this.definition = definition;
-        this.flattened = new HashMap();
+        this.flattened = new HashMap<QName, Definition>();
         this.schemas = schemas;
     }
     
@@ -87,7 +82,7 @@ public class WSDLFlattener {
      * @throws Exception if an error occurs
      */
     public Definition getDefinition(QName portType) throws Exception {
-        Definition def = (Definition) flattened.get(portType);
+        Definition def = flattened.get(portType);
         if (def == null) {
             def = flattenDefinition(portType);
             flattened.put(portType, def);

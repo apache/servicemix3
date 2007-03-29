@@ -135,7 +135,7 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
             }
 
             // build hidden classes
-            List hidden = new ArrayList();
+            List<String> hidden = new ArrayList<String>();
             NodeList hiddenElems = classpathElement.getElementsByTagName("hidden");
             for (int i = 0; i < hiddenElems.getLength(); i++) {
                 Element hiddenElement = (Element) hiddenElems.item(i);
@@ -144,7 +144,7 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
             }
 
             // build non overridable classes
-            List nonOverridable = new ArrayList();
+            List<String> nonOverridable = new ArrayList<String>();
             NodeList nonOverridableElems = classpathElement.getElementsByTagName("nonOverridable");
             for (int i = 0; i < nonOverridableElems.getLength(); i++) {
                 Element nonOverridableElement = (Element) nonOverridableElems.item(i);
@@ -153,7 +153,7 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
             }
 
             // build the classpath
-            List classpath = new ArrayList();
+            List<String> classpath = new ArrayList<String>();
             NodeList locations = classpathElement.getElementsByTagName("location");
             for (int i = 0; i < locations.getLength(); i++) {
                 Element locationElement = (Element) locations.item(i);
@@ -165,8 +165,8 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
             URL[] urls;
             if (classpath.size() != 0) {
                 urls = new URL[classpath.size()];
-                for (ListIterator iterator = classpath.listIterator(); iterator.hasNext();) {
-                    String location = (String) iterator.next();
+                for (ListIterator<String> iterator = classpath.listIterator(); iterator.hasNext();) {
+                    String location = iterator.next();
                     URL url = repository.getResource(location);
                     if (url == null) {
                         throw new FatalBeanException("Unable to resolve classpath location " + location);
@@ -183,8 +183,8 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
                                                  urls, 
                                                  parentLoader,
                                                  inverse,
-                                                 (String[]) hidden.toArray(new String[hidden.size()]),
-                                                 (String[]) nonOverridable.toArray(new String[nonOverridable.size()]));
+                                                 hidden.toArray(new String[hidden.size()]),
+                                                 nonOverridable.toArray(new String[nonOverridable.size()]));
 
             // remove the classpath element so Spring doesn't get confused
             document.getDocumentElement().removeChild(classpathElement);

@@ -24,17 +24,17 @@ import java.util.Map;
 public class Registry {
 
     protected ServiceMixComponent component;
-    protected Map endpoints;
-    protected Map serviceUnits;
+    protected Map<String, Endpoint> endpoints;
+    protected Map<String, ServiceUnit> serviceUnits;
     
     public Registry(ServiceMixComponent component) {
         this.component = component;
-        this.endpoints = new HashMap();
-        this.serviceUnits = new HashMap();
+        this.endpoints = new HashMap<String, Endpoint>();
+        this.serviceUnits = new HashMap<String, ServiceUnit>();
     }
 
     public Endpoint getEndpoint(String key) {
-        return (Endpoint) this.endpoints.get(key);
+        return this.endpoints.get(key);
     }
     
     public boolean isRegistered(ServiceUnit su) {
@@ -46,7 +46,7 @@ public class Registry {
     }
     
     public ServiceUnit getServiceUnit(String name) {
-        return (ServiceUnit) this.serviceUnits.get(name);
+        return this.serviceUnits.get(name);
     }
     
     public void registerEndpoint(Endpoint ep) {

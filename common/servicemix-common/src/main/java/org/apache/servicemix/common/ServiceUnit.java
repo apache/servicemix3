@@ -18,7 +18,6 @@ package org.apache.servicemix.common;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +36,7 @@ public class ServiceUnit {
 
     protected String status = LifeCycleMBean.SHUTDOWN;
 
-    protected Map endpoints = new LinkedHashMap();
+    protected Map<String, Endpoint> endpoints = new LinkedHashMap<String, Endpoint>();
 
     public ServiceUnit() {
     }
@@ -48,19 +47,17 @@ public class ServiceUnit {
 
     public void start() throws Exception {
         // Activate endpoints
-        List activated = new ArrayList();
+        List<Endpoint> activated = new ArrayList<Endpoint>();
         try {
-            for (Iterator iter = getEndpoints().iterator(); iter.hasNext();) {
-                Endpoint endpoint = (Endpoint) iter.next();
+            for (Endpoint endpoint : getEndpoints()) {
                 endpoint.activate();
                 activated.add(endpoint);
             }
             this.status = LifeCycleMBean.STARTED;
         } catch (Exception e) {
             // Deactivate activated endpoints
-            for (Iterator iter = activated.iterator(); iter.hasNext();) {
+            for (Endpoint endpoint : activated) {
                 try {
-                    Endpoint endpoint = (Endpoint) iter.next();
                     endpoint.deactivate();
                 } catch (Exception e2) {
                     // do nothing
@@ -74,8 +71,7 @@ public class ServiceUnit {
         this.status = LifeCycleMBean.STOPPED;
         // Deactivate endpoints
         Exception exception = null;
-        for (Iterator iter = getEndpoints().iterator(); iter.hasNext();) {
-            Endpoint endpoint = (Endpoint) iter.next();
+        for (Endpoint endpoint : getEndpoints()) {
             try {
                 endpoint.deactivate();
             } catch (Exception e) {
@@ -126,7 +122,7 @@ public class ServiceUnit {
         this.component = component;
     }
 
-    public Collection getEndpoints() {
+    public Collection<Endpoint> getEndpoints() {
         return this.endpoints.values();
     }
 
@@ -146,7 +142,7 @@ public class ServiceUnit {
     }
 
     public Endpoint getEndpoint(String key) {
-        return (Endpoint) this.endpoints.get(key);
+        return this.endpoints.get(key);
     }
 
     public ClassLoader getConfigurationClassLoader() {

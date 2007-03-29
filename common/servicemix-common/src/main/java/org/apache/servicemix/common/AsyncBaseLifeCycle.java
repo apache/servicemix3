@@ -81,17 +81,17 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
 
     protected boolean workManagerCreated;
 
-    protected Map processors;
+    protected Map<String, ExchangeProcessor> processors;
     
-    protected ThreadLocal correlationId;
+    protected ThreadLocal<String> correlationId;
     
     protected String currentState = LifeCycleMBean.UNKNOWN;
 
     public AsyncBaseLifeCycle() {
         this.running = new AtomicBoolean(false);
         this.polling = new AtomicBoolean(false);
-        this.processors = new ConcurrentHashMap();
-        this.correlationId = new ThreadLocal();
+        this.processors = new ConcurrentHashMap<String, ExchangeProcessor>();
+        this.correlationId = new ThreadLocal<String>();
     }
 
     public AsyncBaseLifeCycle(ServiceMixComponent component) {
@@ -504,7 +504,7 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
                     processor = ep.getProcessor();
                 }
             } else {
-                processor = (ExchangeProcessor) processors.remove(exchange.getExchangeId());
+                processor = processors.remove(exchange.getExchangeId());
             }
             if (processor == null) {
                 throw new IllegalStateException("No processor found for: " + exchange.getExchangeId());
@@ -577,7 +577,7 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
         String correlationIDValue = (String) exchange.getProperty(JbiConstants.CORRELATION_ID);
         if (correlationIDValue == null) {
             // Retrieve correlation id from thread local variable, if exist
-            correlationIDValue = (String) correlationId.get();
+            correlationIDValue = correlationId.get();
             if (correlationIDValue == null) {
                 // Set a correlation id property that have to be propagated in all components
                 // to trace the process instance

@@ -25,6 +25,7 @@ import java.util.List;
 import javax.jbi.messaging.MessageExchange;
 
 import org.apache.servicemix.common.Endpoint;
+import org.apache.servicemix.common.packaging.Consumes;
 import org.apache.servicemix.common.packaging.Provides;
 import org.apache.servicemix.common.packaging.ServiceUnitAnalyzer;
 import org.apache.xbean.spring.context.FileSystemXmlApplicationContext;
@@ -33,32 +34,32 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 public abstract class AbstractXBeanServiceUnitAnalyzer implements
 		ServiceUnitAnalyzer {
 
-	List consumes = new ArrayList();
+	List<Consumes> consumes = new ArrayList<Consumes>();
 
-	List provides = new ArrayList();
+	List<Provides> provides = new ArrayList<Provides>();
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.apache.servicemix.common.packaging.ServiceUnitAnalyzer#getConsumes()
 	 */
-	public List getConsumes() {
+	public List<Consumes> getConsumes() {
 		return consumes;
 	}
 
-	protected abstract List getConsumes(Endpoint endpoint);
+	protected abstract List<Consumes> getConsumes(Endpoint endpoint);
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.apache.servicemix.common.packaging.ServiceUnitAnalyzer#getProvides()
 	 */
-	public List getProvides() {
+	public List<Provides> getProvides() {
 		return provides;
 	}
 
-	protected List getProvides(Endpoint endpoint) {
-		List providesList = new ArrayList();
+	protected List<Provides> getProvides(Endpoint endpoint) {
+		List<Provides> providesList = new ArrayList<Provides>();
 		if (endpoint.getRole().equals(MessageExchange.Role.PROVIDER)) {
 			Provides newProvide = new Provides();
 			newProvide.setEndpointName(endpoint.getEndpoint());

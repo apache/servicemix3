@@ -31,8 +31,8 @@ public class Schema {
 
     private Element root;
     private String namespace;
-    private List imports;
-    private List sourceUris;
+    private List<String> imports;
+    private List<URI> sourceUris;
     
     /**
      * Add a reference to an imported namespace.
@@ -40,7 +40,7 @@ public class Schema {
      */
     public void addImport(String namespace) {
         if (imports == null) {
-            imports = new ArrayList();
+            imports = new ArrayList<String>();
         }
         imports.add(namespace);
     }
@@ -48,14 +48,14 @@ public class Schema {
     /**
      * @return Returns the imports.
      */
-    public List getImports() {
+    public List<String> getImports() {
         return imports;
     }
 
     /**
      * @param imports The imports to set.
      */
-    public void setImports(List imports) {
+    public void setImports(List<String> imports) {
         this.imports = imports;
     }
 
@@ -90,7 +90,7 @@ public class Schema {
     /**
      * @return Returns the sourceUri.
      */
-    public List getSourceUris() {
+    public List<URI> getSourceUris() {
         return sourceUris;
     }
 
@@ -99,7 +99,7 @@ public class Schema {
      */
     public void addSourceUri(URI sourceUri) {
     	if (sourceUris == null) {
-    		sourceUris = new ArrayList();
+    		sourceUris = new ArrayList<URI>();
     	}
         sourceUris.add(sourceUri);
     }
