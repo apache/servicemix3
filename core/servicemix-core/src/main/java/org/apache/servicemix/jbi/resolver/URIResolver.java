@@ -150,6 +150,7 @@ public class URIResolver extends EndpointResolverSupport {
     
     public static String[] split3(String uri) {
         char sep;
+        uri = uri.trim();
         if (uri.indexOf('/') > 0) {
             sep = '/';
         } else {
@@ -168,6 +169,7 @@ public class URIResolver extends EndpointResolverSupport {
     
     public static String[] split2(String uri) {
         char sep;
+        uri = uri.trim();
         if (uri.indexOf('/') > 0) {
             sep = '/';
         } else {
