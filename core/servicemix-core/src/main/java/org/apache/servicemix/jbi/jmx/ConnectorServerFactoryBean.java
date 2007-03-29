@@ -184,6 +184,7 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
         csfb.setRegistrationBehavior(registrationBehavior);
         csfb.setEnvironmentMap(environment);
         csfb.setObjectName(objectName);
+        serviceUrl = serviceUrl.replaceAll(" ", "");
         csfb.setServiceUrl(serviceUrl);
         csfb.setServer(server);
         csfb.afterPropertiesSet();
