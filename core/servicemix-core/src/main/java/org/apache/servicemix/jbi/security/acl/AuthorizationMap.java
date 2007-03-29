@@ -16,6 +16,7 @@
  */
 package org.apache.servicemix.jbi.security.acl;
 
+import java.security.Principal;
 import java.util.Set;
 
 import javax.jbi.servicedesc.ServiceEndpoint;
@@ -23,6 +24,6 @@ import javax.xml.namespace.QName;
 
 public interface AuthorizationMap {
 
-    Set getAcls(ServiceEndpoint endpoint, QName operation);
+    Set<Principal> getAcls(ServiceEndpoint endpoint, QName operation);
     
 }

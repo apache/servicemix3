@@ -61,8 +61,8 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
 
     private static final Log log = LogFactory.getLog(StatisticsService.class);
     
-    private ConcurrentHashMap componentStats = new ConcurrentHashMap();
-    private ConcurrentHashMap endpointStats = new ConcurrentHashMap();
+    private ConcurrentHashMap<String, ComponentStats> componentStats = new ConcurrentHashMap<String, ComponentStats>();
+    private ConcurrentHashMap<String, EndpointStats> endpointStats = new ConcurrentHashMap<String, EndpointStats>();
     
     private ComponentListener componentListener;
     private EndpointListener endpointListener;
@@ -109,7 +109,7 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
         dumpStats = value;
     }
 
-    protected Class getServiceMBean() {
+    protected Class<StatisticsServiceMBean> getServiceMBean() {
         return StatisticsServiceMBean.class;
     }
 
@@ -118,12 +118,12 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
     }
     
     public void resetAllStats() {
-        for (Iterator it = componentStats.values().iterator(); it.hasNext();) {
-            ComponentStats stats = (ComponentStats) it.next();
+        for (Iterator<ComponentStats> it = componentStats.values().iterator(); it.hasNext();) {
+            ComponentStats stats = it.next();
             stats.reset();
         }
-        for (Iterator it = endpointStats.values().iterator(); it.hasNext();) {
-            EndpointStats stats = (EndpointStats) it.next();
+        for (Iterator<EndpointStats> it = endpointStats.values().iterator(); it.hasNext();) {
+            EndpointStats stats = it.next();
             stats.reset();
         }
     }
@@ -145,8 +145,8 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
     public void stop() throws javax.jbi.JBIException {
         this.container.removeListener(exchangeListener);
         super.stop();
-        for (Iterator it = componentStats.values().iterator(); it.hasNext();) {
-            ComponentStats stats = (ComponentStats) it.next();
+        for (Iterator<ComponentStats> it = componentStats.values().iterator(); it.hasNext();) {
+            ComponentStats stats = it.next();
             stats.close();
         }
         if (timerTask != null) {
@@ -215,7 +215,7 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
     protected void onComponentShutDown(ComponentEvent event) {
         ComponentMBeanImpl component = event.getComponent();
         String key = component.getName();
-        ComponentStats stats = (ComponentStats) componentStats.remove(key);
+        ComponentStats stats = componentStats.remove(key);
         if (stats == null) {
             return;
         }
@@ -234,7 +234,7 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
     protected void onEndpointRegistered(EndpointEvent event) {
         AbstractServiceEndpoint endpoint = (AbstractServiceEndpoint) event.getEndpoint();
         String key = EndpointSupport.getUniqueKey(endpoint);
-        ComponentStats compStats = (ComponentStats) componentStats.get(endpoint.getComponentNameSpace().getName()); 
+        ComponentStats compStats = componentStats.get(endpoint.getComponentNameSpace().getName()); 
         EndpointStats stats = new EndpointStats(endpoint, compStats.getMessagingStats());
         endpointStats.putIfAbsent(key, stats);
         // Register MBean
@@ -254,7 +254,7 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
     protected void onEndpointUnregistered(EndpointEvent event) {
         AbstractServiceEndpoint endpoint = (AbstractServiceEndpoint) event.getEndpoint();
         String key = EndpointSupport.getUniqueKey(endpoint);
-        EndpointStats stats = (EndpointStats) endpointStats.remove(key);
+        EndpointStats stats = endpointStats.remove(key);
         // Register MBean
         ManagementContext context= container.getManagementContext();
         try {
@@ -280,14 +280,14 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
             String source = (String) me.getProperty(JbiConstants.SENDER_ENDPOINT);
             if (source == null) {
                 source = mei.getSourceId().getName();
-                ComponentStats stats = (ComponentStats) componentStats.get(source);
+                ComponentStats stats = componentStats.get(source);
                 stats.incrementOutbound();
             } else {
                 ServiceEndpoint[] ses = getContainer().getRegistry().getEndpointRegistry().getAllEndpointsForComponent(mei.getSourceId());
                 for (int i = 0; i < ses.length; i++) {
                     if (EndpointSupport.getKey(ses[i]).equals(source)) {
                         source = EndpointSupport.getUniqueKey(ses[i]);
-                        EndpointStats stats = (EndpointStats) endpointStats.get(source);
+                        EndpointStats stats = endpointStats.get(source);
                         stats.incrementOutbound();
                         break;
                     }
@@ -306,7 +306,7 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
             me instanceof MessageExchangeImpl) 
         {
             String source = EndpointSupport.getUniqueKey(me.getEndpoint());
-            EndpointStats stats = (EndpointStats) endpointStats.get(source);
+            EndpointStats stats = endpointStats.get(source);
             stats.incrementInbound();
         }        
     }
@@ -328,8 +328,8 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
     }
     
     protected void doDumpStats() {
-        for (Iterator it = componentStats.values().iterator(); it.hasNext();) {
-            ComponentStats stats = (ComponentStats) it.next();
+        for (Iterator<ComponentStats> it = componentStats.values().iterator(); it.hasNext();) {
+            ComponentStats stats = it.next();
             stats.dumpStats();
         }
     }

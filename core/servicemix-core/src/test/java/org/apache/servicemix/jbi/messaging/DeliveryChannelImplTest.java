@@ -30,7 +30,6 @@ import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.tck.SenderComponent;
 
 public class DeliveryChannelImplTest extends TestCase {
 

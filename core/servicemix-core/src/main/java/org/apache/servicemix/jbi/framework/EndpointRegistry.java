@@ -53,17 +53,17 @@ public class EndpointRegistry {
     
     private Registry registry;
     
-    private Map endpointMBeans;
+    private Map<AbstractServiceEndpoint, Endpoint> endpointMBeans;
     
-    private Map internalEndpoints;
+    private Map<String, ServiceEndpoint> internalEndpoints;
     
-    private Map externalEndpoints;
+    private Map<String, ServiceEndpoint> externalEndpoints;
     
-    private Map linkedEndpoints;
+    private Map<String, ServiceEndpoint> linkedEndpoints;
     
-    private Map interfaceConnections;
+    private Map<QName, InterfaceConnection> interfaceConnections;
     
-    private List endpointProcessors;
+    private List<EndpointProcessor> endpointProcessors;
     
     /**
      * Constructor
@@ -72,16 +72,16 @@ public class EndpointRegistry {
      */
     public EndpointRegistry(Registry registry) {
         this.registry = registry;
-        this.endpointMBeans = new ConcurrentHashMap();
-        this.internalEndpoints = new ConcurrentHashMap();
-        this.externalEndpoints = new ConcurrentHashMap();
-        this.linkedEndpoints = new ConcurrentHashMap();
-        this.interfaceConnections = new ConcurrentHashMap();
+        this.endpointMBeans = new ConcurrentHashMap<AbstractServiceEndpoint, Endpoint>();
+        this.internalEndpoints = new ConcurrentHashMap<String, ServiceEndpoint>();
+        this.externalEndpoints = new ConcurrentHashMap<String, ServiceEndpoint>();
+        this.linkedEndpoints = new ConcurrentHashMap<String, ServiceEndpoint>();
+        this.interfaceConnections = new ConcurrentHashMap<QName, InterfaceConnection>();
         this.endpointProcessors = getEndpointProcessors();
     }
     
-    protected List getEndpointProcessors() {
-        List l = new ArrayList();
+    protected List<EndpointProcessor> getEndpointProcessors() {
+        List<EndpointProcessor> l = new ArrayList<EndpointProcessor>();
         String[] classes = { "org.apache.servicemix.jbi.framework.support.SUDescriptorProcessor",
                              "org.apache.servicemix.jbi.framework.support.WSDL1Processor",
                              "org.apache.servicemix.jbi.framework.support.WSDL2Processor" };
@@ -98,8 +98,8 @@ public class EndpointRegistry {
     }
     
     public ServiceEndpoint[] getEndpointsForComponent(ComponentNameSpace cns) {
-        Collection endpoints = new ArrayList();
-        for (Iterator iter = getInternalEndpoints().iterator(); iter.hasNext();) {
+        Collection<ServiceEndpoint> endpoints = new ArrayList<ServiceEndpoint>();
+        for (Iterator<ServiceEndpoint> iter = getInternalEndpoints().iterator(); iter.hasNext();) {
             InternalEndpoint endpoint = (InternalEndpoint) iter.next();
             if (cns.equals(endpoint.getComponentNameSpace())) {
                 endpoints.add(endpoint);
@@ -109,14 +109,14 @@ public class EndpointRegistry {
     }
     
     public ServiceEndpoint[] getAllEndpointsForComponent(ComponentNameSpace cns) {
-        Collection endpoints = new ArrayList();
-        for (Iterator iter = getInternalEndpoints().iterator(); iter.hasNext();) {
+        Collection<ServiceEndpoint> endpoints = new ArrayList<ServiceEndpoint>();
+        for (Iterator<ServiceEndpoint> iter = getInternalEndpoints().iterator(); iter.hasNext();) {
             InternalEndpoint endpoint = (InternalEndpoint) iter.next();
             if (cns.equals(endpoint.getComponentNameSpace())) {
                 endpoints.add(endpoint);
             }
         }
-        for (Iterator iter = getExternalEndpoints().iterator(); iter.hasNext();) {
+        for (Iterator<ServiceEndpoint> iter = getExternalEndpoints().iterator(); iter.hasNext();) {
             ExternalEndpoint endpoint = (ExternalEndpoint) iter.next();
             if (cns.equals(endpoint.getComponentNameSpace())) {
                 endpoints.add(endpoint);
@@ -128,7 +128,7 @@ public class EndpointRegistry {
     /**
      * Returns a collection of Endpoint objects
      */
-    public Collection getEndpointMBeans() {
+    public Collection<Endpoint> getEndpointMBeans() {
         return endpointMBeans.values();
     }
 
@@ -139,7 +139,7 @@ public class EndpointRegistry {
      * @return array of endpoints
      */
     public ServiceEndpoint[] getEndpointsForService(QName serviceName) {
-        Collection collection = getEndpointsByService(serviceName, getInternalEndpoints());
+        Collection<ServiceEndpoint> collection = getEndpointsByService(serviceName, getInternalEndpoints());
         return asEndpointArray(collection);
     }
 
@@ -155,10 +155,10 @@ public class EndpointRegistry {
         if (interfaceName == null) {
             return asEndpointArray(internalEndpoints.values());
         }
-        InterfaceConnection conn = (InterfaceConnection) interfaceConnections.get(interfaceName);
+        InterfaceConnection conn = interfaceConnections.get(interfaceName);
         if (conn != null) {
             String key = getKey(conn.service, conn.endpoint);
-            ServiceEndpoint ep = (ServiceEndpoint) internalEndpoints.get(key);
+            ServiceEndpoint ep = internalEndpoints.get(key);
             if (ep == null) {
                 logger.warn("Connection for interface " + interfaceName + " could not find target for service " + conn.service + " and endpoint " + conn.endpoint);
                 return new ServiceEndpoint[0];
@@ -166,7 +166,7 @@ public class EndpointRegistry {
                 return new ServiceEndpoint[] { ep };
             }
         }
-        Collection result = getEndpointsByInterface(interfaceName, getInternalEndpoints());
+        Collection<ServiceEndpoint> result = getEndpointsByInterface(interfaceName, getInternalEndpoints());
         return asEndpointArray(result);
     }
 
@@ -194,8 +194,8 @@ public class EndpointRegistry {
             serviceEndpoint.addInterface(provider.getActivationSpec().getInterfaceName());
         }
         // Get interfaces
-        for (Iterator it = endpointProcessors.iterator(); it.hasNext();) {
-            EndpointProcessor p = (EndpointProcessor) it.next();
+        for (Iterator<EndpointProcessor> it = endpointProcessors.iterator(); it.hasNext();) {
+            EndpointProcessor p = it.next();
             p.process(serviceEndpoint);
         }
         // Set remote namespaces
@@ -275,15 +275,15 @@ public class EndpointRegistry {
      */
     public ServiceEndpoint getEndpoint(QName service, String name) {
         String key = getKey(service, name);
-        ServiceEndpoint ep = (ServiceEndpoint) linkedEndpoints.get(key);
+        ServiceEndpoint ep = linkedEndpoints.get(key);
         if (ep == null) {
-            ep = (ServiceEndpoint) internalEndpoints.get(key);
+            ep = internalEndpoints.get(key);
         }
         return ep;
     }
     
     public ServiceEndpoint getInternalEndpoint(QName service, String name) {
-        return (ServiceEndpoint) internalEndpoints.get(getKey(service, name));
+        return internalEndpoints.get(getKey(service, name));
     }
 
     /**
@@ -327,7 +327,7 @@ public class EndpointRegistry {
      * empty.
      */
     public ServiceEndpoint[] getExternalEndpointsForInterface(QName interfaceName) {
-        Collection endpoints = getEndpointsByInterface(interfaceName, getExternalEndpoints());
+        Collection<ServiceEndpoint> endpoints = getEndpointsByInterface(interfaceName, getExternalEndpoints());
         return asEndpointArray(endpoints);
     }
 
@@ -338,7 +338,7 @@ public class EndpointRegistry {
      * @return an array of available external endpoints for the specified service name; must be non-null; may be empty.
      */
     public ServiceEndpoint[] getExternalEndpointsForService(QName serviceName) {
-        Collection endpoints = getEndpointsByService(serviceName, getExternalEndpoints());
+        Collection<ServiceEndpoint> endpoints = getEndpointsByService(serviceName, getExternalEndpoints());
         return asEndpointArray(endpoints);
     }
 
@@ -348,12 +348,12 @@ public class EndpointRegistry {
      * @param collection
      * @return array of endpoints
      */
-    protected ServiceEndpoint[] asEndpointArray(Collection collection) {
+    protected ServiceEndpoint[] asEndpointArray(Collection<ServiceEndpoint> collection) {
         if (collection == null) {
             return new ServiceEndpoint[0];
         }
         ServiceEndpoint[] answer = new ServiceEndpoint[collection.size()];
-        answer = (ServiceEndpoint[]) collection.toArray(answer);
+        answer = collection.toArray(answer);
         return answer;
     }
 
@@ -364,10 +364,10 @@ public class EndpointRegistry {
      * @param endpoints
      * @return collection of endpoints
      */
-    protected Collection getEndpointsByService(QName serviceName, Collection endpoints) {
-        Collection answer = new ArrayList();
-        for (Iterator i = endpoints.iterator(); i.hasNext();) {
-            ServiceEndpoint endpoint = (ServiceEndpoint) i.next();
+    protected Collection<ServiceEndpoint> getEndpointsByService(QName serviceName, Collection<ServiceEndpoint> endpoints) {
+        Collection<ServiceEndpoint> answer = new ArrayList<ServiceEndpoint>();
+        for (Iterator<ServiceEndpoint> i = endpoints.iterator(); i.hasNext();) {
+            ServiceEndpoint endpoint = i.next();
             if (endpoint.getServiceName().equals(serviceName)) {
                 answer.add(endpoint);
             }
@@ -381,13 +381,13 @@ public class EndpointRegistry {
      * is applied.
      * 
      */
-    protected Collection getEndpointsByInterface(QName interfaceName, Collection endpoints) {
+    protected Collection<ServiceEndpoint> getEndpointsByInterface(QName interfaceName, Collection<ServiceEndpoint> endpoints) {
         if (interfaceName == null) {
             return endpoints;
         }
-        Set answer = new HashSet();
-        for (Iterator i = endpoints.iterator(); i.hasNext();) {
-            ServiceEndpoint endpoint = (ServiceEndpoint) i.next();
+        Set<ServiceEndpoint> answer = new HashSet<ServiceEndpoint>();
+        for (Iterator<ServiceEndpoint> i = endpoints.iterator(); i.hasNext();) {
+            ServiceEndpoint endpoint = i.next();
             QName[] interfaces = endpoint.getInterfaces();
             if (interfaces != null) {
                 for (int k = 0; k < interfaces.length;k ++) {
@@ -405,14 +405,14 @@ public class EndpointRegistry {
     /**
      * @return all default endpoints
      */
-    protected Collection getInternalEndpoints() {
+    protected Collection<ServiceEndpoint> getInternalEndpoints() {
         return internalEndpoints.values();
     }
 
     /**
      * @return all external endpoints
      */
-    protected Collection getExternalEndpoints() {
+    protected Collection<ServiceEndpoint> getExternalEndpoints() {
         return externalEndpoints.values();
     }
 
@@ -485,7 +485,7 @@ public class EndpointRegistry {
     }
     
     private void unregisterEndpoint(AbstractServiceEndpoint se) {
-        Endpoint ep = (Endpoint) endpointMBeans.remove(se);
+        Endpoint ep = endpointMBeans.remove(se);
         try {
             registry.getContainer().getManagementContext().unregisterMBean(ep);
         } catch (JBIException e) {

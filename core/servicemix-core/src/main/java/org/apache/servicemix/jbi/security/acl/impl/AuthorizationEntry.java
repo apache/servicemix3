@@ -46,7 +46,7 @@ public class AuthorizationEntry {
      */
     public static final String TYPE_REM = "rem";
 
-    private Set acls;
+    private Set<GroupPrincipal> acls;
     private QName service;
     private String endpoint;
     private QName operation;
@@ -135,19 +135,19 @@ public class AuthorizationEntry {
     /**
      * @return the acls
      */
-    public Set getAcls() {
+    public Set<GroupPrincipal> getAcls() {
         return acls;
     }
 
     /**
      * @param acls the acls to set
      */
-    public void setAcls(Set acls) {
+    public void setAcls(Set<GroupPrincipal> acls) {
         this.acls = acls;
     }
     
     public void setRoles(String roles) {
-        this.acls = new HashSet();
+        this.acls = new HashSet<GroupPrincipal>();
         StringTokenizer iter = new StringTokenizer(roles, ",");
         while (iter.hasMoreTokens()) {
             String name = iter.nextToken().trim();
@@ -158,8 +158,8 @@ public class AuthorizationEntry {
     public String getRoles() {
         StringBuffer sb = new StringBuffer();
         if (this.acls != null) {
-            for (Iterator iter = this.acls.iterator(); iter.hasNext();) {
-                GroupPrincipal p = (GroupPrincipal) iter.next();
+            for (Iterator<GroupPrincipal> iter = this.acls.iterator(); iter.hasNext();) {
+                GroupPrincipal p = iter.next();
                 sb.append(p);
                 if (iter.hasNext()) {
                     sb.append(",");

@@ -29,7 +29,7 @@ import java.util.List;
  * @version $Revision$
  */
 public class OperationInfoHelper {
-    private List list = new ArrayList();
+    private List<MBeanOperationInfo> list = new ArrayList<MBeanOperationInfo>();
 
     /**
      * Add an operation
@@ -106,7 +106,7 @@ public class OperationInfoHelper {
         return result;
     }
 
-    private Method getMethod(Class theClass, String name, int numParams) {
+    private Method getMethod(Class<? extends Object> theClass, String name, int numParams) {
         Method result = null;
         Method[] methods = theClass.getMethods();
         if (methods != null) {

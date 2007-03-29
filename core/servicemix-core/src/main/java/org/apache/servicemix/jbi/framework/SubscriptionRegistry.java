@@ -35,7 +35,7 @@ import java.util.Map;
  */
 public class SubscriptionRegistry {
 
-    private Map subscriptions = new ConcurrentHashMap();
+    private Map<SubscriptionSpec, InternalEndpoint> subscriptions = new ConcurrentHashMap<SubscriptionSpec, InternalEndpoint>();
     private Registry registry;
     
     public SubscriptionRegistry(Registry registry) {
@@ -63,15 +63,15 @@ public class SubscriptionRegistry {
      * @param exchange 
      * @return a List of matching endpoints - can return null if no matches
      */
-    public List getMatchingSubscriptionEndpoints(MessageExchangeImpl exchange) {
-        List result = null;
+    public List<InternalEndpoint> getMatchingSubscriptionEndpoints(MessageExchangeImpl exchange) {
+        List<InternalEndpoint> result = null;
         for (Iterator iter = subscriptions.entrySet().iterator(); iter.hasNext();) {
             Map.Entry entry = (Map.Entry) iter.next();
 
             SubscriptionSpec subscription = (SubscriptionSpec) entry.getKey();
             if (subscription.matches(registry,exchange)) {
                 if (result == null) {
-                    result = new ArrayList();
+                    result = new ArrayList<InternalEndpoint>();
                 }
                 InternalEndpoint endpoint = (InternalEndpoint) entry.getValue();
                 result.add(endpoint);

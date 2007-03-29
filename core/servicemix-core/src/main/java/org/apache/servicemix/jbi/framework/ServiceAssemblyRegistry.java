@@ -19,7 +19,6 @@ package org.apache.servicemix.jbi.framework;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,7 +43,7 @@ import org.apache.servicemix.jbi.deployment.ServiceUnit;
 public class ServiceAssemblyRegistry {
     
     private static final Log log = LogFactory.getLog(ServiceAssemblyRegistry.class);
-    private Map serviceAssemblies = new ConcurrentHashMap();
+    private Map<String, ServiceAssemblyLifeCycle> serviceAssemblies = new ConcurrentHashMap<String, ServiceAssemblyLifeCycle>();
     private Registry registry;
 
     /**
@@ -79,7 +78,7 @@ public class ServiceAssemblyRegistry {
         String saName = sa.getIdentification().getName();
         if (!serviceAssemblies.containsKey(saName)) {
             ServiceAssemblyLifeCycle salc = new ServiceAssemblyLifeCycle(sa, env, registry);
-            List sus = new ArrayList();
+            List<ServiceUnitLifeCycle> sus = new ArrayList<ServiceUnitLifeCycle>();
             for (int i = 0; i < suKeys.length; i++) {
                 sus.add(registry.getServiceUnit(suKeys[i]));
             }
@@ -97,7 +96,7 @@ public class ServiceAssemblyRegistry {
     }
     
     public ServiceAssemblyLifeCycle register(ServiceAssembly sa, ServiceAssemblyEnvironment env) throws DeploymentException {
-        List sus = new ArrayList();
+        List<String> sus = new ArrayList<String>();
         if (sa.getServiceUnits() != null) {
             for (int i = 0; i < sa.getServiceUnits().length; i++) {
                 String suKey = registry.registerServiceUnit(
@@ -109,7 +108,7 @@ public class ServiceAssemblyRegistry {
             }
         }
         return register(sa,
-                        (String[]) sus.toArray(new String[sus.size()]),
+                        sus.toArray(new String[sus.size()]),
                         env);
     }
     
@@ -119,7 +118,7 @@ public class ServiceAssemblyRegistry {
      * @return true if successful
      */
     public boolean unregister(String name) {
-        ServiceAssemblyLifeCycle salc = (ServiceAssemblyLifeCycle) serviceAssemblies.remove(name);
+        ServiceAssemblyLifeCycle salc = serviceAssemblies.remove(name);
         if (salc != null) {
             try {
                 ServiceUnitLifeCycle[] sus = salc.getDeployedSUs();
@@ -144,7 +143,7 @@ public class ServiceAssemblyRegistry {
      * @return the ServiceAssembly or null if it doesn't exist
      */
     public ServiceAssemblyLifeCycle getServiceAssembly(String saName) {
-        return (ServiceAssemblyLifeCycle) serviceAssemblies.get(saName);
+        return serviceAssemblies.get(saName);
     }
     
    /**
@@ -154,7 +153,7 @@ public class ServiceAssemblyRegistry {
     */
    public String[] getDeployedServiceAssemblies()  {
        String[] result = null;
-       Set keys = serviceAssemblies.keySet();
+       Set<String> keys = serviceAssemblies.keySet();
        result = new String[keys.size()];
        keys.toArray(result);
        return result;
@@ -169,9 +168,8 @@ public class ServiceAssemblyRegistry {
    public String[] getDeployedServiceAssembliesForComponent(String componentName) {
        String[] result = null;
        // iterate through the service assembilies
-       Set tmpList = new HashSet();
-       for (Iterator iter = serviceAssemblies.values().iterator();iter.hasNext();) {
-           ServiceAssemblyLifeCycle salc = (ServiceAssemblyLifeCycle) iter.next();
+       Set<String> tmpList = new HashSet<String>();
+       for (ServiceAssemblyLifeCycle salc : serviceAssemblies.values()) {
            ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
            if (sus != null) {
                for (int i = 0;i < sus.length;i++) {
@@ -194,7 +192,7 @@ public class ServiceAssemblyRegistry {
     */
    public String[] getComponentsForDeployedServiceAssembly(String saName)  {
        String[] result = null;
-       Set tmpList = new HashSet();
+       Set<String> tmpList = new HashSet<String>();
        ServiceAssemblyLifeCycle sa = getServiceAssembly(saName);
        if (sa != null) {
            ServiceUnit[] sus = sa.getServiceAssembly().getServiceUnits();
@@ -218,8 +216,7 @@ public class ServiceAssemblyRegistry {
     */
    public boolean isDeployedServiceUnit(String componentName, String suName) {
        boolean result = false;
-       for (Iterator iter = serviceAssemblies.values().iterator();iter.hasNext();) {
-           ServiceAssemblyLifeCycle salc = (ServiceAssemblyLifeCycle) iter.next();
+       for (ServiceAssemblyLifeCycle salc : serviceAssemblies.values()) {
            ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
            if (sus != null) {
                for (int i = 0;i < sus.length;i++) {
@@ -239,7 +236,7 @@ public class ServiceAssemblyRegistry {
     * 
     * @return list of service assemblies
     */
-   public Collection getServiceAssemblies() {
+   public Collection<ServiceAssemblyLifeCycle> getServiceAssemblies() {
        return serviceAssemblies.values();
    }
    

@@ -18,13 +18,13 @@ package org.apache.servicemix.jbi.util;
 
 import java.util.ArrayList;
 
-public class FastStack extends ArrayList {
+public class FastStack<T> extends ArrayList<T> {
 	
-	public void push(Object o) {
+	public void push(T o) {
 		add(o);
 	}
 
-	public Object pop() {
+	public T pop() {
 		return remove(size() - 1);
 	}
 
@@ -32,7 +32,7 @@ public class FastStack extends ArrayList {
 		return size() == 0;
 	}
 
-	public Object peek() {
+	public T peek() {
 		return get(size() - 1);
 	}
 }

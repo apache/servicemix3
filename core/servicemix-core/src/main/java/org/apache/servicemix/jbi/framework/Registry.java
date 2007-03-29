@@ -19,7 +19,6 @@ package org.apache.servicemix.jbi.framework;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -73,10 +72,10 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     private EndpointRegistry endpointRegistry;
     private SubscriptionRegistry subscriptionRegistry;
     private ServiceAssemblyRegistry serviceAssemblyRegistry;
-    private Map sharedLibraries;
-    private Map serviceUnits;
-    private List pendingAssemblies;
-    private List pendingComponents;
+    private Map<String, SharedLibrary> sharedLibraries;
+    private Map<String, ServiceUnitLifeCycle> serviceUnits;
+    private List<ServiceAssemblyLifeCycle> pendingAssemblies;
+    private List<ComponentMBeanImpl> pendingComponents;
     private Executor executor;
 
     /**
@@ -87,10 +86,10 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         this.endpointRegistry = new EndpointRegistry(this);
         this.subscriptionRegistry = new SubscriptionRegistry(this);
         this.serviceAssemblyRegistry = new ServiceAssemblyRegistry(this);
-        this.serviceUnits = new ConcurrentHashMap();
-        this.pendingAssemblies = new CopyOnWriteArrayList();
-        this.sharedLibraries = new ConcurrentHashMap();
-        this.pendingComponents = new CopyOnWriteArrayList();
+        this.serviceUnits = new ConcurrentHashMap<String, ServiceUnitLifeCycle>();
+        this.pendingAssemblies = new CopyOnWriteArrayList<ServiceAssemblyLifeCycle>();
+        this.sharedLibraries = new ConcurrentHashMap<String, SharedLibrary>();
+        this.pendingComponents = new CopyOnWriteArrayList<ComponentMBeanImpl>();
     }
     
     /**
@@ -247,9 +246,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * cannot be resolved.
      */
     public ServiceEndpoint resolveEndpointReference(DocumentFragment epr) {
-        Collection connectors = getComponents();
-        for (Iterator iter = connectors.iterator(); iter.hasNext();) {
-            ComponentMBeanImpl connector = (ComponentMBeanImpl) iter.next();
+        for (ComponentMBeanImpl connector : getComponents()) {
             ServiceEndpoint se = connector.getComponent().resolveEndpointReference(epr);
             if (se != null) {
                 return new DynamicEndpoint(connector.getComponentNameSpace(), se, epr);  
@@ -481,7 +478,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     /**
      * @return all local ComponentConnectors
      */
-    public Collection getComponents() {
+    public Collection<ComponentMBeanImpl> getComponents() {
         return componentRegistry.getComponents();
     }
 
@@ -510,9 +507,8 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      */
     public ObjectName[] getEngineComponents() {
         ObjectName[] result = null;
-        List tmpList = new ArrayList();
-        for (Iterator i = getComponents().iterator(); i.hasNext();){
-            ComponentMBeanImpl lcc = (ComponentMBeanImpl) i.next();
+        List<ObjectName> tmpList = new ArrayList<ObjectName>();
+        for (ComponentMBeanImpl lcc : getComponents()) {
             if (!lcc.isPojo() && lcc.isService() && lcc.getMBeanName() != null){
                 tmpList.add(lcc.getMBeanName());
             }
@@ -529,9 +525,8 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      */
     public ObjectName[] getBindingComponents() {
         ObjectName[] result = null;
-        List tmpList = new ArrayList();
-        for (Iterator i = getComponents().iterator(); i.hasNext();){
-            ComponentMBeanImpl lcc = (ComponentMBeanImpl) i.next();
+        List<ObjectName> tmpList = new ArrayList<ObjectName>();
+        for (ComponentMBeanImpl lcc : getComponents()) {
             if (!lcc.isPojo() && lcc.isBinding() && lcc.getMBeanName() != null){
                 tmpList.add(lcc.getMBeanName());
             }
@@ -547,9 +542,8 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      */
     public ObjectName[] getPojoComponents() {
         ObjectName[] result = null;
-        List tmpList = new ArrayList();
-        for (Iterator i = getComponents().iterator(); i.hasNext();){
-            ComponentMBeanImpl lcc = (ComponentMBeanImpl) i.next();
+        List<ObjectName> tmpList = new ArrayList<ObjectName>();
+        for (ComponentMBeanImpl lcc : getComponents()) {
             if (lcc.isPojo() && lcc.getMBeanName() != null){
                 tmpList.add(lcc.getMBeanName());
             }
@@ -617,7 +611,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @param exchange 
      * @return a List of matching endpoints - can return null if no matches
      */
-    public List getMatchingSubscriptionEndpoints(MessageExchangeImpl exchange) {
+    public List<InternalEndpoint> getMatchingSubscriptionEndpoints(MessageExchangeImpl exchange) {
         return subscriptionRegistry.getMatchingSubscriptionEndpoints(exchange);
     }
     
@@ -669,10 +663,8 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @return List of deployed service units
      */
     public ServiceUnitLifeCycle[] getDeployedServiceUnits(String componentName)  {
-        Collection sus = serviceUnits.values();
-        List tmpList = new ArrayList();
-        for (Iterator iter = sus.iterator(); iter.hasNext();) {
-            ServiceUnitLifeCycle su = (ServiceUnitLifeCycle) iter.next();
+        List<ServiceUnitLifeCycle> tmpList = new ArrayList<ServiceUnitLifeCycle>();
+        for (ServiceUnitLifeCycle su : serviceUnits.values()) {
             if (su.getComponentName().equals(componentName)) {
                 tmpList.add(su);
             }
@@ -687,11 +679,11 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * 
      * @return list of all service units
      */
-    public Collection getServiceUnits() {
+    public Collection<ServiceUnitLifeCycle> getServiceUnits() {
         return serviceUnits.values();
     }
     
-    public Collection getServiceAssemblies() {
+    public Collection<ServiceAssemblyLifeCycle> getServiceAssemblies() {
         return serviceAssemblyRegistry.getServiceAssemblies();
     }
     
@@ -742,7 +734,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @return the ServiceUnit or null of it doesn't exist
      */
     public ServiceUnitLifeCycle getServiceUnit(String suKey) {
-        return (ServiceUnitLifeCycle) serviceUnits.get(suKey);
+        return serviceUnits.get(suKey);
     }
     
     /**
@@ -774,7 +766,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @param suKey the key of the service unit
      */
     public void unregisterServiceUnit(String suKey) {
-        ServiceUnitLifeCycle sulc = (ServiceUnitLifeCycle) this.serviceUnits.remove(suKey);
+        ServiceUnitLifeCycle sulc = this.serviceUnits.remove(suKey);
         if (sulc != null) {
             try {
                 getContainer().getManagementContext().unregisterMBean(sulc);
@@ -800,7 +792,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     public void unregisterSharedLibrary(String name) {
         // TODO: check for components depending on this library,
         // shutdown them and add them to the list of pending components
-        SharedLibrary sl = (SharedLibrary) this.sharedLibraries.remove(name);
+        SharedLibrary sl = this.sharedLibraries.remove(name);
         if (sl != null) {
             try {
                 getContainer().getManagementContext().unregisterMBean(sl);
@@ -812,10 +804,10 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     }
     
     public SharedLibrary getSharedLibrary(String name) {
-        return (SharedLibrary) sharedLibraries.get(name);
+        return sharedLibraries.get(name);
     }
     
-    public Collection getSharedLibraries() {
+    public Collection<SharedLibrary> getSharedLibraries() {
         return sharedLibraries.values();
     }
 
@@ -858,8 +850,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     }
     
     protected synchronized void startPendingAssemblies() {
-        for (Iterator iter = pendingAssemblies.iterator(); iter.hasNext();) {
-            ServiceAssemblyLifeCycle sa = (ServiceAssemblyLifeCycle) iter.next();
+        for (ServiceAssemblyLifeCycle sa : pendingAssemblies) {
             ServiceUnitLifeCycle[] sus = sa.getDeployedSUs();
             boolean ok = true;
             for (int i = 0; i < sus.length; i++) {
@@ -895,55 +886,49 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     }
     
     protected synchronized void startPendingComponents() {
-        for (Iterator iter = pendingComponents.iterator(); iter.hasNext();) {
-            ComponentMBeanImpl comp = (ComponentMBeanImpl) iter.next();
+        for (ComponentMBeanImpl lcc : pendingComponents) {
             // TODO: restore component state if 
         }
     }
 
     public ObjectName[] getComponentNames() {
-        List tmpList = new ArrayList();
-        for (Iterator i = getComponents().iterator(); i.hasNext();){
-            ComponentMBeanImpl lcc = (ComponentMBeanImpl) i.next();
+        List<ObjectName> tmpList = new ArrayList<ObjectName>();
+        for (ComponentMBeanImpl lcc : getComponents()) {
             tmpList.add(container.getManagementContext().createObjectName(lcc));
         }
-        return (ObjectName[]) tmpList.toArray(new ObjectName[tmpList.size()]);
+        return tmpList.toArray(new ObjectName[tmpList.size()]);
     }
     
     public ObjectName[] getEndpointNames() {
-        List tmpList = new ArrayList();
-        for (Iterator i = container.getRegistry().getEndpointRegistry().getEndpointMBeans().iterator(); i.hasNext();){
-            Endpoint ep = (Endpoint) i.next();
+        List<ObjectName> tmpList = new ArrayList<ObjectName>();
+        for (Endpoint ep : container.getRegistry().getEndpointRegistry().getEndpointMBeans()){
             tmpList.add(container.getManagementContext().createObjectName(ep));
         }
-        return (ObjectName[]) tmpList.toArray(new ObjectName[tmpList.size()]);
+        return tmpList.toArray(new ObjectName[tmpList.size()]);
     }
 
     public ObjectName[] getServiceAssemblyNames() {
-        List tmpList = new ArrayList();
-        for (Iterator i = getServiceAssemblies().iterator(); i.hasNext();){
-            ServiceAssemblyLifeCycle sa = (ServiceAssemblyLifeCycle) i.next();
+        List<ObjectName> tmpList = new ArrayList<ObjectName>();
+        for (ServiceAssemblyLifeCycle sa : getServiceAssemblies()){
             tmpList.add(container.getManagementContext().createObjectName(sa));
         }
-        return (ObjectName[]) tmpList.toArray(new ObjectName[tmpList.size()]);
+        return tmpList.toArray(new ObjectName[tmpList.size()]);
     }
 
     public ObjectName[] getServiceUnitNames() {
-        List tmpList = new ArrayList();
-        for (Iterator i = serviceUnits.values().iterator(); i.hasNext();){
-            ServiceUnitLifeCycle su = (ServiceUnitLifeCycle) i.next();
+        List<ObjectName> tmpList = new ArrayList<ObjectName>();
+        for (ServiceUnitLifeCycle su : serviceUnits.values()) {
             tmpList.add(container.getManagementContext().createObjectName(su));
         }
-        return (ObjectName[]) tmpList.toArray(new ObjectName[tmpList.size()]);
+        return tmpList.toArray(new ObjectName[tmpList.size()]);
     }
 
     public ObjectName[] getSharedLibraryNames() {
-        List tmpList = new ArrayList();
-        for (Iterator i = sharedLibraries.values().iterator(); i.hasNext();){
-            SharedLibrary sl = (SharedLibrary) i.next();
+        List<ObjectName> tmpList = new ArrayList<ObjectName>();
+        for (SharedLibrary sl : sharedLibraries.values()) {
             tmpList.add(container.getManagementContext().createObjectName(sl));
         }
-        return (ObjectName[]) tmpList.toArray(new ObjectName[tmpList.size()]);
+        return tmpList.toArray(new ObjectName[tmpList.size()]);
     } 
     
     /**

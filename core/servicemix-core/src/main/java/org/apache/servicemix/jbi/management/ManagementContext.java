@@ -50,8 +50,8 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     public static final String DEFAULT_CONNECTOR_PATH = "/jmxrmi";
     public static final int DEFAULT_CONNECTOR_PORT = 1099;
     private final static Log log = LogFactory.getLog(ManagementContext.class);
-    private Map beanMap = new ConcurrentHashMap();
-    protected Map systemServices = new ConcurrentHashMap();
+    private Map<ObjectName, Object> beanMap = new ConcurrentHashMap<ObjectName, Object>();
+    protected Map<String, ObjectName> systemServices = new ConcurrentHashMap<String, ObjectName>();
     private MBeanServerContext mbeanServerContext = new MBeanServerContext();
     private ExecutorService executors;
 
@@ -158,7 +158,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         super.init(container);
     }
     
-    protected Class getServiceMBean() {
+    protected Class<ManagementContextMBean> getServiceMBean() {
         return ManagementContextMBean.class;
     }
 
@@ -188,10 +188,10 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     public void shutDown() throws JBIException {
         super.shutDown();
         // Unregister all mbeans
-        Object[] beans = beanMap.keySet().toArray();
+        ObjectName[] beans = beanMap.keySet().toArray(new ObjectName[beanMap.size()]);
         for (int i = 0; i < beans.length; i++) {
             try {
-                unregisterMBean((ObjectName) beans[i]);
+                unregisterMBean(beans[i]);
             } catch (Exception e) {
                 log.debug("Could not unregister mbean", e);
             }
@@ -256,7 +256,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * @return the JMX object name of the service or null
      */
     public ObjectName getSystemService(String serviceName) {
-        return (ObjectName) systemServices.get(serviceName);
+        return systemServices.get(serviceName);
     }
 
     /**
@@ -266,7 +266,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      */
     public ObjectName[] getSystemServices() {
         ObjectName[] result = null;
-        Collection col = systemServices.values();
+        Collection<ObjectName> col = systemServices.values();
         result = new ObjectName[col.size()];
         col.toArray(result);
         return result;
@@ -362,7 +362,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * @return the JMX ObjectName of the MBean, or <code>null</code> if <code>customName</code> is invalid.
      */
     public ObjectName createCustomComponentMBeanName(String type, String name) {
-        Map result = new LinkedHashMap();
+        Map<String, String> result = new LinkedHashMap<String, String>();
         result.put("ContainerName", container.getName());
         result.put("Type", "Component");
         result.put("Name", sanitizeString(name));
@@ -378,7 +378,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * @return the ObjectName
      */
     public ObjectName createObjectName(MBeanInfoProvider provider) {
-        Map props = createObjectNameProps(provider);
+        Map<String, String> props = createObjectNameProps(provider);
         return createObjectName(props);
     }
     
@@ -408,7 +408,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * 
      * @return the ObjectName
      */
-    public ObjectName createObjectName(String domain, Map props) {
+    public ObjectName createObjectName(String domain, Map<String, String> props) {
         StringBuffer sb = new StringBuffer();
         sb.append(domain).append(':');
         int i = 0;
@@ -437,7 +437,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * @param props
      * @return the ObjectName
      */
-    public ObjectName createObjectName(Map props) {
+    public ObjectName createObjectName(Map<String, String> props) {
         return createObjectName(getJmxDomainName(), props);
     }
     
@@ -447,7 +447,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * @param provider
      * @return the ObjectName
      */
-    public Map createObjectNameProps(MBeanInfoProvider provider){
+    public Map<String, String> createObjectNameProps(MBeanInfoProvider provider){
         return createObjectNameProps(provider, false);
     }
 
@@ -457,8 +457,8 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * @param provider
      * @return the ObjectName
      */
-    public Map createObjectNameProps(MBeanInfoProvider provider, boolean subTypeBeforeName) {
-        Map result = new LinkedHashMap();
+    public Map<String, String> createObjectNameProps(MBeanInfoProvider provider, boolean subTypeBeforeName) {
+        Map<String, String> result = new LinkedHashMap<String, String>();
         result.put("ContainerName", container.getName());
         result.put("Type", sanitizeString(provider.getType()));
         if (subTypeBeforeName && provider.getSubType() != null) {
@@ -563,12 +563,10 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
             result = new ObjectName(tmp);
         }
         catch (MalformedObjectNameException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.debug("Unable to build ObjectName", e);
         }
         catch (NullPointerException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.debug("Unable to build ObjectName", e);
         }
         return result;
     }
@@ -613,7 +611,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         if (!systemServices.containsKey(name)) {
             throw new JBIException("A system service for the name " + name + " is not registered");
         }
-        ObjectName objName = (ObjectName)systemServices.remove(name);
+        ObjectName objName = systemServices.remove(name);
         if (log.isDebugEnabled()) {
             log.debug("Unregistering system service: " + objName);
         }

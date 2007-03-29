@@ -73,10 +73,10 @@ public class SubscriptionManager extends ComponentSupport implements MessageExch
     protected boolean dispatchToSubscribers(MessageExchangeImpl exchange) throws JBIException {
     	Boolean source = (Boolean) exchange.getProperty(FROM_SUBSCRIPTION_MANAGER);
     	if (source == null || !source.booleanValue()) {
-	        List list = registry.getMatchingSubscriptionEndpoints(exchange);
+	        List<InternalEndpoint> list = registry.getMatchingSubscriptionEndpoints(exchange);
 	        if (list != null) {
 	            for (int i = 0; i < list.size(); i++) {
-	                InternalEndpoint endpoint = (InternalEndpoint)list.get(i);
+	                InternalEndpoint endpoint = list.get(i);
 	                dispatchToSubscriber(exchange, endpoint);
 	            }
 	        }

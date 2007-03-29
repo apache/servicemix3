@@ -114,7 +114,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
             throw ManagementSupport.failure("start", e.getMessage());
         }
         // Start service units
-        List componentFailures = new ArrayList();
+        List<Element> componentFailures = new ArrayList<Element>();
         for (int i = 0; i < sus.length; i++) {
             if (sus[i].isShutDown()) {
                 try {
@@ -160,7 +160,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
         // Stop connections
         stopConnections();
         // Stop service units
-        List componentFailures = new ArrayList();
+        List<Element> componentFailures = new ArrayList<Element>();
         if (forceInit) {
             for (int i = 0; i < sus.length; i++) {
                 try {
@@ -203,7 +203,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
     
     public synchronized String shutDown(boolean writeState) throws Exception {
         log.info("Shutting down service assembly: " + getName());
-        List componentFailures = new ArrayList();
+        List<Element> componentFailures = new ArrayList<Element>();
         for (int i = 0; i < sus.length; i++) {
             if (sus[i].isStarted()) {
                 try {

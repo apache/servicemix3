@@ -19,7 +19,6 @@ package org.apache.servicemix.jbi.view;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,18 +52,18 @@ import org.apache.servicemix.jbi.servicedesc.EndpointSupport;
 public class DotViewFlowListener extends DotViewEndpointListener 
     implements ExchangeListener, ComponentListener {
 
-    private Map flow;
-    private Set flowLinks;
-    private Set usedComponents;
-    private Set componentsAsConsumer;
+    private Map<String, Map<String, Boolean>> flow;
+    private Set<String> flowLinks;
+    private Set<String> usedComponents;
+    private Set<String> componentsAsConsumer;
     private boolean displayComponents = true;
     
     public DotViewFlowListener() {
         setFile("ServiceMixFlow.dot");
-        flow = new ConcurrentHashMap();
-        flowLinks = new CopyOnWriteArraySet();
-        usedComponents = new CopyOnWriteArraySet();
-        componentsAsConsumer = new CopyOnWriteArraySet();
+        flow = new ConcurrentHashMap<String, Map<String, Boolean>>();
+        flowLinks = new CopyOnWriteArraySet<String>();
+        usedComponents = new CopyOnWriteArraySet<String>();
+        componentsAsConsumer = new CopyOnWriteArraySet<String>();
     }
 
     // Implementation methods
@@ -77,11 +76,10 @@ public class DotViewFlowListener extends DotViewEndpointListener
         writer.println("node [ shape = box, style = \"rounded,filled\", fontname = \"Helvetica-Oblique\", fontsize = 8 ];");
         writer.println();
 
-        List brokerLinks = new ArrayList();
+        List<String> brokerLinks = new ArrayList<String>();
         Registry registry = getContainer().getRegistry();
-        Collection components = registry.getComponents();
-        for (Iterator iter = components.iterator(); iter.hasNext();) {
-            ComponentMBeanImpl component = (ComponentMBeanImpl) iter.next();
+        Collection<ComponentMBeanImpl> components = registry.getComponents();
+        for (ComponentMBeanImpl component : components) {
             ServiceEndpoint[] ses = registry.getEndpointRegistry().getAllEndpointsForComponent(component.getComponentNameSpace());
             String name = component.getName();
             if (!usedComponents.contains(name)) {
@@ -159,7 +157,7 @@ public class DotViewFlowListener extends DotViewEndpointListener
                 usedComponents.add(((AbstractServiceEndpoint) mei.getEndpoint()).getComponentNameSpace().getName());
             }
             String dest = EndpointSupport.getUniqueKey(mei.getEndpoint());
-            Map componentFlow = createSource(source);
+            Map<String, Boolean> componentFlow = createSource(source);
             if (componentFlow.put(dest, Boolean.TRUE) == null) {
                 flowLinks.add(encode(source) + " -> " + encode(dest));
                 viewIsDirty(mei.getEndpoint());
@@ -170,11 +168,11 @@ public class DotViewFlowListener extends DotViewEndpointListener
     public void exchangeAccepted(ExchangeEvent event) {
     }
     
-    protected Map createSource(String name) {
+    protected Map<String, Boolean> createSource(String name) {
         synchronized (flow) {
-            Map componentFlow = (Map) flow.get(name);
+            Map<String, Boolean> componentFlow = flow.get(name);
             if (componentFlow == null) {
-                componentFlow = new ConcurrentHashMap();
+                componentFlow = new ConcurrentHashMap<String, Boolean>();
                 flow.put(name, componentFlow);
             }
             return componentFlow;

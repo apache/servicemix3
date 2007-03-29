@@ -17,7 +17,6 @@
 package org.apache.servicemix.jbi.messaging;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -66,12 +65,12 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     private JBIContainer container;
     private ComponentContextImpl context;
     private ComponentMBeanImpl component;
-    private BlockingQueue queue;
+    private BlockingQueue<MessageExchangeImpl> queue;
     private IdGenerator idGenerator = new IdGenerator();
     private MessageExchangeFactory inboundFactory;
     private int intervalCount = 0;
     private AtomicBoolean closed = new AtomicBoolean(false);
-    private Map waiters = new ConcurrentHashMap();
+    private Map<Thread, Boolean> waiters = new ConcurrentHashMap<Thread, Boolean>();
     private TransactionManager transactionManager = null;
     
     /**
@@ -79,7 +78,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
      * as the one sent (because it has been serialized/deserialized.
      * We thus need to keep the original exchange in a map and override its state.
      */
-    private Map exchangesById = new ConcurrentHashMap();
+    private Map<String, MessageExchangeImpl> exchangesById = new ConcurrentHashMap<String, MessageExchangeImpl>();
 
     /**
      * Constructor
@@ -87,7 +86,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     public DeliveryChannelImpl(ComponentMBeanImpl component) {
         this.component = component;
         this.container = component.getContainer();
-        this.queue = new ArrayBlockingQueue(component.getInboundQueueCapacity());
+        this.queue = new ArrayBlockingQueue<MessageExchangeImpl>(component.getInboundQueueCapacity());
         this.transactionManager = (TransactionManager) this.container.getTransactionManager();
     }
 
@@ -108,18 +107,17 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             if (log.isDebugEnabled()) {
                 log.debug("Closing DeliveryChannel " + this);
             }
-            List pending = new ArrayList(queue.size());
+            List<MessageExchangeImpl> pending = new ArrayList<MessageExchangeImpl>(queue.size());
             queue.drainTo(pending);
-            for (Iterator iter = pending.iterator(); iter.hasNext();) {
-                MessageExchangeImpl messageExchange = (MessageExchangeImpl) iter.next();
+            for (MessageExchangeImpl messageExchange : pending) {
                 if (messageExchange.getTransactionContext() != null && messageExchange.getMirror().getSyncState() == MessageExchangeImpl.SYNC_STATE_SYNC_SENT) {
                     notifyExchange(messageExchange.getMirror(), messageExchange.getMirror(), "close");
                 }
             }
             // Interrupt all blocked thread
-            Object[] threads = waiters.keySet().toArray();
+            Thread[] threads = waiters.keySet().toArray(new Thread[waiters.size()]);
             for (int i = 0; i < threads.length; i++) {
-                ((Thread) threads[i]).interrupt();
+                threads[i].interrupt();
             }
             // deactivate all endpoints from this component
             ServiceEndpoint[] endpoints = container.getRegistry().getEndpointsForComponent(component.getComponentNameSpace());
@@ -251,7 +249,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     public MessageExchange accept(long timeoutMS) throws MessagingException {
         try {
             checkNotClosed();
-            MessageExchangeImpl me = (MessageExchangeImpl) queue.poll(timeoutMS, TimeUnit.MILLISECONDS);
+            MessageExchangeImpl me = queue.poll(timeoutMS, TimeUnit.MILLISECONDS);
             if (me != null) {
                 // If the exchange has already timed out,
                 // do not give it to the component
@@ -545,7 +543,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         // Check if the delivery channel has been closed
         checkNotClosed();
         // Retrieve the original exchange sent
-        MessageExchangeImpl original = (MessageExchangeImpl) exchangesById.get(me.getKey());
+        MessageExchangeImpl original = exchangesById.get(me.getKey());
         if (original != null && me != original) {
             original.copyFrom(me);
             me = original;

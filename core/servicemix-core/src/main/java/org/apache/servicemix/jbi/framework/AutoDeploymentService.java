@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -72,10 +71,10 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     private AtomicBoolean started = new AtomicBoolean(false);
     private Timer statsTimer;
     private TimerTask timerTask;
-    private Map pendingComponents = new ConcurrentHashMap();
-    private Map pendingSAs = new ConcurrentHashMap();
-    private Map installFileMap = null;
-    private Map deployFileMap = null;
+    private Map<File, ArchiveEntry> pendingComponents = new ConcurrentHashMap<File, ArchiveEntry>();
+    private Map<File, ArchiveEntry> pendingSAs = new ConcurrentHashMap<File, ArchiveEntry>();
+    private Map<String, ArchiveEntry> installFileMap = null;
+    private Map<String, ArchiveEntry> deployFileMap = null;
 
     /**
      * @return the extensions
@@ -183,7 +182,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
         initializeFileMaps();
     }
     
-    protected Class getServiceMBean() {
+    protected Class<AutoDeploymentServiceMBean> getServiceMBean() {
         return AutoDeploymentServiceMBean.class;
     }
     
@@ -261,8 +260,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                         }
                         String missings = null;
                         boolean canInstall = true;
-                        for (Iterator it = entry.dependencies.iterator(); it.hasNext();) {
-                            String libraryName = (String) it.next();
+                        for (String libraryName : entry.dependencies) {
                             if (container.getRegistry().getSharedLibrary(libraryName) == null) {
                                 canInstall = false;
                                 if (missings != null) {
@@ -319,8 +317,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                         }
                         String missings = null;
                         boolean canDeploy = true;
-                        for (Iterator it = entry.dependencies.iterator(); it.hasNext();) {
-                        	String componentName = (String) it.next();
+                        for (String componentName : entry.dependencies) {
                         	if (container.getComponent(componentName) == null) {
                         		canDeploy = false;
                         		if (missings != null) {
@@ -372,8 +369,8 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
         return new DeploymentException(ManagementSupport.createFrameworkMessage(msg, componentResults));
     }
 
-    protected Set getComponentNames(ServiceAssembly sa) {
-        Set names = new HashSet();
+    protected Set<String> getComponentNames(ServiceAssembly sa) {
+        Set<String> names = new HashSet<String>();
         if (sa.getServiceUnits() != null && sa.getServiceUnits().length > 0) {
             for (int i = 0; i < sa.getServiceUnits().length; i++) {
                 names.add(sa.getServiceUnits()[i].getTarget().getComponentName());
@@ -382,8 +379,8 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
         return names;
     }
 
-    protected Set getSharedLibraryNames(Component comp) {
-        Set names = new HashSet();
+    protected Set<String> getSharedLibraryNames(Component comp) {
+        Set<String> names = new HashSet<String>();
         if (comp.getSharedLibraries() != null && comp.getSharedLibraries().length > 0) {
             for (int i = 0; i < comp.getSharedLibraries().length; i++) {
                 names.add(comp.getSharedLibraries()[i].getName());
@@ -450,13 +447,11 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
      * installed.
      */
     private void checkPendingSAs() {
-    	Set deployedSas = new HashSet();
-    	for (Iterator it = pendingSAs.entrySet().iterator(); it.hasNext();) {
-    		Map.Entry me = (Map.Entry) it.next();
-    		ArchiveEntry entry = (ArchiveEntry) me.getValue();
+    	Set<File> deployedSas = new HashSet<File>();
+    	for (Map.Entry<File, ArchiveEntry> me : pendingSAs.entrySet()) {
+    		ArchiveEntry entry = me.getValue();
             boolean canDeploy = true;
-            for (Iterator it2 = entry.dependencies.iterator(); it2.hasNext();) {
-            	String componentName = (String) it2.next();
+            for (String componentName : entry.dependencies) {
             	if (container.getComponent(componentName) == null) {
             		canDeploy = false;
             		break;
@@ -477,8 +472,8 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     	}
     	if (!deployedSas.isEmpty()) {
     		// Remove SA from pending SAs
-	    	for (Iterator it = deployedSas.iterator(); it.hasNext();) {
-	    		ArchiveEntry entry = (ArchiveEntry) pendingSAs.remove(it.next());
+	    	for (File f : deployedSas) {
+	    		ArchiveEntry entry = pendingSAs.remove(f);
 	    		entry.pending = false;
 	    	}
 	    	// Store new state
@@ -488,20 +483,18 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     }
     
     private void checkPendingComponents() {
-        Set installedComponents = new HashSet();
-        for (Iterator it = pendingComponents.entrySet().iterator(); it.hasNext();) {
-            Map.Entry me = (Map.Entry) it.next();
-            ArchiveEntry entry = (ArchiveEntry) me.getValue();
+        Set<File> installedComponents = new HashSet<File>();
+        for (Map.Entry<File,ArchiveEntry> me : pendingComponents.entrySet()) {
+            ArchiveEntry entry = me.getValue();
             boolean canInstall = true;
-            for (Iterator it2 = entry.dependencies.iterator(); it2.hasNext();) {
-                String libraryName = (String) it2.next();
+            for (String libraryName : entry.dependencies) {
                 if (container.getRegistry().getSharedLibrary(libraryName) == null) {
                     canInstall = false;
                     break;
                 }
             }
             if (canInstall) {
-                File tmp = (File) me.getKey();
+                File tmp = me.getKey();
                 installedComponents.add(tmp);
                 try {
                     Descriptor root = DescriptorFactory.buildDescriptor(tmp);
@@ -514,8 +507,8 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
         }
         if (!installedComponents.isEmpty()) {
             // Remove SA from pending SAs
-            for (Iterator it = installedComponents.iterator(); it.hasNext();) {
-                ArchiveEntry entry = (ArchiveEntry) pendingComponents.remove(it.next());
+            for (File f : installedComponents) {
+                ArchiveEntry entry = pendingComponents.remove(f);
                 entry.pending = false;
             }
             // Store new state
@@ -615,7 +608,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     }
 
 
-    private void monitorDirectory(final File root, final Map fileMap) {
+    private void monitorDirectory(final File root, final Map<String, ArchiveEntry> fileMap) {
         /*
         if (log.isTraceEnabled()) {
             if (root != null)
@@ -625,7 +618,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                                 + ((fileMap==installFileMap) ? "Installation" : "Deployment") + ".");
         }
         */
-        List tmpList=new ArrayList();
+        List<String> tmpList=new ArrayList<String>();
         if(root!=null&&root.exists()&&root.isDirectory()){
             File[] files=root.listFiles();
             if(files!=null){
@@ -633,7 +626,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                     final File file=files[i];
                     tmpList.add(file.getName());
                     if (isAllowedExtension(file.getName())) {
-                        ArchiveEntry lastEntry = (ArchiveEntry) fileMap.get(file.getName());
+                        ArchiveEntry lastEntry = fileMap.get(file.getName());
                         if(lastEntry == null || file.lastModified() > lastEntry.lastModified.getTime()){
                             try{
                             	final ArchiveEntry entry = new ArchiveEntry();
@@ -656,11 +649,10 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 }
             }
             // now remove any locations no longer here
-            Map map=new HashMap(fileMap);
-            for(Iterator i=map.keySet().iterator();i.hasNext();){
-                String location=i.next().toString();
+            Map<String, ArchiveEntry> map=new HashMap<String, ArchiveEntry>(fileMap);
+            for(String location : map.keySet()) {
                 if(!tmpList.contains(location)){
-                    ArchiveEntry entry = (ArchiveEntry) fileMap.remove(location);
+                    ArchiveEntry entry = fileMap.remove(location);
                     try{
                         log.info("Location "+location+" no longer exists - removing ...");
                         removeArchive(entry);
@@ -685,7 +677,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
         return false;
     }
 
-    private void persistState(File root, Map map) {
+    private void persistState(File root, Map<String, ArchiveEntry> map) {
         try {
             File file = new File(environmentContext.getJbiRootDir(), root.getName() + ".xml");
             XmlPersistenceSupport.write(file, map);
@@ -694,12 +686,13 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
         }
     }
 
-    private Map readState(File root) {
-        Map result = new HashMap();
+    @SuppressWarnings("unchecked")
+    private Map<String, ArchiveEntry> readState(File root) {
+        Map<String, ArchiveEntry> result = new HashMap<String, ArchiveEntry>();
         try {
             File file = new File(environmentContext.getJbiRootDir(), root.getName() + ".xml");
             if (file.exists()) {
-                result = (Map) XmlPersistenceSupport.read(file);
+                result = (Map<String, ArchiveEntry>) XmlPersistenceSupport.read(file);
             } else {
                 log.debug("State file doesn't exist: " + file.getPath());
             }
@@ -728,16 +721,15 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
         }
     }
     
-    private void removePendingEntries(Map map) {
-        Set pendings = new HashSet();
-        for (Iterator it = map.entrySet().iterator(); it.hasNext();) {
-        	Map.Entry e = (Map.Entry) it.next();
-        	if (((ArchiveEntry) e.getValue()).pending) {
+    private void removePendingEntries(Map<String, ArchiveEntry> map) {
+        Set<String> pendings = new HashSet<String>();
+        for (Map.Entry<String, ArchiveEntry> e : map.entrySet()) {
+        	if (e.getValue().pending) {
         		pendings.add(e.getKey());
         	}
         }
-        for (Iterator it = pendings.iterator(); it.hasNext();) {
-        	map.remove(it.next());
+        for (String s : pendings) {
+        	map.remove(s);
         }
     }
     
@@ -747,6 +739,6 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     	public String type;
     	public String name;
     	public boolean pending;
-    	public transient Set dependencies;
+    	public transient Set<String> dependencies;
     }
 }

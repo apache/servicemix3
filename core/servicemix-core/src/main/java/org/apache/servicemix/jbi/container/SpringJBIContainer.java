@@ -182,7 +182,6 @@ public class SpringJBIContainer extends JBIContainer
     
     private boolean isKnownEndpoint(Object endpoint, Class[] knownClasses) {
         if (knownClasses != null) {
-            boolean valid = false;
             for (int i = 0; i < knownClasses.length; i++) {
                 if (knownClasses[i].isInstance(endpoint)) {
                     return true;

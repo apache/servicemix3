@@ -42,7 +42,7 @@ public class InstallationContextImpl implements InstallationContext {
     
     private Component descriptor;
     private File installRoot;
-    private List classPathElements = Collections.EMPTY_LIST;
+    private List<String> classPathElements = Collections.emptyList();
     private ComponentContext context;
     private boolean install = true;
     
@@ -191,7 +191,7 @@ public class InstallationContextImpl implements InstallationContext {
      * @exception IllegalArgumentException if the class path elements is null, empty, or if an individual element is
      * ill-formed.
      */
-    public void setClassPathElements(java.util.List classPathElements) {
+    public void setClassPathElements(List classPathElements) {
         if (classPathElements == null) {
             throw new IllegalArgumentException("classPathElements is null");
         }
@@ -214,7 +214,7 @@ public class InstallationContextImpl implements InstallationContext {
                 throw new IllegalArgumentException("classPathElements should not contain absolute paths");
             }
         }
-        this.classPathElements = new ArrayList(classPathElements);
+        this.classPathElements = new ArrayList<String>(classPathElements);
     }
     
     

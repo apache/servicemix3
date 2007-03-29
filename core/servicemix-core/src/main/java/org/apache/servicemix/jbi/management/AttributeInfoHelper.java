@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class AttributeInfoHelper {
     private PropertyUtilsBean beanUtil = new PropertyUtilsBean();
-    private List list = new ArrayList();
+    private List<MBeanAttributeInfo> list = new ArrayList<MBeanAttributeInfo>();
 
     /**
      * Add an attribute

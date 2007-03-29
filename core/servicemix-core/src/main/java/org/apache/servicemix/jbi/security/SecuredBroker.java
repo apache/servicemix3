@@ -16,6 +16,7 @@
  */
 package org.apache.servicemix.jbi.security;
 
+import java.security.Principal;
 import java.util.Set;
 
 import javax.jbi.JBIException;
@@ -64,7 +65,7 @@ public class SecuredBroker extends DefaultBroker {
             resolveAddress(exchange);
             ServiceEndpoint se = exchange.getEndpoint();
             if (se != null) {
-                Set acls = authorizationMap.getAcls(se, me.getOperation());
+                Set<Principal> acls = authorizationMap.getAcls(se, me.getOperation());
                 if (!acls.contains(GroupPrincipal.ANY)) { 
                     Subject subject = exchange.getMessage("in").getSecuritySubject();
                     if (subject == null) {

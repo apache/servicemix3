@@ -16,7 +16,6 @@
  */
 package org.apache.servicemix.jbi.nmr.flow.seda;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -53,7 +52,7 @@ import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
  */
 public class SedaFlow extends AbstractFlow {
 
-    protected Map queueMap = new ConcurrentHashMap();
+    protected Map<ComponentNameSpace, SedaQueue> queueMap = new ConcurrentHashMap<ComponentNameSpace, SedaQueue>();
     protected AtomicBoolean started = new AtomicBoolean(false);
     protected ComponentListener listener;
 
@@ -112,8 +111,7 @@ public class SedaFlow extends AbstractFlow {
      */
     public void start() throws JBIException {
         if (started.compareAndSet(false, true)) {
-            for (Iterator i = queueMap.values().iterator();i.hasNext();) {
-                SedaQueue queue = (SedaQueue) i.next();
+            for (SedaQueue queue : queueMap.values()) {
                 queue.start();
             }
         }
@@ -127,8 +125,7 @@ public class SedaFlow extends AbstractFlow {
      */
     public void stop() throws JBIException {
         if (started.compareAndSet(true, false)) {
-            for (Iterator i = queueMap.values().iterator();i.hasNext();) {
-                SedaQueue queue = (SedaQueue) i.next();
+            for (SedaQueue queue : queueMap.values()) {
                 queue.stop();
             }
         }
@@ -142,8 +139,7 @@ public class SedaFlow extends AbstractFlow {
      */
     public void shutDown() throws JBIException {
         broker.getContainer().removeListener(listener);
-        for (Iterator i = queueMap.values().iterator(); i.hasNext();) {
-            SedaQueue queue = (SedaQueue) i.next();
+        for (SedaQueue queue : queueMap.values()) {
             queue.shutDown();
             unregisterQueue(queue);
         }
@@ -182,7 +178,7 @@ public class SedaFlow extends AbstractFlow {
      */
     protected void enqueuePacket(MessageExchangeImpl me) throws JBIException {
         ComponentNameSpace cns = me.getDestinationId();
-        SedaQueue queue = (SedaQueue) queueMap.get(cns);
+        SedaQueue queue = queueMap.get(cns);
         if (queue == null) {
             queue = createQueue(cns);
         }
@@ -195,7 +191,7 @@ public class SedaFlow extends AbstractFlow {
     }
     
     protected synchronized SedaQueue createQueue(ComponentNameSpace cns) throws JBIException {
-        SedaQueue queue = (SedaQueue) queueMap.get(cns);
+        SedaQueue queue = queueMap.get(cns);
         if (queue == null) {
             queue = new SedaQueue(cns);
             queue.init(this);
@@ -214,7 +210,7 @@ public class SedaFlow extends AbstractFlow {
      * @param event
      */
     public synchronized void onComponentShutdown(ComponentNameSpace cns) {
-        SedaQueue queue = (SedaQueue) queueMap.remove(cns);
+        SedaQueue queue = queueMap.remove(cns);
         if (queue != null) {
             try {
                 queue.shutDown();

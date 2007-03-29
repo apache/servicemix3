@@ -124,7 +124,7 @@ public class DefaultBroker extends BaseSystemService implements Broker {
     	subscriptionManager.init(this, registry);
     }
     
-    protected Class getServiceMBean() {
+    protected Class<BrokerMBean> getServiceMBean() {
         return BrokerMBean.class;
     }
 
@@ -384,7 +384,7 @@ public class DefaultBroker extends BaseSystemService implements Broker {
      * @return an array of endpoints on which both consumer and provider agrees
      */
     protected ServiceEndpoint[] getMatchingEndpoints(ServiceEndpoint[] endpoints, MessageExchangeImpl exchange) {
-    	List filtered = new ArrayList();
+    	List<ServiceEndpoint> filtered = new ArrayList<ServiceEndpoint>();
         ComponentMBeanImpl consumer = getRegistry().getComponent(exchange.getSourceId());
         
     	for (int i = 0; i < endpoints.length; i++) {
@@ -400,7 +400,7 @@ public class DefaultBroker extends BaseSystemService implements Broker {
             }
             filtered.add(endpoints[i]);
 		}
-		return (ServiceEndpoint[]) filtered.toArray(new ServiceEndpoint[filtered.size()]);
+		return filtered.toArray(new ServiceEndpoint[filtered.size()]);
 	}
 
 	/**

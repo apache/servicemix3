@@ -72,7 +72,7 @@ public class BaseStandardMBean extends StandardMBean
             MBeanRegistration,
             PropertyChangeListener {
     private final static Log log = LogFactory.getLog(BaseStandardMBean.class);
-    private Map cachedAttributes = new LinkedHashMap();// used to maintain insertion ordering
+    private Map<String, CachedAttribute> cachedAttributes = new LinkedHashMap<String, CachedAttribute>();// used to maintain insertion ordering
     private PropertyUtilsBean beanUtil = new PropertyUtilsBean();
     private NotificationBroadcasterSupport broadcasterSupport = new NotificationBroadcasterSupport();
     protected ExecutorService executorService;
@@ -139,15 +139,14 @@ public class BaseStandardMBean extends StandardMBean
      */
     public Object getAttribute(String name) throws AttributeNotFoundException, MBeanException, ReflectionException {
         Object result = null;
-        CachedAttribute ca = (CachedAttribute) cachedAttributes.get(name);
+        CachedAttribute ca = cachedAttributes.get(name);
         if (ca == null) {
             // the use of proxies in MX4J has a bug - in which the caps can be changed on
             // an attribute
-            for (Iterator i = cachedAttributes.entrySet().iterator();i.hasNext();) {
-                Map.Entry entry = (Map.Entry) i.next();
-                String key = entry.getKey().toString();
+            for (Map.Entry<String, CachedAttribute> entry : cachedAttributes.entrySet()) {
+                String key = entry.getKey();
                 if (key.equalsIgnoreCase(name)) {
-                    ca = (CachedAttribute) entry.getValue();
+                    ca = entry.getValue();
                     break;
                 }
             }
@@ -173,7 +172,7 @@ public class BaseStandardMBean extends StandardMBean
     public void setAttribute(Attribute attr) throws AttributeNotFoundException, InvalidAttributeValueException,
             MBeanException, ReflectionException {
         String name = attr.getName();
-        CachedAttribute ca = (CachedAttribute) cachedAttributes.get(name);
+        CachedAttribute ca = cachedAttributes.get(name);
         if (ca != null) {
             Attribute old = ca.getAttribute();
             try {
@@ -206,7 +205,7 @@ public class BaseStandardMBean extends StandardMBean
      * @param value
      */
     public void updateAttribute(String name, Object value) {
-        CachedAttribute ca = (CachedAttribute) cachedAttributes.get(name);
+        CachedAttribute ca = cachedAttributes.get(name);
         if (ca != null) {
             Attribute old = ca.getAttribute();
             ca.updateAttributeValue(value);
@@ -241,7 +240,7 @@ public class BaseStandardMBean extends StandardMBean
             if (attributes != null) {
                 result = new AttributeList();
                 for (int i = 0;i < attributes.length;i++) {
-                    CachedAttribute ca = (CachedAttribute) cachedAttributes.get(attributes[i]);
+                    CachedAttribute ca = cachedAttributes.get(attributes[i]);
                     ca.updateValue(beanUtil);
                     result.add(ca.getAttribute());
                 }
@@ -309,7 +308,7 @@ public class BaseStandardMBean extends StandardMBean
         try {
             Class[] parameterTypes = new Class[signature.length];
             for (int i = 0; i < parameterTypes.length; i++) {
-                parameterTypes[i] = (Class) primitiveClasses.get(signature[i]);
+                parameterTypes[i] = primitiveClasses.get(signature[i]);
                 if (parameterTypes[i] == null) {
                     parameterTypes[i] = Class.forName(signature[i]);
                 }
@@ -338,7 +337,7 @@ public class BaseStandardMBean extends StandardMBean
         }
     }
 
-    private final static Hashtable primitiveClasses = new Hashtable(8);
+    private final static Hashtable<String, Class> primitiveClasses = new Hashtable<String, Class>(8);
     {
         primitiveClasses.put(Boolean.TYPE.toString(), Boolean.TYPE);
         primitiveClasses.put(Character.TYPE.toString(), Character.TYPE);

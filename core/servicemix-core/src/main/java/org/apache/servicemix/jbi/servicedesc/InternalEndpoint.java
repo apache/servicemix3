@@ -40,8 +40,8 @@ public class InternalEndpoint extends AbstractServiceEndpoint {
     
     private String endpointName;
     private QName serviceName;
-    private Set interfaces = new HashSet();
-    private transient Map remotes = new HashMap();
+    private Set<QName> interfaces = new HashSet<QName>();
+    private transient Map<ComponentNameSpace, InternalEndpoint> remotes = new HashMap<ComponentNameSpace, InternalEndpoint>();
     
 
     /**

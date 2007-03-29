@@ -16,8 +16,8 @@
  */
 package org.apache.servicemix.jbi.security.acl.impl;
 
+import java.security.Principal;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -36,19 +36,19 @@ import org.apache.servicemix.jbi.security.acl.AuthorizationMap;
 public class DefaultAuthorizationMap implements AuthorizationMap {
 
     private AuthorizationEntry defaultEntry;
-    private List authorizationEntries;
+    private List<AuthorizationEntry> authorizationEntries;
 
     public DefaultAuthorizationMap() {
     }
     
-    public DefaultAuthorizationMap(List authorizationEntries) {
+    public DefaultAuthorizationMap(List<AuthorizationEntry> authorizationEntries) {
         this.authorizationEntries = authorizationEntries;
     }
     
     /**
      * @return the authorizationEntries
      */
-    public List getAuthorizationEntries() {
+    public List<AuthorizationEntry> getAuthorizationEntries() {
         return authorizationEntries;
     }
 
@@ -56,7 +56,7 @@ public class DefaultAuthorizationMap implements AuthorizationMap {
      * @param authorizationEntries the authorizationEntries to set
      * @org.apache.xbean.ElementType class="org.apache.servicemix.jbi.security.AuthorizationEntry"
      */
-    public void setAuthorizationEntries(List authorizationEntries) {
+    public void setAuthorizationEntries(List<AuthorizationEntry> authorizationEntries) {
         this.authorizationEntries = authorizationEntries;
     }
 
@@ -74,13 +74,12 @@ public class DefaultAuthorizationMap implements AuthorizationMap {
         this.defaultEntry = defaultEntry;
     }
 
-    public Set getAcls(ServiceEndpoint endpoint, QName operation) {
-        Set acls = new HashSet();
+    public Set<Principal> getAcls(ServiceEndpoint endpoint, QName operation) {
+        Set<Principal> acls = new HashSet<Principal>();
         if (defaultEntry != null) {
-            acls.add(defaultEntry);
+            acls.addAll(defaultEntry.getAcls());
         }
-        for (Iterator iter = authorizationEntries.iterator(); iter.hasNext();) {
-            AuthorizationEntry entry = (AuthorizationEntry) iter.next();
+        for (AuthorizationEntry entry : authorizationEntries) {
             if (match(entry, endpoint, operation)) {
                 if (AuthorizationEntry.TYPE_ADD.equalsIgnoreCase(entry.getType())) {
                     acls.addAll(entry.getAcls());

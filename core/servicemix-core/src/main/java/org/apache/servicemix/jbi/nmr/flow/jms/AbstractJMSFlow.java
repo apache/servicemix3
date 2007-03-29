@@ -16,7 +16,6 @@
  */
 package org.apache.servicemix.jbi.nmr.flow.jms;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -77,9 +76,9 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
 
     private MessageConsumer broadcastConsumer;
 
-    protected Set subscriberSet = new CopyOnWriteArraySet();
+    protected Set<String> subscriberSet = new CopyOnWriteArraySet<String>();
 
-    private Map consumerMap = new ConcurrentHashMap();
+    private Map<String, MessageConsumer> consumerMap = new ConcurrentHashMap<String, MessageConsumer>();
 
     AtomicBoolean started = new AtomicBoolean(false);
 
@@ -281,8 +280,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
                 });
 
                 // Start queue consumers for all components
-                for (Iterator it = broker.getContainer().getRegistry().getComponents().iterator(); it.hasNext();) {
-                    ComponentMBeanImpl cmp = (ComponentMBeanImpl) it.next();
+                for (ComponentMBeanImpl cmp : broker.getContainer().getRegistry().getComponents()) {
                     if (cmp.isStarted()) {
                         onComponentStarted(new ComponentEvent(cmp, ComponentEvent.COMPONENT_STARTED));
                     }
@@ -313,8 +311,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
         if (started.compareAndSet(true, false)) {
             log.debug(broker.getContainer().getName() + ": Stopping jms flow");
             super.stop();
-            for (Iterator it = subscriberSet.iterator(); it.hasNext();) {
-                String id = (String) it.next();
+            for (String id : subscriberSet) {
                 removeAllPackets(id);
             }
             subscriberSet.clear();
@@ -376,7 +373,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
     public void onInternalEndpointUnregistered(EndpointEvent event, boolean broadcast) {
         try {
             String key = EndpointSupport.getKey(event.getEndpoint());
-            MessageConsumer consumer = (MessageConsumer) consumerMap.remove(key);
+            MessageConsumer consumer = consumerMap.remove(key);
             if (consumer != null) {
                 consumer.close();
             }
@@ -425,7 +422,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
     public void onComponentStopped(ComponentEvent event) {
         try {
             String key = event.getComponent().getName();
-            MessageConsumer consumer = (MessageConsumer) consumerMap.remove(key);
+            MessageConsumer consumer = consumerMap.remove(key);
             if (consumer != null) {
                 consumer.close();
             }

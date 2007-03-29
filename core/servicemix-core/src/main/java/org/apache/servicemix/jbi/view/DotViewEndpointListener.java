@@ -28,7 +28,6 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -88,11 +87,10 @@ public class DotViewEndpointListener extends EndpointViewRenderer implements Con
         writer.println("jbi [ fillcolor = \"#FFFF99\", label=\"Apache ServiceMix: " + container.getName() + "\" ];");
         writer.println();
 
-        List brokerLinks = new ArrayList();
+        List<String> brokerLinks = new ArrayList<String>();
         Registry registry = container.getRegistry();
-        Collection components = registry.getComponents();
-        for (Iterator iter = components.iterator(); iter.hasNext();) {
-            ComponentMBeanImpl component = (ComponentMBeanImpl) iter.next();
+        Collection<ComponentMBeanImpl> components = registry.getComponents();
+        for (ComponentMBeanImpl component : components) {
             String name = component.getName();
             String id = encode(name);
 
@@ -108,10 +106,9 @@ public class DotViewEndpointListener extends EndpointViewRenderer implements Con
 
         writer.println();
 
-        List componentEndpointLinks = new ArrayList();
-        Collection endpointMBeans = registry.getEndpointRegistry().getEndpointMBeans();
-        for (Iterator iter = endpointMBeans.iterator(); iter.hasNext();) {
-            Endpoint endpoint = (Endpoint) iter.next();
+        List<String> componentEndpointLinks = new ArrayList<String>();
+        Collection<Endpoint> endpointMBeans = registry.getEndpointRegistry().getEndpointMBeans();
+        for (Endpoint endpoint : endpointMBeans) {
             String key = endpoint.getSubType().toLowerCase() + ":{" + 
                                 endpoint.getServiceName().getNamespaceURI() + "}" + 
                                 endpoint.getServiceName().getLocalPart() + ":" + 
@@ -162,9 +159,9 @@ public class DotViewEndpointListener extends EndpointViewRenderer implements Con
         }
     }
 
-    protected void generateLinks(PrintWriter writer, Collection lines, String style) {
-        for (Iterator iter = lines.iterator(); iter.hasNext();) {
-            writer.print(iter.next().toString());
+    protected void generateLinks(PrintWriter writer, Collection<String> lines, String style) {
+        for (String line : lines) {
+            writer.print(line);
             if (style != null) {
                 writer.print(" [" + style + "]");
             }
@@ -173,7 +170,7 @@ public class DotViewEndpointListener extends EndpointViewRenderer implements Con
         writer.println();
     }
 
-    protected void generateLinks(PrintWriter writer, Collection lines) {
+    protected void generateLinks(PrintWriter writer, Collection<String> lines) {
         generateLinks(writer, lines, null);
     }
 

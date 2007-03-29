@@ -29,7 +29,6 @@ import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import java.util.Timer;
 import java.net.URL;
-import java.net.MalformedURLException;
 
 /**
  * 

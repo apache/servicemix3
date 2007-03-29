@@ -61,8 +61,8 @@ public class InstallationService extends BaseSystemService implements Installati
     
     private EnvironmentContext environmentContext;
     private ManagementContext managementContext;
-    private Map installers=new ConcurrentHashMap();
-    private Map nonLoadedInstallers = new ConcurrentHashMap();
+    private Map<String, InstallerMBeanImpl> installers = new ConcurrentHashMap<String, InstallerMBeanImpl>();
+    private Map<String, InstallerMBeanImpl> nonLoadedInstallers = new ConcurrentHashMap<String, InstallerMBeanImpl>();
 
     /**
      * Get Description
@@ -90,12 +90,12 @@ public class InstallationService extends BaseSystemService implements Installati
             if(tmpDir!=null){
                 Descriptor root=DescriptorFactory.buildDescriptor(tmpDir);
                 if(root!=null&&root.getComponent()!=null){
-                    String componentName=root.getComponent().getIdentification().getName();
+                    String componentName = root.getComponent().getIdentification().getName();
                     if(!installers.containsKey(componentName)){
-                        InstallerMBeanImpl installer=doInstallArchive(tmpDir,root);
+                        InstallerMBeanImpl installer = doInstallArchive(tmpDir,root);
                         if(installer!=null){
                             result=installer.getObjectName();
-                            installers.put(componentName,installer);
+                            installers.put(componentName, installer);
                         }
                     }else{
                         throw new RuntimeException("An installer already exists for "+componentName);
@@ -128,9 +128,9 @@ public class InstallationService extends BaseSystemService implements Installati
      * @return - the JMX ObjectName of the InstallerMBean loaded from an existing installation context.
      */
     public ObjectName loadInstaller(String aComponentName) {
-        InstallerMBeanImpl installer = (InstallerMBeanImpl) installers.get(aComponentName);
+        InstallerMBeanImpl installer = installers.get(aComponentName);
         if (installer == null) {
-            installer = (InstallerMBeanImpl) nonLoadedInstallers.get(aComponentName);
+            installer = nonLoadedInstallers.get(aComponentName);
             if (installer != null) {
                 try {
                     // create an MBean for the installer
@@ -178,7 +178,7 @@ public class InstallationService extends BaseSystemService implements Installati
         boolean result = false;
         try {
             container.getBroker().suspend();
-            InstallerMBeanImpl installer = (InstallerMBeanImpl) installers.remove(componentName);
+            InstallerMBeanImpl installer = installers.remove(componentName);
             result = installer != null;
             if(result) {
                 container.getManagementContext().unregisterMBean(installer);

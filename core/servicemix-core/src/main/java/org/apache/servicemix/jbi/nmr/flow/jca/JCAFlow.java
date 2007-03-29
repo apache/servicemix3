@@ -94,9 +94,9 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
     private ConnectionFactory managedConnectionFactory;
     private String broadcastDestinationName = "org.apache.servicemix.JCAFlow";
     private ActiveMQTopic broadcastTopic;
-    private Map connectorMap = new ConcurrentHashMap();
+    private Map<String, Connector> connectorMap = new ConcurrentHashMap<String, Connector>();
     private AtomicBoolean started = new AtomicBoolean(false);
-    private Set subscriberSet = new CopyOnWriteArraySet();
+    private Set<String> subscriberSet = new CopyOnWriteArraySet<String>();
     private ConnectionManager connectionManager;
     private Connector containerConnector;
     private Connector broadcastConnector;
@@ -315,7 +315,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
         broker.getContainer().removeListener(componentListener);
         // Destroy connectors
         while (!connectorMap.isEmpty()) {
-        	Connector connector = (Connector) connectorMap.remove(connectorMap.keySet().iterator().next());
+        	Connector connector = connectorMap.remove(connectorMap.keySet().iterator().next());
         	try {
         		connector.stop();
         	} catch (Exception e) {
@@ -375,7 +375,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
     public void onInternalEndpointUnregistered(EndpointEvent event, boolean broadcast) {
         try{
             String key = EndpointSupport.getKey(event.getEndpoint());
-            Connector connector = (Connector) connectorMap.remove(key);
+            Connector connector = connectorMap.remove(key);
             if (connector != null) {
                 connector.stop();
             }
@@ -409,7 +409,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
     public void onComponentStopped(ComponentEvent event) {
         try {
             String key = event.getComponent().getName();
-            Connector connector = (Connector) connectorMap.remove(key);
+            Connector connector = connectorMap.remove(key);
             if (connector != null){
                 connector.stop();
             }
