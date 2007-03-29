@@ -20,6 +20,9 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
@@ -76,10 +79,6 @@ import org.apache.servicemix.jbi.servicedesc.EndpointSupport;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 import org.jencks.SingletonEndpointFactory;
 import org.jencks.factory.ConnectionManagerFactoryBean;
-
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
-import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Use for message routing among a network of containers. All routing/registration happens automatically.

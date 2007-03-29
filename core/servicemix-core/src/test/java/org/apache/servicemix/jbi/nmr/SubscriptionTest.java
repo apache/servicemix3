@@ -16,7 +16,7 @@
  */
 package org.apache.servicemix.jbi.nmr;
 
-import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.jbi.container.ActivationSpec;

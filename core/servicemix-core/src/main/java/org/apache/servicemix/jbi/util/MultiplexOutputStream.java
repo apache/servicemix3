@@ -16,7 +16,7 @@
  */
 package org.apache.servicemix.jbi.util;
 
-import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import java.io.IOException;
 import java.io.OutputStream;

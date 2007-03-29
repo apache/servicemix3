@@ -80,7 +80,7 @@ import org.apache.servicemix.jbi.nmr.DefaultBroker;
 import org.apache.servicemix.jbi.nmr.flow.Flow;
 import org.w3c.dom.DocumentFragment;
 
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The main container

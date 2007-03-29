@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
@@ -31,8 +32,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jmx.ConnectorServerFactoryBean;
 import org.apache.servicemix.jbi.jmx.RmiRegistryFactoryBean;
-
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**

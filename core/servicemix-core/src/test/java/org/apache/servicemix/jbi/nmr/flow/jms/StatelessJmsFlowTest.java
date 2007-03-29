@@ -37,7 +37,7 @@ import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 
-import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class StatelessJmsFlowTest extends TestCase {
 

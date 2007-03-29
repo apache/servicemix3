@@ -16,6 +16,9 @@
  */
 package org.apache.servicemix.jbi.nmr.flow;
 
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import javax.jbi.JBIException;
 import javax.jbi.management.LifeCycleMBean;
 import javax.jbi.messaging.MessageExchange;
@@ -38,9 +41,6 @@ import org.apache.servicemix.jbi.messaging.ExchangePacket;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.Broker;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
-
-import edu.emory.mathcs.backport.java.util.concurrent.locks.ReadWriteLock;
-import edu.emory.mathcs.backport.java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * A simple Straight through flow

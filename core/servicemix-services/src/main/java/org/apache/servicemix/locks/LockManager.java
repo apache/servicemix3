@@ -16,7 +16,7 @@
  */
 package org.apache.servicemix.locks;
 
-import edu.emory.mathcs.backport.java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.Lock;
 
 public interface LockManager {
 

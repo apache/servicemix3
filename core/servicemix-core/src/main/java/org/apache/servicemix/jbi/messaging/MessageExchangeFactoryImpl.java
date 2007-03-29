@@ -16,7 +16,7 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.id.IdGenerator;

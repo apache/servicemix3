@@ -16,7 +16,7 @@
  */
 package org.apache.servicemix.jbi.management;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ExecutorService;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.beanutils.PropertyUtilsBean;

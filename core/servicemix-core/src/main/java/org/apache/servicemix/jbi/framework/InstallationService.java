@@ -48,7 +48,7 @@ import org.apache.servicemix.jbi.management.ParameterHelper;
 import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.servicemix.jbi.util.FileVersionUtil;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Installation Service - installs/uninstalls archives

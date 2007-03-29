@@ -16,7 +16,7 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.servicemix.jbi.RuntimeJBIException;
 import org.apache.servicemix.jbi.container.ActivationSpec;

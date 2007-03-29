@@ -20,7 +20,7 @@ import javax.management.DynamicMBean;
 import javax.management.JMException;
 import javax.management.StandardMBean;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ExecutorService;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Builds a DynamicMBean wrappers for existing objects

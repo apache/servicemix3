@@ -16,6 +16,8 @@
  */
 package org.apache.servicemix.jbi.nmr.flow.seda;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.jbi.JBIException;
 import javax.jbi.messaging.MessagingException;
 import javax.management.JMException;
@@ -29,8 +31,6 @@ import org.apache.servicemix.jbi.framework.ComponentNameSpace;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseLifeCycle;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
-
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * A simple Straight through flow

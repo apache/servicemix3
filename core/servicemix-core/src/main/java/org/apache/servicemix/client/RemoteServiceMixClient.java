@@ -16,14 +16,14 @@
  */
 package org.apache.servicemix.client;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.jbi.JBIException;
 
 import org.apache.servicemix.id.IdGenerator;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.nmr.flow.jms.JMSFlow;
-
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Provides remote access to ServiceMix JBI Containers running on the JMS NMR Flow
