@@ -25,13 +25,13 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class SimpleLockManager implements LockManager {
 
-    private ConcurrentMap locks = new ConcurrentHashMap();
+    private ConcurrentMap<String, Lock> locks = new ConcurrentHashMap<String, Lock>();
     
     public Lock getLock(String id) {
-        Lock lock = (Lock) locks.get(id);
+        Lock lock = locks.get(id);
         if (lock == null) {
             lock = new ReentrantLock();
-            Lock oldLock = (Lock) locks.putIfAbsent(id, lock);
+            Lock oldLock = locks.putIfAbsent(id, lock);
             if (oldLock != null) {
                 lock = oldLock;
             }

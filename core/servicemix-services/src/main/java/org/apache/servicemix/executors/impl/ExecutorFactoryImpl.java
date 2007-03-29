@@ -51,7 +51,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ExecutorFactoryImpl implements ExecutorFactory {
 
     private ExecutorConfig defaultConfig = new ExecutorConfig();
-    private Map configs = new HashMap();
+    private Map<String,ExecutorConfig> configs = new HashMap<String, ExecutorConfig>();
     
     public Executor createExecutor(String id) {
         ExecutorConfig config = getConfig(id);
@@ -62,10 +62,10 @@ public class ExecutorFactoryImpl implements ExecutorFactory {
     protected ExecutorConfig getConfig(String id) {
         ExecutorConfig config = null;
         if (configs != null) {
-            config = (ExecutorConfig) configs.get(id);
+            config = configs.get(id);
             while (config == null && id.indexOf('.') > 0) {
                 id = id.substring(0, id.lastIndexOf('.'));
-                config = (ExecutorConfig) configs.get(id);
+                config = configs.get(id);
             }
         }
         if (config == null) {
@@ -78,13 +78,13 @@ public class ExecutorFactoryImpl implements ExecutorFactory {
         if (config.getQueueSize() != 0 && config.getCorePoolSize() == 0) {
             throw new IllegalArgumentException("CorePoolSize must be > 0 when using a capacity queue");
         }
-        BlockingQueue queue;
+        BlockingQueue<Runnable> queue;
         if (config.getQueueSize() == 0) {
-            queue = new SynchronousQueue();
+            queue = new SynchronousQueue<Runnable>();
         } else if (config.getQueueSize() < 0 || config.getQueueSize() == Integer.MAX_VALUE) {
-            queue = new LinkedBlockingQueue();
+            queue = new LinkedBlockingQueue<Runnable>();
         } else {
-            queue = new ArrayBlockingQueue(config.getQueueSize());
+            queue = new ArrayBlockingQueue<Runnable>(config.getQueueSize());
         }
         ThreadFactory factory = new DefaultThreadFactory(id,
                                                          config.isThreadDaemon(), 
@@ -144,14 +144,14 @@ public class ExecutorFactoryImpl implements ExecutorFactory {
     /**
      * @return the configs
      */
-    public Map getConfigs() {
+    public Map<String, ExecutorConfig> getConfigs() {
         return configs;
     }
 
     /**
      * @param configs the configs to set
      */
-    public void setConfigs(Map configs) {
+    public void setConfigs(Map<String, ExecutorConfig> configs) {
         this.configs = configs;
     }
 
