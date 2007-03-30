@@ -67,9 +67,9 @@ public class W3CDOMStreamReader extends DOMStreamReader {
      */
     protected void newFrame(ElementFrame frame) {
         Element element = getCurrentElement();
-        frame.uris = new ArrayList();
-        frame.prefixes = new ArrayList();
-        frame.attributes = new ArrayList();
+        frame.uris = new ArrayList<String>();
+        frame.prefixes = new ArrayList<String>();
+        frame.attributes = new ArrayList<Attr>();
 
         if (context == null)
             context = new W3CNamespaceContext();
@@ -78,7 +78,6 @@ public class W3CDOMStreamReader extends DOMStreamReader {
 
         NamedNodeMap nodes = element.getAttributes();
 
-        String nsURI = element.getNamespaceURI();
         String ePrefix = element.getPrefix();
         if (ePrefix == null) {
             ePrefix = "";
@@ -90,7 +89,6 @@ public class W3CDOMStreamReader extends DOMStreamReader {
             String localName = node.getLocalName();
             String value = node.getNodeValue();
             String name = node.getNodeName();
-            String uri = node.getNamespaceURI();
 
             if (prefix == null)
                 prefix = "";
@@ -159,7 +157,7 @@ public class W3CDOMStreamReader extends DOMStreamReader {
         while (null != frame) {
             int index = frame.prefixes.indexOf(prefix);
             if (index != -1) {
-                return (String) frame.uris.get(index);
+                return frame.uris.get(index);
             }
 
             frame = frame.parent;
@@ -242,11 +240,11 @@ public class W3CDOMStreamReader extends DOMStreamReader {
     }
 
     public String getNamespacePrefix(int i) {
-        return (String) getCurrentFrame().prefixes.get(i);
+        return getCurrentFrame().prefixes.get(i);
     }
 
     public String getNamespaceURI(int i) {
-        return (String) getCurrentFrame().uris.get(i);
+        return getCurrentFrame().uris.get(i);
     }
 
     public NamespaceContext getNamespaceContext() {

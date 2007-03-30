@@ -41,7 +41,7 @@ import org.apache.servicemix.jbi.util.FastStack;
 public abstract class DOMStreamReader implements XMLStreamReader {
     public Map properties = new HashMap();
 
-    private FastStack frames = new FastStack();
+    private FastStack<ElementFrame> frames = new FastStack<ElementFrame>();
 
     private ElementFrame frame;
 
@@ -66,17 +66,13 @@ public abstract class DOMStreamReader implements XMLStreamReader {
 
         int currentAttribute = -1;
 
-        int currentNamespace = -1;
-
         int currentElement = -1;
 
-        List uris;
+        List<String> uris;
 
-        List prefixes;
+        List<String> prefixes;
 
         List attributes;
-
-        List allAttributes;
 
         final ElementFrame parent;
     }
@@ -108,7 +104,7 @@ public abstract class DOMStreamReader implements XMLStreamReader {
         if (frame.ended) {
             frames.pop();
             if (!frames.empty()) {
-                frame = (ElementFrame) frames.peek();
+                frame = frames.peek();
             } else {
                 currentEvent = END_DOCUMENT;
                 return currentEvent;
@@ -121,9 +117,6 @@ public abstract class DOMStreamReader implements XMLStreamReader {
         } else if (frame.currentAttribute < getAttributeCount() - 1) {
             frame.currentAttribute++;
             currentEvent = ATTRIBUTE;
-        } else if (frame.currentNamespace < getNamespaceCount() - 1) {
-            frame.currentNamespace++;
-            currentEvent = NAMESPACE;
         } else if (frame.currentChild < getChildCount() - 1) {
             frame.currentChild++;
 

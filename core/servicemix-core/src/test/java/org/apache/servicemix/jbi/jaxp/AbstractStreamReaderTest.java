@@ -35,9 +35,6 @@ public abstract class AbstractStreamReaderTest
         assertTrue(reader.hasNext());
         assertEquals("root", reader.getLocalName());
         assertEquals(1, reader.getNamespaceCount());
-        assertEquals(XMLStreamReader.NAMESPACE, reader.next());
-        
-        assertEquals(1, reader.getNamespaceCount());
         assertEquals("", reader.getNamespacePrefix(0));
         assertEquals("urn:test", reader.getNamespaceURI(0));
         
@@ -49,8 +46,6 @@ public abstract class AbstractStreamReaderTest
     {
         assertTrue(reader.hasNext());
         assertEquals(XMLStreamReader.START_ELEMENT, reader.next());
-        assertTrue(reader.hasNext());
-        assertEquals(XMLStreamReader.NAMESPACE, reader.next());
         
         assertEquals(1, reader.getNamespaceCount());
         assertEquals("", reader.getNamespacePrefix(0));
@@ -69,8 +64,6 @@ public abstract class AbstractStreamReaderTest
     {
         assertTrue(reader.hasNext());
         assertEquals(XMLStreamReader.START_ELEMENT, reader.next());
-        assertTrue(reader.hasNext());
-        assertEquals(XMLStreamReader.NAMESPACE, reader.next());
         
         assertEquals("root", reader.getLocalName());
         assertEquals(1, reader.getNamespaceCount());
@@ -133,17 +126,11 @@ public abstract class AbstractStreamReaderTest
         assertTrue(reader.hasNext());
         assertEquals(XMLStreamReader.ATTRIBUTE, reader.next());
         
-        assertTrue(reader.hasNext());
-        assertEquals(XMLStreamReader.NAMESPACE, reader.next());
-        
         assertEquals(2, reader.getNamespaceCount());
         assertEquals("", reader.getNamespacePrefix(0));
         assertEquals("urn:test", reader.getNamespaceURI(0));
         assertEquals("p", reader.getNamespacePrefix(1));
         assertEquals("urn:test2", reader.getNamespaceURI(1));
-        
-        assertTrue(reader.hasNext());
-        assertEquals(XMLStreamReader.NAMESPACE, reader.next());
         
         assertTrue(reader.hasNext());
         assertEquals(XMLStreamReader.END_ELEMENT, reader.next());
@@ -159,17 +146,11 @@ public abstract class AbstractStreamReaderTest
         assertEquals("", reader.getPrefix());
         
         assertTrue(reader.hasNext());
-        assertEquals(XMLStreamReader.NAMESPACE, reader.next());
-        
-        assertTrue(reader.hasNext());
         assertEquals(XMLStreamReader.START_ELEMENT, reader.next());
         
         assertEquals("child", reader.getLocalName());
         assertEquals("urn:test2", reader.getNamespaceURI());
         assertEquals("a", reader.getPrefix());
-        
-        assertTrue(reader.hasNext());
-        assertEquals(XMLStreamReader.NAMESPACE, reader.next());        
         
         assertTrue(reader.hasNext());
         assertEquals(XMLStreamReader.END_ELEMENT, reader.next());
