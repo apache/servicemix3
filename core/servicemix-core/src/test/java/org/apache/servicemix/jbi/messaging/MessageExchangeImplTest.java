@@ -16,27 +16,28 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.jaxp.BytesSource;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.messaging.InOnlyImpl;
-import org.apache.servicemix.jbi.util.StreamDataSource;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.concurrent.PriorityBlockingQueue;
 
 import javax.activation.DataHandler;
+import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
 import junit.framework.TestCase;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.jaxp.BytesSource;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.util.StreamDataSource;
 
 public class MessageExchangeImplTest extends TestCase {
     
@@ -103,6 +104,26 @@ public class MessageExchangeImplTest extends TestCase {
     public void testSerializeDeserializeWithSaxSource() throws Exception {
         Source src = new SourceTransformer().toSAXSource(new StringSource("<hello>world</hello>"));
         testSerializeDeserialize(src);
+    }
+
+    public void testAgeComparator() throws Exception {
+        PriorityBlockingQueue<MessageExchangeImpl> queue = new PriorityBlockingQueue<MessageExchangeImpl>(11, new MessageExchangeImpl.AgeComparator());
+        MessageExchangeImpl me1 = new InOnlyImpl("me1");
+        MessageExchangeImpl me2 = new InOnlyImpl("me2");
+        me2.handleSend(false);
+        me2.packet.setStatus(ExchangeStatus.DONE);
+        me2.handleAccept();
+        MessageExchangeImpl me3 = new InOutImpl("me3");
+        me3.handleSend(false);
+        me3.handleAccept();
+
+        queue.put(me1);
+        queue.put(me2);
+        queue.put(me3);
+
+        assertEquals(me2, queue.take());
+        assertEquals(me3, queue.take());
+        assertEquals(me1, queue.take());
     }
 
 }

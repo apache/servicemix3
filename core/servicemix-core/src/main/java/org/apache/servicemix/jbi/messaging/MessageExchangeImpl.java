@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.net.URI;
+import java.util.Comparator;
 import java.util.Set;
 
 /**
@@ -756,5 +757,26 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             key = (getRole() == Role.CONSUMER ? "consumer:" : "provider:") + getExchangeId();
         }
         return key;
+    }
+
+    /**
+     * Comparator that can be used to sort exchanges according to their
+     * "age" in their processing: i.e.: a newly created exchange will be
+     * more than a DONE exchange ...
+     * If the arguments are not instances of MessageExchangeImpl,
+     * returns 0.
+     */
+    public static class AgeComparator implements Comparator<MessageExchangeImpl> {
+        public int compare(MessageExchangeImpl m0, MessageExchangeImpl m1) {
+            int i0 = (m0.state * 4) / (m0.states.length - 1);
+            int i1 = (m1.state * 4) / (m1.states.length - 1);
+            if (i0 < i1) {
+                return +1;
+            } else if (i0 == i1) {
+                return 0;
+            } else {
+                return -1;
+            }
+        }
     }
 }
