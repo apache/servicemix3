@@ -27,13 +27,13 @@ import org.apache.servicemix.store.StoreFactory;
 public class MemoryStoreFactory implements StoreFactory {
 
     private IdGenerator idGenerator = new IdGenerator();
-    private Map stores = new HashMap();
+    private Map<String, MemoryStore> stores = new HashMap<String, MemoryStore>();
     
     /* (non-Javadoc)
      * @see org.apache.servicemix.store.ExchangeStoreFactory#get(java.lang.String)
      */
     public synchronized Store open(String name) throws IOException {
-        MemoryStore store = (MemoryStore) stores.get(name);
+        MemoryStore store = stores.get(name);
         if (store == null) {
             store = new MemoryStore(idGenerator);
             stores.put(name, store);

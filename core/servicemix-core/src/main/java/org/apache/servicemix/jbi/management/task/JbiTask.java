@@ -72,7 +72,7 @@ public abstract class JbiTask extends Task {
      */
     public JMXConnector getJMXConnector (JMXServiceURL url) throws IOException {
         String[] credentials = new String[] { getUsername(), getPassword() };
-        Map environment = new HashMap();
+        Map<String,Object> environment = new HashMap<String,Object>();
         environment.put(JMXConnector.CREDENTIALS, credentials);
         return JMXConnectorFactory.connect(url, environment);
     }

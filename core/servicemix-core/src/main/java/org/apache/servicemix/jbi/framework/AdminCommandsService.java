@@ -322,7 +322,7 @@ public class AdminCommandsService extends BaseSystemService implements
 		}
 		// Get components
 		Collection connectors = container.getRegistry().getComponents();
-		List components = new ArrayList();
+		List<ComponentMBeanImpl> components = new ArrayList<ComponentMBeanImpl>();
 		for (Iterator iter = connectors.iterator(); iter.hasNext();) {
 			ComponentMBeanImpl component = (ComponentMBeanImpl) iter.next();
 			// Skip SEs if needed
@@ -376,8 +376,8 @@ public class AdminCommandsService extends BaseSystemService implements
 		buffer.append("<?xml version='1.0'?>\n");
 		buffer
 				.append("<component-info-list xmlns='http://java.sun.com/xml/ns/jbi/component-info-list' version='1.0'>\n");
-		for (Iterator iter = components.iterator(); iter.hasNext();) {
-			ComponentMBeanImpl component = (ComponentMBeanImpl) iter.next();
+		for (Iterator<ComponentMBeanImpl> iter = components.iterator(); iter.hasNext();) {
+			ComponentMBeanImpl component = iter.next();
 			buffer.append("  <component-info");
 			if (!component.isBinding() && component.isService()) {
 				buffer.append(" type='service-engine'");
@@ -406,7 +406,7 @@ public class AdminCommandsService extends BaseSystemService implements
 	 */
 	public String listSharedLibraries(String componentName,
 			String sharedLibraryName) throws Exception {
-		Collection libs;
+		Collection<SharedLibrary> libs;
 		if (sharedLibraryName != null) {
 			SharedLibrary sl = container.getRegistry().getSharedLibrary(
 					sharedLibraryName);
@@ -425,8 +425,8 @@ public class AdminCommandsService extends BaseSystemService implements
 		buffer.append("<?xml version='1.0'?>\n");
 		buffer
 				.append("<component-info-list xmlns='http://java.sun.com/xml/ns/jbi/component-info-list' version='1.0'>\n");
-		for (Iterator iter = libs.iterator(); iter.hasNext();) {
-			SharedLibrary sl = (SharedLibrary) iter.next();
+		for (Iterator<SharedLibrary> iter = libs.iterator(); iter.hasNext();) {
+			SharedLibrary sl = iter.next();
 			buffer.append("  <component-info type='shared-library' name='")
 					.append(sl.getName()).append("' state='Started'>");
 			if (sl.getDescription() != null) {
@@ -460,7 +460,7 @@ public class AdminCommandsService extends BaseSystemService implements
 			result = container.getRegistry().getDeployedServiceAssemblies();
 		}
 
-		List assemblies = new ArrayList();
+		List<ServiceAssemblyLifeCycle> assemblies = new ArrayList<ServiceAssemblyLifeCycle>();
 		for (int i = 0; i < result.length; i++) {
 			ServiceAssemblyLifeCycle sa = container.getRegistry()
 					.getServiceAssembly(result[i]);
@@ -478,8 +478,8 @@ public class AdminCommandsService extends BaseSystemService implements
 		buffer.append("<?xml version='1.0'?>\n");
 		buffer
 				.append("<service-assembly-info-list xmlns='http://java.sun.com/xml/ns/jbi/service-assembly-info-list' version='1.0'>\n");
-		for (Iterator iter = assemblies.iterator(); iter.hasNext();) {
-			ServiceAssemblyLifeCycle sa = (ServiceAssemblyLifeCycle) iter
+		for (Iterator<ServiceAssemblyLifeCycle> iter = assemblies.iterator(); iter.hasNext();) {
+			ServiceAssemblyLifeCycle sa = iter
 					.next();
 			buffer.append("  <service-assembly-info");
 			buffer.append(" name='" + sa.getName() + "'");

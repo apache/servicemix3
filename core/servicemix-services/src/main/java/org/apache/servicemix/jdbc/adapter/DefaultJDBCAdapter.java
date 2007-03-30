@@ -281,13 +281,13 @@ public class DefaultJDBCAdapter implements JDBCAdapter {
         PreparedStatement s = null;
         ResultSet rs = null;
         try {
-            List ids = new ArrayList();
+            List<String> ids = new ArrayList<String>();
             s = connection.prepareStatement(statements.getFindAllIdsStatement());
             rs = s.executeQuery();
             while (rs.next()) {
                 ids.add(rs.getString(1));
             }
-            return (String[]) ids.toArray(new String[ids.size()]);
+            return ids.toArray(new String[ids.size()]);
         }
         finally {
             close(rs);

@@ -37,7 +37,7 @@ public class JdbcStoreFactory implements StoreFactory {
     private boolean clustered;
     private DataSource dataSource;
     private IdGenerator idGenerator = new IdGenerator();
-    private Map stores = new HashMap();
+    private Map<String, JdbcStore> stores = new HashMap<String, JdbcStore>();
     private String tableName = "SM_STORE";
     private boolean createDataBase = true;
     private JDBCAdapter adapter;
@@ -72,7 +72,7 @@ public class JdbcStoreFactory implements StoreFactory {
                 }
             }
         }
-        JdbcStore store = (JdbcStore) stores.get(name);
+        JdbcStore store = stores.get(name);
         if (store == null) {
             store = new JdbcStore(this, name);
             stores.put(name, store);

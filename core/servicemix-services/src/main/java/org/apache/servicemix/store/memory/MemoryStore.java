@@ -36,7 +36,7 @@ public class MemoryStore implements Store {
     
     private static final Log log = LogFactory.getLog(MemoryStore.class);
 
-    private Map datas = new ConcurrentHashMap();
+    private Map<String, Object> datas = new ConcurrentHashMap<String, Object>();
     private IdGenerator idGenerator;
     
     public MemoryStore(IdGenerator idGenerator) {

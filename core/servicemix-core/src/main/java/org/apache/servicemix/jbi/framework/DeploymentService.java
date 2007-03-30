@@ -84,7 +84,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         buildState();
     }
     
-    protected Class getServiceMBean() {
+    protected Class<DeploymentServiceMBean> getServiceMBean() {
         return DeploymentServiceMBean.class;
     }
 
@@ -492,8 +492,8 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         // Everything seems ok, so deploy all SUs
         int nbSuccess = 0;
         int nbFailures = 0;
-        List componentResults = new ArrayList();
-        List suKeys = new ArrayList();
+        List<Element> componentResults = new ArrayList<Element>();
+        List<String> suKeys = new ArrayList<String>();
         if (sus != null) {
             for (int i = 0; i < sus.length; i++) {
                 File targetDir = null;
@@ -549,9 +549,9 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         // Failure
         if (nbFailures > 0) {
             // Undeploy SUs
-            for (Iterator iter = suKeys.iterator(); iter.hasNext();) {
+            for (Iterator<String> iter = suKeys.iterator(); iter.hasNext();) {
                 try {
-                    String suName = (String) iter.next();
+                    String suName = iter.next();
                     ServiceUnitLifeCycle su = registry.getServiceUnit(suName);
                     undeployServiceUnit(su);
                 } catch (Exception e) {
@@ -565,7 +565,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         // Success
         else {
             // Register SA
-            String[] deployedSUs = (String[]) suKeys.toArray(new String[suKeys.size()]);
+            String[] deployedSUs = suKeys.toArray(new String[suKeys.size()]);
             ServiceAssemblyLifeCycle salc = registry.registerServiceAssembly(sa, deployedSUs, env);
             salc.writeRunningState();
             // Build result string
@@ -577,7 +577,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         }
     }
     
-    protected void getComponentTaskError(Exception exception, String component, List results) {
+    protected void getComponentTaskError(Exception exception, String component, List<Element> results) {
         Element result = null;
         try {
             Document doc = parse(exception.getMessage());
@@ -592,7 +592,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         }
     }
 
-    protected boolean getComponentTaskResult(String resultMsg, String component, List results, boolean success) {
+    protected boolean getComponentTaskResult(String resultMsg, String component, List<Element> results, boolean success) {
         Element result = null;
         try {
             Document doc = parse(resultMsg);
