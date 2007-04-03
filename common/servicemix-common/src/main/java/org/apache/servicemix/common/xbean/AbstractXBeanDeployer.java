@@ -20,6 +20,8 @@ import org.apache.servicemix.common.AbstractDeployer;
 import org.apache.servicemix.common.Endpoint;
 import org.apache.servicemix.common.ServiceMixComponent;
 import org.apache.servicemix.common.ServiceUnit;
+import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 import org.apache.xbean.kernel.Kernel;
 import org.apache.xbean.kernel.KernelFactory;
 import org.apache.xbean.kernel.ServiceName;
@@ -28,6 +30,7 @@ import org.apache.xbean.server.spring.loader.SpringLoader;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.core.io.FileSystemResource;
 
+import javax.jbi.component.ComponentContext;
 import javax.jbi.management.DeploymentException;
 import java.io.File;
 import java.util.Collections;
@@ -116,8 +119,12 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
     }
     
     protected List getXmlPreProcessors(String serviceUnitRootPath) {
+        JBIContainer container = null;
+        try {
+            container = ((ComponentContextImpl) component.getComponentContext()).getContainer();
+        } catch (Throwable t) { }
         FileSystemRepository repository = new FileSystemRepository(new File(serviceUnitRootPath));
-        ClassLoaderXmlPreprocessor classLoaderXmlPreprocessor = new ClassLoaderXmlPreprocessor(repository);
+        ClassLoaderXmlPreprocessor classLoaderXmlPreprocessor = new ClassLoaderXmlPreprocessor(repository, container);
         return Collections.singletonList(classLoaderXmlPreprocessor);
     }
     

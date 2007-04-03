@@ -26,6 +26,8 @@ import java.util.ListIterator;
 
 import javax.xml.parsers.DocumentBuilder;
 
+import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.framework.SharedLibrary;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.xbean.classloader.JarFileClassLoader;
 import org.apache.xbean.server.repository.FileSystemRepository;
@@ -52,12 +54,18 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
     public static final String LIB_DIR = "/lib";
     
     private final FileSystemRepository repository;
+    private final JBIContainer container;
     
     public ClassLoaderXmlPreprocessor(Repository repository) {
+        this(repository, null);
+    }
+
+    public ClassLoaderXmlPreprocessor(Repository repository, JBIContainer container) {
         if (repository instanceof FileSystemRepository == false) {
             throw new IllegalArgumentException("repository must be a FileSystemRepository");
         }
         this.repository = (FileSystemRepository) repository;
+        this.container = container;
     }
 
     public void preprocess(SpringApplicationContext applicationContext, XmlBeanDefinitionReader reader, Document document) {
@@ -161,6 +169,18 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
                 classpath.add(location);
             }
             
+            // Add shared libraries
+            List<String> sls = new ArrayList<String>();
+            NodeList libraries = classpathElement.getElementsByTagName("library");
+            for (int i = 0; i < libraries.getLength(); i++) {
+                Element locationElement = (Element) locations.item(i);
+                String library = ((Text) locationElement.getFirstChild()).getData().trim();
+                sls.add(library);
+            }
+            if (sls.size() > 0 && container == null) {
+                throw new IllegalStateException("Can not reference shared libraries if the component is not deployed in ServiceMix");
+            }
+            
             // convert the paths to URLS
             URL[] urls;
             if (classpath.size() != 0) {
@@ -178,10 +198,15 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
             }
 
             // create the classloader
-            ClassLoader parentLoader = getParentClassLoader(applicationContext);
+            List<ClassLoader> parents = new ArrayList<ClassLoader>();
+            parents.add(getParentClassLoader(applicationContext));
+            for (String library : sls) {
+                SharedLibrary sl = container.getRegistry().getSharedLibrary(library);
+                parents.add(sl.getClassLoader());
+            }
             classLoader = new JarFileClassLoader(applicationContext.getDisplayName(), 
                                                  urls, 
-                                                 parentLoader,
+                                                 parents.toArray(new ClassLoader[parents.size()]),
                                                  inverse,
                                                  hidden.toArray(new String[hidden.size()]),
                                                  nonOverridable.toArray(new String[nonOverridable.size()]));
