@@ -71,7 +71,7 @@
           <br/>
           <br/>
           <br/>
-          <small>&copy; 2006 The Apache Software Foundation</small>
+          <small>&copy; 2007 The Apache Software Foundation</small>
         </div>
     </div>
 
