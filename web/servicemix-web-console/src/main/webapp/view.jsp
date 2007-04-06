@@ -20,6 +20,23 @@
 </head>
 <body>
 
+<%
+Throwable dotException = null;
+try {
+    org.apache.servicemix.web.view.Dot.initialize();
+} catch (Throwable t) {
+    dotException = t;
+}
+if (dotException != null) {
+%>
+<br></br>
+Unable to run dot: <%=dotException.getMessage()%>
+<br></br>
+Check that the dot executable is available in the path or install it from <a href="http://www.graphviz.org/">http://www.graphviz.org/</a>.
+<%
+} else {
+%>
+
 <h2>View</h2>
 
 <fieldset style="height:25em">
@@ -48,6 +65,9 @@
   </object>
 </fieldset>
 
+<%
+}
+%>
 </body>
 </html>
 	
