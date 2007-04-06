@@ -89,7 +89,7 @@ public class Registry {
     public List<Endpoint> getEndpoints(Component component) throws Exception {
         List<Endpoint> endpoints = new ArrayList<Endpoint>();
         for (Endpoint endpoint : getEndpoints()) {
-            if (endpoint.getComponent().equals(component)) {
+            if (component.equals(endpoint.getComponent())) {
                 endpoints.add(endpoint);
             }
         }
