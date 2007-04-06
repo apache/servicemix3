@@ -31,12 +31,10 @@ import org.springframework.web.servlet.view.AbstractView;
 
 public class DotView extends AbstractView {
 
-    public static final String DEFAULT_DOT_PATH = "dot";
     public static final String DEFAULT_DOT_FORMAT = "svg";
     public static final String MODEL_SOURCE = "dotSource";
     public static final String MODEL_FORMAT = "dotFormat";
     
-    private String dotPath = DEFAULT_DOT_PATH;
     private String dotModelSource = MODEL_SOURCE;
     private String dotFormat = DEFAULT_DOT_FORMAT;
     
@@ -67,9 +65,8 @@ public class DotView extends AbstractView {
             w.close();
             dotImg = File.createTempFile("smx_", ".dot." + getDotFormat());
             
-            String cmd = getDotPath() + " -T" + getDotFormat() + " \"" + dotSrc.getCanonicalPath() + "\" -o\"" + dotImg.getAbsolutePath() + "\"";
-            Process p = Runtime.getRuntime().exec(cmd);
-            p.waitFor();
+            String cmd = "-T" + getDotFormat() + " \"" + dotSrc.getCanonicalPath() + "\" -o\"" + dotImg.getAbsolutePath() + "\"";
+            Dot.run(cmd);
             
             InputStream is = new FileInputStream(dotImg);
             if (is.available() == 0) {
@@ -80,7 +77,7 @@ public class DotView extends AbstractView {
             FileUtil.copyInputStream(is, response.getOutputStream());
         } finally {
             if (dotSrc != null) {
-                dotSrc.delete();
+                //dotSrc.delete();
             }
             if (dotImg != null) {
                 dotImg.delete();
@@ -90,14 +87,6 @@ public class DotView extends AbstractView {
     
     public String getContentType() {
         return FORMATS.get(getDotFormat());
-    }
-
-    public String getDotPath() {
-        return dotPath;
-    }
-
-    public void setDotPath(String dotPath) {
-        this.dotPath = dotPath;
     }
 
     public String getDotFormat() {
