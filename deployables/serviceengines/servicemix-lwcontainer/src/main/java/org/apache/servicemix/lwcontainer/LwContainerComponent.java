@@ -26,7 +26,7 @@ public class LwContainerComponent extends BaseComponent {
      * @see org.servicemix.common.BaseComponent#createServiceUnitManager()
      */
     public BaseServiceUnitManager createServiceUnitManager() {
-        Deployer[] deployers = new Deployer[] { new LwContainerXBeanDeployer(this) };
+        Deployer[] deployers = new Deployer[] {new LwContainerXBeanDeployer(this) };
         return new BaseServiceUnitManager(this, deployers);
     }
 

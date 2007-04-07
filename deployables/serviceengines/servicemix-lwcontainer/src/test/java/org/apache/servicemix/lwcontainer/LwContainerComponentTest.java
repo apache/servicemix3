@@ -16,75 +16,72 @@
  */
 package org.apache.servicemix.lwcontainer;
 
-import org.apache.servicemix.client.DefaultServiceMixClient;
-import org.apache.servicemix.client.ServiceMixClient;
-import org.apache.servicemix.jbi.container.JBIContainer;
-import org.apache.servicemix.lwcontainer.LwContainerComponent;
+import java.io.File;
+import java.net.URI;
+import java.net.URL;
 
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessagingException;
 import javax.xml.namespace.QName;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URL;
-
 import junit.framework.TestCase;
+
+import org.apache.servicemix.client.DefaultServiceMixClient;
+import org.apache.servicemix.client.ServiceMixClient;
+import org.apache.servicemix.jbi.container.JBIContainer;
 
 /**
  * 
  * @version $Revision$
  */
 public class LwContainerComponentTest extends TestCase {
-	protected JBIContainer container = new JBIContainer();
+    protected JBIContainer container = new JBIContainer();
 
-	private File tempRootDir;
+    private File tempRootDir;
 
-	/*
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-		container.setCreateMBeanServer(false);
-		container.setMonitorInstallationDirectory(false);
-		tempRootDir = File.createTempFile("servicemix", "rootDir");
-		tempRootDir.delete();
-		File tempTemp = new File(tempRootDir.getAbsolutePath() + "/temp");
-		if (!tempTemp.mkdirs())
-			fail("Unable to create temporary working root directory ["
-					+ tempTemp.getAbsolutePath() + "]");
+    /*
+     * @see TestCase#setUp()
+     */
+    protected void setUp() throws Exception {
+        super.setUp();
+        container.setCreateMBeanServer(false);
+        container.setMonitorInstallationDirectory(false);
+        tempRootDir = File.createTempFile("servicemix", "rootDir");
+        tempRootDir.delete();
+        File tempTemp = new File(tempRootDir.getAbsolutePath() + "/temp");
+        if (!tempTemp.mkdirs()) {
+            fail("Unable to create temporary working root directory [" + tempTemp.getAbsolutePath() + "]");
+        }
+        System.out.println("Using temporary root directory [" + tempRootDir.getAbsolutePath() + "]");
 
-		System.out.println("Using temporary root directory ["
-				+ tempRootDir.getAbsolutePath() + "]");
-
-		container.setRootDir(tempRootDir.getAbsolutePath());
+        container.setRootDir(tempRootDir.getAbsolutePath());
         container.setMonitorInstallationDirectory(false);
         container.setUseMBeanServer(false);
         container.setCreateMBeanServer(false);
         container.setFlowName("st");
-		container.init();
-		container.start();
-	}
+        container.init();
+        container.start();
+    }
 
-	public void testComponentInstallation() throws Exception {
+    public void testComponentInstallation() throws Exception {
         LwContainerComponent component = new LwContainerComponent();
         container.activateComponent(component, "#ServiceMixComponent#");
         URL url = getClass().getResource("su1-src/servicemix.xml");
         File path = new File(new URI(url.toString()));
         path = path.getParentFile();
         ServiceMixClient client = new DefaultServiceMixClient(container);
-        
+
         for (int i = 0; i < 2; i++) {
             // Deploy and start su
             component.getServiceUnitManager().deploy("su1", path.getAbsolutePath());
             component.getServiceUnitManager().init("su1", path.getAbsolutePath());
             component.getServiceUnitManager().start("su1");
-            
+
             // Send message
             InOut inout = client.createInOutExchange();
             inout.setService(new QName("http://servicemix.apache.org/demo/", "chained"));
             client.send(inout);
-            
+
             // Stop and undeploy
             component.getServiceUnitManager().stop("su1");
             component.getServiceUnitManager().shutDown("su1");
@@ -98,33 +95,33 @@ public class LwContainerComponentTest extends TestCase {
             } catch (MessagingException e) {
                 // Ok, the lw component is undeployed
             }
-            
+
         }
-	}
+    }
 
     /*
-	 * @see TestCase#tearDown()
-	 */
+     * @see TestCase#tearDown()
+     */
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
+    protected void tearDown() throws Exception {
+        super.tearDown();
         container.stop();
-		container.shutDown();
-		deleteDir(tempRootDir);
-	}
+        container.shutDown();
+        deleteDir(tempRootDir);
+    }
 
-	public static boolean deleteDir(File dir) {
-		System.out.println("Deleting directory : " + dir.getAbsolutePath());
-		if (dir.isDirectory()) {
-			String[] children = dir.list();
-			for (int i = 0; i < children.length; i++) {
-				boolean success = deleteDir(new File(dir, children[i]));
-				if (!success) {
-					return false;
-				}
-			}
-		}
-		// The directory is now empty so delete it
-		return dir.delete();
-	}
+    public static boolean deleteDir(File dir) {
+        System.out.println("Deleting directory : " + dir.getAbsolutePath());
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        // The directory is now empty so delete it
+        return dir.delete();
+    }
 }

@@ -30,9 +30,9 @@ import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 public class LwContainerEndpoint extends Endpoint {
 
     private static final QName SERVICE_NAME = new QName("http://lwcontainer.servicemix.org", "LwContainerComponent");
-    
+
     private ActivationSpec activationSpec;
-    
+
     public LwContainerEndpoint(ActivationSpec activationSpec) {
         this.activationSpec = activationSpec;
         this.service = SERVICE_NAME;
@@ -44,14 +44,13 @@ public class LwContainerEndpoint extends Endpoint {
             this.endpoint = new IdGenerator().generateId();
         }
     }
-    
+
     public Role getRole() {
         throw new UnsupportedOperationException();
     }
 
     public void activate() throws Exception {
         getContainer().activateComponent(activationSpec);
-        
     }
 
     public void deactivate() throws Exception {
@@ -64,7 +63,7 @@ public class LwContainerEndpoint extends Endpoint {
 
     public JBIContainer getContainer() {
         ComponentContext context = getServiceUnit().getComponent().getComponentContext();
-        if( context instanceof ComponentContextImpl ) {
+        if (context instanceof ComponentContextImpl) {
             return ((ComponentContextImpl) context).getContainer();
         }
         throw new IllegalStateException("LwContainer component can only be deployed in ServiceMix");
