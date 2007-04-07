@@ -35,7 +35,9 @@ public class BPESpringComponentTest extends SpringTestSupport {
         MessageExchange me = client.createInOutExchange();
         me.setService(new QName("urn:logicblaze:soa:loanbroker", "LoanBrokerService"));
         me.setOperation(new QName("getLoanQuote"));
-        me.getMessage("in").setContent(new StringSource("<getLoanQuoteRequest xmlns=\"urn:logicblaze:soa:loanbroker\"><ssn>1234341</ssn><amount>100000.0</amount><duration>12</duration></getLoanQuoteRequest>"));
+        me.getMessage("in").setContent(new StringSource(
+                                "<getLoanQuoteRequest xmlns=\"urn:logicblaze:soa:loanbroker\"><ssn>1234341</ssn>"
+                                + "<amount>100000.0</amount><duration>12</duration></getLoanQuoteRequest>"));
         long t0 = System.currentTimeMillis();
         client.sendSync(me);
         long t1 = System.currentTimeMillis();
@@ -48,9 +50,9 @@ public class BPESpringComponentTest extends SpringTestSupport {
         System.err.println("Time: " + (t1 - t0));
         client.done(me);
     }
-    
+
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/bpe/spring.xml");
     }
-    
+
 }

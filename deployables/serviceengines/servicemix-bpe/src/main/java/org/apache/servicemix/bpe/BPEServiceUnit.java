@@ -16,11 +16,11 @@
  */
 package org.apache.servicemix.bpe;
 
+import java.util.Collection;
+
 import javax.wsdl.Definition;
 
 import org.apache.servicemix.common.ServiceUnit;
-
-import java.util.Collection;
 
 public class BPEServiceUnit extends ServiceUnit {
 

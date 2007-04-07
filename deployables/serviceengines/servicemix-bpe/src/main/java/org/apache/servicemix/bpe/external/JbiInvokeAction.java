@@ -28,6 +28,7 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.wsdl.Definition;
 import javax.wsdl.Fault;
 import javax.wsdl.Operation;
@@ -36,6 +37,9 @@ import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,8 +56,6 @@ import org.apache.servicemix.bpe.BPEServiceUnit;
 import org.apache.servicemix.jbi.jaxp.BytesSource;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 public class JbiInvokeAction implements IExternalAction {
 
@@ -67,9 +69,14 @@ public class JbiInvokeAction implements IExternalAction {
     public static final String ACTION = "action";
     public static final String ENDPOINT = "endpoint";
     public static final String MEP = "mep";
-    
-    private static Log log = LogFactory.getLog(JbiInvokeAction.class);
-    
+
+    private static final Log LOG = LogFactory.getLog(JbiInvokeAction.class);
+
+    /**
+     * Generated serial version UID
+     */
+    private static final long serialVersionUID = -8522450752525724302L;
+
     private Properties properties;
     private QName interfaceName;
     private QName serviceName;
@@ -80,31 +87,26 @@ public class JbiInvokeAction implements IExternalAction {
     private URI mep;
     private SourceTransformer transformer;
     private Operation wsdlOperation;
-    
-	/**
-	 * Generated serial version UID
-	 */
-	private static final long serialVersionUID = -8522450752525724302L;
-    
+
     public JbiInvokeAction() {
         transformer = new SourceTransformer();
     }
 
-	public void init(Properties props) throws BPRuntimeException, ActionSystemException {
-        if (log.isDebugEnabled()) {
-            log.debug("init");
+    public void init(Properties props) throws BPRuntimeException, ActionSystemException {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("init");
         }
         this.properties = props;
         extractInformations();
-        if (serviceName == null && interfaceName == null) { 
+        if (serviceName == null && interfaceName == null) {
             throw new BPRuntimeException("Interface, Service or Endpoint should be specified", "");
         }
-        if (log.isDebugEnabled()) {
-            log.debug("properties: " + props);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("properties: " + props);
         }
-	}
+    }
 
-	protected void extractInformations() {
+    protected void extractInformations() {
         String action = properties.getProperty(ACTION);
         if (action != null) {
             String[] parts = split(action);
@@ -122,7 +124,7 @@ public class JbiInvokeAction implements IExternalAction {
                 operationName = new QName(operationNamespace, operationLocalName);
             }
         }
-        String endpoint = properties.getProperty(ENDPOINT); 
+        String endpoint = properties.getProperty(ENDPOINT);
         if (endpoint != null) {
             String[] parts = split(action);
             serviceName = new QName(parts[0], parts[1]);
@@ -135,45 +137,44 @@ public class JbiInvokeAction implements IExternalAction {
             }
             endpointName = properties.getProperty(ENDPOINT_NAME);
         }
-        String mep = properties.getProperty(MEP);
-        if (mep == null) {
+        String mepStr = properties.getProperty(MEP);
+        if (mepStr == null) {
             BPEEndpoint ep = BPEEndpoint.getCurrent();
             Definition def = ((BPEServiceUnit) ep.getServiceUnit()).getDefinition();
             PortType pt = def.getPortType(interfaceName);
             Operation oper = pt != null ? pt.getOperation(operationName.getLocalPart(), null, null) : null;
             if (oper != null) {
-                boolean output = oper.getOutput() != null && 
-                                 oper.getOutput().getMessage() != null &&
-                                 oper.getOutput().getMessage().getParts().size() > 0;
+                boolean output = oper.getOutput() != null && oper.getOutput().getMessage() != null
+                        && oper.getOutput().getMessage().getParts().size() > 0;
                 boolean faults = oper.getFaults().size() > 0;
                 if (output) {
-                    mep = "in-out";
+                    mepStr = "in-out";
                 } else if (faults) {
-                    mep = "robust-in-only";
+                    mepStr = "robust-in-only";
                 } else {
-                    mep = "in-only";
+                    mepStr = "in-only";
                 }
                 if (oper.getInput() != null && oper.getInput().getMessage() != null) {
                     Map parts = oper.getInput().getMessage().getParts();
-                    inputPartName = (String) parts.keySet().iterator().next(); 
+                    inputPartName = (String) parts.keySet().iterator().next();
                 }
                 if (oper.getOutput() != null && oper.getOutput().getMessage() != null) {
                     Map parts = oper.getOutput().getMessage().getParts();
-                    outputPartName = (String) parts.keySet().iterator().next(); 
+                    outputPartName = (String) parts.keySet().iterator().next();
                 }
                 wsdlOperation = oper;
             }
         }
-        if (mep == null) {
-            mep = "in-out"; 
+        if (mepStr == null) {
+            mepStr = "in-out";
         }
-        this.mep = URI.create("http://www.w3.org/2004/08/wsdl/" + mep);
+        this.mep = URI.create("http://www.w3.org/2004/08/wsdl/" + mepStr);
     }
 
-    public void execute(HashMap input, HashMap output, IURIResolver resolver)
-			throws BPRuntimeException, ActionSystemException {
-        if (log.isDebugEnabled()) {
-            log.debug("execute");
+    public void execute(HashMap input, HashMap output, 
+                        IURIResolver resolver) throws BPRuntimeException, ActionSystemException {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("execute");
         }
         Object payload = input.get(inputPartName);
         Source inputSource = getSourceFromPayload(payload);
@@ -187,6 +188,10 @@ public class JbiInvokeAction implements IExternalAction {
             MessageExchange me = factory.createExchange(this.mep);
             me.setInterfaceName(interfaceName);
             me.setService(serviceName);
+            if (endpointName != null) {
+                ServiceEndpoint ep = component.getComponentContext().getEndpoint(serviceName, endpointName);
+                me.setEndpoint(ep);
+            }
             // TODO: set endpoint
             me.setOperation(operationName);
             NormalizedMessage nm = me.createMessage();
@@ -260,11 +265,11 @@ public class JbiInvokeAction implements IExternalAction {
         } catch (MessagingException e) {
             throw new ActionSystemException(e);
         }
-        if (log.isDebugEnabled()) {
-            log.debug("Request: " + payload);
-            log.debug("Response: " + output.get(outputPartName));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Request: " + payload);
+            LOG.debug("Response: " + output.get(outputPartName));
         }
-	}
+    }
 
     protected Source getSourceFromPayload(Object payload) {
         Source inputSource;
@@ -293,26 +298,23 @@ public class JbiInvokeAction implements IExternalAction {
         }
         return inputSource;
     }
-    
-	public void release() {
-        if (log.isDebugEnabled()) {
-            log.debug("release");
+
+    public void release() {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("release");
         }
-	}
+    }
 
     public void process(MessageExchange exchange) throws Exception {
         // TODO Auto-generated method stub
-        
     }
 
     public void start() throws Exception {
         // TODO Auto-generated method stub
-        
     }
 
     public void stop() throws Exception {
         // TODO Auto-generated method stub
-        
     }
 
     protected String[] split(String uri) {
@@ -326,7 +328,7 @@ public class JbiInvokeAction implements IExternalAction {
         int idx2 = uri.lastIndexOf(sep, idx1 - 1);
         String epName = uri.substring(idx1 + 1);
         String svcName = uri.substring(idx2 + 1, idx1);
-        String nsUri   = uri.substring(0, idx2);
-        return new String[] { nsUri, svcName, epName };
+        String nsUri = uri.substring(0, idx2);
+        return new String[] {nsUri, svcName, epName };
     }
 }

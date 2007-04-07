@@ -16,14 +16,14 @@
  */
 package org.apache.servicemix.bpe;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import javax.jbi.JBIException;
 import javax.jbi.component.Bootstrap;
 import javax.jbi.component.InstallationContext;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Base class for components bootstrap.
@@ -35,13 +35,14 @@ import javax.management.ObjectName;
 public class BPEBootstrap implements Bootstrap {
 
     protected final transient Log logger = LogFactory.getLog(getClass());
-    
+
     protected InstallationContext context;
+
     protected ObjectName mbeanName;
-    
+
     public BPEBootstrap() {
     }
-    
+
     public ObjectName getExtensionMBeanName() {
         return mbeanName;
     }
@@ -49,7 +50,7 @@ public class BPEBootstrap implements Bootstrap {
     protected Object getExtensionMBean() throws Exception {
         return null;
     }
-    
+
     protected ObjectName createExtensionMBeanName() throws Exception {
         return this.context.getContext().getMBeanNames().createCustomComponentMBeanName("bootstrap");
     }
@@ -88,7 +89,7 @@ public class BPEBootstrap implements Bootstrap {
             server.registerMBean(mbean, this.mbeanName);
         }
     }
-    
+
     /* (non-Javadoc)
      * @see javax.jbi.component.Bootstrap#cleanUp()
      */
@@ -141,7 +142,7 @@ public class BPEBootstrap implements Bootstrap {
 
     protected void doOnInstall() throws Exception {
     }
-    
+
     /* (non-Javadoc)
      * @see javax.jbi.component.Bootstrap#onUninstall()
      */
@@ -163,5 +164,5 @@ public class BPEBootstrap implements Bootstrap {
 
     protected void doOnUninstall() throws Exception {
     }
-    
+
 }

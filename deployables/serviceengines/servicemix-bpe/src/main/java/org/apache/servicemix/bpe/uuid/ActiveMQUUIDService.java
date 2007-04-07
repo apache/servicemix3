@@ -21,11 +21,10 @@ import org.apache.ode.bpe.uuid.UUIDService;
 import org.apache.ode.bpe.uuid.UUIDServiceException;
 import org.apache.servicemix.id.IdGenerator;
 
-
 public class ActiveMQUUIDService implements UUIDService {
 
     private IdGenerator idGenerator;
-    
+
     public ActiveMQUUIDService() {
         idGenerator = new IdGenerator();
     }

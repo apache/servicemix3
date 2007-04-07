@@ -16,29 +16,27 @@
  */
 package org.apache.servicemix.bpe;
 
+import org.apache.ode.bpe.bped.EventDirector;
 import org.apache.servicemix.common.BaseComponent;
 import org.apache.servicemix.common.BaseLifeCycle;
 import org.apache.servicemix.common.BaseServiceUnitManager;
 import org.apache.servicemix.common.Deployer;
 
-import org.apache.ode.bpe.bped.EventDirector;
-
 public class BPEComponent extends BaseComponent {
 
-    public static String PART_PAYLOAD = "payload";
-    
+    public static final String PART_PAYLOAD = "payload";
+
     public BPEComponent() {
     }
-    
-	protected BaseLifeCycle createLifeCycle() {
-		return new BPELifeCycle(this);
-	}
 
-	protected BaseServiceUnitManager createServiceUnitManager() {
-		return new BaseServiceUnitManager(this, 
-										  new Deployer[] { new BPEDeployer(this) });
-	}
-    
+    protected BaseLifeCycle createLifeCycle() {
+        return new BPELifeCycle(this);
+    }
+
+    protected BaseServiceUnitManager createServiceUnitManager() {
+        return new BaseServiceUnitManager(this, new Deployer[] {new BPEDeployer(this) });
+    }
+
     public EventDirector getEventDirector() {
         return ((BPELifeCycle) getLifeCycle()).getEventDirector();
     }

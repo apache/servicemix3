@@ -16,22 +16,21 @@
  */
 package org.apache.servicemix.bpe;
 
-import org.apache.servicemix.common.BaseComponent;
-import org.apache.servicemix.common.BaseLifeCycle;
-
 import org.apache.ode.bpe.bped.EventDirector;
 import org.apache.ode.bpe.bped.EventDirectorFactory;
 import org.apache.ode.bpe.util.BPEProperties;
+import org.apache.servicemix.common.BaseComponent;
+import org.apache.servicemix.common.BaseLifeCycle;
 
 public class BPELifeCycle extends BaseLifeCycle {
 
     public static final String IM_ENGINE_PROPERTY_FILE_NAME = "bpeEngine.properties";
-    
+
     private EventDirector eventDirector;
-    
-	public BPELifeCycle(BaseComponent component) {
-		super(component);
-	}
+
+    public BPELifeCycle(BaseComponent component) {
+        super(component);
+    }
 
     public EventDirector getEventDirector() {
         return eventDirector;

@@ -21,12 +21,11 @@ import java.util.TimerTask;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.bpe.BPEComponent;
-import org.apache.servicemix.bpe.BPEEndpoint;
-
 import org.apache.ode.bpe.bped.EventDirector;
 import org.apache.ode.bpe.event.ITimerEvent;
 import org.apache.ode.bpe.timerservice.IBPETimer;
+import org.apache.servicemix.bpe.BPEComponent;
+import org.apache.servicemix.bpe.BPEEndpoint;
 
 public class BPETimerJdk extends TimerTask implements IBPETimer {
 

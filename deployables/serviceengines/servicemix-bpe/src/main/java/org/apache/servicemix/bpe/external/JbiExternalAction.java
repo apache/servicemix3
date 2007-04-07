@@ -34,28 +34,28 @@ import org.apache.ode.bpe.util.BPException;
 
 public class JbiExternalAction extends ExternalServiceAction {
 
-    private static Log log = LogFactory.getLog(JbiExternalAction.class);
-    
     public static final String SM_NS = "http://servicemix.apache.org/schemas/bpe/1.0";
     
     public static final String SM_ENDPOINT = "endpoint";
     public static final String SM_SERVICE = "service";
     public static final String SM_MEP = "mep";
     
+    private static final Log LOG = LogFactory.getLog(JbiExternalAction.class);
+    
     public JbiExternalAction() {
         super();
     }
     
     public void init(Properties props) throws BPException {
-        if (log.isDebugEnabled()) {
-            log.debug("init");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("init");
         }
         extractInformations(props);
         // Do not store informations about operation
         props.remove(ExternalServiceAction.OPERATION_KEY);
         super.init(props);
-        if (log.isDebugEnabled()) {
-            log.debug("properties: " + props);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("properties: " + props);
         }
     }
     
@@ -103,7 +103,7 @@ public class JbiExternalAction extends ExternalServiceAction {
         String epName = uri.substring(idx1 + 1);
         String svcName = uri.substring(idx2 + 1, idx1);
         String nsUri   = uri.substring(0, idx2);
-        return new String[] { nsUri, svcName, epName };
+        return new String[] {nsUri, svcName, epName };
     }
     
     protected String[] split2(String uri) {
@@ -116,7 +116,7 @@ public class JbiExternalAction extends ExternalServiceAction {
         int idx1 = uri.lastIndexOf(sep);
         String svcName = uri.substring(idx1 + 1);
         String nsUri   = uri.substring(0, idx1);
-        return new String[] { nsUri, svcName };
+        return new String[] {nsUri, svcName };
     }
     
     public boolean execute(
@@ -124,8 +124,7 @@ public class JbiExternalAction extends ExternalServiceAction {
             IEvaluationContext ec,
             IProcessCallBack pcb,
             IPMIProcess processInstance,
-            IPMDProcess processDefinition)
-            throws BPException {
+            IPMDProcess processDefinition) throws BPException {
         return super.execute(resolver, ec, pcb, processInstance, processDefinition);
     }
 }

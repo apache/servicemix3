@@ -26,13 +26,15 @@ import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.InOptionalOut;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.messaging.RobustInOnly;
-import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.wsdl.Operation;
 import javax.wsdl.PortType;
 import javax.xml.transform.dom.DOMSource;
+
+import org.w3c.dom.Document;
 
 import org.apache.ode.bpe.bped.EventDirector;
 import org.apache.ode.bpe.client.IFormattableValue;
@@ -47,53 +49,52 @@ import org.apache.ode.bpe.scope.service.BPRuntimeException;
 import org.apache.servicemix.common.Endpoint;
 import org.apache.servicemix.common.ExchangeProcessor;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.w3c.dom.Document;
 
 public class BPEEndpoint extends Endpoint implements ExchangeProcessor {
+
+    private static final ThreadLocal<BPEEndpoint> ENDPOINT = new ThreadLocal<BPEEndpoint>();
 
     protected ServiceEndpoint activated;
     protected DeliveryChannel channel;
     protected SourceTransformer transformer = new SourceTransformer();
-	
-    private static final ThreadLocal ENDPOINT = new ThreadLocal();
-    
+
     public static BPEEndpoint getCurrent() {
-        return (BPEEndpoint) ENDPOINT.get();
+        return ENDPOINT.get();
     }
-    
+
     public static void setCurrent(BPEEndpoint endpoint) {
         ENDPOINT.set(endpoint);
     }
-    
-	public Role getRole() {
-		return Role.PROVIDER;
-	}
 
-	public void activate() throws Exception {
+    public Role getRole() {
+        return Role.PROVIDER;
+    }
+
+    public void activate() throws Exception {
         logger = this.serviceUnit.getComponent().getLogger();
         ComponentContext ctx = this.serviceUnit.getComponent().getComponentContext();
         activated = ctx.activateEndpoint(service, endpoint);
         channel = ctx.getDeliveryChannel();
-	}
+    }
 
-	public void deactivate() throws Exception {
+    public void deactivate() throws Exception {
         ServiceEndpoint ep = activated;
         activated = null;
         ComponentContext ctx = this.serviceUnit.getComponent().getComponentContext();
         ctx.deactivateEndpoint(ep);
-	}
+    }
 
-	public ExchangeProcessor getProcessor() {
-		return this;
-	}
+    public ExchangeProcessor getProcessor() {
+        return this;
+    }
 
-	public void process(MessageExchange exchange) throws Exception {
+    public void process(MessageExchange exchange) throws Exception {
         if (exchange.getStatus() == ExchangeStatus.DONE) {
             return;
         } else if (exchange.getStatus() == ExchangeStatus.ERROR) {
             return;
         }
-        
+
         String inputPartName = BPEComponent.PART_PAYLOAD;
         String outputPartName = BPEComponent.PART_PAYLOAD;
         if (exchange.getOperation() != null) {
@@ -101,27 +102,15 @@ public class BPEEndpoint extends Endpoint implements ExchangeProcessor {
             Operation oper = pt.getOperation(exchange.getOperation().getLocalPart(), null, null);
             if (oper.getInput() != null && oper.getInput().getMessage() != null) {
                 Map parts = oper.getInput().getMessage().getParts();
-                inputPartName = (String) parts.keySet().iterator().next(); 
+                inputPartName = (String) parts.keySet().iterator().next();
             }
             if (oper.getOutput() != null && oper.getOutput().getMessage() != null) {
                 Map parts = oper.getOutput().getMessage().getParts();
-                outputPartName = (String) parts.keySet().iterator().next(); 
+                outputPartName = (String) parts.keySet().iterator().next();
             }
         }
-        
-        
-		BPELStaticKey bsk = new BPELStaticKey();
-		bsk.setTargetNamespace(getInterfaceName().getNamespaceURI());
-		bsk.setPortType(getInterfaceName().getLocalPart());
-		if (exchange.getOperation() != null) {
-			bsk.setOperation(exchange.getOperation().getLocalPart());
-		}
-		SimpleRequestMessageEvent msg = new SimpleRequestMessageEvent();
-		msg.setStaticKey(bsk);
-		XMLInteractionObject interaction = new XMLInteractionObject();
-		interaction.setDocument(transformer.toDOMDocument(exchange.getMessage("in")));
-		msg.setPart(inputPartName, interaction);
-        
+
+        SimpleRequestMessageEvent msg = createEvent(exchange, inputPartName);
         EventDirector ed = ((BPEComponent) getServiceUnit().getComponent()).getEventDirector();
         try {
             IResponseMessage response;
@@ -141,7 +130,8 @@ public class BPEEndpoint extends Endpoint implements ExchangeProcessor {
                 throw new BPRuntimeException(response.getFault().getFaultString(), "");
             } else if (exchange instanceof InOnly || exchange instanceof RobustInOnly) {
                 if (payload != null) {
-                    throw new UnsupportedOperationException("Did not expect return value for in-only or robust-in-only");
+                    throw new UnsupportedOperationException(
+                            "Did not expect return value for in-only or robust-in-only");
                 }
                 exchange.setStatus(ExchangeStatus.DONE);
                 channel.send(exchange);
@@ -157,7 +147,7 @@ public class BPEEndpoint extends Endpoint implements ExchangeProcessor {
                 }
             } else if (exchange instanceof InOut) {
                 if (payload == null) {
-                    throw new UnsupportedOperationException("Expected return data for in-out"); 
+                    throw new UnsupportedOperationException("Expected return data for in-out");
                 }
                 NormalizedMessage out = exchange.createMessage();
                 out.setContent(new DOMSource(getDocument(payload)));
@@ -185,24 +175,38 @@ public class BPEEndpoint extends Endpoint implements ExchangeProcessor {
             }
             channel.send(exchange);
         }
-	}
+    }
 
-	public void start() throws Exception {
-	}
-
-	public void stop() throws Exception {
-	}
-	
-	protected Document getDocument(IInteraction interaction) throws InteractionException {
-		Object obj = interaction.invoke(InvocationFactory.newInstance().createGetObjectInvocation());
-        if (obj instanceof Document) {
-        	return (Document) obj;
-        } else if (obj instanceof IFormattableValue) {
-        	return (Document) ((IFormattableValue) obj).getValueAs(Document.class);
-        } else {
-        	throw new IllegalStateException("Unable to handle object of type: " + obj.getClass().getName());
+    protected SimpleRequestMessageEvent createEvent(MessageExchange exchange, String inputPartName) throws Exception {
+        BPELStaticKey bsk = new BPELStaticKey();
+        bsk.setTargetNamespace(getInterfaceName().getNamespaceURI());
+        bsk.setPortType(getInterfaceName().getLocalPart());
+        if (exchange.getOperation() != null) {
+            bsk.setOperation(exchange.getOperation().getLocalPart());
         }
-	}
+        SimpleRequestMessageEvent msg = new SimpleRequestMessageEvent();
+        msg.setStaticKey(bsk);
+        XMLInteractionObject interaction = new XMLInteractionObject();
+        interaction.setDocument(transformer.toDOMDocument(exchange.getMessage("in")));
+        msg.setPart(inputPartName, interaction);
+        return msg;
+    }
 
+    public void start() throws Exception {
+    }
+
+    public void stop() throws Exception {
+    }
+
+    protected Document getDocument(IInteraction interaction) throws InteractionException {
+        Object obj = interaction.invoke(InvocationFactory.newInstance().createGetObjectInvocation());
+        if (obj instanceof Document) {
+            return (Document) obj;
+        } else if (obj instanceof IFormattableValue) {
+            return (Document) ((IFormattableValue) obj).getValueAs(Document.class);
+        } else {
+            throw new IllegalStateException("Unable to handle object of type: " + obj.getClass().getName());
+        }
+    }
 
 }

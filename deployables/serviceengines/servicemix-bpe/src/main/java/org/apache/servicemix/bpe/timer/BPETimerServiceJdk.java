@@ -31,7 +31,8 @@ import org.apache.servicemix.bpe.BPEEndpoint;
 
 public class BPETimerServiceJdk implements IBPETimerService {
 
-    private static final Log log = LogFactory.getLog(BPETimerServiceJdk.class);
+    private static final Log LOG = LogFactory.getLog(BPETimerServiceJdk.class);
+
     private static Timer timer;
     
     public BPETimerServiceJdk() {
@@ -39,8 +40,8 @@ public class BPETimerServiceJdk implements IBPETimerService {
     }
 
     public IBPETimer createTimer(long startDuration, ITimerEvent timerEvent) throws BPException {
-        if (log.isDebugEnabled()) {
-            log.debug("Schedule timer " + timerEvent + " for " + startDuration);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Schedule timer " + timerEvent + " for " + startDuration);
         }
         BPETimerJdk tt = new BPETimerJdk(timerEvent, BPEEndpoint.getCurrent());
         timer.schedule(tt, startDuration);
@@ -48,19 +49,19 @@ public class BPETimerServiceJdk implements IBPETimerService {
     }
 
     public IBPETimer createTimer(Date startTime, ITimerEvent timerEvent) throws BPException {
-        if (log.isDebugEnabled()) {
-            log.debug("Schedule timer " + timerEvent + " at " + startTime);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Schedule timer " + timerEvent + " at " + startTime);
         }
         BPETimerJdk tt = new BPETimerJdk(timerEvent, BPEEndpoint.getCurrent());
         timer.schedule(tt, startTime);
         return tt;
     }
 
-    public void removeTimer(IBPETimer timer) throws BPException {
-        if (log.isDebugEnabled()) {
-            log.debug("Timer " + timer.getTimerEvent() + " cancelled");
+    public void removeTimer(IBPETimer tmr) throws BPException {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Timer " + tmr.getTimerEvent() + " cancelled");
         }
-        ((BPETimerJdk) timer).cancel();
+        ((BPETimerJdk) tmr).cancel();
 
     }
 

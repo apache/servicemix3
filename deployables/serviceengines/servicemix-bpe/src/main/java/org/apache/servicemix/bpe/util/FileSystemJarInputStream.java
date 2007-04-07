@@ -27,43 +27,47 @@ import org.apache.servicemix.jbi.util.FileUtil;
 
 public class FileSystemJarInputStream extends InputStream implements Runnable {
 
-	private File root;
-	private PipedInputStream input;
-	private PipedOutputStream output;
-	private Thread runner;
-	private IOException exception;
-	
-	public FileSystemJarInputStream(File root) throws IOException {
-		this.root = root;
-		input = new PipedInputStream();
-		output = new PipedOutputStream(input);
-	}
+    private File root;
 
-	public int read() throws IOException {
-		if (runner == null) {
-			runner = new Thread(this);
-			runner.setDaemon(true);
-			runner.start();
-		}
-		if (exception != null) {
-			throw exception;
-		}
-		return input.read();
-	}
+    private PipedInputStream input;
 
-	public void run() {
-		try {
-			JarOutputStream jos = new JarOutputStream(output);
-			FileUtil.zipDir(root.getAbsolutePath(), jos, "");
-			jos.close();
-		} catch (IOException e) {
-			exception = e;
+    private PipedOutputStream output;
+
+    private Thread runner;
+
+    private IOException exception;
+
+    public FileSystemJarInputStream(File root) throws IOException {
+        this.root = root;
+        input = new PipedInputStream();
+        output = new PipedOutputStream(input);
+    }
+
+    public int read() throws IOException {
+        if (runner == null) {
+            runner = new Thread(this);
+            runner.setDaemon(true);
+            runner.start();
+        }
+        if (exception != null) {
+            throw exception;
+        }
+        return input.read();
+    }
+
+    public void run() {
+        try {
+            JarOutputStream jos = new JarOutputStream(output);
+            FileUtil.zipDir(root.getAbsolutePath(), jos, "");
+            jos.close();
+        } catch (IOException e) {
+            exception = e;
             try {
                 output.close();
             } catch (IOException e2) {
                 e2.printStackTrace();
             }
-		}
-	}
+        }
+    }
 
 }

@@ -43,7 +43,8 @@ public class Bank extends ComponentSupport implements MessageExchangeListener {
         }
         System.err.println(getService().getLocalPart() + " requested");
         try {
-            String output = "<getLoanQuoteResponse xmlns=\"urn:logicblaze:soa:bank\"><rate>" + (Math.ceil(1000 * Math.random()) / 100) + "</rate></getLoanQuoteResponse>";
+            String output = "<getLoanQuoteResponse xmlns=\"urn:logicblaze:soa:bank\"><rate>"
+                + (Math.ceil(1000 * Math.random()) / 100) + "</rate></getLoanQuoteResponse>";
             NormalizedMessage answer = inOut.createMessage();
             answer.setContent(new StringSource(output));
             answer(inOut, answer);

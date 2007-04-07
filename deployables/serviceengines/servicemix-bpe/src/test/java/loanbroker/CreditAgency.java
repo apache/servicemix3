@@ -25,17 +25,18 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerException;
 
-import org.apache.servicemix.MessageExchangeListener;
-import org.apache.servicemix.components.util.ComponentSupport;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.util.DOMUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
 
 import com.sun.org.apache.xpath.internal.CachedXPathAPI;
+
+import org.apache.servicemix.MessageExchangeListener;
+import org.apache.servicemix.components.util.ComponentSupport;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.util.DOMUtil;
 
 public class CreditAgency extends ComponentSupport implements MessageExchangeListener {
 
@@ -60,7 +61,9 @@ public class CreditAgency extends ComponentSupport implements MessageExchangeLis
             } 
             if (!ssn.startsWith("1")) {
                 Fault fault = inOut.createFault();
-                fault.setContent(new StringSource("<invalidSSNFault xmlns=\"urn:logicblaze:soa:creditagency:types\"><ssn>" + ssn + "</ssn></invalidSSNFault>"));
+                fault.setContent(new StringSource(
+                        "<invalidSSNFault xmlns=\"urn:logicblaze:soa:creditagency:types\"><ssn>"
+                        + ssn + "</ssn></invalidSSNFault>"));
                 fail(inOut, fault);
             } else {
                 String operation = null;
@@ -71,9 +74,11 @@ public class CreditAgency extends ComponentSupport implements MessageExchangeLis
                 }
                 String output;
                 if ("getCreditScore".equals(operation)) {
-                    output = "<getCreditScoreResponse xmlns=\"urn:logicblaze:soa:creditagency\"><score>" + getCreditScore(ssn) + "</score></getCreditScoreResponse>";
+                    output = "<getCreditScoreResponse xmlns=\"urn:logicblaze:soa:creditagency\"><score>"
+                        + getCreditScore(ssn) + "</score></getCreditScoreResponse>";
                 } else if ("getCreditHistoryLength".equals(operation)) {
-                    output = "<getCreditHistoryLengthResponse xmlns=\"urn:logicblaze:soa:creditagency\"><length>" + getCreditHistoryLength(ssn) + "</length></getCreditHistoryLengthResponse>";
+                    output = "<getCreditHistoryLengthResponse xmlns=\"urn:logicblaze:soa:creditagency\"><length>"
+                        + getCreditHistoryLength(ssn) + "</length></getCreditHistoryLengthResponse>";
                 } else {
                     throw new UnsupportedOperationException(operation);
                 }
@@ -103,10 +108,8 @@ public class CreditAgency extends ComponentSupport implements MessageExchangeLis
             if (element == null) {
                 return "";
             }
-            String text = DOMUtil.getElementText(element);
-            return text;
-        }
-        else if (root != null) {
+            return DOMUtil.getElementText(element);
+        } else if (root != null) {
             return root.getNodeValue();
         } else {
             return null;

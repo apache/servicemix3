@@ -25,42 +25,44 @@ import java.io.Writer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import org.apache.servicemix.bpe.util.FileSystemJarInputStream;
-
 import junit.framework.TestCase;
 
 public class FileSystemJarInputStreamTest extends TestCase {
 
-	private static final int BUFFER = 2048;
+    private static final int BUFFER = 2048;
 
-	public void testInputStream() throws Exception {
-		File f = new File("target/test-data");
-		f.mkdirs();
-		Writer w = new OutputStreamWriter(new FileOutputStream(new File(f, "test.txt")));
-		w.write("<hello>world</hello>");
-		w.close();
-		
-		FileSystemJarInputStream fsjis = new FileSystemJarInputStream(f);
-		JarInputStream jis = new JarInputStream(fsjis);
+    public void testInputStream() throws Exception {
+        File f = new File("target/test-data");
+        f.mkdirs();
+        Writer w = new OutputStreamWriter(new FileOutputStream(new File(f, "test.txt")));
+        w.write("<hello>world</hello>");
+        w.close();
 
-		JarEntry entry = jis.getNextJarEntry();
-		assertNotNull(entry);
-		assertEquals("test.txt", entry.getName());
+        FileSystemJarInputStream fsjis = new FileSystemJarInputStream(f);
+        JarInputStream jis = new JarInputStream(fsjis);
 
-		// Copy data from jar file into byte array
-		BufferedOutputStream dest = null;
-		ByteArrayOutputStream baos = null;
-		int count; // buffer counter
-		byte data[] = new byte[BUFFER];
-		baos = new ByteArrayOutputStream();
-		dest = new BufferedOutputStream(baos, BUFFER);
-		while ((count = jis.read(data, 0, BUFFER)) != -1) {
-			dest.write(data, 0, count);
-		}
-		dest.close();
-		System.out.println(entry.getName() + ": " +  baos.toString());
-		
-		assertEquals("<hello>world</hello>", baos.toString());
-	}
+        JarEntry entry = jis.getNextJarEntry();
+        assertNotNull(entry);
+        assertEquals("test.txt", entry.getName());
+
+        // Copy data from jar file into byte array
+        BufferedOutputStream dest = null;
+        ByteArrayOutputStream baos = null;
+        int count; // buffer counter
+        byte data[] = new byte[BUFFER];
+        baos = new ByteArrayOutputStream();
+        dest = new BufferedOutputStream(baos, BUFFER);
+        for (;;) {
+            count = jis.read(data, 0, BUFFER);
+            if (count == -1) {
+                break;
+            }
+            dest.write(data, 0, count);
+        }
+        dest.close();
+        System.out.println(entry.getName() + ": " + baos.toString());
+
+        assertEquals("<hello>world</hello>", baos.toString());
+    }
 
 }

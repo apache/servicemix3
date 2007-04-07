@@ -22,24 +22,22 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.apache.servicemix.bpe.BPEComponent;
-import org.apache.servicemix.bpe.BPEDeployer;
 import org.apache.servicemix.common.ServiceUnit;
 
 public class BPEDeployerTest extends TestCase {
 
-	public void testDeploy() throws Exception {
+    public void testDeploy() throws Exception {
         URL url = getClass().getClassLoader().getResource("loanbroker/loanbroker.bpel");
         File path = new File(new URI(url.toString()));
         path = path.getParentFile();
-        
+
         BPEComponent bpe = new BPEComponent();
         ((BPELifeCycle) bpe.getLifeCycle()).doInit();
-		BPEDeployer deployer = new BPEDeployer(bpe);
-		assertTrue(deployer.canDeploy("loanbroker", path.getAbsolutePath()));
-		
-		ServiceUnit su = deployer.deploy("loanbroker", path.getAbsolutePath());
-		assertNotNull(su);
-	}
-	
+        BPEDeployer deployer = new BPEDeployer(bpe);
+        assertTrue(deployer.canDeploy("loanbroker", path.getAbsolutePath()));
+
+        ServiceUnit su = deployer.deploy("loanbroker", path.getAbsolutePath());
+        assertNotNull(su);
+    }
+
 }
