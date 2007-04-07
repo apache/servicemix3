@@ -357,6 +357,18 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+        <!-- Apache snapshot -->
+        <repository>
+            <id>apache-snapshots</id>
+            <name>Apache Snapshot repository</name>
+            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
         <!-- Codehaus -->
         <repository>
             <id>codehaus</id>
@@ -389,6 +401,18 @@
             <id>servicemix-m2-repo</id>
             <name>Servicemix Maven2 Repository</name>
             <url>http://servicemix.org/m2-repo</url>
+        </pluginRepository>
+        <!-- Apache incubating -->
+        <pluginRepository>
+            <id>apache-incubating</id>
+            <name>Apache Incubating Repository</name>
+            <url>http://people.apache.org/repo/m2-incubating-repository</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </pluginRepository>
         <!-- Apache snapshot -->
         <pluginRepository>
@@ -1805,19 +1829,6 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
                 <version>1.0.0</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>2.1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.1</version>
-                <configuration>
-                    <configLocation>build/checkstyle.xml</configLocation>
-                </configuration>
             </plugin>
         </plugins>
     </reporting>
