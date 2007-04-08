@@ -225,6 +225,7 @@
             </activation>
             <modules>
                 <module>build</module>
+                <module>parent</module>
                 <module>core</module>
                 <module>common</module>
                 <module>tooling</module>
