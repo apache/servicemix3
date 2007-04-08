@@ -42,7 +42,6 @@
     <module>servicemix-lwcontainer</module>
     <module>servicemix-quartz</module>
     <module>servicemix-saxon</module>
-    <module>servicemix-sca</module>
     <module>servicemix-script</module>
     <module>servicemix-wsn2005</module>
   </modules>
