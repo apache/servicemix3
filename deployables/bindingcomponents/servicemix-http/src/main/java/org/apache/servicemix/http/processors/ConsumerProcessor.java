@@ -39,11 +39,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.common.BaseLifeCycle;
 import org.apache.servicemix.common.ExchangeProcessor;
-import org.apache.servicemix.http.ContextManager;
-import org.apache.servicemix.http.HttpComponent;
-import org.apache.servicemix.http.HttpEndpoint;
-import org.apache.servicemix.http.HttpProcessor;
-import org.apache.servicemix.http.SslParameters;
+import org.apache.servicemix.http.*;
 import org.apache.servicemix.http.jetty.JaasJettyPrincipal;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.soap.Context;
@@ -81,7 +77,7 @@ public class ConsumerProcessor implements ExchangeProcessor, HttpProcessor {
         this.soapHelper = new SoapHelper(endpoint);
         this.locks = new ConcurrentHashMap();
         this.exchanges = new ConcurrentHashMap();
-        this.suspentionTime = ((HttpComponent) endpoint.getServiceUnit().getComponent()).getConfiguration().getConsumerProcessorSuspendTime();
+        this.suspentionTime = getConfiguration().getConsumerProcessorSuspendTime();
     }
     
     public SslParameters getSsl() {
@@ -178,7 +174,9 @@ public class ConsumerProcessor implements ExchangeProcessor, HttpProcessor {
                 request.setAttribute(Context.class.getName(), context);
                 exchange = soapHelper.onReceive(context);
                 NormalizedMessage inMessage = exchange.getMessage("in");
-                inMessage.setProperty(JbiConstants.PROTOCOL_HEADERS, getHeaders(request));
+                if (getConfiguration().isWantHeadersFromHttpIntoExchange()) {
+                    inMessage.setProperty(JbiConstants.PROTOCOL_HEADERS, getHeaders(request));
+                }
                 locks.put(exchange.getExchangeId(), cont);
                 request.setAttribute(MessageExchange.class.getName(), exchange.getExchangeId());
                 synchronized (cont) {
@@ -291,6 +289,11 @@ public class ConsumerProcessor implements ExchangeProcessor, HttpProcessor {
         response.setStatus(200);
         response.setContentType("text/xml");
         new SourceTransformer().toResult(new DOMSource(node), new StreamResult(response.getOutputStream()));
+    }
+
+    protected HttpConfiguration getConfiguration() {
+        HttpComponent comp = (HttpComponent) endpoint.getServiceUnit().getComponent();
+        return comp.getConfiguration();
     }
 
 }

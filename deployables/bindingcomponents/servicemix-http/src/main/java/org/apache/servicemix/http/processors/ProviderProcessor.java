@@ -199,7 +199,9 @@ public class ProviderProcessor implements ExchangeProcessor {
                                           contentType != null ? contentType.getValue() : null);
                 context.setOutMessage(soapMessage);
                 soapHelper.onAnswer(context);
-                msg.setProperty(JbiConstants.PROTOCOL_HEADERS, getHeaders(method));
+                if (getConfiguration().isWantHeadersFromHttpIntoExchange()) {
+                    msg.setProperty(JbiConstants.PROTOCOL_HEADERS, getHeaders(method));
+                }
                 soapHelper.getJBIMarshaler().toNMS(msg, soapMessage);
                 ((InOut) exchange).setOutMessage(msg);
                 if (txSync) {
@@ -220,7 +222,9 @@ public class ProviderProcessor implements ExchangeProcessor {
                                               method.getResponseHeader(Constants.HEADER_CONTENT_TYPE).getValue());
                     context.setOutMessage(soapMessage);
                     soapHelper.onAnswer(context);
-                    msg.setProperty(JbiConstants.PROTOCOL_HEADERS, getHeaders(method));
+                    if (getConfiguration().isWantHeadersFromHttpIntoExchange()) {
+                        msg.setProperty(JbiConstants.PROTOCOL_HEADERS, getHeaders(method));
+                    }
                     soapHelper.getJBIMarshaler().toNMS(msg, soapMessage);
                     ((InOptionalOut) exchange).setOutMessage(msg);
                     if (txSync) {
