@@ -19,6 +19,8 @@ package org.apache.servicemix.expression;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.util.MessageUtil;
 import org.jaxen.FunctionContext;
 import org.jaxen.JaxenException;
 import org.jaxen.NamespaceContext;
@@ -46,6 +48,7 @@ public class JaxenXPathExpression implements Expression, InitializingBean {
     private static final transient Log log = LogFactory.getLog(JaxenXPathExpression.class);
     
     private String xpath;
+    private boolean useMessageContent = true;
     private SourceTransformer transformer = new SourceTransformer();
     private JaxenVariableContext variableContext = new JaxenVariableContext();
     private XPath xpathObject;
@@ -156,6 +159,22 @@ public class JaxenXPathExpression implements Expression, InitializingBean {
         this.xpath = xpath;
     }
 
+    public boolean isUseMessageContent() {
+        return useMessageContent;
+    }
+
+    /**
+     * Specifies whether or not the XPath expression uses the message content.  
+     * 
+     * By default, this property is <code>true</code>, but you can set it to <code>false</code> to avoid that the message content
+     * is converted to {@link StringSource}  
+     * 
+     * @param useMessageContent specify <code>false</code> if this expression does not access the message content
+     */
+    public void setUseMessageContent(boolean useMessageContent) {
+        this.useMessageContent = useMessageContent;
+    }
+
     public SourceTransformer getTransformer() {
         return transformer;
     }
@@ -205,6 +224,10 @@ public class JaxenXPathExpression implements Expression, InitializingBean {
 
     protected Object getXMLNode(MessageExchange exchange, NormalizedMessage message) throws TransformerException, MessagingException, ParserConfigurationException, IOException, SAXException {
         Node node = null;
+        //ensure re-readability of the content if the expression also needs to access the content 
+        if (useMessageContent) {
+            MessageUtil.enableContentRereadability(message);
+        }
         if (message != null) {
             node = transformer.toDOMNode(message);
         }

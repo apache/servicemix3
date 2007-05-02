@@ -17,6 +17,7 @@
 package org.apache.servicemix.jbi.util;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,12 +31,16 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.security.auth.Subject;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.util.ByteArrayDataSource;
 import org.apache.servicemix.jbi.util.FileUtil;
+import org.xml.sax.SAXException;
 
 /**
  * @author gnodet
@@ -55,7 +60,7 @@ public class MessageUtil {
         }
         dest.setSecuritySubject(source.getSecuritySubject());
     }
-    
+
     public static NormalizedMessage copy(NormalizedMessage source) throws MessagingException {
         if (source instanceof Fault) {
             return new FaultImpl((Fault) source);
@@ -63,76 +68,104 @@ public class MessageUtil {
             return new NormalizedMessageImpl(source);
         }
     }
-    
+
     public static NormalizedMessage copyIn(MessageExchange exchange) throws MessagingException {
         return copy(exchange.getMessage("in"));
     }
-    
+
     public static NormalizedMessage copyOut(MessageExchange exchange) throws MessagingException {
         return copy(exchange.getMessage("out"));
     }
-    
+
     public static Fault copyFault(MessageExchange exchange) throws MessagingException {
         return (Fault) copy(exchange.getMessage("fault"));
     }
-    
+
     public static void transferInToIn(MessageExchange source, MessageExchange dest) throws MessagingException {
         transferToIn(source.getMessage("in"), dest);
     }
-    
+
     public static void transferOutToIn(MessageExchange source, MessageExchange dest) throws MessagingException {
         transferToIn(source.getMessage("out"), dest);
     }
-    
+
     public static void transferToIn(NormalizedMessage sourceMsg, MessageExchange dest) throws MessagingException {
         transferTo(sourceMsg, dest, "in");
     }
-    
+
     public static void transferOutToOut(MessageExchange source, MessageExchange dest) throws MessagingException {
         transferToOut(source.getMessage("out"), dest);
     }
-    
+
     public static void transferInToOut(MessageExchange source, MessageExchange dest) throws MessagingException {
         transferToOut(source.getMessage("in"), dest);
     }
-    
+
     public static void transferToOut(NormalizedMessage sourceMsg, MessageExchange dest) throws MessagingException {
         transferTo(sourceMsg, dest, "out");
     }
-    
+
     public static void transferFaultToFault(MessageExchange source, MessageExchange dest) throws MessagingException {
         transferToFault(source.getFault(), dest);
     }
-    
+
     public static void transferToFault(Fault fault, MessageExchange dest) throws MessagingException {
         transferTo(fault, dest, "fault");
     }
-    
-    public static void transferTo(NormalizedMessage sourceMsg, MessageExchange dest, String name) throws MessagingException {
+
+    public static void transferTo(NormalizedMessage sourceMsg, MessageExchange dest, String name)
+                    throws MessagingException {
         NormalizedMessage destMsg = (sourceMsg instanceof Fault) ? dest.createFault() : dest.createMessage();
         transfer(sourceMsg, destMsg);
         dest.setMessage(destMsg, name);
     }
-    
+
     public static void transferTo(MessageExchange source, MessageExchange dest, String name) throws MessagingException {
         NormalizedMessage sourceMsg = source.getMessage(name);
         NormalizedMessage destMsg = (sourceMsg instanceof Fault) ? dest.createFault() : dest.createMessage();
         transfer(sourceMsg, destMsg);
         dest.setMessage(destMsg, name);
     }
-    
+
+    /**
+     * Convert the given {@link NormalizedMessage} instance's content to a re-readable {@link Source} This allows the
+     * content to be read more than once (e.g. for XPath evaluation or auditing).
+     * 
+     * @param message
+     *            the {@link NormalizedMessage} to convert the content for
+     * @throws MessagingException
+     */
+    public static void enableContentRereadability(NormalizedMessage message) throws MessagingException {
+        if (message.getContent() instanceof StreamSource) {
+            try {
+                String content = new SourceTransformer().contentToString(message);
+                if (content != null) {
+                    message.setContent(new StringSource(content));
+                }
+            } catch (TransformerException e) {
+                throw new MessagingException("Unable to convert message content into StringSource", e);
+            } catch (ParserConfigurationException e) {
+                throw new MessagingException("Unable to convert message content into StringSource", e);
+            } catch (IOException e) {
+                throw new MessagingException("Unable to convert message content into StringSource", e);
+            } catch (SAXException e) {
+                throw new MessagingException("Unable to convert message content into StringSource", e);
+            }
+        }
+    }
+
     public static class NormalizedMessageImpl implements NormalizedMessage, Serializable {
 
         private static final long serialVersionUID = -5813947566001096708L;
-        
+
         private Subject subject;
         private Source content;
         private Map properties = new HashMap();
         private Map attachments = new HashMap();
-        
+
         public NormalizedMessageImpl() {
         }
-        
+
         public NormalizedMessageImpl(NormalizedMessage message) throws MessagingException {
             try {
                 String str = new SourceTransformer().contentToString(message);
@@ -163,7 +196,7 @@ public class MessageUtil {
                 throw new MessagingException(e);
             }
         }
-        
+
         public void addAttachment(String id, DataHandler content) throws MessagingException {
             this.attachments.put(id, content);
         }
@@ -207,18 +240,18 @@ public class MessageUtil {
         public Subject getSecuritySubject() {
             return this.subject;
         }
-        
+
     }
-    
+
     public static class FaultImpl extends NormalizedMessageImpl implements Fault {
         private static final long serialVersionUID = -6076815664102825860L;
 
         public FaultImpl() {
         }
-        
+
         public FaultImpl(Fault fault) throws MessagingException {
             super(fault);
         }
     }
-    
+
 }
