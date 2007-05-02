@@ -187,8 +187,8 @@ public class JdbcComponent extends TransformComponentSupport implements MessageE
 
         while (rs.next()) {
             buff.append("<row ");
-            for (int i=1; i<=colCount; i++) {
-                buff.append(colNames[i].toLowerCase() + "='" + rs.getString(i) + "' ");
+            for (int i = 0; i < colCount; i++) {
+                buff.append(colNames[i].toLowerCase() + "='" + rs.getString(i + 1) + "' ");
             }
             buff.append("/>");
         }
@@ -213,7 +213,7 @@ public class JdbcComponent extends TransformComponentSupport implements MessageE
         List colNames = new LinkedList();
         Map chanedNames = new HashMap();
 
-        for (int i = 0; i < metaData.getColumnCount(); i++) {
+        for (int i = 1; i <= metaData.getColumnCount(); i++) {
             String name = metaData.getColumnName(i);
 
             if (name.equals("")) {

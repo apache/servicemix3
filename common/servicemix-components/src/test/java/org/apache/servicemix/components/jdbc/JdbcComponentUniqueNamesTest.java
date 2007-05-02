@@ -60,7 +60,7 @@ public class JdbcComponentUniqueNamesTest extends TestCase {
 		}
 
 		public String getColumnName(int column) throws SQLException {
-			return names[column];
+			return names[column-1];
 		}
 
 		public String getCatalogName(int column) throws SQLException {
