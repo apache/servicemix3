@@ -252,6 +252,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 	entry.name = componentName; 
                     try {
                         if (container.getRegistry().getComponent(componentName) != null) {
+                        	installationService.loadInstaller(componentName);
                             installationService.unloadInstaller(componentName, true);
                         }
                         // See if shared libraries are installed
