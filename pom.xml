@@ -1781,14 +1781,6 @@
                 <artifactId>maven-pmd-plugin</artifactId>
                 <version>2.1</version>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.1</version>
-                <configuration>
-                    <configLocation>build/checkstyle.xml</configLocation>
-                </configuration>
-            </plugin>
         </plugins>
     </reporting>
 </project>
