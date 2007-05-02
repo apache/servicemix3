@@ -17,6 +17,8 @@
 package org.apache.servicemix.expression;
 
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.util.MessageUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.xml.sax.SAXException;
 
@@ -43,6 +45,7 @@ import java.io.IOException;
  */
 public class JAXPXPathExpression implements Expression, InitializingBean {
     private String xpath;
+    private boolean useMessageContent = true;
     private SourceTransformer transformer = new SourceTransformer();
     private MessageVariableResolver variableResolver = new MessageVariableResolver();
     private XPathExpression xPathExpression;
@@ -124,6 +127,22 @@ public class JAXPXPathExpression implements Expression, InitializingBean {
     public void setXPath(String xpath) {
         this.xpath = xpath;
     }
+    
+    public boolean isUseMessageContent() {
+        return useMessageContent;
+    }
+    
+    /**
+     * Specifies whether or not the XPath expression uses the message content.  
+     * 
+     * By default, this property is <code>true</code>, but you can set it to <code>false</code> to avoid that the message content
+     * is converted to {@link StringSource}  
+     * 
+     * @param useMessageContent specify <code>false</code> if this expression does not access the message content
+     */
+    public void setUseMessageContent(boolean useMessageContent) {
+        this.useMessageContent = useMessageContent;
+    }
 
     public SourceTransformer getTransformer() {
         return transformer;
@@ -176,6 +195,10 @@ public class JAXPXPathExpression implements Expression, InitializingBean {
     }
 
     protected Object getXMLNode(MessageExchange exchange, NormalizedMessage message) throws TransformerException, MessagingException, ParserConfigurationException, IOException, SAXException {
+        //ensure re-readability of the content if the expression also needs to access the content 
+        if (useMessageContent) {
+            MessageUtil.enableContentRereadability(message);
+        }
         return transformer.toDOMNode(message);
     }
 }
