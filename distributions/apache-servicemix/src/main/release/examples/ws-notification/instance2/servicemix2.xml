@@ -25,8 +25,8 @@
 
   <!-- We need to include the WS-Notification component dependencies in the classpath -->
   <classpath>
-    <location>../lib/servicemix-wsn2005-3.1.1-incubating-SNAPSHOT.jar</location>
-    <location>../lib/servicemix-common-3.1.1-incubating-SNAPSHOT.jar</location>
+    <location>../lib/servicemix-wsn2005-3.1.1-incubating.jar</location>
+    <location>../lib/servicemix-common-3.1.1-incubating.jar</location>
     <location>../lib/jaxb-api-2.0.jar</location>
     <location>../lib/jaxb-impl-2.0.1.jar</location>
     <location>../lib/xfire-jsr181-api-1.0-M1.jar</location>

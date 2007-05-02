@@ -23,12 +23,12 @@
   <parent>
     <groupId>org.apache.servicemix</groupId>
     <artifactId>deployables</artifactId>
-    <version>3.1.1-incubating-SNAPSHOT</version>
+    <version>3.1.1-incubating</version>
   </parent>
   
   <groupId>org.apache.servicemix</groupId>
   <artifactId>sharedlibraries</artifactId>
-  <version>3.1.1-incubating-SNAPSHOT</version>
+  <version>3.1.1-incubating</version>
   <name>ServiceMix :: Shared Libraries</name>
   <packaging>pom</packaging>
 
