@@ -36,18 +36,25 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.W3CDOMStreamReader;
 import org.apache.servicemix.jbi.jaxp.XMLStreamHelper;
 import org.apache.servicemix.jbi.util.ByteArrayDataSource;
 import org.apache.servicemix.soap.SoapFault;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * 
@@ -96,7 +103,7 @@ public class SoapWriter {
 
     private void writeSimpleMessage(OutputStream out) throws Exception {
         if (message.getDocument() != null) {
-            marshaler.sourceTransformer.toResult(new DOMSource(message.getDocument()), new StreamResult(out));
+            marshaler.getSourceTransformer().toResult(new DOMSource(message.getDocument()), new StreamResult(out));
             return;
         }
         XMLStreamWriter writer = marshaler.getOutputFactory().createXMLStreamWriter(out);
@@ -132,7 +139,6 @@ public class SoapWriter {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         writeSimpleMessage(baos);
         soapPart.setDataHandler(new DataHandler(new ByteArrayDataSource(baos.toByteArray(), "text/xml")));
-        soapPart.addHeader("Content-Transfer-Encoding", "8bit");
         parts.addBodyPart(soapPart);
         // Add attachments
         for (Iterator itr = message.getAttachments().entrySet().iterator(); itr.hasNext();) {
@@ -142,7 +148,6 @@ public class SoapWriter {
             MimeBodyPart part = new MimeBodyPart();
             part.setDataHandler(dh);
             part.setContentID("<" + id + ">");
-            part.addHeader("Content-Transfer-Encoding", "binary");
             parts.addBodyPart(part);
         }
         mime.setContent(parts);
@@ -251,8 +256,7 @@ public class SoapWriter {
         Source details = fault.getDetails();
         if (details != null) {
             XMLStreamHelper.writeStartElement(writer, SoapMarshaler.SOAP_11_FAULTDETAIL);
-            XMLStreamReader reader = marshaler.getSourceTransformer().toXMLStreamReader(details);
-            XMLStreamHelper.copy(reader, writer);
+            writeDetails(writer, details);
             writer.writeEndElement();
         }
 
@@ -313,12 +317,30 @@ public class SoapWriter {
         Source details = fault.getDetails();
         if (details != null) {
             XMLStreamHelper.writeStartElement(writer, SoapMarshaler.SOAP_12_FAULTDETAIL);
-            XMLStreamReader reader = marshaler.getSourceTransformer().toXMLStreamReader(details);
-            XMLStreamHelper.copy(reader, writer);
+            writeDetails(writer, details);
             writer.writeEndElement();
         }
 
         writer.writeEndElement();
+    }
+
+    private void writeDetails(XMLStreamWriter writer, Source details) throws ParserConfigurationException, IOException, SAXException, TransformerException, XMLStreamException {
+        SourceTransformer st = new SourceTransformer();
+        DOMSource domDetails = st.toDOMSource(details);
+        Node detailsNode = domDetails.getNode().getFirstChild();
+        if ( SoapMarshaler.MULTIPLE_DETAILS_NODE_WRAPPER.equals(detailsNode.getNodeName()) ) {
+            NodeList children = detailsNode.getChildNodes();
+            for ( int i = 0; i < children.getLength(); i++ ) {
+                Node node = children.item(i);
+                if ( node.getNodeType() == Node.ELEMENT_NODE ) {
+                    XMLStreamReader reader = marshaler.getSourceTransformer().toXMLStreamReader(new DOMSource(node));
+                    XMLStreamHelper.copy(reader, writer);
+                }
+            }
+        } else {
+            XMLStreamReader reader = marshaler.getSourceTransformer().toXMLStreamReader(details);
+            XMLStreamHelper.copy(reader, writer);
+        }
     }
     
     protected QName getEnvelopeName() {

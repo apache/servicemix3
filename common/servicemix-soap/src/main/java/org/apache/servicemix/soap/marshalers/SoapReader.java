@@ -29,6 +29,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Source;
@@ -37,6 +38,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.servicemix.jbi.jaxp.ExtendedXMLStreamReader;
 import org.apache.servicemix.jbi.jaxp.FragmentStreamReader;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StaxSource;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.util.DOMUtil;
@@ -44,6 +46,7 @@ import org.apache.servicemix.soap.SoapFault;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * 
@@ -232,14 +235,7 @@ public class SoapReader {
             }
             // Fault details
             if (SoapMarshaler.SOAP_11_FAULTDETAIL.equals(childname)) {
-                Element subchild = DOMUtil.getFirstChildElement(child);
-                if (subchild != null) {
-                    details = new DOMSource(subchild);
-                    subchild = DOMUtil.getNextSiblingElement(subchild);
-                    if (subchild != null) {
-                        throw new SoapFault(SoapFault.RECEIVER, "Multiple elements are not supported in Detail");
-                    }
-                }
+                details = getDetailsAsSource(child);
                 child = DOMUtil.getNextSiblingElement(child);
                 childname = DOMUtil.getQName(child);
             }
@@ -300,14 +296,7 @@ public class SoapReader {
             }
             // Fault details
             if (SoapMarshaler.SOAP_12_FAULTDETAIL.equals(childname)) {
-                subchild = DOMUtil.getFirstChildElement(child);
-                if (subchild != null) {
-                    details = new DOMSource(subchild);
-                    subchild = DOMUtil.getNextSiblingElement(subchild);
-                    if (subchild != null) {
-                        throw new SoapFault(SoapFault.RECEIVER, "Multiple elements are not supported in Detail");
-                    }
-                }
+                details = getDetailsAsSource(child);
                 child = DOMUtil.getNextSiblingElement(child);
                 childname = DOMUtil.getQName(child);
             }
@@ -318,6 +307,30 @@ public class SoapReader {
         }
         SoapFault fault = new SoapFault(code, subcode, reason, node, role, details);
         return fault;
+    }
+
+    private Source getDetailsAsSource(Element parent) throws SoapFault {
+    	Element main = DOMUtil.getFirstChildElement(parent);
+        Source details = null;
+        if (main != null && DOMUtil.getNextSiblingElement(main) == null) {
+            details = new DOMSource(main);
+        } else if (main != null) {
+            // Wrap nodes in a parent element
+            Document document = null;
+            try {
+                document = new SourceTransformer().createDocument();
+            } catch (ParserConfigurationException e) {
+                throw new SoapFault(e);
+            }
+            Element parentNode = document.createElement(SoapMarshaler.MULTIPLE_DETAILS_NODE_WRAPPER);
+            NodeList nodes = parent.getChildNodes();
+            for (int i = 0; i < nodes.getLength(); i++) {
+                parentNode.appendChild(document.importNode(nodes.item(i), true));
+            }
+            document.appendChild(parentNode);
+            details = new DOMSource(document);
+        }
+        return details;
     }
     
     private SoapFault readFaultUsingStax(XMLStreamReader reader) throws SoapFault {

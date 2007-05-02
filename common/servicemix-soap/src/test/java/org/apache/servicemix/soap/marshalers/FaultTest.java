@@ -49,6 +49,38 @@ public class FaultTest extends TestCase {
         }
     }
     
+    protected SoapMessage testSoap11WithMultipleDetailElements(boolean useDom) throws Exception {
+        SoapMarshaler marshaler = new SoapMarshaler(true, useDom);
+        try {
+            SoapMessage message = marshaler.createReader().read(getClass().getResourceAsStream("fault-1.1-multiple-detail-elements.xml"));
+            return message;
+        } catch (SoapFault fault) {
+            assertEquals(SoapMarshaler.SOAP_11_CODE_SERVER, fault.getCode());
+            assertNull(fault.getSubcode());
+            assertEquals("Server Error", fault.getReason());
+            assertNotNull(fault.getDetails());
+            Node node = sourceTransformer.toDOMNode(fault.getDetails());
+            Element e = node instanceof Document ? ((Document) node).getDocumentElement() : (Element) node;
+            assertEquals(new QName("Some-URI", "myfaultdetails"), DOMUtil.getQName(e));
+            return null;
+        }
+    }
+
+    public void testReadSoap11WithMultipleElementsUsingDom() throws Exception {
+        testSoap11WithMultipleDetailElements(true);
+    }
+
+    public void testWriteSoap11WithMultipleElementsUsingDom() throws Exception {
+        SoapMessage message = testSoap11WithMultipleDetailElements(true);
+        message.setDocument(null);
+        SoapMarshaler marshaler = new SoapMarshaler(true, true);
+        SoapWriter writer = marshaler.createWriter(message);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        writer.write(baos);
+        
+        System.err.println("Resulting Fault: \n" + baos);
+    }
+
     public void testReadSoap11UsingDom() throws Exception {
         testSoap11(true);
     }

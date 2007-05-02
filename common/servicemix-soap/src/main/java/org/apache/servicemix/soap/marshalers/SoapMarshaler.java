@@ -72,6 +72,8 @@ public class SoapMarshaler {
 	protected boolean soap = true;
     protected boolean useDom = false;
 	protected String soapUri = SOAP_12_URI;
+    
+    public static final String MULTIPLE_DETAILS_NODE_WRAPPER = "multiple-details";
 
 	public SoapMarshaler() {
 	}
