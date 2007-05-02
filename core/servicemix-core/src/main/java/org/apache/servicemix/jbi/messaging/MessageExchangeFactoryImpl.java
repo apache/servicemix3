@@ -16,6 +16,7 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
+import java.text.SimpleDateFormat;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.servicemix.JbiConstants;
@@ -33,7 +34,7 @@ import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
 import java.net.URI;
-import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * Resolver for URI patterns
@@ -267,6 +268,13 @@ public class MessageExchangeFactoryImpl implements MessageExchangeFactory {
                 exchange.setMarshaler(marshaler);
             }
         }
-        exchange.setProperty(JbiConstants.DATESTAMP_PROPERTY_NAME, Calendar.getInstance());
+        exchange.setProperty(JbiConstants.DATESTAMP_PROPERTY_NAME, new PrettyCalendar());
+    }
+
+    @SuppressWarnings("serial")
+    public static class PrettyCalendar extends GregorianCalendar {
+        public String toString() {
+            return new SimpleDateFormat().format(getTime());
+        }
     }
 }
