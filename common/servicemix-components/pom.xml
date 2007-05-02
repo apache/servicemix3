@@ -253,6 +253,11 @@
       <version>${spring-version}</version>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   
   <repositories>

@@ -60,7 +60,7 @@ public class JdbcComponentUniqueNamesTest extends TestCase {
 		}
 
 		public String getColumnName(int column) throws SQLException {
-			return names[column];
+			return names[column-1];
 		}
 
 		public String getCatalogName(int column) throws SQLException {
@@ -139,11 +139,11 @@ public class JdbcComponentUniqueNamesTest extends TestCase {
 			throw new RuntimeException("not implemented");
 		}
 
-		public boolean isWrapperFor(Class iface) throws SQLException {
+		public boolean isWrapperFor(Class arg0) throws SQLException {
 			throw new RuntimeException("not implemented");
 		}
 
-		public Object unwrap(Class iface) throws SQLException {
+		public Object unwrap(Class arg0) throws SQLException {
 			throw new RuntimeException("not implemented");
 		}
 
