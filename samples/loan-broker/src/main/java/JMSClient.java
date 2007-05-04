@@ -19,6 +19,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.CountDownLatch;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.logicblaze.lingo.jms.Requestor;
+import org.logicblaze.lingo.jms.JmsProducerConfig;
 import org.logicblaze.lingo.jms.impl.MultiplexingRequestor;
 import edu.emory.mathcs.backport.java.util.concurrent.ExecutorService;
 import edu.emory.mathcs.backport.java.util.concurrent.Executors;
@@ -31,11 +32,11 @@ import javax.jms.TextMessage;
  * @version $Revision$
  */
 public class JMSClient implements Runnable {
-    
+
     private static ConnectionFactory factory;
     private static CountDownLatch latch;
     private static Requestor requestor;
-    
+
     /**
      * main ...
      * 
@@ -47,8 +48,8 @@ public class JMSClient implements Runnable {
         factory = new ActiveMQConnectionFactory("tcp://localhost:61616");
         Destination inQueue = new ActiveMQQueue("demo.org.servicemix.source");
         Destination outQueue = new ActiveMQQueue("demo.org.servicemix.output" + (int)(1000*Math.random()));
-        requestor = MultiplexingRequestor.newInstance(factory, inQueue, outQueue); 
-        
+        requestor = MultiplexingRequestor.newInstance(factory, new JmsProducerConfig(), inQueue, outQueue); 
+
         if (args.length == 0) {
             new JMSClient().run();
         } else {
@@ -67,23 +68,29 @@ public class JMSClient implements Runnable {
         System.out.println("Closing.");
         requestor.close();
     }
-   
+
     public void run() {
         try {
             System.out.println("Sending request.");
-            String request = 
-"<getLoanQuoteRequest xmlns='urn:logicblaze:soa:loanbroker'>\n" +
-"  <ssn>102-24532-53254</ssn>\n" +
-"  <amount>" + Math.random() * 100000 + "</amount>\n" +
-"  <duration>" + (int) Math.random() * 48 + "</duration>\n" +
-"</getLoanQuoteRequest>";
+            double r = Math.random();
+
+            String request =
+                "<getLoanQuoteRequest xmlns='urn:logicblaze:soa:loanbroker'>\n" +
+                "  <ssn>102-24532-53254</ssn>\n" +
+                "  <amount>" + r * 100000 + "</amount>\n" +
+                "  <duration>" + (int) r * 48 + "</duration>\n" +
+                "  <score>" + (int) r * 48 + "</score>\n" +
+                "  <length>" + (int) r * 48 + "</length>\n" +
+                "</getLoanQuoteRequest>";
+
             TextMessage out = requestor.getSession().createTextMessage(request);
-            TextMessage in = (TextMessage) requestor.request(null, out);
+
+            TextMessage in = (TextMessage) requestor.request(null, out); 
             if (in == null) {
                 System.out.println("Response timed out.");
             }
             else {
-                System.out.println("Response: " + in.getText());
+                System.out.println("Response was: " + in.getText());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,4 +100,5 @@ public class JMSClient implements Runnable {
             }
         }
     }
+
 }

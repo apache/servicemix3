@@ -35,7 +35,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.servicemix.samples.loan-broker</groupId>
-            <artifactId>loan-broker-bpe-su</artifactId>
+            <artifactId>loan-broker-ode-su</artifactId>
             <version>3.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>

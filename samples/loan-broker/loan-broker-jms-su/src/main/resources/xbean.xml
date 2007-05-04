@@ -21,7 +21,7 @@
        xmlns:lb="urn:logicblaze:soa:loanbroker">
 
   <jms:endpoint service="lb:LoanBrokerService"
-                endpoint="endpoint"
+                endpoint="broker"
                 targetService="lb:LoanBrokerService"
                 defaultOperation="lb:getLoanQuote" 
                 role="consumer"

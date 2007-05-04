@@ -20,15 +20,13 @@
 <!-- $Rev: 356052 $ $Date: 2005-12-11 14:41:20 -0800 (dim., 11 d√©c. 2005) $ -->
 <definitions targetNamespace="urn:logicblaze:soa:bank"
 	xmlns:tns="urn:logicblaze:soa:bank"
-	xmlns:typens="urn:logicblaze:soa:bank:types"
 	xmlns="http://schemas.xmlsoap.org/wsdl/"
-	xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
-	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/">
+	xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
 	<types>
 		<xsd:schema
-			targetNamespace="urn:logicblaze:soa:bank:types"
+			targetNamespace="urn:logicblaze:soa:bank"
 			xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
 			<xsd:complexType name="getLoanQuoteRequest">
@@ -47,15 +45,18 @@
 				</xsd:sequence>
 			</xsd:complexType>
 
+			<xsd:element name="getLoanQuoteRequest" type="tns:getLoanQuoteRequest" />
+			<xsd:element name="getLoanQuoteResponse" type="tns:getLoanQuoteResponse" />
+
 		</xsd:schema>
 	</types>
 
 	<message name="getLoanQuoteRequest">
-		<part name="payload" type="typens:getLoanQuoteRequest" />
+		<part name="payload" element="tns:getLoanQuoteRequest" />
 	</message>
 
 	<message name="getLoanQuoteResponse">
-		<part name="payload" type="typens:getLoanQuoteResponse" />
+		<part name="payload" element="tns:getLoanQuoteResponse" />
 	</message>
 
 	<portType name="Bank">
@@ -64,5 +65,9 @@
 			<output message="tns:getLoanQuoteResponse" />
 		</operation>
 	</portType>
+
+	<plnk:partnerLinkType name="BankPL">
+		<plnk:role name="BankService" portType="tns:Bank" />
+	</plnk:partnerLinkType>
 
 </definitions>

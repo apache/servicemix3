@@ -52,7 +52,7 @@ public class CreditAgency extends ComponentSupport implements MessageExchangeLis
             return;
         }
         try {
-            Document doc = (Document) new SourceTransformer().toDOMNode(inOut.getInMessage());
+            Document doc = new SourceTransformer().toDOMDocument(inOut.getInMessage());
             String ssn = textValueOfXPath(doc, "//*[local-name()='ssn']");
             if (ssn == null || ssn.length() == 0) {
                 fail(exchange, new NullPointerException());
