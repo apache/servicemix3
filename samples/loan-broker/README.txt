@@ -36,7 +36,7 @@ prior to the following instructions.
 To run this sample, launch the following commands:
   mvn install jbi:projectDeploy
 
-You can run a client from the src/main/client folder by running
+To test this sample, launch the following commands:
   ant run
 
 For more information on this example please see
