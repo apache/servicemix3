@@ -27,8 +27,17 @@ First start a ServiceMix server (if not already started) by running
   bin/servicemix
 in the root dir of this ditribution.
 
+This example depends on Apache Ode JBI Service Engine which has not been
+released yet.  You will need to build it yourself (more informations at
+http://incubator.apache.org/ode/getting-ode.html).  You will need to copy
+the Service Engine installer to the install directory of this distribution
+prior to the following instructions.
+
 To run this sample, launch the following commands:
   mvn install jbi:projectDeploy
+
+You can run a client from the src/main/client folder by running
+  ant run
 
 For more information on this example please see
   http://incubator.apache.org/servicemix/loan-broker-bpel.html

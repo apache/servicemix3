@@ -48,8 +48,8 @@
     </repositories>
     
     <modules>
+      <module>loan-broker-ode-su</module>
       <module>loan-broker-lw-su</module>
-      <module>loan-broker-bpe-su</module>
       <module>loan-broker-jms-su</module>
       <module>loan-broker-sa</module>
     </modules>
