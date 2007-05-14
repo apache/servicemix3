@@ -77,10 +77,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix</groupId>
-      <artifactId>servicemix-sca</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-wsn2005</artifactId>
     </dependency>
     <dependency>
@@ -320,13 +316,6 @@
                 <artifactItem>
                   <groupId>org.apache.servicemix</groupId>
                   <artifactId>servicemix-drools</artifactId>
-                  <version>${servicemix-version}</version>
-                  <classifier>installer</classifier>
-                  <type>zip</type>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.apache.servicemix</groupId>
-                  <artifactId>servicemix-sca</artifactId>
                   <version>${servicemix-version}</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
