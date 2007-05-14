@@ -99,6 +99,15 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                  <excludes>
+                    <exclude>**/JbiServiceUnitDescriptorWriterTest.*</exclude>
+                  </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-plugin-plugin</artifactId>
 
                 <!-- Add the Ant plugin tools -->
