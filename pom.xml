@@ -342,7 +342,7 @@
         <repository>
             <id>servicemix-m2-repo</id>
             <name>Servicemix Maven2 Repository</name>
-            <url>http://servicemix.org/m2-repo</url>
+            <url>http://svn.apache.org/repos/asf/incubator/servicemix/m2-repo</url>
         </repository>
         <!-- Apache incubating -->
         <repository>
@@ -375,7 +375,7 @@
         <pluginRepository>
             <id>servicemix-m2-repo</id>
             <name>Servicemix Maven2 Repository</name>
-            <url>http://servicemix.org/m2-repo</url>
+            <url>http://svn.apache.org/repos/asf/incubator/servicemix/m2-repo</url>
         </pluginRepository>
     </pluginRepositories>
     
@@ -558,12 +558,12 @@
                 <version>1.0-pr</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.servicemix.dependencies</groupId>
+                <groupId>org.apache.ws</groupId>
                 <artifactId>wsif</artifactId>
                 <version>2.0.1_IB3</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.servicemix.dependencies</groupId>
+                <groupId>org.apache.ws</groupId>
                 <artifactId>wsif-j2c</artifactId>
                 <version>2.0.1_IB3</version>
             </dependency>

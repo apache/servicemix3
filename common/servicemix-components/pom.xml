@@ -73,12 +73,12 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix.dependencies</groupId>
+      <groupId>org.apache.ws</groupId>
       <artifactId>wsif</artifactId>
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix.dependencies</groupId>
+      <groupId>org.apache.ws</groupId>
       <artifactId>wsif-j2c</artifactId>
       <optional>true</optional>
     </dependency>
@@ -176,16 +176,6 @@
     <dependency>
       <groupId>jdom</groupId>
       <artifactId>jdom</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.servicemix.dependencies</groupId>
-      <artifactId>wsif</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.servicemix.dependencies</groupId>
-      <artifactId>wsif-j2c</artifactId>
       <optional>true</optional>
     </dependency>
     <dependency>
