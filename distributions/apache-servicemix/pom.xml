@@ -412,36 +412,6 @@
             </configuration>
           </execution>
           <execution>
-            <id>copy-sas</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>target/sas</outputDirectory>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.apache.servicemix.samples.bridge</groupId>
-                  <artifactId>bridge-sa</artifactId>
-                  <version>${servicemix-version}</version>
-                  <type>zip</type>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.apache.servicemix.samples.loan-broker</groupId>
-                  <artifactId>loan-broker-sa</artifactId>
-                  <version>${servicemix-version}</version>
-                  <type>zip</type>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.apache.servicemix.samples.wsdl-first</groupId>
-                  <artifactId>wsdl-first-sa</artifactId>
-                  <version>${servicemix-version}</version>
-                  <type>zip</type>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-          <execution>
             <id>unpack-samples</id>
             <phase>generate-resources</phase>
             <goals>
@@ -483,6 +453,60 @@
                   <artifactId>basic</artifactId>
                   <version>${servicemix-version}</version>
                   <classifier>src</classifier>
+                  <type>zip</type>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-sa-bridge</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/samples/bridge-${servicemix-version}</outputDirectory>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.servicemix.samples.bridge</groupId>
+                  <artifactId>bridge-sa</artifactId>
+                  <version>${servicemix-version}</version>
+                  <type>zip</type>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-sa-loan-broker</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/samples/loan-broker-${servicemix-version}</outputDirectory>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.servicemix.samples.loan-broker</groupId>
+                  <artifactId>loan-broker-sa</artifactId>
+                  <version>${servicemix-version}</version>
+                  <type>zip</type>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-sa-wsdl-first</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/samples/wsdl-first-${servicemix-version}</outputDirectory>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.servicemix.samples.wsdl-first</groupId>
+                  <artifactId>wsdl-first-sa</artifactId>
+                  <version>${servicemix-version}</version>
                   <type>zip</type>
                 </artifactItem>
               </artifactItems>
