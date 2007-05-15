@@ -33,12 +33,14 @@
     <name>ServiceMix :: Samples :: Loan Broker :: Ode</name>
 
     <dependencies>
+        <!--
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-tools</artifactId>
             <version>${ode-version}</version>
             <scope>test</scope>
         </dependency>
+        -->
     </dependencies>
 
     <properties>
@@ -53,6 +55,7 @@
                 <artifactId>jbi-maven-plugin</artifactId>
                 <extensions>true</extensions>
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -80,6 +83,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
     </build>
 </project>
