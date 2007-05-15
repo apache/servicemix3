@@ -22,6 +22,7 @@
     <module>j2ee-management</module>
     <module>howl</module>
     <module>commons-logging</module>
+    <module>xbean-naming</module>
   </modules>
 
   <build>

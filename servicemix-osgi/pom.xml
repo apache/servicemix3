@@ -10,8 +10,10 @@
 
   <modules>
     <module>bundles</module>
+    <module>rmi</module>
     <module>jmx</module>
     <module>transaction</module>
+    <module>naming</module>
     <module>dist</module>
   </modules>
 

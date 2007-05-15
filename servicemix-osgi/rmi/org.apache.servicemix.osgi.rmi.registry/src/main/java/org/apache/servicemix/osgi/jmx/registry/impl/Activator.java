@@ -22,6 +22,7 @@ public class Activator implements BundleActivator {
         if (portS != null) {
             port = Integer.parseInt(portS);
         }
+        System.setProperty("java.rmi.server.RMIClassLoaderSpi", RmiClassLoaderSpiImpl.class.getName());
         Registry reg = LocateRegistry.createRegistry(port);
         registry = new RmiRegistryImpl(reg, port);
         context.registerService(new String[] { RmiRegistry.class.getName(), Registry.class.getName() }, 
