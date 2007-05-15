@@ -21,7 +21,7 @@ rem $Id: servicemix.bat 979 2005-11-30 22:50:55Z bsnyder $
 rem 
 
 if "%SERVICEMIX_VERSION%" == "" (
-    set SERVICEMIX_VERSION=3.1.1-incubating-SNAPSHOT
+    set SERVICEMIX_VERSION=3.1.1-incubating
 )
 
 if "%DEF_GROUP_ID%" == "" (
