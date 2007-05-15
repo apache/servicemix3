@@ -8,7 +8,7 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <name>ServiceMix OSGI Rmi Bundles</name>
+  <name>ServiceMix OSGI RMI Bundles</name>
   <groupId>org.apache.servicemix.osgi</groupId>
   <artifactId>rmi</artifactId>
   <packaging>pom</packaging>

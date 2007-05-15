@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.osgi.jmx.registry.impl;
+package org.apache.servicemix.osgi.rmi.registry.impl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -40,10 +40,10 @@ public class RmiClassLoaderSpiImpl
     private RMIClassLoaderSpi delegate = RMIClassLoader.getDefaultProviderInstance();
 
     //TODO: Not sure of the best initial size.  Starting with 100 which should be reasonable.
-    private ConcurrentHashMap cachedCodebases = new ConcurrentHashMap(100);
+    private ConcurrentHashMap<String, String> cachedCodebases = new ConcurrentHashMap<String, String>(100);
 
 
-    public Class loadClass(String codebase, String name, ClassLoader defaultLoader)
+    public Class<?>loadClass(String codebase, String name, ClassLoader defaultLoader)
         throws MalformedURLException, ClassNotFoundException
     {
         if (codebase != null) {
@@ -53,7 +53,7 @@ public class RmiClassLoaderSpiImpl
         return delegate.loadClass(codebase, name, defaultLoader);
     }
     
-    public Class loadProxyClass(String codebase, String[] interfaces, ClassLoader defaultLoader)
+    public Class<?> loadProxyClass(String codebase, String[] interfaces, ClassLoader defaultLoader)
         throws MalformedURLException, ClassNotFoundException
     {
         if (codebase != null) {
@@ -104,12 +104,12 @@ public class RmiClassLoaderSpiImpl
      */
     private String getNormalizedCodebase(String codebase)
             throws MalformedURLException {
-        String cachedCodebase = (String)cachedCodebases.get(codebase);
+        String cachedCodebase = cachedCodebases.get(codebase);
         if (cachedCodebase != null)
             return cachedCodebase;
 
         String normalizedCodebase = normalizeCodebase(codebase);
-        String oldValue = (String)cachedCodebases.put(codebase, normalizedCodebase);
+        String oldValue = cachedCodebases.put(codebase, normalizedCodebase);
 
         // If there was a previous value remove the one we just added to make sure the
         // cache doesn't grow.
@@ -140,7 +140,7 @@ public class RmiClassLoaderSpiImpl
             if ( item.indexOf(':') != -1 )
             {
                 try {
-                    URL url = new URL(item);
+                    new URL(item);
                     // If we got this far then item is a valid url, so commit the current
                     // buffer and start collecting any trailing bits from where we are now
                     updateCodebase(working, codebase);
@@ -179,8 +179,7 @@ public class RmiClassLoaderSpiImpl
         }
     }
     
-    static URL normalizeURL(URL url)
-    {
+    static URL normalizeURL(URL url) {
         assert url != null;
         
         if (url.getProtocol().equals("file")) {

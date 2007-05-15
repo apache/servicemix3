@@ -65,7 +65,8 @@
           <instructions>
             <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
             <Export-Package>*;version=${pkgVersion}</Export-Package>
-            <Import-Package>*</Import-Package>
+            <Import-Package>!*</Import-Package>
+            <Fragment-Host>system.bundle; extension:=framework</Fragment-Host>
           </instructions>
         </configuration>
       </plugin>

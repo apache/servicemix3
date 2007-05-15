@@ -31,8 +31,8 @@
               <outputDirectory>target/bundles</outputDirectory>
               <artifactItems>
                 <artifactItem>
-                  <groupId>org.apache.servicemix.osgi.jmx</groupId>
-                  <artifactId>org.apache.servicemix.osgi.jmx.registry</artifactId>
+                  <groupId>org.apache.servicemix.osgi.rmi</groupId>
+                  <artifactId>org.apache.servicemix.osgi.rmi.registry</artifactId>
                   <version>1.0-SNAPSHOT</version>
                 </artifactItem>
                 <artifactItem>

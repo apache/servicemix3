@@ -1,3 +1,19 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.servicemix.osgi.jmx.rmi.impl;
 
 import java.net.InetAddress;
@@ -8,13 +24,14 @@ import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXConnectorServerMBean;
 import javax.management.remote.JMXServiceURL;
 
-import org.apache.servicemix.osgi.jmx.registry.RmiRegistry;
 import org.apache.servicemix.osgi.jmx.rmi.RmiConnector;
+import org.apache.servicemix.osgi.rmi.registry.RmiRegistry;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 
 public class Activator implements BundleActivator, ServiceListener {
 
@@ -29,6 +46,8 @@ public class Activator implements BundleActivator, ServiceListener {
     private RmiRegistry rmi;
     
     private BundleContext context;
+    
+    private ServiceRegistration registration;
 
     /**
      * Implements BundleActivator.start(). P
@@ -100,15 +119,18 @@ public class Activator implements BundleActivator, ServiceListener {
         }
         int port = rmi.getPort();
         String url = "service:jmx:rmi:///jndi/rmi://"+ InetAddress.getLocalHost().getHostAddress() + ":" + port + "/jmxrmi";
-        JMXServiceURL address=new JMXServiceURL(url);
+        JMXServiceURL address = new JMXServiceURL(url);
         JMXConnectorServer con = JMXConnectorServerFactory.newJMXConnectorServer(address, null, this.mbs);
         connector = new RmiConnectorImpl(con);
         connector.start();
-        context.registerService(new String[] { RmiConnector.class.getName(), JMXConnectorServerMBean.class.getName() }, 
+        registration = context.registerService(
+                                new String[] { RmiConnector.class.getName(), JMXConnectorServerMBean.class.getName() }, 
                                 connector, null);
     }
     
     protected void stopRmiConnector() throws Exception {
+        System.err.println("Stop connector");
+        registration.unregister();
         if (connector != null) {
             connector.stop();
             connector = null;

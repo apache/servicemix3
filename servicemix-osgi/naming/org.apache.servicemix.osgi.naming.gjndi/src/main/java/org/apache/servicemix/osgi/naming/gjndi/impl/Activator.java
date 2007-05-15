@@ -1,6 +1,25 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.servicemix.osgi.naming.gjndi.impl;
 
-import org.apache.servicemix.osgi.jmx.registry.RmiRegistry;
+import javax.naming.Context;
+
+import org.apache.servicemix.osgi.rmi.registry.RmiRegistry;
+import org.apache.xbean.naming.context.WritableContext;
 import org.apache.xbean.naming.global.GlobalContextManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -9,11 +28,6 @@ import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
 public class Activator implements BundleActivator, ServiceListener {
-
-    static final String JAVA_NAMING_FACTORY_INITIAL = "java.naming.factory.initial";
-    static final String JAVA_NAMING_FACTORY_URL_PKGS = "java.naming.factory.url.pkgs";
-    static final String JAVA_NAMING_PROVIDER_URL = "java.naming.provider.url";
-
 
     private BundleContext context;
     private ServiceReference rmiRef;
@@ -52,8 +66,6 @@ public class Activator implements BundleActivator, ServiceListener {
      */
     public void serviceChanged(ServiceEvent event) {
         ServiceReference servicereference = event.getServiceReference();
-        String[] ast = (String[]) (servicereference.getProperty("objectClass"));
-        String as = ast[0];
         switch (event.getType()) {
         case ServiceEvent.REGISTERED:
             rmiRef = servicereference;
@@ -81,12 +93,14 @@ public class Activator implements BundleActivator, ServiceListener {
             return;
         }
         int port = rmi.getPort();
-        System.setProperty(JAVA_NAMING_FACTORY_INITIAL, GlobalContextManager.class.getName());
-        System.setProperty(JAVA_NAMING_FACTORY_URL_PKGS, "org.apache.xbean.naming");
-        System.setProperty(JAVA_NAMING_PROVIDER_URL, "rmi://0.0.0.0:" + rmi.getPort());
+        GlobalContextManager.setGlobalContext(new WritableContext(""));
+        System.setProperty(Context.INITIAL_CONTEXT_FACTORY, GlobalContextManager.class.getName());
+        System.setProperty(Context.URL_PKG_PREFIXES, "org.apache.xbean.naming");
+        System.setProperty(Context.PROVIDER_URL, "rmi://0.0.0.0:" + port);
     }
 
     protected void stopRmiGJndi() throws Exception {
+        GlobalContextManager.setGlobalContext(null);
         if (rmi != null) {
             context.ungetService(rmiRef);
             rmi = null;

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.osgi.jmx.registry.impl;
+package org.apache.servicemix.osgi.rmi.registry.impl;
 
 import java.rmi.AccessException;
 import java.rmi.AlreadyBoundException;
@@ -23,7 +23,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 
-import org.apache.servicemix.osgi.jmx.registry.RmiRegistry;
+import org.apache.servicemix.osgi.rmi.registry.RmiRegistry;
 
 /**
  * 
