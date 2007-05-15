@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<project>
+
+  <parent>
+    <groupId>org.apache.servicemix</groupId>
+    <artifactId>osgi</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <name>ServiceMix OSGI Common Bundles</name>
+  <groupId>org.apache.servicemix.osgi</groupId>
+  <artifactId>bundles</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0-SNAPSHOT</version>
+
+  <modules>
+    <module>geronimo-transaction</module>
+    <module>jta</module>
+    <module>ejb</module>
+    <module>j2ee-connector</module>
+    <module>j2ee-management</module>
+    <module>howl</module>
+    <module>commons-logging</module>
+  </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>${felix.version}</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <goals>
+              <goal>bundle</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+            <Export-Package>*;version=${pkgVersion}</Export-Package>
+            <Import-Package>*</Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!--
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-jbi</artifactId>
+      <version>3.1.1-incubating</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.geronimo.specs</groupId>
+          <artifactId>geronimo-qname_1.1_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.geronimo.specs</groupId>
+          <artifactId>geronimo-activation_1.0.2_spec</artifactId>
+        </exclusion>
+      </exclusions>
+      <dependencies>
+        <dependency>
+          <groupId>javax.activation</groupId>
+          <artifactId>activation</artifactId>
+          <version>1.1</version>
+        </dependency>
+      </dependencies>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>${felix.version}</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <goals>
+              <goal>bundleall</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+            <Export-Package>*;version=${pkgVersion}</Export-Package>
+            <Import-Package>*</Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  -->
+
+</project>
