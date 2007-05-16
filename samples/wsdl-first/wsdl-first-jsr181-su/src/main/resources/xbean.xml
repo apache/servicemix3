@@ -19,6 +19,8 @@
 -->
 <beans xmlns:jsr181="http://servicemix.apache.org/jsr181/1.0">
 
-    <jsr181:endpoint pojoClass="org.apache.servicemix.samples.wsdl_first.PersonImpl" />
+    <jsr181:endpoint pojoClass="org.apache.servicemix.samples.wsdl_first.PersonImpl"
+                     wsdlResource="classpath:person.wsdl"
+                     style="document" />
 
 </beans>
