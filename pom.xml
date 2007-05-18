@@ -270,12 +270,9 @@
             </modules>
         </profile>
         <profile>
-            <id>release-environment</id>
+            <id>sign</id>
             <activation>
-                <property>
-                    <name>env</name>
-                    <value>release</value>
-                </property>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <build>
                 <plugins>
@@ -295,7 +292,7 @@
                             <passphrase>${gpg.passphrase}</passphrase>
                         </configuration>
                     </plugin>
-                    <!-- We want the JavaDoc JAR published with the release -->
+                    <!-- 
                     <plugin>
                         <inherited>true</inherited>
                         <artifactId>maven-javadoc-plugin</artifactId>
@@ -312,7 +309,6 @@
                             <attach>true</attach>
                         </configuration>
                     </plugin>
-                    <!-- Force source JAR to be published -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
@@ -328,6 +324,7 @@
                             <attach>true</attach>
                         </configuration>
                     </plugin>
+                   -->
                 </plugins>
             </build>
         </profile>
@@ -1620,16 +1617,16 @@
         <repository>
             <id>servicemix</id>
             <name>Apache Release Distribution Repository</name>
-            <url>scpexe://people.apache.org/www/people.apache.org/repo/m2-incubating-repository</url>
+            <url>scp://people.apache.org/www/people.apache.org/repo/m2-incubating-repository</url>
         </repository>
         <snapshotRepository>
             <id>apache.snapshots</id>
             <name>Apache Development Snapshot Repository</name>
-            <url>scpexe://people.apache.org/www/people.apache.org/repo/m2-snapshot-repository</url>
+            <url>scp://people.apache.org/www/people.apache.org/repo/m2-snapshot-repository</url>
         </snapshotRepository>
         <site>
             <id>servicemix</id>
-            <url>scpexe://people.apache.org/www/incubator.apache.org/servicemix/dist/servicemix-${version}/site</url>
+            <url>scp://people.apache.org/www/incubator.apache.org/servicemix/dist/servicemix-${version}/site</url>
         </site>
     </distributionManagement>
 
