@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -69,12 +70,20 @@ public class LegalMojo extends AbstractMojo {
                 copyLegalFiles(new File(project.getBasedir(), "target/classes/"));
                 copyLegalFiles(new File(project.getBasedir(), "target/" + project.getArtifactId() + "-" + project.getVersion() + "-installer/"));
             }
+
+            File outDir = new File(project.getBasedir(), "target/maven-shared-archive-resources");
+            copyLegalFiles(outDir);
+            Resource resource = new Resource();
+            resource.setDirectory(outDir.getAbsolutePath());
+            project.getResources().add(resource);
+            project.getTestResources().add(resource);
+            
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to copy legal files", e);
         }
-  	}
-  	
-  	protected void copyLegalFiles(File outputDir) throws IOException {
+    }
+
+    protected void copyLegalFiles(File outputDir) throws IOException {
         String[] names = { "/META-INF/DISCLAIMER", "/META-INF/NOTICE", "/META-INF/LICENSE"};
         for (int i = 0; i < names.length; i++) {
             URL res = getClass().getResource(names[i]);
