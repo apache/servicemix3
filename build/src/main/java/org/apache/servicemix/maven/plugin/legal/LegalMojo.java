@@ -30,7 +30,7 @@ import org.codehaus.plexus.util.FileUtils;
 /**
  *
  * @goal copy
- * @phase generate-resources
+ * @phase generate-sources
  */
 public class LegalMojo extends AbstractMojo {
 
