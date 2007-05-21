@@ -269,65 +269,6 @@
                 <module>distributions</module>
             </modules>
         </profile>
-        <profile>
-            <id>sign</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <!-- We want to sign the artifact, the POM, and all attached artifacts -->
-                    <plugin>
-                        <inherited>true</inherited>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.0-alpha-1</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <passphrase>${gpg.passphrase}</passphrase>
-                        </configuration>
-                    </plugin>
-                    <!-- 
-                    <plugin>
-                        <inherited>true</inherited>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.2</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <source>1.5</source>
-                            <attach>true</attach>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>2.0.2</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <attach>true</attach>
-                        </configuration>
-                    </plugin>
-                   -->
-                </plugins>
-            </build>
-        </profile>
     </profiles>
 
     <repositories>
@@ -1648,6 +1589,14 @@
         </resources>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <inherited>true</inherited>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>1.0-alpha-4-SNAPSHOT</version>
+                    <configuration>
+                        <passphrase>${gpg.passphrase}</passphrase>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
