@@ -213,7 +213,7 @@
         <oro-version>2.0.8</oro-version>
         <sitemesh-version>2.2.1</sitemesh-version>
         <woden-version>1.0.0M6</woden-version>
-
+        <cxf-version>2.0-incubator-RC</cxf-version>
         <topDirectoryLocation>.</topDirectoryLocation>
     </properties>
 
@@ -1676,16 +1676,16 @@
         <repository>
             <id>servicemix</id>
             <name>Apache Release Distribution Repository</name>
-            <url>scpexe://people.apache.org/www/people.apache.org/repo/m2-incubating-repository</url>
+            <url>scp://people.apache.org/www/people.apache.org/repo/m2-incubating-repository</url>
         </repository>
         <snapshotRepository>
             <id>apache.snapshots</id>
             <name>Apache Development Snapshot Repository</name>
-            <url>scpexe://people.apache.org/www/people.apache.org/repo/m2-snapshot-repository</url>
+            <url>scp://people.apache.org/www/people.apache.org/repo/m2-snapshot-repository</url>
         </snapshotRepository>
         <site>
             <id>servicemix</id>
-            <url>scpexe://people.apache.org/www/incubator.apache.org/servicemix/dist/servicemix-${version}/site</url>
+            <url>scp://people.apache.org/www/incubator.apache.org/servicemix/dist/servicemix-${version}/site</url>
         </site>
     </distributionManagement>
 
