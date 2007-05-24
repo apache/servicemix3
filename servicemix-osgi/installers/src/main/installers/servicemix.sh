@@ -30,6 +30,11 @@ if [ "x$JAVA_MIN_MEM" = "x" ]; then
     export JAVA_MIN_MEM
 fi
 
+if [ "x$JAVA_MAX_MEM" = "x" ]; then
+    JAVA_MAX_MEM=512M
+    export JAVA_MAX_MEM
+fi
+
 detectOS() {
     # OS specific support (must be 'true' or 'false').
     cygwin=false;
@@ -84,6 +89,17 @@ unlimitFD() {
     fi
 }
 
+locateHome() {
+    if [ "x$SERVICEMIX_HOME" != "x" ]; then
+        warn "Ignoring predefined value for SERVICEMIX_HOME"
+    fi
+    
+    SERVICEMIX_HOME=`cd $DIRNAME/..; pwd`
+    if [ ! -d "$SERVICEMIX_HOME" ]; then
+        die "SERVICEMIX_HOME is not valid: $SERVICEMIX_HOME"
+    fi
+}
+
 setupNativePath() {
     # Support for loading native libraries
     LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$SERVICEMIX_HOME/lib"
@@ -118,7 +134,7 @@ locateJava() {
 }
 
 detectJVM() {
-   echo "`$JAVA -version`"
+   #echo "`$JAVA -version`"
    # This service should call `java -version`, 
    # read stdout, and look for hints
    if $JAVA -version 2>&1 | grep "^IBM" ; then
@@ -132,15 +148,49 @@ detectJVM() {
    # echo "JVM vendor is $JVM_VENDOR"
 }
 
-locateHome() {
-    if [ "x$SERVICEMIX_HOME" != "x" ]; then
-        warn "Ignoring predefined value for SERVICEMIX_HOME"
+setupDebugOptions() {
+    if [ "x$JAVA_OPTS" = "x" ]; then
+        JAVA_OPTS="$DEFAULT_JAVA_OPTS"
     fi
+    export JAVA_OPTS
     
-    SERVICEMIX_HOME=`cd $DIRNAME/..; pwd`
-    if [ ! -d "$SERVICEMIX_HOME" ]; then
-        die "SERVICEMIX_HOME is not valid: $SERVICEMIX_HOME"
+    # Set Debug options if enabled
+    if [ "x$SERVICEMIX_DEBUG" != "x" ]; then
+        # Use the defaults if JAVA_DEBUG_OPTS was not set
+        if [ "x$JAVA_DEBUG_OPTS" = "x" ]; then
+            JAVA_DEBUG_OPTS="$DEFAULT_JAVA_DEBUG_OPTS"
+        fi
+        
+        JAVA_OPTS="$JAVA_DEBUG_OPTS $JAVA_OPTS"
+        warn "Enabling Java debug options: $JAVA_DEBUG_OPTS"
     fi
+}
+
+setupDefaults() {
+    DEFAULT_JAVA_OPTS="-Xms$JAVA_MIN_MEM -Xmx$JAVA_MAX_MEM "
+
+    #Set the JVM_VENDOR specific JVM flags
+    if [ "$JVM_VENDOR" = "SUN" ]; then
+        DEFAULT_JAVA_OPTS="-server $DEFAULT_JAVA_OPTS"
+    elif [ "$JVM_VENDOR" = "IBM" ]; then
+        if $os400; then
+            DEFAULT_JAVA_OPTS="$DEFAULT_JAVA_OPTS"
+        elif $aix; then
+            DEFAULT_JAVA_OPTS="-Xverify:none -Xlp $DEFAULT_JAVA_OPTS"
+        else
+            DEFAULT_JAVA_OPTS="-Xverify:none $DEFAULT_JAVA_OPTS"
+        fi
+    fi
+
+    # Add the conf directory so it picks up the Log4J config
+    CLASSPATH="$CLASSPATH:$SERVICEMIX_HOME/conf"
+    DEFAULT_JAVA_DEBUG_OPTS="-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"
+    
+    ##
+    ## TODO: Move to conf/profiler/yourkit.{sh|cmd}
+    ##
+    # Uncomment to enable YourKit profiling
+    #DEFAULT_JAVA_DEBUG_OPTS="-Xrunyjpagent"
 }
 
 init() {
@@ -153,11 +203,21 @@ init() {
     # Locate the ServiceMix home directory
     locateHome
     
+    # Setup the native library path
+    setupNativePath
+    
     # Locate the Java VM to execute
     locateJava
     
     # Determine the JVM vendor
     detectJVM
+    
+    # Setup default options
+    setupDefaults
+    
+    # Install debug options
+    setupDebugOptions
+    
 }
 
 run() {
@@ -170,8 +230,12 @@ run() {
         CYGHOME=`cygpath --windows "$HOME"`
         JAR=`cygpath --windows "$JAR"`
     fi
-    cd $SERVICEMIX_HOME/conf
-    exec $JAVA -Dfelix.home=$SERVICEMIX_HOME -jar $JAR $SERVICEMIX_HOME start 
+    cd "$SERVICEMIX_HOME"
+    if [ "x$1" = "x" ] ; then
+        exec $JAVA $JAVA_OPTS -Dservicemix.home="$SERVICEMIX_HOME" -jar "$JAR" "$SERVICEMIX_HOME" start 
+    else
+        exec $JAVA $JAVA_OPTS -Dservicemix.home="$SERVICEMIX_HOME" -jar "$JAR" "$SERVICEMIX_HOME" "$1" 
+    fi
 }
 
 main() {

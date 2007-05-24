@@ -44,6 +44,8 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 ; bin directory targets
 Source: {#SourceBase}\bin\${app}w.exe; DestDir: {app}\bin; Tasks: ; Languages: 
 Source: {#SourceBase}\bin\${app}.exe; DestDir: {app}\bin
+Source: {#SourceBase}\bin\${app}.sh; DestDir: {app}\bin
+Source: {#SourceBase}\bin\${app}.bat; DestDir: {app}\bin
 Source: {#SourceBase}\bin\bootstrapper.jar; DestDir: {app}\bin; DestName: bootstrapper.jar
 Source: {#SourceBase}\bin\servicemix.jar; DestDir: {app}\bin; DestName: servicemix.jar
 Source: {#SourceBase}\bin\logger.jar; DestDir: {app}\bin; DestName: logger.jar

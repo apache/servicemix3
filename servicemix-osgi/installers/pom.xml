@@ -85,7 +85,7 @@
           <application>
             <name>servicemix</name>
             <version>${pom.version}</version>
-            <copyrightYear>2006</copyrightYear>
+            <copyrightYear>2007</copyrightYear>
             <minimumJavaVersion>1.5</minimumJavaVersion>
             <url>http://incubator.apache.org/servicemix</url>
             <email>servicemix-dev@geronimo.apache.org</email>
@@ -100,6 +100,14 @@
               <filtered>true</filtered>
               <source>config.properties</source>
               <destinationPath>conf/config.properties</destinationPath>
+            </packagedFile>
+            <packagedFile>
+              <source>servicemix.sh</source>
+              <destinationPath>bin/servicemix.sh</destinationPath>
+            </packagedFile>
+            <packagedFile>
+              <source>servicemix.bat</source>
+              <destinationPath>bin/servicemix.bat</destinationPath>
             </packagedFile>
             <packagedFile>
               <dependency>true</dependency>
@@ -193,9 +201,6 @@
               <daemonFramework>jsvc</daemonFramework>
             </izPackTarget>
             <izPackTarget>
-              <finalName>
-                servicemix-${pom.version}-solaris-sparc-setup.jar
-              </finalName>
               <id>solaris-jsvc-sparc</id>
               <izPackInstallFile>
                 src/main/installers/izpack-unix.xml
@@ -203,6 +208,9 @@
               <izPackShortcutsUnixFile>
                 src/main/installers/unix_shortcuts.xml
               </izPackShortcutsUnixFile>
+              <finalName>
+                servicemix-${pom.version}-solaris-sparc-setup.jar
+              </finalName>
               <osName>sunos</osName>
               <osFamily>unix</osFamily>
               <osArch>sparc</osArch>
