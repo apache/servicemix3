@@ -141,4 +141,8 @@ public class FragmentStreamReader extends StreamReaderDelegate implements XMLStr
     	}
     }
     
+    @Override
+    public boolean isStartElement() {
+        return event == START_ELEMENT;
+    }
 }
