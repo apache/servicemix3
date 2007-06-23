@@ -33,11 +33,11 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
 @Scope("MODULE")
-public class JbiBindingLoader implements StAXElementLoader<JbiBinding>{
+public class JbiBindingLoader implements StAXElementLoader<JbiBinding> {
 
     public static final QName BINDING_JBI = new QName("http://www.osoa.org/xmlns/sca/0.9", "binding.jbi");
 
-    private static final JbiAssemblyFactory jbiFactory = new JbiAssemblyFactoryImpl();
+    private static final JbiAssemblyFactory JBIFACTORY = new JbiAssemblyFactoryImpl();
 
     private StAXLoaderRegistry registry;
 
@@ -65,7 +65,7 @@ public class JbiBindingLoader implements StAXElementLoader<JbiBinding>{
     }
 
     public JbiBinding load(XMLStreamReader reader, ResourceLoader resourceLoader) throws XMLStreamException, ConfigurationLoadException {
-        JbiBinding binding = jbiFactory.createJbiBinding();
+        JbiBinding binding = JBIFACTORY.createJbiBinding();
         binding.setURI(reader.getAttributeValue(null, "uri"));
         binding.setPortURI(reader.getAttributeValue(null, "port"));
         return binding;

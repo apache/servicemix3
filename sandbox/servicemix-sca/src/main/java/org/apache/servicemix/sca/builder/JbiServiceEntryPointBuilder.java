@@ -86,7 +86,7 @@ public class JbiServiceEntryPointBuilder implements ContextFactoryBuilder<Aggreg
 
     /**
      * Sets the factory used to construct invocation messages
-     * 
+     *
      * @param msgFactory
      */
     @Autowire
@@ -98,7 +98,7 @@ public class JbiServiceEntryPointBuilder implements ContextFactoryBuilder<Aggreg
      * Sets a builder responsible for creating source-side and target-side invocation chains for a reference. The
      * reference builder may be hierarchical, containing other child reference builders that operate on specific
      * metadata used to construct and invocation chain.
-     * 
+     *
      * @see org.apache.tuscany.core.builder.impl.HierarchicalBuilder
      */
     public void setPolicyBuilder(ContextFactoryBuilder builder) {
@@ -114,7 +114,8 @@ public class JbiServiceEntryPointBuilder implements ContextFactoryBuilder<Aggreg
             return;
         }
 
-        EntryPointContextFactory config = new JbiServiceEntryPointContextFactory(entryPoint.getName(), entryPoint.getConfiguredService().getService().getName(), messageFactory);
+        EntryPointContextFactory config = new JbiServiceEntryPointContextFactory(entryPoint.getName(),
+                entryPoint.getConfiguredService().getService().getName(), messageFactory);
 
         ConfiguredService configuredService = entryPoint.getConfiguredService();
         Service service = configuredService.getService();
@@ -126,8 +127,11 @@ public class JbiServiceEntryPointBuilder implements ContextFactoryBuilder<Aggreg
             InvocationConfiguration iConfig = new InvocationConfiguration(method);
             iConfigMap.put(method, iConfig);
         }
-        QualifiedName qName = new QualifiedName(entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0).getAggregatePart().getName() + "/" + service.getName());
-        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
+        QualifiedName qName =
+            new QualifiedName(entryPoint.getConfiguredReference().getTargetConfiguredServices().get(0).getAggregatePart().getName()
+                    + "/" + service.getName());
+        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(),
+                messageFactory);
         proxyFactory.setBusinessInterface(serviceContract.getInterface());
         proxyFactory.setProxyConfiguration(pConfiguration);
         config.addSourceProxyFactory(service.getName(), proxyFactory);
@@ -142,12 +146,12 @@ public class JbiServiceEntryPointBuilder implements ContextFactoryBuilder<Aggreg
         }
         entryPoint.getConfiguredReference().setContextFactory(config);
     }
-    
+
     //FIXME same as the InvokerInterceptor except that it doesn't throw an exception in setNext
     // For some reason another InvokerInterceptor is added after this one, need Jim to look into it
     // and figure out why.
     public class EntryPointInvokerInterceptor implements Interceptor {
-        
+
         public EntryPointInvokerInterceptor() {
         }
 

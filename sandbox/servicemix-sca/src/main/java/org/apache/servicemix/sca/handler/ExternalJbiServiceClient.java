@@ -78,7 +78,7 @@ public class ExternalJbiServiceClient {
             NormalizedMessage in = inout.createMessage();
             inout.setInMessage(in);
             in.setContent(new StringSource(baos.toString()));
-            boolean sent = channel.sendSync(inout);
+            //boolean sent = channel.sendSync(inout);
             // TODO: check for error ?
             NormalizedMessage out = inout.getOutMessage();
             Object response = context.createUnmarshaller().unmarshal(out.getContent());

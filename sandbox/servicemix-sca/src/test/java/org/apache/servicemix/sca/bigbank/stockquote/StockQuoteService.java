@@ -21,7 +21,6 @@ import org.osoa.sca.annotations.Remotable;
 @Remotable
 public interface StockQuoteService {
 
-    public StockQuoteResponse getQuote(StockQuoteRequest stockQuote);
+    StockQuoteResponse getQuote(StockQuoteRequest stockQuote);
 }
 
- 

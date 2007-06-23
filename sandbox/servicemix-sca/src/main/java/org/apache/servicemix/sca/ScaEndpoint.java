@@ -29,8 +29,8 @@ import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.messaging.MessageExchange.Role;
+import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.bind.JAXBContext;
 
@@ -43,11 +43,11 @@ import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.EntryPoint;
 
 /**
- * 
+ *
  * @author gnodet
  * @version $Revision: 366467 $
  * @org.apache.xbean.XBean element="endpoint" description="A sca endpoint"
- * 
+ *
  */
 public class ScaEndpoint extends Endpoint implements ExchangeProcessor {
 
@@ -90,7 +90,7 @@ public class ScaEndpoint extends Endpoint implements ExchangeProcessor {
             classes.add(mth.getReturnType());
             classes.add(params[0]);
         }
-        jaxbContext = JAXBContext.newInstance(classes.toArray(new Class[0]));
+        jaxbContext = JAXBContext.newInstance(classes.toArray(new Class[classes.size()]));
     }
 
     public void deactivate() throws Exception {
@@ -121,7 +121,7 @@ public class ScaEndpoint extends Endpoint implements ExchangeProcessor {
             EntryPointContext entryPointContext = (EntryPointContext) ((ScaServiceUnit) serviceUnit)
                     .getTuscanyRuntime().getModuleContext().getContext(entryPoint.getName());
             InvocationHandler handler = (InvocationHandler) entryPointContext.getImplementationInstance();
-            output = handler.invoke(null, method, new Object[] { input });
+            output = handler.invoke(null, method, new Object[] {input});
         } catch (UndeclaredThrowableException e) {
             throw e;
         } catch (RuntimeException e) {

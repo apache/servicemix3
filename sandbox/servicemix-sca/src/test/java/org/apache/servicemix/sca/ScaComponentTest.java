@@ -26,6 +26,8 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 
+import org.w3c.dom.Node;
+
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
@@ -39,14 +41,14 @@ import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver;
 import org.apache.servicemix.sca.bigbank.stockquote.StockQuoteResponse;
-import org.w3c.dom.Node;
+
 
 public class ScaComponentTest extends TestCase {
 
     private static Log log =  LogFactory.getLog(ScaComponentTest.class);
-    
+
     protected JBIContainer container;
-    
+
     protected void setUp() throws Exception {
         container = new JBIContainer();
         container.setUseMBeanServer(false);
@@ -56,13 +58,13 @@ public class ScaComponentTest extends TestCase {
         container.setEmbedded(true);
         container.init();
     }
-    
+
     protected void tearDown() throws Exception {
         if (container != null) {
             container.shutDown();
         }
     }
-    
+
     public void testDeploy() throws Exception {
         ScaComponent component = new ScaComponent();
         container.activateComponent(component, "JSR181Component");
@@ -78,31 +80,31 @@ public class ScaComponentTest extends TestCase {
         ActivationSpec as = new ActivationSpec();
         as.setComponent(mock);
         container.activateComponent(as);
-        
+
         // Start container
         container.start();
-        
+
         // Deploy SU
         component.getServiceUnitManager().deploy("su", getServiceUnitPath("org/apache/servicemix/sca/bigbank"));
         component.getServiceUnitManager().init("su", getServiceUnitPath("org/apache/servicemix/sca/bigbank"));
         component.getServiceUnitManager().start("su");
-        
+
         ServiceMixClient client = new DefaultServiceMixClient(container);
         Source req = new StringSource("<AccountReportRequest><CustomerID>id</CustomerID></AccountReportRequest>");
         Object rep = client.request(new ServiceNameEndpointResolver(
-        										new QName("http://sca.servicemix.apache.org/Bigbank/Account", "AccountService")),
-        			   						 null, null, req);
+                new QName("http://sca.servicemix.apache.org/Bigbank/Account", "AccountService")),
+                null, null, req);
         if (rep instanceof Node) {
             rep = new DOMSource((Node) rep);
         }
         log.info(new SourceTransformer().toString((Source) rep));
     }
-     
+
     protected String getServiceUnitPath(String name) {
         URL url = getClass().getClassLoader().getResource(name + "/sca.module");
         File path = new File(url.getFile());
         path = path.getParentFile();
         return path.getAbsolutePath();
     }
-    
+
 }

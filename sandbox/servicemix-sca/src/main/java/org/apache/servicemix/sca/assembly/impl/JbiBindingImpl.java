@@ -116,30 +116,31 @@ public class JbiBindingImpl extends BindingImpl implements JbiBinding {
      * @see org.apache.tuscany.model.assembly.impl.BindingImpl#initialize(org.apache.tuscany.model.assembly.AssemblyModelContext)
      */
     public void initialize(AssemblyModelContext modelContext) {
-        if (isInitialized())
+        if (isInitialized()) {
             return;
+        }
         super.initialize(modelContext);
 
         // Get the service name and endpoint name
         String[] parts = split(portURI);
         serviceName = new QName(parts[0], parts[1]);
         endpointName = parts[2];
-        
+
         // Load the WSDL definitions for the given namespace
         List<Definition> definitions = modelContext.getAssemblyLoader().loadDefinitions(parts[0]);
         if (definitions != null) {
-            for (Definition definition : definitions) {
-                Service service = definition.getService(serviceName);
-                if (service != null) {
-                    Port port = service.getPort(endpointName);
-                    if (port != null) {
-                        this.service = service;
-                        this.port = port;
-                        this.portType = port.getBinding().getPortType();
-                        this.interfaceName = portType.getQName();
-                        this.definition = definition;
-                        return;
-                    }
+            for (Definition tmpDefinition : definitions) {
+                Service tmpService = tmpDefinition.getService(serviceName);
+                if ((tmpService != null) && (port != null)) {
+                    //Port tmpPort = service.getPort(endpointName);
+                    // if  {
+                    this.service = service;
+                    this.port = port;
+                    this.portType = port.getBinding().getPortType();
+                    this.interfaceName = portType.getQName();
+                    this.definition = definition;
+                    return;
+                    //  }
                 }
             }
         }
@@ -158,7 +159,7 @@ public class JbiBindingImpl extends BindingImpl implements JbiBinding {
         String epName = uri.substring(idx1 + 1);
         String svcName = uri.substring(idx2 + 1, idx1);
         String nsUri   = uri.substring(0, idx2);
-        return new String[] { nsUri, svcName, epName };
+        return new String[] {nsUri, svcName, epName};
     }
-    
+
 }

@@ -43,7 +43,7 @@ import org.apache.tuscany.model.assembly.ConfiguredService;
 import org.apache.tuscany.model.assembly.ExternalService;
 import org.apache.tuscany.model.assembly.Service;
 import org.apache.tuscany.model.assembly.ServiceContract;
-import org.apache.tuscany.model.scdl.WebServiceBinding;
+//import org.apache.tuscany.model.scdl.WebServiceBinding;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
@@ -87,7 +87,7 @@ public class ExternalJbiServiceBuilder implements ContextFactoryBuilder {
 
     /**
      * Sets the factory used to construct invocation messages
-     * 
+     *
      * @param msgFactory
      */
     @Autowire
@@ -99,7 +99,7 @@ public class ExternalJbiServiceBuilder implements ContextFactoryBuilder {
      * Sets a builder responsible for creating source-side and target-side invocation chains for a reference. The
      * reference builder may be hierarchical, containing other child reference builders that operate on specific
      * metadata used to construct and invocation chain.
-     * 
+     *
      * @see org.apache.tuscany.core.builder.impl.HierarchicalBuilder
      */
     public void setPolicyBuilder(ContextFactoryBuilder builder) {
@@ -116,7 +116,8 @@ public class ExternalJbiServiceBuilder implements ContextFactoryBuilder {
         }
 
         ExternalJbiServiceClient externalJbiServiceClient = new ExternalJbiServiceClient(externalService);
-        ExternalJbiServiceContextFactory config = new ExternalJbiServiceContextFactory(externalService.getName(), new SingletonObjectFactory<ExternalJbiServiceClient>(externalJbiServiceClient));
+        ExternalJbiServiceContextFactory config = new ExternalJbiServiceContextFactory(externalService.getName(),
+                new SingletonObjectFactory<ExternalJbiServiceClient>(externalJbiServiceClient));
 
         ConfiguredService configuredService = externalService.getConfiguredService();
         Service service = configuredService.getService();
@@ -129,7 +130,8 @@ public class ExternalJbiServiceBuilder implements ContextFactoryBuilder {
             iConfigMap.put(method, iConfig);
         }
         QualifiedName qName = new QualifiedName(externalService.getName() + "/" + service.getName());
-        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap, serviceContract.getInterface().getClassLoader(), messageFactory);
+        ProxyConfiguration pConfiguration = new ProxyConfiguration(qName, iConfigMap,
+                serviceContract.getInterface().getClassLoader(), messageFactory);
         proxyFactory.setBusinessInterface(serviceContract.getInterface());
         proxyFactory.setProxyConfiguration(pConfiguration);
         config.addTargetProxyFactory(service.getName(), proxyFactory);

@@ -27,15 +27,15 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "StockQuoteResponse")
 public class StockQuoteResponse {
 
-	@XmlElement(name = "Result")
-	private float result;
+    @XmlElement(name = "Result")
+    private float result;
 
-	public float getResult() {
-		return result;
-	}
+    public float getResult() {
+        return result;
+    }
 
-	public void setResult(float result) {
-		this.result = result;
-	}
+    public void setResult(float result) {
+        this.result = result;
+    }
 
 }

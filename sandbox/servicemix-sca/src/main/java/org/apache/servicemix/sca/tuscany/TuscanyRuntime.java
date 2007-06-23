@@ -38,15 +38,16 @@ import org.osoa.sca.SCA;
 import org.osoa.sca.ServiceRuntimeException;
 
 public class TuscanyRuntime extends SCA {
+
+    private static final String SYSTEM_MODULE_COMPONENT = "org.apache.tuscany.core.system";
+
     private final TuscanyRuntime.Monitor monitor;
     private final Object sessionKey = new Object();
 
     private final RuntimeContext runtime;
     private final AggregateContext moduleContext;
-    
-    private final ModuleComponent moduleComponent;
 
-    private static final String SYSTEM_MODULE_COMPONENT = "org.apache.tuscany.core.system";
+    private final ModuleComponent moduleComponent;
 
     /**
      * Construct a runtime using a null MonitorFactory.
@@ -57,8 +58,8 @@ public class TuscanyRuntime extends SCA {
      * @see TuscanyRuntime#TuscanyRuntime(String, String, org.apache.tuscany.common.monitor.MonitorFactory)
      */
     public TuscanyRuntime(String name, String uri) throws ConfigurationException {
-        this(name, uri, 
-             Thread.currentThread().getContextClassLoader(), 
+        this(name, uri,
+             Thread.currentThread().getContextClassLoader(),
              new NullMonitorFactory());
     }
 
@@ -102,11 +103,11 @@ public class TuscanyRuntime extends SCA {
     public ModuleComponent getModuleComponent() {
         return moduleComponent;
     }
-    
+
     public AggregateContext getModuleContext() {
         return moduleContext;
     }
-    
+
     /**
      * Start the runtime and associate the module context with the calling thread.
      */

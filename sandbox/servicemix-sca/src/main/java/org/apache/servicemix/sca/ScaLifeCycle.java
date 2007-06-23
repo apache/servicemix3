@@ -21,8 +21,8 @@ import org.apache.servicemix.common.BaseLifeCycle;
 
 public class ScaLifeCycle extends BaseLifeCycle {
 
-	public ScaLifeCycle(BaseComponent component) {
-		super(component);
-	}
+    public ScaLifeCycle(BaseComponent component) {
+        super(component);
+    }
 
 }

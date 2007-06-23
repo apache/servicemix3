@@ -45,23 +45,26 @@ public class ExternalJbiServiceWireBuilder implements WireBuilder {
         runtimeContext = context;
     }
 
-    @Init(eager=true)
+    @Init(eager = true)
     public void init() {
         runtimeContext.addBuilder(this);
     }
 
-    public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope, ScopeContext targetScopeContext) throws BuilderConfigException {
+    public void connect(ProxyFactory sourceFactory, ProxyFactory targetFactory, Class targetType, boolean downScope,
+            ScopeContext targetScopeContext) throws BuilderConfigException {
         if (!(ExternalJbiServiceContextFactory.class.isAssignableFrom(targetType))) {
             return;
         }
-        for (InvocationConfiguration sourceInvocationConfig : sourceFactory.getProxyConfiguration().getInvocationConfigurations().values()) {
-            ExternalJbiServiceTargetInvoker invoker = new ExternalJbiServiceTargetInvoker(sourceFactory.getProxyConfiguration().getTargetName(), sourceInvocationConfig.getMethod(), targetScopeContext);
+        for (InvocationConfiguration sourceInvocationConfig
+                : sourceFactory.getProxyConfiguration().getInvocationConfigurations().values()) {
+            ExternalJbiServiceTargetInvoker invoker = new ExternalJbiServiceTargetInvoker(
+                    sourceFactory.getProxyConfiguration().getTargetName(), sourceInvocationConfig.getMethod(), targetScopeContext);
             sourceInvocationConfig.setTargetInvoker(invoker);
         }
     }
 
     public void completeTargetChain(ProxyFactory targetFactory, Class targetType, ScopeContext targetScopeContext)
-            throws BuilderConfigException {
+        throws BuilderConfigException {
         //TODO implement
     }
 

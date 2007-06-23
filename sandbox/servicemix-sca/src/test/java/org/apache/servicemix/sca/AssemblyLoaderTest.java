@@ -45,14 +45,14 @@ public class AssemblyLoaderTest extends TestCase {
     public void testLoader() throws Exception {
         String name = "bigbank";
         String uri  = getClass().getResource("bigbank/sca.module").toString();
-        
+
         URL url = getClass().getResource("bigbank/sca.module");
         URL parentUrl = new File(url.toURI()).getParentFile().toURL();
-        ClassLoader cl = new URLClassLoader(new URL[] { parentUrl }, getClass().getClassLoader());
-        
+        ClassLoader cl = new URLClassLoader(new URL[] {parentUrl}, getClass().getClassLoader());
+
         TuscanyRuntime rt = new TuscanyRuntime(name, uri, cl, new NullMonitorFactory());
         assertNotNull(rt);
-        
+
         Module module = rt.getModuleComponent().getModuleImplementation();
 
         Assert.assertTrue(module.getName().equals("org.apache.servicemix.sca.bigbank"));

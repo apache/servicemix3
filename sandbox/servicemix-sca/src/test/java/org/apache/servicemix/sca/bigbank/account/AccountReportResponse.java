@@ -29,15 +29,15 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "AccountReportResponse")
 public class AccountReportResponse {
 
-	@XmlElement(name = "AccountSummaries")
-	private List<AccountSummary> accountSummaries;
+    @XmlElement(name = "AccountSummaries")
+    private List<AccountSummary> accountSummaries;
 
-	public List<AccountSummary> getAccountSummaries() {
-		return accountSummaries;
-	}
+    public List<AccountSummary> getAccountSummaries() {
+        return accountSummaries;
+    }
 
-	public void setAccountSummaries(List<AccountSummary> accountSummaries) {
-		this.accountSummaries = accountSummaries;
-	}
+    public void setAccountSummaries(List<AccountSummary> accountSummaries) {
+        this.accountSummaries = accountSummaries;
+    }
 
 }

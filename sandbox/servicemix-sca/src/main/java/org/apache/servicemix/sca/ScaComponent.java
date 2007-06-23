@@ -34,7 +34,7 @@ public class ScaComponent extends BaseComponent {
      * @see org.servicemix.common.BaseComponent#createServiceUnitManager()
      */
     public BaseServiceUnitManager createServiceUnitManager() {
-        Deployer[] deployers = new Deployer[] { new ScaDeployer(this) };
+        Deployer[] deployers = new Deployer[] {new ScaDeployer(this)};
         return new BaseServiceUnitManager(this, deployers);
     }
 

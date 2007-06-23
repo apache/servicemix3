@@ -27,15 +27,15 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "AccountReportRequest")
 public class AccountReportRequest {
 
-	@XmlElement(name = "CustomerID")
-	private String customerID;
+    @XmlElement(name = "CustomerID")
+    private String customerID;
 
-	public String getCustomerID() {
-		return customerID;
-	}
+    public String getCustomerID() {
+        return customerID;
+    }
 
-	public void setCustomerID(String customerID) {
-		this.customerID = customerID;
-	}
+    public void setCustomerID(String customerID) {
+        this.customerID = customerID;
+    }
 
 }

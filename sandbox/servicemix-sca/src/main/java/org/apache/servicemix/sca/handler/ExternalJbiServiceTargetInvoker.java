@@ -43,9 +43,9 @@ public class ExternalJbiServiceTargetInvoker implements TargetInvoker {
      * @param container
      */
     public ExternalJbiServiceTargetInvoker(QualifiedName serviceName, Method method, ScopeContext container) {
-        assert (serviceName != null) : "No service name specified";
-        assert (method != null) : "No method specified";
-        assert (container != null) : "No scope container specified";
+        assert serviceName != null : "No service name specified";
+        assert method != null : "No method specified";
+        assert container != null : "No scope container specified";
         this.serviceName = serviceName;
         this.esName = serviceName.getPartName();
         this.method = method;
@@ -103,6 +103,6 @@ public class ExternalJbiServiceTargetInvoker implements TargetInvoker {
         } catch (CloneNotSupportedException e) {
             return null; // will not happen
         }
-    }  
-    
+    }
+
 }

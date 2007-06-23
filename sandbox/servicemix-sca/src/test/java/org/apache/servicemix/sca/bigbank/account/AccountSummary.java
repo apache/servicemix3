@@ -27,40 +27,40 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "AccountSummary")
 public class AccountSummary {
 
-	@XmlElement(name = "AccountNumber")
-	private String accountNumber;
+    @XmlElement(name = "AccountNumber")
+    private String accountNumber;
 
-	@XmlElement(name = "AccountType")
-	private String accountType;
+    @XmlElement(name = "AccountType")
+    private String accountType;
 
-	@XmlElement(name = "Balance")
-	private float balance;
+    @XmlElement(name = "Balance")
+    private float balance;
 
-	public AccountSummary() {
-	}
+    public AccountSummary() {
+    }
 
-	public String getAccountNumber() {
-		return accountNumber;
-	}
+    public String getAccountNumber() {
+        return accountNumber;
+    }
 
-	public void setAccountNumber(String accountNumber) {
-		this.accountNumber = accountNumber;
-	}
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
 
-	public String getAccountType() {
-		return accountType;
-	}
+    public String getAccountType() {
+        return accountType;
+    }
 
-	public void setAccountType(String accountType) {
-		this.accountType = accountType;
-	}
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
 
-	public float getBalance() {
-		return balance;
-	}
+    public float getBalance() {
+        return balance;
+    }
 
-	public void setBalance(float balance) {
-		this.balance = balance;
-	}
+    public void setBalance(float balance) {
+        this.balance = balance;
+    }
 
 }

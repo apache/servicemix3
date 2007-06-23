@@ -26,33 +26,33 @@ import org.apache.servicemix.common.ServiceUnit;
 
 public class ScaDeployer extends AbstractDeployer {
 
-	public static final String SCA_MODULE_FILE = "sca.module";
-	
-	public ScaDeployer(BaseComponent component) {
-		super(component);
-	}
+    public static final String SCA_MODULE_FILE = "sca.module";
 
-	public boolean canDeploy(String serviceUnitName, String serviceUnitRootPath) {
-		File module = new File(serviceUnitRootPath, SCA_MODULE_FILE);
-		return module.exists() && module.isFile();
-	}
+    public ScaDeployer(BaseComponent component) {
+        super(component);
+    }
 
-	public ServiceUnit deploy(String serviceUnitName, String serviceUnitRootPath)
-			throws DeploymentException {
-		File module = new File(serviceUnitRootPath, SCA_MODULE_FILE);
-		if (!module.exists() || !module.isFile()) {
+    public boolean canDeploy(String serviceUnitName, String serviceUnitRootPath) {
+        File module = new File(serviceUnitRootPath, SCA_MODULE_FILE);
+        return module.exists() && module.isFile();
+    }
+
+    public ServiceUnit deploy(String serviceUnitName, String serviceUnitRootPath)
+        throws DeploymentException {
+        File module = new File(serviceUnitRootPath, SCA_MODULE_FILE);
+        if (!module.exists() || !module.isFile()) {
             throw failure("deploy", "No sca.module found", null);
-		}
-		try {
-			ScaServiceUnit su = new ScaServiceUnit();
-	        su.setComponent(component);
-	        su.setName(serviceUnitName);
-	        su.setRootPath(serviceUnitRootPath);
-	        su.init();
-	        return su;
-		} catch (Exception e) {
-			throw failure("deploy", "Error loading sca module", e);
-		}
-	}
+        }
+        try {
+            ScaServiceUnit su = new ScaServiceUnit();
+            su.setComponent(component);
+            su.setName(serviceUnitName);
+            su.setRootPath(serviceUnitRootPath);
+            su.init();
+            return su;
+        } catch (Exception e) {
+            throw failure("deploy", "Error loading sca module", e);
+        }
+    }
 
 }

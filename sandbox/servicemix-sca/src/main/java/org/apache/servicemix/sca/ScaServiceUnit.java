@@ -35,36 +35,36 @@ import org.apache.tuscany.model.assembly.Module;
 
 public class ScaServiceUnit extends ServiceUnit {
 
-	protected static final ThreadLocal<ScaServiceUnit> SERVICE_UNIT = new ThreadLocal<ScaServiceUnit>();
-	
-	public static ScaServiceUnit getCurrentScaServiceUnit() {
-		return SERVICE_UNIT.get();
-	}
-	
-	protected TuscanyRuntime tuscanyRuntime;
-	protected ClassLoader classLoader;
-	
-	public void init() throws Exception {
+    protected static final ThreadLocal<ScaServiceUnit> SERVICE_UNIT = new ThreadLocal<ScaServiceUnit>();
+
+    protected ClassLoader classLoader;
+    protected TuscanyRuntime tuscanyRuntime;
+
+    public static ScaServiceUnit getCurrentScaServiceUnit() {
+        return SERVICE_UNIT.get();
+    }
+
+    public void init() throws Exception {
         SERVICE_UNIT.set(this);
-		createScaRuntime();
-		createEndpoints();
+        createScaRuntime();
+        createEndpoints();
         SERVICE_UNIT.set(null);
-	}
-	
-	protected void createScaRuntime() throws Exception {
-		File root = new File(getRootPath());
-		File[] files = root.listFiles(new JarFileFilter());
-		URL[] urls = new URL[files.length + 1];
-		for (int i = 0; i < files.length; i++) {
-			urls[i] = files[i].toURL();
-		}
-		urls[urls.length - 1] = root.toURL();
-		classLoader = new URLClassLoader(urls, getClass().getClassLoader());
-		
+    }
+
+    protected void createScaRuntime() throws Exception {
+        File root = new File(getRootPath());
+        File[] files = root.listFiles(new JarFileFilter());
+        URL[] urls = new URL[files.length + 1];
+        for (int i = 0; i < files.length; i++) {
+            urls[i] = files[i].toURL();
+        }
+        urls[urls.length - 1] = root.toURL();
+        classLoader = new URLClassLoader(urls, getClass().getClassLoader());
+
         tuscanyRuntime = new TuscanyRuntime(getName(), getRootPath(), classLoader, new CommonsLoggingMonitorFactory());
-	}
-	
-	protected void createEndpoints() throws Exception {
+    }
+
+    protected void createEndpoints() throws Exception {
         Module module = tuscanyRuntime.getModuleComponent().getModuleImplementation();
         for (Iterator i = module.getEntryPoints().iterator(); i.hasNext();) {
             EntryPoint entryPoint = (EntryPoint) i.next();
@@ -84,28 +84,28 @@ public class ScaServiceUnit extends ServiceUnit {
                 addEndpoint(endpoint);
             }
         }
-	}
-	
-	private static class JarFileFilter implements FilenameFilter {
+    }
+
+    private static class JarFileFilter implements FilenameFilter {
         public boolean accept(File dir, String name) {
             return name.endsWith(".jar");
         }
-	}
+    }
 
-	public TuscanyRuntime getTuscanyRuntime() {
-		return tuscanyRuntime;
-	}
+    public TuscanyRuntime getTuscanyRuntime() {
+        return tuscanyRuntime;
+    }
 
-	@Override
-	public void start() throws Exception {
-	    tuscanyRuntime.start();
-		super.start();
-	}
+    @Override
+    public void start() throws Exception {
+        tuscanyRuntime.start();
+        super.start();
+    }
 
-	@Override
-	public void stop() throws Exception {
-		super.stop();
-		tuscanyRuntime.stop();
-	}
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        tuscanyRuntime.stop();
+    }
 
 }

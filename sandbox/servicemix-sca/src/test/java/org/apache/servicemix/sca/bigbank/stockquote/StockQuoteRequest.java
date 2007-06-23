@@ -27,15 +27,15 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "StockQuoteRequest")
 public class StockQuoteRequest {
 
-	@XmlElement(name = "Symbol")
-	private String symbol;
+    @XmlElement(name = "Symbol")
+    private String symbol;
 
-	public String getSymbol() {
-		return symbol;
-	}
+    public String getSymbol() {
+        return symbol;
+    }
 
-	public void setSymbol(String symbol) {
-		this.symbol = symbol;
-	}
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
 
 }

@@ -25,67 +25,67 @@ import org.apache.servicemix.sca.bigbank.accountdata.StockAccount;
 import org.apache.servicemix.sca.bigbank.stockquote.StockQuoteRequest;
 import org.apache.servicemix.sca.bigbank.stockquote.StockQuoteResponse;
 import org.apache.servicemix.sca.bigbank.stockquote.StockQuoteService;
-import org.osoa.sca.annotations.Property;
+//import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
-@Service(interfaces=AccountService.class)
+@Service(interfaces = AccountService.class)
 public class AccountServiceImpl implements AccountService {
 
-    @Property
-    public String currency = "USD";
+    //@Property
+    //private String currency = "USD";
 
     @Reference
-    public AccountDataService accountDataService;
+    private AccountDataService accountDataService;
     @Reference
-    public StockQuoteService stockQuoteService;
+    private StockQuoteService stockQuoteService;
 
     public AccountServiceImpl() {
     }
 
     public AccountReportResponse getAccountReport(AccountReportRequest request) {
-    	AccountReportResponse report = new AccountReportResponse();
-    	String customerID = request.getCustomerID();
-    	report.setAccountSummaries(new ArrayList<AccountSummary>());
-    	report.getAccountSummaries().add(getCheckAccountSummary(customerID));
-    	report.getAccountSummaries().add(getSavingsAccountSummary(customerID));
-    	report.getAccountSummaries().add(getStockAccountSummary(customerID));
+        AccountReportResponse report = new AccountReportResponse();
+        String customerID = request.getCustomerID();
+        report.setAccountSummaries(new ArrayList<AccountSummary>());
+        report.getAccountSummaries().add(getCheckAccountSummary(customerID));
+        report.getAccountSummaries().add(getSavingsAccountSummary(customerID));
+        report.getAccountSummaries().add(getStockAccountSummary(customerID));
         return report;
     }
-    
+
     private AccountSummary getCheckAccountSummary(String customerID) {
-    	CheckingAccount checking = accountDataService.getCheckingAccount(customerID);
-    	AccountSummary summary = new AccountSummary();
-    	summary.setAccountNumber(checking.getAccountNumber());
-    	summary.setAccountType("Checking");
-    	summary.setBalance(checking.getBalance());
-    	return summary;
+        CheckingAccount checking = accountDataService.getCheckingAccount(customerID);
+        AccountSummary summary = new AccountSummary();
+        summary.setAccountNumber(checking.getAccountNumber());
+        summary.setAccountType("Checking");
+        summary.setBalance(checking.getBalance());
+        return summary;
     }
 
     private AccountSummary getSavingsAccountSummary(String customerID) {
-    	SavingsAccount savings = accountDataService.getSavingsAccount(customerID);
-    	AccountSummary summary = new AccountSummary();
-    	summary.setAccountNumber(savings.getAccountNumber());
-    	summary.setAccountType("Savings");
-    	summary.setBalance(savings.getBalance());
-    	return summary;
+        SavingsAccount savings = accountDataService.getSavingsAccount(customerID);
+        AccountSummary summary = new AccountSummary();
+        summary.setAccountNumber(savings.getAccountNumber());
+        summary.setAccountType("Savings");
+        summary.setBalance(savings.getBalance());
+        return summary;
     }
 
     private AccountSummary getStockAccountSummary(String customerID) {
-    	StockAccount stock = accountDataService.getStockAccount(customerID);
-    	AccountSummary summary = new AccountSummary();
-    	summary.setAccountNumber(stock.getAccountNumber());
-    	summary.setAccountType("Stock");
-    	float quote = getQuote(stock.getSymbol());
-    	summary.setBalance(quote * stock.getQuantity());
-    	return summary;
+        StockAccount stock = accountDataService.getStockAccount(customerID);
+        AccountSummary summary = new AccountSummary();
+        summary.setAccountNumber(stock.getAccountNumber());
+        summary.setAccountType("Stock");
+        float quote = getQuote(stock.getSymbol());
+        summary.setBalance(quote * stock.getQuantity());
+        return summary;
     }
-    
+
     private float getQuote(String symbol) {
-    	StockQuoteRequest req = new StockQuoteRequest();
-    	req.setSymbol(symbol);
-    	StockQuoteResponse rep = stockQuoteService.getQuote(req);
-    	return rep.getResult();
+        StockQuoteRequest req = new StockQuoteRequest();
+        req.setSymbol(symbol);
+        StockQuoteResponse rep = stockQuoteService.getQuote(req);
+        return rep.getResult();
     }
 
 }
