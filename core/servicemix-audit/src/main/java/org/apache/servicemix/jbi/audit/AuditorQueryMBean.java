@@ -27,16 +27,16 @@ import javax.jbi.messaging.ExchangeStatus;
  * @version $Revision$
  */
 public interface AuditorQueryMBean extends AuditorMBean {
-	String[] findExchangesIDsByStatus(ExchangeStatus status) throws AuditorException;	
-	String[] findExchangesIDsByMessageContent(String type, String content) throws AuditorException;
-	String[] findExchangesIDsByMessageProperty(String type, String property, String value) throws AuditorException;
+    String[] findExchangesIDsByStatus(ExchangeStatus status) throws AuditorException;
+    String[] findExchangesIDsByMessageContent(String type, String content) throws AuditorException;
+    String[] findExchangesIDsByMessageProperty(String type, String property, String value) throws AuditorException;
 
-	/**
-	 * Searches for Exchanges IDs using the supplied key-field and the expected content of the field 
-	 * @param field
-	 * @param fieldValue
-	 * @return exchange ids
-	 * @throws AuditorException if an error occurs
-	 */
-	String[] getExchangeIds(String field, String fieldValue) throws AuditorException;
+    /**
+     * Searches for Exchanges IDs using the supplied key-field and the expected content of the field 
+     * @param field
+     * @param fieldValue
+     * @return exchange ids
+     * @throws AuditorException if an error occurs
+     */
+    String[] getExchangeIds(String field, String fieldValue) throws AuditorException;
 }

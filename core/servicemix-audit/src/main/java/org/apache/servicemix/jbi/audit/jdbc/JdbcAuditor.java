@@ -113,7 +113,7 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
     
     public void exchangeSent(ExchangeEvent event) {
         MessageExchange exchange = event.getExchange();
-        if (exchange instanceof MessageExchangeImpl == false) {
+        if (!(exchange instanceof MessageExchangeImpl)) {
             throw new IllegalArgumentException("exchange should be a MessageExchangeImpl");
         }
         try {
@@ -186,8 +186,7 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
-            String[] ids = adapter.doGetIds(connection, fromIndex, toIndex);
-            return ids;
+            return adapter.doGetIds(connection, fromIndex, toIndex);
         } catch (Exception e) {
             throw new AuditorException("Could not retrieve exchange ids", e);
         } finally {
@@ -276,6 +275,7 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
                 }
                 connection.close();
             } catch (SQLException e) {
+                // Do nothing
             }
         }
     }

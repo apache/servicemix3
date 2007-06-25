@@ -63,8 +63,9 @@ public abstract class AbstractAuditor extends BaseSystemService implements Audit
     public void start() throws javax.jbi.JBIException {
         super.start();
         doStart();
-        if (isAsContainerListener())
-        	this.container.addListener(this);
+        if (isAsContainerListener()) {
+            this.container.addListener(this);
+        }
     }
 
     /* (non-Javadoc)
@@ -150,7 +151,7 @@ public abstract class AbstractAuditor extends BaseSystemService implements Audit
         if (id == null || id.length() == 0) {
             throw new IllegalArgumentException("id should be non null and non empty");
         }
-        return getExchangesByIds(new String[] { id })[0];
+        return getExchangesByIds(new String[] {id })[0];
     }
     
     /* (non-Javadoc)
@@ -193,7 +194,7 @@ public abstract class AbstractAuditor extends BaseSystemService implements Audit
      * @see org.apache.servicemix.jbi.audit.AuditorMBean#deleteExchange(java.lang.String)
      */
     public boolean deleteExchangeById(String id) throws AuditorException {
-        return deleteExchangesByIds(new String[] { id }) == 1;
+        return deleteExchangesByIds(new String[] {id }) == 1;
     }
     
     /* (non-Javadoc)
@@ -215,7 +216,7 @@ public abstract class AbstractAuditor extends BaseSystemService implements Audit
         container.resendExchange(exchange);
     }
 
-	/**
+    /**
      * Test if Auditor should be included as a container listener
      * 
      * @return Returns the addToContainer.

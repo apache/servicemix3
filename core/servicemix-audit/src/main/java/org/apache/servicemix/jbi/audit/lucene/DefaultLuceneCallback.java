@@ -28,33 +28,35 @@ import org.apache.lucene.search.Query;
 
 /**
  * Default Lucene Callback implementation. Used on LuceneAuditor
+ * 
  * @author George Gastaldi (gastaldi)
  * @since 2.1
  * @version $Revision$
  */
 public class DefaultLuceneCallback implements LuceneCallback {
-	private String field;
-	private String query;
-	
-	public DefaultLuceneCallback(String field, String query) {
-		this.field = field;
-		this.query = query;
-	}
-	
-	public Object doCallback(IndexSearcher is) throws IOException {
-		try {
-			Query queryObj = QueryParser.parse(query, field, new StandardAnalyzer());
-			Hits hits = is.search(queryObj);
-			int total = hits.length();
-			String[] ids = new String[total];
-			for (int i = 0; i < total; i++) {
-				Document d = hits.doc(i);
-				ids[i] = d.get("org.apache.servicemix.exchangeid");
-			}
-			return ids;
-		} catch (ParseException pe) {
-			return new String[0];
-		}
-	}
+    private String field;
+
+    private String query;
+
+    public DefaultLuceneCallback(String field, String query) {
+        this.field = field;
+        this.query = query;
+    }
+
+    public Object doCallback(IndexSearcher is) throws IOException {
+        try {
+            Query queryObj = QueryParser.parse(query, field, new StandardAnalyzer());
+            Hits hits = is.search(queryObj);
+            int total = hits.length();
+            String[] ids = new String[total];
+            for (int i = 0; i < total; i++) {
+                Document d = hits.doc(i);
+                ids[i] = d.get("org.apache.servicemix.exchangeid");
+            }
+            return ids;
+        } catch (ParseException pe) {
+            return new String[0];
+        }
+    }
 
 }

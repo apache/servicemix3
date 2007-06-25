@@ -27,20 +27,22 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+
+
 /**
  * Utility class for Lucene API.
  * @author george
  * @since 2.1
  * @version $Revision$
  */
-
 public class LuceneIndexer {
     protected Directory directory;
+
     private File segmentFile;
-    
+
     public LuceneIndexer() {
     }
-    
+
     public Directory getDirectory() {
         return directory;
     }
@@ -49,75 +51,71 @@ public class LuceneIndexer {
         this.directory = directory;
     }
 
-    public void setDirectoryName(File directoryName) throws IOException  {
-    	this.segmentFile = new File(directoryName,"segments");
-    	this.directory = FSDirectory.getDirectory(directoryName.toString(),!this.segmentFile.exists());
+    public void setDirectoryName(File directoryName) throws IOException {
+        this.segmentFile = new File(directoryName, "segments");
+        this.directory = FSDirectory.getDirectory(directoryName.toString(), !this.segmentFile.exists());
     }
-    
+
     /**
      * Drop object from Lucene index
      */
     protected void remove(String id) throws IOException {
         synchronized (directory) {
-            IndexReader ir = IndexReader.open(directory); 
-            try{
+            IndexReader ir = IndexReader.open(directory);
+            try {
                 ir.delete(new Term("org.apache.servicemix.exchangeid", id));
-            }
-            finally{
-                ir.close();    
+            } finally {
+                ir.close();
             }
         }
     }
-    
+
     protected void remove(String[] ids) throws IOException {
-    	if (ids != null && ids.length > 0) {
-	        synchronized (directory) {
-	            IndexReader ir = IndexReader.open(directory); 
-	            try{
-	            	for (int i=0;i<ids.length;i++)
-	            		ir.delete(new Term("org.apache.servicemix.exchangeid", ids[i]));
-	            }
-	            finally{
-	                ir.close();    
-	            }
-	        }
-    	}
+        if (ids != null && ids.length > 0) {
+            synchronized (directory) {
+                IndexReader ir = IndexReader.open(directory);
+                try {
+                    for (int i = 0; i < ids.length; i++) {
+                        ir.delete(new Term("org.apache.servicemix.exchangeid", ids[i]));
+                    }
+                } finally {
+                    ir.close();
+                }
+            }
+        }
     }
-    
+
     /**
      * Add object to Lucene index
      */
     public void add(Document lucDoc, String id) throws IOException {
         synchronized (directory) {
             IndexWriter writer = new IndexWriter(directory, new SimpleAnalyzer(), !segmentFile.exists());
-            try{
+            try {
                 writer.addDocument(lucDoc);
-            }
-            finally{
-                writer.close();    
+            } finally {
+                writer.close();
             }
         }
     }
-    
+
     /**
      * called when an existing document is updated.
      */
     public void update(Document lucDoc, String id) throws IOException {
         remove(id);
-        add(lucDoc,id);
+        add(lucDoc, id);
     }
-    
-    
-    public Object search (LuceneCallback lc) throws IOException {
+
+    public Object search(LuceneCallback lc) throws IOException {
         synchronized (directory) {
             IndexReader ir = IndexReader.open(directory);
             IndexSearcher is = new IndexSearcher(ir);
-            try{
+            try {
                 return lc.doCallback(is);
-            }
-            finally{
-            	is.close();
-                ir.close();    
+            } finally {
+                is.close();
+                ir.close();
             }
         }
     }

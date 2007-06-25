@@ -21,18 +21,23 @@ import java.io.IOException;
 import org.apache.lucene.search.IndexSearcher;
 
 /**
- * Lucene Callback Interface. 
- * Used on searching to be executed on synchronized blocks. 
+ * Lucene Callback Interface. Used on searching to be executed on synchronized
+ * blocks.
+ * 
  * @author George Gastaldi
  * @since 2.1
  * @version $Revision$
  */
 public interface LuceneCallback {
-	/**
-	 * Called by the LuceneIndexer 
-	 * @param is IndexSearcher provided by the indexer
-	 * @return an object from the query
-	 * @throws IOException if an error occurs during opening/searching of the index
-	 */	
-	Object doCallback(IndexSearcher is) throws IOException;
+
+    /**
+     * Called by the LuceneIndexer
+     * 
+     * @param is
+     *            IndexSearcher provided by the indexer
+     * @return an object from the query
+     * @throws IOException
+     *             if an error occurs during opening/searching of the index
+     */
+    Object doCallback(IndexSearcher is) throws IOException;
 }
