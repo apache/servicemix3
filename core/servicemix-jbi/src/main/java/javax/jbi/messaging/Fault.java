@@ -16,7 +16,6 @@
  */
 package javax.jbi.messaging;
 
-public interface Fault extends NormalizedMessage
-{
-    
+public interface Fault extends NormalizedMessage {
+
 }

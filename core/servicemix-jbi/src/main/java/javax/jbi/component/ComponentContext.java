@@ -27,33 +27,26 @@ import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;   
+import org.w3c.dom.DocumentFragment;
 
-public interface ComponentContext
-{
-    ServiceEndpoint activateEndpoint(QName serviceName, String endpointName)
-        throws JBIException;
-    
-    void deactivateEndpoint(ServiceEndpoint endpoint)
-        throws JBIException;
+public interface ComponentContext {
+    ServiceEndpoint activateEndpoint(QName serviceName, String endpointName) throws JBIException;
 
-    void registerExternalEndpoint(ServiceEndpoint externalEndpoint)
-        throws JBIException;
+    void deactivateEndpoint(ServiceEndpoint endpoint) throws JBIException;
 
-    void deregisterExternalEndpoint(ServiceEndpoint externalEndpoint)
-        throws JBIException;
+    void registerExternalEndpoint(ServiceEndpoint externalEndpoint) throws JBIException;
+
+    void deregisterExternalEndpoint(ServiceEndpoint externalEndpoint) throws JBIException;
 
     ServiceEndpoint resolveEndpointReference(DocumentFragment epr);
 
     String getComponentName();
 
-    DeliveryChannel getDeliveryChannel()
-        throws MessagingException;
+    DeliveryChannel getDeliveryChannel() throws MessagingException;
 
     ServiceEndpoint getEndpoint(QName service, String name);
 
-    Document getEndpointDescriptor(ServiceEndpoint endpoint)
-        throws JBIException;
+    Document getEndpointDescriptor(ServiceEndpoint endpoint) throws JBIException;
 
     ServiceEndpoint[] getEndpoints(QName interfaceName);
 
@@ -65,8 +58,7 @@ public interface ComponentContext
 
     String getInstallRoot();
 
-    Logger getLogger(String suffix, String resourceBundleName)
-        throws MissingResourceException, JBIException;
+    Logger getLogger(String suffix, String resourceBundleName) throws MissingResourceException, JBIException;
 
     javax.jbi.management.MBeanNames getMBeanNames();
 

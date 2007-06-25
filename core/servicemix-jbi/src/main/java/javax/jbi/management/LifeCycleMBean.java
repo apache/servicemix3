@@ -18,8 +18,16 @@ package javax.jbi.management;
 
 import javax.jbi.JBIException;
 
-public interface LifeCycleMBean
-{
+public interface LifeCycleMBean {
+
+    String SHUTDOWN = "Shutdown";
+
+    String STOPPED = "Stopped";
+
+    String STARTED = "Started";
+
+    String UNKNOWN = "Unknown";
+
     void start() throws JBIException;
 
     void stop() throws JBIException;
@@ -28,11 +36,4 @@ public interface LifeCycleMBean
 
     String getCurrentState();
 
-    final static String SHUTDOWN = "Shutdown";
-
-    final static String STOPPED  = "Stopped";
-
-    final static String STARTED  = "Started";
-
-    final static String UNKNOWN  = "Unknown";
 }

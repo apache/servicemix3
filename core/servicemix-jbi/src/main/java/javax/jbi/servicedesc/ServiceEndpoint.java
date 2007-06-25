@@ -18,8 +18,7 @@ package javax.jbi.servicedesc;
 
 import javax.xml.namespace.QName;
 
-public interface ServiceEndpoint
-{
+public interface ServiceEndpoint {
     org.w3c.dom.DocumentFragment getAsReference(QName operationName);
 
     String getEndpointName();

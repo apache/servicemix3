@@ -18,8 +18,7 @@ package javax.jbi.component;
 
 import org.w3c.dom.DocumentFragment;
 
-public interface InstallationContext
-{
+public interface InstallationContext {
     String getComponentClassName();
 
     java.util.List getClassPathElements();

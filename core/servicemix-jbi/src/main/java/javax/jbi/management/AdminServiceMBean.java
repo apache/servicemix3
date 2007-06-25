@@ -18,8 +18,7 @@ package javax.jbi.management;
 
 import javax.management.ObjectName;
 
-public interface AdminServiceMBean
-{
+public interface AdminServiceMBean {
     ObjectName[] getBindingComponents();
 
     ObjectName getComponentByName(String name);

@@ -18,13 +18,13 @@ package javax.jbi.management;
 
 import javax.management.ObjectName;
 
-public interface MBeanNames
-{
+public interface MBeanNames {
+
+    String BOOTSTRAP_EXTENSION = "BootstrapExtension";
+
+    String COMPONENT_LIFE_CYCLE_EXTENSION = "LifeCycleExtension";
+
     ObjectName createCustomComponentMBeanName(String customName);
-
-    static final String BOOTSTRAP_EXTENSION = "BootstrapExtension";
-
-    static final String COMPONENT_LIFE_CYCLE_EXTENSION = "LifeCycleExtension";
 
     String getJmxDomainName();
 }

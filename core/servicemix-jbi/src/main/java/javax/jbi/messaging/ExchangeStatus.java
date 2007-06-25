@@ -16,62 +16,48 @@
  */
 package javax.jbi.messaging;
 
-public final class ExchangeStatus
-{
-    
+public final class ExchangeStatus {
+
     public static final ExchangeStatus ACTIVE = new ExchangeStatus("Active");
-    
+
     public static final ExchangeStatus ERROR = new ExchangeStatus("Error");
-    
-    public static final ExchangeStatus DONE  = new ExchangeStatus("Done");
-    
+
+    public static final ExchangeStatus DONE = new ExchangeStatus("Done");
+
     private String mStatus;
-    
-    private ExchangeStatus(String status)
-    {
+
+    private ExchangeStatus(String status) {
         mStatus = status;
     }
-    
-    public String toString()
-    {
+
+    public String toString() {
         return mStatus;
     }
-    
-   
-    
-    public static ExchangeStatus valueOf(String status)
-    {
+
+    public static ExchangeStatus valueOf(String status) {
         ExchangeStatus instance;
-        
+
         //
         //  Convert symbolic name to object reference.
         //
-        if (status.equals(DONE.toString()))
-        {
+        if (status.equals(DONE.toString())) {
             instance = DONE;
-        }
-        else if (status.equals(ERROR.toString()))
-        {
+        } else if (status.equals(ERROR.toString())) {
             instance = ERROR;
-        }
-        else if (status.equals(ACTIVE.toString()))
-        {
+        } else if (status.equals(ACTIVE.toString())) {
             instance = ACTIVE;
-            
-        }
-        else
-        {
+
+        } else {
             //
             //  Someone has a problem.
             //
             throw new java.lang.IllegalArgumentException(status);
         }
-       
-        return (instance);
+
+        return instance;
     }
-    
-    public int hashCode()
-    {
+
+    public int hashCode() {
         return mStatus.hashCode();
     }
 }
