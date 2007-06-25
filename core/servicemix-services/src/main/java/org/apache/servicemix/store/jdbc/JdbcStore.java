@@ -29,7 +29,7 @@ import org.apache.servicemix.store.Store;
 
 public class JdbcStore implements Store {
 
-    private static final Log log = LogFactory.getLog(JdbcStore.class);
+    private static final Log LOG = LogFactory.getLog(JdbcStore.class);
 
     private JdbcStoreFactory factory;
     private String name;
@@ -39,14 +39,14 @@ public class JdbcStore implements Store {
         this.name = name;
     }
 
-    public boolean hasFeature(String name) {
-        return PERSISTENT.equals(name) ||
-               (CLUSTERED.equals(name) && factory.isClustered()) ||
-               (TRANSACTIONAL.equals(name) && factory.isTransactional());
+    public boolean hasFeature(String feature) {
+        return PERSISTENT.equals(feature) 
+            || (CLUSTERED.equals(feature) && factory.isClustered())
+            || (TRANSACTIONAL.equals(feature) && factory.isTransactional());
     }
 
     public void store(String id, Object data) throws IOException {
-        log.debug("Storing object with id: " + id);
+        LOG.debug("Storing object with id: " + id);
         Connection connection = null;
         try {
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -69,7 +69,7 @@ public class JdbcStore implements Store {
     }
 
     public Object load(String id) throws IOException {
-        log.debug("Loading object with id: " + id);
+        LOG.debug("Loading object with id: " + id);
         Connection connection = null;
         try {
             connection = factory.getDataSource().getConnection();

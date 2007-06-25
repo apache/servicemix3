@@ -18,13 +18,12 @@ package org.apache.servicemix.store.memory;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.servicemix.id.IdGenerator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.id.IdGenerator;
 import org.apache.servicemix.store.Store;
-
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A simple memory store implementation based on a simple map.
@@ -33,25 +32,26 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author gnodet
  */
 public class MemoryStore implements Store {
-    
-    private static final Log log = LogFactory.getLog(MemoryStore.class);
+
+    private static final Log LOG = LogFactory.getLog(MemoryStore.class);
 
     private Map<String, Object> datas = new ConcurrentHashMap<String, Object>();
+
     private IdGenerator idGenerator;
-    
+
     public MemoryStore(IdGenerator idGenerator) {
         this.idGenerator = idGenerator;
     }
-    
+
     public boolean hasFeature(String name) {
         return false;
     }
 
     public void store(String id, Object data) throws IOException {
-        log.debug("Storing object with id: " + id);
+        LOG.debug("Storing object with id: " + id);
         datas.put(id, data);
     }
-    
+
     public String store(Object data) throws IOException {
         String id = idGenerator.generateId();
         store(id, data);
@@ -59,8 +59,8 @@ public class MemoryStore implements Store {
     }
 
     public Object load(String id) throws IOException {
-        log.debug("Loading object with id: " + id);
+        LOG.debug("Loading object with id: " + id);
         return datas.remove(id);
     }
-    
+
 }

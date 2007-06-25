@@ -68,6 +68,7 @@ public class JdbcStoreFactory implements StoreFactory {
                     try {
                         connection.close();
                     } catch (Exception e) {
+                        // Do nothing
                     }
                 }
             }

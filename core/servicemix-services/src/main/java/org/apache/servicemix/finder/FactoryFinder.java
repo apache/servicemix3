@@ -24,10 +24,10 @@ import java.util.Properties;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-
 public class FactoryFinder {
 
     private final String path;
+
     private final Map<String, Class<?>> classMap = new ConcurrentHashMap<String, Class<?>>();
 
     public FactoryFinder(String path) {
@@ -41,18 +41,16 @@ public class FactoryFinder {
      *            containing the factory name
      * @return a newly created instance
      */
-    public Object newInstance(String key)
-            throws IllegalAccessException, InstantiationException, IOException, ClassNotFoundException
-    {
+    public Object newInstance(String key) throws IllegalAccessException, InstantiationException, IOException,
+            ClassNotFoundException {
         return newInstance(key, null);
     }
 
-    public Object newInstance(String key, String propertyPrefix)
-            throws IllegalAccessException, InstantiationException, IOException, ClassNotFoundException
-    {
-        if (propertyPrefix == null)
+    public Object newInstance(String key, String propertyPrefix) throws IllegalAccessException, InstantiationException,
+            IOException, ClassNotFoundException {
+        if (propertyPrefix == null) {
             propertyPrefix = "";
-
+        }
         Class clazz = classMap.get(propertyPrefix + key);
         if (clazz == null) {
             clazz = newInstance(doFindFactoryProperies(key), propertyPrefix);
@@ -100,6 +98,7 @@ public class FactoryFinder {
             try {
                 reader.close();
             } catch (Exception e) {
+                // Do nothing
             }
         }
     }

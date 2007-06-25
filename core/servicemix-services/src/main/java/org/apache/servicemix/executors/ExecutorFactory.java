@@ -31,6 +31,6 @@ public interface ExecutorFactory {
      * @param id the id of the executor to create
      * @return a configured Executor
      */
-    public Executor createExecutor(String id);
+    Executor createExecutor(String id);
     
 }

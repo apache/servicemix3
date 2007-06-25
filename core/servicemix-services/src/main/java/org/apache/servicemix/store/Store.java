@@ -41,7 +41,7 @@ public interface Store {
      * @param name the feature to check
      * @return <code>true</code> if the feature is supported
      */
-    public boolean hasFeature(String name);
+    boolean hasFeature(String name);
     
     /**
      * Put an object in the store under the given id.
@@ -52,7 +52,7 @@ public interface Store {
      * @param data the object to store
      * @throws IOException if an error occurs
      */
-    public void store(String id, Object data) throws IOException;
+    void store(String id, Object data) throws IOException;
     
     /**
      * Put an object into the store and return the unique id that
@@ -62,7 +62,7 @@ public interface Store {
      * @return the id of the object stored
      * @throws IOException if an error occurs
      */
-    public String store(Object data) throws IOException;
+    String store(Object data) throws IOException;
     
     /**
      * Loads an object that has been previously stored under the specified key.
@@ -72,6 +72,6 @@ public interface Store {
      * @return the object, or <code>null></code> if the object could not be found
      * @throws IOException if an error occurs
      */
-    public Object load(String id) throws IOException;
+    Object load(String id) throws IOException;
     
 }

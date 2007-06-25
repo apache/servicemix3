@@ -38,34 +38,33 @@ import java.sql.SQLException;
  * @version $Revision: 1.2 $
  */
 public class StreamJDBCAdapter extends DefaultJDBCAdapter {
-    
+
     /**
      * @see org.apache.activemq.store.jdbc.adapter.DefaultJDBCAdapter#getBinaryData(java.sql.ResultSet, int)
      */
     protected byte[] getBinaryData(ResultSet rs, int index) throws SQLException {
-        
+
         try {
             InputStream is = rs.getBinaryStream(index);
             ByteArrayOutputStream os = new ByteArrayOutputStream(1024 * 4);
-
-            int ch;
-            while ((ch = is.read()) >= 0) {
+            int ch = is.read();
+            while (ch >= 0) {
                 os.write(ch);
+                ch = is.read();
             }
             is.close();
             os.close();
-
             return os.toByteArray();
         } catch (IOException e) {
-            throw (SQLException)new SQLException("Error reading binary parameter: "+index).initCause(e);
+            throw (SQLException) new SQLException("Error reading binary parameter: " + index).initCause(e);
         }
     }
-    
+
     /**
      * @see org.apache.activemq.store.jdbc.adapter.DefaultJDBCAdapter#setBinaryData(java.sql.PreparedStatement, int, byte[])
      */
     protected void setBinaryData(PreparedStatement s, int index, byte[] data) throws SQLException {
         s.setBinaryStream(index, new ByteArrayInputStream(data), data.length);
     }
-    
+
 }

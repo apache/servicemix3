@@ -16,17 +16,17 @@
  */
 package org.apache.servicemix.locks.impl;
 
-import org.apache.servicemix.locks.LockManager;
-
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.servicemix.locks.LockManager;
+
 public class SimpleLockManager implements LockManager {
 
     private ConcurrentMap<String, Lock> locks = new ConcurrentHashMap<String, Lock>();
-    
+
     public Lock getLock(String id) {
         Lock lock = locks.get(id);
         if (lock == null) {

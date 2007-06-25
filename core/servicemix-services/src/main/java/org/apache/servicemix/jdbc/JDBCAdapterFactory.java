@@ -24,11 +24,14 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.finder.FactoryFinder;
 import org.apache.servicemix.jdbc.adapter.DefaultJDBCAdapter;
 
-public class JDBCAdapterFactory {
+public final class JDBCAdapterFactory {
 
-    private static final Log log = LogFactory.getLog(JDBCAdapterFactory.class);
+    private static final Log LOG = LogFactory.getLog(JDBCAdapterFactory.class);
     private static FactoryFinder factoryFinder = new FactoryFinder("META-INF/services/org/apache/servicemix/jdbc/");
 
+    private JDBCAdapterFactory() {
+    }
+    
     public static JDBCAdapter getAdapter(Connection connection) {
         JDBCAdapter adapter = null;
         try {
@@ -39,14 +42,14 @@ public class JDBCAdapterFactory {
 
             try {
                 adapter = (JDBCAdapter) factoryFinder.newInstance(driverName);
-                log.info("Database driver recognized: [" + driverName + "]");
+                LOG.info("Database driver recognized: [" + driverName + "]");
             } catch (Throwable e) {
-                log.warn("Database driver NOT recognized: [" + driverName
+                LOG.warn("Database driver NOT recognized: [" + driverName
                         + "].  Will use default JDBC implementation.");
             }
 
         } catch (SQLException e) {
-            log.warn("JDBC error occurred while trying to detect database type.  Will use default JDBC implementation: "
+            LOG.warn("JDBC error occurred while trying to detect database type.  Will use default JDBC implementation: "
                             + e.getMessage());
             log("Failure details: ", e);
         }
@@ -61,15 +64,13 @@ public class JDBCAdapterFactory {
     }
     
     public static void log(String msg, SQLException e) {
-        if (log.isDebugEnabled()) {
-            if (log.isDebugEnabled()) {
-                String s = msg + e.getMessage();
-                while (e.getNextException() != null) {
-                    e = e.getNextException();
-                    s += ", due to: " + e.getMessage();
-                }
-                log.debug(s, e);
+        if (LOG.isDebugEnabled()) {
+            String s = msg + e.getMessage();
+            while (e.getNextException() != null) {
+                e = e.getNextException();
+                s += ", due to: " + e.getMessage();
             }
+            LOG.debug(s, e);
         }
     }
 }

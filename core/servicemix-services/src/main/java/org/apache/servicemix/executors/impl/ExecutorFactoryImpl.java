@@ -19,10 +19,6 @@ package org.apache.servicemix.executors.impl;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.servicemix.executors.Executor;
-import org.apache.servicemix.executors.ExecutorFactory;
-
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -32,6 +28,9 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.servicemix.executors.Executor;
+import org.apache.servicemix.executors.ExecutorFactory;
 
 /**
  * Default implementation of the ExecutorFactory.
@@ -51,14 +50,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ExecutorFactoryImpl implements ExecutorFactory {
 
     private ExecutorConfig defaultConfig = new ExecutorConfig();
-    private Map<String,ExecutorConfig> configs = new HashMap<String, ExecutorConfig>();
-    
+
+    private Map<String, ExecutorConfig> configs = new HashMap<String, ExecutorConfig>();
+
     public Executor createExecutor(String id) {
         ExecutorConfig config = getConfig(id);
-        return new ExecutorImpl(createService(id, config), 
-                                config.getShutdownDelay());
+        return new ExecutorImpl(createService(id, config), config.getShutdownDelay());
     }
-    
+
     protected ExecutorConfig getConfig(String id) {
         ExecutorConfig config = null;
         if (configs != null) {
@@ -73,7 +72,7 @@ public class ExecutorFactoryImpl implements ExecutorFactory {
         }
         return config;
     }
-    
+
     protected ThreadPoolExecutor createService(String id, ExecutorConfig config) {
         if (config.getQueueSize() != 0 && config.getCorePoolSize() == 0) {
             throw new IllegalArgumentException("CorePoolSize must be > 0 when using a capacity queue");
@@ -86,23 +85,17 @@ public class ExecutorFactoryImpl implements ExecutorFactory {
         } else {
             queue = new ArrayBlockingQueue<Runnable>(config.getQueueSize());
         }
-        ThreadFactory factory = new DefaultThreadFactory(id,
-                                                         config.isThreadDaemon(), 
-                                                         config.getThreadPriority());
+        ThreadFactory factory = new DefaultThreadFactory(id, config.isThreadDaemon(), config.getThreadPriority());
         RejectedExecutionHandler handler = new ThreadPoolExecutor.CallerRunsPolicy();
-        ThreadPoolExecutor service = new ThreadPoolExecutor(
-                        config.getCorePoolSize(),
-                        config.getMaximumPoolSize() < 0 ? Integer.MAX_VALUE : config.getMaximumPoolSize(),
-                        config.getKeepAliveTime(),
-                        TimeUnit.MILLISECONDS,
-                        queue,
-                        factory,
-                        handler);
+        ThreadPoolExecutor service = new ThreadPoolExecutor(config.getCorePoolSize(),
+                config.getMaximumPoolSize() < 0 ? Integer.MAX_VALUE : config.getMaximumPoolSize(), config
+                        .getKeepAliveTime(), TimeUnit.MILLISECONDS, queue, factory, handler);
         if (config.isAllowCoreThreadsTimeout()) {
             try {
-                Method mth = service.getClass().getMethod("allowCoreThreadTimeOut", new Class[] { boolean.class });
-                mth.invoke(service, new Object[] { Boolean.TRUE });
+                Method mth = service.getClass().getMethod("allowCoreThreadTimeOut", new Class[] {boolean.class });
+                mth.invoke(service, new Object[] {Boolean.TRUE });
             } catch (Throwable t) {
+                // Do nothing
             }
         }
         return service;
@@ -113,30 +106,31 @@ public class ExecutorFactoryImpl implements ExecutorFactory {
      */
     static class DefaultThreadFactory implements ThreadFactory {
         final ThreadGroup group;
+
         final AtomicInteger threadNumber = new AtomicInteger(1);
+
         final String namePrefix;
+
         final boolean daemon;
+
         final int priority;
 
         DefaultThreadFactory(String id, boolean daemon, int priority) {
             SecurityManager s = System.getSecurityManager();
-            group = (s != null)? s.getThreadGroup() :
-                                 Thread.currentThread().getThreadGroup();
-            namePrefix = "pool-" +
-                          id +
-                         "-thread-";
+            group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+            namePrefix = "pool-" + id + "-thread-";
             this.daemon = daemon;
             this.priority = priority;
         }
 
         public Thread newThread(Runnable r) {
-            Thread t = new Thread(group, r,
-                                  namePrefix + threadNumber.getAndIncrement(),
-                                  0);
-            if (t.isDaemon() != daemon)
+            Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
+            if (t.isDaemon() != daemon) {
                 t.setDaemon(daemon);
-            if (t.getPriority() != priority)
+            }
+            if (t.getPriority() != priority) {
                 t.setPriority(priority);
+            }
             return t;
         }
     }

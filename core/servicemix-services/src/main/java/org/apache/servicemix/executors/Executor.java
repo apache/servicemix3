@@ -29,24 +29,24 @@ public interface Executor {
      * 
      * @param command the command to execute
      */
-    public void execute(Runnable command);
+    void execute(Runnable command);
     
     /**
      * Shutdown this executor.
      * This must be called to kill all threads.
      */
-    public void shutdown();
+    void shutdown();
 
     /**
      * The capacity of the underlying queue (if any)
      * @return
      */
-    public int capacity();
+    int capacity();
     
     /**
      * The current size of the underlying queue (if any)
      * @return
      */
-    public int size();
+    int size();
     
 }

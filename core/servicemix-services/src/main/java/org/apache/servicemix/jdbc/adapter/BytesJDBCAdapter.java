@@ -32,19 +32,18 @@ import java.sql.SQLException;
  */
 public class BytesJDBCAdapter extends DefaultJDBCAdapter {
 
-	    
     /**
      * @see org.apache.activemq.store.jdbc.adapter.DefaultJDBCAdapter#getBinaryData(java.sql.ResultSet, int)
      */
     protected byte[] getBinaryData(ResultSet rs, int index) throws SQLException {
         return rs.getBytes(index);
     }
-    
+
     /**
      * @see org.apache.activemq.store.jdbc.adapter.DefaultJDBCAdapter#setBinaryData(java.sql.PreparedStatement, int, byte[])
      */
     protected void setBinaryData(PreparedStatement s, int index, byte[] data) throws SQLException {
         s.setBytes(index, data);
     }
-    
+
 }

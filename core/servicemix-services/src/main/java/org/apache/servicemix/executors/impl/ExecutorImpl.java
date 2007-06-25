@@ -16,11 +16,11 @@
  */
 package org.apache.servicemix.executors.impl;
 
-import org.apache.servicemix.executors.Executor;
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.servicemix.executors.Executor;
 
 /**
  * The default Executor implementation which uses a 
@@ -31,8 +31,9 @@ import java.util.concurrent.TimeUnit;
 public class ExecutorImpl implements Executor {
 
     private final ThreadPoolExecutor threadPool;
+
     private final long shutdownDelay;
-    
+
     public ExecutorImpl(ThreadPoolExecutor threadPool, long shutdownDelay) {
         this.threadPool = threadPool;
         this.shutdownDelay = shutdownDelay;
@@ -52,6 +53,7 @@ public class ExecutorImpl implements Executor {
                             threadPool.shutdownNow();
                         }
                     } catch (InterruptedException e) {
+                        // Do nothing
                     }
                 }
             }).start();
@@ -67,5 +69,5 @@ public class ExecutorImpl implements Executor {
         BlockingQueue queue = threadPool.getQueue();
         return queue.size();
     }
-    
+
 }

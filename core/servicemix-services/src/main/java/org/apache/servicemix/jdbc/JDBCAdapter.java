@@ -22,30 +22,30 @@ import java.sql.SQLException;
 
 public interface JDBCAdapter {
 
-    public void doCreateTables(Connection connection) throws SQLException, IOException;
+    void doCreateTables(Connection connection) throws SQLException, IOException;
     
-    public void doDropTables(Connection connection) throws SQLException, IOException;
+    void doDropTables(Connection connection) throws SQLException, IOException;
     
-    public byte[] doLoadData(Connection connection, String id) throws SQLException, IOException;
+    byte[] doLoadData(Connection connection, String id) throws SQLException, IOException;
     
-    public byte[][] doLoadData(Connection connection, String[] ids) throws SQLException, IOException;
+    byte[][] doLoadData(Connection connection, String[] ids) throws SQLException, IOException;
     
-    public void doStoreData(Connection connection, String id, byte[] data) throws SQLException, IOException;
+    void doStoreData(Connection connection, String id, byte[] data) throws SQLException, IOException;
     
-    public void doUpdateData(Connection connection, String id, byte[] data) throws SQLException, IOException;
+    void doUpdateData(Connection connection, String id, byte[] data) throws SQLException, IOException;
     
-    public void doRemoveData(Connection connection, String id) throws SQLException, IOException;
+    void doRemoveData(Connection connection, String id) throws SQLException, IOException;
     
-    public void doRemoveData(Connection connection, String[] ids) throws SQLException, IOException;
+    void doRemoveData(Connection connection, String[] ids) throws SQLException, IOException;
     
-    public int doGetCount(Connection connection) throws SQLException, IOException;
+    int doGetCount(Connection connection) throws SQLException, IOException;
     
-    public String[] doGetIds(Connection connection) throws SQLException, IOException;
+    String[] doGetIds(Connection connection) throws SQLException, IOException;
     
-    public String[] doGetIds(Connection connection, int fromIndex, int toIndex) throws SQLException, IOException;
+    String[] doGetIds(Connection connection, int fromIndex, int toIndex) throws SQLException, IOException;
     
-    public Statements getStatements();
+    Statements getStatements();
     
-    public void setStatements(Statements statements);
+    void setStatements(Statements statements);
     
 }

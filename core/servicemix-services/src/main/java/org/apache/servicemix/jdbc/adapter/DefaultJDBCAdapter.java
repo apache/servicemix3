@@ -32,28 +32,23 @@ import org.apache.servicemix.jdbc.JDBCAdapterFactory;
 import org.apache.servicemix.jdbc.Statements;
 
 /**
- * Implements all the default JDBC operations that are used
- * by the JDBCPersistenceAdapter.
- * <p/>
- * sub-classing is encouraged to override the default
- * implementation of methods to account for differences
- * in JDBC Driver implementations.
- * <p/>
- * The JDBCAdapter inserts and extracts BLOB data using the
- * getBytes()/setBytes() operations.
- * <p/>
- * The databases/JDBC drivers that use this adapter are:
+ * Implements all the default JDBC operations that are used by the
+ * JDBCPersistenceAdapter. <p/> sub-classing is encouraged to override the
+ * default implementation of methods to account for differences in JDBC Driver
+ * implementations. <p/> The JDBCAdapter inserts and extracts BLOB data using
+ * the getBytes()/setBytes() operations. <p/> The databases/JDBC drivers that
+ * use this adapter are:
  * <ul>
  * <li></li>
  * </ul>
- *
+ * 
  * @org.apache.xbean.XBean element="defaultJDBCAdapter"
  * 
  * @version $Revision: 1.10 $
  */
 public class DefaultJDBCAdapter implements JDBCAdapter {
 
-    private static final Log log = LogFactory.getLog(DefaultJDBCAdapter.class);
+    private static final Log LOG = LogFactory.getLog(DefaultJDBCAdapter.class);
 
     protected Statements statements;
 
@@ -68,49 +63,52 @@ public class DefaultJDBCAdapter implements JDBCAdapter {
     public void doCreateTables(Connection connection) throws SQLException, IOException {
         Statement s = null;
         try {
-            // Check to see if the table already exists.  If it does, then don't log warnings during startup.
-            // Need to run the scripts anyways since they may contain ALTER statements that upgrade a previous version of the table
+            // Check to see if the table already exists. If it does, then don't
+            // log warnings during startup.
+            // Need to run the scripts anyways since they may contain ALTER
+            // statements that upgrade a previous version of the table
             boolean alreadyExists = false;
-            ResultSet rs=null;
+            ResultSet rs = null;
             try {
-                rs= connection.getMetaData().getTables(null,null, statements.getFullStoreTableName(), new String[] {"TABLE"});
-                alreadyExists = rs.next();                
+                rs = connection.getMetaData().getTables(null, null, statements.getFullStoreTableName(),
+                        new String[] {"TABLE" });
+                alreadyExists = rs.next();
             } catch (Throwable ignore) {
+                // Do nothing
             } finally {
                 close(rs);
             }
-            
-            // If the dataSource is a managed DataSource, executing a statement that throws
+
+            // If the dataSource is a managed DataSource, executing a statement
+            // that throws
             // an exception will make the connection unusable.
             // So if the table already exists, do not try to re-create them
             if (alreadyExists) {
                 return;
             }
-            
+
             s = connection.createStatement();
             String[] createStatments = statements.getCreateSchemaStatements();
             for (int i = 0; i < createStatments.length; i++) {
                 // This will fail usually since the tables will be
                 // created already.
                 try {
-                    log.debug("Executing SQL: " + createStatments[i]);
+                    LOG.debug("Executing SQL: " + createStatments[i]);
                     s.execute(createStatments[i]);
-                }
-                catch (SQLException e) {
-                    if( alreadyExists )  {
-                        log.debug("Could not create JDBC tables; The message table already existed." +
-                                " Failure was: " + createStatments[i] + " Message: " + e.getMessage() +
-                                " SQLState: " + e.getSQLState() + " Vendor code: " + e.getErrorCode() );
+                } catch (SQLException e) {
+                    if (alreadyExists) {
+                        LOG.debug("Could not create JDBC tables; The message table already existed." + " Failure was: "
+                                + createStatments[i] + " Message: " + e.getMessage() + " SQLState: " + e.getSQLState()
+                                + " Vendor code: " + e.getErrorCode());
                     } else {
-                        log.warn("Could not create JDBC tables; they could already exist." +
-                            " Failure was: " + createStatments[i] + " Message: " + e.getMessage() +
-                            " SQLState: " + e.getSQLState() + " Vendor code: " + e.getErrorCode() );
+                        LOG.warn("Could not create JDBC tables; they could already exist." + " Failure was: "
+                                + createStatments[i] + " Message: " + e.getMessage() + " SQLState: " + e.getSQLState()
+                                + " Vendor code: " + e.getErrorCode());
                         JDBCAdapterFactory.log("Failure details: ", e);
                     }
                 }
             }
-        }
-        finally {
+        } finally {
             close(s);
         }
     }
@@ -125,16 +123,14 @@ public class DefaultJDBCAdapter implements JDBCAdapter {
                 // created already.
                 try {
                     s.execute(dropStatments[i]);
-                }
-                catch (SQLException e) {
-                    log.warn("Could not drop JDBC tables; they may not exist." +
-                        " Failure was: " + dropStatments[i] + " Message: " + e.getMessage() +
-                        " SQLState: " + e.getSQLState() + " Vendor code: " + e.getErrorCode() );
+                } catch (SQLException e) {
+                    LOG.warn("Could not drop JDBC tables; they may not exist." + " Failure was: " + dropStatments[i]
+                            + " Message: " + e.getMessage() + " SQLState: " + e.getSQLState() + " Vendor code: "
+                            + e.getErrorCode());
                     JDBCAdapterFactory.log("Failure details: ", e);
                 }
             }
-        }
-        finally {
+        } finally {
             close(s);
         }
     }
@@ -147,14 +143,14 @@ public class DefaultJDBCAdapter implements JDBCAdapter {
             }
             s.setString(1, id);
             setBinaryData(s, 2, data);
-            if ( s.executeUpdate() != 1 ) {
+            if (s.executeUpdate() != 1) {
                 throw new SQLException("Failed to insert data");
             }
         } finally {
             close(s);
         }
     }
-    
+
     public byte[] doLoadData(Connection connection, String id) throws SQLException, IOException {
         PreparedStatement s = null;
         ResultSet rs = null;
@@ -166,29 +162,28 @@ public class DefaultJDBCAdapter implements JDBCAdapter {
                 return null;
             }
             return getBinaryData(rs, 1);
-        }
-        finally {
+        } finally {
             close(rs);
             close(s);
         }
     }
-    
+
     public void doUpdateData(Connection connection, String id, byte[] data) throws SQLException, IOException {
         PreparedStatement s = null;
         try {
-            if( s == null ) {
+            if (s == null) {
                 s = connection.prepareStatement(statements.getUpdateDataStatement());
             }
             s.setString(2, id);
             setBinaryData(s, 1, data);
-            if ( s.executeUpdate() != 1 ) {
+            if (s.executeUpdate() != 1) {
                 throw new SQLException("Failed to update data");
             }
         } finally {
             close(s);
         }
     }
-    
+
     public void doRemoveData(Connection connection, String id) throws SQLException, IOException {
         PreparedStatement s = null;
         try {
@@ -199,24 +194,26 @@ public class DefaultJDBCAdapter implements JDBCAdapter {
             }
         } finally {
             close(s);
-        }        
+        }
     }
-    
-    static private void close(Statement s) {
+
+    private static void close(Statement s) {
         try {
             if (s != null) {
                 s.close();
             }
         } catch (Throwable e) {
+            // Do nothing
         }
     }
 
-    static private void close(ResultSet rs) {
+    private static void close(ResultSet rs) {
         try {
             if (rs != null) {
                 rs.close();
             }
         } catch (Throwable e) {
+            // Do nothing
         }
     }
 
@@ -242,8 +239,7 @@ public class DefaultJDBCAdapter implements JDBCAdapter {
                 close(rs);
             }
             return datas;
-        }
-        finally {
+        } finally {
             close(s);
         }
     }
@@ -256,8 +252,7 @@ public class DefaultJDBCAdapter implements JDBCAdapter {
                 s.setString(1, ids[i]);
                 s.executeUpdate();
             }
-        }
-        finally {
+        } finally {
             close(s);
         }
     }
@@ -270,8 +265,7 @@ public class DefaultJDBCAdapter implements JDBCAdapter {
             rs = s.executeQuery();
             rs.next();
             return rs.getInt(1);
-        }
-        finally {
+        } finally {
             close(rs);
             close(s);
         }
@@ -288,8 +282,7 @@ public class DefaultJDBCAdapter implements JDBCAdapter {
                 ids.add(rs.getString(1));
             }
             return ids.toArray(new String[ids.size()]);
-        }
-        finally {
+        } finally {
             close(rs);
             close(s);
         }
@@ -311,8 +304,7 @@ public class DefaultJDBCAdapter implements JDBCAdapter {
                 }
             }
             return ids;
-        }
-        finally {
+        } finally {
             close(rs);
             close(s);
         }

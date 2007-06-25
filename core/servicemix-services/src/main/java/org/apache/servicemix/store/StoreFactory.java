@@ -20,8 +20,8 @@ import java.io.IOException;
 
 public interface StoreFactory {
 
-    public Store open(String name) throws IOException;
+    Store open(String name) throws IOException;
     
-    public void close(Store store) throws IOException;
+    void close(Store store) throws IOException;
     
 }

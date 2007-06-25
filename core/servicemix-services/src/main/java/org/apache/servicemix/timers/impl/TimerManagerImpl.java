@@ -27,12 +27,13 @@ import org.apache.servicemix.timers.TimerManager;
 
 public class TimerManagerImpl implements TimerManager {
 
-    private static final Log log = LogFactory.getLog(TimerManagerImpl.class);
+    private static final Log LOG = LogFactory.getLog(TimerManagerImpl.class);
+
     private java.util.Timer timer;
-    
+
     public Timer schedule(TimerListener listener, long delay) {
-        if (log.isDebugEnabled()) {
-            log.debug("Schedule timer " + listener + " for " + delay);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Schedule timer " + listener + " for " + delay);
         }
         TimerImpl tt = new TimerImpl(listener);
         timer.schedule(tt, delay);
@@ -40,48 +41,48 @@ public class TimerManagerImpl implements TimerManager {
     }
 
     public Timer schedule(TimerListener listener, Date date) {
-        if (log.isDebugEnabled()) {
-            log.debug("Schedule timer " + listener + " at " + date);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Schedule timer " + listener + " at " + date);
         }
         TimerImpl tt = new TimerImpl(listener);
         timer.schedule(tt, date);
         return tt;
     }
-    
+
     public void start() {
         timer = new java.util.Timer();
     }
-    
+
     public void stop() {
         timer.cancel();
     }
-    
+
     protected static class TimerImpl extends TimerTask implements Timer {
 
         private TimerListener timerListener;
-        
+
         public TimerImpl(TimerListener timerListener) {
             this.timerListener = timerListener;
         }
-        
+
         public boolean cancel() {
-            if (log.isDebugEnabled()) {
-                log.debug("Timer " + timerListener + " cancelled");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Timer " + timerListener + " cancelled");
             }
             return super.cancel();
         }
-        
+
         public TimerListener getTimerListener() {
             return this.timerListener;
         }
 
         public void run() {
-            if (log.isDebugEnabled()) {
-                log.debug("Timer " + timerListener + " expired");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Timer " + timerListener + " expired");
             }
             this.timerListener.timerExpired(this);
         }
-        
+
     }
 
 }

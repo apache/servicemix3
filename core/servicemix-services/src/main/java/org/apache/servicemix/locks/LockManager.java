@@ -20,6 +20,6 @@ import java.util.concurrent.locks.Lock;
 
 public interface LockManager {
 
-    public Lock getLock(String id);
+    Lock getLock(String id);
     
 }

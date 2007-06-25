@@ -24,11 +24,10 @@ package org.apache.servicemix.jdbc;
  */
 public class Statements {
 
-    private String tablePrefix = "";
     protected String storeTableName = "SM_STORE";
-
     protected String binaryDataType = "BLOB";
     protected String idDataType = "VARCHAR(48)";
+    private String tablePrefix = "";
     private String storeDataStatement;
     private String updateDataStatement;
     private String removeDataStatement;
@@ -42,7 +41,7 @@ public class Statements {
     public String[] getCreateSchemaStatements() {
         if (createSchemaStatements == null) {
             createSchemaStatements = new String[] {
-                    "CREATE TABLE " + getFullStoreTableName() + "(" + "ID " + idDataType + " NOT NULL"
+                "CREATE TABLE " + getFullStoreTableName() + "(" + "ID " + idDataType + " NOT NULL"
                             + ", DATA " + binaryDataType
                             + ", PRIMARY KEY ( ID ) )",
             };
@@ -53,7 +52,7 @@ public class Statements {
     public String[] getDropSchemaStatements() {
         if (dropSchemaStatements == null) {
             dropSchemaStatements = new String[] { 
-                    "DROP TABLE " + getFullStoreTableName() + "", 
+                "DROP TABLE " + getFullStoreTableName() + "", 
             };
         }
         return dropSchemaStatements;

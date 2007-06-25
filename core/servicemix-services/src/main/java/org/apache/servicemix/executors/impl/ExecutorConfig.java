@@ -17,117 +17,146 @@
 package org.apache.servicemix.executors.impl;
 
 /**
- * This bean holds configuration attributes for a given
- * Executor.
+ * This bean holds configuration attributes for a given Executor.
  * 
  * @author <a href="mailto:gnodet [at] gmail.com">Guillaume Nodet</a>
  */
 public class ExecutorConfig {
 
     private int corePoolSize = 4;
+
     private int maximumPoolSize = -1;
+
     private long keepAliveTime = 60000;
-    private boolean threadDaemon = false;
+
+    private boolean threadDaemon;
+
     private int threadPriority = Thread.NORM_PRIORITY;
+
     private int queueSize = 1024;
+
     private long shutdownDelay = 1000;
+
     private boolean allowCoreThreadsTimeout = true;
-    
+
     /**
      * @return the corePoolSize
      */
     public int getCorePoolSize() {
         return corePoolSize;
     }
+
     /**
-     * @param corePoolSize the corePoolSize to set
+     * @param corePoolSize
+     *            the corePoolSize to set
      */
     public void setCorePoolSize(int corePoolSize) {
         this.corePoolSize = corePoolSize;
     }
+
     /**
      * @return the keepAlive
      */
     public long getKeepAliveTime() {
         return keepAliveTime;
     }
+
     /**
-     * @param keepAlive the keepAlive to set
+     * @param keepAlive
+     *            the keepAlive to set
      */
     public void setKeepAliveTime(long keepAlive) {
         this.keepAliveTime = keepAlive;
     }
+
     /**
      * @return the maximumPoolSize
      */
     public int getMaximumPoolSize() {
         return maximumPoolSize;
     }
+
     /**
-     * @param maximumPoolSize the maximumPoolSize to set
+     * @param maximumPoolSize
+     *            the maximumPoolSize to set
      */
     public void setMaximumPoolSize(int maximumPoolSize) {
         this.maximumPoolSize = maximumPoolSize;
     }
+
     /**
      * @return the queueSize
      */
     public int getQueueSize() {
         return queueSize;
     }
+
     /**
-     * @param queueSize the queueSize to set
+     * @param queueSize
+     *            the queueSize to set
      */
     public void setQueueSize(int queueSize) {
         this.queueSize = queueSize;
     }
+
     /**
      * @return the threadDaemon
      */
     public boolean isThreadDaemon() {
         return threadDaemon;
     }
+
     /**
-     * @param threadDaemon the threadDaemon to set
+     * @param threadDaemon
+     *            the threadDaemon to set
      */
     public void setThreadDaemon(boolean threadDaemon) {
         this.threadDaemon = threadDaemon;
     }
+
     /**
      * @return the threadPriority
      */
     public int getThreadPriority() {
         return threadPriority;
     }
+
     /**
-     * @param threadPriority the threadPriority to set
+     * @param threadPriority
+     *            the threadPriority to set
      */
     public void setThreadPriority(int threadPriority) {
         this.threadPriority = threadPriority;
     }
+
     /**
      * @return the shutdownDelay
      */
     public long getShutdownDelay() {
         return shutdownDelay;
     }
+
     /**
-     * @param shutdownDelay the shutdownDelay to set
+     * @param shutdownDelay
+     *            the shutdownDelay to set
      */
     public void setShutdownDelay(long shutdownDelay) {
         this.shutdownDelay = shutdownDelay;
     }
+
     /**
      * @return the allowCoreThreadsTimeout
      */
     public boolean isAllowCoreThreadsTimeout() {
         return allowCoreThreadsTimeout;
     }
+
     /**
-     * @param allowCoreThreadsTimeout the allowCoreThreadsTimeout to set
+     * @param allowCoreThreadsTimeout
+     *            the allowCoreThreadsTimeout to set
      */
     public void setAllowCoreThreadsTimeout(boolean allowCoreThreadsTimeout) {
         this.allowCoreThreadsTimeout = allowCoreThreadsTimeout;
     }
-    
+
 }
