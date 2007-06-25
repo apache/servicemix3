@@ -59,7 +59,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version $Revision$
  */
 public class AutoDeploymentService extends BaseSystemService implements AutoDeploymentServiceMBean {
-	
+
     private static final Log log = LogFactory.getLog(AutoDeploymentService.class);
     private EnvironmentContext environmentContext;
     private DeploymentService deploymentService;
@@ -246,9 +246,9 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 container.getBroker().suspend();
                 if (root.getComponent() != null) {
                     Component comp = root.getComponent();
-                	String componentName = comp.getIdentification().getName();
-                	entry.type = "component";
-                	entry.name = componentName; 
+                    String componentName = comp.getIdentification().getName();
+                    entry.type = "component";
+                    entry.name = componentName; 
                     try {
                         if (container.getRegistry().getComponent(componentName) != null) {
                             installationService.loadInstaller(componentName);
@@ -286,9 +286,9 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                         throw new DeploymentException(errStr, e);
                     }
                 } else if (root.getSharedLibrary() != null) {
-                	String libraryName = root.getSharedLibrary().getIdentification().getName();
-                	entry.type = "library";
-                	entry.name = libraryName; 
+                    String libraryName = root.getSharedLibrary().getIdentification().getName();
+                    entry.type = "library";
+                    entry.name = libraryName; 
                     try {
                         if (container.getRegistry().getSharedLibrary(libraryName) != null) {
                             container.getRegistry().unregisterSharedLibrary(libraryName);
@@ -304,8 +304,8 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 } else if (root.getServiceAssembly() != null) {
                     ServiceAssembly sa = root.getServiceAssembly();
                     String name = sa.getIdentification().getName();
-                	entry.type = "assembly";
-                	entry.name = name; 
+                    entry.type = "assembly";
+                    entry.name = name; 
                     try {
                         if (deploymentService.isSaDeployed(name)) {
                             deploymentService.shutDown(name);
@@ -319,14 +319,14 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                         String missings = null;
                         boolean canDeploy = true;
                         for (String componentName : entry.dependencies) {
-                        	if (container.getComponent(componentName) == null) {
-                        		canDeploy = false;
-                        		if (missings != null) {
-                        			missings += ", " + componentName;
-                        		} else {
-                        			missings = componentName;
-                        		}
-                        	}
+                            if (container.getComponent(componentName) == null) {
+                                canDeploy = false;
+                                if (missings != null) {
+                                    missings += ", " + componentName;
+                                } else {
+                                    missings = componentName;
+                                }
+                            }
                         }
                         if (canDeploy) {
                             deploymentService.deployServiceAssembly(tmpDir, sa);
@@ -335,7 +335,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                             }
                         } else {
                             // TODO: check that the assembly is not already pending
-                        	entry.pending = true;
+                            entry.pending = true;
                             log.warn("Components " + missings + " are not installed yet: the service assembly " + name + 
                                      " deployment is suspended and will be resumed once the listed components are installed");
                             pendingSAs.put(tmpDir, entry);
@@ -355,11 +355,11 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     protected DeploymentException failure(String task, String info) {
         return failure(task, info, null, null);
     }
-    
+
     protected DeploymentException failure(String task, String info, Exception e) {
         return failure(task, info, e, null);
     }
-    
+
     protected DeploymentException failure(String task, String info, Exception e, List componentResults) {
         ManagementSupport.Message msg = new ManagementSupport.Message();
         msg.setTask(task);
@@ -448,41 +448,41 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
      * installed.
      */
     private void checkPendingSAs() {
-    	Set<File> deployedSas = new HashSet<File>();
-    	for (Map.Entry<File, ArchiveEntry> me : pendingSAs.entrySet()) {
-    		ArchiveEntry entry = me.getValue();
+        Set<File> deployedSas = new HashSet<File>();
+        for (Map.Entry<File, ArchiveEntry> me : pendingSAs.entrySet()) {
+            ArchiveEntry entry = me.getValue();
             boolean canDeploy = true;
             for (String componentName : entry.dependencies) {
-            	if (container.getComponent(componentName) == null) {
-            		canDeploy = false;
-            		break;
-            	}
+                if (container.getComponent(componentName) == null) {
+                    canDeploy = false;
+                    break;
+                }
             }
             if (canDeploy) {
                 File tmp = (File) me.getKey();
                 deployedSas.add(tmp);
                 try {
-	                Descriptor root = DescriptorFactory.buildDescriptor(tmp);
-	                deploymentService.deployServiceAssembly(tmp, root.getServiceAssembly());
-	                deploymentService.start(root.getServiceAssembly().getIdentification().getName());
+                    Descriptor root = DescriptorFactory.buildDescriptor(tmp);
+                    deploymentService.deployServiceAssembly(tmp, root.getServiceAssembly());
+                    deploymentService.start(root.getServiceAssembly().getIdentification().getName());
                 } catch (Exception e) {
                     String errStr = "Failed to update Service Assembly: " + tmp.getName();
                     log.error(errStr, e);
                 }
             }
-    	}
-    	if (!deployedSas.isEmpty()) {
-    		// Remove SA from pending SAs
-	    	for (File f : deployedSas) {
-	    		ArchiveEntry entry = pendingSAs.remove(f);
-	    		entry.pending = false;
-	    	}
-	    	// Store new state
-	    	persistState(environmentContext.getDeploymentDir(), deployFileMap);
-	    	persistState(environmentContext.getInstallationDir(), installFileMap);
-    	}
+        }
+        if (!deployedSas.isEmpty()) {
+            // Remove SA from pending SAs
+            for (File f : deployedSas) {
+                ArchiveEntry entry = pendingSAs.remove(f);
+                entry.pending = false;
+            }
+            // Store new state
+            persistState(environmentContext.getDeploymentDir(), deployFileMap);
+            persistState(environmentContext.getInstallationDir(), installFileMap);
+        }
     }
-    
+
     private void checkPendingComponents() {
         Set<File> installedComponents = new HashSet<File>();
         for (Map.Entry<File,ArchiveEntry> me : pendingComponents.entrySet()) {
@@ -630,19 +630,19 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                         ArchiveEntry lastEntry = fileMap.get(file.getName());
                         if(lastEntry == null || file.lastModified() > lastEntry.lastModified.getTime()){
                             try{
-                            	final ArchiveEntry entry = new ArchiveEntry();
-                            	entry.location = file.getName();
-                            	entry.lastModified = new Date(file.lastModified());
-                            	fileMap.put(file.getName(), entry);
+                                final ArchiveEntry entry = new ArchiveEntry();
+                                entry.location = file.getName();
+                                entry.lastModified = new Date(file.lastModified());
+                                fileMap.put(file.getName(), entry);
                                 log.info("Directory: "+root.getName()+": Archive changed: processing "
                                                 +file.getName()+" ...");
                                 updateArchive(file.getAbsolutePath(), entry, true);
                                 log.info("Directory: "+root.getName()+": Finished installation of archive:  "
                                         +file.getName());
-                            }catch(Exception e){
+                            } catch(Exception e) {
                                 log.warn("Directory: "+root.getName()+": Automatic install of "+file
                                                 +" failed",e);
-                            }finally{
+                            } finally {
                                 persistState(root, fileMap);
                             }
                         }
@@ -721,25 +721,25 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             }
         }
     }
-    
+
     private void removePendingEntries(Map<String, ArchiveEntry> map) {
         Set<String> pendings = new HashSet<String>();
         for (Map.Entry<String, ArchiveEntry> e : map.entrySet()) {
-        	if (e.getValue().pending) {
-        		pendings.add(e.getKey());
-        	}
+            if (e.getValue().pending) {
+                pendings.add(e.getKey());
+            }
         }
         for (String s : pendings) {
-        	map.remove(s);
+            map.remove(s);
         }
     }
-    
+
     public static class ArchiveEntry {
-    	public String location;
-    	public Date lastModified;
-    	public String type;
-    	public String name;
-    	public boolean pending;
-    	public transient Set<String> dependencies;
+        public String location;
+        public Date lastModified;
+        public String type;
+        public String name;
+        public boolean pending;
+        public transient Set<String> dependencies;
     }
 }
