@@ -140,5 +140,9 @@ public class FragmentStreamReader extends StreamReaderDelegate implements XMLStr
     		return getParent().getNamespaceURI(prefix);
     	}
     }
-    
+
+    public boolean isStartElement() {
+    	return event == START_ELEMENT;
+    }
+
 }
