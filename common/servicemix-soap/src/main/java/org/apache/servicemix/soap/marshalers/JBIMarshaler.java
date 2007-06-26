@@ -87,6 +87,7 @@ public class JBIMarshaler {
 			DataHandler handler = normalizedMessage.getAttachment(id);
 			soapMessage.addAttachment(id, handler);
 		}
+        soapMessage.setSubject(normalizedMessage.getSecuritySubject());
         if (normalizedMessage instanceof Fault) {
             QName code = (QName) normalizedMessage.getProperty(SOAP_FAULT_CODE);
             QName subcode = (QName) normalizedMessage.getProperty(SOAP_FAULT_SUBCODE);
