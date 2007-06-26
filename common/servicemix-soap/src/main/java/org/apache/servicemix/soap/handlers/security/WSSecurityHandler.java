@@ -78,9 +78,14 @@ public class WSSecurityHandler extends WSHandler implements Handler {
     private CallbackHandler handler = new DefaultHandler();
     
     private ThreadLocal currentSubject = new ThreadLocal();
+    private static ThreadLocal currentHandler = new ThreadLocal();
 
     public WSSecurityHandler() {
         WSSecurityEngine.setWssConfig(new ServiceMixWssConfig());
+    }
+
+    static WSSecurityHandler getCurrentHandler() {
+        return (WSSecurityHandler) currentHandler.get();
     }
     
     /**
@@ -97,7 +102,7 @@ public class WSSecurityHandler extends WSHandler implements Handler {
         this.authenticationService = authenticationService;
     }
 
-    private class ServiceMixWssConfig extends WSSConfig {
+    private static class ServiceMixWssConfig extends WSSConfig {
         public Processor getProcessor(QName el) throws WSSecurityException {
             if (el.equals(WSSecurityEngine.SIGNATURE)) {
                 return new SignatureProcessor();
@@ -107,7 +112,7 @@ public class WSSecurityHandler extends WSHandler implements Handler {
         }
     }
     
-    private class SignatureProcessor extends org.apache.ws.security.processor.SignatureProcessor {
+    private static class SignatureProcessor extends org.apache.ws.security.processor.SignatureProcessor {
         private String signatureId;
         public void handleToken(Element elem, Crypto crypto, Crypto decCrypto, CallbackHandler cb, WSDocInfo wsDocInfo, Vector returnResults, WSSConfig wsc) throws WSSecurityException {
             WSDocInfoStore.store(wsDocInfo);
@@ -116,13 +121,14 @@ public class WSSecurityHandler extends WSHandler implements Handler {
             byte[][] signatureValue = new byte[1][];
             Principal lastPrincipalFound = null;
             try {
+                WSSecurityHandler handler = WSSecurityHandler.getCurrentHandler();
                 lastPrincipalFound = verifyXMLSignature((Element) elem,
                         crypto, returnCert, returnElements, signatureValue);
                 if (lastPrincipalFound instanceof WSUsernameTokenPrincipal) {
                     WSUsernameTokenPrincipal p = (WSUsernameTokenPrincipal) lastPrincipalFound;
-                    checkUser(p.getName(), p.getPassword());
+                    handler.checkUser(p.getName(), p.getPassword());
                 } else {
-                    checkUser(returnCert[0].getSubjectX500Principal().getName(), returnCert[0]);
+                    handler.checkUser(returnCert[0].getSubjectX500Principal().getName(), returnCert[0]);
                 }
             } catch (GeneralSecurityException e) {
                 throw new WSSecurityException("Unable to authenticate user", e);
@@ -425,6 +431,7 @@ public class WSSecurityHandler extends WSHandler implements Handler {
         } finally {
             reqData.clear();
             currentSubject.set(null);
+            currentHandler.set(null);
         }
     }
 
@@ -508,6 +515,7 @@ public class WSSecurityHandler extends WSHandler implements Handler {
         finally {
             reqData.clear();
             reqData = null;
+            currentHandler.set(null);
         }
     }
 
@@ -560,6 +568,7 @@ public class WSSecurityHandler extends WSHandler implements Handler {
     
     protected void init(Context context) {
         currentSubject.set(null);
+        currentHandler.set(this);
         if (context.getProperty(Context.AUTHENTICATION_SERVICE) != null) {
             setAuthenticationService((AuthenticationService) context.getProperty(Context.AUTHENTICATION_SERVICE));
         }
