@@ -25,6 +25,7 @@ import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
 import javax.jbi.messaging.InOnly;
+import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.ExchangeStatus;
@@ -50,6 +51,25 @@ public class SpringComponentTest extends SpringTestSupport {
         log.info("The bean has been invoked: " + bean.getLastExchange());
     }
 
+    public void testSendingInOutToStaticEndpoint() throws Exception {
+        DefaultServiceMixClient client = new DefaultServiceMixClient(jbi);
+
+        InOut me = client.createInOutExchange();
+        me.setService(new QName("urn:test", "service"));
+        NormalizedMessage message = me.getInMessage();
+
+        message.setProperty("name", "cheese");
+        message.setContent(new StringSource("<hello>world</hello>"));
+
+        client.sendSync(me);
+        client.done(me);
+        assertExchangeWorked(me);
+
+        ListenerBean bean = (ListenerBean) getBean("listenerBean");
+        assertNotNull("Bean should bave been invoked", bean.getLastExchange());
+
+        log.info("The bean has been invoked: " + bean.getLastExchange());
+    }
 
     protected void assertExchangeWorked(MessageExchange me) throws Exception {
         if (me.getStatus() == ExchangeStatus.ERROR) {

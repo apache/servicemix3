@@ -28,6 +28,7 @@ import org.w3c.dom.DocumentFragment;
 
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOnly;
+import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.servicedesc.ServiceEndpoint;
 
@@ -45,6 +46,30 @@ public class ListenerBeanEndpointTest extends SpringTestSupport {
         exchange.setEndpoint(se);
         exchange.getInMessage().setContent(new StringSource("<hello>world</hello>"));
         client.sendSync(exchange);
+
+        assertExchangeWorked(exchange);
+
+        ListenerBean bean = (ListenerBean) getBean("listenerBean");
+        MessageExchange answer = bean.getLastExchange();
+
+        log.info("Bean's process() method has been invoked: " + answer);
+
+        assertNotNull("Bean's process() method should bave been invoked", answer);
+    }
+
+    public void testSendingInOutToDynamicEndpointForExchangeProcessorBeanWithFooOperation() throws Exception {
+        // now lets make a request on this endpoint
+        DefaultServiceMixClient client = new DefaultServiceMixClient(jbi);
+
+        DocumentFragment epr = URIResolver.createWSAEPR("bean:listenerBean");
+        ServiceEndpoint se = client.getContext().resolveEndpointReference(epr);
+        assertNotNull("We should find a service endpoint!", se);
+
+        InOut exchange = client.createInOutExchange();
+        exchange.setEndpoint(se);
+        exchange.getInMessage().setContent(new StringSource("<hello>world</hello>"));
+        client.sendSync(exchange);
+        client.done(exchange);
 
         assertExchangeWorked(exchange);
 

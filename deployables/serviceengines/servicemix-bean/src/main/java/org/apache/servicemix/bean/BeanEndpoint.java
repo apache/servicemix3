@@ -55,8 +55,6 @@ import org.apache.servicemix.expression.PropertyExpression;
 import org.apache.servicemix.jbi.resolver.URIResolver;
 import org.apache.servicemix.jbi.util.MessageUtil;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationContext;
 
@@ -391,8 +389,8 @@ public class BeanEndpoint extends ProviderEndpoint implements ApplicationContext
     protected void checkEndOfRequest(Request request, Object corId) {
         if (request.getExchange().getStatus() != ExchangeStatus.ACTIVE) {
             ReflectionUtils.callLifecycleMethod(request.getBean(), PreDestroy.class);
-            request.setBean(null);
-            request.setExchange(null);
+            //request.setBean(null);
+            //request.setExchange(null);
             requests.remove(corId);
         }
     }
