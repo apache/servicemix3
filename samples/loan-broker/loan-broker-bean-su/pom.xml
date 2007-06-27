@@ -28,30 +28,21 @@
     </parent>
 
     <groupId>org.apache.servicemix.samples.loan-broker</groupId>
-    <artifactId>loan-broker-sa</artifactId>
-    <packaging>jbi-service-assembly</packaging>
-    <name>ServiceMix :: Samples :: Loan Broker :: SA</name>
+    <artifactId>loan-broker-bean-su</artifactId>
+    <packaging>jbi-service-unit</packaging>
+    <name>ServiceMix :: Samples :: Loan Broker :: Bean</name>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.servicemix.samples.loan-broker</groupId>
-            <artifactId>loan-broker-ode-su</artifactId>
+            <groupId>org.apache.servicemix</groupId>
+            <artifactId>servicemix-bean</artifactId>
             <version>3.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.servicemix.samples.loan-broker</groupId>
-            <artifactId>loan-broker-bean-su</artifactId>
+            <groupId>org.apache.servicemix</groupId>
+            <artifactId>servicemix-core</artifactId>
             <version>3.2-incubating-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.servicemix.samples.loan-broker</groupId>
-            <artifactId>loan-broker-drools-su</artifactId>
-            <version>3.2-incubating-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.servicemix.samples.loan-broker</groupId>
-            <artifactId>loan-broker-jms-su</artifactId>
-            <version>3.2-incubating-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -64,5 +55,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

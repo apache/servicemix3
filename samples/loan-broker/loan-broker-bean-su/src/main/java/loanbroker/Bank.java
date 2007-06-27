@@ -16,23 +16,21 @@
  */
 package loanbroker;
 
+import javax.annotation.Resource;
+import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.xml.namespace.QName;
 
 import org.apache.servicemix.MessageExchangeListener;
-import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 
-public class Bank extends ComponentSupport implements MessageExchangeListener {
+public class Bank implements MessageExchangeListener {
     
-    public Bank(int number) {
-        setService(new QName("urn:logicblaze:soa:bank", "Bank" + number));
-        setEndpoint("bank");
-    }
+    @Resource
+    DeliveryChannel channel;
     
     public void onMessageExchange(MessageExchange exchange) throws MessagingException {
         InOut inOut = (InOut) exchange;
@@ -41,14 +39,16 @@ public class Bank extends ComponentSupport implements MessageExchangeListener {
         } else if (inOut.getStatus() == ExchangeStatus.ERROR) {
             return;
         }
-        System.err.println(getService().getLocalPart() + " requested");
+        System.err.println(inOut.getService().getLocalPart() + " requested");
         try {
             String output = "<getLoanQuoteResponse xmlns=\"urn:logicblaze:soa:bank\"><rate>" + (Math.ceil(1000 * Math.random()) / 100) + "</rate></getLoanQuoteResponse>";
             NormalizedMessage answer = inOut.createMessage();
             answer.setContent(new StringSource(output));
-            answer(inOut, answer);
+            inOut.setOutMessage(answer);
+            channel.send(inOut);
         } catch (Exception e) {
-            throw new MessagingException(e);
+            inOut.setError(e);
+            channel.send(inOut);
         }
     }
 }

@@ -28,32 +28,51 @@
     </parent>
 
     <groupId>org.apache.servicemix.samples.loan-broker</groupId>
-    <artifactId>loan-broker-lw-su</artifactId>
+    <artifactId>loan-broker-drools-su</artifactId>
     <packaging>jbi-service-unit</packaging>
-    <name>ServiceMix :: Samples :: Loan Broker :: LwContainer</name>
+    <name>ServiceMix :: Samples :: Loan Broker :: Drools</name>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.servicemix</groupId>
-            <artifactId>servicemix-lwcontainer</artifactId>
-            <version>3.2-incubating-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.servicemix</groupId>
-            <artifactId>servicemix-components</artifactId>
+            <artifactId>servicemix-drools</artifactId>
             <version>3.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-core</artifactId>
             <version>3.2-incubating-SNAPSHOT</version>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jms_1.1_spec</artifactId>
-            <version>1.0.1</version>
-            <scope>provided</scope>
+            <groupId>org.apache.servicemix</groupId>
+            <artifactId>servicemix-common</artifactId>
+            <version>3.2-incubating-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-compiler</artifactId>
+            <version>3.0.3</version>
+            <scope>test</scope>
+            <exclusions>
+              <exclusion>
+                <groupId>jung</groupId>
+                <artifactId>jung</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>xstream</groupId>
+                <artifactId>xstream</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>xpp3</groupId>
+                <artifactId>xpp3</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-jci-janino</artifactId>
+              </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
