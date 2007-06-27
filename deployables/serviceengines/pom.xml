@@ -36,6 +36,7 @@
   <modules>
     <module>servicemix-bean</module>
     <module>servicemix-bpe</module>
+    <module>servicemix-camel</module>
     <module>servicemix-drools</module>
     <module>servicemix-eip</module>
     <module>servicemix-jsr181</module>
