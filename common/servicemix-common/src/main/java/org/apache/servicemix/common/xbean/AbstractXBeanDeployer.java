@@ -73,7 +73,7 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
             // Load configuration
             Thread.currentThread().setContextClassLoader(component.getClass().getClassLoader());
 
-            SpringLoader springLoader = new SpringLoader();
+            SpringLoader springLoader = createSpringLoader();
             springLoader.setKernel(kernel);
             springLoader.setBaseDir(new File(serviceUnitRootPath));
             springLoader.setXmlPreprocessors(getXmlPreProcessors(serviceUnitRootPath));
@@ -113,7 +113,14 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         }
     }
-    
+
+    /**
+     * A factory method to allow derived classes to create alternative spring loaders
+     */
+    protected SpringLoader createSpringLoader() {
+        return new SpringLoader();
+    }
+
     protected List getServices(Kernel kernel) throws DeploymentException {
         return kernel.getServices(Endpoint.class);
     }
