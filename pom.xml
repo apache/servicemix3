@@ -197,7 +197,7 @@
         <xfire-version>1.2.5</xfire-version>
         <mavenAssemblyPluginVersion>2.1</mavenAssemblyPluginVersion>
         <xbean-version>3.0</xbean-version>
-        <spring-version>2.0.1</spring-version>
+        <spring-version>2.0.5</spring-version>
         <activemq-version>4.1.1</activemq-version>
         <activeio-version>3.0.0-incubator</activeio-version>
         <backport-util-concurrent-version>2.2</backport-util-concurrent-version>
