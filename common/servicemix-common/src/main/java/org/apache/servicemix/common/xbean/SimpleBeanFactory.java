@@ -82,4 +82,8 @@ public class SimpleBeanFactory implements BeanFactory {
         }
         return targetType.isAssignableFrom(beans.get(name).getClass());
     }
+    public boolean isPrototype(String name) {
+        return false;
+    }
+    
 }
