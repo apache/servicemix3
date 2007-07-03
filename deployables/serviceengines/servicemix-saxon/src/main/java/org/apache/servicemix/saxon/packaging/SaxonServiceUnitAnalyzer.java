@@ -26,17 +26,14 @@ import org.apache.servicemix.saxon.SaxonEndpoint;
 
 public class SaxonServiceUnitAnalyzer extends AbstractXBeanServiceUnitAnalyzer {
 
-    @Override
-    protected List<Consumes> getConsumes(Endpoint endpoint) {
+    protected List getConsumes(Endpoint endpoint) {
         return Collections.emptyList();
     }
 
-    @Override
     protected String getXBeanFile() {
         return "xbean.xml";
     }
 
-    @Override
     protected boolean isValidEndpoint(Object bean) {
         return bean instanceof SaxonEndpoint;
     }
