@@ -44,7 +44,7 @@ public class ProxyManager {
             MBeanProxyFactoryBean factory = new MBeanProxyFactoryBean();
             factory.setServer(server);
             try {
-                factory.setObjectName(name.toString());
+                factory.setObjectName(name);
             } catch (MalformedObjectNameException e) {
                 throw new IllegalStateException(e);
             }

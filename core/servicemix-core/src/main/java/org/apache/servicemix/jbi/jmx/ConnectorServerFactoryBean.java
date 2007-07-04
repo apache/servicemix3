@@ -70,7 +70,7 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
     private boolean daemon = false;
     private boolean threaded = false;
     private Map environment;
-    private String objectName;
+    private Object objectName;
     private int registrationBehavior = REGISTRATION_FAIL_ON_EXISTING;
     private MBeanServer server;
     private static final Constants constants = new Constants(ConnectorServerFactoryBean.class);
@@ -103,7 +103,7 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
      * @throws MalformedObjectNameException if the <code>ObjectName</code> is malformed
      * @see org.springframework.jmx.support.ConnectorServerFactoryBean#setObjectName(java.lang.String)
      */
-    public void setObjectName(String objectName) throws MalformedObjectNameException {
+    public void setObjectName(Object objectName) throws MalformedObjectNameException {
         this.objectName = objectName;
     }
 
