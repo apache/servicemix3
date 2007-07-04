@@ -135,10 +135,10 @@ public abstract class ConsumerEndpoint extends SimpleEndpoint {
         if (targetUri != null) {
             URIResolver.configureExchange(exchange, getContext(), targetUri);
         }
-        if (targetInterface != null) {
+        if (exchange.getInterfaceName() == null && targetInterface != null) {
             exchange.setInterfaceName(targetInterface);
         }
-        if (targetService != null) {
+        if (exchange.getService() == null && targetService != null) {
             exchange.setService(targetService);
             if (targetEndpoint != null) {
                 ServiceEndpoint se = getContext().getEndpoint(targetService, targetEndpoint);
