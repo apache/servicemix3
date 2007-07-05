@@ -263,8 +263,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <workingDirectory>${basedir}</workingDirectory>
           <includes>
-            <include>**/*Test*</include>
+            <include>**/*Test.*</include>
           </includes>
           <excludes>
             <!--  exclude abstract tests -->
@@ -303,8 +304,6 @@
             <exclude>**/GroovyTransformTest.*</exclude>
             <exclude>**/TransformComponentTest.*</exclude>
 
-			
-            
             <!-- Hangs -->
             <exclude>**/SaajSoapActionTest.*</exclude>
 	        

@@ -430,15 +430,6 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
-    
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 
     <dependencyManagement>
         <dependencies>
@@ -1716,11 +1707,12 @@
                         <forkMode>once</forkMode>
                         <childDelegation>false</childDelegation>
                         <argLine>-Xmx512M</argLine>
-                        <workingDir>${basedir}</workingDir>
+                        <!--<redirectTestOutputToFile>true</redirectTestOutputToFile>-->
+                        <workingDirectory>${basedir}</workingDirectory>
                         <systemProperties>
                             <property>
                                 <name>log4j.configuration</name>
-                                <value>${basedir}/target/test-classes/log4j-tests.properties</value>
+                                <value>log4j-tests.properties</value>
                             </property>
                         </systemProperties>
                     </configuration>
