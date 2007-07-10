@@ -483,7 +483,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         } catch (InterruptedException e) {
             throw new MessagingException(e);
         } catch (RuntimeException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw e;
         } finally {
             exchangesById.remove(exchangeKey);

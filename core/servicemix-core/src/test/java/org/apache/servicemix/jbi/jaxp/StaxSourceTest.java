@@ -102,9 +102,9 @@ public class StaxSourceTest extends TestCase {
         StringSource src = new StringSource(msg);
         DOMSource dom = new SourceTransformer().toDOMSource(src);
         StreamSource stream = new SourceTransformer().toStreamSource(dom);
-        System.err.println(new SourceTransformer().toString(stream));
+        log.info(new SourceTransformer().toString(stream));
         SAXSource sax = new SourceTransformer().toSAXSource(dom);
-        System.err.println(new SourceTransformer().toString(sax));
+        log.info(new SourceTransformer().toString(sax));
     }
 
     protected void checkDomResult(Document doc) {

@@ -17,6 +17,7 @@
 package org.apache.servicemix.jbi.jaxp;
 
 import java.io.OutputStream;
+import java.io.ByteArrayOutputStream;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -31,6 +32,8 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -40,7 +43,8 @@ import org.w3c.dom.Node;
 public class W3CDOMStreamReaderTest
     extends AbstractStreamReaderTest
 {
-    
+
+    private static final Log log = LogFactory.getLog(W3CDOMStreamReaderTest.class);
     
     public void testSingleElement() throws Exception
     {
@@ -50,13 +54,15 @@ public class W3CDOMStreamReaderTest
         doc.appendChild(e);
         
         assertEquals(1, e.getAttributes().getLength());
-        System.out.println("start: " + XMLStreamReader.START_ELEMENT);
-        System.out.println("attr: " + XMLStreamReader.ATTRIBUTE);
-        System.out.println("ns: " + XMLStreamReader.NAMESPACE);
-        System.out.println("chars: " + XMLStreamReader.CHARACTERS);
-        System.out.println("end: " + XMLStreamReader.END_ELEMENT);
-        
-        writeXml(doc,System.out);
+        log.info("start: " + XMLStreamReader.START_ELEMENT);
+        log.info("attr: " + XMLStreamReader.ATTRIBUTE);
+        log.info("ns: " + XMLStreamReader.NAMESPACE);
+        log.info("chars: " + XMLStreamReader.CHARACTERS);
+        log.info("end: " + XMLStreamReader.END_ELEMENT);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        writeXml(doc, baos);
+        log.info(baos.toString());
         W3CDOMStreamReader reader = new W3CDOMStreamReader(doc.getDocumentElement());
         testSingleElement(reader);
     }
@@ -77,9 +83,11 @@ public class W3CDOMStreamReaderTest
         doc.appendChild(e);
         Node text = doc.createTextNode("Hello World");
         e.appendChild(text);
-        
-        writeXml(doc,System.out);
-        
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        writeXml(doc, baos);
+        log.info(baos.toString());
+
         W3CDOMStreamReader reader = new W3CDOMStreamReader(e);
         testTextChild(reader);
     }
@@ -97,8 +105,10 @@ public class W3CDOMStreamReaderTest
         e.appendChild(child);
         text = doc.createTextNode(" more text");
         e.appendChild(text);
-        
-        writeXml(doc,System.out);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        writeXml(doc, baos);
+        log.info(baos);
         
         W3CDOMStreamReader reader = new W3CDOMStreamReader(e);
         testMixedContent(reader);
@@ -121,7 +131,10 @@ public class W3CDOMStreamReaderTest
         e.setAttribute("xmlns:p", "urn:test2");
         
         e.setAttributeNode(attr);
-        writeXml(doc,System.out);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        writeXml(doc, baos);
+        log.info(baos.toString());
         
         W3CDOMStreamReader reader = new W3CDOMStreamReader(doc.getDocumentElement());
         
@@ -139,7 +152,10 @@ public class W3CDOMStreamReaderTest
         child.setPrefix("a");
         e.appendChild(child);
         doc.appendChild(e);
-        writeXml(doc,System.out);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        writeXml(doc, baos);
+        log.info(baos.toString());
         
         W3CDOMStreamReader reader = new W3CDOMStreamReader(e);
         testElementChild(reader);

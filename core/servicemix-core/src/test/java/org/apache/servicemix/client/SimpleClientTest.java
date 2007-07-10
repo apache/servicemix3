@@ -21,6 +21,8 @@ import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.components.util.OutBinding;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.MessageExchange;
@@ -37,6 +39,9 @@ import junit.framework.TestCase;
  * @version $Revision$
  */
 public class SimpleClientTest extends TestCase {
+
+    private static final Log log = LogFactory.getLog(SimpleClientTest.class);
+
     protected JBIContainer container;
     protected OutBinding out;
     protected ServiceMixClient client;
@@ -48,7 +53,7 @@ public class SimpleClientTest extends TestCase {
         container.start();
         out = new OutBinding() {
             protected void process(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
-                System.out.println("Received: " + message);
+                log.info("Received: " + message);
                 done(exchange);
             }
         };

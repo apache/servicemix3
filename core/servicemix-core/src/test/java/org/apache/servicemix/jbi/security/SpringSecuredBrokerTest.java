@@ -36,9 +36,13 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.tck.Receiver;
 import org.apache.servicemix.tck.SpringTestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
 public class SpringSecuredBrokerTest extends SpringTestSupport {
+
+    private static final Log log = LogFactory.getLog(SpringSecuredBrokerTest.class);
 
     static {
         String path = System.getProperty("java.security.auth.login.config");
@@ -49,7 +53,7 @@ public class SpringSecuredBrokerTest extends SpringTestSupport {
                 System.setProperty("java.security.auth.login.config", path);
             }
         }
-        System.err.println("Path to login config: " + path);
+        log.info("Path to login config: " + path);
     }
 
     protected Receiver receiver1;

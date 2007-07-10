@@ -27,8 +27,12 @@ import org.apache.servicemix.jbi.container.SubscriptionSpec;
 import org.apache.servicemix.jbi.resolver.SubscriptionFilter;
 import org.apache.servicemix.tck.ReceiverComponent;
 import org.apache.servicemix.tck.SenderComponent;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class PubSubTest extends TestCase {
+
+    private static final Log log = LogFactory.getLog(PubSubTest.class);
 
     private SenderComponent sender;
     private JBIContainer container;
@@ -87,7 +91,7 @@ public class PubSubTest extends TestCase {
     public static class Filter implements SubscriptionFilter {
 
         public boolean matches(MessageExchange arg0) {
-            System.out.println("Matches");
+            log.info("Matches");
             return true;
         }
         

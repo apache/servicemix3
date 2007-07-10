@@ -30,8 +30,14 @@ import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DeliveryChannelImplTest extends TestCase {
+
+    private static final Log log = LogFactory.getLog(DeliveryChannelImplTest.class);
 
     protected JBIContainer container;
     
@@ -79,6 +85,8 @@ public class DeliveryChannelImplTest extends TestCase {
         TestComponent component = new TestComponent(new QName("service"), "endpoint");
         container.activateComponent(new ActivationSpec("component", component));
         final DeliveryChannel channel = component.getChannel();
+        final AtomicBoolean success = new AtomicBoolean(false);
+        final AtomicBoolean done = new AtomicBoolean(false);
 
         // Create another thread
         new Thread() {
@@ -89,9 +97,12 @@ public class DeliveryChannelImplTest extends TestCase {
                     nm.setContent(new StringSource("<response/>"));
                     me.setOutMessage(nm);
                     channel.sendSync(me);
+                    success.set(true);
+                    done.set(true);
                 } catch (MessagingException e) {
-                    e.printStackTrace();
-                    fail("Exception caught: " + e);
+                    log.error(e.getMessage(), e);
+                    success.set(false);
+                    done.set(true);
                 }
             }
         }.start();
@@ -105,6 +116,15 @@ public class DeliveryChannelImplTest extends TestCase {
         assertEquals(ExchangeStatus.ACTIVE, me.getStatus());
         me.setStatus(ExchangeStatus.DONE);
         channel.send(me);
+
+        if (!done.get()) {
+            synchronized(done) {
+                done.wait(5000);
+            }
+        }
+
+        assertTrue("Secondary thread didn't finish", done.get());
+        assertTrue("Exception in secondary thread", success.get());
     }
     
     public static class TestComponent extends ComponentSupport {

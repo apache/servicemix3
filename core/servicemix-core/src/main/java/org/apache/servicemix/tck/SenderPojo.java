@@ -76,12 +76,12 @@ public class SenderPojo extends PojoSupport implements ComponentLifeCycle, Sende
     }
     
     public void sendMessages(int messageCount, boolean sync) throws MessagingException {
-        System.out.println("Looking for services for interface: " + interfaceName);
+        log.info("Looking for services for interface: " + interfaceName);
 
         ServiceEndpoint[] endpoints = context.getEndpointsForService(interfaceName);
         if (endpoints.length > 0) {
             ServiceEndpoint endpoint = endpoints[0];
-            System.out.println("Sending to endpoint: " + endpoint);
+            log.info("Sending to endpoint: " + endpoint);
             
             for (int i = 0; i < messageCount; i++) {
                 InOnly exchange = context.getDeliveryChannel().createExchangeFactory().createInOnlyExchange();
@@ -91,9 +91,9 @@ public class SenderPojo extends PojoSupport implements ComponentLifeCycle, Sende
                 // lets set the XML as a byte[], String or DOM etc
                 String xml = "<s12:Envelope xmlns:s12='http://www.w3.org/2003/05/soap-envelope'><s12:Body> <foo>Hello!</foo> </s12:Body></s12:Envelope>";
                 message.setContent(new StringSource(xml));
-                System.out.println("sending message: " + i);
+                log.info("sending message: " + i);
                 DeliveryChannel deliveryChannel = context.getDeliveryChannel();
-                System.out.println("sync send on deliverychannel: " + deliveryChannel);
+                log.info("sync send on deliverychannel: " + deliveryChannel);
                 if (sync) {
                 	deliveryChannel.sendSync(exchange);
                 } else {

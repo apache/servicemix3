@@ -23,12 +23,16 @@ import javax.xml.transform.dom.DOMSource;
 import junit.framework.TestCase;
 
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.DocumentFragment;
 
 /**
  * @version $Revision$
  */
 public class ComponentTest extends TestCase {
+
+    private static final Log log = LogFactory.getLog(ComponentTest.class);
 
     protected SourceTransformer transformer = new SourceTransformer();
 
@@ -61,8 +65,8 @@ public class ComponentTest extends TestCase {
         DocumentFragment fragment = descriptorExtension.getDescriptorExtension();
         assertNotNull("fragment is null", fragment);
 
-        System.out.println("Created document fragment: " + fragment);
-        System.out.println("XML: " + transformer.toString(new DOMSource(fragment)));
+        log.info("Created document fragment: " + fragment);
+        log.info("XML: " + transformer.toString(new DOMSource(fragment)));
     }
 
     protected void assertArrayEquals(String text, Object[] expected, Object[] actual) {
