@@ -32,11 +32,15 @@ import javax.security.auth.login.LoginException;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  *
  */
 public class PropertiesLoginModuleTest extends TestCase {
+    private static transient Log log = LogFactory.getLog(PropertiesLoginModuleTest.class);
     
     static {
         String path = System.getProperty("java.security.auth.login.config");
@@ -47,7 +51,7 @@ public class PropertiesLoginModuleTest extends TestCase {
                 System.setProperty("java.security.auth.login.config", path);
             }
         }
-        System.out.println("Path to login config: " + path);
+        log.info("Path to login config: " + path);
     }
 
     public void testLogin() throws LoginException {

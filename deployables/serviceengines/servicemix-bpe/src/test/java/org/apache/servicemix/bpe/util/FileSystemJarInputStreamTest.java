@@ -27,7 +27,11 @@ import java.util.jar.JarInputStream;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class FileSystemJarInputStreamTest extends TestCase {
+    private static transient Log log = LogFactory.getLog(FileSystemJarInputStreamTest.class);
 
     private static final int BUFFER = 2048;
 
@@ -60,7 +64,7 @@ public class FileSystemJarInputStreamTest extends TestCase {
             dest.write(data, 0, count);
         }
         dest.close();
-        System.out.println(entry.getName() + ": " + baos.toString());
+        log.info(entry.getName() + ": " + baos.toString());
 
         assertEquals("<hello>world</hello>", baos.toString());
     }

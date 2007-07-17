@@ -21,8 +21,12 @@ import java.net.URL;
 import java.security.Principal;
 import java.util.List;
 
+import org.w3c.dom.Document;
+
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.jaxp.W3CDOMStreamWriter;
 import org.apache.servicemix.jbi.security.auth.impl.JAASAuthenticationService;
@@ -38,12 +42,12 @@ import org.apache.ws.security.WSUsernameTokenPrincipal;
 import org.apache.ws.security.handler.WSHandlerConstants;
 import org.apache.ws.security.handler.WSHandlerResult;
 import org.springframework.core.io.ClassPathResource;
-import org.w3c.dom.Document;
-
 import sun.security.x509.X500Name;
 
 public class WSSecurityHandlerTest extends TestCase {
-    
+
+    private static transient Log log = LogFactory.getLog(WSSecurityHandlerTest.class);
+
     static {
         String path = System.getProperty("java.security.auth.login.config");
         if (path == null) {
@@ -53,7 +57,7 @@ public class WSSecurityHandlerTest extends TestCase {
                 System.setProperty("java.security.auth.login.config", path);
             }
         }
-        System.out.println("Path to login config: " + path);
+        log.info("Path to login config: " + path);
     }
 
     public void testUserNameToken() throws Exception {
@@ -109,7 +113,7 @@ public class WSSecurityHandlerTest extends TestCase {
         handler.onSend(ctx);
         
         Document doc = ctx.getInMessage().getDocument();
-        System.err.println(DOMUtil.asXML(doc));
+        log.info(DOMUtil.asXML(doc));
         
         handler.setReceiveAction(WSHandlerConstants.SIGNATURE);
         handler.onReceive(ctx);

@@ -25,17 +25,21 @@ import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.tck.Receiver;
-import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
  * @version $Revision$
  */
 public class GroovyChainTest extends TestCase {
+    private static transient Log log = LogFactory.getLog(GroovyChainTest.class);
+
     protected AbstractXmlApplicationContext context;
     protected ServiceMixClient client;
     protected Receiver receiver;
@@ -56,7 +60,7 @@ public class GroovyChainTest extends TestCase {
         exchange.setService(service);
         client.sendSync(exchange);
         
-        System.out.println(transformer.toString(exchange.getMessage("out").getContent()));
+        log.info(transformer.toString(exchange.getMessage("out").getContent()));
     }
 
 

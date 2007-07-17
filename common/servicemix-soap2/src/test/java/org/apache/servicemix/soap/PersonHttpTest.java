@@ -17,6 +17,7 @@
 package org.apache.servicemix.soap;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import javax.jbi.messaging.MessageExchange;
@@ -25,10 +26,15 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import junit.framework.TestCase;
 
-import org.apache.servicemix.soap.api.Message;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.soap.api.InterceptorProvider.Phase;
+import org.apache.servicemix.soap.api.Message;
 import org.apache.servicemix.soap.api.model.Binding;
 import org.apache.servicemix.soap.bindings.http.HttpConstants;
 import org.apache.servicemix.soap.core.MessageImpl;
@@ -42,11 +48,10 @@ import org.apache.woden.WSDLReader;
 import org.apache.woden.wsdl20.Description;
 import org.apache.woden.wsdl20.Endpoint;
 import org.apache.woden.wsdl20.xml.DescriptionElement;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 public class PersonHttpTest extends TestCase {
-    
+    private static transient Log log = LogFactory.getLog(PersonHttpTest.class);
+
     private static Binding<?> binding = getBinding("Person.wsdl2");
 
     public void testGetPerson() throws Exception {
@@ -64,7 +69,10 @@ public class PersonHttpTest extends TestCase {
         MessageExchange me = message.getContent(MessageExchange.class);
         NormalizedMessage nm = message.getContent(NormalizedMessage.class);
         Document doc = DomUtil.parse(nm.getContent());
-        DomUtil.getTransformerFactory().newTransformer().transform(nm.getContent(), new StreamResult(System.err));
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DomUtil.getTransformerFactory().newTransformer().transform(nm.getContent(), new StreamResult(baos));
+        log.info(baos.toString());
 
         assertEquals(new QName("http://example.org/Person", "getPerson"), me.getOperation());
         Element e = DomUtil.getFirstChildElement(doc);
@@ -93,7 +101,10 @@ public class PersonHttpTest extends TestCase {
         MessageExchange me = message.getContent(MessageExchange.class);
         NormalizedMessage nm = message.getContent(NormalizedMessage.class);
         Document doc = DomUtil.parse(nm.getContent());
-        DomUtil.getTransformerFactory().newTransformer().transform(nm.getContent(), new StreamResult(System.err));
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DomUtil.getTransformerFactory().newTransformer().transform(nm.getContent(), new StreamResult(baos));
+        log.info(baos.toString());
 
         assertEquals(new QName("http://example.org/Person", "updatePerson"), me.getOperation());
         Element e = DomUtil.getFirstChildElement(doc);
@@ -132,7 +143,10 @@ public class PersonHttpTest extends TestCase {
         MessageExchange me = message.getContent(MessageExchange.class);
         NormalizedMessage nm = message.getContent(NormalizedMessage.class);
         Document doc = DomUtil.parse(nm.getContent());
-        DomUtil.getTransformerFactory().newTransformer().transform(nm.getContent(), new StreamResult(System.err));
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DomUtil.getTransformerFactory().newTransformer().transform(nm.getContent(), new StreamResult(baos));
+        log.info(baos.toString());
 
         assertEquals(new QName("http://example.org/Person", "addPerson"), me.getOperation());
         Element e = DomUtil.getFirstChildElement(doc);
@@ -170,7 +184,10 @@ public class PersonHttpTest extends TestCase {
         MessageExchange me = message.getContent(MessageExchange.class);
         NormalizedMessage nm = message.getContent(NormalizedMessage.class);
         Document doc = DomUtil.parse(nm.getContent());
-        DomUtil.getTransformerFactory().newTransformer().transform(nm.getContent(), new StreamResult(System.err));
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DomUtil.getTransformerFactory().newTransformer().transform(nm.getContent(), new StreamResult(baos));
+        log.info(baos.toString());
 
         assertEquals(new QName("http://example.org/Person", "deletePerson"), me.getOperation());
         Element e = DomUtil.getFirstChildElement(doc);

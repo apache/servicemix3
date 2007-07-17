@@ -31,7 +31,8 @@ import junit.framework.TestCase;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.servicemix.components.http.HttpSoapConnector;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.EchoComponent;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
@@ -39,6 +40,7 @@ import org.codehaus.xfire.attachments.JavaMailAttachments;
 import org.codehaus.xfire.attachments.SimpleAttachment;
 
 public class HttpSoapAttachmentsTest extends TestCase {
+    private static transient Log log = LogFactory.getLog(HttpSoapAttachmentsTest.class);
 
     private static final int PORT = 7012;
 
@@ -84,7 +86,7 @@ public class HttpSoapAttachmentsTest extends TestCase {
         method.setRequestEntity(new InputStreamRequestEntity(is));
         method.setRequestHeader("Content-Type", sendAtts.getContentType());
         new HttpClient().executeMethod(method);
-        System.out.println(method.getResponseBodyAsString());
+        log.info(method.getResponseBodyAsString());
     }
 
     private DataHandler createDataHandler(String name) throws MessagingException {

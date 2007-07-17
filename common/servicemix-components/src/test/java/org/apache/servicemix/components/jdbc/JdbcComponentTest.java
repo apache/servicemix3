@@ -25,6 +25,8 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
@@ -32,8 +34,9 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.hsqldb.jdbc.jdbcDataSource;
 
 public class JdbcComponentTest extends TestCase {
+    private static transient Log log = LogFactory.getLog(JdbcComponentTest.class);
 
-	private JBIContainer jbi;
+    private JBIContainer jbi;
 	private DataSource dataSource;
 	private JdbcComponent jdbc;
 	
@@ -72,7 +75,7 @@ public class JdbcComponentTest extends TestCase {
 		me.getInMessage().setContent(new StringSource("<sql>select * from MyTable</sql>"));
 		client.sendSync(me);
 		String out = new SourceTransformer().contentToString(me.getOutMessage());
-		System.err.println(out);
+		log.info(out);
 		assertTrue(out.contains("One"));
 		assertTrue(out.contains("Two"));
 	}

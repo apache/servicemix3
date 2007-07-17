@@ -21,6 +21,8 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.jaxp.StringSource;
@@ -29,17 +31,19 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
  * Test service from SM-174 - (Craig Wall orginal author)
  */
 public class PingService extends ComponentSupport implements MessageExchangeListener{
+    private static transient Log log = LogFactory.getLog(PingService.class);
+
     public void onMessageExchange(MessageExchange exchange) throws MessagingException{
         if (exchange.getStatus() == ExchangeStatus.ACTIVE) {
-            System.out.println("GOT A MESSAGE; exchange.status="+exchange.getStatus());
+            log.info("GOT A MESSAGE; exchange.status="+exchange.getStatus());
             NormalizedMessage out=exchange.createMessage();
             out.setContent(new StringSource("<response>Ping back at ya!</response>"));
-            System.out.println("SENDING RESPONSE; exchange.status="+exchange.getStatus());
+            log.info("SENDING RESPONSE; exchange.status="+exchange.getStatus());
             exchange.setMessage(out, "out");
             getDeliveryChannel().sendSync(exchange);
-            System.out.println("RESPONSE SENT; exchange.status="+exchange.getStatus());
+            log.info("RESPONSE SENT; exchange.status="+exchange.getStatus());
         } else {
-            System.out.println("GOT A MESSAGE; exchange.status="+exchange.getStatus());
+            log.info("GOT A MESSAGE; exchange.status="+exchange.getStatus());
         }
     }
 }

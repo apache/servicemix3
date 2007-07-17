@@ -22,11 +22,13 @@ import javax.wsdl.PortType;
 import javax.wsdl.factory.WSDLFactory;
 import javax.xml.namespace.QName;
 
-import org.apache.servicemix.soap.wsdl.validator.WSIBPValidator;
-
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class WSIBPValidatorTest extends TestCase {
+    private static transient Log log = LogFactory.getLog(WSIBPValidatorTest.class);
 
     public void testR2303() throws Exception {
         Definition def = WSDLFactory.newInstance().newDefinition();
@@ -42,7 +44,7 @@ public class WSIBPValidatorTest extends TestCase {
         assertFalse(validator.isValid());
         
         for (String err : validator.getErrors()) {
-            System.err.println(err);
+            log.info(err);
         }
     }
     

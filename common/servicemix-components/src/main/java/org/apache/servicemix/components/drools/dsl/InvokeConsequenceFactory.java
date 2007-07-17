@@ -16,6 +16,11 @@
  */
 package org.apache.servicemix.components.drools.dsl;
 
+import javax.jbi.messaging.MessagingException;
+import javax.xml.namespace.QName;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.drools.JbiHelper;
 import org.drools.rule.Rule;
 import org.drools.smf.Configuration;
@@ -25,13 +30,13 @@ import org.drools.spi.Consequence;
 import org.drools.spi.RuleBaseContext;
 import org.drools.spi.Tuple;
 
-import javax.jbi.messaging.MessagingException;
-import javax.xml.namespace.QName;
-
 /**
  * @version $Revision$
  */
 public class InvokeConsequenceFactory implements ConsequenceFactory {
+
+    private static transient Log log = LogFactory.getLog(InvokeConsequenceFactory.class);
+
     public Consequence newConsequence(Rule rule, RuleBaseContext ruleBaseContext, Configuration configuration) throws FactoryException {
         final QName operation = toQName(configuration, configuration.getAttribute("operation"));
         final QName service = toQName(configuration, configuration.getAttribute("service"));
@@ -74,7 +79,7 @@ public class InvokeConsequenceFactory implements ConsequenceFactory {
                 }
             }
         }
-        System.out.println("Creating QName with uri: " + uri + " name: " + localPart);
+        log.debug("Creating QName with uri: " + uri + " name: " + localPart);
         return new QName(uri, localPart);
     }
 }

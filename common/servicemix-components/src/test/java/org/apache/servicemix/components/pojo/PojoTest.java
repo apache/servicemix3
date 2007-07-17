@@ -16,14 +16,17 @@
  */
 package org.apache.servicemix.components.pojo;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.tck.SpringTestSupport;
-import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
  * @version $Revision$
  */
 public class PojoTest extends SpringTestSupport {
+    private static transient Log log = LogFactory.getLog(PojoTest.class);
 
     public void testSendAndReceiveOfMessages() throws Exception {
         MySender sender = (MySender) getBean("sender");
@@ -46,7 +49,7 @@ public class PojoTest extends SpringTestSupport {
     	assertMessagesReceived(receiver.getMessageList(), messageCount);
     	long end = System.currentTimeMillis();
 
-    	System.err.println((end - start) + " ms to send " + messageCount + " messages");
+    	log.info((end - start) + " ms to send " + messageCount + " messages");
     }
     
     protected AbstractXmlApplicationContext createBeanFactory() {

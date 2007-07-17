@@ -17,6 +17,7 @@
 package org.apache.servicemix.soap.interceptors.jbi;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
@@ -24,8 +25,13 @@ import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.soap.api.Message;
 import org.apache.servicemix.soap.api.model.Operation;
 import org.apache.servicemix.soap.bindings.soap.impl.Wsdl1SoapMessageImpl;
@@ -33,10 +39,9 @@ import org.apache.servicemix.soap.bindings.soap.impl.Wsdl1SoapOperationImpl;
 import org.apache.servicemix.soap.core.MessageImpl;
 import org.apache.servicemix.soap.util.DomUtil;
 import org.apache.servicemix.soap.util.stax.StaxUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 public class JbiInWsdl1InterceptorTest extends TestCase {
+    private static transient Log log = LogFactory.getLog(JbiInWsdl1InterceptorTest.class);
 
     public void test() throws Exception {
         Wsdl1SoapOperationImpl wsdlOperation = new Wsdl1SoapOperationImpl();
@@ -61,7 +66,10 @@ public class JbiInWsdl1InterceptorTest extends TestCase {
         assertEquals(JbiConstants.WSDL11_WRAPPER_NAMESPACE, root.getNamespaceURI());
         assertEquals(JbiConstants.WSDL11_WRAPPER_MESSAGE_LOCALNAME, root.getLocalName());
         
-        DomUtil.getTransformerFactory().newTransformer().transform(new DOMSource(doc), new StreamResult(System.err));
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DomUtil.getTransformerFactory().newTransformer().transform(new DOMSource(doc), new StreamResult(baos));
+        log.info(baos.toString());
     }
     
 }

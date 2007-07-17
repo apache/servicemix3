@@ -25,6 +25,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.soap.api.Message;
 import org.apache.servicemix.soap.bindings.soap.SoapFault;
 import org.apache.servicemix.soap.bindings.soap.SoapVersion;
@@ -32,6 +34,7 @@ import org.apache.servicemix.soap.core.MessageImpl;
 import org.apache.servicemix.soap.interceptors.xml.StaxInInterceptor;
 
 public class SoapInInterceptorTest extends TestCase {
+    private static transient Log log = LogFactory.getLog(SoapInInterceptorTest.class);
 
     private SoapInInterceptor interceptor = new SoapInInterceptor();
     
@@ -53,7 +56,7 @@ public class SoapInInterceptorTest extends TestCase {
             interceptor.handleMessage(msg);
             fail("Interceptor should have thrown a SoapFault");
         } catch (SoapFault e) {
-            System.err.println(e);
+            log.info(e.getMessage(), e);
         }
     }
     
@@ -66,7 +69,7 @@ public class SoapInInterceptorTest extends TestCase {
             interceptor.handleMessage(msg);
             fail("Interceptor should have thrown a SoapFault");
         } catch (SoapFault e) {
-            System.err.println(e);
+            log.info(e.getMessage(), e);
         }
     }
     
@@ -79,7 +82,7 @@ public class SoapInInterceptorTest extends TestCase {
             interceptor.handleMessage(msg);
             fail("Interceptor should have thrown a SoapFault");
         } catch (SoapFault e) {
-            System.err.println(e);
+            log.info(e.getMessage(), e);
         }
     }
     

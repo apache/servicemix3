@@ -16,6 +16,7 @@
  */
 package org.apache.servicemix.bpe;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,9 +30,11 @@ import javax.jbi.messaging.MessageExchange;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
+
 import loanbroker.Bank;
 import loanbroker.CreditAgency;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.http.HttpComponent;
@@ -43,6 +46,8 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.MessageExchangeSupport;
 
 public class BPEComponentTest extends TestCase {
+
+    private static transient Log log = LogFactory.getLog(BPEComponentTest.class);
 
     private JBIContainer jbi;
 
@@ -123,7 +128,10 @@ public class BPEComponentTest extends TestCase {
         InputStream is = getClass().getClassLoader().getResourceAsStream("request.xml");
         OutputStream os = con.getOutputStream();
         copyInputStream(is, os);
-        copyInputStream(con.getInputStream(), System.out);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        copyInputStream(con.getInputStream(), baos);
+        log.info(baos.toString());
     }
 
     public void testBPEOk() throws Exception {
@@ -155,8 +163,8 @@ public class BPEComponentTest extends TestCase {
         }
         assertEquals(ExchangeStatus.ACTIVE, me.getStatus());
         String out = new SourceTransformer().contentToString(me.getMessage("out"));
-        System.err.println(out);
-        System.err.println("Time: " + (t1 - t0));
+        log.info(out);
+        log.info("Time: " + (t1 - t0));
         client.done(me);
 
         //
@@ -177,8 +185,8 @@ public class BPEComponentTest extends TestCase {
         }
         assertEquals(ExchangeStatus.ACTIVE, me.getStatus());
         out = new SourceTransformer().contentToString(me.getMessage("out"));
-        System.err.println(out);
-        System.err.println("Time: " + (t1 - t0));
+        log.info(out);
+        log.info("Time: " + (t1 - t0));
         client.done(me);
 
         //
@@ -199,8 +207,8 @@ public class BPEComponentTest extends TestCase {
         }
         assertEquals(ExchangeStatus.ACTIVE, me.getStatus());
         out = new SourceTransformer().contentToString(me.getMessage("out"));
-        System.err.println(out);
-        System.err.println("Time: " + (t1 - t0));
+        log.info(out);
+        log.info("Time: " + (t1 - t0));
         client.done(me);
     }
 

@@ -27,10 +27,17 @@ import javax.xml.messaging.URLEndpoint;
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerException;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.traversal.NodeIterator;
+
 import junit.framework.TestCase;
 
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.xbean.BrokerFactoryBean;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.saaj.SaajBinding;
 import org.apache.servicemix.components.util.MockServiceComponent;
 import org.apache.servicemix.jbi.container.ActivationSpec;
@@ -43,10 +50,6 @@ import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.apache.xpath.CachedXPathAPI;
 import org.springframework.core.io.ClassPathResource;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
 
 public class HttpSoapAndSaajTest extends TestCase {
     
@@ -54,6 +57,8 @@ public class HttpSoapAndSaajTest extends TestCase {
     private static final int PORT_2 = 7012;
     private static final int PORT_WS_1 = 7014;
     private static final int PORT_WS_2 = 7014;
+
+    private static transient Log log = LogFactory.getLog(HttpSoapAndSaajTest.class);
 
     protected JBIContainer container;
 	protected BrokerService broker;
@@ -131,9 +136,11 @@ public class HttpSoapAndSaajTest extends TestCase {
         format.setLineWidth(65);
         format.setIndenting(true);
         format.setIndent(2);
-        XMLSerializer serializer = new XMLSerializer(System.err, format);
-        System.err.println();
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        XMLSerializer serializer = new XMLSerializer(output, format);
         serializer.serialize((Document) node);
+        log.info(output.toString());
         
         CachedXPathAPI cachedXPathAPI = new CachedXPathAPI();
         NodeIterator iterator = cachedXPathAPI.selectNodeIterator(node, "//*[local-name() = 'userId']");

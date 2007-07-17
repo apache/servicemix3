@@ -16,17 +16,21 @@
  */
 package org.apache.servicemix.components.email;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
+
 import junit.framework.Assert;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
-
-import javax.mail.Session;
-import javax.mail.internet.MimeMessage;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A stub {@link JavaMailSender} useful for testing.
@@ -35,9 +39,10 @@ import java.util.List;
  */
 public class StubJavaMailSender extends Assert implements JavaMailSender {
 
+    private static transient Log log = LogFactory.getLog(StubJavaMailSender.class);
+
     private List messages = new ArrayList();
     private Object semaphore = new Object();
-
 
     public void send(MimeMessage mimeMessage) throws MailException {
         addMessage(mimeMessage);
@@ -120,7 +125,7 @@ public class StubJavaMailSender extends Assert implements JavaMailSender {
 
 
     public void waitForMessagesToArrive(int messageCount) {
-        System.out.println("Waiting for message to arrive");
+        log.info("Waiting for message to arrive");
 
         long start = System.currentTimeMillis();
 
@@ -134,12 +139,12 @@ public class StubJavaMailSender extends Assert implements JavaMailSender {
                 }
             }
             catch (InterruptedException e) {
-                System.out.println("Caught: " + e);
+                log.info("Caught: " + e);
             }
         }
         long end = System.currentTimeMillis() - start;
 
-        System.out.println("End of wait for " + end + " millis");
+        log.info("End of wait for " + end + " millis");
     }
 
 
@@ -152,7 +157,7 @@ public class StubJavaMailSender extends Assert implements JavaMailSender {
         waitForMessagesToArrive(messageCount);
 
         assertEquals("expected number of messages", messageCount, getMessageCount());
-        System.out.println("Received messages:  " + getMessages());
+        log.info("Received messages:  " + getMessages());
     }
 
     public boolean hasReceivedMessage() {

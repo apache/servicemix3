@@ -17,15 +17,17 @@
 package org.apache.servicemix.components.wsif;
 
 
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.core.MessageCreator;
-
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 
 /**
  * This is a simple MDB that processes a message containing an integer
@@ -38,6 +40,8 @@ import javax.jms.TextMessage;
  * @version $Revision$
  */
 public class SampleServiceMessageListener implements MessageListener, InitializingBean {
+    private static transient Log log = LogFactory.getLog(SampleServiceMessageListener.class);
+
     private JmsTemplate template;
 
     public JmsTemplate getTemplate() {
@@ -59,7 +63,7 @@ public class SampleServiceMessageListener implements MessageListener, Initializi
             TextMessage message = (TextMessage) msg;
             // assume we have an integer
             String text = message.getText();
-            System.out.println("Text: " + text);
+            log.info("Text: " + text);
             int zipCode = new Integer(text).intValue();
             // return true if zip code < 50000, false otherwise
             if (zipCode < 50000) {
@@ -71,8 +75,7 @@ public class SampleServiceMessageListener implements MessageListener, Initializi
         }
         catch (Exception e) {
             // aargh - this should not happen usually
-            System.out.println(e);
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 

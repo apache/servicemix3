@@ -26,15 +26,19 @@ import java.net.URLConnection;
 
 import javax.xml.namespace.QName;
 
+import org.w3c.dom.Node;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.tck.TestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
-import org.w3c.dom.Node;
 
 /**
  * @version $Revision$
  */
 public class HttpTest extends TestSupport {
+    private static transient Log log = LogFactory.getLog(HttpTest.class);
 
     protected String quote = "SUNW";
     
@@ -63,11 +67,11 @@ public class HttpTest extends TestSupport {
         Object answer = requestServiceWithFileRequest(serviceName, file);
         assertTrue("Shoud return a DOM Node: " + answer, answer instanceof Node);
         Node node = (Node) answer;
-        System.out.println(transformer.toString(node));
+        log.info(transformer.toString(node));
 
         String text = textValueOfXPath(node, "//Result").trim();
 
-        System.out.println("Found price: " + text);
+        log.info("Found price: " + text);
 
         assertTrue("price text should not be empty", text.length() > 0);
 
@@ -93,7 +97,7 @@ public class HttpTest extends TestSupport {
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String inputLine;
         while ((inputLine = in.readLine()) != null) {
-            System.out.println(inputLine);
+            log.info(inputLine);
         }
         in.close();
     }

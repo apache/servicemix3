@@ -24,16 +24,20 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver;
 import org.apache.servicemix.tck.TestSupport;
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.mail.SimpleMailMessage;
-import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
  * @version $Revision$
  */
 public class SimpleMailTest extends TestSupport {
+
+    private static final transient Log log = LogFactory.getLog(SimpleMailTest.class);
 
     public void testUsingXPathExpressionsInSimpleEmail() throws Exception {
 
@@ -58,7 +62,7 @@ public class SimpleMailTest extends TestSupport {
 
         SimpleMailMessage message = (SimpleMailMessage) messages.get(0);
 
-        System.out.println("Created message: " + message);
+        log.info("Created message: " + message);
 
         assertEquals("text", "Hello there James how are you today?", message.getText());
         assertEquals("from", "james@nowhere.com", message.getFrom());
@@ -89,7 +93,7 @@ public class SimpleMailTest extends TestSupport {
 
         SimpleMailMessage mailMessage = (SimpleMailMessage) messages.get(0);
 
-        System.out.println("Created message: " + mailMessage);
+        log.info("Created message: " + mailMessage);
 
         assertEquals("subject", "Subject came from expression", mailMessage.getSubject());
         assertEquals("from", "junit@servicemix.org", mailMessage.getFrom());

@@ -23,17 +23,17 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import javax.xml.namespace.QName;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.tck.TestSupport;
-import org.springframework.context.support.AbstractXmlApplicationContext;
-import org.w3c.dom.Node;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
  * @version $Revision: 359186 $
  */
 public class HttpSoapWsTest extends TestSupport {
+    private static transient Log log = LogFactory.getLog(HttpSoapWsTest.class);
 
     protected String quote = "SUNW";
 
@@ -57,7 +57,7 @@ public class HttpSoapWsTest extends TestSupport {
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String inputLine;
         while ((inputLine = in.readLine()) != null) {
-            System.out.println(inputLine);
+            log.info(inputLine);
         }
         in.close();
     }

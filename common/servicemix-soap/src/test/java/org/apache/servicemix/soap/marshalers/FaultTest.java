@@ -20,17 +20,21 @@ import java.io.ByteArrayOutputStream;
 
 import javax.xml.namespace.QName;
 
-import junit.framework.TestCase;
-
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.util.DOMUtil;
-import org.apache.servicemix.soap.SoapFault;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import junit.framework.TestCase;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.util.DOMUtil;
+import org.apache.servicemix.soap.SoapFault;
+
 public class FaultTest extends TestCase {
+    private static transient Log log = LogFactory.getLog(FaultTest.class);
 
     private SourceTransformer sourceTransformer = new SourceTransformer();
     
@@ -78,7 +82,7 @@ public class FaultTest extends TestCase {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         writer.write(baos);
         
-        System.err.println("Resulting Fault: \n" + baos);
+        log.info("Resulting Fault: \n" + baos);
     }
 
     public void testReadSoap11UsingDom() throws Exception {
@@ -128,7 +132,7 @@ public class FaultTest extends TestCase {
         msg.setFault(fault);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         marshaler.createWriter(msg).write(baos);
-        System.err.println(baos.toString());
+        log.info(baos.toString());
 
         Node node = sourceTransformer.toDOMNode(new StringSource(baos.toString()));
         Element e = ((Document) node).getDocumentElement();
@@ -165,7 +169,7 @@ public class FaultTest extends TestCase {
         msg.setFault(fault);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         marshaler.createWriter(msg).write(baos);
-        System.err.println(baos.toString());
+        log.info(baos.toString());
 
         Node node = sourceTransformer.toDOMNode(new StringSource(baos.toString()));
         Element e = ((Document) node).getDocumentElement();

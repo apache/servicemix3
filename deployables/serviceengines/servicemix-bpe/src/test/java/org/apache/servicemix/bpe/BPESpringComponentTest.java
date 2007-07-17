@@ -20,6 +20,8 @@ import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 import javax.xml.namespace.QName;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
@@ -29,6 +31,7 @@ import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
 public class BPESpringComponentTest extends SpringTestSupport {
+    private static transient Log log = LogFactory.getLog(BPESpringComponentTest.class);
 
     public void test() throws Exception {
         ServiceMixClient client = new DefaultServiceMixClient(jbi);
@@ -46,8 +49,8 @@ public class BPESpringComponentTest extends SpringTestSupport {
         }
         assertEquals(ExchangeStatus.ACTIVE, me.getStatus());
         String out = new SourceTransformer().contentToString(me.getMessage("out"));
-        System.err.println(out);
-        System.err.println("Time: " + (t1 - t0));
+        log.info(out);
+        log.info("Time: " + (t1 - t0));
         client.done(me);
     }
 

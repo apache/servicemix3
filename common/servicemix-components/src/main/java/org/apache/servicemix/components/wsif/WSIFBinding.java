@@ -30,6 +30,8 @@ import javax.wsdl.Binding;
 import javax.wsdl.Definition;
 import javax.wsdl.WSDLException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.TransformComponentSupport;
 import org.apache.wsif.WSIFException;
 import org.apache.wsif.WSIFMessage;
@@ -46,6 +48,8 @@ import org.springframework.core.io.Resource;
  * @version $Revision$
  */
 public class WSIFBinding extends TransformComponentSupport {
+
+    private static transient Log log = LogFactory.getLog(WSIFBinding.class);
 
     private WSIFMarshaler marshaler = new WSIFMarshaler();
     private WSIFService serviceHelper;
@@ -69,8 +73,10 @@ public class WSIFBinding extends TransformComponentSupport {
                 serviceHelper = factory.getService(definition);
             }
 
-            for (Iterator iter = serviceHelper.getAvailablePortNames(); iter.hasNext();) {
-                System.out.println("Available port name: " + iter.next());
+            if (log.isDebugEnabled()) {
+                for (Iterator iter = serviceHelper.getAvailablePortNames(); iter.hasNext();) {
+                    log.debug("Available port name: " + iter.next());
+                }
             }
 
             operationMap = new WSIFOperationMap(serviceHelper);

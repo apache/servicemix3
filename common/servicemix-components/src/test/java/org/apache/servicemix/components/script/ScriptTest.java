@@ -18,15 +18,18 @@ package org.apache.servicemix.components.script;
 
 import java.util.List;
 
-import org.apache.servicemix.components.script.ScriptComponent;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.tck.Sender;
-import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
  * @version $Revision$
  */
 public class ScriptTest extends org.apache.servicemix.tck.SpringTestSupport {
+    private static transient Log log = LogFactory.getLog(ScriptTest.class);
+
     private static List result;
 
     public static List getResult() {
@@ -46,7 +49,7 @@ public class ScriptTest extends org.apache.servicemix.tck.SpringTestSupport {
 
         List result = getResult();
         assertNotNull("Have not received any results from groovy!", result);
-        System.out.println("Found results: " + result);
+        log.info("Found results: " + result);
     }
 
     protected AbstractXmlApplicationContext createBeanFactory() {

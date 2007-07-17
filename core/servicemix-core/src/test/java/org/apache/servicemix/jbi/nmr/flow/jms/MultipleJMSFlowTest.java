@@ -20,12 +20,15 @@ import junit.framework.TestCase;
 
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.xbean.BrokerFactoryBean;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.nmr.flow.Flow;
 import org.apache.servicemix.tck.ReceiverComponent;
 import org.springframework.core.io.ClassPathResource;
 
 public class MultipleJMSFlowTest extends TestCase {
+    private static transient Log log = LogFactory.getLog(MultipleJMSFlowTest.class);
 
     protected BrokerService broker;
     
@@ -61,7 +64,7 @@ public class MultipleJMSFlowTest extends TestCase {
             printNodes(containers);
         }
         long t1 = System.currentTimeMillis();
-        System.err.println(t1 - t0);
+        log.info(t1 - t0);
         for (int i = 0; i < containers.length; i++) {
             containers[i].activateComponent(new ReceiverComponent(), "receiver");
         }
@@ -89,7 +92,7 @@ public class MultipleJMSFlowTest extends TestCase {
             if (j > 0) msg += ", ";
             msg += ((JMSFlow) containers[j].getFlow()).numberInNetwork();
         }
-        System.err.println(msg);
+        log.info(msg);
     }
     
     protected Flow createFlow() {

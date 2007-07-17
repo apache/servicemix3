@@ -215,8 +215,6 @@ public class ScriptComponent extends TransformComponentSupport {
             return !isDisableOutput();
         }
         catch (ScriptException e) {
-            System.out.println("Caught: " + e);
-            e.printStackTrace();
             throw new MessagingException("Failed to run compiledScript. Reason: " + e, e);
         }
     }
@@ -253,8 +251,9 @@ public class ScriptComponent extends TransformComponentSupport {
             }
         }
         else {
-        return Logger.getLogger(getClass().getName());
-        }    }
+            return Logger.getLogger(getClass().getName());
+        }
+    }
 
     protected void runScript(Bindings bindings) throws ScriptException {
         if (compiledScript != null) {

@@ -31,11 +31,15 @@ import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import junit.framework.TestCase;
 
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.servicemix.soap.api.Message;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.soap.api.InterceptorProvider.Phase;
+import org.apache.servicemix.soap.api.Message;
 import org.apache.servicemix.soap.api.model.Binding;
 import org.apache.servicemix.soap.api.model.Operation;
 import org.apache.servicemix.soap.bindings.soap.Soap11;
@@ -50,20 +54,21 @@ import org.apache.servicemix.soap.util.DomUtil;
 import org.apache.servicemix.soap.wsdl.BindingFactory;
 import org.apache.servicemix.soap.wsdl.WSDLUtils;
 import org.apache.servicemix.soap.wsdl.validator.WSIBPValidator;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 public class HelloWorldSoapTest extends TestCase {
+    private static transient Log log = LogFactory.getLog(HelloWorldSoapTest.class);
 
-    static {
-        String conf = System.getProperty("log4j.configuration");
-        System.err.println("Configuring log4j with: " + conf);
-        if (conf != null) {
-            PropertyConfigurator.configure(conf);
-        }
-    }
+//    static {
+//        String conf = System.getProperty("log4j.configuration");
+//        System.err.println("Configuring log4j with: " + conf);
+//        if (conf != null) {
+//            PropertyConfigurator.configure(conf);
+//        }
+//    }
     
     public void testDocLitInput() throws Exception {
+        ByteArrayOutputStream baos;
+
         Binding<?> binding = getBinding("HelloWorld-DOC.wsdl");
         PhaseInterceptorChain phaseIn = new PhaseInterceptorChain();
         phaseIn.add(binding.getInterceptors(Phase.ServerIn));
@@ -76,7 +81,9 @@ public class HelloWorldSoapTest extends TestCase {
 
         NormalizedMessage nm = msg.getContent(NormalizedMessage.class);
         Document doc = DomUtil.parse(nm.getContent());
-        DomUtil.getTransformerFactory().newTransformer().transform(nm.getContent(), new StreamResult(System.err));
+        baos = new ByteArrayOutputStream();
+        DomUtil.getTransformerFactory().newTransformer().transform(nm.getContent(), new StreamResult(baos));
+        log.info(baos.toString());
         
         // check jbi message element
         Element root = DomUtil.getFirstChildElement(doc);
@@ -125,7 +132,8 @@ public class HelloWorldSoapTest extends TestCase {
        
         PhaseInterceptorChain phaseOut = new PhaseInterceptorChain();
         phaseOut.add(binding.getInterceptors(Phase.ClientOut));
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        baos = new ByteArrayOutputStream();
+
         Message msgOut = new MessageImpl();
         msgOut.put(Binding.class, binding);
         msgOut.setContent(OutputStream.class, baos);
@@ -133,7 +141,7 @@ public class HelloWorldSoapTest extends TestCase {
         msgOut.setContent(NormalizedMessage.class, nm);
         msgOut.put(SoapVersion.class, msg.get(SoapVersion.class));
         phaseOut.doIntercept(msgOut);
-        System.err.println(baos.toString());
+        log.info(baos.toString());
         
         Document node = DomUtil.parse(new ByteArrayInputStream(baos.toByteArray()));
         
@@ -170,6 +178,8 @@ public class HelloWorldSoapTest extends TestCase {
     }
 
     public void testDocLitOutput() throws Exception {
+        ByteArrayOutputStream baos;
+
         Binding<?> binding = getBinding("HelloWorld-DOC.wsdl");
         PhaseInterceptorChain phaseIn = new PhaseInterceptorChain();
         phaseIn.add(binding.getInterceptors(Phase.ClientIn));
@@ -184,7 +194,9 @@ public class HelloWorldSoapTest extends TestCase {
 
         NormalizedMessage nm = msg.getContent(NormalizedMessage.class);
         Document doc = DomUtil.parse(nm.getContent());
-        DomUtil.getTransformerFactory().newTransformer().transform(nm.getContent(), new StreamResult(System.err));
+        baos = new ByteArrayOutputStream();
+        DomUtil.getTransformerFactory().newTransformer().transform(nm.getContent(), new StreamResult(baos));
+        log.info(baos.toString());
         
         // check jbi message element
         Element root = DomUtil.getFirstChildElement(doc);
@@ -214,7 +226,8 @@ public class HelloWorldSoapTest extends TestCase {
 
         PhaseInterceptorChain phaseOut = new PhaseInterceptorChain();
         phaseOut.add(binding.getInterceptors(Phase.ServerOut));
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        baos = new ByteArrayOutputStream();
         Message msgOut = new MessageImpl();
         msgOut.put(Binding.class, binding);
         msgOut.put(Operation.class, binding.getOperations().iterator().next());
@@ -223,7 +236,7 @@ public class HelloWorldSoapTest extends TestCase {
         msgOut.setContent(NormalizedMessage.class, nm);
         msgOut.put(SoapVersion.class, msg.get(SoapVersion.class));
         phaseOut.doIntercept(msgOut);
-        System.err.println(baos.toString());
+        log.info(baos.toString());
         
         Document node = DomUtil.parse(new ByteArrayInputStream(baos.toByteArray()));
         Element envelope = DomUtil.getFirstChildElement(node);
@@ -244,6 +257,8 @@ public class HelloWorldSoapTest extends TestCase {
     }
     
     public void testDocLitFault() throws Exception {
+        ByteArrayOutputStream baos;
+
         Binding<?> binding = getBinding("HelloWorld-DOC.wsdl");
         PhaseInterceptorChain phaseIn = new PhaseInterceptorChain();
         phaseIn.add(binding.getInterceptors(Phase.ClientIn));
@@ -257,7 +272,9 @@ public class HelloWorldSoapTest extends TestCase {
 
         NormalizedMessage nm = msg.getContent(NormalizedMessage.class);
         Document doc = DomUtil.parse(nm.getContent());
-        DomUtil.getTransformerFactory().newTransformer().transform(nm.getContent(), new StreamResult(System.err));
+        baos = new ByteArrayOutputStream();
+        DomUtil.getTransformerFactory().newTransformer().transform(nm.getContent(), new StreamResult(baos));
+        log.info(baos.toString());
         
         Element root = DomUtil.getFirstChildElement(doc);
         assertNotNull(root);
@@ -266,7 +283,8 @@ public class HelloWorldSoapTest extends TestCase {
 
         PhaseInterceptorChain phaseOut = new PhaseInterceptorChain();
         phaseOut.add(binding.getInterceptors(Phase.ServerOut));
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        baos = new ByteArrayOutputStream();
         Message msgOut = new MessageImpl();
         msgOut.put(Binding.class, binding);
         msgOut.setContent(OutputStream.class, baos);
@@ -283,7 +301,7 @@ public class HelloWorldSoapTest extends TestCase {
             phaseOutFault.doIntercept(msgOut);
         }
 
-        System.err.println(baos.toString());
+        log.info(baos.toString());
         Document node = DomUtil.parse(new ByteArrayInputStream(baos.toByteArray()));
         
         Element envelope = DomUtil.getFirstChildElement(node);
@@ -301,6 +319,8 @@ public class HelloWorldSoapTest extends TestCase {
     }
     
     public void testRpcLitInput() throws Exception {
+        ByteArrayOutputStream baos;
+
         Binding<?> binding = getBinding("HelloWorld-RPC.wsdl");
         PhaseInterceptorChain phaseIn = new PhaseInterceptorChain();
         phaseIn.add(binding.getInterceptors(Phase.ServerIn));
@@ -313,8 +333,11 @@ public class HelloWorldSoapTest extends TestCase {
         
         NormalizedMessage nm = msg.getContent(NormalizedMessage.class);
         Document doc = DomUtil.parse(nm.getContent());
-        DomUtil.getTransformerFactory().newTransformer().transform(nm.getContent(), new StreamResult(System.err));
-        
+
+        baos = new ByteArrayOutputStream();
+        DomUtil.getTransformerFactory().newTransformer().transform(nm.getContent(), new StreamResult(baos));
+        log.info(baos.toString());
+
         Element root = DomUtil.getFirstChildElement(doc);
         assertNotNull(msg);
         assertEquals(JbiConstants.WSDL11_WRAPPER_NAMESPACE, root.getNamespaceURI()); 
@@ -375,7 +398,8 @@ public class HelloWorldSoapTest extends TestCase {
 
         PhaseInterceptorChain phaseOut = new PhaseInterceptorChain();
         phaseOut.add(binding.getInterceptors(Phase.ClientOut));
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        baos = new ByteArrayOutputStream();
         Message msgOut = new MessageImpl();
         msgOut.put(Binding.class, binding);
         msgOut.setContent(OutputStream.class, baos);
@@ -383,7 +407,7 @@ public class HelloWorldSoapTest extends TestCase {
         msgOut.setContent(NormalizedMessage.class, nm);
         msgOut.put(SoapVersion.class, msg.get(SoapVersion.class));
         phaseOut.doIntercept(msgOut);
-        System.err.println(baos.toString());
+        log.info(baos.toString());
         
         Document node = DomUtil.parse(new ByteArrayInputStream(baos.toByteArray()));
         Element envelope = DomUtil.getFirstChildElement(node);
@@ -414,6 +438,8 @@ public class HelloWorldSoapTest extends TestCase {
     }
     
     public void testRpcLitOutput() throws Exception {
+        ByteArrayOutputStream baos;
+
         Binding<?> binding = getBinding("HelloWorld-RPC.wsdl");
         PhaseInterceptorChain phaseIn = new PhaseInterceptorChain();
         phaseIn.add(binding.getInterceptors(Phase.ClientIn));
@@ -428,7 +454,10 @@ public class HelloWorldSoapTest extends TestCase {
 
         NormalizedMessage nm = msg.getContent(NormalizedMessage.class);
         Document doc = DomUtil.parse(nm.getContent());
-        DomUtil.getTransformerFactory().newTransformer().transform(nm.getContent(), new StreamResult(System.err));
+
+        baos = new ByteArrayOutputStream();
+        DomUtil.getTransformerFactory().newTransformer().transform(nm.getContent(), new StreamResult(baos));
+        log.info(baos.toString());
         
         // check jbi message element
         Element root = DomUtil.getFirstChildElement(doc);
@@ -449,7 +478,8 @@ public class HelloWorldSoapTest extends TestCase {
 
         PhaseInterceptorChain phaseOut = new PhaseInterceptorChain();
         phaseOut.add(binding.getInterceptors(Phase.ServerOut));
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        baos = new ByteArrayOutputStream();
         Message msgOut = new MessageImpl();
         msgOut.put(Binding.class, binding);
         msgOut.put(Operation.class, binding.getOperations().iterator().next());
@@ -458,7 +488,7 @@ public class HelloWorldSoapTest extends TestCase {
         msgOut.setContent(NormalizedMessage.class, nm);
         msgOut.put(SoapVersion.class, msg.get(SoapVersion.class));
         phaseOut.doIntercept(msgOut);
-        System.err.println(baos.toString());
+        log.info(baos.toString());
         
         Document node = DomUtil.parse(new ByteArrayInputStream(baos.toByteArray()));
         Element envelope = DomUtil.getFirstChildElement(node);
@@ -485,7 +515,7 @@ public class HelloWorldSoapTest extends TestCase {
         WSIBPValidator validator = new WSIBPValidator(def);
         if (!validator.isValid()) {
             for (String err : validator.getErrors()) {
-                System.err.println(err);
+                log.info(err);
             }
         }
         Service svc = (Service) def.getServices().values().iterator().next();

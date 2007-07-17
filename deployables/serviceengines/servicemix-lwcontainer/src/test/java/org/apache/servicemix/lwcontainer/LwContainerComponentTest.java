@@ -26,6 +26,8 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.container.JBIContainer;
@@ -35,6 +37,8 @@ import org.apache.servicemix.jbi.container.JBIContainer;
  * @version $Revision$
  */
 public class LwContainerComponentTest extends TestCase {
+    private static transient Log log = LogFactory.getLog(LwContainerComponentTest.class);
+
     protected JBIContainer container = new JBIContainer();
 
     private File tempRootDir;
@@ -52,7 +56,7 @@ public class LwContainerComponentTest extends TestCase {
         if (!tempTemp.mkdirs()) {
             fail("Unable to create temporary working root directory [" + tempTemp.getAbsolutePath() + "]");
         }
-        System.out.println("Using temporary root directory [" + tempRootDir.getAbsolutePath() + "]");
+        log.info("Using temporary root directory [" + tempRootDir.getAbsolutePath() + "]");
 
         container.setRootDir(tempRootDir.getAbsolutePath());
         container.setMonitorInstallationDirectory(false);
@@ -111,7 +115,7 @@ public class LwContainerComponentTest extends TestCase {
     }
 
     public static boolean deleteDir(File dir) {
-        System.out.println("Deleting directory : " + dir.getAbsolutePath());
+        log.info("Deleting directory : " + dir.getAbsolutePath());
         if (dir.isDirectory()) {
             String[] children = dir.list();
             for (int i = 0; i < children.length; i++) {

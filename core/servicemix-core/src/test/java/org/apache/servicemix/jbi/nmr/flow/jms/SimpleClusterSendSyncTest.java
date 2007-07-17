@@ -22,17 +22,21 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
  * JMSCluster Test for SendSync
  */
 public class SimpleClusterSendSyncTest extends TestCase {
+    private static transient Log log = LogFactory.getLog(SimpleClusterSendSyncTest.class);
+
     protected SpringJBIContainer jbi;
     protected AbstractXmlApplicationContext context;
 
@@ -59,10 +63,10 @@ public class SimpleClusterSendSyncTest extends TestCase {
             exchange.setService(new QName("http://www.habuma.com/foo", "pingService"));
             NormalizedMessage in = exchange.getInMessage();
             in.setContent(new StringSource("<ping>Pinging you</ping>"));
-            System.out.println("SENDING; exchange.status=" + exchange.getStatus());
+            log.info("SENDING; exchange.status=" + exchange.getStatus());
             client.sendSync(exchange);
             assertNotNull(exchange.getOutMessage());
-            System.out.println("GOT RESPONSE; exchange.out=" + new SourceTransformer().toString(exchange.getOutMessage().getContent()));
+            log.info("GOT RESPONSE; exchange.out=" + new SourceTransformer().toString(exchange.getOutMessage().getContent()));
             client.done(exchange);
             // Wait for done to be delivered
             Thread.sleep(50);

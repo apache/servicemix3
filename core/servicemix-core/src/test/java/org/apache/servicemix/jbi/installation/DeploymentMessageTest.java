@@ -20,6 +20,11 @@ import java.io.File;
 
 import javax.xml.transform.TransformerException;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.framework.ManagementSupport;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
@@ -27,10 +32,9 @@ import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.CachedXPathAPI;
 import org.apache.xpath.objects.XObject;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 public class DeploymentMessageTest extends AbstractManagementTest {
+    private static transient Log log = LogFactory.getLog(DeploymentMessageTest.class);
 
     protected void initContainer() {
         container.setCreateMBeanServer(false);
@@ -46,7 +50,7 @@ public class DeploymentMessageTest extends AbstractManagementTest {
         } catch (Exception e) {
             assertTrue(e instanceof Exception);
             String str = e.getMessage();
-            System.err.println(str);
+            log.info(str);
             Node node = new SourceTransformer().toDOMNode(new StringSource(str));
             assertNotNull(node);
             assertEquals("FAILED", textValueOfXPath(node, "//jbi:frmwk-task-result//jbi:task-result"));
@@ -63,7 +67,7 @@ public class DeploymentMessageTest extends AbstractManagementTest {
         } catch (Exception e) {
             assertTrue(e instanceof Exception);
             String str = e.getMessage();
-            System.err.println(str);
+            log.info(str);
             Node node = new SourceTransformer().toDOMNode(new StringSource(str));
             assertNotNull(node);
             assertEquals("FAILED", textValueOfXPath(node, "//jbi:frmwk-task-result//jbi:task-result"));
@@ -81,7 +85,7 @@ public class DeploymentMessageTest extends AbstractManagementTest {
         } catch (Exception e) {
             assertTrue(e instanceof Exception);
             String str = e.getMessage();
-            System.err.println(str);
+            log.info(str);
             Node node = new SourceTransformer().toDOMNode(new StringSource(str));
             assertNotNull(node);
             assertEquals("FAILED", textValueOfXPath(node, "//jbi:frmwk-task-result//jbi:task-result"));
@@ -99,7 +103,7 @@ public class DeploymentMessageTest extends AbstractManagementTest {
         } catch (Exception e) {
             assertTrue(e instanceof Exception);
             String str = e.getMessage();
-            System.err.println(str);
+            log.info(str);
             Node node = new SourceTransformer().toDOMNode(new StringSource(str));
             assertNotNull(node);
             assertEquals("FAILED", textValueOfXPath(node, "//jbi:frmwk-task-result//jbi:task-result"));
@@ -112,13 +116,13 @@ public class DeploymentMessageTest extends AbstractManagementTest {
         DummyComponent component = new DummyComponent();
         String deployResult = DOMUtil.asXML(ManagementSupport.createComponentSuccess("deploy", "component1"));
         component.setResult(deployResult);
-        System.err.println(deployResult);
+        log.info(deployResult);
         startContainer(true);
         getContainer().activateComponent(component, "component1");
         getContainer().getEnvironmentContext().createComponentRootDir("component1");
         File installSaUrl = createServiceAssemblyArchive("sa", "su", "component1");
         String result = getDeploymentService().deploy(installSaUrl.getAbsolutePath());
-        System.err.println(result);
+        log.info(result);
         Node node = new SourceTransformer().toDOMNode(new StringSource(result));
         assertNotNull(node);
         // main task
@@ -134,11 +138,11 @@ public class DeploymentMessageTest extends AbstractManagementTest {
         String deployResult1 = DOMUtil.asXML(ManagementSupport.createComponentFailure("deploy", "component1", "xxx", null));
         component1.setResult(deployResult1);
         component1.setException(true);
-        System.err.println(deployResult1);
+        log.info(deployResult1);
         DummyComponent component2 = new DummyComponent();
         String deployResult2 = DOMUtil.asXML(ManagementSupport.createComponentSuccess("deploy", "component2"));
         component2.setResult(deployResult2);
-        System.err.println(deployResult2);
+        log.info(deployResult2);
         startContainer(true);
         getContainer().activateComponent(component1, "component1");
         getContainer().getEnvironmentContext().createComponentRootDir("component1");
@@ -152,7 +156,7 @@ public class DeploymentMessageTest extends AbstractManagementTest {
         } catch (Exception e) {
             result = e.getMessage();
         }
-        System.err.println(result);
+        log.info(result);
         Node node = new SourceTransformer().toDOMNode(new StringSource(result));
         assertNotNull(node);
         // main task
@@ -175,7 +179,7 @@ public class DeploymentMessageTest extends AbstractManagementTest {
         } catch (Exception e) {
             assertTrue(e instanceof Exception);
             String str = e.getMessage();
-            System.err.println(str);
+            log.info(str);
             Node node = new SourceTransformer().toDOMNode(new StringSource(str));
             assertNotNull(node);
             assertEquals("FAILED", textValueOfXPath(node, "//jbi:frmwk-task-result//jbi:task-result"));
@@ -192,7 +196,7 @@ public class DeploymentMessageTest extends AbstractManagementTest {
         } catch (Exception e) {
             assertTrue(e instanceof Exception);
             String str = e.getMessage();
-            System.err.println(str);
+            log.info(str);
             Node node = new SourceTransformer().toDOMNode(new StringSource(str));
             assertNotNull(node);
             assertEquals("FAILED", textValueOfXPath(node, "//jbi:frmwk-task-result//jbi:task-result"));

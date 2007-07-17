@@ -20,6 +20,8 @@ import javax.jbi.messaging.Fault;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.NormalizedMessage;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.apache.servicemix.tck.Receiver;
@@ -31,6 +33,8 @@ import org.springframework.context.support.AbstractXmlApplicationContext;
  * @version $Revision$
  */
 public class ValidationTest extends SpringTestSupport {
+    private static transient Log log = LogFactory.getLog(ValidationTest.class);
+
     protected ServiceMixClient client;
     protected Receiver receiver;
 
@@ -71,10 +75,10 @@ public class ValidationTest extends SpringTestSupport {
         assertEquals("out", null, out);
         assertNotNull("Should have a fault", fault);
 
-        System.out.println("error is: " + error);
+        log.info("error is: " + error);
 
-        System.out.println("Fault is...");
-        System.out.println(transformer.toString(fault.getContent()));
+        log.info("Fault is...");
+        log.info(transformer.toString(fault.getContent()));
 
         // TODO?
         //assertEquals("error", null, error);
@@ -94,10 +98,10 @@ public class ValidationTest extends SpringTestSupport {
         assertEquals("out", null, out);
         assertNotNull("Should have a fault", fault);
 
-        System.out.println("error is: " + error);
+        log.info("error is: " + error);
 
-        System.out.println("Fault is...");
-        System.out.println(transformer.toString(fault.getContent()));
+        log.info("Fault is...");
+        log.info(transformer.toString(fault.getContent()));
 
         // TODO?
         //assertEquals("error", null, error);

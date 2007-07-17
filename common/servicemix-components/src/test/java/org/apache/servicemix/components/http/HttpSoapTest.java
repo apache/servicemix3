@@ -26,12 +26,18 @@ import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.traversal.NodeIterator;
+
 import junit.framework.TestCase;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.EchoComponent;
 import org.apache.servicemix.components.util.MockServiceComponent;
 import org.apache.servicemix.components.util.TraceComponent;
@@ -45,12 +51,10 @@ import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.servicemix.tck.ReceiverComponent;
 import org.apache.xpath.CachedXPathAPI;
 import org.springframework.core.io.ClassPathResource;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
 
 public class HttpSoapTest extends TestCase {
-    
+    private static transient Log log = LogFactory.getLog(HttpSoapTest.class);
+
     protected JBIContainer container;
     
     protected void setUp() throws Exception {
@@ -94,7 +98,7 @@ public class HttpSoapTest extends TestCase {
         InputStream is = connection.getInputStream();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         FileUtil.copyInputStream(is, baos);
-        System.out.println(baos.toString());
+        log.info(baos.toString());
     }
 
     public void testInOnly() throws Exception {
@@ -113,7 +117,7 @@ public class HttpSoapTest extends TestCase {
         PostMethod method = new PostMethod("http://localhost:" + PORT + "/?name=Guillaume");
         method.setRequestEntity(new InputStreamRequestEntity(getClass().getResourceAsStream("soap-request.xml")));
         new HttpClient().executeMethod(method);
-        System.out.println(method.getResponseBodyAsString());
+        log.info(method.getResponseBodyAsString());
     }
 
     public void testMarhaler() throws Exception {
@@ -128,18 +132,18 @@ public class HttpSoapTest extends TestCase {
         exchange.setInMessage(in);
         in.setContent(new StringSource("<?xml version='1.0'?><ns1:getQuote xmlns:ns1='urn:xmethods-delayed-quotes' xmlns:xsi='http://www.w3.org/1999/XMLSchema-instance' xmlns:se='http://schemas.xmlsoap.org/soap/envelope/' se:encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'><symbol xsi:type='xsd:string'>SUNW</symbol></ns1:getQuote>"));
         marshaler.fromNMS(method, exchange, in);
-        System.out.println(((StringRequestEntity) method.getRequestEntity()).getContent());
+        log.info(((StringRequestEntity) method.getRequestEntity()).getContent());
 
         HttpClient httpClient = new HttpClient();
         httpClient.executeMethod(method);
-        System.out.println(method.getResponseBodyAsString());
+        log.info(method.getResponseBodyAsString());
         
         exchange = new InOnlyImpl("id");
         in = exchange.createMessage();
         exchange.setInMessage(in);
         marshaler.toNMS(in, method);
         
-        System.out.println(new SourceTransformer().toString(in.getContent()));
+        log.info(new SourceTransformer().toString(in.getContent()));
     }
     
     public void testMarshalerNamespaces() throws Exception {
@@ -170,11 +174,11 @@ public class HttpSoapTest extends TestCase {
         exchange.setInMessage(in);
         in.setContent(new StringSource("<?xml version='1.0'?><ns1:getQuote xmlns:ns1='urn:xmethods-delayed-quotes' xmlns:xsi='http://www.w3.org/1999/XMLSchema-instance' xmlns:se='http://schemas.xmlsoap.org/soap/envelope/' se:encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'><symbol xsi:type='xsd:string'>SUNW</symbol></ns1:getQuote>"));
         marshaler.fromNMS(method, exchange, in);
-        System.out.println(((StringRequestEntity) method.getRequestEntity()).getContent());
+        log.info(((StringRequestEntity) method.getRequestEntity()).getContent());
 
         HttpClient httpClient = new HttpClient();
         httpClient.executeMethod(method);
-        System.out.println(method.getResponseBodyAsString());
+        log.info(method.getResponseBodyAsString());
         
         exchange = new InOnlyImpl("id");
         in = exchange.createMessage();
@@ -183,7 +187,7 @@ public class HttpSoapTest extends TestCase {
         
 
         Node node = new SourceTransformer().toDOMNode(new SourceTransformer().toStreamSource(in.getContent()));
-        System.out.println(new SourceTransformer().toString(node));
+        log.info(new SourceTransformer().toString(node));
         
         CachedXPathAPI cachedXPathAPI = new CachedXPathAPI();
         NodeIterator iterator = cachedXPathAPI.selectNodeIterator(node, "//*[local-name() = 'userId']");
@@ -223,7 +227,7 @@ public class HttpSoapTest extends TestCase {
         NormalizedMessage msg = (NormalizedMessage) receiver.getMessageList().flushMessages().get(0);
 
         Node node = new SourceTransformer().toDOMNode(new SourceTransformer().toStreamSource(msg.getContent()));
-        System.out.println(new SourceTransformer().toString(node));
+        log.info(new SourceTransformer().toString(node));
         
         CachedXPathAPI cachedXPathAPI = new CachedXPathAPI();
         NodeIterator iterator = cachedXPathAPI.selectNodeIterator(node, "//*[local-name() = 'userId']");

@@ -37,14 +37,14 @@ import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.resolver.EndpointResolver;
 import org.apache.servicemix.tck.Receiver;
-import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
  * @version $Revision$
  */
 public class ServiceMixClientTest extends TestCase {
-    private static final transient Log log = LogFactory.getLog(ServiceMixClientTest.class);
+    private static transient Log log = LogFactory.getLog(ServiceMixClientTest.class);
 
     protected AbstractXmlApplicationContext context;
     protected ServiceMixClient client;
@@ -141,7 +141,7 @@ public class ServiceMixClientTest extends TestCase {
 
         assertNotNull("Should have returned a non-null response!", response);
 
-        System.out.println("Received result: " + response);
+        log.info("Received result: " + response);
     }
 
 
@@ -163,8 +163,8 @@ public class ServiceMixClientTest extends TestCase {
         assertNotNull("outMessage is null!", outMessage);
 
         assertEquals("foo header", "hello", outMessage.getProperty("foo"));
-        System.out.println("Received result: " + outMessage.getContent());
-        System.out.println("XML is: " + transformer.toString(outMessage.getContent()));
+        log.info("Received result: " + outMessage.getContent());
+        log.info("XML is: " + transformer.toString(outMessage.getContent()));
     }
 
     protected void assertRequestUsingMapAndPOJOByServiceName(QName service) throws Exception {
@@ -176,7 +176,7 @@ public class ServiceMixClientTest extends TestCase {
 
         assertNotNull("Should have returned a non-null response!", response);
         
-        System.out.println("Received result: " + response);
+        log.info("Received result: " + response);
     }
 
     protected void setUp() throws Exception {

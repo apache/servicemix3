@@ -23,12 +23,15 @@ import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 
 public class Bank extends ComponentSupport implements MessageExchangeListener {
-    
+    private static transient Log log = LogFactory.getLog(Bank.class);
+
     public Bank(int number) {
         setService(new QName("urn:logicblaze:soa:bank", "Bank" + number));
         setEndpoint("bank");
@@ -41,7 +44,7 @@ public class Bank extends ComponentSupport implements MessageExchangeListener {
         } else if (inOut.getStatus() == ExchangeStatus.ERROR) {
             return;
         }
-        System.err.println(getService().getLocalPart() + " requested");
+        log.info(getService().getLocalPart() + " requested");
         try {
             String output = "<getLoanQuoteResponse xmlns=\"urn:logicblaze:soa:bank\"><rate>"
                 + (Math.ceil(1000 * Math.random()) / 100) + "</rate></getLoanQuoteResponse>";
