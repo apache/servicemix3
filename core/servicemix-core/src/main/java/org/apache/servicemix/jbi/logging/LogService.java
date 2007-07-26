@@ -39,6 +39,8 @@ import java.net.MalformedURLException;
  */
 public class LogService extends BaseSystemService implements InitializingBean, LogServiceMBean {
 
+	private static String DEFAULT_LOG_FILE_NAME = "log4j.xml";
+	
     private boolean autoStart = true;
     private boolean initialized = false;
     private int refreshPeriod = 60; // 60sec
@@ -165,13 +167,8 @@ public class LogService extends BaseSystemService implements InitializingBean, L
 
     public void setup() throws JBIException {
         if (!initialized) {
-            if (configUrl != null) {
-                try {
-                    configFileUrl = new URL(configUrl);
-                } catch (MalformedURLException e) {
-                    configFileUrl = null;
-                }
-            }
+        	configFileUrl = locateLoggingConfig();
+
             if (configFileUrl != null) {
                 // daemon mode
                 timer = new Timer(true);
@@ -184,7 +181,21 @@ public class LogService extends BaseSystemService implements InitializingBean, L
         }
     }
 
-    public MBeanOperationInfo[] getOperationInfos() throws JMException {
+    /** 
+     * Grab the log4j.xml from the CLASSPATH 
+     * 
+     * @return URL of the log4j.xml file 
+     */
+    private URL locateLoggingConfig() {
+		URL log4jConfigUrl = ClassLoader.getSystemResource(DEFAULT_LOG_FILE_NAME);
+		
+		if (logger.isDebugEnabled() && log4jConfigUrl != null)
+			logger.debug("Located logging configuration: " + log4jConfigUrl.toString());
+		
+		return log4jConfigUrl;
+	}
+
+	public MBeanOperationInfo[] getOperationInfos() throws JMException {
         OperationInfoHelper helper = new OperationInfoHelper();
         helper.addOperation(getObjectToManage(), "reconfigureLogSystem", 0,
                 "Reconfigure the log4j system");
