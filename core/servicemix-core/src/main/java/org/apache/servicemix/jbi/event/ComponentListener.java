@@ -18,7 +18,7 @@ package org.apache.servicemix.jbi.event;
 
 import java.util.EventListener;
 
-public interface ComponentListener extends EventListener {
+public interface ComponentListener extends ServiceMixListener {
     
     public void componentInstalled(ComponentEvent event);
     

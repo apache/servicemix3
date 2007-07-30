@@ -18,7 +18,7 @@ package org.apache.servicemix.jbi.event;
 
 import java.util.EventListener;
 
-public interface EndpointListener extends EventListener {
+public interface EndpointListener extends ServiceMixListener {
 
     public void internalEndpointRegistered(EndpointEvent event);
     

@@ -18,7 +18,7 @@ package org.apache.servicemix.jbi.event;
 
 import java.util.EventListener;
 
-public interface ServiceAssemblyListener extends EventListener {
+public interface ServiceAssemblyListener extends ServiceMixListener {
 
     public void assemblyDeployed(ServiceAssemblyEvent event);
 
