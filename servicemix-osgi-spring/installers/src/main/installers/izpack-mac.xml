@@ -61,6 +61,8 @@
       <executable os="unix" targetfile="$INSTALL_PATH/bin/${app}" stage="never" keep="true" />
       <parsable os="unix" targetfile="$INSTALL_PATH/bin/${server.init}" type="shell" />
       <executable os="unix" targetfile="$INSTALL_PATH/bin/${server.init}" stage="never" keep="true" />
+      <parsable os="unix" targetfile="$INSTALL_PATH/bin/servicemix.sh" type="shell" />
+      <executable os="unix" targetfile="$INSTALL_PATH/bin/servicemix.sh" stage="never" keep="true" />
     </pack>
   </packs>
 </installation>

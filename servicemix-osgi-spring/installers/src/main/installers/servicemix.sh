@@ -232,7 +232,8 @@ run() {
     fi
     cd "$SERVICEMIX_HOME"
     if [ "x$1" = "x" ] ; then
-        exec $JAVA $JAVA_OPTS -Dservicemix.home="$SERVICEMIX_HOME" -jar "$JAR" "$SERVICEMIX_HOME" start 
+        #exec $JAVA $JAVA_OPTS -Dservicemix.home="$SERVICEMIX_HOME" -jar "$JAR" "$SERVICEMIX_HOME" start 
+        exec $JAVA $JAVA_OPTS -Dfelix.config.properties=file:$SERVICEMIX_HOME/conf/config.properties -Dservicemix.home="$SERVICEMIX_HOME" -jar bin/servicemix.jar
     else
         exec $JAVA $JAVA_OPTS -Dservicemix.home="$SERVICEMIX_HOME" -jar "$JAR" "$SERVICEMIX_HOME" "$1" 
     fi

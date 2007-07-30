@@ -9,13 +9,14 @@
   <version>4.0-SNAPSHOT</version>
 
   <modules>
+	<module>org.apache.felix.daemon</module>
     <module>bundles</module>
     <module>services</module>
     <module>installers</module>
   </modules>
 
   <properties>
-    <felix.version>1.0.0</felix.version>
+    <felix.version>0.9.0-incubator-SNAPSHOT</felix.version>
     <spring.version>2.1-SNAPSHOT</spring.version>
     <servicemix.version>4.0-SNAPSHOT</servicemix.version>
   </properties>
@@ -32,6 +33,22 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+    <repository>
+	  <id>springframework.org</id>
+	  <name>Springframework Maven Repository</name>
+	  <url>http://static.springframework.org/maven2/</url>
+    </repository>
+	<repository>
+	 <id>springframework.org snaphots</id>
+	  <name>Springframework Maven SNAPSHOT Repository</name>
+	  <url>http://static.springframework.org/maven2-snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+	</repository>
   </repositories>
 
   <pluginRepositories>
