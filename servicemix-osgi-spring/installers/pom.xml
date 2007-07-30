@@ -211,12 +211,91 @@
           <excludes>
             <exclude>ant:ant</exclude>
             <exclude>xerces:xercesImpl</exclude>
+			<exclude>xalan:xalan</exclude>
+			<exclude>org.apache.activemq:activemq-core</exclude>
+			<exclude>org.apache.activemq:activeio-core</exclude>
+			<exclude>org.aopalliance:aopalliance</exclude>
             <exclude>org.apache.felix:org.apache.felix.main</exclude>
-            <!--
+            <exclude>org.apache.felix:org.apache.felix.framework</exclude>
             <exclude>org.apache.felix:org.apache.felix.shell</exclude>
             <exclude>org.apache.felix:org.apache.felix.shell.tui</exclude>
             <exclude>org.apache.felix:org.apache.felix.bundlerepository</exclude>
-            -->
+			<exclude>org.apache.felix:org.osgi.core</exclude>
+            <exclude>org.apache.servicemix.osgi:org.apache.felix.daemon</exclude>
+            <exclude>org.apache.servicemix.osgi.bundles:org.apache.servicemix.osgi.bundles.activation</exclude>
+            <exclude>org.apache.servicemix.osgi.bundles:org.apache.servicemix.osgi.bundles.commons-logging</exclude>
+            <exclude>org.apache.servicemix.osgi.bundles:org.apache.servicemix.osgi.bundles.ejb</exclude>
+            <exclude>org.apache.servicemix.osgi.bundles:org.apache.servicemix.osgi.bundles.j2ee-connector</exclude>
+            <exclude>org.apache.servicemix.osgi.bundles:org.apache.servicemix.osgi.bundles.j2ee-management</exclude>
+            <exclude>org.apache.servicemix.osgi.bundles:org.apache.servicemix.osgi.bundles.jta</exclude>
+            <exclude>org.apache.servicemix.osgi.bundles:org.apache.servicemix.osgi.bundles.servicemix-core</exclude>
+            <exclude>org.apache.servicemix.osgi.bundles:org.apache.servicemix.osgi.bundles.servicemix-jbi</exclude>
+            <exclude>org.apache.servicemix.osgi.bundles:org.apache.servicemix.osgi.bundles.servicemix-services</exclude>
+			<exclude>org.apache.servicemix.osgi.services:org.apache.servicemix.nmr</exclude>
+			<exclude>org.apache.servicemix.osgi.services:org.apache.servicemix.jmx</exclude>
+			<exclude>org.apache.servicemix:servicemix-core</exclude>
+			<exclude>org.apache.servicemix:servicemix-jbi</exclude>
+			<exclude>org.apache.servicemix:servicemix-services</exclude>
+			<exclude>org.springframework:spring-aop</exclude>
+			<exclude>org.springframework:spring-beans</exclude>
+			<exclude>org.springframework:spring-context</exclude>
+			<exclude>org.springframework:spring-core</exclude>
+			<exclude>org.springframework:spring-jmx</exclude>
+			<exclude>org.springframework.osgi:spring-aop</exclude>
+			<exclude>org.springframework.osgi:spring-beans</exclude>
+			<exclude>org.springframework.osgi:spring-context</exclude>
+			<exclude>org.springframework.osgi:spring-core</exclude>
+			<exclude>org.springframework.osgi:spring-jmx</exclude>
+			<exclude>org.springframework.osgi:spring-osgi-core</exclude>
+			<exclude>org.springframework.osgi:spring-osgi-extender</exclude>
+			<exclude>org.springframework.osgi:spring-osgi-io</exclude>
+			<exclude>org.springframework.osgi:aopalliance.osgi</exclude>
+			<exclude>org.springframework.osgi:backport-util-concurrent</exclude>
+			<exclude>mx4j:mx4j</exclude>
+			<exclude>mx4j:mx4j-remote</exclude>
+			<exclude>backport-util-concurrent:backport-util-concurrent</exclude>
+			<exclude>commons-beanutils:commons-beanutils-core</exclude>
+			<exclude>commons-collections:commons-collections</exclude>
+			<exclude>commons-dbcp:commons-dbcp</exclude>
+			<exclude>commons-lang:commons-lang</exclude>
+			<exclude>commons-logging:commons-logging</exclude>
+			<exclude>commons-pool:commons-pool</exclude>
+			<exclude>org.apache.xbean:xbean-classloader</exclude>
+			<exclude>org.apache.xbean:xbean-kernel</exclude>
+			<exclude>org.apache.xbean:xbean-server</exclude>
+			<exclude>org.apache.xbean:xbean-spring</exclude>
+			<exclude>aopalliance:aopalliance</exclude>
+			<exclude>org.apache.geronimo.specs:geronimo-jta_1.0.1B_spec</exclude>
+			<exclude>org.apache.geronimo.specs:geronimo-qname_1.1_spec</exclude>
+			<exclude>org.apache.geronimo.specs:geronimo-j2ee-jacc_1.0_spec</exclude>
+			<exclude>org.apache.geronimo.specs:geronimo-activation_1.1_spec</exclude>
+			<exclude>org.apache.geronimo.modules:geronimo-transaction</exclude>
+			<exclude>org.apache.geronimo.specs:geronimo-j2ee-management_1.1_spec</exclude>
+			<exclude>org.apache.geronimo.specs:geronimo-j2ee-connector_1.5_spec</exclude>
+			<exclude>org.apache.geronimo.specs:geronimo-activation_1.0.2_spec</exclude>
+			<exclude>org.apache.geronimo.specs:geronimo-ejb_3.0_spec</exclude>
+			<exclude>org.apache.geronimo.specs:geronimo-ejb_2.1_spec</exclude>
+			<exclude>org.apache.geronimo.specs:geronimo-jms_1.1_spec</exclude>
+			<exclude>org.apache.geronimo.specs:geronimo-jta_1.1_spec</exclude>
+			<exclude>org.apache.geronimo.specs:geronimo-j2ee-management_1.0_spec</exclude>
+			<exclude>org.apache.geronimo.modules:geronimo-transaction</exclude>
+			<exclude>org.apache.geronimo.modules:geronimo-connector</exclude>
+			<exclude>xstream:xstream</exclude>
+			<exclude>log4j:log4j</exclude>
+			<exclude>xml-apis:xml-apis</exclude>
+			<exclude>xmlpull:xmlpull</exclude>
+			<exclude>logkit:logkit</exclude>
+			<exclude>stax:stax-api</exclude>
+			<exclude>regexp:regexp</exclude>
+			<exclude>junit:junit</exclude>
+			<exclude>org.codehaus.woodstox:wstx-asl</exclude>
+			<exclude>avalon-framework:avalon-framework</exclude>
+			<exclude>net.sf.kxml:kxml2</exclude>
+			<exclude>jaxen:jaxen</exclude>
+			<exclude>org.jencks:jencks</exclude>
+			<exclude>javax.servlet:servlet-api</exclude>
+			<exclude>org.objectweb.howl:howl</exclude>
+			<exclude></exclude>
           </excludes>
           <application>
             <name>servicemix</name>
@@ -271,34 +350,6 @@
               <source>org.apache.felix:org.apache.felix.bundlerepository</source>
               <destinationPath>
                 bundle/org.apache.felix.bundlerepository-${felix.version}.jar
-              </destinationPath>
-            </packagedFile>
-            <packagedFile>
-              <dependency>true</dependency>
-              <source>org.apache.servicemix.osgi.rmi:org.apache.servicemix.osgi.rmi.registry</source>
-              <destinationPath>
-                bundle/org.apache.servicemix.osgi.rmi.registry-${project.version}.jar
-              </destinationPath>
-            </packagedFile>
-            <packagedFile>
-              <dependency>true</dependency>
-              <source>org.apache.servicemix.osgi.jmx:org.apache.servicemix.osgi.jmx.server</source>
-              <destinationPath>
-                bundle/org.apache.servicemix.osgi.jmx.server-${project.version}.jar
-              </destinationPath>
-            </packagedFile>
-            <packagedFile>
-              <dependency>true</dependency>
-              <source>org.apache.servicemix.osgi.jmx:org.apache.servicemix.osgi.jmx.rmi</source>
-              <destinationPath>
-                bundle/org.apache.servicemix.osgi.jmx.rmi-${project.version}.jar
-              </destinationPath>
-            </packagedFile>
-            <packagedFile>
-              <dependency>true</dependency>
-              <source>org.apache.servicemix.osgi.transaction:org.apache.servicemix.osgi.transaction.manager</source>
-              <destinationPath>
-                bundle/org.apache.servicemix.osgi.transaction.manager-${project.version}.jar
               </destinationPath>
             </packagedFile>
             <packagedFile>
