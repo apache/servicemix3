@@ -194,13 +194,19 @@ public class FilePoller extends PollingComponentSupport {
     }
 
     protected void processFile(File aFile) throws Exception {
-        String name = aFile.getCanonicalPath();
-        InputStream in = new BufferedInputStream(new FileInputStream(aFile));
-        InOnly exchange = getExchangeFactory().createInOnlyExchange();
-        NormalizedMessage message = exchange.createMessage();
-        exchange.setInMessage(message);
-        marshaler.readMessage(exchange, message, in, name);
-        getDeliveryChannel().sendSync(exchange);
-        in.close();
+        InputStream in = null;
+        try {
+            String name = aFile.getCanonicalPath();
+            in = new BufferedInputStream(new FileInputStream(aFile));
+            InOnly exchange = getExchangeFactory().createInOnlyExchange();
+            NormalizedMessage message = exchange.createMessage();
+            exchange.setInMessage(message);
+            marshaler.readMessage(exchange, message, in, name);
+            getDeliveryChannel().sendSync(exchange);
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+        }
     }
 }
