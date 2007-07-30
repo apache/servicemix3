@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:osgi="http://www.springframework.org/schema/osgi"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+  http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans.xsd
+  http://www.springframework.org/schema/util
+  http://www.springframework.org/schema/util/spring-util.xsd
+  http://www.springframework.org/schema/osgi
+  http://www.springframework.org/schema/osgi/spring-osgi.xsd">
+
+    <bean id="servicemix"
+          class="org.apache.servicemix.nmr.Container">
+        <property name="MBeanServer" ref="MBeanServer" />
+        <property name="broker" ref="broker" />
+        <property name="listeners" ref="listeners" />
+    </bean>
+
+    <osgi:reference id="MBeanServer"
+                    interface="javax.management.MBeanServer"
+                    cardinality="0..1" />
+
+    <bean id="broker"
+          class="org.apache.servicemix.jbi.security.SecuredBroker">
+        <property name="authorizationMap" ref="authorizationMap" />
+        <property name="flows" ref="flows" />
+    </bean>
+
+    <bean id="authorizationMap"
+          class="org.apache.servicemix.jbi.security.acl.impl.DefaultAuthorizationMap">
+
+    </bean>
+
+    <osgi:reference id="flows"
+                    interface="org.apache.servicemix.jbi.nmr.flow.Flow"
+                    cardinality="0..n" />
+
+    <bean id="stFlow"
+          class="org.apache.servicemix.jbi.nmr.flow.st.STFlow" />
+
+    <osgi:service ref="stFlow">
+        <osgi:interfaces>
+            <value>org.apache.servicemix.jbi.nmr.flow.Flow</value>
+        </osgi:interfaces>
+    </osgi:service>
+
+    <osgi:reference id="listeners"
+                    interface="org.apache.servicemix.jbi.event.ServiceMixListener"
+                    cardinality="0..n" />
+
+</beans>
