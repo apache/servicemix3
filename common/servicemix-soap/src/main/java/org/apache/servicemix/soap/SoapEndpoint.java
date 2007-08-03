@@ -43,6 +43,7 @@ import org.apache.servicemix.common.Endpoint;
 import org.apache.servicemix.common.ExchangeProcessor;
 import org.apache.servicemix.common.wsdl1.JbiExtension;
 import org.apache.servicemix.common.xbean.XBeanServiceUnit;
+import org.apache.servicemix.jbi.messaging.MessageExchangeSupport;
 import org.apache.servicemix.jbi.security.auth.AuthenticationService;
 import org.apache.servicemix.jbi.security.keystore.KeystoreManager;
 import org.apache.servicemix.soap.handlers.addressing.AddressingHandler;
@@ -56,7 +57,7 @@ public abstract class SoapEndpoint extends Endpoint {
     protected ServiceEndpoint activated;
     protected ExchangeProcessor processor;
     protected Role role;
-    protected URI defaultMep;
+    protected URI defaultMep = MessageExchangeSupport.IN_OUT;
     protected boolean soap;
     protected String soapVersion;
     protected Resource wsdlResource;
