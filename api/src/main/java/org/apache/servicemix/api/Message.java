@@ -16,12 +16,14 @@
  */
 package org.apache.servicemix.api;
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
  * @version $Revision: $
+ * @since 4.0
  */
-public interface Message {
+public interface Message extends Serializable, Cloneable {
 
     enum Type {
         In, Out, Fault
@@ -37,7 +39,7 @@ public interface Message {
     Set<String> getAttachmentIds();
     Object      getAttachment(String id);
     void        addAttachment(String id, Object value);
-    void        removeAttacment(String id);
+    void        removeAttachment(String id);
 
     /**
      *
@@ -52,12 +54,12 @@ public interface Message {
     Message     copy();
 
     /**
-     * Make sure that all streams container in the content and in
-     * attachements are transformed to re-readable sources.
+     * Make sure that all streams contained in the content and in
+     * attachments are transformed to re-readable sources.
      * This method will be called by the framework when persisting
      * the message or when displaying it
      */
     void        ensureReReadable();
 
-    String      toString();        
+    String      display(boolean displayContent);
 }

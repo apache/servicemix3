@@ -16,6 +16,7 @@
  */
 package org.apache.servicemix.api;
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -26,8 +27,9 @@ import java.util.Set;
  * Exchanges are created using the {@link Channel}.
  *
  * @version $Revision: $
+ * @since 4.0
  */
-public interface Exchange {
+public interface Exchange extends Serializable, Cloneable {
 
     enum Pattern {
         InOnly,
@@ -66,9 +68,9 @@ public interface Exchange {
      */
     Exchange.Pattern getPattern();
 
-    Reference getReference();
+    Reference getTarget();
 
-    void setReference(Reference target);
+    void setTarget(Reference target);
 
     /**
      *
@@ -127,7 +129,16 @@ public interface Exchange {
      */
     Exception getError();
 
+    /**
+     * Make sure that all streams contained in the content and in
+     * attachments are transformed to re-readable sources.
+     * This method will be called by the framework when persisting
+     * the exchange or when displaying it
+     */
+    void        ensureReReadable();
+
+    void     copyFrom(Exchange exchange);
     Exchange copy();
-    String   toString();
+    String   display(boolean displayContent);
 
 }

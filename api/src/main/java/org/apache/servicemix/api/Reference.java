@@ -24,10 +24,15 @@ import org.w3c.dom.Document;
  * as targets for {@link Exchange}s.
  *
  * @version $Revision: $
+ * @since 4.0
  */
 public interface Reference {
 
-    
+    /**
+     * Obtains an xml document describing this endpoint reference.
+     * 
+     * @return 
+     */
     Document toXml();
 
 }

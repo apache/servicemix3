@@ -22,6 +22,7 @@ import java.util.concurrent.Future;
  * Creates a channel to perform invocations on the NMR.
  *
  * @version $Revision: $
+ * @since 4.0
  */
 public interface Channel {
 
@@ -45,9 +46,9 @@ public interface Channel {
     Exchange createExchange(Exchange.Pattern pattern);
 
     /**
-     * Asynchronously invocation of the service
+     * Synchronously invocation of the service
      */
-    void send(Exchange exchange);
+    void invoke(Exchange exchange);
 
     /**
      * An asynchronous invocation of the service which will notify the returned future when the invocation

@@ -24,6 +24,7 @@ package org.apache.servicemix.api;
  * be given several exchanges concurrently for processing.
  *
  * @version $Revision: $
+ * @since 4.0
  */
 public interface Endpoint {
 
