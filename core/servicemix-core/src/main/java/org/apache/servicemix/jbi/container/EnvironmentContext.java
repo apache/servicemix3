@@ -381,6 +381,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @param doDelete true if component is to be deleted
      */
     public void unreregister(ComponentMBeanImpl connector) {
+        this.envMap.remove(connector);
     }
 
     /**
