@@ -36,6 +36,8 @@ import org.w3c.dom.Document;
  */
 public class StaxInInterceptor extends AbstractInterceptor {
 
+    public static final String ENCODING = "Encoding";
+
     public StaxInInterceptor() {
     }
 
@@ -49,7 +51,7 @@ public class StaxInInterceptor extends AbstractInterceptor {
                 InputStream is = message.getContent(InputStream.class);
                 if (is != null) {
                     // TODO: where does encoding constant go?
-                    String encoding = (String) message.get("Encoding");
+                    String encoding = (String) message.get(ENCODING);
                     reader = StaxUtil.createReader(is, encoding);
                     reader = new ExtendedXMLStreamReader(reader);
                 } else {
