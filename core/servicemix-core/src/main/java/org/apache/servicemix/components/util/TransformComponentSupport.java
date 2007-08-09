@@ -59,6 +59,11 @@ public abstract class TransformComponentSupport extends ComponentSupport impleme
                 out = exchange.createMessage();
             } else {
                 outExchange = getExchangeFactory().createInOnlyExchange();
+                outExchange.setProperty(JbiConstants.SENDER_ENDPOINT, getService() + ":" + getEndpoint());
+                String processCorrelationId = (String)exchange.getProperty(JbiConstants.CORRELATION_ID);
+                if (processCorrelationId != null) {
+                    outExchange.setProperty(JbiConstants.CORRELATION_ID, processCorrelationId);
+                }
                 out = outExchange.createMessage();
             }
             boolean txSync = exchange.isTransacted() && Boolean.TRUE.equals(exchange.getProperty(JbiConstants.SEND_SYNC));
