@@ -21,10 +21,12 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.DefaultFileMarshaler;
 import org.apache.servicemix.components.util.FileMarshaler;
 import org.apache.servicemix.components.util.PollingComponentSupport;
+import org.apache.servicemix.jbi.util.FileUtil;
 
 import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.jbi.JBIException;
+import javax.jbi.management.DeploymentException;
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.NormalizedMessage;
 import java.io.BufferedInputStream;
@@ -45,6 +47,7 @@ import java.util.Set;
 public class FilePoller extends PollingComponentSupport {
     private static final Log log = LogFactory.getLog(FilePoller.class);
 
+    private File archive;
     private File file;
     private FileFilter filter;
     private boolean deleteFile = true;
@@ -117,6 +120,19 @@ public class FilePoller extends PollingComponentSupport {
     public void setMarshaler(FileMarshaler marshaler) {
         this.marshaler = marshaler;
     }
+    
+    public File getArchive() {
+        return archive;
+    }
+    
+    /**
+     * Configure a directory to archive files before deleting them.
+     * 
+     * @param archive the archive directory
+     */
+    public void setArchive(File archive) {
+        this.archive = archive;
+    }
 
     /**
      * The set of FTPFiles that this component is currently working on
@@ -135,6 +151,17 @@ public class FilePoller extends PollingComponentSupport {
         }
         if (isAutoCreateDirectory() && !file.exists()) {
             file.mkdirs();
+        }
+        if (archive != null) {
+            if (!deleteFile) {
+                throw new DeploymentException("Archive shouldn't be specified unless deleteFile='true'");
+            }
+            if (isAutoCreateDirectory() && !archive.exists()) {
+                archive.mkdirs();
+            }
+            if (!archive.isDirectory()) {
+                throw new DeploymentException("Archive should refer to a directory");
+            }
         }
         super.init();
     }
@@ -182,8 +209,12 @@ public class FilePoller extends PollingComponentSupport {
             if (aFile.exists()) {
                 processFile(aFile);
                 if (isDeleteFile()) {
-                    if (!aFile.delete()) {
-                        throw new IOException("Could not delete file " + aFile);
+                    if (archive != null) {
+                        FileUtil.moveFile(aFile, archive);
+                    } else {
+                        if (!aFile.delete()) {
+                            throw new IOException("Could not delete file " + aFile);
+                        }
                     }
                 }
             }
