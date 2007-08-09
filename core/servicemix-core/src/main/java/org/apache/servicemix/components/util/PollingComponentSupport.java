@@ -31,13 +31,15 @@ import org.apache.servicemix.executors.ExecutorFactory;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 
 /**
- * An implementation inheritence class for a component which polls some resource at periodic intervals to decide if
- * there is an event to process.
+ * An implementation inheritence class for a component which polls some resource
+ * at periodic intervals to decide if there is an event to process.
  * 
  * @version $Revision$
  */
 public abstract class PollingComponentSupport extends ComponentSupport implements Work {
-    private static final Log log = LogFactory.getLog(PollingComponentSupport.class);
+    
+    private static final Log LOG = LogFactory.getLog(PollingComponentSupport.class);
+
     private Executor executor;
     private Scheduler scheduler;
     private Date firstTime;
@@ -54,16 +56,15 @@ public abstract class PollingComponentSupport extends ComponentSupport implement
      * @throws JBIException
      */
     public abstract void poll() throws Exception;
-    
+
     public void release() {
     }
 
     public void run() {
         try {
             poll();
-        }
-        catch (Exception e) {
-            log.error("Caught exception while polling: " + e, e);
+        } catch (Exception e) {
+            LOG.error("Caught exception while polling: " + e, e);
         }
     }
 
@@ -104,7 +105,7 @@ public abstract class PollingComponentSupport extends ComponentSupport implement
     public void setScheduler(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
-    
+
     public synchronized void start() throws JBIException {
         if (!started) {
             started = true;
@@ -112,7 +113,7 @@ public abstract class PollingComponentSupport extends ComponentSupport implement
                 schedulerTask.cancel();
             }
             schedulerTask = new PollSchedulerTask();
-            this.scheduler.schedule(schedulerTask,scheduleIterator);
+            this.scheduler.schedule(schedulerTask, scheduleIterator);
         }
         super.start();
     }
@@ -144,43 +145,44 @@ public abstract class PollingComponentSupport extends ComponentSupport implement
             scheduler = new Scheduler(true);
         }
         if (scheduleIterator == null) {
-        	scheduleIterator = new PollScheduleIterator();
+            scheduleIterator = new PollScheduleIterator();
         }
         if (executor == null) {
             ComponentContextImpl context = (ComponentContextImpl) getContext();
-            ExecutorFactory factory = context.getContainer().getExecutorFactory();
-            executor = factory.createExecutor("component." + context.getComponentName());
+            ExecutorFactory factory = context.getContainer()
+                    .getExecutorFactory();
+            executor = factory.createExecutor("component."
+                    + context.getComponentName());
         }
         super.init();
-       
+
     }
-    
+
     private class PollSchedulerTask extends SchedulerTask {
-    	public void run() {
-	        try {
-	            // lets run the work inside the JCA worker pools to ensure
-	            // the threads are setup correctly when we actually do stuff
-	            getExecutor().execute(PollingComponentSupport.this);
-	        }
-	        catch (Throwable e) {
-	            log.error("Failed to schedule work: " + e, e);
-	        }
-    	}
+        public void run() {
+            try {
+                // lets run the work inside the JCA worker pools to ensure
+                // the threads are setup correctly when we actually do stuff
+                getExecutor().execute(PollingComponentSupport.this);
+            } catch (Throwable e) {
+                LOG.error("Failed to schedule work: " + e, e);
+            }
+        }
     }
-    
+
     private class PollScheduleIterator implements ScheduleIterator {
-    	public Date nextExecution() {
-    		long nextTime = System.currentTimeMillis();
-        	if (scheduleExecutedFlag) {
-        		nextTime += period;        		
-        	} else {
-        		if (firstTime != null) {
-        			nextTime = firstTime.getTime();
-        		}
-        		nextTime += delay;
-        		scheduleExecutedFlag = true;
-        	}
-    		return (started) ? new Date(nextTime) : null;
+        public Date nextExecution() {
+            long nextTime = System.currentTimeMillis();
+            if (scheduleExecutedFlag) {
+                nextTime += period;
+            } else {
+                if (firstTime != null) {
+                    nextTime = firstTime.getTime();
+                }
+                nextTime += delay;
+                scheduleExecutedFlag = true;
+            }
+            return started ? new Date(nextTime) : null;
         }
     }
 }

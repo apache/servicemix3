@@ -19,6 +19,8 @@ package org.apache.servicemix.jbi.container;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.jbi.JBIException;
 
@@ -28,9 +30,6 @@ import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.servicemix.jbi.util.FileVersionUtil;
-
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Holder for environment information
@@ -49,7 +48,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version $Revision$
  */
 public class EnvironmentContext extends BaseSystemService implements EnvironmentContextMBean {
-    private static final Log log = LogFactory.getLog(EnvironmentContext.class);
+    
+    private static final Log LOG = LogFactory.getLog(EnvironmentContext.class);
 
     private File jbiRootDir;
     private File componentsDir;
@@ -60,7 +60,6 @@ public class EnvironmentContext extends BaseSystemService implements Environment
     private File tmpDir;
     private Map envMap = new ConcurrentHashMap();
     private AtomicBoolean started = new AtomicBoolean(false);
-
 
     /**
      * @return the current version of servicemix
@@ -78,9 +77,10 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * Get Description
      * @return description
      */
-    public String getDescription(){
+    public String getDescription() {
         return "Manages Environment for the Container";
     }
+
     /**
      * @return Returns the componentsDir.
      */
@@ -94,16 +94,15 @@ public class EnvironmentContext extends BaseSystemService implements Environment
     public File getInstallationDir() {
         return installationDir;
     }
-    
+
     /**
      * Set the installationDir - rge default location
      * is root/<container name>/installation
      * @param installationDir
      */
-    public void setInstallationDir(File installationDir){
+    public void setInstallationDir(File installationDir) {
         this.installationDir = installationDir;
     }
-    
 
     /**
      * @return Returns the deploymentDir.
@@ -118,12 +117,12 @@ public class EnvironmentContext extends BaseSystemService implements Environment
     public void setDeploymentDir(File deploymentDir) {
         this.deploymentDir = deploymentDir;
     }
-    
+
     /**
      * 
      * @return Returns the shared library directory
      */
-    public File getSharedLibDir(){
+    public File getSharedLibDir() {
         return sharedLibDir;
     }
 
@@ -137,14 +136,12 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         return tmpDir;
     }
 
-        
     /**
      * @return Returns service asseblies directory
      */
-    public File getServiceAssembliesDir(){
+    public File getServiceAssembliesDir() {
         return serviceAssembliesDir;
-    } 
-   
+    }
 
     /**
      * Initialize the Environment
@@ -206,7 +203,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
     public ComponentEnvironment registerComponent(ComponentMBeanImpl connector) throws JBIException {
         return registerComponent(null, connector);
     }
-    
+
     /**
      * register the ComponentConnector
      * 
@@ -214,8 +211,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * @return the CompponentEnvironment
      * @throws JBIException
      */
-    public ComponentEnvironment registerComponent(ComponentEnvironment result,
-            ComponentMBeanImpl connector) throws JBIException {
+    public ComponentEnvironment registerComponent(ComponentEnvironment result, ComponentMBeanImpl connector) throws JBIException {
         if (result == null) {
             result = new ComponentEnvironment();
         }
@@ -246,8 +242,8 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         result.setLocalConnector(connector);
         envMap.put(connector, result);
         return result;
-	}
-    
+    }
+
     /**
      * Get root directory for a Component
      * 
@@ -277,7 +273,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         File result = FileUtil.getDirectoryPath(getComponentsDir(), componentName);
         return result;
     }
-    
+
     /**
      * Get a new versionned directory for installation
      * 
@@ -291,7 +287,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         result = FileVersionUtil.getNewVersionDirectory(result);
         return result;
     }
-    
+
     /**
      * Create installation directory for a Component
      * 
@@ -305,11 +301,11 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         result = FileVersionUtil.getLatestVersionDirectory(result);
         return result;
     }
-    
+
     public ComponentEnvironment getNewComponentEnvironment(String compName) throws IOException {
-        File rootDir   = FileUtil.getDirectoryPath(getComponentsDir(), compName);
-        File instDir   = FileVersionUtil.getNewVersionDirectory(rootDir);
-        File workDir   = FileUtil.getDirectoryPath(rootDir, "workspace");
+        File rootDir = FileUtil.getDirectoryPath(getComponentsDir(), compName);
+        File instDir = FileVersionUtil.getNewVersionDirectory(rootDir);
+        File workDir = FileUtil.getDirectoryPath(rootDir, "workspace");
         File stateFile = FileUtil.getDirectoryPath(rootDir, "state.xml");
         ComponentEnvironment env = new ComponentEnvironment();
         env.setComponentRoot(rootDir);
@@ -318,11 +314,11 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         env.setStateFile(stateFile);
         return env;
     }
-    
+
     public ComponentEnvironment getComponentEnvironment(String compName) throws IOException {
-        File rootDir   = FileUtil.getDirectoryPath(getComponentsDir(), compName);
-        File instDir   = FileVersionUtil.getLatestVersionDirectory(rootDir);
-        File workDir   = FileUtil.getDirectoryPath(rootDir, "workspace");
+        File rootDir = FileUtil.getDirectoryPath(getComponentsDir(), compName);
+        File instDir = FileVersionUtil.getLatestVersionDirectory(rootDir);
+        File workDir = FileUtil.getDirectoryPath(rootDir, "workspace");
         File stateFile = FileUtil.getDirectoryPath(rootDir, "state.xml");
         ComponentEnvironment env = new ComponentEnvironment();
         env.setComponentRoot(rootDir);
@@ -331,12 +327,12 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         env.setStateFile(stateFile);
         return env;
     }
-    
+
     public ServiceAssemblyEnvironment getNewServiceAssemblyEnvironment(String saName) throws IOException {
-        File rootDir   = FileUtil.getDirectoryPath(getServiceAssembliesDir(), saName);
-        File versDir   = FileVersionUtil.getNewVersionDirectory(rootDir);
-        File instDir   = FileUtil.getDirectoryPath(versDir, "install");
-        File susDir    = FileUtil.getDirectoryPath(versDir, "sus");
+        File rootDir = FileUtil.getDirectoryPath(getServiceAssembliesDir(), saName);
+        File versDir = FileVersionUtil.getNewVersionDirectory(rootDir);
+        File instDir = FileUtil.getDirectoryPath(versDir, "install");
+        File susDir = FileUtil.getDirectoryPath(versDir, "sus");
         File stateFile = FileUtil.getDirectoryPath(rootDir, "state.xml");
         ServiceAssemblyEnvironment env = new ServiceAssemblyEnvironment();
         env.setRootDir(rootDir);
@@ -345,12 +341,12 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         env.setStateFile(stateFile);
         return env;
     }
-    
+
     public ServiceAssemblyEnvironment getServiceAssemblyEnvironment(String saName) {
-        File rootDir   = FileUtil.getDirectoryPath(getServiceAssembliesDir(), saName);
-        File versDir   = FileVersionUtil.getLatestVersionDirectory(rootDir);
-        File instDir   = FileUtil.getDirectoryPath(versDir, "install");
-        File susDir    = FileUtil.getDirectoryPath(versDir, "sus");
+        File rootDir = FileUtil.getDirectoryPath(getServiceAssembliesDir(), saName);
+        File versDir = FileVersionUtil.getLatestVersionDirectory(rootDir);
+        File instDir = FileUtil.getDirectoryPath(versDir, "install");
+        File susDir = FileUtil.getDirectoryPath(versDir, "sus");
         File stateFile = FileUtil.getDirectoryPath(rootDir, "state.xml");
         ServiceAssemblyEnvironment env = new ServiceAssemblyEnvironment();
         env.setRootDir(rootDir);
@@ -359,7 +355,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         env.setStateFile(stateFile);
         return env;
     }
-    
+
     /**
      * Create workspace directory for a Component
      * 
@@ -373,7 +369,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         FileUtil.buildDirectory(result);
         return result;
     }
-    
+
     /**
      * deregister the ComponentConnector
      * 
@@ -393,14 +389,13 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         File file = getComponentRootDir(componentName);
         if (file != null) {
             if (!FileUtil.deleteFile(file)) {
-                log.warn("Failed to remove directory structure for component [version]: " + componentName + " [" + file.getName() + ']');
-            }
-            else {
-                log.info("Removed directory structure for component [version]: " + componentName + " [" + file.getName() + ']');
+                LOG.warn("Failed to remove directory structure for component [version]: " + componentName + " [" + file.getName() + ']');
+            } else {
+                LOG.info("Removed directory structure for component [version]: " + componentName + " [" + file.getName() + ']');
             }
         }
-    } 
-    
+    }
+
     /**
      * create a shared library directory
      * 
@@ -413,7 +408,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         FileUtil.buildDirectory(result);
         return result;
     }
-    
+
     /**
      * remove shared library directory
      * @param name
@@ -424,8 +419,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         FileUtil.deleteFile(result);
     }
 
-
-    private void buildDirectoryStructure() throws JBIException  {
+    private void buildDirectoryStructure() throws JBIException {
         // We want ServiceMix to be able to run embedded
         // so do not create the directory structure if the root does not exist
         if (container.isEmbedded()) {
@@ -435,23 +429,23 @@ public class EnvironmentContext extends BaseSystemService implements Environment
             jbiRootDir = jbiRootDir.getCanonicalFile();
             if (!jbiRootDir.exists()) {
                 if (!jbiRootDir.mkdirs()) {
-                	throw new JBIException("Directory could not be created: "+jbiRootDir.getCanonicalFile());
+                    throw new JBIException("Directory could not be created: " + jbiRootDir.getCanonicalFile());
                 }
             } else if (!jbiRootDir.isDirectory()) {
-            	throw new JBIException("Not a directory: " + jbiRootDir.getCanonicalFile());
-            }         
-            if (installationDir == null){
+                throw new JBIException("Not a directory: " + jbiRootDir.getCanonicalFile());
+            }
+            if (installationDir == null) {
                 installationDir = FileUtil.getDirectoryPath(jbiRootDir, "install");
             }
             installationDir = installationDir.getCanonicalFile();
-            if (deploymentDir == null){
+            if (deploymentDir == null) {
                 deploymentDir = FileUtil.getDirectoryPath(jbiRootDir, "deploy");
             }
             deploymentDir = deploymentDir.getCanonicalFile();
             componentsDir = FileUtil.getDirectoryPath(jbiRootDir, "components").getCanonicalFile();
             tmpDir = FileUtil.getDirectoryPath(jbiRootDir, "tmp").getCanonicalFile();
             sharedLibDir = FileUtil.getDirectoryPath(jbiRootDir, "sharedlibs").getCanonicalFile();
-            serviceAssembliesDir = FileUtil.getDirectoryPath(jbiRootDir,"service-assemblies").getCanonicalFile();
+            serviceAssembliesDir = FileUtil.getDirectoryPath(jbiRootDir, "service-assemblies").getCanonicalFile();
             //actually create the sub directories
             FileUtil.buildDirectory(installationDir);
             FileUtil.buildDirectory(deploymentDir);
@@ -464,10 +458,8 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         }
     }
 
-
     public File getJbiRootDir() {
         return jbiRootDir;
     }
-
 
 }

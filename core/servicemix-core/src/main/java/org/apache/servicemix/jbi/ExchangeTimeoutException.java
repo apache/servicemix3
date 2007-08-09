@@ -25,7 +25,8 @@ import javax.jbi.messaging.MessagingException;
  * @version $Revision$
  */
 public class ExchangeTimeoutException extends MessagingException {
-    private MessageExchange exchange;
+    
+    private final MessageExchange exchange;
 
     public ExchangeTimeoutException(MessageExchange exchange) {
         super("Exchange has timed out: " + exchange);

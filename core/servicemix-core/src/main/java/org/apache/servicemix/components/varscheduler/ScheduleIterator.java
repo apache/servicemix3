@@ -19,16 +19,17 @@ package org.apache.servicemix.components.varscheduler;
 import java.util.Date;
 
 /**
- * Iterator for scheduling. 
+ * Iterator for scheduling.
+ * 
  * @author george
- *
+ * 
  */
 public interface ScheduleIterator {
-	/**
-	 * Next execution date of associated task. 
-	 * Implementations should return null to cancel running task.
-	 *  
-	 * @return next date of Execution
-	 */
-	Date nextExecution();
+    /**
+     * Next execution date of associated task. Implementations should return
+     * null to cancel running task.
+     * 
+     * @return next date of Execution
+     */
+    Date nextExecution();
 }

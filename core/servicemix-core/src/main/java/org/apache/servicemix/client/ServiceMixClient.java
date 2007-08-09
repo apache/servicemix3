@@ -16,14 +16,23 @@
  */
 package org.apache.servicemix.client;
 
-import org.apache.servicemix.jbi.resolver.EndpointResolver;
+import java.util.Map;
 
 import javax.jbi.JBIException;
-import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.jbi.component.ComponentContext;
-import javax.jbi.messaging.*;
+import javax.jbi.messaging.DeliveryChannel;
+import javax.jbi.messaging.Fault;
+import javax.jbi.messaging.InOnly;
+import javax.jbi.messaging.InOptionalOut;
+import javax.jbi.messaging.InOut;
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessageExchangeFactory;
+import javax.jbi.messaging.MessagingException;
+import javax.jbi.messaging.RobustInOnly;
+import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
-import java.util.Map;
+
+import org.apache.servicemix.jbi.resolver.EndpointResolver;
 
 /**
  * Represents a client  API which allows users to programatically send messages into the JBI

@@ -28,10 +28,11 @@ public interface JavaSource extends Source {
     /**
      * Returns the POJO equivalent of the Source
      */
-    public Object getObject();
+    Object getObject();
 
     /**
      * Sets the POJO equivalent of the Source
      */
-    public void setObject(Object object);
+    void setObject(Object object);
+
 }

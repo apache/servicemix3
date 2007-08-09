@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.jbi.JBIException;
 import javax.jbi.management.DeploymentException;
@@ -50,9 +52,6 @@ import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.servicemix.jbi.util.XmlPersistenceSupport;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 /**
  * Monitors install and deploy directories to auto install/deploy archives
  * 
@@ -60,7 +59,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class AutoDeploymentService extends BaseSystemService implements AutoDeploymentServiceMBean {
 
-    private static final Log log = LogFactory.getLog(AutoDeploymentService.class);
+    private static final Log LOG = LogFactory.getLog(AutoDeploymentService.class);
+    
     private EnvironmentContext environmentContext;
     private DeploymentService deploymentService;
     private InstallationService installationService;
@@ -73,8 +73,8 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     private TimerTask timerTask;
     private Map<File, ArchiveEntry> pendingComponents = new ConcurrentHashMap<File, ArchiveEntry>();
     private Map<File, ArchiveEntry> pendingSAs = new ConcurrentHashMap<File, ArchiveEntry>();
-    private Map<String, ArchiveEntry> installFileMap = null;
-    private Map<String, ArchiveEntry> deployFileMap = null;
+    private Map<String, ArchiveEntry> installFileMap;
+    private Map<String, ArchiveEntry> deployFileMap;
 
     /**
      * @return the extensions
@@ -84,7 +84,8 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     }
 
     /**
-     * @param extensions the extensions to set
+     * @param extensions
+     *            the extensions to set
      */
     public void setExtensions(String extensions) {
         this.extensions = extensions;
@@ -93,14 +94,14 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     /**
      * @return a description of this
      */
-    public String getDescription(){
+    public String getDescription() {
         return "automatically installs and deploys JBI Archives";
     }
 
     /**
      * @return Returns the monitorInstallationDirectory.
      */
-    public boolean isMonitorInstallationDirectory(){
+    public boolean isMonitorInstallationDirectory() {
         return monitorInstallationDirectory;
     }
 
@@ -108,14 +109,14 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
      * @param monitorInstallationDirectory
      *            The monitorInstallationDirectory to set.
      */
-    public void setMonitorInstallationDirectory(boolean monitorInstallationDirectory){
-        this.monitorInstallationDirectory=monitorInstallationDirectory;
+    public void setMonitorInstallationDirectory(boolean monitorInstallationDirectory) {
+        this.monitorInstallationDirectory = monitorInstallationDirectory;
     }
 
     /**
      * @return Returns the monitorDeploymentDirectory.
      */
-    public boolean isMonitorDeploymentDirectory(){
+    public boolean isMonitorDeploymentDirectory() {
         return monitorDeploymentDirectory;
     }
 
@@ -123,14 +124,14 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
      * @param monitorDeploymentDirectory
      *            The monitorDeploymentDirectory to set.
      */
-    public void setMonitorDeploymentDirectory(boolean monitorDeploymentDirectory){
-        this.monitorDeploymentDirectory=monitorDeploymentDirectory;
+    public void setMonitorDeploymentDirectory(boolean monitorDeploymentDirectory) {
+        this.monitorDeploymentDirectory = monitorDeploymentDirectory;
     }
 
     /**
      * @return Returns the monitorInterval (number in secs)
      */
-    public int getMonitorInterval(){
+    public int getMonitorInterval() {
         return monitorInterval;
     }
 
@@ -138,13 +139,13 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
      * @param monitorInterval
      *            The monitorInterval to set (in secs)
      */
-    public void setMonitorInterval(int monitorInterval){
-        this.monitorInterval=monitorInterval;
+    public void setMonitorInterval(int monitorInterval) {
+        this.monitorInterval = monitorInterval;
     }
 
-    public void start() throws javax.jbi.JBIException{
+    public void start() throws javax.jbi.JBIException {
         super.start();
-        if(started.compareAndSet(false,true)){
+        if (started.compareAndSet(false, true)) {
             scheduleDirectoryTimer();
         }
     }
@@ -155,10 +156,10 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
      * @exception javax.jbi.JBIException
      *                if the item fails to stop.
      */
-    public void stop() throws javax.jbi.JBIException{
-        if(started.compareAndSet(true,false)){
+    public void stop() throws javax.jbi.JBIException {
+        if (started.compareAndSet(true, false)) {
             super.stop();
-            if(timerTask!=null){
+            if (timerTask != null) {
                 timerTask.cancel();
             }
         }
@@ -172,32 +173,32 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
      */
     public void init(JBIContainer container) throws JBIException {
         super.init(container);
-        this.environmentContext=container.getEnvironmentContext();
-        this.installationService=container.getInstallationService();
-        this.deploymentService=container.getDeploymentService();
-        //clean-up tmp directory
-        if(environmentContext.getTmpDir()!=null){
+        this.environmentContext = container.getEnvironmentContext();
+        this.installationService = container.getInstallationService();
+        this.deploymentService = container.getDeploymentService();
+        // clean-up tmp directory
+        if (environmentContext.getTmpDir() != null) {
             FileUtil.deleteFile(environmentContext.getTmpDir());
         }
         initializeFileMaps();
     }
-    
+
     protected Class<AutoDeploymentServiceMBean> getServiceMBean() {
         return AutoDeploymentServiceMBean.class;
     }
-    
-    
+
     /**
      * load an archive from an external location
+     * 
      * @param location
      * @param autoStart
      * @throws DeploymentException
      */
-    public ArchiveEntry updateExternalArchive(String location,boolean autoStart) throws DeploymentException {
+    public ArchiveEntry updateExternalArchive(String location, boolean autoStart) throws DeploymentException {
         ArchiveEntry entry = new ArchiveEntry();
         entry.location = location;
         entry.lastModified = new Date();
-        updateArchive(location,entry,autoStart);
+        updateArchive(location, entry, autoStart);
         return entry;
     }
 
@@ -242,113 +243,126 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             throw failure("deploy", "Unable to find jbi descriptor: " + location);
         }
         if (root != null) {
-            try{
+            try {
                 container.getBroker().suspend();
                 if (root.getComponent() != null) {
-                    Component comp = root.getComponent();
-                    String componentName = comp.getIdentification().getName();
-                    entry.type = "component";
-                    entry.name = componentName; 
-                    try {
-                        if (container.getRegistry().getComponent(componentName) != null) {
-                            installationService.loadInstaller(componentName);
-                            installationService.unloadInstaller(componentName, true);
-                        }
-                        // See if shared libraries are installed
-                        entry.dependencies = getSharedLibraryNames(comp);
-                        if (log.isDebugEnabled()) {
-                            log.debug("Component dependencies: " + entry.dependencies);
-                        }
-                        String missings = null;
-                        boolean canInstall = true;
-                        for (String libraryName : entry.dependencies) {
-                            if (container.getRegistry().getSharedLibrary(libraryName) == null) {
-                                canInstall = false;
-                                if (missings != null) {
-                                    missings += ", " + libraryName;
-                                } else {
-                                    missings = libraryName;
-                                }
-                            }
-                        }
-                        if (canInstall) {
-                            installationService.install(tmpDir, null, root, autoStart);
-                            checkPendingSAs();
-                        } else {
-                            entry.pending = true;
-                            log.warn("Shared libraries " + missings + " are not installed yet: the component" + componentName + 
-                                     " installation is suspended and will be resumed once the listed shared libraries are installed");
-                            pendingComponents.put(tmpDir, entry);
-                        }
-                    } catch (Exception e) {
-                        String errStr = "Failed to update Component: " + componentName;
-                        log.error(errStr, e);
-                        throw new DeploymentException(errStr, e);
-                    }
+                    updateComponent(entry, autoStart, tmpDir, root);
                 } else if (root.getSharedLibrary() != null) {
-                    String libraryName = root.getSharedLibrary().getIdentification().getName();
-                    entry.type = "library";
-                    entry.name = libraryName; 
-                    try {
-                        if (container.getRegistry().getSharedLibrary(libraryName) != null) {
-                            container.getRegistry().unregisterSharedLibrary(libraryName);
-                            environmentContext.removeSharedLibraryDirectory(libraryName);
-                        }
-                        installationService.doInstallSharedLibrary(tmpDir, root.getSharedLibrary());
-                        checkPendingComponents();
-                    } catch (Exception e) {
-                        String errStr = "Failed to update SharedLibrary: " + libraryName;
-                        log.error(errStr, e);
-                        throw new DeploymentException(errStr, e);
-                    }
+                    updateSharedLibrary(entry, tmpDir, root);
                 } else if (root.getServiceAssembly() != null) {
-                    ServiceAssembly sa = root.getServiceAssembly();
-                    String name = sa.getIdentification().getName();
-                    entry.type = "assembly";
-                    entry.name = name; 
-                    try {
-                        if (deploymentService.isSaDeployed(name)) {
-                            deploymentService.shutDown(name);
-                            deploymentService.undeploy(name);
-                        }
-                        // see if components are installed
-                        entry.dependencies = getComponentNames(sa);
-                        if (log.isDebugEnabled()) {
-                            log.debug("SA dependencies: " + entry.dependencies);
-                        }
-                        String missings = null;
-                        boolean canDeploy = true;
-                        for (String componentName : entry.dependencies) {
-                            if (container.getComponent(componentName) == null) {
-                                canDeploy = false;
-                                if (missings != null) {
-                                    missings += ", " + componentName;
-                                } else {
-                                    missings = componentName;
-                                }
-                            }
-                        }
-                        if (canDeploy) {
-                            deploymentService.deployServiceAssembly(tmpDir, sa);
-                            if (autoStart){
-                                deploymentService.start(name);
-                            }
-                        } else {
-                            // TODO: check that the assembly is not already pending
-                            entry.pending = true;
-                            log.warn("Components " + missings + " are not installed yet: the service assembly " + name + 
-                                     " deployment is suspended and will be resumed once the listed components are installed");
-                            pendingSAs.put(tmpDir, entry);
-                        }
-                    } catch (Exception e) {
-                        String errStr = "Failed to update Service Assembly: " + name;
-                        log.error(errStr, e);
-                        throw new DeploymentException(errStr, e);
-                    }
+                    updateServiceAssembly(entry, autoStart, tmpDir, root);
                 }
             } finally {
                 container.getBroker().resume();
             }
+        }
+    }
+
+    protected void updateComponent(ArchiveEntry entry, boolean autoStart, File tmpDir, Descriptor root) throws DeploymentException {
+        Component comp = root.getComponent();
+        String componentName = comp.getIdentification().getName();
+        entry.type = "component";
+        entry.name = componentName;
+        try {
+            if (container.getRegistry().getComponent(componentName) != null) {
+                installationService.loadInstaller(componentName);
+                installationService.unloadInstaller(componentName, true);
+            }
+            // See if shared libraries are installed
+            entry.dependencies = getSharedLibraryNames(comp);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Component dependencies: " + entry.dependencies);
+            }
+            String missings = null;
+            boolean canInstall = true;
+            for (String libraryName : entry.dependencies) {
+                if (container.getRegistry().getSharedLibrary(libraryName) == null) {
+                    canInstall = false;
+                    if (missings != null) {
+                        missings += ", " + libraryName;
+                    } else {
+                        missings = libraryName;
+                    }
+                }
+            }
+            if (canInstall) {
+                installationService.install(tmpDir, null, root, autoStart);
+                checkPendingSAs();
+            } else {
+                entry.pending = true;
+                LOG.warn("Shared libraries " + missings + " are not installed yet: the component" + componentName
+                                + " installation is suspended and will be resumed once the listed shared libraries are installed");
+                pendingComponents.put(tmpDir, entry);
+            }
+        } catch (Exception e) {
+            String errStr = "Failed to update Component: " + componentName;
+            LOG.error(errStr, e);
+            throw new DeploymentException(errStr, e);
+        }
+    }
+
+    protected void updateSharedLibrary(ArchiveEntry entry, File tmpDir, Descriptor root) throws DeploymentException {
+        String libraryName = root.getSharedLibrary().getIdentification().getName();
+        entry.type = "library";
+        entry.name = libraryName;
+        try {
+            if (container.getRegistry().getSharedLibrary(libraryName) != null) {
+                container.getRegistry().unregisterSharedLibrary(libraryName);
+                environmentContext.removeSharedLibraryDirectory(libraryName);
+            }
+            installationService.doInstallSharedLibrary(tmpDir, root.getSharedLibrary());
+            checkPendingComponents();
+        } catch (Exception e) {
+            String errStr = "Failed to update SharedLibrary: " + libraryName;
+            LOG.error(errStr, e);
+            throw new DeploymentException(errStr, e);
+        }
+    }
+
+    protected void updateServiceAssembly(ArchiveEntry entry, boolean autoStart, File tmpDir, Descriptor root) throws DeploymentException {
+        ServiceAssembly sa = root.getServiceAssembly();
+        String name = sa.getIdentification().getName();
+        entry.type = "assembly";
+        entry.name = name;
+        try {
+            if (deploymentService.isSaDeployed(name)) {
+                deploymentService.shutDown(name);
+                deploymentService.undeploy(name);
+            }
+            // see if components are installed
+            entry.dependencies = getComponentNames(sa);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("SA dependencies: " + entry.dependencies);
+            }
+            String missings = null;
+            boolean canDeploy = true;
+            for (String componentName : entry.dependencies) {
+                if (container.getComponent(componentName) == null) {
+                    canDeploy = false;
+                    if (missings != null) {
+                        missings += ", " + componentName;
+                    } else {
+                        missings = componentName;
+                    }
+                }
+            }
+            if (canDeploy) {
+                deploymentService.deployServiceAssembly(tmpDir, sa);
+                if (autoStart) {
+                    deploymentService.start(name);
+                }
+            } else {
+                // TODO: check that the assembly is not already
+                // pending
+                entry.pending = true;
+                LOG.warn("Components " + missings + " are not installed yet: the service assembly " + name
+                                + " deployment is suspended and will be resumed once the listed components are installed");
+                pendingSAs.put(tmpDir, entry);
+            }
+        } catch (Exception e) {
+            String errStr = "Failed to update Service Assembly: " + name;
+            LOG.error(errStr, e);
+            throw new DeploymentException(errStr, e);
         }
     }
 
@@ -410,31 +424,31 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             throw failure("deploy", "Error when deploying: " + entry.location, e);
         }
         // Standard processing
-        log.info("Attempting to remove archive at: " + entry.location);
-        try{
+        LOG.info("Attempting to remove archive at: " + entry.location);
+        try {
             container.getBroker().suspend();
             if ("component".equals(entry.type)) {
-                log.info("Uninstalling component: " + entry.name);
+                LOG.info("Uninstalling component: " + entry.name);
                 // Ensure installer is loaded
                 installationService.loadInstaller(entry.name);
                 // Uninstall and delete component
-                installationService.unloadInstaller(entry.name,true);
-            } 
+                installationService.unloadInstaller(entry.name, true);
+            }
             if ("library".equals(entry.type)) {
-                log.info("Removing shared library: " + entry.name);
+                LOG.info("Removing shared library: " + entry.name);
                 installationService.uninstallSharedLibrary(entry.name);
             }
             if ("assembly".equals(entry.type)) {
-                log.info("Undeploying service assembly " + entry.name);
-                try{
-                    if(deploymentService.isSaDeployed(entry.name)){
+                LOG.info("Undeploying service assembly " + entry.name);
+                try {
+                    if (deploymentService.isSaDeployed(entry.name)) {
                         deploymentService.shutDown(entry.name);
                         deploymentService.undeploy(entry.name);
                     }
-                } catch(Exception e) {
-                    String errStr = "Failed to update service assembly: "+ entry.name;
-                    log.error(errStr,e);
-                    throw new DeploymentException(errStr,e);
+                } catch (Exception e) {
+                    String errStr = "Failed to update service assembly: " + entry.name;
+                    LOG.error(errStr, e);
+                    throw new DeploymentException(errStr, e);
                 }
             }
         } finally {
@@ -443,9 +457,8 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     }
 
     /**
-     * Called when a component has been installed to see
-     * if pending service assemblies have all component
-     * installed.
+     * Called when a component has been installed to see if pending service
+     * assemblies have all component installed.
      */
     private void checkPendingSAs() {
         Set<File> deployedSas = new HashSet<File>();
@@ -467,7 +480,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                     deploymentService.start(root.getServiceAssembly().getIdentification().getName());
                 } catch (Exception e) {
                     String errStr = "Failed to update Service Assembly: " + tmp.getName();
-                    log.error(errStr, e);
+                    LOG.error(errStr, e);
                 }
             }
         }
@@ -485,7 +498,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
 
     private void checkPendingComponents() {
         Set<File> installedComponents = new HashSet<File>();
-        for (Map.Entry<File,ArchiveEntry> me : pendingComponents.entrySet()) {
+        for (Map.Entry<File, ArchiveEntry> me : pendingComponents.entrySet()) {
             ArchiveEntry entry = me.getValue();
             boolean canInstall = true;
             for (String libraryName : entry.dependencies) {
@@ -502,7 +515,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                     installationService.install(tmp, null, root, true);
                 } catch (Exception e) {
                     String errStr = "Failed to update Component: " + tmp.getName();
-                    log.error(errStr, e);
+                    LOG.error(errStr, e);
                 }
             }
         }
@@ -526,17 +539,16 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
      * @return array of AttributeInfos
      * @throws JMException
      */
-    public MBeanAttributeInfo[] getAttributeInfos() throws JMException{
-        AttributeInfoHelper helper=new AttributeInfoHelper();
-        helper.addAttribute(getObjectToManage(),"monitorInstallationDirectory",
-                        "Periodically monitor the Installation directory");
-        helper.addAttribute(getObjectToManage(),"monitorInterval","Interval (secs) before monitoring");
-        return AttributeInfoHelper.join(super.getAttributeInfos(),helper.getAttributeInfos());
+    public MBeanAttributeInfo[] getAttributeInfos() throws JMException {
+        AttributeInfoHelper helper = new AttributeInfoHelper();
+        helper.addAttribute(getObjectToManage(), "monitorInstallationDirectory", "Periodically monitor the Installation directory");
+        helper.addAttribute(getObjectToManage(), "monitorInterval", "Interval (secs) before monitoring");
+        return AttributeInfoHelper.join(super.getAttributeInfos(), helper.getAttributeInfos());
     }
 
     /**
-     * Unpack a location into a temp file directory.
-     * If the location does not contain a jbi descritor, no unpacking occurs.
+     * Unpack a location into a temp file directory. If the location does not
+     * contain a jbi descritor, no unpacking occurs.
      * 
      * @param location
      * @return tmp directory (if location contains a jbi descriptor)
@@ -547,27 +559,27 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
         try {
             File file = new File(location);
             if (file.isDirectory()) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Deploying an exploded jar/zip, we will create a temporary jar for it.");
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Deploying an exploded jar/zip, we will create a temporary jar for it.");
                 }
                 // If we have a directory then we should move it over
                 File newFile = new File(tmpRoot.getAbsolutePath() + "/exploded.jar");
                 newFile.delete();
                 FileUtil.zipDir(file.getAbsolutePath(), newFile.getAbsolutePath());
                 file = newFile;
-                if (log.isDebugEnabled()) {
-                    log.debug("Deployment will now work from " + file.getAbsolutePath());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Deployment will now work from " + file.getAbsolutePath());
                 }
             }
             if (!file.exists()) {
                 // assume it's a URL
-                try{
+                try {
                     URL url = new URL(location);
                     String fileName = url.getFile();
                     if (fileName == null) {
                         throw new DeploymentException("Location: " + location + " is not an archive");
                     }
-                    file = FileUtil.unpackArchive(url,tmpRoot);
+                    file = FileUtil.unpackArchive(url, tmpRoot);
                 } catch (MalformedURLException e) {
                     throw new DeploymentException(e);
                 }
@@ -575,8 +587,8 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             if (FileUtil.archiveContainsEntry(file, DescriptorFactory.DESCRIPTOR_FILE)) {
                 tmpDir = FileUtil.createUniqueDirectory(tmpRoot, file.getName());
                 FileUtil.unpackArchive(file, tmpDir);
-                if (log.isDebugEnabled()) {
-                    log.debug("Unpacked archive " + location + " to " + tmpDir);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Unpacked archive " + location + " to " + tmpDir);
                 }
             }
         } catch (IOException e) {
@@ -585,63 +597,57 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
         return tmpDir;
     }
 
-    private void scheduleDirectoryTimer(){
+    private void scheduleDirectoryTimer() {
         if (!container.isEmbedded() && (isMonitorInstallationDirectory() || isMonitorDeploymentDirectory())) {
-            if(statsTimer==null){
-                statsTimer=new Timer(true);
+            if (statsTimer == null) {
+                statsTimer = new Timer(true);
             }
-            if(timerTask!=null){
+            if (timerTask != null) {
                 timerTask.cancel();
             }
-            timerTask=new TimerTask(){
-                public void run(){
-                    if(isMonitorInstallationDirectory()){
-                        monitorDirectory(environmentContext.getInstallationDir(),installFileMap);
+            timerTask = new TimerTask() {
+                public void run() {
+                    if (isMonitorInstallationDirectory()) {
+                        monitorDirectory(environmentContext.getInstallationDir(), installFileMap);
                     }
-                    if(isMonitorDeploymentDirectory()){
-                        monitorDirectory(environmentContext.getDeploymentDir(),deployFileMap);
+                    if (isMonitorDeploymentDirectory()) {
+                        monitorDirectory(environmentContext.getDeploymentDir(), deployFileMap);
                     }
                 }
             };
-            long interval=monitorInterval*1000;
-            statsTimer.scheduleAtFixedRate(timerTask,0,interval);
+            long interval = monitorInterval * 1000;
+            statsTimer.scheduleAtFixedRate(timerTask, 0, interval);
         }
     }
 
-
     private void monitorDirectory(final File root, final Map<String, ArchiveEntry> fileMap) {
         /*
-        if (log.isTraceEnabled()) {
-            if (root != null)
-                log.trace("Monitoring directory " + root.getAbsolutePath() + " for new or modified archives");
-            else
-                log.trace("No directory to monitor for new or modified archives for "
-                                + ((fileMap==installFileMap) ? "Installation" : "Deployment") + ".");
-        }
-        */
-        List<String> tmpList=new ArrayList<String>();
-        if(root!=null&&root.exists()&&root.isDirectory()){
-            File[] files=root.listFiles();
-            if(files!=null){
-                for(int i=0;i<files.length;i++){
-                    final File file=files[i];
+         * if (log.isTraceEnabled()) { if (root != null) log.trace("Monitoring
+         * directory " + root.getAbsolutePath() + " for new or modified
+         * archives"); else log.trace("No directory to monitor for new or
+         * modified archives for " + ((fileMap==installFileMap) ? "Installation" :
+         * "Deployment") + "."); }
+         */
+        List<String> tmpList = new ArrayList<String>();
+        if (root != null && root.exists() && root.isDirectory()) {
+            File[] files = root.listFiles();
+            if (files != null) {
+                for (int i = 0; i < files.length; i++) {
+                    final File file = files[i];
                     tmpList.add(file.getName());
                     if (isAllowedExtension(file.getName())) {
                         ArchiveEntry lastEntry = fileMap.get(file.getName());
-                        if(lastEntry == null || file.lastModified() > lastEntry.lastModified.getTime()){
-                            try{
+                        if (lastEntry == null || file.lastModified() > lastEntry.lastModified.getTime()) {
+                            try {
                                 final ArchiveEntry entry = new ArchiveEntry();
                                 entry.location = file.getName();
                                 entry.lastModified = new Date(file.lastModified());
                                 fileMap.put(file.getName(), entry);
-                                log.info("Directory: "+root.getName()+": Archive changed: processing "
-                                                +file.getName()+" ...");
+                                LOG.info("Directory: " + root.getName() + ": Archive changed: processing " + file.getName() + " ...");
                                 updateArchive(file.getAbsolutePath(), entry, true);
-                                log.info("Directory: "+root.getName()+": Finished installation of archive:  "
-                                        +file.getName());
-                            } catch(Exception e) {
-                                log.warn("Directory: "+root.getName()+": Automatic install of "+file
-                                                +" failed",e);
+                                LOG.info("Directory: " + root.getName() + ": Finished installation of archive:  " + file.getName());
+                            } catch (Exception e) {
+                                LOG.warn("Directory: " + root.getName() + ": Automatic install of " + file + " failed", e);
                             } finally {
                                 persistState(root, fileMap);
                             }
@@ -650,28 +656,28 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 }
             }
             // now remove any locations no longer here
-            Map<String, ArchiveEntry> map=new HashMap<String, ArchiveEntry>(fileMap);
-            for(String location : map.keySet()) {
-                if(!tmpList.contains(location)){
+            Map<String, ArchiveEntry> map = new HashMap<String, ArchiveEntry>(fileMap);
+            for (String location : map.keySet()) {
+                if (!tmpList.contains(location)) {
                     ArchiveEntry entry = fileMap.remove(location);
-                    try{
-                        log.info("Location "+location+" no longer exists - removing ...");
+                    try {
+                        LOG.info("Location " + location + " no longer exists - removing ...");
                         removeArchive(entry);
                     } catch (DeploymentException e) {
-                        log.error("Failed to removeArchive: "+location,e);
+                        LOG.error("Failed to removeArchive: " + location, e);
                     }
                 }
             }
-            if (!map.equals(fileMap)){
+            if (!map.equals(fileMap)) {
                 persistState(root, fileMap);
             }
         }
     }
 
     private boolean isAllowedExtension(String file) {
-        String[] extensions = this.extensions.split(",");
-        for (int i = 0; i < extensions.length; i++) {
-            if (file.endsWith(extensions[i])) {
+        String[] ext = this.extensions.split(",");
+        for (int i = 0; i < ext.length; i++) {
+            if (file.endsWith(ext[i])) {
                 return true;
             }
         }
@@ -683,7 +689,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             File file = new File(environmentContext.getJbiRootDir(), root.getName() + ".xml");
             XmlPersistenceSupport.write(file, map);
         } catch (IOException e) {
-            log.error("Failed to persist file state to: " + root, e);
+            LOG.error("Failed to persist file state to: " + root, e);
         }
     }
 
@@ -695,29 +701,29 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             if (file.exists()) {
                 result = (Map<String, ArchiveEntry>) XmlPersistenceSupport.read(file);
             } else {
-                log.debug("State file doesn't exist: " + file.getPath());
+                LOG.debug("State file doesn't exist: " + file.getPath());
             }
         } catch (Exception e) {
-            log.error("Failed to read file state from: " + root, e);
+            LOG.error("Failed to read file state from: " + root, e);
         }
         return result;
     }
 
-    private void initializeFileMaps(){
+    private void initializeFileMaps() {
         if (isMonitorInstallationDirectory() && !container.isEmbedded()) {
             try {
-                installFileMap=readState(environmentContext.getInstallationDir());
+                installFileMap = readState(environmentContext.getInstallationDir());
                 removePendingEntries(installFileMap);
             } catch (Exception e) {
-                log.error("Failed to read installed state", e);
+                LOG.error("Failed to read installed state", e);
             }
         }
         if (isMonitorDeploymentDirectory() && !container.isEmbedded()) {
             try {
-                deployFileMap=readState(environmentContext.getDeploymentDir());
+                deployFileMap = readState(environmentContext.getDeploymentDir());
                 removePendingEntries(deployFileMap);
             } catch (Exception e) {
-                log.error("Failed to read deployed state", e);
+                LOG.error("Failed to read deployed state", e);
             }
         }
     }
@@ -735,11 +741,60 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     }
 
     public static class ArchiveEntry {
-        public String location;
-        public Date lastModified;
-        public String type;
-        public String name;
-        public boolean pending;
-        public transient Set<String> dependencies;
+        
+        private String location;
+        private Date lastModified;
+        private String type;
+        private String name;
+        private boolean pending;
+        private transient Set<String> dependencies;
+
+        public String getLocation() {
+            return location;
+        }
+
+        public void setLocation(String location) {
+            this.location = location;
+        }
+
+        public Date getLastModified() {
+            return lastModified;
+        }
+
+        public void setLastModified(Date lastModified) {
+            this.lastModified = lastModified;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public boolean isPending() {
+            return pending;
+        }
+
+        public void setPending(boolean pending) {
+            this.pending = pending;
+        }
+
+        public Set<String> getDependencies() {
+            return dependencies;
+        }
+
+        public void setDependencies(Set<String> dependencies) {
+            this.dependencies = dependencies;
+        }
     }
 }

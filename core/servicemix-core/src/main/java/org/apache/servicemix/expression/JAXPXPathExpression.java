@@ -16,11 +16,7 @@
  */
 package org.apache.servicemix.expression;
 
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.util.MessageUtil;
-import org.springframework.beans.factory.InitializingBean;
-import org.xml.sax.SAXException;
+import java.io.IOException;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
@@ -34,30 +30,42 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathFunctionResolver;
 
-import java.io.IOException;
+import org.xml.sax.SAXException;
+
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.util.MessageUtil;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * Evalutes an XPath expression on the given message using JAXP
- *
+ * 
  * @org.apache.xbean.XBean element="xpath"
- *  
+ * 
  * @version $Revision$
  */
 public class JAXPXPathExpression implements Expression, InitializingBean {
+    
     private String xpath;
+
     private boolean useMessageContent = true;
+
     private SourceTransformer transformer = new SourceTransformer();
+
     private MessageVariableResolver variableResolver = new MessageVariableResolver();
+
     private XPathExpression xPathExpression;
+
     private XPathFunctionResolver functionResolver;
+
     private NamespaceContext namespaceContext;
+
     private XPathFactory factory;
 
     public JAXPXPathExpression() {
     }
 
     /**
-     * A helper constructor to make a fully created expression. 
+     * A helper constructor to make a fully created expression.
      */
     public JAXPXPathExpression(String xpath) {
         this.xpath = xpath;
@@ -100,45 +108,43 @@ public class JAXPXPathExpression implements Expression, InitializingBean {
                 variableResolver.setMessage(message);
                 return evaluateXPath(object);
             }
-        }
-        catch (TransformerException e) {
+        } catch (TransformerException e) {
             throw new MessagingException(e);
-        }
-        catch (XPathExpressionException e) {
+        } catch (XPathExpressionException e) {
             throw new MessagingException(e);
-        } 
-        catch (ParserConfigurationException e) {
+        } catch (ParserConfigurationException e) {
             throw new MessagingException(e);
-        } 
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new MessagingException(e);
-        } 
-        catch (SAXException e) {
+        } catch (SAXException e) {
             throw new MessagingException(e);
         }
     }
 
     // Properties
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public String getXPath() {
         return xpath;
     }
 
-    public void setXPath(String xpath) {
-        this.xpath = xpath;
+    public void setXPath(String xp) {
+        this.xpath = xp;
     }
-    
+
     public boolean isUseMessageContent() {
         return useMessageContent;
     }
-    
+
     /**
-     * Specifies whether or not the XPath expression uses the message content.  
+     * Specifies whether or not the XPath expression uses the message content.
      * 
-     * By default, this property is <code>true</code>, but you can set it to <code>false</code> to avoid that the message content
-     * is converted to {@link StringSource}  
+     * By default, this property is <code>true</code>, but you can set it to
+     * <code>false</code> to avoid that the message content is converted to
+     * {@link StringSource}
      * 
-     * @param useMessageContent specify <code>false</code> if this expression does not access the message content
+     * @param useMessageContent
+     *            specify <code>false</code> if this expression does not
+     *            access the message content
      */
     public void setUseMessageContent(boolean useMessageContent) {
         this.useMessageContent = useMessageContent;
@@ -185,7 +191,7 @@ public class JAXPXPathExpression implements Expression, InitializingBean {
     }
 
     // Implementation methods
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     protected Object evaluateXPath(Object object) throws XPathExpressionException {
         return xPathExpression.evaluate(object);
     }
@@ -194,8 +200,10 @@ public class JAXPXPathExpression implements Expression, InitializingBean {
         return xPathExpression;
     }
 
-    protected Object getXMLNode(MessageExchange exchange, NormalizedMessage message) throws TransformerException, MessagingException, ParserConfigurationException, IOException, SAXException {
-        //ensure re-readability of the content if the expression also needs to access the content 
+    protected Object getXMLNode(MessageExchange exchange, NormalizedMessage message) throws TransformerException, MessagingException,
+                    ParserConfigurationException, IOException, SAXException {
+        // ensure re-readability of the content if the expression also needs to
+        // access the content
         if (useMessageContent) {
             MessageUtil.enableContentRereadability(message);
         }

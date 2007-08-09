@@ -25,6 +25,7 @@ import javax.jbi.JBIException;
  * @version $Revision$
  */
 public class RuntimeJBIException extends RuntimeException {
+
     private static final long serialVersionUID = -6386553476156600457L;
 
     /**

@@ -22,19 +22,20 @@ import javax.xml.namespace.QName;
  * @version $Revision$
  */
 public class Provides {
+    
     private QName serviceName;
     private String endpointName;
     private QName interfaceName;
 
     public QName getInterfaceName() {
-		return interfaceName;
-	}
+        return interfaceName;
+    }
 
-	public void setInterfaceName(QName interfaceName) {
-		this.interfaceName = interfaceName;
-	}
+    public void setInterfaceName(QName interfaceName) {
+        this.interfaceName = interfaceName;
+    }
 
-	public QName getServiceName() {
+    public QName getServiceName() {
         return serviceName;
     }
 

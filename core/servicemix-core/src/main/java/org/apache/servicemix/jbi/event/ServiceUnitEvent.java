@@ -27,13 +27,13 @@ import org.apache.servicemix.jbi.framework.ServiceUnitLifeCycle;
  */
 public class ServiceUnitEvent extends EventObject {
 
-    private static final long serialVersionUID = 7825652001472392923L;
-    
     public static final int UNIT_DEPLOYED = 0;
     public static final int UNIT_STARTED = 1;
     public static final int UNIT_STOPPED = 2;
     public static final int UNIT_SHUTDOWN = 3;
     public static final int UNIT_UNDEPLOYED = 4;
+    
+    private static final long serialVersionUID = 7825652001472392923L;
     
     private ServiceUnitLifeCycle unit;
     private int type;

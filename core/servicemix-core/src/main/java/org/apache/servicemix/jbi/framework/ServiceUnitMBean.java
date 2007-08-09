@@ -20,21 +20,21 @@ import javax.jbi.management.DeploymentServiceMBean;
 
 public interface ServiceUnitMBean {
 
-    public String getName();
+    String getName();
     
-    public String getDescription();
+    String getDescription();
     
-    public String getComponentName();
+    String getComponentName();
 
-    public String getCurrentState();
+    String getCurrentState();
     
-    public String getServiceAssembly();
+    String getServiceAssembly();
     
-    public String getDescriptor();
+    String getDescriptor();
 
-    public static final String STARTED = DeploymentServiceMBean.STARTED;
+    String STARTED = DeploymentServiceMBean.STARTED;
 
-    public static final String SHUTDOWN = DeploymentServiceMBean.SHUTDOWN;
+    String SHUTDOWN = DeploymentServiceMBean.SHUTDOWN;
 
-    public static final String STOPPED = DeploymentServiceMBean.STOPPED;
+    String STOPPED = DeploymentServiceMBean.STOPPED;
 }

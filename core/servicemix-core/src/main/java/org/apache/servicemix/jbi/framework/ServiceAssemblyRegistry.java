@@ -41,9 +41,11 @@ import org.apache.servicemix.jbi.deployment.ServiceUnit;
  * @version $Revision$
  */
 public class ServiceAssemblyRegistry {
-    
-    private static final Log log = LogFactory.getLog(ServiceAssemblyRegistry.class);
+
+    private static final Log LOG = LogFactory.getLog(ServiceAssemblyRegistry.class);
+
     private Map<String, ServiceAssemblyLifeCycle> serviceAssemblies = new ConcurrentHashMap<String, ServiceAssemblyLifeCycle>();
+
     private Registry registry;
 
     /**
@@ -59,22 +61,21 @@ public class ServiceAssemblyRegistry {
      */
     public void start() {
     }
-    
+
     /**
      * Stop service assembilies 
      */
-    public void stop(){
+    public void stop() {
     }
-    
+
     /**
      * shutDown the service
      */
-    public void shutDown(){
+    public void shutDown() {
     }
 
-    public ServiceAssemblyLifeCycle register(ServiceAssembly sa, 
-                                             String[] suKeys,
-                                             ServiceAssemblyEnvironment env) throws DeploymentException {
+    public ServiceAssemblyLifeCycle register(ServiceAssembly sa, String[] suKeys, ServiceAssemblyEnvironment env)
+                    throws DeploymentException {
         String saName = sa.getIdentification().getName();
         if (!serviceAssemblies.containsKey(saName)) {
             ServiceAssemblyLifeCycle salc = new ServiceAssemblyLifeCycle(sa, env, registry);
@@ -88,30 +89,26 @@ public class ServiceAssemblyRegistry {
                 ObjectName objectName = registry.getContainer().getManagementContext().createObjectName(salc);
                 registry.getContainer().getManagementContext().registerMBean(objectName, salc, ServiceAssemblyMBean.class);
             } catch (JMException e) {
-                log.error("Could not register MBean for service assembly", e);
+                LOG.error("Could not register MBean for service assembly", e);
             }
             return salc;
         }
         return null;
     }
-    
+
     public ServiceAssemblyLifeCycle register(ServiceAssembly sa, ServiceAssemblyEnvironment env) throws DeploymentException {
         List<String> sus = new ArrayList<String>();
         if (sa.getServiceUnits() != null) {
             for (int i = 0; i < sa.getServiceUnits().length; i++) {
-                String suKey = registry.registerServiceUnit(
-                                        sa.getServiceUnits()[i],
-                                        sa.getIdentification().getName(),
-                                        env.getServiceUnitDirectory(sa.getServiceUnits()[i].getTarget().getComponentName(),
-                                                                    sa.getServiceUnits()[i].getIdentification().getName()));
+                String suKey = registry.registerServiceUnit(sa.getServiceUnits()[i], sa.getIdentification().getName(), env
+                                .getServiceUnitDirectory(sa.getServiceUnits()[i].getTarget().getComponentName(), sa.getServiceUnits()[i]
+                                                .getIdentification().getName()));
                 sus.add(suKey);
             }
         }
-        return register(sa,
-                        sus.toArray(new String[sus.size()]),
-                        env);
+        return register(sa, sus.toArray(new String[sus.size()]), env);
     }
-    
+
     /**
      * unregister a service assembly
      * @param name
@@ -129,14 +126,14 @@ public class ServiceAssemblyRegistry {
                 }
                 registry.getContainer().getManagementContext().unregisterMBean(salc);
             } catch (JBIException e) {
-                log.error("Unable to unregister MBean for service assembly", e);
+                LOG.error("Unable to unregister MBean for service assembly", e);
             }
             return true;
         } else {
             return false;
         }
     }
-    
+
     /**
      * Get a named ServiceAssembly
      * @param name
@@ -145,99 +142,98 @@ public class ServiceAssemblyRegistry {
     public ServiceAssemblyLifeCycle getServiceAssembly(String saName) {
         return serviceAssemblies.get(saName);
     }
-    
-   /**
-    * Returns a list of Service Assemblies deployed to the JBI enviroment.
-    * 
-    * @return list of Service Assembly Name's.
-    */
-   public String[] getDeployedServiceAssemblies()  {
-       String[] result = null;
-       Set<String> keys = serviceAssemblies.keySet();
-       result = new String[keys.size()];
-       keys.toArray(result);
-       return result;
-   }
-   
-   /**
-    * Returns a list of Service Assemblies that contain SUs for the given component.
-    * 
-    * @param componentName name of the component.
-    * @return list of Service Assembly names.
-    */
-   public String[] getDeployedServiceAssembliesForComponent(String componentName) {
-       String[] result = null;
-       // iterate through the service assembilies
-       Set<String> tmpList = new HashSet<String>();
-       for (ServiceAssemblyLifeCycle salc : serviceAssemblies.values()) {
-           ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
-           if (sus != null) {
-               for (int i = 0;i < sus.length;i++) {
-                   if (sus[i].getTarget().getComponentName().equals(componentName)) {
-                       tmpList.add(salc.getServiceAssembly().getIdentification().getName());
-                   }
-               }
-           }
-       }
-       result = new String[tmpList.size()];
-       tmpList.toArray(result);
-       return result;
-   }
 
-   /**
-    * Returns a list of components(to which SUs are targeted for) in a Service Assembly.
-    * 
-    * @param saName name of the service assembly.
-    * @return list of component names.
-    */
-   public String[] getComponentsForDeployedServiceAssembly(String saName)  {
-       String[] result = null;
-       Set<String> tmpList = new HashSet<String>();
-       ServiceAssemblyLifeCycle sa = getServiceAssembly(saName);
-       if (sa != null) {
-           ServiceUnit[] sus = sa.getServiceAssembly().getServiceUnits();
-           if (sus != null) {
-               for (int i = 0;i < sus.length;i++) {
-                   tmpList.add(sus[i].getTarget().getComponentName());
-               }
-           }
-       }
-       result = new String[tmpList.size()];
-       tmpList.toArray(result);
-       return result;
-   }
+    /**
+     * Returns a list of Service Assemblies deployed to the JBI enviroment.
+     * 
+     * @return list of Service Assembly Name's.
+     */
+    public String[] getDeployedServiceAssemblies() {
+        String[] result = null;
+        Set<String> keys = serviceAssemblies.keySet();
+        result = new String[keys.size()];
+        keys.toArray(result);
+        return result;
+    }
 
-   /**
-    * Returns a boolean value indicating whether the SU is currently deployed.
-    * 
-    * @param componentName - name of component.
-    * @param suName - name of the Service Unit.
-    * @return boolean value indicating whether the SU is currently deployed.
-    */
-   public boolean isDeployedServiceUnit(String componentName, String suName) {
-       boolean result = false;
-       for (ServiceAssemblyLifeCycle salc : serviceAssemblies.values()) {
-           ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
-           if (sus != null) {
-               for (int i = 0;i < sus.length;i++) {
-                   if (sus[i].getTarget().getComponentName().equals(componentName)
-                           && sus[i].getIdentification().getName().equals(suName)) {
-                       result = true;
-                       break;
-                   }
-               }
-           }
-       }
-       return result;
-   }
-   
-   /**
-    * Returns a list of service assemblies.
-    * 
-    * @return list of service assemblies
-    */
-   public Collection<ServiceAssemblyLifeCycle> getServiceAssemblies() {
-       return serviceAssemblies.values();
-   }
-   
+    /**
+     * Returns a list of Service Assemblies that contain SUs for the given component.
+     * 
+     * @param componentName name of the component.
+     * @return list of Service Assembly names.
+     */
+    public String[] getDeployedServiceAssembliesForComponent(String componentName) {
+        String[] result = null;
+        // iterate through the service assembilies
+        Set<String> tmpList = new HashSet<String>();
+        for (ServiceAssemblyLifeCycle salc : serviceAssemblies.values()) {
+            ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
+            if (sus != null) {
+                for (int i = 0; i < sus.length; i++) {
+                    if (sus[i].getTarget().getComponentName().equals(componentName)) {
+                        tmpList.add(salc.getServiceAssembly().getIdentification().getName());
+                    }
+                }
+            }
+        }
+        result = new String[tmpList.size()];
+        tmpList.toArray(result);
+        return result;
+    }
+
+    /**
+     * Returns a list of components(to which SUs are targeted for) in a Service Assembly.
+     * 
+     * @param saName name of the service assembly.
+     * @return list of component names.
+     */
+    public String[] getComponentsForDeployedServiceAssembly(String saName) {
+        String[] result = null;
+        Set<String> tmpList = new HashSet<String>();
+        ServiceAssemblyLifeCycle sa = getServiceAssembly(saName);
+        if (sa != null) {
+            ServiceUnit[] sus = sa.getServiceAssembly().getServiceUnits();
+            if (sus != null) {
+                for (int i = 0; i < sus.length; i++) {
+                    tmpList.add(sus[i].getTarget().getComponentName());
+                }
+            }
+        }
+        result = new String[tmpList.size()];
+        tmpList.toArray(result);
+        return result;
+    }
+
+    /**
+     * Returns a boolean value indicating whether the SU is currently deployed.
+     * 
+     * @param componentName - name of component.
+     * @param suName - name of the Service Unit.
+     * @return boolean value indicating whether the SU is currently deployed.
+     */
+    public boolean isDeployedServiceUnit(String componentName, String suName) {
+        boolean result = false;
+        for (ServiceAssemblyLifeCycle salc : serviceAssemblies.values()) {
+            ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
+            if (sus != null) {
+                for (int i = 0; i < sus.length; i++) {
+                    if (sus[i].getTarget().getComponentName().equals(componentName) && sus[i].getIdentification().getName().equals(suName)) {
+                        result = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns a list of service assemblies.
+     * 
+     * @return list of service assemblies
+     */
+    public Collection<ServiceAssemblyLifeCycle> getServiceAssemblies() {
+        return serviceAssemblies.values();
+    }
+
 }

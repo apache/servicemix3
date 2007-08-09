@@ -16,14 +16,16 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
-import org.apache.servicemix.client.Message;
-import org.apache.servicemix.jbi.RuntimeJBIException;
-import org.apache.servicemix.jbi.jaxp.BytesSource;
-import org.apache.servicemix.jbi.jaxp.ResourceSource;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.util.ByteArrayDataSource;
-import org.apache.servicemix.jbi.util.FileUtil;
+import java.io.ByteArrayOutputStream;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -36,8 +38,15 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
-import java.io.*;
-import java.util.*;
+
+import org.apache.servicemix.client.Message;
+import org.apache.servicemix.jbi.RuntimeJBIException;
+import org.apache.servicemix.jbi.jaxp.BytesSource;
+import org.apache.servicemix.jbi.jaxp.ResourceSource;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.util.ByteArrayDataSource;
+import org.apache.servicemix.jbi.util.FileUtil;
 
 /**
  * Represents a JBI NormalizedMessage.

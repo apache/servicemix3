@@ -21,7 +21,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 /**
  * Evaluates an XPath expression and coerces the result into a String.
- *
+ * 
  * @version $Revision: 359151 $
  */
 public class JAXPNodeSetXPathExpression extends JAXPXPathExpression {

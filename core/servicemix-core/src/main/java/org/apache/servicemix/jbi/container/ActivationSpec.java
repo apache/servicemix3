@@ -16,6 +16,10 @@
  */
 package org.apache.servicemix.jbi.container;
 
+import java.io.Serializable;
+
+import javax.xml.namespace.QName;
+
 import org.apache.servicemix.jbi.messaging.PojoMarshaler;
 import org.apache.servicemix.jbi.resolver.EndpointChooser;
 import org.apache.servicemix.jbi.resolver.EndpointResolver;
@@ -24,22 +28,20 @@ import org.apache.servicemix.jbi.resolver.ServiceAndEndpointNameResolver;
 import org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver;
 import org.apache.servicemix.jbi.resolver.URIResolver;
 
-import javax.xml.namespace.QName;
-
-import java.io.Serializable;
-
 /**
  * Represents the registration of a component with the {@link JBIContainer}
- *
- * @org.apache.xbean.XBean element="activationSpec"
- * description="The Component configuration consisting of its container related properties such as its routing information"
+ * 
+ * @org.apache.xbean.XBean element="activationSpec" description="The Component
+ *                         configuration consisting of its container related
+ *                         properties such as its routing information"
  * 
  * @version $Revision$
  */
 public class ActivationSpec implements Serializable {
-    
-	static final long serialVersionUID = 8458586342841647313L;
-	private String id;
+
+    static final long serialVersionUID = 8458586342841647313L;
+
+    private String id;
     private String componentName;
     private Object component;
     private QName service;
@@ -59,7 +61,6 @@ public class ActivationSpec implements Serializable {
     private Boolean persistent;
     private String destinationUri;
 
-
     public ActivationSpec() {
     }
 
@@ -74,7 +75,7 @@ public class ActivationSpec implements Serializable {
 
     /**
      * The unique component ID
-     *
+     * 
      * @return the unique ID
      */
     public String getId() {
@@ -83,7 +84,7 @@ public class ActivationSpec implements Serializable {
 
     /**
      * Sets the unique component ID
-     *
+     * 
      * @param id
      */
     public void setId(String id) {
@@ -149,9 +150,9 @@ public class ActivationSpec implements Serializable {
     }
 
     /**
-     * Returns the destination resolver used to decide which
-     * destination the container should route this component to.
-     *
+     * Returns the destination resolver used to decide which destination the
+     * container should route this component to.
+     * 
      * @return the destination resolver, lazily creating one if possible
      */
     public EndpointResolver getDestinationResolver() {
@@ -162,15 +163,14 @@ public class ActivationSpec implements Serializable {
     }
 
     /**
-     * Sets the destination resolver used by the container to route
-     * requests send on the default endpoint.
-     *
+     * Sets the destination resolver used by the container to route requests
+     * send on the default endpoint.
+     * 
      * @param destinationResolver
      */
     public void setDestinationResolver(EndpointResolver destinationResolver) {
         this.destinationResolver = destinationResolver;
     }
-
 
     public EndpointChooser getInterfaceChooser() {
         return interfaceChooser;
@@ -247,15 +247,16 @@ public class ActivationSpec implements Serializable {
     public void setSubscriptions(SubscriptionSpec[] subscriptions) {
         this.subscriptions = subscriptions;
     }
-    
+
     public boolean isFailIfNoDestinationEndpoint() {
         return failIfNoDestinationEndpoint;
     }
 
     /**
-     * Sets whether or not there should be a failure if there is no matching endpoint for the service dispatch.
-     * It may be in a pure publish/subscribe model you want all available subscribes to receive the message but do not mind
-     * if there is not a single destination endpoint that can be found.
+     * Sets whether or not there should be a failure if there is no matching
+     * endpoint for the service dispatch. It may be in a pure publish/subscribe
+     * model you want all available subscribes to receive the message but do not
+     * mind if there is not a single destination endpoint that can be found.
      * 
      * @param failIfNoDestinationEndpoint
      */
@@ -271,12 +272,10 @@ public class ActivationSpec implements Serializable {
         if (destinationService != null) {
             if (destinationEndpoint != null) {
                 return new ServiceAndEndpointNameResolver(destinationService, destinationEndpoint);
-            }
-            else {
+            } else {
                 return new ServiceNameEndpointResolver(destinationService);
             }
-        }
-        else if (destinationInterface != null) {
+        } else if (destinationInterface != null) {
             return new InterfaceNameEndpointResolver(destinationInterface);
         } else if (destinationUri != null) {
             return new URIResolver(destinationUri);
@@ -284,20 +283,22 @@ public class ActivationSpec implements Serializable {
         return null;
     }
 
-	public Boolean getPersistent() {
-		return persistent;
-	}
+    public Boolean getPersistent() {
+        return persistent;
+    }
 
-	/**
-	 * Set if message exchanges issued by the component should be persistent
-	 * or not.  This value will override the default one given on the 
-	 * {@link org.apache.servicemix.jbi.container.JBIContainer#persistent} attribute.
-	 * 
-	 * @param persistent the new value to set
-	 */
-	public void setPersistent(Boolean persistent) {
-		this.persistent = persistent;
-	}
+    /**
+     * Set if message exchanges issued by the component should be persistent or
+     * not. This value will override the default one given on the
+     * {@link org.apache.servicemix.jbi.container.JBIContainer#persistent}
+     * attribute.
+     * 
+     * @param persistent
+     *            the new value to set
+     */
+    public void setPersistent(Boolean persistent) {
+        this.persistent = persistent;
+    }
 
     /**
      * @return the destinationUri
@@ -307,11 +308,11 @@ public class ActivationSpec implements Serializable {
     }
 
     /**
-     * @param destinationUri the destinationUri to set
+     * @param destinationUri
+     *            the destinationUri to set
      */
     public void setDestinationUri(String destinationUri) {
         this.destinationUri = destinationUri;
     }
-
 
 }

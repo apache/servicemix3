@@ -51,8 +51,8 @@ public class XStreamSource extends TraxSource implements JavaSource {
         setSource(object);
     }
 
-    public void setSource(Object object) {
-        super.setSource(object);
-        this.object = object;
+    public void setSource(Object source) {
+        super.setSource(source);
+        this.object = source;
     }
 }

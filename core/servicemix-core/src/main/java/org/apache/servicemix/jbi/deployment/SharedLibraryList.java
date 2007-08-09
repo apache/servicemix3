@@ -68,8 +68,8 @@ public class SharedLibraryList {
 
     public int hashCode() {
         int result;
-        result = (version != null ? version.hashCode() : 0);
-        result = 29 * result + (name != null ? name.hashCode() : 0);
+        result = version != null ? version.hashCode() : 0;
+        result = 29 * result + name != null ? name.hashCode() : 0;
         return result;
     }
 

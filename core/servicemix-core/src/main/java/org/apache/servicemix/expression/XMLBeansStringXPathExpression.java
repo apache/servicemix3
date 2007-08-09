@@ -35,11 +35,9 @@ public class XMLBeansStringXPathExpression extends XMLBeansXPathExpression {
         XmlObject[] xmlObjects = object.selectPath(xpath);
         if (xmlObjects == null || xmlObjects.length == 0) {
             return "";
-        }
-        else if (xmlObjects.length == 1) {
+        } else if (xmlObjects.length == 1) {
             return asString(xmlObjects[0]);
-        }
-        else {
+        } else {
             StringBuffer buffer = new StringBuffer();
             for (int i = 0; i < xmlObjects.length; i++) {
                 XmlObject xmlObject = xmlObjects[i];

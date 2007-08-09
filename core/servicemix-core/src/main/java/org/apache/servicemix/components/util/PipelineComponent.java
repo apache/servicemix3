@@ -92,13 +92,11 @@ public class PipelineComponent extends ComponentSupport implements MessageExchan
             inOnly.setInMessage(rpc.getOutMessage());
             deliveryChannel.send(inOnly);
             done(exchange);
-        }
-        else if (exchange instanceof InOnly == false) {
+        } else if (!(exchange instanceof InOnly)) {
             inOnly.setError(rpc.getError());
             Fault fault = rpc.getFault();
             fail(exchange, fault);
-        } 
-        else {
+        } else {
             // terminate the exchange
             done(exchange);
         }
@@ -154,7 +152,6 @@ public class PipelineComponent extends ComponentSupport implements MessageExchan
         if (endpoints == null || endpoints.length == 0) {
             throw new NoServiceAvailableException(serviceName);
         }
-
         // TODO how should we choose?
         return endpoints[0];
     }

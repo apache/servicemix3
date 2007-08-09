@@ -27,14 +27,14 @@ import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
  */
 public class ComponentEvent extends EventObject {
 
-    private static final long serialVersionUID = -4075242868959881673L;
-    
     public static final int COMPONENT_INSTALLED = 0;
     public static final int COMPONENT_INITIALIZED = 1;
     public static final int COMPONENT_STARTED = 2;
     public static final int COMPONENT_STOPPED = 3;
     public static final int COMPONENT_SHUTDOWN = 4;
     public static final int COMPONENT_UNINSTALLED = 5;
+    
+    private static final long serialVersionUID = -4075242868959881673L;
     
     private ComponentMBeanImpl component;
     private int type;

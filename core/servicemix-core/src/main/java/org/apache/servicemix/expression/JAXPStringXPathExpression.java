@@ -21,9 +21,9 @@ import javax.xml.xpath.XPathExpressionException;
 
 /**
  * Evaluates an XPath expression and coerces the result into a String.
- *
+ * 
  * @org.apache.xbean.XBean element="xpathString"
- *
+ * 
  * @version $Revision$
  */
 public class JAXPStringXPathExpression extends JAXPXPathExpression {

@@ -20,60 +20,57 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 
-import org.apache.servicemix.components.util.DefaultFileMarshaler;
 import org.apache.servicemix.expression.PropertyExpression;
 
 /**
- * Expression that returns the 'org.apache.servicemix.file.name' property on 
- * the message added by a file extensions. Existing file extensions are by 
- * default removed 
+ * Expression that returns the 'org.apache.servicemix.file.name' property on the
+ * message added by a file extensions. Existing file extensions are by default
+ * removed
+ * 
  * @author Mayrbaeurl
  * @since 3.2
  */
 public class FileExtensionPropertyExpression extends PropertyExpression {
-    
+
     private final String extension;
 
     private boolean deleteExistingExtension = true;
 
     public FileExtensionPropertyExpression(String fileExtension) {
-	super(DefaultFileMarshaler.FILE_NAME_PROPERTY);
+        super(DefaultFileMarshaler.FILE_NAME_PROPERTY);
 
-	this.extension = fileExtension;
+        this.extension = fileExtension;
     }
 
     public FileExtensionPropertyExpression(String extension,
-	    boolean deleteExistingExtension) {
-	super(DefaultFileMarshaler.FILE_NAME_PROPERTY);
+            boolean deleteExistingExtension) {
+        super(DefaultFileMarshaler.FILE_NAME_PROPERTY);
 
-	this.extension = extension;
-	this.deleteExistingExtension = deleteExistingExtension;
+        this.extension = extension;
+        this.deleteExistingExtension = deleteExistingExtension;
     }
 
     // Implementation methods
-    //-------------------------------------------------------------------------
-    public Object evaluate(MessageExchange exchange, NormalizedMessage message)
-	    throws MessagingException {
-	Object result = super.evaluate(exchange, message);
-
-	if ((result != null) && (result instanceof String)) {
-	    return this.removeExtension((String) result) + this.extension;
-	} else
-	    return result;
+    // -------------------------------------------------------------------------
+    public Object evaluate(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
+        Object result = super.evaluate(exchange, message);
+        if ((result != null) && (result instanceof String)) {
+            return this.removeExtension((String) result) + this.extension;
+        } else {
+            return result;
+        }
     }
 
     private String removeExtension(String fileName) {
-	String result = fileName;
-
-	if (this.deleteExistingExtension) {
-	    if ((fileName != null) && (fileName.length() > 1)) {
-		int index = fileName.lastIndexOf('.');
-		if (index != -1) {
-		    result = fileName.substring(0, index);
-		}
-	    }
-	}
-
-	return result;
+        String result = fileName;
+        if (this.deleteExistingExtension) {
+            if ((fileName != null) && (fileName.length() > 1)) {
+                int index = fileName.lastIndexOf('.');
+                if (index != -1) {
+                    result = fileName.substring(0, index);
+                }
+            }
+        }
+        return result;
     }
 }

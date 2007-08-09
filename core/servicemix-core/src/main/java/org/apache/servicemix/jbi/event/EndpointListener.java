@@ -16,24 +16,23 @@
  */
 package org.apache.servicemix.jbi.event;
 
-import java.util.EventListener;
 
 public interface EndpointListener extends ServiceMixListener {
 
-    public void internalEndpointRegistered(EndpointEvent event);
+    void internalEndpointRegistered(EndpointEvent event);
     
-    public void internalEndpointUnregistered(EndpointEvent event);
+    void internalEndpointUnregistered(EndpointEvent event);
     
-    public void externalEndpointRegistered(EndpointEvent event);
+    void externalEndpointRegistered(EndpointEvent event);
     
-    public void externalEndpointUnregistered(EndpointEvent event);
+    void externalEndpointUnregistered(EndpointEvent event);
     
-    public void linkedEndpointRegistered(EndpointEvent event);
+    void linkedEndpointRegistered(EndpointEvent event);
     
-    public void linkedEndpointUnregistered(EndpointEvent event);
+    void linkedEndpointUnregistered(EndpointEvent event);
     
-    public void remoteEndpointRegistered(EndpointEvent event);
+    void remoteEndpointRegistered(EndpointEvent event);
     
-    public void remoteEndpointUnregistered(EndpointEvent event);
+    void remoteEndpointUnregistered(EndpointEvent event);
     
 }

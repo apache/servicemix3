@@ -21,14 +21,15 @@ import java.util.EventObject;
 
 public class DeploymentEvent extends EventObject {
 
-    private static final long serialVersionUID = 1330139373403204421L;
-
     public static final int FILE_ADDED = 0;
     public static final int FILE_CHANGED = 1;
     public static final int FILE_REMOVED = 2;
     
+    private static final long serialVersionUID = 1330139373403204421L;
+
     private final File file;
     private final int type;
+
     public DeploymentEvent(File file, int type) {
         super(file);
         this.file = file;

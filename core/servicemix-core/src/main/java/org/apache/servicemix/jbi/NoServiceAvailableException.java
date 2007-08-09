@@ -25,7 +25,8 @@ import javax.xml.namespace.QName;
  * @version $Revision$
  */
 public class NoServiceAvailableException extends NoEndpointAvailableException {
-    private QName serviceName;
+
+    private final QName serviceName;
 
     public NoServiceAvailableException(QName serviceName) {
         super("Cannot find an instance of the service: " + serviceName);

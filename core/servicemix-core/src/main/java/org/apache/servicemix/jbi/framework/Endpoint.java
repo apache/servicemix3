@@ -45,7 +45,7 @@ import org.apache.servicemix.jbi.util.QNameUtil;
 
 public class Endpoint implements EndpointMBean, MBeanInfoProvider {
 
-    private static final Log log = LogFactory.getLog(Endpoint.class);
+    private static final Log LOG = LogFactory.getLog(Endpoint.class);
     
     private AbstractServiceEndpoint endpoint;
     private Registry registry;
@@ -164,7 +164,7 @@ public class Endpoint implements EndpointMBean, MBeanInfoProvider {
             }
             return null;
         } catch (Exception e) {
-            log.debug("Error proces test exchange", e);
+            LOG.debug("Error proces test exchange", e);
             throw new RuntimeException(e);
         } finally {
             if (client != null) {

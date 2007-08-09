@@ -35,7 +35,7 @@ import org.apache.servicemix.jbi.management.OperationInfoHelper;
  */
 public class ClientFactory extends BaseSystemService implements ClientFactoryMBean, Serializable {
 
-    private static final Log logger = LogFactory.getLog(ClientFactory.class);
+    private static final Log LOG = LogFactory.getLog(ClientFactory.class);
     
     private String jndiName = DEFAULT_JNDI_NAME;
     
@@ -84,9 +84,9 @@ public class ClientFactory extends BaseSystemService implements ClientFactoryMBe
             getContainer().getNamingContext().bind(jndiName, this);
             super.start();
         } catch (NamingException e) {
-            logger.warn("Cound not start ClientFactory: " + e);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Could not start ClientFactory", e);
+            LOG.warn("Cound not start ClientFactory: " + e);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Could not start ClientFactory", e);
             }
         }
     }
@@ -101,9 +101,9 @@ public class ClientFactory extends BaseSystemService implements ClientFactoryMBe
             super.stop();
             getContainer().getNamingContext().unbind(jndiName);
         } catch (NamingException e) {
-            logger.warn("Cound not stop ClientFactory: " + e);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Could not stop ClientFactory", e);
+            LOG.warn("Cound not stop ClientFactory: " + e);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Could not stop ClientFactory", e);
             }
         }
     }

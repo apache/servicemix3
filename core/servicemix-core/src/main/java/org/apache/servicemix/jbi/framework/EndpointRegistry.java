@@ -49,7 +49,7 @@ import org.apache.servicemix.jbi.servicedesc.LinkedEndpoint;
  */
 public class EndpointRegistry {
     
-    private static final Log logger = LogFactory.getLog(EndpointRegistry.class);
+    private static final Log LOG = LogFactory.getLog(EndpointRegistry.class);
     
     private Registry registry;
     
@@ -82,16 +82,16 @@ public class EndpointRegistry {
     
     protected List<EndpointProcessor> getEndpointProcessors() {
         List<EndpointProcessor> l = new ArrayList<EndpointProcessor>();
-        String[] classes = { "org.apache.servicemix.jbi.framework.support.SUDescriptorProcessor",
-                             "org.apache.servicemix.jbi.framework.support.WSDL1Processor",
-                             "org.apache.servicemix.jbi.framework.support.WSDL2Processor" };
+        String[] classes = {"org.apache.servicemix.jbi.framework.support.SUDescriptorProcessor",
+                            "org.apache.servicemix.jbi.framework.support.WSDL1Processor",
+                            "org.apache.servicemix.jbi.framework.support.WSDL2Processor" };
         for (int i = 0; i < classes.length; i++) {
             try {
                 EndpointProcessor p = (EndpointProcessor) Class.forName(classes[i]).newInstance();
                 p.init(registry);
                 l.add(p);
             } catch (Throwable e) {
-                logger.warn("Disabled endpoint processor '" + classes[i] + "': " + e);
+                LOG.warn("Disabled endpoint processor '" + classes[i] + "': " + e);
             }
         }
         return l;
@@ -160,10 +160,11 @@ public class EndpointRegistry {
             String key = getKey(conn.service, conn.endpoint);
             ServiceEndpoint ep = internalEndpoints.get(key);
             if (ep == null) {
-                logger.warn("Connection for interface " + interfaceName + " could not find target for service " + conn.service + " and endpoint " + conn.endpoint);
+                LOG.warn("Connection for interface " + interfaceName + " could not find target for service "
+                                + conn.service + " and endpoint " + conn.endpoint);
                 return new ServiceEndpoint[0];
             } else {
-                return new ServiceEndpoint[] { ep };
+                return new ServiceEndpoint[] {ep };
             }
         }
         Collection<ServiceEndpoint> result = getEndpointsByInterface(interfaceName, getInternalEndpoints());
@@ -179,13 +180,16 @@ public class EndpointRegistry {
      * @return the endpoint
      * @throws JBIException 
      */
-    public InternalEndpoint registerInternalEndpoint(ComponentContextImpl provider, QName serviceName, String endpointName) throws JBIException {
+    public InternalEndpoint registerInternalEndpoint(ComponentContextImpl provider, 
+                                                     QName serviceName, 
+                                                     String endpointName) throws JBIException {
         // Create endpoint
         String key = getKey(serviceName, endpointName);
         InternalEndpoint registered = (InternalEndpoint) internalEndpoints.get(key);
         // Check if the endpoint has already been activated by another component
         if (registered != null && registered.isLocal()) {
-            throw new JBIException("An internal endpoint for service " + serviceName + " and endpoint " + endpointName + " is already registered");
+            throw new JBIException("An internal endpoint for service " + serviceName
+                                        + " and endpoint " + endpointName + " is already registered");
         }        
         // Create a new endpoint
         InternalEndpoint serviceEndpoint = new InternalEndpoint(provider.getComponentNameSpace(), endpointName, serviceName);
@@ -298,7 +302,8 @@ public class EndpointRegistry {
     public void registerExternalEndpoint(ComponentNameSpace cns, ServiceEndpoint externalEndpoint) throws JBIException {
         ExternalEndpoint serviceEndpoint = new ExternalEndpoint(cns, externalEndpoint); 
         if (externalEndpoints.get(getKey(serviceEndpoint)) != null) {
-            throw new JBIException("An external endpoint for service " + externalEndpoint.getServiceName() + " and endpoint " + externalEndpoint.getEndpointName() + " is already registered");
+            throw new JBIException("An external endpoint for service " + externalEndpoint.getServiceName()
+                                    + " and endpoint " + externalEndpoint.getEndpointName() + " is already registered");
         }
         registerEndpoint(serviceEndpoint);
         externalEndpoints.put(getKey(serviceEndpoint), serviceEndpoint);
@@ -390,7 +395,7 @@ public class EndpointRegistry {
             ServiceEndpoint endpoint = i.next();
             QName[] interfaces = endpoint.getInterfaces();
             if (interfaces != null) {
-                for (int k = 0; k < interfaces.length;k ++) {
+                for (int k = 0; k < interfaces.length; k++) {
                     QName qn = interfaces[k];
                     if (qn != null && qn.equals(interfaceName)) {
                         answer.add(endpoint);
@@ -426,7 +431,8 @@ public class EndpointRegistry {
      * @param link
      * @throws JBIException
      */
-    public void registerEndpointConnection(QName fromSvc, String fromEp, QName toSvc, String toEp, String link) throws JBIException {
+    public void registerEndpointConnection(QName fromSvc, String fromEp, 
+                                           QName toSvc, String toEp, String link) throws JBIException {
         LinkedEndpoint ep = new LinkedEndpoint(fromSvc, fromEp, toSvc, toEp, link);
         if (linkedEndpoints.get(getKey(ep)) != null) {
             throw new JBIException("An endpoint connection for service " + ep.getServiceName() + " and name " + ep.getEndpointName() + " is already registered");
@@ -480,7 +486,7 @@ public class EndpointRegistry {
             registry.getContainer().getManagementContext().registerMBean(objectName, endpoint, EndpointMBean.class);
             endpointMBeans.put(serviceEndpoint, endpoint);
         } catch (JMException e) {
-            logger.error("Could not register MBean for endpoint", e);
+            LOG.error("Could not register MBean for endpoint", e);
         }
     }
     
@@ -489,7 +495,7 @@ public class EndpointRegistry {
         try {
             registry.getContainer().getManagementContext().unregisterMBean(ep);
         } catch (JBIException e) {
-            logger.error("Could not unregister MBean for endpoint", e);
+            LOG.error("Could not unregister MBean for endpoint", e);
         }
     }
 
@@ -538,6 +544,8 @@ public class EndpointRegistry {
                 break;
             case EndpointEvent.REMOTE_ENDPOINT_UNREGISTERED:
                 listeners[i].remoteEndpointUnregistered(event);
+                break;
+            default:
                 break;
             }
         }

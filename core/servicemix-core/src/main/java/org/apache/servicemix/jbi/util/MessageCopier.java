@@ -26,9 +26,6 @@ import javax.jbi.messaging.NormalizedMessage;
 
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.util.ByteArrayDataSource;
-import org.apache.servicemix.jbi.util.FileUtil;
-import org.apache.servicemix.jbi.util.MessageUtil;
 
 /**
  * A thread-safe copier for NormalizedMessage onjects.

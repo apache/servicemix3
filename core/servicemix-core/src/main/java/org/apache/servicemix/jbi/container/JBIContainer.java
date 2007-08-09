@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.EventListener;
 import java.util.MissingResourceException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 import javax.jbi.JBIException;
@@ -41,6 +42,8 @@ import javax.naming.NamingException;
 import javax.swing.event.EventListenerList;
 import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
+
+import org.w3c.dom.DocumentFragment;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -78,9 +81,6 @@ import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.Broker;
 import org.apache.servicemix.jbi.nmr.DefaultBroker;
 import org.apache.servicemix.jbi.nmr.flow.Flow;
-import org.w3c.dom.DocumentFragment;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The main container
@@ -92,15 +92,9 @@ public class JBIContainer extends BaseLifeCycle {
      * Default Container name - must be unique if used in a cluster
      */
     public static final String DEFAULT_NAME = "ServiceMix";
-    private static final Log log = LogFactory.getLog(JBIContainer.class);
-    private String name = DEFAULT_NAME;
-    private InitialContext namingContext;
-    private MBeanServer mbeanServer;
-    private TransactionManager transactionManager;
-    private String rootDir = "." + File.separator + "rootDir";
-    private AtomicBoolean started = new AtomicBoolean(false);
-    private AtomicBoolean containerInitialized = new AtomicBoolean(false);
-    private IdGenerator idGenerator = new IdGenerator();
+
+    private static final Log LOG = LogFactory.getLog(JBIContainer.class);
+
     protected Broker broker = new DefaultBroker();
     protected ServiceUnitManager serviceManager;
     protected ManagementContext managementContext = new ManagementContext();
@@ -112,16 +106,24 @@ public class JBIContainer extends BaseLifeCycle {
     protected BaseSystemService[] services;
     protected ClientFactory clientFactory = new ClientFactory();
     protected Registry registry = new Registry();
-    protected boolean autoEnlistInTransaction = false;
-    protected boolean persistent = false;
-    protected boolean embedded = false;
-    protected boolean notifyStatistics = false;
+    protected boolean autoEnlistInTransaction;
+    protected boolean persistent;
+    protected boolean embedded;
+    protected boolean notifyStatistics;
     protected EventListenerList listeners = new EventListenerList();
     protected EventListener[] configuredListeners;
     protected boolean useShutdownHook = true;
     protected transient Thread shutdownHook;
-    protected ExecutorFactory executorFactory; 
-    
+    protected ExecutorFactory executorFactory;
+    private String name = DEFAULT_NAME;
+    private InitialContext namingContext;
+    private MBeanServer mbeanServer;
+    private TransactionManager transactionManager;
+    private String rootDir = "." + File.separator + "rootDir";
+    private AtomicBoolean started = new AtomicBoolean(false);
+    private AtomicBoolean containerInitialized = new AtomicBoolean(false);
+    private IdGenerator idGenerator = new IdGenerator();
+
     /**
      * Default Constructor
      */
@@ -172,7 +174,7 @@ public class JBIContainer extends BaseLifeCycle {
     public void setFlowName(String flowName) {
         getDefaultBroker().setFlowNames(flowName);
     }
-    
+
     /**
      * @return Returns the flowNames.
      */
@@ -186,7 +188,7 @@ public class JBIContainer extends BaseLifeCycle {
     public void setFlowNames(String flowNames) {
         getDefaultBroker().setFlowNames(flowNames);
     }
-    
+
     /**
      * @return the subscriptionFlowName
      */
@@ -208,7 +210,7 @@ public class JBIContainer extends BaseLifeCycle {
      * @param flow
      */
     public void setFlow(Flow flow) {
-        getDefaultBroker().setFlows(new Flow[] { flow });
+        getDefaultBroker().setFlows(new Flow[] {flow });
     }
 
     /**
@@ -287,28 +289,27 @@ public class JBIContainer extends BaseLifeCycle {
     /**
      * @return Return the registry
      */
-    public Registry getRegistry()  {
+    public Registry getRegistry() {
         return registry;
     }
-    
+
     /**
      * Return the DefaultBroker instance
      */
     public DefaultBroker getDefaultBroker() {
-        if (broker == null ||
-            broker instanceof DefaultBroker == false) {
+        if (broker == null || !(broker instanceof DefaultBroker)) {
             throw new IllegalStateException("Broker is not a DefaultBroker");
         }
         return (DefaultBroker) broker;
     }
-    
+
     /**
      * @return Return the NMR broker
      */
-    public Broker getBroker(){
+    public Broker getBroker() {
         return broker;
     }
-    
+
     /**
      * Set the Broker to use
      */
@@ -373,18 +374,18 @@ public class JBIContainer extends BaseLifeCycle {
     public void setMonitorInstallationDirectory(boolean monitorInstallationDirectory) {
         autoDeployService.setMonitorInstallationDirectory(monitorInstallationDirectory);
     }
-    
+
     /**
      * @return Returns the monitorDeploymentDirectory.
      */
-    public boolean isMonitorDeploymentDirectory(){
+    public boolean isMonitorDeploymentDirectory() {
         return autoDeployService.isMonitorDeploymentDirectory();
     }
 
     /**
      * @param monitorDeploymentDirectory The monitorDeploymentDirectory to set.
      */
-    public void setMonitorDeploymentDirectory(boolean monitorDeploymentDirectory){
+    public void setMonitorDeploymentDirectory(boolean monitorDeploymentDirectory) {
         autoDeployService.setMonitorDeploymentDirectory(monitorDeploymentDirectory);
     }
 
@@ -428,14 +429,14 @@ public class JBIContainer extends BaseLifeCycle {
      * @return Returns the monitorInterval (in secs).
      */
     public int getMonitorInterval() {
-    	return autoDeployService.getMonitorInterval();
+        return autoDeployService.getMonitorInterval();
     }
-    
+
     /**
      * @param monitorInterval The monitorInterval to set (in secs).
      */
     public void setMonitorInterval(int monitorInterval) {
-    	autoDeployService.setMonitorInterval(monitorInterval);
+        autoDeployService.setMonitorInterval(monitorInterval);
     }
 
     /**
@@ -461,7 +462,7 @@ public class JBIContainer extends BaseLifeCycle {
     public void installArchive(String url) throws DeploymentException {
         installationService.install(url, null, true);
     }
-    
+
     /**
      * load an archive from an external location. 
      * The archive can be a Component, Service Assembly or Shared Library.
@@ -469,10 +470,10 @@ public class JBIContainer extends BaseLifeCycle {
      * @param autoStart - if true will start the component/service assembly
      * @throws DeploymentException
      */
-    public void updateExternalArchive(String location,boolean autoStart) throws DeploymentException {
+    public void updateExternalArchive(String location, boolean autoStart) throws DeploymentException {
         autoDeployService.updateExternalArchive(location, autoStart);
     }
-    
+
     /**
      * load an archive from an external location and starts it
      * The archive can be a Component, Service Assembly or Shared Library.
@@ -482,10 +483,6 @@ public class JBIContainer extends BaseLifeCycle {
     public void updateExternalArchive(String location) throws DeploymentException {
         updateExternalArchive(location, true);
     }
-    
-    
-    
-    
 
     /**
      * @return Returns the deploymentService.
@@ -515,11 +512,10 @@ public class JBIContainer extends BaseLifeCycle {
     public AdminCommandsService getAdminCommandsService() {
         return adminCommandsService;
     }
-    
+
     public ClientFactory getClientFactory() {
         return clientFactory;
     }
-
 
     /**
      * light weight initialization - default values for mbeanServer, TransactionManager etc are null
@@ -528,10 +524,8 @@ public class JBIContainer extends BaseLifeCycle {
      */
     public void init() throws JBIException {
         if (containerInitialized.compareAndSet(false, true)) {
-            log.info("ServiceMix " + 
-                     EnvironmentContext.getVersion() +
-                     " JBI Container (" + getName() + ") is starting");
-            log.info("For help or more informations please see: http://incubator.apache.org/servicemix/");
+            LOG.info("ServiceMix " + EnvironmentContext.getVersion() + " JBI Container (" + getName() + ") is starting");
+            LOG.info("For help or more informations please see: http://incubator.apache.org/servicemix/");
             addShutdownHook();
             if (this.executorFactory == null) {
                 this.executorFactory = createExecutorFactory();
@@ -539,18 +533,17 @@ public class JBIContainer extends BaseLifeCycle {
             if (this.namingContext == null) {
                 try {
                     this.namingContext = new InitialContext();
-                }
-                catch (NamingException e) {
+                } catch (NamingException e) {
                     // Log a warning, with exception only in debug
-                    if (log.isDebugEnabled()) {
-                        log.warn("Failed to set InitialContext", e);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.warn("Failed to set InitialContext", e);
                     } else {
-                        log.warn("Failed to set InitialContext");
+                        LOG.warn("Failed to set InitialContext");
                     }
                 }
             }
             managementContext.init(this, getMBeanServer());
-            mbeanServer = this.managementContext.getMBeanServer();// just in case ManagementContext creates it
+            mbeanServer = this.managementContext.getMBeanServer(); // just in case ManagementContext creates it
             environmentContext.init(this, rootDir);
             clientFactory.init(this);
             if (services != null) {
@@ -567,12 +560,12 @@ public class JBIContainer extends BaseLifeCycle {
 
             // register self with the ManagementContext
             try {
-                managementContext.registerMBean(ManagementContext.getContainerObjectName(managementContext.getJmxDomainName(), getName()), 
-                                                this, LifeCycleMBean.class);
+                managementContext.registerMBean(ManagementContext.getContainerObjectName(managementContext.getJmxDomainName(), getName()),
+                                this, LifeCycleMBean.class);
             } catch (JMException e) {
                 throw new JBIException(e);
             }
-            
+
             // Initialize listeners after the whole container has been initialized
             // so that they can register themselves as JMX mbeans for example
             if (configuredListeners != null) {
@@ -607,7 +600,7 @@ public class JBIContainer extends BaseLifeCycle {
             autoDeployService.start();
             adminCommandsService.start();
             super.start();
-            log.info("ServiceMix JBI Container (" + getName() + ") started");
+            LOG.info("ServiceMix JBI Container (" + getName() + ") started");
         }
     }
 
@@ -619,7 +612,7 @@ public class JBIContainer extends BaseLifeCycle {
     public void stop() throws JBIException {
         checkInitialized();
         if (started.compareAndSet(true, false)) {
-            log.info("ServiceMix JBI Container (" + getName() + ") stopping");
+            LOG.info("ServiceMix JBI Container (" + getName() + ") stopping");
             adminCommandsService.stop();
             autoDeployService.stop();
             deploymentService.stop();
@@ -665,11 +658,10 @@ public class JBIContainer extends BaseLifeCycle {
             super.shutDown();
             managementContext.unregisterMBean(this);
             managementContext.shutDown();
-            log.info("ServiceMix JBI Container (" + getName() + ") stopped");
+            LOG.info("ServiceMix JBI Container (" + getName() + ") stopped");
         }
     }
 
-    
     protected void addShutdownHook() {
         if (useShutdownHook) {
             shutdownHook = new Thread("ServiceMix ShutdownHook") {
@@ -685,9 +677,8 @@ public class JBIContainer extends BaseLifeCycle {
         if (shutdownHook != null) {
             try {
                 Runtime.getRuntime().removeShutdownHook(shutdownHook);
-            }
-            catch (Exception e) {
-                log.debug("Caught exception, must be shutting down: " + e);
+            } catch (Exception e) {
+                LOG.debug("Caught exception, must be shutting down: " + e);
             }
         }
     }
@@ -698,8 +689,7 @@ public class JBIContainer extends BaseLifeCycle {
     protected void containerShutdown() {
         try {
             shutDown();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.err.println("Failed to shut down: " + e);
         }
     }
@@ -743,14 +733,12 @@ public class JBIContainer extends BaseLifeCycle {
         if (transactionManager == null && namingContext != null) {
             try {
                 transactionManager = (TransactionManager) namingContext.lookup("java:appserver/TransactionManager");
-            }
-            catch (NamingException e) {
-                log.debug("No transaction manager found from naming context: " + e.getMessage());
+            } catch (NamingException e) {
+                LOG.debug("No transaction manager found from naming context: " + e.getMessage());
                 try {
                     transactionManager = (TransactionManager) namingContext.lookup("javax.transaction.TransactionManager");
-                }
-                catch (NamingException e1) {
-                    log.debug("No transaction manager found from naming context: " + e1.getMessage());
+                } catch (NamingException e1) {
+                    LOG.debug("No transaction manager found from naming context: " + e1.getMessage());
                 }
             }
         }
@@ -791,23 +779,19 @@ public class JBIContainer extends BaseLifeCycle {
     public void sendExchange(MessageExchangeImpl exchange) throws MessagingException {
         try {
             broker.sendExchangePacket(exchange);
-        }
-        catch (MessagingException e) {
+        } catch (MessagingException e) {
             throw e;
-        }
-        catch (JBIException e) {
+        } catch (JBIException e) {
             throw new MessagingException(e);
         }
     }
-    
-    
+
     /**
      * @param context
      * @param externalEndpoint
      * @throws JBIException
      */
-    public void registerExternalEndpoint(ComponentNameSpace cns, ServiceEndpoint externalEndpoint)
-            throws JBIException {
+    public void registerExternalEndpoint(ComponentNameSpace cns, ServiceEndpoint externalEndpoint) throws JBIException {
         registry.registerExternalEndpoint(cns, externalEndpoint);
     }
 
@@ -816,8 +800,7 @@ public class JBIContainer extends BaseLifeCycle {
      * @param externalEndpoint
      * @throws JBIException
      */
-    public void deregisterExternalEndpoint(ComponentNameSpace cns, ServiceEndpoint externalEndpoint)
-            throws JBIException {
+    public void deregisterExternalEndpoint(ComponentNameSpace cns, ServiceEndpoint externalEndpoint) throws JBIException {
         registry.deregisterExternalEndpoint(cns, externalEndpoint);
     }
 
@@ -833,11 +816,11 @@ public class JBIContainer extends BaseLifeCycle {
     /**
      * @param context
      * @param service
-     * @param name
+     * @param endpointName
      * @return the matching endpoint
      */
-    public ServiceEndpoint getEndpoint(ComponentContextImpl context, QName service, String name) {
-        return registry.getEndpoint(service, name);
+    public ServiceEndpoint getEndpoint(ComponentContextImpl context, QName service, String endpointName) {
+        return registry.getEndpoint(service, endpointName);
     }
 
     /**
@@ -894,21 +877,20 @@ public class JBIContainer extends BaseLifeCycle {
     /**
      * Used for Simple POJO's
      *
-     * @param name - the unique component ID
+     * @param componentName - the unique component ID
      * @throws JBIException
      */
-    public void deactivateComponent(String name) throws JBIException {
-        ComponentMBeanImpl component = registry.getComponent(name);
+    public void deactivateComponent(String componentName) throws JBIException {
+        ComponentMBeanImpl component = registry.getComponent(componentName);
         if (component != null) {
             component.doShutDown();
-        	component.unregisterMbeans(managementContext);
+            component.unregisterMbeans(managementContext);
             registry.deregisterComponent(component);
             environmentContext.unreregister(component);
             component.dispose();
-            log.info("Deactivating component " + name);
-        }
-        else {
-            throw new JBIException("Could not find component " + name);
+            LOG.info("Deactivating component " + componentName);
+        } else {
+            throw new JBIException("Could not find component " + componentName);
         }
     }
 
@@ -978,8 +960,7 @@ public class JBIContainer extends BaseLifeCycle {
             }
             activateComponent(component, activationSpec);
             return component;
-        }
-        else if (bean instanceof ComponentLifeCycle) {
+        } else if (bean instanceof ComponentLifeCycle) {
             // lets support just plain lifecycle pojos
             ComponentLifeCycle lifeCycle = (ComponentLifeCycle) bean;
             if (bean instanceof PojoSupport) {
@@ -988,18 +969,15 @@ public class JBIContainer extends BaseLifeCycle {
             Component adaptor = createComponentAdaptor(lifeCycle, activationSpec);
             activateComponent(adaptor, activationSpec);
             return adaptor;
-        }
-        else if (bean instanceof MessageExchangeListener) {
+        } else if (bean instanceof MessageExchangeListener) {
             // lets support just plain listener pojos
             MessageExchangeListener listener = (MessageExchangeListener) bean;
             Component adaptor = createComponentAdaptor(listener, activationSpec);
             activateComponent(adaptor, activationSpec);
             return adaptor;
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Component name: " + id
-                    + " is bound to an object which is not a JBI component, it is of type: "
-                    + bean.getClass().getName());
+                            + " is bound to an object which is not a JBI component, it is of type: " + bean.getClass().getName());
         }
     }
 
@@ -1007,13 +985,13 @@ public class JBIContainer extends BaseLifeCycle {
      * Activate a POJO Component
      *
      * @param component
-     * @param name
+     * @param componentName
      * @return the ObjectName of the MBean for the Component
      * @throws JBIException
      */
-    public ObjectName activateComponent(Component component, String name) throws JBIException {
+    public ObjectName activateComponent(Component component, String componentName) throws JBIException {
         ActivationSpec activationSpec = new ActivationSpec();
-        ComponentNameSpace cns = new ComponentNameSpace(getName(), name);
+        ComponentNameSpace cns = new ComponentNameSpace(getName(), componentName);
         activationSpec.setComponent(component);
         activationSpec.setComponentName(cns.getName());
         return activateComponent(component, activationSpec);
@@ -1043,9 +1021,8 @@ public class JBIContainer extends BaseLifeCycle {
      * @return the ObjectName of the Component's MBean
      * @throws JBIException
      */
-    public ObjectName activateComponent(File installDir, Component component, String description,
-                                        ComponentContextImpl context, boolean binding, boolean service,
-                                        String[] sharedLibraries) throws JBIException {
+    public ObjectName activateComponent(File installDir, Component component, String description, ComponentContextImpl context,
+                    boolean binding, boolean service, String[] sharedLibraries) throws JBIException {
         ComponentNameSpace cns = context.getComponentNameSpace();
         ActivationSpec activationSpec = new ActivationSpec();
         activationSpec.setComponent(component);
@@ -1063,9 +1040,8 @@ public class JBIContainer extends BaseLifeCycle {
      * @return the ObjectName of the Component's MBean
      * @throws JBIException
      */
-    public ObjectName activateComponent(Component component, String description, ActivationSpec activationSpec,
-                                        boolean pojo, boolean binding, boolean service,
-                                        String[] sharedLibraries) throws JBIException {
+    public ObjectName activateComponent(Component component, String description, ActivationSpec activationSpec, boolean pojo,
+                    boolean binding, boolean service, String[] sharedLibraries) throws JBIException {
         ComponentNameSpace cns = new ComponentNameSpace(getName(), activationSpec.getComponentName());
         if (registry.getComponent(cns) != null) {
             throw new JBIException("A component is already registered for " + cns);
@@ -1086,28 +1062,26 @@ public class JBIContainer extends BaseLifeCycle {
      * @return the ObjectName of the Component's MBean
      * @throws JBIException
      */
-    public ObjectName activateComponent(File installationDir, Component component, String description,
-                                        ComponentContextImpl context, ActivationSpec activationSpec, 
-                                        boolean pojo, boolean binding, boolean service,
-                                        String[] sharedLibraries)
-            throws JBIException {
+    public ObjectName activateComponent(File installationDir, Component component, 
+                                       String description, ComponentContextImpl context,
+                                       ActivationSpec activationSpec, boolean pojo, 
+                                       boolean binding, boolean service, String[] sharedLibraries) throws JBIException {
         ObjectName result = null;
         ComponentNameSpace cns = new ComponentNameSpace(getName(), activationSpec.getComponentName());
-        if (log.isDebugEnabled()) {
-            log.info("Activating component for: " + cns + " with service: " + activationSpec.getService() + " component: "
-                    + component);
+        if (LOG.isDebugEnabled()) {
+            LOG.info("Activating component for: " + cns + " with service: " + activationSpec.getService() + " component: " + component);
         }
         ComponentMBeanImpl lcc = registry.registerComponent(cns, description, component, binding, service, sharedLibraries);
         if (lcc != null) {
             lcc.setPojo(pojo);
-            ComponentEnvironment env = environmentContext.registerComponent(context.getEnvironment(),lcc);
+            ComponentEnvironment env = environmentContext.registerComponent(context.getEnvironment(), lcc);
             if (env.getInstallRoot() == null) {
                 env.setInstallRoot(installationDir);
             }
             context.activate(component, env, activationSpec);
             lcc.setContext(context);
             lcc.setActivationSpec(activationSpec);
-            
+
             if (lcc.isPojo()) {
                 //non-pojo's are either started by the auto deployer
                 //or manually
@@ -1145,7 +1119,6 @@ public class JBIContainer extends BaseLifeCycle {
         return new ExecutorFactoryImpl();
     }
 
-
     /**
      * Factory method to create a new component adaptor from the given lifecycle
      *
@@ -1156,10 +1129,9 @@ public class JBIContainer extends BaseLifeCycle {
     protected Component createComponentAdaptor(ComponentLifeCycle lifeCycle, ActivationSpec activationSpec) {
         ComponentAdaptor answer = null;
         if (lifeCycle instanceof MessageExchangeListener) {
-            answer = new ComponentAdaptorMEListener(lifeCycle, activationSpec.getService(), activationSpec
-                    .getEndpoint(), (MessageExchangeListener) lifeCycle);
-        }
-        else {
+            answer = new ComponentAdaptorMEListener(lifeCycle, activationSpec.getService(), activationSpec.getEndpoint(),
+                            (MessageExchangeListener) lifeCycle);
+        } else {
             answer = new ComponentAdaptor(lifeCycle, activationSpec.getService(), activationSpec.getEndpoint());
         }
         answer.setServiceManager(serviceManager);
@@ -1167,8 +1139,7 @@ public class JBIContainer extends BaseLifeCycle {
     }
 
     protected Component createComponentAdaptor(MessageExchangeListener listener, ActivationSpec activationSpec) {
-        ComponentLifeCycle lifecCycle = new PojoLifecycleAdaptor(listener, activationSpec.getService(), activationSpec
-                .getEndpoint());
+        ComponentLifeCycle lifecCycle = new PojoLifecycleAdaptor(listener, activationSpec.getService(), activationSpec.getEndpoint());
         return new ComponentAdaptorMEListener(lifecCycle, listener);
     }
 
@@ -1182,7 +1153,7 @@ public class JBIContainer extends BaseLifeCycle {
     }
 
     protected void checkInitialized() throws JBIException {
-        if (containerInitialized.get() == false) {
+        if (!containerInitialized.get()) {
             throw new JBIException("The Container is not initialized - please call init(...)");
         }
     }
@@ -1191,39 +1162,39 @@ public class JBIContainer extends BaseLifeCycle {
      * Retrieve the value for automatic transaction enlistment.
      * @return 
      */
-	public boolean isAutoEnlistInTransaction() {
-		return autoEnlistInTransaction;
-	}
+    public boolean isAutoEnlistInTransaction() {
+        return autoEnlistInTransaction;
+    }
 
-	/**
-	 * Set the new value for automatic transaction enlistment.
-	 * When this parameter is set to <code>true</code> and a transaction
-	 * is running when sending / receiving an exchange, this operation will
-	 * automatically be done in the current transaction.
-	 * 
-	 * @param autoEnlistInTransaction
-	 */
-	public void setAutoEnlistInTransaction(boolean autoEnlistInTransaction) {
-		this.autoEnlistInTransaction = autoEnlistInTransaction;
-	}
+    /**
+     * Set the new value for automatic transaction enlistment.
+     * When this parameter is set to <code>true</code> and a transaction
+     * is running when sending / receiving an exchange, this operation will
+     * automatically be done in the current transaction.
+     * 
+     * @param autoEnlistInTransaction
+     */
+    public void setAutoEnlistInTransaction(boolean autoEnlistInTransaction) {
+        this.autoEnlistInTransaction = autoEnlistInTransaction;
+    }
 
-	public boolean isPersistent() {
-		return persistent;
-	}
+    public boolean isPersistent() {
+        return persistent;
+    }
 
-	/**
-	 * Set the new default value for exchange persistence.
-	 * This value will be the default if none is configured on
-	 * the activation spec of the component or on the message.
-	 * 
-	 * @param persistent
-	 */
-	public void setPersistent(boolean persistent) {
-		this.persistent = persistent;
-	}
-    
+    /**
+     * Set the new default value for exchange persistence.
+     * This value will be the default if none is configured on
+     * the activation spec of the component or on the message.
+     * 
+     * @param persistent
+     */
+    public void setPersistent(boolean persistent) {
+        this.persistent = persistent;
+    }
+
     public void addListener(EventListener listener) {
-        log.debug("Adding listener: " + listener.getClass());
+        LOG.debug("Adding listener: " + listener.getClass());
         if (listener instanceof ContainerAware) {
             ContainerAware containerAware = (ContainerAware) listener;
             containerAware.setContainer(this);
@@ -1247,9 +1218,9 @@ public class JBIContainer extends BaseLifeCycle {
             listeners.add(DeploymentListener.class, (DeploymentListener) listener);
         }
     }
-    
+
     public void removeListener(EventListener listener) {
-        log.debug("Removing listener: " + listener.getClass());
+        LOG.debug("Removing listener: " + listener.getClass());
         if (listener instanceof ExchangeListener) {
             listeners.remove(ExchangeListener.class, (ExchangeListener) listener);
         }
@@ -1269,17 +1240,17 @@ public class JBIContainer extends BaseLifeCycle {
             listeners.remove(DeploymentListener.class, (DeploymentListener) listener);
         }
     }
-    
+
     public Object[] getListeners(Class lc) {
         return listeners.getListeners(lc);
     }
-    
+
     public void setListeners(EventListener[] listeners) {
         configuredListeners = listeners;
     }
-    
+
     public void resendExchange(MessageExchange exchange) throws JBIException {
-        if (exchange instanceof MessageExchangeImpl == false) {
+        if (!(exchange instanceof MessageExchangeImpl)) {
             throw new IllegalArgumentException("exchange should be a MessageExchangeImpl");
         }
         MessageExchangeImpl me = (MessageExchangeImpl) exchange;
@@ -1295,7 +1266,7 @@ public class JBIContainer extends BaseLifeCycle {
             try {
                 l[i].exchangeSent(event);
             } catch (Exception e) {
-                log.warn("Error calling listener: " + e.getMessage(), e);
+                LOG.warn("Error calling listener: " + e.getMessage(), e);
             }
         }
         me.handleSend(false);
@@ -1309,13 +1280,13 @@ public class JBIContainer extends BaseLifeCycle {
     public void setEmbedded(boolean embedded) {
         this.embedded = embedded;
     }
-    
-    public void setRmiPort( int portNum ) {
-    	getManagementContext().setNamingPort( portNum );
+
+    public void setRmiPort(int portNum) {
+        getManagementContext().setNamingPort(portNum);
     }
 
     public int getRmiPort() {
-    	return getManagementContext().getNamingPort();
+        return getManagementContext().getNamingPort();
     }
 
     /**

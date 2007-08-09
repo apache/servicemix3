@@ -27,13 +27,13 @@ import org.apache.servicemix.jbi.framework.ServiceAssemblyLifeCycle;
  */
 public class ServiceAssemblyEvent extends EventObject {
 
-    private static final long serialVersionUID = 8441830155548563543L;
-    
     public static final int ASSEMBLY_DEPLOYED = 0;
     public static final int ASSEMBLY_STARTED = 1;
     public static final int ASSEMBLY_STOPPED = 2;
     public static final int ASSEMBLY_SHUTDOWN = 3;
     public static final int ASSEMBLY_UNDEPLOYED = 4;
+    
+    private static final long serialVersionUID = 8441830155548563543L;
     
     private ServiceAssemblyLifeCycle assembly;
     private int type;

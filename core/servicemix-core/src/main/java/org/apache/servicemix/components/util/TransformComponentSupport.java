@@ -76,8 +76,7 @@ public abstract class TransformComponentSupport extends ComponentSupport impleme
                     } else {
                         getDeliveryChannel().send(exchange);
                     }
-                }
-                else {
+                } else {
                     outExchange.setMessage(out, "in");
                     if (txSync) {
                         getDeliveryChannel().sendSync(outExchange);
@@ -91,8 +90,7 @@ public abstract class TransformComponentSupport extends ComponentSupport impleme
                 exchange.setStatus(ExchangeStatus.DONE);
                 getDeliveryChannel().send(exchange);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             try {
                 fail(exchange, e);
             } catch (Exception e2) {
@@ -143,7 +141,8 @@ public abstract class TransformComponentSupport extends ComponentSupport impleme
     /**
      * If enabled the properties and attachments are copied to the destination message
      */
-    protected void copyPropertiesAndAttachments(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws MessagingException {
+    protected void copyPropertiesAndAttachments(MessageExchange exchange, NormalizedMessage in, 
+                                                NormalizedMessage out) throws MessagingException {
         if (isCopyProperties()) {
             CopyTransformer.copyProperties(in, out);
         }

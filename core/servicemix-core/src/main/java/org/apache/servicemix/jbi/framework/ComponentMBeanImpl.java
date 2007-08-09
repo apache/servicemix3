@@ -50,12 +50,11 @@ import org.apache.xbean.classloader.DestroyableClassLoader;
  */
 public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean {
     
-    private static Log log = LogFactory.getLog(ComponentMBeanImpl.class);
+    private static final Log LOG = LogFactory.getLog(ComponentMBeanImpl.class);
     
     private boolean exchangeThrottling;
     private long throttlingTimeout = 100;
     private int throttlingInterval = 1;
-       
     private Component component;
     private ComponentLifeCycle lifeCycle;
     private ServiceUnitManager suManager;
@@ -110,39 +109,39 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
 
     /**
      * Register the MBeans for this Component
-     * @param context
+     * @param ctx
      * @return ObjectName
      * @throws JBIException
      */
-    public ObjectName registerMBeans(ManagementContext context) throws JBIException{
-        try{
-            mBeanName = context.createObjectName(this);
-            context.registerMBean(mBeanName, this, ComponentMBean.class);
+    public ObjectName registerMBeans(ManagementContext ctx) throws JBIException {
+        try {
+            mBeanName = ctx.createObjectName(this);
+            ctx.registerMBean(mBeanName, this, ComponentMBean.class);
             return mBeanName;
-        }catch(Exception e){
-            String errorStr="Failed to register MBeans";
-            log.error(errorStr,e);
-            throw new JBIException(errorStr,e);
+        }  catch (Exception e) {
+            String errorStr = "Failed to register MBeans";
+            LOG.error(errorStr, e);
+            throw new JBIException(errorStr, e);
         }
     }
     
     /**
      * Unregister Component MBeans
-     * @param context
+     * @param ctx
      * @throws JBIException
      */
-    public void unregisterMbeans(ManagementContext context) throws JBIException{
-        context.unregisterMBean(mBeanName);
+    public void unregisterMbeans(ManagementContext ctx) throws JBIException {
+        ctx.unregisterMBean(mBeanName);
     }
 
     /**
      * Set the Context
      * 
-     * @param context
+     * @param ctx
      */
-    public void setContext(ComponentContextImpl context) {
-        this.context = context;
-        this.stateFile = context.getEnvironment().getStateFile();
+    public void setContext(ComponentContextImpl ctx) {
+        this.context = ctx;
+        this.stateFile = ctx.getEnvironment().getStateFile();
     }
 
     /**
@@ -182,13 +181,13 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      * Get the Description of the item
      * @return the description
      */
-    public String getDescription(){
+    public String getDescription() {
         return description;
     }
 
     
     public void init() throws JBIException {
-        log.info("Initializing component: " + getName());
+        LOG.info("Initializing component: " + getName());
         if (context != null && component != null) {
             DeliveryChannelImpl channel = new DeliveryChannelImpl(this);
             channel.setContext(context);
@@ -211,19 +210,19 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      * @exception javax.jbi.JBIException if the item fails to start.
      */
     public void start() throws javax.jbi.JBIException {
-        log.info("Starting component: " + getName());
+        LOG.info("Starting component: " + getName());
         try {
             doStart();
             persistRunningState();
             getContainer().getRegistry().checkPendingAssemblies();
         } catch (JBIException e) {
-            log.error("Could not start component", e);
+            LOG.error("Could not start component", e);
             throw e;
         } catch (RuntimeException e) {
-            log.error("Could not start component", e);
+            LOG.error("Could not start component", e);
             throw e;
         } catch (Error e) {
-            log.error("Could not start component", e);
+            LOG.error("Could not start component", e);
             throw e;
         }
     }
@@ -234,18 +233,18 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      * @exception javax.jbi.JBIException if the item fails to stop.
      */
     public void stop() throws javax.jbi.JBIException {
-        log.info("Stopping component: " + getName());
+        LOG.info("Stopping component: " + getName());
         try {
             doStop();
             persistRunningState();
         } catch (JBIException e) {
-            log.error("Could not stop component", e);
+            LOG.error("Could not stop component", e);
             throw e;
         } catch (RuntimeException e) {
-            log.error("Could not start component", e);
+            LOG.error("Could not start component", e);
             throw e;
         } catch (Error e) {
-            log.error("Could not start component", e);
+            LOG.error("Could not start component", e);
             throw e;
         }
     }
@@ -256,18 +255,18 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      * @exception javax.jbi.JBIException if the item fails to shut down.
      */
     public void shutDown() throws javax.jbi.JBIException {
-        log.info("Shutting down component: " + getName());
+        LOG.info("Shutting down component: " + getName());
         try {
             doShutDown();
             persistRunningState();
         } catch (JBIException e) {
-            log.error("Could not shutDown component", e);
+            LOG.error("Could not shutDown component", e);
             throw e;
         } catch (RuntimeException e) {
-            log.error("Could not start component", e);
+            LOG.error("Could not start component", e);
             throw e;
         } catch (Error e) {
-            log.error("Could not start component", e);
+            LOG.error("Could not start component", e);
             throw e;
         }
     }
@@ -317,7 +316,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
             } finally {
                 Thread.currentThread().setContextClassLoader(loader);
             }
-	        super.stop();
+            super.stop();
         }
         fireEvent(ComponentEvent.COMPONENT_STOPPED);
     }
@@ -356,11 +355,11 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      * Set the initial running state of the Component
      * @throws JBIException
      */
-    public void setInitialRunningState() throws JBIException{
+    public void setInitialRunningState() throws JBIException {
         if (!isPojo()) {
-            String componentName = getName();
+            String name = getName();
             String runningState = getRunningStateFromStore();
-            log.info("Setting running state for Component: " + componentName + " to " + runningState);
+            LOG.info("Setting running state for Component: " + name + " to " + runningState);
             if (runningState != null) {
                 if (runningState.equals(LifeCycleMBean.STARTED)) {
                     doStart();
@@ -379,14 +378,14 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      */
     public void persistRunningState() {
         if (!isPojo()) {
-            String componentName = getName();
+            String name = getName();
             try {
                 String currentState = getCurrentState();
                 Properties props = new Properties();
                 props.setProperty("state", currentState);
                 XmlPersistenceSupport.write(stateFile, props);
             } catch (IOException e) {
-                log.error("Failed to write current running state for Component: " + componentName, e);
+                LOG.error("Failed to write current running state for Component: " + name, e);
             }
         }
     }
@@ -396,12 +395,12 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      */
     public String getRunningStateFromStore() {
         String result = LifeCycleMBean.UNKNOWN;
-        String componentName = getName();
+        String name = getName();
         try {
             Properties props = (Properties) XmlPersistenceSupport.read(stateFile);
             result = props.getProperty("state", result);
         } catch (Exception e) {
-            log.error("Failed to read running state for Component: " + componentName, e);
+            LOG.error("Failed to read running state for Component: " + name, e);
         }
         return result;
     }
@@ -409,7 +408,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
     /**
      * @return the capacity of the inbound queue
      */
-    public int getInboundQueueCapacity(){
+    public int getInboundQueueCapacity() {
         return queueCapacity;
     }
     
@@ -417,7 +416,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      * Set the inbound queue capacity
      * @param value
      */
-    public void setInboundQueueCapacity(int value){
+    public void setInboundQueueCapacity(int value) {
         if (getDeliveryChannel() != null) {
             throw new IllegalStateException("The component must be shut down before changing queue capacity");
         }
@@ -564,7 +563,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
                     sa.stop(false, false);
                     registry.addPendingAssembly(sa);
                 } catch (Exception e) {
-                    log.error("Error stopping service assembly " + sas[i]);
+                    LOG.error("Error stopping service assembly " + sas[i]);
                 }
             }
         }
@@ -580,7 +579,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
                     sa.shutDown(false);
                     registry.addPendingAssembly(sa);
                 } catch (Exception e) {
-                    log.error("Error shutting down service assembly " + sas[i]);
+                    LOG.error("Error shutting down service assembly " + sas[i]);
                 }
             }
         }
@@ -602,6 +601,8 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
                 break;
             case ComponentEvent.COMPONENT_SHUTDOWN:
                 listeners[i].componentShutDown(event);
+                break;
+            default:
                 break;
             }
         }

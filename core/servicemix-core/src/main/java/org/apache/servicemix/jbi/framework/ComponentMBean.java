@@ -23,57 +23,57 @@ import javax.jbi.management.ComponentLifeCycleMBean;
  */
 public interface ComponentMBean extends ComponentLifeCycleMBean {
     
-    public static final String TYPE_SERVICE_ENGINE = "service-engine";
-    public static final String TYPE_BINDING_COMPONENT = "binding-component";
-    public static final String TYPE_POJO = "pojo";
+    String TYPE_SERVICE_ENGINE = "service-engine";
+    String TYPE_BINDING_COMPONENT = "binding-component";
+    String TYPE_POJO = "pojo";
     
     /**
      * Get the name of this component
      * @return the name of this component
      */
-    public String getName();
+    String getName();
     
     /**
      * Is MessageExchange sender throttling enabled ?
      * @return true if throttling enabled
      */
-    public boolean isExchangeThrottling();
+    boolean isExchangeThrottling();
     
     /**
      * Set exchange throttling
      * @param value
      *
      */
-    public void setExchangeThrottling(boolean value);
+    void setExchangeThrottling(boolean value);
     
     /**
      * Get the throttling timeout
      * @return throttling timeout (ms)
      */
-    public long getThrottlingTimeout();
+    long getThrottlingTimeout();
     
     /**
      * Set the throttling timout 
      * @param value (ms)
      */
-    public void setThrottlingTimeout(long value);
+    void setThrottlingTimeout(long value);
     
     /**
      * Get the interval for throttling -
      * number of Exchanges set before the throttling timeout is applied
      * @return interval for throttling
      */
-    public int getThrottlingInterval();
+    int getThrottlingInterval();
     
     /**
      * Set the throttling interval
      * number of Exchanges set before the throttling timeout is applied
      * @param value
      */
-    public void setThrottlingInterval(int value);
+    void setThrottlingInterval(int value);
     
     /**
      * @return the component type (service-engine, binding-component)
      */
-    public String getComponentType();
+    String getComponentType();
 }

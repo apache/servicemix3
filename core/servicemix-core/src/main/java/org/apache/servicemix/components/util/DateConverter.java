@@ -34,93 +34,94 @@ public class DateConverter implements ContentConverter {
     public static final String DEFAULT_OUTPUT_FORMATSTRING = "yyyy-MM-dd'T'HH:mm:ss'.'SSS";
 
     /**
-         * Flat file date format
-         */
+     * Flat file date format
+     */
     private DateFormat inputformat;
 
     /**
-         * XML Element date format to use
-         */
-    private DateFormat outputformat = new SimpleDateFormat(
-	    DEFAULT_OUTPUT_FORMATSTRING);
+     * XML Element date format to use
+     */
+    private DateFormat outputformat = new SimpleDateFormat(DEFAULT_OUTPUT_FORMATSTRING);
 
     private boolean blankValueIsNull = true;
 
     public DateConverter(DateFormat inputformat) {
-	super();
+        super();
 
-	this.inputformat = inputformat;
+        this.inputformat = inputformat;
     }
 
     public DateConverter(DateFormat inputformat, DateFormat outputformat) {
-	super();
+        super();
 
-	this.inputformat = inputformat;
-	this.outputformat = outputformat;
+        this.inputformat = inputformat;
+        this.outputformat = outputformat;
     }
 
     public DateConverter(String inputformat) {
-	super();
+        super();
 
-	this.inputformat = new SimpleDateFormat(inputformat);
+        this.inputformat = new SimpleDateFormat(inputformat);
     }
 
     public DateConverter(String inputformat, String outputformat) {
-	super();
+        super();
 
-	this.inputformat = new SimpleDateFormat(inputformat);
-	this.outputformat = new SimpleDateFormat(outputformat);
+        this.inputformat = new SimpleDateFormat(inputformat);
+        this.outputformat = new SimpleDateFormat(outputformat);
     }
 
     // Implementation methods
     // -------------------------------------------------------------------------
     public String convertToXml(String contents) {
-	if (contents != null) {
-	    if (StringUtils.isNotBlank(contents)) {
-		try {
-		    return this.outputformat.format(this.inputformat
-			    .parse(contents));
-		} catch (ParseException e) {
-		    return contents;
-		}
-	    } else {
-		if (this.blankValueIsNull)
-		    return StringUtils.EMPTY;
-		else
-		    return contents;
-	    }
-	} else
-	    return null;
+        if (contents != null) {
+            if (StringUtils.isNotBlank(contents)) {
+                try {
+                    return this.outputformat.format(this.inputformat
+                            .parse(contents));
+                } catch (ParseException e) {
+                    return contents;
+                }
+            } else {
+                if (this.blankValueIsNull) {
+                    return StringUtils.EMPTY;
+                } else {
+                    return contents;
+                }
+            }
+        } else {
+            return null;
+        }
     }
 
     public String convertToFlatFileContent(String contents) {
-	if (contents != null) {
-	    try {
-		return this.inputformat.format(this.outputformat
-			.parse(contents));
-	    } catch (ParseException e) {
-		return contents;
-	    }
-	} else
-	    return null;
+        if (contents != null) {
+            try {
+                return this.inputformat.format(this.outputformat.parse(contents));
+            } catch (ParseException e) {
+                return contents;
+            }
+        } else {
+            return null;
+        }
     }
 
     // Properties
     // -------------------------------------------------------------------------
     public final void setInputformat(String format) {
-	this.inputformat = new SimpleDateFormat(format);
+        this.inputformat = new SimpleDateFormat(format);
     }
 
     public final void setOutpuformat(String format) {
-	this.outputformat = new SimpleDateFormat(format);
+        this.outputformat = new SimpleDateFormat(format);
     }
 
     public boolean isBlankValueIsNull() {
-	return blankValueIsNull;
+        return blankValueIsNull;
     }
 
     public void setBlankValueIsNull(boolean blankValueIsNull) {
-	this.blankValueIsNull = blankValueIsNull;
+        this.blankValueIsNull = blankValueIsNull;
     }
 
 }

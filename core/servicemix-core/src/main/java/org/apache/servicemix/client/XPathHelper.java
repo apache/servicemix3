@@ -16,6 +16,8 @@
  */
 package org.apache.servicemix.client;
 
+import java.util.Map;
+
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
@@ -25,8 +27,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathFunctionResolver;
 import javax.xml.xpath.XPathVariableResolver;
-
-import java.util.Map;
 
 /**
  * A helper class for working with XPath and {@link Message} instances.

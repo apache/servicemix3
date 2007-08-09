@@ -25,7 +25,8 @@ import javax.jbi.messaging.MessagingException;
  * @version $Revision$
  */
 public class NoOutMessageAvailableException extends MessagingException {
-    private MessageExchange messageExchange;
+
+    private final MessageExchange messageExchange;
 
     public NoOutMessageAvailableException(MessageExchange messageExchange) {
         super("No out message available for message exchange: " + messageExchange);

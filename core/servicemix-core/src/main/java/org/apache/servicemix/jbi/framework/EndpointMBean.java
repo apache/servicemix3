@@ -20,18 +20,18 @@ import javax.xml.namespace.QName;
 
 public interface EndpointMBean {
 
-    public String getEndpointName();
+    String getEndpointName();
 
-    public QName[] getInterfaces();
+    QName[] getInterfaces();
 
-    public QName getServiceName();
+    QName getServiceName();
     
-    public String getComponentName();
+    String getComponentName();
     
-    public String loadReference();
+    String loadReference();
     
-    public String loadWSDL();
+    String loadWSDL();
     
-    public String send(String content, String operation, String mep);
+    String send(String content, String operation, String mep);
 
 }

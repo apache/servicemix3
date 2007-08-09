@@ -34,5 +34,5 @@ public interface MessageListener {
      * @param message
      * @throws Exception if the message could not be processed correctly
      */
-    public void onMessage(MessageExchange exchange, Message message) throws Exception;
+    void onMessage(MessageExchange exchange, Message message) throws Exception;
 }

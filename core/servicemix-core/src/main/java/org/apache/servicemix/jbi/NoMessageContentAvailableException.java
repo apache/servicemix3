@@ -25,7 +25,8 @@ import javax.jbi.messaging.MessagingException;
  * @version $Revision$
  */
 public class NoMessageContentAvailableException extends MessagingException {
-    private MessageExchange messageExchange;
+
+    private final MessageExchange messageExchange;
 
     public NoMessageContentAvailableException(MessageExchange messageExchange) {
         super("No message content in the inbound message for message exchange: " + messageExchange);

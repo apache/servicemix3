@@ -22,5 +22,7 @@ package org.apache.servicemix.components.util;
  * @since 3.2
  */
 public interface ColumnExtractor {
-    public abstract String[] extractColumns(String lineText);
+    
+    String[] extractColumns(String lineText);
+
 }

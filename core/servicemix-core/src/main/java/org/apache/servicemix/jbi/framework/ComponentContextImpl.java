@@ -24,12 +24,14 @@ import javax.jbi.component.Component;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.management.MBeanNames;
 import javax.jbi.messaging.DeliveryChannel;
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.naming.InitialContext;
 import javax.xml.namespace.QName;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,8 +40,6 @@ import org.apache.servicemix.jbi.container.ComponentEnvironment;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.container.SubscriptionSpec;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
 
 /**
  * This context provides access to data needed by all JBI components running in the JBI environment.
@@ -48,7 +48,7 @@ import org.w3c.dom.DocumentFragment;
  */
 public class ComponentContextImpl implements ComponentContext, MBeanNames {
     
-    private static final Log log = LogFactory.getLog(ComponentContextImpl.class);
+    private static final Log LOG = LogFactory.getLog(ComponentContextImpl.class);
     
     private ComponentNameSpace componentName;
     private ComponentEnvironment environment;
@@ -72,16 +72,16 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
     /**
      * Activate the ComponentContext
      * 
-     * @param component
+     * @param comp
      * @param channel
      * @param env
      * @param spec
      * @param installRoot
      */
-    public void activate(Component component, 
+    public void activate(Component comp, 
                          ComponentEnvironment env,
                          ActivationSpec spec) {
-        this.component = component;
+        this.component = comp;
         this.environment = env;
         this.activationSpec = spec;
         activated = true;
@@ -120,8 +120,8 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      */
     public ServiceEndpoint activateEndpoint(QName serviceName, String endpointName) throws JBIException {
         checkActivated();
-        if (log.isDebugEnabled()) {
-            log.debug("Component: " + componentName.getName() + " activated endpoint: " + serviceName + " : " + endpointName);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Component: " + componentName.getName() + " activated endpoint: " + serviceName + " : " + endpointName);
         }
         return container.getRegistry().activateEndpoint(this, serviceName, endpointName);
     }
@@ -280,8 +280,8 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      * Set the ComponentEnvironment
      * @param ce
      */
-    public void setEnvironment(ComponentEnvironment ce){
-    	  this.environment = ce;
+    public void setEnvironment(ComponentEnvironment ce) {
+        this.environment = ce;
     }
 
     /**

@@ -25,90 +25,94 @@ import java.util.TimerTask;
  * <p>
  * This class is thread-safe
  * <p>
- *
+ * 
  * @author George Gastaldi (gastaldi)
  */
 public class Scheduler {
 
-	private Timer timer;
+    private Timer timer;
 
-	/**
-	 * Creates a new Scheduler.
-	 */
-	public Scheduler() {
-		this.timer = new Timer();
-	}
+    /**
+     * Creates a new Scheduler.
+     */
+    public Scheduler() {
+        this.timer = new Timer();
+    }
 
-	/**
-	 * Creates a new Daemon Scheduler 
-	 * @param	daemon Thread must be executed as "daemon".
-	 */
-	public Scheduler(boolean daemon) {
-		this.timer = new Timer(daemon);
-	}
+    /**
+     * Creates a new Daemon Scheduler
+     * 
+     * @param daemon
+     *            Thread must be executed as "daemon".
+     */
+    public Scheduler(boolean daemon) {
+        this.timer = new Timer(daemon);
+    }
 
-	/**
-	 * Cancels the scheduler task
-	 */
-	public void cancel() {
-		timer.cancel();
-	}
+    /**
+     * Cancels the scheduler task
+     */
+    public void cancel() {
+        timer.cancel();
+    }
 
-	/**
-	 * Schedules a task
-	 *
-	 * @param	task scheduled tasl
-	 * @param	iterator iterator for schedulingque descreve o agendamento
-	 * @throws	IllegalStateException if task scheduled or canceled 
-	 */
-	public void schedule(SchedulerTask task, ScheduleIterator iterator) {
-		Date time = iterator.nextExecution();
-		if (time == null) {
-			task.cancel();
-		} else {
-			synchronized (task.lock) {
-				if (task.state != SchedulerTask.VIRGIN) {
-					throw new IllegalStateException(
-						"Task already scheduled or cancelled");
-				}
-				task.state = SchedulerTask.SCHEDULED;
-				task.timerTask = new SchedulerTimerTask(task, iterator);
-				timer.schedule(task.timerTask, time);
-			}
-		}
-	}
+    /**
+     * Schedules a task
+     * 
+     * @param task
+     *            scheduled tasl
+     * @param iterator
+     *            iterator for schedulingque descreve o agendamento
+     * @throws IllegalStateException
+     *             if task scheduled or canceled
+     */
+    public void schedule(SchedulerTask task, ScheduleIterator iterator) {
+        Date time = iterator.nextExecution();
+        if (time == null) {
+            task.cancel();
+        } else {
+            synchronized (task.lock) {
+                if (task.state != SchedulerTask.VIRGIN) {
+                    throw new IllegalStateException("Task already scheduled or cancelled");
+                }
+                task.state = SchedulerTask.SCHEDULED;
+                task.timerTask = new SchedulerTimerTask(task, iterator);
+                timer.schedule(task.timerTask, time);
+            }
+        }
+    }
 
-	private void reschedule(SchedulerTask task, ScheduleIterator iterator) {
-		Date time = iterator.nextExecution();
-		if (time == null) {
-			task.cancel();
-		} else {
-			synchronized (task.lock) {
-				if (task.state != SchedulerTask.CANCELLED) {
-					task.timerTask = new SchedulerTimerTask(task, iterator);
-					timer.schedule(task.timerTask, time);
-				}
-			}
-		}
-	}
+    private void reschedule(SchedulerTask task, ScheduleIterator iterator) {
+        Date time = iterator.nextExecution();
+        if (time == null) {
+            task.cancel();
+        } else {
+            synchronized (task.lock) {
+                if (task.state != SchedulerTask.CANCELLED) {
+                    task.timerTask = new SchedulerTimerTask(task, iterator);
+                    timer.schedule(task.timerTask, time);
+                }
+            }
+        }
+    }
 
-	/**
-	 * Internal TimerTask instance
-	 */
-	class SchedulerTimerTask extends TimerTask {
-		private SchedulerTask task;
-		private ScheduleIterator iterator;
-		
-		public SchedulerTimerTask(SchedulerTask task,ScheduleIterator iterator){
-			this.task = task;
-			this.iterator = iterator;
-		}
-		
-		public void run() {
-			task.run();
-			reschedule(task, iterator);
-		}
-	}
+    /**
+     * Internal TimerTask instance
+     */
+    class SchedulerTimerTask extends TimerTask {
+        private SchedulerTask task;
+
+        private ScheduleIterator iterator;
+
+        public SchedulerTimerTask(SchedulerTask task, ScheduleIterator iterator) {
+            this.task = task;
+            this.iterator = iterator;
+        }
+
+        public void run() {
+            task.run();
+            reschedule(task, iterator);
+        }
+    }
 
 }
-

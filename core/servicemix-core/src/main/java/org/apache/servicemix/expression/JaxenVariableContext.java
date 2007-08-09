@@ -16,14 +16,14 @@
  */
 package org.apache.servicemix.expression;
 
-import org.jaxen.UnresolvableException;
-import org.jaxen.VariableContext;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.jaxen.UnresolvableException;
+import org.jaxen.VariableContext;
 
 /**
  * A variable resolver for XPath expressions which support properties on the messge, exchange as well
@@ -33,12 +33,17 @@ import java.util.Map;
  */
 public class JaxenVariableContext implements VariableContext {
     public static final String MESSAGE_NAMESPACE = "http://servicemix.org/xml/variables/message";
+
     public static final String EXCHANGE_NAMESPACE = "http://servicemix.org/xml/variables/exchange";
+
     public static final String SYSTEM_PROPERTIES_NAMESPACE = "http://servicemix.org/xml/variables/system-properties";
+
     public static final String ENVIRONMENT_VARIABLES_NAMESPACE = "http://servicemix.org/xml/variables/environment-variables";
 
     private MessageExchange exchange;
+
     private NormalizedMessage message;
+
     private Map variables;
 
     public MessageExchange getExchange() {
@@ -78,17 +83,13 @@ public class JaxenVariableContext implements VariableContext {
             if (answer == null) {
                 answer = exchange.getProperty(localPart);
             }
-        }
-        else if (uri.equals(MESSAGE_NAMESPACE)) {
+        } else if (uri.equals(MESSAGE_NAMESPACE)) {
             answer = message.getProperty(localPart);
-        }
-        else if (uri.equals(EXCHANGE_NAMESPACE)) {
+        } else if (uri.equals(EXCHANGE_NAMESPACE)) {
             answer = message.getProperty(localPart);
-        }
-        else if (uri.equals(SYSTEM_PROPERTIES_NAMESPACE)) {
+        } else if (uri.equals(SYSTEM_PROPERTIES_NAMESPACE)) {
             answer = System.getProperty(localPart);
-        }
-        else if (uri.equals(ENVIRONMENT_VARIABLES_NAMESPACE)) {
+        } else if (uri.equals(ENVIRONMENT_VARIABLES_NAMESPACE)) {
             answer = System.getProperty(System.getProperty(localPart));
         }
         return answer;

@@ -16,11 +16,11 @@
  */
 package org.apache.servicemix.components.util;
 
-import org.springframework.beans.factory.InitializingBean;
-
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * A Java based transformation component using a plugable {@link MessageTransformer} instance

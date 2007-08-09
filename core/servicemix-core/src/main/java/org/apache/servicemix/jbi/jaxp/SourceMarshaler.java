@@ -16,16 +16,17 @@
  */
 package org.apache.servicemix.jbi.jaxp;
 
+import java.io.StringWriter;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
-
-import java.io.StringWriter;
 
 /**
  * @version $Revision$
  */
 public class SourceMarshaler {
+    
     private SourceTransformer transformer = new SourceTransformer();
 
     public Source asSource(String text) {

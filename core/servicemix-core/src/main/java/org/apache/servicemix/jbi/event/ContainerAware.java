@@ -31,6 +31,6 @@ public interface ContainerAware {
      * 
      * @param container the container where this listener is registered
      */
-    public void setContainer(JBIContainer container);
+    void setContainer(JBIContainer container);
 
 }

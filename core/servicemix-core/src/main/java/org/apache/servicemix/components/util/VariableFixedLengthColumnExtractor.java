@@ -22,14 +22,15 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Column extractor for SimpleFlatFileMarshaler that can extract columns 
- * from fixed-length flat files that have a variable count of columns based on 
- * a discriminator column value
+ * Column extractor for SimpleFlatFileMarshaler that can extract columns from
+ * fixed-length flat files that have a variable count of columns based on a
+ * discriminator column value
+ * 
  * @author Mayrbaeurl
  * @since 3.2
  */
 public class VariableFixedLengthColumnExtractor implements ColumnExtractor {
-    
+
     /**
      * Index of the discriminator column in the fixed length flat file
      */
@@ -51,107 +52,93 @@ public class VariableFixedLengthColumnExtractor implements ColumnExtractor {
     private int[] fixedColumnLengths;
 
     /**
-     * Column lengths for discriminator values. Key is discriminator value. 
+     * Column lengths for discriminator values. Key is discriminator value.
      * Value is int[] for column lengths
      */
     private Map variableColumnLengths;
 
     // Implementation methods
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public String[] extractColumns(String lineText) {
-	String[] result = new String[maximumColumnCount];
+        String[] result = new String[maximumColumnCount];
+        int curIndex = 0;
+        for (int i = 0; i <= lastFixedContentIndex; i++) {
+            try {
+                result[i] = lineText.substring(curIndex, curIndex + this.fixedColumnLengths[i]);
+                curIndex += this.fixedColumnLengths[i];
+            } catch (StringIndexOutOfBoundsException e) {
+                return result;
+            }
+        }
+        if (result.length > this.discriminatorIndex) {
+            String discriminatorValue = result[this.discriminatorIndex];
+            if (StringUtils.isNotBlank(discriminatorValue) && (this.variableColumnLengths != null)
+                            && (this.variableColumnLengths.containsKey(discriminatorValue))) {
+                int[] variableLengths = (int[]) this.variableColumnLengths.get(discriminatorValue);
 
-	int curIndex = 0;
+                int variableIndex = 0;
+                for (int i = lastFixedContentIndex + 1; i < maximumColumnCount; i++, variableIndex++) {
+                    try {
+                        if (variableLengths[variableIndex] != -1) {
+                            result[i] = lineText.substring(curIndex, curIndex + variableLengths[variableIndex]);
 
-	for (int i = 0; i <= lastFixedContentIndex; i++) {
-	    try {
-		result[i] = lineText.substring(curIndex, curIndex
-			+ this.fixedColumnLengths[i]);
-
-		curIndex += this.fixedColumnLengths[i];
-
-	    } catch (StringIndexOutOfBoundsException e) {
-		return result;
-	    }
-	}
-
-	if (result.length > this.discriminatorIndex) {
-	    String discriminatorValue = result[this.discriminatorIndex];
-	    if (StringUtils.isNotBlank(discriminatorValue)
-		    && (this.variableColumnLengths != null)
-		    && (this.variableColumnLengths
-			    .containsKey(discriminatorValue))) {
-		int[] variableLengths = (int[]) this.variableColumnLengths
-			.get(discriminatorValue);
-
-		int variableIndex = 0;
-		for (int i = lastFixedContentIndex + 1; i < maximumColumnCount; i++, variableIndex++) {
-		    try {
-			if (variableLengths[variableIndex] != -1) {
-			    result[i] = lineText.substring(curIndex, curIndex
-				    + variableLengths[variableIndex]);
-
-			    curIndex += variableLengths[variableIndex];
-			}
-		    } catch (StringIndexOutOfBoundsException e) {
-			break;
-		    }
-		}
-	    }
-	} else
-	    throw new IllegalStateException(
-		    "Discriminator Column could not be read");
-
-	return result;
+                            curIndex += variableLengths[variableIndex];
+                        }
+                    } catch (StringIndexOutOfBoundsException e) {
+                        break;
+                    }
+                }
+            }
+        } else {
+            throw new IllegalStateException("Discriminator Column could not be read");
+        }
+        return result;
     }
 
     // Properties
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public final void setFixedColumnLengths(int[] fixedColumnLengths) {
-	this.fixedColumnLengths = fixedColumnLengths;
+        this.fixedColumnLengths = fixedColumnLengths;
     }
 
-    public final void setStringFixedColumnLengths(String[] fixedColumnLengths) {
-	this.fixedColumnLengths = new int[fixedColumnLengths.length];
-
-	for (int i = 0; i < fixedColumnLengths.length; i++)
-	    this.fixedColumnLengths[i] = Integer
-		    .parseInt(fixedColumnLengths[i]);
+    public final void setStringFixedColumnLengths(String[] lengths) {
+        this.fixedColumnLengths = new int[lengths.length];
+        for (int i = 0; i < lengths.length; i++) {
+            this.fixedColumnLengths[i] = Integer.parseInt(lengths[i]);
+        }
     }
 
     public final void setMaximumColumnCount(int maximumColumnCount) {
-	this.maximumColumnCount = maximumColumnCount;
+        this.maximumColumnCount = maximumColumnCount;
     }
 
     public final void setDiscriminatorIndex(int discriminatorIndex) {
-	this.discriminatorIndex = discriminatorIndex;
+        this.discriminatorIndex = discriminatorIndex;
     }
 
     public final void setLastFixedContentIndex(int lastFixedContentIndex) {
-	this.lastFixedContentIndex = lastFixedContentIndex;
+        this.lastFixedContentIndex = lastFixedContentIndex;
     }
 
     public final void setVariableColumnLengths(Map variableColumnLengths) {
-	this.variableColumnLengths = variableColumnLengths;
+        this.variableColumnLengths = variableColumnLengths;
     }
 
-    public final void setStringEncodedVariableColumnLengths(
-	    String variableColumnLengths) {
-	this.variableColumnLengths = null;
-
-	String[] entries = StringUtils.split(variableColumnLengths, ";");
-	if ((entries != null) && (entries.length > 0)) {
-	    this.variableColumnLengths = new LinkedHashMap();
-	    for (int i = 0; i < entries.length; i++) {
-		String[] colLengths = StringUtils.splitPreserveAllTokens(
-			entries[i], ",");
-		if ((colLengths != null) && (colLengths.length > 1)) {
-		    int[] lengths = new int[colLengths.length - 1];
-		    for (int j = 1; j < colLengths.length; j++)
-			lengths[j - 1] = Integer.parseInt(colLengths[j]);
-		    this.variableColumnLengths.put(colLengths[0], lengths);
-		}
-	    }
-	}
+    public final void setStringEncodedVariableColumnLengths(String columnLengths) {
+        this.variableColumnLengths = null;
+        String[] entries = StringUtils.split(columnLengths, ";");
+        if ((entries != null) && (entries.length > 0)) {
+            this.variableColumnLengths = new LinkedHashMap();
+            for (int i = 0; i < entries.length; i++) {
+                String[] colLengths = StringUtils.splitPreserveAllTokens(entries[i], ",");
+                if ((colLengths != null) && (colLengths.length > 1)) {
+                    int[] lengths = new int[colLengths.length - 1];
+                    for (int j = 1; j < colLengths.length; j++) {
+                        lengths[j - 1] = Integer.parseInt(colLengths[j]);
+                    }
+                    this.variableColumnLengths.put(colLengths[0], lengths);
+                }
+            }
+        }
     }
 }

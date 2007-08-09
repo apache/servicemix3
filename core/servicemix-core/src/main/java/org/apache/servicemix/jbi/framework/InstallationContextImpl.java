@@ -16,21 +16,22 @@
  */
 package org.apache.servicemix.jbi.framework;
 
-import org.apache.servicemix.jbi.deployment.Component;
-import org.apache.servicemix.jbi.deployment.InstallationDescriptorExtension;
-import org.apache.servicemix.jbi.deployment.SharedLibraryList;
-import org.w3c.dom.DocumentFragment;
-
-import javax.jbi.component.Bootstrap;
-import javax.jbi.component.ComponentContext;
-import javax.jbi.component.InstallationContext;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.jbi.component.Bootstrap;
+import javax.jbi.component.ComponentContext;
+import javax.jbi.component.InstallationContext;
+
+import org.w3c.dom.DocumentFragment;
+
+import org.apache.servicemix.jbi.deployment.Component;
+import org.apache.servicemix.jbi.deployment.InstallationDescriptorExtension;
+import org.apache.servicemix.jbi.deployment.SharedLibraryList;
 
 /**
  * This context contains information necessary for a JBI component to perform its installation/uninstallation

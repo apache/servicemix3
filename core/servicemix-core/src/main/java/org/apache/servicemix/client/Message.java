@@ -34,20 +34,20 @@ public interface Message extends NormalizedMessage {
      * Returns the body as a POJO. Depending on the implementation this could be
      * a Java POJO, a DOM tree or a byte[]
      */
-    public Object getBody() throws MessagingException;
+    Object getBody() throws MessagingException;
 
     /**
      * Sets the body as a POJO
      */
-    public void setBody(Object body) throws MessagingException;
+    void setBody(Object body) throws MessagingException;
 
     /**
      * Returns the message exchange
      */
-    public MessageExchange getExchange();
+    MessageExchange getExchange();
 
     /**
      * Helper method to create a new fault for this message exchange
      */
-    public Fault createFault() throws MessagingException;
+    Fault createFault() throws MessagingException;
 }

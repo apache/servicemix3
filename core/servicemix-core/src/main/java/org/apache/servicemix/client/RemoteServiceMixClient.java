@@ -46,7 +46,7 @@ public class RemoteServiceMixClient extends DefaultServiceMixClient {
      * transport for the JMSFlow to be peer:// 
      * 
      */
-    public RemoteServiceMixClient(){
+    public RemoteServiceMixClient() {
         this("peer://org.apache.servicemix?persistent=false");
     }
 
@@ -55,7 +55,7 @@ public class RemoteServiceMixClient extends DefaultServiceMixClient {
      * @param uri 
      * 
      */
-    public RemoteServiceMixClient(String uri){
+    public RemoteServiceMixClient(String uri) {
         this(uri, new ActivationSpec());
     }
 
@@ -64,7 +64,7 @@ public class RemoteServiceMixClient extends DefaultServiceMixClient {
      * @param uri 
      * @param activationSpec 
      */
-    public RemoteServiceMixClient(String uri, ActivationSpec activationSpec){
+    public RemoteServiceMixClient(String uri, ActivationSpec activationSpec) {
         container = new JBIContainer();
         container.setEmbedded(true);
         container.setUseMBeanServer(false);
@@ -114,8 +114,8 @@ public class RemoteServiceMixClient extends DefaultServiceMixClient {
                 // This is very ugly but we have no way yet to be notified
                 // of cluster events.
                 long start = System.currentTimeMillis();
-                while (jmsFlow.numberInNetwork() == 0 &&
-                       System.currentTimeMillis() - start < timeout) {
+                while (jmsFlow.numberInNetwork() == 0
+                           && System.currentTimeMillis() - start < timeout) {
                     try {
                         Thread.sleep(50);
                     } catch (InterruptedException e) {

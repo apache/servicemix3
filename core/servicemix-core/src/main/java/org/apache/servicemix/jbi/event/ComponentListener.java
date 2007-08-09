@@ -16,20 +16,19 @@
  */
 package org.apache.servicemix.jbi.event;
 
-import java.util.EventListener;
 
 public interface ComponentListener extends ServiceMixListener {
     
-    public void componentInstalled(ComponentEvent event);
+    void componentInstalled(ComponentEvent event);
     
-    public void componentInitialized(ComponentEvent event);
+    void componentInitialized(ComponentEvent event);
 
-    public void componentStarted(ComponentEvent event);
+    void componentStarted(ComponentEvent event);
 
-    public void componentStopped(ComponentEvent event);
+    void componentStopped(ComponentEvent event);
 
-    public void componentShutDown(ComponentEvent event);
+    void componentShutDown(ComponentEvent event);
     
-    public void componentUninstalled(ComponentEvent event);
+    void componentUninstalled(ComponentEvent event);
 
 }

@@ -16,8 +16,9 @@
  */
 package org.apache.servicemix.jbi.framework;
 
-import javax.jbi.management.LifeCycleMBean;
 import java.util.Properties;
+
+import javax.jbi.management.LifeCycleMBean;
 
 /**
  * Provides a simple interface to access ServiceMix administration commands.

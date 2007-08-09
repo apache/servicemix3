@@ -19,57 +19,59 @@ package org.apache.servicemix.components.util;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Column converter for SimpleFlatFileMarshaler that converts string representations 
- * of numbers. Zero values and blank columns in flat files can be converted 
- * to empty strings (default setting)
+ * Column converter for SimpleFlatFileMarshaler that converts string
+ * representations of numbers. Zero values and blank columns in flat files can
+ * be converted to empty strings (default setting)
+ * 
  * @author Mayrbaeurl
  * @since 3.2
  */
 public class NumberConverter implements ContentConverter {
-    
+
     private boolean zeroValueIsNull = true;
 
     private boolean blankValueIsNull = true;
 
     // Implementation methods
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public String convertToXml(String contents) {
-	if (contents != null) {
-	    int number = 0;
-
-	    if (StringUtils.isNotBlank(contents)) {
-		try {
-		    number = Integer.parseInt(contents);
-		} catch (NumberFormatException e) {
-		    return contents;
-		}
-	    } else {
-		if (this.blankValueIsNull)
-		    return StringUtils.EMPTY;
-		else
-		    return contents;
-	    }
-
-	    if ((this.zeroValueIsNull) && (number == 0))
-		return StringUtils.EMPTY;
-	    else
-		return String.valueOf(number);
-	} else
-	    return null;
+        if (contents != null) {
+            int number = 0;
+            if (StringUtils.isNotBlank(contents)) {
+                try {
+                    number = Integer.parseInt(contents);
+                } catch (NumberFormatException e) {
+                    return contents;
+                }
+            } else {
+                if (this.blankValueIsNull) {
+                    return StringUtils.EMPTY;
+                } else {
+                    return contents;
+                }
+            }
+            if ((this.zeroValueIsNull) && (number == 0)) {
+                return StringUtils.EMPTY;
+            } else {
+                return String.valueOf(number);
+            }
+        } else {
+            return null;
+        }
     }
 
     public String convertToFlatFileContent(String contents) {
-	return contents;
+        return contents;
     }
 
     // Properties
-    //-------------------------------------------------------------------------
-   public final void setZeroValueIsNull(boolean zeroValueIsNull) {
-	this.zeroValueIsNull = zeroValueIsNull;
+    // -------------------------------------------------------------------------
+    public final void setZeroValueIsNull(boolean zeroValueIsNull) {
+        this.zeroValueIsNull = zeroValueIsNull;
     }
 
     public final void setBlankValueIsNull(boolean blankValueIsNull) {
-	this.blankValueIsNull = blankValueIsNull;
+        this.blankValueIsNull = blankValueIsNull;
     }
 
 }

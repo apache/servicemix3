@@ -16,9 +16,12 @@
  */
 package org.apache.servicemix.components.util;
 
-import org.apache.servicemix.expression.Expression;
-import org.apache.servicemix.expression.PropertyExpression;
-import org.apache.servicemix.jbi.NoMessageContentAvailableException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 
 import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
@@ -29,12 +32,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import org.apache.servicemix.expression.Expression;
+import org.apache.servicemix.expression.PropertyExpression;
+import org.apache.servicemix.jbi.NoMessageContentAvailableException;
 
 /**
  * A default file transformer which assumes the file is already in XML format and
@@ -55,7 +55,8 @@ public class DefaultFileMarshaler extends MarshalerSupport implements FileMarsha
     private Expression fileName = FILE_NAME_EXPRESSION;
     private Expression content = FILE_CONTENT_EXPRESSION;
 
-    public void readMessage(MessageExchange exchange, NormalizedMessage message, InputStream in, String path) throws IOException, JBIException {
+    public void readMessage(MessageExchange exchange, NormalizedMessage message, 
+                            InputStream in, String path) throws IOException, JBIException {
         message.setContent(new StreamSource(in, path));
         message.setProperty(FILE_NAME_PROPERTY, new File(path).getName());
         message.setProperty(FILE_PATH_PROPERTY, path);
@@ -65,17 +66,16 @@ public class DefaultFileMarshaler extends MarshalerSupport implements FileMarsha
         return asString(fileName.evaluate(exchange, message));
     }
 
-    public void writeMessage(MessageExchange exchange, NormalizedMessage message, OutputStream out, String path) throws IOException, JBIException {
+    public void writeMessage(MessageExchange exchange, NormalizedMessage message, 
+                             OutputStream out, String path) throws IOException, JBIException {
         try {
             Object value = content.evaluate(exchange, message);
             if (value != null) {
                 writeValue(value, out);
-            }
-            else {
+            } else {
                 writeMessageContent(exchange, message, out, path);
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new MessagingException(e);
         }
     }
@@ -112,11 +112,9 @@ public class DefaultFileMarshaler extends MarshalerSupport implements FileMarsha
             OutputStreamWriter writer = new OutputStreamWriter(out);
             writer.write((String) value);
             writer.flush();
-        }
-        else if (value instanceof byte[]) {
+        } else if (value instanceof byte[]) {
             out.write((byte[]) value);
-        }
-        else {
+        } else {
             ObjectOutputStream objectOut = new ObjectOutputStream(out);
             objectOut.writeObject(value);
         }
@@ -129,15 +127,16 @@ public class DefaultFileMarshaler extends MarshalerSupport implements FileMarsha
      * @param out     the destination of the output
      * @param path    the name of the output resource (file, uri, url)
      */
-    protected void writeMessageContent(MessageExchange exchange, NormalizedMessage message, OutputStream out, String path) throws MessagingException {
-        Source content = message.getContent();
-        if (content == null) {
+    protected void writeMessageContent(MessageExchange exchange, NormalizedMessage message, 
+                                       OutputStream out, String path) throws MessagingException {
+        Source src = message.getContent();
+        if (src == null) {
             throw new NoMessageContentAvailableException(exchange);
         }
         try {
-        	getTransformer().toResult(content, new StreamResult(out));
+            getTransformer().toResult(src, new StreamResult(out));
         } catch (TransformerException e) {
-        	throw new MessagingException(e);
+            throw new MessagingException(e);
         }
     }
 }

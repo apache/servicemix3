@@ -34,5 +34,5 @@ public interface Expression {
      * @param message the message, typically an inbound message
      * @return the value of the expression
      */
-    public Object evaluate(MessageExchange exchange, NormalizedMessage message) throws MessagingException ;
+    Object evaluate(MessageExchange exchange, NormalizedMessage message) throws MessagingException;
 }

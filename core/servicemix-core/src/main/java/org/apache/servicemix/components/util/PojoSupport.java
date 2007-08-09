@@ -16,19 +16,28 @@
  */
 package org.apache.servicemix.components.util;
 
+import javax.jbi.JBIException;
+import javax.jbi.component.ComponentContext;
+import javax.jbi.component.ComponentLifeCycle;
+import javax.jbi.messaging.DeliveryChannel;
+import javax.jbi.messaging.ExchangeStatus;
+import javax.jbi.messaging.Fault;
+import javax.jbi.messaging.InOnly;
+import javax.jbi.messaging.InOptionalOut;
+import javax.jbi.messaging.InOut;
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessageExchangeFactory;
+import javax.jbi.messaging.MessagingException;
+import javax.jbi.messaging.NormalizedMessage;
+import javax.jbi.servicedesc.ServiceEndpoint;
+import javax.management.ObjectName;
+import javax.xml.namespace.QName;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.FaultException;
 import org.apache.servicemix.jbi.NotInitialisedYetException;
 import org.apache.servicemix.jbi.management.BaseLifeCycle;
-
-import javax.jbi.JBIException;
-import javax.jbi.component.ComponentContext;
-import javax.jbi.component.ComponentLifeCycle;
-import javax.jbi.messaging.*;
-import javax.jbi.servicedesc.ServiceEndpoint;
-import javax.management.ObjectName;
-import javax.xml.namespace.QName;
 
 /**
  * A useful base class for a POJO based JBI component which contains most of the basic plumbing
@@ -37,6 +46,8 @@ import javax.xml.namespace.QName;
  */
 public abstract class PojoSupport extends BaseLifeCycle implements ComponentLifeCycle {
 
+    protected Log logger = LogFactory.getLog(getClass());
+    
     private ComponentContext context;
     private ObjectName extensionMBeanName;
     private QName service;
@@ -45,8 +56,6 @@ public abstract class PojoSupport extends BaseLifeCycle implements ComponentLife
     private String description = "POJO Component";
     private ServiceEndpoint serviceEndpoint;
     private DeliveryChannel channel;
-    
-    protected Log logger = LogFactory.getLog(getClass());
     
     protected PojoSupport() {
     }
@@ -60,7 +69,7 @@ public abstract class PojoSupport extends BaseLifeCycle implements ComponentLife
      * Get the description
      * @return the description
      */
-    public String getDescription(){
+    public String getDescription() {
         return description;
     }
 
@@ -235,7 +244,7 @@ public abstract class PojoSupport extends BaseLifeCycle implements ComponentLife
      * @throws MessagingException 
      */
     public void fail(MessageExchange exchange, Exception error) throws MessagingException {
-        if (exchange instanceof InOnly || error instanceof FaultException == false) {
+        if (exchange instanceof InOnly || !(error instanceof FaultException)) {
             exchange.setError(error);
         } else {
             FaultException faultException = (FaultException) error;

@@ -16,12 +16,12 @@
  */
 package org.apache.servicemix.components.util;
 
-import org.apache.servicemix.MessageExchangeListener;
-
 import javax.jbi.component.ComponentLifeCycle;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.xml.namespace.QName;
+
+import org.apache.servicemix.MessageExchangeListener;
 
 /**
  * A {@link ComponentAdaptor} which also supports the direct

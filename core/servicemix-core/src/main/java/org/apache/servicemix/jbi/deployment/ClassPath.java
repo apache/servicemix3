@@ -60,15 +60,14 @@ public class ClassPath {
     
     //SM-199: Hashcode method added
     public int hashCode() {
-        if (pathElements == null)
+        if (pathElements == null) {
             return 0;
-        
+        }
         int result = 1;
-
-        for (int i=0;i < pathElements.length;i++) 
+        for (int i = 0; i < pathElements.length; i++) { 
             result = 31 * result + (pathElements[i] == null ? 0 : pathElements[i].hashCode());
-        
-        return result;    	
+        }
+        return result;
     }
     
     

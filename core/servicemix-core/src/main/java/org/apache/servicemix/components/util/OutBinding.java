@@ -18,10 +18,6 @@ package org.apache.servicemix.components.util;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.MessageExchangeListener;
-
 import javax.jbi.JBIException;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
@@ -29,13 +25,19 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.MessageExchangeListener;
+
 /**
  * A base class for bindings which process inbound JBI messages
  *
  * @version $Revision$
  */
 public abstract class OutBinding extends ComponentSupport implements Runnable, MessageExchangeListener {
-    private static final Log log = LogFactory.getLog(OutBinding.class);
+
+    private static final Log LOG = LogFactory.getLog(OutBinding.class);
+
     private AtomicBoolean stop = new AtomicBoolean(true);
     private Thread runnable;
 
@@ -47,10 +49,9 @@ public abstract class OutBinding extends ComponentSupport implements Runnable, M
             try {
                 NormalizedMessage message = getInMessage(exchange);
                 process(exchange, message);
-            }
-            catch (Exception e) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Exchange failed", e);
+            } catch (Exception e) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Exchange failed", e);
                 }
                 fail(exchange, e);
             }
@@ -69,17 +70,16 @@ public abstract class OutBinding extends ComponentSupport implements Runnable, M
                     try {
                         onMessageExchange(exchange);
                     } catch (MessagingException e) {
-                        log.error("MessageExchange processing failed", e);
+                        LOG.error("MessageExchange processing failed", e);
                     }
                 }
             }
-        }
-        catch (MessagingException e) {
+        } catch (MessagingException e) {
             // Only log exception if the component really fails
             // i.e. the exception has not been thrown to interrupt
             // this thread
             if (!stop.get()) {
-                log.error("run failed", e);
+                LOG.error("run failed", e);
             }
         }
     }
@@ -104,7 +104,7 @@ public abstract class OutBinding extends ComponentSupport implements Runnable, M
             try {
                 runnable.join();
             } catch (InterruptedException e) {
-                log.warn("Unable to stop component polling thread", e);
+                LOG.warn("Unable to stop component polling thread", e);
             }
             runnable = null;
         }

@@ -25,7 +25,8 @@ import javax.xml.namespace.QName;
  * @version $Revision$
  */
 public class NoSuchOperationException extends MessagingException {
-    private QName operationName;
+
+    private final QName operationName;
 
     public NoSuchOperationException(QName operationName) {
         super("No such operation name: " + operationName);

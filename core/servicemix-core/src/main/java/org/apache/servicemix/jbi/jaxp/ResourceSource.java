@@ -16,14 +16,14 @@
  */
 package org.apache.servicemix.jbi.jaxp;
 
-import org.springframework.core.io.Resource;
-
-import javax.xml.transform.stream.StreamSource;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+
+import javax.xml.transform.stream.StreamSource;
+
+import org.springframework.core.io.Resource;
 
 /**
  * A JAXP {@link StreamSource} which uses a Spring {@link Resource} as the source of the input stream.

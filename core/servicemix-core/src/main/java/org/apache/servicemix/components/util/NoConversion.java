@@ -30,7 +30,7 @@ public class NoConversion implements ContentConverter {
      * @return parameter contents
      */
     public final String convertToXml(String contents) {
-	return contents;
+        return contents;
     }
 
     /**
@@ -39,6 +39,6 @@ public class NoConversion implements ContentConverter {
      * @return parameter contents
      */
     public String convertToFlatFileContent(String contents) {
-	return contents;
+        return contents;
     }
 }

@@ -16,13 +16,13 @@
  */
 package org.apache.servicemix.components.util;
 
-import org.springframework.beans.factory.DisposableBean;
-
 import javax.jbi.JBIException;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.component.ComponentLifeCycle;
 import javax.management.ObjectName;
 import javax.xml.namespace.QName;
+
+import org.springframework.beans.factory.DisposableBean;
 
 /**
  * Adapts a POJO to a {@link ComponentLifeCycle} without performing any activation
@@ -47,10 +47,10 @@ public class PojoLifecycleAdaptor implements ComponentLifeCycle {
         return extensionMBeanName;
     }
 
-    public void init(ComponentContext context) throws JBIException {
-        this.context = context;
+    public void init(ComponentContext ctx) throws JBIException {
+        this.context = ctx;
         if (service != null && endpoint != null) {
-            context.activateEndpoint(service, endpoint);
+            ctx.activateEndpoint(service, endpoint);
         }
     }
 
@@ -60,8 +60,7 @@ public class PojoLifecycleAdaptor implements ComponentLifeCycle {
             DisposableBean disposableBean = (DisposableBean) pojo;
             try {
                 disposableBean.destroy();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new JBIException(e);
             }
         }

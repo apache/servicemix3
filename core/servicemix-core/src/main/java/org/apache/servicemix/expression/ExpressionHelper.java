@@ -25,7 +25,10 @@ import javax.jbi.messaging.NormalizedMessage;
  * 
  * @version $Revision$
  */
-public class ExpressionHelper {
+public final class ExpressionHelper {
+    
+    private ExpressionHelper() {
+    }
 
     /**
      * Evaluates the given expression as a string value.
@@ -37,7 +40,8 @@ public class ExpressionHelper {
      * @return the value of the expression as a string if it is not null or the defaultValue
      * @throws MessagingException if the expression failed to be evaluated
      */
-    public static String asString(Expression expression, MessageExchange exchange, NormalizedMessage message, String defaultValue) throws MessagingException {
+    public static String asString(Expression expression, MessageExchange exchange, 
+                                  NormalizedMessage message, String defaultValue) throws MessagingException {
         if (expression != null) {
             Object answer = expression.evaluate(exchange, message);
             if (answer != null) {

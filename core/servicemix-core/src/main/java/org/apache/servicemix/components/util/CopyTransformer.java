@@ -16,12 +16,8 @@
  */
 package org.apache.servicemix.components.util;
 
-import org.apache.servicemix.jbi.jaxp.BytesSource;
-import org.apache.servicemix.jbi.jaxp.ResourceSource;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.messaging.PojoMarshaler;
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.util.Iterator;
 
 import javax.activation.DataHandler;
 import javax.jbi.messaging.MessageExchange;
@@ -33,8 +29,13 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
-import java.io.IOException;
-import java.util.Iterator;
+import org.xml.sax.SAXException;
+
+import org.apache.servicemix.jbi.jaxp.BytesSource;
+import org.apache.servicemix.jbi.jaxp.ResourceSource;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.messaging.PojoMarshaler;
 
 /**
  * A simple transformer which copies the properties and content from the source message to the destination message.
@@ -43,12 +44,14 @@ import java.util.Iterator;
  */
 public class CopyTransformer implements MessageTransformer {
 
-    private static final CopyTransformer instance = new CopyTransformer();
+    private static final CopyTransformer INSTANCE = new CopyTransformer();
 
     private SourceTransformer sourceTransformer = new SourceTransformer();
-    
+
     private boolean copyProperties = true;
+
     private boolean copyAttachments = true;
+
     private boolean copySecuritySubject = true;
 
     /**
@@ -99,47 +102,43 @@ public class CopyTransformer implements MessageTransformer {
      * @return the singleton instance
      */
     public static CopyTransformer getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
-    public boolean transform(MessageExchange exchange, NormalizedMessage from, NormalizedMessage to) throws MessagingException {
+    public boolean transform(MessageExchange exchange, NormalizedMessage from,
+            NormalizedMessage to) throws MessagingException {
         if (copyProperties) {
             copyProperties(from, to);
         }
 
         Source content = from.getContent();
-        if ((content instanceof StreamSource ||
-             content instanceof SAXSource) &&
-            !(content instanceof StringSource) &&
-            !(content instanceof BytesSource) &&
-            !(content instanceof ResourceSource)) {
+        if ((content instanceof StreamSource || content instanceof SAXSource)
+                && !(content instanceof StringSource)
+                && !(content instanceof BytesSource)
+                && !(content instanceof ResourceSource)) {
             // lets avoid stream open exceptions by using a temporary format
             try {
                 content = sourceTransformer.toDOMSource(from);
-            }
-            catch (TransformerException e) {
+            } catch (TransformerException e) {
                 throw new MessagingException(e);
-            } 
-            catch (ParserConfigurationException e) {
+            } catch (ParserConfigurationException e) {
                 throw new MessagingException(e);
-            } 
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw new MessagingException(e);
-            } 
-            catch (SAXException e) {
+            } catch (SAXException e) {
                 throw new MessagingException(e);
             }
         }
         to.setContent(content);
-        
+
         if (copyAttachments) {
             copyAttachments(from, to);
         }
-        
+
         if (copySecuritySubject) {
             copySecuritySubject(from, to);
         }
-        
+
         return true;
     }
 
@@ -149,12 +148,12 @@ public class CopyTransformer implements MessageTransformer {
      * @param from the message containing the properties
      * @param to the destination messages where the properties are set
      */
-    public static void copyProperties(NormalizedMessage from, NormalizedMessage to) {
+    public static void copyProperties(NormalizedMessage from,
+            NormalizedMessage to) {
         for (Iterator iter = from.getPropertyNames().iterator(); iter.hasNext();) {
             String name = (String) iter.next();
             // Do not copy transient properties
-            if (!PojoMarshaler.BODY.equals(name))
-            {
+            if (!PojoMarshaler.BODY.equals(name)) {
                 Object value = from.getProperty(name);
                 to.setProperty(name, value);
             }
@@ -168,8 +167,10 @@ public class CopyTransformer implements MessageTransformer {
      * @param to the message to which attachments are added
      * @throws MessagingException if an attachment could not be added 
      */
-    public static void copyAttachments(NormalizedMessage from, NormalizedMessage to) throws MessagingException {
-        for (Iterator iter = from.getAttachmentNames().iterator(); iter.hasNext();) {
+    public static void copyAttachments(NormalizedMessage from,
+            NormalizedMessage to) throws MessagingException {
+        for (Iterator iter = from.getAttachmentNames().iterator(); iter
+                .hasNext();) {
             String name = (String) iter.next();
             DataHandler value = from.getAttachment(name);
             to.addAttachment(name, value);
@@ -183,8 +184,9 @@ public class CopyTransformer implements MessageTransformer {
      * @param to the message to which the subject is added
      * @throws MessagingException if an attachment could not be added 
      */
-    public static void copySecuritySubject(NormalizedMessage from, NormalizedMessage to) throws MessagingException {
+    public static void copySecuritySubject(NormalizedMessage from,
+            NormalizedMessage to) throws MessagingException {
         to.setSecuritySubject(from.getSecuritySubject());
     }
-    
+
 }

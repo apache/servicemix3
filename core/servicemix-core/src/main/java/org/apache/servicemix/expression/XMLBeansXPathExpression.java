@@ -16,17 +16,17 @@
  */
 package org.apache.servicemix.expression;
 
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.xmlbeans.XmlException;
-import org.apache.xmlbeans.XmlObject;
-import org.apache.xmlbeans.XmlOptions;
-import org.apache.xmlbeans.XmlSaxHandler;
-
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXResult;
+
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlObject;
+import org.apache.xmlbeans.XmlOptions;
+import org.apache.xmlbeans.XmlSaxHandler;
 
 /**
  * An {@link Expression} which evaluates an XPath expression using <a href="http://xmlbeans.apache.org/">XMLBeans</a>
@@ -34,12 +34,15 @@ import javax.xml.transform.sax.SAXResult;
  * @version $Revision$
  */
 public class XMLBeansXPathExpression implements Expression {
+    
     private String xpath;
+
     private XmlOptions options = new XmlOptions();
+
     private SourceTransformer transformer = new SourceTransformer();
 
-    public XMLBeansXPathExpression(String xpath) {
-        this.xpath = xpath;
+    public XMLBeansXPathExpression(String xp) {
+        this.xpath = xp;
     }
 
     public Object evaluate(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
@@ -49,17 +52,15 @@ public class XMLBeansXPathExpression implements Expression {
             transformer.toResult(message.getContent(), result);
             XmlObject object = handler.getObject();
             return evaluateXPath(object, xpath, options);
-        }
-        catch (TransformerException e) {
+        } catch (TransformerException e) {
             throw new MessagingException(e);
-        }
-        catch (XmlException e) {
+        } catch (XmlException e) {
             throw new MessagingException(e);
         }
     }
 
-    protected Object evaluateXPath(XmlObject object, String xpath, XmlOptions options) {
-        XmlObject[] xmlObjects = object.selectPath(this.xpath, this.options);
+    protected Object evaluateXPath(XmlObject object, String xp, XmlOptions opts) {
+        XmlObject[] xmlObjects = object.selectPath(xp, opts);
         if (xmlObjects.length == 1) {
             return xmlObjects[0];
         }

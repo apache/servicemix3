@@ -16,10 +16,7 @@
  */
 package org.apache.servicemix.jbi.jaxp;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
+import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
@@ -33,7 +30,11 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 
-import java.io.IOException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import org.xml.sax.SAXException;
 
 /**
  * An enhanced {@link org.apache.servicemix.jbi.jaxp.SourceTransformer} which adds support for converting from and to

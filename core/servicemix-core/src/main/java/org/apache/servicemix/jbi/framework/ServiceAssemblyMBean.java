@@ -22,25 +22,26 @@ import javax.management.ObjectName;
 
 public interface ServiceAssemblyMBean {
 
-    public static final String STARTED = DeploymentServiceMBean.STARTED;
+    String STARTED = DeploymentServiceMBean.STARTED;
 
-    public static final String SHUTDOWN = DeploymentServiceMBean.SHUTDOWN;
+    String SHUTDOWN = DeploymentServiceMBean.SHUTDOWN;
 
-    public static final String STOPPED = DeploymentServiceMBean.STOPPED;
+    String STOPPED = DeploymentServiceMBean.STOPPED;
 
-    public String getName();
+    String getName();
     
-    public String getDescription();
+    String getDescription();
     
-    public String getCurrentState();
+    String getCurrentState();
     
-    public String getDescriptor();
+    String getDescriptor();
     
-    public ObjectName[] getServiceUnits();
+    ObjectName[] getServiceUnits();
 
-    public String start() throws Exception;
+    String start() throws Exception;
 
-    public String stop() throws Exception;
+    String stop() throws Exception;
 
-    public String shutDown() throws Exception;
+    String shutDown() throws Exception;
+
 }

@@ -16,12 +16,11 @@
  */
 package org.apache.servicemix.jbi.event;
 
-import java.util.EventListener;
 
 public interface ExchangeListener extends ServiceMixListener {
 
-    public void exchangeSent(ExchangeEvent event);
+    void exchangeSent(ExchangeEvent event);
     
-    public void exchangeAccepted(ExchangeEvent event);
+    void exchangeAccepted(ExchangeEvent event);
     
 }

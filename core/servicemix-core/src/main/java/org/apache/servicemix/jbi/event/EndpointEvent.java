@@ -27,8 +27,6 @@ import javax.jbi.servicedesc.ServiceEndpoint;
  */
 public class EndpointEvent extends EventObject {
 
-    private static final long serialVersionUID = -4480619483039133388L;
-    
     public static final int INTERNAL_ENDPOINT_REGISTERED = 0;
     public static final int INTERNAL_ENDPOINT_UNREGISTERED = 1;
     public static final int EXTERNAL_ENDPOINT_REGISTERED = 2;
@@ -37,6 +35,8 @@ public class EndpointEvent extends EventObject {
     public static final int LINKED_ENDPOINT_UNREGISTERED = 5;
     public static final int REMOTE_ENDPOINT_REGISTERED = 6;
     public static final int REMOTE_ENDPOINT_UNREGISTERED = 7;
+    
+    private static final long serialVersionUID = -4480619483039133388L;
     
     private ServiceEndpoint endpoint;
     private int type;

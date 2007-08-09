@@ -16,20 +16,23 @@
  */
 package org.apache.servicemix.components.util;
 
-import org.apache.servicemix.JavaSource;
-import org.apache.servicemix.jbi.messaging.NormalizedMessageImpl;
-import org.apache.servicemix.jbi.messaging.PojoMarshaler;
-
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.transform.Source;
+
+import org.apache.servicemix.JavaSource;
+import org.apache.servicemix.jbi.messaging.NormalizedMessageImpl;
+import org.apache.servicemix.jbi.messaging.PojoMarshaler;
 
 /**
  * Some helper methods for working with messages
  *
  * @version $Revision: $
  */
-public class MessageHelper {
+public final class MessageHelper {
+    
+    private MessageHelper() {
+    }
 
     /**
      * A helper method to return the body of the message as a POJO which could be a
@@ -86,11 +89,9 @@ public class MessageHelper {
         if (content instanceof JavaSource) {
             JavaSource source = (JavaSource) content;
             source.setObject(body);
-        }
-        else if (message instanceof NormalizedMessageImpl) {
+        } else if (message instanceof NormalizedMessageImpl) {
             ((NormalizedMessageImpl) message).setBody(body);
-        }
-        else {
+        } else {
             message.setProperty(PojoMarshaler.BODY, body);
         }
     }

@@ -16,9 +16,6 @@
  */
 package org.apache.servicemix.components.util;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
-
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
 import javax.jbi.component.ComponentContext;
@@ -27,6 +24,9 @@ import javax.jbi.component.ServiceUnitManager;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
 
 /**
  * A simple adaptor which can be used to turn any instance of
@@ -56,13 +56,13 @@ public class ComponentAdaptor implements Component {
     /**
      * Called when the Component is initialized
      *
-     * @param context
+     * @param ctx
      * @throws javax.jbi.JBIException
      */
-    public void init(ComponentContext context) throws JBIException {
-        this.context = context;
+    public void init(ComponentContext ctx) throws JBIException {
+        this.context = ctx;
         if (service != null && endpoint != null) {
-            context.activateEndpoint(service, endpoint);
+            ctx.activateEndpoint(service, endpoint);
         }
     }
 
@@ -102,19 +102,19 @@ public class ComponentAdaptor implements Component {
     }
 
 
-    public Document getServiceDescription(ServiceEndpoint endpoint) {
+    public Document getServiceDescription(ServiceEndpoint ep) {
         // TODO Auto-generated method stub
         return null;
     }
 
 
-    public boolean isExchangeWithConsumerOkay(ServiceEndpoint endpoint, MessageExchange exchange) {
+    public boolean isExchangeWithConsumerOkay(ServiceEndpoint ep, MessageExchange exchange) {
         // TODO Auto-generated method stub
         return true;
     }
 
 
-    public boolean isExchangeWithProviderOkay(ServiceEndpoint endpoint, MessageExchange exchange) {
+    public boolean isExchangeWithProviderOkay(ServiceEndpoint ep, MessageExchange exchange) {
         // TODO Auto-generated method stub
         return true;
     }

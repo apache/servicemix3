@@ -16,15 +16,15 @@
  */
 package org.apache.servicemix.components.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.MessageExchangeListener;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.transform.TransformerException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.MessageExchangeListener;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 
 /**
  * A simple tracing component which can be placed inside a pipeline
@@ -59,13 +59,11 @@ public class TraceComponent extends ComponentSupport implements MessageExchangeL
         NormalizedMessage message = exchange.getMessage("in");
         if (message == null) {
             log.warn("Received null message from exchange: " + exchange);
-        }
-        else {
+        } else {
             log.info("Exchange: " + exchange + " received IN message: " + message);
             try {
                 log.info("Body is: " + sourceTransformer.toString(message.getContent()));
-            }
-            catch (TransformerException e) {
+            } catch (TransformerException e) {
                 log.error("Failed to turn message body into text: " + e, e);
             }
         }

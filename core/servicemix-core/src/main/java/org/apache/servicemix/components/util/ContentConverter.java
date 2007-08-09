@@ -29,12 +29,12 @@ public interface ContentConverter {
      * @param contents contents of the flat file column
      * @return contents for the XML element
      */
-    public abstract String convertToXml(String contents);
+    String convertToXml(String contents);
 
     /**
      * Converts the contents of a XML element to the contents of the flat file column
      * @param contents contents of the XML element
      * @return contents for the flat file
      */
-    public abstract String convertToFlatFileContent(String contents);
+    String convertToFlatFileContent(String contents);
 }

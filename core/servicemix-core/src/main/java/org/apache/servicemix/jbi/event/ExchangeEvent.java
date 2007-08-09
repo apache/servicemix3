@@ -16,12 +16,12 @@
  */
 package org.apache.servicemix.jbi.event;
 
-import org.apache.servicemix.jbi.framework.ComponentContextImpl;
-import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
-
 import java.util.EventObject;
 
 import javax.jbi.messaging.MessageExchange;
+
+import org.apache.servicemix.jbi.framework.ComponentContextImpl;
+import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 
 /**
  * Event sent when an exchange is received or accepted by a component.
@@ -30,11 +30,11 @@ import javax.jbi.messaging.MessageExchange;
  */
 public class ExchangeEvent extends EventObject {
 
-    private static final long serialVersionUID = -8349785806912334977L;
-
     public static final int EXCHANGE_SENT = 0;
     public static final int EXCHANGE_ACCEPTED = 1;
     
+    private static final long serialVersionUID = -8349785806912334977L;
+
     private MessageExchange exchange;
     private int type;
     

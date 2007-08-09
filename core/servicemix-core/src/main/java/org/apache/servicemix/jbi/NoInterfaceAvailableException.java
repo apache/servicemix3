@@ -25,7 +25,8 @@ import javax.xml.namespace.QName;
  * @version $Revision$
  */
 public class NoInterfaceAvailableException extends NoEndpointAvailableException {
-    private QName interfaceName;
+
+    private final QName interfaceName;
 
     public NoInterfaceAvailableException(QName interfaceName) {
         super("Cannot find an instance of the service: " + interfaceName);

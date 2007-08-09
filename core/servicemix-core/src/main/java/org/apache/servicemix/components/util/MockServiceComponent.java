@@ -16,10 +16,8 @@
  */
 package org.apache.servicemix.components.util;
 
-import org.apache.servicemix.MessageExchangeListener;
-import org.apache.servicemix.jbi.jaxp.ResourceSource;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.springframework.core.io.Resource;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
@@ -28,8 +26,10 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
-import java.util.Iterator;
-import java.util.Map;
+import org.apache.servicemix.MessageExchangeListener;
+import org.apache.servicemix.jbi.jaxp.ResourceSource;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.springframework.core.io.Resource;
 
 /**
  * A simple mock service component which is hard coded with a response to give
@@ -40,6 +40,7 @@ import java.util.Map;
  * @version $Revision$
  */
 public class MockServiceComponent extends TransformComponentSupport implements MessageExchangeListener {
+    
     private Source responseContent;
     private String responseXml;
     private Resource responseResource;
@@ -56,8 +57,7 @@ public class MockServiceComponent extends TransformComponentSupport implements M
         if (responseContent == null) {
             if (responseXml != null) {
                 responseContent = new StringSource(responseXml);
-            }
-            else if (responseResource != null) {
+            } else if (responseResource != null) {
                 return new ResourceSource(responseResource);
             }
         }

@@ -17,13 +17,12 @@
 package org.apache.servicemix.jbi.event;
 
 import java.io.IOException;
-import java.util.EventListener;
 
 public interface DeploymentListener extends ServiceMixListener {
 
-    public boolean fileAdded(DeploymentEvent event) throws IOException;
+    boolean fileAdded(DeploymentEvent event) throws IOException;
     
-    public boolean fileChanged(DeploymentEvent event) throws IOException;
+    boolean fileChanged(DeploymentEvent event) throws IOException;
     
-    public boolean fileRemoved(DeploymentEvent event) throws IOException;
+    boolean fileRemoved(DeploymentEvent event) throws IOException;
 }

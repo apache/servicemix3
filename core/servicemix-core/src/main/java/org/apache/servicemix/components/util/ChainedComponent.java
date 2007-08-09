@@ -26,7 +26,6 @@ import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 
-import org.apache.servicemix.components.util.TransformComponentSupport;
 import org.apache.servicemix.jbi.FaultException;
 
 /**

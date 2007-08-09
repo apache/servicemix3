@@ -16,19 +16,7 @@
  */
 package org.apache.servicemix.expression;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.util.MessageUtil;
-import org.jaxen.FunctionContext;
-import org.jaxen.JaxenException;
-import org.jaxen.NamespaceContext;
-import org.jaxen.XPath;
-import org.jaxen.dom.DOMXPath;
-import org.springframework.beans.factory.InitializingBean;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
+import java.io.IOException;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
@@ -36,31 +24,52 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import java.io.IOException;
+import org.w3c.dom.Node;
 
+import org.xml.sax.SAXException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.util.MessageUtil;
+import org.jaxen.FunctionContext;
+import org.jaxen.JaxenException;
+import org.jaxen.NamespaceContext;
+import org.jaxen.XPath;
+import org.jaxen.dom.DOMXPath;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
- * Evalutes an XPath expression on the given message using <a href="http://jaxen.org/"/>Jaxen</a>
- *
+ * Evalutes an XPath expression on the given message using <a
+ * href="http://jaxen.org/"/>Jaxen</a>
+ * 
  * @version $Revision$
  */
 public class JaxenXPathExpression implements Expression, InitializingBean {
-    private static final transient Log log = LogFactory.getLog(JaxenXPathExpression.class);
     
+    private static final transient Log LOG = LogFactory.getLog(JaxenXPathExpression.class);
+
     private String xpath;
+
     private boolean useMessageContent = true;
+
     private SourceTransformer transformer = new SourceTransformer();
+
     private JaxenVariableContext variableContext = new JaxenVariableContext();
+
     private XPath xpathObject;
+
     private NamespaceContext namespaceContext;
+
     private FunctionContext functionContext;
 
     public JaxenXPathExpression() {
     }
 
     /**
-     * A helper constructor to make a fully created expression. This constructor will
-     * call the {@link #afterPropertiesSet()} method to ensure this POJO is properly constructed.
+     * A helper constructor to make a fully created expression. This constructor
+     * will call the {@link #afterPropertiesSet()} method to ensure this POJO is
+     * properly constructed.
      */
     public JaxenXPathExpression(String xpath) throws Exception {
         this.xpath = xpath;
@@ -94,20 +103,15 @@ public class JaxenXPathExpression implements Expression, InitializingBean {
                 variableContext.setMessage(message);
                 return evaluateXPath(object);
             }
-        }
-        catch (TransformerException e) {
+        } catch (TransformerException e) {
             throw new MessagingException(e);
-        }
-        catch (JaxenException e) {
+        } catch (JaxenException e) {
             throw new MessagingException(e);
-        }
-        catch (ParserConfigurationException e) {
+        } catch (ParserConfigurationException e) {
             throw new MessagingException(e);
-        } 
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new MessagingException(e);
-        } 
-        catch (SAXException e) {
+        } catch (SAXException e) {
             throw new MessagingException(e);
         }
     }
@@ -123,26 +127,21 @@ public class JaxenXPathExpression implements Expression, InitializingBean {
                 variableContext.setMessage(message);
                 return evaluateXPathAsBoolean(object);
             }
-        }
-        catch (TransformerException e) {
+        } catch (TransformerException e) {
             throw new MessagingException(e);
-        }
-        catch (JaxenException e) {
+        } catch (JaxenException e) {
             throw new MessagingException(e);
-        }
-        catch (ParserConfigurationException e) {
+        } catch (ParserConfigurationException e) {
             throw new MessagingException(e);
-        } 
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new MessagingException(e);
-        } 
-        catch (SAXException e) {
+        } catch (SAXException e) {
             throw new MessagingException(e);
         }
     }
 
     // Properties
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public XPath getXpathObject() {
         return xpathObject;
     }
@@ -164,12 +163,15 @@ public class JaxenXPathExpression implements Expression, InitializingBean {
     }
 
     /**
-     * Specifies whether or not the XPath expression uses the message content.  
+     * Specifies whether or not the XPath expression uses the message content.
      * 
-     * By default, this property is <code>true</code>, but you can set it to <code>false</code> to avoid that the message content
-     * is converted to {@link StringSource}  
+     * By default, this property is <code>true</code>, but you can set it to
+     * <code>false</code> to avoid that the message content is converted to
+     * {@link StringSource}
      * 
-     * @param useMessageContent specify <code>false</code> if this expression does not access the message content
+     * @param useMessageContent
+     *            specify <code>false</code> if this expression does not
+     *            access the message content
      */
     public void setUseMessageContent(boolean useMessageContent) {
         this.useMessageContent = useMessageContent;
@@ -208,9 +210,9 @@ public class JaxenXPathExpression implements Expression, InitializingBean {
     }
 
     // Implementation methods
-    //-------------------------------------------------------------------------
-    protected XPath createXPath(String xpath) throws JaxenException {
-        return new DOMXPath(xpath);
+    // -------------------------------------------------------------------------
+    protected XPath createXPath(String xp) throws JaxenException {
+        return new DOMXPath(xp);
     }
 
     protected Object evaluateXPath(Object object) throws JaxenException {
@@ -221,21 +223,22 @@ public class JaxenXPathExpression implements Expression, InitializingBean {
         return xpathObject.booleanValueOf(object);
     }
 
-
-    protected Object getXMLNode(MessageExchange exchange, NormalizedMessage message) throws TransformerException, MessagingException, ParserConfigurationException, IOException, SAXException {
+    protected Object getXMLNode(MessageExchange exchange, NormalizedMessage message) throws TransformerException, MessagingException,
+                    ParserConfigurationException, IOException, SAXException {
         Node node = null;
-        //ensure re-readability of the content if the expression also needs to access the content 
+        // ensure re-readability of the content if the expression also needs to
+        // access the content
         if (useMessageContent) {
             MessageUtil.enableContentRereadability(message);
         }
         if (message != null) {
             node = transformer.toDOMNode(message);
-        }
-        else {
-            log.warn("Null message for exchange: " + exchange);
+        } else {
+            LOG.warn("Null message for exchange: " + exchange);
         }
         if (node == null) {
-            // lets make an empty document to avoid Jaxen throwing a NullPointerException
+            // lets make an empty document to avoid Jaxen throwing a
+            // NullPointerException
             node = transformer.createDocument();
         }
         return node;

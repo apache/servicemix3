@@ -96,7 +96,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * Get the description
      * @return description
      */
-    public String getDescription(){
+    public String getDescription() {
         return "Registry of Components/SU's and Endpoints";
     }
 
@@ -156,21 +156,21 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     /**
      * @return the EnvironmentContext
      */
-    protected EnvironmentContext getEnvironmentContext(){
+    protected EnvironmentContext getEnvironmentContext() {
         return container.getEnvironmentContext();
     }
     
     /**
      * @return true if the container is embedded
      */
-    protected boolean isContainerEmbedded(){
+    protected boolean isContainerEmbedded() {
         return container.isEmbedded();
     }
 
     protected InternalEndpoint matchEndpointByName(ServiceEndpoint[] endpoints, String endpointName) {
         InternalEndpoint result = null;
         if (endpoints != null && endpointName != null && endpointName.length() > 0) {
-            for (int i = 0;i < endpoints.length;i++) {
+            for (int i = 0; i < endpoints.length; i++) {
                 if (endpoints[i].getEndpointName().equals(endpointName)) {
                     result = (InternalEndpoint) endpoints[i];
                     break;
@@ -224,7 +224,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @throws JBIException invalid endpoint reference.
      */
     public Document getEndpointDescriptor(ServiceEndpoint endpoint) throws JBIException {
-        if (endpoint instanceof AbstractServiceEndpoint == false) {
+        if (!(endpoint instanceof AbstractServiceEndpoint)) {
             throw new JBIException("Descriptors can not be queried for external endpoints");
         }
         AbstractServiceEndpoint se = (AbstractServiceEndpoint) endpoint;
@@ -283,15 +283,15 @@ public class Registry extends BaseSystemService implements RegistryMBean {
             throw new NullPointerException("resolveInternalEPR(epr) called with null epr.");
         }
         NodeList nl = epr.getChildNodes();
-        for (int i = 0 ; i < nl.getLength(); ++i) {
+        for (int i = 0; i < nl.getLength(); ++i) {
             Node n = nl.item(i);
             if (n.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
             Element el = (Element) n;
             // Namespace should be "http://java.sun.com/jbi/end-point-reference"
-            if (el.getNamespaceURI() == null || 
-                !el.getNamespaceURI().equals("http://java.sun.com/jbi/end-point-reference")) 
+            if (el.getNamespaceURI() == null 
+                    || !el.getNamespaceURI().equals("http://java.sun.com/jbi/end-point-reference")) 
             {
                 continue;
             }
@@ -347,16 +347,16 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     public ServiceEndpoint resolveStandardEPR(DocumentFragment epr) {
         try {
             NodeList children = epr.getChildNodes();
-            for (int i = 0 ; i < children.getLength(); ++i) {
+            for (int i = 0; i < children.getLength(); ++i) {
                 Node n = children.item(i);
                 if (n.getNodeType() != Node.ELEMENT_NODE) {
                     continue;
                 }
                 Element elem = (Element) n;
-                String[] namespaces = new String[] { WSAddressingConstants.WSA_NAMESPACE_200508,
-                                                     WSAddressingConstants.WSA_NAMESPACE_200408,
-                                                     WSAddressingConstants.WSA_NAMESPACE_200403,
-                                                     WSAddressingConstants.WSA_NAMESPACE_200303 };
+                String[] namespaces = new String[] {WSAddressingConstants.WSA_NAMESPACE_200508,
+                                                    WSAddressingConstants.WSA_NAMESPACE_200408,
+                                                    WSAddressingConstants.WSA_NAMESPACE_200403,
+                                                    WSAddressingConstants.WSA_NAMESPACE_200303 };
                 NodeList nl = null;
                 for (int ns = 0; ns < namespaces.length; ns++) {
                     NodeList tnl = elem.getElementsByTagNameNS(namespaces[ns], WSAddressingConstants.EL_ADDRESS);
@@ -375,8 +375,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
                         uri = uri.substring("endpoint:".length());
                         String[] parts = URIResolver.split3(uri);
                         return getInternalEndpoint(new QName(parts[0], parts[1]), parts[2]);
-                    }
-                    else if (uri.startsWith("service:")) {
+                    } else if (uri.startsWith("service:")) {
                         uri = uri.substring("service:".length());
                         String[] parts = URIResolver.split2(uri);
                         return getEndpoint(new QName(parts[0], parts[1]), parts[1]);
@@ -463,8 +462,8 @@ public class Registry extends BaseSystemService implements RegistryMBean {
                                                 Component component,
                                                 boolean binding, 
                                                 boolean service,
-                                                String[] sharedLibraries) throws JBIException {
-        return componentRegistry.registerComponent(name,description, component, binding, service, sharedLibraries);
+                                                String[] sharedLibs) throws JBIException {
+        return componentRegistry.registerComponent(name, description, component, binding, service, sharedLibs);
     }
 
     /**
@@ -509,7 +508,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         ObjectName[] result = null;
         List<ObjectName> tmpList = new ArrayList<ObjectName>();
         for (ComponentMBeanImpl lcc : getComponents()) {
-            if (!lcc.isPojo() && lcc.isService() && lcc.getMBeanName() != null){
+            if (!lcc.isPojo() && lcc.isService() && lcc.getMBeanName() != null) {
                 tmpList.add(lcc.getMBeanName());
             }
         }
@@ -527,7 +526,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         ObjectName[] result = null;
         List<ObjectName> tmpList = new ArrayList<ObjectName>();
         for (ComponentMBeanImpl lcc : getComponents()) {
-            if (!lcc.isPojo() && lcc.isBinding() && lcc.getMBeanName() != null){
+            if (!lcc.isPojo() && lcc.isBinding() && lcc.getMBeanName() != null) {
                 tmpList.add(lcc.getMBeanName());
             }
         }
@@ -544,7 +543,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         ObjectName[] result = null;
         List<ObjectName> tmpList = new ArrayList<ObjectName>();
         for (ComponentMBeanImpl lcc : getComponents()) {
-            if (lcc.isPojo() && lcc.getMBeanName() != null){
+            if (lcc.isPojo() && lcc.getMBeanName() != null) {
                 tmpList.add(lcc.getMBeanName());
             }
         }
@@ -558,7 +557,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @param context 
      * @param as 
      */
-    public void registerSubscriptions(ComponentContextImpl context,ActivationSpec as) {
+    public void registerSubscriptions(ComponentContextImpl context, ActivationSpec as) {
         QName service = as.getService();
         String endpointName = as.getEndpoint();
         InternalEndpoint endpoint = new InternalEndpoint(context.getComponentNameSpace(), endpointName, service);
@@ -575,7 +574,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @param context
      * @param as
      */
-    public void deregisterSubscriptions(ComponentContextImpl context,ActivationSpec as) {
+    public void deregisterSubscriptions(ComponentContextImpl context, ActivationSpec as) {
         SubscriptionSpec[] specs = as.getSubscriptions();
         if (specs != null) {
             for (int i =0; i<specs.length; i++) {
@@ -589,7 +588,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @param subscription
      * @param endpoint
      */
-    public void registerSubscription(ComponentContextImpl context,SubscriptionSpec subscription, ServiceEndpoint endpoint) {
+    public void registerSubscription(ComponentContextImpl context, SubscriptionSpec subscription, ServiceEndpoint endpoint) {
         InternalEndpoint sei = (InternalEndpoint)endpoint;
         subscription.setName(context.getComponentNameSpace());
         subscriptionRegistry.registerSubscription(subscription,sei);
@@ -600,7 +599,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @param subscription
      * @return the ServiceEndpoint
      */
-    public InternalEndpoint deregisterSubscription(ComponentContextImpl context,SubscriptionSpec subscription) {
+    public InternalEndpoint deregisterSubscription(ComponentContextImpl context, SubscriptionSpec subscription) {
         subscription.setName(context.getComponentNameSpace());
         InternalEndpoint result = subscriptionRegistry.deregisterSubscription(subscription);
         return result;
@@ -622,7 +621,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @throws DeploymentException 
      */
     public ServiceAssemblyLifeCycle registerServiceAssembly(ServiceAssembly sa,
-                                                            ServiceAssemblyEnvironment env) throws DeploymentException{
+                                                            ServiceAssemblyEnvironment env) throws DeploymentException {
         return serviceAssemblyRegistry.register(sa, env);
     }
     
@@ -634,7 +633,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      */
     public ServiceAssemblyLifeCycle registerServiceAssembly(ServiceAssembly sa,
                                                             String[] suKeys,
-                                                            ServiceAssemblyEnvironment env) throws DeploymentException{
+                                                            ServiceAssemblyEnvironment env) throws DeploymentException {
         return serviceAssemblyRegistry.register(sa, suKeys, env);
     }
     

@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.jbi.JBIException;
@@ -34,11 +35,11 @@ import javax.jbi.component.Component;
 public class ComponentRegistry {
     
     private Map<ComponentNameSpace, ComponentMBeanImpl> idMap = new LinkedHashMap<ComponentNameSpace, ComponentMBeanImpl>();
-    private boolean runningStateInitialized = false;
+    private boolean runningStateInitialized;
     private Registry registry;
     
     
-    protected ComponentRegistry(Registry reg){
+    protected ComponentRegistry(Registry reg) {
         this.registry = reg;
     }
     /**
@@ -70,9 +71,9 @@ public class ComponentRegistry {
      * start components
      * @throws JBIException
      */
-    public synchronized void start() throws JBIException{
+    public synchronized void start() throws JBIException {
         if (!setInitialRunningStateFromStart()) {
-            for(Iterator<ComponentMBeanImpl> i = getComponents().iterator(); i.hasNext();) {
+            for (Iterator<ComponentMBeanImpl> i = getComponents().iterator(); i.hasNext();) {
                 ComponentMBeanImpl lcc = i.next();
                 lcc.doStart();
             }
@@ -86,7 +87,7 @@ public class ComponentRegistry {
      * @throws JBIException
      */
     public synchronized void stop() throws JBIException  {
-        for (Iterator<ComponentMBeanImpl> i = getReverseComponents(). iterator();i.hasNext();) {
+        for (Iterator<ComponentMBeanImpl> i = getReverseComponents().iterator(); i.hasNext();) {
             ComponentMBeanImpl lcc = i.next();
             lcc.doStop();
         }
@@ -99,7 +100,7 @@ public class ComponentRegistry {
      * @throws JBIException
      */
     public synchronized void shutDown() throws JBIException {
-        for (Iterator<ComponentMBeanImpl> i = getReverseComponents().iterator();i.hasNext();) {
+        for (Iterator<ComponentMBeanImpl> i = getReverseComponents().iterator(); i.hasNext();) {
             ComponentMBeanImpl lcc = i.next();
             lcc.persistRunningState();
             lcc.doShutDown();
@@ -108,7 +109,7 @@ public class ComponentRegistry {
     
     private Collection<ComponentMBeanImpl> getReverseComponents() {
         synchronized (idMap) {
-            ArrayList<ComponentMBeanImpl> l = new ArrayList<ComponentMBeanImpl>(idMap.values());
+            List<ComponentMBeanImpl> l = new ArrayList<ComponentMBeanImpl>(idMap.values());
             Collections.reverse(l);
             return l;
         }
@@ -145,15 +146,15 @@ public class ComponentRegistry {
         }
     }
 
-    private boolean setInitialRunningStateFromStart() throws JBIException{
+    private boolean setInitialRunningStateFromStart() throws JBIException {
         boolean result = !runningStateInitialized;
-        if (!runningStateInitialized){
+        if (!runningStateInitialized) {
             runningStateInitialized = true;
-            for (Iterator<ComponentMBeanImpl> i = getComponents().iterator();i.hasNext();) {
+            for (Iterator<ComponentMBeanImpl> i = getComponents().iterator(); i.hasNext();) {
                 ComponentMBeanImpl lcc = i.next();
-                if(!lcc.isPojo() && !registry.isContainerEmbedded()){
+                if (!lcc.isPojo() && !registry.isContainerEmbedded()) {
                     lcc.setInitialRunningState();
-                }else {
+                } else {
                     lcc.doStart();
                 }
             }

@@ -25,7 +25,8 @@ import javax.jbi.messaging.MessagingException;
  * @version $Revision$
  */
 public class NoInMessageAvailableException extends MessagingException {
-    private MessageExchange messageExchange;
+
+    private final MessageExchange messageExchange;
 
     public NoInMessageAvailableException(MessageExchange messageExchange) {
         super("No in message available for message exchange: " + messageExchange);

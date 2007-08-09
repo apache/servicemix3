@@ -29,7 +29,7 @@ public interface ClientFactory {
     /**
      * Default location to where the object should be looked for in JNDI
      */
-    public static final String DEFAULT_JNDI_NAME = "java:comp/env/jbi/ClientFactory";
+    String DEFAULT_JNDI_NAME = "java:comp/env/jbi/ClientFactory";
     
     /**
      * Create a new client to interact with the JBI bus
@@ -37,6 +37,6 @@ public interface ClientFactory {
      * @return a client
      * @throws JBIException if an error occurs
      */
-    public ServiceMixClient createClient() throws JBIException;
+    ServiceMixClient createClient() throws JBIException;
     
 }

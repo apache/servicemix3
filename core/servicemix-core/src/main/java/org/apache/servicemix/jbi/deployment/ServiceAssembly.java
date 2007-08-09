@@ -19,52 +19,49 @@ package org.apache.servicemix.jbi.deployment;
 /**
  * @version $Revision$
  */
-public class ServiceAssembly {	
+public class ServiceAssembly {
 
-	private Connections connections = new Connections();
+    private Connections connections = new Connections();
+    private Identification identification;
+    private ServiceUnit[] serviceUnits;
+    private String state = "";
 
-	private Identification identification;
+    public Connections getConnections() {
+        return connections;
+    }
 
-	private ServiceUnit[] serviceUnits;
-	
-	private String state = "";
+    public Identification getIdentification() {
+        return identification;
+    }
 
-	public Connections getConnections() {
-		return connections;
-	}
+    public ServiceUnit[] getServiceUnits() {
+        return serviceUnits;
+    }
 
-	public Identification getIdentification() {
-		return identification;
-	}
+    /**
+     * @return Returns the state.
+     */
+    public String getState() {
+        return state;
+    }
 
-	public ServiceUnit[] getServiceUnits() {
-		return serviceUnits;
-	}
+    public void setConnections(Connections connections) {
+        this.connections = connections;
+    }
 
-	/**
-	 * @return Returns the state.
-	 */
-	public String getState() {
-		return state;
-	}
+    public void setIdentification(Identification identification) {
+        this.identification = identification;
+    }
 
-	public void setConnections(Connections connections) {
-		this.connections = connections;
-	}
+    public void setServiceUnits(ServiceUnit[] serviceUnits) {
+        this.serviceUnits = serviceUnits;
+    }
 
-	public void setIdentification(Identification identification) {
-		this.identification = identification;
-	}
-
-	public void setServiceUnits(ServiceUnit[] serviceUnits) {
-		this.serviceUnits = serviceUnits;
-	}
-
-	/**
-	 * @param state
-	 *            The state to set.
-	 */
-	public void setState(String state) {
-		this.state = state;
-	}
+    /**
+     * @param state
+     *            The state to set.
+     */
+    public void setState(String state) {
+        this.state = state;
+    }
 }

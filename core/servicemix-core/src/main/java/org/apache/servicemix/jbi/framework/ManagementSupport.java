@@ -16,13 +16,6 @@
  */
 package org.apache.servicemix.jbi.framework;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.util.DOMUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Iterator;
@@ -31,6 +24,14 @@ import java.util.List;
 import javax.jbi.management.DeploymentException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.util.DOMUtil;
 
 /**
  * ManagementMessageHelper is a class that ease the building of management messages. 

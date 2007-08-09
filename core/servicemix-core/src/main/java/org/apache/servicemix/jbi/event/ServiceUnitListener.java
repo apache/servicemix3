@@ -16,18 +16,17 @@
  */
 package org.apache.servicemix.jbi.event;
 
-import java.util.EventListener;
 
 public interface ServiceUnitListener extends ServiceMixListener {
 
-    public void unitDeployed(ServiceUnitEvent event);
+    void unitDeployed(ServiceUnitEvent event);
 
-    public void unitStarted(ServiceUnitEvent event);
+    void unitStarted(ServiceUnitEvent event);
 
-    public void unitStopped(ServiceUnitEvent event);
+    void unitStopped(ServiceUnitEvent event);
 
-    public void unitShutDown(ServiceUnitEvent event);
+    void unitShutDown(ServiceUnitEvent event);
 
-    public void unitUndeployed(ServiceUnitEvent event);
+    void unitUndeployed(ServiceUnitEvent event);
 
 }

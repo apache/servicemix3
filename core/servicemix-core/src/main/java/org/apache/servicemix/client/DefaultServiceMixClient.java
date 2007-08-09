@@ -16,18 +16,10 @@
  */
 package org.apache.servicemix.client;
 
-import org.apache.servicemix.components.util.ComponentSupport;
-import org.apache.servicemix.jbi.FaultException;
-import org.apache.servicemix.jbi.NoOutMessageAvailableException;
-import org.apache.servicemix.jbi.container.ActivationSpec;
-import org.apache.servicemix.jbi.container.JBIContainer;
-import org.apache.servicemix.jbi.messaging.DefaultMarshaler;
-import org.apache.servicemix.jbi.messaging.PojoMarshaler;
-import org.apache.servicemix.jbi.resolver.*;
-import org.w3c.dom.DocumentFragment;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.jbi.JBIException;
-import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.Fault;
@@ -39,11 +31,27 @@ import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.messaging.RobustInOnly;
+import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
-import javax.xml.transform.Source;
 
-import java.util.Iterator;
-import java.util.Map;
+import org.w3c.dom.DocumentFragment;
+
+import org.apache.servicemix.components.util.ComponentSupport;
+import org.apache.servicemix.jbi.FaultException;
+import org.apache.servicemix.jbi.NoOutMessageAvailableException;
+import org.apache.servicemix.jbi.container.ActivationSpec;
+import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.messaging.DefaultMarshaler;
+import org.apache.servicemix.jbi.messaging.PojoMarshaler;
+import org.apache.servicemix.jbi.resolver.EndpointFilter;
+import org.apache.servicemix.jbi.resolver.EndpointResolver;
+import org.apache.servicemix.jbi.resolver.ExternalInterfaceNameEndpointResolver;
+import org.apache.servicemix.jbi.resolver.ExternalServiceNameEndpointResolver;
+import org.apache.servicemix.jbi.resolver.InterfaceNameEndpointResolver;
+import org.apache.servicemix.jbi.resolver.NullEndpointFilter;
+import org.apache.servicemix.jbi.resolver.ServiceAndEndpointNameResolver;
+import org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver;
+import org.apache.servicemix.jbi.resolver.URIResolver;
 
 /**
  * The default implementation of the {@link ServiceMixClient} API.
@@ -203,7 +211,8 @@ public class DefaultServiceMixClient extends ComponentSupport implements Service
         send(exchange);
     }
 
-    public boolean sendSync(EndpointResolver resolver, Map exchangeProperties, Map inMessageProperties, Object content) throws JBIException {
+    public boolean sendSync(EndpointResolver resolver, Map exchangeProperties, 
+                            Map inMessageProperties, Object content) throws JBIException {
         InOnly exchange = createInOnlyExchange(resolver);
         populateMessage(exchange, exchangeProperties, inMessageProperties, content);
         return sendSync(exchange);
@@ -261,8 +270,8 @@ public class DefaultServiceMixClient extends ComponentSupport implements Service
         return new ServiceAndEndpointNameResolver(service, endpoint);
     }
     
-    public void close() throws JBIException{
-        if(container!=null){
+    public void close() throws JBIException {
+        if (container != null) {
             container.deactivateComponent(activationSpec.getComponentName());
         }
     }
@@ -307,7 +316,8 @@ public class DefaultServiceMixClient extends ComponentSupport implements Service
         }
     }
 
-    protected void populateMessage(MessageExchange exchange, Map exchangeProperties, Map inMessageProperties, Object content) throws MessagingException {
+    protected void populateMessage(MessageExchange exchange, Map exchangeProperties, 
+                                   Map inMessageProperties, Object content) throws MessagingException {
         NormalizedMessage in = exchange.getMessage("in");
         populateExchangeProperties(exchange, exchangeProperties);
         populateMessageProperties(in, inMessageProperties);

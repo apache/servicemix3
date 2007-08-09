@@ -24,7 +24,8 @@ import javax.jbi.JBIException;
  * @version $Revision$
  */
 public class MissingPropertyException extends JBIException {
-    private String property;
+
+    private final String property;
 
     public MissingPropertyException(String property) {
         super("Cannot use this component as the property '" + property + "' was not configured");

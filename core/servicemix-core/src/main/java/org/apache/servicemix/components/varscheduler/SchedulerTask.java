@@ -16,48 +16,52 @@
  */
 package org.apache.servicemix.components.varscheduler;
 
-import java.util.*;
+import java.util.TimerTask;
 
 /**
  * A task run by a {@link Scheduler}.
  * 
- * @author 	George Gastaldi (gastaldi)
+ * @author George Gastaldi (gastaldi)
  */
 public abstract class SchedulerTask implements Runnable {
 
-	static final int VIRGIN = 0;
-	static final int SCHEDULED = 1;
-	static final int CANCELLED = 2;
+    static final int VIRGIN = 0;
 
-	final Object lock = new Object();
-	int state = VIRGIN;
-	TimerTask timerTask;
+    static final int SCHEDULED = 1;
 
-	protected SchedulerTask() {
-	}
+    static final int CANCELLED = 2;
 
-	public abstract void run();
+    final Object lock = new Object();
 
-	/**
-	 * Cancels task.
-	 * @return true if task already scheduled
-	 */
-	public boolean cancel() {
-		synchronized (lock) {
-			if (timerTask != null) {
-				timerTask.cancel();
-			}
-			boolean result = (state == SCHEDULED);
-			state = CANCELLED;
-			return result;
-		}
-	}
+    int state = VIRGIN;
 
-	public long scheduledExecutionTime() {
-		synchronized (lock) {
-			return timerTask == null ? 0 : timerTask.scheduledExecutionTime();
-		}
-	}
+    TimerTask timerTask;
+
+    protected SchedulerTask() {
+    }
+
+    public abstract void run();
+
+    /**
+     * Cancels task.
+     * 
+     * @return true if task already scheduled
+     */
+    public boolean cancel() {
+        synchronized (lock) {
+            if (timerTask != null) {
+                timerTask.cancel();
+            }
+            boolean result = state == SCHEDULED;
+            state = CANCELLED;
+            return result;
+        }
+    }
+
+    public long scheduledExecutionTime() {
+        synchronized (lock) {
+            return timerTask == null ? 0 : timerTask.scheduledExecutionTime();
+        }
+    }
 
 }
-

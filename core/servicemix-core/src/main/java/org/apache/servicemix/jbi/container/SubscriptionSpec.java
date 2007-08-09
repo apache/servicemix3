@@ -16,17 +16,17 @@
  */
 package org.apache.servicemix.jbi.container;
 
+import java.io.Serializable;
+
+import javax.jbi.servicedesc.ServiceEndpoint;
+import javax.xml.namespace.QName;
+
 import org.apache.servicemix.jbi.framework.ComponentNameSpace;
 import org.apache.servicemix.jbi.framework.Registry;
 import org.apache.servicemix.jbi.messaging.ExchangePacket;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.resolver.SubscriptionFilter;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
-
-import javax.jbi.servicedesc.ServiceEndpoint;
-import javax.xml.namespace.QName;
-
-import java.io.Serializable;
 
 /**
  * Represents a subscription to a JBI endpoint.

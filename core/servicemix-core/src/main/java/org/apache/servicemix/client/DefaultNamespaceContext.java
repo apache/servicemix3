@@ -16,10 +16,14 @@
  */
 package org.apache.servicemix.client;
 
-import javax.xml.xpath.*;
-import javax.xml.namespace.NamespaceContext;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
-import java.util.*;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.xpath.XPathFactory;
 
 /**
  * An implementation of {@link NamespaceContext} which uses a simple Map where

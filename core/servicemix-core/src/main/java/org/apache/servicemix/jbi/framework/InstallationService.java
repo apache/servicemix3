@@ -56,12 +56,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version $Revision$
  */
 public class InstallationService extends BaseSystemService implements InstallationServiceMBean {
-    
-    private static final Log log=LogFactory.getLog(InstallationService.class);
-    
+
+    private static final Log LOG = LogFactory.getLog(InstallationService.class);
+
     private EnvironmentContext environmentContext;
+
     private ManagementContext managementContext;
+
     private Map<String, InstallerMBeanImpl> installers = new ConcurrentHashMap<String, InstallerMBeanImpl>();
+
     private Map<String, InstallerMBeanImpl> nonLoadedInstallers = new ConcurrentHashMap<String, InstallerMBeanImpl>();
 
     /**
@@ -69,53 +72,56 @@ public class InstallationService extends BaseSystemService implements Installati
      * 
      * @return description of this item
      */
-    public String getDescription(){
+    public String getDescription() {
         return "installs/uninstalls Components";
     }
 
     /**
-     * Load the installer for a new component from a component installation package.
+     * Load the installer for a new component from a component installation
+     * package.
      * 
      * @param installJarURL -
-     *            URL locating a jar file containing a JBI Installable Component.
-     * @return - the JMX ObjectName of the InstallerMBean loaded from installJarURL.
+     *            URL locating a jar file containing a JBI Installable
+     *            Component.
+     * @return - the JMX ObjectName of the InstallerMBean loaded from
+     *         installJarURL.
      */
-    public synchronized ObjectName loadNewInstaller(String installJarURL){
-        try{
-            ObjectName result=null;
-            if(log.isDebugEnabled()){
-                log.debug("Loading new installer from "+installJarURL);
+    public synchronized ObjectName loadNewInstaller(String installJarURL) {
+        try {
+            ObjectName result = null;
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Loading new installer from " + installJarURL);
             }
-            File tmpDir=AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(),installJarURL);
-            if(tmpDir!=null){
-                Descriptor root=DescriptorFactory.buildDescriptor(tmpDir);
-                if(root!=null&&root.getComponent()!=null){
+            File tmpDir = AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(), installJarURL);
+            if (tmpDir != null) {
+                Descriptor root = DescriptorFactory.buildDescriptor(tmpDir);
+                if (root != null && root.getComponent() != null) {
                     String componentName = root.getComponent().getIdentification().getName();
-                    if(!installers.containsKey(componentName)){
-                        InstallerMBeanImpl installer = doInstallArchive(tmpDir,root);
-                        if(installer!=null){
-                            result=installer.getObjectName();
+                    if (!installers.containsKey(componentName)) {
+                        InstallerMBeanImpl installer = doInstallArchive(tmpDir, root);
+                        if (installer != null) {
+                            result = installer.getObjectName();
                             installers.put(componentName, installer);
                         }
-                    }else{
-                        throw new RuntimeException("An installer already exists for "+componentName);
+                    } else {
+                        throw new RuntimeException("An installer already exists for " + componentName);
                     }
-                }else{
-                    throw new RuntimeException("Could not find Component from: "+installJarURL);
+                } else {
+                    throw new RuntimeException("Could not find Component from: " + installJarURL);
                 }
-            }else{
-                throw new RuntimeException("location: "+installJarURL+" isn't valid");
+            } else {
+                throw new RuntimeException("location: " + installJarURL + " isn't valid");
             }
             return result;
-        }catch(Throwable t){
-            log.error("Deployment failed",t);
-            if(t instanceof Error){
+        } catch (Throwable t) {
+            LOG.error("Deployment failed", t);
+            if (t instanceof Error) {
                 throw (Error) t;
             }
-            if(t instanceof RuntimeException){
+            if (t instanceof RuntimeException) {
                 throw (RuntimeException) t;
-            }else{
-                throw new RuntimeException("Deployment failed: "+t.getMessage());
+            } else {
+                throw new RuntimeException("Deployment failed: " + t.getMessage());
             }
         }
     }
@@ -125,7 +131,8 @@ public class InstallationService extends BaseSystemService implements Installati
      * 
      * @param aComponentName -
      *            the component name identifying the installer to load.
-     * @return - the JMX ObjectName of the InstallerMBean loaded from an existing installation context.
+     * @return - the JMX ObjectName of the InstallerMBean loaded from an
+     *         existing installation context.
      */
     public ObjectName loadInstaller(String aComponentName) {
         InstallerMBeanImpl installer = installers.get(aComponentName);
@@ -136,9 +143,8 @@ public class InstallationService extends BaseSystemService implements Installati
                     // create an MBean for the installer
                     ObjectName objectName = managementContext.createCustomComponentMBeanName("Installer", aComponentName);
                     installer.setObjectName(objectName);
-                    managementContext.registerMBean(objectName, installer,
-                            InstallerMBean.class,
-                            "standard installation controls for a Component");
+                    managementContext.registerMBean(objectName, installer, InstallerMBean.class,
+                                    "standard installation controls for a Component");
                 } catch (Exception e) {
                     throw new RuntimeException("Could not load installer", e);
                 }
@@ -147,7 +153,7 @@ public class InstallationService extends BaseSystemService implements Installati
         }
         return null;
     }
-    
+
     private InstallerMBeanImpl createInstaller(String componentName) throws IOException, DeploymentException {
         File installationDir = environmentContext.getComponentInstallationDir(componentName);
         Descriptor root = DescriptorFactory.buildDescriptor(installationDir);
@@ -160,8 +166,7 @@ public class InstallationService extends BaseSystemService implements Installati
         File componentRoot = environmentContext.getComponentRootDir(componentName);
         ComponentContextImpl context = buildComponentContext(componentRoot, installationDir, componentName);
         installationContext.setContext(context);
-        InstallerMBeanImpl installer = new InstallerMBeanImpl(container,
-                                                              installationContext);
+        InstallerMBeanImpl installer = new InstallerMBeanImpl(container, installationContext);
         return installer;
     }
 
@@ -180,7 +185,7 @@ public class InstallationService extends BaseSystemService implements Installati
             container.getBroker().suspend();
             InstallerMBeanImpl installer = installers.remove(componentName);
             result = installer != null;
-            if(result) {
+            if (result) {
                 container.getManagementContext().unregisterMBean(installer);
                 if (isToBeDeleted) {
                     installer.uninstall();
@@ -188,9 +193,9 @@ public class InstallationService extends BaseSystemService implements Installati
                     nonLoadedInstallers.put(componentName, installer);
                 }
             }
-        } catch(JBIException e) {
+        } catch (JBIException e) {
             String errStr = "Problem shutting down Component: " + componentName;
-            log.error(errStr, e);
+            LOG.error(errStr, e);
         } finally {
             container.getBroker().resume();
         }
@@ -204,26 +209,26 @@ public class InstallationService extends BaseSystemService implements Installati
      *            URI locating a jar file containing a shared library.
      * @return - the name of the shared library loaded from aSharedLibURI.
      */
-    public String installSharedLibrary(String aSharedLibURI){
-        String result="";
-        try{
-            File tmpDir=AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(),aSharedLibURI);
-            if(tmpDir!=null){
-                Descriptor root=DescriptorFactory.buildDescriptor(tmpDir);
+    public String installSharedLibrary(String aSharedLibURI) {
+        String result = "";
+        try {
+            File tmpDir = AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(), aSharedLibURI);
+            if (tmpDir != null) {
+                Descriptor root = DescriptorFactory.buildDescriptor(tmpDir);
                 if (root == null) {
                     throw new DeploymentException("Could not find JBI descriptor");
                 }
-                SharedLibrary sl=root.getSharedLibrary();
-                if(sl!=null){
-                    result=doInstallSharedLibrary(tmpDir,sl);
+                SharedLibrary sl = root.getSharedLibrary();
+                if (sl != null) {
+                    result = doInstallSharedLibrary(tmpDir, sl);
                 } else {
                     throw new DeploymentException("JBI descriptor is not a SharedLibrary descriptor");
                 }
-            }else{
+            } else {
                 throw new DeploymentException("Could not find JBI descriptor");
             }
-        }catch(DeploymentException e){
-            log.error("Deployment failed",e);
+        } catch (DeploymentException e) {
+            LOG.error("Deployment failed", e);
         }
         return result;
     }
@@ -256,7 +261,7 @@ public class InstallationService extends BaseSystemService implements Installati
         this.managementContext = container.getManagementContext();
         buildState();
     }
-    
+
     protected Class getServiceMBean() {
         return InstallationServiceMBean.class;
     }
@@ -270,7 +275,7 @@ public class InstallationService extends BaseSystemService implements Installati
      * @throws DeploymentException
      */
     public void install(String location, Properties props, boolean autoStart) throws DeploymentException {
-        File tmpDir = AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(),location);
+        File tmpDir = AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(), location);
         if (tmpDir != null) {
             Descriptor root = DescriptorFactory.buildDescriptor(tmpDir);
             if (root != null) {
@@ -300,13 +305,13 @@ public class InstallationService extends BaseSystemService implements Installati
             if (installers.containsKey(componentName)) {
                 throw new DeploymentException("Component " + componentName + " is already installed");
             }
-            InstallerMBeanImpl installer = doInstallArchive(tmpDir,root);
+            InstallerMBeanImpl installer = doInstallArchive(tmpDir, root);
             if (installer != null) {
                 try {
                     if (props != null && props.size() > 0) {
                         ObjectName on = installer.getInstallerConfigurationMBean();
-                        if (on == null ) {
-                            log.warn("Could not find installation configuration MBean. Installation properties will be ignored.");
+                        if (on == null) {
+                            LOG.warn("Could not find installation configuration MBean. Installation properties will be ignored.");
                         } else {
                             MBeanServer mbs = managementContext.getMBeanServer();
                             for (Iterator it = props.keySet().iterator(); it.hasNext();) {
@@ -321,24 +326,24 @@ public class InstallationService extends BaseSystemService implements Installati
                         }
                     }
                     installer.install();
-                } catch(JBIException e) {
+                } catch (JBIException e) {
                     throw new DeploymentException(e);
                 }
                 if (autoStart) {
-                    try{
+                    try {
                         ComponentMBeanImpl lcc = container.getComponent(componentName);
                         if (lcc != null) {
                             lcc.start();
-                        }else{
-                            log.warn("No ComponentConnector found for Component "+componentName);
+                        } else {
+                            LOG.warn("No ComponentConnector found for Component " + componentName);
                         }
-                    }catch(JBIException e){
-                        String errStr="Failed to start Component: "+componentName;
-                        log.error(errStr,e);
+                    } catch (JBIException e) {
+                        String errStr = "Failed to start Component: " + componentName;
+                        LOG.error(errStr, e);
                         throw new DeploymentException(e);
                     }
                 }
-                installers.put(componentName,installer);
+                installers.put(componentName, installer);
             }
         }
     }
@@ -349,38 +354,37 @@ public class InstallationService extends BaseSystemService implements Installati
      * @return array of OperationInfos
      * @throws JMException
      */
-    public MBeanOperationInfo[] getOperationInfos() throws JMException{
-        OperationInfoHelper helper=new OperationInfoHelper();
-        ParameterHelper ph=helper.addOperation(getObjectToManage(),"loadNewInstaller",1,"load a new Installer ");
-        ph.setDescription(0,"installJarURL","URL locating the install Jar");
-        ph=helper.addOperation(getObjectToManage(),"loadInstaller",1,
-                        "load installer for a previously installed component");
-        ph.setDescription(0,"componentName","Name of the Component");
-        ph=helper.addOperation(getObjectToManage(),"unloadInstaller",2,"unload an installer");
-        ph.setDescription(0,"componentName","Name of the Component");
-        ph.setDescription(1,"isToBeDeleted","true if component is to be deleted");
-        ph=helper.addOperation(getObjectToManage(),"installSharedLibrary",1,"Install a shared library jar");
-        ph.setDescription(0,"sharedLibURI","URI for the jar to be installed");
-        ph=helper.addOperation(getObjectToManage(),"uninstallSharedLibrary",1,"Uninstall a shared library jar");
-        ph.setDescription(0,"sharedLibName","name of the shared library");
-        ph=helper.addOperation(getObjectToManage(),"install",1,"install and deplot an archive");
-        ph.setDescription(0,"location","location of archive");
-        ph=helper.addOperation(getObjectToManage(),"install",2,"install and deplot an archive");
-        ph.setDescription(0,"location","location of archive");
-        ph.setDescription(1,"autostart","automatically start the Component");
-        return OperationInfoHelper.join(super.getOperationInfos(),helper.getOperationInfos());
+    public MBeanOperationInfo[] getOperationInfos() throws JMException {
+        OperationInfoHelper helper = new OperationInfoHelper();
+        ParameterHelper ph = helper.addOperation(getObjectToManage(), "loadNewInstaller", 1, "load a new Installer ");
+        ph.setDescription(0, "installJarURL", "URL locating the install Jar");
+        ph = helper.addOperation(getObjectToManage(), "loadInstaller", 1, "load installer for a previously installed component");
+        ph.setDescription(0, "componentName", "Name of the Component");
+        ph = helper.addOperation(getObjectToManage(), "unloadInstaller", 2, "unload an installer");
+        ph.setDescription(0, "componentName", "Name of the Component");
+        ph.setDescription(1, "isToBeDeleted", "true if component is to be deleted");
+        ph = helper.addOperation(getObjectToManage(), "installSharedLibrary", 1, "Install a shared library jar");
+        ph.setDescription(0, "sharedLibURI", "URI for the jar to be installed");
+        ph = helper.addOperation(getObjectToManage(), "uninstallSharedLibrary", 1, "Uninstall a shared library jar");
+        ph.setDescription(0, "sharedLibName", "name of the shared library");
+        ph = helper.addOperation(getObjectToManage(), "install", 1, "install and deplot an archive");
+        ph.setDescription(0, "location", "location of archive");
+        ph = helper.addOperation(getObjectToManage(), "install", 2, "install and deplot an archive");
+        ph.setDescription(0, "location", "location of archive");
+        ph.setDescription(1, "autostart", "automatically start the Component");
+        return OperationInfoHelper.join(super.getOperationInfos(), helper.getOperationInfos());
     }
 
-    protected InstallerMBeanImpl doInstallArchive(File tmpDirectory,Descriptor descriptor) throws DeploymentException{
-        InstallerMBeanImpl installer=null;
-        Component component=descriptor.getComponent();
-        if(component!=null){
-            installer=doInstallComponent(tmpDirectory,component);
+    protected InstallerMBeanImpl doInstallArchive(File tmpDirectory, Descriptor descriptor) throws DeploymentException {
+        InstallerMBeanImpl installer = null;
+        Component component = descriptor.getComponent();
+        if (component != null) {
+            installer = doInstallComponent(tmpDirectory, component);
         }
         return installer;
     }
 
-    protected String doInstallSharedLibrary(File tmpDirectory, SharedLibrary descriptor) throws DeploymentException{
+    protected String doInstallSharedLibrary(File tmpDirectory, SharedLibrary descriptor) throws DeploymentException {
         String result = null;
         if (descriptor != null) {
             File installationDir = null;
@@ -391,12 +395,12 @@ public class InstallationService extends BaseSystemService implements Installati
                 if (!tmpDirectory.renameTo(installationDir)) {
                     throw new DeploymentException("Unable to rename " + tmpDirectory + " to " + installationDir);
                 }
-                if (log.isDebugEnabled()) {
-                    log.debug("Moved " + tmpDirectory + " to " + installationDir);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Moved " + tmpDirectory + " to " + installationDir);
                 }
                 container.getRegistry().registerSharedLibrary(descriptor, installationDir);
             } catch (Exception e) {
-                log.error("Deployment of Shared Library failed", e);
+                LOG.error("Deployment of Shared Library failed", e);
                 // remove any files created for installation
                 FileUtil.deleteFile(installationDir);
                 throw new DeploymentException(e);
@@ -407,50 +411,48 @@ public class InstallationService extends BaseSystemService implements Installati
         return result;
     }
 
-    protected InstallerMBeanImpl doInstallComponent(File tmpDirectory,Component descriptor) throws DeploymentException{
+    protected InstallerMBeanImpl doInstallComponent(File tmpDirectory, Component descriptor) throws DeploymentException {
         // move archive to Component directory
-        InstallerMBeanImpl result=null;
-        String name=descriptor.getIdentification().getName();
-        try{
-            File oldInstallationDir=environmentContext.getComponentInstallationDir(name);
+        InstallerMBeanImpl result = null;
+        String name = descriptor.getIdentification().getName();
+        try {
+            File oldInstallationDir = environmentContext.getComponentInstallationDir(name);
             // try and delete the old version ? - maybe should leave around ??
-            if(!FileUtil.deleteFile(oldInstallationDir)){
-                log.warn("Failed to delete old installation directory: " + oldInstallationDir.getPath());
+            if (!FileUtil.deleteFile(oldInstallationDir)) {
+                LOG.warn("Failed to delete old installation directory: " + oldInstallationDir.getPath());
             }
-            File componentRoot=environmentContext.createComponentRootDir(name);
+            File componentRoot = environmentContext.createComponentRootDir(name);
             // this will get the new one
-            File installationDir=environmentContext.getNewComponentInstallationDir(name);
+            File installationDir = environmentContext.getNewComponentInstallationDir(name);
             tmpDirectory.renameTo(installationDir);
-            if (log.isDebugEnabled()) {
-                log.debug("Moved " + tmpDirectory + " to " + installationDir);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Moved " + tmpDirectory + " to " + installationDir);
             }
-            result=initializeInstaller(installationDir,componentRoot,descriptor);
+            result = initializeInstaller(installationDir, componentRoot, descriptor);
             return result;
-        }catch(IOException e){
+        } catch (IOException e) {
             throw new DeploymentException(e);
         }
     }
 
-    private InstallerMBeanImpl initializeInstaller(File installationDir,File componentRoot,Component descriptor)
-                    throws DeploymentException{
-        InstallerMBeanImpl result=null;
-        try{
-            String name=descriptor.getIdentification().getName();
-            InstallationContextImpl installationContext=new InstallationContextImpl(descriptor);
+    private InstallerMBeanImpl initializeInstaller(File installationDir, File componentRoot, Component descriptor)
+                    throws DeploymentException {
+        InstallerMBeanImpl result = null;
+        try {
+            String name = descriptor.getIdentification().getName();
+            InstallationContextImpl installationContext = new InstallationContextImpl(descriptor);
             installationContext.setInstall(true);
             installationContext.setInstallRoot(installationDir);
             // now build the ComponentContext
             ComponentContextImpl context = buildComponentContext(componentRoot, installationDir, name);
             installationContext.setContext(context);
-            result = new InstallerMBeanImpl(container,
-                                            installationContext);
+            result = new InstallerMBeanImpl(container, installationContext);
             // create an MBean for the installer
             ObjectName objectName = managementContext.createCustomComponentMBeanName("Installer", name);
             result.setObjectName(objectName);
-            managementContext.registerMBean(objectName,result,InstallerMBean.class,
-                            "standard installation controls for a Component");
-        }catch(Throwable e){
-            log.error("Deployment of Component failed",e);
+            managementContext.registerMBean(objectName, result, InstallerMBean.class, "standard installation controls for a Component");
+        } catch (Throwable e) {
+            LOG.error("Deployment of Component failed", e);
             // remove any files created for installation
             environmentContext.removeComponentRootDirectory(descriptor.getIdentification().getName());
             throw new DeploymentException(e);
@@ -458,7 +460,7 @@ public class InstallationService extends BaseSystemService implements Installati
         return result;
     }
 
-    protected void buildState(){
+    protected void buildState() {
         buildSharedLibs();
         buildComponents();
     }
@@ -469,15 +471,16 @@ public class InstallationService extends BaseSystemService implements Installati
      * @param name
      * @return true/false
      */
-    protected boolean containsSharedLibrary(String name){
+    protected boolean containsSharedLibrary(String name) {
         return container.getRegistry().getSharedLibrary(name) != null;
     }
 
-    protected void buildSharedLibs(){
+    protected void buildSharedLibs() {
         // walk through shared libaries and add then to the ClassLoaderService
         File top = environmentContext.getSharedLibDir();
         if (top != null && top.exists() && top.isDirectory()) {
-            // directory structure is sharedlibraries/<lib name>/version_x/stuff ...
+            // directory structure is sharedlibraries/<lib name>/version_x/stuff
+            // ...
             File[] files = top.listFiles();
             if (files != null) {
                 for (int i = 0; i < files.length; i++) {
@@ -491,7 +494,7 @@ public class InstallationService extends BaseSystemService implements Installati
                                     try {
                                         container.getRegistry().registerSharedLibrary(sl, dir);
                                     } catch (Exception e) {
-                                        log.error("Failed to initialize sharted library", e);
+                                        LOG.error("Failed to initialize sharted library", e);
                                     }
                                 }
                             }
@@ -502,21 +505,22 @@ public class InstallationService extends BaseSystemService implements Installati
         }
     }
 
-    protected void buildComponents(){
+    protected void buildComponents() {
         // walk through components and add then to the ClassLoaderService
-        File top=environmentContext.getComponentsDir();
-        if(top!=null&&top.exists()&&top.isDirectory()){
-            // directory structure is components/<component name>/installation ...
-            File[] files=top.listFiles();
-            if(files!=null){
-                for(int i=0;i<files.length;i++){
-                    if(files[i].isDirectory()){
-                        final File directory=files[i];
-                        try{
+        File top = environmentContext.getComponentsDir();
+        if (top != null && top.exists() && top.isDirectory()) {
+            // directory structure is components/<component name>/installation
+            // ...
+            File[] files = top.listFiles();
+            if (files != null) {
+                for (int i = 0; i < files.length; i++) {
+                    if (files[i].isDirectory()) {
+                        final File directory = files[i];
+                        try {
                             buildComponent(directory);
-                        }catch(DeploymentException e){
-                            log.error("Could not build Component: "+directory.getName(),e);
-                            log.warn("Deleting Component directory: "+directory);
+                        } catch (DeploymentException e) {
+                            LOG.error("Could not build Component: " + directory.getName(), e);
+                            LOG.warn("Deleting Component directory: " + directory);
                             FileUtil.deleteFile(directory);
                         }
                     }
@@ -525,29 +529,27 @@ public class InstallationService extends BaseSystemService implements Installati
         }
     }
 
-    protected void buildComponent(File componentDirectory)
-            throws DeploymentException {
+    protected void buildComponent(File componentDirectory) throws DeploymentException {
         try {
             String componentName = componentDirectory.getName();
             ComponentEnvironment env = container.getEnvironmentContext().getComponentEnvironment(componentName);
             if (!env.getStateFile().exists()) {
-                // An installer has been created but the component has not been installed
+                // An installer has been created but the component has not been
+                // installed
                 // So remove it
                 FileUtil.deleteFile(componentDirectory);
             } else {
-                InstallerMBeanImpl installer = createInstaller(componentName); 
+                InstallerMBeanImpl installer = createInstaller(componentName);
                 installer.activateComponent();
                 nonLoadedInstallers.put(componentName, installer);
             }
         } catch (Throwable e) {
-            log.error("Failed to deploy component: "
-                    + componentDirectory.getName(), e);
+            LOG.error("Failed to deploy component: " + componentDirectory.getName(), e);
             throw new DeploymentException(e);
         }
     }
 
-    protected ComponentContextImpl buildComponentContext(File componentRoot, File installRoot, String name)
-                    throws IOException {
+    protected ComponentContextImpl buildComponentContext(File componentRoot, File installRoot, String name) throws IOException {
         ComponentNameSpace cns = new ComponentNameSpace(container.getName(), name);
         ComponentContextImpl context = new ComponentContextImpl(container, cns);
         ComponentEnvironment env = new ComponentEnvironment();

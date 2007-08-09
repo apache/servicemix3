@@ -40,7 +40,7 @@ import org.apache.servicemix.jbi.management.OperationInfoHelper;
 
 public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider {
 
-    private static final Log log = LogFactory.getLog(ServiceUnitLifeCycle.class);
+    private static final Log LOG = LogFactory.getLog(ServiceUnitLifeCycle.class);
 
     private ServiceUnit serviceUnit;
 
@@ -75,7 +75,7 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
      * @throws DeploymentException 
      */
     public void init() throws DeploymentException {
-        log.info("Initializing service unit: " + getName());
+        LOG.info("Initializing service unit: " + getName());
         checkComponentStarted("init");
         ServiceUnitManager sum = getServiceUnitManager();
         File path = getServiceUnitRootPath();
@@ -94,7 +94,7 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
      * @throws DeploymentException 
      */
     public void start() throws DeploymentException {
-        log.info("Starting service unit: " + getName());
+        LOG.info("Starting service unit: " + getName());
         checkComponentStarted("start");
         ServiceUnitManager sum = getServiceUnitManager();
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -112,7 +112,7 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
      * @throws DeploymentException 
      */
     public void stop() throws DeploymentException {
-        log.info("Stopping service unit: " + getName());
+        LOG.info("Stopping service unit: " + getName());
         checkComponentStarted("stop");
         ServiceUnitManager sum = getServiceUnitManager();
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -131,7 +131,7 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
      * @throws DeploymentException 
      */
     public void shutDown() throws DeploymentException {
-        log.info("Shutting down service unit: " + getName());
+        LOG.info("Shutting down service unit: " + getName());
         checkComponentStartedOrStopped("shutDown");
         ServiceUnitManager sum = getServiceUnitManager();
         ClassLoader cl = Thread.currentThread().getContextClassLoader();

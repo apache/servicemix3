@@ -32,49 +32,54 @@ import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.servicemix.jbi.util.StreamDataSource;
 
 /**
- * A FileMarshaler that converts the given input stream into a binary attachment.
+ * A FileMarshaler that converts the given input stream into a binary
+ * attachment.
  * 
  * @org.apache.xbean.XBean
- *  
+ * 
  * @author Guillaume Nodet
  * @since 3.0
  */
 public class BinaryFileMarshaler extends DefaultFileMarshaler {
 
-	private String attachment = "content";
-	private String contentType = null;
+    private String attachment = "content";
 
-	public String getAttachment() {
-		return attachment;
-	}
+    private String contentType;
 
-	public void setAttachment(String attachment) {
-		this.attachment = attachment;
-	}
-	
-	public String getContentType() {
-		return contentType;
-	}
+    public String getAttachment() {
+        return attachment;
+    }
 
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
+    public void setAttachment(String attachment) {
+        this.attachment = attachment;
+    }
 
-    public void readMessage(MessageExchange exchange, NormalizedMessage message, InputStream in, String path) throws IOException, JBIException {
-    	DataSource ds = new StreamDataSource(in, contentType);
-    	DataHandler handler = new DataHandler(ds);
-    	message.addAttachment(attachment, handler);
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public void readMessage(MessageExchange exchange, NormalizedMessage message, 
+                            InputStream in, String path) throws IOException, JBIException {
+        DataSource ds = new StreamDataSource(in, contentType);
+        DataHandler handler = new DataHandler(ds);
+        message.addAttachment(attachment, handler);
         message.setProperty(FILE_NAME_PROPERTY, new File(path).getName());
         message.setProperty(FILE_PATH_PROPERTY, path);
     }
 
-	public void writeMessage(MessageExchange exchange, NormalizedMessage message, OutputStream out, String path) throws IOException, JBIException {
-		DataHandler handler = message.getAttachment(attachment);
-		if (handler == null) {
-			throw new MessagingException("Could not find attachment: " + attachment);
-		}
-		InputStream is = handler.getInputStream();
-		FileUtil.copyInputStream(is, out);
-	}
+    public void writeMessage(MessageExchange exchange, NormalizedMessage message, 
+                             OutputStream out, String path) throws IOException, JBIException {
+        DataHandler handler = message.getAttachment(attachment);
+        if (handler == null) {
+            throw new MessagingException("Could not find attachment: "
+                    + attachment);
+        }
+        InputStream is = handler.getInputStream();
+        FileUtil.copyInputStream(is, out);
+    }
 
 }

@@ -16,18 +16,17 @@
  */
 package org.apache.servicemix.jbi.event;
 
-import java.util.EventListener;
 
 public interface ServiceAssemblyListener extends ServiceMixListener {
 
-    public void assemblyDeployed(ServiceAssemblyEvent event);
+    void assemblyDeployed(ServiceAssemblyEvent event);
 
-    public void assemblyStarted(ServiceAssemblyEvent event);
+    void assemblyStarted(ServiceAssemblyEvent event);
 
-    public void assemblyStopped(ServiceAssemblyEvent event);
+    void assemblyStopped(ServiceAssemblyEvent event);
 
-    public void assemblyShutDown(ServiceAssemblyEvent event);
+    void assemblyShutDown(ServiceAssemblyEvent event);
 
-    public void assemblyUndeployed(ServiceAssemblyEvent event);
+    void assemblyUndeployed(ServiceAssemblyEvent event);
 
 }

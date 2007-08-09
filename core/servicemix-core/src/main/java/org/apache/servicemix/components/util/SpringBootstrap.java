@@ -16,6 +16,16 @@
  */
 package org.apache.servicemix.components.util;
 
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.jbi.JBIException;
+import javax.jbi.component.Bootstrap;
+import javax.jbi.component.InstallationContext;
+import javax.management.ObjectName;
+
+import org.w3c.dom.DocumentFragment;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.NotInitialisedYetException;
@@ -23,29 +33,24 @@ import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.w3c.dom.DocumentFragment;
-
-import javax.jbi.JBIException;
-import javax.jbi.component.Bootstrap;
-import javax.jbi.component.InstallationContext;
-import javax.management.ObjectName;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * A Spring implementation of the {@link Bootstrap}
- *
+ * 
  * @version $Revision$
  */
 public class SpringBootstrap implements Bootstrap, ApplicationContextAware {
+
+    private static final Log LOG = LogFactory.getLog(SpringBootstrap.class);
+
     private InstallationContext installContext;
+
     private ObjectName extensionMBeanName;
+
     private ApplicationContext applicationContext;
-    private static Log log = LogFactory.getLog(SpringBootstrap.class);
-    
-    public void init(InstallationContext installContext) throws JBIException {
-        this.installContext = installContext;
+
+    public void init(InstallationContext ctx) throws JBIException {
+        this.installContext = ctx;
     }
 
     public void cleanUp() throws JBIException {
@@ -61,15 +66,15 @@ public class SpringBootstrap implements Bootstrap, ApplicationContextAware {
         }
         DocumentFragment fragment = installContext.getInstallationDescriptorExtension();
         if (fragment != null) {
-        	log.debug("Installation Descriptor Extension Found");
+            LOG.debug("Installation Descriptor Extension Found");
         } else {
-        	log.debug("Installation Descriptor Extension Not Found !");
+            LOG.debug("Installation Descriptor Extension Not Found !");
         }
         // lets load this from Spring...
         Map map = applicationContext.getBeansOfType(ActivationSpec.class, false, false);
-        for (Iterator iter = map.values().iterator(); iter.hasNext(); ) {
+        for (Iterator iter = map.values().iterator(); iter.hasNext();) {
             ActivationSpec spec = (ActivationSpec) iter.next();
-            log.debug("Registering "+spec.getComponentName());
+            LOG.debug("Registering " + spec.getComponentName());
         }
     }
 
@@ -80,7 +85,7 @@ public class SpringBootstrap implements Bootstrap, ApplicationContextAware {
         return installContext;
     }
 
-	public void setApplicationContext(ApplicationContext appCtx) throws BeansException {
-		this.applicationContext = appCtx;
-	}
+    public void setApplicationContext(ApplicationContext appCtx) throws BeansException {
+        this.applicationContext = appCtx;
+    }
 }

@@ -26,15 +26,15 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.messaging.DefaultMarshaler;
-import org.apache.servicemix.jbi.messaging.PojoMarshaler;
 import org.w3c.dom.Document;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomReader;
 import com.thoughtworks.xstream.io.xml.DomWriter;
+
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.messaging.DefaultMarshaler;
 
 /**
  * A {@link PojoMarshaler} for <a href="http://xStream.codehaus.org/">XStream</a> which
@@ -45,8 +45,10 @@ import com.thoughtworks.xstream.io.xml.DomWriter;
  */
 public class XStreamMarshaler extends DefaultMarshaler {
     private XStream xStream;
+
     private SourceTransformer transformer = new SourceTransformer();
-    private boolean useDOM = false;
+
+    private boolean useDOM;
 
     public void marshal(MessageExchange exchange, NormalizedMessage message, Object body) throws MessagingException {
         if (useDOM) {
@@ -54,12 +56,10 @@ public class XStreamMarshaler extends DefaultMarshaler {
                 Document document = transformer.createDocument();
                 getXStream().marshal(body, new DomWriter(document));
                 message.setContent(new DOMSource(document));
-            }
-            catch (ParserConfigurationException e) {
+            } catch (ParserConfigurationException e) {
                 throw new MessagingException("Failed to marshal: " + body + " to DOM document: " + e, e);
             }
-        }
-        else {
+        } else {
             String xml = getXStream().toXML(body);
             message.setContent(new StringSource(xml));
         }
@@ -76,13 +76,11 @@ public class XStreamMarshaler extends DefaultMarshaler {
             if (content instanceof DOMSource) {
                 DOMSource domSource = (DOMSource) content;
                 document = (Document) domSource.getNode();
-            }
-            else {
+            } else {
                 DOMResult result = new DOMResult();
                 try {
                     transformer.toResult(content, result);
-                }
-                catch (TransformerException e) {
+                } catch (TransformerException e) {
                     throw new MessagingException("Failed to transform content: " + content + " to DOMResult: " + e, e);
                 }
                 document = (Document) result.getNode();
@@ -136,9 +134,9 @@ public class XStreamMarshaler extends DefaultMarshaler {
     protected XStream createXStream() {
         XStream answer = new XStream();
         try {
-        	answer.alias("invoke", Class.forName("org.logicblaze.lingo.LingoInvocation"));
+            answer.alias("invoke", Class.forName("org.logicblaze.lingo.LingoInvocation"));
         } catch (ClassNotFoundException e) {
-        	// Ignore
+            // Ignore
         }
         return answer;
     }

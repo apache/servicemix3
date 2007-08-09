@@ -16,13 +16,13 @@
  */
 package org.apache.servicemix.jbi.jaxp;
 
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 
 /**
  * A helper class which provides a JAXP {@link Source} from a byte[]

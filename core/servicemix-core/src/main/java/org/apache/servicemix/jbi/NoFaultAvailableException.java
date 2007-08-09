@@ -26,7 +26,8 @@ import javax.jbi.messaging.MessagingException;
  * @version $Revision$
  */
 public class NoFaultAvailableException extends MessagingException {
-    private MessageExchange messageExchange;
+
+    private final MessageExchange messageExchange;
 
     public NoFaultAvailableException(MessageExchange messageExchange) {
         super("No Fault available for message exchange: " + messageExchange);

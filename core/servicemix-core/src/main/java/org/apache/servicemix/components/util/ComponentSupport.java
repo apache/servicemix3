@@ -16,17 +16,26 @@
  */
 package org.apache.servicemix.components.util;
 
-import org.apache.servicemix.jbi.NoInMessageAvailableException;
-import org.apache.servicemix.JbiConstants;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
-
 import javax.jbi.component.Component;
 import javax.jbi.component.ComponentLifeCycle;
 import javax.jbi.component.ServiceUnitManager;
-import javax.jbi.messaging.*;
+import javax.jbi.messaging.DeliveryChannel;
+import javax.jbi.messaging.InOnly;
+import javax.jbi.messaging.InOptionalOut;
+import javax.jbi.messaging.InOut;
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessageExchangeFactory;
+import javax.jbi.messaging.MessagingException;
+import javax.jbi.messaging.NormalizedMessage;
+import javax.jbi.messaging.RobustInOnly;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
+
+import org.apache.servicemix.JbiConstants;
+import org.apache.servicemix.jbi.NoInMessageAvailableException;
 
 /**
  * A useful base class for developers wishing to implement a JBI Component.
@@ -169,7 +178,8 @@ public abstract class ComponentSupport extends PojoSupport implements Component 
      * @param interfaceName
      * @param operation
      */
-    public void invoke(MessageExchange exchange, NormalizedMessage in, QName service, QName interfaceName, QName operation) throws MessagingException {
+    public void invoke(MessageExchange exchange, NormalizedMessage in, 
+                       QName service, QName interfaceName, QName operation) throws MessagingException {
         InOnly outExchange = createInOnlyExchange(service, interfaceName, operation);
         forwardToExchange(exchange, outExchange, in, operation);
     }
@@ -200,7 +210,8 @@ public abstract class ComponentSupport extends PojoSupport implements Component 
         return outExchange;
     }
 
-    public InOnly createInOnlyExchange(QName service, QName interfaceName, QName operation, MessageExchange beforeExchange) throws MessagingException {
+    public InOnly createInOnlyExchange(QName service, QName interfaceName, 
+                                       QName operation, MessageExchange beforeExchange) throws MessagingException {
         InOnly inOnly = createInOnlyExchange(service, interfaceName, operation);
         propagateCorrelationId(beforeExchange, inOnly);
         return inOnly;
@@ -232,7 +243,8 @@ public abstract class ComponentSupport extends PojoSupport implements Component 
         return outExchange;
     }
 
-    public InOut creatInOutExchange(QName service, QName interfaceName, QName operation, MessageExchange srcExchange) throws MessagingException {
+    public InOut creatInOutExchange(QName service, QName interfaceName, 
+                                    QName operation, MessageExchange srcExchange) throws MessagingException {
         InOut inOut = createInOutExchange(service, interfaceName, operation);
         propagateCorrelationId(srcExchange, inOut);
         return inOut;
@@ -319,7 +331,8 @@ public abstract class ComponentSupport extends PojoSupport implements Component 
         }
     }
 
-    protected void forwardToExchange(MessageExchange exchange, InOnly outExchange, NormalizedMessage in, QName operationName) throws MessagingException {
+    protected void forwardToExchange(MessageExchange exchange, InOnly outExchange, 
+                                     NormalizedMessage in, QName operationName) throws MessagingException {
         if (operationName != null) {
             exchange.setOperation(operationName);
         }
