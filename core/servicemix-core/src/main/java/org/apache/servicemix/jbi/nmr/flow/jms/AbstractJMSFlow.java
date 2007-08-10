@@ -24,8 +24,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.MessageExchange.Role;
+import javax.jbi.messaging.MessagingException;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -64,32 +64,20 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
 
     private static final String INBOUND_PREFIX = "org.apache.servicemix.jms.";
 
-    private String userName;
-
-    private String password;
-
-    ConnectionFactory connectionFactory;
-
+    protected ConnectionFactory connectionFactory;
     protected Connection connection;
-
-    private String broadcastDestinationName = "org.apache.servicemix.JMSFlow";
-
-    private MessageConsumer broadcastConsumer;
-
+    protected AtomicBoolean started = new AtomicBoolean(false);
+    protected MessageConsumer monitorMessageConsumer;
     protected Set<String> subscriberSet = new CopyOnWriteArraySet<String>();
 
+    private String userName;
+    private String password;
+    private String broadcastDestinationName = "org.apache.servicemix.JMSFlow";
+    private MessageConsumer broadcastConsumer;
     private Map<String, MessageConsumer> consumerMap = new ConcurrentHashMap<String, MessageConsumer>();
-
-    AtomicBoolean started = new AtomicBoolean(false);
-
     private EndpointListener endpointListener;
-
     private ComponentListener componentListener;
-
     private Executor executor;
-
-    protected MessageConsumer monitorMessageConsumer = null;
-
     private String jmsURL = "peer://org.apache.servicemix?persistent=false";
 
     /**
@@ -229,7 +217,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
         }
     }
 
-    abstract protected ConnectionFactory createConnectionFactoryFromUrl(String jmsURL);
+    protected abstract ConnectionFactory createConnectionFactoryFromUrl(String url);
 
     /*
      * The following abstract methods have to be implemented by specialized JMS
@@ -238,7 +226,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
 
     protected abstract void onConsumerMonitorMessage(Message message);
 
-    abstract public void startConsumerMonitor() throws JMSException;
+    public abstract void startConsumerMonitor() throws JMSException;
 
     public void stopConsumerMonitor() throws JMSException {
         monitorMessageConsumer.close();

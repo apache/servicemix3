@@ -26,9 +26,12 @@ import java.io.Writer;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-public class XmlPersistenceSupport {
+public final class XmlPersistenceSupport {
 
     private static XStream xstream = new XStream(new DomDriver());
+    
+    private XmlPersistenceSupport() {
+    }
     
     public static Object read(File file) throws IOException {
         Reader r = new FileReader(file);

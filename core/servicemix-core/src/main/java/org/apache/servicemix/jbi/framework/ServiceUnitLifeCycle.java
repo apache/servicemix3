@@ -199,13 +199,16 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
         String suName = getName();
         ComponentMBeanImpl lcc = registry.getComponent(componentName);
         if (lcc == null) {
-            throw ManagementSupport.componentFailure("deploy", componentName, "Target component " + componentName + " for service unit " + suName + " is not installed");
+            throw ManagementSupport.componentFailure("deploy", componentName, "Target component "
+                            + componentName + " for service unit " + suName + " is not installed");
         }
         if (!lcc.isStarted()) {
-            throw ManagementSupport.componentFailure("deploy", componentName, "Target component " + componentName + " for service unit " + suName + " is not started");
+            throw ManagementSupport.componentFailure("deploy", componentName, "Target component "
+                            + componentName + " for service unit " + suName + " is not started");
         }
         if (lcc.getServiceUnitManager() == null) {
-            throw ManagementSupport.componentFailure("deploy", componentName, "Target component " + componentName + " for service unit " + suName + " does not accept deployments");
+            throw ManagementSupport.componentFailure("deploy", componentName, "Target component "
+                            + componentName + " for service unit " + suName + " does not accept deployments");
         }
     }
     
@@ -214,13 +217,16 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
         String suName = getName();
         ComponentMBeanImpl lcc = registry.getComponent(componentName);
         if (lcc == null) {
-            throw ManagementSupport.componentFailure("deploy", componentName, "Target component " + componentName + " for service unit " + suName + " is not installed");
+            throw ManagementSupport.componentFailure("deploy", componentName, "Target component "
+                            + componentName + " for service unit " + suName + " is not installed");
         }
         if (!lcc.isStarted() && !lcc.isStopped()) {
-            throw ManagementSupport.componentFailure("deploy", componentName, "Target component " + componentName + " for service unit " + suName + " is not started");
+            throw ManagementSupport.componentFailure("deploy", componentName, "Target component "
+                            + componentName + " for service unit " + suName + " is not started");
         }
         if (lcc.getServiceUnitManager() == null) {
-            throw ManagementSupport.componentFailure("deploy", componentName, "Target component " + componentName + " for service unit " + suName + " does not accept deployments");
+            throw ManagementSupport.componentFailure("deploy", componentName, "Target component "
+                            + componentName + " for service unit " + suName + " does not accept deployments");
         }
     }
     
@@ -267,14 +273,14 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
         return getComponentName();
     }
 
-    public void setPropertyChangeListener(PropertyChangeListener listener) {
-        this.listener = listener;
+    public void setPropertyChangeListener(PropertyChangeListener l) {
+        this.listener = l;
     }
 
-    protected void firePropertyChanged(String name,Object oldValue, Object newValue){
+    protected void firePropertyChanged(String name, Object oldValue, Object newValue) {
         PropertyChangeListener l = listener;
-        if (l != null){
-            PropertyChangeEvent event = new PropertyChangeEvent(this,name,oldValue,newValue);
+        if (l != null) {
+            PropertyChangeEvent event = new PropertyChangeEvent(this, name, oldValue, newValue);
             l.propertyChange(event);
         }
     }
@@ -296,6 +302,8 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
                 break;
             case ServiceUnitEvent.UNIT_SHUTDOWN:
                 listeners[i].unitShutDown(event);
+                break;
+            default:
                 break;
             }
         }

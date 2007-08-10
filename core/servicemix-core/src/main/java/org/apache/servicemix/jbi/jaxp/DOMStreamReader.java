@@ -33,48 +33,43 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.servicemix.jbi.util.FastStack;
 
 /**
- * Abstract logic for creating XMLStreamReader from DOM documents.
- * Its works using adapters for Element, Node and Attribute ( @see ElementAdapter }
+ * Abstract logic for creating XMLStreamReader from DOM documents. Its works
+ * using adapters for Element, Node and Attribute (
+ * 
+ * @see ElementAdapter }
  * 
  * @author <a href="mailto:tsztelak@gmail.com">Tomasz Sztelak</a>
  */
 public abstract class DOMStreamReader implements XMLStreamReader {
-    public Map properties = new HashMap();
 
-    private FastStack<ElementFrame> frames = new FastStack<ElementFrame>();
-
-    private ElementFrame frame;
+    protected Map properties = new HashMap();
 
     protected int currentEvent = XMLStreamConstants.START_DOCUMENT;
 
+    protected FastStack<ElementFrame> frames = new FastStack<ElementFrame>();
+
+    protected ElementFrame frame;
+
     /**
-     *     
+     * 
      */
     public static class ElementFrame {
+
+        Object element;
+        boolean started;
+        boolean ended;
+        int currentChild = -1;
+        int currentAttribute = -1;
+        int currentElement = -1;
+        List<String> uris;
+        List<String> prefixes;
+        List attributes;
+        final ElementFrame parent;
+
         public ElementFrame(Object element, ElementFrame parent) {
             this.element = element;
             this.parent = parent;
         }
-
-        Object element;
-
-        boolean started = false;
-
-        boolean ended = false;
-
-        int currentChild = -1;
-
-        int currentAttribute = -1;
-
-        int currentElement = -1;
-
-        List<String> uris;
-
-        List<String> prefixes;
-
-        List attributes;
-
-        final ElementFrame parent;
     }
 
     /**
@@ -90,14 +85,18 @@ public abstract class DOMStreamReader implements XMLStreamReader {
         return frame;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.xml.stream.XMLStreamReader#getProperty(java.lang.String)
      */
     public Object getProperty(String key) throws IllegalArgumentException {
         return properties.get(key);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.xml.stream.XMLStreamReader#next()
      */
     public int next() throws XMLStreamException {
@@ -146,36 +145,46 @@ public abstract class DOMStreamReader implements XMLStreamReader {
     }
 
     protected abstract int moveToChild(int currentChild);
-
+    
     protected abstract ElementFrame getChildFrame(int currentChild);
-
+    
     protected abstract int getChildCount();
 
-    /* (non-Javadoc)
-     * @see javax.xml.stream.XMLStreamReader#require(int, java.lang.String, java.lang.String)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.xml.stream.XMLStreamReader#require(int, java.lang.String,
+     *      java.lang.String)
      */
     public void require(int arg0, String arg1, String arg2) throws XMLStreamException {
         throw new UnsupportedOperationException();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.xml.stream.XMLStreamReader#getElementText()
      */
     public abstract String getElementText() throws XMLStreamException;
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.xml.stream.XMLStreamReader#nextTag()
      */
     public int nextTag() throws XMLStreamException {
         while (hasNext()) {
-            if (START_ELEMENT == next())
+            if (START_ELEMENT == next()) {
                 return START_ELEMENT;
+            }
         }
 
         return currentEvent;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.xml.stream.XMLStreamReader#hasNext()
      */
     public boolean hasNext() throws XMLStreamException {
@@ -183,43 +192,55 @@ public abstract class DOMStreamReader implements XMLStreamReader {
 
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.xml.stream.XMLStreamReader#close()
      */
     public void close() throws XMLStreamException {
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.xml.stream.XMLStreamReader#getNamespaceURI(java.lang.String)
      */
     public abstract String getNamespaceURI(String prefix);
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.xml.stream.XMLStreamReader#isStartElement()
      */
     public boolean isStartElement() {
-        return (currentEvent == START_ELEMENT);
+        return currentEvent == START_ELEMENT;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.xml.stream.XMLStreamReader#isEndElement()
      */
     public boolean isEndElement() {
-        return (currentEvent == END_ELEMENT);
+        return currentEvent == END_ELEMENT;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.xml.stream.XMLStreamReader#isCharacters()
      */
     public boolean isCharacters() {
-        return (currentEvent == CHARACTERS);
+        return currentEvent == CHARACTERS;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.xml.stream.XMLStreamReader#isWhiteSpace()
      */
     public boolean isWhiteSpace() {
-        return (currentEvent == SPACE);
+        return currentEvent == SPACE;
     }
 
     public int getEventType() {
@@ -229,8 +250,9 @@ public abstract class DOMStreamReader implements XMLStreamReader {
     public int getTextCharacters(int sourceStart, char[] target, int targetStart, int length) throws XMLStreamException {
         char[] src = getText().toCharArray();
 
-        if (sourceStart + length >= src.length)
+        if (sourceStart + length >= src.length) {
             length = src.length - sourceStart;
+        }
 
         for (int i = 0; i < length; i++) {
             target[targetStart + i] = src[i + sourceStart];
@@ -240,8 +262,9 @@ public abstract class DOMStreamReader implements XMLStreamReader {
     }
 
     public boolean hasText() {
-        return (currentEvent == CHARACTERS || currentEvent == DTD || currentEvent == ENTITY_REFERENCE
-                        || currentEvent == COMMENT || currentEvent == SPACE);
+        return currentEvent == CHARACTERS || currentEvent == DTD
+            || currentEvent == ENTITY_REFERENCE || currentEvent == COMMENT
+            || currentEvent == SPACE;
     }
 
     public Location getLocation() {
@@ -271,7 +294,7 @@ public abstract class DOMStreamReader implements XMLStreamReader {
     }
 
     public boolean hasName() {
-        return (currentEvent == START_ELEMENT || currentEvent == END_ELEMENT);
+        return currentEvent == START_ELEMENT || currentEvent == END_ELEMENT;
     }
 
     public String getVersion() {

@@ -37,9 +37,9 @@ import org.apache.servicemix.jbi.management.OperationInfoHelper;
  */
 public class ComponentStats extends BaseLifeCycle implements ComponentStatsMBean {
 
-    private static final Log log = LogFactory.getLog(ComponentStats.class);
-    
     public static final String STATS_FILE = "stats.csv";
+    
+    private static final Log LOG = LogFactory.getLog(ComponentStats.class);
     
     private ComponentMBeanImpl component;
     private MessagingStats stats;
@@ -80,9 +80,8 @@ public class ComponentStats extends BaseLifeCycle implements ComponentStatsMBean
                 long outbound = stats.getOutboundExchanges().getCount();
                 double outboundRate = stats.getOutboundExchangeRate().getAveragePerSecond();
                 statsWriter.println(inbound + "," + inboundRate + "," + outbound + "," + outboundRate);
-            }
-            catch (IOException e) {
-                log.warn("Failed to dump stats", e);
+            } catch (IOException e) {
+                LOG.warn("Failed to dump stats", e);
             }
         }
     }
@@ -115,7 +114,7 @@ public class ComponentStats extends BaseLifeCycle implements ComponentStatsMBean
         */
         stats.getInboundExchanges().increment();
         stats.getInboundExchangeRate().addTime();
-   }
+    }
     
     void incrementOutbound() {
         /*

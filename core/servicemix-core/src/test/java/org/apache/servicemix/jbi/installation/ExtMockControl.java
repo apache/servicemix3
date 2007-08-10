@@ -16,16 +16,16 @@
  */
 package org.apache.servicemix.jbi.installation;
 
-import org.easymock.ArgumentsMatcher;
-import org.easymock.MockControl;
-import org.easymock.internal.Range;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 import junit.framework.AssertionFailedError;
+
+import org.easymock.ArgumentsMatcher;
+import org.easymock.MockControl;
+import org.easymock.internal.Range;
 
 public class ExtMockControl implements InvocationHandler {
 
@@ -410,7 +410,7 @@ public class ExtMockControl implements InvocationHandler {
      */
     public Object getMock() {
         if (mock == null) {
-            mock = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] { clazz },  this);
+            mock = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] {clazz },  this);
         }
         return mock;
     }

@@ -19,6 +19,11 @@ package org.apache.servicemix.jbi.messaging;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
@@ -26,9 +31,9 @@ import javax.jbi.component.ComponentLifeCycle;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
-import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
@@ -47,12 +52,6 @@ import org.apache.servicemix.jbi.event.ExchangeListener;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 /**
  * DeliveryChannel implementation
  * 
@@ -60,23 +59,32 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class DeliveryChannelImpl implements DeliveryChannel {
 
-    private static final Log log = LogFactory.getLog(DeliveryChannelImpl.class);
+    private static final Log LOG = LogFactory.getLog(DeliveryChannelImpl.class);
 
     private JBIContainer container;
+
     private ComponentContextImpl context;
+
     private ComponentMBeanImpl component;
+
     private BlockingQueue<MessageExchangeImpl> queue;
+
     private IdGenerator idGenerator = new IdGenerator();
+
     private MessageExchangeFactory inboundFactory;
-    private int intervalCount = 0;
+
+    private int intervalCount;
+
     private AtomicBoolean closed = new AtomicBoolean(false);
+
     private Map<Thread, Boolean> waiters = new ConcurrentHashMap<Thread, Boolean>();
-    private TransactionManager transactionManager = null;
-    
+
+    private TransactionManager transactionManager;
+
     /**
-     * When using clustering and sendSync, the exchange received will not be the same
-     * as the one sent (because it has been serialized/deserialized.
-     * We thus need to keep the original exchange in a map and override its state.
+     * When using clustering and sendSync, the exchange received will not be the
+     * same as the one sent (because it has been serialized/deserialized. We
+     * thus need to keep the original exchange in a map and override its state.
      */
     private Map<String, MessageExchangeImpl> exchangesById = new ConcurrentHashMap<String, MessageExchangeImpl>();
 
@@ -104,13 +112,14 @@ public class DeliveryChannelImpl implements DeliveryChannel {
      */
     public void close() throws MessagingException {
         if (this.closed.compareAndSet(false, true)) {
-            if (log.isDebugEnabled()) {
-                log.debug("Closing DeliveryChannel " + this);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Closing DeliveryChannel " + this);
             }
             List<MessageExchangeImpl> pending = new ArrayList<MessageExchangeImpl>(queue.size());
             queue.drainTo(pending);
             for (MessageExchangeImpl messageExchange : pending) {
-                if (messageExchange.getTransactionContext() != null && messageExchange.getMirror().getSyncState() == MessageExchangeImpl.SYNC_STATE_SYNC_SENT) {
+                if (messageExchange.getTransactionContext() != null
+                                && messageExchange.getMirror().getSyncState() == MessageExchangeImpl.SYNC_STATE_SYNC_SENT) {
                     notifyExchange(messageExchange.getMirror(), messageExchange.getMirror(), "close");
                 }
             }
@@ -125,7 +134,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                 try {
                     component.getContext().deactivateEndpoint(endpoints[i]);
                 } catch (JBIException e) {
-                    log.error("Error deactivating endpoint", e);
+                    LOG.error("Error deactivating endpoint", e);
                 }
             }
             // TODO: Cause all accepts to return null
@@ -140,8 +149,8 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     }
 
     /**
-     * Create a message exchange factory. This factory will create exchange instances with all appropriate properties
-     * set to null.
+     * Create a message exchange factory. This factory will create exchange
+     * instances with all appropriate properties set to null.
      * 
      * @return a message exchange factory
      */
@@ -155,34 +164,34 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             QName serviceName = activationSpec.getDestinationService();
             if (serviceName != null) {
                 result.setServiceName(serviceName);
-                log.debug("default destination serviceName for " + componentName + " = " + serviceName);
+                LOG.debug("default destination serviceName for " + componentName + " = " + serviceName);
             }
             QName interfaceName = activationSpec.getDestinationInterface();
             if (interfaceName != null) {
                 result.setInterfaceName(interfaceName);
-                log.debug("default destination interfaceName for " + componentName + " = " + interfaceName);
+                LOG.debug("default destination interfaceName for " + componentName + " = " + interfaceName);
             }
             QName operationName = activationSpec.getDestinationOperation();
             if (operationName != null) {
                 result.setOperationName(operationName);
-                log.debug("default destination operationName for " + componentName + " = " + operationName);
+                LOG.debug("default destination operationName for " + componentName + " = " + operationName);
             }
             String endpointName = activationSpec.getDestinationEndpoint();
             if (endpointName != null) {
                 boolean endpointSet = false;
-                log.debug("default destination endpointName for " + componentName + " = " + endpointName);
+                LOG.debug("default destination endpointName for " + componentName + " = " + endpointName);
                 if (serviceName != null && endpointName != null) {
                     endpointName = endpointName.trim();
                     ServiceEndpoint endpoint = container.getRegistry().getEndpoint(serviceName, endpointName);
                     if (endpoint != null) {
                         result.setEndpoint(endpoint);
-                        log.info("Set default destination endpoint for " + componentName + " to " + endpoint);
+                        LOG.info("Set default destination endpoint for " + componentName + " to " + endpoint);
                         endpointSet = true;
                     }
                 }
                 if (!endpointSet) {
-                    log.warn("Could not find destination endpoint for " + componentName + " service(" + serviceName
-                            + ") with endpointName " + endpointName);
+                    LOG.warn("Could not find destination endpoint for " + componentName + " service(" + serviceName
+                                    + ") with endpointName " + endpointName);
                 }
             }
         }
@@ -192,8 +201,11 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     /**
      * Create a message exchange factory for the given interface name.
      * 
-     * @param interfaceName name of the interface for which all exchanges created by the returned factory will be set
-     * @return an exchange factory that will create exchanges for the given interface; must be non-null
+     * @param interfaceName
+     *            name of the interface for which all exchanges created by the
+     *            returned factory will be set
+     * @return an exchange factory that will create exchanges for the given
+     *         interface; must be non-null
      */
     public MessageExchangeFactory createExchangeFactory(QName interfaceName) {
         MessageExchangeFactoryImpl result = createMessageExchangeFactory();
@@ -204,8 +216,11 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     /**
      * Create a message exchange factory for the given service name.
      * 
-     * @param serviceName name of the service for which all exchanges created by the returned factory will be set
-     * @return an exchange factory that will create exchanges for the given service; must be non-null
+     * @param serviceName
+     *            name of the service for which all exchanges created by the
+     *            returned factory will be set
+     * @return an exchange factory that will create exchanges for the given
+     *         service; must be non-null
      */
     public MessageExchangeFactory createExchangeFactoryForService(QName serviceName) {
         MessageExchangeFactoryImpl result = createMessageExchangeFactory();
@@ -216,8 +231,11 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     /**
      * Create a message exchange factory for the given endpoint.
      * 
-     * @param endpoint endpoint for which all exchanges created by the returned factory will be set for
-     * @return an exchange factory that will create exchanges for the given endpoint
+     * @param endpoint
+     *            endpoint for which all exchanges created by the returned
+     *            factory will be set for
+     * @return an exchange factory that will create exchanges for the given
+     *         endpoint
      */
     public MessageExchangeFactory createExchangeFactory(ServiceEndpoint endpoint) {
         MessageExchangeFactoryImpl result = createMessageExchangeFactory();
@@ -254,36 +272,35 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                 // If the exchange has already timed out,
                 // do not give it to the component
                 if (me.getPacket().isAborted()) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Aborted " + me.getExchangeId() + " in " + this);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Aborted " + me.getExchangeId() + " in " + this);
                     }
                     me = null;
                 } else {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Accepting " + me.getExchangeId() + " in " + this);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Accepting " + me.getExchangeId() + " in " + this);
                     }
-                    // If we have a tx lock and the exchange is not active, we need
+                    // If we have a tx lock and the exchange is not active, we
+                    // need
                     // to notify here without resuming transaction
                     if (me.getTxLock() != null && me.getStatus() != ExchangeStatus.ACTIVE) {
                         notifyExchange(me.getMirror(), me.getTxLock(), "acceptFinishedExchangeWithTxLock");
                         me.handleAccept();
-                        if (log.isTraceEnabled()) {
-                            log.trace("Accepted: " + me);
+                        if (LOG.isTraceEnabled()) {
+                            LOG.trace("Accepted: " + me);
                         }
-                    }
                     // We transactionnaly deliver a finished exchange
-                    else if (me.isTransacted() && me.getStatus() != ExchangeStatus.ACTIVE) {
+                    } else if (me.isTransacted() && me.getStatus() != ExchangeStatus.ACTIVE) {
                         // Do not resume transaction
                         me.handleAccept();
-                        if (log.isTraceEnabled()) {
-                            log.trace("Accepted: " + me);
+                        if (LOG.isTraceEnabled()) {
+                            LOG.trace("Accepted: " + me);
                         }
-                    } 
-                    else {
+                    } else {
                         resumeTx(me);
                         me.handleAccept();
-                        if (log.isTraceEnabled()) {
-                            log.trace("Accepted: " + me);
+                        if (LOG.isTraceEnabled()) {
+                            LOG.trace("Accepted: " + me);
                         }
                     }
                 }
@@ -296,17 +313,16 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                     try {
                         l[i].exchangeAccepted(event);
                     } catch (Exception e) {
-                        log.warn("Error calling listener: " + e.getMessage(), e);
+                        LOG.warn("Error calling listener: " + e.getMessage(), e);
                     }
                 }
             }
             return me;
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             throw new MessagingException("accept failed", e);
         }
     }
-    
+
     protected void autoSetPersistent(MessageExchangeImpl me) {
         Boolean persistent = me.getPersistent();
         if (persistent == null) {
@@ -318,16 +334,15 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             me.setPersistent(persistent);
         }
     }
-    
+
     protected void throttle() {
         if (component.isExchangeThrottling()) {
             if (component.getThrottlingInterval() > intervalCount) {
                 intervalCount = 0;
                 try {
                     Thread.sleep(component.getThrottlingTimeout());
-                }
-                catch (InterruptedException e) {
-                    log.warn("throttling failed", e);
+                } catch (InterruptedException e) {
+                    LOG.warn("throttling failed", e);
                 }
             }
             intervalCount++;
@@ -338,8 +353,8 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         MessageExchangeImpl mirror = me.getMirror();
         boolean finished = me.getStatus() != ExchangeStatus.ACTIVE;
         try {
-            if (log.isTraceEnabled()) {
-                log.trace("Sent: " + me);
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Sent: " + me);
             }
             // If the message has timed out
             if (me.getPacket().isAborted()) {
@@ -363,25 +378,24 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                 try {
                     l[i].exchangeSent(event);
                 } catch (Exception e) {
-                    log.warn("Error calling listener: " + e.getMessage(), e);
+                    LOG.warn("Error calling listener: " + e.getMessage(), e);
                 }
             }
             // Change ownership
             me.handleSend(sync);
             mirror.setTxState(MessageExchangeImpl.TX_STATE_NONE);
-            // If this is the DONE or ERROR status from a synchronous transactional exchange,
-            // it should not be part of the transaction, so remove the tx context
-            if (finished && 
-                me.getTxLock() == null &&
-                me.getTxState() == MessageExchangeImpl.TX_STATE_CONVEYED &&
-                me.isPushDelivery() == false &&
-                me.getRole() == Role.CONSUMER) {
+            // If this is the DONE or ERROR status from a synchronous
+            // transactional exchange,
+            // it should not be part of the transaction, so remove the tx
+            // context
+            if (finished && me.getTxLock() == null && me.getTxState() == MessageExchangeImpl.TX_STATE_CONVEYED
+                            && !me.isPushDelivery() && me.getRole() == Role.CONSUMER) {
                 me.setTransactionContext(null);
             }
             container.sendExchange(mirror);
         } catch (MessagingException e) {
-            if (log.isDebugEnabled()) {
-                log.debug("Exception processing: " + me.getExchangeId() + " in " + this);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Exception processing: " + me.getExchangeId() + " in " + this);
             }
             throw e;
         } finally {
@@ -407,8 +421,8 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         // If the delivery channel has been closed
         checkNotClosed();
         // Log call
-        if (log.isDebugEnabled()) {
-            log.debug("Send " + messageExchange.getExchangeId() + " in " + this);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Send " + messageExchange.getExchangeId() + " in " + this);
         }
         // // JBI 5.5.2.1.3: remove sync property
         messageExchange.setProperty(JbiConstants.SEND_SYNC, null);
@@ -440,8 +454,8 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         // If the delivery channel has been closed
         checkNotClosed();
         // Log call
-        if (log.isDebugEnabled()) {
-            log.debug("SendSync " + messageExchange.getExchangeId() + " in " + this);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("SendSync " + messageExchange.getExchangeId() + " in " + this);
         }
         boolean result = false;
         // JBI 5.5.2.1.3: set the sendSync property
@@ -457,8 +471,8 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                 if (me.getSyncState() != MessageExchangeImpl.SYNC_STATE_SYNC_RECEIVED) {
                     waitForExchange(me, me, timeout, "sendSync");
                 } else {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Exchange " + messageExchange.getExchangeId() + " has already been answered (no need to wait)");
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Exchange " + messageExchange.getExchangeId() + " has already been answered (no need to wait)");
                     }
                 }
             }
@@ -468,14 +482,14 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                 // the message has been delivered in the same thread
                 // so there is no need to resume the transaction
                 // See processInBound
-                //if (messageExchangeImpl.getSyncSenderThread() != null) {
-                    resumeTx(me);
-                //}
+                // if (messageExchangeImpl.getSyncSenderThread() != null) {
+                resumeTx(me);
+                // }
                 result = true;
             } else {
                 // JBI 5.5.2.1.3: the exchange should be set to ERROR status
-                if (log.isDebugEnabled()) {
-                    log.debug("Exchange " + messageExchange.getExchangeId() + " has been aborted");
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Exchange " + messageExchange.getExchangeId() + " has been aborted");
                 }
                 me.getPacket().setAborted(true);
                 result = false;
@@ -483,7 +497,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         } catch (InterruptedException e) {
             throw new MessagingException(e);
         } catch (RuntimeException e) {
-//            e.printStackTrace();
+            // e.printStackTrace();
             throw e;
         } finally {
             exchangesById.remove(exchangeKey);
@@ -499,7 +513,8 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     }
 
     /**
-     * @param container The container to set.
+     * @param container
+     *            The container to set.
      */
     public void setContainer(JBIContainer container) {
         this.container = container;
@@ -537,8 +552,8 @@ public class DeliveryChannelImpl implements DeliveryChannel {
      * @throws MessagingException
      */
     public void processInBound(MessageExchangeImpl me) throws MessagingException {
-        if (log.isTraceEnabled()) {
-            log.trace("Processing inbound exchange: " + me);
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Processing inbound exchange: " + me);
         }
         // Check if the delivery channel has been closed
         checkNotClosed();
@@ -548,19 +563,21 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             original.copyFrom(me);
             me = original;
         }
-        // Check if the incoming exchange is a response to a synchronous exchange previously sent
-        // In this case, we do not have to queue it, but rather notify the waiting thread.
+        // Check if the incoming exchange is a response to a synchronous
+        // exchange previously sent
+        // In this case, we do not have to queue it, but rather notify the
+        // waiting thread.
         if (me.getSyncState() == MessageExchangeImpl.SYNC_STATE_SYNC_SENT) {
             // If the mirror has been delivered using push, better wait until
-            // the push call return.  This can only work if not using clustered flows,
+            // the push call return. This can only work if not using clustered
+            // flows,
             // but the flag is transient so we do not care.
-            /*if (!me.getMirror().isPushDelivery())*/ {
-                // Ensure that data is uptodate with the incoming exchange (in case the exchange has
-                // been serialized / deserialized by a clustered flow)
-                suspendTx(original);
-                me.setSyncState(MessageExchangeImpl.SYNC_STATE_SYNC_RECEIVED);
-                notifyExchange(original, original, "processInboundSynchronousExchange");
-            }
+            // Ensure that data is uptodate with the incoming exchange (in
+            // case the exchange has
+            // been serialized / deserialized by a clustered flow)
+            suspendTx(original);
+            me.setSyncState(MessageExchangeImpl.SYNC_STATE_SYNC_RECEIVED);
+            notifyExchange(original, original, "processInboundSynchronousExchange");
             return;
         }
 
@@ -570,8 +587,8 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         MessageExchangeListener listener = getExchangeListener();
         if (listener != null) {
             me.handleAccept();
-            if (log.isTraceEnabled()) {
-                log.trace("Received: " + me);
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Received: " + me);
             }
             // Call input listeners
             ExchangeListener[] l = (ExchangeListener[]) container.getListeners(ExchangeListener.class);
@@ -580,7 +597,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                 try {
                     l[i].exchangeAccepted(event);
                 } catch (Exception e) {
-                    log.warn("Error calling listener: " + e.getMessage(), e);
+                    LOG.warn("Error calling listener: " + e.getMessage(), e);
                 }
             }
             // Set the flag the the exchange was delivered using push mode
@@ -594,32 +611,33 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             } finally {
                 Thread.currentThread().setContextClassLoader(old);
             }
-            // TODO: handle delayed exchange notifications 
+            // TODO: handle delayed exchange notifications
             return;
         }
-        
+
         // Component uses pull delivery.
-        
+
         // If the exchange is transacted, special care should be taken.
         // But if the exchange is no more ACTIVE, just queue it, as
         // we will never have an answer back.
         if (me.isTransacted() && me.getStatus() == ExchangeStatus.ACTIVE) {
             // If the transaction is conveyed by the exchange
-            // We do not need to resume the transaction in this thread 
+            // We do not need to resume the transaction in this thread
             if (me.getTxState() == MessageExchangeImpl.TX_STATE_CONVEYED) {
                 try {
                     suspendTx(me);
                     queue.put(me);
                 } catch (InterruptedException e) {
-                    log.debug("Exchange " + me.getExchangeId() + " aborted due to thread interruption", e);
+                    LOG.debug("Exchange " + me.getExchangeId() + " aborted due to thread interruption", e);
                     me.getPacket().setAborted(true);
                 }
-            }
             // Else the delivery / send are enlisted in the current tx.
-            // We must suspend the transaction, queue it, and wait for the answer
-            // to be sent, at which time the tx should be suspended and resumed in
+            // We must suspend the transaction, queue it, and wait for the
+            // answer
+            // to be sent, at which time the tx should be suspended and resumed
+            // in
             // this thread.
-            else {
+            } else {
                 Object lock = new Object();
                 synchronized (lock) {
                     try {
@@ -628,7 +646,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                         queue.put(me);
                         waitForExchange(me, lock, 0, "processInboundTransactionalExchange");
                     } catch (InterruptedException e) {
-                        log.debug("Exchange " + me.getExchangeId() + " aborted due to thread interruption", e);
+                        LOG.debug("Exchange " + me.getExchangeId() + " aborted due to thread interruption", e);
                         me.getPacket().setAborted(true);
                     } finally {
                         me.setTxLock(null);
@@ -636,24 +654,24 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                     }
                 }
             }
-        }
-        // If the exchange is ACTIVE, the transaction boundary will suspended when the 
+        // If the exchange is ACTIVE, the transaction boundary will suspended
+        // when the
         // answer is sent
         // Else just queue the exchange
-        else {
+        } else {
             try {
                 queue.put(me);
             } catch (InterruptedException e) {
-                log.debug("Exchange " + me.getExchangeId() + " aborted due to thread interruption", e);
+                LOG.debug("Exchange " + me.getExchangeId() + " aborted due to thread interruption", e);
                 me.getPacket().setAborted(true);
             }
         }
     }
-    
+
     protected MessageExchangeListener getExchangeListener() {
-        Component component = this.component.getComponent();
-        if (component instanceof MessageExchangeListener) {
-            return (MessageExchangeListener) component;
+        Component comp = this.component.getComponent();
+        if (comp instanceof MessageExchangeListener) {
+            return (MessageExchangeListener) comp;
         }
         ComponentLifeCycle lifecycle = this.component.getLifeCycle();
         if (lifecycle instanceof MessageExchangeListener) {
@@ -661,17 +679,19 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         }
         return null;
     }
-    
+
     /**
-     * Synchronization must be performed on the given exchange when calling this method
+     * Synchronization must be performed on the given exchange when calling this
+     * method
      * 
      * @param me
      * @throws InterruptedException
      */
     protected void waitForExchange(MessageExchangeImpl me, Object lock, long timeout, String from) throws InterruptedException {
         // If the channel is closed while here, we must abort
-        if (log.isDebugEnabled()) {
-            log.debug("Waiting for exchange " + me.getExchangeId() + " (" + Integer.toHexString(me.hashCode()) + ") to be answered in " + this + " from " + from);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Waiting for exchange " + me.getExchangeId() + " (" + Integer.toHexString(me.hashCode()) + ") to be answered in "
+                            + this + " from " + from);
         }
         Thread th = Thread.currentThread();
         try {
@@ -680,14 +700,15 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         } finally {
             waiters.remove(th);
         }
-        if (log.isDebugEnabled()) {
-            log.debug("Notified: " + me.getExchangeId() + "(" + Integer.toHexString(me.hashCode()) + ") in " + this + " from " + from);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Notified: " + me.getExchangeId() + "(" + Integer.toHexString(me.hashCode()) + ") in " + this + " from " + from);
         }
     }
-    
+
     protected void notifyExchange(MessageExchangeImpl me, Object lock, String from) {
-        if (log.isDebugEnabled()) {
-            log.debug("Notifying exchange " + me.getExchangeId() + "(" + Integer.toHexString(me.hashCode()) + ") in " + this + " from " + from);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Notifying exchange " + me.getExchangeId() + "(" + Integer.toHexString(me.hashCode()) + ") in " + this + " from "
+                            + from);
         }
         synchronized (lock) {
             lock.notify();
@@ -711,16 +732,17 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             try {
                 Transaction oldTx = me.getTransactionContext();
                 if (oldTx != null) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Suspending transaction for " + me.getExchangeId() + " in " + this);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Suspending transaction for " + me.getExchangeId() + " in " + this);
                     }
                     Transaction tx = transactionManager.suspend();
                     if (tx != oldTx) {
-                        throw new IllegalStateException("the transaction context set in the messageExchange is not bound to the current thread");
+                        throw new IllegalStateException(
+                                        "the transaction context set in the messageExchange is not bound to the current thread");
                     }
                 }
             } catch (Exception e) {
-                log.info("Exchange " + me.getExchangeId() + " aborted due to transaction exception", e);
+                LOG.info("Exchange " + me.getExchangeId() + " aborted due to transaction exception", e);
                 me.getPacket().setAborted(true);
             }
         }
@@ -731,8 +753,8 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             try {
                 Transaction oldTx = me.getTransactionContext();
                 if (oldTx != null) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Resuming transaction for " + me.getExchangeId() + " in " + this);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Resuming transaction for " + me.getExchangeId() + " in " + this);
                     }
                     transactionManager.resume(oldTx);
                 }
@@ -744,7 +766,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
 
     /**
      * If the jbi container configured to do so, the message exchange will
-     * automatically be enlisted in the current transaction, if exists. 
+     * automatically be enlisted in the current transaction, if exists.
      * 
      * @throws MessagingException
      */
@@ -758,7 +780,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                         me.setTransactionContext(tx);
                     } else if (oldTx != tx) {
                         throw new IllegalStateException(
-                                "the transaction context set in the messageExchange is not bound to the current thread");
+                                        "the transaction context set in the messageExchange is not bound to the current thread");
                     }
                 }
             } catch (Exception e) {

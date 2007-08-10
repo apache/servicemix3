@@ -16,11 +16,12 @@
  */
 package org.apache.servicemix.jbi.servicedesc;
 
-import org.apache.servicemix.jbi.framework.ComponentNameSpace;
-import org.w3c.dom.DocumentFragment;
-
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
+
+import org.w3c.dom.DocumentFragment;
+
+import org.apache.servicemix.jbi.framework.ComponentNameSpace;
 
 /**
  * External endpoints are wrapper for endpoints registered

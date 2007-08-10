@@ -20,6 +20,12 @@ import javax.jbi.management.DeploymentServiceMBean;
 
 public interface ServiceUnitMBean {
 
+    String STARTED = DeploymentServiceMBean.STARTED;
+
+    String SHUTDOWN = DeploymentServiceMBean.SHUTDOWN;
+
+    String STOPPED = DeploymentServiceMBean.STOPPED;
+
     String getName();
     
     String getDescription();
@@ -32,9 +38,4 @@ public interface ServiceUnitMBean {
     
     String getDescriptor();
 
-    String STARTED = DeploymentServiceMBean.STARTED;
-
-    String SHUTDOWN = DeploymentServiceMBean.SHUTDOWN;
-
-    String STOPPED = DeploymentServiceMBean.STOPPED;
 }

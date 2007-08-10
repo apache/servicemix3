@@ -52,8 +52,8 @@ import org.springframework.core.io.Resource;
  */
 public class FileKeystoreInstance implements KeystoreInstance {
 
-    private static final Log log = LogFactory.getLog(FileKeystoreInstance.class);
-    private final static String JKS = "JKS";
+    private static final Log LOG = LogFactory.getLog(FileKeystoreInstance.class);
+    private static final String JKS = "JKS";
     
     private Resource path;
     private String name;
@@ -76,7 +76,7 @@ public class FileKeystoreInstance implements KeystoreInstance {
             for (int i = 0; i < keys.length; i++) {
                 String key = keys[i];
                 int pos = key.indexOf('=');
-                this.keyPasswords.put(key.substring(0, pos), key.substring(pos+1).toCharArray());
+                this.keyPasswords.put(key.substring(0, pos), key.substring(pos + 1).toCharArray());
             }
         }
     }
@@ -124,7 +124,7 @@ public class FileKeystoreInstance implements KeystoreInstance {
         try {
             return keystore.getCertificate(alias);
         } catch (KeyStoreException e) {
-            log.error("Unable to read certificate from keystore", e);
+            LOG.error("Unable to read certificate from keystore", e);
         }
         return null;
     }
@@ -136,7 +136,7 @@ public class FileKeystoreInstance implements KeystoreInstance {
         try {
             return keystore.getCertificateAlias(cert);
         } catch (KeyStoreException e) {
-            log.error("Unable to read retrieve alias for given certificate from keystore", e);
+            LOG.error("Unable to read retrieve alias for given certificate from keystore", e);
         }
         return null;
     }
@@ -148,16 +148,17 @@ public class FileKeystoreInstance implements KeystoreInstance {
         try {
             return keystore.getCertificateChain(alias);
         } catch (KeyStoreException e) {
-            log.error("Unable to read certificate chain from keystore", e);
+            LOG.error("Unable to read certificate chain from keystore", e);
         }
         return null;
     }
 
-    public KeyManager[] getKeyManager(String algorithm, String keyAlias) throws KeystoreIsLocked, NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException {
-        if(isKeystoreLocked()) {
-            throw new KeystoreIsLocked("Keystore '"+name+"' is locked; please unlock it in the console.");
+    public KeyManager[] getKeyManager(String algorithm, String keyAlias) throws KeystoreIsLocked, 
+                                    NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException {
+        if (isKeystoreLocked()) {
+            throw new KeystoreIsLocked("Keystore '" + name + "' is locked; please unlock it in the console.");
         }
-        if(keystore == null || keystoreReadDate < keystoreFile.lastModified()) {
+        if (keystore == null || keystoreReadDate < keystoreFile.lastModified()) {
             loadKeystoreData();
         }
         KeyManagerFactory keyFactory = KeyManagerFactory.getInstance(algorithm);
@@ -178,18 +179,19 @@ public class FileKeystoreInstance implements KeystoreInstance {
                 return (PrivateKey) key;
             }
         } catch (KeyStoreException e) {
-            log.error("Unable to read private key from keystore", e);
+            LOG.error("Unable to read private key from keystore", e);
         } catch (NoSuchAlgorithmException e) {
-            log.error("Unable to read private key from keystore", e);
+            LOG.error("Unable to read private key from keystore", e);
         } catch (UnrecoverableKeyException e) {
-            log.error("Unable to read private key from keystore", e);
+            LOG.error("Unable to read private key from keystore", e);
         }
         return null;
     }
 
-    public TrustManager[] getTrustManager(String algorithm) throws KeyStoreException, NoSuchAlgorithmException, KeystoreIsLocked {
-        if(isKeystoreLocked()) {
-            throw new KeystoreIsLocked("Keystore '"+name+"' is locked; please unlock it in the console.");
+    public TrustManager[] getTrustManager(String algorithm) throws KeyStoreException, 
+                                            NoSuchAlgorithmException, KeystoreIsLocked {
+        if (isKeystoreLocked()) {
+            throw new KeystoreIsLocked("Keystore '" + name + "' is locked; please unlock it in the console.");
         }
         if (!loadKeystoreData()) {
             return null;
@@ -237,7 +239,7 @@ public class FileKeystoreInstance implements KeystoreInstance {
             keystoreReadDate = System.currentTimeMillis();
             privateKeys.clear();
             trustCerts.clear();
-            if(keystore == null) {
+            if (keystore == null) {
                 keystore = KeyStore.getInstance(JKS);
             }
             InputStream in = new BufferedInputStream(new FileInputStream(keystoreFile));
@@ -254,13 +256,13 @@ public class FileKeystoreInstance implements KeystoreInstance {
             }
             return true;
         } catch (KeyStoreException e) {
-            log.error("Unable to open keystore with provided password", e);
+            LOG.error("Unable to open keystore with provided password", e);
         } catch (IOException e) {
-            log.error("Unable to open keystore with provided password", e);
+            LOG.error("Unable to open keystore with provided password", e);
         } catch (NoSuchAlgorithmException e) {
-            log.error("Unable to open keystore with provided password", e);
+            LOG.error("Unable to open keystore with provided password", e);
         } catch (CertificateException e) {
-            log.error("Unable to open keystore with provided password", e);
+            LOG.error("Unable to open keystore with provided password", e);
         }
         return false;
     }

@@ -16,15 +16,7 @@
  */
 package org.apache.servicemix.jbi.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
+import java.io.StringWriter;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -39,15 +31,30 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import java.io.StringWriter;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * A collection of W3C DOM helper methods
  *
  * @version $Revision$
  */
-public class DOMUtil {
-    private static final Log log = LogFactory.getLog(DOMUtil.class);
+public final class DOMUtil {
+    
+    private static final Log LOG = LogFactory.getLog(DOMUtil.class);
+    private static DocumentBuilderFactory dbf;
+    private static Queue builders = new ConcurrentLinkedQueue();
+
+    
+    private DOMUtil() {
+    }
 
     /**
      * Returns the text of the element
@@ -55,7 +62,7 @@ public class DOMUtil {
     public static String getElementText(Element element) {
         StringBuffer buffer = new StringBuffer();
         NodeList nodeList = element.getChildNodes();
-        for (int i = 0, size = nodeList.getLength(); i < size; i++) {
+        for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
             if (node.getNodeType() == Node.TEXT_NODE || node.getNodeType() == Node.CDATA_SECTION_NODE) {
                 buffer.append(node.getNodeValue());
@@ -83,7 +90,7 @@ public class DOMUtil {
     public static void copyAttributes(Element from, Element to) {
         // lets copy across all the remainingattributes
         NamedNodeMap attributes = from.getAttributes();
-        for (int i = 0, size = attributes.getLength(); i < size; i++) {
+        for (int i = 0; i < attributes.getLength(); i++) {
             Attr node = (Attr) attributes.item(i);
             to.setAttributeNS(node.getNamespaceURI(), node.getName(), node.getValue());
         }
@@ -137,8 +144,7 @@ public class DOMUtil {
             String localName = qualifiedName.substring(index + 1);
             String uri = recursiveGetAttributeValue(element, "xmlns:" + prefix);
             return new QName(uri, localName, prefix);
-        }
-        else {
+        } else {
             String uri = recursiveGetAttributeValue(element, "xmlns");
             if (uri != null) {
                 return new QName(uri, qualifiedName);
@@ -154,10 +160,9 @@ public class DOMUtil {
         String answer = null;
         try {
             answer = element.getAttribute(attributeName);
-        }
-        catch (Exception e) {
-            if (log.isTraceEnabled()) {
-                log.trace("Caught exception looking up attribute: " + attributeName + " on element: " + element + ". Cause: " + e, e);
+        } catch (Exception e) {
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Caught exception looking up attribute: " + attributeName + " on element: " + element + ". Cause: " + e, e);
             }
         }
         if (answer == null || answer.length() == 0) {
@@ -213,9 +218,6 @@ public class DOMUtil {
             return new QName(el.getNamespaceURI(), el.getLocalName());
         }
     }
-
-    private static DocumentBuilderFactory dbf = null;
-    private static Queue builders = new ConcurrentLinkedQueue();
 
     public static DocumentBuilder getBuilder() throws ParserConfigurationException {
         DocumentBuilder builder = (DocumentBuilder) builders.poll();

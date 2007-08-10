@@ -50,40 +50,42 @@ import org.apache.servicemix.jbi.util.FileUtil;
 
 /**
  * Represents a JBI NormalizedMessage.
- *
+ * 
  * @version $Revision$
  */
 public class NormalizedMessageImpl implements NormalizedMessage, Externalizable, Message {
-    
-    private static final long serialVersionUID = 9179194301410526549L;
-    
-    protected transient MessageExchangeImpl exchange;
-    private transient Source content;
-    private transient Object body;
-    private Subject securitySubject;
-    private Map properties;
-    private Map attachments;
 
-    private static SourceTransformer transformer = new SourceTransformer();
+    private static final long serialVersionUID = 9179194301410526549L;
+
+    private static final SourceTransformer TRANSFORMER = new SourceTransformer();
+
+    protected transient MessageExchangeImpl exchange;
+
+    private transient Source content;
+
+    private transient Object body;
+
+    private Subject securitySubject;
+
+    private Map properties;
+
+    private Map attachments;
 
     /**
      * Constructor
-     *
+     * 
      */
     public NormalizedMessageImpl() {
     }
 
-
     /**
      * Constructor
+     * 
      * @param exchange
      */
     public NormalizedMessageImpl(MessageExchangeImpl exchange) {
         this.exchange = exchange;
     }
-
-    
-
 
     /**
      * @return the content of the message
@@ -92,8 +94,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
         if (content == null && body != null) {
             try {
                 getMarshaler().marshal(exchange, this, body);
-            }
-            catch (MessagingException e) {
+            } catch (MessagingException e) {
                 throw new RuntimeJBIException(e);
             }
         }
@@ -102,7 +103,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
 
     /**
      * set the content fo the message
-     *
+     * 
      * @param source
      */
     public void setContent(Source source) {
@@ -118,7 +119,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
 
     /**
      * set the security subject
-     *
+     * 
      * @param securitySubject
      */
     public void setSecuritySubject(Subject securitySubject) {
@@ -127,7 +128,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
 
     /**
      * get a named property
-     *
+     * 
      * @param name
      * @return a property from the message
      */
@@ -150,7 +151,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
 
     /**
      * set a property
-     *
+     * 
      * @param name
      * @param value
      */
@@ -166,17 +167,17 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
 
     /**
      * Add an attachment
-     *
+     * 
      * @param id
-     * @param content
+     * @param handler
      */
-    public void addAttachment(String id, DataHandler content) {
-        getAttachments().put(id, content.getDataSource());
+    public void addAttachment(String id, DataHandler handler) {
+        getAttachments().put(id, handler.getDataSource());
     }
 
     /**
      * Get a named attachement
-     *
+     * 
      * @param id
      * @return the specified attachment
      */
@@ -199,7 +200,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
 
     /**
      * remove an identified attachment
-     *
+     * 
      * @param id
      */
     public void removeAttachment(String id) {
@@ -207,25 +208,26 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
             attachments.remove(id);
         }
     }
-    
-    /** Returns a list of identifiers for each attachment to the message.
-     *  @return iterator over String attachment identifiers
+
+    /**
+     * Returns a list of identifiers for each attachment to the message.
+     * 
+     * @return iterator over String attachment identifiers
      */
-    public Set getAttachmentNames(){
-        if (attachments != null){
+    public Set getAttachmentNames() {
+        if (attachments != null) {
             return Collections.unmodifiableSet(attachments.keySet());
         }
         return Collections.EMPTY_SET;
     }
 
-
     public String toString() {
         return super.toString() + "{properties: " + getProperties() + "}";
     }
-    
+
     // Scripting helper methods to add expressive power
     // when using languages like Groovy, Velocity etc
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
 
     public Object getBody() throws MessagingException {
         if (body == null) {
@@ -243,7 +245,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
     }
 
     public String getBodyText() throws TransformerException {
-        return transformer.toString(getContent());
+        return TRANSFORMER.toString(getContent());
     }
 
     public void setBodyText(String xml) {
@@ -262,9 +264,8 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
         return getExchange().createFault();
     }
 
-
     // Implementation methods
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     protected Map getProperties() {
         if (properties == null) {
             properties = createPropertiesMap();
@@ -299,6 +300,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
 
     /**
      * Write to a Stream
+     * 
      * @param out
      * @throws IOException
      */
@@ -307,16 +309,13 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
             convertAttachments();
             out.writeObject(attachments);
             out.writeObject(properties);
-            String src = transformer.toString(content);
+            String src = TRANSFORMER.toString(content);
             out.writeObject(src);
             // We have read the source
             // so now, ensure that it can be re-read
-            if ((content instanceof StreamSource ||
-                    content instanceof SAXSource) &&
-                    !(content instanceof StringSource) &&
-                    !(content instanceof BytesSource) &&
-                    !(content instanceof ResourceSource)) {
-                content = new StringSource(src); 
+            if ((content instanceof StreamSource || content instanceof SAXSource) && !(content instanceof StringSource)
+                            && !(content instanceof BytesSource) && !(content instanceof ResourceSource)) {
+                content = new StringSource(src);
             }
         } catch (TransformerException e) {
             throw (IOException) new IOException("Could not transform content to string").initCause(e);
@@ -360,4 +359,3 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
     }
 
 }
-

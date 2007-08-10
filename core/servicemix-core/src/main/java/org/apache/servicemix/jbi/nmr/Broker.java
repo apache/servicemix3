@@ -22,13 +22,13 @@ import javax.jbi.messaging.MessageExchange;
 import org.apache.servicemix.jbi.container.JBIContainer;
 
 /**
- * The Broker handles Nomalised Message Routing within ServiceMix
+ * The Broker handles Normalized Message Routing within ServiceMix
  * 
  * @version $Revision$
  */
 public interface Broker extends BrokerMBean {
 
-    public JBIContainer getContainer();
+    JBIContainer getContainer();
     
     /**
      * initialize the broker
@@ -36,17 +36,17 @@ public interface Broker extends BrokerMBean {
      * @param container
      * @throws JBIException
      */
-    public void init(JBIContainer container) throws JBIException;
+    void init(JBIContainer container) throws JBIException;
     
     /**
      * suspend the flow to prevent any message exchanges
      */
-    public void suspend();
+    void suspend();
 
     /**
      * resume message exchange processing
      */
-    public void resume();
+    void resume();
 
     /**
      * Route an ExchangePacket to a destination
@@ -54,6 +54,6 @@ public interface Broker extends BrokerMBean {
      * @param exchange
      * @throws JBIException
      */
-    public void sendExchangePacket(MessageExchange exchange) throws JBIException;
+    void sendExchangePacket(MessageExchange exchange) throws JBIException;
     
 }

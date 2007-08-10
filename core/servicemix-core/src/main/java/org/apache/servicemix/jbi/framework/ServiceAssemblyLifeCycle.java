@@ -93,8 +93,8 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
         this.registry = registry;
     }
     
-    protected void setServiceUnits(ServiceUnitLifeCycle[] sus) {
-        this.sus = sus;
+    protected void setServiceUnits(ServiceUnitLifeCycle[] serviceUnits) {
+        this.sus = serviceUnits;
     }
 
     /**
@@ -295,9 +295,9 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
     void writeRunningState() {
         try {
             if (env.getStateFile() != null) {
-                String currentState = getCurrentState();
+                String state = getCurrentState();
                 Properties props = new Properties();
-                props.setProperty("state", currentState);
+                props.setProperty("state", state);
                 XmlPersistenceSupport.write(env.getStateFile(), props);
             }
         } catch (IOException e) {
@@ -369,8 +369,8 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
             if (s != null && s.getConsumes() != null) {
                 Consumes[] consumes = s.getConsumes();
                 for (int j = 0; j < consumes.length; j++) {
-                    if (svc.equals(consumes[j].getServiceName()) &&
-                        ep.equals(consumes[j].getEndpointName())) {
+                    if (svc.equals(consumes[j].getServiceName())
+                            && ep.equals(consumes[j].getEndpointName())) {
                         return consumes[j].getLinkType();
                     }
                 }
@@ -463,10 +463,10 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
         this.listener = l;
     }
 
-    protected void firePropertyChanged(String name, Object oldValue, Object newValue){
+    protected void firePropertyChanged(String name, Object oldValue, Object newValue) {
         PropertyChangeListener l = listener;
-        if (l != null){
-            PropertyChangeEvent event = new PropertyChangeEvent(this,name,oldValue,newValue);
+        if (l != null) {
+            PropertyChangeEvent event = new PropertyChangeEvent(this, name, oldValue, newValue);
             l.propertyChange(event);
         }
     }
@@ -485,7 +485,8 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
     
     protected void fireEvent(int type) {
         ServiceAssemblyEvent event = new ServiceAssemblyEvent(this, type);
-        ServiceAssemblyListener[] listeners = (ServiceAssemblyListener[]) registry.getContainer().getListeners(ServiceAssemblyListener.class);
+        ServiceAssemblyListener[] listeners = 
+                (ServiceAssemblyListener[]) registry.getContainer().getListeners(ServiceAssemblyListener.class);
         for (int i = 0; i < listeners.length; i++) {
             switch (type) {
             case ServiceAssemblyEvent.ASSEMBLY_STARTED:
@@ -496,6 +497,8 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
                 break;
             case ServiceAssemblyEvent.ASSEMBLY_SHUTDOWN:
                 listeners[i].assemblyShutDown(event);
+                break;
+            default:
                 break;
             }
         }

@@ -45,7 +45,10 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
  * @author gnodet
  * @version $Revision: 376451 $
  */
-public class MessageUtil {
+public final class MessageUtil {
+    
+    private MessageUtil() {
+    }
 
     public static void transfer(NormalizedMessage source, NormalizedMessage dest) throws MessagingException {
         dest.setContent(source.getContent());
@@ -112,8 +115,7 @@ public class MessageUtil {
         transferTo(fault, dest, "fault");
     }
 
-    public static void transferTo(NormalizedMessage sourceMsg, MessageExchange dest, String name)
-                    throws MessagingException {
+    public static void transferTo(NormalizedMessage sourceMsg, MessageExchange dest, String name) throws MessagingException {
         NormalizedMessage destMsg = (sourceMsg instanceof Fault) ? dest.createFault() : dest.createMessage();
         transfer(sourceMsg, destMsg);
         dest.setMessage(destMsg, name);
@@ -179,7 +181,7 @@ public class MessageUtil {
                     String name = (String) it.next();
                     DataHandler dh = message.getAttachment(name);
                     DataSource ds = dh.getDataSource();
-                    if (ds instanceof ByteArrayDataSource == false) {
+                    if (!(ds instanceof ByteArrayDataSource)) {
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         FileUtil.copyInputStream(ds.getInputStream(), baos);
                         ByteArrayDataSource bads = new ByteArrayDataSource(baos.toByteArray(), ds.getContentType());
@@ -196,8 +198,8 @@ public class MessageUtil {
             }
         }
 
-        public void addAttachment(String id, DataHandler content) throws MessagingException {
-            this.attachments.put(id, content);
+        public void addAttachment(String id, DataHandler data) throws MessagingException {
+            this.attachments.put(id, data);
         }
 
         public Source getContent() {
@@ -224,8 +226,8 @@ public class MessageUtil {
             this.properties.put(name, value);
         }
 
-        public void setSecuritySubject(Subject subject) {
-            this.subject = subject;
+        public void setSecuritySubject(Subject sub) {
+            this.subject = sub;
         }
 
         public Set getPropertyNames() {

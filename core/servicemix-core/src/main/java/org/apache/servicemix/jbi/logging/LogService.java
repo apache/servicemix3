@@ -16,19 +16,20 @@
  */
 package org.apache.servicemix.jbi.logging;
 
-import org.apache.servicemix.jbi.management.BaseSystemService;
-import org.apache.servicemix.jbi.management.OperationInfoHelper;
-import org.apache.servicemix.jbi.management.AttributeInfoHelper;
-import org.apache.servicemix.jbi.container.JBIContainer;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.InitializingBean;
+import java.net.URL;
+import java.util.Timer;
 
 import javax.jbi.JBIException;
-import javax.management.MBeanOperationInfo;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
-import java.util.Timer;
-import java.net.URL;
+import javax.management.MBeanOperationInfo;
+
+import org.apache.log4j.Logger;
+import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.management.AttributeInfoHelper;
+import org.apache.servicemix.jbi.management.BaseSystemService;
+import org.apache.servicemix.jbi.management.OperationInfoHelper;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * 
@@ -38,19 +39,24 @@ import java.net.URL;
  */
 public class LogService extends BaseSystemService implements InitializingBean, LogServiceMBean {
 
-	private static String DEFAULT_LOG_FILE_NAME = "log4j.xml";
-	
+    private static final String DEFAULT_LOG_FILE_NAME = "log4j.xml";
+
+    private static final Logger LOG = Logger.getLogger(LogService.class);
+
     private boolean autoStart = true;
-    private boolean initialized = false;
+
+    private boolean initialized;
+
     private int refreshPeriod = 60; // 60sec
-    private URL configFileUrl = null;
+
+    private URL configFileUrl;
+
     private String configUrl = "file:conf/log4j.xml";
-    private LogTask logTask = null;
+
+    private LogTask logTask;
 
     // timer in daemon mode
-    private Timer timer = null;
-
-    private static Logger logger = Logger.getLogger(LogService.class);
+    private Timer timer;
 
     public void afterPropertiesSet() throws Exception {
         if (this.container == null) {
@@ -87,7 +93,7 @@ public class LogService extends BaseSystemService implements InitializingBean, L
                 start();
             }
         } catch (JBIException ex) {
-            logger.error("Error occured!", ex);
+            LOG.error("Error occured!", ex);
         }
     }
 
@@ -113,7 +119,7 @@ public class LogService extends BaseSystemService implements InitializingBean, L
                 start();
             }
         } catch (JBIException ex) {
-            logger.error("Error occured!", ex);
+            LOG.error("Error occured!", ex);
         }
 
     }
@@ -134,8 +140,8 @@ public class LogService extends BaseSystemService implements InitializingBean, L
      * reconfigure the log4j system if something has changed in the config file
      */
     public void reconfigureLogSystem() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("try to reconfigure the log4j system");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("try to reconfigure the log4j system");
         }
         if (logTask != null) {
             logTask.reconfigure();
@@ -147,7 +153,7 @@ public class LogService extends BaseSystemService implements InitializingBean, L
     }
 
     public void start() throws JBIException {
-        setup();
+        setUp();
         super.start();
     }
 
@@ -164,51 +170,46 @@ public class LogService extends BaseSystemService implements InitializingBean, L
         super.stop();
     }
 
-    public void setup() throws JBIException {
+    public void setUp() throws JBIException {
         if (!initialized) {
-        	configFileUrl = locateLoggingConfig();
+            configFileUrl = locateLoggingConfig();
 
             if (configFileUrl != null) {
                 // daemon mode
                 timer = new Timer(true);
                 logTask = new LogTask(configFileUrl);
                 logTask.run();
-                timer.schedule(logTask, 1000 * refreshPeriod,
-                        1000 * refreshPeriod);
+                timer.schedule(logTask, 1000 * refreshPeriod, 1000 * refreshPeriod);
                 initialized = true;
             }
         }
     }
 
-    /** 
-     * Grab the log4j.xml from the CLASSPATH 
+    /**
+     * Grab the log4j.xml from the CLASSPATH
      * 
-     * @return URL of the log4j.xml file 
+     * @return URL of the log4j.xml file
      */
     private URL locateLoggingConfig() {
-		URL log4jConfigUrl = ClassLoader.getSystemResource(DEFAULT_LOG_FILE_NAME);
-		
-		if (logger.isDebugEnabled()) 
-			logger.debug("Located logging configuration: " + log4jConfigUrl.toString());
-		
-		return log4jConfigUrl;
-	}
+        URL log4jConfigUrl = ClassLoader.getSystemResource(DEFAULT_LOG_FILE_NAME);
 
-	public MBeanOperationInfo[] getOperationInfos() throws JMException {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Located logging configuration: " + log4jConfigUrl.toString());
+        }
+
+        return log4jConfigUrl;
+    }
+
+    public MBeanOperationInfo[] getOperationInfos() throws JMException {
         OperationInfoHelper helper = new OperationInfoHelper();
-        helper.addOperation(getObjectToManage(), "reconfigureLogSystem", 0,
-                "Reconfigure the log4j system");
-        return OperationInfoHelper.join(super.getOperationInfos(), helper
-                .getOperationInfos());
+        helper.addOperation(getObjectToManage(), "reconfigureLogSystem", 0, "Reconfigure the log4j system");
+        return OperationInfoHelper.join(super.getOperationInfos(), helper.getOperationInfos());
     }
 
     public MBeanAttributeInfo[] getAttributeInfos() throws JMException {
         AttributeInfoHelper helper = new AttributeInfoHelper();
-        helper.addAttribute(getObjectToManage(), "configUrl",
-                "the url for the log4j.xml config file");
-        helper.addAttribute(getObjectToManage(), "refreshPeriod",
-                "schedule time for scanning the log4j config file");
-        return AttributeInfoHelper.join(super.getAttributeInfos(), helper
-                .getAttributeInfos());
+        helper.addAttribute(getObjectToManage(), "configUrl", "the url for the log4j.xml config file");
+        helper.addAttribute(getObjectToManage(), "refreshPeriod", "schedule time for scanning the log4j config file");
+        return AttributeInfoHelper.join(super.getAttributeInfos(), helper.getAttributeInfos());
     }
 }

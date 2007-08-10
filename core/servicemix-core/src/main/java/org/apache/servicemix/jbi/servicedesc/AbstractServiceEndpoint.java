@@ -16,11 +16,11 @@
  */
 package org.apache.servicemix.jbi.servicedesc;
 
-import org.apache.servicemix.jbi.framework.ComponentNameSpace;
+import java.io.Serializable;
 
 import javax.jbi.servicedesc.ServiceEndpoint;
 
-import java.io.Serializable;
+import org.apache.servicemix.jbi.framework.ComponentNameSpace;
 
 public abstract class AbstractServiceEndpoint implements ServiceEndpoint, Serializable {
 

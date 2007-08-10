@@ -37,32 +37,35 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 /**
- * An enhanced {@link org.apache.servicemix.jbi.jaxp.SourceTransformer} which adds support for converting from and to
- * {@link StAXSource} instances. Since this class introduces a runtime dependency on StAX
- * which some users may not use/require, this class is separated out from the core JAXP transformer.
- *
+ * An enhanced {@link org.apache.servicemix.jbi.jaxp.SourceTransformer} which
+ * adds support for converting from and to {@link StAXSource} instances. Since
+ * this class introduces a runtime dependency on StAX which some users may not
+ * use/require, this class is separated out from the core JAXP transformer.
+ * 
  * @version $Revision$
  */
 public class StAXSourceTransformer extends SourceTransformer {
 
     private XMLInputFactory inputFactory;
+
     private XMLOutputFactory outputFactory;
 
     /**
-     * Converts the source instance to a {@link javax.xml.transform.dom.DOMSource} or returns null if the conversion is not
-     * supported (making it easy to derive from this class to add new kinds of conversion).
+     * Converts the source instance to a
+     * {@link javax.xml.transform.dom.DOMSource} or returns null if the
+     * conversion is not supported (making it easy to derive from this class to
+     * add new kinds of conversion).
      */
     public StaxSource toStaxSource(Source source) throws XMLStreamException {
         if (source instanceof StaxSource) {
             return (StaxSource) source;
-        }
-        else {
+        } else {
             XMLInputFactory factory = getInputFactory();
             XMLStreamReader reader = factory.createXMLStreamReader(source);
             return new StaxSource(reader);
         }
     }
-    
+
     public XMLStreamReader toXMLStreamReader(Source source) throws XMLStreamException, TransformerException {
         if (source instanceof StaxSource) {
             return ((StaxSource) source).getXMLStreamReader();
@@ -78,9 +81,9 @@ public class StAXSourceTransformer extends SourceTransformer {
         }
         XMLInputFactory factory = getInputFactory();
         try {
-        	return factory.createXMLStreamReader(source);
+            return factory.createXMLStreamReader(source);
         } catch (XMLStreamException e) {
-        	return factory.createXMLStreamReader(toReaderFromSource(source));
+            return factory.createXMLStreamReader(toReaderFromSource(source));
         }
     }
 
@@ -112,7 +115,7 @@ public class StAXSourceTransformer extends SourceTransformer {
     }
 
     // Properties
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public XMLInputFactory getInputFactory() {
         if (inputFactory == null) {
             inputFactory = createInputFactory();
@@ -123,20 +126,20 @@ public class StAXSourceTransformer extends SourceTransformer {
     public void setInputFactory(XMLInputFactory inputFactory) {
         this.inputFactory = inputFactory;
     }
-    
+
     public XMLOutputFactory getOutputFactory() {
         if (outputFactory == null) {
             outputFactory = createOutputFactory();
         }
         return outputFactory;
     }
-    
+
     public void setOutputFactory(XMLOutputFactory outputFactory) {
         this.outputFactory = outputFactory;
     }
 
     // Implementation methods
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     protected XMLInputFactory createInputFactory() {
         XMLInputFactory answer = XMLInputFactory.newInstance();
         return answer;

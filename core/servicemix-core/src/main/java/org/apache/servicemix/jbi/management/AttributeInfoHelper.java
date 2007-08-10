@@ -16,16 +16,16 @@
  */
 package org.apache.servicemix.jbi.management;
 
-import org.apache.commons.beanutils.PropertyUtilsBean;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.management.IntrospectionException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.ReflectionException;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.beanutils.PropertyUtilsBean;
 
 /**
  * A Helper class to build a list of MBeanAttributInfos
@@ -34,6 +34,7 @@ import java.util.List;
  */
 public class AttributeInfoHelper {
     private PropertyUtilsBean beanUtil = new PropertyUtilsBean();
+
     private List<MBeanAttributeInfo> list = new ArrayList<MBeanAttributeInfo>();
 
     /**
@@ -43,7 +44,7 @@ public class AttributeInfoHelper {
      * @param name
      * @param description
      * @throws ReflectionException
-     
+     * 
      */
     public void addAttribute(Object theObject, String name, String description) throws ReflectionException {
         PropertyDescriptor pd;
@@ -51,21 +52,16 @@ public class AttributeInfoHelper {
             pd = beanUtil.getPropertyDescriptor(theObject, name);
             MBeanAttributeInfo info = new MBeanAttributeInfo(name, description, pd.getReadMethod(), pd.getWriteMethod());
             list.add(info);
-        }
-        catch(IntrospectionException e){
+        } catch (IntrospectionException e) {
+            throw new ReflectionException(e);
+        } catch (IllegalAccessException e) {
+            throw new ReflectionException(e);
+        } catch (InvocationTargetException e) {
+            throw new ReflectionException(e);
+        } catch (NoSuchMethodException e) {
             throw new ReflectionException(e);
         }
-        catch (IllegalAccessException e) {
-            throw new ReflectionException(e);
-        }
-        catch (InvocationTargetException e) {
-            throw new ReflectionException(e);
-        }
-        catch (NoSuchMethodException e) {
-            throw new ReflectionException(e);
-        }
-        
-        
+
     }
 
     /**
@@ -85,30 +81,32 @@ public class AttributeInfoHelper {
     public void clear() {
         list.clear();
     }
-    
+
     /**
      * Join two MBeanAttributeInfo[] arrays
+     * 
      * @param attrs1
      * @param attrs2
-     * @return new MBeanAttributeInfo array containing contents of attr1 and attr2
+     * @return new MBeanAttributeInfo array containing contents of attr1 and
+     *         attr2
      */
-    public static MBeanAttributeInfo[] join(MBeanAttributeInfo[] attrs1,MBeanAttributeInfo[] attrs2){
+    public static MBeanAttributeInfo[] join(MBeanAttributeInfo[] attrs1, MBeanAttributeInfo[] attrs2) {
         MBeanAttributeInfo[] result = null;
         int length = 0;
         int startPos = 0;
-        if (attrs1 != null){
+        if (attrs1 != null) {
             length = attrs1.length;
         }
-        if (attrs2 != null){
+        if (attrs2 != null) {
             length += attrs2.length;
         }
-        
+
         result = new MBeanAttributeInfo[length];
-        if (attrs1 != null){
+        if (attrs1 != null) {
             System.arraycopy(attrs1, 0, result, startPos, attrs1.length);
             startPos = attrs1.length;
         }
-        if(attrs2 != null){
+        if (attrs2 != null) {
             System.arraycopy(attrs2, 0, result, startPos, attrs2.length);
         }
         return result;

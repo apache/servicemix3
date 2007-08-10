@@ -16,11 +16,6 @@
  */
 package org.apache.servicemix.tck;
 
-import org.apache.servicemix.components.util.ComponentSupport;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.resolver.EndpointResolver;
-import org.apache.servicemix.jbi.resolver.NullEndpointFilter;
-
 import javax.jbi.JBIException;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.InOnly;
@@ -29,15 +24,25 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
+import org.apache.servicemix.components.util.ComponentSupport;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.resolver.EndpointResolver;
+import org.apache.servicemix.jbi.resolver.NullEndpointFilter;
+
 /**
  * @version $Revision$
  */
 public class SenderComponent extends ComponentSupport implements Sender {
+
     public static final QName SERVICE = new QName("http://servicemix.org/example/", "sender");
     public static final String ENDPOINT = "sender";
 
     private EndpointResolver resolver;
-    private String message = "<s12:Envelope xmlns:s12='http://www.w3.org/2003/05/soap-envelope'><s12:Body> <foo>Hello!</foo> </s12:Body></s12:Envelope>";
+    private String message = "<s12:Envelope xmlns:s12='http://www.w3.org/2003/05/soap-envelope'>" 
+                           + "  <s12:Body>"
+                           + "    <foo>Hello!</foo>"
+                           + "  </s12:Body>"
+                           + "</s12:Envelope>";
 
     public SenderComponent() {
         super(SERVICE, ENDPOINT);
@@ -52,15 +57,15 @@ public class SenderComponent extends ComponentSupport implements Sender {
     }
 
     public void sendMessages(int messageCount) throws JBIException {
-    	sendMessages(messageCount, false);
+        sendMessages(messageCount, false);
     }
-        
+
     public void sendMessages(int messageCount, boolean sync) throws JBIException {
         ComponentContext context = getContext();
 
         for (int i = 0; i < messageCount; i++) {
             InOnly exchange = context.getDeliveryChannel().createExchangeFactory().createInOnlyExchange();
-            NormalizedMessage message = exchange.createMessage();
+            NormalizedMessage msg = exchange.createMessage();
 
             ServiceEndpoint destination = null;
             if (resolver != null) {
@@ -72,26 +77,26 @@ public class SenderComponent extends ComponentSupport implements Sender {
                 exchange.setEndpoint(destination);
             }
 
-            exchange.setInMessage(message);
+            exchange.setInMessage(msg);
             // lets set the XML as a byte[], String or DOM etc
-            message.setContent(new StringSource(this.message));
+            msg.setContent(new StringSource(this.message));
             if (sync) {
-            	boolean result = context.getDeliveryChannel().sendSync(exchange, 1000);
+                boolean result = context.getDeliveryChannel().sendSync(exchange, 1000);
                 if (!result) {
                     throw new MessagingException("Message delivery using sendSync has timed out");
                 }
             } else {
-            	context.getDeliveryChannel().send(exchange);
+                context.getDeliveryChannel().send(exchange);
             }
         }
     }
 
-	public String getMessage() {
-		return message;
-	}
+    public String getMessage() {
+        return message;
+    }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
 }

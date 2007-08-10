@@ -113,9 +113,9 @@ public class StaxSource extends SAXSource implements XMLReader {
                     String prefix = streamReader.getPrefix();
                     String qname = prefix != null && prefix.length() > 0 ? prefix + ":" + localName : localName;
                     contentHandler.endElement(uri, localName, qname);
-                    for (int i = 0; i < streamReader.getNamespaceCount(); i++) {
-                        //contentHandler.endPrefixMapping(streamReader.getNamespaceURI(i));
-                    }
+                    //for (int i = 0; i < streamReader.getNamespaceCount(); i++) {
+                    //    contentHandler.endPrefixMapping(streamReader.getNamespaceURI(i));
+                    //}
                     break;
                 }
                 case XMLStreamConstants.ENTITY_DECLARATION:
@@ -129,18 +129,19 @@ public class StaxSource extends SAXSource implements XMLReader {
                     contentHandler.startDocument();
                     break;
                 case XMLStreamConstants.START_ELEMENT: {
-                    for (int i = 0; i < streamReader.getNamespaceCount(); i++) {
-                        //contentHandler.startPrefixMapping(streamReader.getNamespacePrefix(i),
-                        //                                  streamReader.getNamespaceURI(i));
-                    }
+                    //for (int i = 0; i < streamReader.getNamespaceCount(); i++) {
+                    //    contentHandler.startPrefixMapping(streamReader.getNamespacePrefix(i),
+                    //                                      streamReader.getNamespaceURI(i));
+                    //}
                     String uri = streamReader.getNamespaceURI();
                     String localName = streamReader.getLocalName();
                     String prefix = streamReader.getPrefix();
                     String qname = prefix != null && prefix.length() > 0 ? prefix + ":" + localName : localName;
-
                     contentHandler.startElement(uri == null ? "" : uri, localName, qname, getAttributes());
                     break;
                 }
+                default:
+                    break;
                 }
                 streamReader.next();
             }
@@ -225,7 +226,7 @@ public class StaxSource extends SAXSource implements XMLReader {
     }
 
     public void setProperty(String name, Object value) throws SAXNotRecognizedException, SAXNotSupportedException {
-        if( "http://xml.org/sax/properties/lexical-handler".equals(name) ) {
+        if ("http://xml.org/sax/properties/lexical-handler".equals(name)) {
             lexicalHandler = (LexicalHandler) value;
         } else {
             throw new SAXNotRecognizedException(name);

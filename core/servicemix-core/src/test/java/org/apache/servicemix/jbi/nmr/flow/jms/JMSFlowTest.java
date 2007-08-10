@@ -16,28 +16,29 @@
  */
 package org.apache.servicemix.jbi.nmr.flow.jms;
 
+import junit.framework.TestCase;
+
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.xbean.BrokerFactoryBean;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
-import org.apache.servicemix.jbi.nmr.flow.jms.JMSFlow;
 import org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver;
 import org.apache.servicemix.tck.ReceiverComponent;
 import org.apache.servicemix.tck.SenderComponent;
 import org.springframework.core.io.ClassPathResource;
-
-import junit.framework.TestCase;
 
 /**
  *
  * JMSFlowTest
  */
 public class JMSFlowTest extends TestCase {
-    JBIContainer senderContainer = new JBIContainer();
-    JBIContainer receiverContainer = new JBIContainer();
-    private SenderComponent sender;
-    private ReceiverComponent receiver;
+
     private static final int NUM_MESSAGES = 10;
+    
+    protected JBIContainer senderContainer = new JBIContainer();
+    protected JBIContainer receiverContainer = new JBIContainer();
+    protected SenderComponent sender;
+    protected ReceiverComponent receiver;
     protected BrokerService broker;
     
     /*
@@ -72,7 +73,7 @@ public class JMSFlowTest extends TestCase {
         sender.setResolver(new ServiceNameEndpointResolver(ReceiverComponent.SERVICE));
     }
     
-    protected void tearDown() throws Exception{
+    protected void tearDown() throws Exception {
         super.tearDown();
         senderContainer.shutDown();
         receiverContainer.shutDown();
@@ -90,17 +91,17 @@ public class JMSFlowTest extends TestCase {
     }
 
     public void testClusteredInOnly() throws Exception {
-        final SenderComponent sender = new SenderComponent();
+        final SenderComponent sender2 = new SenderComponent();
         final ReceiverComponent receiver1 =  new ReceiverComponent();
         final ReceiverComponent receiver2 =  new ReceiverComponent();
-        sender.setResolver(new ServiceNameEndpointResolver(ReceiverComponent.SERVICE));
+        sender2.setResolver(new ServiceNameEndpointResolver(ReceiverComponent.SERVICE));
 
-        senderContainer.activateComponent(new ActivationSpec("sender", sender));
+        senderContainer.activateComponent(new ActivationSpec("sender", sender2));
         senderContainer.activateComponent(new ActivationSpec("receiver", receiver1));
         receiverContainer.activateComponent(new ActivationSpec("receiver", receiver2));
         Thread.sleep(1000);
 
-        sender.sendMessages(NUM_MESSAGES);
+        sender2.sendMessages(NUM_MESSAGES);
         Thread.sleep(3000);
         assertTrue(receiver1.getMessageList().hasReceivedMessage());
         assertTrue(receiver2.getMessageList().hasReceivedMessage());
@@ -110,7 +111,7 @@ public class JMSFlowTest extends TestCase {
         senderContainer.deactivateComponent("receiver");
         Thread.sleep(1000);
         
-        sender.sendMessages(NUM_MESSAGES);
+        sender2.sendMessages(NUM_MESSAGES);
         Thread.sleep(3000);
         assertFalse(receiver1.getMessageList().hasReceivedMessage());
         assertTrue(receiver2.getMessageList().hasReceivedMessage());
@@ -121,7 +122,7 @@ public class JMSFlowTest extends TestCase {
         receiverContainer.deactivateComponent("receiver");
         Thread.sleep(1000);
         
-        sender.sendMessages(NUM_MESSAGES);
+        sender2.sendMessages(NUM_MESSAGES);
         Thread.sleep(3000);
         assertTrue(receiver1.getMessageList().hasReceivedMessage());
         assertFalse(receiver2.getMessageList().hasReceivedMessage());

@@ -24,11 +24,12 @@ import javax.xml.transform.Source;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
+import org.xml.sax.InputSource;
+
 import junit.framework.TestCase;
 
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.messaging.NormalizedMessageImpl;
-import org.xml.sax.InputSource;
 
 public class CopyTransformerTest extends TestCase {
 

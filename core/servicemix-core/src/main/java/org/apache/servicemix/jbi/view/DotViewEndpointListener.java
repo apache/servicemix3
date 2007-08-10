@@ -16,6 +16,12 @@
  */
 package org.apache.servicemix.jbi.view;
 
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.JBIContainer;
@@ -23,12 +29,6 @@ import org.apache.servicemix.jbi.event.ContainerAware;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.framework.Endpoint;
 import org.apache.servicemix.jbi.framework.Registry;
-
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Creates a <a href="http://www.graphviz.org/">DOT</a> file showing the various components
@@ -41,7 +41,7 @@ import java.util.List;
  */
 public class DotViewEndpointListener extends EndpointViewRenderer implements ContainerAware {
 
-    private static final Log log = LogFactory.getLog(DotViewEndpointListener.class);
+    private static final Log LOG = LogFactory.getLog(DotViewEndpointListener.class);
 
     private JBIContainer container;
     private String file = "ServiceMixComponents.dot";
@@ -67,14 +67,13 @@ public class DotViewEndpointListener extends EndpointViewRenderer implements Con
     // -------------------------------------------------------------------------
 
     protected void doRender() throws Exception {
-        if (log.isDebugEnabled()) {
-            log.debug("Creating DOT file at: " + file);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Creating DOT file at: " + file);
         }
         PrintWriter writer = new PrintWriter(new FileWriter(file));
         try {
             generateFile(writer);
-        }
-        finally {
+        } finally {
             writer.close();
         }
     }
@@ -109,10 +108,10 @@ public class DotViewEndpointListener extends EndpointViewRenderer implements Con
         List<String> componentEndpointLinks = new ArrayList<String>();
         Collection<Endpoint> endpointMBeans = registry.getEndpointRegistry().getEndpointMBeans();
         for (Endpoint endpoint : endpointMBeans) {
-            String key = endpoint.getSubType().toLowerCase() + ":{" + 
-                                endpoint.getServiceName().getNamespaceURI() + "}" + 
-                                endpoint.getServiceName().getLocalPart() + ":" + 
-                                endpoint.getEndpointName(); 
+            String key = endpoint.getSubType().toLowerCase() + ":{"
+                                + endpoint.getServiceName().getNamespaceURI() + "}" 
+                                + endpoint.getServiceName().getLocalPart() + ":" 
+                                + endpoint.getEndpointName(); 
             String componentName = encode(endpoint.getComponentName());
             String id = encode(key);
             writer.print(id);
@@ -179,12 +178,11 @@ public class DotViewEndpointListener extends EndpointViewRenderer implements Con
      */
     protected String encode(String name) {
         StringBuffer buffer = new StringBuffer();
-        for (int i = 0, size = name.length(); i < size; i++) {
+        for (int i = 0; i < name.length(); i++) {
             char ch = name.charAt(i);
             if (Character.isLetterOrDigit(ch) || ch == '_') {
                 buffer.append(ch);
-            }
-            else {
+            } else {
                 buffer.append('_');
             }
         }

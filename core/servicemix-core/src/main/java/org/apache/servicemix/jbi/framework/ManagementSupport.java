@@ -36,9 +36,12 @@ import org.apache.servicemix.jbi.util.DOMUtil;
 /**
  * ManagementMessageHelper is a class that ease the building of management messages. 
  */
-public class ManagementSupport {
+public final class ManagementSupport {
     
-    private static final Log logger = LogFactory.getLog(ManagementSupport.class);
+    private static final Log LOG = LogFactory.getLog(ManagementSupport.class);
+    
+    private ManagementSupport() {
+    }
 
     public static class Message {
         private boolean isCauseFramework;
@@ -59,8 +62,8 @@ public class ManagementSupport {
         public boolean isCauseFramework() {
             return isCauseFramework;
         }
-        public void setCauseFramework(boolean isCauseFramework) {
-            this.isCauseFramework = isCauseFramework;
+        public void setCauseFramework(boolean value) {
+            this.isCauseFramework = value;
         }
         public String getMessage() {
             return message;
@@ -172,7 +175,7 @@ public class ManagementSupport {
             }
             return DOMUtil.asIndentedXML(doc);
         } catch (Exception e) {
-            logger.error("Error", e);
+            LOG.error("Error", e);
             return null;
         }
     }
@@ -236,8 +239,8 @@ public class ManagementSupport {
             Element e = createComponentFailure(task, component, info, null);
             return new DeploymentException(DOMUtil.asXML(e));
         } catch (Exception e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Error creating management message", e);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Error creating management message", e);
             }
             return new DeploymentException(info);
         }

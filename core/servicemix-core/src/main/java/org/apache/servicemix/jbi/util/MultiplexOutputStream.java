@@ -16,12 +16,11 @@
  */
 package org.apache.servicemix.jbi.util;
 
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Write to multiple OutputStreams
@@ -29,14 +28,15 @@ import java.util.List;
  * @version $Revision$
  */
 public class MultiplexOutputStream extends OutputStream {
-    List streams = new CopyOnWriteArrayList();
     
+    List streams = new CopyOnWriteArrayList();
+
     
     /**
      * Add an Output Stream
      * @param os
      */
-    public void add(OutputStream os){
+    public void add(OutputStream os) {
         streams.add(os);
     }
     
@@ -44,7 +44,7 @@ public class MultiplexOutputStream extends OutputStream {
      * Remove an OutputStream
      * @param os
      */
-    public void remove(OutputStream os){
+    public void remove(OutputStream os) {
         streams.remove(os);
     }
 
@@ -54,7 +54,7 @@ public class MultiplexOutputStream extends OutputStream {
      * @throws IOException
      */
     public synchronized void write(int b) throws IOException {
-        for (Iterator i = streams.iterator();i.hasNext();) {
+        for (Iterator i = streams.iterator(); i.hasNext();) {
             OutputStream s = (OutputStream) i.next();
             s.write(b);
         }
@@ -68,7 +68,7 @@ public class MultiplexOutputStream extends OutputStream {
      * @throws IOException
      */
     public synchronized void write(byte b[], int off, int len) throws IOException {
-        for (Iterator i = streams.iterator();i.hasNext();) {
+        for (Iterator i = streams.iterator(); i.hasNext();) {
             OutputStream s = (OutputStream) i.next();
             s.write(b, off, len);
         }
@@ -79,7 +79,7 @@ public class MultiplexOutputStream extends OutputStream {
      * @throws IOException
      */
     public void flush() throws IOException {
-        for (Iterator i = streams.iterator();i.hasNext();) {
+        for (Iterator i = streams.iterator(); i.hasNext();) {
             OutputStream s = (OutputStream) i.next();
             s.flush();
         }
@@ -90,7 +90,7 @@ public class MultiplexOutputStream extends OutputStream {
      * @throws IOException
      */
     public void close() throws IOException {
-        for (Iterator i = streams.iterator();i.hasNext();) {
+        for (Iterator i = streams.iterator(); i.hasNext();) {
             OutputStream s = (OutputStream) i.next();
             s.close();
         }

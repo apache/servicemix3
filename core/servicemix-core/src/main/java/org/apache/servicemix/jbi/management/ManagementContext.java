@@ -21,6 +21,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import javax.jbi.JBIException;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
@@ -28,14 +32,12 @@ import javax.management.MBeanOperationInfo;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.EnvironmentContext;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Management Context applied to a ServiceMix container
@@ -47,12 +49,19 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * Default servicemix domain
      */
     public static final String DEFAULT_DOMAIN = "org.apache.servicemix";
+
     public static final String DEFAULT_CONNECTOR_PATH = "/jmxrmi";
+
     public static final int DEFAULT_CONNECTOR_PORT = 1099;
-    private final static Log log = LogFactory.getLog(ManagementContext.class);
-    private Map<ObjectName, Object> beanMap = new ConcurrentHashMap<ObjectName, Object>();
+
+    private static final Log LOG = LogFactory.getLog(ManagementContext.class);
+
     protected Map<String, ObjectName> systemServices = new ConcurrentHashMap<String, ObjectName>();
+
+    private Map<ObjectName, Object> beanMap = new ConcurrentHashMap<ObjectName, Object>();
+
     private MBeanServerContext mbeanServerContext = new MBeanServerContext();
+
     private ExecutorService executors;
 
     /**
@@ -71,8 +80,6 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         return "JMX Management";
     }
 
-    
-
     /**
      * Get the MBeanServer
      * 
@@ -81,16 +88,14 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     public MBeanServer getMBeanServer() {
         return mbeanServerContext.getMBeanServer();
     }
-    
+
     /**
      * @return the domain
      */
-    public String getJmxDomainName(){
+    public String getJmxDomainName() {
         return mbeanServerContext.getJmxDomainName();
     }
 
-    
-   
     /**
      * @return Returns the useMBeanServer.
      */
@@ -99,12 +104,13 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     }
 
     /**
-     * @param useMBeanServer The useMBeanServer to set.
+     * @param useMBeanServer
+     *            The useMBeanServer to set.
      */
     public void setUseMBeanServer(boolean useMBeanServer) {
         mbeanServerContext.setUseMBeanServer(useMBeanServer);
     }
-    
+
     /**
      * @return Returns the createMBeanServer flag.
      */
@@ -113,12 +119,13 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     }
 
     /**
-     * @param enableJMX Set createMBeanServer.
+     * @param enableJMX
+     *            Set createMBeanServer.
      */
     public void setCreateMBeanServer(boolean enableJMX) {
         mbeanServerContext.setCreateMBeanServer(enableJMX);
     }
-    
+
     public void setNamingPort(int portNum) {
         mbeanServerContext.setConnectorPort(portNum);
     }
@@ -126,11 +133,11 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     public int getNamingPort() {
         return mbeanServerContext.getConnectorPort();
     }
-    
+
     public boolean isCreateJmxConnector() {
         return mbeanServerContext.isCreateConnector();
     }
-    
+
     public void setCreateJmxConnector(boolean createJmxConnector) {
         mbeanServerContext.setCreateConnector(createJmxConnector);
     }
@@ -140,10 +147,10 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * 
      * @param container
      * @param server
-     * @throws JBIException 
-    
+     * @throws JBIException
+     * 
      */
-    public void init(JBIContainer container, MBeanServer server) throws JBIException  {
+    public void init(JBIContainer container, MBeanServer server) throws JBIException {
         if (container.isEmbedded() && server == null) {
             mbeanServerContext.setUseMBeanServer(false);
             mbeanServerContext.setCreateMBeanServer(false);
@@ -152,12 +159,12 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         try {
             mbeanServerContext.start();
         } catch (IOException e) {
-            log.error("Failed to start mbeanServerContext", e);
+            LOG.error("Failed to start mbeanServerContext", e);
         }
         this.executors = Executors.newCachedThreadPool();
         super.init(container);
     }
-    
+
     protected Class<ManagementContextMBean> getServiceMBean() {
         return ManagementContextMBean.class;
     }
@@ -165,7 +172,8 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     /**
      * Start the item.
      * 
-     * @exception JBIException if the item fails to start.
+     * @exception JBIException
+     *                if the item fails to start.
      */
     public void start() throws JBIException {
         super.start();
@@ -174,16 +182,19 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     /**
      * Stop the item. This suspends current messaging activities.
      * 
-     * @exception JBIException if the item fails to stop.
+     * @exception JBIException
+     *                if the item fails to stop.
      */
     public void stop() throws JBIException {
         super.stop();
     }
 
     /**
-     * Shut down the item. The releases resources, preparatory to uninstallation.
+     * Shut down the item. The releases resources, preparatory to
+     * uninstallation.
      * 
-     * @exception JBIException if the item fails to shut down.
+     * @exception JBIException
+     *                if the item fails to shut down.
      */
     public void shutDown() throws JBIException {
         super.shutDown();
@@ -193,13 +204,13 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
             try {
                 unregisterMBean(beans[i]);
             } catch (Exception e) {
-                log.debug("Could not unregister mbean", e);
+                LOG.debug("Could not unregister mbean", e);
             }
         }
-        try{
+        try {
             mbeanServerContext.stop();
-        }catch(IOException e){
-            log.debug("Failed to shutdown mbeanServerContext cleanly",e);
+        } catch (IOException e) {
+            LOG.debug("Failed to shutdown mbeanServerContext cleanly", e);
         }
         executors.shutdown();
     }
@@ -216,7 +227,8 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     /**
      * Lookup a JBI Installable Component by its unique name.
      * 
-     * @param componentName - is the name of the BC or SE.
+     * @param componentName -
+     *            is the name of the BC or SE.
      * @return the JMX object name of the component's LifeCycle MBean or null.
      */
     public ObjectName getComponentByName(String componentName) {
@@ -232,11 +244,11 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     public ObjectName[] getEngineComponents() {
         return container.getRegistry().getEngineComponents();
     }
-    
+
     /**
      * @return an array of ObjectNames for all Pojo components
-     */   
-    public ObjectName[] getPojoComponents(){
+     */
+    public ObjectName[] getPojoComponents() {
         return container.getRegistry().getPojoComponents();
     }
 
@@ -252,7 +264,8 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     /**
      * Lookup a system service by name.
      * 
-     * @param serviceName - is the name of the system service
+     * @param serviceName -
+     *            is the name of the system service
      * @return the JMX object name of the service or null
      */
     public ObjectName getSystemService(String serviceName) {
@@ -275,7 +288,8 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     /**
      * Check if a given JBI Installable Component is a Binding Component.
      * 
-     * @param componentName - the unique name of the component
+     * @param componentName -
+     *            the unique name of the component
      * @return true if the component is a binding
      */
     public boolean isBinding(String componentName) {
@@ -286,7 +300,8 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     /**
      * Check if a given JBI Component is a service engine.
      * 
-     * @param componentName - the unique name of the component
+     * @param componentName -
+     *            the unique name of the component
      * @return true if the component is a service engine
      */
     public boolean isEngine(String componentName) {
@@ -355,11 +370,13 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
     }
 
     /**
-     * Formulate and return the MBean ObjectName of a custom control MBean for a JBI component.
+     * Formulate and return the MBean ObjectName of a custom control MBean for a
+     * JBI component.
      * 
      * @param type
      * @param name
-     * @return the JMX ObjectName of the MBean, or <code>null</code> if <code>customName</code> is invalid.
+     * @return the JMX ObjectName of the MBean, or <code>null</code> if
+     *         <code>customName</code> is invalid.
      */
     public ObjectName createCustomComponentMBeanName(String type, String name) {
         Map<String, String> result = new LinkedHashMap<String, String>();
@@ -370,7 +387,6 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         return createObjectName(result);
     }
 
-    
     /**
      * Create an ObjectName
      * 
@@ -381,10 +397,11 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         Map<String, String> props = createObjectNameProps(provider);
         return createObjectName(props);
     }
-    
+
     /**
      * Create an ObjectName
-     * @param name 
+     * 
+     * @param name
      * 
      * @return the ObjectName
      */
@@ -392,19 +409,19 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         ObjectName result = null;
         try {
             result = new ObjectName(name);
-        }
-        catch (MalformedObjectNameException e) {
+        } catch (MalformedObjectNameException e) {
             // shouldn't happen
             String error = "Could not create ObjectName for " + name;
-            log.error(error, e);
+            LOG.error(error, e);
             throw new RuntimeException(error);
         }
         return result;
     }
-    
+
     /**
      * Create an ObjectName
-     * @param domain 
+     * 
+     * @param domain
      * 
      * @return the ObjectName
      */
@@ -422,32 +439,32 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         ObjectName result = null;
         try {
             result = new ObjectName(sb.toString());
-        }
-        catch (MalformedObjectNameException e) {
+        } catch (MalformedObjectNameException e) {
             // shouldn't happen
             String error = "Could not create ObjectName for " + props;
-            log.error(error, e);
+            LOG.error(error, e);
             throw new RuntimeException(error);
         }
         return result;
     }
-    
+
     /**
      * Create an ObjectName
+     * 
      * @param props
      * @return the ObjectName
      */
     public ObjectName createObjectName(Map<String, String> props) {
         return createObjectName(getJmxDomainName(), props);
     }
-    
+
     /**
      * Create a String used to create an ObjectName
      * 
      * @param provider
      * @return the ObjectName
      */
-    public Map<String, String> createObjectNameProps(MBeanInfoProvider provider){
+    public Map<String, String> createObjectNameProps(MBeanInfoProvider provider) {
         return createObjectNameProps(provider, false);
     }
 
@@ -511,8 +528,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * @param description
      * @throws JMException
      */
-    public void registerMBean(ObjectName name, Object resource, Class interfaceMBean, String description)
-            throws JMException {
+    public void registerMBean(ObjectName name, Object resource, Class interfaceMBean, String description) throws JMException {
         if (mbeanServerContext.getMBeanServer() != null) {
             Object mbean = MBeanBuilder.buildStandardMBean(resource, interfaceMBean, description, executors);
             if (mbeanServerContext.getMBeanServer().isRegistered(name)) {
@@ -523,7 +539,6 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         }
     }
 
-
     /**
      * Retrive an System ObjectName
      * 
@@ -533,20 +548,18 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * @return the ObjectName
      */
     public static ObjectName getSystemObjectName(String domainName, String containerName, Class interfaceType) {
-        String tmp = domainName + ":ContainerName=" + containerName + ",Type=SystemService,Name=" + getSystemServiceName(interfaceType); 
+        String tmp = domainName + ":ContainerName=" + containerName + ",Type=SystemService,Name=" + getSystemServiceName(interfaceType);
         ObjectName result = null;
         try {
             result = new ObjectName(tmp);
-        }
-        catch (MalformedObjectNameException e) {
-            log.error("Failed to build ObjectName:",e);
-        }
-        catch (NullPointerException e) {
-            log.error("Failed to build ObjectName:",e);
+        } catch (MalformedObjectNameException e) {
+            LOG.error("Failed to build ObjectName:", e);
+        } catch (NullPointerException e) {
+            LOG.error("Failed to build ObjectName:", e);
         }
         return result;
     }
-    
+
     public static String getSystemServiceName(Class interfaceType) {
         String name = interfaceType.getName();
         name = name.substring(name.lastIndexOf('.') + 1);
@@ -555,18 +568,16 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         }
         return name;
     }
-    
+
     public static ObjectName getContainerObjectName(String domainName, String containerName) {
         String tmp = domainName + ":ContainerName=" + containerName + ",Type=JBIContainer";
         ObjectName result = null;
         try {
             result = new ObjectName(tmp);
-        }
-        catch (MalformedObjectNameException e) {
-            log.debug("Unable to build ObjectName", e);
-        }
-        catch (NullPointerException e) {
-            log.debug("Unable to build ObjectName", e);
+        } catch (MalformedObjectNameException e) {
+            LOG.debug("Unable to build ObjectName", e);
+        } catch (NullPointerException e) {
+            LOG.debug("Unable to build ObjectName", e);
         }
         return result;
     }
@@ -586,23 +597,21 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
                 throw new JBIException("A system service for the name " + name + " is already registered");
             }
             ObjectName objName = createObjectName(service);
-            if (log.isDebugEnabled()) {
-                log.debug("Registering system service: " + objName);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Registering system service: " + objName);
             }
             registerMBean(objName, service, interfaceType, service.getDescription());
             systemServices.put(name, objName);
-        }
-        catch (MalformedObjectNameException e) {
+        } catch (MalformedObjectNameException e) {
             throw new JBIException(e);
-        }
-        catch (JMException e) {
+        } catch (JMException e) {
             throw new JBIException(e);
         }
     }
 
     /**
      * Unregister a System service
-     *
+     * 
      * @param service
      * @throws JBIException
      */
@@ -612,8 +621,8 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
             throw new JBIException("A system service for the name " + name + " is not registered");
         }
         ObjectName objName = systemServices.remove(name);
-        if (log.isDebugEnabled()) {
-            log.debug("Unregistering system service: " + objName);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Unregistering system service: " + objName);
         }
         unregisterMBean(objName);
     }
@@ -625,11 +634,11 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * @throws JBIException
      */
     public void unregisterMBean(ObjectName name) throws JBIException {
-        try{
+        try {
             mbeanServerContext.unregisterMBean(name);
             beanMap.remove(name);
-        }catch(JMException e){
-            log.error("Failed to unregister mbean: " + name,e);
+        } catch (JMException e) {
+            LOG.error("Failed to unregister mbean: " + name, e);
             throw new JBIException(e);
         }
     }
@@ -641,17 +650,15 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * @throws JBIException
      */
     public void unregisterMBean(Object bean) throws JBIException {
-        for (Iterator i = beanMap.entrySet().iterator();i.hasNext();) {
+        for (Iterator i = beanMap.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
             if (entry.getValue() == bean) {
-            	ObjectName name = (ObjectName) entry.getKey();
-            	unregisterMBean(name);
+                ObjectName name = (ObjectName) entry.getKey();
+                unregisterMBean(name);
                 break;
             }
         }
     }
-
-   
 
     /**
      * Get an array of MBeanOperationInfo
@@ -660,26 +667,26 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * @throws JMException
      */
     public MBeanAttributeInfo[] getAttributeInfos() throws JMException {
-    	AttributeInfoHelper helper = new AttributeInfoHelper();
-    	helper.addAttribute(getObjectToManage(), "bindingComponents", "Get list of all binding components");
-    	helper.addAttribute(getObjectToManage(), "engineComponents", "Get list of all engine components");
+        AttributeInfoHelper helper = new AttributeInfoHelper();
+        helper.addAttribute(getObjectToManage(), "bindingComponents", "Get list of all binding components");
+        helper.addAttribute(getObjectToManage(), "engineComponents", "Get list of all engine components");
         helper.addAttribute(getObjectToManage(), "pojoComponents", "Get list of all pojo components");
-    	helper.addAttribute(getObjectToManage(), "systemInfo", "Return current version");
-    	helper.addAttribute(getObjectToManage(), "systemServices", "Get list of system services");
-    	return AttributeInfoHelper.join(super.getAttributeInfos(), helper.getAttributeInfos());
+        helper.addAttribute(getObjectToManage(), "systemInfo", "Return current version");
+        helper.addAttribute(getObjectToManage(), "systemServices", "Get list of system services");
+        return AttributeInfoHelper.join(super.getAttributeInfos(), helper.getAttributeInfos());
     }
 
     public MBeanOperationInfo[] getOperationInfos() throws JMException {
-    	OperationInfoHelper helper = new OperationInfoHelper();
-    	ParameterHelper ph = helper.addOperation(getObjectToManage(), "getComponentByName", 1, "look up Component by name");
-    	ph.setDescription(0, "name", "Component name");
-    	ph = helper.addOperation(getObjectToManage(), "getSystemService", 1, "look up System service by name");
-    	ph.setDescription(0, "name", "System name");
-    	ph = helper.addOperation(getObjectToManage(), "isBinding", 1, "Is Component a binding Component?");
-    	ph.setDescription(0, "name", "Component name");
-    	ph = helper.addOperation(getObjectToManage(), "isEngine", 1, "Is Component a service engine?");
-    	ph.setDescription(0, "name", "Component name");
-    	return OperationInfoHelper.join(super.getOperationInfos(), helper.getOperationInfos());
-    }   
-    
+        OperationInfoHelper helper = new OperationInfoHelper();
+        ParameterHelper ph = helper.addOperation(getObjectToManage(), "getComponentByName", 1, "look up Component by name");
+        ph.setDescription(0, "name", "Component name");
+        ph = helper.addOperation(getObjectToManage(), "getSystemService", 1, "look up System service by name");
+        ph.setDescription(0, "name", "System name");
+        ph = helper.addOperation(getObjectToManage(), "isBinding", 1, "Is Component a binding Component?");
+        ph.setDescription(0, "name", "Component name");
+        ph = helper.addOperation(getObjectToManage(), "isEngine", 1, "Is Component a service engine?");
+        ph.setDescription(0, "name", "Component name");
+        return OperationInfoHelper.join(super.getOperationInfos(), helper.getOperationInfos());
+    }
+
 }

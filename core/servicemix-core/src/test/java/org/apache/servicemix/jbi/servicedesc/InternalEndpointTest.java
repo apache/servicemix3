@@ -16,17 +16,16 @@
  */
 package org.apache.servicemix.jbi.servicedesc;
 
-import org.apache.servicemix.jbi.framework.ComponentNameSpace;
-import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
-
-import javax.xml.namespace.QName;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import javax.xml.namespace.QName;
+
 import junit.framework.TestCase;
+
+import org.apache.servicemix.jbi.framework.ComponentNameSpace;
 
 public class InternalEndpointTest extends TestCase {
 

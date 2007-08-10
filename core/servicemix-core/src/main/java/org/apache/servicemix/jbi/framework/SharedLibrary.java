@@ -84,7 +84,7 @@ public class SharedLibrary implements SharedLibraryMBean, MBeanInfoProvider {
                         parent, 
                         !parentFirst, 
                         new String[0], 
-                        new String[] { "java.", "javax." });
+                        new String[] {"java.", "javax." });
     }
 
     public String getDescription() {

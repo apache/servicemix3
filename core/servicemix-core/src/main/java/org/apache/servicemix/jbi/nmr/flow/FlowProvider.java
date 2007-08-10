@@ -19,22 +19,28 @@ package org.apache.servicemix.jbi.nmr.flow;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
+
 import javax.jbi.JBIException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.finder.FactoryFinder;
 import org.apache.servicemix.jbi.util.IntrospectionSupport;
 import org.apache.servicemix.jbi.util.URISupport;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Find a Flow by Name
  * 
  * @version $Revision$
  */
-public class FlowProvider{
-    private static final Log log=LogFactory.getLog(FlowProvider.class);
-    private static FactoryFinder finder=new FactoryFinder("META-INF/services/org/apache/servicemix/jbi/nmr/flow/");
+public final class FlowProvider {
+
+    private static final Log LOG = LogFactory.getLog(FlowProvider.class);
+
+    private static final FactoryFinder FINDER = new FactoryFinder("META-INF/services/org/apache/servicemix/jbi/nmr/flow/");
+
+    private FlowProvider() {
+    }
 
     /**
      * Locate a Flow
@@ -43,54 +49,54 @@ public class FlowProvider{
      * @return the Flow
      * @throws JBIException
      */
-    public static Flow getFlow(String flow) throws JBIException{
+    public static Flow getFlow(String flow) throws JBIException {
         Object value;
-        String flowName=getFlowName(flow);
-        try{
-            value=finder.newInstance(flowName);
-            if(value!=null&&value instanceof Flow){
-                String query=getQuery(flow);
-                if(query!=null){
-                    Map map=URISupport.parseQuery(query);
-                    if(map!=null&&!map.isEmpty()){
-                        IntrospectionSupport.setProperties(value,map);
+        String flowName = getFlowName(flow);
+        try {
+            value = FINDER.newInstance(flowName);
+            if (value != null && value instanceof Flow) {
+                String query = getQuery(flow);
+                if (query != null) {
+                    Map map = URISupport.parseQuery(query);
+                    if (map != null && !map.isEmpty()) {
+                        IntrospectionSupport.setProperties(value, map);
                     }
                 }
                 return (Flow) value;
             }
-            throw new JBIException("No implementation found for: "+flow);
-        }catch(IllegalAccessException e){
-            log.error("getFlow("+flow+" failed: "+e,e);
+            throw new JBIException("No implementation found for: " + flow);
+        } catch (IllegalAccessException e) {
+            LOG.error("getFlow(" + flow + " failed: " + e, e);
             throw new JBIException(e);
-        }catch(InstantiationException e){
-            log.error("getFlow("+flow+" failed: "+e,e);
+        } catch (InstantiationException e) {
+            LOG.error("getFlow(" + flow + " failed: " + e, e);
             throw new JBIException(e);
-        }catch(IOException e){
-            log.error("getFlow("+flow+" failed: "+e,e);
+        } catch (IOException e) {
+            LOG.error("getFlow(" + flow + " failed: " + e, e);
             throw new JBIException(e);
-        }catch(ClassNotFoundException e){
-            log.error("getFlow("+flow+" failed: "+e,e);
+        } catch (ClassNotFoundException e) {
+            LOG.error("getFlow(" + flow + " failed: " + e, e);
             throw new JBIException(e);
-        }catch(URISyntaxException e){
-            log.error("getFlow("+flow+" failed: "+e,e);
+        } catch (URISyntaxException e) {
+            LOG.error("getFlow(" + flow + " failed: " + e, e);
             throw new JBIException(e);
         }
     }
 
-    public static String getFlowName(String str){
-        String result=str;
-        int index=str.indexOf('?');
-        if(index>=0){
-            result=str.substring(0,index);
+    public static String getFlowName(String str) {
+        String result = str;
+        int index = str.indexOf('?');
+        if (index >= 0) {
+            result = str.substring(0, index);
         }
         return result;
     }
 
-    protected static String getQuery(String str){
-        String result=null;
-        int index=str.indexOf('?');
-        if(index>=0&&(index+1)<str.length()){
-            result=str.substring(index+1);
+    protected static String getQuery(String str) {
+        String result = null;
+        int index = str.indexOf('?');
+        if (index >= 0 && (index + 1) < str.length()) {
+            result = str.substring(index + 1);
         }
         return result;
     }

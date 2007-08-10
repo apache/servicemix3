@@ -16,22 +16,22 @@
  */
 package org.apache.servicemix.tck;
 
+import junit.framework.TestCase;
+
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver;
-import org.apache.servicemix.tck.ReceiverComponent;
-import org.apache.servicemix.tck.SenderComponent;
-
-import junit.framework.TestCase;
 
 /**
  * @version $Revision$
  */
 public class ExamplePojoTest extends TestCase {
+
+    private static final int NUM_MESSAGES = 10;
+
     protected JBIContainer container = new JBIContainer();
-    private SenderComponent sender;
-    private ReceiverComponent receiver;
-    protected int NUM_MESSAGES = 10;
+    protected SenderComponent sender;
+    protected ReceiverComponent receiver;
 
     public void testInOnly() throws Exception {
         sender.sendMessages(NUM_MESSAGES);
@@ -49,7 +49,7 @@ public class ExamplePojoTest extends TestCase {
         container.activateComponent(new ActivationSpec("sender", sender));
         container.activateComponent(new ActivationSpec("receiver", receiver));
     }
-    
+
     protected void tearDown() throws Exception {
         container.shutDown();
     }

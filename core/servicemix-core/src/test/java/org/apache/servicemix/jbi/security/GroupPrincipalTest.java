@@ -18,22 +18,21 @@ package org.apache.servicemix.jbi.security;
 
 import junit.framework.TestCase;
 
-
 /**
- *
+ * 
  */
 public class GroupPrincipalTest extends TestCase {
 
     public void testArguments() {
         GroupPrincipal principal = new GroupPrincipal("FOO");
 
-       assertEquals("FOO", principal.getName());
+        assertEquals("FOO", principal.getName());
 
         try {
             new GroupPrincipal(null);
             fail("Should have thrown IllegalArgumentException");
         } catch (IllegalArgumentException ingore) {
-
+            // Expected
         }
     }
 

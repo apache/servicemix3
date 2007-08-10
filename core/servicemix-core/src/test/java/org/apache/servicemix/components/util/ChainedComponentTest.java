@@ -16,15 +16,14 @@
  */
 package org.apache.servicemix.components.util;
 
+import java.util.Iterator;
+
+import javax.jbi.messaging.NormalizedMessage;
+
 import org.apache.servicemix.examples.AbstractSpringTestSupport;
 import org.apache.servicemix.jbi.config.DebugClassPathXmlApplicationContext;
 import org.apache.servicemix.tck.MessageList;
 import org.springframework.context.support.AbstractXmlApplicationContext;
-
-import javax.jbi.messaging.NormalizedMessage;
-
-import java.util.Iterator;
-
 
 public class ChainedComponentTest extends AbstractSpringTestSupport {
 
@@ -35,9 +34,9 @@ public class ChainedComponentTest extends AbstractSpringTestSupport {
             NormalizedMessage msg = (NormalizedMessage) iter.next();
             assertNotNull(msg.getProperty("prop1"));
             assertNotNull(msg.getProperty("prop2"));
-        } 
+        }
     }
-    
+
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new DebugClassPathXmlApplicationContext("org/apache/servicemix/components/util/chained-router.xml");
     }

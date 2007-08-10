@@ -22,12 +22,13 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.util.WSAddressingConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
+
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.util.WSAddressingConstants;
 
 public class URIResolver extends EndpointResolverSupport {
 
@@ -47,34 +48,34 @@ public class URIResolver extends EndpointResolverSupport {
         return new JBIException("Unable to resolve uri: " + uri);
     }
 
-    public ServiceEndpoint[] resolveAvailableEndpoints(ComponentContext context, MessageExchange exchange)
-            throws JBIException {
+    public ServiceEndpoint[] resolveAvailableEndpoints(ComponentContext context, 
+                                                       MessageExchange exchange) throws JBIException {
         if (uri.startsWith("interface:")) {
-            String uri = this.uri.substring(10);
-            String[] parts = split2(uri);
+            String u = this.uri.substring(10);
+            String[] parts = split2(u);
             return context.getEndpoints(new QName(parts[0], parts[1]));
         } else if (uri.startsWith("operation:")) {
             // ignore operation
-            String uri = this.uri.substring(10);
-            String[] parts = split3(uri);
+            String u = this.uri.substring(10);
+            String[] parts = split3(u);
             return context.getEndpoints(new QName(parts[0], parts[1]));
         } else if (uri.startsWith("service:")) {
-            String uri = this.uri.substring(8);
-            String[] parts = split2(uri);
+            String u = this.uri.substring(8);
+            String[] parts = split2(u);
             return context.getEndpointsForService(new QName(parts[0], parts[1]));
         } else if (uri.startsWith("endpoint:")) {
-            String uri = this.uri.substring(9);
-            String[] parts = split3(uri);
+            String u = this.uri.substring(9);
+            String[] parts = split3(u);
             ServiceEndpoint se = context.getEndpoint(new QName(parts[0], parts[1]), parts[2]);
             if (se != null) {
-                return new ServiceEndpoint[] { se };
+                return new ServiceEndpoint[] {se };
             }
         // Try an EPR resolution
         } else {
             DocumentFragment epr = createWSAEPR(uri);
             ServiceEndpoint se = context.resolveEndpointReference(epr);
             if (se != null) {
-                return new ServiceEndpoint[] { se };
+                return new ServiceEndpoint[] {se };
             }
         }
         return null;
@@ -120,9 +121,15 @@ public class URIResolver extends EndpointResolverSupport {
      * @param uri the target uri
      */
     public static void configureExchange(MessageExchange exchange, ComponentContext context, String uri) {
-        if (exchange == null) throw new NullPointerException("exchange is null");
-        if (context == null) throw new NullPointerException("context is null");
-        if (uri == null) throw new NullPointerException("uri is null");
+        if (exchange == null) {
+            throw new NullPointerException("exchange is null");
+        }
+        if (context == null) {
+            throw new NullPointerException("context is null");
+        }
+        if (uri == null) {
+            throw new NullPointerException("uri is null");
+        }
         if (uri.startsWith("interface:")) {
             String uri2 = uri.substring(10);
             String[] parts = URIResolver.split2(uri2);
@@ -164,7 +171,7 @@ public class URIResolver extends EndpointResolverSupport {
         String epName = uri.substring(idx1 + 1);
         String svcName = uri.substring(idx2 + 1, idx1);
         String nsUri   = uri.substring(0, idx2);
-        return new String[] { nsUri, svcName, epName };
+        return new String[] {nsUri, svcName, epName };
     }
     
     public static String[] split2(String uri) {
@@ -181,7 +188,7 @@ public class URIResolver extends EndpointResolverSupport {
         }
         String svcName = uri.substring(idx1 + 1);
         String nsUri   = uri.substring(0, idx1);
-        return new String[] { nsUri, svcName };
+        return new String[] {nsUri, svcName };
     }
     
 }

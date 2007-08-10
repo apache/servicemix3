@@ -16,7 +16,6 @@
  */
 package org.apache.servicemix.jbi;
 
-import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
 /**

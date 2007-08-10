@@ -17,7 +17,6 @@
 package org.apache.servicemix.jbi.management.task;
 
 import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 /**
@@ -26,10 +25,13 @@ import org.apache.tools.ant.Project;
  * @version $Revision: 379004 $
  */
 public class ListServiceAssembliesTask extends JbiTask {
-    
+
     private String state;
+
     private String componentName;
+
     private String serviceAssemblyName;
+
     private String xmlOutput;
 
     /**
@@ -40,15 +42,15 @@ public class ListServiceAssembliesTask extends JbiTask {
     }
 
     /**
-     * @param xmlOutput the xmlOutput to set
+     * @param xmlOutput
+     *            the xmlOutput to set
      */
     public void setXmlOutput(String xmlOutput) {
         this.xmlOutput = xmlOutput;
     }
 
-
     /**
-     *
+     * 
      * @return the state
      */
     public String getState() {
@@ -56,15 +58,16 @@ public class ListServiceAssembliesTask extends JbiTask {
     }
 
     /**
-     *
-     * @param state Sets the state
+     * 
+     * @param state
+     *            Sets the state
      */
     public void setState(String state) {
         this.state = state;
     }
 
     /**
-     *
+     * 
      * @return the component name
      */
     public String getComponentName() {
@@ -72,15 +75,16 @@ public class ListServiceAssembliesTask extends JbiTask {
     }
 
     /**
-     *
-     * @param componentName Sets the component name
+     * 
+     * @param componentName
+     *            Sets the component name
      */
     public void setComponentName(String componentName) {
         this.componentName = componentName;
     }
 
     /**
-     *
+     * 
      * @return service assembly name
      */
     public String getServiceAssemblyName() {
@@ -88,8 +92,9 @@ public class ListServiceAssembliesTask extends JbiTask {
     }
 
     /**
-     *
-     * @param serviceAssemblynname Sets the service assembly name
+     * 
+     * @param serviceAssemblynname
+     *            Sets the service assembly name
      */
     public void setServiceAssemblyName(String serviceAssemblynname) {
         this.serviceAssemblyName = serviceAssemblynname;
@@ -107,5 +112,5 @@ public class ListServiceAssembliesTask extends JbiTask {
         }
         log(result, Project.MSG_WARN);
     }
-    
+
 }

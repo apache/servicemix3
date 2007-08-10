@@ -34,7 +34,7 @@ public class JbiTaskTest extends JbiTaskSupport {
      */
     protected void setUp() throws Exception {
         super.setUp();        
-        jbiTask = new JbiTask(){
+        jbiTask = new JbiTask() {
             protected void doExecute(AdminCommandsServiceMBean acs) throws Exception {
             }
         };

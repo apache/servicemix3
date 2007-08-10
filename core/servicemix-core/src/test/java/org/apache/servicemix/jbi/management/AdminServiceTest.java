@@ -34,31 +34,32 @@ import org.apache.servicemix.jbi.container.JBIContainer;
  * ManagementContextTest
  */
 public class AdminServiceTest extends TestCase {
-    
-	private Log log = LogFactory.getLog(getClass());
-	
-	private JBIContainer container;
+
+    private Log log = LogFactory.getLog(getClass());
+
+    private JBIContainer container;
 
     // The host, port and path where the rmiregistry runs.
-	private String namingHost = "localhost";
-	private int namingPort = ManagementContext.DEFAULT_CONNECTOR_PORT;
-	private String jndiPath = ManagementContext.DEFAULT_CONNECTOR_PATH;
-    
+    private String namingHost = "localhost";
+
+    private int namingPort = ManagementContext.DEFAULT_CONNECTOR_PORT;
+
+    private String jndiPath = ManagementContext.DEFAULT_CONNECTOR_PATH;
+
     protected void setUp() throws Exception {
-    	container = new JBIContainer();
-    	container.setRmiPort(namingPort);
-    	container.setCreateMBeanServer(true);
-    	container.init();
+        container = new JBIContainer();
+        container.setRmiPort(namingPort);
+        container.setCreateMBeanServer(true);
+        container.init();
     }
-    
+
     protected void tearDown() throws Exception {
         container.shutDown();
     }
 
     public void testAdminService() throws Exception {
         // The address of the connector server
-        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://"
-                + namingHost + ":" + namingPort + jndiPath);
+        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://" + namingHost + ":" + namingPort + jndiPath);
         // Connect a JSR 160 JMXConnector to the server side
         JMXConnector connector = JMXConnectorFactory.connect(url);
         // Retrieve an MBeanServerConnection that represent the MBeanServer the remote
@@ -66,15 +67,14 @@ public class AdminServiceTest extends TestCase {
         MBeanServerConnection connection = connector.getMBeanServerConnection();
         // Call the server side as if it is a local MBeanServer
         ObjectName asmName = getObjectName(ManagementContext.class);
-        Object proxy = MBeanServerInvocationHandler.newProxyInstance(connection, asmName,
-        		AdminServiceMBean.class, true);
+        Object proxy = MBeanServerInvocationHandler.newProxyInstance(connection, asmName, AdminServiceMBean.class, true);
         AdminServiceMBean asm = (AdminServiceMBean) proxy;
 
-        log.info(asm.getBindingComponents()); 
-        log.info(asm.getComponentByName("toto")); 
+        log.info(asm.getBindingComponents());
+        log.info(asm.getComponentByName("toto"));
     }
-    
-    protected  ObjectName getObjectName (Class systemClass){
+
+    protected ObjectName getObjectName(Class systemClass) {
         return ManagementContext.getSystemObjectName(ManagementContext.DEFAULT_DOMAIN, JBIContainer.DEFAULT_NAME, systemClass);
     }
 }

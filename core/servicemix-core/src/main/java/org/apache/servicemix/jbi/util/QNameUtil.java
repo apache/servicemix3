@@ -31,7 +31,10 @@ import org.w3c.dom.Element;
  * @version $Revision: 1.5 $
  * @since 3.0
  */
-public class QNameUtil {
+public final class QNameUtil {
+    
+    private QNameUtil() {
+    }
 
     /**
      * Convert QName to the Clark notation, e.g., {namespace}localName

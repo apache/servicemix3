@@ -33,6 +33,8 @@ import javax.security.auth.login.LoginContext;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.container.JBIContainer;
@@ -41,11 +43,10 @@ import org.apache.servicemix.jbi.security.acl.AuthorizationMap;
 import org.apache.servicemix.jbi.security.acl.impl.AuthorizationEntry;
 import org.apache.servicemix.jbi.security.acl.impl.DefaultAuthorizationMap;
 import org.apache.servicemix.tck.ReceiverComponent;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 public class SecuredBrokerTest extends TestCase {
-    private static final Log log = LogFactory.getLog(SecuredBrokerTest.class);
+
+    private static final Log LOG = LogFactory.getLog(SecuredBrokerTest.class);
 
     static {
         String path = System.getProperty("java.security.auth.login.config");
@@ -56,7 +57,7 @@ public class SecuredBrokerTest extends TestCase {
                 System.setProperty("java.security.auth.login.config", path);
             }
         }
-        log.info("Path to login config: " + path);
+        LOG.info("Path to login config: " + path);
     }
 
     protected JBIContainer jbi;

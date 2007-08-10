@@ -30,5 +30,6 @@ public interface EndpointFilter {
      * Performs the filter on the endpoint returning true if the endpoint is suitable, based on some
      * capabilities evaluation or false if the endpoint should be ignored.
      */
-    public boolean evaluate(ServiceEndpoint endpoint, MessageExchange exchange);
+    boolean evaluate(ServiceEndpoint endpoint, MessageExchange exchange);
+
 }

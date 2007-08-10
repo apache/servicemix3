@@ -17,15 +17,15 @@
 package org.apache.servicemix.tck;
 
 import org.apache.servicemix.examples.AbstractSpringTestSupport;
-import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
  * @version $Revision$
  */
 public class SpringComponentTest extends AbstractSpringTestSupport {
 
-   protected AbstractXmlApplicationContext createBeanFactory() {
+    protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/examples/spring-simple.xml");
     }
 }

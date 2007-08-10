@@ -95,20 +95,20 @@ public class DefaultAuthorizationMap implements AuthorizationMap {
     }
 
     protected boolean match(AuthorizationEntry entry, ServiceEndpoint endpoint, QName operation) {
-        return match(entry.getService(), endpoint.getServiceName()) &&
-               match(entry.getEndpoint(), endpoint.getEndpointName()) &&
-               (entry.getOperation() == null || operation == null || match(entry.getOperation(), operation));
+        return match(entry.getService(), endpoint.getServiceName())
+            && match(entry.getEndpoint(), endpoint.getEndpointName())
+            && (entry.getOperation() == null || operation == null || match(entry.getOperation(), operation));
     }
 
     private boolean match(QName acl, QName target) {
-        return match(acl.getNamespaceURI(), target.getNamespaceURI()) &&
-               match(acl.getLocalPart(), target.getLocalPart());
+        return match(acl.getNamespaceURI(), target.getNamespaceURI())
+            && match(acl.getLocalPart(), target.getLocalPart());
     }
 
     private boolean match(String acl, String target) {
-        return acl == null ||
-               acl.equals("*") ||
-               Pattern.matches(acl, target);
+        return acl == null
+            || acl.equals("*")
+            || Pattern.matches(acl, target);
     }
 
 }

@@ -24,16 +24,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import junit.framework.TestCase;
+
+import org.apache.commons.lang.StringUtils;
 
 public class SimpleFlatFileMarshalerTest extends TestCase {
 
     public void testFixedLengthMarshalling() throws FileNotFoundException, IOException {
         SimpleFlatFileMarshaler marshaler = new SimpleFlatFileMarshaler();
         marshaler.setLineFormat(SimpleFlatFileMarshaler.LINEFORMAT_FIXLENGTH);
-        marshaler.setColumnLengths(new String[] { "2", "3", "5" });
+        marshaler.setColumnLengths(new String[] {"2", "3", "5" });
 
         String path = "./src/test/resources/org/apache/servicemix/components/util/fixedlength.txt";
         String result = marshaler.convertLinesToString(null, new FileInputStream(new File(path)), path);
@@ -50,8 +50,8 @@ public class SimpleFlatFileMarshalerTest extends TestCase {
     public void testFixedLengthWithColNamesMarshalling() throws FileNotFoundException, IOException {
         SimpleFlatFileMarshaler marshaler = new SimpleFlatFileMarshaler();
         marshaler.setLineFormat(SimpleFlatFileMarshaler.LINEFORMAT_FIXLENGTH);
-        marshaler.setColumnLengths(new String[] { "2", "3", "5" });
-        marshaler.setColumnNames(new String[] { "First", "Second", "Third" });
+        marshaler.setColumnLengths(new String[] {"2", "3", "5" });
+        marshaler.setColumnNames(new String[] {"First", "Second", "Third" });
 
         String path = "./src/test/resources/org/apache/servicemix/components/util/fixedlength.txt";
         String result = marshaler.convertLinesToString(null, new FileInputStream(new File(path)), path);
@@ -71,8 +71,8 @@ public class SimpleFlatFileMarshalerTest extends TestCase {
     public void testFixedLengthWithConversionMarshalling() throws FileNotFoundException, IOException {
         SimpleFlatFileMarshaler marshaler = new SimpleFlatFileMarshaler();
         marshaler.setLineFormat(SimpleFlatFileMarshaler.LINEFORMAT_FIXLENGTH);
-        marshaler.setColumnLengths(new String[] { "2", "3", "5", "8" });
-        marshaler.setColumnNames(new String[] { "Number", "Text1", "Text2", "Date" });
+        marshaler.setColumnLengths(new String[] {"2", "3", "5", "8" });
+        marshaler.setColumnNames(new String[] {"Number", "Text1", "Text2", "Date" });
 
         List columnConverters = new ArrayList();
         columnConverters.add(new NumberConverter());

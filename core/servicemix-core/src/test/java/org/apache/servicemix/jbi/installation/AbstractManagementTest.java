@@ -40,16 +40,16 @@ import org.apache.servicemix.jbi.util.FileUtil;
 public abstract class AbstractManagementTest extends TestCase {
 
     protected Log logger = LogFactory.getLog(getClass());
-    
+
     protected JBIContainer container;
-   
+
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
     }
-    
+
     /*
      * @see TestCase#tearDown()
      */
@@ -61,7 +61,7 @@ public abstract class AbstractManagementTest extends TestCase {
             logger.info("Error shutting down container", e);
         }
     }
-    
+
     protected void startContainer(boolean clean) throws Exception {
         shutdownContainer();
         if (clean) {
@@ -74,23 +74,23 @@ public abstract class AbstractManagementTest extends TestCase {
         container.init();
         container.start();
     }
-    
+
     protected void initContainer() {
         container.setCreateMBeanServer(true);
         container.setMonitorInstallationDirectory(false);
         container.setMonitorDeploymentDirectory(false);
     }
-    
+
     protected void shutdownContainer() throws Exception {
         if (container != null) {
             container.shutDown();
         }
     }
-    
+
     protected JBIContainer getContainer() {
         return container;
     }
-    
+
     protected File createInstallerArchive(String jbi) throws Exception {
         InputStream is = getClass().getResourceAsStream(jbi + "-jbi.xml");
         File jar = File.createTempFile("jbi", ".zip");
@@ -104,7 +104,7 @@ public abstract class AbstractManagementTest extends TestCase {
         is.close();
         return jar;
     }
-    
+
     protected File createDummyArchive() throws Exception {
         File jar = File.createTempFile("jbi", ".zip");
         JarOutputStream jos = new JarOutputStream(new FileOutputStream(jar));
@@ -115,49 +115,49 @@ public abstract class AbstractManagementTest extends TestCase {
     }
 
     protected File createServiceAssemblyArchive(String saName, String suName, String compName) throws Exception {
-        return createServiceAssemblyArchive(saName, 
-                                            new String[] { suName }, 
-                                            new String[] { compName }); 
+        return createServiceAssemblyArchive(saName, new String[] {suName }, new String[] {compName });
     }
-    
+
     protected File createServiceAssemblyArchive(String saName, String[] suName, String[] compName) throws Exception {
         File jar = File.createTempFile("jbi", ".zip");
         JarOutputStream jos = new JarOutputStream(new FileOutputStream(jar));
         // Write jbi.xml
         jos.putNextEntry(new ZipEntry("META-INF/jbi.xml"));
         XMLOutputFactory xof = XMLOutputFactory.newInstance();
-        //xof.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
+        // xof.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES,
+        // Boolean.TRUE);
         XMLStreamWriter xsw = xof.createXMLStreamWriter(new FilterOutputStream(jos) {
-            public void close() {}
+            public void close() {
+            }
         });
         xsw.writeStartDocument();
         xsw.writeStartElement("jbi");
         xsw.writeAttribute("xmlns", "http://java.sun.com/xml/ns/jbi");
         xsw.writeAttribute("version", "1.0");
-          xsw.writeStartElement("service-assembly");
+        xsw.writeStartElement("service-assembly");
+        xsw.writeStartElement("identification");
+        xsw.writeStartElement("name");
+        xsw.writeCharacters(saName);
+        xsw.writeEndElement();
+        xsw.writeEndElement();
+        for (int i = 0; i < suName.length; i++) {
+            xsw.writeStartElement("service-unit");
             xsw.writeStartElement("identification");
-              xsw.writeStartElement("name");
-              xsw.writeCharacters(saName);
-              xsw.writeEndElement();
+            xsw.writeStartElement("name");
+            xsw.writeCharacters(suName[i]);
             xsw.writeEndElement();
-            for (int i = 0; i < suName.length; i++) {
-              xsw.writeStartElement("service-unit");
-                xsw.writeStartElement("identification");
-                  xsw.writeStartElement("name");
-                  xsw.writeCharacters(suName[i]);
-                  xsw.writeEndElement();
-                xsw.writeEndElement();
-                xsw.writeStartElement("target");
-                  xsw.writeStartElement("artifacts-zip");
-                  xsw.writeCharacters(suName[i] + ".zip");
-                  xsw.writeEndElement();
-                  xsw.writeStartElement("component-name");
-                  xsw.writeCharacters(compName[i]);
-                  xsw.writeEndElement();
-                xsw.writeEndElement();
-              xsw.writeEndElement();
-            }
-          xsw.writeEndElement();
+            xsw.writeEndElement();
+            xsw.writeStartElement("target");
+            xsw.writeStartElement("artifacts-zip");
+            xsw.writeCharacters(suName[i] + ".zip");
+            xsw.writeEndElement();
+            xsw.writeStartElement("component-name");
+            xsw.writeCharacters(compName[i]);
+            xsw.writeEndElement();
+            xsw.writeEndElement();
+            xsw.writeEndElement();
+        }
+        xsw.writeEndElement();
         xsw.writeEndElement();
         xsw.writeEndDocument();
         xsw.flush();
@@ -174,18 +174,17 @@ public abstract class AbstractManagementTest extends TestCase {
         jos.close();
         return jar;
     }
-    
+
     protected InstallationServiceMBean getInstallationService() throws Exception {
         return container.getInstallationService();
     }
-    
+
     protected DeploymentServiceMBean getDeploymentService() throws Exception {
         return container.getDeploymentService();
     }
-    
+
     protected AdminServiceMBean getAdminService() throws Exception {
         return container.getManagementContext();
     }
-    
-    
+
 }

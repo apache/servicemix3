@@ -16,23 +16,24 @@
  */
 package org.apache.servicemix.jbi.util;
 
-import org.w3c.dom.Node;
-
 import javax.xml.transform.dom.DOMSource;
+
+import org.w3c.dom.Node;
 
 /**
  * A lazily created source which is only created if its required.
- *
+ * 
  * @version $Revision$
  */
 public abstract class LazyDOMSource extends DOMSource {
+
     private boolean initialized;
 
     public LazyDOMSource() {
     }
 
     public Node getNode() {
-        if (! initialized) {
+        if (!initialized) {
             setNode(loadNode());
             initialized = true;
         }
@@ -40,4 +41,5 @@ public abstract class LazyDOMSource extends DOMSource {
     }
 
     protected abstract Node loadNode();
+
 }

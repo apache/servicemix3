@@ -38,7 +38,8 @@ import org.springframework.context.support.AbstractXmlApplicationContext;
  * @version $Revision$
  */
 public class ClientDestinationTest extends TestCase {
-    private static final transient Log log = LogFactory.getLog(ClientDestinationTest.class);
+    
+    private static final transient Log LOG = LogFactory.getLog(ClientDestinationTest.class);
 
     protected AbstractXmlApplicationContext context;
     protected ServiceMixClient client;
@@ -87,7 +88,7 @@ public class ClientDestinationTest extends TestCase {
         
         assertNotNull("Should have returned a non-null response!", response);
 
-        log.info("Received result: " + response);
+        LOG.info("Received result: " + response);
     }
 
 
@@ -95,7 +96,7 @@ public class ClientDestinationTest extends TestCase {
         TestBean bean = new TestBean();
         bean.setName("James");
         bean.setLength(12);
-        bean.getAddresses().addAll(Arrays.asList(new String[] { "London", "LA" }));
+        bean.getAddresses().addAll(Arrays.asList(new String[] {"London", "LA" }));
 
         Destination destination = client.createDestination("service:http://servicemix.org/cheese/receiver");
         Message message = destination.createInOnlyMessage();

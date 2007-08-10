@@ -17,18 +17,19 @@
 package org.apache.servicemix.jbi.management.task;
 
 import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 /**
  * ListSharedLibrariesTask
- *
- * @version $Revision: 
+ * 
+ * @version $Revision:
  */
 public class ListSharedLibrariesTask extends JbiTask {
-    
+
     private String componentName;
+
     private String sharedLibraryName;
+
     private String xmlOutput;
 
     /**
@@ -39,15 +40,15 @@ public class ListSharedLibrariesTask extends JbiTask {
     }
 
     /**
-     * @param xmlOutput the xmlOutput to set
+     * @param xmlOutput
+     *            the xmlOutput to set
      */
     public void setXmlOutput(String xmlOutput) {
         this.xmlOutput = xmlOutput;
     }
 
-
     /**
-     *
+     * 
      * @return component name
      */
     public String getComponentName() {
@@ -55,15 +56,16 @@ public class ListSharedLibrariesTask extends JbiTask {
     }
 
     /**
-     *
-     * @param componentName The component name to set
+     * 
+     * @param componentName
+     *            The component name to set
      */
     public void setComponentName(String componentName) {
         this.componentName = componentName;
     }
 
     /**
-     *
+     * 
      * @return shared library name
      */
     public String getSharedLibraryName() {
@@ -71,8 +73,9 @@ public class ListSharedLibrariesTask extends JbiTask {
     }
 
     /**
-     *
-     * @param sharedLibraryName the shared library name to set
+     * 
+     * @param sharedLibraryName
+     *            the shared library name to set
      */
     public void setSharedLibraryName(String sharedLibraryName) {
         this.sharedLibraryName = sharedLibraryName;
@@ -80,7 +83,7 @@ public class ListSharedLibrariesTask extends JbiTask {
 
     /**
      * execute the task
-     *
+     * 
      * @throws BuildException
      */
     public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
@@ -90,5 +93,5 @@ public class ListSharedLibrariesTask extends JbiTask {
         }
         log(result, Project.MSG_WARN);
     }
-    
+
 }

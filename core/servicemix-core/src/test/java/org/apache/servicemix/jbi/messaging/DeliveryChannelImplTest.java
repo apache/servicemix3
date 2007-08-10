@@ -16,6 +16,8 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOut;
@@ -26,32 +28,30 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DeliveryChannelImplTest extends TestCase {
 
-    private static final Log log = LogFactory.getLog(DeliveryChannelImplTest.class);
+    private static final Log LOG = LogFactory.getLog(DeliveryChannelImplTest.class);
 
     protected JBIContainer container;
-    
+
     protected void setUp() throws Exception {
         container = new JBIContainer();
         container.setEmbedded(true);
         container.init();
         container.start();
     }
-    
+
     protected void tearDown() throws Exception {
         container.shutDown();
     }
-    
+
     public void testExchangeFactoryOnOpenChannel() throws Exception {
         // Retrieve a delivery channel
         TestComponent component = new TestComponent(null, null);
@@ -62,7 +62,7 @@ public class DeliveryChannelImplTest extends TestCase {
         assertNotNull(mef);
         assertNotNull(mef.createInOnlyExchange());
     }
-    
+
     public void testExchangeFactoryOnClosedChannel() throws Exception {
         // Retrieve a delivery channel
         TestComponent component = new TestComponent(null, null);
@@ -79,7 +79,7 @@ public class DeliveryChannelImplTest extends TestCase {
             // expected
         }
     }
-    
+
     public void testSendSyncOnSameComponent() throws Exception {
         // Retrieve a delivery channel
         TestComponent component = new TestComponent(new QName("service"), "endpoint");
@@ -89,7 +89,7 @@ public class DeliveryChannelImplTest extends TestCase {
         final AtomicBoolean done = new AtomicBoolean(false);
 
         // Create another thread
-        new Thread() {
+        Thread t = new Thread() {
             public void run() {
                 try {
                     InOut me = (InOut) channel.accept(5000);
@@ -100,13 +100,14 @@ public class DeliveryChannelImplTest extends TestCase {
                     success.set(true);
                     done.set(true);
                 } catch (MessagingException e) {
-                    log.error(e.getMessage(), e);
+                    LOG.error(e.getMessage(), e);
                     success.set(false);
                     done.set(true);
                 }
             }
-        }.start();
-        
+        };
+        t.start();
+
         MessageExchangeFactory factory = channel.createExchangeFactoryForService(new QName("service"));
         InOut me = factory.createInOutExchange();
         NormalizedMessage nm = me.createMessage();
@@ -118,7 +119,7 @@ public class DeliveryChannelImplTest extends TestCase {
         channel.send(me);
 
         if (!done.get()) {
-            synchronized(done) {
+            synchronized (done) {
                 done.wait(5000);
             }
         }
@@ -126,14 +127,15 @@ public class DeliveryChannelImplTest extends TestCase {
         assertTrue("Secondary thread didn't finish", done.get());
         assertTrue("Exception in secondary thread", success.get());
     }
-    
+
     public static class TestComponent extends ComponentSupport {
         public TestComponent(QName service, String endpoint) {
             super(service, endpoint);
         }
+
         public DeliveryChannel getChannel() throws MessagingException {
             return getContext().getDeliveryChannel();
         }
     }
-    
+
 }

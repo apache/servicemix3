@@ -39,7 +39,7 @@ import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
  */
 public class SedaQueue extends BaseLifeCycle {
     
-    private static final Log log = LogFactory.getLog(SedaQueue.class);
+    private static final Log LOG = LogFactory.getLog(SedaQueue.class);
     
     protected SedaFlow flow;
     protected ComponentNameSpace name;
@@ -91,10 +91,10 @@ public class SedaQueue extends BaseLifeCycle {
     /**
      * Initialize the Region
      * 
-     * @param flow
+     * @param seda
      */
-    public void init(SedaFlow flow) {
-        this.flow = flow;
+    public void init(SedaFlow seda) {
+        this.flow = seda;
     }
 
     /**
@@ -128,13 +128,12 @@ public class SedaQueue extends BaseLifeCycle {
         executor.execute(new Runnable() {
             public void run() {
                 try {
-                    if (log.isDebugEnabled()) {
-                        log.debug(this + " dequeued exchange: " + me);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(this + " dequeued exchange: " + me);
                     }
                     flow.doRouting(me);
-                }
-                catch (Throwable e) {
-                    log.error(this + " got error processing " + me, e);
+                } catch (Throwable e) {
+                    LOG.error(this + " got error processing " + me, e);
                 }
             }
         });

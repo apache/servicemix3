@@ -148,8 +148,8 @@ public class DeploymentMessageTest extends AbstractManagementTest {
         getContainer().getEnvironmentContext().createComponentRootDir("component1");
         getContainer().activateComponent(component2, "component2");
         getContainer().getEnvironmentContext().createComponentRootDir("component2");
-        File installSaUrl = createServiceAssemblyArchive("sa", new String[] { "su1", "su2" }, new String[] { "component1", "component2"});
-        String result = null;;
+        File installSaUrl = createServiceAssemblyArchive("sa", new String[] {"su1", "su2" }, new String[] {"component1", "component2"});
+        String result = null;
         try {
             result = getDeploymentService().deploy(installSaUrl.getAbsolutePath());
             fail("Deployment with an error is not supported");
@@ -232,8 +232,7 @@ public class DeploymentMessageTest extends AbstractManagementTest {
             }
             String text = DOMUtil.getElementText(element);
             return text;
-        }
-        else if (root != null) {
+        } else if (root != null) {
             return root.getNodeValue();
         } else {
             return null;

@@ -16,13 +16,7 @@
  */
 package org.apache.servicemix.client;
 
-import org.apache.servicemix.client.DefaultServiceMixClient;
-import org.apache.servicemix.client.ServiceMixClient;
-import org.apache.servicemix.components.util.OutBinding;
-import org.apache.servicemix.jbi.container.ActivationSpec;
-import org.apache.servicemix.jbi.container.JBIContainer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.io.StringReader;
 
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.MessageExchange;
@@ -31,16 +25,20 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
-import java.io.StringReader;
-
 import junit.framework.TestCase;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.components.util.OutBinding;
+import org.apache.servicemix.jbi.container.ActivationSpec;
+import org.apache.servicemix.jbi.container.JBIContainer;
 
 /**
  * @version $Revision$
  */
 public class SimpleClientTest extends TestCase {
 
-    private static final Log log = LogFactory.getLog(SimpleClientTest.class);
+    private static final Log LOG = LogFactory.getLog(SimpleClientTest.class);
 
     protected JBIContainer container;
     protected OutBinding out;
@@ -53,11 +51,11 @@ public class SimpleClientTest extends TestCase {
         container.start();
         out = new OutBinding() {
             protected void process(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
-                log.info("Received: " + message);
+                LOG.info("Received: " + message);
                 done(exchange);
             }
         };
-        ActivationSpec as = new ActivationSpec("out",out);
+        ActivationSpec as = new ActivationSpec("out", out);
         as.setService(new QName("out"));
         container.activateComponent(as);
         client = new DefaultServiceMixClient(container);

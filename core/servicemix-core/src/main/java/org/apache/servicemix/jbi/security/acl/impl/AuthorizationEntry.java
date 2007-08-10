@@ -111,8 +111,8 @@ public class AuthorizationEntry {
     public void setService(QName service) {
         // Hack a bit to support wildcards
         // If the attribute was service="*:*", then the namespace is not found, but the prefix is set
-        if (XMLConstants.NULL_NS_URI.equals(service.getNamespaceURI()) &&
-            service.getPrefix() != null && service.getPrefix().length() > 0) {
+        if (XMLConstants.NULL_NS_URI.equals(service.getNamespaceURI())
+                        && service.getPrefix() != null && service.getPrefix().length() > 0) {
             service = new QName(service.getPrefix(), service.getLocalPart());
         }
         this.service = service;

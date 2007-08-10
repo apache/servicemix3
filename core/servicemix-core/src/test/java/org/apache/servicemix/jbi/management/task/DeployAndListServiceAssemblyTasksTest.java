@@ -33,66 +33,64 @@ public class DeployAndListServiceAssemblyTasksTest extends JbiTaskSupport {
 
     private static final String XML_OUTPUT_PROPERTY = "test.xml.output";
 
-	private DeployServiceAssemblyTask deployServiceAssembliesTask;
+    private DeployServiceAssemblyTask deployServiceAssembliesTask;
 
-	private File rootDir = new File("target/testWDIR");
+    private File rootDir = new File("target/testWDIR");
 
-	private ListServiceAssembliesTask listServiceAssembliesTask;
+    private ListServiceAssembliesTask listServiceAssembliesTask;
 
-	private Project project = new Project();
+    private Project project = new Project();
 
-	/*
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		FileUtil.deleteFile(rootDir);
-		this.container.setRootDir(rootDir.getPath());
-		super.setUp();
-		deployServiceAssembliesTask = new DeployServiceAssemblyTask() {
-		};
-		deployServiceAssembliesTask.setProject(new Project());
-		deployServiceAssembliesTask.init();
+    /*
+     * @see TestCase#setUp()
+     */
+    protected void setUp() throws Exception {
+        FileUtil.deleteFile(rootDir);
+        this.container.setRootDir(rootDir.getPath());
+        super.setUp();
+        deployServiceAssembliesTask = new DeployServiceAssemblyTask() {
+        };
+        deployServiceAssembliesTask.setProject(new Project());
+        deployServiceAssembliesTask.init();
 
-		listServiceAssembliesTask = new ListServiceAssembliesTask();
-		listServiceAssembliesTask.setProject(project);
-		listServiceAssembliesTask.init();
-	}
+        listServiceAssembliesTask = new ListServiceAssembliesTask();
+        listServiceAssembliesTask.setProject(project);
+        listServiceAssembliesTask.init();
+    }
 
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		deployServiceAssembliesTask.close();
-		super.tearDown();
-	}
+    /*
+     * @see TestCase#tearDown()
+     */
+    protected void tearDown() throws Exception {
+        deployServiceAssembliesTask.close();
+        super.tearDown();
+    }
 
-	public void testInstallationAndList() throws Exception {
-		URL url = getClass().getClassLoader().getResource(
-				"org/apache/servicemix/jbi/installation/testassembly.jar");
+    public void testInstallationAndList() throws Exception {
+        URL url = getClass().getClassLoader().getResource("org/apache/servicemix/jbi/installation/testassembly.jar");
 
-		listServiceAssembliesTask.setServiceAssemblyName("sa");
-		listServiceAssembliesTask.setXmlOutput(XML_OUTPUT_PROPERTY);
-		listServiceAssembliesTask.execute();
+        listServiceAssembliesTask.setServiceAssemblyName("sa");
+        listServiceAssembliesTask.setXmlOutput(XML_OUTPUT_PROPERTY);
+        listServiceAssembliesTask.execute();
 
-		log.info(project.getProperty(XML_OUTPUT_PROPERTY));
-		
-		if (url != null) {
-			String file = url.getFile();
-			deployServiceAssembliesTask.setFile(file);
-			deployServiceAssembliesTask.init();
-			deployServiceAssembliesTask.execute();
-			File testFile = new File(rootDir, "service-assemblies"
-					+ File.separator + "sa");
-			assertTrue(testFile.exists());
-		}
+        log.info(project.getProperty(XML_OUTPUT_PROPERTY));
 
-		listServiceAssembliesTask.setServiceAssemblyName("sa");
-		listServiceAssembliesTask.setXmlOutput(XML_OUTPUT_PROPERTY);
-		listServiceAssembliesTask.execute();
+        if (url != null) {
+            String file = url.getFile();
+            deployServiceAssembliesTask.setFile(file);
+            deployServiceAssembliesTask.init();
+            deployServiceAssembliesTask.execute();
+            File testFile = new File(rootDir, "service-assemblies" + File.separator + "sa");
+            assertTrue(testFile.exists());
+        }
 
-		log.info(project.getProperty(XML_OUTPUT_PROPERTY));
+        listServiceAssembliesTask.setServiceAssemblyName("sa");
+        listServiceAssembliesTask.setXmlOutput(XML_OUTPUT_PROPERTY);
+        listServiceAssembliesTask.execute();
 
-		FileUtil.deleteFile(rootDir);
+        log.info(project.getProperty(XML_OUTPUT_PROPERTY));
 
-	}
+        FileUtil.deleteFile(rootDir);
+
+    }
 }

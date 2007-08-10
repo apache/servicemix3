@@ -18,22 +18,21 @@ package org.apache.servicemix.jbi.security;
 
 import junit.framework.TestCase;
 
-
 /**
- *
+ * 
  */
 public class UserPrincipalTest extends TestCase {
 
     public void testArguments() {
         UserPrincipal principal = new UserPrincipal("FOO");
 
-       assertEquals("FOO", principal.getName());
+        assertEquals("FOO", principal.getName());
 
         try {
             new UserPrincipal(null);
             fail("Should have thrown IllegalArgumentException");
         } catch (IllegalArgumentException ingore) {
-
+            // Expected
         }
     }
 

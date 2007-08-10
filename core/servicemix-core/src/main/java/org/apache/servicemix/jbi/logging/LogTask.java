@@ -16,12 +16,12 @@
  */
 package org.apache.servicemix.jbi.logging;
 
-import org.apache.log4j.xml.DOMConfigurator;
-import org.apache.log4j.Logger;
-
-import java.util.TimerTask;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.TimerTask;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.xml.DOMConfigurator;
 
 public class LogTask extends TimerTask {
 

@@ -16,12 +16,8 @@
  */
 package org.apache.servicemix.jbi.security.keystore.impl;
 
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
+import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
-import java.security.UnrecoverableKeyException;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocketFactory;
@@ -29,7 +25,6 @@ import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.security.keystore.KeyIsLocked;
 import org.apache.servicemix.jbi.security.keystore.KeystoreInstance;
 import org.apache.servicemix.jbi.security.keystore.KeystoreIsLocked;
 import org.apache.servicemix.jbi.security.keystore.KeystoreManager;
@@ -84,6 +79,7 @@ public class BaseKeystoreManager implements KeystoreManager {
      *            The class loader used to resolve factory classes.
      * 
      * @return A created SSLSocketFactory item created from the KeystoreManager.
+     * @throws GeneralSecurityException 
      * @throws KeystoreIsLocked
      *             Occurs when the requested key keystore cannot be used because
      *             it has not been unlocked.
@@ -96,15 +92,9 @@ public class BaseKeystoreManager implements KeystoreManager {
      * @throws KeyManagementException
      * @throws NoSuchProviderException
      */
-    public SSLSocketFactory createSSLFactory(
-                                String provider, 
-                                String protocol, 
-                                String algorithm, 
-                                String keyStore,
-                                String keyAlias, 
-                                String trustStore) throws KeystoreIsLocked, KeyIsLocked,
-                    NoSuchAlgorithmException, UnrecoverableKeyException, KeyStoreException, KeyManagementException,
-                    NoSuchProviderException {
+    public SSLSocketFactory createSSLFactory(String provider, String protocol, 
+                                             String algorithm, String keyStore,
+                                             String keyAlias, String trustStore) throws GeneralSecurityException  {
         // the keyStore is optional.
         KeystoreInstance keyInstance = null;
         if (keyStore != null) {
@@ -146,7 +136,7 @@ public class BaseKeystoreManager implements KeystoreManager {
             if (provider == null) {
                 context = SSLContext.getInstance(protocol);
             } else {
-                context= SSLContext.getInstance(protocol, provider);
+                context = SSLContext.getInstance(protocol, provider);
             }
             context.init(keyInstance == null ? null : keyInstance.getKeyManager(algorithm, keyAlias), 
                          trustInstance == null ? null : trustInstance.getTrustManager(algorithm), 
@@ -189,15 +179,9 @@ public class BaseKeystoreManager implements KeystoreManager {
      *             Occurs when the requested private key in the key keystore
      *             cannot be used because it has not been unlocked.
      */
-    public SSLServerSocketFactory createSSLServerFactory(
-                                String provider, 
-                                String protocol, 
-                                String algorithm,
-                                String keyStore, 
-                                String keyAlias, 
-                                String trustStore) throws KeystoreIsLocked,
-                    KeyIsLocked, NoSuchAlgorithmException, UnrecoverableKeyException, KeyStoreException,
-                    KeyManagementException, NoSuchProviderException {
+    public SSLServerSocketFactory createSSLServerFactory(String provider, String protocol, 
+                                                         String algorithm, String keyStore, 
+                                                         String keyAlias, String trustStore) throws GeneralSecurityException {
         KeystoreInstance keyInstance = getKeystore(keyStore);
         if (keyInstance.isKeystoreLocked()) {
             throw new KeystoreIsLocked("Keystore '" + keyStore
@@ -235,7 +219,7 @@ public class BaseKeystoreManager implements KeystoreManager {
             if (provider == null) {
                 context = SSLContext.getInstance(protocol);
             } else {
-                context= SSLContext.getInstance(protocol, provider);
+                context = SSLContext.getInstance(protocol, provider);
             }
             context.init(keyInstance == null ? null : keyInstance.getKeyManager(algorithm, keyAlias), 
                          trustInstance == null ? null : trustInstance.getTrustManager(algorithm), 

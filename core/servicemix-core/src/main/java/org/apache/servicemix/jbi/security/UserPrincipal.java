@@ -28,7 +28,9 @@ public class UserPrincipal implements Principal {
     private transient int hash;
 
     public UserPrincipal(String name) {
-        if (name == null) throw new IllegalArgumentException("name cannot be null");
+        if (name == null) {
+            throw new IllegalArgumentException("name cannot be null");
+        }
         this.name = name;
     }
 
@@ -37,12 +39,18 @@ public class UserPrincipal implements Principal {
     }
 
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         final UserPrincipal that = (UserPrincipal) o;
 
-        if (!name.equals(that.name)) return false;
+        if (!name.equals(that.name)) {
+            return false;
+        }
 
         return true;
     }

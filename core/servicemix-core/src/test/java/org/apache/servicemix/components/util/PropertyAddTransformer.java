@@ -20,8 +20,6 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 
-import org.apache.servicemix.components.util.CopyTransformer;
-
 public class PropertyAddTransformer extends CopyTransformer {
 
     String name;

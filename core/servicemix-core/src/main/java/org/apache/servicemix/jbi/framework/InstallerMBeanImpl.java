@@ -75,9 +75,9 @@ public class InstallerMBeanImpl implements InstallerMBean {
                 // Unregister a previously registered extension mbean,
                 // in case the bootstrap has not done it
                 try {
-                    if (extensionMBeanName != null &&
-                        container.getMBeanServer() != null &&
-                        container.getMBeanServer().isRegistered(extensionMBeanName)) {
+                    if (extensionMBeanName != null
+                            && container.getMBeanServer() != null
+                            && container.getMBeanServer().isRegistered(extensionMBeanName)) {
                         container.getMBeanServer().unregisterMBean(extensionMBeanName);
                     }
                 } catch (InstanceNotFoundException e) {
@@ -118,8 +118,8 @@ public class InstallerMBeanImpl implements InstallerMBean {
                                     null);
             Thread.currentThread().setContextClassLoader(cl);
             Class bootstrapClass = cl.loadClass(descriptor.getBootstrapClassName());
-            Bootstrap bootstrap = (Bootstrap) bootstrapClass.newInstance();
-            return bootstrap;
+            Bootstrap bs = (Bootstrap) bootstrapClass.newInstance();
+            return bs;
         } catch (MalformedURLException e) {
             LOG.error("Could not create class loader", e);
             throw new DeploymentException(e);
@@ -249,7 +249,7 @@ public class InstallerMBeanImpl implements InstallerMBean {
             // If it was found by a destroyable classloader destroy it
             // XXX Should we be holding the classloader as a member as always destroying it?
             if (bootstrap.getClass().getClassLoader() instanceof DestroyableClassLoader) {
-            	((DestroyableClassLoader) bootstrap.getClass().getClassLoader()).destroy();
+                ((DestroyableClassLoader) bootstrap.getClass().getClassLoader()).destroy();
             }
             System.gc();
             container.getEnvironmentContext().removeComponentRootDirectory(componentName);
@@ -311,7 +311,7 @@ public class InstallerMBeanImpl implements InstallerMBean {
                 parents[i] = sl.getClassLoader();
             }
         } else {
-            parents = new ClassLoader[] { getClass().getClassLoader() };
+            parents = new ClassLoader[] {getClass().getClassLoader() };
         }
         
         List urls = new ArrayList();
@@ -331,7 +331,7 @@ public class InstallerMBeanImpl implements InstallerMBean {
                         parents, 
                         !parentFirst,
                         new String[0],
-                        new String[] { "java.", "javax." }); 
+                        new String[] {"java.", "javax." }); 
         if (LOG.isDebugEnabled()) {
             LOG.debug("Component class loader: " + cl);
         }

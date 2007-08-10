@@ -22,23 +22,20 @@ import java.io.ObjectInput;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 
-import org.apache.servicemix.jbi.messaging.ExchangePacket;
-import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
-
 import junit.framework.TestCase;
 
 public class MessageExchangeTest extends TestCase {
 
     public static class TestMessageExchange extends MessageExchangeImpl {
         private static final long serialVersionUID = 5572313276570983400L;
+        private static final int[][] STATES = {
+            {CAN_CONSUMER + CAN_OWNER + CAN_SET_IN_MSG + CAN_SEND + CAN_STATUS_ACTIVE, -1, -1, -1 },
+        };
         public TestMessageExchange() {
             super(new ExchangePacket(), STATES);
         }
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         }
-        private static int[][] STATES = {
-            { CAN_CONSUMER + CAN_OWNER + CAN_SET_IN_MSG + CAN_SEND + CAN_STATUS_ACTIVE, -1, -1, -1 },
-        };
     }
     
     public void testErrorStatus() throws Exception {

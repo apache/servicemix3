@@ -16,12 +16,6 @@
  */
 package org.apache.servicemix.jbi.management;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.components.util.EchoComponent;
-import org.apache.servicemix.jbi.container.JBIContainer;
-import org.apache.servicemix.jbi.management.ManagementContext;
-
 import javax.jbi.management.LifeCycleMBean;
 import javax.management.MBeanServerConnection;
 import javax.management.MBeanServerDelegateMBean;
@@ -33,64 +27,68 @@ import javax.management.remote.JMXServiceURL;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.components.util.EchoComponent;
+import org.apache.servicemix.jbi.container.JBIContainer;
+
 /**
  * ManagementContextTest
  */
 public class ManagementContextTest extends TestCase {
 
-	private Log log = LogFactory.getLog(getClass());
-	
+    private Log log = LogFactory.getLog(getClass());
+
     // The host, port and path where the rmiregistry runs.
-	private String namingHost = "localhost";
-	private int namingPort = ManagementContext.DEFAULT_CONNECTOR_PORT;
-	private String jndiPath = ManagementContext.DEFAULT_CONNECTOR_PATH;
-    
-	private ManagementContext context;
-	private JBIContainer container;
+    private String namingHost = "localhost";
+
+    private int namingPort = ManagementContext.DEFAULT_CONNECTOR_PORT;
+
+    private String jndiPath = ManagementContext.DEFAULT_CONNECTOR_PATH;
+
+    private ManagementContext context;
+
+    private JBIContainer container;
 
     protected void setUp() throws Exception {
-    	container = new JBIContainer();
-    	container.setCreateMBeanServer(true);
-    	container.setRmiPort(namingPort);
-    	container.init();
-    	container.start();
-    	context = container.getManagementContext();
-    	/*
-        context = new ManagementContext();
-        context.setCreateMBeanServer(true);
-        context.setNamingPort(namingPort);
-        context.init(container, null);
-        */
+        container = new JBIContainer();
+        container.setCreateMBeanServer(true);
+        container.setRmiPort(namingPort);
+        container.init();
+        container.start();
+        context = container.getManagementContext();
+        /*
+         * context = new ManagementContext();
+         * context.setCreateMBeanServer(true);
+         * context.setNamingPort(namingPort); context.init(container, null);
+         */
     }
-    
+
     protected void tearDown() throws Exception {
-    	container.shutDown();
+        container.shutDown();
     }
 
     public void testRemote() throws Exception {
         // The address of the connector server
-        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://"
-                + namingHost + ":" + namingPort + jndiPath);
+        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://" + namingHost + ":" + namingPort + jndiPath);
         // Connect a JSR 160 JMXConnector to the server side
         JMXConnector connector = JMXConnectorFactory.connect(url);
-        // Retrieve an MBeanServerConnection that represent the MBeanServer the remote
+        // Retrieve an MBeanServerConnection that represent the MBeanServer the
+        // remote
         // connector server is bound to
         MBeanServerConnection connection = connector.getMBeanServerConnection();
         // Call the server side as if it is a local MBeanServer
         ObjectName delegateName = ObjectName.getInstance("JMImplementation:type=MBeanServerDelegate");
-        Object proxy = MBeanServerInvocationHandler.newProxyInstance(connection, delegateName,
-                MBeanServerDelegateMBean.class, true);
+        Object proxy = MBeanServerInvocationHandler.newProxyInstance(connection, delegateName, MBeanServerDelegateMBean.class, true);
         MBeanServerDelegateMBean delegate = (MBeanServerDelegateMBean) proxy;
         // The magic of JDK 1.3 dynamic proxy and JSR 160:
         // delegate.getImplementationVendor() is actually a remote JMX call,
         // but it looks like a local, old-style, java call.
         log.info(delegate.getImplementationVendor() + " is cool !");
-        
+
         ObjectName objName = context.createObjectName(context);
-        
-        
-        proxy = MBeanServerInvocationHandler.newProxyInstance(connection, objName,
-                LifeCycleMBean.class, true);
+
+        proxy = MBeanServerInvocationHandler.newProxyInstance(connection, objName, LifeCycleMBean.class, true);
         LifeCycleMBean mc = (LifeCycleMBean) proxy;
         log.info("STATE = " + mc.getCurrentState());
         mc.start();
@@ -98,18 +96,18 @@ public class ManagementContextTest extends TestCase {
         mc.stop();
         log.info("STATE = " + mc.getCurrentState());
     }
-    
+
     public void testComponent() throws Exception {
-    	ObjectName[] names = context.getPojoComponents();
-    	assertEquals(1, names.length);
-    	EchoComponent echo = new EchoComponent();
-    	container.activateComponent(echo, "echo");
-    	names = context.getPojoComponents();
-    	assertNotNull(names);
-    	assertEquals(2, names.length);
-    	assertEquals(LifeCycleMBean.STARTED, echo.getCurrentState());
-    	context.stopComponent("echo");
-    	assertEquals(LifeCycleMBean.STOPPED, echo.getCurrentState());
+        ObjectName[] names = context.getPojoComponents();
+        assertEquals(1, names.length);
+        EchoComponent echo = new EchoComponent();
+        container.activateComponent(echo, "echo");
+        names = context.getPojoComponents();
+        assertNotNull(names);
+        assertEquals(2, names.length);
+        assertEquals(LifeCycleMBean.STARTED, echo.getCurrentState());
+        context.stopComponent("echo");
+        assertEquals(LifeCycleMBean.STOPPED, echo.getCurrentState());
     }
-    
+
 }

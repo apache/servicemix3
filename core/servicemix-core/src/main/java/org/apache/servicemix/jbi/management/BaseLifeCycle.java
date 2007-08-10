@@ -30,57 +30,60 @@ import javax.management.MBeanOperationInfo;
  * @version $Revision$
  */
 public abstract class BaseLifeCycle implements LifeCycleMBean, MBeanInfoProvider {
-    
+
     public static final String INITIALIZED = "Initialized";
-    
+
     protected String currentState = LifeCycleMBean.UNKNOWN;
-    
+
     protected PropertyChangeListener listener;
-    
-    
+
     /**
      * Get the name of the item
+     * 
      * @return the name
      */
     public String getName() {
         String name = getClass().getName();
         int index = name.lastIndexOf(".");
-        if (index >= 0 && (index+1) < name.length()) {
-            name = name.substring(index+1);
+        if (index >= 0 && (index + 1) < name.length()) {
+            name = name.substring(index + 1);
         }
         return name;
     }
-    
+
     /**
      * Get the type of the item
+     * 
      * @return the type
      */
     public String getType() {
         String name = getClass().getName();
         int index = name.lastIndexOf(".");
-        if (index >= 0 && (index+1) < name.length()) {
-            name = name.substring(index+1);
+        if (index >= 0 && (index + 1) < name.length()) {
+            name = name.substring(index + 1);
         }
         return name;
     }
-    
+
     public String getSubType() {
         return null;
     }
-    
+
     /**
      * set state to initialized
-     * @throws JBIException 
-     *
+     * 
+     * @throws JBIException
+     * 
      */
-    protected void init() throws JBIException{
+    protected void init() throws JBIException {
         setCurrentState(INITIALIZED);
     }
 
     /**
      * Start the item.
      * 
-     * @exception javax.jbi.JBIException if the item fails to start.
+     * @exception javax.jbi.JBIException
+     *                if the item fails to start.
      */
     public void start() throws javax.jbi.JBIException {
         setCurrentState(LifeCycleMBean.STARTED);
@@ -89,16 +92,19 @@ public abstract class BaseLifeCycle implements LifeCycleMBean, MBeanInfoProvider
     /**
      * Stop the item. This suspends current messaging activities.
      * 
-     * @exception javax.jbi.JBIException if the item fails to stop.
+     * @exception javax.jbi.JBIException
+     *                if the item fails to stop.
      */
     public void stop() throws javax.jbi.JBIException {
         setCurrentState(LifeCycleMBean.STOPPED);
     }
 
     /**
-     * Shut down the item. The releases resources, preparatory to uninstallation.
+     * Shut down the item. The releases resources, preparatory to
+     * uninstallation.
      * 
-     * @exception javax.jbi.JBIException if the item fails to shut down.
+     * @exception javax.jbi.JBIException
+     *                if the item fails to shut down.
      */
     public void shutDown() throws javax.jbi.JBIException {
         setCurrentState(LifeCycleMBean.SHUTDOWN);
@@ -107,59 +113,60 @@ public abstract class BaseLifeCycle implements LifeCycleMBean, MBeanInfoProvider
     /**
      * Get the current state of this managed compononent.
      * 
-     * @return the current state of this managed component (must be one of the string constants defined by this
-     * interface)
+     * @return the current state of this managed component (must be one of the
+     *         string constants defined by this interface)
      * @org.apache.xbean.Property hidden="true"
      */
     public String getCurrentState() {
         return currentState;
     }
-    
+
     /**
      * Set the current state
+     * 
      * @param newValue
      */
-    protected void setCurrentState(String newValue){
+    protected void setCurrentState(String newValue) {
         String oldValue = currentState;
         this.currentState = newValue;
-        firePropertyChanged("currentState",oldValue,newValue);
+        firePropertyChanged("currentState", oldValue, newValue);
     }
-    
+
     /**
      * @return true if the object is in the started state
      */
-    public boolean isStarted(){
+    public boolean isStarted() {
         return currentState != null && currentState.equals(LifeCycleMBean.STARTED);
     }
-    
+
     /**
-    * @return true if the object is stopped
-    */
-   public boolean isStopped(){
-       return currentState != null && currentState.equals(LifeCycleMBean.STOPPED);
-   }
-   
-   /**
-    * @return true if the object is shutDown
-    */
-   public boolean isShutDown(){
-       return currentState != null && currentState.equals(LifeCycleMBean.SHUTDOWN);
-   }
-   
-   /**
-    * @return true if the object is shutDown
-    */
-   public boolean isInitialized(){
-       return currentState != null && currentState.equals(INITIALIZED);
-   }
-   
-   /**
-    * @return true if the object is shutDown
-    */
-   public boolean isUnknown(){
-       return currentState == null || currentState.equals(LifeCycleMBean.UNKNOWN);
-   }
-    
+     * @return true if the object is stopped
+     */
+    public boolean isStopped() {
+        return currentState != null && currentState.equals(LifeCycleMBean.STOPPED);
+    }
+
+    /**
+     * @return true if the object is shutDown
+     */
+    public boolean isShutDown() {
+        return currentState != null && currentState.equals(LifeCycleMBean.SHUTDOWN);
+    }
+
+    /**
+     * @return true if the object is shutDown
+     */
+    public boolean isInitialized() {
+        return currentState != null && currentState.equals(INITIALIZED);
+    }
+
+    /**
+     * @return true if the object is shutDown
+     */
+    public boolean isUnknown() {
+        return currentState == null || currentState.equals(LifeCycleMBean.UNKNOWN);
+    }
+
     /**
      * Get an array of MBeanAttributeInfo
      * 
@@ -196,20 +203,21 @@ public abstract class BaseLifeCycle implements LifeCycleMBean, MBeanInfoProvider
     public Object getObjectToManage() {
         return this;
     }
-    
+
     /**
      * Register for propertyChange events
+     * 
      * @param l
      * @org.apache.xbean.Property hidden="true"
      */
-    public void setPropertyChangeListener(PropertyChangeListener l){
+    public void setPropertyChangeListener(PropertyChangeListener l) {
         this.listener = l;
     }
-    
-    protected void firePropertyChanged(String name,Object oldValue, Object newValue){
+
+    protected void firePropertyChanged(String name, Object oldValue, Object newValue) {
         PropertyChangeListener l = listener;
-        if (l != null){
-            PropertyChangeEvent event = new PropertyChangeEvent(this,name,oldValue,newValue);
+        if (l != null) {
+            PropertyChangeEvent event = new PropertyChangeEvent(this, name, oldValue, newValue);
             l.propertyChange(event);
         }
     }

@@ -17,7 +17,6 @@
 package org.apache.servicemix.expression;
 
 import org.apache.servicemix.client.DefaultNamespaceContext;
-import org.apache.servicemix.expression.JAXPStringXPathExpression;
 import org.apache.xalan.extensions.XPathFunctionResolverImpl;
 
 
@@ -36,9 +35,9 @@ public class JAXPXPathExpressionTest extends XPathExpressionTest {
 
         try {
             Class.forName("java.lang.annotation.AnnotationTypeMismatchException");
-
             test = true;
         } catch (ClassNotFoundException doNothing) {
+            // Expected if not java 5
         }
 
         if (test) {

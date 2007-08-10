@@ -184,8 +184,7 @@ public class SedaFlow extends AbstractFlow {
         }
         try {
             queue.enqueue(me);
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             throw new MessagingException(queue + " Failed to enqueue exchange: " + me, e);
         }
     }
@@ -215,8 +214,7 @@ public class SedaFlow extends AbstractFlow {
             try {
                 queue.shutDown();
                 unregisterQueue(queue);
-            }
-            catch (JBIException e) {
+            } catch (JBIException e) {
                 log.error("Failed to stop SedaQueue: " + queue + ": " + e);
                 if (log.isDebugEnabled()) {
                     log.debug("Failed to stop SedaQueue: " + queue, e);
@@ -254,8 +252,7 @@ public class SedaFlow extends AbstractFlow {
             }
             queue.setObjectName(objectName);
             broker.getContainer().getManagementContext().registerMBean(objectName, queue, LifeCycleMBean.class);
-        }
-        catch (JMException e) {
+        } catch (JMException e) {
             log.error("Failed to register SedaQueue: " + queue + " with the ManagementContext: " + e);
             if (log.isDebugEnabled()) {
                 log.debug("Failed to register SedaQueue: " + queue + " with the ManagementContext", e);
@@ -266,8 +263,7 @@ public class SedaFlow extends AbstractFlow {
     protected void unregisterQueue(SedaQueue queue) {
         try {
             broker.getContainer().getManagementContext().unregisterMBean(queue.getObjectName());
-        }
-        catch (JBIException e) {
+        } catch (JBIException e) {
             log.error("Failed to unregister SedaQueue: " + queue + " from the ManagementContext");
             if (log.isDebugEnabled()) {
                 log.debug("Failed to unregister SedaQueue: " + queue + " with the ManagementContext", e);
@@ -298,7 +294,8 @@ public class SedaFlow extends AbstractFlow {
                     }
                     Transaction tx = tm.suspend();
                     if (tx != oldTx) {
-                        throw new IllegalStateException("the transaction context set in the messageExchange is not bound to the current thread");
+                        throw new IllegalStateException("the transaction context set in "
+                                + "the messageExchange is not bound to the current thread");
                     }
                 }
             }

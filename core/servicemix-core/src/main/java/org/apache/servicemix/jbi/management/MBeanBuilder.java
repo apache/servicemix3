@@ -16,19 +16,21 @@
  */
 package org.apache.servicemix.jbi.management;
 
+import java.util.concurrent.ExecutorService;
+
 import javax.management.DynamicMBean;
 import javax.management.JMException;
 import javax.management.StandardMBean;
-
-import java.util.concurrent.ExecutorService;
 
 /**
  * Builds a DynamicMBean wrappers for existing objects
  * 
  * @version $Revision$
  */
-class MBeanBuilder {
+public final class MBeanBuilder {
     
+    private MBeanBuilder() {
+    }
 
     /**
      * Build an MBean
@@ -40,7 +42,8 @@ class MBeanBuilder {
      * @return the MBean wrapper
      * @throws JMException
      */
-    static DynamicMBean buildStandardMBean(Object theObject, Class interfaceMBean, String description, ExecutorService executorService) throws JMException {
+    static DynamicMBean buildStandardMBean(Object theObject, Class interfaceMBean, 
+                                           String description, ExecutorService executorService) throws JMException {
         DynamicMBean result = null;
         if (theObject != null) {
             if (theObject instanceof MBeanInfoProvider) {
@@ -53,8 +56,7 @@ class MBeanBuilder {
                         info.getOperationInfos(),
                         executorService);
                 info.setPropertyChangeListener((BaseStandardMBean)result);
-            }
-            else {
+            } else {
                 return new StandardMBean(theObject, interfaceMBean);
             }
         }

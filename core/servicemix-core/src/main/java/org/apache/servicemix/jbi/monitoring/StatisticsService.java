@@ -19,6 +19,7 @@ package org.apache.servicemix.jbi.monitoring;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jbi.JBIException;
 import javax.jbi.messaging.ExchangeStatus;
@@ -50,8 +51,6 @@ import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
 import org.apache.servicemix.jbi.servicedesc.EndpointSupport;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * 
  * @author gnodet
@@ -59,7 +58,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class StatisticsService extends BaseSystemService implements StatisticsServiceMBean {
 
-    private static final Log log = LogFactory.getLog(StatisticsService.class);
+    private static final Log LOG = LogFactory.getLog(StatisticsService.class);
     
     private ConcurrentHashMap<String, ComponentStats> componentStats = new ConcurrentHashMap<String, ComponentStats>();
     private ConcurrentHashMap<String, EndpointStats> endpointStats = new ConcurrentHashMap<String, EndpointStats>();
@@ -101,9 +100,8 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
             if (timerTask != null) {
                 timerTask.cancel();
             }
-        }
-        else if (!dumpStats && value) {
-            dumpStats = value;//scheduleStatsTimer relies on dumpStats value
+        } else if (!dumpStats && value) {
+            dumpStats = value; //scheduleStatsTimer relies on dumpStats value
             scheduleStatsTimer();
         }
         dumpStats = value;
@@ -199,15 +197,15 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
         ComponentStats stats = new ComponentStats(component);
         componentStats.putIfAbsent(key, stats);
         // Register MBean
-        ManagementContext context= container.getManagementContext();
+        ManagementContext context = container.getManagementContext();
         try {
             context.registerMBean(context.createObjectName(context.createObjectNameProps(stats, true)), 
                     stats, 
                     ComponentStatsMBean.class);
         } catch (Exception e) {
-            log.info("Unable to register component statistics MBean: " + e.getMessage());
-            if (log.isDebugEnabled()) {
-                log.debug("Unable to register component statistics MBean", e);
+            LOG.info("Unable to register component statistics MBean: " + e.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Unable to register component statistics MBean", e);
             }
         }
     }
@@ -220,13 +218,13 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
             return;
         }
         // Register MBean
-        ManagementContext context= container.getManagementContext();
+        ManagementContext context = container.getManagementContext();
         try {
             context.unregisterMBean(context.createObjectName(context.createObjectNameProps(stats, true)));
         } catch (Exception e) {
-            log.info("Unable to unregister component statistics MBean: " + e);
-            if (log.isDebugEnabled()) {
-                log.debug("Unable to unregister component statistics MBean", e);
+            LOG.info("Unable to unregister component statistics MBean: " + e);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Unable to unregister component statistics MBean", e);
             }
         }
     }
@@ -238,15 +236,15 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
         EndpointStats stats = new EndpointStats(endpoint, compStats.getMessagingStats());
         endpointStats.putIfAbsent(key, stats);
         // Register MBean
-        ManagementContext context= container.getManagementContext();
+        ManagementContext context = container.getManagementContext();
         try {
             context.registerMBean(context.createObjectName(context.createObjectNameProps(stats, true)), 
                                   stats, 
                                   EndpointStatsMBean.class);
         } catch (Exception e) {
-            log.info("Unable to register endpoint statistics MBean: " + e.getMessage());
-            if (log.isDebugEnabled()) {
-                log.debug("Unable to register endpoint statistics MBean", e);
+            LOG.info("Unable to register endpoint statistics MBean: " + e.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Unable to register endpoint statistics MBean", e);
             }
         }
     }
@@ -256,13 +254,13 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
         String key = EndpointSupport.getUniqueKey(endpoint);
         EndpointStats stats = endpointStats.remove(key);
         // Register MBean
-        ManagementContext context= container.getManagementContext();
+        ManagementContext context = container.getManagementContext();
         try {
             context.unregisterMBean(context.createObjectName(context.createObjectNameProps(stats, true)));
         } catch (Exception e) {
-            log.info("Unable to unregister endpoint statistics MBean: " + e.getMessage());
-            if (log.isDebugEnabled()) {
-                log.debug("Unable to unregister endpoint statistics MBean", e);
+            LOG.info("Unable to unregister endpoint statistics MBean: " + e.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Unable to unregister endpoint statistics MBean", e);
             }
         }
     }
@@ -270,12 +268,11 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
     protected void onExchangeSent(ExchangeEvent event) {
         MessageExchange me = event.getExchange();
         // This is a new exchange sent by a consumer
-        if (me.getStatus() == ExchangeStatus.ACTIVE &&
-            me.getRole() == Role.CONSUMER && 
-            me.getMessage("out") == null && 
-            me.getFault() == null &&
-            me instanceof MessageExchangeImpl) 
-        {
+        if (me.getStatus() == ExchangeStatus.ACTIVE
+                && me.getRole() == Role.CONSUMER 
+                && me.getMessage("out") == null 
+                && me.getFault() == null
+                && me instanceof MessageExchangeImpl) {
             MessageExchangeImpl mei = (MessageExchangeImpl) me;
             String source = (String) me.getProperty(JbiConstants.SENDER_ENDPOINT);
             if (source == null) {
@@ -283,7 +280,8 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
                 ComponentStats stats = componentStats.get(source);
                 stats.incrementOutbound();
             } else {
-                ServiceEndpoint[] ses = getContainer().getRegistry().getEndpointRegistry().getAllEndpointsForComponent(mei.getSourceId());
+                ServiceEndpoint[] ses = getContainer().getRegistry().getEndpointRegistry()
+                                                .getAllEndpointsForComponent(mei.getSourceId());
                 for (int i = 0; i < ses.length; i++) {
                     if (EndpointSupport.getKey(ses[i]).equals(source)) {
                         source = EndpointSupport.getUniqueKey(ses[i]);
@@ -292,19 +290,18 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
                         break;
                     }
                 }
-            }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+            }
         }
     }
     
     protected void onExchangeAccepted(ExchangeEvent event) {
         MessageExchange me = event.getExchange();
         // This is a new exchange sent by a consumer
-        if (me.getStatus() == ExchangeStatus.ACTIVE &&
-            me.getRole() == Role.PROVIDER && 
-            me.getMessage("out") == null && 
-            me.getFault() == null &&
-            me instanceof MessageExchangeImpl) 
-        {
+        if (me.getStatus() == ExchangeStatus.ACTIVE
+                && me.getRole() == Role.PROVIDER 
+                && me.getMessage("out") == null 
+                && me.getFault() == null
+                && me instanceof MessageExchangeImpl) {
             String source = EndpointSupport.getUniqueKey(me.getEndpoint());
             EndpointStats stats = endpointStats.get(source);
             stats.incrementInbound();

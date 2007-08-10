@@ -40,14 +40,14 @@ import org.apache.servicemix.jbi.security.login.CertificateCallback;
  */
 public class JAASAuthenticationService implements AuthenticationService {
 
-    private static final Log log = LogFactory.getLog(JAASAuthenticationService.class);
+    private static final Log LOG = LogFactory.getLog(JAASAuthenticationService.class);
     
     public void authenticate(Subject subject,
                              String domain,
                              final String user, 
                              final Object credentials) throws GeneralSecurityException {
-        if (log.isDebugEnabled()) {
-            log.debug("Authenticating '" + user + "' with '" + credentials + "'");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Authenticating '" + user + "' with '" + credentials + "'");
         }
         LoginContext loginContext = new LoginContext(domain, subject, new CallbackHandler() {
             public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {

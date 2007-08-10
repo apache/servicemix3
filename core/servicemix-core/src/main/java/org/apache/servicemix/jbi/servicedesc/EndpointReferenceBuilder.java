@@ -18,31 +18,36 @@ package org.apache.servicemix.jbi.servicedesc;
 
 import javax.jbi.servicedesc.ServiceEndpoint;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.util.DOMUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 
-public class EndpointReferenceBuilder {
-    private static final Log log = LogFactory.getLog(EndpointReferenceBuilder.class);
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.util.DOMUtil;
 
+public final class EndpointReferenceBuilder {
+    
     public static final String JBI_NAMESPACE = "http://java.sun.com/jbi/end-point-reference";
     public static final String XMLNS_NAMESPACE = "http://www.w3.org/2000/xmlns/";
+    
+    private static final Log LOG = LogFactory.getLog(EndpointReferenceBuilder.class);
+
+    private EndpointReferenceBuilder() {
+    }
     
     public static DocumentFragment getReference(ServiceEndpoint endpoint) {
         try {
             Document doc = DOMUtil.newDocument();
             DocumentFragment fragment = doc.createDocumentFragment();
             Element epr = doc.createElementNS(JBI_NAMESPACE, "jbi:end-point-reference");
-            epr.setAttributeNS(XMLNS_NAMESPACE,"xmlns:sns", endpoint.getServiceName().getNamespaceURI());
+            epr.setAttributeNS(XMLNS_NAMESPACE, "xmlns:sns", endpoint.getServiceName().getNamespaceURI());
             epr.setAttributeNS(JBI_NAMESPACE, "jbi:service-name", "sns:" + endpoint.getServiceName().getLocalPart());
             epr.setAttributeNS(JBI_NAMESPACE, "jbi:end-point-name", endpoint.getEndpointName());
             fragment.appendChild(epr);
             return fragment;
         } catch (Exception e) {
-            log.warn("Unable to create reference for ServiceEndpoint " + endpoint, e);
+            LOG.warn("Unable to create reference for ServiceEndpoint " + endpoint, e);
             return null;
         }
     }

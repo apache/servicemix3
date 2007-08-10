@@ -23,38 +23,38 @@ import javax.management.ObjectName;
 
 public class BootstrapDelegate implements Bootstrap {
 
-	private Bootstrap delegate;
-	
-	public BootstrapDelegate(Bootstrap delegate) {
-		this.delegate = delegate;
-	}
+    private Bootstrap delegate;
 
-	public Bootstrap getDelegate() {
-		return delegate;
-	}
+    public BootstrapDelegate(Bootstrap delegate) {
+        this.delegate = delegate;
+    }
 
-	public void setDelegate(Bootstrap delegate) {
-		this.delegate = delegate;
-	}
+    public Bootstrap getDelegate() {
+        return delegate;
+    }
 
-	public void cleanUp() throws JBIException {
-		delegate.cleanUp();
-	}
+    public void setDelegate(Bootstrap delegate) {
+        this.delegate = delegate;
+    }
 
-	public ObjectName getExtensionMBeanName() {
-		return delegate.getExtensionMBeanName();
-	}
+    public void cleanUp() throws JBIException {
+        delegate.cleanUp();
+    }
 
-	public void init(InstallationContext installContext) throws JBIException {
-		delegate.init(installContext);
-	}
+    public ObjectName getExtensionMBeanName() {
+        return delegate.getExtensionMBeanName();
+    }
 
-	public void onInstall() throws JBIException {
-		delegate.onInstall();
-	}
+    public void init(InstallationContext installContext) throws JBIException {
+        delegate.init(installContext);
+    }
 
-	public void onUninstall() throws JBIException {
-		delegate.onUninstall();
-	}
-	
+    public void onInstall() throws JBIException {
+        delegate.onInstall();
+    }
+
+    public void onUninstall() throws JBIException {
+        delegate.onUninstall();
+    }
+
 }

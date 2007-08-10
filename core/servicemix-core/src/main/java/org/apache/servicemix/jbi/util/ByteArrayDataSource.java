@@ -25,30 +25,33 @@ import java.io.Serializable;
 import javax.activation.DataSource;
 
 /**
- * Byte array DataSource for Mail and message attachments 
+ * Byte array DataSource for Mail and message attachments
+ * 
  * @author George Gastaldi
  * @since 3.0
  */
 public class ByteArrayDataSource implements DataSource, Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     private byte[] data;
     private String type;
     private String name = "unused";
-    
+
     public ByteArrayDataSource(byte[] data, String type) {
         this.data = data;
         this.type = type;
     }
 
     public InputStream getInputStream() throws IOException {
-		if (data == null) throw new IOException("no data");
-		return new ByteArrayInputStream(data);
+        if (data == null) {
+            throw new IOException("no data");
+        }
+        return new ByteArrayInputStream(data);
     }
 
     public OutputStream getOutputStream() throws IOException {
-    	throw new IOException("getOutputStream() not supported");
+        throw new IOException("getOutputStream() not supported");
     }
 
     public String getContentType() {
@@ -58,8 +61,8 @@ public class ByteArrayDataSource implements DataSource, Serializable {
     public String getName() {
         return name;
     }
-    
+
     public void setName(String name) {
-    	this.name = name;
+        this.name = name;
     }
 }

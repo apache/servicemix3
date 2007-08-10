@@ -24,52 +24,57 @@ import javax.activation.DataSource;
 
 /**
  * Stream DataSource for Mail and message attachments .
+ * 
  * @author <a href="mailto:gnodet@logicblaze.com"> Guillaume Nodet</a>
  * @since 3.0
  */
 public class StreamDataSource implements DataSource {
 
-	private InputStream in;
-	private String contentType;
-	private String name;
-	
-	public StreamDataSource(InputStream in) {
-		this(in, null, null);
-	}
+    private InputStream in;
 
-	public StreamDataSource(InputStream in, String contentType) {
-		this(in, contentType, null);
-	}
+    private String contentType;
 
-	public StreamDataSource(InputStream in, String contentType, String name) {
-		this.in = in;
-		this.contentType = contentType;
-		this.name = name;
-	}
+    private String name;
 
-	public InputStream getInputStream() throws IOException {
-		if (in == null) throw new IOException("no data");
-		return in;
-	}
+    public StreamDataSource(InputStream in) {
+        this(in, null, null);
+    }
 
-	public OutputStream getOutputStream() throws IOException {
-    	throw new IOException("getOutputStream() not supported");
-	}
+    public StreamDataSource(InputStream in, String contentType) {
+        this(in, contentType, null);
+    }
 
-	public String getContentType() {
-		return contentType;
-	}
+    public StreamDataSource(InputStream in, String contentType, String name) {
+        this.in = in;
+        this.contentType = contentType;
+        this.name = name;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public InputStream getInputStream() throws IOException {
+        if (in == null) {
+            throw new IOException("no data");
+        }
+        return in;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public OutputStream getOutputStream() throws IOException {
+        throw new IOException("getOutputStream() not supported");
+    }
 
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
+    public String getContentType() {
+        return contentType;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
 
 }

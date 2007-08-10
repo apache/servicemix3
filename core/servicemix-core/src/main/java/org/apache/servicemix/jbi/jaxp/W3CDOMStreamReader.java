@@ -71,8 +71,9 @@ public class W3CDOMStreamReader extends DOMStreamReader {
         frame.prefixes = new ArrayList<String>();
         frame.attributes = new ArrayList<Attr>();
 
-        if (context == null)
+        if (context == null) {
             context = new W3CNamespaceContext();
+        }
 
         context.setElement(element);
 
@@ -90,8 +91,9 @@ public class W3CDOMStreamReader extends DOMStreamReader {
             String value = node.getNodeValue();
             String name = node.getNodeName();
 
-            if (prefix == null)
+            if (prefix == null) {
                 prefix = "";
+            }
 
             if (name != null && name.equals("xmlns")) {
                 frame.uris.add(value);
@@ -127,23 +129,22 @@ public class W3CDOMStreamReader extends DOMStreamReader {
 
     protected int moveToChild(int currentChild) {
         this.content = getCurrentElement().getChildNodes().item(currentChild);
-
-        if (content instanceof Text)
+        if (content instanceof Text) {
             return CHARACTERS;
-        else if (content instanceof Element)
+        } else if (content instanceof Element) {
             return START_ELEMENT;
-        else if (content instanceof CDATASection)
+        } else if (content instanceof CDATASection) {
             return CDATA;
-        else if (content instanceof Comment)
+        } else if (content instanceof Comment) {
             return CHARACTERS;
-        else if (content instanceof EntityReference)
+        } else if (content instanceof EntityReference) {
             return ENTITY_REFERENCE;
-
+        }
         throw new IllegalStateException();
     }
 
     public String getElementText() throws XMLStreamException {
-        getCurrentFrame().ended = true;
+        frame.ended = true;
         currentEvent = END_ELEMENT;
         endElement();
         String result = getContent(getCurrentElement());
@@ -168,12 +169,14 @@ public class W3CDOMStreamReader extends DOMStreamReader {
 
     public String getAttributeValue(String ns, String local) {
         Attr attr;
-        if (ns == null || ns.equals(""))
+        if (ns == null || ns.equals("")) {
             attr = getCurrentElement().getAttributeNode(local);
-        else
+        } else {
             attr = getCurrentElement().getAttributeNodeNS(ns, local);
-        if (attr != null)
+        }
+        if (attr != null) {
             return attr.getValue();
+        }
         return null;
     }
 
@@ -186,7 +189,6 @@ public class W3CDOMStreamReader extends DOMStreamReader {
     }
 
     private String getLocalName(Attr attr) {
-
         String name = attr.getLocalName();
         if (name == null) {
             name = attr.getNodeName();
@@ -318,11 +320,13 @@ public class W3CDOMStreamReader extends DOMStreamReader {
      * Get the trimed text content of a node or null if there is no text
      */
     public static String getContent(Node n) {
-        if (n == null)
+        if (n == null) {
             return null;
+        }
         Node n1 = getChild(n, Node.TEXT_NODE);
-        if (n1 == null)
+        if (n1 == null) {
             return null;
+        }
         String s1 = n1.getNodeValue();
         return s1.trim();
     }
@@ -335,8 +339,9 @@ public class W3CDOMStreamReader extends DOMStreamReader {
         while (n != null && type != n.getNodeType()) {
             n = n.getNextSibling();
         }
-        if (n == null)
+        if (n == null) {
             return null;
+        }
         return n;
     }
 

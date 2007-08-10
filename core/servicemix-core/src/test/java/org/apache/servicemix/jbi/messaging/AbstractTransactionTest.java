@@ -41,11 +41,13 @@ import org.springframework.transaction.support.TransactionTemplate;
 public abstract class AbstractTransactionTest extends TestCase {
 
     protected static final int NUM_MESSAGES = 10;
-    
+
     protected TransactionTemplate tt;
+
     protected TransactionManager tm;
+
     protected JBIContainer senderContainer;
-    
+
     /*
      * @see TestCase#setUp()
      */
@@ -54,19 +56,19 @@ public abstract class AbstractTransactionTest extends TestCase {
         createTransactionLayer();
         senderContainer = createJbiContainer("senderContainer");
     }
-    
+
     protected void tearDown() throws Exception {
-    	senderContainer.shutDown();
+        senderContainer.shutDown();
     }
-    
+
     protected void createTransactionLayer() throws Exception {
-    	GeronimoPlatformTransactionManager gtm = new GeronimoPlatformTransactionManager();
-    	tm = gtm;
+        GeronimoPlatformTransactionManager gtm = new GeronimoPlatformTransactionManager();
+        tm = gtm;
         tt = new TransactionTemplate(gtm);
     }
-    
+
     protected JBIContainer createJbiContainer(String name) throws Exception {
-    	JBIContainer container = new JBIContainer();
+        JBIContainer container = new JBIContainer();
         container.setTransactionManager(tm);
         container.setName(name);
         container.setFlow(createFlow());
@@ -76,41 +78,41 @@ public abstract class AbstractTransactionTest extends TestCase {
         container.start();
         return container;
     }
-    
+
     protected abstract Flow createFlow();
-    
+
     protected void runSimpleTest(final boolean syncSend, final boolean syncReceive) throws Exception {
         final SenderComponent sender = new SenderComponent();
         sender.setResolver(new ServiceNameEndpointResolver(ReceiverComponent.SERVICE));
         final Receiver receiver;
         if (syncReceive) {
-        	receiver = new ReceiverComponent();
+            receiver = new ReceiverComponent();
         } else {
-        	receiver = new AsyncReceiverPojo();
+            receiver = new AsyncReceiverPojo();
         }
 
         senderContainer.activateComponent(new ActivationSpec("sender", sender));
         senderContainer.activateComponent(new ActivationSpec("receiver", receiver));
-        
+
         tt.execute(new TransactionCallback() {
-	  		public Object doInTransaction(TransactionStatus status) {
+            public Object doInTransaction(TransactionStatus status) {
                 try {
                     sender.sendMessages(NUM_MESSAGES, syncSend);
                 } catch (JBIException e) {
                     throw new RuntimeJBIException(e);
                 }
-	  			return null;
-	  		}
+                return null;
+            }
         });
         receiver.getMessageList().assertMessagesReceived(NUM_MESSAGES);
     }
-    
+
     public void testSyncSendSyncReceive() throws Exception {
         runSimpleTest(true, true);
     }
 
     public void testAsyncSendSyncReceive() throws Exception {
-    	runSimpleTest(false, true);
+        runSimpleTest(false, true);
     }
 
     public void testSyncSendAsyncReceive() throws Exception {
@@ -118,7 +120,7 @@ public abstract class AbstractTransactionTest extends TestCase {
     }
 
     public void testAsyncSendAsyncReceive() throws Exception {
-    	runSimpleTest(false, false);
+        runSimpleTest(false, false);
     }
 
 }

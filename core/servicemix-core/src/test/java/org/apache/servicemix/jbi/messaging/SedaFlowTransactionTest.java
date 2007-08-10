@@ -24,9 +24,9 @@ import org.apache.servicemix.jbi.nmr.flow.seda.SedaFlow;
  */
 public class SedaFlowTransactionTest extends AbstractTransactionTest {
 
-	protected Flow createFlow() {
-		return new SedaFlow();
-	}
+    protected Flow createFlow() {
+        return new SedaFlow();
+    }
 
     public void testAsyncSendSyncReceive() throws Exception {
         try {

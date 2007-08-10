@@ -26,23 +26,24 @@ import javax.management.ObjectName;
 
 import org.easymock.MockControl;
 
-
 /**
- *
+ * 
  * JbiTaskTest
+ * 
  * @version $Revision$
  */
 public class InstallationTest extends AbstractManagementTest {
-    
+
     /**
      * Installer should not be persistent across restart
+     * 
      * @throws Exception
      */
     public void testLoadNewInstallerAndRestart() throws Exception {
         ExtMockControl bootstrapMock = ExtMockControl.createControl(Bootstrap.class);
         Bootstrap bootstrap = (Bootstrap) bootstrapMock.getMock();
         Bootstrap1.setDelegate(bootstrap);
-        
+
         // configure bootstrap
         bootstrap.init(null);
         bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
@@ -55,12 +56,13 @@ public class InstallationTest extends AbstractManagementTest {
         ObjectName installerName = getInstallationService().loadNewInstaller(installJarUrl);
         assertNotNull(Bootstrap1.getInstallContext());
         assertTrue(Bootstrap1.getInstallContext().isInstall());
-        InstallerMBean installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), installerName, InstallerMBean.class, false);
+        InstallerMBean installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        installerName, InstallerMBean.class, false);
         assertFalse(installer.isInstalled());
         shutdownContainer();
         // check mocks
         bootstrapMock.verify();
-        
+
         // configure bootstrap
         bootstrapMock.reset();
         bootstrapMock.replay();
@@ -72,18 +74,19 @@ public class InstallationTest extends AbstractManagementTest {
 
     /**
      * Installer should not be persistent across restart
+     * 
      * @throws Exception
      */
     public void testLoadNewInstallerAndLoadNewInstaller() throws Exception {
         ExtMockControl bootstrapMock = ExtMockControl.createControl(Bootstrap.class);
         Bootstrap bootstrap = (Bootstrap) bootstrapMock.getMock();
         Bootstrap1.setDelegate(bootstrap);
-        
+
         // configure bootstrap
         bootstrap.init(null);
         bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
         bootstrap.getExtensionMBeanName();
-        bootstrapMock.setReturnValue(null);       
+        bootstrapMock.setReturnValue(null);
         bootstrapMock.replay();
         // test component installation
         startContainer(true);
@@ -91,11 +94,12 @@ public class InstallationTest extends AbstractManagementTest {
         ObjectName installerName = getInstallationService().loadNewInstaller(installJarUrl);
         assertNotNull(Bootstrap1.getInstallContext());
         assertTrue(Bootstrap1.getInstallContext().isInstall());
-        InstallerMBean installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), installerName, InstallerMBean.class, false);
+        InstallerMBean installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        installerName, InstallerMBean.class, false);
         assertFalse(installer.isInstalled());
         // check mocks
         bootstrapMock.verify();
-        
+
         // configure bootstrap
         bootstrapMock.reset();
         bootstrapMock.replay();
@@ -112,6 +116,7 @@ public class InstallationTest extends AbstractManagementTest {
 
     /**
      * Installer is created, component installed and server restarted
+     * 
      * @throws Exception
      */
     public void testInstallAndRestart() throws Exception {
@@ -122,14 +127,14 @@ public class InstallationTest extends AbstractManagementTest {
         ExtMockControl componentMock = ExtMockControl.createControl(Component.class);
         Component component = (Component) componentMock.getMock();
         Component1.setDelegate(component);
-        
+
         // configure bootstrap
         bootstrapMock.reset();
         bootstrap.init(null);
-        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);        
+        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
         bootstrap.onInstall();
         bootstrap.getExtensionMBeanName();
-        bootstrapMock.setReturnValue(null);             
+        bootstrapMock.setReturnValue(null);
         bootstrap.cleanUp();
         bootstrapMock.replay();
         // configure component
@@ -139,15 +144,17 @@ public class InstallationTest extends AbstractManagementTest {
         startContainer(true);
         String installJarUrl = createInstallerArchive("component1").getAbsolutePath();
         ObjectName installerName = getInstallationService().loadNewInstaller(installJarUrl);
-        InstallerMBean installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), installerName, InstallerMBean.class, false);
+        InstallerMBean installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        installerName, InstallerMBean.class, false);
         assertFalse(installer.isInstalled());
         ObjectName lifecycleName = installer.install();
-        LifeCycleMBean lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
+        LifeCycleMBean lifecycleMBean = (LifeCycleMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        lifecycleName, LifeCycleMBean.class, false);
         assertEquals(LifeCycleMBean.SHUTDOWN, lifecycleMBean.getCurrentState());
         // check mocks
         bootstrapMock.verify();
         componentMock.verify();
-        
+
         // configure bootstrap
         bootstrapMock.reset();
         bootstrapMock.replay();
@@ -171,20 +178,21 @@ public class InstallationTest extends AbstractManagementTest {
         // check mocks
         bootstrapMock.verify();
         componentMock.verify();
-        
+
         // configure bootstrap
         bootstrapMock.reset();
         bootstrap.init(null);
-        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);                
+        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
         bootstrap.getExtensionMBeanName();
-        bootstrapMock.setReturnValue(null);                     
+        bootstrapMock.setReturnValue(null);
         bootstrapMock.replay();
         // configure component
         componentMock.reset();
         componentMock.replay();
         // start container
         startContainer(false);
-        lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
+        lifecycleMBean = (LifeCycleMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName,
+                        LifeCycleMBean.class, false);
         assertEquals(LifeCycleMBean.SHUTDOWN, lifecycleMBean.getCurrentState());
         // check mocks
         bootstrapMock.verify();
@@ -193,6 +201,7 @@ public class InstallationTest extends AbstractManagementTest {
 
     /**
      * Installer is created, component installed, started and server restarted
+     * 
      * @throws Exception
      */
     public void testInstallStartAndRestart() throws Exception {
@@ -205,14 +214,14 @@ public class InstallationTest extends AbstractManagementTest {
         Component1.setDelegate(component);
         ExtMockControl lifecycleMock = ExtMockControl.createControl(ComponentLifeCycle.class);
         ComponentLifeCycle lifecycle = (ComponentLifeCycle) lifecycleMock.getMock();
-        
+
         // configure bootstrap
         bootstrapMock.reset();
         bootstrap.init(null);
         bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
         bootstrap.onInstall();
         bootstrap.getExtensionMBeanName();
-        bootstrapMock.setReturnValue(null);  
+        bootstrapMock.setReturnValue(null);
         bootstrap.cleanUp();
         bootstrapMock.replay();
         // configure component
@@ -225,16 +234,18 @@ public class InstallationTest extends AbstractManagementTest {
         startContainer(true);
         String installJarUrl = createInstallerArchive("component1").getAbsolutePath();
         ObjectName installerName = getInstallationService().loadNewInstaller(installJarUrl);
-        InstallerMBean installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), installerName, InstallerMBean.class, false);
+        InstallerMBean installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        installerName, InstallerMBean.class, false);
         assertFalse(installer.isInstalled());
         ObjectName lifecycleName = installer.install();
-        LifeCycleMBean lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
+        LifeCycleMBean lifecycleMBean = (LifeCycleMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        lifecycleName, LifeCycleMBean.class, false);
         assertEquals(LifeCycleMBean.SHUTDOWN, lifecycleMBean.getCurrentState());
         // check mocks
         bootstrapMock.verify();
         componentMock.verify();
         lifecycleMock.verify();
-        
+
         // configure bootstrap
         bootstrapMock.reset();
         bootstrapMock.replay();
@@ -256,7 +267,7 @@ public class InstallationTest extends AbstractManagementTest {
         bootstrapMock.verify();
         componentMock.verify();
         lifecycleMock.verify();
-        
+
         // configure bootstrap
         bootstrapMock.reset();
         bootstrapMock.replay();
@@ -274,13 +285,13 @@ public class InstallationTest extends AbstractManagementTest {
         bootstrapMock.verify();
         componentMock.verify();
         lifecycleMock.verify();
-        
+
         // configure bootstrap
         bootstrapMock.reset();
         bootstrap.init(null);
-        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);        
+        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
         bootstrap.getExtensionMBeanName();
-        bootstrapMock.setReturnValue(null);          
+        bootstrapMock.setReturnValue(null);
         bootstrapMock.replay();
         // configure component
         componentMock.reset();
@@ -297,7 +308,8 @@ public class InstallationTest extends AbstractManagementTest {
         lifecycleMock.replay();
         // start container
         startContainer(false);
-        lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
+        lifecycleMBean = (LifeCycleMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName,
+                        LifeCycleMBean.class, false);
         assertEquals(LifeCycleMBean.STARTED, lifecycleMBean.getCurrentState());
         // check mocks
         bootstrapMock.verify();
@@ -306,8 +318,9 @@ public class InstallationTest extends AbstractManagementTest {
     }
 
     /**
-     * Installer is created, component installed.
-     * Then we unload the installer and reload it.
+     * Installer is created, component installed. Then we unload the installer
+     * and reload it.
+     * 
      * @throws Exception
      */
     public void testInstallAndReloadInstaller() throws Exception {
@@ -320,14 +333,14 @@ public class InstallationTest extends AbstractManagementTest {
         Component1.setDelegate(component);
         ExtMockControl lifecycleMock = ExtMockControl.createControl(ComponentLifeCycle.class);
         ComponentLifeCycle lifecycle = (ComponentLifeCycle) lifecycleMock.getMock();
-        
+
         // configure bootstrap
         bootstrapMock.reset();
         bootstrap.init(null);
         bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
         bootstrap.onInstall();
         bootstrap.getExtensionMBeanName();
-        bootstrapMock.setReturnValue(null);  
+        bootstrapMock.setReturnValue(null);
         bootstrap.cleanUp();
         bootstrapMock.replay();
         // configure component
@@ -342,15 +355,17 @@ public class InstallationTest extends AbstractManagementTest {
         startContainer(true);
         String installJarUrl = createInstallerArchive("component1").getAbsolutePath();
         ObjectName installerName = getInstallationService().loadNewInstaller(installJarUrl);
-        InstallerMBean installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), installerName, InstallerMBean.class, false);
+        InstallerMBean installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        installerName, InstallerMBean.class, false);
         assertFalse(installer.isInstalled());
         ObjectName lifecycleName = installer.install();
-        LifeCycleMBean lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
+        LifeCycleMBean lifecycleMBean = (LifeCycleMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        lifecycleName, LifeCycleMBean.class, false);
         assertEquals(LifeCycleMBean.SHUTDOWN, lifecycleMBean.getCurrentState());
         // check mocks
         bootstrapMock.verify();
         componentMock.verify();
-        
+
         // configure bootstrap
         bootstrapMock.reset();
         bootstrapMock.replay();
@@ -379,6 +394,7 @@ public class InstallationTest extends AbstractManagementTest {
 
     /**
      * Installer is created, component installed, uninstalled and reinstalled
+     * 
      * @throws Exception
      */
     public void testInstallAndReinstall() throws Exception {
@@ -389,14 +405,14 @@ public class InstallationTest extends AbstractManagementTest {
         ExtMockControl componentMock = ExtMockControl.createControl(Component.class);
         Component component = (Component) componentMock.getMock();
         Component1.setDelegate(component);
-        
+
         // configure bootstrap
         bootstrapMock.reset();
         bootstrap.init(null);
         bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
         bootstrap.onInstall();
         bootstrap.getExtensionMBeanName();
-        bootstrapMock.setReturnValue(null);  
+        bootstrapMock.setReturnValue(null);
         bootstrap.cleanUp();
         bootstrapMock.replay();
         // configure component
@@ -406,15 +422,17 @@ public class InstallationTest extends AbstractManagementTest {
         startContainer(true);
         String installJarUrl = createInstallerArchive("component1").getAbsolutePath();
         ObjectName installerName = getInstallationService().loadNewInstaller(installJarUrl);
-        InstallerMBean installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), installerName, InstallerMBean.class, false);
+        InstallerMBean installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        installerName, InstallerMBean.class, false);
         assertFalse(installer.isInstalled());
         ObjectName lifecycleName = installer.install();
-        LifeCycleMBean lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
+        LifeCycleMBean lifecycleMBean = (LifeCycleMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        lifecycleName, LifeCycleMBean.class, false);
         assertEquals(LifeCycleMBean.SHUTDOWN, lifecycleMBean.getCurrentState());
         // check mocks
         bootstrapMock.verify();
         componentMock.verify();
-        
+
         // configure bootstrap
         bootstrapMock.reset();
         bootstrap.onUninstall();
@@ -434,7 +452,7 @@ public class InstallationTest extends AbstractManagementTest {
         bootstrap.init(null);
         bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
         bootstrap.getExtensionMBeanName();
-        bootstrapMock.setReturnValue(null);  
+        bootstrapMock.setReturnValue(null);
         bootstrap.onInstall();
         bootstrap.cleanUp();
         bootstrapMock.replay();
@@ -445,15 +463,17 @@ public class InstallationTest extends AbstractManagementTest {
         startContainer(true);
         installJarUrl = createInstallerArchive("component1").getAbsolutePath();
         installerName = getInstallationService().loadNewInstaller(installJarUrl);
-        installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), installerName, InstallerMBean.class, false);
+        installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), installerName,
+                        InstallerMBean.class, false);
         assertFalse(installer.isInstalled());
         lifecycleName = installer.install();
-        lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
+        lifecycleMBean = (LifeCycleMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName,
+                        LifeCycleMBean.class, false);
         assertEquals(LifeCycleMBean.SHUTDOWN, lifecycleMBean.getCurrentState());
         // check mocks
         bootstrapMock.verify();
         componentMock.verify();
-        
+
         // configure bootstrap
         bootstrapMock.reset();
         bootstrapMock.replay();

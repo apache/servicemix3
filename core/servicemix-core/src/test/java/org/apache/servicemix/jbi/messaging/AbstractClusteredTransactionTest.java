@@ -16,6 +16,8 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
+import javax.jbi.JBIException;
+
 import org.apache.servicemix.jbi.RuntimeJBIException;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
@@ -27,15 +29,13 @@ import org.apache.servicemix.tck.SenderComponent;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 
-import javax.jbi.JBIException;
-
 /**
  * @version $Revision$
  */
 public abstract class AbstractClusteredTransactionTest extends AbstractTransactionTest {
 
     protected JBIContainer receiverContainer;
-    
+
     /*
      * @see TestCase#setUp()
      */
@@ -44,63 +44,63 @@ public abstract class AbstractClusteredTransactionTest extends AbstractTransacti
         receiverContainer = createJbiContainer("receiverContainer");
         Thread.sleep(3000);
     }
-    
+
     protected void tearDown() throws Exception {
         receiverContainer.shutDown();
-    	super.tearDown();
+        super.tearDown();
     }
-    
+
     protected void runClusteredTest(final boolean syncSend, final boolean syncReceive) throws Exception {
         final SenderComponent sender = new SenderComponent();
         sender.setResolver(new ServiceNameEndpointResolver(ReceiverComponent.SERVICE));
         final Receiver receiver;
         if (syncReceive) {
-        	receiver = new ReceiverComponent();
+            receiver = new ReceiverComponent();
         } else {
-        	receiver = new AsyncReceiverPojo();
+            receiver = new AsyncReceiverPojo();
         }
 
         senderContainer.activateComponent(new ActivationSpec("sender", sender));
         receiverContainer.activateComponent(new ActivationSpec("receiver", receiver));
         Thread.sleep(1000);
-        
+
         tt.execute(new TransactionCallback() {
-	  		public Object doInTransaction(TransactionStatus status) {
+            public Object doInTransaction(TransactionStatus status) {
                 try {
                     sender.sendMessages(NUM_MESSAGES, syncSend);
                 } catch (JBIException e) {
                     throw new RuntimeJBIException(e);
                 }
-	  			return null;
-	  		}
+                return null;
+            }
         });
         receiver.getMessageList().assertMessagesReceived(NUM_MESSAGES);
     }
-    
+
     public void testClusteredSyncSendSyncReceive() throws Exception {
-    	try {
-    		runClusteredTest(true, true);
-    		fail("sendSync can not be used on clustered flows with external components");
-    	} catch (Exception e) {
-    		// ok
-    	}
+        try {
+            runClusteredTest(true, true);
+            fail("sendSync can not be used on clustered flows with external components");
+        } catch (Exception e) {
+            // ok
+        }
     }
 
     public void testClusteredAsyncSendSyncReceive() throws Exception {
-    	runClusteredTest(false, true);
+        runClusteredTest(false, true);
     }
 
     public void testClusteredSyncSendAsyncReceive() throws Exception {
-    	try {
-    		runClusteredTest(true, false);
-    		fail("sendSync can not be used on clustered flows with external components");
-    	} catch (Exception e) {
-    		// ok
-    	}
+        try {
+            runClusteredTest(true, false);
+            fail("sendSync can not be used on clustered flows with external components");
+        } catch (Exception e) {
+            // ok
+        }
     }
 
     public void testClusteredAsyncSendAsyncReceive() throws Exception {
-    	runClusteredTest(false, false);
+        runClusteredTest(false, false);
     }
 
 }

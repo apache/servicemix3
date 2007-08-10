@@ -69,8 +69,9 @@ public class JaasAuthenticator implements JMXAuthenticator {
      * @see javax.management.remote.JMXAuthenticator#authenticate(java.lang.Object)
      */
     public Subject authenticate(Object credentials) throws SecurityException {
-        if (credentials instanceof String[] == false) {
-            throw new IllegalArgumentException("Expected String[2], got " + (credentials != null ? credentials.getClass().getName() : null));
+        if (!(credentials instanceof String[])) {
+            throw new IllegalArgumentException("Expected String[2], got " 
+                            + (credentials != null ? credentials.getClass().getName() : null));
         }
         String[] params = (String[]) credentials;
         if (params.length != 2) {

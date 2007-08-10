@@ -42,8 +42,7 @@ public class ResourceSource extends StreamSource {
     public InputStream getInputStream() {
         try {
             return resource.getInputStream();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException("Failed to open resource: " + resource + ". Reason: " + e, e); 
         }
     }

@@ -35,17 +35,24 @@ import org.easymock.MockControl;
 public class HotDeployTest extends AbstractManagementTest {
 
     // Create mocks
-	protected ExtMockControl bootstrapMock;
-	protected Bootstrap bootstrap;
-	protected ExtMockControl componentMock;
+    protected ExtMockControl bootstrapMock;
+
+    protected Bootstrap bootstrap;
+
+    protected ExtMockControl componentMock;
+
     protected Component component;
+
     protected ExtMockControl lifecycleMock;
+
     protected ComponentLifeCycle lifecycle;
+
     protected ExtMockControl managerMock;
+
     protected ServiceUnitManager manager;
-    
-	protected void setUp() throws Exception {
-		super.setUp();
+
+    protected void setUp() throws Exception {
+        super.setUp();
         // Create mocks
         bootstrapMock = ExtMockControl.createControl(Bootstrap.class);
         bootstrap = (Bootstrap) bootstrapMock.getMock();
@@ -57,50 +64,48 @@ public class HotDeployTest extends AbstractManagementTest {
         lifecycle = (ComponentLifeCycle) lifecycleMock.getMock();
         managerMock = ExtMockControl.createControl(ServiceUnitManager.class);
         manager = (ServiceUnitManager) managerMock.getMock();
-	}
-	
-	protected void reset() {
-		bootstrapMock.reset();
-		componentMock.reset();
-		lifecycleMock.reset();
-		managerMock.reset();
-	}
-	
-	protected void replay() {
-		bootstrapMock.replay();
-		componentMock.replay();
-		lifecycleMock.replay();
-		managerMock.replay();
-	}
-	
-	protected void verify() {
-		bootstrapMock.verify();
-		componentMock.verify();
-		lifecycleMock.verify();
-		managerMock.verify();
-	}
-	
+    }
+
+    protected void reset() {
+        bootstrapMock.reset();
+        componentMock.reset();
+        lifecycleMock.reset();
+        managerMock.reset();
+    }
+
+    protected void replay() {
+        bootstrapMock.replay();
+        componentMock.replay();
+        lifecycleMock.replay();
+        managerMock.replay();
+    }
+
+    protected void verify() {
+        bootstrapMock.verify();
+        componentMock.verify();
+        lifecycleMock.verify();
+        managerMock.verify();
+    }
+
     protected void initContainer() {
         container.setCreateMBeanServer(true);
         container.setMonitorInstallationDirectory(true);
         container.setMonitorDeploymentDirectory(true);
         container.setMonitorInterval(1);
     }
-    
-    
-    
+
     public void testHotDeployComponent() throws Exception {
-    	final Object lock = new Object();
-    	// configure mocks
-    	Bootstrap1.setDelegate(new BootstrapDelegate(bootstrap) {
-    		public void cleanUp() throws JBIException {
-    			super.cleanUp();
-    			synchronized (lock) {
-    				lock.notify();
-				}
-    		}
-    	});
-    	reset();
+        final Object lock = new Object();
+        // configure mocks
+        Bootstrap1.setDelegate(new BootstrapDelegate(bootstrap) {
+            public void cleanUp() throws JBIException {
+                super.cleanUp();
+                synchronized (lock) {
+                    lock.notify();
+                }
+            }
+        });
+        reset();
         bootstrap.init(null);
         bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
         bootstrap.getExtensionMBeanName();
@@ -116,20 +121,20 @@ public class HotDeployTest extends AbstractManagementTest {
         // test component installation
         startContainer(true);
         String installJarUrl = createInstallerArchive("component1").getAbsolutePath();
-        File hdInstaller =  new File(container.getEnvironmentContext().getInstallationDir(), new File(installJarUrl).getName());
+        File hdInstaller = new File(container.getEnvironmentContext().getInstallationDir(), new File(installJarUrl).getName());
         synchronized (lock) {
-        	FileUtil.copyInputStream(new FileInputStream(installJarUrl), 
-        			new FileOutputStream(hdInstaller));
-        	lock.wait(5000);
+            FileUtil.copyInputStream(new FileInputStream(installJarUrl), new FileOutputStream(hdInstaller));
+            lock.wait(5000);
         }
         Thread.sleep(50);
         ObjectName lifecycleName = container.getComponent("component1").getMBeanName();
         assertNotNull(lifecycleName);
-        LifeCycleMBean lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
+        LifeCycleMBean lifecycleMBean = (LifeCycleMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        lifecycleName, LifeCycleMBean.class, false);
         assertEquals(LifeCycleMBean.STARTED, lifecycleMBean.getCurrentState());
         // check mocks
         verify();
-        
+
         // Clean shutdown
         reset();
         component.getLifeCycle();
@@ -139,19 +144,19 @@ public class HotDeployTest extends AbstractManagementTest {
         replay();
         shutdownContainer();
     }
-    
+
     public void testHotDeployUndeployComponent() throws Exception {
-    	final Object lock = new Object();
-    	// configure mocks
-    	Bootstrap1.setDelegate(new BootstrapDelegate(bootstrap) {
-    		public void cleanUp() throws JBIException {
-    			super.cleanUp();
-    			synchronized (lock) {
-    				lock.notify();
-				}
-    		}
-    	});
-    	reset();
+        final Object lock = new Object();
+        // configure mocks
+        Bootstrap1.setDelegate(new BootstrapDelegate(bootstrap) {
+            public void cleanUp() throws JBIException {
+                super.cleanUp();
+                synchronized (lock) {
+                    lock.notify();
+                }
+            }
+        });
+        reset();
         bootstrap.init(null);
         bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
         bootstrap.getExtensionMBeanName();
@@ -167,58 +172,58 @@ public class HotDeployTest extends AbstractManagementTest {
         // test component installation
         startContainer(true);
         String installJarUrl = createInstallerArchive("component1").getAbsolutePath();
-        File hdInstaller =  new File(container.getEnvironmentContext().getInstallationDir(), new File(installJarUrl).getName());
+        File hdInstaller = new File(container.getEnvironmentContext().getInstallationDir(), new File(installJarUrl).getName());
         synchronized (lock) {
-        	FileUtil.copyInputStream(new FileInputStream(installJarUrl), 
-        			new FileOutputStream(hdInstaller));
-        	lock.wait(5000);
+            FileUtil.copyInputStream(new FileInputStream(installJarUrl), new FileOutputStream(hdInstaller));
+            lock.wait(5000);
         }
         Thread.sleep(50);
         ObjectName lifecycleName = container.getComponent("component1").getMBeanName();
         assertNotNull(lifecycleName);
-        LifeCycleMBean lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
+        LifeCycleMBean lifecycleMBean = (LifeCycleMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        lifecycleName, LifeCycleMBean.class, false);
         assertEquals(LifeCycleMBean.STARTED, lifecycleMBean.getCurrentState());
         // check mocks
         verify();
-        
+
         // Configure mocks
         reset();
         bootstrap.onUninstall();
         bootstrap.cleanUp();
         lifecycle.stop();
         lifecycle.shutDown();
-        //manager.shutDown("su");
+        // manager.shutDown("su");
         replay();
         // test component uninstallation
         synchronized (lock) {
-        	assertTrue(hdInstaller.delete());
-        	lock.wait(5000);
+            assertTrue(hdInstaller.delete());
+            lock.wait(5000);
         }
         Thread.sleep(50);
         assertNull(container.getComponent("component1"));
         // check mocks
         verify();
-        
+
         // Clean shutdown
         reset();
         replay();
         shutdownContainer();
     }
-    
+
     public void testDeploySAThenComponent() throws Exception {
-    	final Object lock = new Object();
-    	// configure mocks
-    	Bootstrap1.setDelegate(new BootstrapDelegate(bootstrap) {
-    		public void cleanUp() throws JBIException {
-    			super.cleanUp();
-    			synchronized (lock) {
-    				lock.notify();
-				}
-    		}
-    	});
-    	reset();
+        final Object lock = new Object();
+        // configure mocks
+        Bootstrap1.setDelegate(new BootstrapDelegate(bootstrap) {
+            public void cleanUp() throws JBIException {
+                super.cleanUp();
+                synchronized (lock) {
+                    lock.notify();
+                }
+            }
+        });
+        reset();
         bootstrap.init(null);
-        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);        
+        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
         bootstrap.getExtensionMBeanName();
         bootstrapMock.setReturnValue(null);
         bootstrap.onInstall();
@@ -241,25 +246,24 @@ public class HotDeployTest extends AbstractManagementTest {
         startContainer(true);
         File saJarUrl = createServiceAssemblyArchive("sa", "su", "component1");
         File hdSa = new File(container.getEnvironmentContext().getDeploymentDir(), saJarUrl.getName());
-    	FileUtil.copyInputStream(new FileInputStream(saJarUrl), 
-    			new FileOutputStream(hdSa));
+        FileUtil.copyInputStream(new FileInputStream(saJarUrl), new FileOutputStream(hdSa));
         Thread.sleep(2000);
-        
+
         String installJarUrl = createInstallerArchive("component1").getAbsolutePath();
-        File hdInstaller =  new File(container.getEnvironmentContext().getInstallationDir(), new File(installJarUrl).getName());
+        File hdInstaller = new File(container.getEnvironmentContext().getInstallationDir(), new File(installJarUrl).getName());
         synchronized (lock) {
-        	FileUtil.copyInputStream(new FileInputStream(installJarUrl), 
-        			new FileOutputStream(hdInstaller));
-        	lock.wait(5000);
+            FileUtil.copyInputStream(new FileInputStream(installJarUrl), new FileOutputStream(hdInstaller));
+            lock.wait(5000);
         }
         Thread.sleep(2000);
         ObjectName lifecycleName = container.getComponent("component1").getMBeanName();
         assertNotNull(lifecycleName);
-        LifeCycleMBean lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
+        LifeCycleMBean lifecycleMBean = (LifeCycleMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        lifecycleName, LifeCycleMBean.class, false);
         assertEquals(LifeCycleMBean.STARTED, lifecycleMBean.getCurrentState());
         // check mocks
         verify();
-        
+
         // Clean shutdown
         reset();
         component.getLifeCycle();

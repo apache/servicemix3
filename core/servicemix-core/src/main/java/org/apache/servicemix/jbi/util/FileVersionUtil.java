@@ -18,17 +18,25 @@ package org.apache.servicemix.jbi.util;
 
 import java.io.File;
 import java.io.IOException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 /**
  * Supports a simple versioning scheme using the file system
  * 
  * @version $Revision$
  */
-public class FileVersionUtil{
-    private static final Log log=LogFactory.getLog(FileVersionUtil.class);
-    private static final String VERSION_PREFIX="version_";
-    private static final String[] RESERVED= { VERSION_PREFIX };
+public final class FileVersionUtil {
+    
+    private static final Log LOG = LogFactory.getLog(FileVersionUtil.class);
+
+    private static final String VERSION_PREFIX = "version_";
+
+    private static final String[] RESERVED = {VERSION_PREFIX };
+    
+    private FileVersionUtil() {
+    }
 
     /**
      * Get the latest version number for a directory
@@ -37,13 +45,13 @@ public class FileVersionUtil{
      * @return the version number
      */
     public static int getLatestVersionNumber(File rootDirectory) {
-        int result=-1;
-        if(isVersioned(rootDirectory)){
-            File[] files=rootDirectory.listFiles();
-            for(int i=0;i<files.length;i++){
-                int version=getVersionNumber(files[i].getName());
-                if(version>result){
-                    result=version;
+        int result = -1;
+        if (isVersioned(rootDirectory)) {
+            File[] files = rootDirectory.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                int version = getVersionNumber(files[i].getName());
+                if (version > result) {
+                    result = version;
                 }
             }
         }
@@ -58,15 +66,15 @@ public class FileVersionUtil{
      * @throws IOException
      */
     public static File getLatestVersionDirectory(File rootDirectory) {
-        File result=null;
-        int highestVersion=-1;
-        if(rootDirectory != null && isVersioned(rootDirectory)){
-            File[] files=rootDirectory.listFiles();
-            for(int i=0;i<files.length;i++){
-                int version=getVersionNumber(files[i].getName());
-                if(version>highestVersion){
-                    highestVersion=version;
-                    result=files[i];
+        File result = null;
+        int highestVersion = -1;
+        if (rootDirectory != null && isVersioned(rootDirectory)) {
+            File[] files = rootDirectory.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                int version = getVersionNumber(files[i].getName());
+                if (version > highestVersion) {
+                    highestVersion = version;
+                    result = files[i];
                 }
             }
         }
@@ -75,14 +83,15 @@ public class FileVersionUtil{
 
     /**
      * Create a new version directory
+     * 
      * @param rootDirectory
      * @return the created version directory
      * @throws IOException
      */
-    public static File createNewVersionDirectory(File rootDirectory) throws IOException{
-        File result= getNewVersionDirectory(rootDirectory);
-        if(!FileUtil.buildDirectory(result)){
-            throw new IOException("Failed to build version directory: "+result);
+    public static File createNewVersionDirectory(File rootDirectory) throws IOException {
+        File result = getNewVersionDirectory(rootDirectory);
+        if (!FileUtil.buildDirectory(result)) {
+            throw new IOException("Failed to build version directory: " + result);
         }
         return result;
     }
@@ -94,20 +103,20 @@ public class FileVersionUtil{
      * @return the version directory
      * @throws IOException
      */
-    public static File getNewVersionDirectory(File rootDirectory) throws IOException{
-        File result=null;
-        if(FileUtil.buildDirectory(rootDirectory)){
-            String versionDirectoryName=VERSION_PREFIX;
-            if(isVersioned(rootDirectory)){
-                int versionNumber=getLatestVersionNumber(rootDirectory);
-                versionNumber=versionNumber>0?versionNumber+1:1;
-                versionDirectoryName+=versionNumber;
-            }else{
-                versionDirectoryName+=1;
+    public static File getNewVersionDirectory(File rootDirectory) throws IOException {
+        File result = null;
+        if (FileUtil.buildDirectory(rootDirectory)) {
+            String versionDirectoryName = VERSION_PREFIX;
+            if (isVersioned(rootDirectory)) {
+                int versionNumber = getLatestVersionNumber(rootDirectory);
+                versionNumber = versionNumber > 0 ? versionNumber + 1 : 1;
+                versionDirectoryName += versionNumber;
+            } else {
+                versionDirectoryName += 1;
             }
-            result=FileUtil.getDirectoryPath(rootDirectory,versionDirectoryName);
-        }else{
-            throw new IOException("Cannot build parent directory: "+rootDirectory);
+            result = FileUtil.getDirectoryPath(rootDirectory, versionDirectoryName);
+        } else {
+            throw new IOException("Cannot build parent directory: " + rootDirectory);
         }
         return result;
     }
@@ -118,30 +127,29 @@ public class FileVersionUtil{
      * @param rootDirectory
      * @throws IOException
      */
-    public static void initializeVersionDirectory(File rootDirectory) throws IOException{
-        if(!isVersioned(rootDirectory)){
-            File newRoot=createNewVersionDirectory(rootDirectory);
-            File[] files=rootDirectory.listFiles();
-            for(int i=0;i<files.length;i++){
-                if(!isReserved(files[i].getName())){
-                    log.info(rootDirectory.getPath()+": moving non-versioned file "+files[i].getName()+" to "
-                                    +newRoot.getName());
+    public static void initializeVersionDirectory(File rootDirectory) throws IOException {
+        if (!isVersioned(rootDirectory)) {
+            File newRoot = createNewVersionDirectory(rootDirectory);
+            File[] files = rootDirectory.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                if (!isReserved(files[i].getName())) {
+                    LOG.info(rootDirectory.getPath() + ": moving non-versioned file " + files[i].getName() + " to " + newRoot.getName());
                     File moveTo = FileUtil.getDirectoryPath(newRoot, files[i].getName());
-                    FileUtil.moveFile(files[i],moveTo);
+                    FileUtil.moveFile(files[i], moveTo);
                 }
             }
         }
     }
 
     private static boolean isVersioned(File rootDirectory) {
-        boolean result=false;
-        if(rootDirectory.exists()&&rootDirectory.isDirectory()){
-            File[] files=rootDirectory.listFiles();
-            result=files==null||files.length==0;
-            if(!result){
-                for(int i=0;i<files.length;i++){
-                    if(isReserved(files[i].getName())){
-                        result=true;
+        boolean result = false;
+        if (rootDirectory.exists() && rootDirectory.isDirectory()) {
+            File[] files = rootDirectory.listFiles();
+            result = files == null || files.length == 0;
+            if (!result) {
+                for (int i = 0; i < files.length; i++) {
+                    if (isReserved(files[i].getName())) {
+                        result = true;
                         break;
                     }
                 }
@@ -150,12 +158,12 @@ public class FileVersionUtil{
         return result;
     }
 
-    private static boolean isReserved(String name){
-        boolean result=false;
-        if(name!=null){
-            for(int i=0;i<RESERVED.length;i++){
-                if(name.startsWith(RESERVED[i])){
-                    result=true;
+    private static boolean isReserved(String name) {
+        boolean result = false;
+        if (name != null) {
+            for (int i = 0; i < RESERVED.length; i++) {
+                if (name.startsWith(RESERVED[i])) {
+                    result = true;
                     break;
                 }
             }
@@ -163,11 +171,11 @@ public class FileVersionUtil{
         return result;
     }
 
-    private static int getVersionNumber(String name){
-        int result=-1;
-        if(name!=null&&name.startsWith(VERSION_PREFIX)){
-            String number=name.substring(VERSION_PREFIX.length());
-            result=Integer.parseInt(number);
+    private static int getVersionNumber(String name) {
+        int result = -1;
+        if (name != null && name.startsWith(VERSION_PREFIX)) {
+            String number = name.substring(VERSION_PREFIX.length());
+            result = Integer.parseInt(number);
         }
         return result;
     }

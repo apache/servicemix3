@@ -32,7 +32,9 @@ public class GroupPrincipal implements Principal {
     private transient int hash;
 
     public GroupPrincipal(String name) {
-        if (name == null) throw new IllegalArgumentException("name cannot be null");
+        if (name == null) {
+            throw new IllegalArgumentException("name cannot be null");
+        }
         this.name = name;
     }
 
@@ -41,13 +43,16 @@ public class GroupPrincipal implements Principal {
     }
 
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         final GroupPrincipal that = (GroupPrincipal) o;
-
-        if (!name.equals(that.name)) return false;
-
+        if (!name.equals(that.name)) {
+            return false;
+        }
         return true;
     }
 

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jbi.JBIException;
 import javax.jbi.management.DeploymentException;
@@ -47,8 +48,6 @@ import org.apache.servicemix.jbi.management.OperationInfoHelper;
 import org.apache.servicemix.jbi.management.ParameterHelper;
 import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.servicemix.jbi.util.FileVersionUtil;
-
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Installation Service - installs/uninstalls archives
@@ -435,8 +434,8 @@ public class InstallationService extends BaseSystemService implements Installati
         }
     }
 
-    private InstallerMBeanImpl initializeInstaller(File installationDir, File componentRoot, Component descriptor)
-                    throws DeploymentException {
+    private InstallerMBeanImpl initializeInstaller(File installationDir, File componentRoot, 
+                                                   Component descriptor) throws DeploymentException {
         InstallerMBeanImpl result = null;
         try {
             String name = descriptor.getIdentification().getName();
@@ -484,21 +483,25 @@ public class InstallationService extends BaseSystemService implements Installati
             File[] files = top.listFiles();
             if (files != null) {
                 for (int i = 0; i < files.length; i++) {
-                    if (files[i].isDirectory()) {
-                        File dir = FileVersionUtil.getLatestVersionDirectory(files[i]);
-                        if (dir != null) {
-                            Descriptor root = DescriptorFactory.buildDescriptor(dir);
-                            if (root != null) {
-                                SharedLibrary sl = root.getSharedLibrary();
-                                if (sl != null) {
-                                    try {
-                                        container.getRegistry().registerSharedLibrary(sl, dir);
-                                    } catch (Exception e) {
-                                        LOG.error("Failed to initialize sharted library", e);
-                                    }
-                                }
-                            }
-                        }
+                    if (!files[i].isDirectory()) {
+                        continue;
+                    }
+                    File dir = FileVersionUtil.getLatestVersionDirectory(files[i]);
+                    if (dir == null) {
+                        continue;
+                    }
+                    Descriptor root = DescriptorFactory.buildDescriptor(dir);
+                    if (root == null) {
+                        continue;
+                    }
+                    SharedLibrary sl = root.getSharedLibrary();
+                    if (sl == null) {
+                        continue;
+                    }
+                    try {
+                        container.getRegistry().registerSharedLibrary(sl, dir);
+                    } catch (Exception e) {
+                        LOG.error("Failed to initialize sharted library", e);
                     }
                 }
             }
@@ -514,15 +517,16 @@ public class InstallationService extends BaseSystemService implements Installati
             File[] files = top.listFiles();
             if (files != null) {
                 for (int i = 0; i < files.length; i++) {
-                    if (files[i].isDirectory()) {
-                        final File directory = files[i];
-                        try {
-                            buildComponent(directory);
-                        } catch (DeploymentException e) {
-                            LOG.error("Could not build Component: " + directory.getName(), e);
-                            LOG.warn("Deleting Component directory: " + directory);
-                            FileUtil.deleteFile(directory);
-                        }
+                    if (!files[i].isDirectory()) {
+                        continue;
+                    }
+                    final File directory = files[i];
+                    try {
+                        buildComponent(directory);
+                    } catch (DeploymentException e) {
+                        LOG.error("Could not build Component: " + directory.getName(), e);
+                        LOG.warn("Deleting Component directory: " + directory);
+                        FileUtil.deleteFile(directory);
                     }
                 }
             }

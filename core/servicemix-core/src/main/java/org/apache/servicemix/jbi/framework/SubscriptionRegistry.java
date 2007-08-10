@@ -16,16 +16,15 @@
  */
 package org.apache.servicemix.jbi.framework;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.servicemix.jbi.container.SubscriptionSpec;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Maintains a registry of the applicable subscriptions currently active for the
@@ -69,7 +68,7 @@ public class SubscriptionRegistry {
             Map.Entry entry = (Map.Entry) iter.next();
 
             SubscriptionSpec subscription = (SubscriptionSpec) entry.getKey();
-            if (subscription.matches(registry,exchange)) {
+            if (subscription.matches(registry, exchange)) {
                 if (result == null) {
                     result = new ArrayList<InternalEndpoint>();
                 }

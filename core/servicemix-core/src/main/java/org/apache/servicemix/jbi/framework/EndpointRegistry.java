@@ -435,7 +435,8 @@ public class EndpointRegistry {
                                            QName toSvc, String toEp, String link) throws JBIException {
         LinkedEndpoint ep = new LinkedEndpoint(fromSvc, fromEp, toSvc, toEp, link);
         if (linkedEndpoints.get(getKey(ep)) != null) {
-            throw new JBIException("An endpoint connection for service " + ep.getServiceName() + " and name " + ep.getEndpointName() + " is already registered");
+            throw new JBIException("An endpoint connection for service " + ep.getServiceName() + " and name "
+                                        + ep.getEndpointName() + " is already registered");
         }
         linkedEndpoints.put(getKey(ep), ep);
         registerEndpoint(ep);

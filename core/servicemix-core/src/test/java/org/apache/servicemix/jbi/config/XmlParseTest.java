@@ -16,15 +16,15 @@
  */
 package org.apache.servicemix.jbi.config;
 
+import java.util.Arrays;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.SubscriptionSpec;
 import org.apache.servicemix.tck.SpringTestSupport;
 import org.springframework.context.support.AbstractXmlApplicationContext;
-
-import javax.xml.namespace.QName;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * 

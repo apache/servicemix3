@@ -96,7 +96,7 @@ public class TransactionsTest extends TestCase {
         store = storeFactory.open("store");
         
         jbi = new JBIContainer();
-        jbi.setFlows(new Flow[] { new SedaFlow(), new JCAFlow() });
+        jbi.setFlows(new Flow[] {new SedaFlow(), new JCAFlow() });
         jbi.setEmbedded(true);
         jbi.setUseMBeanServer(false);
         jbi.setCreateMBeanServer(false);
@@ -430,7 +430,7 @@ public class TransactionsTest extends TestCase {
         assertEquals(Status.STATUS_NO_TRANSACTION, tm.getStatus());
         
         assertNotNull(store.load(me.getExchangeId()));
-   }
+    }
     
     protected class Async extends ComponentSupport implements Runnable {
         private boolean sync;
@@ -456,8 +456,7 @@ public class TransactionsTest extends TestCase {
                     DeliveryChannel deliveryChannel = getContext().getDeliveryChannel();
                     MessageExchange messageExchange = deliveryChannel.accept();
                     process(messageExchange);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

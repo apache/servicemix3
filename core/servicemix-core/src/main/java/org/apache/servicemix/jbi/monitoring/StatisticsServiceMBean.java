@@ -21,25 +21,25 @@ public interface StatisticsServiceMBean {
     /**
      * @return the statsInterval
      */
-    public long getStatsInterval();
+    long getStatsInterval();
 
     /**
      * @param statsInterval the statsInterval to set
      */
-    public void setStatsInterval(long statsInterval);
+    void setStatsInterval(long statsInterval);
 
     /**
      * @return the dumpStats
      */
-    public boolean isDumpStats();
+    boolean isDumpStats();
 
     /**
      * @param dumpStats the dumpStats to set
      */
-    public void setDumpStats(boolean value);
+    void setDumpStats(boolean value);
     
     /**
      * Reset all statistics
      */
-    public void resetAllStats();
+    void resetAllStats();
 }

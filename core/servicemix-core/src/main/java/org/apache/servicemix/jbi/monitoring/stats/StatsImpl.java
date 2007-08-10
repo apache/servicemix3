@@ -43,7 +43,7 @@ public class StatsImpl extends StatisticImpl implements Stats, Resettable {
 
     public void reset() {
         Statistic[] stats = getStatistics();
-        for (int i = 0, size = stats.length; i < size; i++) {
+        for (int i = 0; i < stats.length; i++) {
             Statistic stat = stats[i];
             if (stat instanceof Resettable) {
                 Resettable r = (Resettable) stat;

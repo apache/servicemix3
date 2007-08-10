@@ -52,17 +52,35 @@ import org.xml.sax.XMLReader;
 
 /**
  * A helper class to transform from one type of {@link Source} to another
- *
+ * 
  * @version $Revision$
  */
 public class SourceTransformer {
+
     public static final String DEFAULT_CHARSET_PROPERTY = "org.apache.servicemix.default.charset";
 
+    /*
+     * When converting a DOM tree to a SAXSource, we try to use Xalan internal
+     * DOM parser if available. Else, transform the DOM tree to a String and
+     * build a SAXSource on top of it.
+     */
+    private static final Class DOM_2_SAX_CLASS;
+    static {
+        Class cl = null;
+        try {
+            cl = Class.forName("org.apache.xalan.xsltc.trax.DOM2SAX");
+        } catch (Throwable t) {
+            // Ignore
+        }
+        DOM_2_SAX_CLASS = cl;
+    }
+
+    private static String defaultCharset = System.getProperty(DEFAULT_CHARSET_PROPERTY, "UTF-8");
+
     private DocumentBuilderFactory documentBuilderFactory;
+
     private TransformerFactory transformerFactory;
 
-    public static String defaultCharset = System.getProperty(DEFAULT_CHARSET_PROPERTY, "UTF-8");
-        
     public SourceTransformer() {
     }
 
@@ -70,6 +88,13 @@ public class SourceTransformer {
         this.documentBuilderFactory = documentBuilderFactory;
     }
 
+    public static String getDefaultCharset() {
+        return defaultCharset;
+    }
+
+    public static void setDefaultCharset(String defaultCharset) {
+        SourceTransformer.defaultCharset = defaultCharset;
+    }
 
     /**
      * Converts the given input Source into the required result
@@ -85,7 +110,6 @@ public class SourceTransformer {
         transformer.setOutputProperty(OutputKeys.ENCODING, defaultCharset);
         transformer.transform(source, result);
     }
-
 
     /**
      * Converts the given input Source into text
@@ -113,53 +137,52 @@ public class SourceTransformer {
 
     /**
      * Converts the content of the given message to a String
-     * @throws SAXException 
-     * @throws IOException 
-     * @throws ParserConfigurationException 
+     * 
+     * @throws SAXException
+     * @throws IOException
+     * @throws ParserConfigurationException
      */
-    public String contentToString(NormalizedMessage message) throws MessagingException, TransformerException, ParserConfigurationException, IOException, SAXException {
+    public String contentToString(NormalizedMessage message) throws MessagingException, TransformerException, ParserConfigurationException,
+                    IOException, SAXException {
         return toString(message.getContent());
     }
 
     /**
-     * Converts the source instance to a {@link DOMSource} or returns null if the conversion is not
-     * supported (making it easy to derive from this class to add new kinds of conversion).
+     * Converts the source instance to a {@link DOMSource} or returns null if
+     * the conversion is not supported (making it easy to derive from this class
+     * to add new kinds of conversion).
      */
     public DOMSource toDOMSource(Source source) throws ParserConfigurationException, IOException, SAXException, TransformerException {
         if (source instanceof DOMSource) {
             return (DOMSource) source;
-        }
-        else if (source instanceof SAXSource) {
+        } else if (source instanceof SAXSource) {
             return toDOMSourceFromSAX((SAXSource) source);
-        }
-        else if (source instanceof StreamSource) {
+        } else if (source instanceof StreamSource) {
             return toDOMSourceFromStream((StreamSource) source);
-        }
-        else {
+        } else {
             return null;
         }
     }
 
-    public Source toDOMSource(NormalizedMessage message) throws MessagingException, TransformerException, ParserConfigurationException, IOException, SAXException {
+    public Source toDOMSource(NormalizedMessage message) throws MessagingException, TransformerException, ParserConfigurationException,
+                    IOException, SAXException {
         Node node = toDOMNode(message);
         return new DOMSource(node);
     }
 
     /**
-     * Converts the source instance to a {@link SAXSource} or returns null if the conversion is not
-     * supported (making it easy to derive from this class to add new kinds of conversion).
+     * Converts the source instance to a {@link SAXSource} or returns null if
+     * the conversion is not supported (making it easy to derive from this class
+     * to add new kinds of conversion).
      */
     public SAXSource toSAXSource(Source source) throws IOException, SAXException, TransformerException {
         if (source instanceof SAXSource) {
             return (SAXSource) source;
-        }
-        else if (source instanceof DOMSource) {
+        } else if (source instanceof DOMSource) {
             return toSAXSourceFromDOM((DOMSource) source);
-        }
-        else if (source instanceof StreamSource) {
+        } else if (source instanceof StreamSource) {
             return toSAXSourceFromStream((StreamSource) source);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -229,36 +252,18 @@ public class SourceTransformer {
                 InputSource inputsource = new InputSource(inputStream);
                 inputsource.setSystemId(systemId);
                 document = builder.parse(inputsource);
-            }
-            else {
+            } else {
                 throw new IOException("No input stream or reader available");
             }
         }
         return new DOMSource(document, systemId);
     }
 
-    /*
-     * When converting a DOM tree to a SAXSource,
-     * we try to use Xalan internal DOM parser if
-     * available.  Else, transform the DOM tree
-     * to a String and build a SAXSource on top of
-     * it.
-     */
-    private static final Class dom2SaxClass;
-    
-    static {
-        Class cl = null;
-        try {
-            cl = Class.forName("org.apache.xalan.xsltc.trax.DOM2SAX");
-        } catch (Throwable t) {}
-        dom2SaxClass = cl;
-    }
-    
     public SAXSource toSAXSourceFromDOM(DOMSource source) throws TransformerException {
-        if (dom2SaxClass != null) {
+        if (DOM_2_SAX_CLASS != null) {
             try {
-                Constructor cns = dom2SaxClass.getConstructor(new Class[] { Node.class });
-                XMLReader converter = (XMLReader) cns.newInstance(new Object[] { source.getNode() });
+                Constructor cns = DOM_2_SAX_CLASS.getConstructor(new Class[] {Node.class });
+                XMLReader converter = (XMLReader) cns.newInstance(new Object[] {source.getNode() });
                 return new SAXSource(converter, new InputSource());
             } catch (Exception e) {
                 throw new TransformerException(e);
@@ -270,7 +275,8 @@ public class SourceTransformer {
         }
     }
 
-    public DOMSource toDOMSourceFromSAX(SAXSource source) throws IOException, SAXException, ParserConfigurationException, TransformerException {
+    public DOMSource toDOMSourceFromSAX(SAXSource source) throws IOException, SAXException, ParserConfigurationException,
+                    TransformerException {
         return new DOMSource(toDOMNodeFromSAX(source));
     }
 
@@ -282,32 +288,35 @@ public class SourceTransformer {
 
     /**
      * Converts the given TRaX Source into a W3C DOM node
-     * @throws SAXException 
-     * @throws IOException 
-     * @throws ParserConfigurationException 
+     * 
+     * @throws SAXException
+     * @throws IOException
+     * @throws ParserConfigurationException
      */
     public Node toDOMNode(Source source) throws TransformerException, ParserConfigurationException, IOException, SAXException {
         DOMSource domSrc = toDOMSource(source);
-        return domSrc != null ? domSrc.getNode() :  null;
+        return domSrc != null ? domSrc.getNode() : null;
     }
 
     /**
-     * Avoids multple parsing to DOM by caching the DOM representation in the message
-     * as a property so future calls will avoid the reparse - and avoid issues with
-     * stream based Source instances.
-     *
-     * @param message the normalized message
+     * Avoids multple parsing to DOM by caching the DOM representation in the
+     * message as a property so future calls will avoid the reparse - and avoid
+     * issues with stream based Source instances.
+     * 
+     * @param message
+     *            the normalized message
      * @return the W3C DOM node for this message
-     * @throws SAXException 
-     * @throws IOException 
-     * @throws ParserConfigurationException 
+     * @throws SAXException
+     * @throws IOException
+     * @throws ParserConfigurationException
      */
-    public Node toDOMNode(NormalizedMessage message) throws MessagingException, TransformerException, ParserConfigurationException, IOException, SAXException {
+    public Node toDOMNode(NormalizedMessage message) throws MessagingException, TransformerException, ParserConfigurationException,
+                    IOException, SAXException {
         Source content = message.getContent();
         Node node = toDOMNode(content);
         return node;
     }
-    
+
     /**
      * Create a DOM element from the normalized message.
      * 
@@ -319,11 +328,12 @@ public class SourceTransformer {
      * @throws IOException
      * @throws SAXException
      */
-    public Element toDOMElement(NormalizedMessage message) throws MessagingException, TransformerException, ParserConfigurationException, IOException, SAXException {
+    public Element toDOMElement(NormalizedMessage message) throws MessagingException, TransformerException, ParserConfigurationException,
+                    IOException, SAXException {
         Node node = toDOMNode(message);
         return toDOMElement(node);
     }
-    
+
     /**
      * Create a DOM element from the given source.
      * 
@@ -338,29 +348,28 @@ public class SourceTransformer {
         Node node = toDOMNode(source);
         return toDOMElement(node);
     }
-    
+
     /**
-     * Create a DOM element from the DOM node.
-     * Simply cast if the node is an Element, or
-     * return the root element if it is a Document.
+     * Create a DOM element from the DOM node. Simply cast if the node is an
+     * Element, or return the root element if it is a Document.
      * 
      * @param node
      * @return
-     * @throws TransformerException 
+     * @throws TransformerException
      */
     public Element toDOMElement(Node node) throws TransformerException {
         // If the node is an document, return the root element
         if (node instanceof Document) {
             return ((Document) node).getDocumentElement();
-        // If the node is an element, just cast it
+            // If the node is an element, just cast it
         } else if (node instanceof Element) {
             return (Element) node;
-        // Other node types are not handled
+            // Other node types are not handled
         } else {
             throw new TransformerException("Unable to convert DOM node to an Element");
         }
     }
-    
+
     /**
      * Create a DOM document from the given normalized message
      * 
@@ -372,11 +381,12 @@ public class SourceTransformer {
      * @throws IOException
      * @throws SAXException
      */
-    public Document toDOMDocument(NormalizedMessage message) throws MessagingException, TransformerException, ParserConfigurationException, IOException, SAXException {
+    public Document toDOMDocument(NormalizedMessage message) throws MessagingException, TransformerException, ParserConfigurationException,
+                    IOException, SAXException {
         Node node = toDOMNode(message);
         return toDOMDocument(node);
     }
-    
+
     /**
      * Create a DOM document from the given source.
      * 
@@ -391,43 +401,41 @@ public class SourceTransformer {
         Node node = toDOMNode(source);
         return toDOMDocument(node);
     }
-    
+
     /**
-     * Create a DOM document from the given Node.
-     * If the node is an document, just cast it,
-     * if the node is an root element, retrieve its
-     * owner element or create a new document and import
-     * the node.
+     * Create a DOM document from the given Node. If the node is an document,
+     * just cast it, if the node is an root element, retrieve its owner element
+     * or create a new document and import the node.
      * 
      * @param node
      * @return
      * @throws ParserConfigurationException
-     * @throws TransformerException 
+     * @throws TransformerException
      */
     public Document toDOMDocument(Node node) throws ParserConfigurationException, TransformerException {
         // If the node is the document, just cast it
         if (node instanceof Document) {
             return (Document) node;
-        // If the node is an element
+            // If the node is an element
         } else if (node instanceof Element) {
             Element elem = (Element) node;
             // If this is the root element, return its owner document
             if (elem.getOwnerDocument().getDocumentElement() == elem) {
                 return elem.getOwnerDocument();
-            // else, create a new doc and copy the element inside it
+                // else, create a new doc and copy the element inside it
             } else {
                 Document doc = createDocument();
                 doc.appendChild(doc.importNode(node, true));
                 return doc;
             }
-        // other element types are not handled
+            // other element types are not handled
         } else {
             throw new TransformerException("Unable to convert DOM node to a Document");
         }
     }
 
     // Properties
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public DocumentBuilderFactory getDocumentBuilderFactory() {
         if (documentBuilderFactory == null) {
             documentBuilderFactory = createDocumentBuilderFactory();
@@ -439,9 +447,8 @@ public class SourceTransformer {
         this.documentBuilderFactory = documentBuilderFactory;
     }
 
-
     // Helper methods
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public DocumentBuilderFactory createDocumentBuilderFactory() {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
@@ -449,7 +456,6 @@ public class SourceTransformer {
         factory.setIgnoringComments(true);
         return factory;
     }
-
 
     public DocumentBuilder createDocumentBuilder() throws ParserConfigurationException {
         DocumentBuilderFactory factory = getDocumentBuilderFactory();

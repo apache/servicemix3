@@ -30,13 +30,13 @@ import org.springframework.beans.factory.InitializingBean;
  * @author gnodet
  * @org.apache.xbean.XBean element="rmiRegistry"
  */
-public class RmiRegistryFactoryBean implements FactoryBean, InitializingBean, DisposableBean{
+public class RmiRegistryFactoryBean implements FactoryBean, InitializingBean, DisposableBean {
 
     private int port = Registry.REGISTRY_PORT;
     private Registry registry;
-    private boolean locate = false;
+    private boolean locate;
     private boolean create = true;
-    private boolean locallyCreated = false;
+    private boolean locallyCreated;
     
     /**
      * @return the create

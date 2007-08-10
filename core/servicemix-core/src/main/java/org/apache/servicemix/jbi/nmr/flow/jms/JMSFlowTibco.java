@@ -48,8 +48,8 @@ public class JMSFlowTibco extends AbstractJMSFlow {
         try {
             Class connFactoryClass = Class.forName("com.tibco.tibjms.TibjmsConnectionFactory");
             if (jmsURL != null) {
-                Constructor cns = connFactoryClass.getConstructor(new Class[] { String.class });
-                ConnectionFactory connFactory = (ConnectionFactory) cns.newInstance(new Object[] { jmsURL });
+                Constructor cns = connFactoryClass.getConstructor(new Class[] {String.class });
+                ConnectionFactory connFactory = (ConnectionFactory) cns.newInstance(new Object[] {jmsURL });
                 return connFactory;
             } else {
                 ConnectionFactory connFactory = (ConnectionFactory) connFactoryClass.newInstance();
@@ -65,8 +65,9 @@ public class JMSFlowTibco extends AbstractJMSFlow {
     }
 
     public void onConsumerMonitorMessage(Message message) {
-        if (!started.get())
+        if (!started.get()) {
             return;
+        }
         try {
             String connectionId = "" + message.getLongProperty(PROPERTY_NAME_CONN_CONNID);
             String targetDestName = message.getStringProperty(PROPERTY_NAME_TARGET_DEST_NAME);

@@ -21,13 +21,13 @@ package org.apache.servicemix.jbi.logging;
  */
 public interface LogServiceMBean {
 
-    public void setRefreshPeriod(int seconds);
+    void setRefreshPeriod(int seconds);
 
-    public int getRefreshPeriod();
+    int getRefreshPeriod();
 
-    public void setConfigUrl(String url);
+    void setConfigUrl(String url);
 
-    public String getConfigUrl();
+    String getConfigUrl();
 
-    public void reconfigureLogSystem();
+    void reconfigureLogSystem();
 }

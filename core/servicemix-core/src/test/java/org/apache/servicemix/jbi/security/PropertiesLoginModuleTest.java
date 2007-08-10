@@ -99,8 +99,8 @@ public class PropertiesLoginModuleTest extends TestCase {
             context.login();
             fail("Should have thrown a FailedLoginException");
         } catch (FailedLoginException doNothing) {
+            // Expected
         }
-
     }
 
     public void testBadPWLogin() throws Exception {
@@ -121,7 +121,7 @@ public class PropertiesLoginModuleTest extends TestCase {
             context.login();
             fail("Should have thrown a FailedLoginException");
         } catch (FailedLoginException doNothing) {
+            // Expected
         }
-
     }
 }

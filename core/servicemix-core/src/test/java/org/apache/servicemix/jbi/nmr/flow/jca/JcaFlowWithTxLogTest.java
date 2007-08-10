@@ -43,76 +43,78 @@ import org.jencks.factory.TransactionManagerFactoryBean;
  * @version $Revision: 426415 $
  */
 public class JcaFlowWithTxLogTest extends TestCase {
-    
-	private JBIContainer senderContainer = new JBIContainer();
+
+    private JBIContainer senderContainer = new JBIContainer();
+
     private JBIContainer receiverContainer = new JBIContainer();
+
     private BrokerService broker;
-	private GeronimoPlatformTransactionManager tm;
-    
-	public class MyEchoComponent extends ComponentSupport implements MessageExchangeListener {
 
-		public void onMessageExchange(MessageExchange exchange) throws MessagingException {
-			if(exchange.getStatus() == ExchangeStatus.ACTIVE && exchange instanceof InOut) {
-				InOut inOut = (InOut) exchange;
-				NormalizedMessage inMessage = inOut.getInMessage();
-				NormalizedMessage outMessage = inOut.createMessage();
-				outMessage.setContent(inMessage.getContent());
-				inOut.setOutMessage(outMessage);
-				send(inOut);
-			}
-		}
+    private GeronimoPlatformTransactionManager tm;
 
-	}
+    public class MyEchoComponent extends ComponentSupport implements MessageExchangeListener {
+
+        public void onMessageExchange(MessageExchange exchange) throws MessagingException {
+            if (exchange.getStatus() == ExchangeStatus.ACTIVE && exchange instanceof InOut) {
+                InOut inOut = (InOut) exchange;
+                NormalizedMessage inMessage = inOut.getInMessage();
+                NormalizedMessage outMessage = inOut.createMessage();
+                outMessage.setContent(inMessage.getContent());
+                inOut.setOutMessage(outMessage);
+                send(inOut);
+            }
+        }
+
+    }
 
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        
+
         System.setProperty(Context.INITIAL_CONTEXT_FACTORY, SpringInitialContextFactory.class.getName());
         System.setProperty(Context.PROVIDER_URL, "jndi.xml");
 
         TransactionManagerFactoryBean factory = new TransactionManagerFactoryBean();
         factory.setTransactionLogDir("target/txlog");
         tm = (GeronimoPlatformTransactionManager) factory.getObject();
-       
+
         broker = new BrokerService();
         broker.setPersistenceAdapter(new MemoryPersistenceAdapter());
         broker.addConnector("tcp://localhost:61616");
         broker.start();
-        
+
         JCAFlow senderFlow = new JCAFlow();
         senderFlow.setJmsURL("tcp://localhost:61616");
         senderContainer.setTransactionManager(tm);
         senderContainer.setEmbedded(true);
         senderContainer.setName("senderContainer");
-        senderContainer.setFlows(new Flow[] { senderFlow} );
+        senderContainer.setFlows(new Flow[] {senderFlow });
         senderContainer.setMonitorInstallationDirectory(false);
         senderContainer.setAutoEnlistInTransaction(true);
         senderContainer.init();
         senderContainer.start();
-        
-        
+
         JCAFlow receiverFlow = new JCAFlow();
         receiverFlow.setJmsURL("tcp://localhost:61616");
         receiverContainer.setTransactionManager(tm);
         receiverContainer.setEmbedded(true);
         receiverContainer.setName("receiverContainer");
-        receiverContainer.setFlows(new Flow[] { receiverFlow} );
+        receiverContainer.setFlows(new Flow[] {receiverFlow });
         receiverContainer.setMonitorInstallationDirectory(false);
         receiverContainer.setAutoEnlistInTransaction(true);
         receiverContainer.init();
         receiverContainer.start();
     }
-    
-    protected void tearDown() throws Exception{
+
+    protected void tearDown() throws Exception {
         super.tearDown();
         senderContainer.shutDown();
         receiverContainer.shutDown();
         broker.stop();
     }
-    
+
     public void testClusteredInOut() throws Exception {
         QName service = new QName("http://org.echo", "echo");
         MyEchoComponent echoComponent = new MyEchoComponent();
@@ -133,5 +135,5 @@ public class JcaFlowWithTxLogTest extends TestCase {
             client.done(inOut);
         }
     }
-    
+
 }

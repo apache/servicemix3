@@ -19,12 +19,13 @@ package org.apache.servicemix.jbi.jaxp;
 import javax.xml.namespace.QName;
 import javax.xml.transform.dom.DOMSource;
 
-import junit.framework.TestCase;
-
-import org.apache.servicemix.jbi.util.DOMUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
+import junit.framework.TestCase;
+
+import org.apache.servicemix.jbi.util.DOMUtil;
 
 public class SourceTransformerTest extends TestCase {
 

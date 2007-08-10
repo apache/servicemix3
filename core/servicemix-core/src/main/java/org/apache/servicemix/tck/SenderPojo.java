@@ -16,10 +16,8 @@
  */
 package org.apache.servicemix.tck;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.components.util.PojoSupport;
-import org.apache.servicemix.jbi.jaxp.StringSource;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.jbi.JBIException;
 import javax.jbi.component.ComponentContext;
@@ -31,8 +29,10 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.components.util.PojoSupport;
+import org.apache.servicemix.jbi.jaxp.StringSource;
 
 /**
  * @version $Revision$
@@ -40,15 +40,16 @@ import java.util.List;
 public class SenderPojo extends PojoSupport implements ComponentLifeCycle, Sender {
 
     public static final QName SERVICE = new QName("http://servicemix.org/example/", "sender");
+
     public static final String ENDPOINT = "sender";
 
-    private static final Log log = LogFactory.getLog(SenderPojo.class);
+    private static final Log LOG = LogFactory.getLog(SenderPojo.class);
 
-    private QName interfaceName;
-    private int numMessages = 10;
-    private ComponentContext context;
-    private List messages = new ArrayList();
-    boolean done = false;
+    protected QName interfaceName;
+    protected int numMessages = 10;
+    protected ComponentContext context;
+    protected List messages = new ArrayList();
+    protected boolean done;
 
     public SenderPojo() {
         this(ReceiverPojo.SERVICE);
@@ -58,9 +59,9 @@ public class SenderPojo extends PojoSupport implements ComponentLifeCycle, Sende
         this.interfaceName = interfaceName;
     }
 
-    public void init(ComponentContext context) throws JBIException {
-        this.context = context;
-        context.activateEndpoint(SERVICE, ENDPOINT);
+    public void init(ComponentContext ctx) throws JBIException {
+        this.context = ctx;
+        ctx.activateEndpoint(SERVICE, ENDPOINT);
     }
 
     public int messagesReceived() {
@@ -72,43 +73,43 @@ public class SenderPojo extends PojoSupport implements ComponentLifeCycle, Sende
     }
 
     public void sendMessages(int messageCount) throws MessagingException {
-    	sendMessages(messageCount, true);
+        sendMessages(messageCount, true);
     }
-    
+
     public void sendMessages(int messageCount, boolean sync) throws MessagingException {
-        log.info("Looking for services for interface: " + interfaceName);
+        LOG.info("Looking for services for interface: " + interfaceName);
 
         ServiceEndpoint[] endpoints = context.getEndpointsForService(interfaceName);
         if (endpoints.length > 0) {
             ServiceEndpoint endpoint = endpoints[0];
-            log.info("Sending to endpoint: " + endpoint);
-            
+            LOG.info("Sending to endpoint: " + endpoint);
+
             for (int i = 0; i < messageCount; i++) {
                 InOnly exchange = context.getDeliveryChannel().createExchangeFactory().createInOnlyExchange();
                 NormalizedMessage message = exchange.createMessage();
                 exchange.setEndpoint(endpoint);
                 exchange.setInMessage(message);
                 // lets set the XML as a byte[], String or DOM etc
-                String xml = "<s12:Envelope xmlns:s12='http://www.w3.org/2003/05/soap-envelope'><s12:Body> <foo>Hello!</foo> </s12:Body></s12:Envelope>";
+                String xml = "<s12:Envelope xmlns:s12='http://www.w3.org/2003/05/soap-envelope'>"
+                           + "  <s12:Body><foo>Hello!</foo> </s12:Body>"
+                           + "</s12:Envelope>";
                 message.setContent(new StringSource(xml));
-                log.info("sending message: " + i);
+                LOG.info("sending message: " + i);
                 DeliveryChannel deliveryChannel = context.getDeliveryChannel();
-                log.info("sync send on deliverychannel: " + deliveryChannel);
+                LOG.info("sync send on deliverychannel: " + deliveryChannel);
                 if (sync) {
-                	deliveryChannel.sendSync(exchange);
+                    deliveryChannel.sendSync(exchange);
                 } else {
-                	deliveryChannel.send(exchange);
+                    deliveryChannel.send(exchange);
                 }
             }
-        }
-        else {
-            log.warn("No endpoints available for interface: " + interfaceName);
+        } else {
+            LOG.warn("No endpoints available for interface: " + interfaceName);
         }
     }
 
-
     // Properties
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     public QName getInterfaceName() {
         return interfaceName;
     }

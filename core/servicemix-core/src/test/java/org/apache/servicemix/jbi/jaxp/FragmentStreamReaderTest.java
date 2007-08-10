@@ -28,36 +28,37 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.Document;
+
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
 
 public class FragmentStreamReaderTest extends TestCase {
 
-	private static final Log log = LogFactory.getLog(FragmentStreamReaderTest.class);
-	
-	public void testStaxSource() throws Exception {
-		InputStream is = getClass().getResourceAsStream("test.xml");
-		XMLStreamReader xsr = XMLInputFactory.newInstance().createXMLStreamReader(is);
+    private static final Log LOG = LogFactory.getLog(FragmentStreamReaderTest.class);
+
+    public void testStaxSource() throws Exception {
+        InputStream is = getClass().getResourceAsStream("test.xml");
+        XMLStreamReader xsr = XMLInputFactory.newInstance().createXMLStreamReader(is);
         xsr = new ExtendedXMLStreamReader(xsr);
-		xsr.nextTag();
-		log.info(xsr.getName());
-		xsr.nextTag();
-		log.info(xsr.getName());
-		XMLStreamReader fsr = new FragmentStreamReader(xsr);
-		StaxSource ss = new StaxSource(fsr);
+        xsr.nextTag();
+        LOG.info(xsr.getName());
+        xsr.nextTag();
+        LOG.info(xsr.getName());
+        XMLStreamReader fsr = new FragmentStreamReader(xsr);
+        StaxSource ss = new StaxSource(fsr);
         StringWriter buffer = new StringWriter();
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.transform(ss, new StreamResult(buffer));
-        log.info(buffer.toString());
-        DocumentBuilderFactory dbf =DocumentBuilderFactory.newInstance();
+        LOG.info(buffer.toString());
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
-		Document doc = dbf.newDocumentBuilder().parse(new ByteArrayInputStream(buffer.toString().getBytes()));
-		StringWriter buffer2 = new StringWriter();
+        Document doc = dbf.newDocumentBuilder().parse(new ByteArrayInputStream(buffer.toString().getBytes()));
+        StringWriter buffer2 = new StringWriter();
         transformer.transform(new DOMSource(doc), new StreamResult(buffer2));
-        log.info(buffer2.toString());
-	}
-	
+        LOG.info(buffer2.toString());
+    }
+
 }

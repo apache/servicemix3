@@ -43,9 +43,9 @@ public class Bootstrap1 implements Bootstrap {
     /* (non-Javadoc)
      * @see javax.jbi.component.Bootstrap#init(javax.jbi.component.InstallationContext)
      */
-    public void init(InstallationContext installContext) throws JBIException {
-        Bootstrap1.installContext = installContext;
-        Bootstrap1.delegate.init(installContext);
+    public void init(InstallationContext ctx) throws JBIException {
+        Bootstrap1.installContext = ctx;
+        Bootstrap1.delegate.init(ctx);
     }
 
     /* (non-Javadoc)

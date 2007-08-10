@@ -34,110 +34,110 @@ import org.apache.tools.ant.BuildException;
  */
 public class InstallComponentTask extends JbiTask {
 
-	private String file; // file to install
+    private String file; // file to install
 
-	private String paramsFile;
+    private String paramsFile;
 
-	private List nestedParams;
+    private List nestedParams;
 
-	private boolean deferExceptions = false;
+    private boolean deferExceptions;
 
-	public boolean isDeferExceptions() {
-		return deferExceptions;
-	}
+    public boolean isDeferExceptions() {
+        return deferExceptions;
+    }
 
-	public void setDeferExceptions(boolean deferExceptions) {
-		this.deferExceptions = deferExceptions;
-	}
+    public void setDeferExceptions(boolean deferExceptions) {
+        this.deferExceptions = deferExceptions;
+    }
 
-	/**
-	 * @return Returns the file.
-	 */
-	public String getFile() {
-		return file;
-	}
+    /**
+     * @return Returns the file.
+     */
+    public String getFile() {
+        return file;
+    }
 
-	/**
-	 * @param file
-	 *            The file to set.
-	 */
-	public void setFile(String file) {
-		this.file = file;
-	}
+    /**
+     * @param file
+     *            The file to set.
+     */
+    public void setFile(String file) {
+        this.file = file;
+    }
 
-	public String getParams() {
-		return paramsFile;
-	}
+    public String getParams() {
+        return paramsFile;
+    }
 
-	public void setParams(String paramsFile) {
-		this.paramsFile = paramsFile;
-	}
+    public void setParams(String params) {
+        this.paramsFile = params;
+    }
 
-	public Param createParam() {
-		Param p = new Param();
-		if (nestedParams == null) {
-			nestedParams = new ArrayList();
-		}
-		nestedParams.add(p);
-		return p;
-	}
+    public Param createParam() {
+        Param p = new Param();
+        if (nestedParams == null) {
+            nestedParams = new ArrayList();
+        }
+        nestedParams.add(p);
+        return p;
+    }
 
-	/**
-	 * execute the task
-	 * 
-	 * @throws BuildException
-	 */
-	public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
-		if (file == null) {
-			throw new BuildException("null file - file should be an archive");
-		}
-		if (!file.endsWith(".zip") && !file.endsWith(".jar")) {
-			throw new BuildException("file: " + file + " is not an archive");
-		}
-		File archive = new File(file);
-		String location = archive.getAbsolutePath();
-		if (!archive.isFile()) {
-			// if it's not a file, assume it's a url and pass it along
-			location = file;
-		}
-		Properties props = getProperties();
-		acs.installComponent(location, props, deferExceptions);
-	}
+    /**
+     * execute the task
+     * 
+     * @throws BuildException
+     */
+    public void doExecute(AdminCommandsServiceMBean acs) throws Exception {
+        if (file == null) {
+            throw new BuildException("null file - file should be an archive");
+        }
+        if (!file.endsWith(".zip") && !file.endsWith(".jar")) {
+            throw new BuildException("file: " + file + " is not an archive");
+        }
+        File archive = new File(file);
+        String location = archive.getAbsolutePath();
+        if (!archive.isFile()) {
+            // if it's not a file, assume it's a url and pass it along
+            location = file;
+        }
+        Properties props = getProperties();
+        acs.installComponent(location, props, deferExceptions);
+    }
 
-	private Properties getProperties() throws IOException {
-		Properties props = new Properties();
-		if (paramsFile != null) {
-			props.load(new FileInputStream(paramsFile));
-		}
-		if (nestedParams != null) {
-			for (Iterator iter = nestedParams.iterator(); iter.hasNext();) {
-				Param p = (Param) iter.next();
-				props.setProperty(p.getName(), p.getValue());
-			}
-		}
-		return props;
-	}
+    private Properties getProperties() throws IOException {
+        Properties props = new Properties();
+        if (paramsFile != null) {
+            props.load(new FileInputStream(paramsFile));
+        }
+        if (nestedParams != null) {
+            for (Iterator iter = nestedParams.iterator(); iter.hasNext();) {
+                Param p = (Param) iter.next();
+                props.setProperty(p.getName(), p.getValue());
+            }
+        }
+        return props;
+    }
 
-	public static class Param {
-		private String name;
+    public static class Param {
+        private String name;
 
-		private String value;
+        private String value;
 
-		public String getName() {
-			return name;
-		}
+        public String getName() {
+            return name;
+        }
 
-		public void setName(String name) {
-			this.name = name;
-		}
+        public void setName(String name) {
+            this.name = name;
+        }
 
-		public String getValue() {
-			return value;
-		}
+        public String getValue() {
+            return value;
+        }
 
-		public void setValue(String value) {
-			this.value = value;
-		}
-	}
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
 
 }

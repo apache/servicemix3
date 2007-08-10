@@ -16,15 +16,10 @@
  */
 package org.apache.servicemix.client;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.client.ServiceMixClient;
-import org.apache.servicemix.jbi.container.SpringJBIContainer;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.resolver.EndpointResolver;
-import org.apache.servicemix.tck.Receiver;
-import org.springframework.context.support.AbstractXmlApplicationContext;
-import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import java.io.StringReader;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.jbi.JBIException;
 import javax.jbi.messaging.InOnly;
@@ -33,18 +28,23 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
-import java.io.StringReader;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 import junit.framework.TestCase;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.container.SpringJBIContainer;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.resolver.EndpointResolver;
+import org.apache.servicemix.tck.Receiver;
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
  * @version $Revision$
  */
 public class ServiceMixClientTest extends TestCase {
-    private static final transient Log log = LogFactory.getLog(ServiceMixClientTest.class);
+    
+    private static final transient Log LOG = LogFactory.getLog(ServiceMixClientTest.class);
 
     protected AbstractXmlApplicationContext context;
     protected ServiceMixClient client;
@@ -103,9 +103,8 @@ public class ServiceMixClientTest extends TestCase {
 
             client.send(null, null, properties, "<hello>world</hello>");
             fail("Should have thrown an exception as we have not wired in any container routing information to this client");
-        }
-        catch (JBIException e) {
-            log.info("Caught expected exception as we have specified no endpoint resolver: " + e);
+        } catch (JBIException e) {
+            LOG.info("Caught expected exception as we have specified no endpoint resolver: " + e);
             assertNotNull(e);
         }
     }
@@ -126,22 +125,22 @@ public class ServiceMixClientTest extends TestCase {
     public void testRequestUsingPOJOWithXStreamMarshaling() throws Exception {
         QName service = new QName("http://servicemix.org/cheese", "myService");
 
-        ServiceMixClient client = (ServiceMixClient) context.getBean("clientWithXStream");
+        ServiceMixClient clientWithXStream = (ServiceMixClient) context.getBean("clientWithXStream");
 
         Map properties = new HashMap();
         properties.put("name", "James");
 
-        EndpointResolver resolver = client.createResolverForService(service);
+        EndpointResolver resolver = clientWithXStream.createResolverForService(service);
         TestBean bean = new TestBean();
         bean.setName("James");
         bean.setLength(12);
         bean.getAddresses().addAll(Arrays.asList(new String[] {"London", "LA"}));
 
-        Object response = client.request(resolver, null, properties, bean);
+        Object response = clientWithXStream.request(resolver, null, properties, bean);
 
         assertNotNull("Should have returned a non-null response!", response);
 
-        log.info("Received result: " + response);
+        LOG.info("Received result: " + response);
     }
 
 
@@ -163,8 +162,8 @@ public class ServiceMixClientTest extends TestCase {
         assertNotNull("outMessage is null!", outMessage);
 
         assertEquals("foo header", "hello", outMessage.getProperty("foo"));
-        log.info("Received result: " + outMessage.getContent());
-        log.info("XML is: " + transformer.toString(outMessage.getContent()));
+        LOG.info("Received result: " + outMessage.getContent());
+        LOG.info("XML is: " + transformer.toString(outMessage.getContent()));
     }
 
     protected void assertRequestUsingMapAndPOJOByServiceName(QName service) throws Exception {
@@ -176,7 +175,7 @@ public class ServiceMixClientTest extends TestCase {
 
         assertNotNull("Should have returned a non-null response!", response);
         
-        log.info("Received result: " + response);
+        LOG.info("Received result: " + response);
     }
 
     protected void setUp() throws Exception {

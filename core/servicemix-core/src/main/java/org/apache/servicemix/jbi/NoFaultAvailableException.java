@@ -16,7 +16,6 @@
  */
 package org.apache.servicemix.jbi;
 
-import javax.jbi.messaging.Fault;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 

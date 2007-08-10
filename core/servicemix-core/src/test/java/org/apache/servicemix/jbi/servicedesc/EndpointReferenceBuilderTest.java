@@ -18,33 +18,35 @@ package org.apache.servicemix.jbi.servicedesc;
 
 import javax.xml.namespace.QName;
 
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Element;
+
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.util.DOMUtil;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Element;
 
 public class EndpointReferenceBuilderTest extends TestCase {
 
-	private static final Log log = LogFactory.getLog(EndpointReferenceBuilderTest.class);
-	
+    private static final Log LOG = LogFactory.getLog(EndpointReferenceBuilderTest.class);
+
     /*
-     * Test method for 'org.apache.servicemix.jbi.servicedesc.EndpointReferenceBuilder.getReference(ServiceEndpoint)'
+     * Test method for
+     * 'org.apache.servicemix.jbi.servicedesc.EndpointReferenceBuilder.getReference(ServiceEndpoint)'
      */
     public void testGetReference() throws Exception {
         InternalEndpoint endpoint = new InternalEndpoint(null, "myEndpoint", new QName("http://foo.bar.com", "myService"));
         DocumentFragment df = EndpointReferenceBuilder.getReference(endpoint);
         assertNotNull(df);
-        log.info(new SourceTransformer().toString(df));
+        LOG.info(new SourceTransformer().toString(df));
         Element e = (Element) df.getFirstChild();
         assertEquals("http://java.sun.com/jbi/end-point-reference", e.getNamespaceURI());
         assertEquals("end-point-reference", e.getLocalName());
         assertEquals("myEndpoint", e.getAttributeNodeNS("http://java.sun.com/jbi/end-point-reference", "end-point-name").getValue());
-        assertEquals(new QName("http://foo.bar.com", "myService"),
-                     DOMUtil.createQName(e, e.getAttributeNS("http://java.sun.com/jbi/end-point-reference", "service-name")));
+        assertEquals(new QName("http://foo.bar.com", "myService"), DOMUtil.createQName(e, e.getAttributeNS(
+                        "http://java.sun.com/jbi/end-point-reference", "service-name")));
     }
 
 }

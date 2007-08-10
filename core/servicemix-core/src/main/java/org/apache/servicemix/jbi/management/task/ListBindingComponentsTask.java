@@ -17,20 +17,23 @@
 package org.apache.servicemix.jbi.management.task;
 
 import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 /**
  * ListBindingComponentsTask
- *
- * @version $Revision: 
+ * 
+ * @version $Revision:
  */
 public class ListBindingComponentsTask extends JbiTask {
-    
+
     private String sharedLibraryName;
+
     private String serviceAssemblyName;
+
     private String bindingComponentName;
+
     private String state;
+
     private String xmlOutput;
 
     /**
@@ -41,14 +44,15 @@ public class ListBindingComponentsTask extends JbiTask {
     }
 
     /**
-     * @param xmlOutput the xmlOutput to set
+     * @param xmlOutput
+     *            the xmlOutput to set
      */
     public void setXmlOutput(String xmlOutput) {
         this.xmlOutput = xmlOutput;
     }
 
     /**
-     *
+     * 
      * @return shared library name
      */
     public String getSharedLibraryName() {
@@ -56,7 +60,7 @@ public class ListBindingComponentsTask extends JbiTask {
     }
 
     /**
-     *
+     * 
      * @param sharedLibraryName
      */
     public void setSharedLibraryName(String sharedLibraryName) {
@@ -64,7 +68,7 @@ public class ListBindingComponentsTask extends JbiTask {
     }
 
     /**
-     *
+     * 
      * @return service assembly name
      */
     public String getServiceAssemblyName() {
@@ -72,7 +76,7 @@ public class ListBindingComponentsTask extends JbiTask {
     }
 
     /**
-     *
+     * 
      * @param serviceAssemblyName
      */
     public void setServiceAssemblyName(String serviceAssemblyName) {
@@ -80,7 +84,7 @@ public class ListBindingComponentsTask extends JbiTask {
     }
 
     /**
-     *
+     * 
      * @return binding component name
      */
     public String getBindingComponentName() {
@@ -88,7 +92,7 @@ public class ListBindingComponentsTask extends JbiTask {
     }
 
     /**
-     *
+     * 
      * @param bindingComponentName
      */
     public void setBindingComponentName(String bindingComponentName) {
@@ -96,7 +100,7 @@ public class ListBindingComponentsTask extends JbiTask {
     }
 
     /**
-     *
+     * 
      * @return component state
      */
     public String getState() {
@@ -104,8 +108,9 @@ public class ListBindingComponentsTask extends JbiTask {
     }
 
     /**
-     *
-     * @param state Sets the component state
+     * 
+     * @param state
+     *            Sets the component state
      */
     public void setState(String state) {
         this.state = state;
@@ -123,5 +128,5 @@ public class ListBindingComponentsTask extends JbiTask {
         }
         log(result, Project.MSG_WARN);
     }
-    
+
 }

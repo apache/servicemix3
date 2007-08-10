@@ -43,21 +43,26 @@ public class ServiceAssemblyTest extends TestCase {
         assertNotNull("serviceUnits are null", serviceUnits);
         assertEquals("serviceUnits size", 4, serviceUnits.length);
 
-        assertEquals("getIdentification().getName() for 0", "TransformationSU_041207152821-0800_suId", serviceUnits[0].getIdentification().getName());
-        assertEquals("getIdentification().getDescription() for 0", "Description of Serviceunit: TransformationSU", serviceUnits[0].getIdentification().getDescription());
+        assertEquals("getIdentification().getName() for 0", "TransformationSU_041207152821-0800_suId", 
+                     serviceUnits[0].getIdentification().getName());
+        assertEquals("getIdentification().getDescription() for 0", "Description of Serviceunit: TransformationSU", 
+                     serviceUnits[0].getIdentification().getDescription());
         assertEquals("getTarget().getArtifactsZip() for 0", "TransformationSU.zip", serviceUnits[0].getTarget().getArtifactsZip());
         assertEquals("getTarget().getComponentName() for 0", "SunTransformationEngine", serviceUnits[0].getTarget().getComponentName());
 
-        assertEquals("getIdentification().getName() for 3", "SequencingEngineSU_041207152507-0800_suId", serviceUnits[3].getIdentification().getName());
-        assertEquals("getIdentification().getDescription() for 3", "Description of Serviceunit: SequencingEngineSU", serviceUnits[3].getIdentification().getDescription());
+        assertEquals("getIdentification().getName() for 3", "SequencingEngineSU_041207152507-0800_suId", serviceUnits[3]
+                        .getIdentification().getName());
+        assertEquals("getIdentification().getDescription() for 3", "Description of Serviceunit: SequencingEngineSU", 
+                     serviceUnits[3].getIdentification().getDescription());
         assertEquals("getTarget().getArtifactsZip() for 3", "SequencingEngineSU.zip", serviceUnits[3].getTarget().getArtifactsZip());
         assertEquals("getTarget().getComponentName() for 3", "SunSequencingEngine", serviceUnits[3].getTarget().getComponentName());
-        
+
         Connection[] connections = serviceAssembly.getConnections().getConnections();
         assertNotNull("connections are null", connections);
         assertEquals("connections size", 2, connections.length);
-        
-        assertEquals("getConsumer().getServiceName() for 0", new QName("urn:csi", "csi-service"), connections[0].getConsumer().getServiceName());
+
+        assertEquals("getConsumer().getServiceName() for 0", new QName("urn:csi", "csi-service"), connections[0].getConsumer()
+                        .getServiceName());
     }
 
 }

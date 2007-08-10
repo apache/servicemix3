@@ -16,17 +16,6 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
-import org.apache.servicemix.components.util.CopyTransformer;
-import org.apache.servicemix.jbi.framework.ComponentNameSpace;
-
-import javax.jbi.messaging.ExchangeStatus;
-import javax.jbi.messaging.Fault;
-import javax.jbi.messaging.MessagingException;
-import javax.jbi.messaging.NormalizedMessage;
-import javax.jbi.servicedesc.ServiceEndpoint;
-import javax.transaction.Transaction;
-import javax.xml.namespace.QName;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
@@ -41,34 +30,60 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.jbi.messaging.ExchangeStatus;
+import javax.jbi.messaging.Fault;
+import javax.jbi.messaging.MessagingException;
+import javax.jbi.messaging.NormalizedMessage;
+import javax.jbi.servicedesc.ServiceEndpoint;
+import javax.transaction.Transaction;
+import javax.xml.namespace.QName;
+
+import org.apache.servicemix.components.util.CopyTransformer;
+import org.apache.servicemix.jbi.framework.ComponentNameSpace;
+
 /**
  * ExchangePacket is responsible for carrying MessageExchange payloads
  * 
  * @version $Revision$
  */
 public class ExchangePacket implements Externalizable {
-    
+
     private static final long serialVersionUID = -9110837382914609624L;
-    
+
     protected URI pattern;
+
     protected String exchangeId;
+
     protected ComponentNameSpace destinationId;
+
     protected ComponentNameSpace sourceId;
+
     protected ExchangeStatus status = ExchangeStatus.ACTIVE;
+
     protected QName serviceName;
+
     protected QName interfaceName;
+
     protected QName operationName;
+
     protected Exception error;
+
     protected Map properties;
+
     protected NormalizedMessageImpl in;
+
     protected NormalizedMessageImpl out;
+
     protected FaultImpl fault;
+
     protected ServiceEndpoint endpoint;
+
     protected transient Transaction transactionContext;
+
     protected Boolean persistent;
+
     protected boolean aborted;
 
-    
     public ExchangePacket() {
     }
 
@@ -76,7 +91,7 @@ public class ExchangePacket implements Externalizable {
         this.destinationId = packet.destinationId;
         this.endpoint = null; // packet.endpoint;
         this.error = null;
-        this.exchangeId = null; //???;
+        this.exchangeId = null; // ???;
         this.interfaceName = packet.interfaceName;
         CopyTransformer ct = new CopyTransformer();
         if (packet.in != null) {
@@ -111,7 +126,8 @@ public class ExchangePacket implements Externalizable {
     }
 
     /**
-     * @param endpoint The endpoint to set.
+     * @param endpoint
+     *            The endpoint to set.
      */
     public void setEndpoint(ServiceEndpoint endpoint) {
         this.endpoint = endpoint;
@@ -125,7 +141,8 @@ public class ExchangePacket implements Externalizable {
     }
 
     /**
-     * @param transactionContext The transactionContext to set.
+     * @param transactionContext
+     *            The transactionContext to set.
      */
     public void setTransactionContext(Transaction transactionContext) {
         this.transactionContext = transactionContext;
@@ -139,7 +156,8 @@ public class ExchangePacket implements Externalizable {
     }
 
     /**
-     * @param interfaceName The interfaceName to set.
+     * @param interfaceName
+     *            The interfaceName to set.
      */
     public void setInterfaceName(QName interfaceName) {
         this.interfaceName = interfaceName;
@@ -153,7 +171,8 @@ public class ExchangePacket implements Externalizable {
     }
 
     /**
-     * @param operationName The operationName to set.
+     * @param operationName
+     *            The operationName to set.
      */
     public void setOperationName(QName operationName) {
         this.operationName = operationName;
@@ -167,14 +186,16 @@ public class ExchangePacket implements Externalizable {
     }
 
     /**
-     * @param serviceName The serviceName to set.
+     * @param serviceName
+     *            The serviceName to set.
      */
     public void setServiceName(QName serviceName) {
         this.serviceName = serviceName;
     }
 
     /**
-     * @param status The status to set.
+     * @param status
+     *            The status to set.
      */
     public void setStatus(ExchangeStatus status) {
         this.status = status;
@@ -195,7 +216,8 @@ public class ExchangePacket implements Externalizable {
     }
 
     /**
-     * @param pattern The pattern to set.
+     * @param pattern
+     *            The pattern to set.
      */
     public void setPattern(URI pattern) {
         this.pattern = pattern;
@@ -209,7 +231,8 @@ public class ExchangePacket implements Externalizable {
     }
 
     /**
-     * @param error The error to set.
+     * @param error
+     *            The error to set.
      */
     public void setError(Exception error) {
         this.error = error;
@@ -224,7 +247,8 @@ public class ExchangePacket implements Externalizable {
     }
 
     /**
-     * @param exchangeId The exchangeId to set.
+     * @param exchangeId
+     *            The exchangeId to set.
      */
     public void setExchangeId(String exchangeId) {
         this.exchangeId = exchangeId;
@@ -287,7 +311,8 @@ public class ExchangePacket implements Externalizable {
     }
 
     /**
-     * @param sourceId The sourceId to set.
+     * @param sourceId
+     *            The sourceId to set.
      */
     public void setSourceId(ComponentNameSpace sourceId) {
         this.sourceId = sourceId;
@@ -301,7 +326,8 @@ public class ExchangePacket implements Externalizable {
     }
 
     /**
-     * @param destinationId The destinationId to set.
+     * @param destinationId
+     *            The destinationId to set.
      */
     public void setDestinationId(ComponentNameSpace destinationId) {
         this.destinationId = destinationId;
@@ -315,7 +341,8 @@ public class ExchangePacket implements Externalizable {
     }
 
     /**
-     * @param fault The fault to set.
+     * @param fault
+     *            The fault to set.
      */
     public void setFault(FaultImpl fault) {
         this.fault = fault;
@@ -329,7 +356,8 @@ public class ExchangePacket implements Externalizable {
     }
 
     /**
-     * @param in The in to set.
+     * @param in
+     *            The in to set.
      */
     public void setIn(NormalizedMessageImpl in) {
         this.in = in;
@@ -343,7 +371,8 @@ public class ExchangePacket implements Externalizable {
     }
 
     /**
-     * @param out The out to set.
+     * @param out
+     *            The out to set.
      */
     public void setOut(NormalizedMessageImpl out) {
         this.out = out;
@@ -358,6 +387,7 @@ public class ExchangePacket implements Externalizable {
 
     /**
      * Write to a Stream
+     * 
      * @param output
      * @throws IOException
      */
@@ -407,19 +437,20 @@ public class ExchangePacket implements Externalizable {
 
     /**
      * Creates a copy of the packet so it can be sent to another destination
-     * @throws MessagingException 
+     * 
+     * @throws MessagingException
      */
     public ExchangePacket copy() throws MessagingException {
         return new ExchangePacket(this);
     }
 
-	public Boolean getPersistent() {
-		return persistent;
-	}
+    public Boolean getPersistent() {
+        return persistent;
+    }
 
-	public void setPersistent(Boolean persistent) {
-		this.persistent = persistent;
-	}
+    public void setPersistent(Boolean persistent) {
+        this.persistent = persistent;
+    }
 
     public boolean isAborted() {
         return aborted;
@@ -428,23 +459,26 @@ public class ExchangePacket implements Externalizable {
     public void setAborted(boolean timedOut) {
         this.aborted = timedOut;
     }
-    
+
     /**
      * Retrieve the serialized from of this packet
+     * 
      * @return the serialized packet
-     * @throws IOException 
+     * @throws IOException
      */
     public byte[] getData() throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(buffer);
-        out.writeObject(this);
-        out.close();
+        ObjectOutputStream os = new ObjectOutputStream(buffer);
+        os.writeObject(this);
+        os.close();
         return buffer.toByteArray();
     }
-    
+
     /**
      * Deserialize an ExchangePacket.
-     * @param data the serialized packet
+     * 
+     * @param data
+     *            the serialized packet
      * @return the deserialized packet
      * @throws IOException
      * @throws ClassNotFoundException

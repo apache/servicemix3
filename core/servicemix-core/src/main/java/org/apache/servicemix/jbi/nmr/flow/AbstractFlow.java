@@ -22,8 +22,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.jbi.JBIException;
 import javax.jbi.management.LifeCycleMBean;
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.MessageExchange.Role;
+import javax.jbi.messaging.MessagingException;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
@@ -48,110 +48,106 @@ import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
  * @version $Revision$
  */
 public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
-    
+
     protected final Log log = LogFactory.getLog(getClass());
-    
     protected Broker broker;
     protected ExecutorFactory executorFactory;
     private ReadWriteLock lock = new ReentrantReadWriteLock();
-    private Thread suspendThread = null;
+    private Thread suspendThread;
     private String name;
 
     /**
      * Initialize the Region
      * 
-     * @param broker
+     * @param br
      * @throws JBIException
      */
-    public void init(Broker broker) throws JBIException {
-        this.broker = broker;
-        this.executorFactory = broker.getContainer().getExecutorFactory();
+    public void init(Broker br) throws JBIException {
+        this.broker = br;
+        this.executorFactory = br.getContainer().getExecutorFactory();
         // register self with the management context
-        ObjectName objectName = broker.getContainer().getManagementContext().createObjectName(this);
+        ObjectName objectName = br.getContainer().getManagementContext().createObjectName(this);
         try {
-            broker.getContainer().getManagementContext().registerMBean(objectName, this, LifeCycleMBean.class);
-        }
-        catch (JMException e) {
+            br.getContainer().getManagementContext().registerMBean(objectName, this, LifeCycleMBean.class);
+        } catch (JMException e) {
             throw new JBIException("Failed to register MBean with the ManagementContext", e);
         }
     }
-    
+
     /**
      * start the flow
      * @throws JBIException
      */
-    public void start() throws JBIException{
+    public void start() throws JBIException {
         super.start();
     }
-    
-    
+
     /**
      * stop the flow
      * @throws JBIException
      */
-    public void stop() throws JBIException{
+    public void stop() throws JBIException {
         if (log.isDebugEnabled()) {
             log.debug("Called Flow stop");
         }
-        if (suspendThread != null){
+        if (suspendThread != null) {
             suspendThread.interrupt();
         }
         super.stop();
     }
-    
+
     /**
      * shutDown the flow
      * @throws JBIException
      */
-    public void shutDown() throws JBIException{
+    public void shutDown() throws JBIException {
         if (log.isDebugEnabled()) {
             log.debug("Called Flow shutdown");
         }
         broker.getContainer().getManagementContext().unregisterMBean(this);
         super.shutDown();
     }
-    
+
     /**
      * Distribute an ExchangePacket
      * @param packet
      * @throws JBIException
      */
-    public void send(MessageExchange me) throws JBIException{
+    public void send(MessageExchange me) throws JBIException {
         if (log.isDebugEnabled()) {
             log.debug("Called Flow send");
         }
-    	// do send
+        // do send
         try {
             lock.readLock().lock();
             doSend((MessageExchangeImpl) me);
-        } finally{
+        } finally {
             lock.readLock().unlock();
         }
     }
-    
+
     /**
      * suspend the flow to prevent any message exchanges
      */
-    public synchronized void suspend(){
+    public synchronized void suspend() {
         if (log.isDebugEnabled()) {
             log.debug("Called Flow suspend");
         }
         lock.writeLock().lock();
         suspendThread = Thread.currentThread();
     }
-    
-    
+
     /**
      * resume message exchange processing
      */
-    public synchronized void resume(){
+    public synchronized void resume() {
         if (log.isDebugEnabled()) {
             log.debug("Called Flow resume");
         }
         lock.writeLock().unlock();
         suspendThread = null;
     }
-    
+
     /**
      * Do the Flow specific routing
      * @param packet
@@ -175,12 +171,11 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
             } else {
                 throw new MessagingException("Component " + id.getName() + " is shut down");
             }
-        }
-        else {
+        } else {
             throw new MessagingException("No component named " + id.getName() + " - Couldn't route MessageExchange " + me);
         }
     }
-    
+
     /**
      * Get an array of MBeanAttributeInfo
      * 
@@ -200,17 +195,17 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      */
     protected boolean isPersistent(MessageExchange me) {
         ExchangePacket packet = ((MessageExchangeImpl) me).getPacket();
-    	if (packet.getPersistent() != null) {
-    		return packet.getPersistent().booleanValue();
-    	} else {
-    		return broker.getContainer().isPersistent();
-    	}
+        if (packet.getPersistent() != null) {
+            return packet.getPersistent().booleanValue();
+        } else {
+            return broker.getContainer().isPersistent();
+        }
     }
 
     protected boolean isTransacted(MessageExchange me) {
         return me.getProperty(MessageExchange.JTA_TRANSACTION_PROPERTY_NAME) != null;
     }
-    
+
     protected boolean isSynchronous(MessageExchange me) {
         Boolean sync = (Boolean) me.getProperty(JbiConstants.SEND_SYNC);
         return sync != null && sync.booleanValue();
@@ -222,7 +217,7 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
             ServiceEndpoint se = me.getEndpoint();
             if (se instanceof InternalEndpoint) {
                 return ((InternalEndpoint) se).isClustered();
-            // Unknown: assume this is not clustered
+                // Unknown: assume this is not clustered
             } else {
                 return false;
             }
@@ -232,7 +227,7 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
             return !source.equals(destination);
         }
     }
-    
+
     public Broker getBroker() {
         return broker;
     }
@@ -244,23 +239,23 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
     public String getType() {
         return "Flow";
     }
-    
+
     /**
      * Get the name of the item
      * @return the name
      */
     public String getName() {
         if (this.name == null) {
-            String name = super.getName();
-            if (name.endsWith("Flow")) {
-                name = name.substring(0, name.length() - 4);
+            String n = super.getName();
+            if (n.endsWith("Flow")) {
+                n = n.substring(0, n.length() - 4);
             }
-            return name;
+            return n;
         } else {
             return this.name;
         }
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
@@ -271,5 +266,5 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
     public ExecutorFactory getExecutorFactory() {
         return executorFactory;
     }
-    
+
 }

@@ -19,6 +19,7 @@ package org.apache.servicemix.jbi.nmr.flow.jms;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOut;
@@ -37,31 +38,29 @@ import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 
-import java.util.concurrent.CopyOnWriteArrayList;
-
 public class StatelessJmsFlowTest extends TestCase {
 
     protected JBIContainer jbi1;
     protected JBIContainer jbi2;
     protected BrokerService broker;
-    
+
     protected void setUp() throws Exception {
         broker = new BrokerService();
         broker.setPersistent(false);
         broker.setUseJmx(false);
         broker.addConnector("tcp://localhost:61616");
         broker.start();
-        
+
         jbi1 = createContainer("jbi1");
         jbi2 = createContainer("jbi2");
     }
-    
+
     protected void tearDown() throws Exception {
         jbi1.shutDown();
         jbi2.shutDown();
         broker.stop();
     }
-    
+
     protected JBIContainer createContainer(String name) throws Exception {
         JBIContainer container = new JBIContainer();
         container.setName(name);
@@ -72,27 +71,27 @@ public class StatelessJmsFlowTest extends TestCase {
         container.start();
         return container;
     }
-    
+
     protected StatelessEcho activateProvider(JBIContainer container, boolean stateless) throws Exception {
         StatelessEcho echo = new StatelessEcho(stateless);
         container.activateComponent(echo, "echo");
         return echo;
     }
-    
+
     protected StatelessSender activateConsumer(JBIContainer container) throws Exception {
         StatelessSender sender = new StatelessSender();
         container.activateComponent(sender, "sender");
         return sender;
     }
-    
+
     public void testStatelessConsumer() throws Exception {
         StatelessEcho echo1 = activateProvider(jbi1, false);
         StatelessEcho echo2 = activateProvider(jbi2, false);
         StatelessSender sender1 = activateConsumer(jbi1);
         StatelessSender sender2 = activateConsumer(jbi2);
-        
+
         sender1.sendMessages(100, true);
-        
+
         int n1 = 0;
         int n2 = 0;
         for (int i = 0; i < 10; i++) {
@@ -107,15 +106,15 @@ public class StatelessJmsFlowTest extends TestCase {
         assertTrue(n2 != 0);
         assertTrue(n1 + n2 == 100);
     }
-    
+
     public void testStatefullConsumer() throws Exception {
         StatelessEcho echo1 = activateProvider(jbi1, false);
         StatelessEcho echo2 = activateProvider(jbi2, false);
         StatelessSender sender1 = activateConsumer(jbi1);
         StatelessSender sender2 = activateConsumer(jbi2);
-        
+
         sender1.sendMessages(100, false);
-        
+
         int n1 = 0;
         int n2 = 0;
         for (int i = 0; i < 10; i++) {
@@ -130,13 +129,13 @@ public class StatelessJmsFlowTest extends TestCase {
         assertTrue(n2 == 0);
         assertTrue(n1 + n2 == 100);
     }
-    
+
     public void testStatelessProvider() throws Exception {
         StatelessEcho echo1 = activateProvider(jbi1, true);
         StatelessEcho echo2 = activateProvider(jbi2, true);
         StatelessSender sender1 = activateConsumer(jbi1);
         StatelessSender sender2 = activateConsumer(jbi2);
-        
+
         sender1.sendMessages(100, false);
 
         for (int i = 0; i < 10; i++) {
@@ -146,7 +145,7 @@ public class StatelessJmsFlowTest extends TestCase {
             }
         }
         assertTrue(echo1.doneIds.size() + echo2.doneIds.size() == 100);
-        
+
         // Check that the echo1 component received
         // DONE status for exchanges it did not handle
         // the first time.
@@ -157,13 +156,13 @@ public class StatelessJmsFlowTest extends TestCase {
         doneIds1.removeAll(echo1.inIds);
         assertTrue(doneIds1.size() > 0);
     }
-    
+
     public void testStatefullProvider() throws Exception {
         StatelessEcho echo1 = activateProvider(jbi1, false);
         StatelessEcho echo2 = activateProvider(jbi2, false);
         StatelessSender sender1 = activateConsumer(jbi1);
         StatelessSender sender2 = activateConsumer(jbi2);
-        
+
         sender1.sendMessages(100, false);
 
         for (int i = 0; i < 10; i++) {
@@ -173,7 +172,7 @@ public class StatelessJmsFlowTest extends TestCase {
             }
         }
         assertTrue(echo1.doneIds.size() + echo2.doneIds.size() == 100);
-        
+
         // Check that the echo1 component received
         // DONE status for exchanges it did not handle
         // the first time.
@@ -184,14 +183,18 @@ public class StatelessJmsFlowTest extends TestCase {
         doneIds1.removeAll(echo1.inIds);
         assertTrue(doneIds1.size() == 0);
     }
-    
+
     public static class StatelessSender extends ComponentSupport implements MessageExchangeListener {
+
         public static final QName SERVICE = new QName("sender");
         public static final String ENDPOINT = "ep";
-        public List outIds = new CopyOnWriteArrayList();
+
+        List outIds = new CopyOnWriteArrayList();
+
         public StatelessSender() {
             super(SERVICE, ENDPOINT);
         }
+
         public void sendMessages(int nb, boolean stateless) throws Exception {
             for (int i = 0; i < nb; i++) {
                 MessageExchangeFactory mef = getDeliveryChannel().createExchangeFactory();
@@ -203,24 +206,28 @@ public class StatelessJmsFlowTest extends TestCase {
                 me.setInMessage(me.createMessage());
                 me.getInMessage().setContent(new StringSource("<hello/>"));
                 getDeliveryChannel().send(me);
-                
+
             }
         }
+
         public void onMessageExchange(MessageExchange exchange) throws MessagingException {
             outIds.add(exchange.getExchangeId());
             done(exchange);
         }
     }
-    
+
     public static class StatelessEcho extends ComponentSupport implements MessageExchangeListener {
-        private boolean stateless;
-        public List inIds = new CopyOnWriteArrayList();
-        public List doneIds = new CopyOnWriteArrayList();
+
+        boolean stateless;
+        List inIds = new CopyOnWriteArrayList();
+        List doneIds = new CopyOnWriteArrayList();
+
         public StatelessEcho(boolean stateless) {
             setService(new QName("echo"));
             setEndpoint("ep");
             this.stateless = stateless;
         }
+
         public void onMessageExchange(MessageExchange exchange) throws MessagingException {
             if (exchange.getStatus() == ExchangeStatus.DONE) {
                 doneIds.add(exchange.getExchangeId());

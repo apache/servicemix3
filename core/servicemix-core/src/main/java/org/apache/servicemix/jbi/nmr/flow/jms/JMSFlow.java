@@ -49,8 +49,9 @@ public class JMSFlow extends AbstractJMSFlow {
      * node is added or removed
      */
     protected void onConsumerMonitorMessage(Message advisoryMessage) {
-        if (!started.get())
+        if (!started.get()) {
             return;
+        }
         Object obj = ((ActiveMQMessage) advisoryMessage).getDataStructure();
         if (obj instanceof ConsumerInfo) {
             ConsumerInfo info = (ConsumerInfo) obj;

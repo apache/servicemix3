@@ -34,5 +34,6 @@ public interface MessageExchangeListener {
      * @param exchange
      * @throws MessagingException
      */
-    public void onMessageExchange(MessageExchange exchange) throws MessagingException;
+    void onMessageExchange(MessageExchange exchange) throws MessagingException;
+
 }

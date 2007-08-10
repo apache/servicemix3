@@ -41,8 +41,7 @@ public abstract class EndpointResolverSupport implements EndpointResolver {
         if (endpoints.length == 0) {
             if (failIfUnavailable) {
                 throw createServiceUnavailableException();
-            }
-            else {
+            } else {
                 return null;
             }
         }
@@ -79,17 +78,16 @@ public abstract class EndpointResolverSupport implements EndpointResolver {
             ServiceEndpoint endpoint = endpoints[i];
             if (filter.evaluate(endpoint, exchange)) {
                 matches++;
-            }
-            else {
+            }  else {
                 endpoints[i] = null;
             }
         }
         if (matches == endpoints.length) {
             return endpoints;
-        }
-        else {
+        } else {
             ServiceEndpoint[] answer = new ServiceEndpoint[matches];
-            for (int i = 0, j = 0; i < endpoints.length; i++) {
+            int j = 0;
+            for (int i = 0; i < endpoints.length; i++) {
                 ServiceEndpoint endpoint = endpoints[i];
                 if (endpoint != null) {
                     answer[j++] = endpoints[i];

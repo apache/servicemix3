@@ -21,19 +21,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.context.ApplicationContext;
 import org.apache.xbean.server.repository.FileSystemRepository;
 import org.apache.xbean.server.spring.configuration.ClassLoaderXmlPreprocessor;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.apache.xbean.spring.context.FileSystemXmlApplicationContext;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.context.ApplicationContext;
 
 /**
  * A simple stand alone application which runs ServiceMix from the command line.
  *
  * @version $Revision$
  */
-public class Main {
+public final class Main {
+    
+    private Main() {
+    }
 
     public static void main(String args[]) {
         try {
@@ -49,8 +52,7 @@ public class Main {
             if (args.length <= 0) {
                 System.out.println("Loading Apache ServiceMix from servicemix.xml on the CLASSPATH");
                 context = new ClassPathXmlApplicationContext("servicemix.xml");
-            }
-            else {
+            } else {
                 String file = args[0];
 
                 if (file.equals("-?") || file.equals("?") || file.equals("--help") || file.equals("-h")) {
@@ -75,8 +77,7 @@ public class Main {
             if (context instanceof DisposableBean) {
                 ((DisposableBean) context).destroy();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Caught: " + e);
             e.printStackTrace();
         }

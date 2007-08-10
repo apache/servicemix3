@@ -27,23 +27,23 @@ import org.springframework.core.io.ClassPathResource;
  */
 public class JcaFlowTransactionTest extends AbstractClusteredTransactionTest {
 
-	protected BrokerService broker;
-    
+    protected BrokerService broker;
+
     protected void setUp() throws Exception {
         BrokerFactoryBean bfb = new BrokerFactoryBean(new ClassPathResource("org/apache/servicemix/jbi/nmr/flow/jca/broker.xml"));
         bfb.afterPropertiesSet();
         broker = bfb.getBroker();
         super.setUp();
     }
-    
+
     protected void tearDown() throws Exception {
-    	super.tearDown();
-    	broker.stop();
+        super.tearDown();
+        broker.stop();
     }
-    
+
     protected Flow createFlow() {
-    	JCAFlow flow = new JCAFlow("tcp://localhost:61216");
-    	return flow;
+        JCAFlow flow = new JCAFlow("tcp://localhost:61216");
+        return flow;
     }
 
     public void testSyncSendSyncReceive() throws Exception {

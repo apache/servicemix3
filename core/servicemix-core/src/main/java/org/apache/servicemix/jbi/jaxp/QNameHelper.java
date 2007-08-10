@@ -22,8 +22,11 @@ import javax.xml.namespace.QName;
 /**
  * @version $Revision: 1.1 $
  */
-public class QNameHelper {
-	
+public final class QNameHelper {
+
+    private QNameHelper() {
+    }
+
     public static String getQualifiedName(QName qname) {
         String prefix = qname.getPrefix();
         String localPart = qname.getLocalPart();
@@ -43,8 +46,7 @@ public class QNameHelper {
             String localPart = text.substring(idx + 1);
             String uri = context.getNamespaceURI(prefix);
             return new QName(uri, localPart, prefix);
-        }
-        else {
+        } else {
             return new QName(text);
         }
     }

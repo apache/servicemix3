@@ -89,7 +89,9 @@ public class MultipleJMSFlowTest extends TestCase {
     protected void printNodes(JBIContainer[] containers) {
         String msg = "Nodes: ";
         for (int j = 0; j < containers.length; j++) {
-            if (j > 0) msg += ", ";
+            if (j > 0) {
+                msg += ", ";
+            }
             msg += ((JMSFlow) containers[j].getFlow()).numberInNetwork();
         }
         log.info(msg);

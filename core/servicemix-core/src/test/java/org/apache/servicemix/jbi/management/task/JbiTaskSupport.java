@@ -16,11 +16,10 @@
  */
 package org.apache.servicemix.jbi.management.task;
 
+import junit.framework.TestCase;
+
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
-import org.apache.servicemix.jbi.management.task.JbiTask;
-
-import junit.framework.TestCase;
 
 
 /**
@@ -42,10 +41,9 @@ public abstract class JbiTaskSupport extends TestCase {
         container.init();
         container.start();
         
-        remoteConnection = new JbiTask(){
+        remoteConnection = new JbiTask() {
             protected void doExecute(AdminCommandsServiceMBean acs) throws Exception {
             }
-            
         };
         remoteConnection.init();
     }

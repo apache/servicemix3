@@ -19,12 +19,13 @@ package org.apache.servicemix.jbi.framework;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
+import org.w3c.dom.DocumentFragment;
+
 import junit.framework.TestCase;
 
 import org.apache.servicemix.components.util.EchoComponent;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.resolver.URIResolver;
-import org.w3c.dom.DocumentFragment;
 
 public class RegistryTest extends TestCase {
 

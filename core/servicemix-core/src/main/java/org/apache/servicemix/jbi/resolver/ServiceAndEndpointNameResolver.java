@@ -30,7 +30,7 @@ import org.apache.servicemix.jbi.NoServiceAvailableException;
  * @version $Revision$
  */
 public class ServiceAndEndpointNameResolver extends EndpointResolverSupport {
-	
+
     private QName serviceName;
     private String endpointName;
 
@@ -45,9 +45,8 @@ public class ServiceAndEndpointNameResolver extends EndpointResolverSupport {
     public ServiceEndpoint[] resolveAvailableEndpoints(ComponentContext context, MessageExchange exchange) throws JBIException {
         ServiceEndpoint endpoint = context.getEndpoint(serviceName, endpointName);
         if (endpoint != null) {
-            return new ServiceEndpoint[]{endpoint};
-        }
-        else {
+            return new ServiceEndpoint[] {endpoint };
+        } else {
             return new ServiceEndpoint[0];
         }
     }

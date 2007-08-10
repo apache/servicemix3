@@ -25,12 +25,12 @@ import org.jencks.GeronimoPlatformTransactionManager;
 public class StatelessJcaFlowTest extends StatelessJmsFlowTest {
 
     private TransactionManager tm;
-    
+
     protected void setUp() throws Exception {
-    	tm = new GeronimoPlatformTransactionManager();
+        tm = new GeronimoPlatformTransactionManager();
         super.setUp();
     }
-    
+
     protected JBIContainer createContainer(String name) throws Exception {
         JBIContainer container = new JBIContainer();
         container.setName(name);
@@ -43,6 +43,5 @@ public class StatelessJcaFlowTest extends StatelessJmsFlowTest {
         container.start();
         return container;
     }
-    
 
 }

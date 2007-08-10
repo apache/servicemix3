@@ -16,14 +16,14 @@
  */
 package org.apache.servicemix.jbi.management;
 
-import org.apache.commons.beanutils.PropertyUtilsBean;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.management.Attribute;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanException;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
+import org.apache.commons.beanutils.PropertyUtilsBean;
 
 /**
  * A simple holder for an Attribute and a PropertyDescriptor
@@ -89,14 +89,11 @@ public class CachedAttribute {
             if (value != attribute.getValue()) {
                 this.attribute = new Attribute(getName(), value);
             }
-        }
-        catch (IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             throw new MBeanException(e);
-        }
-        catch (InvocationTargetException e) {
+        } catch (InvocationTargetException e) {
             throw new MBeanException(e);
-        }
-        catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException e) {
             throw new MBeanException(e);
         }
     }
@@ -105,18 +102,18 @@ public class CachedAttribute {
      * Update the Attribute
      * 
      * @param beanUtils
-     * @param attribute The attribute to set.
+     * @param attr The attribute to set.
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      * @throws NoSuchMethodException
      */
-    public void updateAttribute(PropertyUtilsBean beanUtils, Attribute attribute) throws IllegalAccessException,
+    public void updateAttribute(PropertyUtilsBean beanUtils, Attribute attr) throws IllegalAccessException,
             InvocationTargetException, NoSuchMethodException {
         if (this.attribute != null && propertyDescriptor != null) {
             // update object value
-            beanUtils.setProperty(bean, getName(), attribute.getValue());
+            beanUtils.setProperty(bean, getName(), attr.getValue());
         }
-        this.attribute = attribute;
+        this.attribute = attr;
     }
 
     /**

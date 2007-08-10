@@ -16,12 +16,12 @@
  */
 package org.apache.servicemix.jbi.management;
 
-import javax.management.MBeanOperationInfo;
-import javax.management.MBeanParameterInfo;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.management.MBeanOperationInfo;
+import javax.management.MBeanParameterInfo;
 
 /**
  * A Helper class to build an MBeanOperationInfo
@@ -110,15 +110,15 @@ public class OperationInfoHelper {
         Method result = null;
         Method[] methods = theClass.getMethods();
         if (methods != null) {
-            for (int i = 0;i < methods.length;i++) {
+            for (int i = 0; i < methods.length; i++) {
                 if (methods[i].getName().equals(name) && methods[i].getParameterTypes().length == numParams) {
                     result = methods[i];
                     break;
                 }
             }
-            if (result == null){
-                //do a less exact search
-                for (int i = 0;i < methods.length;i++) {
+            if (result == null) {
+                // do a less exact search
+                for (int i = 0; i < methods.length; i++) {
                     if (methods[i].getName().equals(name)) {
                         result = methods[i];
                         break;

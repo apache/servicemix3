@@ -21,20 +21,21 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.container.SubscriptionSpec;
 import org.apache.servicemix.jbi.resolver.SubscriptionFilter;
 import org.apache.servicemix.tck.ReceiverComponent;
 import org.apache.servicemix.tck.SenderComponent;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 public class PubSubTest extends TestCase {
 
-    private static final Log log = LogFactory.getLog(PubSubTest.class);
+    private static final Log LOG = LogFactory.getLog(PubSubTest.class);
 
     private SenderComponent sender;
+
     private JBIContainer container;
 
     protected void setUp() throws Exception {
@@ -43,10 +44,10 @@ public class PubSubTest extends TestCase {
         container.setFlowName("seda");
         container.init();
         container.start();
-        
+
         sender = new SenderComponent();
-        ActivationSpec as = new ActivationSpec("source",sender);
-        as.setService(new QName("http://www.test.com","source"));
+        ActivationSpec as = new ActivationSpec("source", sender);
+        as.setService(new QName("http://www.test.com", "source"));
         as.setFailIfNoDestinationEndpoint(false);
         container.activateComponent(as);
     }
@@ -54,17 +55,17 @@ public class PubSubTest extends TestCase {
     protected void tearDown() throws Exception {
         container.shutDown();
     }
-    
+
     public void testPubSub() throws Exception {
-    	ReceiverComponent recListener = new ReceiverComponent();
-        container.activateComponent(createReceiverAS("receiver",recListener));
+        ReceiverComponent recListener = new ReceiverComponent();
+        container.activateComponent(createReceiverAS("receiver", recListener));
         sender.sendMessages(1);
         recListener.getMessageList().assertMessagesReceived(1);
     }
-    
+
     public void testPubSubFiltered() throws Exception {
-    	ReceiverComponent recListener = new ReceiverComponent();
-        container.activateComponent(createReceiverASFiltered("receiver",recListener));
+        ReceiverComponent recListener = new ReceiverComponent();
+        container.activateComponent(createReceiverASFiltered("receiver", recListener));
         sender.sendMessages(1, false);
         recListener.getMessageList().assertMessagesReceived(1);
     }
@@ -72,8 +73,8 @@ public class PubSubTest extends TestCase {
     private ActivationSpec createReceiverAS(String id, Object component) {
         ActivationSpec as = new ActivationSpec(id, component);
         SubscriptionSpec ss = new SubscriptionSpec();
-        ss.setService(new QName("http://www.test.com","source"));
-        as.setSubscriptions(new SubscriptionSpec[] { ss });
+        ss.setService(new QName("http://www.test.com", "source"));
+        as.setSubscriptions(new SubscriptionSpec[] {ss });
         as.setFailIfNoDestinationEndpoint(false);
         return as;
     }
@@ -81,9 +82,9 @@ public class PubSubTest extends TestCase {
     private ActivationSpec createReceiverASFiltered(String id, Object component) {
         ActivationSpec as = new ActivationSpec(id, component);
         SubscriptionSpec ss = new SubscriptionSpec();
-        ss.setService(new QName("http://www.test.com","source"));
+        ss.setService(new QName("http://www.test.com", "source"));
         ss.setFilter(new Filter());
-        as.setSubscriptions(new SubscriptionSpec[] { ss });
+        as.setSubscriptions(new SubscriptionSpec[] {ss });
         as.setFailIfNoDestinationEndpoint(false);
         return as;
     }
@@ -91,9 +92,9 @@ public class PubSubTest extends TestCase {
     public static class Filter implements SubscriptionFilter {
 
         public boolean matches(MessageExchange arg0) {
-            log.info("Matches");
+            LOG.info("Matches");
             return true;
         }
-        
+
     }
 }

@@ -22,96 +22,65 @@ import junit.framework.TestCase;
 
 public class FileUtilTest extends TestCase {
 
-	private static File WORKDIR = new File("target/servicemix-test");
-	
-	protected void setUp() throws Exception {
-		FileUtil.deleteFile(WORKDIR);
-		WORKDIR.mkdirs();
-	}
-	
-	public void testDeleteFile() throws Exception {
-		File f = new File(WORKDIR, "test.txt");
-		assertFalse(f.exists());
-		assertTrue(f.createNewFile());
-		assertTrue(f.exists());
-		assertFalse(f.isDirectory());
-		assertTrue(f.isFile());
-		assertTrue(FileUtil.deleteFile(f));
-		assertFalse(f.exists());
-	}
-	
-	/*
-	 * This test only works on windows, as
-	 * writing to a file does not prevent its 
-	 * deletion on unix systems.
-	 *
-	public void testDeleteLockedFile() throws Exception {
-		File f = new File(WORKDIR, "test.txt");
-		assertFalse(f.exists());
-		OutputStream os = new FileOutputStream(f);
-		try {
-			Writer w = new OutputStreamWriter(os);
-			w.write("hello");
-			w.flush();
-			assertTrue(f.exists());
-			assertFalse(FileUtil.deleteFile(f));
-			assertTrue(f.exists());
-		} finally {
-			os.close();
-		}
-		assertTrue(f.exists());
-		assertTrue(FileUtil.deleteFile(f));
-		assertFalse(f.exists());
-	}
-	*/
-	
-	public void testDeleteDir() throws Exception {
-		File f = new File(WORKDIR, "testdir");
-		assertFalse(f.exists());
-		assertTrue(f.mkdir());
-		assertTrue(f.exists());
-		assertTrue(f.isDirectory());
-		assertFalse(f.isFile());
-		assertTrue(FileUtil.deleteFile(f));
-		assertFalse(f.exists());
-	}
-	
-	/*
-	 * This test only works on windows, as
-	 * writing to a file does not prevent its 
-	 * deletion on unix systems.
-	 *
-	public void testDeleteDirWithLockedFile() throws Exception {
-		File f = new File(WORKDIR, "testdir");
-		assertFalse(f.exists());
-		assertTrue(f.mkdir());
-		assertTrue(f.exists());
-		assertTrue(f.isDirectory());
-		assertFalse(f.isFile());
-		File f2 = new File(f, "test.txt");
-		assertFalse(f2.exists());
-		File f3 = new File(f, "test2.txt");
-		assertFalse(f3.exists());
-		assertTrue(f3.createNewFile());
-		assertTrue(f3.exists());
-		OutputStream os = new FileOutputStream(f2);
-		try {
-			Writer w = new OutputStreamWriter(os);
-			w.write("hello");
-			w.flush();
-			assertTrue(f2.exists());
-			assertFalse(FileUtil.deleteFile(f));
-			assertTrue(f.exists());
-			assertTrue(f2.exists());
-		} finally {
-			os.close();
-		}
-		assertFalse(f3.exists());
-		assertTrue(f2.exists());
-		assertTrue(f.exists());
-		assertTrue(FileUtil.deleteFile(f));
-		assertFalse(f.exists());
-	}
-	*/
-	
+    private static final File WORKDIR = new File("target/servicemix-test");
+
+    protected void setUp() throws Exception {
+        FileUtil.deleteFile(WORKDIR);
+        WORKDIR.mkdirs();
+    }
+
+    public void testDeleteFile() throws Exception {
+        File f = new File(WORKDIR, "test.txt");
+        assertFalse(f.exists());
+        assertTrue(f.createNewFile());
+        assertTrue(f.exists());
+        assertFalse(f.isDirectory());
+        assertTrue(f.isFile());
+        assertTrue(FileUtil.deleteFile(f));
+        assertFalse(f.exists());
+    }
+
+    /*
+     * This test only works on windows, as writing to a file does not prevent
+     * its deletion on unix systems.
+     * 
+     * public void testDeleteLockedFile() throws Exception { File f = new
+     * File(WORKDIR, "test.txt"); assertFalse(f.exists()); OutputStream os = new
+     * FileOutputStream(f); try { Writer w = new OutputStreamWriter(os);
+     * w.write("hello"); w.flush(); assertTrue(f.exists());
+     * assertFalse(FileUtil.deleteFile(f)); assertTrue(f.exists()); } finally {
+     * os.close(); } assertTrue(f.exists()); assertTrue(FileUtil.deleteFile(f));
+     * assertFalse(f.exists()); }
+     */
+
+    public void testDeleteDir() throws Exception {
+        File f = new File(WORKDIR, "testdir");
+        assertFalse(f.exists());
+        assertTrue(f.mkdir());
+        assertTrue(f.exists());
+        assertTrue(f.isDirectory());
+        assertFalse(f.isFile());
+        assertTrue(FileUtil.deleteFile(f));
+        assertFalse(f.exists());
+    }
+
+    /*
+     * This test only works on windows, as writing to a file does not prevent
+     * its deletion on unix systems.
+     * 
+     * public void testDeleteDirWithLockedFile() throws Exception { File f = new
+     * File(WORKDIR, "testdir"); assertFalse(f.exists()); assertTrue(f.mkdir());
+     * assertTrue(f.exists()); assertTrue(f.isDirectory());
+     * assertFalse(f.isFile()); File f2 = new File(f, "test.txt");
+     * assertFalse(f2.exists()); File f3 = new File(f, "test2.txt");
+     * assertFalse(f3.exists()); assertTrue(f3.createNewFile());
+     * assertTrue(f3.exists()); OutputStream os = new FileOutputStream(f2); try {
+     * Writer w = new OutputStreamWriter(os); w.write("hello"); w.flush();
+     * assertTrue(f2.exists()); assertFalse(FileUtil.deleteFile(f));
+     * assertTrue(f.exists()); assertTrue(f2.exists()); } finally { os.close(); }
+     * assertFalse(f3.exists()); assertTrue(f2.exists());
+     * assertTrue(f.exists()); assertTrue(FileUtil.deleteFile(f));
+     * assertFalse(f.exists()); }
+     */
+
 }

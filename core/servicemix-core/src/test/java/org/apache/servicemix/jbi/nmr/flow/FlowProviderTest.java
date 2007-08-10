@@ -16,27 +16,25 @@
  */
 package org.apache.servicemix.jbi.nmr.flow;
 
-import org.apache.servicemix.jbi.nmr.flow.Flow;
-import org.apache.servicemix.jbi.nmr.flow.FlowProvider;
+import junit.framework.TestCase;
+
 import org.apache.servicemix.jbi.nmr.flow.jms.JMSFlow;
 import org.apache.servicemix.jbi.nmr.flow.seda.SedaFlow;
 import org.apache.servicemix.jbi.nmr.flow.st.STFlow;
 
-import junit.framework.TestCase;
+public class FlowProviderTest extends TestCase {
 
-public class FlowProviderTest extends TestCase{
-    
-    public void testGetFlowName(){
+    public void testGetFlowName() {
         String name = "fred";
-        String query ="props=foo";
+        String query = "props=foo";
         String nameAndQuery = name + "?" + query;
         assertTrue(FlowProvider.getFlowName(name).equals(name));
         assertTrue(FlowProvider.getFlowName(nameAndQuery).equals(name));
         assertTrue(FlowProvider.getQuery(nameAndQuery).equals(query));
-       
+
     }
-    
-    public void testGetFlows() throws Exception{
+
+    public void testGetFlows() throws Exception {
         Flow flow = FlowProvider.getFlow("st");
         assertTrue(flow instanceof STFlow);
         flow = FlowProvider.getFlow("seda");
@@ -46,12 +44,12 @@ public class FlowProviderTest extends TestCase{
         flow = FlowProvider.getFlow("cluster");
         assertTrue(flow instanceof JMSFlow);
     }
-    
+
     public void testSetProperties() throws Exception {
         String jmsURL = "reliable://tcp://fred:666";
-        Flow flow = FlowProvider.getFlow("jms?jmsURL="+jmsURL);
+        Flow flow = FlowProvider.getFlow("jms?jmsURL=" + jmsURL);
         assertTrue(flow instanceof JMSFlow);
-        JMSFlow jmsFlow = (JMSFlow)flow;
+        JMSFlow jmsFlow = (JMSFlow) flow;
         assertTrue(jmsFlow.getJmsURL().equals(jmsURL));
     }
 }

@@ -35,13 +35,16 @@ import java.util.zip.ZipOutputStream;
  * 
  * @version $Revision$
  */
-public class FileUtil {
+public final class FileUtil {
     
     /**
      * Buffer size used when copying the content of an input stream to
      * an output stream. 
      */
     private static final int DEFAULT_BUFFER_SIZE = 4096;
+    
+    private FileUtil() {
+    }
 
     /**
      * Move a File
@@ -51,7 +54,7 @@ public class FileUtil {
      * @throws IOException 
      */
     public static void moveFile(File src, File targetDirectory) throws IOException {
-        if (!src.renameTo(new File(targetDirectory, src.getName()))){
+        if (!src.renameTo(new File(targetDirectory, src.getName()))) {
             throw new IOException("Failed to move " + src + " to " + targetDirectory);
         }
     }
@@ -65,7 +68,7 @@ public class FileUtil {
      */
     public static File getDirectoryPath(File parent, String subDirectory) {
         File result = null;
-        if (parent != null){
+        if (parent != null) {
             result = new File(parent, subDirectory);
         }
         return result;
@@ -187,7 +190,7 @@ public class FileUtil {
      * @return unique directory
      * @throws IOException
      */
-    public synchronized static File createUniqueDirectory(File rootDir, String seed) throws IOException {
+    public static synchronized File createUniqueDirectory(File rootDir, String seed) throws IOException {
         int index = seed.lastIndexOf('.');
         if (index > 0) {
             seed = seed.substring(0, index);
@@ -213,27 +216,29 @@ public class FileUtil {
      * @return true if the File is deleted
      */
     public static boolean deleteFile(File fileToDelete) {
+        if (fileToDelete == null || !fileToDelete.exists()) {
+            return true;
+        }
         boolean result = true;
-        if (fileToDelete != null && fileToDelete.exists()) {
-            if (fileToDelete.isDirectory()) {
-                File[] files = fileToDelete.listFiles();
-                if (files == null) {
-                    result = false;
-                } else {
-                    for (int i = 0; i < files.length; i++) {
-                        File file = files[i];
-                        if (!file.getName().equals(".") && !file.getName().equals("..")) {
-                            if (file.isDirectory()) {
-                                result &= deleteFile(file);
-                            } else {
-                            	result &= file.delete();
-                            }
-                        }
+        if (fileToDelete.isDirectory()) {
+            File[] files = fileToDelete.listFiles();
+            if (files == null) {
+                result = false;
+            } else {
+                for (int i = 0; i < files.length; i++) {
+                    File file = files[i];
+                    if (file.getName().equals(".") || file.getName().equals("..")) {
+                        continue;
+                    }
+                    if (file.isDirectory()) {
+                        result &= deleteFile(file);
+                    } else {
+                        result &= file.delete();
                     }
                 }
             }
-            result &= fileToDelete.delete();
         }
+        result &= fileToDelete.delete();
         return result;
     }
 

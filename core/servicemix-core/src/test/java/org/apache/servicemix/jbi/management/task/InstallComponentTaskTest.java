@@ -33,22 +33,24 @@ import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.tools.ant.Project;
 
 /**
- *
+ * 
  * InstallComponentTaskTest
  */
 public class InstallComponentTaskTest extends JbiTaskSupport {
-    
-    
+
     private InstallComponentTask installComponentTask;
+
     private File rootDir = new File("target/testWDIR");
+
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
         FileUtil.deleteFile(rootDir);
         this.container.setRootDir(rootDir.getPath());
-        super.setUp();        
-        installComponentTask = new InstallComponentTask(){};
+        super.setUp();
+        installComponentTask = new InstallComponentTask() {
+        };
         installComponentTask.setProject(new Project());
         installComponentTask.init();
     }
@@ -60,18 +62,22 @@ public class InstallComponentTaskTest extends JbiTaskSupport {
         installComponentTask.close();
         super.tearDown();
     }
-    
+
     public void testInstallation() throws Exception {
         Bootstrap1.setDelegate(new Bootstrap() {
             public void cleanUp() throws JBIException {
             }
+
             public ObjectName getExtensionMBeanName() {
                 return null;
             }
+
             public void init(InstallationContext installContext) throws JBIException {
             }
+
             public void onInstall() throws JBIException {
             }
+
             public void onUninstall() throws JBIException {
             }
         });
@@ -79,8 +85,7 @@ public class InstallComponentTaskTest extends JbiTaskSupport {
         installComponentTask.setFile(installJarUrl);
         installComponentTask.init();
         installComponentTask.execute();
-        File testFile = new File(rootDir, "components" + File.separator
-                + "component1");
+        File testFile = new File(rootDir, "components" + File.separator + "component1");
         assertTrue(testFile.exists());
         FileUtil.deleteFile(rootDir);
     }

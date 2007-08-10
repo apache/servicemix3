@@ -28,11 +28,12 @@ import org.apache.servicemix.jbi.util.IndentPrinter;
  * @version $Revision$
  */
 public class MessagingStats extends StatsImpl {
-    private String name;
+
     protected CountStatisticImpl inboundExchanges;
     protected CountStatisticImpl outboundExchanges;
     protected TimeStatisticImpl inboundExchangeRate;
     protected TimeStatisticImpl outboundExchangeRate;
+    private String name;
 
     /**
      * Default Constructor

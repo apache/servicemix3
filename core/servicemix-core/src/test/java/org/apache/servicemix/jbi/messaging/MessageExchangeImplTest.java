@@ -40,9 +40,9 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.util.StreamDataSource;
 
 public class MessageExchangeImplTest extends TestCase {
-    
-	private static final Log log = LogFactory.getLog(MessageExchangeImplTest.class);
-	
+
+    private static final Log LOG = LogFactory.getLog(MessageExchangeImplTest.class);
+
     protected void testSerializeDeserialize(Source src) throws Exception {
         MessageExchange me = new InOnlyImpl("exchangeId");
         me.setOperation(new QName("uri", "op"));
@@ -53,16 +53,16 @@ public class MessageExchangeImplTest extends TestCase {
         msg.addAttachment("myAttachment", new DataHandler(new StreamDataSource(new ByteArrayInputStream("hello".getBytes()))));
         me.setMessage(msg, "in");
         assertNotNull(((NormalizedMessageImpl) msg).getBody());
-        
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(me);
         oos.close();
-        
+
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
         Object out = ois.readObject();
-        
+
         assertNotNull(out);
         assertTrue(out instanceof MessageExchange);
         MessageExchange meOut = (MessageExchange) out;
@@ -76,11 +76,10 @@ public class MessageExchangeImplTest extends TestCase {
         String outStr = new SourceTransformer().toString(outSrc);
         assertNotNull(outStr);
         assertNotNull(((NormalizedMessageImpl) msgOut).getBody());
-        log.info(outStr);
+        LOG.info(outStr);
         assertNotNull(msgOut.getAttachment("myAttachment"));
     }
 
-    
     public void testSerializeDeserializeWithStringSource() throws Exception {
         Source src = new StringSource("<hello>world</hello>");
         testSerializeDeserialize(src);
@@ -107,7 +106,8 @@ public class MessageExchangeImplTest extends TestCase {
     }
 
     public void testAgeComparator() throws Exception {
-        PriorityBlockingQueue<MessageExchangeImpl> queue = new PriorityBlockingQueue<MessageExchangeImpl>(11, new MessageExchangeImpl.AgeComparator());
+        PriorityBlockingQueue<MessageExchangeImpl> queue = new PriorityBlockingQueue<MessageExchangeImpl>(11,
+                        new MessageExchangeImpl.AgeComparator());
         MessageExchangeImpl me1 = new InOnlyImpl("me1");
         MessageExchangeImpl me2 = new InOnlyImpl("me2");
         me2.handleSend(false);

@@ -17,7 +17,6 @@
 package org.apache.servicemix.jbi;
 
 import javax.jbi.JBIException;
-import javax.jbi.servicedesc.ServiceEndpoint;
 
 /**
  * An exception thrown if a {@link ServiceEndpoint} is unavailable

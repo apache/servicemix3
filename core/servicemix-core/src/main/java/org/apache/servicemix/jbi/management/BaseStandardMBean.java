@@ -16,12 +16,15 @@
  */
 package org.apache.servicemix.jbi.management;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
-
-import org.apache.commons.beanutils.MethodUtils;
-import org.apache.commons.beanutils.PropertyUtilsBean;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import javax.management.Attribute;
 import javax.management.AttributeChangeNotification;
@@ -51,35 +54,49 @@ import javax.management.modelmbean.DescriptorSupport;
 import javax.management.modelmbean.ModelMBeanNotificationBroadcaster;
 import javax.management.modelmbean.ModelMBeanNotificationInfo;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import org.apache.commons.beanutils.MethodUtils;
+import org.apache.commons.beanutils.PropertyUtilsBean;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * An MBean wrapper for an Existing Object
  * 
  * @version $Revision$
  */
-public class BaseStandardMBean extends StandardMBean
-        implements
-            ModelMBeanNotificationBroadcaster,
-            MBeanRegistration,
-            PropertyChangeListener {
-    private final static Log log = LogFactory.getLog(BaseStandardMBean.class);
-    private Map<String, CachedAttribute> cachedAttributes = new LinkedHashMap<String, CachedAttribute>();// used to maintain insertion ordering
-    private PropertyUtilsBean beanUtil = new PropertyUtilsBean();
-    private NotificationBroadcasterSupport broadcasterSupport = new NotificationBroadcasterSupport();
+public class BaseStandardMBean extends StandardMBean implements ModelMBeanNotificationBroadcaster, MBeanRegistration,
+                PropertyChangeListener {
+
+    private static final Log LOG = LogFactory.getLog(BaseStandardMBean.class);
+
+    private static final Map<String, Class<?>> PRIMITIVE_CLASSES = new Hashtable<String, Class<?>>(8);
+    {
+        PRIMITIVE_CLASSES.put(Boolean.TYPE.toString(), Boolean.TYPE);
+        PRIMITIVE_CLASSES.put(Character.TYPE.toString(), Character.TYPE);
+        PRIMITIVE_CLASSES.put(Byte.TYPE.toString(), Byte.TYPE);
+        PRIMITIVE_CLASSES.put(Short.TYPE.toString(), Short.TYPE);
+        PRIMITIVE_CLASSES.put(Integer.TYPE.toString(), Integer.TYPE);
+        PRIMITIVE_CLASSES.put(Long.TYPE.toString(), Long.TYPE);
+        PRIMITIVE_CLASSES.put(Float.TYPE.toString(), Float.TYPE);
+        PRIMITIVE_CLASSES.put(Double.TYPE.toString(), Double.TYPE);
+    }
+
     protected ExecutorService executorService;
+
+    private Map<String, CachedAttribute> cachedAttributes = new LinkedHashMap<String, CachedAttribute>();
+
+    // used to maintain insertion ordering
+    private PropertyUtilsBean beanUtil = new PropertyUtilsBean();
+
+    private NotificationBroadcasterSupport broadcasterSupport = new NotificationBroadcasterSupport();
+
     private MBeanAttributeInfo[] attributeInfos;
+
     private MBeanInfo beanInfo;
+
     // this values are set after registering with the MBeanServer//
     private ObjectName objectName;
+
     private MBeanServer beanServer;
 
     /**
@@ -90,17 +107,18 @@ public class BaseStandardMBean extends StandardMBean
      * @param description
      * @param attrs
      * @param ops
-     * @param executorService2 
+     * @param executorService2
      * @throws ReflectionException
      * @throws NotCompliantMBeanException
      */
-    public BaseStandardMBean(Object object, Class interfaceMBean, String description, MBeanAttributeInfo[] attrs,
-            MBeanOperationInfo[] ops, ExecutorService executorService) throws ReflectionException, NotCompliantMBeanException {
+    public BaseStandardMBean(Object object, Class<?> interfaceMBean, String description, 
+                             MBeanAttributeInfo[] attrs, MBeanOperationInfo[] ops,
+                             ExecutorService executorService) throws ReflectionException, NotCompliantMBeanException {
         super(object, interfaceMBean);
         this.attributeInfos = attrs;
         buildAttributes(object, this.attributeInfos);
         this.beanInfo = new MBeanInfo(object.getClass().getName(), description, attrs, null, ops, getNotificationInfo());
-        this.executorService = executorService; 
+        this.executorService = executorService;
     }
 
     /**
@@ -141,7 +159,8 @@ public class BaseStandardMBean extends StandardMBean
         Object result = null;
         CachedAttribute ca = cachedAttributes.get(name);
         if (ca == null) {
-            // the use of proxies in MX4J has a bug - in which the caps can be changed on
+            // the use of proxies in MX4J has a bug - in which the caps can be
+            // changed on
             // an attribute
             for (Map.Entry<String, CachedAttribute> entry : cachedAttributes.entrySet()) {
                 String key = entry.getKey();
@@ -153,8 +172,7 @@ public class BaseStandardMBean extends StandardMBean
         }
         if (ca != null) {
             result = getCurrentValue(ca);
-        }
-        else {
+        } else {
             throw new AttributeNotFoundException("Could not locate " + name);
         }
         return result;
@@ -169,8 +187,8 @@ public class BaseStandardMBean extends StandardMBean
      * @throws MBeanException
      * @throws ReflectionException
      */
-    public void setAttribute(Attribute attr) throws AttributeNotFoundException, InvalidAttributeValueException,
-            MBeanException, ReflectionException {
+    public void setAttribute(Attribute attr) throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException,
+                    ReflectionException {
         String name = attr.getName();
         CachedAttribute ca = cachedAttributes.get(name);
         if (ca != null) {
@@ -178,22 +196,18 @@ public class BaseStandardMBean extends StandardMBean
             try {
                 ca.updateAttribute(beanUtil, attr);
                 sendAttributeChangeNotification(old, attr);
-            }
-            catch (NoSuchMethodException e) {
+            } catch (NoSuchMethodException e) {
                 throw new ReflectionException(e);
-            }
-            catch (IllegalAccessException e) {
+            } catch (IllegalAccessException e) {
                 throw new ReflectionException(e);
-            }
-            catch (InvocationTargetException e) {
+            } catch (InvocationTargetException e) {
                 Throwable t = e.getTargetException();
                 if (t instanceof Exception) {
                     throw new MBeanException(e);
                 }
                 throw new MBeanException(e);
             }
-        }
-        else {
+        } else {
             throw new AttributeNotFoundException("Could not locate " + name);
         }
     }
@@ -211,12 +225,10 @@ public class BaseStandardMBean extends StandardMBean
             ca.updateAttributeValue(value);
             try {
                 sendAttributeChangeNotification(old, ca.getAttribute());
-            }
-            catch (RuntimeOperationsException e) {
-                log.error("Failed to update attribute: " + name + " to new value: " + value, e);
-            }
-            catch (MBeanException e) {
-                log.error("Failed to update attribute: " + name + " to new value: " + value, e);
+            } catch (RuntimeOperationsException e) {
+                LOG.error("Failed to update attribute: " + name + " to new value: " + value, e);
+            } catch (MBeanException e) {
+                LOG.error("Failed to update attribute: " + name + " to new value: " + value, e);
             }
         }
     }
@@ -231,7 +243,8 @@ public class BaseStandardMBean extends StandardMBean
     }
 
     /**
-     * @param attributes - array of Attribute names
+     * @param attributes -
+     *            array of Attribute names
      * @return AttributeList of matching Attributes
      */
     public AttributeList getAttributes(String[] attributes) {
@@ -239,24 +252,21 @@ public class BaseStandardMBean extends StandardMBean
         try {
             if (attributes != null) {
                 result = new AttributeList();
-                for (int i = 0;i < attributes.length;i++) {
+                for (int i = 0; i < attributes.length; i++) {
                     CachedAttribute ca = cachedAttributes.get(attributes[i]);
                     ca.updateValue(beanUtil);
                     result.add(ca.getAttribute());
                 }
-            }
-            else {
+            } else {
                 // Do this to maintain insertion ordering
-                for (Iterator i = cachedAttributes.entrySet().iterator();i.hasNext();) {
-                    Map.Entry entry = (Map.Entry) i.next();
-                    CachedAttribute ca = (CachedAttribute) entry.getValue();
+                for (Map.Entry<String, CachedAttribute> entry : cachedAttributes.entrySet()) {
+                    CachedAttribute ca = entry.getValue();
                     ca.updateValue(beanUtil);
                     result.add(ca.getAttribute());
                 }
             }
-        }
-        catch (MBeanException e) {
-            log.error("Caught excdeption building attributes", e);
+        } catch (MBeanException e) {
+            LOG.error("Caught excdeption building attributes", e);
         }
         return result;
     }
@@ -270,22 +280,18 @@ public class BaseStandardMBean extends StandardMBean
     public AttributeList setAttributes(AttributeList attributes) {
         AttributeList result = new AttributeList();
         if (attributes != null) {
-            for (int i = 0;i < attributes.size();i++) {
+            for (int i = 0; i < attributes.size(); i++) {
                 Attribute attribute = (Attribute) attributes.get(i);
                 try {
                     setAttribute(attribute);
-                }
-                catch (AttributeNotFoundException e) {
-                    log.warn("Failed to setAttribute(" + attribute + ")", e);
-                }
-                catch (InvalidAttributeValueException e) {
-                    log.warn("Failed to setAttribute(" + attribute + ")", e);
-                }
-                catch (MBeanException e) {
-                    log.warn("Failed to setAttribute(" + attribute + ")", e);
-                }
-                catch (ReflectionException e) {
-                    log.warn("Failed to setAttribute(" + attribute + ")", e);
+                } catch (AttributeNotFoundException e) {
+                    LOG.warn("Failed to setAttribute(" + attribute + ")", e);
+                } catch (InvalidAttributeValueException e) {
+                    LOG.warn("Failed to setAttribute(" + attribute + ")", e);
+                } catch (MBeanException e) {
+                    LOG.warn("Failed to setAttribute(" + attribute + ")", e);
+                } catch (ReflectionException e) {
+                    LOG.warn("Failed to setAttribute(" + attribute + ")", e);
                 }
                 result.add(attribute);
             }
@@ -306,29 +312,25 @@ public class BaseStandardMBean extends StandardMBean
     public Object invoke(String name, Object[] params, String[] signature) throws MBeanException, ReflectionException {
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         try {
-            Class[] parameterTypes = new Class[signature.length];
+            Class<?>[] parameterTypes = new Class<?>[signature.length];
             for (int i = 0; i < parameterTypes.length; i++) {
-                parameterTypes[i] = primitiveClasses.get(signature[i]);
+                parameterTypes[i] = PRIMITIVE_CLASSES.get(signature[i]);
                 if (parameterTypes[i] == null) {
                     parameterTypes[i] = Class.forName(signature[i]);
                 }
             }
             Thread.currentThread().setContextClassLoader(getImplementation().getClass().getClassLoader());
             return MethodUtils.invokeMethod(getImplementation(), name, params, parameterTypes);
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             throw new ReflectionException(e);
-        }
-        catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException e) {
             throw new ReflectionException(e);
-        }
-        catch (IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             throw new ReflectionException(e);
-        }
-        catch (InvocationTargetException e) {
+        } catch (InvocationTargetException e) {
             Throwable t = e.getTargetException();
             if (t instanceof Exception) {
-                throw new MBeanException((Exception)t);
+                throw new MBeanException((Exception) t);
             } else {
                 throw new MBeanException(e);
             }
@@ -337,18 +339,6 @@ public class BaseStandardMBean extends StandardMBean
         }
     }
 
-    private final static Hashtable<String, Class> primitiveClasses = new Hashtable<String, Class>(8);
-    {
-        primitiveClasses.put(Boolean.TYPE.toString(), Boolean.TYPE);
-        primitiveClasses.put(Character.TYPE.toString(), Character.TYPE);
-        primitiveClasses.put(Byte.TYPE.toString(), Byte.TYPE);
-        primitiveClasses.put(Short.TYPE.toString(), Short.TYPE);
-        primitiveClasses.put(Integer.TYPE.toString(), Integer.TYPE);
-        primitiveClasses.put(Long.TYPE.toString(), Long.TYPE);
-        primitiveClasses.put(Float.TYPE.toString(), Float.TYPE);
-        primitiveClasses.put(Double.TYPE.toString(), Double.TYPE);
-     }    
-    
     /**
      * Called at registration
      * 
@@ -357,11 +347,11 @@ public class BaseStandardMBean extends StandardMBean
      * @return the ObjectName
      * @throws Exception
      */
-    public ObjectName preRegister(MBeanServer mbs,ObjectName on) throws Exception{
-        if(mbs != null){
+    public ObjectName preRegister(MBeanServer mbs, ObjectName on) throws Exception {
+        if (mbs != null) {
             this.beanServer = mbs;
         }
-        if(on != null){
+        if (on != null) {
             this.objectName = on;
         }
         return on;
@@ -426,8 +416,8 @@ public class BaseStandardMBean extends StandardMBean
      * @throws RuntimeOperationsException
      * @throws IllegalArgumentException
      */
-    public void addAttributeChangeNotificationListener(NotificationListener l, String attrName, Object handback)
-            throws MBeanException, RuntimeOperationsException, IllegalArgumentException {
+    public void addAttributeChangeNotificationListener(NotificationListener l, String attrName, Object handback) throws MBeanException,
+                    RuntimeOperationsException, IllegalArgumentException {
         AttributeChangeNotificationFilter currFilter = new AttributeChangeNotificationFilter();
         currFilter.enableAttribute(attrName);
         broadcasterSupport.addNotificationListener(l, currFilter, handback);
@@ -440,8 +430,8 @@ public class BaseStandardMBean extends StandardMBean
      * @throws RuntimeOperationsException
      * @throws ListenerNotFoundException
      */
-    public void removeAttributeChangeNotificationListener(NotificationListener l, String attrName)
-            throws MBeanException, RuntimeOperationsException, ListenerNotFoundException {
+    public void removeAttributeChangeNotificationListener(NotificationListener l, String attrName) throws MBeanException,
+                    RuntimeOperationsException, ListenerNotFoundException {
         broadcasterSupport.removeNotificationListener(l);
     }
 
@@ -450,8 +440,8 @@ public class BaseStandardMBean extends StandardMBean
      * @throws MBeanException
      * @throws RuntimeOperationsException
      */
-    public void sendAttributeChangeNotification(AttributeChangeNotification notification) throws MBeanException,
-            RuntimeOperationsException {
+    public void sendAttributeChangeNotification(AttributeChangeNotification notification) throws MBeanException, 
+                                                                                                 RuntimeOperationsException {
         sendNotification(notification);
     }
 
@@ -461,12 +451,11 @@ public class BaseStandardMBean extends StandardMBean
      * @throws MBeanException
      * @throws RuntimeOperationsException
      */
-    public void sendAttributeChangeNotification(Attribute oldAttr, Attribute newAttr) throws MBeanException,
-            RuntimeOperationsException {
+    public void sendAttributeChangeNotification(Attribute oldAttr, Attribute newAttr) throws MBeanException, RuntimeOperationsException {
         if (!oldAttr.equals(newAttr)) {
-            AttributeChangeNotification notification = new AttributeChangeNotification(objectName, 1, ((new Date())
-                    .getTime()), "AttributeChange", oldAttr.getName(), (((newAttr.getValue()).getClass()).toString()),
-                    oldAttr.getValue(), newAttr.getValue());
+            AttributeChangeNotification notification = new AttributeChangeNotification(objectName, 1, (new Date()).getTime(),
+                            "AttributeChange", oldAttr.getName(), newAttr.getValue().getClass().toString(), oldAttr.getValue(),
+                            newAttr.getValue());
             sendAttributeChangeNotification(notification);
         }
     }
@@ -476,14 +465,15 @@ public class BaseStandardMBean extends StandardMBean
      */
     public MBeanNotificationInfo[] getNotificationInfo() {
         MBeanNotificationInfo[] result = new MBeanNotificationInfo[2];
-        Descriptor genericDescriptor = new DescriptorSupport(new String[]{"name=GENERIC",
-                "descriptorType=notification", "log=T", "severity=5", "displayName=jmx.modelmbean.generic"});
-        result[0] = new ModelMBeanNotificationInfo(new String[]{"jmx.modelmbean.generic"}, "GENERIC",
-                "A text notification has been issued by the managed resource", genericDescriptor);
-        Descriptor attributeDescriptor = new DescriptorSupport(new String[]{"name=ATTRIBUTE_CHANGE",
-                "descriptorType=notification", "log=T", "severity=5", "displayName=jmx.attribute.change"});
-        result[1] = new ModelMBeanNotificationInfo(new String[]{"jmx.attribute.change"}, "ATTRIBUTE_CHANGE",
-                "Signifies that an observed MBean attribute value has changed", attributeDescriptor);
+        Descriptor genericDescriptor = new DescriptorSupport(new String[] {
+            "name=GENERIC", "descriptorType=notification", "log=T",
+            "severity=5", "displayName=jmx.modelmbean.generic" });
+        result[0] = new ModelMBeanNotificationInfo(new String[] {"jmx.modelmbean.generic" }, "GENERIC",
+            "A text notification has been issued by the managed resource", genericDescriptor);
+        Descriptor attributeDescriptor = new DescriptorSupport(new String[] {"name=ATTRIBUTE_CHANGE", "descriptorType=notification",
+            "log=T", "severity=5", "displayName=jmx.attribute.change" });
+        result[1] = new ModelMBeanNotificationInfo(new String[] {"jmx.attribute.change" }, "ATTRIBUTE_CHANGE",
+            "Signifies that an observed MBean attribute value has changed", attributeDescriptor);
         return result;
     }
 
@@ -493,8 +483,8 @@ public class BaseStandardMBean extends StandardMBean
      * @param handle
      * @throws IllegalArgumentException
      */
-    public void addNotificationListener(NotificationListener l, NotificationFilter filter, Object handle)
-            throws IllegalArgumentException {
+    public void addNotificationListener(NotificationListener l, NotificationFilter filter, 
+                                        Object handle) throws IllegalArgumentException {
         broadcasterSupport.addNotificationListener(l, filter, handle);
     }
 
@@ -511,14 +501,11 @@ public class BaseStandardMBean extends StandardMBean
         if (ca != null) {
             try {
                 result = beanUtil.getProperty(ca.getBean(), ca.getName());
-            }
-            catch (IllegalAccessException e) {
+            } catch (IllegalAccessException e) {
                 throw new MBeanException(e);
-            }
-            catch (InvocationTargetException e) {
+            } catch (InvocationTargetException e) {
                 throw new MBeanException(e);
-            }
-            catch (NoSuchMethodException e) {
+            } catch (NoSuchMethodException e) {
                 throw new MBeanException(e);
             }
         }
@@ -534,7 +521,7 @@ public class BaseStandardMBean extends StandardMBean
      */
     private void buildAttributes(Object obj, MBeanAttributeInfo[] attrs) throws ReflectionException {
         if (attrs != null) {
-            for (int i = 0;i < attrs.length;i++) {
+            for (int i = 0; i < attrs.length; i++) {
                 try {
                     String name = attrs[i].getName();
                     PropertyDescriptor pd = beanUtil.getPropertyDescriptor(obj, name);
@@ -544,14 +531,11 @@ public class BaseStandardMBean extends StandardMBean
                     ca.setBean(obj);
                     ca.setPropertyDescriptor(pd);
                     cachedAttributes.put(name, ca);
-                }
-                catch (NoSuchMethodException e) {
+                } catch (NoSuchMethodException e) {
                     throw new ReflectionException(e);
-                }
-                catch (IllegalAccessException e) {
+                } catch (IllegalAccessException e) {
                     throw new ReflectionException(e);
-                }
-                catch (InvocationTargetException e) {
+                } catch (InvocationTargetException e) {
                     throw new ReflectionException(e);
                 }
             }

@@ -31,12 +31,12 @@ import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
  */
 public class SUDescriptorProcessor implements EndpointProcessor {
 
-    private static final Log logger = LogFactory.getLog(SUDescriptorProcessor.class);
+    private static final Log LOG = LogFactory.getLog(SUDescriptorProcessor.class);
     
     private Registry registry;
     
-    public void init(Registry registry) {
-        this.registry = registry;
+    public void init(Registry reg) {
+        this.registry = reg;
     }
 
     /**
@@ -52,12 +52,12 @@ public class SUDescriptorProcessor implements EndpointProcessor {
                 Provides[] provides = services.getProvides();
                 if (provides != null) {
                     for (int j = 0; j < provides.length; j++) {
-                        if (provides[j].getInterfaceName() != null &&
-                            serviceEndpoint.getServiceName().equals(provides[j].getServiceName()) &&
-                            serviceEndpoint.getEndpointName().equals(provides[j].getEndpointName())) {
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("Endpoint " + serviceEndpoint + " is provided by SU " + sus[i].getName());
-                                logger.debug("Endpoint " + serviceEndpoint + " implements interface " + provides[j].getInterfaceName());
+                        if (provides[j].getInterfaceName() != null
+                                && serviceEndpoint.getServiceName().equals(provides[j].getServiceName())
+                                && serviceEndpoint.getEndpointName().equals(provides[j].getEndpointName())) {
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug("Endpoint " + serviceEndpoint + " is provided by SU " + sus[i].getName());
+                                LOG.debug("Endpoint " + serviceEndpoint + " implements interface " + provides[j].getInterfaceName());
                             }
                             serviceEndpoint.addInterface(provides[j].getInterfaceName());
                         }

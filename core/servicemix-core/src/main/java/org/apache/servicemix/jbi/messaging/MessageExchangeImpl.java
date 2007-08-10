@@ -16,14 +16,13 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.JbiConstants;
-import org.apache.servicemix.jbi.container.ActivationSpec;
-import org.apache.servicemix.jbi.framework.ComponentContextImpl;
-import org.apache.servicemix.jbi.framework.ComponentNameSpace;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.w3c.dom.Node;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.net.URI;
+import java.util.Comparator;
+import java.util.Set;
 
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.Fault;
@@ -35,82 +34,117 @@ import javax.transaction.Transaction;
 import javax.xml.namespace.QName;
 import javax.xml.transform.dom.DOMSource;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.net.URI;
-import java.util.Comparator;
-import java.util.Set;
+import org.w3c.dom.Node;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.JbiConstants;
+import org.apache.servicemix.jbi.container.ActivationSpec;
+import org.apache.servicemix.jbi.framework.ComponentContextImpl;
+import org.apache.servicemix.jbi.framework.ComponentNameSpace;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 
 /**
- * A simple message exchange declaration. This is partial, just giving us enough ME function for the doodle. This
- * doesn't add anything new to the current MessageExchange definition.
- *
+ * A simple message exchange declaration. This is partial, just giving us enough
+ * ME function for the doodle. This doesn't add anything new to the current
+ * MessageExchange definition.
+ * 
  * @version $Revision$
  */
 public abstract class MessageExchangeImpl implements MessageExchange, Externalizable {
 
+    public static final String IN = "in";
+
+    public static final String OUT = "out";
+
+    public static final String FAULT = "fault";
+
+    public static final int MAX_MSG_DISPLAY_SIZE = 1500;
+
+    public static final boolean PRESERVE_CONTENT = Boolean.getBoolean("org.apache.servicemix.preserveContent");
+
     public static final int SYNC_STATE_ASYNC = 0;
+
     public static final int SYNC_STATE_SYNC_SENT = 1;
+
     public static final int SYNC_STATE_SYNC_RECEIVED = 2;
-    
+
     /**
-     * Exchange is not transactional 
+     * Exchange is not transactional
      */
     public static final int TX_STATE_NONE = 0;
+
     /**
-     * Exchange has been enlisted in the current transaction.
-     * This means that the transaction must be commited for
-     * the exchange to be delivered.
+     * Exchange has been enlisted in the current transaction. This means that
+     * the transaction must be commited for the exchange to be delivered.
      */
     public static final int TX_STATE_ENLISTED = 1;
+
     /**
-     * Transaction is being conveyed by the exchange.
-     * The transaction context will be given to the
-     * target component.
+     * Transaction is being conveyed by the exchange. The transaction context
+     * will be given to the target component.
      */
     public static final int TX_STATE_CONVEYED = 2;
 
-    protected static final int CAN_SET_IN_MSG               = 0x00000001;
-    protected static final int CAN_SET_OUT_MSG              = 0x00000002;
-    protected static final int CAN_SET_FAULT_MSG            = 0x00000004;
-    protected static final int CAN_PROVIDER                 = 0x00000008;
-    protected static final int CAN_CONSUMER                 = 0x00000000;
-    protected static final int CAN_SEND                     = 0x00000010;
-    protected static final int CAN_STATUS_ACTIVE            = 0x00000040;
-    protected static final int CAN_STATUS_DONE              = 0x00000080;
-    protected static final int CAN_STATUS_ERROR             = 0x00000100;
-    protected static final int CAN_OWNER                    = 0x00000200;
+    protected static final int CAN_SET_IN_MSG = 0x00000001;
 
-    protected static final int STATES_CANS       = 0;
-    protected static final int STATES_NEXT_OUT   = 1;
+    protected static final int CAN_SET_OUT_MSG = 0x00000002;
+
+    protected static final int CAN_SET_FAULT_MSG = 0x00000004;
+
+    protected static final int CAN_PROVIDER = 0x00000008;
+
+    protected static final int CAN_CONSUMER = 0x00000000;
+
+    protected static final int CAN_SEND = 0x00000010;
+
+    protected static final int CAN_STATUS_ACTIVE = 0x00000040;
+
+    protected static final int CAN_STATUS_DONE = 0x00000080;
+
+    protected static final int CAN_STATUS_ERROR = 0x00000100;
+
+    protected static final int CAN_OWNER = 0x00000200;
+
+    protected static final int STATES_CANS = 0;
+
+    protected static final int STATES_NEXT_OUT = 1;
+
     protected static final int STATES_NEXT_FAULT = 2;
+
     protected static final int STATES_NEXT_ERROR = 3;
-    protected static final int STATES_NEXT_DONE  = 4;
-    
-    public static final String FAULT = "fault";
-    public static final String IN = "in";
-    public static final String OUT = "out";
-    
+
+    protected static final int STATES_NEXT_DONE = 4;
+
     private static final long serialVersionUID = -3639175136897005605L;
-    
-    private static final Log log = LogFactory.getLog(MessageExchangeImpl.class);
-    
+
+    private static final Log LOG = LogFactory.getLog(MessageExchangeImpl.class);
+
     protected ComponentContextImpl sourceContext;
+
     protected ExchangePacket packet;
+
     protected PojoMarshaler marshaler;
+
     protected int state;
+
     protected int syncState = SYNC_STATE_ASYNC;
+
     protected int txState = TX_STATE_NONE;
+
     protected int[][] states;
+
     protected MessageExchangeImpl mirror;
+
     protected transient boolean pushDeliver;
+
     protected transient Object txLock;
+
     protected transient String key;
 
     /**
      * Constructor
+     * 
      * @param exchangeId
      * @param pattern
      */
@@ -120,15 +154,15 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
         this.packet.setExchangeId(exchangeId);
         this.packet.setPattern(pattern);
     }
-    
+
     protected MessageExchangeImpl(ExchangePacket packet, int[][] states) {
         this.states = states;
         this.packet = packet;
     }
-    
+
     protected MessageExchangeImpl() {
     }
-    
+
     protected void copyFrom(MessageExchangeImpl me) {
         if (this != me) {
             this.packet = me.packet;
@@ -137,13 +171,15 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             this.mirror.state = me.mirror.state;
         }
     }
-    
+
     protected boolean can(int c) {
         return (this.states[state][STATES_CANS] & c) == c;
     }
 
     /**
-     * Returns the activation spec that was provided when the component was registered
+     * Returns the activation spec that was provided when the component was
+     * registered
+     * 
      * @return the spec
      */
     public ActivationSpec getActivationSpec() {
@@ -154,7 +190,9 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     }
 
     /**
-     * Returns the context which created the message exchange which can then be used for routing
+     * Returns the context which created the message exchange which can then be
+     * used for routing
+     * 
      * @return the context
      */
     public ComponentContextImpl getSourceContext() {
@@ -163,6 +201,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
 
     /**
      * Set the context
+     * 
      * @param sourceContext
      */
     public void setSourceContext(ComponentContextImpl sourceContext) {
@@ -173,10 +212,10 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     /**
      * @return the packet
      */
-    public ExchangePacket getPacket(){
+    public ExchangePacket getPacket() {
         return packet;
     }
-    
+
     /**
      * @return URI of pattern exchange
      */
@@ -203,7 +242,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
 
     /**
      * set the processing status
-     *
+     * 
      * @param exchangeStatus
      * @throws MessagingException
      */
@@ -217,7 +256,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
 
     /**
      * set the source of a failure
-     *
+     * 
      * @param exception
      */
     public void setError(Exception exception) {
@@ -243,7 +282,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
 
     /**
      * set the fault message for the exchange
-     *
+     * 
      * @param fault
      * @throws MessagingException
      */
@@ -261,7 +300,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
 
     /**
      * factory method for fault objects
-     *
+     * 
      * @return a new fault
      * @throws MessagingException
      */
@@ -271,7 +310,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
 
     /**
      * get a NormalizedMessage based on the message reference
-     *
+     * 
      * @param name
      * @return a NormalizedMessage
      */
@@ -289,7 +328,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
 
     /**
      * set a NormalizedMessage with a named reference
-     *
+     * 
      * @param message
      * @param name
      * @throws MessagingException
@@ -344,18 +383,18 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
      * @return the property from the exchange
      */
     public Object getProperty(String name) {
-    	if (JTA_TRANSACTION_PROPERTY_NAME.equals(name)) {
-    		return packet.getTransactionContext();
-    	} else if (JbiConstants.PERSISTENT_PROPERTY_NAME.equals(name)) {
-    		return packet.getPersistent();
-    	} else {
-    		return packet.getProperty(name);
-    	}
+        if (JTA_TRANSACTION_PROPERTY_NAME.equals(name)) {
+            return packet.getTransactionContext();
+        } else if (JbiConstants.PERSISTENT_PROPERTY_NAME.equals(name)) {
+            return packet.getPersistent();
+        } else {
+            return packet.getProperty(name);
+        }
     }
 
     /**
      * set a named property on the exchange
-     *
+     * 
      * @param name
      * @param value
      */
@@ -366,25 +405,25 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
         if (name == null) {
             throw new IllegalArgumentException("name should not be null");
         }
-    	if (JTA_TRANSACTION_PROPERTY_NAME.equals(name)) {
-    		packet.setTransactionContext((Transaction) value);
-    	} else if (JbiConstants.PERSISTENT_PROPERTY_NAME.equals(name)) {
-    		packet.setPersistent((Boolean) value);
-    	} else {
-    		packet.setProperty(name, value);
-    	}
+        if (JTA_TRANSACTION_PROPERTY_NAME.equals(name)) {
+            packet.setTransactionContext((Transaction) value);
+        } else if (JbiConstants.PERSISTENT_PROPERTY_NAME.equals(name)) {
+            packet.setPersistent((Boolean) value);
+        } else {
+            packet.setProperty(name, value);
+        }
     }
-    
+
     /**
      * @return property names
      */
-    public Set getPropertyNames(){
+    public Set getPropertyNames() {
         return packet.getPropertyNames();
     }
 
     /**
      * Set an endpoint
-     *
+     * 
      * @param endpoint
      */
     public void setEndpoint(ServiceEndpoint endpoint) {
@@ -393,7 +432,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
 
     /**
      * set a service
-     *
+     * 
      * @param name
      */
     public void setService(QName name) {
@@ -402,16 +441,16 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
 
     /**
      * set an operation
-     *
+     * 
      * @param name
      */
     public void setOperation(QName name) {
         packet.setOperationName(name);
     }
-    
+
     /**
      * set an interface
-     *
+     * 
      * @param name
      */
     public void setInterfaceName(QName name) {
@@ -431,7 +470,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     public QName getService() {
         return packet.getServiceName();
     }
-    
+
     /**
      * @return the interface name
      */
@@ -455,7 +494,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
 
     /**
      * set the transaction
-     *
+     * 
      * @param transaction
      * @throws MessagingException
      */
@@ -480,71 +519,74 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     /**
      * @return the in message
      */
-    public  NormalizedMessage getInMessage() {
+    public NormalizedMessage getInMessage() {
         return this.packet.getIn();
     }
 
     /**
      * set the in message
-     *
+     * 
      * @param message
      * @throws MessagingException
      */
-    public  void setInMessage(NormalizedMessage message) throws MessagingException {
+    public void setInMessage(NormalizedMessage message) throws MessagingException {
         setMessage(message, IN);
     }
 
     /**
      * @return the out message
      */
-    public  NormalizedMessage getOutMessage() {
+    public NormalizedMessage getOutMessage() {
         return getMessage(OUT);
     }
 
     /**
      * set the out message
-     *
+     * 
      * @param message
      * @throws MessagingException
      */
-    public  void setOutMessage(NormalizedMessage message) throws MessagingException {
+    public void setOutMessage(NormalizedMessage message) throws MessagingException {
         setMessage(message, OUT);
     }
-    
+
     /**
      * @return Returns the sourceId.
      */
     public ComponentNameSpace getSourceId() {
         return packet.getSourceId();
     }
+
     /**
-     * @param sourceId The sourceId to set.
+     * @param sourceId
+     *            The sourceId to set.
      */
     public void setSourceId(ComponentNameSpace sourceId) {
         packet.setSourceId(sourceId);
     }
-    
+
     /**
      * @return Returns the destinationId.
      */
     public ComponentNameSpace getDestinationId() {
         return packet.getDestinationId();
     }
+
     /**
-     * @param destinationId The destinationId to set.
+     * @param destinationId
+     *            The destinationId to set.
      */
     public void setDestinationId(ComponentNameSpace destinationId) {
         packet.setDestinationId(destinationId);
     }
-    
+
     public Boolean getPersistent() {
-    	return packet.getPersistent();
-    }
-    
-    public void setPersistent(Boolean persistent) {
-    	packet.setPersistent(persistent);
+        return packet.getPersistent();
     }
 
+    public void setPersistent(Boolean persistent) {
+        packet.setPersistent(persistent);
+    }
 
     public PojoMarshaler getMarshaler() {
         if (marshaler == null) {
@@ -557,15 +599,15 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
         this.marshaler = marshaler;
     }
 
-    public abstract void readExternal(ObjectInput in) throws IOException, ClassNotFoundException;        
-    
+    public abstract void readExternal(ObjectInput in) throws IOException, ClassNotFoundException;
+
     public void writeExternal(ObjectOutput out) throws IOException {
         packet.writeExternal(out);
         out.write(state);
         out.write(mirror.state);
         out.writeBoolean(can(CAN_PROVIDER));
     }
-    
+
     public void handleSend(boolean sync) throws MessagingException {
         // Check if send / sendSync is legal
         if (!can(CAN_SEND)) {
@@ -636,7 +678,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     public void setSyncState(int syncState) {
         this.syncState = syncState;
     }
-    
+
     /**
      * @return the txState
      */
@@ -645,7 +687,8 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     }
 
     /**
-     * @param txState the txState to set
+     * @param txState
+     *            the txState to set
      */
     public void setTxState(int txState) {
         this.txState = txState;
@@ -654,11 +697,11 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     public boolean isPushDelivery() {
         return this.pushDeliver;
     }
-    
+
     public void setPushDeliver(boolean b) {
         this.pushDeliver = true;
     }
-    
+
     /**
      * @return the txLock
      */
@@ -667,7 +710,8 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     }
 
     /**
-     * @param txLock the txLock to set
+     * @param txLock
+     *            the txLock to set
      */
     public void setTxLock(Object txLock) {
         this.txLock = txLock;
@@ -695,7 +739,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             if (getOperation() != null) {
                 sb.append("  operation: ").append(getOperation()).append('\n');
             }
-            SourceTransformer st = new SourceTransformer(); 
+            SourceTransformer st = new SourceTransformer();
             display("in", sb, st);
             display("out", sb, st);
             display("fault", sb, st);
@@ -707,28 +751,24 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             sb.append("]");
             return sb.toString();
         } catch (Exception e) {
-            log.trace("Error caught in toString", e);
+            LOG.trace("Error caught in toString", e);
             return super.toString();
         }
     }
-
-    public static final int maxMsgDisplaySize = 1500;
-
-    public static final boolean preserveContent = Boolean.getBoolean("org.apache.servicemix.preserveContent");
 
     private void display(String msg, StringBuffer sb, SourceTransformer st) {
         if (getMessage(msg) != null) {
             sb.append("  ").append(msg).append(": ");
             try {
                 if (getMessage(msg).getContent() != null) {
-                    if (preserveContent) {
+                    if (PRESERVE_CONTENT) {
                         sb.append(getMessage(msg).getContent().getClass());
                     } else {
                         Node node = st.toDOMNode(getMessage(msg).getContent());
                         getMessage(msg).setContent(new DOMSource(node));
                         String str = st.toString(node);
-                        if (str.length() > maxMsgDisplaySize) {
-                            sb.append(str.substring(0, maxMsgDisplaySize)).append("...");
+                        if (str.length() > MAX_MSG_DISPLAY_SIZE) {
+                            sb.append(str.substring(0, MAX_MSG_DISPLAY_SIZE)).append("...");
                         } else {
                             sb.append(str);
                         }
@@ -744,11 +784,9 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     }
 
     /**
-     * Compute a unique key for this exchange proxy.
-     * It has to be different for the two sides of the exchange, so
-     * we include the role + the exchange id.
-     * Obviously, it works, because the role never change for
-     * a given proxy.
+     * Compute a unique key for this exchange proxy. It has to be different for
+     * the two sides of the exchange, so we include the role + the exchange id.
+     * Obviously, it works, because the role never change for a given proxy.
      * 
      * @return
      */
@@ -760,10 +798,9 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     }
 
     /**
-     * Comparator that can be used to sort exchanges according to their
-     * "age" in their processing: i.e.: a newly created exchange will be
-     * more than a DONE exchange ...
-     * If the arguments are not instances of MessageExchangeImpl,
+     * Comparator that can be used to sort exchanges according to their "age" in
+     * their processing: i.e.: a newly created exchange will be more than a DONE
+     * exchange ... If the arguments are not instances of MessageExchangeImpl,
      * returns 0.
      */
     public static class AgeComparator implements Comparator<MessageExchangeImpl> {

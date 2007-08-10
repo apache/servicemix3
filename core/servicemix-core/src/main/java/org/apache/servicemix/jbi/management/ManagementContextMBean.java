@@ -40,7 +40,7 @@ public interface ManagementContextMBean extends AdminServiceMBean {
      * @return the status
      * @throws JBIException
      */
-    public String startComponent(String componentName) throws JBIException;
+    String startComponent(String componentName) throws JBIException;
 
     /**
      * Stop a Component
@@ -49,7 +49,7 @@ public interface ManagementContextMBean extends AdminServiceMBean {
      * @return the status
      * @throws JBIException
      */
-    public String stopComponent(String componentName) throws JBIException;
+    String stopComponent(String componentName) throws JBIException;
 
     /**
      * Shutdown a Component
@@ -58,5 +58,5 @@ public interface ManagementContextMBean extends AdminServiceMBean {
      * @return the status
      * @throws JBIException
      */
-    public String shutDownComponent(String componentName) throws JBIException;
+    String shutDownComponent(String componentName) throws JBIException;
 }

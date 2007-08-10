@@ -16,19 +16,20 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.w3c.dom.Node;
-
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 
+import org.w3c.dom.Node;
+
+import org.apache.servicemix.jbi.jaxp.StringSource;
+
 /**
- * Default implementation of {@link PojoMarshaler} which will pass through String
- * objects as XML content, DOM objects or Stream objects, otherwise the payload
- * is stored in a message property.
+ * Default implementation of {@link PojoMarshaler} which will pass through
+ * String objects as XML content, DOM objects or Stream objects, otherwise the
+ * payload is stored in a message property.
  * 
  * @version $Revision$
  */
@@ -50,8 +51,7 @@ public class DefaultMarshaler implements PojoMarshaler {
     public void marshal(MessageExchange exchange, NormalizedMessage message, Object body) throws MessagingException {
         if (body instanceof Source) {
             message.setContent((Source) body);
-        }
-        else {
+        } else {
             message.setProperty(BODY, body);
             Source content = asContent(message, body);
             message.setContent(content);
@@ -83,12 +83,10 @@ public class DefaultMarshaler implements PojoMarshaler {
     protected Source asContent(NormalizedMessage message, Object body) {
         if (body instanceof Source) {
             return (Source) body;
-        }
-        else if (body instanceof String) {
+        } else if (body instanceof String) {
             // lets assume String is the XML to send
             return new StringSource((String) body);
-        }
-        else if (body instanceof Node) {
+        } else if (body instanceof Node) {
             return new DOMSource((Node) body);
         }
         return null;

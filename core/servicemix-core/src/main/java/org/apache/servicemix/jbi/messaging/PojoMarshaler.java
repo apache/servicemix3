@@ -16,41 +16,47 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
-import javax.jbi.messaging.InOptionalOut;
-import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 
 /**
  * A plugin strategy which marshals an Object into and out of a JBI message.
- * This interface is used by the ServiceMixClient to marshal POJOs into and out of JBI messages.
- *
+ * This interface is used by the ServiceMixClient to marshal POJOs into and out
+ * of JBI messages.
+ * 
  * @version $Revision$
  */
 public interface PojoMarshaler {
 
     /**
-     * The key on the message to store the message body which cannot be marshaled into or out of XML easily
-     * or to provide a cache of the object representation of the object.
+     * The key on the message to store the message body which cannot be
+     * marshaled into or out of XML easily or to provide a cache of the object
+     * representation of the object.
      */
     String BODY = "org.apache.servicemix.body";
 
     /**
-     * Marshals the payload into the normalized message, typically as the content
-     * property.
-     *
-     * @param exchange the message exchange in which to marshal
-     * @param message the message in which to marshal
-     * @param body the body of the message as a POJO
+     * Marshals the payload into the normalized message, typically as the
+     * content property.
+     * 
+     * @param exchange
+     *            the message exchange in which to marshal
+     * @param message
+     *            the message in which to marshal
+     * @param body
+     *            the body of the message as a POJO
      */
     void marshal(MessageExchange exchange, NormalizedMessage message, Object body) throws MessagingException;
 
     /**
      * Unmarshals the response out of the normalized message.
-     *
-     * @param exchange the message exchange, which is an {@link InOut} or {@link InOptionalOut}
-     * @param message the output message
+     * 
+     * @param exchange
+     *            the message exchange, which is an {@link InOut} or
+     *            {@link InOptionalOut}
+     * @param message
+     *            the output message
      * @return the unmarshaled body object, extracted from the message
      * @throws MessagingException
      */

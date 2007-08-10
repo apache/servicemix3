@@ -17,7 +17,6 @@
 package org.apache.servicemix.jbi.jaxp;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
 
@@ -32,19 +31,18 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.util.FileUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-import org.xml.sax.InputSource;
 
 public class StaxSourceTest extends TestCase {
 
-    private static final Log log = LogFactory.getLog(StaxSourceTest.class);
+    private static final Log LOG = LogFactory.getLog(StaxSourceTest.class);
 
     public void testStaxSourceOnStream() throws Exception {
         InputStream is = getClass().getResourceAsStream("test.xml");
@@ -55,25 +53,27 @@ public class StaxSourceTest extends TestCase {
         StringWriter buffer = new StringWriter();
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.transform(ss, new StreamResult(buffer));
-        log.info(buffer.toString());
-        
+        LOG.info(buffer.toString());
+
         /*
-         * Attribute ordering is not preserved, so we can not compare the strings
+         * Attribute ordering is not preserved, so we can not compare the
+         * strings
          * 
-        is = getClass().getResourceAsStream("test.xml");
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        FileUtil.copyInputStream(is, baos);
-        compare(baos.toString().replaceAll("\r", ""), buffer.toString().replaceAll("\r", ""));
-        */
-        
+         * is = getClass().getResourceAsStream("test.xml");
+         * ByteArrayOutputStream baos = new ByteArrayOutputStream();
+         * FileUtil.copyInputStream(is, baos);
+         * compare(baos.toString().replaceAll("\r", ""),
+         * buffer.toString().replaceAll("\r", ""));
+         */
+
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         Document doc = dbf.newDocumentBuilder().parse(new ByteArrayInputStream(buffer.toString().getBytes()));
         checkDomResult(doc);
-        
+
         StringWriter buffer2 = new StringWriter();
         transformer.transform(new DOMSource(doc), new StreamResult(buffer2));
-        log.info(buffer2.toString());
+        LOG.info(buffer2.toString());
     }
 
     public void testStaxSourceOnDOM() throws Exception {
@@ -102,9 +102,9 @@ public class StaxSourceTest extends TestCase {
         StringSource src = new StringSource(msg);
         DOMSource dom = new SourceTransformer().toDOMSource(src);
         StreamSource stream = new SourceTransformer().toStreamSource(dom);
-        log.info(new SourceTransformer().toString(stream));
+        LOG.info(new SourceTransformer().toString(stream));
         SAXSource sax = new SourceTransformer().toSAXSource(dom);
-        log.info(new SourceTransformer().toString(sax));
+        LOG.info(new SourceTransformer().toString(sax));
     }
 
     protected void checkDomResult(Document doc) {
@@ -124,8 +124,8 @@ public class StaxSourceTest extends TestCase {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 10; j++) {
                 for (int k = 0; k < 10; k++) {
-                    expected.append((char)('0' + j));
-                    expected.append((char)('0' + k));
+                    expected.append((char) ('0' + j));
+                    expected.append((char) ('0' + k));
                     if (k != 9) {
                         expected.append(' ');
                     }
@@ -135,17 +135,18 @@ public class StaxSourceTest extends TestCase {
         }
         assertEquals(expected.toString(), txt.getTextContent());
     }
-    
+
     protected void compare(String s1, String s2) {
         char[] c1 = s1.toCharArray();
         char[] c2 = s2.toCharArray();
         for (int i = 0; i < c1.length; i++) {
             if (c1[i] != c2[i]) {
-                fail("Expected '" + (int)c2[i] + "' but found '" + (int)c1[i] + "' at index " + i + ". Expected '" + build(c2, i) + "' but found '" + build(c1, i) + "'.");
+                fail("Expected '" + (int) c2[i] + "' but found '" + (int) c1[i] + "' at index " + i + ". Expected '" + build(c2, i)
+                                + "' but found '" + build(c1, i) + "'.");
             }
         }
     }
-    
+
     protected String build(char[] c, int i) {
         int min = Math.max(0, i - 10);
         int cnt = Math.min(20, c.length - min);

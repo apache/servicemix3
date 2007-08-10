@@ -16,18 +16,15 @@
  */
 package org.apache.servicemix.expression;
 
-import org.apache.servicemix.expression.Expression;
-import org.apache.servicemix.expression.JaxenStringXPathExpression;
-import org.apache.servicemix.expression.XMLBeansStringXPathExpression;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.messaging.InOnlyImpl;
-import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
-import org.apache.servicemix.jbi.messaging.NormalizedMessageImpl;
-
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 
 import junit.framework.TestCase;
+
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.messaging.InOnlyImpl;
+import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
+import org.apache.servicemix.jbi.messaging.NormalizedMessageImpl;
 
 /**
  * @version $Revision$

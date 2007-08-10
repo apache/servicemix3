@@ -20,7 +20,10 @@ import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
 
-public class EndpointSupport {
+public final class EndpointSupport {
+    
+    private EndpointSupport() {
+    }
 
     public static String getKey(QName service, String endpoint) {
         StringBuffer sb = new StringBuffer();

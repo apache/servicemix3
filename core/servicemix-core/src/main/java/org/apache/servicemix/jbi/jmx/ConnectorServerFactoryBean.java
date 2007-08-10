@@ -64,17 +64,18 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
      */
     public static final int REGISTRATION_REPLACE_EXISTING = 2;
 
+    private static final Constants CONSTANTS = new Constants(ConnectorServerFactoryBean.class);
 
     private Log log = LogFactory.getLog(ConnectorServerFactoryBean.class);
-    private org.springframework.jmx.support.ConnectorServerFactoryBean csfb = new org.springframework.jmx.support.ConnectorServerFactoryBean();
+    private org.springframework.jmx.support.ConnectorServerFactoryBean csfb = 
+                    new org.springframework.jmx.support.ConnectorServerFactoryBean();
     private String serviceUrl = org.springframework.jmx.support.ConnectorServerFactoryBean.DEFAULT_SERVICE_URL;
-    private boolean daemon = false;
-    private boolean threaded = false;
+    private boolean daemon;
+    private boolean threaded;
     private Map environment;
     private Object objectName;
     private int registrationBehavior = REGISTRATION_FAIL_ON_EXISTING;
     private MBeanServer server;
-    private static final Constants constants = new Constants(ConnectorServerFactoryBean.class);
     
 
     /**
@@ -141,11 +142,11 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
      * @see #REGISTRATION_FAIL_ON_EXISTING
      * @see #REGISTRATION_IGNORE_EXISTING
      * @see #REGISTRATION_REPLACE_EXISTING
-     * @param registrationBehavior
+     * @param behavior
      * @see org.springframework.jmx.support.MBeanRegistrationSupport#setRegistrationBehaviorName(java.lang.String)
      */
-    public void setRegistrationBehaviorName(String registrationBehavior) {
-        setRegistrationBehavior(constants.asNumber(registrationBehavior).intValue());
+    public void setRegistrationBehaviorName(String behavior) {
+        setRegistrationBehavior(CONSTANTS.asNumber(behavior).intValue());
     }
 
     /**

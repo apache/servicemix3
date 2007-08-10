@@ -16,55 +16,56 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
-import javax.jbi.messaging.InOut;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 
+import javax.jbi.messaging.InOut;
+
 /**
  * InOut message exchange.
- *
+ * 
  * @version $Revision$
  */
 public class InOutImpl extends MessageExchangeImpl implements InOut {
-    
+
     private static final long serialVersionUID = -1639492357707831113L;
 
-    private static int[][] STATES_CONSUMER = {
-        { CAN_CONSUMER + CAN_OWNER + CAN_SET_IN_MSG + CAN_SEND + CAN_STATUS_ACTIVE, 1, -1, -1, -1},
-        { CAN_CONSUMER, 2, 2, 3, 3 },
-        { CAN_CONSUMER + CAN_OWNER + CAN_SEND + CAN_STATUS_ERROR + CAN_STATUS_DONE, -1, -1, 4, 4},
-        { CAN_CONSUMER + CAN_OWNER, -1, -1, -1, -1 },
-        { CAN_CONSUMER, -1, -1, -1, -1 },
+    private static final int[][] STATES_CONSUMER = {
+        {CAN_CONSUMER + CAN_OWNER + CAN_SET_IN_MSG + CAN_SEND + CAN_STATUS_ACTIVE, 1, -1, -1, -1 },
+        {CAN_CONSUMER, 2, 2, 3, 3 },
+        {CAN_CONSUMER + CAN_OWNER + CAN_SEND + CAN_STATUS_ERROR + CAN_STATUS_DONE, -1, -1, 4, 4 },
+        {CAN_CONSUMER + CAN_OWNER, -1, -1, -1, -1 }, 
+        {CAN_CONSUMER, -1, -1, -1, -1 }
     };
-    
-    private static int[][] STATES_PROVIDER = {
-        { CAN_PROVIDER, 1, -1, -1 },
-        { CAN_PROVIDER + CAN_OWNER + CAN_SET_OUT_MSG + CAN_SET_FAULT_MSG + CAN_SEND + CAN_STATUS_ACTIVE + CAN_STATUS_ERROR, 2, 2, 3, -1 },
-        { CAN_PROVIDER, -1, -1, 4, 4 },
-        { CAN_PROVIDER, -1, -1, -1, -1 },
-        { CAN_PROVIDER + CAN_OWNER, -1, -1, -1, -1 },
+
+    private static final int[][] STATES_PROVIDER = { 
+        {CAN_PROVIDER, 1, -1, -1 },
+        {CAN_PROVIDER + CAN_OWNER + CAN_SET_OUT_MSG + CAN_SET_FAULT_MSG + CAN_SEND
+                                                    + CAN_STATUS_ACTIVE + CAN_STATUS_ERROR, 2, 2, 3, -1 }, 
+        {CAN_PROVIDER, -1, -1, 4, 4 }, 
+        {CAN_PROVIDER, -1, -1, -1, -1 },
+        {CAN_PROVIDER + CAN_OWNER, -1, -1, -1, -1 }
     };
-    
+
     public InOutImpl() {
     }
-    
+
     public InOutImpl(String exchangeId) {
         super(exchangeId, MessageExchangeSupport.IN_OUT, STATES_CONSUMER);
         this.mirror = new InOutImpl(this);
     }
-    
+
     public InOutImpl(ExchangePacket packet) {
         super(packet, STATES_CONSUMER);
         this.mirror = new InOutImpl(this);
     }
-    
+
     protected InOutImpl(InOutImpl mep) {
         super(mep.packet, STATES_PROVIDER);
         this.mirror = mep;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {        
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         this.packet = new ExchangePacket();
         this.packet.readExternal(in);
         if (this.packet.in != null) {

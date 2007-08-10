@@ -16,11 +16,11 @@
  */
 package org.apache.servicemix.jbi.nmr.flow;
 
-import org.apache.servicemix.jbi.nmr.Broker;
-
 import javax.jbi.JBIException;
 import javax.jbi.management.LifeCycleMBean;
 import javax.jbi.messaging.MessageExchange;
+
+import org.apache.servicemix.jbi.nmr.Broker;
 
 /**
  * A Flow provides different dispatch policies within the NMR
@@ -34,49 +34,49 @@ public interface Flow  extends LifeCycleMBean {
      * @param broker
      * @throws JBIException
      */
-    public void init(Broker broker) throws JBIException;
+    void init(Broker broker) throws JBIException;
     
     /**
      * The description of Flow
      * @return the description
      */
-    public String getDescription();
+    String getDescription();
     
     /**
      * The unique name of Flow
      * @return the name
      */
-    public String getName();
+    String getName();
     
     /**
      * Distribute an ExchangePacket
      * @param packet
      * @throws JBIException
      */
-    public void send(MessageExchange me) throws JBIException;
+    void send(MessageExchange me) throws JBIException;
     
     /**
      * suspend the flow to prevent any message exchanges
      */
-    public void suspend();
+    void suspend();
     
     
     /**
      * resume message exchange processing
      */
-    public void resume();
+    void resume();
     
     /**
      * Get the broker associated with this flow
      *
      */
-    public Broker getBroker();
+    Broker getBroker();
     
     /**
      * Check if the flow can support the requested QoS for this exchange
      * @param me the exchange to check
      * @return true if this flow can handle the given exchange
      */
-    public boolean canHandle(MessageExchange me);
+    boolean canHandle(MessageExchange me);
         
 }

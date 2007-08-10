@@ -24,9 +24,9 @@ import org.apache.servicemix.jbi.nmr.flow.st.STFlow;
  */
 public class StFlowTransactionTest extends AbstractTransactionTest {
 
-	protected Flow createFlow() {
-		return new STFlow();
-	}
+    protected Flow createFlow() {
+        return new STFlow();
+    }
 
     public void testAsyncSendSyncReceive() throws Exception {
         try {

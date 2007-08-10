@@ -26,8 +26,6 @@ import junit.framework.TestCase;
 import org.apache.commons.io.IOUtils;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.util.ByteArrayDataSource;
-import org.apache.servicemix.jbi.util.MessageUtil;
 
 public class MessageCopierTest extends TestCase {
 

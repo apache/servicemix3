@@ -235,6 +235,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
             try {
                 sa.shutDown();
             } catch (Exception e) {
+                // Ignore
             }
 
             String result = null;
@@ -468,33 +469,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         // Check all SUs requirements
         ServiceUnit[] sus = sa.getServiceUnits();
         if (sus != null) {
-            for (int i = 0; i < sus.length; i++) {
-                String suName = sus[i].getIdentification().getName();
-                String artifact = sus[i].getTarget().getArtifactsZip();
-                String componentName = sus[i].getTarget().getComponentName();
-                File artifactFile = new File(saDirectory, artifact);
-                if (!artifactFile.exists()) {
-                    throw ManagementSupport.failure("deploy", "Artifact " + artifact + " not found for service unit " + suName);
-                }
-                ComponentMBeanImpl lcc = container.getComponent(componentName);
-                if (lcc == null) {
-                    throw ManagementSupport.failure("deploy", "Target component " + componentName
-                                                                + " for service unit " + suName + " is not installed");
-                }
-                if (!lcc.isStarted()) {
-                    throw ManagementSupport.failure("deploy", "Target component " + componentName
-                                                                + " for service unit " + suName + " is not started");
-                }
-                if (lcc.getServiceUnitManager() == null) {
-                    throw ManagementSupport.failure("deploy", "Target component " + componentName
-                                                                + " for service unit " + suName + " does not accept deployments");
-                }
-                // TODO: check duplicates here ?
-                if (isDeployedServiceUnit(componentName, suName)) {
-                    throw ManagementSupport.failure("deploy", "Service unit " + suName
-                                                                + " is already deployed on component " + componentName);
-                }
-            }
+            checkSus(saDirectory, sus);
         }
         // Everything seems ok, so deploy all SUs
         int nbSuccess = 0;
@@ -579,6 +554,36 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
                 return ManagementSupport.createWarningMessage("deploy", "Failed to deploy some service units", componentResults);
             } else {
                 return ManagementSupport.createSuccessMessage("deploy", componentResults);
+            }
+        }
+    }
+
+    protected void checkSus(File saDirectory, ServiceUnit[] sus) throws Exception {
+        for (int i = 0; i < sus.length; i++) {
+            String suName = sus[i].getIdentification().getName();
+            String artifact = sus[i].getTarget().getArtifactsZip();
+            String componentName = sus[i].getTarget().getComponentName();
+            File artifactFile = new File(saDirectory, artifact);
+            if (!artifactFile.exists()) {
+                throw ManagementSupport.failure("deploy", "Artifact " + artifact + " not found for service unit " + suName);
+            }
+            ComponentMBeanImpl lcc = container.getComponent(componentName);
+            if (lcc == null) {
+                throw ManagementSupport.failure("deploy", "Target component " + componentName
+                                                            + " for service unit " + suName + " is not installed");
+            }
+            if (!lcc.isStarted()) {
+                throw ManagementSupport.failure("deploy", "Target component " + componentName
+                                                            + " for service unit " + suName + " is not started");
+            }
+            if (lcc.getServiceUnitManager() == null) {
+                throw ManagementSupport.failure("deploy", "Target component " + componentName
+                                                            + " for service unit " + suName + " does not accept deployments");
+            }
+            // TODO: check duplicates here ?
+            if (isDeployedServiceUnit(componentName, suName)) {
+                throw ManagementSupport.failure("deploy", "Service unit " + suName
+                                                            + " is already deployed on component " + componentName);
             }
         }
     }
@@ -689,26 +694,28 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         LOG.info("Restoring service assemblies");
         // walk through deployed SA's
         File top = environmentContext.getServiceAssembliesDir();
-        if (top != null && top.exists() && top.isDirectory()) {
-            File[] files = top.listFiles();
-            if (files != null) {
-                // Initialize all assemblies
-                for (int i = 0; i < files.length; i++) {
-                    if (files[i].isDirectory()) {
-                        String assemblyName = files[i].getName();
-                        try {
-                            ServiceAssemblyEnvironment env = environmentContext.getServiceAssemblyEnvironment(assemblyName);
-                            Descriptor root = DescriptorFactory.buildDescriptor(env.getInstallDir());
-                            if (root != null) {
-                                ServiceAssembly sa = root.getServiceAssembly();
-                                if (sa != null && sa.getIdentification() != null) {
-                                    registry.registerServiceAssembly(sa, env);
-                                }
-                            }
-                        } catch (Exception e) {
-                            LOG.error("Failed to initialized service assembly: " + assemblyName, e);
+        if (top == null || !top.exists() || !top.isDirectory()) {
+            return;
+        }
+        File[] files = top.listFiles();
+        if (files == null) {
+            return;
+        }
+        // Initialize all assemblies
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isDirectory()) {
+                String assemblyName = files[i].getName();
+                try {
+                    ServiceAssemblyEnvironment env = environmentContext.getServiceAssemblyEnvironment(assemblyName);
+                    Descriptor root = DescriptorFactory.buildDescriptor(env.getInstallDir());
+                    if (root != null) {
+                        ServiceAssembly sa = root.getServiceAssembly();
+                        if (sa != null && sa.getIdentification() != null) {
+                            registry.registerServiceAssembly(sa, env);
                         }
                     }
+                } catch (Exception e) {
+                    LOG.error("Failed to initialized service assembly: " + assemblyName, e);
                 }
             }
         }

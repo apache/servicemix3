@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
@@ -31,6 +33,12 @@ import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.ObjectName;
 import javax.xml.namespace.QName;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,14 +59,6 @@ import org.apache.servicemix.jbi.servicedesc.DynamicEndpoint;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.servicemix.jbi.util.WSAddressingConstants;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Registry - state infomation including running state, SA's deployed etc.
@@ -67,7 +67,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class Registry extends BaseSystemService implements RegistryMBean {
     
-    private static final Log log = LogFactory.getLog(Registry.class);
+    private static final Log LOG = LogFactory.getLog(Registry.class);
+    
     private ComponentRegistry componentRegistry;
     private EndpointRegistry endpointRegistry;
     private SubscriptionRegistry subscriptionRegistry;
@@ -384,7 +385,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
                 }
             }
         } catch (Exception e) {
-            log.debug("Unable to resolve EPR: " + e);
+            LOG.debug("Unable to resolve EPR: " + e);
         }
         return null;
     }
@@ -563,7 +564,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         InternalEndpoint endpoint = new InternalEndpoint(context.getComponentNameSpace(), endpointName, service);
         SubscriptionSpec[] specs = as.getSubscriptions();
         if (specs != null) {
-            for (int i =0; i<specs.length; i++) {
+            for (int i = 0; i < specs.length; i++) {
                 registerSubscription(context, specs[i], endpoint);
             }
         }
@@ -577,8 +578,8 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     public void deregisterSubscriptions(ComponentContextImpl context, ActivationSpec as) {
         SubscriptionSpec[] specs = as.getSubscriptions();
         if (specs != null) {
-            for (int i =0; i<specs.length; i++) {
-                deregisterSubscription(context,specs[i]);
+            for (int i = 0; i < specs.length; i++) {
+                deregisterSubscription(context, specs[i]);
             }
         }
     }
@@ -591,7 +592,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     public void registerSubscription(ComponentContextImpl context, SubscriptionSpec subscription, ServiceEndpoint endpoint) {
         InternalEndpoint sei = (InternalEndpoint)endpoint;
         subscription.setName(context.getComponentNameSpace());
-        subscriptionRegistry.registerSubscription(subscription,sei);
+        subscriptionRegistry.registerSubscription(subscription, sei);
     }
 
     /**
@@ -651,7 +652,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @param name
      * @return the ServiceAssembly or null if it doesn't exist
      */
-    public ServiceAssemblyLifeCycle getServiceAssembly(String saName){
+    public ServiceAssemblyLifeCycle getServiceAssembly(String saName) {
         return serviceAssemblyRegistry.getServiceAssembly(saName);
     }
 
@@ -754,7 +755,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
             ObjectName objectName = getContainer().getManagementContext().createObjectName(sulc);
             getContainer().getManagementContext().registerMBean(objectName, sulc, ServiceUnitMBean.class);
         } catch (JMException e) {
-            log.error("Could not register MBean for service unit", e);
+            LOG.error("Could not register MBean for service unit", e);
         }
         return sulc.getKey();
     }
@@ -770,7 +771,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
             try {
                 getContainer().getManagementContext().unregisterMBean(sulc);
             } catch (JBIException e) {
-                log.error("Could not unregister MBean for service unit", e);
+                LOG.error("Could not unregister MBean for service unit", e);
             }
         }
     }
@@ -783,7 +784,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
             ObjectName objectName = getContainer().getManagementContext().createObjectName(library);
             getContainer().getManagementContext().registerMBean(objectName, library, SharedLibraryMBean.class);
         } catch (JMException e) {
-            log.error("Could not register MBean for service unit", e);
+            LOG.error("Could not register MBean for service unit", e);
         }
         checkPendingComponents();
     }
@@ -797,7 +798,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
                 getContainer().getManagementContext().unregisterMBean(sl);
                 sl.dispose();
             } catch (JBIException e) {
-                log.error("Could not unregister MBean for shared library", e);
+                LOG.error("Could not unregister MBean for shared library", e);
             }
         }
     }
@@ -864,7 +865,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
                     sa.restore();
                     pendingAssemblies.remove(sa);
                 } catch (Exception e) {
-                    log.error("Error trying to restore service assembly state", e);
+                    LOG.error("Error trying to restore service assembly state", e);
                 }
             }
         }
@@ -900,7 +901,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     
     public ObjectName[] getEndpointNames() {
         List<ObjectName> tmpList = new ArrayList<ObjectName>();
-        for (Endpoint ep : container.getRegistry().getEndpointRegistry().getEndpointMBeans()){
+        for (Endpoint ep : container.getRegistry().getEndpointRegistry().getEndpointMBeans()) {
             tmpList.add(container.getManagementContext().createObjectName(ep));
         }
         return tmpList.toArray(new ObjectName[tmpList.size()]);
@@ -908,7 +909,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
 
     public ObjectName[] getServiceAssemblyNames() {
         List<ObjectName> tmpList = new ArrayList<ObjectName>();
-        for (ServiceAssemblyLifeCycle sa : getServiceAssemblies()){
+        for (ServiceAssemblyLifeCycle sa : getServiceAssemblies()) {
             tmpList.add(container.getManagementContext().createObjectName(sa));
         }
         return tmpList.toArray(new ObjectName[tmpList.size()]);

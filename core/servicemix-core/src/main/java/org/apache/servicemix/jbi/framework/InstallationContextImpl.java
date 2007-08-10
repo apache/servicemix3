@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.jbi.component.Bootstrap;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.component.InstallationContext;
 
@@ -49,9 +48,9 @@ public class InstallationContextImpl implements InstallationContext {
     
     public InstallationContextImpl(Component descriptor) {
         this.descriptor = descriptor;
-        if (descriptor.getComponentClassPath() != null &&
-            descriptor.getComponentClassPath().getPathElements() != null &&
-            descriptor.getComponentClassPath().getPathElements().length > 0) {
+        if (descriptor.getComponentClassPath() != null
+                && descriptor.getComponentClassPath().getPathElements() != null
+                && descriptor.getComponentClassPath().getPathElements().length > 0) {
             String[] elems = descriptor.getComponentClassPath().getPathElements();
             for (int i = 0; i < elems.length; i++) {
                 if (File.separatorChar == '\\') {
@@ -142,7 +141,7 @@ public class InstallationContextImpl implements InstallationContext {
      * 
      * @return Return the install root
      */
-    public File getInstallRootAsDir(){
+    public File getInstallRootAsDir() {
         return installRoot;
     }
 
@@ -201,13 +200,13 @@ public class InstallationContextImpl implements InstallationContext {
         }
         for (Iterator iter = classPathElements.iterator(); iter.hasNext();) {
             Object obj = iter.next();
-            if (obj instanceof String == false) {
+            if (!(obj instanceof String)) {
                 throw new IllegalArgumentException("classPathElements must contain element of type String");
             }
             String element = (String) obj;
             String sep = File.separator.equals("\\") ? "/" : "\\";
             int offset = element.indexOf(sep);
-            if ( offset > -1 ) {
+            if (offset > -1) {
                 throw new IllegalArgumentException("classPathElements contains an invalid file separator '" + sep + "'"); 
             }
             File f = new File((String) element);

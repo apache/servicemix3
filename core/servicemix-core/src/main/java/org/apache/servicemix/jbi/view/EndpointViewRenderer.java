@@ -16,12 +16,12 @@
  */
 package org.apache.servicemix.jbi.view;
 
+import javax.jbi.servicedesc.ServiceEndpoint;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.event.EndpointEvent;
 import org.apache.servicemix.jbi.event.EndpointListener;
-
-import javax.jbi.servicedesc.ServiceEndpoint;
 
 /**
  * A base class for renderings of endpoints which can re-render whenever something
@@ -31,7 +31,7 @@ import javax.jbi.servicedesc.ServiceEndpoint;
  */
 public abstract class EndpointViewRenderer implements EndpointListener {
 
-    private static final Log log = LogFactory.getLog(EndpointViewRenderer.class);
+    private static final Log LOG = LogFactory.getLog(EndpointViewRenderer.class);
     
     private boolean dirty;
     private boolean rerenderOnChange = true;
@@ -96,9 +96,8 @@ public abstract class EndpointViewRenderer implements EndpointListener {
         if (rerenderOnChange) {
             try {
                 render();
-            }
-            catch (Exception e) {
-                log.warn("Failed to render view: " + e, e);
+            } catch (Exception e) {
+                LOG.warn("Failed to render view: " + e, e);
             }
         }
     }

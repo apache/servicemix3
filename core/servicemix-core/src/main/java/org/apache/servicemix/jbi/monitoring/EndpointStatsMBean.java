@@ -23,31 +23,31 @@ public interface EndpointStatsMBean {
      * 
      * @return inbound count
      */
-    public long getInboundExchangeCount();
+    long getInboundExchangeCount();
 
     /**
      * Get the Inbound MessageExchange rate (number/sec)
      * 
      * @return the inbound exchange rate
      */
-    public double getInboundExchangeRate();
+    double getInboundExchangeRate();
 
     /**
      * Get the Outbound MessageExchange count
      * 
      * @return outbound count
      */
-    public long getOutboundExchangeCount();
+    long getOutboundExchangeCount();
 
     /**
      * Get the Outbound MessageExchange rate (number/sec)
      * 
      * @return the outbound exchange rate
      */
-    public double getOutboundExchangeRate();
+    double getOutboundExchangeRate();
     
     /**
      * reset all stats counters
      */
-    public void reset();
+    void reset();
 }

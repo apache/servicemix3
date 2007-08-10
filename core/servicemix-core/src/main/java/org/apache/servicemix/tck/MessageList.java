@@ -16,29 +16,29 @@
  */
 package org.apache.servicemix.tck;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+
+import junit.framework.Assert;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.Message;
 import org.apache.servicemix.client.MessageListener;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import junit.framework.Assert;
-
 /**
  * A simple container for performing testing and rendezvous style code.
- *
+ * 
  * @version $Revision$
  */
 public class MessageList extends Assert implements MessageListener {
-	
-	private static final Log log = LogFactory.getLog(MessageList.class); 
-	
+
+    private static final Log LOG = LogFactory.getLog(MessageList.class);
+
     private List messages = new ArrayList();
 
     private Object semaphore;
@@ -93,7 +93,7 @@ public class MessageList extends Assert implements MessageListener {
     }
 
     public void waitForMessagesToArrive(int messageCount, long baseTimeout) {
-        log.info("Waiting for message to arrive");
+        LOG.info("Waiting for message to arrive");
 
         long start = System.currentTimeMillis();
 
@@ -105,20 +105,19 @@ public class MessageList extends Assert implements MessageListener {
                 synchronized (semaphore) {
                     semaphore.wait(4000);
                 }
-            }
-            catch (InterruptedException e) {
-            	log.info("Caught: " + e);
+            } catch (InterruptedException e) {
+                LOG.info("Caught: " + e);
             }
         }
         long end = System.currentTimeMillis() - start;
 
-        log.info("End of wait for " + end + " millis");
+        LOG.info("End of wait for " + end + " millis");
     }
 
-
     /**
-     * Performs a testing assertion that the correct number of messages have been received
-     *
+     * Performs a testing assertion that the correct number of messages have
+     * been received
+     * 
      * @param messageCount
      */
     public void assertMessagesReceived(int messageCount) {

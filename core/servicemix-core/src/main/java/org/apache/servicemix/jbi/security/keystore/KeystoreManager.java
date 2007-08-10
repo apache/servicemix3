@@ -16,17 +16,14 @@
  */
 package org.apache.servicemix.jbi.security.keystore;
 
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableKeyException;
+import java.security.GeneralSecurityException;
 
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocketFactory;
 
 /**
- * Based on http://svn.apache.org/repos/asf/geronimo/trunk/modules/management/src/java/org/apache/geronimo/management/geronimo/KeystoreManager.java
+ * Based on http://svn.apache.org/repos/asf/geronimo/trunk/modules/management/
+ *                      src/java/org/apache/geronimo/management/geronimo/KeystoreManager.java
  * 
  */
 public interface KeystoreManager {
@@ -55,14 +52,9 @@ public interface KeystoreManager {
      *                     keystore cannot be used because it has not been
      *                     unlocked.
      */
-    public SSLServerSocketFactory createSSLServerFactory(
-                                        String provider,
-                                        String protocol, 
-                                        String algorithm,
-                                        String keyStore, 
-                                        String keyAlias, 
-                                        String trustStore)
-            throws KeystoreIsLocked, KeyIsLocked, NoSuchAlgorithmException, UnrecoverableKeyException, KeyStoreException, KeyManagementException, NoSuchProviderException;
+    SSLServerSocketFactory createSSLServerFactory(String provider, String protocol, 
+                                                  String algorithm, String keyStore, 
+                                                  String keyAlias, String trustStore) throws GeneralSecurityException;
 
     /**
      * Gets a SocketFactory using one Keystore to access the private key
@@ -85,14 +77,10 @@ public interface KeystoreManager {
      * @throws KeyIsLocked Occurs when the requested private key in the key
      *                     keystore cannot be used because it has not been
      *                     unlocked.
+     * @throws GeneralSecurityException 
      */
-    public SSLSocketFactory createSSLFactory(
-                                        String provider, 
-                                        String protocol, 
-                                        String algorithm,
-                                        String keyStore, 
-                                        String keyAlias, 
-                                        String trustStore)
-            throws KeystoreIsLocked, KeyIsLocked, NoSuchAlgorithmException, UnrecoverableKeyException, KeyStoreException, KeyManagementException, NoSuchProviderException;
+    SSLSocketFactory createSSLFactory(String provider, String protocol, 
+                                      String algorithm, String keyStore, 
+                                      String keyAlias, String trustStore) throws GeneralSecurityException;
 
 }

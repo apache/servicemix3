@@ -109,7 +109,7 @@ public class MessageCopier {
         to.setSecuritySubject(from.getSecuritySubject());
     }
     
-    private static void copyContent(NormalizedMessage from, NormalizedMessage to) throws MessagingException{
+    private static void copyContent(NormalizedMessage from, NormalizedMessage to) throws MessagingException {
         String str = null; 
         try {
             str = new SourceTransformer().toString(from.getContent());
@@ -127,11 +127,11 @@ public class MessageCopier {
         }
     }
     
-    private static void copyAttachments(NormalizedMessage from, NormalizedMessage to) throws MessagingException{
+    private static void copyAttachments(NormalizedMessage from, NormalizedMessage to) throws MessagingException {
         for (Object name : from.getAttachmentNames()) {
             DataHandler handler = from.getAttachment((String)name);
             DataSource source = handler.getDataSource();
-            if (source instanceof ByteArrayDataSource == false) {
+            if (!(source instanceof ByteArrayDataSource)) {
                 DataSource copy = copyDataSource(source);
                 handler = new DataHandler(copy);
             }

@@ -25,7 +25,7 @@ import org.apache.tools.ant.BuildException;
  * @version $Revision$
  */
 public class ShutDownComponentTask extends JbiTask {
-    
+
     private String name;
 
     /**
@@ -36,7 +36,8 @@ public class ShutDownComponentTask extends JbiTask {
     }
 
     /**
-     * @param name The component name to set.
+     * @param name
+     *            The component name to set.
      */
     public void setName(String name) {
         this.name = name;
@@ -53,5 +54,5 @@ public class ShutDownComponentTask extends JbiTask {
         }
         acs.shutdownComponent(name);
     }
-    
+
 }

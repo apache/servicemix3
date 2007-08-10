@@ -40,159 +40,184 @@ import org.apache.tools.ant.Task;
  * @version $Revision$
  */
 public abstract class JbiTask extends Task {
-    
+
     private String serverProtocol = "rmi";
+
     private String host = "localhost";
+
     private String containerName = JBIContainer.DEFAULT_NAME;
+
     private String jmxDomainName = ManagementContext.DEFAULT_DOMAIN;
+
     private int port = ManagementContext.DEFAULT_CONNECTOR_PORT;
+
     private String jndiPath = ManagementContext.DEFAULT_CONNECTOR_PATH;
+
     private String username;
+
     private String password;
+
     private boolean failOnError = true;
+
     private JMXConnector jmxConnector;
-    
-    
+
     /**
      * Get the JMXServiceURL - built from the protocol used and host names
+     * 
      * @return the url
      */
     public JMXServiceURL getServiceURL() throws MalformedURLException {
         JMXServiceURL url = null;
-        url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://" 
-                + host + ":" + port + jndiPath);
+        url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://" + host + ":" + port + jndiPath);
         return url;
     }
-    
+
     /**
      * Get a JMXConnector from a url
+     * 
      * @param url
      * @return the JMXConnector
      * @throws IOException
      */
-    public JMXConnector getJMXConnector (JMXServiceURL url) throws IOException {
-        String[] credentials = new String[] { getUsername(), getPassword() };
-        Map<String,Object> environment = new HashMap<String,Object>();
+    public JMXConnector getJMXConnector(JMXServiceURL url) throws IOException {
+        String[] credentials = new String[] {getUsername(), getPassword() };
+        Map<String, Object> environment = new HashMap<String, Object>();
         environment.put(JMXConnector.CREDENTIALS, credentials);
         return JMXConnectorFactory.connect(url, environment);
     }
-    
+
     /**
      * initialize the connection
+     * 
      * @throws BuildException
      */
     public void connect() throws IOException {
         this.jmxConnector = getJMXConnector(getServiceURL());
     }
-    
-    
+
     /**
      * close any internal remote connections
-     *
+     * 
      */
-    public void close(){
-        if (this.jmxConnector != null){
+    public void close() {
+        if (this.jmxConnector != null) {
             try {
                 jmxConnector.close();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 log("Caught an error closing the jmxConnector" + e.getMessage(), Project.MSG_WARN);
             }
         }
     }
-    
-    
+
     /**
-     * Get a servicemix internal system management instance, from it's class name
+     * Get a servicemix internal system management instance, from it's class
+     * name
+     * 
      * @param systemClass
      * @return the object name
      */
-    protected  ObjectName getObjectName (Class systemClass){
+    protected ObjectName getObjectName(Class systemClass) {
         return ManagementContext.getSystemObjectName(jmxDomainName, containerName, systemClass);
     }
-    
-        
+
     /**
      * Get the AdminCommandsService
+     * 
      * @return the main administration service MBean
      * @throws IOException
      */
-    public AdminCommandsServiceMBean getAdminCommandsService() throws IOException{
+    public AdminCommandsServiceMBean getAdminCommandsService() throws IOException {
         ObjectName objectName = getObjectName(AdminCommandsServiceMBean.class);
-        
-        return (AdminCommandsServiceMBean) MBeanServerInvocationHandler.newProxyInstance(jmxConnector.getMBeanServerConnection(), objectName,
-                AdminCommandsServiceMBean.class, true);
+
+        return (AdminCommandsServiceMBean) MBeanServerInvocationHandler.newProxyInstance(jmxConnector.getMBeanServerConnection(),
+                        objectName, AdminCommandsServiceMBean.class, true);
     }
-    
+
     /**
      * @return Returns the containerName.
      */
     public String getContainerName() {
         return containerName;
     }
+
     /**
-     * @param containerName The containerName to set.
+     * @param containerName
+     *            The containerName to set.
      */
     public void setContainerName(String containerName) {
         this.containerName = containerName;
     }
+
     /**
      * @return Returns the jmxDomainName.
      */
     public String getJmxDomainName() {
         return jmxDomainName;
     }
+
     /**
-     * @param jmxDomainName The jmxDomainName to set.
+     * @param jmxDomainName
+     *            The jmxDomainName to set.
      */
     public void setJmxDomainName(String jmxDomainName) {
         this.jmxDomainName = jmxDomainName;
     }
+
     /**
      * @return Returns the jndiPath.
      */
     public String getJndiPath() {
         return jndiPath;
     }
+
     /**
-     * @param jndiPath The jndiPath to set.
+     * @param jndiPath
+     *            The jndiPath to set.
      */
     public void setJndiPath(String jndiPath) {
         this.jndiPath = jndiPath;
     }
+
     /**
      * @return Returns the namingHost.
      */
     public String getHost() {
         return host;
     }
+
     /**
-     * @param host The namingHost to set.
+     * @param host
+     *            The namingHost to set.
      */
     public void setHost(String host) {
         this.host = host;
     }
+
     /**
      * @return Returns the namingPort.
      */
     public int getPort() {
         return port;
     }
+
     /**
-     * @param port The namingPort to set.
+     * @param port
+     *            The namingPort to set.
      */
     public void setPort(int port) {
         this.port = port;
     }
-    
+
     /**
      * @return Returns the serverProtocol.
      */
     public String getServerProtocol() {
         return serverProtocol;
     }
+
     /**
-     * @param serverProtocol The serverProtocol to set.
+     * @param serverProtocol
+     *            The serverProtocol to set.
      */
     public void setServerProtocol(String serverProtocol) {
         this.serverProtocol = serverProtocol;
@@ -206,7 +231,8 @@ public abstract class JbiTask extends Task {
     }
 
     /**
-     * @param password The passwd to set.
+     * @param password
+     *            The passwd to set.
      */
     public void setPassword(String password) {
         this.password = password;
@@ -220,12 +246,13 @@ public abstract class JbiTask extends Task {
     }
 
     /**
-     * @param username The username to set.
+     * @param username
+     *            The username to set.
      */
     public void setUsername(String username) {
         this.username = username;
     }
-    
+
     /**
      * @return Returns the failOnError.
      */
@@ -234,12 +261,13 @@ public abstract class JbiTask extends Task {
     }
 
     /**
-     * @param failOnError The failOnError to set.
+     * @param failOnError
+     *            The failOnError to set.
      */
     public void setFailOnError(boolean failOnError) {
         this.failOnError = failOnError;
     }
-    
+
     /**
      * execute the task
      * 
@@ -271,7 +299,7 @@ public abstract class JbiTask extends Task {
             }
         }
     }
-    
+
     protected abstract void doExecute(AdminCommandsServiceMBean acs) throws Exception;
 
 }

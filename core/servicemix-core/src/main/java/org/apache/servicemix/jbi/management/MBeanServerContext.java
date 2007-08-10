@@ -33,9 +33,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jmx.ConnectorServerFactoryBean;
 import org.apache.servicemix.jbi.jmx.RmiRegistryFactoryBean;
 
-
 /**
- *Wrapper around ActiveMQ ManagementContext. Re-use to build/find mbean server
+ * Wrapper around ActiveMQ ManagementContext. Re-use to build/find mbean server
  * 
  * @version $Revision: 372580 $
  */
@@ -44,27 +43,40 @@ class MBeanServerContext {
     /**
      * Default activemq domain
      */
-    public static final String DEFAULT_DOMAIN="org.apache.activemq";
-    private final static Log log=LogFactory.getLog(ManagementContext.class);
+    public static final String DEFAULT_DOMAIN = "org.apache.activemq";
+
+    private static final Log LOG = LogFactory.getLog(ManagementContext.class);
+
     private MBeanServer beanServer;
-    private String jmxDomainName=DEFAULT_DOMAIN;
-    private boolean useMBeanServer=true;
-    private boolean createMBeanServer=true;
-    private boolean locallyCreateMBeanServer=false;
-    private boolean createConnector=true;
-    private boolean findTigerMbeanServer=false;
-    private int connectorPort=1099;
-    private String connectorPath="/jmxrmi";
-    private AtomicBoolean started=new AtomicBoolean(false);
+
+    private String jmxDomainName = DEFAULT_DOMAIN;
+
+    private boolean useMBeanServer = true;
+
+    private boolean createMBeanServer = true;
+
+    private boolean locallyCreateMBeanServer;
+
+    private boolean createConnector = true;
+
+    private boolean findTigerMbeanServer;
+
+    private int connectorPort = 1099;
+
+    private String connectorPath = "/jmxrmi";
+
+    private AtomicBoolean started = new AtomicBoolean(false);
+
     private ConnectorServerFactoryBean connectorServerFactoryBean;
+
     private RmiRegistryFactoryBean rmiRegistryFactoryBean;
 
-    public MBeanServerContext(){
+    public MBeanServerContext() {
         this(null);
     }
 
-    public MBeanServerContext(MBeanServer server){
-        this.beanServer=server;
+    public MBeanServerContext(MBeanServer server) {
+        this.beanServer = server;
     }
 
     public void start() throws IOException {
@@ -77,28 +89,28 @@ class MBeanServerContext {
                     rmiRegistryFactoryBean.setPort(connectorPort);
                     rmiRegistryFactoryBean.afterPropertiesSet();
                 } catch (Exception e) {
-                    log.warn("Failed to start rmi registry: " + e.getMessage());
-                    if (log.isDebugEnabled()) {
-                        log.debug("Failed to start rmi registry", e);
+                    LOG.warn("Failed to start rmi registry: " + e.getMessage());
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Failed to start rmi registry", e);
                     }
                 }
                 try {
                     connectorServerFactoryBean = new ConnectorServerFactoryBean();
-                    //connectorServerFactoryBean.setDaemon(true);
+                    // connectorServerFactoryBean.setDaemon(true);
                     connectorServerFactoryBean.setObjectName("connector:name=rmi");
-                    //connectorServerFactoryBean.setThreaded(true);
+                    // connectorServerFactoryBean.setThreaded(true);
                     connectorServerFactoryBean.setServer(getMBeanServer());
                     String serviceUrl = "service:jmx:rmi:///jndi/rmi://localhost:" + connectorPort + connectorPath;
                     connectorServerFactoryBean.setServiceUrl(serviceUrl);
                     connectorServerFactoryBean.afterPropertiesSet();
                 } catch (Exception e) {
-                    log.warn("Failed to start jmx connector: " + e.getMessage());
-                    if (log.isDebugEnabled()) {
-                        log.debug("Failed to create jmx connector", e);
+                    LOG.warn("Failed to start jmx connector: " + e.getMessage());
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Failed to create jmx connector", e);
                     }
                 }
             }
-        }   
+        }
     }
 
     public void stop() throws IOException {
@@ -107,9 +119,9 @@ class MBeanServerContext {
                 try {
                     connectorServerFactoryBean.destroy();
                 } catch (Exception e) {
-                    log.warn("Failed to stop jmx connector: " + e.getMessage());
-                    if (log.isDebugEnabled()) {
-                        log.debug("Failed to stop jmx connector", e);
+                    LOG.warn("Failed to stop jmx connector: " + e.getMessage());
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Failed to stop jmx connector", e);
                     }
                 } finally {
                     connectorServerFactoryBean = null;
@@ -119,9 +131,9 @@ class MBeanServerContext {
                 try {
                     rmiRegistryFactoryBean.destroy();
                 } catch (RemoteException e) {
-                    log.warn("Failed to stop rmi registry: " + e.getMessage());
-                    if (log.isDebugEnabled()) {
-                        log.debug("Failed to stop rmi registry", e);
+                    LOG.warn("Failed to stop rmi registry: " + e.getMessage());
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Failed to stop rmi registry", e);
                     }
                 } finally {
                     rmiRegistryFactoryBean = null;
@@ -140,7 +152,7 @@ class MBeanServerContext {
     /**
      * @return Returns the jmxDomainName.
      */
-    public String getJmxDomainName(){
+    public String getJmxDomainName() {
         return jmxDomainName;
     }
 
@@ -148,8 +160,8 @@ class MBeanServerContext {
      * @param jmxDomainName
      *            The jmxDomainName to set.
      */
-    public void setJmxDomainName(String jmxDomainName){
-        this.jmxDomainName=jmxDomainName;
+    public void setJmxDomainName(String jmxDomainName) {
+        this.jmxDomainName = jmxDomainName;
     }
 
     /**
@@ -157,9 +169,9 @@ class MBeanServerContext {
      * 
      * @return the MBeanServer
      */
-    public MBeanServer getMBeanServer(){
-        if(this.beanServer==null){
-            this.beanServer=findMBeanServer();
+    public MBeanServer getMBeanServer() {
+        if (this.beanServer == null) {
+            this.beanServer = findMBeanServer();
         }
         return beanServer;
     }
@@ -167,16 +179,16 @@ class MBeanServerContext {
     /**
      * Set the MBeanServer
      * 
-     * @param beanServer
+     * @param mbs
      */
-    public void setMBeanServer(MBeanServer beanServer){
-        this.beanServer=beanServer;
+    public void setMBeanServer(MBeanServer mbs) {
+        this.beanServer = mbs;
     }
 
     /**
      * @return Returns the useMBeanServer.
      */
-    public boolean isUseMBeanServer(){
+    public boolean isUseMBeanServer() {
         return useMBeanServer;
     }
 
@@ -184,14 +196,14 @@ class MBeanServerContext {
      * @param useMBeanServer
      *            The useMBeanServer to set.
      */
-    public void setUseMBeanServer(boolean useMBeanServer){
-        this.useMBeanServer=useMBeanServer;
+    public void setUseMBeanServer(boolean useMBeanServer) {
+        this.useMBeanServer = useMBeanServer;
     }
 
     /**
      * @return Returns the createMBeanServer flag.
      */
-    public boolean isCreateMBeanServer(){
+    public boolean isCreateMBeanServer() {
         return createMBeanServer;
     }
 
@@ -199,8 +211,8 @@ class MBeanServerContext {
      * @param enableJMX
      *            Set createMBeanServer.
      */
-    public void setCreateMBeanServer(boolean enableJMX){
-        this.createMBeanServer=enableJMX;
+    public void setCreateMBeanServer(boolean enableJMX) {
+        this.createMBeanServer = enableJMX;
     }
 
     public boolean isFindTigerMbeanServer() {
@@ -219,15 +231,16 @@ class MBeanServerContext {
      * 
      * @param type
      * @param name
-     * @return the JMX ObjectName of the MBean, or <code>null</code> if <code>customName</code> is invalid.
+     * @return the JMX ObjectName of the MBean, or <code>null</code> if
+     *         <code>customName</code> is invalid.
      */
-    public ObjectName createCustomComponentMBeanName(String type,String name){
-        ObjectName result=null;
-        String tmp=jmxDomainName+":"+"type="+sanitizeString(type)+",name="+sanitizeString(name);
-        try{
-            result=new ObjectName(tmp);
-        }catch(MalformedObjectNameException e){
-            log.error("Couldn't create ObjectName from: "+type+" , "+name);
+    public ObjectName createCustomComponentMBeanName(String type, String name) {
+        ObjectName result = null;
+        String tmp = jmxDomainName + ":" + "type=" + sanitizeString(type) + ",name=" + sanitizeString(name);
+        try {
+            result = new ObjectName(tmp);
+        } catch (MalformedObjectNameException e) {
+            LOG.error("Couldn't create ObjectName from: " + type + " , " + name);
         }
         return result;
     }
@@ -238,12 +251,12 @@ class MBeanServerContext {
      * @param in
      * @return sanitized String
      */
-    private static String sanitizeString(String in){
-        String result=null;
-        if(in!=null){
-            result=in.replace(':','_');
-            result=result.replace('/','_');
-            result=result.replace('\\','_');
+    private static String sanitizeString(String in) {
+        String result = null;
+        if (in != null) {
+            result = in.replace(':', '_');
+            result = result.replace('/', '_');
+            result = result.replace('\\', '_');
         }
         return result;
     }
@@ -257,19 +270,19 @@ class MBeanServerContext {
      * @return the ObjectName
      * @throws MalformedObjectNameException
      */
-    public static ObjectName getSystemObjectName(String domainName,String containerName,Class theClass)
-                    throws MalformedObjectNameException,NullPointerException{
-        String tmp=domainName+":"+"type="+theClass.getName()+",name="+getRelativeName(containerName,theClass);
+    public static ObjectName getSystemObjectName(String domainName, String containerName, 
+                                                 Class theClass) throws MalformedObjectNameException, NullPointerException {
+        String tmp = domainName + ":" + "type=" + theClass.getName() + ",name=" + getRelativeName(containerName, theClass);
         return new ObjectName(tmp);
     }
 
-    private static String getRelativeName(String containerName,Class theClass){
-        String name=theClass.getName();
-        int index=name.lastIndexOf(".");
-        if(index>=0&&(index+1)<name.length()){
-            name=name.substring(index+1);
+    private static String getRelativeName(String containerName, Class theClass) {
+        String name = theClass.getName();
+        int index = name.lastIndexOf(".");
+        if (index >= 0 && (index + 1) < name.length()) {
+            name = name.substring(index + 1);
         }
-        return containerName+"."+name;
+        return containerName + "." + name;
     }
 
     /**
@@ -278,37 +291,37 @@ class MBeanServerContext {
      * @param name
      * @throws JMException
      */
-    public void unregisterMBean(ObjectName name) throws JMException{
-        if(beanServer!=null&&beanServer.isRegistered(name)){
+    public void unregisterMBean(ObjectName name) throws JMException {
+        if (beanServer != null && beanServer.isRegistered(name)) {
             beanServer.unregisterMBean(name);
         }
     }
 
-    protected synchronized MBeanServer findMBeanServer(){
-        MBeanServer result=null;
+    protected synchronized MBeanServer findMBeanServer() {
+        MBeanServer result = null;
         // create the mbean server
-        try{
-            if(useMBeanServer){
+        try {
+            if (useMBeanServer) {
                 if (findTigerMbeanServer) {
                     result = findTigerMBeanServer();
                 }
                 if (result == null) {
                     // lets piggy back on another MBeanServer -
                     // we could be in an appserver!
-                    List list=MBeanServerFactory.findMBeanServer(null);
-                    if(list!=null&&list.size()>0){
-                        result=(MBeanServer) list.get(0);
+                    List list = MBeanServerFactory.findMBeanServer(null);
+                    if (list != null && list.size() > 0) {
+                        result = (MBeanServer) list.get(0);
                     }
                 }
             }
-            if(result==null&&createMBeanServer){
-                result=createMBeanServer();
+            if (result == null && createMBeanServer) {
+                result = createMBeanServer();
             }
-        }catch(NoClassDefFoundError e){
-            log.error("Could not load MBeanServer",e);
-        }catch(Throwable e){
+        } catch (NoClassDefFoundError e) {
+            LOG.error("Could not load MBeanServer", e);
+        } catch (Throwable e) {
             // probably don't have access to system properties
-            log.error("Failed to initialize MBeanServer",e);
+            LOG.error("Failed to initialize MBeanServer", e);
         }
         return result;
     }
@@ -323,21 +336,17 @@ class MBeanServerContext {
                     Object answer = method.invoke(null, new Object[0]);
                     if (answer instanceof MBeanServer) {
                         return (MBeanServer) answer;
+                    } else {
+                        LOG.warn("Could not cast: " + answer + " into an MBeanServer. There must be some classloader strangeness in town");
                     }
-                    else {
-                        log.warn("Could not cast: " + answer + " into an MBeanServer. There must be some classloader strangeness in town");
-                    }
+                } else {
+                    LOG.warn("Method getPlatformMBeanServer() does not appear visible on type: " + type.getName());
                 }
-                else {
-                    log.warn("Method getPlatformMBeanServer() does not appear visible on type: " + type.getName());
-                }
+            } catch (Exception e) {
+                LOG.warn("Failed to call getPlatformMBeanServer() due to: " + e, e);
             }
-            catch (Exception e) {
-                log.warn("Failed to call getPlatformMBeanServer() due to: " + e, e);
-            }
-        }
-        else {
-            log.trace("Class not found: " + name + " so probably running on Java 1.4");
+        } else {
+            LOG.trace("Class not found: " + name + " so probably running on Java 1.4");
         }
         return null;
     }
@@ -345,12 +354,10 @@ class MBeanServerContext {
     private static Class loadClass(String name, ClassLoader loader) {
         try {
             return loader.loadClass(name);
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             try {
                 return Thread.currentThread().getContextClassLoader().loadClass(name);
-            }
-            catch (ClassNotFoundException e1) {
+            } catch (ClassNotFoundException e1) {
                 return null;
             }
         }
@@ -362,33 +369,33 @@ class MBeanServerContext {
      * @throws MalformedObjectNameException
      * @throws IOException
      */
-    protected MBeanServer createMBeanServer() throws MalformedObjectNameException,IOException{
-        MBeanServer mbeanServer=MBeanServerFactory.createMBeanServer(jmxDomainName);
-        locallyCreateMBeanServer=true;
+    protected MBeanServer createMBeanServer() throws MalformedObjectNameException, IOException {
+        MBeanServer mbeanServer = MBeanServerFactory.createMBeanServer(jmxDomainName);
+        locallyCreateMBeanServer = true;
         return mbeanServer;
     }
 
-    public String getConnectorPath(){
+    public String getConnectorPath() {
         return connectorPath;
     }
 
-    public void setConnectorPath(String connectorPath){
-        this.connectorPath=connectorPath;
+    public void setConnectorPath(String connectorPath) {
+        this.connectorPath = connectorPath;
     }
 
-    public int getConnectorPort(){
+    public int getConnectorPort() {
         return connectorPort;
     }
 
-    public void setConnectorPort(int connectorPort){
-        this.connectorPort=connectorPort;
+    public void setConnectorPort(int connectorPort) {
+        this.connectorPort = connectorPort;
     }
 
-    public boolean isCreateConnector(){
+    public boolean isCreateConnector() {
         return createConnector;
     }
 
-    public void setCreateConnector(boolean createConnector){
-        this.createConnector=createConnector;
+    public void setCreateConnector(boolean createConnector) {
+        this.createConnector = createConnector;
     }
 }

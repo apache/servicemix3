@@ -22,8 +22,8 @@ import java.util.List;
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.MessageExchange.Role;
+import javax.jbi.messaging.MessagingException;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.JMException;
 import javax.management.MBeanOperationInfo;
@@ -63,11 +63,12 @@ import org.apache.servicemix.jbi.servicedesc.LinkedEndpoint;
  */
 public class DefaultBroker extends BaseSystemService implements Broker {
 
+    private static final Log LOG = LogFactory.getLog(DefaultBroker.class);
+
     private Registry registry;
     private String flowNames = "seda";
-    private String subscriptionFlowName = null;
+    private String subscriptionFlowName;
     private Flow[] flows;
-    private final static Log log = LogFactory.getLog(DefaultBroker.class);
     private EndpointChooser defaultServiceChooser = new FirstChoicePolicy();
     private EndpointChooser defaultInterfaceChooser = new FirstChoicePolicy();
     private SubscriptionManager subscriptionManager = new SubscriptionManager();
@@ -121,18 +122,18 @@ public class DefaultBroker extends BaseSystemService implements Broker {
                 flows[i].init(this);
             }
         }
-    	subscriptionManager.init(this, registry);
+        subscriptionManager.init(this, registry);
     }
-    
+
     protected Class<BrokerMBean> getServiceMBean() {
         return BrokerMBean.class;
     }
 
     /**
-	 * Get the name of the Container
-	 * 
-	 * @return containerName
-	 */
+     * Get the name of the Container
+     * 
+     * @return containerName
+     */
     public String getContainerName() {
         return container.getName();
     }
@@ -213,18 +214,19 @@ public class DefaultBroker extends BaseSystemService implements Broker {
      * @return the subscriptionFlowName
      */
     public String getSubscriptionFlowName() {
-		return subscriptionFlowName;
-	}
+        return subscriptionFlowName;
+    }
 
     /**
      * Set the subscription flow name
+     * 
      * @param subscriptionFlowName
      */
-	public void setSubscriptionFlowName(String subscriptionFlowName) {
-		this.subscriptionFlowName = subscriptionFlowName;
-	}
+    public void setSubscriptionFlowName(String subscriptionFlowName) {
+        this.subscriptionFlowName = subscriptionFlowName;
+    }
 
-	/**
+    /**
      * Set the flow
      * 
      * @param flow
@@ -282,9 +284,9 @@ public class DefaultBroker extends BaseSystemService implements Broker {
         }
 
         if (exchange.getRole() == Role.PROVIDER) {
-        	getSubscriptionManager().dispatchToSubscribers(exchange);
+            getSubscriptionManager().dispatchToSubscribers(exchange);
         }
-        
+
         if (!foundRoute) {
             boolean throwException = true;
             ActivationSpec activationSpec = exchange.getActivationSpec();
@@ -292,8 +294,8 @@ public class DefaultBroker extends BaseSystemService implements Broker {
                 throwException = activationSpec.isFailIfNoDestinationEndpoint();
             }
             if (throwException) {
-                throw new MessagingException("Could not find route for exchange: " + exchange + " for service: " + exchange.getService() + " and interface: "
-                        + exchange.getInterfaceName());
+                throw new MessagingException("Could not find route for exchange: " + exchange + " for service: " + exchange.getService()
+                                + " and interface: " + exchange.getInterfaceName());
             } else if (exchange.getMirror().getSyncState() == MessageExchangeImpl.SYNC_STATE_SYNC_SENT) {
                 exchange.handleAccept();
                 ComponentContextImpl ctx = (ComponentContextImpl) getSubscriptionManager().getContext();
@@ -303,15 +305,16 @@ public class DefaultBroker extends BaseSystemService implements Broker {
             }
         }
     }
-    
+
     protected void resolveAddress(MessageExchangeImpl exchange) throws JBIException {
         ServiceEndpoint theEndpoint = exchange.getEndpoint();
         if (theEndpoint != null) {
             if (theEndpoint instanceof ExternalEndpoint) {
                 throw new JBIException("External endpoints can not be used for routing: should be an internal or dynamic endpoint.");
             }
-            if (theEndpoint instanceof AbstractServiceEndpoint == false) {
-                throw new JBIException("Component-specific endpoints can not be used for routing: should be an internal or dynamic endpoint.");
+            if (!(theEndpoint instanceof AbstractServiceEndpoint)) {
+                throw new JBIException(
+                                "Component-specific endpoints can not be used for routing: should be an internal or dynamic endpoint.");
             }
         }
         // Resolve linked endpoints
@@ -330,7 +333,7 @@ public class DefaultBroker extends BaseSystemService implements Broker {
         if (theEndpoint == null) {
             QName serviceName = exchange.getService();
             QName interfaceName = exchange.getInterfaceName();
-            
+
             // check in order, ServiceName then InterfaceName
             // check to see if there is a match on the serviceName
             if (serviceName != null) {
@@ -338,7 +341,7 @@ public class DefaultBroker extends BaseSystemService implements Broker {
                 endpoints = getMatchingEndpoints(endpoints, exchange);
                 theEndpoint = getServiceChooser(exchange).chooseEndpoint(endpoints, context, exchange);
                 if (theEndpoint == null) {
-                    log.warn("ServiceName (" + serviceName + ") specified for routing, but can't find it registered");
+                    LOG.warn("ServiceName (" + serviceName + ") specified for routing, but can't find it registered");
                 }
             }
             if (theEndpoint == null && interfaceName != null) {
@@ -346,7 +349,7 @@ public class DefaultBroker extends BaseSystemService implements Broker {
                 endpoints = getMatchingEndpoints(endpoints, exchange);
                 theEndpoint = (InternalEndpoint) getInterfaceChooser(exchange).chooseEndpoint(endpoints, context, exchange);
                 if (theEndpoint == null) {
-                    log.warn("InterfaceName (" + interfaceName + ") specified for routing, but can't find any matching components");
+                    LOG.warn("InterfaceName (" + interfaceName + ") specified for routing, but can't find any matching components");
                 }
             }
             if (theEndpoint == null) {
@@ -359,8 +362,7 @@ public class DefaultBroker extends BaseSystemService implements Broker {
                         try {
                             EndpointFilter filter = createEndpointFilter(context, exchange);
                             theEndpoint = (InternalEndpoint) destinationResolver.resolveEndpoint(context, exchange, filter);
-                        }
-                        catch (JBIException e) {
+                        } catch (JBIException e) {
                             throw new MessagingException("Failed to resolve endpoint: " + e, e);
                         }
                     }
@@ -370,40 +372,42 @@ public class DefaultBroker extends BaseSystemService implements Broker {
         if (theEndpoint != null) {
             exchange.setEndpoint(theEndpoint);
         }
-        if (log.isTraceEnabled()) {
-            log.trace("Routing exchange " + exchange + " to: " + theEndpoint);
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Routing exchange " + exchange + " to: " + theEndpoint);
         }
     }
 
     /**
-     * Filter the given endpoints by asking to the provider and consumer
-     * if they are both ok to process the exchange.
+     * Filter the given endpoints by asking to the provider and consumer if they
+     * are both ok to process the exchange.
      * 
-     * @param endpoints an array of internal endpoints to check
-     * @param exchange the exchange that will be serviced
+     * @param endpoints
+     *            an array of internal endpoints to check
+     * @param exchange
+     *            the exchange that will be serviced
      * @return an array of endpoints on which both consumer and provider agrees
      */
     protected ServiceEndpoint[] getMatchingEndpoints(ServiceEndpoint[] endpoints, MessageExchangeImpl exchange) {
-    	List<ServiceEndpoint> filtered = new ArrayList<ServiceEndpoint>();
+        List<ServiceEndpoint> filtered = new ArrayList<ServiceEndpoint>();
         ComponentMBeanImpl consumer = getRegistry().getComponent(exchange.getSourceId());
-        
-    	for (int i = 0; i < endpoints.length; i++) {
-			ComponentNameSpace id = ((InternalEndpoint) endpoints[i]).getComponentNameSpace();
+
+        for (int i = 0; i < endpoints.length; i++) {
+            ComponentNameSpace id = ((InternalEndpoint) endpoints[i]).getComponentNameSpace();
             if (id != null) {
                 ComponentMBeanImpl provider = getRegistry().getComponent(id);
                 if (provider != null) {
-                    if (!consumer.getComponent().isExchangeWithProviderOkay(endpoints[i], exchange) ||
-                        !provider.getComponent().isExchangeWithConsumerOkay(endpoints[i], exchange)) {
-           			    continue;
-                	}
+                    if (!consumer.getComponent().isExchangeWithProviderOkay(endpoints[i], exchange)
+                                    || !provider.getComponent().isExchangeWithConsumerOkay(endpoints[i], exchange)) {
+                        continue;
+                    }
                 }
             }
             filtered.add(endpoints[i]);
-		}
-		return filtered.toArray(new ServiceEndpoint[filtered.size()]);
-	}
+        }
+        return filtered.toArray(new ServiceEndpoint[filtered.size()]);
+    }
 
-	/**
+    /**
      * @return the default EndpointChooser
      */
     public EndpointChooser getDefaultInterfaceChooser() {
@@ -443,7 +447,8 @@ public class DefaultBroker extends BaseSystemService implements Broker {
     }
 
     /**
-     * @param defaultFlowChooser the defaultFlowChooser to set
+     * @param defaultFlowChooser
+     *            the defaultFlowChooser to set
      */
     public void setDefaultFlowChooser(FlowChooser defaultFlowChooser) {
         this.defaultFlowChooser = defaultFlowChooser;
@@ -501,8 +506,7 @@ public class DefaultBroker extends BaseSystemService implements Broker {
         Component component = context.getComponent();
         if (exchange.getRole() == Role.PROVIDER) {
             return new ConsumerComponentEndpointFilter(component);
-        }
-        else {
+        } else {
             return new ProducerComponentEndpointFilter(component);
         }
     }
@@ -521,8 +525,8 @@ public class DefaultBroker extends BaseSystemService implements Broker {
         return OperationInfoHelper.join(super.getOperationInfos(), helper.getOperationInfos());
     }
 
-	public JBIContainer getContainer() {
-		return container;
-	}
+    public JBIContainer getContainer() {
+        return container;
+    }
 
 }

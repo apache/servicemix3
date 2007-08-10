@@ -25,10 +25,11 @@ import javax.jbi.servicedesc.ServiceEndpoint;
  * @version $Revision$
  */
 public class NullEndpointFilter implements EndpointFilter {
-    private static final NullEndpointFilter instance = new NullEndpointFilter();
+
+    private static final NullEndpointFilter INSTANCE = new NullEndpointFilter();
 
     public static NullEndpointFilter getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     public boolean evaluate(ServiceEndpoint endpoint, MessageExchange exchange) {

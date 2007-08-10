@@ -33,20 +33,27 @@ import org.easymock.MockControl;
 public class DeploymentTest extends AbstractManagementTest {
 
     // Create mocks
-	protected ExtMockControl bootstrapMock;
-	protected Bootstrap bootstrap;
-	protected ExtMockControl componentMock;
+    protected ExtMockControl bootstrapMock;
+
+    protected Bootstrap bootstrap;
+
+    protected ExtMockControl componentMock;
+
     protected Component component;
+
     protected ExtMockControl lifecycleMock;
+
     protected ComponentLifeCycle lifecycle;
+
     protected ExtMockControl managerMock;
+
     protected ServiceUnitManager manager;
-    
-	protected void setUp() throws Exception {
-		super.setUp();
+
+    protected void setUp() throws Exception {
+        super.setUp();
         // Create mocks
-        bootstrapMock = ExtMockControl.createControl(Bootstrap.class);                
-        bootstrap = (Bootstrap) bootstrapMock.getMock();        
+        bootstrapMock = ExtMockControl.createControl(Bootstrap.class);
+        bootstrap = (Bootstrap) bootstrapMock.getMock();
         Bootstrap1.setDelegate(bootstrap);
         componentMock = ExtMockControl.createControl(Component.class);
         component = (Component) componentMock.getMock();
@@ -55,38 +62,39 @@ public class DeploymentTest extends AbstractManagementTest {
         lifecycle = (ComponentLifeCycle) lifecycleMock.getMock();
         managerMock = ExtMockControl.createControl(ServiceUnitManager.class);
         manager = (ServiceUnitManager) managerMock.getMock();
-	}
-	
-	protected void reset() {
-		bootstrapMock.reset();
-		componentMock.reset();
-		lifecycleMock.reset();
-		managerMock.reset();
-	}
-	
-	protected void replay() {
-		bootstrapMock.replay();
-		componentMock.replay();
-		lifecycleMock.replay();
-		managerMock.replay();
-	}
-	
-	protected void verify() {
-		bootstrapMock.verify();
-		componentMock.verify();
-		lifecycleMock.verify();
-		managerMock.verify();
-	}
-	
-	/**
+    }
+
+    protected void reset() {
+        bootstrapMock.reset();
+        componentMock.reset();
+        lifecycleMock.reset();
+        managerMock.reset();
+    }
+
+    protected void replay() {
+        bootstrapMock.replay();
+        componentMock.replay();
+        lifecycleMock.replay();
+        managerMock.replay();
+    }
+
+    protected void verify() {
+        bootstrapMock.verify();
+        componentMock.verify();
+        lifecycleMock.verify();
+        managerMock.verify();
+    }
+
+    /**
      * SA is deployed and started
+     * 
      * @throws Exception
      */
     public void testDeployAndStart() throws Exception {
-    	// configure mocks
-    	reset();
+        // configure mocks
+        reset();
         bootstrap.init(null);
-        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);       
+        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
         bootstrap.onInstall();
         bootstrap.getExtensionMBeanName();
         bootstrapMock.setReturnValue(null);
@@ -96,14 +104,16 @@ public class DeploymentTest extends AbstractManagementTest {
         startContainer(true);
         String installJarUrl = createInstallerArchive("component1").getAbsolutePath();
         ObjectName installerName = getInstallationService().loadNewInstaller(installJarUrl);
-        InstallerMBean installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), installerName, InstallerMBean.class, false);
+        InstallerMBean installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        installerName, InstallerMBean.class, false);
         assertFalse(installer.isInstalled());
         ObjectName lifecycleName = installer.install();
-        LifeCycleMBean lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
+        LifeCycleMBean lifecycleMBean = (LifeCycleMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        lifecycleName, LifeCycleMBean.class, false);
         assertEquals(LifeCycleMBean.SHUTDOWN, lifecycleMBean.getCurrentState());
         // check mocks
         verify();
-        
+
         // configure mocks
         reset();
         component.getLifeCycle();
@@ -117,7 +127,7 @@ public class DeploymentTest extends AbstractManagementTest {
         assertEquals(LifeCycleMBean.STARTED, lifecycleMBean.getCurrentState());
         // check mocks
         verify();
-        
+
         // configure mocks
         reset();
         component.getServiceUnitManager();
@@ -142,7 +152,7 @@ public class DeploymentTest extends AbstractManagementTest {
         assertEquals(DeploymentServiceMBean.SHUTDOWN, getDeploymentService().getState("sa"));
         // check mocks
         verify();
-        
+
         // configure mocks
         reset();
         component.getServiceUnitManager();
@@ -156,7 +166,7 @@ public class DeploymentTest extends AbstractManagementTest {
         assertEquals(DeploymentServiceMBean.STARTED, getDeploymentService().getState("sa"));
         // check mocks
         verify();
-        
+
         // Clean shutdown
         reset();
         component.getLifeCycle();
@@ -165,21 +175,22 @@ public class DeploymentTest extends AbstractManagementTest {
         componentMock.setReturnValue(manager, MockControl.ONE_OR_MORE);
         lifecycle.stop();
         lifecycle.shutDown();
-        //manager.stop("su");
+        // manager.stop("su");
         manager.shutDown("su");
         replay();
         shutdownContainer();
     }
 
-	/**
+    /**
      * SA is deployed and started
+     * 
      * @throws Exception
      */
     public void testDeployAndRestart() throws Exception {
-    	// configure mocks
-    	reset();    	
-        bootstrap.init(null);        
-        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);        
+        // configure mocks
+        reset();
+        bootstrap.init(null);
+        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
         bootstrap.onInstall();
         bootstrap.getExtensionMBeanName();
         bootstrapMock.setReturnValue(null);
@@ -189,14 +200,16 @@ public class DeploymentTest extends AbstractManagementTest {
         startContainer(true);
         String installJarUrl = createInstallerArchive("component1").getAbsolutePath();
         ObjectName installerName = getInstallationService().loadNewInstaller(installJarUrl);
-        InstallerMBean installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), installerName, InstallerMBean.class, false);
+        InstallerMBean installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        installerName, InstallerMBean.class, false);
         assertFalse(installer.isInstalled());
         ObjectName lifecycleName = installer.install();
-        LifeCycleMBean lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
+        LifeCycleMBean lifecycleMBean = (LifeCycleMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        lifecycleName, LifeCycleMBean.class, false);
         assertEquals(LifeCycleMBean.SHUTDOWN, lifecycleMBean.getCurrentState());
         // check mocks
         verify();
-        
+
         // configure mocks
         reset();
         component.getLifeCycle();
@@ -210,7 +223,7 @@ public class DeploymentTest extends AbstractManagementTest {
         assertEquals(LifeCycleMBean.STARTED, lifecycleMBean.getCurrentState());
         // check mocks
         verify();
-        
+
         // configure mocks
         reset();
         component.getServiceUnitManager();
@@ -234,7 +247,7 @@ public class DeploymentTest extends AbstractManagementTest {
         assertEquals(DeploymentServiceMBean.SHUTDOWN, getDeploymentService().getState("sa"));
         // check mocks
         verify();
-        
+
         // configure mocks
         reset();
         lifecycle.stop();
@@ -244,7 +257,7 @@ public class DeploymentTest extends AbstractManagementTest {
         shutdownContainer();
         // check mocks
         verify();
-        
+
         // configure mocks
         reset();
         // XXX Should the bootstrap re-init?
@@ -256,7 +269,7 @@ public class DeploymentTest extends AbstractManagementTest {
         componentMock.setReturnValue(lifecycle, MockControl.ONE_OR_MORE);
         lifecycle.init(null);
         lifecycleMock.setMatcher(MockControl.ALWAYS_MATCHER);
-        lifecycle.start();        
+        lifecycle.start();
         component.getServiceUnitManager();
         componentMock.setReturnValue(manager, MockControl.ONE_OR_MORE);
         manager.init(null, null);
@@ -267,7 +280,7 @@ public class DeploymentTest extends AbstractManagementTest {
         startContainer(false);
         // check mocks
         verify();
-        
+
         // Clean shutdown
         reset();
         component.getLifeCycle();
@@ -276,19 +289,20 @@ public class DeploymentTest extends AbstractManagementTest {
         componentMock.setReturnValue(manager, MockControl.ONE_OR_MORE);
         lifecycle.stop();
         lifecycle.shutDown();
-        //manager.stop("su");
+        // manager.stop("su");
         manager.shutDown("su");
         replay();
         shutdownContainer();
     }
 
-	/**
+    /**
      * SA is deployed and started
+     * 
      * @throws Exception
      */
     public void testDeployStartAndRestart() throws Exception {
-    	// configure mocks
-    	reset();
+        // configure mocks
+        reset();
         bootstrap.init(null);
         bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
         bootstrap.onInstall();
@@ -300,14 +314,16 @@ public class DeploymentTest extends AbstractManagementTest {
         startContainer(true);
         String installJarUrl = createInstallerArchive("component1").getAbsolutePath();
         ObjectName installerName = getInstallationService().loadNewInstaller(installJarUrl);
-        InstallerMBean installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), installerName, InstallerMBean.class, false);
+        InstallerMBean installer = (InstallerMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        installerName, InstallerMBean.class, false);
         assertFalse(installer.isInstalled());
         ObjectName lifecycleName = installer.install();
-        LifeCycleMBean lifecycleMBean = (LifeCycleMBean)  MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(), lifecycleName, LifeCycleMBean.class, false);
+        LifeCycleMBean lifecycleMBean = (LifeCycleMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        lifecycleName, LifeCycleMBean.class, false);
         assertEquals(LifeCycleMBean.SHUTDOWN, lifecycleMBean.getCurrentState());
         // check mocks
         verify();
-        
+
         // configure mocks
         reset();
         component.getLifeCycle();
@@ -321,7 +337,7 @@ public class DeploymentTest extends AbstractManagementTest {
         assertEquals(LifeCycleMBean.STARTED, lifecycleMBean.getCurrentState());
         // check mocks
         verify();
-        
+
         // configure mocks
         reset();
         component.getServiceUnitManager();
@@ -345,7 +361,7 @@ public class DeploymentTest extends AbstractManagementTest {
         assertEquals(DeploymentServiceMBean.SHUTDOWN, getDeploymentService().getState("sa"));
         // check mocks
         verify();
-        
+
         // configure mocks
         reset();
         manager.init(null, null);
@@ -357,7 +373,7 @@ public class DeploymentTest extends AbstractManagementTest {
         assertEquals(DeploymentServiceMBean.STARTED, getDeploymentService().getState("sa"));
         // check mocks
         verify();
-        
+
         // configure mocks
         reset();
         lifecycle.stop();
@@ -369,9 +385,9 @@ public class DeploymentTest extends AbstractManagementTest {
         shutdownContainer();
         // check mocks
         verify();
-        
+
         // configure mocks
-        reset();  
+        reset();
         // XXX Should the bootstrap re-init?
         bootstrap.init(null);
         bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
@@ -393,7 +409,7 @@ public class DeploymentTest extends AbstractManagementTest {
         startContainer(false);
         // check mocks
         verify();
-        
+
         // Clean shutdown
         reset();
         component.getLifeCycle();
@@ -402,7 +418,7 @@ public class DeploymentTest extends AbstractManagementTest {
         componentMock.setReturnValue(manager, MockControl.ONE_OR_MORE);
         lifecycle.stop();
         lifecycle.shutDown();
-        //manager.stop("su");
+        // manager.stop("su");
         manager.shutDown("su");
         replay();
         shutdownContainer();

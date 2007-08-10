@@ -24,13 +24,14 @@ import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
+import org.w3c.dom.Document;
+
+import com.ibm.wsdl.Constants;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.framework.Registry;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
-import org.w3c.dom.Document;
-
-import com.ibm.wsdl.Constants;
 
 /**
  * Retrieve interface implemented by the given endpoint using the WSDL 1 description.
@@ -41,12 +42,12 @@ public class WSDL1Processor implements EndpointProcessor {
 
     public static final String WSDL1_NAMESPACE = "http://schemas.xmlsoap.org/wsdl/";
     
-    private static final Log logger = LogFactory.getLog(WSDL1Processor.class);
+    private static final Log LOG = LogFactory.getLog(WSDL1Processor.class);
     
     private Registry registry;
     
-    public void init(Registry registry) {
-        this.registry = registry;
+    public void init(Registry reg) {
+        this.registry = reg;
     }
 
     /**
@@ -58,14 +59,14 @@ public class WSDL1Processor implements EndpointProcessor {
         try {
             Document document = registry.getEndpointDescriptor(serviceEndpoint);
             if (document == null || document.getDocumentElement() == null) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Endpoint " + serviceEndpoint + " has no service description");
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Endpoint " + serviceEndpoint + " has no service description");
                 }
                 return;
             }
             if (!WSDL1_NAMESPACE.equals(document.getDocumentElement().getNamespaceURI())) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Endpoint " + serviceEndpoint + " has a non WSDL1 service description");
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Endpoint " + serviceEndpoint + " has a non WSDL1 service description");
                 }
                 return;
             }
@@ -75,43 +76,45 @@ public class WSDL1Processor implements EndpointProcessor {
             // Check if the wsdl is only a port type
             // In these cases, only the port type is used, as the service name and endpoint name
             // are provided on the jbi endpoint
-            if (definition.getPortTypes().keySet().size() == 1 &&
-                definition.getServices().keySet().size() == 0) {
+            if (definition.getPortTypes().keySet().size() == 1
+                    && definition.getServices().keySet().size() == 0) {
                 PortType portType = (PortType) definition.getPortTypes().values().iterator().next();
                 QName interfaceName = portType.getQName();
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Endpoint " + serviceEndpoint + " implements interface " + interfaceName);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Endpoint " + serviceEndpoint + " implements interface " + interfaceName);
                 }
                 serviceEndpoint.addInterface(interfaceName);
             } else {
                 Service service = definition.getService(serviceEndpoint.getServiceName());
                 if (service == null) {
-                    logger.info("Endpoint " + serviceEndpoint + " has a service description, but no matching service found in " + definition.getServices().keySet());
+                    LOG.info("Endpoint " + serviceEndpoint + " has a service description, but no matching service found in "
+                                    + definition.getServices().keySet());
                     return;
                 }
                 Port port = service.getPort(serviceEndpoint.getEndpointName());
                 if (port == null) {
-                    logger.info("Endpoint " + serviceEndpoint + " has a service description, but no matching endpoint found in " + service.getPorts().keySet());
+                    LOG.info("Endpoint " + serviceEndpoint + " has a service description, but no matching endpoint found in "
+                                    + service.getPorts().keySet());
                     return;
                 }
                 if (port.getBinding() == null) {
-                    logger.info("Endpoint " + serviceEndpoint + " has a service description, but no binding found");
+                    LOG.info("Endpoint " + serviceEndpoint + " has a service description, but no binding found");
                     return;
                 }
                 if (port.getBinding().getPortType() == null) {
-                    logger.info("Endpoint " + serviceEndpoint + " has a service description, but no port type found");
+                    LOG.info("Endpoint " + serviceEndpoint + " has a service description, but no port type found");
                     return;
                 }
                 QName interfaceName = port.getBinding().getPortType().getQName();
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Endpoint " + serviceEndpoint + " implements interface " + interfaceName);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Endpoint " + serviceEndpoint + " implements interface " + interfaceName);
                 }
                 serviceEndpoint.addInterface(interfaceName);
             }
         } catch (Exception e) {
-            logger.warn("Error retrieving interfaces from service description: " + e.getMessage());
-            if (logger.isDebugEnabled()) {
-                logger.debug("Error retrieving interfaces from service description", e);
+            LOG.warn("Error retrieving interfaces from service description: " + e.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Error retrieving interfaces from service description", e);
             }
         }
     }

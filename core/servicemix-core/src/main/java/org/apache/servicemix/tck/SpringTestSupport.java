@@ -16,6 +16,28 @@
  */
 package org.apache.servicemix.tck;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.jbi.messaging.ExchangeStatus;
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
+import javax.jbi.messaging.NormalizedMessage;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.stream.StreamSource;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.traversal.NodeIterator;
+
+import org.xml.sax.SAXException;
+
+import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
@@ -23,26 +45,6 @@ import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.xpath.CachedXPathAPI;
 import org.springframework.context.support.AbstractXmlApplicationContext;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
-import org.xml.sax.SAXException;
-
-import javax.jbi.messaging.MessagingException;
-import javax.jbi.messaging.NormalizedMessage;
-import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.ExchangeStatus;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Source;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.stream.StreamSource;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
-import java.util.List;
-
-import junit.framework.TestCase;
 
 /**
  * @version $Revision$
@@ -51,8 +53,11 @@ public abstract class SpringTestSupport extends TestCase {
     protected transient Log log = LogFactory.getLog(getClass());
 
     protected AbstractXmlApplicationContext context;
+
     protected SourceTransformer transformer;
+
     protected int messageCount = 20;
+
     protected SpringJBIContainer jbi;
 
     protected void setUp() throws Exception {
@@ -84,8 +89,9 @@ public abstract class SpringTestSupport extends TestCase {
     protected abstract AbstractXmlApplicationContext createBeanFactory();
 
     /**
-     * Performs an XPath expression and returns the Text content of the root node.
-     *
+     * Performs an XPath expression and returns the Text content of the root
+     * node.
+     * 
      * @param node
      * @param xpath
      * @return
@@ -102,8 +108,7 @@ public abstract class SpringTestSupport extends TestCase {
             }
             String text = DOMUtil.getElementText(element);
             return text;
-        }
-        else if (root != null) {
+        } else if (root != null) {
             return root.getNodeValue();
         } else {
             return null;
@@ -117,8 +122,9 @@ public abstract class SpringTestSupport extends TestCase {
         return content;
     }
 
-    protected void assertMessagesReceived(MessageList messageList, int messageCount) throws MessagingException, TransformerException, ParserConfigurationException, IOException, SAXException {
-        messageList.assertMessagesReceived(messageCount);
+    protected void assertMessagesReceived(MessageList messageList, int count) throws MessagingException, TransformerException,
+                    ParserConfigurationException, IOException, SAXException {
+        messageList.assertMessagesReceived(count);
         List list = messageList.getMessages();
         int counter = 0;
         for (Iterator iter = list.iterator(); iter.hasNext();) {
@@ -128,17 +134,14 @@ public abstract class SpringTestSupport extends TestCase {
         }
     }
 
-
     protected void assertExchangeWorked(MessageExchange me) throws Exception {
         if (me.getStatus() == ExchangeStatus.ERROR) {
             if (me.getError() != null) {
                 throw me.getError();
-            }
-            else {
+            } else {
                 fail("Received ERROR status");
             }
-        }
-        else if (me.getFault() != null) {
+        } else if (me.getFault() != null) {
             fail("Received fault: " + new SourceTransformer().toString(me.getFault().getContent()));
         }
     }

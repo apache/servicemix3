@@ -16,12 +16,10 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
+import java.net.URI;
 import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.apache.servicemix.JbiConstants;
-import org.apache.servicemix.id.IdGenerator;
-import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.InOptionalOut;
@@ -33,33 +31,41 @@ import javax.jbi.messaging.RobustInOnly;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
-import java.net.URI;
-import java.util.GregorianCalendar;
+import org.apache.servicemix.JbiConstants;
+import org.apache.servicemix.id.IdGenerator;
+import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 
 /**
  * Resolver for URI patterns
- *
+ * 
  * @version $Revision$
  */
 public class MessageExchangeFactoryImpl implements MessageExchangeFactory {
 
     private QName interfaceName;
+
     private QName serviceName;
+
     private QName operationName;
+
     private ServiceEndpoint endpoint;
+
     private IdGenerator idGenerator;
+
     private ComponentContextImpl context;
+
     private AtomicBoolean closed;
 
     /**
      * Constructor for a factory
+     * 
      * @param idGen
      */
-    public MessageExchangeFactoryImpl(IdGenerator idGen, AtomicBoolean closed){
+    public MessageExchangeFactoryImpl(IdGenerator idGen, AtomicBoolean closed) {
         this.idGenerator = idGen;
         this.closed = closed;
     }
-    
+
     protected void checkNotClosed() throws MessagingException {
         if (closed.get()) {
             throw new MessagingException("DeliveryChannel has been closed.");
@@ -68,7 +74,7 @@ public class MessageExchangeFactoryImpl implements MessageExchangeFactory {
 
     /**
      * Create an exchange from the specified pattern
-     *
+     * 
      * @param pattern
      * @return MessageExchange
      * @throws MessagingException
@@ -77,20 +83,15 @@ public class MessageExchangeFactoryImpl implements MessageExchangeFactory {
         checkNotClosed();
         MessageExchange result = null;
         if (pattern != null) {
-            if (pattern.equals(MessageExchangeSupport.IN_ONLY) ||
-                pattern.equals(MessageExchangeSupport.WSDL2_IN_ONLY)) {
+            if (pattern.equals(MessageExchangeSupport.IN_ONLY) || pattern.equals(MessageExchangeSupport.WSDL2_IN_ONLY)) {
                 result = createInOnlyExchange();
-            }
-            else if (pattern.equals(MessageExchangeSupport.IN_OUT) ||
-                     pattern.equals(MessageExchangeSupport.WSDL2_IN_OUT)) {
+            } else if (pattern.equals(MessageExchangeSupport.IN_OUT) || pattern.equals(MessageExchangeSupport.WSDL2_IN_OUT)) {
                 result = createInOutExchange();
-            }
-            else if (pattern.equals(MessageExchangeSupport.IN_OPTIONAL_OUT) ||
-                     pattern.equals(MessageExchangeSupport.WSDL2_IN_OPTIONAL_OUT)) {
+            } else if (pattern.equals(MessageExchangeSupport.IN_OPTIONAL_OUT)
+                            || pattern.equals(MessageExchangeSupport.WSDL2_IN_OPTIONAL_OUT)) {
                 result = createInOptionalOutExchange();
-            }
-            else if (pattern.equals(MessageExchangeSupport.ROBUST_IN_ONLY) ||
-                     pattern.equals(MessageExchangeSupport.WSDL2_ROBUST_IN_ONLY)) {
+            } else if (pattern.equals(MessageExchangeSupport.ROBUST_IN_ONLY)
+                            || pattern.equals(MessageExchangeSupport.WSDL2_ROBUST_IN_ONLY)) {
                 result = createRobustInOnlyExchange();
             }
         }
@@ -102,33 +103,33 @@ public class MessageExchangeFactoryImpl implements MessageExchangeFactory {
 
     /**
      * create InOnly exchange
-     *
+     * 
      * @return InOnly exchange
      * @throws MessagingException
      */
     public InOnly createInOnlyExchange() throws MessagingException {
         checkNotClosed();
-        InOnlyImpl result =  new InOnlyImpl(getExchangeId());
+        InOnlyImpl result = new InOnlyImpl(getExchangeId());
         setDefaults(result);
         return result;
     }
 
     /**
      * create RobustInOnly exchange
-     *
+     * 
      * @return RobsutInOnly exchange
      * @throws MessagingException
      */
     public RobustInOnly createRobustInOnlyExchange() throws MessagingException {
         checkNotClosed();
-        RobustInOnlyImpl result =  new RobustInOnlyImpl(getExchangeId());
+        RobustInOnlyImpl result = new RobustInOnlyImpl(getExchangeId());
         setDefaults(result);
         return result;
     }
 
     /**
      * create InOut Exchange
-     *
+     * 
      * @return InOut exchange
      * @throws MessagingException
      */
@@ -141,86 +142,91 @@ public class MessageExchangeFactoryImpl implements MessageExchangeFactory {
 
     /**
      * create InOptionalOut exchange
-     *
+     * 
      * @return InOptionalOut exchange
      * @throws MessagingException
      */
     public InOptionalOut createInOptionalOutExchange() throws MessagingException {
         checkNotClosed();
-        InOptionalOutImpl result =  new InOptionalOutImpl(getExchangeId());
+        InOptionalOutImpl result = new InOptionalOutImpl(getExchangeId());
         setDefaults(result);
         return result;
     }
 
     /**
-     * Create an exchange that points at an endpoint that conforms to the declared capabilities, requirements, and
-     * policies of both the consumer and the provider.
-     *
-     * @param serviceName
-     * @param operationName the WSDL name of the operation to be performed
-     * @return a message exchange that is initialized with given interfaceName, operationName, and the endpoint decided
-     *         upon by JBI.
+     * Create an exchange that points at an endpoint that conforms to the
+     * declared capabilities, requirements, and policies of both the consumer
+     * and the provider.
+     * 
+     * @param svcName
+     * @param opName
+     *            the WSDL name of the operation to be performed
+     * @return a message exchange that is initialized with given interfaceName,
+     *         operationName, and the endpoint decided upon by JBI.
      * @throws MessagingException
      */
-    public MessageExchange createExchange(QName serviceName, QName operationName) throws MessagingException {
+    public MessageExchange createExchange(QName svcName, QName opName) throws MessagingException {
         // TODO: look for the operation in the wsdl and infer the MEP
         checkNotClosed();
-        InOptionalOutImpl me =  new InOptionalOutImpl(getExchangeId());
+        InOptionalOutImpl me = new InOptionalOutImpl(getExchangeId());
         setDefaults(me);
-        me.setService(serviceName);
-        me.setOperation(operationName);
+        me.setService(svcName);
+        me.setOperation(opName);
         return me;
     }
 
     protected String getExchangeId() {
         return idGenerator.generateId();
     }
-    
+
     /**
      * @return endpoint
      */
     public ServiceEndpoint getEndpoint() {
         return endpoint;
     }
-    
+
     /**
      * set endpoint
+     * 
      * @param endpoint
      */
     public void setEndpoint(ServiceEndpoint endpoint) {
         this.endpoint = endpoint;
     }
-    
+
     /**
      * @return interface name
      */
     public QName getInterfaceName() {
         return interfaceName;
     }
-    
+
     /**
      * set interface name
+     * 
      * @param interfaceName
      */
     public void setInterfaceName(QName interfaceName) {
         this.interfaceName = interfaceName;
     }
-    
+
     /**
      * @return service name
      */
     public QName getServiceName() {
         return serviceName;
     }
-    
+
     /**
      * set service name
+     * 
      * @param serviceName
      */
     public void setServiceName(QName serviceName) {
         this.serviceName = serviceName;
     }
-    
+
     /**
      * @return Returns the operationName.
      */
@@ -228,16 +234,17 @@ public class MessageExchangeFactoryImpl implements MessageExchangeFactory {
         return operationName;
     }
 
-
     /**
-     * @param operationName The operationName to set.
+     * @param operationName
+     *            The operationName to set.
      */
     public void setOperationName(QName operationName) {
         this.operationName = operationName;
     }
 
     /**
-     * Get the Context 
+     * Get the Context
+     * 
      * @return the context
      */
     public ComponentContextImpl getContext() {
@@ -246,6 +253,7 @@ public class MessageExchangeFactoryImpl implements MessageExchangeFactory {
 
     /**
      * Set the Context
+     * 
      * @param context
      */
     public void setContext(ComponentContextImpl context) {

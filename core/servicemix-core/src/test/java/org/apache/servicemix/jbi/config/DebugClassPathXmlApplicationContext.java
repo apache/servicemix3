@@ -16,13 +16,13 @@
  */
 package org.apache.servicemix.jbi.config;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
-import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * A debugging version of the class to add tracing of the generated XML.

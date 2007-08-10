@@ -16,6 +16,16 @@
  */
 package org.apache.servicemix.jbi.nmr;
 
+import javax.jbi.JBIException;
+import javax.jbi.messaging.InOnly;
+import javax.jbi.servicedesc.ServiceEndpoint;
+import javax.xml.namespace.QName;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
+
+import junit.framework.TestCase;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
@@ -26,15 +36,6 @@ import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.tck.ReceiverComponent;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
-
-import javax.jbi.JBIException;
-import javax.jbi.messaging.InOnly;
-import javax.jbi.servicedesc.ServiceEndpoint;
-import javax.xml.namespace.QName;
-
-import junit.framework.TestCase;
 
 public class BrokerTest extends TestCase {
     

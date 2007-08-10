@@ -16,8 +16,6 @@
  */
 package org.apache.servicemix.expression;
 
-import org.apache.servicemix.expression.Expression;
-
 public class ExpressionTestSupport {
 
     private Expression expression;

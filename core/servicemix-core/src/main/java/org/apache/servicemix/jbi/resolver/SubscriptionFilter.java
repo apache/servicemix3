@@ -31,5 +31,6 @@ public interface SubscriptionFilter {
      * @param exchange 
      * @return true if will accept the exchange
      */
-    public boolean matches(MessageExchange exchange);
+    boolean matches(MessageExchange exchange);
+
 }

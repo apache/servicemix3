@@ -16,13 +16,13 @@
  */
 package org.apache.servicemix.jbi.resolver;
 
-import org.apache.servicemix.jbi.NoInterfaceAvailableException;
-
 import javax.jbi.JBIException;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
+
+import org.apache.servicemix.jbi.NoInterfaceAvailableException;
 
 /**
  * Resolves the endpoint using the external interface name with a pluggable {@link EndpointChooser} selection

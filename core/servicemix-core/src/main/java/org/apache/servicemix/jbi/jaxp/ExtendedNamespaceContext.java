@@ -22,11 +22,12 @@ import javax.xml.namespace.NamespaceContext;
 
 public interface ExtendedNamespaceContext extends NamespaceContext {
 
-	/**
-	 * Returns an {@link Iterator} of all namespace prefixes in scope within this
-	 * context, including those inherited from ancestor contexts.
-	 * 
-	 * @return An {@link Iterator} of prefix {@link String}s.
-	 */
-    public Iterator getPrefixes();
+    /**
+     * Returns an {@link Iterator} of all namespace prefixes in scope within
+     * this context, including those inherited from ancestor contexts.
+     * 
+     * @return An {@link Iterator} of prefix {@link String}s.
+     */
+    Iterator getPrefixes();
+
 }

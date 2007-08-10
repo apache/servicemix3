@@ -25,7 +25,7 @@ import org.apache.servicemix.jbi.nmr.flow.jms.JMSFlow;
 public class JmsFlowTransactionTest extends AbstractTransactionTest {
 
     protected Flow createFlow() {
-    	return new JMSFlow();
+        return new JMSFlow();
     }
 
     public void testSyncSendSyncReceive() throws Exception {

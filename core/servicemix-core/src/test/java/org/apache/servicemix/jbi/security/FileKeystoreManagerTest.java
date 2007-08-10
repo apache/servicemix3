@@ -35,7 +35,7 @@ public class FileKeystoreManagerTest extends TestCase {
         keystore.setKeystorePassword("keyStorePassword");
         keystore.setKeyPasswords("myalias=myAliasPassword");
         keystore.setName("ks");
-        mgr.setKeystores(new KeystoreInstance[] { keystore });
+        mgr.setKeystores(new KeystoreInstance[] {keystore });
         keystoreManager = mgr;
     }
     

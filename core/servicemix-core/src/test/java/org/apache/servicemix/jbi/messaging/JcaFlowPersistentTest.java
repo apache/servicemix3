@@ -27,8 +27,8 @@ import org.springframework.core.io.ClassPathResource;
  */
 public class JcaFlowPersistentTest extends AbstractPersistenceTest {
 
-	protected BrokerService broker;
-    
+    protected BrokerService broker;
+
     protected void setUp() throws Exception {
         BrokerFactoryBean bfb = new BrokerFactoryBean(new ClassPathResource("org/apache/servicemix/jbi/nmr/flow/jca/broker.xml"));
         bfb.afterPropertiesSet();
@@ -36,41 +36,41 @@ public class JcaFlowPersistentTest extends AbstractPersistenceTest {
         broker.start();
         super.setUp();
     }
-    
+
     protected void tearDown() throws Exception {
-    	super.tearDown();
-    	broker.stop();
+        super.tearDown();
+        broker.stop();
     }
-    
+
     protected Flow createFlow() {
-    	JCAFlow flow = new JCAFlow("tcp://localhost:61216");
-    	return flow;
+        JCAFlow flow = new JCAFlow("tcp://localhost:61216");
+        return flow;
     }
 
     public void testSyncSendSyncReceive() throws Exception {
-    	try {
-        	runSimpleTest(true, true);
-        	fail("sendSync can not be used");
-    	} catch (Exception e) {
-    		// sendSync can not be used
-    	}
+        try {
+            runSimpleTest(true, true);
+            fail("sendSync can not be used");
+        } catch (Exception e) {
+            // sendSync can not be used
+        }
     }
 
     public void testAsyncSendSyncReceive() throws Exception {
-   		runSimpleTest(false, true);
+        runSimpleTest(false, true);
     }
 
     public void testSyncSendAsyncReceive() throws Exception {
-    	try {
-	    	runSimpleTest(true, false);
-        	fail("sendSync can not be used");
-    	} catch (Exception e) {
-    		// sendSync can not be used
-    	}
+        try {
+            runSimpleTest(true, false);
+            fail("sendSync can not be used");
+        } catch (Exception e) {
+            // sendSync can not be used
+        }
     }
 
     public void testAsyncSendAsyncReceive() throws Exception {
-    	runSimpleTest(false, false);
+        runSimpleTest(false, false);
     }
 
 }

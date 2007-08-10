@@ -26,5 +26,6 @@ public interface Receiver {
     /**
      * Return access to the list of messages being received
      */
-    public MessageList getMessageList();
+    MessageList getMessageList();
+
 }

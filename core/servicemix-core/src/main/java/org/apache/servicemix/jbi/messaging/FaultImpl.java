@@ -20,7 +20,7 @@ import javax.jbi.messaging.Fault;
 
 /**
  * Fault implementation
- *
+ * 
  * @version $Revision$
  */
 public class FaultImpl extends NormalizedMessageImpl implements Fault {

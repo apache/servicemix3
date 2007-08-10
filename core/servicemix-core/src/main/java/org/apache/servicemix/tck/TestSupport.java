@@ -16,14 +16,9 @@
  */
 package org.apache.servicemix.tck;
 
-import org.apache.servicemix.client.ServiceMixClient;
-import org.apache.servicemix.jbi.container.SpringJBIContainer;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.util.Date;
 
-import javax.jbi.JBIException;
 import javax.jbi.messaging.Fault;
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.NormalizedMessage;
@@ -32,14 +27,21 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 
-import java.io.IOException;
-import java.util.Date;
+import org.w3c.dom.Node;
+
+import org.xml.sax.SAXException;
+
+import org.apache.servicemix.client.ServiceMixClient;
+import org.apache.servicemix.jbi.container.SpringJBIContainer;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver;
 
 /**
  * @version $Revision$
  */
 public abstract class TestSupport extends SpringTestSupport {
     protected ServiceMixClient client;
+
     protected Receiver receiver;
 
     protected void setUp() throws Exception {
@@ -50,8 +52,9 @@ public abstract class TestSupport extends SpringTestSupport {
     }
 
     /**
-     * Sends messages to the given service and asserts that the receiver gets them all
-     *
+     * Sends messages to the given service and asserts that the receiver gets
+     * them all
+     * 
      * @param service
      * @throws javax.jbi.messaging.MessagingException
      */
@@ -61,16 +64,16 @@ public abstract class TestSupport extends SpringTestSupport {
     }
 
     protected void sendMessages(QName service, int messageCount) throws Exception {
-    	sendMessages(service, messageCount, true, null);
+        sendMessages(service, messageCount, true, null);
     }
 
     protected void sendMessages(QName service, int messageCount, String message) throws Exception {
-    	sendMessages(service, messageCount, true, message);
+        sendMessages(service, messageCount, true, message);
     }
 
     /**
      * Sends the given number of messages to the given service
-     *
+     * 
      * @param service
      * @throws javax.jbi.messaging.MessagingException
      */
@@ -90,9 +93,9 @@ public abstract class TestSupport extends SpringTestSupport {
 
             exchange.setService(service);
             if (sync) {
-            	client.sendSync(exchange);
+                client.sendSync(exchange);
             } else {
-            	client.send(exchange);
+                client.send(exchange);
             }
 
             // lets assert that we have no failure
@@ -122,17 +125,18 @@ public abstract class TestSupport extends SpringTestSupport {
     }
 
     protected MessageList assertMessagesReceived(String receiverName, int messageCount) throws Exception {
-        Receiver receiver = (Receiver) getBean(receiverName);
-        assertNotNull("receiver: " + receiverName + " not found in JBI container", receiver);
+        Receiver rcv = (Receiver) getBean(receiverName);
+        assertNotNull("receiver: " + receiverName + " not found in JBI container", rcv);
 
-        MessageList messageList = receiver.getMessageList();
+        MessageList messageList = rcv.getMessageList();
         assertMessagesReceived(messageList, messageCount);
         return messageList;
     }
 
     /**
-     * Performs a request using the given file from the classpath as the request body and return the answer
-     *
+     * Performs a request using the given file from the classpath as the request
+     * body and return the answer
+     * 
      * @param serviceName
      * @param fileOnClassPath
      * @return
@@ -149,8 +153,9 @@ public abstract class TestSupport extends SpringTestSupport {
     }
 
     /**
-     * Performs a request using the given file from the classpath as the request body and return the answer
-     *
+     * Performs a request using the given file from the classpath as the request
+     * body and return the answer
+     * 
      * @param serviceName
      * @param fileOnClassPath
      * @return
@@ -167,7 +172,7 @@ public abstract class TestSupport extends SpringTestSupport {
         assertNotNull("Message: " + index + " is null!", message);
 
         Object value = message.getProperty(propertyName);
-        assertEquals("property: " +  propertyName, expectedValue, value);
+        assertEquals("property: " + propertyName, expectedValue, value);
     }
 
     protected void assertMessageBody(MessageList messageList, int index, String expectedXml) throws TransformerException {
@@ -181,7 +186,8 @@ public abstract class TestSupport extends SpringTestSupport {
         assertEquals("message XML for: " + index, expectedXml, value);
     }
 
-    protected void assertMessageXPath(MessageList messageList, int index, String xpath, String expectedValue) throws TransformerException, ParserConfigurationException, IOException, SAXException {
+    protected void assertMessageXPath(MessageList messageList, int index, String xpath, String expectedValue) throws TransformerException,
+                    ParserConfigurationException, IOException, SAXException {
         NormalizedMessage message = (NormalizedMessage) messageList.getMessages().get(index);
         assertNotNull("Message: " + index + " is null!", message);
 
@@ -191,11 +197,11 @@ public abstract class TestSupport extends SpringTestSupport {
 
         String value = textValueOfXPath(node, xpath);
         String xmlText = transformer.toString(node);
-        
+
         if (log.isTraceEnabled()) {
             log.trace("Message: " + index + " received XML: " + xmlText);
         }
-        
+
         assertEquals("message XML: " + index + " for xpath: " + xpath + " body was: " + xmlText, expectedValue, value);
     }
 }

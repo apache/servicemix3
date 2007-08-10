@@ -40,7 +40,8 @@ public class DefaultFlowChooser implements FlowChooser {
             }
             if (foundFlow == null) {
                 throw new MessagingException("Flow '" + flow + "' was specified but not found");
-            } if (foundFlow.canHandle(exchange)) {
+            }
+            if (foundFlow.canHandle(exchange)) {
                 return foundFlow;
             } else {
                 throw new MessagingException("Flow '" + flow + "' was specified but not able to handle exchange");
@@ -55,5 +56,5 @@ public class DefaultFlowChooser implements FlowChooser {
         }
         return null;
     }
-    
+
 }

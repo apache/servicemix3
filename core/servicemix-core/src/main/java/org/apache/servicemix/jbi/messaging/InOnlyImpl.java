@@ -16,50 +16,51 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
-import javax.jbi.messaging.InOnly;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 
+import javax.jbi.messaging.InOnly;
+
 /**
  * InOnly message exchange.
- *
+ * 
  * @version $Revision$
  */
 public class InOnlyImpl extends MessageExchangeImpl implements InOnly {
-    
+
     private static final long serialVersionUID = -4851111881482457905L;
-    
-    private static int[][] STATES_CONSUMER = {
-        { CAN_CONSUMER + CAN_OWNER + CAN_SET_IN_MSG + CAN_SEND + CAN_STATUS_ACTIVE, 1, -1, -1, -1 },
-        { CAN_CONSUMER, -1, -1, 2, 2 },
-        { CAN_CONSUMER + CAN_OWNER, -1, -1, -1, -1 },
+
+    private static final int[][] STATES_CONSUMER = { 
+        {CAN_CONSUMER + CAN_OWNER + CAN_SET_IN_MSG + CAN_SEND + CAN_STATUS_ACTIVE, 1, -1, -1, -1 },
+        {CAN_CONSUMER, -1, -1, 2, 2 }, 
+        {CAN_CONSUMER + CAN_OWNER, -1, -1, -1, -1 }
     };
-    private static int[][] STATES_PROVIDER = {
-        { CAN_PROVIDER, 1, -1, -1, -1 },
-        { CAN_PROVIDER + CAN_OWNER + CAN_SEND + CAN_STATUS_DONE + CAN_STATUS_ERROR, -1, -1, 2, 2 },
-        { CAN_PROVIDER, -1, -1, -1, -1 },
+
+    private static final int[][] STATES_PROVIDER = { 
+        {CAN_PROVIDER, 1, -1, -1, -1 },
+        {CAN_PROVIDER + CAN_OWNER + CAN_SEND + CAN_STATUS_DONE + CAN_STATUS_ERROR, -1, -1, 2, 2 },
+        {CAN_PROVIDER, -1, -1, -1, -1 }
     };
-    
+
     public InOnlyImpl() {
     }
-    
+
     public InOnlyImpl(String exchangeId) {
         super(exchangeId, MessageExchangeSupport.IN_ONLY, STATES_CONSUMER);
         this.mirror = new InOnlyImpl(this);
     }
-    
+
     public InOnlyImpl(ExchangePacket packet) {
         super(packet, STATES_CONSUMER);
         this.mirror = new InOnlyImpl(this);
     }
-    
+
     protected InOnlyImpl(InOnlyImpl mep) {
         super(mep.packet, STATES_PROVIDER);
         this.mirror = mep;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {        
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         this.packet = new ExchangePacket();
         this.packet.readExternal(in);
         if (this.packet.in != null) {
@@ -85,6 +86,5 @@ public class InOnlyImpl extends MessageExchangeImpl implements InOnly {
             this.mirror.states = STATES_PROVIDER;
         }
     }
-
 
 }

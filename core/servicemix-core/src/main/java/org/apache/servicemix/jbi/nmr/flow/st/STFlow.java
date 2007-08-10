@@ -16,12 +16,12 @@
  */
 package org.apache.servicemix.jbi.nmr.flow.st;
 
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
+
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.flow.AbstractFlow;
 import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
-
-import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 
 /**
  * A simple Straight through flow.
@@ -53,7 +53,7 @@ public class STFlow extends AbstractFlow {
      * The type of Flow
      * @return the type
      */
-    public String getDescription(){
+    public String getDescription() {
         return "st";
     }
     

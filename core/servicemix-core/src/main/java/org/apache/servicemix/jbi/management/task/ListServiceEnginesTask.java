@@ -17,19 +17,21 @@
 package org.apache.servicemix.jbi.management.task;
 
 import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 /**
  * ListServiceEnginesTask
- *
- * @version $Revision: 
+ * 
+ * @version $Revision:
  */
 public class ListServiceEnginesTask extends JbiTask {
-    
+
     private String state;
+
     private String serviceAssemblyName;
+
     private String sharedLibraryName;
+
     private String xmlOutput;
 
     /**
@@ -40,15 +42,15 @@ public class ListServiceEnginesTask extends JbiTask {
     }
 
     /**
-     * @param xmlOutput the xmlOutput to set
+     * @param xmlOutput
+     *            the xmlOutput to set
      */
     public void setXmlOutput(String xmlOutput) {
         this.xmlOutput = xmlOutput;
     }
 
-
     /**
-     *
+     * 
      * @return the state
      */
     public String getState() {
@@ -56,15 +58,16 @@ public class ListServiceEnginesTask extends JbiTask {
     }
 
     /**
-     *
-     * @param state Sets the state
+     * 
+     * @param state
+     *            Sets the state
      */
     public void setState(String state) {
         this.state = state;
     }
 
     /**
-     *
+     * 
      * @return service assembly name
      */
     public String getServiceAssemblyName() {
@@ -72,15 +75,16 @@ public class ListServiceEnginesTask extends JbiTask {
     }
 
     /**
-     *
-     * @param serviceAssemblyName the service assembly name to set
+     * 
+     * @param serviceAssemblyName
+     *            the service assembly name to set
      */
     public void setServiceAssemblyName(String serviceAssemblyName) {
         this.serviceAssemblyName = serviceAssemblyName;
     }
 
     /**
-     *
+     * 
      * @return The shared library name
      */
     public String getSharedLibraryName() {
@@ -88,17 +92,17 @@ public class ListServiceEnginesTask extends JbiTask {
     }
 
     /**
-     *
-     * @param sharedLibraryName Sets the shared library name
+     * 
+     * @param sharedLibraryName
+     *            Sets the shared library name
      */
     public void setSharedLibraryName(String sharedLibraryName) {
         this.sharedLibraryName = sharedLibraryName;
     }
 
-
     /**
      * execute the task
-     *
+     * 
      * @throws BuildException
      */
     public void doExecute(AdminCommandsServiceMBean acs) throws Exception {

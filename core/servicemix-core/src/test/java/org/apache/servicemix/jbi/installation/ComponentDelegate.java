@@ -27,42 +27,42 @@ import org.w3c.dom.DocumentFragment;
 
 public class ComponentDelegate implements Component {
 
-	private Component delegate;
-	
-	public ComponentDelegate(Component delegate) {
-		this.delegate = delegate;
-	}
+    private Component delegate;
 
-	public Component getDelegate() {
-		return delegate;
-	}
+    public ComponentDelegate(Component delegate) {
+        this.delegate = delegate;
+    }
 
-	public void setDelegate(Component delegate) {
-		this.delegate = delegate;
-	}
+    public Component getDelegate() {
+        return delegate;
+    }
 
-	public ComponentLifeCycle getLifeCycle() {
-		return delegate.getLifeCycle();
-	}
+    public void setDelegate(Component delegate) {
+        this.delegate = delegate;
+    }
 
-	public Document getServiceDescription(ServiceEndpoint endpoint) {
-		return delegate.getServiceDescription(endpoint);
-	}
+    public ComponentLifeCycle getLifeCycle() {
+        return delegate.getLifeCycle();
+    }
 
-	public ServiceUnitManager getServiceUnitManager() {
-		return delegate.getServiceUnitManager();
-	}
+    public Document getServiceDescription(ServiceEndpoint endpoint) {
+        return delegate.getServiceDescription(endpoint);
+    }
 
-	public boolean isExchangeWithConsumerOkay(ServiceEndpoint endpoint, MessageExchange exchange) {
-		return delegate.isExchangeWithConsumerOkay(endpoint, exchange);
-	}
+    public ServiceUnitManager getServiceUnitManager() {
+        return delegate.getServiceUnitManager();
+    }
 
-	public boolean isExchangeWithProviderOkay(ServiceEndpoint endpoint, MessageExchange exchange) {
-		return delegate.isExchangeWithProviderOkay(endpoint, exchange);
-	}
+    public boolean isExchangeWithConsumerOkay(ServiceEndpoint endpoint, MessageExchange exchange) {
+        return delegate.isExchangeWithConsumerOkay(endpoint, exchange);
+    }
 
-	public ServiceEndpoint resolveEndpointReference(DocumentFragment epr) {
-		return delegate.resolveEndpointReference(epr);
-	}
-	
+    public boolean isExchangeWithProviderOkay(ServiceEndpoint endpoint, MessageExchange exchange) {
+        return delegate.isExchangeWithProviderOkay(endpoint, exchange);
+    }
+
+    public ServiceEndpoint resolveEndpointReference(DocumentFragment epr) {
+        return delegate.resolveEndpointReference(epr);
+    }
+
 }

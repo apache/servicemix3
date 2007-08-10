@@ -30,8 +30,8 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
-import javax.security.auth.login.LoginException;
 import javax.security.auth.login.FailedLoginException;
+import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
 import org.apache.commons.logging.Log;
@@ -45,14 +45,12 @@ import org.apache.servicemix.jbi.security.UserPrincipal;
  */
 public class PropertiesLoginModule implements LoginModule {
 
-    private final String USER_FILE = "org.apache.servicemix.security.properties.user";
-    private final String GROUP_FILE = "org.apache.servicemix.security.properties.group";
-
-    private static final Log log = LogFactory.getLog(PropertiesLoginModule.class);
+    private static final String USER_FILE = "org.apache.servicemix.security.properties.user";
+    private static final String GROUP_FILE = "org.apache.servicemix.security.properties.group";
+    private static final Log LOG = LogFactory.getLog(PropertiesLoginModule.class);
 
     private Subject subject;
     private CallbackHandler callbackHandler;
-
     private boolean debug;
     private String usersFile;
     private String groupsFile;
@@ -62,27 +60,27 @@ public class PropertiesLoginModule implements LoginModule {
     private Set principals = new HashSet();
     private File baseDir;
 
-    public void initialize(Subject subject, CallbackHandler callbackHandler, Map sharedState, Map options) {
-        this.subject = subject;
-        this.callbackHandler = callbackHandler;
+    public void initialize(Subject sub, CallbackHandler handler, Map sharedState, Map options) {
+        this.subject = sub;
+        this.callbackHandler = handler;
 
-        if( System.getProperty("java.security.auth.login.config")!=null ) {
-            baseDir=new File(System.getProperty("java.security.auth.login.config")).getParentFile();
+        if (System.getProperty("java.security.auth.login.config") != null) {
+            baseDir = new File(System.getProperty("java.security.auth.login.config")).getParentFile();
         } else {
             baseDir = new File(".");
         }
 
         debug = "true".equalsIgnoreCase((String) options.get("debug"));
-        usersFile = (String) options.get(USER_FILE)+"";
-        groupsFile = (String) options.get(GROUP_FILE)+"";
+        usersFile = (String) options.get(USER_FILE) + "";
+        groupsFile = (String) options.get(GROUP_FILE) + "";
 
         if (debug) {
-            log.debug("Initialized debug=" + debug + " usersFile=" + usersFile + " groupsFile=" + groupsFile+" basedir="+baseDir);
+            LOG.debug("Initialized debug=" + debug + " usersFile=" + usersFile + " groupsFile=" + groupsFile + " basedir=" + baseDir);
         }
     }
 
     public boolean login() throws LoginException {
-        File f = new File(baseDir,usersFile);
+        File f = new File(baseDir, usersFile);
         try {
             users.load(new java.io.FileInputStream(f));
         } catch (IOException ioe) {
@@ -108,17 +106,23 @@ public class PropertiesLoginModule implements LoginModule {
         }
         user = ((NameCallback) callbacks[0]).getName();
         char[] tmpPassword = ((PasswordCallback) callbacks[1]).getPassword();
-        if (tmpPassword == null) tmpPassword = new char[0];
+        if (tmpPassword == null) {
+            tmpPassword = new char[0];
+        }
 
         String password = users.getProperty(user);
 
-        if (password == null) throw new FailedLoginException("User does not exist");
-        if (!password.equals(new String(tmpPassword))) throw new FailedLoginException("Password does not match");
+        if (password == null) {
+            throw new FailedLoginException("User does not exist");
+        }
+        if (!password.equals(new String(tmpPassword))) {
+            throw new FailedLoginException("Password does not match");
+        }
 
         users.clear();
 
         if (debug) {
-            log.debug("login " + user);
+            LOG.debug("login " + user);
         }
         return true;
     }
@@ -142,7 +146,7 @@ public class PropertiesLoginModule implements LoginModule {
         clear();
 
         if (debug) {
-            log.debug("commit");
+            LOG.debug("commit");
         }
         return true;
     }
@@ -151,7 +155,7 @@ public class PropertiesLoginModule implements LoginModule {
         clear();
 
         if (debug) {
-            log.debug("abort");
+            LOG.debug("abort");
         }
         return true;
     }
@@ -161,7 +165,7 @@ public class PropertiesLoginModule implements LoginModule {
         principals.clear();
 
         if (debug) {
-            log.debug("logout");
+            LOG.debug("logout");
         }
         return true;
     }

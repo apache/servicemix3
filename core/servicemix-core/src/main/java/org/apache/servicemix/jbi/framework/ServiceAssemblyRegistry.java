@@ -74,8 +74,8 @@ public class ServiceAssemblyRegistry {
     public void shutDown() {
     }
 
-    public ServiceAssemblyLifeCycle register(ServiceAssembly sa, String[] suKeys, ServiceAssemblyEnvironment env)
-                    throws DeploymentException {
+    public ServiceAssemblyLifeCycle register(ServiceAssembly sa, String[] suKeys, 
+                                             ServiceAssemblyEnvironment env) throws DeploymentException {
         String saName = sa.getIdentification().getName();
         if (!serviceAssemblies.containsKey(saName)) {
             ServiceAssemblyLifeCycle salc = new ServiceAssemblyLifeCycle(sa, env, registry);
@@ -217,7 +217,8 @@ public class ServiceAssemblyRegistry {
             ServiceUnit[] sus = salc.getServiceAssembly().getServiceUnits();
             if (sus != null) {
                 for (int i = 0; i < sus.length; i++) {
-                    if (sus[i].getTarget().getComponentName().equals(componentName) && sus[i].getIdentification().getName().equals(suName)) {
+                    if (sus[i].getTarget().getComponentName().equals(componentName)
+                                    && sus[i].getIdentification().getName().equals(suName)) {
                         result = true;
                         break;
                     }

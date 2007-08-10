@@ -16,9 +16,6 @@
  */
 package org.apache.servicemix.tck;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import javax.jbi.JBIException;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.component.ComponentLifeCycle;
@@ -29,6 +26,9 @@ import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.management.ObjectName;
 import javax.xml.namespace.QName;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * A simple POJO which just implements the {@link javax.jbi.component.ComponentLifeCycle}
@@ -41,7 +41,7 @@ public class AsyncReceiverPojo implements ComponentLifeCycle, Receiver, Runnable
     public static final QName SERVICE = ReceiverPojo.SERVICE;
     public static final String ENDPOINT = ReceiverPojo.ENDPOINT;
 
-    private static final Log log = LogFactory.getLog(AsyncReceiverPojo.class);
+    private static final Log LOG = LogFactory.getLog(AsyncReceiverPojo.class);
 
     private ComponentContext context;
     private MessageList messageList = new MessageList();
@@ -51,9 +51,9 @@ public class AsyncReceiverPojo implements ComponentLifeCycle, Receiver, Runnable
 
     // ComponentLifeCycle interface
     //-------------------------------------------------------------------------
-    public void init(ComponentContext context) throws JBIException {
-        this.context = context;
-        context.activateEndpoint(SERVICE, ENDPOINT);
+    public void init(ComponentContext ctx) throws JBIException {
+        this.context = ctx;
+        ctx.activateEndpoint(SERVICE, ENDPOINT);
     }
 
     public void shutDown() throws JBIException {
@@ -88,13 +88,12 @@ public class AsyncReceiverPojo implements ComponentLifeCycle, Receiver, Runnable
         while (running) {
             try {
                 DeliveryChannel deliveryChannel = context.getDeliveryChannel();
-                log.info("about to do an accept on deliveryChannel: " + deliveryChannel);
+                LOG.info("about to do an accept on deliveryChannel: " + deliveryChannel);
                 MessageExchange messageExchange = deliveryChannel.accept();
-                log.info("received me: " + messageExchange);
+                LOG.info("received me: " + messageExchange);
                 onMessageExchange(messageExchange);
-            }
-            catch (MessagingException e) {
-                log.error("Failed to process inbound messages: " + e, e);
+            } catch (MessagingException e) {
+                LOG.error("Failed to process inbound messages: " + e, e);
             }
         }
     }
@@ -106,7 +105,7 @@ public class AsyncReceiverPojo implements ComponentLifeCycle, Receiver, Runnable
         context.getDeliveryChannel().send(exchange);
     }
 
-	public ComponentContext getContext() {
-		return context;
-	}
+    public ComponentContext getContext() {
+        return context;
+    }
 }

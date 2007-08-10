@@ -16,11 +16,11 @@
  */
 package org.apache.servicemix.jbi.management;
 
+import java.beans.PropertyChangeListener;
+
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanOperationInfo;
-
-import java.beans.PropertyChangeListener;
 
 /**
  * An object to be managed can implement this class
@@ -35,51 +35,49 @@ public interface MBeanInfoProvider {
      * @return array of AttributeInfos
      * @throws JMException
      */
-    public MBeanAttributeInfo[] getAttributeInfos() throws JMException;
+    MBeanAttributeInfo[] getAttributeInfos() throws JMException;
     
     /**
      * Get an array of MBeanOperationInfo
      * @return array of OperationInfos
      * @throws JMException
      */
-    public MBeanOperationInfo[] getOperationInfos() throws JMException;
+    MBeanOperationInfo[] getOperationInfos() throws JMException;
     
     /**
      * Get the Object to Manage
      * @return the Object to Manage
      */
-    public Object getObjectToManage();
+    Object getObjectToManage();
     
     /**
      * Get the name of the item
      * @return the name
      */
-    public String getName();
+    String getName();
     
     /**
      * Get the type of this mbean
      * @return the type
      */
-    public String getType();
+    String getType();
     
     /**
      * Get the type of this mbean
      * @return the type
      */
-    public String getSubType();
+    String getSubType();
     
     /**
      * Get the Description of the item
      * @return the description
      */
-    public String getDescription();
+    String getDescription();
     
     /**
      * Register for propertyChange events
      * @param l
      */
-    public void setPropertyChangeListener(PropertyChangeListener l);
-    
-    
-    
+    void setPropertyChangeListener(PropertyChangeListener l);
+
 }

@@ -16,9 +16,9 @@
  */
 package org.apache.servicemix.jbi.monitoring.stats;
 
-import javax.management.j2ee.statistics.CountStatistic;
-
 import java.util.concurrent.atomic.AtomicLong;
+
+import javax.management.j2ee.statistics.CountStatistic;
 
 /**
  * A count statistic implementation
@@ -107,10 +107,11 @@ public class CountStatisticImpl extends StatisticImpl implements CountStatistic 
      */
     public double getPeriod() {
         double count = counter.get();
-        if( count == 0 )
+        if (count == 0) {
             return 0;
-        double time = (System.currentTimeMillis() - getStartTime());
-        return (time/(count*1000.0));
+        }
+        double time = System.currentTimeMillis() - getStartTime();
+        return time / (count * 1000.0);
     }
     
     /**
@@ -118,8 +119,8 @@ public class CountStatisticImpl extends StatisticImpl implements CountStatistic 
      */
     public double getFrequency() {
         double count = counter.get();
-        double time = (System.currentTimeMillis() - getStartTime());
-        return (count*1000.0/time);
+        double time = System.currentTimeMillis() - getStartTime();
+        return count * 1000.0 / time;
     }
 
 }
