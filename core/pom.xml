@@ -23,7 +23,7 @@
 
     <parent>
         <groupId>org.apache.servicemix</groupId>
-        <artifactId>servicemix</artifactId>
+        <artifactId>parent</artifactId>
         <version>3.2-incubating-SNAPSHOT</version>
     </parent>
 
