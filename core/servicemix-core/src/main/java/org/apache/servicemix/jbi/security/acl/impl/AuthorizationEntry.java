@@ -59,14 +59,14 @@ public class AuthorizationEntry {
         this.service = service;
         this.endpoint = endpoint;
         this.operation = operation;
-        setRoles(roles);
+        this.acls = buildRoles(roles);
     }
     
     public AuthorizationEntry(QName service, String endpoint, QName operation, String roles, String type) {
         this.service = service;
         this.endpoint = endpoint;
         this.operation = operation;
-        setRoles(roles);
+        this.acls = buildRoles(roles);
         this.type = type;
     }
     
@@ -147,12 +147,7 @@ public class AuthorizationEntry {
     }
     
     public void setRoles(String roles) {
-        this.acls = new HashSet<GroupPrincipal>();
-        StringTokenizer iter = new StringTokenizer(roles, ",");
-        while (iter.hasMoreTokens()) {
-            String name = iter.nextToken().trim();
-            this.acls.add(new GroupPrincipal(name));
-        }
+        this.acls = buildRoles(roles);
     }
     
     public String getRoles() {
@@ -171,5 +166,15 @@ public class AuthorizationEntry {
     
     public String toString() {
         return "AuthorizationEntry[service=" + service + ", endpoint=" + endpoint + ", roles=" + getRoles() + "]";
+    }
+    
+    private Set<GroupPrincipal> buildRoles(String roles) {
+        Set<GroupPrincipal> s = new HashSet<GroupPrincipal>();
+        StringTokenizer iter = new StringTokenizer(roles, ",");
+        while (iter.hasMoreTokens()) {
+            String name = iter.nextToken().trim();
+            s.add(new GroupPrincipal(name));
+        }
+        return s;
     }
 }

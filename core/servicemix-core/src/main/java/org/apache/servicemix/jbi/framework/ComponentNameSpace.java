@@ -88,7 +88,7 @@ public class ComponentNameSpace implements Externalizable {
      */
     public boolean equals(Object obj) {
         boolean result = false;
-        if (obj != null && obj instanceof ComponentNameSpace) {
+        if (obj instanceof ComponentNameSpace) {
             ComponentNameSpace other = (ComponentNameSpace) obj;
             result = other.containerName.equals(this.containerName)
                     && other.name.equals(this.name);
@@ -136,8 +136,7 @@ public class ComponentNameSpace implements Externalizable {
      * @return
      */
     public ComponentNameSpace copy() {
-        ComponentNameSpace result = new ComponentNameSpace(containerName, name);
-        return result;
+        return new ComponentNameSpace(containerName, name);
     }
     
 }

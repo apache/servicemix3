@@ -286,12 +286,12 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
     public String listComponents(boolean excludeSEs, boolean excludeBCs, boolean excludePojos, String requiredState,
                     String sharedLibraryName, String serviceAssemblyName) throws Exception {
         // validate requiredState
-        if (requiredState != null && requiredState.length() > 0) {
-            if (!LifeCycleMBean.UNKNOWN.equalsIgnoreCase(requiredState) && !LifeCycleMBean.SHUTDOWN.equalsIgnoreCase(requiredState)
-                            && !LifeCycleMBean.STOPPED.equalsIgnoreCase(requiredState)
-                            && !LifeCycleMBean.STARTED.equalsIgnoreCase(requiredState)) {
-                throw ManagementSupport.failure("listComponents", "Required state '" + requiredState + "' is not a valid state.");
-            }
+        if (requiredState != null && requiredState.length() > 0
+                        && !LifeCycleMBean.UNKNOWN.equalsIgnoreCase(requiredState)
+                        && !LifeCycleMBean.SHUTDOWN.equalsIgnoreCase(requiredState)
+                        && !LifeCycleMBean.STOPPED.equalsIgnoreCase(requiredState)
+                        && !LifeCycleMBean.STARTED.equalsIgnoreCase(requiredState)) {
+            throw ManagementSupport.failure("listComponents", "Required state '" + requiredState + "' is not a valid state.");
         }
         // Get components
         Collection connectors = container.getRegistry().getComponents();

@@ -76,9 +76,13 @@ public abstract class DOMStreamReader implements XMLStreamReader {
      * @param element
      */
     public DOMStreamReader(ElementFrame frame) {
-        this.frame = frame;
+        init(frame); // NOPMD
+    }
+
+    private void init(ElementFrame f) {
+        this.frame = f;
         frames.push(this.frame);
-        newFrame(frame);
+        newFrame(f);
     }
 
     protected ElementFrame getCurrentFrame() {

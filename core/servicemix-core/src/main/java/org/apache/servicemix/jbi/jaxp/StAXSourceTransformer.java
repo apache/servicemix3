@@ -141,13 +141,11 @@ public class StAXSourceTransformer extends SourceTransformer {
     // Implementation methods
     // -------------------------------------------------------------------------
     protected XMLInputFactory createInputFactory() {
-        XMLInputFactory answer = XMLInputFactory.newInstance();
-        return answer;
+        return XMLInputFactory.newInstance();
     }
 
     protected XMLOutputFactory createOutputFactory() {
-        XMLOutputFactory answer = XMLOutputFactory.newInstance();
-        return answer;
+        return XMLOutputFactory.newInstance();
     }
 
 }

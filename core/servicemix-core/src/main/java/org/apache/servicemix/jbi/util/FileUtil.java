@@ -93,9 +93,10 @@ public final class FileUtil {
      */
     public static void copyInputStream(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-        int len;
-        while ((len = in.read(buffer)) >= 0) {
+        int len = in.read(buffer);
+        while (len >= 0) {
             out.write(buffer, 0, len);
+            len = in.read(buffer);
         }
         in.close();
         out.close();
@@ -280,12 +281,17 @@ public final class FileUtil {
                 continue;
             }
             FileInputStream fis = new FileInputStream(f);
-            ZipEntry anEntry = new ZipEntry(path + f.getName());
-            zos.putNextEntry(anEntry);
-            while ((bytesIn = fis.read(readBuffer)) != -1) {
-                zos.write(readBuffer, 0, bytesIn);
+            try {
+                ZipEntry anEntry = new ZipEntry(path + f.getName());
+                zos.putNextEntry(anEntry);
+                bytesIn = fis.read(readBuffer);
+                while (bytesIn != -1) {
+                    zos.write(readBuffer, 0, bytesIn);
+                    bytesIn = fis.read(readBuffer);
+                }
+            } finally {
+                fis.close();
             }
-            fis.close();
         }
     }
 }

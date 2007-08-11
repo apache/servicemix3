@@ -51,8 +51,8 @@ public class GroupPrincipalTest extends TestCase {
 
         assertTrue(p1.equals(p1));
         assertTrue(p1.equals(p2));
-        assertFalse(p1.equals(null));
-        assertFalse(p1.equals("FOO"));
+        assertFalse(p1.equals((Object) null)); // NOPMD just testing
+        assertFalse(p1.equals(new Object())); // NOPMD just testing
         assertFalse(p1.equals(p3));
     }
 }

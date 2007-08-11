@@ -69,7 +69,7 @@ public class InstallerMBeanImpl implements InstallerMBean {
         initBootstrap();
     }
     
-    protected void initBootstrap() throws DeploymentException {
+    private void initBootstrap() throws DeploymentException {
         try {
             if (!initialized) {
                 // Unregister a previously registered extension mbean,
@@ -107,7 +107,7 @@ public class InstallerMBeanImpl implements InstallerMBean {
         }
     }
     
-    protected Bootstrap createBootstrap() throws DeploymentException {
+    private Bootstrap createBootstrap() throws DeploymentException {
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
         org.apache.servicemix.jbi.deployment.Component descriptor = context.getDescriptor();
         try {
@@ -118,8 +118,7 @@ public class InstallerMBeanImpl implements InstallerMBean {
                                     null);
             Thread.currentThread().setContextClassLoader(cl);
             Class bootstrapClass = cl.loadClass(descriptor.getBootstrapClassName());
-            Bootstrap bs = (Bootstrap) bootstrapClass.newInstance();
-            return bs;
+            return (Bootstrap) bootstrapClass.newInstance();
         } catch (MalformedURLException e) {
             LOG.error("Could not create class loader", e);
             throw new DeploymentException(e);
@@ -290,7 +289,7 @@ public class InstallerMBeanImpl implements InstallerMBean {
      * @throws MalformedURLException
      * @throws DeploymentException
      */
-    protected ClassLoader buildClassLoader(
+    private ClassLoader buildClassLoader(
                     File dir,
                     String[] classPathNames, 
                     boolean parentFirst,

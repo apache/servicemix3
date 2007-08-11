@@ -385,14 +385,12 @@ public class BaseStandardMBean extends StandardMBean implements ModelMBeanNotifi
      * @throws RuntimeOperationsException
      */
     public void sendNotification(final Notification notification) throws MBeanException, RuntimeOperationsException {
-        if (notification != null) {
-            if (!executorService.isShutdown()) {
-                executorService.execute(new Runnable() {
-                    public void run() {
-                        broadcasterSupport.sendNotification(notification);
-                    }
-                });
-            }
+        if (notification != null && !executorService.isShutdown()) {
+            executorService.execute(new Runnable() {
+                public void run() {
+                    broadcasterSupport.sendNotification(notification);
+                }
+            });
         }
     }
 
@@ -463,7 +461,7 @@ public class BaseStandardMBean extends StandardMBean implements ModelMBeanNotifi
     /**
      * @return notificationInfo
      */
-    public MBeanNotificationInfo[] getNotificationInfo() {
+    public final MBeanNotificationInfo[] getNotificationInfo() {
         MBeanNotificationInfo[] result = new MBeanNotificationInfo[2];
         Descriptor genericDescriptor = new DescriptorSupport(new String[] {
             "name=GENERIC", "descriptorType=notification", "log=T",

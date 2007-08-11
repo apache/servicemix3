@@ -80,7 +80,7 @@ public class EndpointRegistry {
         this.endpointProcessors = getEndpointProcessors();
     }
     
-    protected List<EndpointProcessor> getEndpointProcessors() {
+    private List<EndpointProcessor> getEndpointProcessors() {
         List<EndpointProcessor> l = new ArrayList<EndpointProcessor>();
         String[] classes = {"org.apache.servicemix.jbi.framework.support.SUDescriptorProcessor",
                             "org.apache.servicemix.jbi.framework.support.WSDL1Processor",

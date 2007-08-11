@@ -255,8 +255,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         if (getComponentsDir() == null) {
             return null;
         }
-        File result = FileUtil.getDirectoryPath(getComponentsDir(), componentName);
-        return result;
+        return FileUtil.getDirectoryPath(getComponentsDir(), componentName);
     }
 
     /**
@@ -270,8 +269,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         if (getComponentsDir() == null) {
             return null;
         }
-        File result = FileUtil.getDirectoryPath(getComponentsDir(), componentName);
-        return result;
+        return FileUtil.getDirectoryPath(getComponentsDir(), componentName);
     }
 
     /**
@@ -284,8 +282,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
     public File getNewComponentInstallationDir(String componentName) throws IOException {
         File result = getComponentRootDir(componentName);
         // get new version dir
-        result = FileVersionUtil.getNewVersionDirectory(result);
-        return result;
+        return FileVersionUtil.getNewVersionDirectory(result);
     }
 
     /**
@@ -298,8 +295,7 @@ public class EnvironmentContext extends BaseSystemService implements Environment
     public File getComponentInstallationDir(String componentName) throws IOException {
         File result = getComponentRootDir(componentName);
         // get the version directory
-        result = FileVersionUtil.getLatestVersionDirectory(result);
-        return result;
+        return FileVersionUtil.getLatestVersionDirectory(result);
     }
 
     public ComponentEnvironment getNewComponentEnvironment(String compName) throws IOException {

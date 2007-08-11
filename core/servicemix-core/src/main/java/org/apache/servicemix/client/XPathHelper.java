@@ -34,6 +34,7 @@ import javax.xml.xpath.XPathVariableResolver;
  * @version $Revision: $
  */
 public class XPathHelper {
+
     private Source content;
     private XPathFactory xPathFactory;
     private XPath xPath;
@@ -42,11 +43,11 @@ public class XPathHelper {
     }
 
     public XPathHelper(NormalizedMessage message) {
-        setMessage(message);
+        this.content = message.getContent();
     }
 
     public XPathHelper(Source content) {
-        setContent(content);
+        this.content = content;
     }
 
     public XPathHelper(NormalizedMessage message, Map namespaces) {
@@ -83,7 +84,7 @@ public class XPathHelper {
         this.content = content;
     }
 
-    public NamespaceContext getNamespaceContext() {
+    public final NamespaceContext getNamespaceContext() {
         return getXPath().getNamespaceContext();
     }
 
@@ -95,7 +96,7 @@ public class XPathHelper {
         return getXPath().getXPathVariableResolver();
     }
 
-    public void setNamespaceContext(NamespaceContext context) {
+    public final void setNamespaceContext(NamespaceContext context) {
         getXPath().setNamespaceContext(context);
     }
 
@@ -122,7 +123,7 @@ public class XPathHelper {
         return content;
     }
 
-    public XPath getXPath() {
+    public final XPath getXPath() {
         if (xPath == null) {
             xPath = getXPathFactory().newXPath();
         }
@@ -133,9 +134,8 @@ public class XPathHelper {
      * Sets the namespace context to the given map where the keys are namespace
      * prefixes and the values are the URIs
      */
-    public void setNamespaces(Map namespaces) {
+    public final void setNamespaces(Map namespaces) {
         setNamespaceContext(new DefaultNamespaceContext(getNamespaceContext(), namespaces));
-
     }
 
     // Implementation methods

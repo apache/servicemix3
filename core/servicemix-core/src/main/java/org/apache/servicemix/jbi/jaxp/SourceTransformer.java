@@ -313,8 +313,7 @@ public class SourceTransformer {
     public Node toDOMNode(NormalizedMessage message) throws MessagingException, TransformerException, ParserConfigurationException,
                     IOException, SAXException {
         Source content = message.getContent();
-        Node node = toDOMNode(content);
-        return node;
+        return toDOMNode(content);
     }
 
     /**
@@ -484,8 +483,7 @@ public class SourceTransformer {
     }
 
     public TransformerFactory createTransformerFactory() {
-        TransformerFactory answer = TransformerFactory.newInstance();
-        return answer;
+        return TransformerFactory.newInstance();
     }
 
 }

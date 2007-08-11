@@ -73,10 +73,14 @@ public class JaxenXPathExpression implements Expression, InitializingBean {
      */
     public JaxenXPathExpression(String xpath) throws Exception {
         this.xpath = xpath;
-        afterPropertiesSet();
+        init();
     }
 
     public void afterPropertiesSet() throws Exception {
+        init();
+    }
+
+    private void init() throws JaxenException {
         if (xpathObject == null) {
             if (xpath == null) {
                 throw new IllegalArgumentException("You must specify the xpath property");
@@ -211,7 +215,7 @@ public class JaxenXPathExpression implements Expression, InitializingBean {
 
     // Implementation methods
     // -------------------------------------------------------------------------
-    protected XPath createXPath(String xp) throws JaxenException {
+    protected final XPath createXPath(String xp) throws JaxenException {
         return new DOMXPath(xp);
     }
 

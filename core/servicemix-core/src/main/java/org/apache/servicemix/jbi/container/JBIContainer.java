@@ -297,7 +297,7 @@ public class JBIContainer extends BaseLifeCycle {
      * Return the DefaultBroker instance
      */
     public DefaultBroker getDefaultBroker() {
-        if (broker == null || !(broker instanceof DefaultBroker)) {
+        if (!(broker instanceof DefaultBroker)) {
             throw new IllegalStateException("Broker is not a DefaultBroker");
         }
         return (DefaultBroker) broker;

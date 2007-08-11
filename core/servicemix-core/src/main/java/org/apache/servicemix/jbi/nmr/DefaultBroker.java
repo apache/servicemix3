@@ -395,11 +395,10 @@ public class DefaultBroker extends BaseSystemService implements Broker {
             ComponentNameSpace id = ((InternalEndpoint) endpoints[i]).getComponentNameSpace();
             if (id != null) {
                 ComponentMBeanImpl provider = getRegistry().getComponent(id);
-                if (provider != null) {
-                    if (!consumer.getComponent().isExchangeWithProviderOkay(endpoints[i], exchange)
-                                    || !provider.getComponent().isExchangeWithConsumerOkay(endpoints[i], exchange)) {
-                        continue;
-                    }
+                if (provider != null
+                        && (!consumer.getComponent().isExchangeWithProviderOkay(endpoints[i], exchange)
+                                || !provider.getComponent().isExchangeWithConsumerOkay(endpoints[i], exchange))) {
+                    continue;
                 }
             }
             filtered.add(endpoints[i]);

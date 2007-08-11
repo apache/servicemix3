@@ -62,7 +62,7 @@ public class SharedLibrary implements SharedLibraryMBean, MBeanInfoProvider {
         return this.classLoader;
     }
     
-    protected ClassLoader createClassLoader() {
+    private ClassLoader createClassLoader() {
         boolean parentFirst = library.isParentFirstClassLoaderDelegation();
         // Make the current ClassLoader the parent
         ClassLoader parent = getClass().getClassLoader();       
@@ -79,7 +79,7 @@ public class SharedLibrary implements SharedLibraryMBean, MBeanInfoProvider {
             }
         }
         return new JarFileClassLoader(
-                        getName(), 
+                        library.getIdentification().getName(), 
                         urls, 
                         parent, 
                         !parentFirst, 

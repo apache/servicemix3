@@ -134,16 +134,12 @@ public class PasswordAuthenticator implements JMXAuthenticator {
      * @see #obfuscatePassword(java.lang.String,java.lang.String)
      */
     public static void main(String[] args) throws Exception {
-        if (args.length == 1) {
-            if (!"-help".equals(args[0])) {
-                printPassword("MD5", args[0]);
-                return;
-            }
-        } else if (args.length == 3) {
-            if ("-alg".equals(args[0])) {
-                printPassword(args[1], args[2]);
-                return;
-            }
+        if (args.length == 1 && !"-help".equals(args[0])) {
+            printPassword("MD5", args[0]);
+            return;
+        } else if (args.length == 3 && "-alg".equals(args[0])) {
+            printPassword(args[1], args[2]);
+            return;
         }
         printUsage();
     }

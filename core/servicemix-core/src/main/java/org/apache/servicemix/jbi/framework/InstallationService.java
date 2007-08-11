@@ -165,8 +165,7 @@ public class InstallationService extends BaseSystemService implements Installati
         File componentRoot = environmentContext.getComponentRootDir(componentName);
         ComponentContextImpl context = buildComponentContext(componentRoot, installationDir, componentName);
         installationContext.setContext(context);
-        InstallerMBeanImpl installer = new InstallerMBeanImpl(container, installationContext);
-        return installer;
+        return new InstallerMBeanImpl(container, installationContext);
     }
 
     /**

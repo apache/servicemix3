@@ -54,7 +54,7 @@ public final class FlowProvider {
         String flowName = getFlowName(flow);
         try {
             value = FINDER.newInstance(flowName);
-            if (value != null && value instanceof Flow) {
+            if (value instanceof Flow) {
                 String query = getQuery(flow);
                 if (query != null) {
                     Map map = URISupport.parseQuery(query);

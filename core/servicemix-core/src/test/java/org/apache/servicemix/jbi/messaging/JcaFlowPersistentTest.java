@@ -43,8 +43,7 @@ public class JcaFlowPersistentTest extends AbstractPersistenceTest {
     }
 
     protected Flow createFlow() {
-        JCAFlow flow = new JCAFlow("tcp://localhost:61216");
-        return flow;
+        return new JCAFlow("tcp://localhost:61216");
     }
 
     public void testSyncSendSyncReceive() throws Exception {

@@ -55,7 +55,7 @@ public final class Main {
             } else {
                 String file = args[0];
 
-                if (file.equals("-?") || file.equals("?") || file.equals("--help") || file.equals("-h")) {
+                if ("-?".equals(file) || "?".equals(file) || "--help".equals(file) || "-h".equals(file)) {
                     System.out.println("Usage: Main [-v1] [xmlConfigFile]");
                     System.out.println("If an XML config file is not specified then servicemix.xml is used from the CLASSPATH");
                     return;

@@ -64,7 +64,7 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
         this.serviceAssembly = serviceAssembly;
         this.registry = registry;
         this.rootDir = rootDir;
-        Descriptor d = DescriptorFactory.buildDescriptor(getServiceUnitRootPath());
+        Descriptor d = DescriptorFactory.buildDescriptor(rootDir);
         if (d != null) {
             services = d.getServices();
         }

@@ -67,8 +67,7 @@ public class W3CDOMStreamReaderTest extends AbstractStreamReaderTest {
     private Document getDocument() throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
-        Document doc = factory.newDocumentBuilder().newDocument();
-        return doc;
+        return factory.newDocumentBuilder().newDocument();
     }
 
     public void testTextChild() throws Exception {

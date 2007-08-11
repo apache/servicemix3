@@ -164,10 +164,8 @@ public abstract class PojoSupport extends BaseLifeCycle implements ComponentLife
      * Provide access to the default message exchange exchangeFactory, lazily creating one.
      */
     public MessageExchangeFactory getExchangeFactory() throws MessagingException {
-        if (exchangeFactory == null) {
-            if (context != null) {
-                exchangeFactory = getDeliveryChannel().createExchangeFactory();
-            }
+        if (exchangeFactory == null && context != null) {
+            exchangeFactory = getDeliveryChannel().createExchangeFactory();
         }
         return exchangeFactory;
     }

@@ -85,8 +85,8 @@ public class StatelessJmsFlowTest extends TestCase {
     }
 
     public void testStatelessConsumer() throws Exception {
-        StatelessEcho echo1 = activateProvider(jbi1, false);
-        StatelessEcho echo2 = activateProvider(jbi2, false);
+        activateProvider(jbi1, false);
+        activateProvider(jbi2, false);
         StatelessSender sender1 = activateConsumer(jbi1);
         StatelessSender sender2 = activateConsumer(jbi2);
 
@@ -108,8 +108,8 @@ public class StatelessJmsFlowTest extends TestCase {
     }
 
     public void testStatefullConsumer() throws Exception {
-        StatelessEcho echo1 = activateProvider(jbi1, false);
-        StatelessEcho echo2 = activateProvider(jbi2, false);
+        activateProvider(jbi1, false);
+        activateProvider(jbi2, false);
         StatelessSender sender1 = activateConsumer(jbi1);
         StatelessSender sender2 = activateConsumer(jbi2);
 
@@ -134,7 +134,7 @@ public class StatelessJmsFlowTest extends TestCase {
         StatelessEcho echo1 = activateProvider(jbi1, true);
         StatelessEcho echo2 = activateProvider(jbi2, true);
         StatelessSender sender1 = activateConsumer(jbi1);
-        StatelessSender sender2 = activateConsumer(jbi2);
+        activateConsumer(jbi2);
 
         sender1.sendMessages(100, false);
 
@@ -161,7 +161,7 @@ public class StatelessJmsFlowTest extends TestCase {
         StatelessEcho echo1 = activateProvider(jbi1, false);
         StatelessEcho echo2 = activateProvider(jbi2, false);
         StatelessSender sender1 = activateConsumer(jbi1);
-        StatelessSender sender2 = activateConsumer(jbi2);
+        activateConsumer(jbi2);
 
         sender1.sendMessages(100, false);
 

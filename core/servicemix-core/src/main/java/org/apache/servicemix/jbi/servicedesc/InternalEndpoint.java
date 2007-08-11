@@ -146,7 +146,7 @@ public class InternalEndpoint extends AbstractServiceEndpoint {
      */
     public boolean equals(Object obj) {
         boolean result = false;
-        if (obj != null && obj instanceof InternalEndpoint) {
+        if (obj instanceof InternalEndpoint) {
             InternalEndpoint other = (InternalEndpoint) obj;
             result = other.serviceName.equals(this.serviceName)
                      && other.endpointName.equals(this.endpointName);

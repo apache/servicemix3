@@ -49,11 +49,9 @@ public class JMSFlowTibco extends AbstractJMSFlow {
             Class connFactoryClass = Class.forName("com.tibco.tibjms.TibjmsConnectionFactory");
             if (jmsURL != null) {
                 Constructor cns = connFactoryClass.getConstructor(new Class[] {String.class });
-                ConnectionFactory connFactory = (ConnectionFactory) cns.newInstance(new Object[] {jmsURL });
-                return connFactory;
+                return (ConnectionFactory) cns.newInstance(new Object[] {jmsURL });
             } else {
-                ConnectionFactory connFactory = (ConnectionFactory) connFactoryClass.newInstance();
-                return connFactory;
+                return (ConnectionFactory) connFactoryClass.newInstance();
             }
         } catch (Exception e) {
             throw new RuntimeException("Unable to create Tibco connection factory", e);

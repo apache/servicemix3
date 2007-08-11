@@ -103,16 +103,14 @@ public class DotViewService extends BaseSystemService implements InitializingBea
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         endpointListener.generateFile(pw);
-        String str = sw.toString();
-        return str;
+        return sw.toString();
     }
     
     public String createFlowGraph()  throws Exception {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         flowListener.generateFile(pw);
-        String str = sw.toString();
-        return str;
+        return sw.toString();
     }
 
     /**

@@ -95,10 +95,10 @@ public class W3CDOMStreamReader extends DOMStreamReader {
                 prefix = "";
             }
 
-            if (name != null && name.equals("xmlns")) {
+            if (name != null && "xmlns".equals(name)) {
                 frame.uris.add(value);
                 frame.prefixes.add("");
-            } else if (prefix.length() > 0 && prefix.equals("xmlns")) {
+            } else if (prefix.length() > 0 && "xmlns".equals(prefix)) {
                 frame.uris.add(value);
                 frame.prefixes.add(localName);
             } else if (name.startsWith("xmlns:")) {
@@ -217,8 +217,7 @@ public class W3CDOMStreamReader extends DOMStreamReader {
 
     public String getAttributeLocalName(int i) {
         Attr attr = getAttribute(i);
-        String name = getLocalName(attr);
-        return name;
+        return getLocalName(attr);
     }
 
     public String getAttributePrefix(int i) {

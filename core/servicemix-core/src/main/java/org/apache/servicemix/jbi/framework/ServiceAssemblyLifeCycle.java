@@ -425,8 +425,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
     
     protected Element getElement(Document doc, String name) {
         NodeList l = doc.getElementsByTagNameNS("http://java.sun.com/xml/ns/jbi/management-message", name);
-        Element e = (Element) l.item(0);
-        return e;
+        return (Element) l.item(0);
     }
 
     public MBeanAttributeInfo[] getAttributeInfos() throws JMException {

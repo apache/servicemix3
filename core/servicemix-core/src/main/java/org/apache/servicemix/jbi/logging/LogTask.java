@@ -25,7 +25,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 
 public class LogTask extends TimerTask {
 
-    private static Logger logger = Logger.getLogger(LogTask.class);
+    private static final Logger LOG = Logger.getLogger(LogTask.class);
 
     private URL url;
 
@@ -55,10 +55,10 @@ public class LogTask extends TimerTask {
             if (lastConfigured < lastModified && url != null && xml) {
                 DOMConfigurator.configure(url);
                 lastConfigured = System.currentTimeMillis();
-                logger.info("Logging system reconfigured using file: " + url.toString());
+                LOG.info("Logging system reconfigured using file: " + url.toString());
             }
         } catch (Exception ex) {
-            logger.error(ex);
+            LOG.error(ex);
         }
     }
 }

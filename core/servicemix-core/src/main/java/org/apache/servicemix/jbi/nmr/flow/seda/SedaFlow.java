@@ -93,13 +93,9 @@ public class SedaFlow extends AbstractFlow {
         if (isClustered(me)) {
             return false;
         }
-        if (isTransacted(me)) {
-            if (!isSynchronous(me)) {
-                // we have the mirror, so the role is the one for the target component
-                if (me.getStatus() == ExchangeStatus.ACTIVE) {
-                    return false;
-                }
-            }
+        // we have the mirror, so the role is the one for the target component
+        if (isTransacted(me) && !isSynchronous(me) && me.getStatus() == ExchangeStatus.ACTIVE) {
+            return false;
         }
         return true;
     }

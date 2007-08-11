@@ -191,7 +191,7 @@ public class InstallationContextImpl implements InstallationContext {
      * @exception IllegalArgumentException if the class path elements is null, empty, or if an individual element is
      * ill-formed.
      */
-    public void setClassPathElements(List classPathElements) {
+    public final void setClassPathElements(List classPathElements) {
         if (classPathElements == null) {
             throw new IllegalArgumentException("classPathElements is null");
         }
@@ -204,7 +204,7 @@ public class InstallationContextImpl implements InstallationContext {
                 throw new IllegalArgumentException("classPathElements must contain element of type String");
             }
             String element = (String) obj;
-            String sep = File.separator.equals("\\") ? "/" : "\\";
+            String sep = "\\".equals(File.separator) ? "/" : "\\";
             int offset = element.indexOf(sep);
             if (offset > -1) {
                 throw new IllegalArgumentException("classPathElements contains an invalid file separator '" + sep + "'"); 

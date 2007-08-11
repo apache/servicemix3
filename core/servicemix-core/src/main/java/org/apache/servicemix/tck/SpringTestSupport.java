@@ -106,8 +106,7 @@ public abstract class SpringTestSupport extends TestCase {
             if (element == null) {
                 return "";
             }
-            String text = DOMUtil.getElementText(element);
-            return text;
+            return DOMUtil.getElementText(element);
         } else if (root != null) {
             return root.getNodeValue();
         } else {
@@ -118,8 +117,7 @@ public abstract class SpringTestSupport extends TestCase {
     protected Source getSourceFromClassPath(String fileOnClassPath) {
         InputStream stream = getClass().getResourceAsStream(fileOnClassPath);
         assertNotNull("Could not find file: " + fileOnClassPath + " on the classpath", stream);
-        Source content = new StreamSource(stream);
-        return content;
+        return new StreamSource(stream);
     }
 
     protected void assertMessagesReceived(MessageList messageList, int count) throws MessagingException, TransformerException,

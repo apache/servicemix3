@@ -191,8 +191,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     public ServiceEndpoint activateEndpoint(ComponentContextImpl context, 
                                             QName serviceName,
                                             String endpointName) throws JBIException {
-        InternalEndpoint result = endpointRegistry.registerInternalEndpoint(context, serviceName, endpointName);
-        return result;
+        return endpointRegistry.registerInternalEndpoint(context, serviceName, endpointName);
     }
 
     public ServiceEndpoint[] getEndpointsForComponent(ComponentNameSpace cns) {
@@ -602,8 +601,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      */
     public InternalEndpoint deregisterSubscription(ComponentContextImpl context, SubscriptionSpec subscription) {
         subscription.setName(context.getComponentNameSpace());
-        InternalEndpoint result = subscriptionRegistry.deregisterSubscription(subscription);
-        return result;
+        return subscriptionRegistry.deregisterSubscription(subscription);
     }
     
     

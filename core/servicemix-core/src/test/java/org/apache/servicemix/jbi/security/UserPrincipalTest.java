@@ -44,6 +44,7 @@ public class UserPrincipalTest extends TestCase {
         assertEquals(p1.hashCode(), p2.hashCode());
     }
 
+    @SuppressWarnings("PMD.PositionLiteralsFirstInComparisons")
     public void testEquals() {
         UserPrincipal p1 = new UserPrincipal("FOO");
         UserPrincipal p2 = new UserPrincipal("FOO");
@@ -51,8 +52,8 @@ public class UserPrincipalTest extends TestCase {
 
         assertTrue(p1.equals(p1));
         assertTrue(p1.equals(p2));
-        assertFalse(p1.equals(null));
-        assertFalse(p1.equals("FOO"));
+        assertFalse(p1.equals((Object) null)); // NOPMD just testing
+        assertFalse(p1.equals(new Object())); // NOPMD just testing
         assertFalse(p1.equals(p3));
     }
 }

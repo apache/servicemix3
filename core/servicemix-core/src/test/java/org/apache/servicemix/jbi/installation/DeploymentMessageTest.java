@@ -209,7 +209,7 @@ public class DeploymentMessageTest extends AbstractManagementTest {
         CachedXPathAPI cachedXPathAPI = new CachedXPathAPI();
         XObject list = cachedXPathAPI.eval(node, xpath, new PrefixResolver() {
             public String getNamespaceForPrefix(String prefix) {
-                if (prefix.equals("jbi")) {
+                if ("jbi".equals(prefix)) {
                     return "http://java.sun.com/xml/ns/jbi/management-message";
                 }
                 return null;
@@ -230,8 +230,7 @@ public class DeploymentMessageTest extends AbstractManagementTest {
             if (element == null) {
                 return "";
             }
-            String text = DOMUtil.getElementText(element);
-            return text;
+            return DOMUtil.getElementText(element);
         } else if (root != null) {
             return root.getNodeValue();
         } else {

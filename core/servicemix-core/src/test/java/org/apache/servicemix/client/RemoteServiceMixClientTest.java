@@ -28,7 +28,7 @@ public class RemoteServiceMixClientTest extends ServiceMixClientTest {
         ((RemoteServiceMixClient) client).shutDown();
         super.tearDown();
         Set servers = VMTransportFactory.servers.keySet();
-        String[] serverNames = (String[]) servers.toArray(new String[0]);
+        String[] serverNames = (String[]) servers.toArray(new String[servers.size()]);
         for (int i = 0; i < serverNames.length; i++) {
             VMTransportFactory.stopped(serverNames[i]);
         }

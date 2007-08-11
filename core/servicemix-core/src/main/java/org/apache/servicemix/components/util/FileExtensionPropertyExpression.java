@@ -63,12 +63,10 @@ public class FileExtensionPropertyExpression extends PropertyExpression {
 
     private String removeExtension(String fileName) {
         String result = fileName;
-        if (this.deleteExistingExtension) {
-            if ((fileName != null) && (fileName.length() > 1)) {
-                int index = fileName.lastIndexOf('.');
-                if (index != -1) {
-                    result = fileName.substring(0, index);
-                }
+        if (this.deleteExistingExtension && fileName != null && fileName.length() > 1) {
+            int index = fileName.lastIndexOf('.');
+            if (index != -1) {
+                result = fileName.substring(0, index);
             }
         }
         return result;

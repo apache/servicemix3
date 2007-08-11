@@ -472,7 +472,6 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
             checkSus(saDirectory, sus);
         }
         // Everything seems ok, so deploy all SUs
-        int nbSuccess = 0;
         int nbFailures = 0;
         List<Element> componentResults = new ArrayList<Element>();
         List<String> suKeys = new ArrayList<String>();
@@ -516,7 +515,6 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
                     getComponentTaskError(e, componentName, componentResults);
                 }
                 if (success) {
-                    nbSuccess++;
                     suKeys.add(registry.registerServiceUnit(sus[i], assemblyName, targetDir));
                 } else {
                     nbFailures++;
@@ -651,14 +649,12 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
     
     protected Element getElement(Document doc, String name) {
         NodeList l = doc.getElementsByTagNameNS("http://java.sun.com/xml/ns/jbi/management-message", name);
-        Element e = (Element) l.item(0);
-        return e;
+        return (Element) l.item(0);
     }
     
     protected Element getChildElement(Element element, String name) {
         NodeList l = element.getElementsByTagNameNS("http://java.sun.com/xml/ns/jbi/management-message", name);
-        Element e = (Element) l.item(0);
-        return e;
+        return (Element) l.item(0);
     }
 
     protected void undeployServiceUnit(ServiceUnitLifeCycle su) throws DeploymentException {

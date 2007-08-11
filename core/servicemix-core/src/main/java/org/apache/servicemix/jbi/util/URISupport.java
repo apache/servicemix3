@@ -312,15 +312,15 @@ public class URISupport {
             int open = 0;
             int closed = 0;
 
-            int i = 0;
-            while ((i = str.indexOf('(', i)) >= 0) {
-                i++;
+            int i = str.indexOf('(');
+            while (i >= 0) {
                 open++;
+                i = str.indexOf('(', i + 1);
             }
-            i = 0;
-            while ((i = str.indexOf(')', i)) >= 0) {
-                i++;
+            i = str.indexOf(')');
+            while (i >= 0) {
                 closed++;
+                i = str.indexOf(')', i + 1);
             }
             result = open == closed;
         }

@@ -88,8 +88,7 @@ public class ServiceAssemblyEnvironment {
 
     public File getServiceUnitDirectory(String componentName, String suName) {
         File compDir = FileUtil.getDirectoryPath(susDir, componentName);
-        File suDir = FileUtil.getDirectoryPath(compDir, suName);
-        return suDir;
+        return FileUtil.getDirectoryPath(compDir, suName);
     }
 
 }

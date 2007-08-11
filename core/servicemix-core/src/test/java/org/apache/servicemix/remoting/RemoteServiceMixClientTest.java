@@ -27,7 +27,6 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.ServiceMixClient;
-import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
@@ -54,7 +53,7 @@ public class RemoteServiceMixClientTest extends TestCase {
     protected void setUp() throws Exception {
         context = createBeanFactory();
         client = (ServiceMixClient) getBean("client");
-        SpringJBIContainer jbi = (SpringJBIContainer) getBean("jbi");
+        assertNotNull(getBean("jbi"));
     }
 
     protected Object getBean(String name) {
