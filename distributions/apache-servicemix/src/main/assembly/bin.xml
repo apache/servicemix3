@@ -36,14 +36,14 @@
       </includes>
     </fileSet>
     <fileSet>
-      <directory>src/main/release</directory>
+      <directory>target/filtered</directory>
       <outputDirectory>/</outputDirectory>
       <excludes>
         <exclude>bin</exclude>
       </excludes>
     </fileSet>
     <fileSet>
-      <directory>src/main/release/bin</directory>
+      <directory>target/filtered/bin</directory>
       <outputDirectory>/bin</outputDirectory>
       <fileMode>755</fileMode>
     </fileSet>

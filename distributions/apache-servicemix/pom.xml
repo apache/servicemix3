@@ -504,6 +504,27 @@
         </executions>
       </plugin>
       <plugin>
+	    <inherited>true</inherited>
+		<groupId>org.apache.servicemix.tooling</groupId>
+		<artifactId>res-maven-plugin</artifactId>
+		<version>${servicemix-version}</version>
+		<configuration>
+		  <inputDirectory>${basedir}/src/main/release</inputDirectory>
+		  <outputDirectory>${basedir}/target/filtered</outputDirectory>
+		  <filters>
+		    <servicemix-version>${servicemix-version}</servicemix-version>
+		    <releases-repo-url>${releases-repo-url}</releases-repo-url>
+		  </filters>
+		</configuration>
+		<executions>
+		  <execution>
+			<goals>
+			  <goal>resources</goal>
+		    </goals>
+          </execution>
+		</executions>
+	  </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <version>${mavenAssemblyPluginVersion}</version>

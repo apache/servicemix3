@@ -34,6 +34,7 @@
     <packaging>pom</packaging>
   
     <modules>
+        <module>res-maven-plugin</module>
         <module>jbi-maven-plugin</module>
         <module>xfire-maven-plugin</module>
     </modules>
@@ -59,7 +60,7 @@
                     <dependency>
                         <groupId>org.apache.servicemix</groupId>
                         <artifactId>build</artifactId>
-                        <version>3.1.2-incubating-SNAPSHOT-SNAPSHOT</version>
+                        <version>${servicemix-version}</version>
                     </dependency>
                 </dependencies>
             </plugin>

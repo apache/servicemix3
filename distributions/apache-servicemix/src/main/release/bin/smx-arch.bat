@@ -21,7 +21,7 @@ rem $Id: servicemix.bat 979 2005-11-30 22:50:55Z bsnyder $
 rem 
 
 if "%SERVICEMIX_VERSION%" == "" (
-    set SERVICEMIX_VERSION=3.1.1-incubating
+    set SERVICEMIX_VERSION=@{servicemix-version}
 )
 
 if "%DEF_GROUP_ID%" == "" (
@@ -101,7 +101,7 @@ set CMD_LINE_ARGS=%CMD_LINE_ARGS% %1
 shift
 goto setArgs
 :doneSetArgs
-mvn archetype:create -DremoteRepositories=http://people.apache.org/repo/m2-incubating-repository -DarchetypeGroupId=org.apache.servicemix.tooling -DarchetypeArtifactId=%ARCHETYPE% -DarchetypeVersion=%SERVICEMIX_VERSION% -DgroupId=%DEF_GROUP_ID% -DartifactId=%DEF_ARTIFACT_ID% %CMD_LINE_ARGS%
+mvn archetype:create -DremoteRepositories=@{releases-repo-url} -DarchetypeGroupId=org.apache.servicemix.tooling -DarchetypeArtifactId=%ARCHETYPE% -DarchetypeVersion=%SERVICEMIX_VERSION% -DgroupId=%DEF_GROUP_ID% -DartifactId=%DEF_ARTIFACT_ID% %CMD_LINE_ARGS%
 goto end
 
 :end
