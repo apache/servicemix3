@@ -35,6 +35,7 @@
     <packaging>pom</packaging>
   
     <modules>
+        <module>res-maven-plugin</module>
         <module>jbi-maven-plugin</module>
         <module>xfire-maven-plugin</module>
     </modules>
