@@ -215,7 +215,13 @@
         <sitemesh-version>2.2.1</sitemesh-version>
         <woden-version>1.0.0M6</woden-version>
         <cxf-version>2.1-incubator-SNAPSHOT</cxf-version>
-        <topDirectoryLocation>.</topDirectoryLocation>
+
+		<releases-repo-id>apache.incubating</releases-repo-id>
+		<releases-repo-name>Apache Incubating Repository</releases-repo-name>
+		<releases-repo-url>http://people.apache.org/repo/m2-incubating-repository</releases-repo-url>
+		<snapshots-repo-id>apache.snapshots</snapshots-repo-id>
+		<snapshots-repo-name>Apache Snapshots Repository</snapshots-repo-name>
+		<snapshots-repo-url>http://people.apache.org/repo/m2-snapshot-repository</snapshots-repo-url>
     </properties>
 
     <profiles>

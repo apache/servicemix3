@@ -19,7 +19,7 @@
 #
 
 if [ "$SERVICEMIX_VERSION" = "" ] ; then
-  SERVICEMIX_VERSION=3.2-incubating-SNAPSHOT
+  SERVICEMIX_VERSION=@{servicemix-version}
 fi
 
 if [ "$DEF_GROUP_ID" = "" ] ; then
@@ -87,7 +87,7 @@ else
 fi
 
 mvn archetype:create \
-  -DremoteRepositories=http://people.apache.org/repo/m2-incubating-repository \
+  -DremoteRepositories=@{releases-repo-url} \
   -DarchetypeGroupId=org.apache.servicemix.tooling \
   -DarchetypeArtifactId=$ARCHETYPE \
   -DarchetypeVersion=$SERVICEMIX_VERSION \
