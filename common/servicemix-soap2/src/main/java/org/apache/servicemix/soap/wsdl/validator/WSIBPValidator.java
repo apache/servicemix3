@@ -226,9 +226,11 @@ public class WSIBPValidator {
                 validateHeaderParts(binding,
                                     WSDLUtils.getExtensions(bop.getBindingInput(), SOAPHeader.class),
                                     bop.getOperation().getInput().getMessage());
-                validateHeaderParts(binding,
-                                    WSDLUtils.getExtensions(bop.getBindingOutput(), SOAPHeader.class),
-                                    bop.getOperation().getOutput().getMessage());
+                if (bop.getOperation().getOutput() != null) {
+                    validateHeaderParts(binding,
+                                        WSDLUtils.getExtensions(bop.getBindingOutput(), SOAPHeader.class),
+                                        bop.getOperation().getOutput().getMessage());
+                }
                 /*
                 for (BindingFault fault : getBindingFaults(bop)) {
                     validateFaultParts(binding,

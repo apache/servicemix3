@@ -26,6 +26,8 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
+import org.apache.servicemix.jbi.FaultException;
+import org.apache.servicemix.soap.api.Fault;
 import org.apache.servicemix.soap.api.Message;
 import org.apache.servicemix.soap.api.model.Binding;
 import org.apache.servicemix.soap.api.model.Operation;
@@ -57,6 +59,11 @@ public class JbiOutInterceptor extends AbstractInterceptor {
             Binding binding = message.get(Binding.class);
             Operation operation = binding.getOperation(me.getOperation());
             if (operation != null) {
+                if (!me.getPattern().equals(operation.getMep())) {
+                    throw new Fault("Received incorrect exchange mep.  Received " + me.getPattern()
+                                    + " but expected " + operation.getMep() + " for operation "
+                                    + operation.getName());
+                }
                 message.put(Operation.class, operation);
                 if (operation instanceof SoapOperation<?>) {
                     String soapAction = ((SoapOperation<?>) operation).getSoapAction();
@@ -81,6 +88,7 @@ public class JbiOutInterceptor extends AbstractInterceptor {
     /**
      * Copy NormalizedMessage headers to SoapMessage headers
      */
+    @SuppressWarnings("unchecked")
     private void fromNMSHeaders(Message message, NormalizedMessage normalizedMessage) {
         if (normalizedMessage.getProperty(JbiConstants.PROTOCOL_HEADERS) != null) {
             Map<String, ?> headers = (Map<String, ?>) normalizedMessage.getProperty(JbiConstants.PROTOCOL_HEADERS);

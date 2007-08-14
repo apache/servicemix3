@@ -72,7 +72,7 @@ public class JbiOutWsdl1Interceptor extends AbstractInterceptor {
         while (partWrapper != null) {
             if (!JbiConstants.WSDL11_WRAPPER_NAMESPACE.equals(element.getNamespaceURI()) ||
                 !JbiConstants.WSDL11_WRAPPER_PART_LOCALNAME.equals(partWrapper.getLocalName())) {
-                throw new Fault("Unexpected part wrapper element '" + QNameUtil.toString(element)
+                throw new Fault("Unexpected part wrapper element '" + QNameUtil.toString(partWrapper)
                         + "' expected '{" + JbiConstants.WSDL11_WRAPPER_NAMESPACE + "}part'");
             }
             NodeList nodes = partWrapper.getChildNodes();

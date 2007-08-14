@@ -73,8 +73,11 @@ public class JbiInInterceptor extends AbstractInterceptor {
                     throw new IllegalStateException("Content of type " + MessageExchange.class + " not found on message");
                 }
                 if (message.getContent(Exception.class) == null) {
-                    nm = exchange.createMessage();
-                    exchange.setMessage(nm, "out");
+                    nm = exchange.getMessage("out");
+                    if (nm == null) {
+                        nm = exchange.createMessage();
+                        exchange.setMessage(nm, "out");
+                    }
                 } else {
                     exchange.setFault(exchange.createFault());
                     nm = exchange.getFault();

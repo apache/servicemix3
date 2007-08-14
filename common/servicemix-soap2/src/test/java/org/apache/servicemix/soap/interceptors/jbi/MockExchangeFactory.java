@@ -38,17 +38,20 @@ public class MockExchangeFactory implements MessageExchangeFactory {
             str = str.replace("http://www.w3.org/2006/01/wsdl/", "http://www.w3.org/2004/08/wsdl/");
             pattern = URI.create(str);
         }
+        MessageExchange me;
         if (JbiConstants.IN_ONLY.equals(pattern)) {
-            return createInOnlyExchange();
+            me = createInOnlyExchange();
         } else if (JbiConstants.IN_OUT.equals(pattern)) {
-            return createInOutExchange();
+            me = createInOutExchange();
         } else if (JbiConstants.IN_OPTIONAL_OUT.equals(pattern)) {
-            return createInOptionalOutExchange();
+            me = createInOptionalOutExchange();
         } else if (JbiConstants.ROBUST_IN_ONLY.equals(pattern)) {
-            return createRobustInOnlyExchange();
+            me = createRobustInOnlyExchange();
         } else {
             throw new IllegalArgumentException("Unhandled pattern: " + pattern);
         }
+        ((MockMessageExchange) me).setPattern(pattern);
+        return me;
     }
     public InOnly createInOnlyExchange() throws MessagingException {
         return new MockInOnly();

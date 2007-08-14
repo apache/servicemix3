@@ -26,6 +26,7 @@ import org.apache.servicemix.soap.api.InterceptorChain;
 import org.apache.servicemix.soap.api.Message;
 import org.apache.servicemix.soap.bindings.soap.SoapVersion;
 import org.apache.servicemix.soap.core.AbstractInterceptor;
+import org.apache.servicemix.soap.util.DomUtil;
 import org.apache.servicemix.soap.util.stax.DOMStreamReader;
 import org.apache.servicemix.soap.util.stax.StaxUtil;
 import org.w3c.dom.DocumentFragment;
@@ -66,7 +67,7 @@ public class SoapOutInterceptor extends AbstractInterceptor {
                 StaxUtil.writeStartElement(writer, soapVersion.getHeader());
                 for (Iterator it = message.getSoapHeaders().values().iterator(); it.hasNext();) {
                     DocumentFragment df = (DocumentFragment) it.next();
-                    Element e = (Element) df.getFirstChild();
+                    Element e = DomUtil.getFirstChildElement(df);
                     StaxUtil.copy(new DOMStreamReader(e), writer);
                 }
                 writer.writeEndElement();
