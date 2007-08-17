@@ -771,6 +771,26 @@
                 <version>3.2-incubating-SNAPSHOT</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.servicemix</groupId>
+                <artifactId>servicemix-truezip</artifactId>
+                <version>3.2-incubating-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.servicemix</groupId>
+                <artifactId>servicemix-cxf-bc</artifactId>
+                <version>3.2-incubating-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.servicemix</groupId>
+                <artifactId>servicemix-cxf-se</artifactId>
+                <version>3.2-incubating-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.servicemix</groupId>
+                <artifactId>servicemix-camel</artifactId>
+                <version>3.2-incubating-SNAPSHOT</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>servicemix-web</artifactId>
                 <version>3.2-incubating-SNAPSHOT</version>
