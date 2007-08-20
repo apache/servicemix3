@@ -35,6 +35,7 @@ public abstract class ConsumerEndpoint extends SimpleEndpoint {
     private QName targetInterface;
     private QName targetService;
     private String targetEndpoint;
+    private QName targetOperation;
     private String targetUri;
     
     public ConsumerEndpoint() {
@@ -118,6 +119,20 @@ public abstract class ConsumerEndpoint extends SimpleEndpoint {
     }
 
     /**
+     * @return the targetOperation
+     */
+    public QName getTargetOperation() {
+        return targetOperation;
+    }
+
+    /**
+     * @param targetOperation the targetOperation to set
+     */
+    public void setTargetOperation(QName targetOperation) {
+        this.targetOperation = targetOperation;
+    }
+
+    /**
      * @return the targetUri
      */
     public String getTargetUri() {
@@ -137,6 +152,9 @@ public abstract class ConsumerEndpoint extends SimpleEndpoint {
         }
         if (exchange.getInterfaceName() == null && targetInterface != null) {
             exchange.setInterfaceName(targetInterface);
+        }
+        if (exchange.getOperation() == null && targetOperation != null) {
+            exchange.setOperation(targetOperation);
         }
         if (exchange.getService() == null && targetService != null) {
             exchange.setService(targetService);
