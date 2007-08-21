@@ -48,13 +48,12 @@
   </target>
   
   <target name="setup" depends="build-sa" description="Setup servicemix">
-    <mkdir dir="install"/>
-    <mkdir dir="deploy"/>
-    <copy todir="install">
-      <fileset dir="../../components" includes="*wsn*"/>
-      <fileset dir="../../components" includes="*http*"/>
-      <fileset dir="../../components" includes="*shared*"/>
+    <mkdir dir="hotdeploy"/>
+    <copy todir="hotdeploy">
+      <fileset dir="../../hotdeploy" includes="*wsn*"/>
+      <fileset dir="../../hotdeploy" includes="*http*"/>
+      <fileset dir="../../hotdeploy" includes="*shared*"/>
     </copy>
-    <copy file="${build.dir}/soap-demo-sa.zip" todir="deploy"/>
+    <copy file="${build.dir}/soap-demo-sa.zip" todir="hotdeploy"/>
   </target>
 </project>

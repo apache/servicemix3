@@ -446,13 +446,13 @@
             </configuration>
           </execution>
           <execution>
-            <id>copy-sas</id>
+            <id>copy-bridge-sa</id>
             <phase>generate-resources</phase>
             <goals>
               <goal>copy</goal>
             </goals>
             <configuration>
-              <outputDirectory>target/sas</outputDirectory>
+              <outputDirectory>target/samples/bridge-${servicemix-version}</outputDirectory>
               <artifactItems>
                 <artifactItem>
                   <groupId>org.apache.servicemix.samples.bridge</groupId>
@@ -460,12 +460,37 @@
                   <version>${servicemix-version}</version>
                   <type>zip</type>
                 </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-loan-broker-sa</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/samples/loan-broker-${servicemix-version}</outputDirectory>
+              <artifactItems>
                 <artifactItem>
                   <groupId>org.apache.servicemix.samples.loan-broker</groupId>
                   <artifactId>loan-broker-sa</artifactId>
                   <version>${servicemix-version}</version>
                   <type>zip</type>
                 </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-wsdl-first-sa</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+	          <id>wsdl-first</id>
+              <outputDirectory>target/samples/wsdl-first-${servicemix-version}</outputDirectory>
+              <artifactItems>
                 <artifactItem>
                   <groupId>org.apache.servicemix.samples.wsdl-first</groupId>
                   <artifactId>wsdl-first-sa</artifactId>

@@ -49,7 +49,7 @@
     </fileSet>
     <fileSet>
       <directory>target/components</directory>
-      <outputDirectory>components</outputDirectory>
+      <outputDirectory>hotdeploy</outputDirectory>
     </fileSet>
     <fileSet>
       <directory>target/samples/servicemix-web-${servicemix-version}</directory>
@@ -76,23 +76,9 @@
       <outputDirectory>lib/optional</outputDirectory>
     </fileSet>
   </fileSets>
-  <files>
-    <file>
-      <source>${basedir}/target/sas/bridge-sa-${servicemix-version}.zip</source>
-      <outputDirectory>examples/bridge</outputDirectory>
-    </file>
-    <file>
-      <source>${basedir}/target/sas/wsdl-first-sa-${servicemix-version}.zip</source>
-      <outputDirectory>examples/wsdl-first</outputDirectory>
-    </file>
-    <file>
-      <source>${basedir}/target/sas/loan-broker-sa-${servicemix-version}.zip</source>
-      <outputDirectory>examples/loan-broker-bpel</outputDirectory>
-    </file>
-  </files>
   <dependencySets>
     <dependencySet>
-      <outputDirectory>components/lib</outputDirectory>
+      <outputDirectory>extras</outputDirectory>
       <includes>
         <include>org.apache.servicemix:servicemix-components</include>
         <include>org.apache.servicemix:servicemix-beanflow</include>

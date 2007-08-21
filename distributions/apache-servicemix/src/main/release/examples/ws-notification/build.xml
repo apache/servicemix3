@@ -21,20 +21,20 @@
 
   <target name="setup">
     <mkdir dir="lib" />
-    <get src="http://repo.mergere.com/maven2/junit/junit/3.8.1/junit-3.8.1.jar" 
+    <get src="http://repo1.maven.org/maven2/junit/junit/3.8.1/junit-3.8.1.jar" 
          dest="../../lib/optional/junit-3.8.1.jar" 
          usetimestamp="true" />
-    <get src="http://repo.mergere.com/maven2/quartz/quartz/1.5.1/quartz-1.5.1.jar" 
+    <get src="http://repo1.maven.org/maven2/quartz/quartz/1.5.1/quartz-1.5.1.jar" 
          dest="../../lib/optional/quartz-1.5.1.jar" 
          usetimestamp="true" />
     <copy todir="../../lib/optional">
-      <fileset dir="../../components/lib" includes="servicemix-components*.jar"/>
+      <fileset dir="../../extras" includes="servicemix-components*.jar"/>
     </copy>
     <unzip dest="lib">
       <patternset>
         <include name="lib/*.jar"/>
       </patternset>
-      <fileset dir="../../components">
+      <fileset dir="../../hotdeploy">
         <include name="*wsn2005*"/>
         <include name="*shared*"/>
       </fileset>

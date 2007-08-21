@@ -61,8 +61,8 @@
   <sm:container id="jbi" 
                 rootDir="./data" 
                 MBeanServer="#jmxServer"
-                installationDirPath="./install"
-                deploymentDirPath="./deploy"
+                installationDirPath="./hotdeploy"
+                monitorDeploymentDirectory="false"
                 flowName="seda">
 
     <sm:activationSpecs>

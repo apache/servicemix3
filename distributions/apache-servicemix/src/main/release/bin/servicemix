@@ -114,6 +114,12 @@ locateHome() {
     if [ ! -d "$SERVICEMIX_HOME" ]; then
         die "SERVICEMIX_HOME is not valid: $SERVICEMIX_HOME"
     fi
+
+    if [ "x$@" != "x" ]; then
+	    SERVICEMIX_DATA=.
+	else
+	    SERVICEMIX_DATA=$SERVICEMIX_HOME
+	fi
 }
 
 setupNativePath() {
@@ -182,7 +188,7 @@ setupDebugOptions() {
 }
 
 setupDefaults() {
-    DEFAULT_JAVA_OPTS="-Xms$JAVA_MIN_MEM -Xmx$JAVA_MAX_MEM -Dderby.system.home=$SERVICEMIX_HOME/var -Dderby.storage.fileSyncTransactionLog=true -Dcom.sun.management.jmxremote"
+    DEFAULT_JAVA_OPTS="-Xms$JAVA_MIN_MEM -Xmx$JAVA_MAX_MEM -Dderby.system.home=$SERVICEMIX_HOME/data/derby -Dderby.storage.fileSyncTransactionLog=true -Dcom.sun.management.jmxremote"
 
     #Set the JVM_VENDOR specific JVM flags
     if [ "$JVM_VENDOR" = "SUN" ]; then
@@ -240,7 +246,7 @@ init() {
     unlimitFD
     
     # Locate the ServiceMix home directory
-    locateHome
+    locateHome $@
     
     # Load system-wide servicemix configuration
     maybeSource "/etc/servicemix.conf"
@@ -281,6 +287,7 @@ run() {
         CYGHOME=`cygpath --windows "$HOME"`
     fi
     
+    cd $SERVICEMIX_DATA
     # Execute the Java Virtual Machine
     # echo $JAVA \
     #     $JAVA_OPTS \
@@ -305,7 +312,7 @@ run() {
 }
 
 main() {
-    init
+    init $@
     run $@
 }
 

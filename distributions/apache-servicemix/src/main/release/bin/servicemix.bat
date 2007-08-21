@@ -47,6 +47,13 @@ if not exist "%SERVICEMIX_HOME%" (
     call :warn SERVICEMIX_HOME is not valid: %SERVICEMIX_HOME%
     goto END
 )
+if "$ARGS" == "" goto :SERVICEMIX_DATA_NO_ARGS
+    set SERVICEMIX_DATA=.
+    goto SERVICEMIX_DATA_END
+:SERVICEMIX_DATA_NO_ARGS
+    set SERVICEMIX_DATA=$SERVICEMIX_HOME
+:SERVICEMIX_DATA_END
+
 
 if "%JAVA_MAX_MEM%" == "" set JAVA_MAX_MEM=512M 
 
@@ -117,6 +124,7 @@ if "%SERVICEMIX_PROFILER%" == "" goto :EXECUTE
 
 :EXECUTE
     rem Execute the Java Virtual Machine
+    cd $SERVICEMIX_DATA
     "%JAVA%" %JAVA_OPTS% -classpath "%CLASSPATH%" %BOOT_OPTS% org.codehaus.classworlds.Launcher %ARGS%
 
 rem # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
