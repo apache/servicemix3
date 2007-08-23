@@ -24,6 +24,7 @@ import java.util.Map;
  * The Registry is used to register endpoints, unregister them, query endpoints
  * and create a Channel to interfact with them.
  *
+ * @version $Revision: $
  * @since 4.0
  */
 public interface Registry {
@@ -31,9 +32,12 @@ public interface Registry {
     /**
      * Register the given endpoint in the registry.
      * In an OSGi world, this would be performed automatically by a ServiceTracker.
+     * Upon registration, a {@link Channel} will be injected onto the Endpoint using
+     * the {@link Endpoint#setChannel(Channel)} method.
      *
+     * @see EndpointConstants
      * @param endpoint the endpoint to register
-     * @param properties
+     * @param properties the metadata associated with this endpoint
      */
     void register(Endpoint endpoint, Map<String, ?> properties);
 
@@ -56,8 +60,8 @@ public interface Registry {
 
     /**
      * This methods creates a Reference from its xml representation.
-     * See {@link Reference.toXml}
-     * 
+     *
+     * @see Reference#toXml()
      * @param xml
      * @return
      */
@@ -65,8 +69,9 @@ public interface Registry {
 
     /**
      * Create a channel to interact with the NMR without exposing an endpoint.
-     * @return
+     * @return a channel
      */
     Channel createChannel();
 
 }
+

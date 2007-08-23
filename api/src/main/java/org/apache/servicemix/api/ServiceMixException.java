@@ -16,26 +16,32 @@
  */
 package org.apache.servicemix.api;
 
-import org.w3c.dom.Document;
-
 /**
- * Represents an endpoint reference or a logical endpoint.
- * References are usually obtained from the {@link Registry} and used
- * as targets for {@link Exchange}s using the {@link Exchange#setTarget(Reference)}
- * method.
- *
+ * Base class for ServiceMix exception
+ * 
  * @version $Revision: $
  * @since 4.0
  */
-public interface Reference {
+public class ServiceMixException extends RuntimeException {
 
-    /**
-     * Obtains an xml document describing this endpoint reference.
-     * 
-     * @return 
-     */
-    Document toXml();
+	/**
+	 * Generated serial version UID
+	 */
+	private static final long serialVersionUID = -4589808461481157493L;
+
+	public ServiceMixException() {
+	}
+
+	public ServiceMixException(String message) {
+		super(message);
+	}
+
+	public ServiceMixException(Throwable cause) {
+		super(cause);
+	}
+
+	public ServiceMixException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
 }
-
-

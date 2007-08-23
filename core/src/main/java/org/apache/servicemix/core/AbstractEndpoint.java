@@ -14,28 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.api;
+package org.apache.servicemix.core;
 
-import org.w3c.dom.Document;
+import org.apache.servicemix.api.Endpoint;
+import org.apache.servicemix.api.Channel;
 
 /**
- * Represents an endpoint reference or a logical endpoint.
- * References are usually obtained from the {@link Registry} and used
- * as targets for {@link Exchange}s using the {@link Exchange#setTarget(Reference)}
- * method.
- *
  * @version $Revision: $
  * @since 4.0
  */
-public interface Reference {
+public abstract class AbstractEndpoint implements Endpoint {
 
-    /**
-     * Obtains an xml document describing this endpoint reference.
-     * 
-     * @return 
-     */
-    Document toXml();
+    private Channel channel;
+
+    public Channel getChannel() {
+        return this.channel;
+    }
+
+    public void setChannel(Channel channel) {
+        this.channel = channel;
+    }
 
 }
-
-

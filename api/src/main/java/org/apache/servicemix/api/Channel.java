@@ -16,26 +16,19 @@
  */
 package org.apache.servicemix.api;
 
-import java.util.concurrent.Future;
-
 /**
- * Creates a channel to perform invocations on the NMR.
+ * Creates a channel to perform invocations through the NMR.
+ * Channels are created by the {@link Registry}.  They are used
+ * by {@link Endpoint}s to communicate with the NMR, but they
+ * can also be used by external clients.  In such a case, the
+ * Channel must be closed using the {@link #close()} method
+ * after use.
  *
+ * @see org.apache.servicemix.api.Registry#createChannel()
  * @version $Revision: $
  * @since 4.0
  */
 public interface Channel {
-
-    /**
-     * Used for asynchronous notification of the exchange processing being complete
-     *
-     * @version $Revision: $
-     */
-    public interface AsyncHandler {
-
-        void handle(Exchange exchange);
-
-    }
 
     /**
      * Creates a new exchange.
@@ -43,36 +36,35 @@ public interface Channel {
      * @param pattern specify the InOnly / InOut / RobustInOnly / RobustInOut
      * @return a new exchange of the given pattern
      */
-    Exchange createExchange(Exchange.Pattern pattern);
+    Exchange createExchange(Pattern pattern);
 
     /**
-     * Synchronously invocation of the service
-     */
-    void invoke(Exchange exchange);
-
-    /**
-     * An asynchronous invocation of the service which will notify the returned future when the invocation
-     * is complete
+     * An asynchronous invocation of the service
      *
-     * @param exchange
-     * @return a future to be invoked with the exchange when it is complete
+     * @param exchange the exchange to send
      */
-    Future<Exchange> invokeAsync(Exchange exchange);
+    void send(Exchange exchange);
 
     /**
-     * An asynchronous invocation of the service which will invoke the handler when the invocation
-     * is completed
+     * Synchronously send the exchange, blocking until the exchange is returned.
      *
-     * @param exchange the exchange to invoke
-     * @param handler the handler invoked, typically from another thread, when the invocation is completed
-     * to avoid a thread context switch
-     *
-     * @return a future so that the invocation can be canceled
+     * @param exchange the exchange to send
+     * @return <code>true</code> if the exchange has been processed succesfully
      */
-    Future<Exchange> invokeAsync(Exchange exchange, AsyncHandler handler);
+    boolean sendSync(Exchange exchange);
 
     /**
-     * Closes the channel, freeing up any resources (like sockets, threads etc)
+     * Synchronously send the exchange
+     * @param exchange the exchange to send
+     * @param timeout time to wait in milliseconds
+     * @return <code>true</code> if the exchange has been processed succesfully
+     */
+    boolean sendSync(Exchange exchange, long timeout);
+
+    /**
+     * Closes the channel, freeing up any resources (like sockets, threads etc).
+     * Channel that are injected onto Endpoints will be closed automatically by
+     * the NMR.
      */
     void close();
 

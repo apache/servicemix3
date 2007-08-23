@@ -16,8 +16,9 @@
  */
 package org.apache.servicemix.api;
 
+import javax.xml.namespace.QName;
 import java.io.Serializable;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Represents a message exchange.
@@ -26,57 +27,70 @@ import java.util.Set;
  * representing a link to a logical endpoint.
  * Exchanges are created using the {@link Channel}.
  *
+ * TODO: transactions
+ *
  * @version $Revision: $
  * @since 4.0
  */
-public interface Exchange extends Serializable, Cloneable {
+public interface Exchange extends Serializable {
 
-    enum Pattern {
-        InOnly,
-        RobustInOnly,
-        InOut,
-        InOptionalOut;
+    /**
+     * The unique id of this exchange
+     * @return
+     */
+    String getId();
 
-        public boolean has(Message.Type msg) {
-            switch (msg) {
-                case In:
-                    return true;
-                case Out:
-                    return this == InOut || this == InOptionalOut;
-                case Fault:
-                    return this != InOnly;
-                default:
-                    return false;
-            }
-        }
-    }
-
-    enum Role {
-        Consumer,
-        Provider,
-    }
+    /**
+     * The exchange pattern
+     * @return
+     */
+    Pattern getPattern();
 
     /**
      * The role of the exchange.
      * @return
      */
     Role getRole();
-
+    
     /**
-     * The exchange pattern
+     * The status of the exchange
      * @return
      */
-    Exchange.Pattern getPattern();
+    Status getStatus();
 
+    /**
+     * Set the status of the exchange
+     *
+     * @param status the new status
+     */
+    void setStatus(Status status);
+
+    /**
+     * The target used for this exchange
+     * @return
+     */
     Reference getTarget();
-
+    
+    /**
+     * The target used for this exchange
+     *
+     * @param target the target endpoint
+     */
     void setTarget(Reference target);
 
     /**
+     * The service operation of this exchange
      *
-     * @return the names of properties set on this exchange
+     * @return  the operation
      */
-    Set<String> getPropertyNames();
+    QName getOperation();
+
+    /**
+     * The service operation of this exchange
+     *
+     * @param operation the operation
+     */
+    void setOperation(QName operation);
 
     /**
      * Get a given property by its name.
@@ -84,7 +98,34 @@ public interface Exchange extends Serializable, Cloneable {
      * @param name the name of the property to retrieve
      * @return the value of the property or <code>null</code> if none has been set
      */
-    Object      getProperty(String name);
+    Object getProperty(String name);
+
+    /**
+     * Get a typed property.
+     *
+     * @param type the type of the property to retrieve
+     * @return the value of the property or <code>null</code> if none has been set
+     */
+    <T> T getProperty(Class<T> type);
+
+    /**
+     * Returns a property associated with this exchange by name and specifying
+     * the type required
+     *
+     * @param name the name of the property
+     * @param type the type of the property
+     * @return the value of the given header or null if there is no property for
+     *         the given name or null if it cannot be converted to the given
+     *         type
+     */
+    <T> T getProperty(String name, Class<T> type);
+
+    /**
+     * Return all the properties associated with this exchange
+     *
+     * @return all the properties
+     */
+    Map<String, Object> getProperties();
 
     /**
      * Set a property on this exchange.
@@ -93,41 +134,108 @@ public interface Exchange extends Serializable, Cloneable {
      * @param name the name of the property
      * @param value the value for this property or <code>null</code>
      */
-    void        setProperty(String name, Object value);
+    void setProperty(String name, Object value);
 
     /**
-     * Obtains the input message
-     * @return the input message or <code>null</code> if
-     *         this pattern do not have any
+     * Set a typed property on this exchange.
+     *
+     * @param type the key
+     * @param value the value
+     */
+    <T> void setProperty(Class<T> type, T value);
+
+    /**
+     * Obtains the input message, lazily creating one if none
+     * has been associated with this exchange. If you want to inspect this property
+     * but not force lazy creation then invoke the {@link #getIn(boolean)}
+     * method passing in false
+     *
+     * @return the input message
      */
     Message getIn();
 
     /**
-     * Obtains the output message
-     * @return the output message or <code>null</code> if
-     *         this pattern does not have any
+     * Returns the inbound message, optionally creating one if one has not already
+     * been associated with this exchange.
+     *
+     * @param lazyCreate <code>true</code> if the message should be created
+     * @return the input message
+     */
+    Message getIn(boolean lazyCreate);
+    
+    /**
+     * Obtains the outbound message, lazily creating one if none
+     * has been associated with this exchange and if this exchange
+     * supports an out message. If you want to inspect this property
+     * but not force lazy creation then invoke the {@link #getOut(boolean)}
+     * method passing in false
+     *
+     * @return the output message
      */
     Message getOut();
 
     /**
-     * Obtains the fault message
-     * @return the fault message or <code>null</code> if
-     *         this pattern does not have any
+     * Returns the outbound message, optionally creating one if one has not already
+     * been associated with this exchange
+     *
+     * @return the out message
+     */
+    Message getOut(boolean lazyCreate);
+
+    /**
+     * Obtains the fault message, lazily creating one if none
+     * has been associated with this exchange and if this exchange
+     * supports a faut message. If you want to inspect this property
+     * but not force lazy creation then invoke the {@link #getFault(boolean)}
+     * method passing in false
+     *
+     * @return the fault message
      */
     Message getFault();
 
     /**
-     * Obtains the message of the given type
+     * Returns the fault message, optionally creating one if one has not already
+     * been associated with this exchange
+     *
+     * @return the fault message
+     */
+    Message getFault(boolean lazyCreate);
+
+    /**
+     * Obtains the given message, lazily creating one if none
+     * has been associated with this exchange and if this exchange
+     * supports a faut message. If you want to inspect this property
+     * but not force lazy creation then invoke the {@link #getMessage(Type, boolean)}
+     * method passing in false
+     *
+     * @param type the type of message to retrieve
      * @return the message or <code>null</code> if
      *         this pattern does not support this type of message
      */
-    Message getMessage(Message.Type dir);
+    Message getMessage(Type type);
+
+    /**
+     * Returns the message of the given type, optionally creating one if one has not already
+     * been associated with this exchange
+     *
+     * @param type the type of message to retrieve
+     * @return the given message
+     */
+    Message getMessage(Type type, boolean lazyCreate);
 
     /**
      * Obtains the error of this exchange
+     *
      * @return the exception that caused the exchange to fail
      */
     Exception getError();
+
+    /**
+     * Set the error on this exchange
+     *
+     * @param error the exception that caused the exchange to fail
+     */
+    void setError(Exception error);
 
     /**
      * Make sure that all streams contained in the content and in
@@ -135,10 +243,11 @@ public interface Exchange extends Serializable, Cloneable {
      * This method will be called by the framework when persisting
      * the exchange or when displaying it
      */
-    void        ensureReReadable();
+    void ensureReReadable();
 
-    void     copyFrom(Exchange exchange);
+    void copyFrom(Exchange exchange);
     Exchange copy();
-    String   display(boolean displayContent);
+    String display(boolean displayContent);
+
 
 }

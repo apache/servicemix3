@@ -32,7 +32,10 @@ public interface Endpoint {
      * Set the channel so that the endpoint can send exchanges back
      * when they are processed or act as a consumer itself.
      * This method will be called by the NMR while the endpoint is registered.
+     * Such a channel does not need to be closed as the NMR will close it
+     * automatically when the endpoint is unregistered.
      *
+     * @see Registry#register(Endpoint, java.util.Map)
      * @param channel the channel that this endpoint can use
      */
     void setChannel(Channel channel);
@@ -40,7 +43,7 @@ public interface Endpoint {
     /**
      * Process the given exchange.  The processing can occur in the current thread
      * or asynchronously.
-     * If an exchange has sent an exchange asynchronously to another endpoint,
+     * If an endpoint has sent an exchange asynchronously to another endpoint,
      * it will receive the exchange back using this method.  An endpoint can
      * recognized such exchanges by checking the role of the exchange.
      *

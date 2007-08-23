@@ -16,26 +16,22 @@
  */
 package org.apache.servicemix.api;
 
-import org.w3c.dom.Document;
-
 /**
- * Represents an endpoint reference or a logical endpoint.
- * References are usually obtained from the {@link Registry} and used
- * as targets for {@link Exchange}s using the {@link Exchange#setTarget(Reference)}
- * method.
+ * Various constants used for endpoints metadata.
+ * These constants are used when registering an endpoint using
+ * the {@link Registry#register(Endpoint, java.util.Map)}. The given
+ * map contains the metadata associated with the endpoint.
  *
  * @version $Revision: $
  * @since 4.0
  */
-public interface Reference {
+public interface EndpointConstants {
 
-    /**
-     * Obtains an xml document describing this endpoint reference.
-     * 
-     * @return 
-     */
-    Document toXml();
+    String ID = "ID";
 
+    String SERVICE_NAME = "SERVICE_NAME";
+
+    String ENDPOINT_NAME = "ENDPOINT_NAME";
+    
+    String WSDL_URL = "WSDL_URL";
 }
-
-

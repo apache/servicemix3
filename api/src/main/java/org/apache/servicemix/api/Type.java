@@ -16,26 +16,14 @@
  */
 package org.apache.servicemix.api;
 
-import org.w3c.dom.Document;
-
 /**
- * Represents an endpoint reference or a logical endpoint.
- * References are usually obtained from the {@link Registry} and used
- * as targets for {@link Exchange}s using the {@link Exchange#setTarget(Reference)}
- * method.
- *
+ * The type of a message, which can be In, Out or Fault.
+ * 
  * @version $Revision: $
  * @since 4.0
  */
-public interface Reference {
-
-    /**
-     * Obtains an xml document describing this endpoint reference.
-     * 
-     * @return 
-     */
-    Document toXml();
-
+public enum Type {
+    In,
+    Out,
+    Fault
 }
-
-

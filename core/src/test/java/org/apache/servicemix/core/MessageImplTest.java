@@ -14,28 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.api;
+package org.apache.servicemix.core;
 
-import org.w3c.dom.Document;
+import static org.junit.Assert.*;
 
-/**
- * Represents an endpoint reference or a logical endpoint.
- * References are usually obtained from the {@link Registry} and used
- * as targets for {@link Exchange}s using the {@link Exchange#setTarget(Reference)}
- * method.
- *
- * @version $Revision: $
- * @since 4.0
- */
-public interface Reference {
+import org.apache.servicemix.api.Message;
+import org.junit.Test;
 
-    /**
-     * Obtains an xml document describing this endpoint reference.
-     * 
-     * @return 
-     */
-    Document toXml();
+public class MessageImplTest {
+
+    @Test
+    public void testHeaders() {
+        Message msg = new MessageImpl();
+        assertNotNull(msg.getHeaders());
+    }
 
 }
-
-
