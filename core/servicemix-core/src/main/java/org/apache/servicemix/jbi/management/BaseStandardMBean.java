@@ -111,7 +111,7 @@ public class BaseStandardMBean extends StandardMBean implements ModelMBeanNotifi
      * @throws ReflectionException
      * @throws NotCompliantMBeanException
      */
-    public BaseStandardMBean(Object object, Class<?> interfaceMBean, String description, 
+    public BaseStandardMBean(Object object, Class interfaceMBean, String description, 
                              MBeanAttributeInfo[] attrs, MBeanOperationInfo[] ops,
                              ExecutorService executorService) throws ReflectionException, NotCompliantMBeanException {
         super(object, interfaceMBean);
