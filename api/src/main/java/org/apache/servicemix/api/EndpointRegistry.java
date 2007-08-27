@@ -16,6 +16,8 @@
  */
 package org.apache.servicemix.api;
 
+import org.apache.servicemix.api.service.ServiceRegistry;
+
 import org.w3c.dom.Document;
 
 import java.util.Map;
@@ -27,7 +29,7 @@ import java.util.Map;
  * @version $Revision: $
  * @since 4.0
  */
-public interface Registry {
+public interface EndpointRegistry extends ServiceRegistry<Endpoint> {
 
     /**
      * Register the given endpoint in the registry.
@@ -35,7 +37,6 @@ public interface Registry {
      * Upon registration, a {@link Channel} will be injected onto the Endpoint using
      * the {@link Endpoint#setChannel(Channel)} method.
      *
-     * @see EndpointConstants
      * @param endpoint the endpoint to register
      * @param properties the metadata associated with this endpoint
      */
@@ -62,16 +63,10 @@ public interface Registry {
      * This methods creates a Reference from its xml representation.
      *
      * @see Reference#toXml()
-     * @param xml
-     * @return
+     * @param xml the xml document describing this reference
+     * @return a new Reference
      */
     Reference lookup(Document xml);
-
-    /**
-     * Create a channel to interact with the NMR without exposing an endpoint.
-     * @return a channel
-     */
-    Channel createChannel();
 
 }
 

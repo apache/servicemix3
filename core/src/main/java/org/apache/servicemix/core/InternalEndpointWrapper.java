@@ -14,27 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.api;
+package org.apache.servicemix.core;
+
+import org.apache.servicemix.api.Endpoint;
+import org.apache.servicemix.api.Channel;
+import org.apache.servicemix.api.Exchange;
+import org.apache.servicemix.api.internal.InternalEndpoint;
+import org.apache.servicemix.api.internal.InternalChannel;
 
 /**
- * Represents an endpoint to expose in the NMR.
- * Exposing an endpoint in the NMR is done using the (@link Registry}. 
  *
- * The endpoint will be given Exchange to process and must be prepared to
- * be given several exchanges concurrently for processing.
- *
- * @version $Revision: $
- * @since 4.0
  */
-public interface Endpoint {
+public class InternalEndpointWrapper implements InternalEndpoint {
 
-    String ID = "ID";
+    private final Endpoint endpoint;
+    private InternalChannel channel;
 
-    String SERVICE_NAME = "SERVICE_NAME";
+    public InternalEndpointWrapper(Endpoint endpoint) {
+        this.endpoint = endpoint;
+    }
 
-    String ENDPOINT_NAME = "ENDPOINT_NAME";
-
-    String WSDL_URL = "WSDL_URL";
+    public InternalChannel getChannel() {
+        return channel;
+    }
 
     /**
      * Set the channel so that the endpoint can send exchanges back
@@ -43,10 +45,13 @@ public interface Endpoint {
      * Such a channel does not need to be closed as the NMR will close it
      * automatically when the endpoint is unregistered.
      *
-     * @see EndpointRegistry#register(Endpoint, java.util.Map)
      * @param channel the channel that this endpoint can use
+     * @see org.apache.servicemix.api.EndpointRegistry#register(org.apache.servicemix.api.Endpoint,java.util.Map)
      */
-    void setChannel(Channel channel);
+    public void setChannel(Channel channel) {
+        this.channel = (InternalChannel) channel;
+        endpoint.setChannel(channel);
+    }
 
     /**
      * Process the given exchange.  The processing can occur in the current thread
@@ -57,6 +62,8 @@ public interface Endpoint {
      *
      * @param exchange the exchange to process
      */
-    void process(Exchange exchange);
+    public void process(Exchange exchange) {
+        endpoint.process(exchange);
+    }
 
 }

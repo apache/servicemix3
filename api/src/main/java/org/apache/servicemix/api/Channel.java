@@ -18,13 +18,13 @@ package org.apache.servicemix.api;
 
 /**
  * Creates a channel to perform invocations through the NMR.
- * Channels are created by the {@link Registry}.  They are used
+ * Channels are created by the {@link NMR}.  They are used
  * by {@link Endpoint}s to communicate with the NMR, but they
  * can also be used by external clients.  In such a case, the
  * Channel must be closed using the {@link #close()} method
  * after use.
  *
- * @see org.apache.servicemix.api.Registry#createChannel()
+ * @see org.apache.servicemix.api.NMR#createChannel()
  * @version $Revision: $
  * @since 4.0
  */

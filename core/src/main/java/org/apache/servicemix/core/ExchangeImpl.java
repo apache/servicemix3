@@ -16,13 +16,9 @@
  */
 package org.apache.servicemix.core;
 
-import org.apache.servicemix.api.Exchange;
-import org.apache.servicemix.api.Message;
-import org.apache.servicemix.api.Pattern;
-import org.apache.servicemix.api.Reference;
-import org.apache.servicemix.api.Role;
-import org.apache.servicemix.api.Status;
-import org.apache.servicemix.api.Type;
+import org.apache.servicemix.api.*;
+import org.apache.servicemix.api.internal.InternalExchange;
+import org.apache.servicemix.api.internal.InternalEndpoint;
 
 import javax.xml.namespace.QName;
 import java.io.IOException;
@@ -34,7 +30,7 @@ import java.util.UUID;
  * @version $Revision: $
  * @since 4.0
  */
-public class ExchangeImpl implements Exchange {
+public class ExchangeImpl implements InternalExchange {
 
 	/**
 	 * Generated serial version UID 
@@ -52,6 +48,8 @@ public class ExchangeImpl implements Exchange {
     private Message out;
     private Message fault;
     private Exception error;
+    private InternalEndpoint source;
+    private InternalEndpoint destination;
 
     /**
      * Creates and exchange of the given pattern
@@ -360,5 +358,21 @@ public class ExchangeImpl implements Exchange {
 	public String toString() {
 		return display(true);
 	}
+
+    public InternalEndpoint getSource() {
+        return source;
+    }
+
+    public void setSource(InternalEndpoint source) {
+        this.source = source;
+    }
+
+    public InternalEndpoint getDestination() {
+        return destination;
+    }
+
+    public void setDestination(InternalEndpoint destination) {
+        this.destination = destination;
+    }
 
 }

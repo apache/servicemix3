@@ -48,10 +48,10 @@ public class OsgiExample {
         // registering an endpoint
         Endpoint e = new MyEndpoint();
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put(EndpointConstants.ID, "my-endpoint");
-        props.put(EndpointConstants.SERVICE_NAME, new QName("urn:namesapce", "service"));
-        props.put(EndpointConstants.ENDPOINT_NAME, "foo");
-        props.put(EndpointConstants.WSDL_URL, "file:my.wsdl");
+        props.put(Endpoint.ID, "my-endpoint");
+        props.put(Endpoint.SERVICE_NAME, new QName("urn:namesapce", "service"));
+        props.put(Endpoint.ENDPOINT_NAME, "foo");
+        props.put(Endpoint.WSDL_URL, "file:my.wsdl");
 
         bundleContext.registerService(Endpoint.class.getName(), e, props);
     }
@@ -59,23 +59,29 @@ public class OsgiExample {
     public void testFindRegistry() {
         BundleContext bundleContext = null;
 
-        ServiceReference ref = bundleContext.getServiceReference(Registry.class.getName());
-        Registry reg = (Registry) bundleContext.getService(ref);
+        // Direct retrieval
+        ServiceReference ref = bundleContext.getServiceReference(EndpointRegistry.class.getName());
+        EndpointRegistry reg = (EndpointRegistry) bundleContext.getService(ref);
+
+        // Retrieval using the NMR
+        ref = bundleContext.getServiceReference(NMR.class.getName());
+        NMR nmr = (NMR) bundleContext.getService(ref);
+        reg = nmr.getEndpointRegistry();
     }
 
     public void testLookupReference() throws InvalidSyntaxException {
-        Registry reg = null;
+        EndpointRegistry reg = null;
 
         Map<String, Object> props = new HashMap<String, Object>();
-        props.put(EndpointConstants.ID, "myEndpoint");
+        props.put(Endpoint.ID, "myEndpoint");
         Reference target = reg.lookup(props);
     }
 
     public void testSendExchange() {
-        Registry reg = null;
+        NMR nmr = null;
         Reference target = null;
 
-        Channel channel = reg.createChannel();
+        Channel channel = nmr.createChannel();
         try {
             Exchange e = channel.createExchange(Pattern.InOnly);
             e.setTarget(target);

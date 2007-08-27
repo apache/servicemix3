@@ -188,9 +188,12 @@ public interface Message extends Serializable {
      * Make sure that all streams contained in the content and in
      * attachments are transformed to re-readable sources.
      * This method will be called by the framework when persisting
-     * the message or when displaying it
+     * the message or when displaying it.
+     *
+     * TODO: do we really need this method
      */
     void        ensureReReadable();
 
+    // TODO: is toString() sufficient ?
     String      display(boolean displayContent);
 }

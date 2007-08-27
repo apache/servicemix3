@@ -14,24 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.api;
+package org.apache.servicemix.api.internal;
+
+import org.apache.servicemix.api.Channel;
 
 /**
- * Various constants used for endpoints metadata.
- * These constants are used when registering an endpoint using
- * the {@link Registry#register(Endpoint, java.util.Map)}. The given
- * map contains the metadata associated with the endpoint.
+ * InternalChannel is the private contract for channels.
+ *
+ * The {@link #deliver(InternalExchange)} method
+ * is to be used by {@link Flow}s implementations so that they can
+ * hand exchanges to the channels.
  *
  * @version $Revision: $
  * @since 4.0
  */
-public interface EndpointConstants {
+public interface InternalChannel extends Channel {
 
-    String ID = "ID";
-
-    String SERVICE_NAME = "SERVICE_NAME";
-
-    String ENDPOINT_NAME = "ENDPOINT_NAME";
-    
-    String WSDL_URL = "WSDL_URL";
+    /**
+     * Deliver an exchange to the endpoint using this channel
+     *
+     * @param exchange the exchange to delivery
+     */
+    void deliver(InternalExchange exchange);
 }

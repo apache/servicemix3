@@ -238,15 +238,34 @@ public interface Exchange extends Serializable {
     void setError(Exception error);
 
     /**
+     * Copy the given exchange to this one
+     * @param exchange the exchange to copy from
+     */
+    void copyFrom(Exchange exchange);
+
+    /**
+     * Duplicates this exchange and returns a new copy
+     *
+     * @return a copy of this exchange
+     */
+    Exchange copy();
+
+    /**
      * Make sure that all streams contained in the content and in
      * attachments are transformed to re-readable sources.
      * This method will be called by the framework when persisting
      * the exchange or when displaying it
+     *
+     * TODO: do we really need that?
      */
     void ensureReReadable();
 
-    void copyFrom(Exchange exchange);
-    Exchange copy();
+    /**
+     * TODO: is toString() sufficient 
+     *
+     * @param displayContent
+     * @return
+     */
     String display(boolean displayContent);
 
 

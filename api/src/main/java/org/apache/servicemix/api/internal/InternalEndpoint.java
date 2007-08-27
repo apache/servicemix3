@@ -14,25 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.core;
+package org.apache.servicemix.api.internal;
 
 import org.apache.servicemix.api.Endpoint;
-import org.apache.servicemix.api.Channel;
 
 /**
  * @version $Revision: $
  * @since 4.0
  */
-public abstract class AbstractEndpoint implements Endpoint {
+public interface InternalEndpoint extends Endpoint {
 
-    private Channel channel;
-
-    public Channel getChannel() {
-        return this.channel;
-    }
-
-    public void setChannel(Channel channel) {
-        this.channel = channel;
-    }
+    InternalChannel getChannel();
 
 }
