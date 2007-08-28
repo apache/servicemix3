@@ -31,6 +31,13 @@ package org.apache.servicemix.api;
 public interface Channel {
 
     /**
+     * Access to the bus
+     *
+     * @return the NMR
+     */
+    NMR getNMR();
+
+    /**
      * Creates a new exchange.
      *
      * @param pattern specify the InOnly / InOut / RobustInOnly / RobustInOut

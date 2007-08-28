@@ -19,6 +19,7 @@ package org.apache.servicemix.core;
 import org.apache.servicemix.api.internal.Flow;
 import org.apache.servicemix.api.internal.InternalEndpoint;
 import org.apache.servicemix.api.internal.InternalExchange;
+import org.apache.servicemix.api.Role;
 
 
 /**
@@ -49,6 +50,8 @@ public class StraightThroughFlow implements Flow {
      * @param exchange the exchange to dispatch
      */
     public void dispatch(InternalExchange exchange) {
-        exchange.getDestination().getChannel().deliver(exchange);
+        InternalEndpoint endpoint = exchange.getRole() == Role.Consumer ? exchange.getDestination()
+                                                                        : exchange.getSource();
+        endpoint.getChannel().deliver(exchange);
     }
 }

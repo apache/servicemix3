@@ -23,6 +23,7 @@ import org.apache.servicemix.api.event.ListenerRegistry;
 import org.apache.servicemix.api.internal.FlowRegistry;
 
 /**
+ * This class is the main class implementing the NMR
  *
  */
 public class ServiceMix implements NMR {
@@ -41,6 +42,15 @@ public class ServiceMix implements NMR {
     }
 
     /**
+     * Set the endpoint registry
+     *
+     * @param endpoints the endpoint registry
+     */
+    public void setEndpointRegistry(EndpointRegistry endpoints) {
+        this.endpoints = endpoints;
+    }
+
+    /**
      * Access the listener registry.
      *
      * @return the listener registry
@@ -50,12 +60,30 @@ public class ServiceMix implements NMR {
     }
 
     /**
+     * Set the listener registry
+     *
+     * @param listeners the listener registry
+     */
+    public void setListenerRegistry(ListenerRegistry listeners) {
+        this.listeners = listeners;
+    }
+
+    /**
      * Access the flow registry.
      *
      * @return the flow registry
      */
     public FlowRegistry getFlowRegistry() {
         return flows;
+    }
+
+    /**
+     * Set the flow registry
+     *
+     * @param flows the flow registry
+     */
+    public void setFlowRegistry(FlowRegistry flows) {
+        this.flows = flows;
     }
 
     /**

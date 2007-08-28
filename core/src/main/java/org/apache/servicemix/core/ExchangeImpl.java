@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Semaphore;
 
 /**
  * @version $Revision: $
@@ -50,14 +51,18 @@ public class ExchangeImpl implements InternalExchange {
     private Exception error;
     private InternalEndpoint source;
     private InternalEndpoint destination;
+    private Semaphore consumerLock;
+    private Semaphore providerLock;
 
     /**
      * Creates and exchange of the given pattern
      * @param pattern the pattern of this exchange
      */
     public ExchangeImpl(Pattern pattern) {
-        this.pattern = pattern;
         this.id = UUID.randomUUID().toString();
+        this.status = Status.Active;
+        this.role = Role.Consumer;
+        this.pattern = pattern;
     }
     
     private ExchangeImpl() {
@@ -373,6 +378,20 @@ public class ExchangeImpl implements InternalExchange {
 
     public void setDestination(InternalEndpoint destination) {
         this.destination = destination;
+    }
+
+    public Semaphore getConsumerLock(boolean create) {
+        if (create) {
+            consumerLock = new Semaphore(0);
+        }
+        return consumerLock;
+    }
+
+    public Semaphore getProviderLock(boolean create) {
+        if (create) {
+            providerLock = new Semaphore(0);
+        }
+        return providerLock;
     }
 
 }

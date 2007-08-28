@@ -17,6 +17,7 @@
 package org.apache.servicemix.core;
 
 import org.apache.servicemix.api.ServiceMixException;
+import org.apache.servicemix.api.Role;
 import org.apache.servicemix.api.internal.*;
 
 /**
@@ -37,10 +38,31 @@ public class FlowRegistryImpl extends ServiceRegistryImpl<Flow> implements FlowR
     }
 
     public void dispatch(InternalExchange exchange) {
-        InternalReference target = (InternalReference) exchange.getTarget();
-        for (InternalEndpoint endpoint : target.choose()) {
+        if (exchange.getRole() == Role.Consumer) {
+            if (exchange.getDestination() == null) {
+                InternalReference target = (InternalReference) exchange.getTarget();
+                for (InternalEndpoint endpoint : target.choose()) {
+                    for (Flow flow : getServices()) {
+                        if (flow.canDispatch(exchange, endpoint)) {
+                            exchange.setDestination(endpoint);
+                            flow.dispatch(exchange);
+                            return;
+                        }
+                    }
+                    throw new ServiceMixException("Could not dispatch exchange. No flow can handle it.");
+                }
+            } else {
+                for (Flow flow : getServices()) {
+                    if (flow.canDispatch(exchange, exchange.getDestination())) {
+                        flow.dispatch(exchange);
+                        return;
+                    }
+                }
+                throw new ServiceMixException("Could not dispatch exchange. No flow can handle it.");
+            }
+        } else {
             for (Flow flow : getServices()) {
-                if (flow.canDispatch(exchange, endpoint)) {
+                if (flow.canDispatch(exchange, exchange.getSource())) {
                     flow.dispatch(exchange);
                     return;
                 }

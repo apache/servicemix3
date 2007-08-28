@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 /**
  *
  */
-public class    ListenerRegistryImpl extends ServiceRegistryImpl<Listener> implements ListenerRegistry {
+public class ListenerRegistryImpl extends ServiceRegistryImpl<Listener> implements ListenerRegistry {
 
     /**
      * Retrieve an iterator of listeners of a certain type

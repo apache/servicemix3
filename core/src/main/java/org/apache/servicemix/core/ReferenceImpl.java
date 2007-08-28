@@ -16,19 +16,17 @@
  */
 package org.apache.servicemix.core;
 
-import org.apache.servicemix.api.Reference;
-import org.apache.servicemix.api.Endpoint;
 import org.apache.servicemix.api.internal.InternalEndpoint;
+import org.apache.servicemix.api.internal.InternalReference;
 import org.w3c.dom.Document;
 
 import java.util.List;
-import java.util.Iterator;
 
 /**
  * @version $Revision: $
  * @since 4.0
  */
-public class ReferenceImpl implements Reference {
+public class ReferenceImpl implements InternalReference {
 
     private final List<InternalEndpoint> endpoints;
 
@@ -60,28 +58,8 @@ public class ReferenceImpl implements Reference {
      *
      * @return an endpoint that will be used as the physical target
      */
-    public Iterator<Endpoint> choose() {
-        return new EndpointIterator(endpoints.iterator());
+    public Iterable<InternalEndpoint> choose() {
+        return endpoints;
     }
     
-    protected static class EndpointIterator implements Iterator<Endpoint> {
-
-        private final Iterator<InternalEndpoint> iterator;
-
-        public EndpointIterator(Iterator<InternalEndpoint> iterator) {
-            this.iterator = iterator;
-        }
-
-        public boolean hasNext() {
-            return iterator.hasNext();
-        }
-
-        public Endpoint next() {
-            return iterator.next();
-        }
-
-        public void remove() {
-            throw new IllegalStateException();
-        }
-    }
 }

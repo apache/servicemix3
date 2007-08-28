@@ -42,6 +42,25 @@ public class EndpointRegistryImpl implements EndpointRegistry {
     private Map<Endpoint, InternalEndpoint> endpoints = new ConcurrentHashMap<Endpoint, InternalEndpoint>();
     private ServiceRegistry<InternalEndpoint> registry = new ServiceRegistryImpl<InternalEndpoint>();
 
+    public EndpointRegistryImpl() {
+    }
+
+    public EndpointRegistryImpl(NMR nmr) {
+        this.nmr = nmr;
+    }
+
+    public NMR getNMR() {
+        return this.nmr;
+    }
+
+    public void setNMR(NMR nmr) {
+        this.nmr = nmr;
+    }
+
+    public void init() {
+        // TODO: check nmr
+    }
+
     /**
      * Register the given endpoint in the registry.
      * In an OSGi world, this would be performed automatically by a ServiceTracker.

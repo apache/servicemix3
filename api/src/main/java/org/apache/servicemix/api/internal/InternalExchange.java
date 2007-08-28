@@ -17,6 +17,9 @@
 package org.apache.servicemix.api.internal;
 
 import org.apache.servicemix.api.Exchange;
+import org.apache.servicemix.api.Role;
+
+import java.util.concurrent.Semaphore;
 
 /**
  * 
@@ -25,6 +28,15 @@ import org.apache.servicemix.api.Exchange;
  * @since 4.0
  */
 public interface InternalExchange extends Exchange {
+
+    /**
+     * Set the role of the exchange.
+     * This method is for internal use and will be called by the Channel
+     * when delivering the exchange.
+     *
+     * @param role the new role
+     */
+    public void setRole(Role role);
 
     /**
      * Retrieve the source endpoint. I.e. the one that created the exchange.
@@ -61,4 +73,8 @@ public interface InternalExchange extends Exchange {
      * @param destination the destination endpoint
      */
     void setDestination(InternalEndpoint destination);
+
+    Semaphore getConsumerLock(boolean create);
+
+    Semaphore getProviderLock(boolean create);
 }

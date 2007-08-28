@@ -14,22 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.api.internal;
+package org.apache.servicemix.api.service;
 
-import org.apache.servicemix.api.Endpoint;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
- * @version $Revision: $
- * @since 4.0
+ *
  */
-public interface InternalEndpoint extends Endpoint {
+public final class ServiceHelper {
 
-    /**
-     * Retrieve the channel associated with this endpoint.
-     * This method is usually used by {@link Flow}s to deliver
-     * exchanges to this endpoint.
-     * @return
-     */
-    InternalChannel getChannel();
+    private ServiceHelper() {
+    }
+
+    public static Map<String, ?> createMap(String... data) {
+        Map<String, String> props = new HashMap<String, String>();
+        for (int i = 0; i < data.length / 2; i++) {
+            props.put(data[i*2], data[i*2+1]);
+        }
+        return props;
+    }
 
 }

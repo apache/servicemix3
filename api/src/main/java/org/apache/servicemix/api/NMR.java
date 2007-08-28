@@ -20,7 +20,12 @@ import org.apache.servicemix.api.internal.FlowRegistry;
 import org.apache.servicemix.api.event.ListenerRegistry;
 
 /**
- * 
+ * The NMR interface is the primary interface to communicate with the Bus.
+ * It contains methods to access the registries and to create a client channel
+ * to communicate with the bus.
+ *
+ * @version $Revision: $
+ * @since 4.0
  */
 public interface NMR {
 

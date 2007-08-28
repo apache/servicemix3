@@ -16,17 +16,22 @@
  */
 package org.apache.servicemix.core;
 
-import org.apache.servicemix.api.Exchange;
-import org.apache.servicemix.api.NMR;
-import org.apache.servicemix.api.Pattern;
+import org.apache.servicemix.api.*;
 import org.apache.servicemix.api.event.ExchangeListener;
 import org.apache.servicemix.api.internal.InternalChannel;
 import org.apache.servicemix.api.internal.InternalEndpoint;
 import org.apache.servicemix.api.internal.InternalExchange;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
+ * The Channel implementation.
+ * The channel uses an Executor (usually a thread pool)
+ * to delegate  
+ *
  * @version $Revision: $
  * @since 4.0
  */
@@ -35,12 +40,20 @@ public class ChannelImpl implements InternalChannel {
     private final InternalEndpoint endpoint;
     private final Executor executor;
     private final NMR nmr;
-    
 
     public ChannelImpl(InternalEndpoint endpoint, Executor executor, NMR nmr) {
         this.endpoint = endpoint;
         this.executor = executor;
         this.nmr = nmr;
+    }
+
+    /**
+     * Access to the bus
+     *
+     * @return the NMR
+     */
+    public NMR getNMR() {
+        return nmr;
     }
 
     /**
@@ -70,8 +83,7 @@ public class ChannelImpl implements InternalChannel {
      * @return <code>true</code> if the exchange has been processed succesfully
      */
     public boolean sendSync(Exchange exchange) {
-        // TODO
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return sendSync(exchange, 0);
     }
 
     /**
@@ -82,8 +94,28 @@ public class ChannelImpl implements InternalChannel {
      * @return <code>true</code> if the exchange has been processed succesfully
      */
     public boolean sendSync(Exchange exchange, long timeout) {
-        // TODO
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        InternalExchange e = (InternalExchange) exchange;
+        Semaphore lock = e.getRole() == Role.Consumer ? e.getConsumerLock(true)
+                                                      : e.getProviderLock(true);
+        try {
+            dispatch(e);
+            if (timeout > 0) {
+                if (!lock.tryAcquire(timeout, TimeUnit.MILLISECONDS)) {
+                    throw new TimeoutException();
+                }
+            } else {
+                lock.acquire();
+            }
+        } catch (InterruptedException ex) {
+            exchange.setError(ex);
+            exchange.setStatus(Status.Error);
+            return false;
+        } catch (TimeoutException ex) {
+            exchange.setError(ex);
+            exchange.setStatus(Status.Error);
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -101,6 +133,13 @@ public class ChannelImpl implements InternalChannel {
      * @param exchange the exchange to delivery
      */
     public void deliver(final InternalExchange exchange) {
+        // Handle case where the exchange has been sent synchronously
+        Semaphore lock = exchange.getRole() == Role.Provider ? exchange.getConsumerLock(false)
+                                                             : exchange.getProviderLock(false);
+        if (lock != null) {
+            lock.release();
+            return;
+        }
         // Delegate processing to the executor
         this.executor.execute(new Runnable() {
             public void run() {
@@ -116,11 +155,18 @@ public class ChannelImpl implements InternalChannel {
      */
     protected void process(InternalExchange exchange) {
         // Set destination endpoint
-        exchange.setDestination(endpoint);
+        if (exchange.getDestination() == null) {
+            exchange.setDestination(endpoint);
+        }
         // Call listeners
         for (ExchangeListener l : nmr.getListenerRegistry().getListeners(ExchangeListener.class)) {
             l.exchangeDelivered(exchange);
         }
+        // Change role
+        exchange.setRole(exchange.getRole() == Role.Provider ? Role.Consumer : Role.Provider);
+        // Check if sendSync was used, in which case we need to unblock the other side
+        // rather than delivering the exchange
+        // TODO:
         // Process exchange
         endpoint.process(exchange);
     }
