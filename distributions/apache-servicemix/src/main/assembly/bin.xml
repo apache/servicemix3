@@ -60,6 +60,10 @@
       <outputDirectory>examples/wsdl-first</outputDirectory>
     </fileSet>
     <fileSet>
+      <directory>target/samples/cxf-wsdl-first-${servicemix-version}</directory>
+      <outputDirectory>examples/cxf-wsdl-first</outputDirectory>
+    </fileSet>
+    <fileSet>
       <directory>target/samples/loan-broker-${servicemix-version}</directory>
       <outputDirectory>examples/loan-broker-bpel</outputDirectory>
     </fileSet>

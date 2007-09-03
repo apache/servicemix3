@@ -34,6 +34,7 @@
 
   <modules>
     <module>wsdl-first</module>
+    <module>cxf-wsdl-first</module>
     <module>loan-broker</module>
     <module>bridge</module>
     <module>servicemix-web</module>

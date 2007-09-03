@@ -144,6 +144,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix.samples</groupId>
+      <artifactId>cxf-wsdl-first</artifactId>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.samples</groupId>
       <artifactId>loan-broker</artifactId>
       <type>pom</type>
     </dependency>
@@ -501,6 +506,25 @@
             </configuration>
           </execution>
           <execution>
+            <id>copy-cxf-wsdl-first-sa</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+                  <id>cxf-wsdl-first</id>
+              <outputDirectory>target/samples/cxf-wsdl-first-${servicemix-version}</outputDirectory>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.servicemix.samples.cxf-wsdl-first</groupId>
+                  <artifactId>wsdl-first-sa</artifactId>
+                  <version>${servicemix-version}</version>
+                  <type>zip</type>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
             <id>unpack-samples</id>
             <phase>generate-resources</phase>
             <goals>
@@ -519,6 +543,13 @@
                 <artifactItem>
                   <groupId>org.apache.servicemix.samples</groupId>
                   <artifactId>wsdl-first</artifactId>
+                  <version>${servicemix-version}</version>
+                  <classifier>src</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.servicemix.samples</groupId>
+                  <artifactId>cxf-wsdl-first</artifactId>
                   <version>${servicemix-version}</version>
                   <classifier>src</classifier>
                   <type>zip</type>
