@@ -157,7 +157,7 @@ public class ConsumerProcessor implements ExchangeProcessor, HttpProcessor {
         Continuation cont = ContinuationSupport.getContinuation(request, null);
         MessageExchange exchange;
         // If the continuation is not a retry
-        if (!cont.isPending() && cont.isNew()) {
+        if (!cont.isPending()) {
             try {
                 SoapMessage message = soapHelper.getSoapMarshaler().createReader().read(
                                             request.getInputStream(), 
