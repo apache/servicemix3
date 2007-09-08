@@ -92,7 +92,6 @@
 					<filters>
 						<servicemix-version>${servicemix-version}</servicemix-version>
 						<xbean-version>${xbean-version}</xbean-version>
-						<camel-version>${camel-version}</camel-version>
 						<xfire-version>${xfire-version}</xfire-version>
 						<repositories><![CDATA[  
   <pluginRepositories>
