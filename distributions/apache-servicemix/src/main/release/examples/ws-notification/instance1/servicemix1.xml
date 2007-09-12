@@ -20,12 +20,14 @@
 <beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
 	   xmlns:amq="http://activemq.org/config/1.0"
 	   xmlns:test="http://servicemix.org/test">
-
+  <bean id="jndi" class="org.apache.xbean.spring.jndi.SpringInitialContextFactory"
+        factory-method="makeInitialContext" singleton="true" />
   <!-- the JBI container -->
   <sm:container id="jbi" 
                 name="wsn1"
                 embedded="true"
-                MBeanServer="#jmxServer">
+                MBeanServer="#jmxServer"
+                createJmxConnector="false">
 
     <!-- Use a SEDA flow + JMS flow for clustering. -->
     <sm:flows>
@@ -44,7 +46,7 @@
                    serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1091/jmxrmi"
                    threaded="true"
                    daemon="true" 
-                   depends-on="rmiRegistry" />
+                   depends-on="rmiRegistry, jmxServer" />
 
   <!-- JMS connection factory -->
   <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">

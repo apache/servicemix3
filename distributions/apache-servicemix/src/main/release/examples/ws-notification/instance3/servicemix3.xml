@@ -23,6 +23,8 @@
        xmlns:my="http://servicemix.apache.org/demo"
        xmlns:wsn="http://servicemix.apache.org/wsn/1.0">
 
+  <bean id="jndi" class="org.apache.xbean.spring.jndi.SpringInitialContextFactory"
+        factory-method="makeInitialContext" singleton="true" />
   <!-- We need to include the WS-Notification component dependencies in the classpath -->
   <classpath>
     <location>../lib/servicemix-wsn2005-@{servicemix-version}.jar</location>
@@ -36,7 +38,8 @@
   <sm:container id="jbi" 
                 name="wsn3"
                 embedded="true" 
-                MBeanServer="#jmxServer">
+                MBeanServer="#jmxServer"
+                createJmxConnector="false">
 
     <!-- Use a SEDA flow + JMS flow for clustering. -->
     <sm:flows>
@@ -106,7 +109,7 @@
                    serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1093/jmxrmi"
                    threaded="true"
                    daemon="true" 
-                   depends-on="rmiRegistry" />
+                   depends-on="rmiRegistry jmxServer" />
 
   <!-- JMS connection factory -->
   <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">

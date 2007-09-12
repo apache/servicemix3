@@ -92,8 +92,8 @@
     <mkdir dir="install"/>
     <mkdir dir="deploy"/>
     <copy todir="install">
-      <fileset dir="../../components" includes="*shared*"/>
-      <fileset dir="../../components" includes="*lwcontainer*"/>
+      <fileset dir="../../hotdeploy" includes="*shared*"/>
+      <fileset dir="../../hotdeploy" includes="*lwcontainer*"/>
     </copy>
     <copy file="${build.dir}/loanbroker-sa.zip" todir="deploy"/>
   </target>

@@ -31,12 +31,15 @@
     <location>../lib/jaxb-impl-2.0.1.jar</location>
     <location>../lib/xfire-jsr181-api-1.0-M1.jar</location>
   </classpath>
+  <bean id="jndi" class="org.apache.xbean.spring.jndi.SpringInitialContextFactory"
+        factory-method="makeInitialContext" singleton="true" />  
 
   <!-- the JBI container -->
   <sm:container id="jbi" 
                 name="wsn2"
                 embedded="true"
-                MBeanServer="#jmxServer">
+                MBeanServer="#jmxServer"
+                createJmxConnector="false">
 
     <!-- Use a SEDA flow + JMS flow for clustering. -->
     <sm:flows>
@@ -89,7 +92,7 @@
                    serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1092/jmxrmi"
                    threaded="true"
                    daemon="true" 
-                   depends-on="rmiRegistry" />
+                   depends-on="rmiRegistry jmxServer" />
 
   <!-- JMS connection factory -->
   <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
