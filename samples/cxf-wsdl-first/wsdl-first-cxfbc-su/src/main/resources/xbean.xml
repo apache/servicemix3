@@ -21,7 +21,6 @@
        xmlns:person="http://servicemix.apache.org/samples/wsdl-first">
 
   <cxfbc:consumer wsdl="classpath:person.wsdl"
-                      targetEndpoint="soap"
                       targetService="person:PersonService"
                       targetInterface="person:Person"/>
 
