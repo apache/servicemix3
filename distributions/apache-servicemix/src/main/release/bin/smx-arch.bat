@@ -50,6 +50,7 @@ echo                     ftp-poller, ftp-sender,
 echo                     jsr181-annotated, jsr181-wsdl-first,
 echo                     saxon-xquery, saxon-xslt,
 echo                     eip, lwcontainer, bean, ode, camel
+echo			 cxf-se, cxf-bc
 echo Optional arguments:
 echo   -DgroupId=xxxx
 echo   -DartifactId=xxxx
