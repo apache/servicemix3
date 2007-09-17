@@ -70,6 +70,12 @@
       <name>i21 S3 milestone repo</name>
       <url>http://s3.amazonaws.com/maven.springframework.org/milestone</url>
     </repository>
+    <!-- Spring external dependencies -->
+    <repository>
+      <id>spring-ext</id>
+      <name>Spring External Dependencies Repository</name>
+      <url>https://springframework.svn.sourceforge.net/svnroot/springframework/repos/repo-ext/</url>
+    </repository>
     <!-- Spring Snapshots -->
 	<repository>
 	  <id>spring-snapshots</id>
