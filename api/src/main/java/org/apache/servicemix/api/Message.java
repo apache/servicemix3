@@ -135,7 +135,7 @@ public interface Message extends Serializable {
     <T> T getContent(Class<T> type);
 
     /**
-     * Set the content of the message
+     * Set the content of the message.
      *
      * @param content the content of the message
      */

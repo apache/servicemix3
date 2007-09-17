@@ -23,6 +23,11 @@ package org.apache.servicemix.api.internal;
 public interface Flow {
 
     /**
+     * Meta-data key for the unique flow identifier
+     */
+    String ID = "ID";
+
+    /**
      * Check if this flow can be used to dispatch the given Exchange
      *
      * @param exchange the exchange to check

@@ -19,8 +19,10 @@ package org.apache.servicemix.core;
 import org.apache.servicemix.api.Channel;
 import org.apache.servicemix.api.EndpointRegistry;
 import org.apache.servicemix.api.NMR;
+import org.apache.servicemix.api.service.ServiceHelper;
 import org.apache.servicemix.api.event.ListenerRegistry;
 import org.apache.servicemix.api.internal.FlowRegistry;
+import org.apache.servicemix.api.internal.Flow;
 
 /**
  * This class is the main class implementing the NMR
@@ -31,6 +33,22 @@ public class ServiceMix implements NMR {
     private EndpointRegistry endpoints;
     private ListenerRegistry listeners;
     private FlowRegistry flows;
+
+    /**
+     * Initialize ServiceMix
+     */
+    public void init() {
+        if (endpoints == null) {
+            endpoints = new EndpointRegistryImpl(this);
+        }
+        if (listeners == null) {
+            listeners = new ListenerRegistryImpl();
+        }
+        if (flows == null) {
+            flows = new FlowRegistryImpl();
+            flows.register(new StraightThroughFlow(), ServiceHelper.createMap(Flow.ID, StraightThroughFlow.class.getName()));
+        }
+    }
 
     /**
      * Access the endpoint registry.

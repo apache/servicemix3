@@ -48,7 +48,7 @@ public class OsgiExample {
         // registering an endpoint
         Endpoint e = new MyEndpoint();
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put(Endpoint.ID, "my-endpoint");
+        props.put(Endpoint.NAME, "my-endpoint");
         props.put(Endpoint.SERVICE_NAME, new QName("urn:namesapce", "service"));
         props.put(Endpoint.ENDPOINT_NAME, "foo");
         props.put(Endpoint.WSDL_URL, "file:my.wsdl");
@@ -73,7 +73,7 @@ public class OsgiExample {
         EndpointRegistry reg = null;
 
         Map<String, Object> props = new HashMap<String, Object>();
-        props.put(Endpoint.ID, "myEndpoint");
+        props.put(Endpoint.NAME, "myEndpoint");
         Reference target = reg.lookup(props);
     }
 

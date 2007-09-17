@@ -40,7 +40,7 @@ public interface ListenerRegistry extends ServiceRegistry<Listener> {
      *
      * @param listener the listener to remove
      */
-    void unregister(Listener listener);
+    void unregister(Listener listener, Map<String, ?> properties);
 
     /**
      * Retrieve an iterator of listeners of a certain type

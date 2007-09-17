@@ -42,7 +42,7 @@ public interface ServiceRegistry<T> {
      *
      * @param service the service to unregister
      */
-    void unregister(T service);
+    void unregister(T service, Map<String, ?> properties);
 
     /**
      * Get a set of registered services.

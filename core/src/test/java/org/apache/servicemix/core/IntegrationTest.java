@@ -32,20 +32,17 @@ public class IntegrationTest {
     @Before
     public void setUp() {
         ServiceMix smx = new ServiceMix();
-        smx.setListenerRegistry(new ListenerRegistryImpl());
-        smx.setEndpointRegistry(new EndpointRegistryImpl(smx));
-        smx.setFlowRegistry(new FlowRegistryImpl());
-        smx.getFlowRegistry().register(new StraightThroughFlow(), ServiceHelper.createMap());
+        smx.init();
         nmr = smx;
     }
 
     @Test
     public void testSendExchangeToEndpointUsingClient() throws Exception {
         MyEndpoint endpoint = new MyEndpoint();
-        nmr.getEndpointRegistry().register(endpoint, ServiceHelper.createMap(Endpoint.ID, "id"));
+        nmr.getEndpointRegistry().register(endpoint, ServiceHelper.createMap(Endpoint.NAME, "id"));
         Channel client = nmr.createChannel();
         Exchange e = client.createExchange(Pattern.InOnly);
-        e.setTarget(nmr.getEndpointRegistry().lookup(ServiceHelper.createMap(Endpoint.ID, "id")));
+        e.setTarget(nmr.getEndpointRegistry().lookup(ServiceHelper.createMap(Endpoint.NAME, "id")));
         e.getIn().setContent("Hello");
         boolean res = client.sendSync(e);
         assertTrue(res);

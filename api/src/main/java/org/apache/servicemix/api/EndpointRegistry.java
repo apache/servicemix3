@@ -48,7 +48,7 @@ public interface EndpointRegistry extends ServiceRegistry<Endpoint> {
      *
      * @param endpoint the endpoint to unregister
      */
-    void unregister(Endpoint endpoint);
+    void unregister(Endpoint endpoint, Map<String, ?> properties);
 
     /**
      * From a given amount of metadata which could include interface name, service name

@@ -20,7 +20,7 @@ import org.w3c.dom.Document;
 
 /**
  * Represents an endpoint reference or a logical endpoint.
- * References are usually obtained from the {@link Registry} and used
+ * References are usually obtained from the {@link EndpointRegistry} and used
  * as targets for {@link Exchange}s using the {@link Exchange#setTarget(Reference)}
  * method.
  *

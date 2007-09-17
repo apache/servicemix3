@@ -30,6 +30,12 @@
   <modules>
 	<module>api</module>
 	<module>core</module>
+	<module>spring</module>
+	<module>nmr</module>
+	<module>itests</module>
+	<module>daemon</module>
+	<module>bundles</module>
+	<module>apache-servicemix</module>
   </modules>
 
   <distributionManagement>
@@ -49,7 +55,44 @@
     </site>
   </distributionManagement>
 
+  <properties>
+	<junit.version>4.4</junit.version>
+	<felix.version>1.0.0</felix.version>
+	<spring.osgi.version>1.0-m3-SNAPSHOT</spring.osgi.version>
+	<spring.version>2.1-m4</spring.version>
+	<commons.logging.version>1.1</commons.logging.version>
+  </properties>
+
+  <repositories>
+	<!-- I21 repository -->
+    <repository>
+      <id>i21-s3-maven-repo</id>
+      <name>i21 S3 milestone repo</name>
+      <url>http://s3.amazonaws.com/maven.springframework.org/milestone</url>
+    </repository>
+    <!-- Spring Snapshots -->
+	<repository>
+	  <id>spring-snapshots</id>
+	  <name>Springframework Maven SNAPSHOT Repository</name>
+	  <url>http://static.springframework.org/maven2-snapshots/</url>
+	</repository>
+    <!-- Apache snapshot -->
+    <repository>
+      <id>apache-snapshots</id>
+      <name>Apache Snapshot repository</name>
+      <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+      <releases>
+          <enabled>false</enabled>
+      </releases>
+      <snapshots>
+          <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
   <build>
+    <defaultGoal>install</defaultGoal>
+
     <pluginManagement>
 	  <plugins>
         <plugin>
@@ -59,12 +102,23 @@
           <extensions>true</extensions>
         </plugin>
         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-                <source>1.5</source>
-                <target>1.5</target>
-            </configuration>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.0.2</version>
+          <configuration>
+              <source>1.5</source>
+              <target>1.5</target>
+	          <maxmem>256M</maxmem>
+	          <fork>${compiler.fork}</fork>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-idea-plugin</artifactId>
+          <configuration>
+            <downloadSources>true</downloadSources>
+            <downloadJavadocs>true</downloadJavadocs>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -83,4 +137,41 @@
       </plugin>
     </plugins>
   </reporting>
+
+  <profiles>
+    <profile>
+      <id>rat</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>rat-maven-plugin</artifactId>
+            <version>1.0-alpha-3</version>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <reportFile>${project.build.directory}/${project.build.finalName}.rat</reportFile>
+              <excludes>
+                <exclude>**/target/**/*</exclude>
+                <!-- IDEA files -->
+                <exclude>**/*.iml</exclude>
+                <exclude>**/*.ipr</exclude>
+                <exclude>**/*.iws</exclude>
+                <!-- Eclipse files -->
+                <exclude>**/.*</exclude>
+                <exclude>**/eclipse-classes/**/*</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>

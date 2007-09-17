@@ -18,7 +18,7 @@ package org.apache.servicemix.api;
 
 /**
  * Represents an endpoint to expose in the NMR.
- * Exposing an endpoint in the NMR is done using the (@link Registry}. 
+ * Exposing an endpoint in the NMR is done using the (@link EndpointRegistry}. 
  *
  * The endpoint will be given Exchange to process and must be prepared to
  * be given several exchanges concurrently for processing.
@@ -28,12 +28,29 @@ package org.apache.servicemix.api;
  */
 public interface Endpoint {
 
-    String ID = "ID";
+    /**
+     * Meta-data key for the unique endpoint name
+     */
+    String NAME = "NAME";
 
+    /**
+     * Meta-data key for the interface name
+     */
+    String INTERFACE_NAME = "INTERFACE_NAME";
+
+    /**
+     * Meta-data key for the service QName
+     */
     String SERVICE_NAME = "SERVICE_NAME";
 
+    /**
+     * Meta-data key for the endpoint name
+     */
     String ENDPOINT_NAME = "ENDPOINT_NAME";
 
+    /**
+     * Meta-data key for the WSDL url
+     */
     String WSDL_URL = "WSDL_URL";
 
     /**

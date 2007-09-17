@@ -49,11 +49,11 @@ public class EndpointRegistryImpl implements EndpointRegistry {
         this.nmr = nmr;
     }
 
-    public NMR getNMR() {
+    public NMR getNmr() {
         return this.nmr;
     }
 
-    public void setNMR(NMR nmr) {
+    public void setNmr(NMR nmr) {
         this.nmr = nmr;
     }
 
@@ -86,9 +86,9 @@ public class EndpointRegistryImpl implements EndpointRegistry {
      *
      * @param endpoint the endpoint to unregister
      */
-    public void unregister(Endpoint endpoint) {
+    public void unregister(Endpoint endpoint, Map<String, ?> properties) {
         InternalEndpoint wrapper = endpoints.remove(endpoint);
-        registry.unregister(wrapper);
+        registry.unregister(wrapper, properties);
     }
 
     /**
