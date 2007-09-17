@@ -23,12 +23,12 @@
     <parent>
         <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix</artifactId>
-        <version>3.1.2-incubating-SNAPSHOT</version>
+        <version>3.1.2-incubating</version>
     </parent>
 
     <groupId>org.apache.servicemix</groupId>
     <artifactId>archetypes</artifactId>
-    <version>3.1.2-incubating-SNAPSHOT</version>
+    <version>3.1.2-incubating</version>
     <name>ServiceMix :: Archetypes</name>
     <packaging>pom</packaging>
 
@@ -77,7 +77,7 @@
                     <dependency>
                         <groupId>org.apache.servicemix</groupId>
                         <artifactId>build</artifactId>
-                        <version>3.1.2-incubating-SNAPSHOT</version>
+                        <version>3.1.2-incubating</version>
                     </dependency>
                 </dependencies>
             </plugin>
