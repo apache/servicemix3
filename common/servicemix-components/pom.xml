@@ -309,6 +309,10 @@
 	        
             <!-- https://issues.apache.org/activemq/browse/SM-529 -->
             <exclude>**/MPSSettingTest.*</exclude>
+            <exclude>**/ServiceMixClientTest.*</exclude>
+            <exclude>**/ScriptTest.*</exclude>
+            <exclude>**/CacheTest.*</exclude>
+            <exclude>**/GroovyChainTest.*</exclude>
           
           </excludes>
         </configuration>
