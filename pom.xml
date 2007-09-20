@@ -275,6 +275,91 @@
                 <module>distributions</module>
             </modules>
         </profile>
+        
+
+         <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <!-- We want to deploy the artifact to a staging location for perusal -->
+                    <plugin>
+                        <inherited>true</inherited>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <version>2.3</version>
+                        <configuration>
+                            <altDeploymentRepository>${deploy.altRepository}</altDeploymentRepository>
+                            <updateReleaseInfo>true</updateReleaseInfo>
+                        </configuration>
+                    </plugin>
+                    <!-- We want to sign the artifact, the POM, and all attached artifacts -->
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.0-alpha-3</version>
+                        <configuration>
+                            <passphrase>${gpg.passphrase}</passphrase>
+                        </configuration>            
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>deploy</id>
+            <modules>
+                <module>build</module>
+                <module>core</module>
+                <module>common</module>
+                <module>tooling</module>            
+                <module>archetypes</module>
+                <module>deployables</module>
+                <module>servicemix-itests</module>
+                <module>samples</module>
+                <module>web</module>
+                <module>platforms</module>
+                <module>distributions</module>
+            </modules>
+            <build>
+                <defaultGoal>deploy</defaultGoal>
+                 <plugins>
+                   <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.2</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <source>1.5</source>
+                            <attach>true</attach>
+                        </configuration>
+                   </plugin>
+                   <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.0.2</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <attach>true</attach>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <!--profile>
             <id>release</id>
             <activation>
@@ -328,7 +413,7 @@
                 </plugins>
             </build>
         </profile-->
-        <profile>
+        <!--profile>
             <id>release-environment</id>
             <activation>
                 <property>
@@ -338,7 +423,6 @@
             </activation>
             <build>
                 <plugins>
-                    <!-- We want to sign the artifact, the POM, and all attached artifacts -->
                     <plugin>
                         <inherited>true</inherited>
                         <artifactId>maven-gpg-plugin</artifactId>
@@ -354,7 +438,6 @@
                             <passphrase>${gpg.passphrase}</passphrase>
                         </configuration>
                     </plugin>
-                    <!-- We want the JavaDoc JAR published with the release -->
                     <plugin>
                         <inherited>true</inherited>
                         <artifactId>maven-javadoc-plugin</artifactId>
@@ -371,7 +454,6 @@
                             <attach>true</attach>
                         </configuration>
                     </plugin>
-                    <!-- Force source JAR to be published -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
@@ -389,7 +471,7 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
+        </profile-->
     </profiles>
 
     <repositories>
