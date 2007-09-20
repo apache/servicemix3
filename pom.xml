@@ -32,9 +32,11 @@
 	<module>core</module>
 	<module>spring</module>
 	<module>nmr</module>
+	<module>camel</module>
+	<module>bundles</module>
+	<module>examples</module>
 	<module>itests</module>
 	<module>daemon</module>
-	<module>bundles</module>
 	<module>apache-servicemix</module>
   </modules>
 
@@ -58,6 +60,7 @@
   <properties>
 	<junit.version>4.4</junit.version>
 	<felix.version>1.0.0</felix.version>
+	<camel.version>1.1-SNAPSHOT</camel.version>
 	<spring.osgi.version>1.0-m3-SNAPSHOT</spring.osgi.version>
 	<spring.version>2.1-m4</spring.version>
 	<commons.logging.version>1.1</commons.logging.version>

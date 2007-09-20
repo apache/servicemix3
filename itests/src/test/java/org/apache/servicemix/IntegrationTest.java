@@ -21,8 +21,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.springframework.osgi.test.AbstractConfigurableBundleCreatorTests;
 
-import java.io.IOException;
-import java.util.jar.Manifest;
+import java.net.URL;
 
 public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
 
@@ -54,11 +53,27 @@ public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
 	 */
 	protected String[] getBundles() {
 		return new String[] {
+            localMavenArtifact("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jms", "1.1-4.0-SNAPSHOT"),
+            localMavenArtifact("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.j2ee-management", "1.0-4.0-SNAPSHOT"),
+            localMavenArtifact("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.stax-api", "1.0.1-4.0-SNAPSHOT"),
+            localMavenArtifact("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.activation", "1.1-4.0-SNAPSHOT"),
+            localMavenArtifact("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jaxb-api", "2.0-4.0-SNAPSHOT"),
+            localMavenArtifact("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jaxb-impl", "2.0.3-4.0-SNAPSHOT"),
+            localMavenArtifact("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.httpcore", "4.0-alpha5-4.0-SNAPSHOT"),
+            localMavenArtifact("org.apache.activemq", "activemq-core", "5.0-SNAPSHOT"),
+            localMavenArtifact("org.springframework", "spring-tx", "2.1-m4"),
+            localMavenArtifact("org.springframework", "spring-jms", "2.1-m4"),
+            localMavenArtifact("org.apache.camel", "camel-core", "1.1-SNAPSHOT"),
+            localMavenArtifact("org.apache.camel", "camel-spring", "1.1-SNAPSHOT"),
+            localMavenArtifact("org.apache.camel", "camel-osgi", "1.1-SNAPSHOT"),
+            localMavenArtifact("org.apache.camel", "camel-jms", "1.1-SNAPSHOT"),
+            localMavenArtifact("org.apache.camel", "camel-jhc", "1.1-SNAPSHOT"),
             localMavenArtifact("org.apache.servicemix", "org.apache.servicemix.api", "4.0-SNAPSHOT"),
             localMavenArtifact("org.apache.servicemix", "org.apache.servicemix.core", "4.0-SNAPSHOT"),
 			localMavenArtifact("org.apache.servicemix", "org.apache.servicemix.spring", "4.0-SNAPSHOT"),
             localMavenArtifact("org.apache.servicemix", "org.apache.servicemix.nmr", "4.0-SNAPSHOT"),
-            localMavenArtifact("org.springframework.osgi", "backport-util-concurrent", "3.0-SNAPSHOT"),
+            localMavenArtifact("org.apache.servicemix", "org.apache.servicemix.camel", "4.0-SNAPSHOT"),
+            localMavenArtifact("org.apache.servicemix.examples", "org.apache.servicemix.examples.intermediary", "4.0-SNAPSHOT"),
 		};
 	}
 	
@@ -82,7 +97,7 @@ public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
 	 */
 	public void testSimpleServiceExported() {
 		waitOnContextCreation("org.apache.servicemix.nmr");
-		//waitOnContextCreation("org.apache.servicemix.test");
+		waitOnContextCreation("org.apache.servicemix.examples.intermediary");
 		BundleContext context = getBundleContext();
         ServiceReference ref = context.getServiceReference(NMR.class.getName());
         assertNotNull("Service Reference is null", ref);

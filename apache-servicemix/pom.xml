@@ -133,6 +133,11 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-core</artifactId>
+      <version>${camel.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.servicemix.bundles</groupId>
       <artifactId>org.apache.servicemix.bundles.commons-logging</artifactId>
       <version>1.1-4.0-SNAPSHOT</version>
@@ -400,6 +405,13 @@
               <source>org.apache.servicemix:org.apache.servicemix.nmr</source>
               <destinationPath>
                 bundle/org.apache.servicemix.nmr-${project.version}.jar
+              </destinationPath>
+            </packagedFile>
+            <packagedFile>
+              <dependency>true</dependency>
+              <source>org.apache.camel:camel-core</source>
+              <destinationPath>
+                bundle/org.apache.camel.core-${camel.version}.jar
               </destinationPath>
             </packagedFile>
             <packagedFile>

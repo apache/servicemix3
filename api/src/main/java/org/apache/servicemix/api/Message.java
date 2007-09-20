@@ -83,11 +83,26 @@ public interface Message extends Serializable {
     <T> void setHeader(Class<T> type, T value);
 
     /**
+     * Remove the given header and returns its value.
+     *
+     * @param name the name of the header
+     * @return the previous value
+     */
+    Object removeHeader(String name);
+
+    /**
      * Get a map of all the headers for this message
      *
      * @return a map of headers
      */
     Map<String, Object> getHeaders();
+
+    /**
+     * Set all the headers
+     *
+     * @param headers the new map of headers
+     */
+    void setHeaders(Map<String, Object> headers);
 
     /**
      * Retrieve an attachment given its id.
@@ -140,6 +155,13 @@ public interface Message extends Serializable {
      * @param content the content of the message
      */
     void setContent(Object content);
+
+    /**
+     * Set the content of the message.
+     *
+     * @param content the content of the message
+     */
+    <T> void setContent(Object content, Class<T> type);
 
     /**
      * Get the mime content type describing the content of the message
@@ -196,4 +218,5 @@ public interface Message extends Serializable {
 
     // TODO: is toString() sufficient ?
     String      display(boolean displayContent);
+
 }

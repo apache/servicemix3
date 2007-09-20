@@ -42,10 +42,21 @@ public class MessageImpl implements Message {
     public MessageImpl() {
     }
 
+    /**
+     * Returns the content of the message in its default format.
+     *
+     * @return the main content of this message
+     */
     public Object getContent() {
         return content;
     }
 
+    /**
+     * Returns the content as the specified type.
+     *
+     * @param type the type in which the content is to be transformed
+     * @return the transformed content
+     */
     public <T> T getContent(Class<T> type) {
         // TODO: use converters
         if (type.isInstance(content)) {
@@ -54,7 +65,22 @@ public class MessageImpl implements Message {
         return null;
     }
 
+    /**
+     * Set the content of the message.
+     *
+     * @param content the content of the message
+     */
     public void setContent(Object content) {
+        this.content = content;
+    }
+
+    /**
+     * Set the content of the message.
+     *
+     * @param content the content of the message
+     */
+    public <T> void setContent(Object content, Class<T> type) {
+        // TODO: use converters
         this.content = content;
     }
 
@@ -94,6 +120,12 @@ public class MessageImpl implements Message {
         this.contentEncoding = encoding;
     }
 
+    /**
+     * Get a header on this message.
+     *
+     * @param name the name of the header
+     * @return the value of the header of <code>null</code> if none has been set
+     */
     public Object getHeader(String name) {
         if (headers == null) {
             return null;
@@ -101,6 +133,15 @@ public class MessageImpl implements Message {
         return headers.get(name);
     }
 
+    /**
+     * Get a header, converting it to the desired type
+     *
+     * @param name the name of the header
+     * @param type the desired type
+     * @return the converted header or <code>null</code> if
+     *          no header has been set or if it can not be transformed
+     *          to the desired type
+     */
     public <T> T getHeader(String name, Class<T> type) {
         if (headers == null) {
             return null;
@@ -108,6 +149,14 @@ public class MessageImpl implements Message {
         return (T) headers.get(name);
     }
 
+    /**
+     * Get a typed header.
+     * This is equivalent to:
+     *   <code>exchange.getHeader(type.getName())</code>
+     *
+     * @param type the type of the header
+     * @return the header
+     */
     public <T> T getHeader(Class<T> type) {
         if (headers == null) {
             return null;
@@ -115,6 +164,11 @@ public class MessageImpl implements Message {
         return (T) headers.get(type.getName());
     }
 
+    /**
+     * Set a header for this message
+     * @param name the name of the header
+     * @param value the value of the header
+     */
     public void setHeader(String name, Object value) {
         if (headers == null) {
             headers = new HashMap<String, Object>();
@@ -122,6 +176,15 @@ public class MessageImpl implements Message {
         headers.put(name, value);
     }
 
+    /**
+     * Set a typed header for this message.
+     * This is equivalent to:
+     *   <code>exchange.setHeader(type.getName(), value)</code>
+     *
+     *
+     * @param type the type of the header
+     * @param value the value of the header
+     */
     public <T> void setHeader(Class<T> type, T value) {
         if (headers == null) {
             headers = new HashMap<String, Object>();
@@ -129,6 +192,24 @@ public class MessageImpl implements Message {
         headers.put(type.getName(), value);
     }
 
+    /**
+     * Remove the given header and returns its value.
+     *
+     * @param name the name of the header
+     * @return the previous value
+     */
+    public Object removeHeader(String name) {
+        if (headers == null) {
+            return null;
+        }
+        return headers.remove(name);
+    }
+
+    /**
+     * Get a map of all the headers for this message
+     *
+     * @return a map of headers
+     */
     public Map<String, Object> getHeaders() {
         if (headers == null) {
             headers = new HashMap<String, Object>();
@@ -136,6 +217,21 @@ public class MessageImpl implements Message {
         return headers;
     }
 
+    /**
+     * Set all the headers
+     *
+     * @param headers the new map of headers
+     */
+    public void setHeaders(Map<String, Object> headers) {
+        this.headers = headers;
+    }
+
+    /**
+     * Retrieve an attachment given its id.
+     *
+     * @param id the id of the attachment to retrieve
+     * @return the attachement or <code>null</code> if none exists
+     */
     public Object getAttachment(String id) {
         if (attachments != null) {
             return null;
@@ -143,6 +239,12 @@ public class MessageImpl implements Message {
         return attachments.get(id);
     }
 
+    /**
+     * Add an attachment to this message
+     *
+     * @param id the id of the attachment
+     * @param value the attachment to add
+     */
     public void addAttachment(String id, Object value) {
         if (attachments != null) {
             attachments = new HashMap<String, Object>();
@@ -150,12 +252,22 @@ public class MessageImpl implements Message {
         attachments.put(id, value);
     }
 
+    /**
+     * Remove an attachment on this message
+     *
+     * @param id the id of the attachment to remove
+     */
     public void removeAttachment(String id) {
         if (attachments != null) {
             attachments.remove(id);
         }
     }
 
+    /**
+     * Retrieve a map of all attachments
+     *
+     * @return the map of attachments
+     */
     public Map<String, Object> getAttachments() {
         if (attachments != null) {
             attachments = new HashMap<String, Object>();
@@ -163,10 +275,23 @@ public class MessageImpl implements Message {
         return attachments;
     }
 
+    /**
+     * Make sure that all streams contained in the content and in
+     * attachments are transformed to re-readable sources.
+     * This method will be called by the framework when persisting
+     * the message or when displaying it.
+     *
+     * TODO: do we really need this method
+     */
     public void ensureReReadable() {
         // TODO: implement        
     }
 
+    /**
+     * Copies the contents of the other message into this message
+     *
+     * @param msg the message to copy from
+     */
     public void copyFrom(Message msg) {
         content = msg.getContent();
         if (!msg.getHeaders().isEmpty()) {
@@ -187,6 +312,12 @@ public class MessageImpl implements Message {
         }
     }
 
+    /**
+     * Creates a copy of this message so that it can
+     * be used and possibly modified further in another exchange
+     *
+     * @return a new message instance copied from this message
+     */
     public Message copy() {
         MessageImpl copy = new MessageImpl();
         copy.copyFrom(this);
