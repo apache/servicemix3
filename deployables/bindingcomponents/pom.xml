@@ -24,12 +24,12 @@
   <parent>
     <groupId>org.apache.servicemix</groupId>
     <artifactId>parent</artifactId>
-    <version>3.2-incubating-SNAPSHOT</version>
+    <version>3.2-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.servicemix</groupId>
   <artifactId>bindingcomponents</artifactId>
-  <version>3.2-incubating-SNAPSHOT</version>
+  <version>3.2-SNAPSHOT</version>
   <name>ServiceMix :: Binding Components</name>
   <packaging>pom</packaging>
 
