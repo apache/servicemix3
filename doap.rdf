@@ -22,24 +22,24 @@
          xmlns:asfext="http://projects.apache.org/ns/asfext#"
          xmlns:foaf="http://xmlns.com/foaf/0.1/">
 
-  <Project rdf:about="http://incubator.apache.org/servicemix">
+  <Project rdf:about="http://servicemix.apache.org/">
     <created>2006-03-28</created>
     <license rdf:resource="http://usefulinc.com/doap/licenses/asl20" />
     <name>Apache ServiceMix</name>
-    <homepage rdf:resource="http://incubator.apache.org/servicemix" />
-    <asfext:pmc rdf:resource="http://incubator.apache.org" />
+    <homepage rdf:resource="http://servicemix.apache.org/" />
+    <asfext:pmc rdf:resource="http://apache.org" />
     <shortdesc>Apache ServiceMix is an open source ESB based on JBI.</shortdesc>
     <description>Apache ServiceMix is an open source distributed Enterprise Service Bus (ESB) and SOA toolkit built from the ground up on the semantics and APIs of the Java Business Integration (JBI) specification JSR 208 and released under the Apache license.</description>
     <bug-database rdf:resource="http://issues.apache.org/activemq/browse/SM" />
-    <mailing-list rdf:resource="http://incubator.apache.org/servicemix/Mailing+Lists" />
-    <download-page rdf:resource="http://incubator.apache.org/servicemix/Download" />
+    <mailing-list rdf:resource="http://servicemix.apache.org/Mailing+Lists" />
+    <download-page rdf:resource="http://servicemix.apache.org/Download" />
     <programming-language>Java</programming-language>
     <category rdf:resource="http://projects.apache.org/category/network-server" />
     <category rdf:resource="http://projects.apache.org/category/xml" />
     <repository>
       <SVNRepository>
-        <location rdf:resource="http://svn.apache.org/repos/asf/incubator/servicemix/"/>
-        <browse rdf:resource="http://svn.apache.org/viewcvs.cgi/incubator/servicemix/"/>
+        <location rdf:resource="https://svn.apache.org/repos/asf/servicemix/"/>
+        <browse rdf:resource="http://svn.apache.org/viewcvs.cgi/servicemix/"/>
       </SVNRepository>
     </repository>
     <maintainer>

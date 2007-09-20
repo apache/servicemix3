@@ -33,5 +33,5 @@ and send an HTTP request which will be transformed in a JMS
 message.
 
 For more information on running this example please see:
-  http://incubator.apache.org/servicemix/bridge.html
+  http://servicemix.apache.org/bridge.html
 
