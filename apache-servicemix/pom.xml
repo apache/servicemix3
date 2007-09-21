@@ -144,13 +144,33 @@
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix.bundles</groupId>
-      <artifactId>org.apache.servicemix.bundles.servlet</artifactId>
-      <version>2.5-4.0-SNAPSHOT</version>
+      <artifactId>org.apache.servicemix.bundles.log4j</artifactId>
+      <version>1.2.14-4.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix.bundles</groupId>
       <artifactId>org.apache.servicemix.bundles.aopalliance</artifactId>
       <version>1.0-4.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.jaxb-api</artifactId>
+      <version>2.0-4.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.jaxb-impl</artifactId>
+      <version>2.0.3-4.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-servlet_2.5_spec</artifactId>
+      <version>1.1.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-activation_1.1_spec</artifactId>
+      <version>1.0.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
   <build>
@@ -291,6 +311,10 @@
               <destinationPath>conf/config.properties</destinationPath>
             </packagedFile>
             <packagedFile>
+              <source>log4j.xml</source>
+              <destinationPath>conf/log4j.xml</destinationPath>
+            </packagedFile>
+            <packagedFile>
               <source>servicemix.sh</source>
               <destinationPath>bin/servicemix.sh</destinationPath>
             </packagedFile>
@@ -416,9 +440,23 @@
             </packagedFile>
             <packagedFile>
               <dependency>true</dependency>
-              <source>org.apache.servicemix.bundles:org.apache.servicemix.bundles.servlet</source>
+              <source>org.apache.geronimo.specs:geronimo-activation_1.1_spec</source>
               <destinationPath>
-                bundle/org.apache.servicemix.bundles.servlet-2.5-${project.version}.jar
+                bundle/org.apache.geronimo.specs.activation_1.1_spec-1.0.1-SNAPSHOT.jar
+              </destinationPath>
+            </packagedFile>
+            <packagedFile>
+              <dependency>true</dependency>
+              <source>org.apache.servicemix.bundles:org.apache.servicemix.bundles.jaxb-api</source>
+              <destinationPath>
+                bundle/org.apache.servicemix.bundles.jaxb-api-2.0-${project.version}.jar
+              </destinationPath>
+            </packagedFile>
+            <packagedFile>
+              <dependency>true</dependency>
+              <source>org.apache.servicemix.bundles:org.apache.servicemix.bundles.jaxb-impl</source>
+              <destinationPath>
+                bundle/org.apache.servicemix.bundles.jaxb-impl-2.0.3-${project.version}.jar
               </destinationPath>
             </packagedFile>
             <packagedFile>
@@ -426,6 +464,13 @@
               <source>org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-logging</source>
               <destinationPath>
                 bundle/org.apache.servicemix.bundles.commons-logging-1.1-${project.version}.jar
+              </destinationPath>
+            </packagedFile>
+            <packagedFile>
+              <dependency>true</dependency>
+              <source>org.apache.servicemix.bundles:org.apache.servicemix.bundles.log4j</source>
+              <destinationPath>
+                bundle/org.apache.servicemix.bundles.log4j-1.2.14-${project.version}.jar
               </destinationPath>
             </packagedFile>
             <packagedFile>

@@ -34,16 +34,12 @@
   <name>ServiceMix OSGI Common Bundles</name>
 
   <modules>
-    <module>servlet</module>
-    <module>j2ee-management</module>
     <module>commons-logging</module>
     <module>aopalliance</module>
     <module>jaxb-api</module>
     <module>jaxb-impl</module>
-    <module>jms</module>
-    <module>stax-api</module>
-    <module>activation</module>
 	<module>httpcore</module>
+	<module>log4j</module>
   </modules>
 
   <properties>

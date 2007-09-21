@@ -53,10 +53,10 @@ public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
 	 */
 	protected String[] getBundles() {
 		return new String[] {
-            localMavenArtifact("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jms", "1.1-4.0-SNAPSHOT"),
-            localMavenArtifact("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.j2ee-management", "1.0-4.0-SNAPSHOT"),
-            localMavenArtifact("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.stax-api", "1.0.1-4.0-SNAPSHOT"),
-            localMavenArtifact("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.activation", "1.1-4.0-SNAPSHOT"),
+            localMavenArtifact("org.apache.geronimo.specs", "geronimo-jms_1.1_spec", "1.1.1-SNAPSHOT"),
+            localMavenArtifact("org.apache.geronimo.specs", "geronimo-j2ee-management_1.1_spec", "1.0.1-SNAPSHOT"),
+            localMavenArtifact("org.apache.geronimo.specs", "geronimo-stax-api_1.0_spec", "1.0.1-SNAPSHOT"),
+            localMavenArtifact("org.apache.geronimo.specs", "geronimo-activation_1.1_spec", "1.0.1-SNAPSHOT"),
             localMavenArtifact("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jaxb-api", "2.0-4.0-SNAPSHOT"),
             localMavenArtifact("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jaxb-impl", "2.0.3-4.0-SNAPSHOT"),
             localMavenArtifact("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.httpcore", "4.0-alpha5-4.0-SNAPSHOT"),

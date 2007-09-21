@@ -70,7 +70,7 @@ Source: {#SourceBase}\bin\daemon.jar; DestDir: {app}\bin; DestName: daemon.jar
 ; bundle directory targets
 Source: {#SourceBase}\bundle\*; DestDir: {app}\bundle; Flags: ignoreversion recursesubdirs createallsubdirs
 ; conf directory targets
-Source: {#SourceBase}\conf\log4j.properties; DestDir: {app}\conf; DestName: log4j.properties
+Source: {#SourceBase}\conf\log4j.xml; DestDir: {app}\conf; DestName: log4j.xml
 Source: {#SourceBase}\conf\bootstrapper.properties; DestDir: {app}\conf; DestName: bootstrapper.properties
 Source: {#SourceBase}\conf\config.properties; DestDir: {app}\conf; DestName: config.properties
 ; top level directory targets 

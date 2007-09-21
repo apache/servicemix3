@@ -60,7 +60,7 @@ install -m 644 ${image.basedir}/bin/bootstrapper.jar $RPM_BUILD_ROOT/usr/local/$
 install -m 644 ${image.basedir}/bin/logger.jar $RPM_BUILD_ROOT/usr/local/${app}-%{version}/bin/logger.jar
 install -m 644 ${image.basedir}/bin/daemon.jar $RPM_BUILD_ROOT/usr/local/${app}-%{version}/bin/daemon.jar
 install -m 644 ${image.basedir}/conf/bootstrapper.properties $RPM_BUILD_ROOT/usr/local/${app}-%{version}/conf/bootstrapper.properties
-install -m 644 ${image.basedir}/conf/log4j.properties $RPM_BUILD_ROOT/usr/local/${app}-%{version}/conf/log4j.properties
+install -m 644 ${image.basedir}/conf/log4j.xml $RPM_BUILD_ROOT/usr/local/${app}-%{version}/conf/log4j.xml
 install -m 744 ${image.basedir}/bin/${server.init} $RPM_BUILD_ROOT/etc/init.d/${app}
 install -m 744 ${image.basedir}/bin/servicemix.jar $RPM_BUILD_ROOT/usr/local/${app}-%{version}/bin/servicemix.jar
 install -m 644 ${image.basedir}/${app.license.name} $RPM_BUILD_ROOT/usr/local/${app}-%{version}
@@ -84,7 +84,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/${app}-%{version}/bin/logger.jar
 /usr/local/${app}-%{version}/bin/daemon.jar
 /usr/local/${app}-%{version}/bin/servicemix.jar
-/usr/local/${app}-%{version}/conf/log4j.properties
+/usr/local/${app}-%{version}/conf/log4j.xml
 /usr/local/${app}-%{version}/conf/bootstrapper.properties
 /usr/local/${app}-%{version}/conf/server.xml
 /usr/local/${app}-%{version}/lib/ext
