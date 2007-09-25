@@ -57,6 +57,7 @@ public class SpringJBIContainer extends JBIContainer implements InitializingBean
     private BeanFactory beanFactory;
     private ApplicationContext applicationContext;
     private String[] deployArchives;
+    private DeploySupport[] deployments;
     private Object shutdownLock;
     private Map components;
     private Map endpoints;
@@ -103,6 +104,12 @@ public class SpringJBIContainer extends JBIContainer implements InitializingBean
 
         if (endpoints != null) {
             initEndpoints();
+        }
+
+        if (deployments != null) {
+            for (DeploySupport deployment : deployments) {
+                deployment.deploy(this);
+            }
         }
 
         start();
@@ -260,6 +267,14 @@ public class SpringJBIContainer extends JBIContainer implements InitializingBean
 
     public void setDeployArchives(String[] deployArchives) {
         this.deployArchives = deployArchives;
+    }
+
+    public DeploySupport[] getDeployments() {
+        return deployments;
+    }
+
+    public void setDeployments(DeploySupport[] deployments) {
+        this.deployments = deployments;
     }
 
     // Implementation methods
