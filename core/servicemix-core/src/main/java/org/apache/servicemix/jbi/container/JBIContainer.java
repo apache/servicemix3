@@ -119,7 +119,9 @@ public class JBIContainer extends BaseLifeCycle {
     private InitialContext namingContext;
     private MBeanServer mbeanServer;
     private TransactionManager transactionManager;
-    private String rootDir = "." + File.separator + "rootDir";
+    private String rootDir;
+    private String generatedRootDirPrefix = "target/rootDirs/rootDir";
+    private boolean generateRootDir;
     private AtomicBoolean started = new AtomicBoolean(false);
     private AtomicBoolean containerInitialized = new AtomicBoolean(false);
     private IdGenerator idGenerator = new IdGenerator();
@@ -517,6 +519,43 @@ public class JBIContainer extends BaseLifeCycle {
         return clientFactory;
     }
 
+    public String getGeneratedRootDirPrefix() {
+        return generatedRootDirPrefix;
+    }
+
+    /**
+     * Sets the prefix used when auto-creating a rootDir property value
+     * which is useful for integration testing inside JUnit test cases
+     * letting each test case create its own empty servicemix install
+     *
+     * @param generatedRootDirPrefix the prefix used to auto-create the
+     * rootDir
+     * @see #setRootDir(String)
+     * @see #setGeneratedRootDirPrefix(String)
+     */
+    public void setGeneratedRootDirPrefix(String generatedRootDirPrefix) {
+        this.generatedRootDirPrefix = generatedRootDirPrefix;
+    }
+
+    public boolean isGenerateRootDir() {
+        return generateRootDir;
+    }
+
+    /**
+     * Creates an auto-generated rootDir which is useful for integration testing
+     * in JUnit test cases allowing installations of deployments inside an empty
+     * installation of ServiceMix
+     *
+     * @param generateRootDir if true this will enable the auto-generation of the rootDir
+     * if the rootDir property is not configured
+     *
+     * @see #setRootDir(String)
+     * @see #setGeneratedRootDirPrefix(String)
+     */
+    public void setGenerateRootDir(boolean generateRootDir) {
+        this.generateRootDir = generateRootDir;
+    }
+
     /**
      * light weight initialization - default values for mbeanServer, TransactionManager etc are null
      *
@@ -544,7 +583,7 @@ public class JBIContainer extends BaseLifeCycle {
             }
             managementContext.init(this, getMBeanServer());
             mbeanServer = this.managementContext.getMBeanServer(); // just in case ManagementContext creates it
-            environmentContext.init(this, rootDir);
+            environmentContext.init(this, getRootDir());
             clientFactory.init(this);
             if (services != null) {
                 for (int i = 0; i < services.length; i++) {
@@ -758,8 +797,17 @@ public class JBIContainer extends BaseLifeCycle {
      * @return the root directory path
      */
     public synchronized String getRootDir() {
+        if (rootDir == null) {
+            if (isGenerateRootDir()) {
+                rootDir = createRootDir();
+            } else {
+                rootDir = "." + File.separator + "rootDir";
+            }
+            LOG.debug("Defaulting to rootDir: " + rootDir);
+        }
         return this.rootDir;
     }
+
 
     /**
      * Set the workspace root
@@ -1317,4 +1365,18 @@ public class JBIContainer extends BaseLifeCycle {
         this.executorFactory = executorFactory;
     }
 
+
+    /**
+     * Creates a new rootDir
+     */
+    protected String createRootDir() {
+        String prefix = getGeneratedRootDirPrefix();
+        for (int i = 1; true; i++) {
+            File file = new File(prefix + i);
+            if (!file.exists()) {
+                file.mkdirs();
+                return file.getAbsolutePath();
+            }
+        }
+    }
 }
