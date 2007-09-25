@@ -35,6 +35,7 @@
     <modules>
       <module>camel-simple-su</module>
       <module>camel-sa</module>
+      <module>camel-sa-itest</module>
     </modules>
 
     <!-- Add ServiceMix repositories for snaphots and releases -->

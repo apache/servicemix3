@@ -65,10 +65,12 @@
         <extensions>true</extensions>
       </plugin>
       <!-- allows the route to be ran via 'mvn camel:run' -->
+<!--
       <plugin>
         <groupId>org.apache.camel</groupId>
         <artifactId>camel-maven-plugin</artifactId>
       </plugin>
+-->
     </plugins>
   </build>
 </project>

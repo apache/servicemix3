@@ -19,13 +19,20 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:sm="http://servicemix.apache.org/config/1.0"
        xsi:schemaLocation="
-       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-       http://activemq.apache.org/camel/schema/spring http://activemq.apache.org/camel/schema/spring/camel-spring.xsd
-    ">
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+         http://servicemix.apache.org/config/1.0 http://incubator.apache.org/servicemix/schema/core/servicemix-core.xsd">
 
-	  <camelContext useJmx="true" xmlns="http://activemq.apache.org/camel/schema/spring">
-	    <package>org.apache.servicemix.samples</package>
-	  </camelContext>
+
+  <sm:container generateRootDir="true">
+
+    <sm:deployments>
+      <sm:installSharedLibrary groupId="org.apache.servicemix" artifactId="servicemix-shared"/>
+      <sm:installComponent groupId="org.apache.servicemix" artifactId="servicemix-camel"/>
+      <sm:deployServiceAssembly groupId="org.apache.servicemix.samples" artifactId="camel-sa"/>
+    </sm:deployments>
+
+  </sm:container>
 
 </beans>
