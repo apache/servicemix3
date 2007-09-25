@@ -32,7 +32,7 @@ public class IntermediaryRoutes extends SpringRouteBuilder {
         Predicate isNack           = bean(Predicate.class, name + ".isNackExpression");
 
         from(request).
-            group(name + ": Route 1").
+            group(name + ": Client Request").
             tryBlock().
                 to(requestStorage).
                 setOutBody(constant(ack)).
@@ -40,7 +40,7 @@ public class IntermediaryRoutes extends SpringRouteBuilder {
                 setFaultBody(constant(nack));
 
         from(requestStorage).
-            group(name + ": Route 2").
+            group(name + ": Backend request").
             to(requestTransformer).
             to(requestProvider).
             filter(isNack).
@@ -48,7 +48,7 @@ public class IntermediaryRoutes extends SpringRouteBuilder {
             to(dbStorer);
 
         from(responseConsumer).
-            group(name + ": Route 3").
+            group(name + ": Backend response").
             tryBlock().
                 to(responseStorage).
                 setOutBody(constant(ack)).
@@ -56,12 +56,12 @@ public class IntermediaryRoutes extends SpringRouteBuilder {
                 setFaultBody(constant(nack));
 
         from(responseStorage).
-            group(name + ": Route 4").
+            group(name + ": Response processing").
             to(responseTransformer).
             to(dbStorer);
 
         from(response).
-            group(name + ": Route 5").
+            group(name + ": Client response").
             to(dbLoader);
     }
 

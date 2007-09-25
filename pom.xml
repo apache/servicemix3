@@ -36,6 +36,7 @@
 	<module>bundles</module>
 	<module>examples</module>
 	<module>itests</module>
+	<module>main</module>
 	<module>daemon</module>
 	<module>apache-servicemix</module>
   </modules>

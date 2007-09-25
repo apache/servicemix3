@@ -23,9 +23,7 @@ import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.cache.BundleCache;
 import org.apache.felix.framework.util.StringMap;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
@@ -47,6 +45,8 @@ public class Service implements DaemonApplication
     public static final String CONFIG_PROPERTIES_FILE_VALUE = "config.properties";
     /** the default profile if no profile name or path is specified */
     public static final String DEFAULT_PRODUCTION_PROFILE = "production";
+    /** the property for auto-discovering the bundles **/
+    public static final String PROPERTY_AUTO_START = "felix.auto.start";
 
     /** the instance of Felix managed by this daemon/service */
     private Felix instance;
@@ -72,8 +72,10 @@ public class Service implements DaemonApplication
         {
             this.layout = ( FelixLayout ) suppliedLayout;
         }
-        
+
+        new Exception().printStackTrace();
         configationProperties = readConfigProperties();
+        processConfigurationProperties(configationProperties);
         instance = new Felix(new StringMap(configationProperties, false ), null );
     }
 
@@ -216,6 +218,29 @@ public class Service implements DaemonApplication
         }
 
         return props;
+    }
+
+    /**
+     * Process properties to customize default felix behavior
+     */
+    protected void processConfigurationProperties(Properties props) {
+        if (Boolean.parseBoolean(props.getProperty(PROPERTY_AUTO_START))) {
+            File[] bundles = layout.getBundleDirectory().listFiles(new FileFilter() {
+                public boolean accept(File pathname) {
+                    return pathname.toString().endsWith(".jar");
+                }
+            });
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < bundles.length; i++) {
+                try {
+                    sb.append("\"").append(bundles[i].toURL().toString()).append("\" ");
+                } catch (MalformedURLException e) {
+                    System.err.print( "Ignoring " + bundles[i].toString() + " (" + e + ")" );
+                }
+            }
+            props.setProperty("felix.auto.start.1", sb.toString());
+            props.remove(PROPERTY_AUTO_START);
+        }
     }
 
     

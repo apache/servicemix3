@@ -53,9 +53,9 @@
 
     <!-- Felix Dependencies -->
     <dependency>
-      <groupId>org.apache.felix</groupId>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>org.apache.felix.main</artifactId>
-      <version>${felix.version}</version>
+      <version>${pom.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix</groupId>
@@ -184,7 +184,7 @@
             <exclude>xerces:xercesImpl</exclude>
 			<exclude>aopalliance:aopalliance</exclude>
 			<exclude>commons-logging:commons-logging</exclude>
-            <exclude>org.apache.felix:org.apache.felix.main</exclude>
+            <exclude>org.apache.servicemix:org.apache.felix.main</exclude>
             <exclude>org.apache.felix:org.apache.felix.framework</exclude>
             <exclude>org.apache.felix:org.apache.felix.shell</exclude>
             <exclude>org.apache.felix:org.apache.felix.shell.tui</exclude>
@@ -324,7 +324,7 @@
             </packagedFile>
             <packagedFile>
               <dependency>true</dependency>
-              <source>org.apache.felix:org.apache.felix.main</source>
+              <source>org.apache.servicemix:org.apache.felix.main</source>
               <destinationPath>
                 bin/servicemix.jar
               </destinationPath>
