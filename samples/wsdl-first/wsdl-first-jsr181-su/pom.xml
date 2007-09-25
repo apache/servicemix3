@@ -60,6 +60,7 @@
                             <wsdls>
                                 <wsdl>${basedir}/src/main/resources/person.wsdl</wsdl>
                             </wsdls>
+                            <profile>org.codehaus.xfire.gen.jsr181.Jsr181Profile</profile>
                             <outputDirectory>${basedir}/target/jaxws</outputDirectory>
                         </configuration>
                         <goals>
