@@ -28,6 +28,7 @@ import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.framework.SharedLibrary;
+import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.xbean.classloader.JarFileClassLoader;
 import org.apache.xbean.server.repository.FileSystemRepository;
@@ -180,7 +181,19 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
             if (sls.size() > 0 && container == null) {
                 throw new IllegalStateException("Can not reference shared libraries if the component is not deployed in ServiceMix");
             }
-            
+
+            // Add components
+            List<String> components = new ArrayList<String>();
+            NodeList componentList = classpathElement.getElementsByTagName("component");
+            for (int i = 0; i < componentList.getLength(); i++) {
+                Element locationElement = (Element) locations.item(i);
+                String component = ((Text) locationElement.getFirstChild()).getData().trim();
+                components.add(component);
+            }
+            if (components.size() > 0 && container == null) {
+                throw new IllegalStateException("Can not reference other components if the component is not deployed in ServiceMix");
+            }
+
             // convert the paths to URLS
             URL[] urls;
             if (classpath.size() != 0) {
@@ -204,7 +217,11 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
                 SharedLibrary sl = container.getRegistry().getSharedLibrary(library);
                 parents.add(sl.getClassLoader());
             }
-            classLoader = new JarFileClassLoader(applicationContext.getDisplayName(), 
+            for (String component : components) {
+                ComponentMBeanImpl componentMBean = container.getRegistry().getComponent(component);
+                parents.add(componentMBean.getComponent().getClass().getClassLoader());
+            }
+            classLoader = new JarFileClassLoader(applicationContext.getDisplayName(),
                                                  urls, 
                                                  parents.toArray(new ClassLoader[parents.size()]),
                                                  inverse,
