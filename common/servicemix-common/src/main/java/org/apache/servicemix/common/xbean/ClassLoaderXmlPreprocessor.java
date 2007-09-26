@@ -215,10 +215,16 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
             parents.add(getParentClassLoader(applicationContext));
             for (String library : sls) {
                 SharedLibrary sl = container.getRegistry().getSharedLibrary(library);
+                if (sl == null) {
+                    throw new IllegalStateException("No such shared library: " + library);
+                }
                 parents.add(sl.getClassLoader());
             }
             for (String component : components) {
                 ComponentMBeanImpl componentMBean = container.getRegistry().getComponent(component);
+                if (componentMBean == null) {
+                    throw new IllegalStateException("No such component: " + componentMBean);
+                }
                 parents.add(componentMBean.getComponent().getClass().getClassLoader());
             }
             classLoader = new JarFileClassLoader(applicationContext.getDisplayName(),
