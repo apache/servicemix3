@@ -118,10 +118,33 @@ public class AddressingHandler extends AbstractHandler {
     protected DocumentFragment createHeader(QName name, String value) throws Exception {
         Document doc = new SourceTransformer().createDocument();
         DocumentFragment df = doc.createDocumentFragment();
-        Element el = doc.createElementNS(name.getNamespaceURI(), name.getPrefix() + ":" + name.getLocalPart());
+        Element el = doc.createElementNS(name.getNamespaceURI(), getQualifiedName(name));
         el.appendChild(doc.createTextNode(value));
         df.appendChild(el);
         return df;
     }
     
+    /**
+     * Gets the QName prefix.  If the QName has no set prefix, the specified default prefix will be used.
+     */    
+    protected String getPrefix(QName qname, String defaultPrefix) {
+    	String prefix = qname.getPrefix();
+    	if(null == prefix || "".equals(prefix)) {
+    		prefix = defaultPrefix;
+    	}
+    	
+    	return prefix;
+    }
+    
+    protected String getQualifiedName(QName qname) {
+    	String name = qname.getLocalPart();
+    	
+    	String prefix = qname.getPrefix();
+    	if(null != prefix && (!"".equals(prefix))) {
+    		name = prefix + ":" + name;
+    	}
+    	
+    	return name;
+    }
+  
 }
