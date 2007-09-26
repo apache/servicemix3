@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.servicemix.geronimo</groupId>
         <artifactId>geronimo</artifactId>
-        <version>3.1.2</version>
+        <version>3.1.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>servicemix</artifactId>
@@ -35,29 +35,29 @@
         <dependency>
             <groupId>org.apache.servicemix.geronimo</groupId>
             <artifactId>dependencies</artifactId>
-            <version>3.1.2</version>
+            <version>3.1.3-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- For build ordering -->
         <dependency>
             <groupId>org.apache.servicemix.geronimo</groupId>
             <artifactId>servicemix-service</artifactId>
-            <version>3.1.2</version>
+            <version>3.1.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-jbi</artifactId>
-            <version>3.1.2</version>
+            <version>3.1.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-core</artifactId>
-            <version>3.1.2</version>
+            <version>3.1.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-services</artifactId>
-            <version>3.1.2</version>
+            <version>3.1.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.activemq</groupId>

@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.servicemix.samples</groupId>
         <artifactId>bridge</artifactId>
-        <version>3.1.2</version>
+        <version>3.1.3-SNAPSHOT</version>
     </parent>
 
     <groupId>org.apache.servicemix.samples.bridge</groupId>
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-jms</artifactId>
-            <version>3.1.2</version>
+            <version>3.1.3-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
