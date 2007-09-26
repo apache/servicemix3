@@ -40,6 +40,6 @@ One server have a file poller component, and the other one a file writer compone
 Just drop the test-file.xml in the poller/inbox directory.
 It should be moved to the writer/outbox directory.
 
-See http://incubator.apache.org/servicemix/cluster.html
+See http://servicemix.apache.org/cluster.html
 for more informations.
 

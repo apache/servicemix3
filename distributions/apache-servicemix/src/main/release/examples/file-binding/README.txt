@@ -36,4 +36,4 @@ Just copy the test-file.xml file into the inbox directory and you should
 see it apear in the outbox directory in a few seconds.
 
 For more information see:
-    http://incubator.apache.org/servicemix/file-binding.html
+    http://servicemix.apache.org/file-binding.html

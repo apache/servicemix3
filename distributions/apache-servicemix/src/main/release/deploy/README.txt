@@ -19,4 +19,4 @@ This directory allows you to drop JBI Component archives in here when starting u
 
 Just copy a JBI Service Assembly in this directory for it to deploy
 For more information see
-http://incubator.apache.org/servicemix/Running
+http://servicemix.apache.org/Running

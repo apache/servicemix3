@@ -24,5 +24,5 @@ To start this sample, run:
   mvn jbi:embeddedServicemix
 
 For more information on running this example please see:
-  http://incubator.apache.org/servicemix/basic.html
+  http://servicemix.apache.org/basic.html
 

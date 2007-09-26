@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.servicemix</groupId>
     <artifactId>common</artifactId>
-    <version>3.1.2-incubating-SNAPSHOT</version>
+    <version>3.1.2</version>
   </parent>
 
   <artifactId>servicemix-components</artifactId>
@@ -309,6 +309,10 @@
 	        
             <!-- https://issues.apache.org/activemq/browse/SM-529 -->
             <exclude>**/MPSSettingTest.*</exclude>
+            <exclude>**/ServiceMixClientTest.*</exclude>
+            <exclude>**/ScriptTest.*</exclude>
+            <exclude>**/CacheTest.*</exclude>
+            <exclude>**/GroovyChainTest.*</exclude>
           
           </excludes>
         </configuration>

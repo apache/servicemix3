@@ -21,11 +21,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.servicemix.tooling</groupId>
-    <artifactId>tooling</artifactId>
-    <version>3.1.2-incubating-SNAPSHOT</version>
+    <groupId>org.apache.servicemix</groupId>
+    <artifactId>archetypes</artifactId>
+    <version>3.1.2</version>
   </parent>
 
+  <groupId>org.apache.servicemix.tooling</groupId>
   <artifactId>servicemix-jms-provider-service-unit</artifactId>
   <name>ServiceMix :: Archetypes :: JmsProviderServiceUnit</name>
 
