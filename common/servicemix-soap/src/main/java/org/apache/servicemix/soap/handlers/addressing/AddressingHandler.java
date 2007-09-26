@@ -107,10 +107,10 @@ public class AddressingHandler extends AbstractHandler {
                 Object value = headers.get(qname);
                 if (isWSANamespace(qname.getNamespaceURI())) {
                     if (EL_MESSAGE_ID.equals(qname.getLocalPart())) {
-                        QName name = new QName(qname.getNamespaceURI(), EL_MESSAGE_ID, qname.getPrefix() != null ? qname.getPrefix() : WSA_PREFIX);
+                        QName name = new QName(qname.getNamespaceURI(), EL_MESSAGE_ID, getPrefix(qname, WSA_PREFIX));
                         DocumentFragment df = createHeader(name, idGenerator.generateSanitizedId());
                         out.addHeader(name, df);
-                        name = new QName(qname.getNamespaceURI(), EL_RELATES_TO, qname.getPrefix() != null ? qname.getPrefix() : WSA_PREFIX);
+                        name = new QName(qname.getNamespaceURI(), EL_RELATES_TO, getPrefix(qname, WSA_PREFIX));
                         df = createHeader(name, getHeaderText(value));
                         out.addHeader(name, df);
                     }
@@ -134,10 +134,33 @@ public class AddressingHandler extends AbstractHandler {
     protected DocumentFragment createHeader(QName name, String value) throws Exception {
         Document doc = new SourceTransformer().createDocument();
         DocumentFragment df = doc.createDocumentFragment();
-        Element el = doc.createElementNS(name.getNamespaceURI(), name.getPrefix() + ":" + name.getLocalPart());
+        Element el = doc.createElementNS(name.getNamespaceURI(), getQualifiedName(name));
         el.appendChild(doc.createTextNode(value));
         df.appendChild(el);
         return df;
+    }
+    
+    /**
+     * Gets the QName prefix.  If the QName has no set prefix, the specified default prefix will be used.
+     */
+    protected String getPrefix(QName qname, String defaultPrefix) {
+    	String prefix = qname.getPrefix();
+    	if(null == prefix || "".equals(prefix)) {
+    		prefix = defaultPrefix;
+    	}
+    	
+    	return prefix;
+    }
+    
+    protected String getQualifiedName(QName qname) {
+    	String name = qname.getLocalPart();
+    	
+    	String prefix = qname.getPrefix();
+    	if(null != prefix && (!"".equals(prefix))) {
+    		name = prefix + ":" + name;
+    	}
+    	
+    	return name;
     }
     
     protected String[] split(String uri) {
