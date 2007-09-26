@@ -67,7 +67,7 @@ public class FeedWriter extends OutBinding {
     private SourceTransformer sourceTransformer = new SourceTransformer();
     private boolean loadOnStartup = true;
 
-    public SyndFeed getCachedFeed() throws IllegalArgumentException, FeedException, IOException {
+    public synchronized SyndFeed getCachedFeed() throws IllegalArgumentException, FeedException, IOException {
         if (cachedFeed == null) {
             cachedFeed = loadOrCreateFeed();
         }
@@ -187,9 +187,11 @@ public class FeedWriter extends OutBinding {
 
     protected void process(MessageExchange exchange, NormalizedMessage message) throws Exception {
         SyndFeed feed = getCachedFeed();
-        addMessageToFeed(feed, exchange, message);
-        removeExpiredEntries(feed);
-        writeFeed(feed, exchange, message);
+        synchronized (feed) {
+            addMessageToFeed(feed, exchange, message);
+            removeExpiredEntries(feed);
+            writeFeed(feed, exchange, message);
+        }
         done(exchange);
     }
 
