@@ -71,7 +71,8 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
             su.setName(serviceUnitName);
             su.setRootPath(serviceUnitRootPath);
             // Load configuration
-            Thread.currentThread().setContextClassLoader(component.getClass().getClassLoader());
+            ClassLoader classLoader = component.getClass().getClassLoader();
+            Thread.currentThread().setContextClassLoader(classLoader);
 
             SpringLoader springLoader = createSpringLoader();
             springLoader.setKernel(kernel);
