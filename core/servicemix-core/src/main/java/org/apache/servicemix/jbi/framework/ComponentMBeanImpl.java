@@ -105,6 +105,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
         if (cl instanceof DestroyableClassLoader) {
             ((DestroyableClassLoader) cl).destroy();
         }
+        fireEvent(ComponentEvent.COMPONENT_UNINSTALLED);
     }
 
     /**
@@ -601,6 +602,9 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
                 break;
             case ComponentEvent.COMPONENT_SHUTDOWN:
                 listeners[i].componentShutDown(event);
+                break;
+            case ComponentEvent.COMPONENT_UNINSTALLED:
+                listeners[i].componentUninstalled(event);
                 break;
             default:
                 break;
