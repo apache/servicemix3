@@ -216,6 +216,7 @@
         <woden-version>1.0.0M6</woden-version>
         <cxf-version>2.0.1-incubator</cxf-version>
         <derby-version>10.2.2.0</derby-version>
+	    <saxon-version>8.9</saxon-version>
 
 		<releases-repo-id>apache.incubating</releases-repo-id>
 		<releases-repo-name>Apache Incubating Repository</releases-repo-name>
