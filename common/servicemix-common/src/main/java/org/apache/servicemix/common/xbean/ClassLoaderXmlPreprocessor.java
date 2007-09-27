@@ -174,7 +174,7 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
             List<String> sls = new ArrayList<String>();
             NodeList libraries = classpathElement.getElementsByTagName("library");
             for (int i = 0; i < libraries.getLength(); i++) {
-                Element locationElement = (Element) locations.item(i);
+                Element locationElement = (Element) libraries.item(i);
                 String library = ((Text) locationElement.getFirstChild()).getData().trim();
                 sls.add(library);
             }
@@ -186,7 +186,7 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
             List<String> components = new ArrayList<String>();
             NodeList componentList = classpathElement.getElementsByTagName("component");
             for (int i = 0; i < componentList.getLength(); i++) {
-                Element locationElement = (Element) locations.item(i);
+                Element locationElement = (Element) componentList.item(i);
                 String component = ((Text) locationElement.getFirstChild()).getData().trim();
                 components.add(component);
             }
