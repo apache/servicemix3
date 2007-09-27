@@ -24,10 +24,9 @@ Configuration for ServiceMix container.
 
     <gbean name="ServiceMixJBIContainer" class="org.apache.servicemix.geronimo.ServiceMixGBean">
         <attribute name="name">servicemix</attribute>
-        <attribute name="directory">var/servicemix</attribute>
-        <reference name="transactionManager">
-          <name>TransactionManager</name>
-        </reference>
+        <attribute name="transactionManager">?name=TransactionManager</attribute>
+        <!-- relative to bin directory -->
+        <attribute name="directory">../var/servicemix</attribute>
     </gbean>
 
 </module>

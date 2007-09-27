@@ -29,6 +29,8 @@ import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
+import javax.jbi.component.Component;
+import javax.jbi.component.ServiceUnitManager;
 import javax.management.MalformedObjectNameException;
 
 import org.apache.commons.logging.Log;
@@ -45,6 +47,7 @@ import org.apache.geronimo.gbean.GBeanData;
 import org.apache.geronimo.gbean.GBeanInfo;
 import org.apache.geronimo.gbean.GBeanInfoBuilder;
 import org.apache.geronimo.j2ee.j2eeobjectnames.NameFactory;
+import org.apache.geronimo.kernel.GBeanNotFoundException;
 import org.apache.geronimo.kernel.Kernel;
 import org.apache.geronimo.kernel.config.ConfigurationAlreadyExistsException;
 import org.apache.geronimo.kernel.config.ConfigurationModuleType;
@@ -55,7 +58,6 @@ import org.apache.geronimo.kernel.repository.ArtifactResolver;
 import org.apache.geronimo.kernel.repository.Environment;
 import org.apache.geronimo.kernel.repository.ImportType;
 import org.apache.geronimo.kernel.repository.Repository;
-import org.apache.geronimo.kernel.repository.Version;
 import org.apache.servicemix.jbi.deployment.Descriptor;
 import org.apache.servicemix.jbi.deployment.DescriptorFactory;
 import org.apache.servicemix.jbi.deployment.ServiceUnit;
@@ -69,6 +71,8 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
 
     private final Collection repositories;
 
+    private final AbstractNameQuery containerName;
+
     private final Kernel kernel;
 
     public static final GBeanInfo GBEAN_INFO;
@@ -78,8 +82,9 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
         infoFactory.addInterface(ConfigurationBuilder.class);
         infoFactory.addAttribute("defaultEnvironment", Environment.class, true, true);
         infoFactory.addAttribute("kernel", Kernel.class, false);
+        infoFactory.addAttribute("containerName", AbstractNameQuery.class, true, true);
         infoFactory.addReference("Repositories", Repository.class, "Repository");
-        infoFactory.setConstructor(new String[] { "defaultEnvironment", "Repositories", "kernel" });
+        infoFactory.setConstructor(new String[] { "defaultEnvironment", "containerName", "Repositories", "kernel" });
         GBEAN_INFO = infoFactory.getBeanInfo();
     }
 
@@ -87,10 +92,11 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
         return GBEAN_INFO;
     }
 
-    public ServiceMixConfigBuilder(Environment defaultEnvironment, Collection repositories, Kernel kernel) {
+    public ServiceMixConfigBuilder(Environment defaultEnvironment, AbstractNameQuery containerName, Collection repositories, Kernel kernel) {
         this.defaultEnvironment = defaultEnvironment;
         this.repositories = repositories;
         this.kernel = kernel;
+        this.containerName = containerName;
     }
 
     /**
@@ -109,7 +115,6 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
     public Object getDeploymentPlan(File planFile, JarFile module, ModuleIDBuilder idBuilder)
                     throws DeploymentException {
         log.debug("Checking for ServiceMix deployment.");
-        System.err.println("Checking for ServiceMix deployment.");
         if (module == null) {
             return null;
         }
@@ -264,12 +269,12 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
         props.put("jbiType", "JBIComponent");
         props.put("name", descriptor.getComponent().getIdentification().getName());
         AbstractName name = new AbstractName(environment.getConfigId(), props);
-        GBeanData gbeanData = new GBeanData(name, Component.GBEAN_INFO);
+        GBeanData gbeanData = new GBeanData(name, org.apache.servicemix.geronimo.Component.GBEAN_INFO);
         gbeanData.setAttribute("name", descriptor.getComponent().getIdentification().getName());
         gbeanData.setAttribute("description", descriptor.getComponent().getIdentification().getDescription());
         gbeanData.setAttribute("type", descriptor.getComponent().getType());
         gbeanData.setAttribute("className", descriptor.getComponent().getComponentClassName());
-        gbeanData.setReferencePattern("container", getContainerObjectName());
+        gbeanData.setReferencePattern("container", containerName);
         context.addGBean(gbeanData);
     }
 
@@ -286,12 +291,23 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
             String name = sus[i].getIdentification().getName();
             String zip = sus[i].getTarget().getArtifactsZip();
             String comp = sus[i].getTarget().getComponentName();
-            unzip(context, new JarFile(new File(targetDir, zip)), new URI("sus/" + comp + "/" + name + "/"));
-            // Deploy the SU on the component
-            // TODO: deploy
+            URI installUri = new URI("sus/" + comp + "/" + name + "/");
+            unzip(context, new JarFile(new File(targetDir, zip)), installUri);
             // Add component config as a dependency
-            Artifact sl = new Artifact("servicemix-components", comp, (Version) null, "car");
+            Artifact sl = new Artifact("servicemix-components", comp, "0.0", "car");
             environment.addDependency(sl, ImportType.ALL);
+             // Deploy the SU on the component
+             Component jbiServiceUnit = null;
+             try {
+                 jbiServiceUnit = getAssociatedJbiServiceUnit(comp, sl);
+             } catch (GBeanNotFoundException e) {
+                 throw new DeploymentException("Can not find the associated service unit for this service assembly. "
+                         + "Check if it's deployed and started.", e);
+             }
+             ServiceUnitManager serviceUnitManager = jbiServiceUnit.getServiceUnitManager();
+             File installDir = new File(context.getBaseDir(), installUri.toString());
+             String deploy = serviceUnitManager.deploy(name, installDir.getAbsolutePath());  
+             log.debug(deploy);
         }
         // Create the JBI deployment managed object
         Properties props = new Properties();
@@ -300,12 +316,31 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
         AbstractName name = new AbstractName(environment.getConfigId(), props);
         GBeanData gbeanData = new GBeanData(name, ServiceAssembly.GBEAN_INFO);
         gbeanData.setAttribute("name", descriptor.getServiceAssembly().getIdentification().getName());
-        gbeanData.setReferencePattern("container", getContainerObjectName());
+        gbeanData.setReferencePattern("container", containerName);
         for (int i = 0; i < sus.length; i++) {
             String comp = sus[i].getTarget().getComponentName();
             gbeanData.addDependency(getComponentName(comp));
         }
         context.addGBean(gbeanData);
+    }
+
+    /**
+     * Returns the JBI ServiceUnit with the given 'ArtifactName' and
+     * the given componentName. 
+     * 
+     * @param compName Name
+     * @param artifactName Name
+     * @return Component instance
+     * @throws GBeanNotFoundException if the ServiceUnit cannot be found
+     */
+    private Component getAssociatedJbiServiceUnit(String compName, Artifact artifactName) throws GBeanNotFoundException {
+        Properties props = new Properties();
+        props.put("jbiType", "JBIComponent");
+        props.put("name", compName);
+        org.apache.servicemix.geronimo.Component serviceUnit = 
+                (org.apache.servicemix.geronimo.Component) kernel.getGBean(new AbstractName(artifactName, props));
+        Component jbiServiceUnit = serviceUnit.getComponent();
+        return jbiServiceUnit;
     }
 
     protected void buildSharedLibrary(Descriptor descriptor, DeploymentContext context, JarFile module)
@@ -353,7 +388,7 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
         GBeanData gbeanData = new GBeanData(name, SharedLibrary.GBEAN_INFO);
         gbeanData.setAttribute("name", descriptor.getSharedLibrary().getIdentification().getName());
         gbeanData.setAttribute("description", descriptor.getSharedLibrary().getIdentification().getDescription());
-        gbeanData.setReferencePattern("container", getContainerObjectName());
+        gbeanData.setReferencePattern("container", containerName);
         context.addGBean(gbeanData);
     }
 
@@ -364,12 +399,6 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
             URI target = targetUri.resolve(entry.getName());
             context.addFile(target, module, entry);
         }
-    }
-
-    protected AbstractName getContainerObjectName() {
-        AbstractNameQuery query = new AbstractNameQuery(Container.class.getName());
-        Set names = kernel.listGBeans(query);
-        return (AbstractName) names.iterator().next();
     }
 
     protected AbstractNameQuery getComponentName(String name) throws MalformedObjectNameException {

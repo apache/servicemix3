@@ -17,17 +17,22 @@
 package org.apache.servicemix.geronimo;
 
 import java.io.File;
-import java.util.Collection;
+import java.util.Set;
 
 import javax.jbi.JBIException;
 import javax.transaction.TransactionManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.geronimo.gbean.AbstractName;
+import org.apache.geronimo.gbean.AbstractNameQuery;
 import org.apache.geronimo.gbean.GBeanInfo;
 import org.apache.geronimo.gbean.GBeanInfoBuilder;
 import org.apache.geronimo.gbean.GBeanLifecycle;
+import org.apache.geronimo.kernel.GBeanNotFoundException;
+import org.apache.geronimo.kernel.InternalKernelException;
 import org.apache.geronimo.kernel.Kernel;
+import org.apache.geronimo.naming.java.RootContext;
 import org.apache.servicemix.jbi.container.ComponentEnvironment;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.container.ServiceAssemblyEnvironment;
@@ -43,9 +48,8 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
     private JBIContainer container;
     private String name;
     private String directory;
-    private TransactionManager transactionManager;
+    private final AbstractNameQuery transactionManagerName;
     private Kernel kernel;
-    private Collection jndiResources;
 
     public static final GBeanInfo GBEAN_INFO;
 
@@ -54,7 +58,7 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
         infoFactory.addInterface(Container.class);
         infoFactory.addAttribute("name", String.class, true);
         infoFactory.addAttribute("directory", String.class, true);
-        infoFactory.addReference("transactionManager", TransactionManager.class);
+        infoFactory.addAttribute("transactionManager", AbstractNameQuery.class, true, true);
         infoFactory.addAttribute("kernel", Kernel.class, false);
         infoFactory.setConstructor(new String[]{"name", "directory", "transactionManager", "kernel"});
         GBEAN_INFO = infoFactory.getBeanInfo();
@@ -66,25 +70,15 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
 
     public ServiceMixGBean(String name, 
     					   String directory, 
-    					   TransactionManager transactionManager, 
+    					   AbstractNameQuery transactionManagerName, 
     					   Kernel kernel) {
         this.name = name;
         this.directory = directory;
-        this.transactionManager = transactionManager;
+        this.transactionManagerName = transactionManagerName;
         this.kernel = kernel;
         if (log.isDebugEnabled()) {
             log.debug("ServiceMixGBean created");
         }
-        /*
-        // Print available jndi resources
-        Set patterns = new HashSet();
-        this.jndiResources = kernel.listGBeans(patterns);
-        for (Iterator it = jndiResources.iterator(); it.hasNext();) {
-        	ObjectName name = (ObjectName) it.next();
-        	log.info("Resource name: " + name);
-        	log.info("Resource inst: " + kernel.)
-        }
-        */
     }
     
     /**
@@ -102,6 +96,7 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
             if (container == null) {
                 container = createContainer();
                 container.init();
+                RootContext.setComponentContext(container.getNamingContext());
                 container.start();
             }
         } finally {
@@ -148,16 +143,30 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
         }
     }
 
-    private JBIContainer createContainer() {
+    private JBIContainer createContainer() throws GBeanNotFoundException {
         JBIContainer container = new JBIContainer();
         container.setName(name);
         container.setRootDir(directory);
-        container.setTransactionManager(transactionManager);
+        TransactionManager tm = getTransactionManager();
+        container.setTransactionManager(tm);
         container.setMonitorInstallationDirectory(false);
         container.setMonitorDeploymentDirectory(false);
         return container;
     }
     
+    /**
+     * Determines the TM from Geronimo
+     * 
+     * @return TransactionManager
+     * @throws GBeanNotFoundException
+     */
+    private TransactionManager getTransactionManager() throws GBeanNotFoundException {
+        Set listGBeans = kernel.listGBeans(transactionManagerName);
+        AbstractName tmName = (AbstractName) listGBeans.iterator().next();
+        TransactionManager tm = (TransactionManager) kernel.getGBean(tmName);
+        return tm;
+    }
+
     public void register(Component component) throws Exception {
         ComponentNameSpace cns = new ComponentNameSpace(container.getName(), component.getName());
         ComponentContextImpl context = new ComponentContextImpl(container, cns);

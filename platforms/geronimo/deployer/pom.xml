@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 <!--
 
@@ -39,24 +38,43 @@
             <version>3.2-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.servicemix.geronimo</groupId>
             <artifactId>deployer-service</artifactId>
             <version>${servicemix-version}</version>
             <type>jar</type>
         </dependency>
-        <dependency>
-            <groupId>org.apache.servicemix.geronimo</groupId>
-            <artifactId>servicemix</artifactId>
-            <version>${servicemix-version}</version>
-            <type>car</type>
-        </dependency>
+
         <dependency>
             <groupId>org.apache.geronimo.configs</groupId>
             <artifactId>geronimo-gbean-deployer</artifactId>
             <version>${geronimo-version}</version>
             <type>car</type>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.servicemix.geronimo</groupId>
+			<artifactId>servicemix</artifactId>
+            <version>${version}</version>
+            <type>car</type>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.servicemix</groupId>
+			<artifactId>servicemix-core</artifactId>
+            <version>${version}</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.servicemix</groupId>
+			<artifactId>servicemix-jbi</artifactId>
+            <version>${version}</version>
+            <type>jar</type>
+        </dependency>
+
     </dependencies>
 
     <build>

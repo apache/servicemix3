@@ -34,38 +34,29 @@
         <dependency>
             <groupId>org.apache.servicemix.geronimo</groupId>
             <artifactId>servicemix-service</artifactId>
-            <version>3.2-SNAPSHOT</version>
+            <version>${version}</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.servicemix</groupId>
+			<artifactId>servicemix-core</artifactId>
+            <version>${version}</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.servicemix</groupId>
+			<artifactId>servicemix-jbi</artifactId>
+            <version>${version}</version>
             <type>jar</type>
         </dependency>
         
         <dependency>
-            <groupId>org.apache.geronimo.modules</groupId>
-            <artifactId>geronimo-kernel</artifactId>
+            <groupId>org.apache.geronimo.configs</groupId>
+            <artifactId>j2ee-deployer</artifactId>
             <version>${geronimo-version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.geronimo.modules</groupId>
-            <artifactId>geronimo-deployment</artifactId>
-            <version>${geronimo-version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.geronimo.modules</groupId>
-            <artifactId>geronimo-service-builder</artifactId>
-            <version>${geronimo-version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.geronimo.modules</groupId>
-            <artifactId>geronimo-common</artifactId>
-            <version>${geronimo-version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.geronimo.modules</groupId>
-            <artifactId>geronimo-j2ee</artifactId>
-            <version>${geronimo-version}</version>
+            <type>car</type>
         </dependency>
 
     </dependencies>

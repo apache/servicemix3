@@ -22,6 +22,7 @@ Configuration for ServiceMix deployer.
 <module xmlns="http://geronimo.apache.org/xml/ns/deployment-${geronimoSchemaVersion}">
 
     <gbean name="ServiceMixConfigBuilder" class="org.apache.servicemix.geronimo.ServiceMixConfigBuilder">
+        <attribute name="containerName">?name=ServiceMixJBIContainer</attribute>
         <reference name="Repositories" />
         <xml-attribute name="defaultEnvironment">
             <environment>
@@ -33,6 +34,9 @@ Configuration for ServiceMix deployer.
                         <type>car</type>
                     </dependency>
                 </dependencies>
+ 				<hidden-classes>
+					<filter>org.apache.geronimo</filter>
+ 				</hidden-classes>
             </environment>
         </xml-attribute>
     </gbean>

@@ -33,12 +33,20 @@
     <packaging>pom</packaging>
   
     <properties>
-        <geronimo-version>1.2-beta</geronimo-version>
+        <geronimo-version>2.0.1</geronimo-version>
         <geronimoVersion>${geronimo-version}</geronimoVersion>
         <car-maven-plugin-version>${geronimo-version}</car-maven-plugin-version>
         <geronimoSchemaVersion>1.2</geronimoSchemaVersion>
         <gbeanDeployer>org.apache.geronimo.configs/geronimo-gbean-deployer/${version}/car</gbeanDeployer>
+        <xbean-version>3.1</xbean-version>
     </properties>
+
+    <repositories>
+	    <repository>
+		   <id>geronimo-2.0.1-repo</id>
+		   <url>http://svn.apache.org/repos/asf/geronimo/server/tags/2.0.1/repository</url>
+		</repository>
+	</repositories>
     
     <modules>
         <module>servicemix-service</module>
