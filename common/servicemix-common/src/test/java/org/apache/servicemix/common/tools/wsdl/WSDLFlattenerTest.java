@@ -65,6 +65,32 @@ public class WSDLFlattenerTest extends TestCase {
         PortType portType = (PortType) newFlat.getPortTypes().values().iterator().next();
         assertNotNull(portType);
     }
+
+    public void testIncludes() throws Exception {
+        URL resource = getClass().getClassLoader().getResource("includes/service.wsdl");
+        WSDLReader reader = WSDLFactory.newInstance().newWSDLReader();
+        Definition definition = reader.readWSDL(null, resource.toString());
+        WSDLFlattener flattener = new WSDLFlattener(definition);
+
+        Definition flat = flattener.getDefinition(new QName("http://mycompany.com/nested/", "ServiceInterface"));
+        assertNotNull(flat);
+
+        // Check that the definition is really standalone
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        WSDLWriter writer = WSDLFactory.newInstance().newWSDLWriter();
+        writer.writeWSDL(flat, baos);
+
+        logger.info(baos.toString());
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        Document description = factory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+        Definition newFlat = WSDLFactory.newInstance().newWSDLReader().readWSDL(null, description);
+        assertNotNull(newFlat);
+        assertEquals(1, newFlat.getPortTypes().size());
+        PortType portType = (PortType) newFlat.getPortTypes().values().iterator().next();
+        assertNotNull(portType);
+    }
     
     public void testResolve() throws Exception {
         URI base = URI.create("jar:file:/C:/java/servicemix/servicemix-assembly/target/incubator-servicemix-3.0-SNAPSHOT/bin/incubator-servicemix-3.0-SNAPSHOT/bin/../lib/optional/servicemix-wsn2005-3.0-SNAPSHOT.jar!/org/apache/servicemix/wsn/wsn.wsdl");
