@@ -146,7 +146,14 @@ public class SchemaCollection {
         for (Iterator iter = includes.iterator(); iter.hasNext();) {
             Element ce = (Element) iter.next();
 	        String location = ce.getAttribute("schemaLocation");
-            schema.getRoot().removeChild(ce);
+            Node parentNode = ce.getParentNode();
+            Element root = schema.getRoot();
+            if (root == parentNode) { 
+                log.debug("Removing child include node: " + ce);
+                schema.getRoot().removeChild(ce);
+            } else {
+                log.warn("Skipping child include node removal: " + ce);
+            }
 	        if (location != null && !"".equals(location)) {
 	            read(location, baseUri);
 	        }
