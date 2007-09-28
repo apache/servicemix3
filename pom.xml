@@ -214,7 +214,7 @@
         <oro-version>2.0.8</oro-version>
         <sitemesh-version>2.2.1</sitemesh-version>
         <woden-version>1.0.0M6</woden-version>
-        <cxf-version>2.0.1-incubator</cxf-version>
+        <cxf-version>2.0.2-incubator</cxf-version>
         <derby-version>10.2.2.0</derby-version>
 	    <saxon-version>8.9</saxon-version>
 
