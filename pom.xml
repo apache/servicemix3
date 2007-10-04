@@ -34,6 +34,7 @@
 	<module>nmr</module>
 	<module>camel</module>
 	<module>bundles</module>
+	<module>jbi</module>
 	<module>examples</module>
 	<module>itests</module>
 	<module>main</module>
