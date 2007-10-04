@@ -74,4 +74,8 @@ public interface HttpConfigurationMBean {
 
     void setWantHeadersFromHttpIntoExchange(boolean wantHeadersFromHttpIntoExchange);
 
+    boolean isWantContentTypeHeaderFromExchangeIntoHttpRequest();
+
+    void setWantContentTypeHeaderFromExchangeIntoHttpRequest(boolean wantContentTypeHeaderFromExchangeIntoHttpRequest);
+
 }
