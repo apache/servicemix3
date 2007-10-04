@@ -59,6 +59,15 @@ public class HttpEndpoint extends SoapEndpoint {
     protected String soapAction;
     protected BasicAuthCredentials basicAuthentication;
     protected ProxyParameters proxy;
+    protected boolean wantContentTypeHeaderFromExchangeIntoHttpRequest;
+
+    public boolean isWantContentTypeHeaderFromExchangeIntoHttpRequest() {
+        return wantContentTypeHeaderFromExchangeIntoHttpRequest;
+    }
+
+    public void setWantContentTypeHeaderFromExchangeIntoHttpRequest(boolean wantContentTypeHeaderFromExchangeIntoHttpRequest) {
+        this.wantContentTypeHeaderFromExchangeIntoHttpRequest = wantContentTypeHeaderFromExchangeIntoHttpRequest;
+    }
 
     /**
      * @return the soapAction

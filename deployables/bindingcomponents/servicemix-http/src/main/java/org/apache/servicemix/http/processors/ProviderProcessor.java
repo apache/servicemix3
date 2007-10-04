@@ -141,7 +141,7 @@ public class ProviderProcessor implements ExchangeProcessor {
         }
         RequestEntity entity = writeMessage(writer);
         // remove content-type header that may have been part of the in message
-        if (!getConfiguration().isWantContentTypeHeaderFromExchangeIntoHttpRequest()) {
+        if (!endpoint.isWantContentTypeHeaderFromExchangeIntoHttpRequest()) {
             method.removeRequestHeader(Constants.HEADER_CONTENT_TYPE);
             method.addRequestHeader(Constants.HEADER_CONTENT_TYPE, entity.getContentType());
         }
