@@ -38,7 +38,9 @@ public class ClientFactory extends BaseSystemService implements ClientFactoryMBe
     private static final Log LOG = LogFactory.getLog(ClientFactory.class);
     
     private String jndiName = DEFAULT_JNDI_NAME;
-    
+
+    private boolean isFactoryJNDIregistered;
+
     public ClientFactory() {
     }
     
@@ -82,13 +84,15 @@ public class ClientFactory extends BaseSystemService implements ClientFactoryMBe
     public void start() throws javax.jbi.JBIException {
         try {
             getContainer().getNamingContext().bind(jndiName, this);
-            super.start();
+            isFactoryJNDIregistered = true;
         } catch (NamingException e) {
             LOG.warn("Cound not start ClientFactory: " + e);
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Could not start ClientFactory", e);
             }
+            isFactoryJNDIregistered = false;
         }
+        super.start();
     }
 
     /**
@@ -97,9 +101,11 @@ public class ClientFactory extends BaseSystemService implements ClientFactoryMBe
      * @exception javax.jbi.JBIException if the item fails to stop.
      */
     public void stop() throws javax.jbi.JBIException {
+        super.stop();
         try {
-            super.stop();
-            getContainer().getNamingContext().unbind(jndiName);
+            if (isFactoryJNDIregistered) {
+                getContainer().getNamingContext().unbind(jndiName);
+            }
         } catch (NamingException e) {
             LOG.warn("Cound not stop ClientFactory: " + e);
             if (LOG.isDebugEnabled()) {
