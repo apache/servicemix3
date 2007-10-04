@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+    
+     http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+
+<!-- $Rev: 580839 $ $Date: 2007-10-01 06:55:10 +0200 (Mon, 01 Oct 2007) $ -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>org.apache.geronimo.gshell.osgi</groupId>
+        <artifactId>gshell-osgi</artifactId>
+        <version>1.0-alpha-1-SNAPSHOT</version>
+    </parent>
+    
+    <artifactId>gshell-service</artifactId>
+    <packaging>bundle</packaging>
+    <name>GShell OSGi service</name>
+    
+    <description>
+        Provides the OSGi GShell integration
+    </description>
+
+    <properties>
+        <gshell.osgi.activator>
+            org.apache.geronimo.gshell.osgi.Activator
+        </gshell.osgi.activator>
+        <gshell.osgi.import>
+            javax.xml.stream*;resolution:=optional,
+            junit.framework*;resolution:=optional,
+            nu.xom*;resolution:=optional,
+            net.sf.cglib*;resolution:=optional,
+            org.codehaus.jettison*;resolution:=optional,
+            org.dom4j*;resolution:=optional,
+            org.joda*;resolution:=optional,
+            org.jdom*;resolution:=optional,
+            sun.*;resolution:=optional,
+            *
+        </gshell.osgi.import>
+        <!--
+        <gshell.osgi.private.pkg>
+            com.thoughtworks.xstream*,
+            jline*,
+            org.apache.commons.jexl*,
+            org.codehaus.classworlds*,
+            org.codehaus.plexus*,
+            org.xmlpull.*,
+            META-INF*
+        </gshell.osgi.private.pkg>
+        <gshell.osgi.export.pkg>
+	        org.apache.geronimo.gshell*
+	    </gshell.osgi.export.pkg>
+        -->
+        <gshell.osgi.private.pkg>
+            com.thoughtworks.xstream*,
+            jline*,
+            org.apache.commons.jexl*,
+            org.codehaus.classworlds*,
+            org.xmlpull.*,
+            META-INF*
+        </gshell.osgi.private.pkg>
+        <gshell.osgi.export>
+	        org.apache.geronimo.gshell*;version=${project.version},
+            org.codehaus.plexus*;version=${project.version}
+	    </gshell.osgi.export>
+        <gshell.osgi.symbolic.name>${groupId}.${artifactId}</gshell.osgi.symbolic.name>
+    </properties>
+    
+    <dependencies>
+	    <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>1.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--
+	    <dependency>
+            <groupId>org.apache.geronimo.gshell</groupId>
+            <artifactId>gshell-core</artifactId>
+            <version>${version}</version>
+        </dependency>
+	    <dependency>
+            <groupId>org.apache.geronimo.gshell</groupId>
+            <artifactId>gshell-command-api</artifactId>
+            <version>${version}</version>
+        </dependency>
+	    <dependency>
+            <groupId>org.apache.geronimo.gshell.support</groupId>
+            <artifactId>gshell-common</artifactId>
+            <version>${version}</version>
+        </dependency>
+	    <dependency>
+            <groupId>org.apache.geronimo.gshell.support</groupId>
+            <artifactId>gshell-ansi</artifactId>
+            <version>${version}</version>
+        </dependency>
+	    <dependency>
+            <groupId>org.apache.geronimo.gshell.support</groupId>
+            <artifactId>gshell-i18n</artifactId>
+            <version>${version}</version>
+        </dependency>
+	    <dependency>
+            <groupId>org.apache.geronimo.gshell.support</groupId>
+            <artifactId>gshell-clp</artifactId>
+            <version>${version}</version>
+        </dependency>
+	    <dependency>
+            <groupId>org.apache.geronimo.gshell</groupId>
+            <artifactId>gshell-parser</artifactId>
+            <version>${version}</version>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-classworlds</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.gshell</groupId>
+            <artifactId>gshell-embeddable</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>org.apache.geronimo.gshell.osgi</groupId>
+            <artifactId>gshell-osgi-commands</artifactId>
+            <version>${version}</version>
+        </dependency>
+        -->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>1.0.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Name>${artifactId}</Bundle-Name>
+                        <Bundle-SymbolicName>${gshell.osgi.symbolic.name}</Bundle-SymbolicName>
+                        <Bundle-Activator>${gshell.osgi.activator}</Bundle-Activator>
+                        <Export-Package>${gshell.osgi.export}</Export-Package>
+                        <Import-Package>${gshell.osgi.import}</Import-Package>
+                        <Private-Package>${gshell.osgi.private.pkg}</Private-Package>
+                        <Implementation-Title>Apache GShell</Implementation-Title>
+                        <Implementation-Version>${project.version}</Implementation-Version>
+			            <DynamicImport-Package>*</DynamicImport-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
