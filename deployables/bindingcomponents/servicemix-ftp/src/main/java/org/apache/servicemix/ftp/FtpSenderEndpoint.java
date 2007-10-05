@@ -163,17 +163,17 @@ public class FtpSenderEndpoint extends ProviderEndpoint implements FtpEndpointTy
                 throw new IOException("No output stream available for output name: " + name + ". Maybe the file already exists?");
             }
             marshaler.writeMessage(exchange, message, out, name);
-        }
+        } 
         finally {
             if (out != null) {
                 try {
                     out.close();
+                    client.completePendingCommand();
                 }
                 catch (IOException e) {
                     logger.error("Caught exception while closing stream on error: " + e, e);
                 }
             }
-            client.completePendingCommand();
             returnClient(client);
         }
     }
