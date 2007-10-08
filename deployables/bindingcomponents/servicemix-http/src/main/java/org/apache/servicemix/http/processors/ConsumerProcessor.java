@@ -104,7 +104,6 @@ public class ConsumerProcessor implements ExchangeProcessor, HttpProcessor {
     }
 
     public void start() throws Exception {
-        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         String url = endpoint.getLocationURI();
         context = new EndpointComponentContext(endpoint);
         channel = context.getDeliveryChannel();
