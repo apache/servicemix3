@@ -36,6 +36,22 @@
       </requirements>
     </component>
     <component>
+      <role>org.apache.geronimo.gshell.console.PromptReader</role>
+      <implementation>org.apache.geronimo.gshell.console.PromptReader</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+      <isolated-realm>false</isolated-realm>
+      <requirements>
+        <requirement>
+          <role>jline.Terminal</role>
+          <field-name>terminal</field-name>
+        </requirement>
+        <requirement>
+          <role>org.apache.geronimo.gshell.command.IO</role>
+          <field-name>io</field-name>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
       <role>org.codehaus.plexus.component.factory.ComponentFactory</role>
       <role-hint>Terminal</role-hint>
       <implementation>org.apache.geronimo.gshell.console.TerminalFactory</implementation>
@@ -58,10 +74,6 @@
       <implementation>org.apache.geronimo.gshell.DefaultCommandExecutor</implementation>
       <isolated-realm>false</isolated-realm>
       <requirements>
-        <requirement>
-          <role>org.codehaus.plexus.PlexusContainer</role>
-          <field-name>container</field-name>
-        </requirement>
         <requirement>
           <role>org.apache.geronimo.gshell.layout.LayoutManager</role>
           <field-name>layoutManager</field-name>
@@ -166,6 +178,7 @@
       <implementation>org.apache.geronimo.gshell.lookup.IOLookup</implementation>
       <isolated-realm>false</isolated-realm>
     </component>
+    <!--
     <component>
       <role>org.codehaus.plexus.component.discovery.ComponentDiscoverer</role>
       <role-hint>command</role-hint>
@@ -188,15 +201,17 @@
         </requirement>
       </requirements>
     </component>
+    -->
     <component>
       <role>org.apache.geronimo.gshell.registry.CommandRegistry</role>
       <role-hint>default</role-hint>
       <implementation>org.apache.geronimo.gshell.registry.DefaultCommandRegistry</implementation>
+      <instantiation-strategy>singleton-keep-alive</instantiation-strategy>
       <isolated-realm>false</isolated-realm>
     </component>
     <component>
-      <role>org.apache.geronimo.gshell.URLHandlerFactory</role>
-      <implementation>org.apache.geronimo.gshell.URLHandlerFactory</implementation>
+      <role>org.apache.geronimo.gshell.url.URLHandlerFactory</role>
+      <implementation>org.apache.geronimo.gshell.url.DefaultURLHandlerFactory</implementation>
       <instantiation-strategy>singleton-keep-alive</instantiation-strategy>
       <isolated-realm>false</isolated-realm>
       <requirements>
@@ -207,5 +222,256 @@
         </requirement>
       </requirements>
     </component>
-  </components>
+    <component>
+      <role>org.apache.geronimo.gshell.parser.CommandLineParser</role>
+      <implementation>org.apache.geronimo.gshell.parser.CommandLineParser</implementation>
+      <isolated-realm>false</isolated-realm>
+    </component>
+      <component>
+        <role>org.apache.geronimo.gshell.remote.RemoteShell</role>
+        <implementation>org.apache.geronimo.gshell.remote.server.DefaultRemoteShell</implementation>
+        <instantiation-strategy>per-lookup</instantiation-strategy>
+        <isolated-realm>false</isolated-realm>
+        <requirements>
+          <requirement>
+            <role>org.apache.geronimo.gshell.shell.ShellInfo</role>
+            <field-name>shellInfo</field-name>
+          </requirement>
+          <requirement>
+            <role>org.apache.geronimo.gshell.command.CommandExecutor</role>
+            <field-name>executor</field-name>
+          </requirement>
+          <requirement>
+            <role>org.apache.geronimo.gshell.shell.Environment</role>
+            <field-name>env</field-name>
+          </requirement>
+        </requirements>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.remote.server.handler.ServerMessageHandler</role>
+        <role-hint>close-shell</role-hint>
+        <implementation>org.apache.geronimo.gshell.remote.server.handler.CloseShellHandler</implementation>
+        <isolated-realm>false</isolated-realm>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.remote.server.handler.ServerMessageHandler</role>
+        <role-hint>connect</role-hint>
+        <implementation>org.apache.geronimo.gshell.remote.server.handler.ConnectHandler</implementation>
+        <isolated-realm>false</isolated-realm>
+        <requirements>
+          <requirement>
+            <role>org.apache.geronimo.gshell.remote.crypto.CryptoContext</role>
+            <field-name>crypto</field-name>
+          </requirement>
+          <requirement>
+            <role>org.apache.geronimo.gshell.remote.server.timeout.TimeoutManager</role>
+            <field-name>timeoutManager</field-name>
+          </requirement>
+        </requirements>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.remote.server.handler.ServerMessageHandler</role>
+        <role-hint>echo</role-hint>
+        <implementation>org.apache.geronimo.gshell.remote.server.handler.EchoHandler</implementation>
+        <isolated-realm>false</isolated-realm>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.remote.server.handler.ServerMessageHandler</role>
+        <role-hint>execute</role-hint>
+        <implementation>org.apache.geronimo.gshell.remote.server.handler.ExecuteHandler</implementation>
+        <isolated-realm>false</isolated-realm>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.remote.server.handler.ServerMessageHandler</role>
+        <role-hint>login</role-hint>
+        <implementation>org.apache.geronimo.gshell.remote.server.handler.LoginHandler</implementation>
+        <isolated-realm>false</isolated-realm>
+        <requirements>
+          <requirement>
+            <role>org.apache.geronimo.gshell.remote.server.timeout.TimeoutManager</role>
+            <field-name>timeoutManager</field-name>
+          </requirement>
+        </requirements>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.remote.server.handler.ServerMessageHandler</role>
+        <role-hint>open-shell</role-hint>
+        <implementation>org.apache.geronimo.gshell.remote.server.handler.OpenShellHandler</implementation>
+        <isolated-realm>false</isolated-realm>
+        <requirements>
+          <requirement>
+            <role>org.codehaus.plexus.PlexusContainer</role>
+            <field-name>container</field-name>
+          </requirement>
+        </requirements>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.remote.server.RshServer</role>
+        <implementation>org.apache.geronimo.gshell.remote.server.RshServer</implementation>
+        <instantiation-strategy>per-lookup</instantiation-strategy>
+        <isolated-realm>false</isolated-realm>
+        <requirements>
+          <requirement>
+            <role>org.apache.geronimo.gshell.remote.server.timeout.TimeoutManager</role>
+            <field-name>timeoutManager</field-name>
+          </requirement>
+          <requirement>
+            <role>org.apache.geronimo.gshell.whisper.transport.TransportFactoryLocator</role>
+            <field-name>locator</field-name>
+          </requirement>
+          <requirement>
+            <role>org.apache.geronimo.gshell.remote.server.handler.ServerMessageHandler</role>
+            <role-hints/>
+            <field-name>handlers</field-name>
+          </requirement>
+        </requirements>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.remote.server.timeout.TimeoutManager</role>
+        <implementation>org.apache.geronimo.gshell.remote.server.timeout.DefaultTimeoutManager</implementation>
+        <isolated-realm>false</isolated-realm>
+      </component>
+      <component>
+        <role>java.net.URLStreamHandler</role>
+        <role-hint>rfile</role-hint>
+        <implementation>org.apache.geronimo.gshell.whisper.rfile.RemoteFileURLStreamHandler</implementation>
+        <instantiation-strategy>singleton</instantiation-strategy>
+        <isolated-realm>false</isolated-realm>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.whisper.ssl.SSLContextFactory</role>
+        <role-hint>bogus</role-hint>
+        <implementation>org.apache.geronimo.gshell.whisper.ssl.BogusSSLContextFactory</implementation>
+        <isolated-realm>false</isolated-realm>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.whisper.transport.base.AddressFactory</role>
+        <role-hint>ssl</role-hint>
+        <implementation>org.apache.geronimo.gshell.whisper.transport.ssl.SslAddressFactory</implementation>
+        <isolated-realm>false</isolated-realm>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.whisper.transport.Transport</role>
+        <role-hint>ssl</role-hint>
+        <implementation>org.apache.geronimo.gshell.whisper.transport.ssl.SslTransport</implementation>
+        <instantiation-strategy>per-lookup</instantiation-strategy>
+        <isolated-realm>false</isolated-realm>
+        <requirements>
+          <requirement>
+            <role>org.apache.geronimo.gshell.whisper.ssl.SSLContextFactory</role>
+            <field-name>contextFactory</field-name>
+          </requirement>
+        </requirements>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.whisper.transport.TransportFactory</role>
+        <role-hint>ssl</role-hint>
+        <implementation>org.apache.geronimo.gshell.whisper.transport.ssl.SslTransportFactory</implementation>
+        <isolated-realm>false</isolated-realm>
+        <requirements>
+          <requirement>
+            <role>org.codehaus.plexus.PlexusContainer</role>
+            <field-name>container</field-name>
+          </requirement>
+        </requirements>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.whisper.transport.TransportServer</role>
+        <role-hint>ssl</role-hint>
+        <implementation>org.apache.geronimo.gshell.whisper.transport.ssl.SslTransportServer</implementation>
+        <instantiation-strategy>per-lookup</instantiation-strategy>
+        <isolated-realm>false</isolated-realm>
+        <requirements>
+          <requirement>
+            <role>org.apache.geronimo.gshell.whisper.ssl.SSLContextFactory</role>
+            <field-name>contextFactory</field-name>
+          </requirement>
+        </requirements>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.whisper.transport.base.AddressFactory</role>
+        <role-hint>tcp</role-hint>
+        <implementation>org.apache.geronimo.gshell.whisper.transport.tcp.TcpAddressFactory</implementation>
+        <isolated-realm>false</isolated-realm>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.whisper.transport.Transport</role>
+        <role-hint>tcp</role-hint>
+        <implementation>org.apache.geronimo.gshell.whisper.transport.tcp.TcpTransport</implementation>
+        <instantiation-strategy>per-lookup</instantiation-strategy>
+        <isolated-realm>false</isolated-realm>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.whisper.transport.TransportFactory</role>
+        <role-hint>tcp</role-hint>
+        <implementation>org.apache.geronimo.gshell.whisper.transport.tcp.TcpTransportFactory</implementation>
+        <isolated-realm>false</isolated-realm>
+        <requirements>
+          <requirement>
+            <role>org.codehaus.plexus.PlexusContainer</role>
+            <field-name>container</field-name>
+          </requirement>
+        </requirements>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.whisper.transport.TransportServer</role>
+        <role-hint>tcp</role-hint>
+        <implementation>org.apache.geronimo.gshell.whisper.transport.tcp.TcpTransportServer</implementation>
+        <instantiation-strategy>per-lookup</instantiation-strategy>
+        <isolated-realm>false</isolated-realm>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.whisper.transport.TransportFactoryLocator</role>
+        <implementation>org.apache.geronimo.gshell.whisper.transport.TransportFactoryLocator</implementation>
+        <isolated-realm>false</isolated-realm>
+        <requirements>
+          <requirement>
+            <role>org.codehaus.plexus.PlexusContainer</role>
+            <field-name>container</field-name>
+          </requirement>
+        </requirements>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.whisper.transport.base.AddressFactory</role>
+        <role-hint>vm</role-hint>
+        <implementation>org.apache.geronimo.gshell.whisper.transport.vm.VmAddressFactory</implementation>
+        <isolated-realm>false</isolated-realm>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.whisper.transport.Transport</role>
+        <role-hint>vm</role-hint>
+        <implementation>org.apache.geronimo.gshell.whisper.transport.vm.VmTransport</implementation>
+        <instantiation-strategy>per-lookup</instantiation-strategy>
+        <isolated-realm>false</isolated-realm>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.whisper.transport.TransportFactory</role>
+        <role-hint>vm</role-hint>
+        <implementation>org.apache.geronimo.gshell.whisper.transport.vm.VmTransportFactory</implementation>
+        <isolated-realm>false</isolated-realm>
+        <requirements>
+          <requirement>
+            <role>org.codehaus.plexus.PlexusContainer</role>
+            <field-name>container</field-name>
+          </requirement>
+        </requirements>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.whisper.transport.TransportServer</role>
+        <role-hint>vm</role-hint>
+        <implementation>org.apache.geronimo.gshell.whisper.transport.vm.VmTransportServer</implementation>
+        <instantiation-strategy>per-lookup</instantiation-strategy>
+        <isolated-realm>false</isolated-realm>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.remote.crypto.CryptoContext</role>
+        <implementation>org.apache.geronimo.gshell.remote.crypto.CryptoContext</implementation>
+        <isolated-realm>false</isolated-realm>
+      </component>
+      <component>
+        <role>org.apache.geronimo.gshell.remote.jaas.JaasConfigurationHelper</role>
+        <implementation>org.apache.geronimo.gshell.remote.jaas.JaasConfigurationHelper</implementation>
+        <isolated-realm>false</isolated-realm>
+      </component>
+   </components>
 </component-set>

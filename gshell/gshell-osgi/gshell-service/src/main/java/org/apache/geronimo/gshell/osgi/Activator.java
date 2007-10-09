@@ -1,10 +1,16 @@
 package org.apache.geronimo.gshell.osgi;
 
-import org.apache.geronimo.gshell.command.IO;
-import org.codehaus.plexus.classworlds.ClassWorld;
-import org.osgi.framework.*;
+import java.net.URI;
+import java.util.HashMap;
 
-import java.util.concurrent.CountDownLatch;
+import javax.security.auth.login.AppConfigurationEntry;
+import javax.security.auth.login.Configuration;
+
+import org.apache.geronimo.gshell.command.IO;
+import org.apache.geronimo.gshell.remote.server.auth.BogusLoginModule;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 public class Activator implements BundleActivator, Runnable {
 
@@ -12,8 +18,23 @@ public class Activator implements BundleActivator, Runnable {
     private GShell shell;
     private Thread thread;
     private ClassLoader classLoader;
+    private OsgiCommandListener listener;
+    private OsgiCommandDiscoverer discoverer;
 
     public void start(BundleContext bundleContext) throws Exception {
+
+        Configuration.setConfiguration(new Configuration() {
+            public AppConfigurationEntry[] getAppConfigurationEntry(String name) {
+                return new AppConfigurationEntry[] {
+                    new AppConfigurationEntry(BogusLoginModule.class.getName(),
+                                              AppConfigurationEntry.LoginModuleControlFlag.SUFFICIENT,
+                                              new HashMap())        
+                };
+            }
+            public void refresh() {
+            }
+        });
+
         context = bundleContext;
         classLoader = BundleDelegatingClassLoader.createBundleClassLoaderFor(
                             context.getBundle(), Activator.class.getClassLoader());
@@ -23,10 +44,13 @@ public class Activator implements BundleActivator, Runnable {
         shell = new GShell(cw, io);
         thread = new Thread(this);
         thread.start();
-        new OsgiCommandDiscoverer(bundleContext, shell.getCommandRegistry());
+        listener = new OsgiCommandListener(bundleContext, shell.getCommandRegistry());
+        listener.open();;
+        discoverer = new OsgiCommandDiscoverer(bundleContext);
     }
 
     public void stop(BundleContext bundleContext) throws Exception {
+        listener.close();;
         thread.interrupt();
         thread.join();
     }
@@ -34,8 +58,9 @@ public class Activator implements BundleActivator, Runnable {
     public void run() {
         try {
             // Wait a bit to make sure everything is initialized
-            Thread.sleep(100);
+            Thread.sleep(500);
             Thread.currentThread().setContextClassLoader(classLoader);
+            shell.getRshServer().bind(new URI("tcp://0.0.0.0:8000"));
             shell.run();
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

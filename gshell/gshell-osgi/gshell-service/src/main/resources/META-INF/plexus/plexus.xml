@@ -18,7 +18,7 @@
     under the License.
 -->
 
-<!-- $Rev: 581061 $ $Date: 2007-10-01 22:18:31 +0200 (Mon, 01 Oct 2007) $ -->
+<!-- $Rev: 582181 $ $Date: 2007-10-05 11:57:38 +0200 (Fri, 05 Oct 2007) $ -->
 
 <plexus>
     <component-discoverer-manager implementation="org.codehaus.plexus.component.discovery.DefaultComponentDiscovererManager">
@@ -50,7 +50,8 @@
         <component>
             <role>org.apache.geronimo.gshell.registry.CommandRegistry</role>
             <role-hint>default</role-hint>
-            <implementation>org.apache.geronimo.gshell.registry.DefaultCommandRegistry</implementation>
+            <implementation>org.apache.geronimo.gshell.osgi.OsgiCommandRegistry</implementation>
+            <instantiation-strategy>singleton-keep-alive</instantiation-strategy>
         </component>
 
         <!--
@@ -71,7 +72,7 @@
                 </requirement>
             </requirements>
         </component>
-        
+
         <!--
         Add our instance lookup components.
         -->

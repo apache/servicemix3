@@ -54,24 +54,11 @@
             sun.*;resolution:=optional,
             *
         </gshell.osgi.import>
-        <!--
-        <gshell.osgi.private.pkg>
+       <gshell.osgi.private.pkg>
             com.thoughtworks.xstream*,
             jline*,
             org.apache.commons.jexl*,
-            org.codehaus.classworlds*,
-            org.codehaus.plexus*,
-            org.xmlpull.*,
-            META-INF*
-        </gshell.osgi.private.pkg>
-        <gshell.osgi.export.pkg>
-	        org.apache.geronimo.gshell*
-	    </gshell.osgi.export.pkg>
-        -->
-        <gshell.osgi.private.pkg>
-            com.thoughtworks.xstream*,
-            jline*,
-            org.apache.commons.jexl*,
+            org.apache.mina*,
             org.codehaus.classworlds*,
             org.xmlpull.*,
             META-INF*
@@ -90,43 +77,12 @@
             <version>1.0.0</version>
             <scope>provided</scope>
         </dependency>
-        <!--
 	    <dependency>
-            <groupId>org.apache.geronimo.gshell</groupId>
-            <artifactId>gshell-core</artifactId>
-            <version>${version}</version>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.framework</artifactId>
+            <version>1.0.0</version>
+            <scope>provided</scope>
         </dependency>
-	    <dependency>
-            <groupId>org.apache.geronimo.gshell</groupId>
-            <artifactId>gshell-command-api</artifactId>
-            <version>${version}</version>
-        </dependency>
-	    <dependency>
-            <groupId>org.apache.geronimo.gshell.support</groupId>
-            <artifactId>gshell-common</artifactId>
-            <version>${version}</version>
-        </dependency>
-	    <dependency>
-            <groupId>org.apache.geronimo.gshell.support</groupId>
-            <artifactId>gshell-ansi</artifactId>
-            <version>${version}</version>
-        </dependency>
-	    <dependency>
-            <groupId>org.apache.geronimo.gshell.support</groupId>
-            <artifactId>gshell-i18n</artifactId>
-            <version>${version}</version>
-        </dependency>
-	    <dependency>
-            <groupId>org.apache.geronimo.gshell.support</groupId>
-            <artifactId>gshell-clp</artifactId>
-            <version>${version}</version>
-        </dependency>
-	    <dependency>
-            <groupId>org.apache.geronimo.gshell</groupId>
-            <artifactId>gshell-parser</artifactId>
-            <version>${version}</version>
-        </dependency>
-        -->
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-classworlds</artifactId>
@@ -136,13 +92,29 @@
             <artifactId>gshell-embeddable</artifactId>
             <version>${version}</version>
         </dependency>
-        <!--
         <dependency>
-            <groupId>org.apache.geronimo.gshell.osgi</groupId>
-            <artifactId>gshell-osgi-commands</artifactId>
+            <groupId>org.apache.geronimo.gshell.remote</groupId>
+            <artifactId>gshell-remote-server</artifactId>
             <version>${version}</version>
         </dependency>
-        -->
+        <dependency>
+            <groupId>org.apache.geronimo.gshell.remote</groupId>
+            <artifactId>gshell-remote-common</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.gshell</groupId>
+            <artifactId>gshell-whisper</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.mina</groupId>
+            <artifactId>mina-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.mina</groupId>
+            <artifactId>mina-filter-ssl</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

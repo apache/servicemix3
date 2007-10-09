@@ -16,23 +16,23 @@
  */
 package org.apache.geronimo.gshell.osgi;
 
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.geronimo.gshell.command.Command;
 import org.apache.geronimo.gshell.command.CommandContext;
-import org.apache.geronimo.gshell.command.descriptor.CommandDescriptor;
-import org.apache.geronimo.gshell.command.descriptor.CommandSetDescriptor;
-import org.apache.geronimo.gshell.plugin.CommandSetDescriptorBuilder;
-import org.apache.geronimo.gshell.registry.CommandRegistry;
+import org.apache.geronimo.gshell.descriptor.CommandDescriptor;
+import org.apache.geronimo.gshell.descriptor.CommandSetDescriptor;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.SynchronousBundleListener;
+import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,12 +47,14 @@ public class OsgiCommandDiscoverer {
 
     private final BundleContext bundleContext;
     private final Map<String, OsgiCommand> commands;
-    private final CommandRegistry registry;
 
     private class BundleListener implements SynchronousBundleListener {
         public void bundleChanged(BundleEvent event) {
             try {
                 Bundle bundle = event.getBundle();
+                if (bundle == bundleContext.getBundle()) {
+                    return;
+                }
                 if (event.getType() == BundleEvent.STARTED) {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Bundle resolved: " + bundle.getSymbolicName());
@@ -76,6 +78,7 @@ public class OsgiCommandDiscoverer {
         String implementation;
         String description;
         Class  type;
+        ServiceRegistration reg;
 
         public String getId() {
             return id;
@@ -99,11 +102,10 @@ public class OsgiCommandDiscoverer {
         }
     }
 
-    public OsgiCommandDiscoverer(BundleContext context, CommandRegistry registry) {
+    public OsgiCommandDiscoverer(BundleContext context) {
         LOG.debug("Initializing OsgiCommandDiscoverer");
         this.commands = new ConcurrentHashMap<String, OsgiCommand>();
         this.bundleContext = context;
-        this.registry = registry;
         bundleContext.addBundleListener(new BundleListener());
         Bundle[] previousBundles = bundleContext.getBundles();
         for (int i = 0; i < previousBundles.length; i++) {
@@ -121,8 +123,8 @@ public class OsgiCommandDiscoverer {
                 LOG.debug("Found entry: " + url + " in bundle " + bundle.getSymbolicName());
             }
             try {
-                CommandSetDescriptor set = new CommandSetDescriptorBuilder().build(new InputStreamReader(url.openStream()), url.toString());
-                for (CommandDescriptor desc : set.getCommandDescriptors()) {
+                CommandSetDescriptor set = CommandSetDescriptor.fromXML(new InputStreamReader(url.openStream()));
+                for (CommandDescriptor desc : set.getCommands()) {
                     OsgiCommand cmd = new OsgiCommand();
                     cmd.bundle = bundle;
                     cmd.id = desc.getId();
@@ -132,7 +134,7 @@ public class OsgiCommandDiscoverer {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Adding command: " + cmd.id + " (" + cmd.implementation + ")");
                     }
-                    registry.register(cmd);
+                    cmd.reg = bundleContext.registerService(Command.class.getName(), cmd, new Properties());
                 }
             }
             catch (Exception e) {
@@ -147,8 +149,8 @@ public class OsgiCommandDiscoverer {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Removing entry: " + entry.id + " in bundle " + bundle.getSymbolicName());
                 }
-                Command cmd = commands.remove(entry.id);
-                registry.unregister(cmd);
+                OsgiCommand cmd = commands.remove(entry.id);
+                cmd.reg.unregister();
             }
         }
     }

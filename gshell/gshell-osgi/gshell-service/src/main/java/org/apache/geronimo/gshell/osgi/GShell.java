@@ -26,6 +26,7 @@ import org.apache.geronimo.gshell.common.StopWatch;
 import org.apache.geronimo.gshell.lookup.EnvironmentLookup;
 import org.apache.geronimo.gshell.lookup.IOLookup;
 import org.apache.geronimo.gshell.registry.CommandRegistry;
+import org.apache.geronimo.gshell.remote.server.RshServer;
 import org.apache.geronimo.gshell.shell.Environment;
 import org.apache.geronimo.gshell.shell.InteractiveShell;
 import org.apache.geronimo.gshell.shell.ShellInfo;
@@ -61,6 +62,8 @@ public class GShell
 
     private final CommandRegistry registry;
 
+    private final RshServer rshServer;
+
     public GShell(final IO io) throws Exception {
         this(new ClassWorld("gshell", Thread.currentThread().getContextClassLoader()), io);
     }
@@ -92,6 +95,9 @@ public class GShell
             // Lookup the registry
             registry = (CommandRegistry) container.lookup(CommandRegistry.class);
 
+            // Lookup the rsh server
+            rshServer = (RshServer) container.lookup(RshServer.class);
+
             // We first need to stuff in the IO context for the new shell instance
             IOLookup.set(container, io);
             // And then lets stuff in the environment too
@@ -117,6 +123,10 @@ public class GShell
 
     public CommandRegistry getCommandRegistry() {
         return registry;
+    }
+
+    public RshServer getRshServer() {
+        return rshServer;
     }
 
     public Object execute(final String line) throws Exception {
