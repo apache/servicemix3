@@ -346,6 +346,7 @@
             <exclude>**/Abstract*.*</exclude>
             <exclude>**/*$*</exclude>
 
+            <exclude>**/SubscriptionTest.*</exclude>
             <exclude>**/MultipleJMSFlowTest.*</exclude>
             <exclude>**/MultipleFlowsTest.*</exclude>
             <exclude>**/RemoteServiceMixClientTest.*</exclude>
