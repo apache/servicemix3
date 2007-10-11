@@ -14,66 +14,73 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.cxfse;
+package org.apache.servicemix.cxfbc;
 
 import java.io.File;
 import java.net.URL;
 import java.util.logging.Logger;
 
 import javax.jbi.messaging.InOut;
-import javax.naming.InitialContext;
 import javax.xml.namespace.QName;
 
-import junit.framework.TestCase;
-
+import org.apache.cxf.calculator.CalculatorImpl;
+import org.apache.cxf.calculator.CalculatorPortType;
 import org.apache.cxf.common.logging.LogUtils;
+import org.apache.cxf.endpoint.Endpoint;
+import org.apache.cxf.endpoint.Server;
+import org.apache.cxf.interceptor.LoggingInInterceptor;
+import org.apache.cxf.interceptor.LoggingOutInterceptor;
+import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
+import org.apache.cxf.service.model.ServiceInfo;
 import org.apache.servicemix.client.DefaultServiceMixClient;
-import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.cxfse.CxfSeComponent;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.tck.SpringTestSupport;
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.springframework.context.support.AbstractXmlApplicationContext;
 
+public class CxfBcProviderTest extends SpringTestSupport {
 
-public class CxfSeClientProxyTest extends TestCase {
-
-    private static final Logger LOG = LogUtils.getL7dLogger(CxfSeClientProxyTest.class);
+    private static final Logger LOG = LogUtils.getL7dLogger(org.apache.servicemix.cxfbc.CxfBcProviderTest.class);
+    
     private DefaultServiceMixClient client;
     private InOut io;
-    private JBIContainer container;
+    
     
     protected void setUp() throws Exception {
-        container = new JBIContainer();
-        container.setUseMBeanServer(false);
-        container.setCreateMBeanServer(false);
-        container.setMonitorInstallationDirectory(false);
-        container.setNamingContext(new InitialContext());
-        container.setEmbedded(true);
-        container.init();
-        client = new DefaultServiceMixClient(container);
+        super.setUp();
+        client = new DefaultServiceMixClient(jbi);
         io = client.createInOutExchange();
         io.setService(new QName("http://apache.org/hello_world_soap_http", "SOAPService"));
         io.setInterfaceName(new QName("http://apache.org/hello_world_soap_http", "Greeter"));
         io.setOperation(new QName("http://apache.org/hello_world_soap_http", "greetMe"));
-        
     }
     
-    public void testClientProxy() throws Exception {
-        
+    
+    public void testProvider() throws Exception {
+        LOG.info("test provider");
         CxfSeComponent component = new CxfSeComponent();
-        container.activateComponent(component, "CxfSeComponent");
-
-        // Start container
-        container.start();
-        
-        // Deploy SU
-        component.getServiceUnitManager().deploy("target", getServiceUnitPath("target"));
-        component.getServiceUnitManager().init("target", getServiceUnitPath("target"));
-        component.getServiceUnitManager().start("target");
-        
-        component.getServiceUnitManager().deploy("proxy", getServiceUnitPath("proxy"));
-        component.getServiceUnitManager().init("proxy", getServiceUnitPath("proxy"));
+        jbi.activateComponent(component, "CxfSeComponent");
+        //Deploy proxy SU
+        component.getServiceUnitManager().deploy("proxy", getServiceUnitPath("provider"));
+        component.getServiceUnitManager().init("proxy", getServiceUnitPath("provider"));
         component.getServiceUnitManager().start("proxy");
         
-        LOG.info("test clientProxy");
+        //start external service
+        JaxWsServerFactoryBean factory = new JaxWsServerFactoryBean();
+        factory.setServiceClass(CalculatorPortType.class);
+        factory.setServiceBean(new CalculatorImpl());
+        String address = "http://localhost:9001/providertest";
+        factory.setAddress(address);
+        Server server = factory.create();
+        Endpoint endpoint = server.getEndpoint();
+        endpoint.getInInterceptors().add(new LoggingInInterceptor());
+        endpoint.getOutInterceptors().add(new LoggingOutInterceptor());
+        ServiceInfo service = endpoint.getEndpointInfo().getService();
+        assertNotNull(service);
+        
+        //send message to proxy
         io.getInMessage().setContent(new StringSource(
                 "<message xmlns='http://java.sun.com/xml/ns/jbi/wsdl-11-wrapper'>"
               + "<part> "
@@ -87,18 +94,15 @@ public class CxfSeClientProxyTest extends TestCase {
                 io.getOutMessage()).indexOf("Hello ffang 3") > 0);
     }
     
-    protected void tearDown() throws Exception {
-        if (container != null) {
-            container.shutDown();
-        }
+    @Override
+    protected AbstractXmlApplicationContext createBeanFactory() {
+        return new ClassPathXmlApplicationContext("org/apache/servicemix/cxfbc/provider.xml");
     }
-    
+
     protected String getServiceUnitPath(String name) {
-        URL url = getClass().getClassLoader().getResource("org/apache/servicemix/cxfse/" + name + "/xbean.xml");
+        URL url = getClass().getClassLoader().getResource("org/apache/servicemix/cxfbc/" + name + "/xbean.xml");
         File path = new File(url.getFile());
         path = path.getParentFile();
         return path.getAbsolutePath();
     }
-    
-
 }
