@@ -33,7 +33,7 @@ public class MessageImpl implements Message {
 	 */
 	private static final long serialVersionUID = -8621182821298293687L;
 
-	private Object content;
+	private Object body;
     private String contentType;
     private String contentEncoding;
     private Map<String, Object> headers;
@@ -43,60 +43,60 @@ public class MessageImpl implements Message {
     }
 
     /**
-     * Returns the content of the message in its default format.
+     * Returns the body of the message in its default format.
      *
-     * @return the main content of this message
+     * @return the main body of this message
      */
-    public Object getContent() {
-        return content;
+    public Object getBody() {
+        return body;
     }
 
     /**
-     * Returns the content as the specified type.
+     * Returns the body as the specified type.
      *
-     * @param type the type in which the content is to be transformed
-     * @return the transformed content
+     * @param type the type in which the body is to be transformed
+     * @return the transformed body
      */
-    public <T> T getContent(Class<T> type) {
+    public <T> T getBody(Class<T> type) {
         // TODO: use converters
-        if (type.isInstance(content)) {
-            return (T) content;
+        if (type.isInstance(body)) {
+            return (T) body;
         }
         return null;
     }
 
     /**
-     * Set the content of the message.
+     * Set the body of the message.
      *
-     * @param content the content of the message
+     * @param body the body of the message
      */
-    public void setContent(Object content) {
-        this.content = content;
+    public void setBody(Object body) {
+        this.body = body;
     }
 
     /**
-     * Set the content of the message.
+     * Set the body of the message.
      *
-     * @param content the content of the message
+     * @param content the body of the message
      */
-    public <T> void setContent(Object content, Class<T> type) {
+    public <T> void setBody(Object content, Class<T> type) {
         // TODO: use converters
-        this.content = content;
+        this.body = content;
     }
 
     /**
-     * Get the mime content type describing the content of the message
+     * Get the mime body type describing the body of the message
      *
-     * @return the mime content type
+     * @return the mime body type
      */
     public String getContentType() {
         return contentType;
     }
 
     /**
-     * Set the mime content type describing the content of the message
+     * Set the mime body type describing the body of the message
      *
-     * @param type the mime content type
+     * @param type the mime body type
      */
     public void setContentType(String type) {
         this.contentType = type;
@@ -269,14 +269,14 @@ public class MessageImpl implements Message {
      * @return the map of attachments
      */
     public Map<String, Object> getAttachments() {
-        if (attachments != null) {
+        if (attachments == null) {
             attachments = new HashMap<String, Object>();
         }
         return attachments;
     }
 
     /**
-     * Make sure that all streams contained in the content and in
+     * Make sure that all streams contained in the body and in
      * attachments are transformed to re-readable sources.
      * This method will be called by the framework when persisting
      * the message or when displaying it.
@@ -293,7 +293,7 @@ public class MessageImpl implements Message {
      * @param msg the message to copy from
      */
     public void copyFrom(Message msg) {
-        content = msg.getContent();
+        body = msg.getBody();
         if (!msg.getHeaders().isEmpty()) {
             headers = new HashMap<String, Object>();
             for (Map.Entry<String, Object> e : msg.getHeaders().entrySet()) {

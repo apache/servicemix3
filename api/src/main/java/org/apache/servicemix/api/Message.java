@@ -135,33 +135,33 @@ public interface Message extends Serializable {
     Map<String, Object> getAttachments();
 
     /**
-     * Returns the content of the message in its default format.
+     * Returns the body of the message in its default format.
      *
-     * @return the main content of this message
+     * @return the main body of this message
      */
-    Object getContent();
+    Object getBody();
 
     /**
-     * Returns the content as the specified type.
+     * Returns the body as the specified type.
      *
-     * @param type the type in which the content is to be transformed
-     * @return the transformed content
+     * @param type the type in which the body is to be transformed
+     * @return the transformed body
      */
-    <T> T getContent(Class<T> type);
+    <T> T getBody(Class<T> type);
 
     /**
-     * Set the content of the message.
+     * Set the body of the message.
      *
-     * @param content the content of the message
+     * @param body the body of the message
      */
-    void setContent(Object content);
+    void setBody(Object body);
 
     /**
-     * Set the content of the message.
+     * Set the body of the message.
      *
-     * @param content the content of the message
+     * @param body the body of the message
      */
-    <T> void setContent(Object content, Class<T> type);
+    <T> void setBody(Object body, Class<T> type);
 
     /**
      * Get the mime content type describing the content of the message

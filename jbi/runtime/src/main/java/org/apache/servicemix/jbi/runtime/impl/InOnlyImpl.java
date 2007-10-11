@@ -14,18 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.jbi.runtime;
+package org.apache.servicemix.jbi.runtime.impl;
 
-import org.apache.servicemix.api.service.ServiceRegistry;
+import org.apache.servicemix.api.Exchange;
 
-import javax.jbi.component.Component;
+import javax.jbi.messaging.InOnly;
 
 /**
- * Registry of JBI components.
- *
- * This registry will usually be populated by an OSGi service listener
- * configured via spring-osgi.
+ * Created by IntelliJ IDEA.
+ * User: gnodet
+ * Date: Oct 5, 2007
+ * Time: 5:20:12 PM
+ * To change this template use File | Settings | File Templates.
  */
-public interface ComponentRegistry extends ServiceRegistry<Component>  {
+public class InOnlyImpl extends MessageExchangeImpl implements InOnly {
+
+    public InOnlyImpl(Exchange exchange) {
+        super(exchange);
+    }
 
 }

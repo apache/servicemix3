@@ -237,6 +237,10 @@ public class ExchangeImpl implements InternalExchange {
         return this.in;
     }
 
+    public void setIn(Message message) {
+        this.in = message;
+    }
+
     /**
      * Obtains the output message
      *
@@ -254,6 +258,10 @@ public class ExchangeImpl implements InternalExchange {
             }
         }
         return this.out;
+    }
+
+    public void setOut(Message message) {
+        this.out = message;
     }
 
     /**
@@ -274,6 +282,10 @@ public class ExchangeImpl implements InternalExchange {
         return this.fault;
     }
 
+    public void setFault(Message message) {
+        this.fault = message;
+    }
+
     /**
      * Obtains the message of the given type
      *
@@ -289,6 +301,15 @@ public class ExchangeImpl implements InternalExchange {
             case In: return getIn(lazyCreate);
             case Out: return getOut(lazyCreate);
             case Fault: return getFault(lazyCreate);
+            default: throw new IllegalArgumentException();
+        }
+    }
+
+    public void setMessage(Type type, Message message) {
+        switch (type) {
+            case In: setIn(message);
+            case Out: setOut(message);
+            case Fault: setFault(message);
             default: throw new IllegalArgumentException();
         }
     }

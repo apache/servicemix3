@@ -16,6 +16,9 @@
  */
 package org.apache.servicemix.api;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Pattern of the exchange
  * 
@@ -23,8 +26,49 @@ package org.apache.servicemix.api;
  * @since 4.0
  */
 public enum Pattern {
+
     InOnly,
     RobustInOnly,
     InOut,
-    InOptionalOut,
+    InOptionalOut;
+
+
+    protected static final Map<String, Pattern> map = new HashMap<String, Pattern>();
+
+    /**
+     * Returns the WSDL URI for this message exchange pattern
+     *
+     * @return the WSDL URI for this message exchange pattern
+     */
+    public String getWsdlUri() {
+        switch (this) {
+            case InOnly:
+                return "http://www.w3.org/ns/wsdl/in-only";
+            case InOptionalOut:
+                return "http://www.w3.org/ns/wsdl/in-optional-out";
+            case InOut:
+                return "http://www.w3.org/ns/wsdl/in-out";
+            case RobustInOnly:
+                return "http://www.w3.org/ns/wsdl/robust-in-only";
+            default:
+                throw new IllegalArgumentException("Unknown message exchange pattern: " + this);
+        }
+    }
+
+    /**
+     * Converts the WSDL URI into a {@link Pattern} instance
+     */
+    public static Pattern fromWsdlUri(String wsdlUri) {
+        return map.get(wsdlUri);
+    }
+
+    static {
+        for (Pattern mep : values()) {
+            String uri = mep.getWsdlUri();
+            map.put(uri, mep);
+            String name = uri.substring(uri.lastIndexOf('/') + 1);
+            map.put("http://www.w3.org/2004/08/wsdl/" + name, mep);
+            map.put("http://www.w3.org/2006/01/wsdl/" + name, mep);
+        }
+    }
 }

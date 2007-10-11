@@ -44,6 +44,30 @@
       <artifactId>servicemix-jbi</artifactId>
       <version>3.1.2</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-eip</artifactId>
+      <version>3.1.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-core</artifactId>
+      <version>3.1.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.13</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

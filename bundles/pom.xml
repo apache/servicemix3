@@ -34,12 +34,10 @@
   <name>ServiceMix OSGI Common Bundles</name>
 
   <modules>
-    <module>commons-logging</module>
     <module>aopalliance</module>
     <module>jaxb-api</module>
     <module>jaxb-impl</module>
 	<module>httpcore</module>
-	<module>log4j</module>
   </modules>
 
   <properties>

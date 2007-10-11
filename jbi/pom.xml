@@ -35,6 +35,7 @@
 
   <modules>
     <module>runtime</module>
+    <module>osgi</module>
   </modules>
 
 </project>

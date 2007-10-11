@@ -86,19 +86,19 @@ public class ServiceMixMessage implements Message {
     }
 
     public Object getBody() {
-        return message.getContent();
+        return message.getBody();
     }
 
     public <T> T getBody(Class<T> type) {
-        return message.getContent(type);
+        return message.getBody(type);
     }
 
     public void setBody(Object content) {
-        message.setContent(content);
+        message.setBody(content);
     }
 
     public <T> void setBody(Object content, Class<T> type) {
-        message.setContent(content, type);
+        message.setBody(content, type);
     }
 
     public Message copy() {

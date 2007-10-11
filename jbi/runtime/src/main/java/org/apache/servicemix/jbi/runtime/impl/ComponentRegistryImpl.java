@@ -67,4 +67,11 @@ public class ComponentRegistryImpl extends ServiceRegistryImpl<Component>  imple
         }
     }
 
+    public NMR getNmr() {
+        return nmr;
+    }
+
+    public void setNmr(NMR nmr) {
+        this.nmr = nmr;
+    }
 }

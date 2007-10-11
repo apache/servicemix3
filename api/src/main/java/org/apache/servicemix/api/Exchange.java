@@ -162,6 +162,13 @@ public interface Exchange extends Serializable {
      * @return the input message
      */
     Message getIn(boolean lazyCreate);
+
+    /**
+     * Set the inbound message.
+     *
+     * @param message the new inbound message
+     */
+    void setIn(Message message);
     
     /**
      * Obtains the outbound message, lazily creating one if none
@@ -183,6 +190,13 @@ public interface Exchange extends Serializable {
     Message getOut(boolean lazyCreate);
 
     /**
+     * Set the outbound message.
+     *
+     * @param message the new outbound message
+     */
+    void setOut(Message message);
+
+    /**
      * Obtains the fault message, lazily creating one if none
      * has been associated with this exchange and if this exchange
      * supports a faut message. If you want to inspect this property
@@ -200,6 +214,13 @@ public interface Exchange extends Serializable {
      * @return the fault message
      */
     Message getFault(boolean lazyCreate);
+
+    /**
+     * Set the fault message.
+     *
+     * @param message the new fault message
+     */
+    void setFault(Message message);
 
     /**
      * Obtains the given message, lazily creating one if none
@@ -222,6 +243,14 @@ public interface Exchange extends Serializable {
      * @return the given message
      */
     Message getMessage(Type type, boolean lazyCreate);
+
+    /**
+     * Set the message.
+     *
+     * @param type the type of the message to set
+     * @param message the new inbound message
+     */
+    void setMessage(Type type, Message message);
 
     /**
      * Obtains the error of this exchange

@@ -83,9 +83,6 @@
           <instructions>
             <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
             <Import-Package></Import-Package>
-            <!--
-            <Export-Package>${pom.artifactId}</Export-Package>
-        -->
             <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>

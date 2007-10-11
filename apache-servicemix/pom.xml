@@ -139,16 +139,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix.bundles</groupId>
-      <artifactId>org.apache.servicemix.bundles.commons-logging</artifactId>
-      <version>1.1-4.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.servicemix.bundles</groupId>
-      <artifactId>org.apache.servicemix.bundles.log4j</artifactId>
-      <version>1.2.14-4.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.servicemix.bundles</groupId>
       <artifactId>org.apache.servicemix.bundles.aopalliance</artifactId>
       <version>1.0-4.0-SNAPSHOT</version>
     </dependency>
@@ -171,6 +161,16 @@
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-activation_1.1_spec</artifactId>
       <version>1.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.logging</groupId>
+      <artifactId>pax-logging-api</artifactId>
+      <version>0.9.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.logging</groupId>
+      <artifactId>pax-logging-service</artifactId>
+      <version>0.9.6</version>
     </dependency>
   </dependencies>
   <build>
@@ -461,16 +461,16 @@
             </packagedFile>
             <packagedFile>
               <dependency>true</dependency>
-              <source>org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-logging</source>
+              <source>org.ops4j.pax.logging:pax-logging-service</source>
               <destinationPath>
-                bundle/org.apache.servicemix.bundles.commons-logging-1.1-${project.version}.jar
+                bundle/org.ops4j.pax.logging.service.0.9.6.jar
               </destinationPath>
             </packagedFile>
             <packagedFile>
               <dependency>true</dependency>
-              <source>org.apache.servicemix.bundles:org.apache.servicemix.bundles.log4j</source>
+              <source>org.ops4j.pax.logging:pax-logging-api</source>
               <destinationPath>
-                bundle/org.apache.servicemix.bundles.log4j-1.2.14-${project.version}.jar
+                bundle/org.ops4j.pax.logging.api.0.9.6.jar
               </destinationPath>
             </packagedFile>
             <packagedFile>

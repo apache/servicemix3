@@ -16,23 +16,33 @@
  */
 package org.apache.servicemix.jbi.runtime.impl;
 
-import org.apache.servicemix.api.NMR;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Document;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.logging.Logger;
 
-import javax.jbi.component.ComponentContext;
-import javax.jbi.component.Component;
-import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.jbi.JBIException;
+import javax.jbi.component.Component;
+import javax.jbi.component.ComponentContext;
 import javax.jbi.management.MBeanNames;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.MessagingException;
-import javax.xml.namespace.QName;
+import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.MBeanServer;
 import javax.naming.InitialContext;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.logging.Logger;
+import javax.xml.namespace.QName;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
+
+import org.apache.servicemix.api.Channel;
+import org.apache.servicemix.api.Endpoint;
+import org.apache.servicemix.api.Exchange;
+import org.apache.servicemix.api.NMR;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,22 +53,43 @@ import java.util.logging.Logger;
  */
 public class ComponentContextImpl implements ComponentContext {
 
+    public int DEFAULT_QUEUE_CAPACITY = 100;
+
     private NMR nmr;
     private Component component;
     private Map<String,?> properties;
+    private BlockingQueue<Exchange> queue;
+    private DeliveryChannel dc;
+    private List<EndpointImpl> endpoints;
+    private Channel channel;
 
     public ComponentContextImpl(NMR nmr, Component component, Map<String,?> properties) {
         this.nmr = nmr;
         this.component = component;
         this.properties = properties;
+        this.channel = nmr.createChannel();
+        this.queue = new ArrayBlockingQueue<Exchange>(DEFAULT_QUEUE_CAPACITY);
+        this.dc = new DeliveryChannelImpl(channel, queue);
+        this.endpoints = new ArrayList<EndpointImpl>();
     }
 
-    public ServiceEndpoint activateEndpoint(QName serviceName, String endpointName) throws JBIException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public synchronized ServiceEndpoint activateEndpoint(QName serviceName, String endpointName) throws JBIException {
+        Map<String, Object> props = new HashMap<String, Object>();
+        props.put(Endpoint.NAME, serviceName.toString() + ":" + endpointName);
+        props.put(Endpoint.SERVICE_NAME, serviceName);
+        props.put(Endpoint.ENDPOINT_NAME, endpointName);
+        EndpointImpl endpoint = new EndpointImpl();
+        endpoint.setQueue(queue);
+        endpoint.setServiceName(serviceName);
+        endpoint.setEndpointName(endpointName);
+        nmr.getEndpointRegistry().register(endpoint,  props);
+        return endpoint;
     }
 
-    public void deactivateEndpoint(ServiceEndpoint endpoint) throws JBIException {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public synchronized void deactivateEndpoint(ServiceEndpoint endpoint) throws JBIException {
+        EndpointImpl ep = (EndpointImpl) endpoint;
+        nmr.getEndpointRegistry().register(ep, null);
+        endpoints.remove(ep);
     }
 
     public void registerExternalEndpoint(ServiceEndpoint externalEndpoint) throws JBIException {
@@ -78,7 +109,7 @@ public class ComponentContextImpl implements ComponentContext {
     }
 
     public DeliveryChannel getDeliveryChannel() throws MessagingException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return dc;
     }
 
     public ServiceEndpoint getEndpoint(QName service, String name) {
