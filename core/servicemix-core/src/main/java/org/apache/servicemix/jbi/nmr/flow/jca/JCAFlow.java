@@ -46,8 +46,14 @@ import javax.resource.spi.UnavailableException;
 import javax.resource.spi.XATerminator;
 import javax.resource.spi.endpoint.MessageEndpointFactory;
 import javax.resource.spi.work.WorkManager;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.InvalidTransactionException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
+import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -62,6 +68,8 @@ import org.apache.activemq.command.RemoveInfo;
 import org.apache.activemq.ra.ActiveMQActivationSpec;
 import org.apache.activemq.ra.ActiveMQManagedConnectionFactory;
 import org.apache.activemq.ra.ActiveMQResourceAdapter;
+import org.apache.geronimo.transaction.manager.NamedXAResource;
+import org.apache.geronimo.transaction.manager.RecoverableTransactionManager;
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.executors.Executor;
 import org.apache.servicemix.executors.ExecutorFactory;
@@ -557,7 +565,11 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
     public ConnectionManager getConnectionManager() throws Exception {
         if (connectionManager == null) {
             ConnectionManagerFactoryBean cmfb = new ConnectionManagerFactoryBean();
-            cmfb.setTransactionManager((TransactionManager) broker.getContainer().getTransactionManager());
+            TransactionManager txmgr = (TransactionManager) broker.getContainer().getTransactionManager();
+            if (!(txmgr instanceof RecoverableTransactionManager)) {
+                txmgr = new RecoverableTransactionManagerWrapper(txmgr);
+            }
+            cmfb.setTransactionManager((RecoverableTransactionManager) txmgr);
             cmfb.setTransaction("xa");
             cmfb.afterPropertiesSet();
             connectionManager = (ConnectionManager) cmfb.getObject();
@@ -647,6 +659,59 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
             throw new UnsupportedOperationException();
         }
 
+    }
+
+    public static class RecoverableTransactionManagerWrapper implements RecoverableTransactionManager {
+        private final TransactionManager txMgr;
+
+        public RecoverableTransactionManagerWrapper(TransactionManager txMgr) {
+            this.txMgr = txMgr;
+        }
+
+        public void begin() throws NotSupportedException, SystemException {
+            txMgr.begin();
+        }
+
+        public void commit() throws HeuristicMixedException, HeuristicRollbackException, IllegalStateException,
+                                    RollbackException, SecurityException, SystemException {
+            txMgr.commit();
+        }
+
+        public int getStatus() throws SystemException {
+            return txMgr.getStatus();
+        }
+
+        public Transaction getTransaction() throws SystemException {
+            return txMgr.getTransaction();
+        }
+
+        public void resume(Transaction transaction) throws IllegalStateException, InvalidTransactionException, SystemException {
+            txMgr.resume(transaction);
+        }
+
+        public void rollback() throws IllegalStateException, SecurityException, SystemException {
+            txMgr.rollback();
+        }
+
+        public void setRollbackOnly() throws IllegalStateException, SystemException {
+            txMgr.setRollbackOnly();
+        }
+
+        public void setTransactionTimeout(int i) throws SystemException {
+            txMgr.setTransactionTimeout(i);
+        }
+
+        public Transaction suspend() throws SystemException {
+            return txMgr.suspend();
+        }
+
+        public void recoveryError(Exception e) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void recoverResourceManager(NamedXAResource namedXAResource) {
+            throw new UnsupportedOperationException();
+        }
     }
 
 }

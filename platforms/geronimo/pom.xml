@@ -33,7 +33,6 @@
     <packaging>pom</packaging>
   
     <properties>
-        <geronimo-version>2.0.1</geronimo-version>
         <geronimoVersion>${geronimo-version}</geronimoVersion>
         <car-maven-plugin-version>${geronimo-version}</car-maven-plugin-version>
         <geronimoSchemaVersion>1.2</geronimoSchemaVersion>

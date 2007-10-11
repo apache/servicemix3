@@ -45,7 +45,9 @@
     
     <!-- wsn2005 jms connection factory -->
     <entry key="java:comp/env/jms/wsnotificationCF">
-      <amq:connectionFactory brokerURL="${activemq.url}" />
+	  <bean class="org.apache.activemq.pool.PooledConnectionFactory">
+        <constructor-arg value="${activemq.url}" />
+      </bean>
     </entry>
 
     <!-- transaction manager -->

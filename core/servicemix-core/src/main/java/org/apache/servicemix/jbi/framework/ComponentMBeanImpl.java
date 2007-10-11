@@ -77,9 +77,9 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
      * @param name
      * @param description
      * @param component
-     * @param dc
      * @param binding
      * @param service
+     * @param sharedLibraries
      */
     public ComponentMBeanImpl(JBIContainer container, 
                               ComponentNameSpace name, 

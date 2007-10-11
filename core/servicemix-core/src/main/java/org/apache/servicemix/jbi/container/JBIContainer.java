@@ -357,7 +357,7 @@ public class JBIContainer extends BaseLifeCycle {
     }
 
     /**
-     * @param useMBeanServer The useMBeanServer to set.
+     * @param createJmxConnector The createJmxConnector to set.
      */
     public void setCreateJmxConnector(boolean createJmxConnector) {
         managementContext.setCreateJmxConnector(createJmxConnector);
@@ -677,6 +677,7 @@ public class JBIContainer extends BaseLifeCycle {
      */
     public void shutDown() throws JBIException {
         if (containerInitialized.compareAndSet(true, false)) {
+            LOG.info("Shutting down ServiceMix JBI Container (" + getName() + ") stopped");
             removeShutdownHook();
             adminCommandsService.shutDown();
             autoDeployService.shutDown();
@@ -728,7 +729,7 @@ public class JBIContainer extends BaseLifeCycle {
     protected void containerShutdown() {
         try {
             shutDown();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             System.err.println("Failed to shut down: " + e);
         }
     }

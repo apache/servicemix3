@@ -31,7 +31,6 @@ import javax.resource.spi.ManagedConnectionFactory;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
 import javax.transaction.Status;
-import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
@@ -61,7 +60,7 @@ public class TransactionsTest extends TestCase {
     
     private JBIContainer jbi;
     private BrokerService broker;
-    private TransactionManager tm;
+    private GeronimoPlatformTransactionManager tm;
     private ServiceMixClient client;
     private DataSource dataSource;
     private Connection connection;

@@ -22,7 +22,6 @@ import javax.resource.spi.ConnectionManager;
 import javax.resource.spi.ManagedConnectionFactory;
 import javax.sql.DataSource;
 import javax.sql.XADataSource;
-import javax.transaction.TransactionManager;
 
 import junit.framework.TestCase;
 
@@ -39,7 +38,7 @@ public class JdbcStoreTransactionalTest extends TestCase {
     private DataSource dataSource;
     private Connection connection;
     private StoreFactory factory;
-    private TransactionManager tm;
+    private GeronimoPlatformTransactionManager tm;
 
     protected void setUp() throws Exception {
         tm = new GeronimoPlatformTransactionManager();

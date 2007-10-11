@@ -38,7 +38,7 @@
     </description>
     <url>http://incubator.apache.org/servicemix</url>
     <prerequisites>
-        <maven>2.0.4</maven>
+        <maven>2.0.7</maven>
     </prerequisites>
     <inceptionYear>2005</inceptionYear>
 
@@ -196,20 +196,20 @@
         <xfire-jsr181-api-version>1.0-M1</xfire-jsr181-api-version>
         <xfire-version>1.2.5</xfire-version>
         <mavenAssemblyPluginVersion>2.1</mavenAssemblyPluginVersion>
-        <xbean-version>3.1</xbean-version>
+        <xbean-version>3.2</xbean-version>
         <spring-version>2.0.6</spring-version>
         <activemq-version>4.1.1</activemq-version>
         <activeio-version>3.0.0-incubator</activeio-version>
         <backport-util-concurrent-version>2.2</backport-util-concurrent-version>
         <camel-version>1.1.0</camel-version>
-        <jencks-version>2.0</jencks-version>
+        <jencks-version>2.1</jencks-version>
         <jetty-version>6.1.5</jetty-version>
-        <geronimo-version>1.2-beta</geronimo-version>
+        <geronimo-version>2.0.1</geronimo-version>
         <servicemix-version>3.2-SNAPSHOT</servicemix-version>
         <wsdl4j-version>1.6.1</wsdl4j-version>
         <commons-beanutils-version>1.7.0</commons-beanutils-version>
         <commons-fileupload-version>1.1.1</commons-fileupload-version>
-        <woodstox-version>3.0.3</woodstox-version>
+        <woodstox-version>3.2.2</woodstox-version>
         <msv-version>20050913</msv-version>
         <oro-version>2.0.8</oro-version>
         <sitemesh-version>2.2.1</sitemesh-version>

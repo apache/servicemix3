@@ -57,6 +57,12 @@
             <artifactId>j2ee-deployer</artifactId>
             <version>${geronimo-version}</version>
             <type>car</type>
+            <exclusions>
+              <exclusion>
+                <groupId>org.apache.geronimo.modules</groupId>
+                <artifactId>geronimo-webservices</artifactId>
+              </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>

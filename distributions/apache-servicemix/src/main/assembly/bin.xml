@@ -116,7 +116,7 @@
         <include>org.springframework:spring-dao</include>
         
         <include>org.apache.geronimo.specs:geronimo-jms_1.1_spec</include>
-        <include>org.apache.geronimo.specs:geronimo-jta_1.0.1B_spec</include>
+        <include>org.apache.geronimo.specs:geronimo-jta_1.1_spec</include>
         <include>org.apache.geronimo.specs:geronimo-j2ee-management_1.0_spec</include>
         <include>org.apache.geronimo.specs:geronimo-j2ee-jacc_1.0_spec</include>
         <include>org.apache.geronimo.specs:geronimo-j2ee-connector_1.5_spec</include>
@@ -126,8 +126,8 @@
         <include>org.jencks:jencks</include>
         <include>org.objectweb.howl:howl</include>
         
-        <include>org.apache.geronimo.modules:geronimo-connector</include>
-        <include>org.apache.geronimo.modules:geronimo-transaction</include>
+        <include>org.apache.geronimo.components:geronimo-connector</include>
+        <include>org.apache.geronimo.components:geronimo-transaction</include>
 
         <include>javax.activation:activation</include>
         <include>javax.mail:mail</include>
