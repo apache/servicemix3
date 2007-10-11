@@ -22,7 +22,7 @@
        xmlns:sm="http://servicemix.apache.org/config/1.0"
        xsi:schemaLocation="
          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-         http://servicemix.apache.org/config/1.0 http://incubator.apache.org/servicemix/schema/core/servicemix-core.xsd
+         http://servicemix.apache.org/config/1.0 http://repo1.maven.org/maven2/org/apache/servicemix/servicemix-core/3.1.2/servicemix-core-3.1.2.xsd
          http://activemq.org/config/1.0 http://activemq.apache.org/schema/activemq-core.xsd
          http://activemq.apache.org/camel/schema/spring http://activemq.apache.org/camel/schema/spring/camel-spring.xsd">
 
@@ -35,7 +35,7 @@
 
 
   <!-- Deploy artifacts in ServiceMix -->
-  <sm:container generateRootDir="true" createJmxConnector="false">
+  <sm:container createJmxConnector="false">
 
     <sm:deployments>
       <sm:installSharedLibrary groupId="org.apache.servicemix" artifactId="servicemix-shared"/>

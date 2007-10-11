@@ -19,7 +19,7 @@ package org.apache.servicemix.test;
 
 import junit.framework.TestCase;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
  * @version $Revision: 1.1 $
