@@ -36,6 +36,7 @@
 	<module>bundles</module>
 	<module>jbi</module>
 	<module>gshell</module>
+	<module>transaction</module>
 	<module>examples</module>
 	<module>itests</module>
 	<module>main</module>
