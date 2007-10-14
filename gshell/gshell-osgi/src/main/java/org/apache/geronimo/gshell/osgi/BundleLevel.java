@@ -29,37 +29,36 @@ import org.osgi.service.packageadmin.PackageAdmin;
  * Time: 12:37:30 PM
  * To change this template use File | Settings | File Templates.
  */
-@CommandComponent(id="startlevel", description="Get or set the start level")
-public class StartLevel extends OsgiCommandSupport {
+@CommandComponent(id="bundlelevel", description="Get or set the start level of a given bundle")
+public class BundleLevel extends BundleCommand {
 
     @Argument
     Integer level;
 
-    protected Object doExecute() throws Exception {
+    protected void doExecute(Bundle bundle) throws Exception {
         // Get package admin service.
         ServiceReference ref = getBundleContext().getServiceReference(org.osgi.service.startlevel.StartLevel.class.getName());
         if (ref == null) {
             io.out.println("StartLevel service is unavailable.");
-            return null;
+            return;
         }
         try {
             org.osgi.service.startlevel.StartLevel sl = (org.osgi.service.startlevel.StartLevel) getBundleContext().getService(ref);
             if (sl == null) {
                 io.out.println("StartLevel service is unavailable.");
-                return null;
+                return;
             }
 
             if (level == null) {
-                io.out.println("Level " + sl.getStartLevel());
+                io.out.println("Level " + sl.getBundleStartLevel(bundle));
             }
             else {
-                sl.setStartLevel(level);
+                sl.setBundleStartLevel(bundle, level);
             }
         }
         finally {
             getBundleContext().ungetService(ref);
         }
-        return null;
     }
 
 }

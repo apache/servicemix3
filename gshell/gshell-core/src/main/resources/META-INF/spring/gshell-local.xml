@@ -29,7 +29,7 @@
     <bean id="gshell" class="org.apache.geronimo.gshell.spring.GShell"
                       init-method="start" destroy-method="stop">
         <constructor-arg ref="interactiveShell" />
-        <property name="start" value="true" />
+        <property name="start" value="${startLocalConsole}" />
     </bean>
     
 

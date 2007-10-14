@@ -31,7 +31,7 @@
     </parent>
     
     <groupId>org.apache.servicemix.gshell</groupId>
-    <artifactId>gshell-core</artifactId>
+    <artifactId>org.apache.servicemix.gshell.core</artifactId>
     <packaging>bundle</packaging>
     <name>GShell Core</name>
     
@@ -55,13 +55,11 @@
             *
         </gshell.osgi.import>
         <gshell.osgi.export>
-            org.apache.geronimo.gshell.command*,
-            org.apache.geronimo.gshell.clp*
+            org.apache.geronimo.gshell*,
         </gshell.osgi.export>
         <gshell.osgi.private>
             jline*,
             org.apache.commons.jexl*,
-            org.apache.geronimo.gshell*,
             org.codehaus.plexus.personality.plexus.lifecycle.phase*,
             org.codehaus.plexus.util*,
             META-INF.spring*

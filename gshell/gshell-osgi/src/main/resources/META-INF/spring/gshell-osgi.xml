@@ -31,6 +31,8 @@
 
     <osgi:service ref="list-bundles" interface="org.apache.geronimo.gshell.command.Command" />
 
+    <osgi:service ref="list-services" interface="org.apache.geronimo.gshell.command.Command" />
+
     <osgi:service ref="refresh-bundle" interface="org.apache.geronimo.gshell.command.Command" />
 
     <osgi:service ref="resolve-bundle" interface="org.apache.geronimo.gshell.command.Command" />

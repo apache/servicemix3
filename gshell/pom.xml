@@ -52,9 +52,23 @@
                   </executableDependency>
                   <mainClass>org.ops4j.pax.runner.Run</mainClass>
                   <arguments>
-                      <argument>${basedir}/pax-runner.txt</argument>
                       <argument>--vmOptions=-Dbundles.configuration.location=${basedir}/src/test/configs</argument>
                       <argument>--noConsole</argument>
+                      <argument>mvn:org.apache.felix/org.apache.felix.configadmin/0.9.0-SNAPSHOT</argument>
+                      <argument>mvn:org.ops4j.pax.confman/pax-confman-propsloader/0.3.0-SNAPSHOT</argument>
+                      <argument>mvn:org.ops4j.pax.logging/pax-logging-api/0.9.7-SNAPSHOT</argument>
+                      <argument>mvn:org.ops4j.pax.logging/pax-logging-service/0.9.7-SNAPSHOT</argument>
+                      <argument>mvn:org.springframework.osgi/spring-osgi-core/${spring.osgi.version}</argument>
+                      <argument>mvn:org.springframework.osgi/spring-osgi-extender/${spring.osgi.version}</argument>
+                      <argument>mvn:org.springframework.osgi/spring-osgi-io/${spring.osgi.version}</argument>
+                      <argument>mvn:org.springframework/spring-aop/${spring.version}</argument>
+                      <argument>mvn:org.springframework/spring-beans/${spring.version}</argument>
+                      <argument>mvn:org.springframework/spring-context/${spring.version}</argument>
+                      <argument>mvn:org.springframework/spring-core/${spring.version}</argument>
+                      <argument>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.aopalliance/1.0-${project.version}</argument>
+                      <argument>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/2.1_3-${project.version}</argument>
+                      <argument>mvn:org.apache.servicemix.gshell/org.apache.servicemix.gshell.core/${project.version}</argument>
+                      <argument>mvn:org.apache.servicemix.gshell/org.apache.servicemix.gshell.osgi/${project.version}</argument>
                   </arguments>
                 </configuration>
                 <dependencies>

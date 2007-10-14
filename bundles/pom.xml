@@ -35,6 +35,7 @@
 
   <modules>
     <module>aopalliance</module>
+	<module>cglib</module>
     <module>jaxb-api</module>
     <module>jaxb-impl</module>
 	<module>httpcore</module>

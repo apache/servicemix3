@@ -26,7 +26,11 @@
   http://www.springframework.org/schema/util
   http://www.springframework.org/schema/util/spring-util.xsd">
 
+    <bean id="bundle-level" class="org.apache.geronimo.gshell.osgi.BundleLevel" />
+
     <bean id="list-bundles" class="org.apache.geronimo.gshell.osgi.ListBundles" />
+
+    <bean id="list-services" class="org.apache.geronimo.gshell.osgi.ListServices" />
 
     <bean id="refresh-bundle" class="org.apache.geronimo.gshell.osgi.RefreshBundle" />
 
