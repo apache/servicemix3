@@ -48,6 +48,11 @@
       <artifactId>commons-logging</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>quartz</groupId>
+      <artifactId>quartz</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

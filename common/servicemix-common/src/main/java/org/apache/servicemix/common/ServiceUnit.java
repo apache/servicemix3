@@ -98,7 +98,7 @@ public class ServiceUnit {
     public void setName(String name) {
         this.name = name;
     }
-
+	
     public String getRootPath() {
         return rootPath;
     }
@@ -135,6 +135,19 @@ public class ServiceUnit {
         if (this.status == LifeCycleMBean.STARTED) {
             try {
                 endpoint.activate();
+            } catch (Exception e) {
+                throw new DeploymentException(e);
+            }
+        }
+    }
+
+    public void removeEndpoint(Endpoint endpoint) throws DeploymentException {
+        if (this.endpoints.remove(endpoint) != null) {
+            throw new DeploymentException("Endpoint not found in the SU for key: " + EndpointSupport.getKey(endpoint));
+        }
+        if (this.status == LifeCycleMBean.STARTED) {
+            try {
+                endpoint.deactivate();
             } catch (Exception e) {
                 throw new DeploymentException(e);
             }

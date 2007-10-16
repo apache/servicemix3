@@ -25,11 +25,12 @@ import javax.jbi.messaging.MessagingException;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
+import org.apache.servicemix.jbi.container.InstallComponent;
+import org.apache.servicemix.jbi.container.InstallSharedLibrary;
 import org.apache.servicemix.jbi.container.JBIContainer;
 
 /**
@@ -103,10 +104,40 @@ public class LwContainerComponentTest extends TestCase {
         }
     }
 
+    public void testEndpoints() throws Exception {
+        LwContainerComponent component = new LwContainerComponent();
+        container.activateComponent(component, "#ServiceMixComponent#");
+
+        InstallSharedLibrary isl = new InstallSharedLibrary();
+        isl.setGroupId("org.apache.servicemix");
+        isl.setArtifactId("servicemix-shared");
+        isl.setVersion("3.2-SNAPSHOT");
+        isl.afterPropertiesSet();
+        isl.deploy(container);
+
+        InstallComponent ic = new InstallComponent();
+        ic.setGroupId("org.apache.servicemix");
+        ic.setArtifactId("servicemix-quartz");
+        ic.setVersion("3.2-SNAPSHOT");
+        ic.afterPropertiesSet();
+        ic.deploy(container);
+
+        URL url = getClass().getResource("su2-src/servicemix.xml");
+        File path = new File(new URI(url.toString()));
+        path = path.getParentFile();
+
+        // Deploy and start su
+        component.getServiceUnitManager().deploy("su2", path.getAbsolutePath());
+        component.getServiceUnitManager().init("su2", path.getAbsolutePath());
+        component.getServiceUnitManager().start("su2");
+
+        component.getServiceUnitManager().stop("su2");
+        component.getServiceUnitManager().shutDown("su2");
+    }
+
     /*
      * @see TestCase#tearDown()
      */
-
     protected void tearDown() throws Exception {
         super.tearDown();
         container.stop();

@@ -16,6 +16,11 @@
  */
 package org.apache.servicemix.jbi.container;
 
+import java.util.EventListener;
+import java.util.Map;
+
+import org.apache.servicemix.jbi.management.BaseSystemService;
+
 /**
  * Used to hold a Server Unit configuration.  The components
  * are registered into the JBI container using the Service Unit
@@ -28,6 +33,10 @@ package org.apache.servicemix.jbi.container;
 public class SpringServiceUnitContainer {
     
     private ActivationSpec[] activationSpecs;
+    private Map components;
+    private Map endpoints;
+    private EventListener[] listeners;
+    private BaseSystemService[] services;
 
     public ActivationSpec[] getActivationSpecs() {
         return activationSpecs;
@@ -37,4 +46,41 @@ public class SpringServiceUnitContainer {
         this.activationSpecs = activationSpecs;
     }
 
+    /**
+     * @org.apache.xbean.Map flat="true" keyName="name"
+     */
+    public Map getComponents() {
+        return components;
+    }
+
+    public void setComponents(Map components) {
+        this.components = components;
+    }
+
+    /**
+     * @org.apache.xbean.Map flat="true" dups="always" keyName="component" defaultKey=""
+     */
+    public Map getEndpoints() {
+        return endpoints;
+    }
+
+    public void setEndpoints(Map endpoints) {
+        this.endpoints = endpoints;
+    }
+
+    public EventListener[] getListeners() {
+        return listeners;
+    }
+
+    public void setListeners(EventListener[] listeners) {
+        this.listeners = listeners;
+    }
+
+    public BaseSystemService[] getServices() {
+        return services;
+    }
+
+    public void setServices(BaseSystemService[] services) {
+        this.services = services;
+    }
 }

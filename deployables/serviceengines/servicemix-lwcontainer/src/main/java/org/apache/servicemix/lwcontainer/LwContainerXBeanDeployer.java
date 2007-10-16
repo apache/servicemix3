@@ -42,8 +42,15 @@ public class LwContainerXBeanDeployer extends AbstractXBeanDeployer {
             SpringServiceUnitContainer suContainer = (SpringServiceUnitContainer) jbi; 
             ActivationSpec[] specs = suContainer.getActivationSpecs();
             List services = new ArrayList();
-            for (int i = 0; i < specs.length; i++) {
-                services.add(new LwContainerEndpoint(specs[i]));
+            if (specs != null) {
+                for (int i = 0; i < specs.length; i++) {
+                    services.add(new LwContainerEndpoint(specs[i]));
+                }
+            }
+            if (suContainer.getComponents() != null || suContainer.getEndpoints() != null
+                    || suContainer.getListeners() != null || suContainer.getServices() != null) {
+                services.add(new LwContainerExtra(suContainer.getComponents(), suContainer.getEndpoints(),
+                                                  suContainer.getListeners(), suContainer.getServices()));
             }
             return services;
         } catch (Exception e) {

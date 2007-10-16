@@ -309,6 +309,11 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
         }
     }
 
+    public void removeEndpoint(Endpoint endpoint) throws Exception {
+        ServiceUnit su = endpoint.getServiceUnit();
+        su.removeEndpoint(endpoint);
+    }
+
 
     /**
      * Provides a hook to validate the statically configured endpoint
