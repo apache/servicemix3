@@ -43,7 +43,7 @@ public class IntegrationTest {
         Channel client = nmr.createChannel();
         Exchange e = client.createExchange(Pattern.InOnly);
         e.setTarget(nmr.getEndpointRegistry().lookup(ServiceHelper.createMap(Endpoint.NAME, "id")));
-        e.getIn().setContent("Hello");
+        e.getIn().setBody("Hello");
         boolean res = client.sendSync(e);
         assertTrue(res);
         assertNotNull(endpoint.getExchange());

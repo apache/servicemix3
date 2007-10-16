@@ -85,7 +85,7 @@ public class OsgiExample {
         try {
             Exchange e = channel.createExchange(Pattern.InOnly);
             e.setTarget(target);
-            e.getIn().setContent("Hello");
+            e.getIn().setBody("Hello");
             channel.send(e);
         } finally {
             channel.close();
