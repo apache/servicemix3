@@ -16,15 +16,17 @@
  */
 package org.apache.servicemix.bean.beans;
 
-import org.apache.servicemix.MessageExchangeListener;
-import org.apache.servicemix.jbi.util.MessageUtil;
-
 import javax.annotation.Resource;
 import javax.jbi.messaging.DeliveryChannel;
+import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
+import javax.xml.namespace.QName;
+
+import org.apache.servicemix.MessageExchangeListener;
+import org.apache.servicemix.jbi.util.MessageUtil;
 
 public class ConsumerListener implements MessageExchangeListener {
 
@@ -32,16 +34,28 @@ public class ConsumerListener implements MessageExchangeListener {
     private DeliveryChannel channel;
 
     public void onMessageExchange(MessageExchange exchange) throws MessagingException {
-        MessageExchangeFactory factory = channel.createExchangeFactory();
-        InOut io = factory.createInOutExchange();
-        try {
-            MessageUtil.transferInToIn(exchange, io);
-        }
-        catch (MessagingException e) {
-            throw e;
-        }
-        catch (Exception e) {
-            throw new MessagingException(e);
+        if (exchange.getRole() == MessageExchange.Role.CONSUMER) {
+            if (exchange.getStatus() == ExchangeStatus.ACTIVE) {
+                MessageExchange io = (MessageExchange) exchange.getProperty("exchange");
+                MessageUtil.transferOutToOut(exchange, io);
+                io.setProperty("exchange", exchange);
+                channel.send(io);
+            } else if (exchange.getStatus() == ExchangeStatus.DONE) {
+                MessageExchange io = (MessageExchange) exchange.getProperty("exchange");
+                io.setStatus(ExchangeStatus.DONE);
+                channel.send(io);
+            }
+        } else {
+            if (exchange.getStatus() == ExchangeStatus.ACTIVE) {
+                MessageExchangeFactory factory = channel.createExchangeFactory();
+                InOut io = factory.createInOutExchange();
+                MessageUtil.transferInToIn(exchange, io);
+                io.setService(new QName("echo"));
+                io.setProperty("exchange", exchange);
+                channel.send(io);
+            } else if (exchange.getStatus() == ExchangeStatus.DONE) {
+                // Do nothing
+            }
         }
     }
 
