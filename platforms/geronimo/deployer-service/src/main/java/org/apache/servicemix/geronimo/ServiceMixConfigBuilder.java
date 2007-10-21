@@ -25,7 +25,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
@@ -41,6 +40,7 @@ import org.apache.geronimo.deployment.DeploymentContext;
 import org.apache.geronimo.deployment.ModuleIDBuilder;
 import org.apache.geronimo.deployment.service.EnvironmentBuilder;
 import org.apache.geronimo.deployment.util.DeploymentUtil;
+import org.apache.geronimo.deployment.xbeans.EnvironmentType;
 import org.apache.geronimo.gbean.AbstractName;
 import org.apache.geronimo.gbean.AbstractNameQuery;
 import org.apache.geronimo.gbean.GBeanData;
@@ -58,10 +58,12 @@ import org.apache.geronimo.kernel.repository.ArtifactResolver;
 import org.apache.geronimo.kernel.repository.Environment;
 import org.apache.geronimo.kernel.repository.ImportType;
 import org.apache.geronimo.kernel.repository.Repository;
+import org.apache.servicemix.geronimo.deployment.SMJbiDocument;
 import org.apache.servicemix.jbi.deployment.Descriptor;
 import org.apache.servicemix.jbi.deployment.DescriptorFactory;
 import org.apache.servicemix.jbi.deployment.ServiceUnit;
 import org.apache.servicemix.jbi.deployment.SharedLibraryList;
+import org.apache.xmlbeans.XmlObject;
 
 public class ServiceMixConfigBuilder implements ConfigurationBuilder {
 
@@ -127,7 +129,33 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
                 return null;
             }
             DescriptorFactory.checkDescriptor(descriptor);
-            return descriptor;
+            
+            XmlObject object = null;
+			SMJbiDocument geronimoPlan = null;
+			
+			try {
+				if (planFile != null) {
+					object = XmlObject.Factory.parse(planFile);
+				}
+			} catch (Exception e) {
+				log.info("error " + e);
+			}
+			
+			if (object != null) {
+				try {
+					
+					if (object instanceof SMJbiDocument) {
+						geronimoPlan = (SMJbiDocument) object;	
+					} else {
+						geronimoPlan = (SMJbiDocument) object.changeType(SMJbiDocument.type);
+					}
+					
+				} catch (Exception e) {
+					throw new DeploymentException("Geronimo Plan found but wrong format!" + e.getMessage());
+				}
+			}
+						
+            return new DeploymentPlanWrapper(descriptor, geronimoPlan);
         } catch (Exception e) {
             log.debug("Not a ServiceMix deployment: no jbi.xml found.", e);
             // no jbi.xml, not for us
@@ -150,7 +178,8 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
      */
     public Artifact getConfigurationID(Object plan, JarFile module, ModuleIDBuilder idBuilder) throws IOException,
                     DeploymentException {
-        Descriptor descriptor = (Descriptor) plan;
+        DeploymentPlanWrapper wrapper = (DeploymentPlanWrapper) plan;
+        Descriptor descriptor = wrapper.getServicemixDescriptor();
         if (descriptor.getComponent() != null) {
             return new Artifact("servicemix-components", descriptor.getComponent().getIdentification().getName(),
                             "0.0", "car");
@@ -189,8 +218,12 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
             log.warn("Expected a Descriptor but received null");
             return null;
         }
-        if (plan instanceof Descriptor == false) {
+        if (plan instanceof DeploymentPlanWrapper == false) {
             log.warn("Expected a Descriptor but received a " + plan.getClass().getName());
+            return null;
+        }
+        if (((DeploymentPlanWrapper)plan).getServicemixDescriptor() == null) {
+            log.warn("Expected a SM Descriptor but received null");
             return null;
         }
         File configurationDir;
@@ -204,9 +237,24 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
         environment.setConfigId(configId);
         EnvironmentBuilder.mergeEnvironments(environment, defaultEnvironment);
 
+        DeploymentPlanWrapper wrapper = (DeploymentPlanWrapper) plan;
+        if (wrapper.getGeronimoPlan() != null) {
+                	
+        	if (wrapper.getGeronimoPlan().getJbi() != null) {
+        		EnvironmentType environmentType = wrapper.getGeronimoPlan().getJbi().getEnvironment();
+        		if (environmentType != null) {
+        			log.debug("Environment found in Geronimo Plan for Servicemix " + environmentType);
+        			Environment geronimoPlanEnvironment = EnvironmentBuilder.buildEnvironment(environmentType);
+        			EnvironmentBuilder.mergeEnvironments(environment, geronimoPlanEnvironment);
+        		} else {
+        			log.debug("no additional environment entry found in deployment plan for JBI component");
+        		}
+        	}
+        }
+
         DeploymentContext context = null;
         try {
-            Descriptor descriptor = (Descriptor) plan;
+            Descriptor descriptor = wrapper.getServicemixDescriptor();
             Map name = new HashMap();
             name.put("Config", configId.toString());
             context = new DeploymentContext(configurationDir,
