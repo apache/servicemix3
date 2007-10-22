@@ -49,8 +49,8 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
-      <artifactId>servicemix-quartz</artifactId>
+      <groupId>quartz</groupId>
+      <artifactId>quartz</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
