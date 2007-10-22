@@ -141,6 +141,12 @@
             <organization>Exist Labs</organization>
         </developer>
         <developer>
+            <id>ffang</id>
+            <name>Freeman Fang</name>
+            <email>freeman.fang@iona.com</email>
+            <organization>IONA</organization>
+        </developer>
+        <developer>
             <id>foconer</id>
             <name>Frederick Oconer</name>
             <email>foconer@exist.com</email>
