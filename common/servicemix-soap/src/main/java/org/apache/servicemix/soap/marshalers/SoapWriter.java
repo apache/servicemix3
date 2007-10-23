@@ -34,6 +34,7 @@ import javax.mail.Session;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
@@ -139,6 +140,7 @@ public class SoapWriter {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         writeSimpleMessage(baos);
         soapPart.setDataHandler(new DataHandler(new ByteArrayDataSource(baos.toByteArray(), "text/xml")));
+        soapPart.addHeader("Content-Transfer-Encoding", "8bit");
         parts.addBodyPart(soapPart);
         // Add attachments
         for (Iterator itr = message.getAttachments().entrySet().iterator(); itr.hasNext();) {
@@ -148,6 +150,12 @@ public class SoapWriter {
             MimeBodyPart part = new MimeBodyPart();
             part.setDataHandler(dh);
             part.setContentID("<" + id + ">");
+            // get the encoding type from the DH
+            String encodingType = MimeUtility.getEncoding(dh);
+            if ("7bit".equals(encodingType)) {
+                encodingType = "8bit";
+            }
+            part.addHeader("Content-Transfer-Encoding", encodingType);
             parts.addBodyPart(part);
         }
         mime.setContent(parts);
