@@ -59,6 +59,16 @@
       <artifactId>camel-jms</artifactId>
       <version>${camel.version}</version>
     </dependency>
+      <dependency>
+        <groupId>org.apache.activemq</groupId>
+        <artifactId>activemq-core</artifactId>
+        <version>${activemq.version}</version>
+      </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>org.apache.servicemix.camel</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <build>

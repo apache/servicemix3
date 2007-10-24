@@ -27,9 +27,9 @@
     <version>4.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>org.apache.felix.main</artifactId>
+  <artifactId>org.apache.servicemix.main</artifactId>
   <packaging>bundle</packaging>
-  <name>Apache Felix Main</name>
+  <name>Apache ServiceMix Main</name>
 
   <dependencies>
     <dependency>
@@ -51,28 +51,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.shell</artifactId>
-      <version>${felix.version}</version>
-      <exclusions>
-        <exclusion>
-	      <groupId>org.apache.felix</groupId>
-          <artifactId>org.osgi.core</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.shell.tui</artifactId>
-      <version>${felix.version}</version>
-      <exclusions>
-        <exclusion>
-	      <groupId>org.apache.felix</groupId>
-          <artifactId>org.osgi.core</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.bundlerepository</artifactId>
       <version>${felix.version}</version>
       <exclusions>
@@ -86,10 +64,12 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.apache.directory.daemon</groupId>
+      <artifactId>daemon-bootstrappers</artifactId>
+      <version>1.1.1</version>
+    </dependency>
   </dependencies>
-  <properties>
-    <property name="install.home" value="${basedir.absolutePath}"/>
-  </properties>
   <build>
     <plugins>
       <plugin>
@@ -100,100 +80,16 @@
         <configuration>
           <instructions>
             <_donotcopy>(CVS|.svn|config.properties)</_donotcopy>
-            <Main-Class>org.apache.felix.main.Main</Main-Class>
-            <Bundle-Name>Apache Felix</Bundle-Name>
+            <Main-Class>org.apache.servicemix.main.Main</Main-Class>
+            <Bundle-Name>Apache ServiceMix</Bundle-Name>
             <Bundle-Description>OSGi R4 framework.</Bundle-Description>
-            <Private-Package>org.apache.felix.main.*,org.apache.felix.moduleloader.*,org.apache.felix.framework.*,org.osgi.framework,org.osgi.service.packageadmin,org.osgi.service.startlevel,org.osgi.service.url,org.osgi.util.tracker</Private-Package>
+            <Private-Package>org.apache.servicemix.main.*,org.apache.felix.moduleloader.*,org.apache.felix.framework.*,org.osgi.framework,org.osgi.service.packageadmin,org.osgi.service.startlevel,org.osgi.service.event,org.osgi.service.url,org.osgi.util.tracker</Private-Package>
             <Import-Package>!*</Import-Package>
             <Include-Resource>{src/main/resources/}</Include-Resource>
           </instructions>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>unpack</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-              <artifactItems>
-                <artifactItem>
-			      <groupId>org.apache.felix</groupId>
-                  <artifactId>org.apache.felix.framework</artifactId>
-                  <version>${felix.version}</version>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-          <execution>
-            <id>copy</id>
-            <phase>install</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-                <artifactItems>
-                  <artifactItem>
-			      <groupId>org.apache.felix</groupId>
-                     <artifactId>org.apache.felix.shell</artifactId>
-                     <version>${felix.version}</version>
-                     <type>jar</type>
-                     <overWrite>true</overWrite>
-                     <outputDirectory>${project.build.directory}/bundle</outputDirectory >
-                   </artifactItem>
-                   <artifactItem>
-				     <groupId>org.apache.felix</groupId>
-                     <artifactId>org.apache.felix.shell.tui</artifactId>
-                     <version>${felix.version}</version>
-                     <type>jar</type>
-                     <overWrite>true</overWrite>
-                     <outputDirectory>${project.build.directory}/bundle</outputDirectory >
-                   </artifactItem>
-                   <artifactItem>
-				     <groupId>org.apache.felix</groupId>
-                     <artifactId>org.apache.felix.bundlerepository</artifactId>
-                     <version>${felix.version}</version>
-                     <type>jar</type>
-                     <overWrite>true</overWrite>
-                     <outputDirectory>${project.build.directory}/bundle</outputDirectory >
-                   </artifactItem>
-                 </artifactItems>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>install</phase>
-            <configuration>
-              <tasks>
-                <delete dir="${basedir}/bin"/>
-                <mkdir dir="${basedir}/bin"/>
-                <delete dir="${basedir}/conf"/>
-                <mkdir dir="${basedir}/conf"/>
-                <delete dir="${basedir}/bundle"/>
-                <copy file="${basedir}/target/org.apache.felix.main-${pom.version}.jar"
-                     tofile="${basedir}/bin/felix.jar"/>
-                <copy file="${basedir}/target/classes/config.properties"
-                     todir="${basedir}/conf"/>
-                <move file="${basedir}/target/bundle"
-                     todir="${basedir}"/>
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
+  </plugins>
     <resources>
       <resource>
         <directory>src/main/resources</directory>

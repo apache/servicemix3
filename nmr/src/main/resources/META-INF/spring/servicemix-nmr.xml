@@ -43,29 +43,29 @@
 
     <!-- Flow registry and service tracker -->
     <bean id="flowRegistry" class="org.apache.servicemix.core.FlowRegistryImpl" />
-    <osgi:reference id="flows"
-                    interface="org.apache.servicemix.api.internal.Flow"
-                    mandatory="false">
+    <osgi:list id="flows"
+               interface="org.apache.servicemix.api.internal.Flow"
+               mandatory="false">
         <osgi:listener ref="flowRegistry" bind-method="register" unbind-method="unregister" />
-    </osgi:reference>
+    </osgi:list>
 
     <!-- Listener registry and service tracker -->
     <bean id="listenerRegistry" class="org.apache.servicemix.core.ListenerRegistryImpl" />
-    <osgi:reference id="listeners"
-                    interface="org.apache.servicemix.api.event.Listener"
-                    mandatory="false">
+    <osgi:list id="listeners"
+               interface="org.apache.servicemix.api.event.Listener"
+               mandatory="false">
         <osgi:listener ref="listenerRegistry" bind-method="register" unbind-method="unregister" />
-    </osgi:reference>
+    </osgi:list>
 
     <!-- Endpoint registry and service tracker -->
     <bean id="endpointRegistry" class="org.apache.servicemix.core.EndpointRegistryImpl">
         <property name="nmr" ref="servicemix" />
     </bean>
-    <osgi:reference id="endpoints"
-                    interface="org.apache.servicemix.api.Endpoint"
-                    mandatory="false">
+    <osgi:list id="endpoints"
+               interface="org.apache.servicemix.api.Endpoint"
+               mandatory="false">
         <osgi:listener ref="endpointRegistry" bind-method="register" unbind-method="unregister" />
-    </osgi:reference>
+    </osgi:list>
 
     <!-- Register the Straight-Through flow -->
     <bean id="staightThroughFlow" class="org.apache.servicemix.core.StraightThroughFlow" />

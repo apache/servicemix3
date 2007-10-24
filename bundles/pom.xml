@@ -34,6 +34,7 @@
   <name>ServiceMix OSGI Common Bundles</name>
 
   <modules>
+    <module>acegi</module>
     <module>aopalliance</module>
 	<module>cglib</module>
     <module>jaxb-api</module>

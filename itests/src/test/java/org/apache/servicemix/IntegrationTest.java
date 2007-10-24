@@ -51,33 +51,40 @@ public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
 	 * test bundle are automatically included so do not need
 	 * to be specified here.
 	 */
-	protected String[] getBundles() {
-		return new String[] {
-            localMavenArtifact("org.apache.geronimo.specs", "geronimo-jms_1.1_spec", "1.1.1-SNAPSHOT"),
-            localMavenArtifact("org.apache.geronimo.specs", "geronimo-j2ee-management_1.1_spec", "1.0.1-SNAPSHOT"),
-            localMavenArtifact("org.apache.geronimo.specs", "geronimo-stax-api_1.0_spec", "1.0.1-SNAPSHOT"),
-            localMavenArtifact("org.apache.geronimo.specs", "geronimo-activation_1.1_spec", "1.0.1-SNAPSHOT"),
-            localMavenArtifact("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jaxb-api", "2.0-4.0-SNAPSHOT"),
-            localMavenArtifact("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jaxb-impl", "2.0.3-4.0-SNAPSHOT"),
-            localMavenArtifact("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.httpcore", "4.0-alpha5-4.0-SNAPSHOT"),
-            localMavenArtifact("org.apache.activemq", "activemq-core", "5.0-SNAPSHOT"),
-            localMavenArtifact("org.springframework", "spring-tx", "2.1-m4"),
-            localMavenArtifact("org.springframework", "spring-jms", "2.1-m4"),
-            localMavenArtifact("org.apache.camel", "camel-core", "1.1-SNAPSHOT"),
-            localMavenArtifact("org.apache.camel", "camel-spring", "1.1-SNAPSHOT"),
-            localMavenArtifact("org.apache.camel", "camel-osgi", "1.1-SNAPSHOT"),
-            localMavenArtifact("org.apache.camel", "camel-jms", "1.1-SNAPSHOT"),
-            localMavenArtifact("org.apache.camel", "camel-jhc", "1.1-SNAPSHOT"),
-            localMavenArtifact("org.apache.servicemix", "org.apache.servicemix.api", "4.0-SNAPSHOT"),
-            localMavenArtifact("org.apache.servicemix", "org.apache.servicemix.core", "4.0-SNAPSHOT"),
-			localMavenArtifact("org.apache.servicemix", "org.apache.servicemix.spring", "4.0-SNAPSHOT"),
-            localMavenArtifact("org.apache.servicemix", "org.apache.servicemix.nmr", "4.0-SNAPSHOT"),
-            localMavenArtifact("org.apache.servicemix", "org.apache.servicemix.camel", "4.0-SNAPSHOT"),
-            localMavenArtifact("org.apache.servicemix.examples", "org.apache.servicemix.examples.intermediary", "4.0-SNAPSHOT"),
+	protected String[] getTestBundlesNames() {
+        String servicemixVersion = "4.0-SNAPSHOT";
+        String camelVersion = "1.3-SNAPSHOT";
+        return new String[] {
+            "org.apache.geronimo.specs,geronimo-jms_1.1_spec,1.1.1-SNAPSHOT",
+            "org.apache.geronimo.specs,geronimo-j2ee-management_1.1_spec,1.0.1-SNAPSHOT",
+            "org.apache.geronimo.specs,geronimo-stax-api_1.0_spec,1.0.1-SNAPSHOT",
+            "org.apache.geronimo.specs,geronimo-activation_1.1_spec,1.0.1-SNAPSHOT",
+            "org.apache.servicemix.bundles,org.apache.servicemix.bundles.jaxb-api,2.0-" + servicemixVersion,
+            "org.apache.servicemix.bundles,org.apache.servicemix.bundles.jaxb-impl,2.0.3-" + servicemixVersion,
+            "org.apache.servicemix.bundles,org.apache.servicemix.bundles.httpcore,4.0-alpha5-" + servicemixVersion,
+            "org.apache.activemq,activemq-core,5.0-SNAPSHOT",
+            "org.springframework,spring-tx," + getSpringBundledVersion(),
+            "org.springframework,spring-jms," + getSpringBundledVersion(),
+            "org.apache.camel,camel-core," + camelVersion,
+            "org.apache.camel,camel-spring," + camelVersion,
+            "org.apache.camel,camel-osgi," + camelVersion,
+            "org.apache.camel,camel-jms," + camelVersion,
+            "org.apache.camel,camel-jhc," + camelVersion,
+            "org.apache.servicemix,org.apache.servicemix.api," + servicemixVersion,
+            "org.apache.servicemix,org.apache.servicemix.core," + servicemixVersion,
+			"org.apache.servicemix,org.apache.servicemix.spring," + servicemixVersion,
+            "org.apache.servicemix,org.apache.servicemix.nmr," + servicemixVersion,
+            "org.apache.servicemix,org.apache.servicemix.camel," + servicemixVersion,
+            "org.apache.servicemix.examples,org.apache.servicemix.examples.intermediary," + servicemixVersion,
 		};
 	}
-	
-	/**
+
+//    protected String getSpringBundledVersion() {
+//        return "2.5-rc1";
+//    }
+
+
+    /**
 	 * The superclass provides us access to the root bundle
 	 * context via the 'getBundleContext' operation
 	 */
@@ -96,7 +103,6 @@ public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
 	 * 
 	 */
 	public void testSimpleServiceExported() {
-		waitOnContextCreation("org.apache.servicemix.nmr");
 		waitOnContextCreation("org.apache.servicemix.examples.intermediary");
 		BundleContext context = getBundleContext();
         ServiceReference ref = context.getServiceReference(NMR.class.getName());

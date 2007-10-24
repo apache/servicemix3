@@ -77,6 +77,7 @@
                         <Implementation-Title>Apache GShell</Implementation-Title>
                         <Implementation-Version>${project.version}</Implementation-Version>
 			            <DynamicImport-Package>*</DynamicImport-Package>
+                        <Spring-Context>*;publish-context:=false</Spring-Context>
                     </instructions>
                 </configuration>
             </plugin>

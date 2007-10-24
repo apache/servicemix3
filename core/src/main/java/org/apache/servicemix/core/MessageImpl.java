@@ -45,7 +45,7 @@ public class MessageImpl implements Message {
     /**
      * Returns the body of the message in its default format.
      *
-     * @return the main body of this message
+     * @return the servicemix body of this message
      */
     public Object getBody() {
         return body;

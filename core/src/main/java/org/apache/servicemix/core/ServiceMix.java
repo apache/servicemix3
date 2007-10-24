@@ -25,7 +25,7 @@ import org.apache.servicemix.api.internal.FlowRegistry;
 import org.apache.servicemix.api.internal.Flow;
 
 /**
- * This class is the main class implementing the NMR
+ * This class is the servicemix class implementing the NMR
  *
  */
 public class ServiceMix implements NMR {

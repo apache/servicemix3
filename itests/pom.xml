@@ -45,6 +45,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring</artifactId>
+      <version>${spring.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-spring</artifactId>
       <version>${camel.version}</version>
@@ -168,7 +174,7 @@
     <!--
     <dependency>
       <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.main</artifactId>
+      <artifactId>org.apache.felix.servicemix</artifactId>
       <version>${felix.version}</version>
       <scope>test</scope>
     </dependency>

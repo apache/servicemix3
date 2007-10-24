@@ -35,22 +35,24 @@
   http://activemq.apache.org/camel/schema/osgi
   http://activemq.apache.org/camel/schema/osgi/camel-osgi.xsd">
 
-    <!-- ServiceMix NMR -->
+    <!-- Camel context -->
     <camel-osgi:camelContext id="camel">
+        <camel:package>org.apache.servicemix.examples.intermediary</camel:package>
 
         <!-- Endpoint definitions used by the route builder -->
-        <camel:endpoint id="Intermediary.request" uri="jhc:http://localhost:8080/requests" />
-        <camel:endpoint id="Intermediary.requestProvider" uri="jhc:http://localhost:9090/requests" />
-        <camel:endpoint id="Intermediary.responseConsumer" uri="jhc:http://localhost:8081/responses" />
-        <camel:endpoint id="Intermediary.response" uri="jhc:http://localhost:8082/responses" />
-        <camel:endpoint id="Intermediary.dbStorer" uri="seda:store" />
-        <camel:endpoint id="Intermediary.dbLoader" uri="seda:store" />
-        <camel:endpoint id="Intermediary.requestTransformer" uri="seda:store" />
-        <camel:endpoint id="Intermediary.nackTransformer" uri="seda:store" />
-        <camel:endpoint id="Intermediary.responseTransformer" uri="seda:store" />
+        <camel:endpoint id="dbStorer" uri="seda:store" />
+        <camel:endpoint id="dbLoader" uri="seda:store" />
+        <camel:endpoint id="requestTransformer" uri="seda:store" />
+        <camel:endpoint id="responseTransformer" uri="seda:store" />
+        <camel:endpoint id="nackTransformer" uri="seda:store" />
 
     </camel-osgi:camelContext>
 
+    <bean id="isNackExpression" class="org.apache.camel.builder.xml.XPathBuilder">
+        <constructor-arg value="//*:nack" />
+    </bean>
+
+    <!-- ActiveMQ component and broker -->
     <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
         <property name="connectionFactory" ref="connectionFactory" />
         <property name="transactionManager" ref="jmsTransactionManager" />
@@ -64,28 +66,10 @@
         <constructor-arg value="vm://localhost?persistent=false" />
     </bean>
 
-    <bean id="routeBuilder" class="org.apache.servicemix.examples.intermediary.IntermediaryRoutes">
-        <property name="name" value="Intermediary" />
-        <property name="ack">
-            <value><![CDATA[
-               <ack />
-            ]]></value>
-        </property>
-        <property name="nack">
-            <value><![CDATA[
-               <nack />
-            ]]></value>
-        </property>
-    </bean>
-
-    <camel:xpath id="Intermediary.isNackExpression">
-        //*:nack
-    </camel:xpath>
-
     <bean id="smx" class="org.apache.servicemix.camel.ServiceMixComponent">
         <property name="nmr" ref="nmr" />
     </bean>
 
-    <osgi:reference id="nmr" interface="org.apache.servicemix.api.NMR" mandatory="true" />    
+    <osgi:reference id="nmr" interface="org.apache.servicemix.api.NMR" mandatory="true" />
 
 </beans>
