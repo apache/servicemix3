@@ -127,4 +127,8 @@ public class ServiceMixExchange implements Exchange {
     public void setUnitOfWork(UnitOfWork unitOfWork) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    public Exchange newInstance() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
