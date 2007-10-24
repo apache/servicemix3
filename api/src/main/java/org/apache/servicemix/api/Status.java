@@ -23,7 +23,13 @@ package org.apache.servicemix.api;
  * @since 4.0
  */
 public enum Status {
-    Active, 
-    Done, 
+
+    /** The exchange is active */
+    Active,
+
+    /** The exchange is terminated */
+    Done,
+
+    /** The exchange is terminated with an error */
     Error,
 }

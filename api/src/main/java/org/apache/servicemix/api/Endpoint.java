@@ -54,6 +54,11 @@ public interface Endpoint {
     String WSDL_URL = "WSDL_URL";
 
     /**
+     * Meta-data for the version number of this endpoint
+     */
+    String VERSION = "VERSION";
+
+    /**
      * Set the channel so that the endpoint can send exchanges back
      * when they are processed or act as a consumer itself.
      * This method will be called by the NMR while the endpoint is registered.

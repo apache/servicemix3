@@ -19,10 +19,25 @@ package org.apache.servicemix.api.event;
 import org.apache.servicemix.api.Endpoint;
 
 
+/**
+ * A specific kind of Listener that will receive events
+ * about new registered endpoints or endpoints being
+ * unregistered.
+ */
 public interface EndpointListener extends Listener {
 
+    /**
+     * An endpoint has been registered
+     *
+     * @param endpoint the registered endpoint
+     */
     void endpointRegistered(Endpoint endpoint);
-    
+
+    /**
+     * An endpoint has been unregistered
+     *
+     * @param endpoint the unregistered endpoint
+     */
     void endpointUnregistered(Endpoint endpoint);
     
 }

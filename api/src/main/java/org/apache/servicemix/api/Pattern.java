@@ -33,7 +33,7 @@ public enum Pattern {
     InOptionalOut;
 
 
-    protected static final Map<String, Pattern> map = new HashMap<String, Pattern>();
+    protected static final Map<String, Pattern> map;
 
     /**
      * Returns the WSDL URI for this message exchange pattern
@@ -63,6 +63,7 @@ public enum Pattern {
     }
 
     static {
+        map = new HashMap<String, Pattern>();
         for (Pattern mep : values()) {
             String uri = mep.getWsdlUri();
             map.put(uri, mep);

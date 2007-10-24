@@ -24,6 +24,10 @@ package org.apache.servicemix.api;
  * @since 4.0
  */
 public enum Role {
+
+    /** The endpoint processing the exchange is the consumer */
     Consumer,
+
+    /** The endpoint processing the exchange is the provider */
     Provider,
 }
