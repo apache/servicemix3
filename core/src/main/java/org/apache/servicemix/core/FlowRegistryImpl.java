@@ -41,6 +41,7 @@ public class FlowRegistryImpl extends ServiceRegistryImpl<Flow> implements FlowR
         if (exchange.getRole() == Role.Consumer) {
             if (exchange.getDestination() == null) {
                 InternalReference target = (InternalReference) exchange.getTarget();
+                assert target != null;
                 for (InternalEndpoint endpoint : target.choose()) {
                     for (Flow flow : getServices()) {
                         if (flow.canDispatch(exchange, endpoint)) {

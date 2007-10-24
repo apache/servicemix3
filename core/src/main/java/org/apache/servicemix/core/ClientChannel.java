@@ -31,6 +31,7 @@ public class ClientChannel extends ChannelImpl implements Channel {
 
     public ClientChannel(NMR nmr) {
         super(new ClientEndpoint(), Executors.newCachedThreadPool(), nmr);
+        getEndpoint().setChannel(this);
     }
 
     protected static class ClientEndpoint implements InternalEndpoint {
@@ -38,7 +39,7 @@ public class ClientChannel extends ChannelImpl implements Channel {
         private InternalChannel channel;
 
         public void setChannel(Channel channel) {
-            this.channel = (InternalChannel) channel;   
+            this.channel = (InternalChannel) channel;
         }
 
         public InternalChannel getChannel() {

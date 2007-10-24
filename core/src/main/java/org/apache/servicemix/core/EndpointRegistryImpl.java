@@ -16,14 +16,6 @@
  */
 package org.apache.servicemix.core;
 
-import org.apache.servicemix.api.Endpoint;
-import org.apache.servicemix.api.EndpointRegistry;
-import org.apache.servicemix.api.NMR;
-import org.apache.servicemix.api.Reference;
-import org.apache.servicemix.api.internal.InternalEndpoint;
-import org.apache.servicemix.api.service.ServiceRegistry;
-import org.w3c.dom.Document;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +23,16 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+import org.w3c.dom.Document;
+
+import org.apache.servicemix.api.Endpoint;
+import org.apache.servicemix.api.EndpointRegistry;
+import org.apache.servicemix.api.NMR;
+import org.apache.servicemix.api.Reference;
+import org.apache.servicemix.api.ServiceMixException;
+import org.apache.servicemix.api.internal.InternalEndpoint;
+import org.apache.servicemix.api.service.ServiceRegistry;
 
 /**
  * @version $Revision: $
@@ -103,11 +105,17 @@ public class EndpointRegistryImpl implements EndpointRegistry {
     /**
      * Retrieve the metadata associated to a registered service.
      *
-     * @param service the service for which to retrieve metadata
-     * @return the metadata associated with the service
+     * @param endpoint the service for which to retrieve metadata
+     * @return the metadata associated with the=is endpoint
      */
-    public Map<String, ?> getProperties(Endpoint service) {
-        return null;  // TODO
+    public Map<String, ?> getProperties(Endpoint endpoint) {
+        InternalEndpoint wrapper;
+        if (endpoint instanceof InternalEndpoint) {
+            wrapper = (InternalEndpoint) endpoint;
+        } else {
+            wrapper = endpoints.get(endpoint);
+        }
+        return registry.getProperties(wrapper);
     }
 
     /**
@@ -130,6 +138,9 @@ public class EndpointRegistryImpl implements EndpointRegistry {
             if (match) {
                 endpoints.add(e);
             }
+        }
+        if (endpoints.isEmpty()) {
+            throw new ServiceMixException("No matching endpoints");
         }
         return new ReferenceImpl(endpoints);
     }

@@ -57,6 +57,15 @@ public class ChannelImpl implements InternalChannel {
     }
 
     /**
+     * Access to the endpoint
+     *
+     * @return the endpoint for which this channel has been created
+     */
+    public InternalEndpoint getEndpoint() {
+        return endpoint;
+    }
+
+    /**
      * Creates a new exchange.
      *
      * @param pattern specify the InOnly / InOut / RobustInOnly / RobustInOut
@@ -178,7 +187,9 @@ public class ChannelImpl implements InternalChannel {
      */
     protected void dispatch(InternalExchange exchange) {
         // Set source endpoint
-        exchange.setSource(endpoint);
+        if (exchange.getSource() == null) {
+            exchange.setSource(endpoint);
+        }
         // Call listeners
         for (ExchangeListener l : nmr.getListenerRegistry().getListeners(ExchangeListener.class)) {
             l.exchangeSent(exchange);
