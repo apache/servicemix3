@@ -16,10 +16,16 @@
  */
 package org.apache.servicemix.jbi.runtime;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+
 import org.apache.servicemix.api.Channel;
+import org.apache.servicemix.api.Endpoint;
 import org.apache.servicemix.api.Exchange;
 import org.apache.servicemix.api.Pattern;
-import org.apache.servicemix.api.Endpoint;
+import org.apache.servicemix.api.Status;
 import org.apache.servicemix.api.service.ServiceHelper;
 import org.apache.servicemix.core.ServiceMix;
 import org.apache.servicemix.eip.EIPComponent;
@@ -28,8 +34,6 @@ import org.apache.servicemix.eip.patterns.WireTap;
 import org.apache.servicemix.eip.support.ExchangeTarget;
 import org.apache.servicemix.jbi.runtime.impl.ComponentRegistryImpl;
 import org.junit.Test;
-
-import javax.xml.namespace.QName;
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,6 +50,23 @@ public class IntegrationTest {
         smx.init();
         ComponentRegistryImpl reg = new ComponentRegistryImpl();
         reg.setNmr(smx);
+
+        Endpoint tep = new Endpoint() {
+            private Channel channel;
+            public void setChannel(Channel channel) {
+                this.channel = channel;
+            }
+            public void process(Exchange exchange) {
+                System.out.println("Received exchange: " + exchange);
+                if (exchange.getStatus() == Status.Active) {
+                    exchange.setStatus(Status.Done);
+                    channel.send(exchange);
+                }
+            }
+        };
+        Map<String, Object> props = new HashMap<String, Object>();
+        props.put(Endpoint.SERVICE_NAME, new QName("target"));
+        smx.getEndpointRegistry().register(tep, props);
 
         EIPComponent eip = new EIPComponent();
         WireTap ep = new WireTap();

@@ -16,26 +16,36 @@
  */
 package org.apache.servicemix.jbi.runtime.impl;
 
-import org.apache.servicemix.api.Exchange;
-import org.apache.servicemix.api.Message;
-import org.apache.servicemix.api.Pattern;
-import org.apache.servicemix.api.Status;
-import org.apache.servicemix.core.MessageImpl;
-
-import javax.jbi.messaging.*;
-import javax.jbi.servicedesc.ServiceEndpoint;
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Set;
 
+import javax.jbi.messaging.ExchangeStatus;
+import javax.jbi.messaging.Fault;
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
+import javax.jbi.messaging.NormalizedMessage;
+import javax.jbi.servicedesc.ServiceEndpoint;
+import javax.xml.namespace.QName;
+
+import org.apache.servicemix.api.Exchange;
+import org.apache.servicemix.api.Message;
+import org.apache.servicemix.api.Status;
+import org.apache.servicemix.core.MessageImpl;
+
 /**
- * Created by IntelliJ IDEA.
- * User: gnodet
- * Date: Oct 5, 2007
- * Time: 2:21:25 PM
- * To change this template use File | Settings | File Templates.
+ * MessageExchange wrapper on top of an Exchange.
+ *
+ * @see Exchange
  */
 public class MessageExchangeImpl implements MessageExchange  {
+
+    public static final String INTERFACE_NAME_PROP = "javax.jbi.InterfaceName";
+    public static final String SERVICE_NAME_PROP = "javax.jbi.ServiceName";
+    public static final String SERVICE_ENDPOINT_PROP = "javax.jbi.ServiceEndpoint";
+
+    public static final String IN = "in";
+    public static final String OUT = "out";
+    public static final String FAULT = "fault";
 
     private final Exchange exchange;
 
@@ -109,11 +119,11 @@ public class MessageExchangeImpl implements MessageExchange  {
     }
 
     public NormalizedMessage getMessage(String name) {
-        if ("in".equalsIgnoreCase(name)) {
+        if (IN.equalsIgnoreCase(name)) {
             return getInMessage();
-        } else if ("out".equalsIgnoreCase(name)) {
+        } else if (OUT.equalsIgnoreCase(name)) {
             return getOutMessage();
-        } else if ("fault".equalsIgnoreCase(name)) {
+        } else if (FAULT.equalsIgnoreCase(name)) {
             return getFault();
         } else {
             throw new IllegalStateException();
@@ -121,11 +131,11 @@ public class MessageExchangeImpl implements MessageExchange  {
     }
 
     public void setMessage(NormalizedMessage msg, String name) throws MessagingException {
-        if ("in".equalsIgnoreCase(name)) {
+        if (IN.equalsIgnoreCase(name)) {
             setInMessage(msg);
-        } else if ("out".equalsIgnoreCase(name)) {
+        } else if (OUT.equalsIgnoreCase(name)) {
             setOutMessage(msg);
-        } else if ("fault".equalsIgnoreCase(name)) {
+        } else if (FAULT.equalsIgnoreCase(name)) {
             setFault((Fault) msg);
         } else {
             throw new IllegalStateException();
@@ -187,27 +197,27 @@ public class MessageExchangeImpl implements MessageExchange  {
     }
 
     public void setEndpoint(ServiceEndpoint endpoint) {
-        exchange.setProperty("javax.jbi.ServiceEndpoint", endpoint);
+        exchange.setProperty(SERVICE_ENDPOINT_PROP, endpoint);
     }
 
     public void setService(QName service) {
-        exchange.setProperty("javax.jbi.ServiceeName", service);
+        exchange.setProperty(SERVICE_NAME_PROP, service);
     }
 
     public void setInterfaceName(QName interfaceName) {
-        exchange.setProperty("javax.jbi.InterfaceName", interfaceName);
+        exchange.setProperty(INTERFACE_NAME_PROP, interfaceName);
     }
 
     public ServiceEndpoint getEndpoint() {
-        return exchange.getProperty("javax.jbi.ServiceEndpoint", ServiceEndpoint.class);
+        return exchange.getProperty(SERVICE_ENDPOINT_PROP, ServiceEndpoint.class);
     }
 
     public QName getInterfaceName() {
-        return exchange.getProperty("javax.jbi.InterfaceName", QName.class);
+        return exchange.getProperty(INTERFACE_NAME_PROP, QName.class);
     }
 
     public QName getService() {
-        return exchange.getProperty("javax.jbi.ServiceName", QName.class);
+        return exchange.getProperty(SERVICE_NAME_PROP, QName.class);
     }
 
     public boolean isTransacted() {

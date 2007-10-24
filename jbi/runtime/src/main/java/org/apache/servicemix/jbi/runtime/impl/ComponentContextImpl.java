@@ -61,16 +61,25 @@ public class ComponentContextImpl implements ComponentContext {
     private BlockingQueue<Exchange> queue;
     private DeliveryChannel dc;
     private List<EndpointImpl> endpoints;
-    private Channel channel;
+    private EndpointImpl componentEndpoint;
 
     public ComponentContextImpl(NMR nmr, Component component, Map<String,?> properties) {
+        if (properties == null) {
+            properties = new HashMap<String, Object>();
+        }
         this.nmr = nmr;
         this.component = component;
         this.properties = properties;
-        this.channel = nmr.createChannel();
-        this.queue = new ArrayBlockingQueue<Exchange>(DEFAULT_QUEUE_CAPACITY);
-        this.dc = new DeliveryChannelImpl(channel, queue);
         this.endpoints = new ArrayList<EndpointImpl>();
+        this.queue = new ArrayBlockingQueue<Exchange>(DEFAULT_QUEUE_CAPACITY);
+        this.componentEndpoint = new EndpointImpl();
+        this.componentEndpoint.setQueue(queue);
+        this.nmr.getEndpointRegistry().register(componentEndpoint, properties);
+        this.dc = new DeliveryChannelImpl(this, componentEndpoint.getChannel(), queue);
+    }
+
+    public NMR getNmr() {
+        return nmr;
     }
 
     public synchronized ServiceEndpoint activateEndpoint(QName serviceName, String endpointName) throws JBIException {
