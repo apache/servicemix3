@@ -26,4 +26,4 @@ ant setup
 ../../bin/servicemix servicemix.xml
 
 For more information see:
-    http://incubator.apache.org/servicemix/rss-binding.html
+    http://servicemix.apache.org/rss-binding.html

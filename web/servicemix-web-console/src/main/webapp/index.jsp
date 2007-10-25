@@ -27,7 +27,7 @@ Welcome to the ServiceMix Console
 </p>
 
 <p>
-You can find more information about ServiceMix on the <a href="http://incubator.apache.org/servicemix/">Apache ServiceMix Site</a>
+You can find more information about ServiceMix on the <a href="http://servicemix.apache.org/">Apache ServiceMix Site</a>
 </p>
 </body>
 </html>

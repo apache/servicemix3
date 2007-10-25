@@ -32,5 +32,5 @@ To start this sample, run:
   mvn install jbi:projectDeploy
   
 For more information on running this example please see:
-  http://incubator.apache.org/servicemix/camel-example.html
+  http://servicemix.apache.org/camel-example.html
 

@@ -43,4 +43,4 @@ directory and you should see it apear in the outbox directory in a
 few seconds.
 
 For more information see:
-    http://incubator.apache.org/servicemix/vfs-binding.html
+    http://servicemix.apache.org/vfs-binding.html

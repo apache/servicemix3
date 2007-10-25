@@ -40,4 +40,4 @@ To test this sample, launch the following commands:
   ant run
 
 For more information on this example please see
-  http://incubator.apache.org/servicemix/loan-broker-bpel.html
+  http://servicemix.apache.org/loan-broker-bpel.html
