@@ -19,11 +19,13 @@ package org.apache.servicemix;
 import org.apache.servicemix.api.NMR;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.osgi.test.AbstractConfigurableBundleCreatorTests;
 
-import java.net.URL;
-
 public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
+
+    private static final String TEST_FRAMEWORK_BUNDLES_CONF_FILE = "/org/apache/servicemix/boot-bundles.properties";
 
     /**
 	 * The manifest to use for the "virtual bundle" created
@@ -79,9 +81,13 @@ public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
 		};
 	}
 
-//    protected String getSpringBundledVersion() {
-//        return "2.5-rc1";
-//    }
+    protected Resource getTestingFrameworkBundlesConfiguration() {
+        return new InputStreamResource(getClass().getResourceAsStream(TEST_FRAMEWORK_BUNDLES_CONF_FILE));
+    }
+    
+    protected String getSpringBundledVersion() {
+        return "2.5-rc1";
+    }
 
 
     /**
