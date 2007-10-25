@@ -26,13 +26,13 @@
   http://www.springframework.org/schema/util
   http://www.springframework.org/schema/util/spring-util.xsd">
 
-    <bean id="branding" class="org.apache.geronimo.gshell.branding.DefaultBranding">
+    <bean id="branding" class="org.apache.geronimo.gshell.branding.ServiceMixBranding">
         <constructor-arg ref="versionLoader" />
         <constructor-arg ref="terminal" />
     </bean>
 
     <bean id="versionLoader" class="org.apache.geronimo.gshell.branding.PropertiesVersionLoader">
-        <constructor-arg value="version.properties" />
+        <constructor-arg value="servicemix-version.properties" />
     </bean>
 
     <bean id="terminal" class="jline.Terminal" factory-method="getTerminal" />

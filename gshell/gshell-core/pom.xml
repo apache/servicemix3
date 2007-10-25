@@ -162,6 +162,22 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>${pom.basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+
+            <resource>
+                <directory>${pom.basedir}/src/main/filtered-resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
