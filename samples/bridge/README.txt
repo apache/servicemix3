@@ -26,7 +26,7 @@ First start a ServiceMix server (if not already started) by running
 in the root dir of this ditribution.
 
 To start this sample, run:
-  mvn install jbi:projectDeploy
+  mvn install jbi:projectDeploy -Dmaven.test.skip=true
   
 You can then launch the client.html in your favorite browser
 and send an HTTP request which will be transformed in a JMS
