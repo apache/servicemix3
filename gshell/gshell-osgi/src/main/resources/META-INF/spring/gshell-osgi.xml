@@ -29,6 +29,8 @@
   http://www.springframework.org/schema/osgi
   http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
+    <osgi:service ref="headers" interface="org.apache.geronimo.gshell.command.Command" />
+
     <osgi:service ref="list-bundles" interface="org.apache.geronimo.gshell.command.Command" />
 
     <osgi:service ref="list-services" interface="org.apache.geronimo.gshell.command.Command" />

@@ -28,6 +28,8 @@
 
     <bean id="bundle-level" class="org.apache.geronimo.gshell.osgi.BundleLevel" />
 
+    <bean id="headers" class="org.apache.geronimo.gshell.osgi.Headers" />
+
     <bean id="list-bundles" class="org.apache.geronimo.gshell.osgi.ListBundles" />
 
     <bean id="list-services" class="org.apache.geronimo.gshell.osgi.ListServices" />

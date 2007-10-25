@@ -45,7 +45,7 @@
     <bean id="flowRegistry" class="org.apache.servicemix.core.FlowRegistryImpl" />
     <osgi:list id="flows"
                interface="org.apache.servicemix.api.internal.Flow"
-               mandatory="false">
+               cardinality="0..N">
         <osgi:listener ref="flowRegistry" bind-method="register" unbind-method="unregister" />
     </osgi:list>
 
@@ -53,7 +53,7 @@
     <bean id="listenerRegistry" class="org.apache.servicemix.core.ListenerRegistryImpl" />
     <osgi:list id="listeners"
                interface="org.apache.servicemix.api.event.Listener"
-               mandatory="false">
+               cardinality="0..N">
         <osgi:listener ref="listenerRegistry" bind-method="register" unbind-method="unregister" />
     </osgi:list>
 
@@ -63,7 +63,7 @@
     </bean>
     <osgi:list id="endpoints"
                interface="org.apache.servicemix.api.Endpoint"
-               mandatory="false">
+               cardinality="0..N">
         <osgi:listener ref="endpointRegistry" bind-method="register" unbind-method="unregister" />
     </osgi:list>
 
