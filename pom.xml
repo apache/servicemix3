@@ -31,7 +31,7 @@
     <artifactId>servicemix</artifactId>
     <packaging>pom</packaging>
     <name>ServiceMix</name>
-    <version>3.2-SNAPSHOT</version>
+    <version>3.2</version>
     <description>
     ServiceMix is an open source ESB based on the Java Business
     Integration framework - JSR-208 
@@ -211,7 +211,7 @@
         <jencks-version>2.1</jencks-version>
         <jetty-version>6.1.5</jetty-version>
         <geronimo-version>2.0.1</geronimo-version>
-        <servicemix-version>3.2-SNAPSHOT</servicemix-version>
+        <servicemix-version>3.2</servicemix-version>
         <wsdl4j-version>1.6.1</wsdl4j-version>
         <commons-beanutils-version>1.7.0</commons-beanutils-version>
         <commons-fileupload-version>1.1.1</commons-fileupload-version>
@@ -288,20 +288,26 @@
             </modules>
         </profile>
         <profile>
-            <id>release-environment</id>
-            <activation>
-                <property>
-                    <name>env</name>
-                    <value>release</value>
-                </property>
-            </activation>
+            <id>release</id>
             <build>
                 <plugins>
-                    <!-- We want to sign the artifact, the POM, and all attached artifacts -->
+                    <!-- We want to deploy the artifact to a staging location for perusal -->
                     <plugin>
                         <inherited>true</inherited>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <version>2.3</version>
+                        <configuration>
+                            <altDeploymentRepository>${deploy.altRepository}</altDeploymentRepository>
+                            <updateReleaseInfo>true</updateReleaseInfo>
+                        </configuration>
+                    </plugin>
+                    <!-- We want to sign the artifact, the POM, and all attached artifacts -->
+                    <plugin>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.0-alpha-1</version>
+                        <version>1.0-alpha-3</version>
+                        <configuration>
+                            <passphrase>${gpg.passphrase}</passphrase>
+                        </configuration>
                         <executions>
                             <execution>
                                 <goals>
@@ -309,13 +315,29 @@
                                 </goals>
                             </execution>
                         </executions>
-                        <configuration>
-                            <passphrase>${gpg.passphrase}</passphrase>
-                        </configuration>
                     </plugin>
-                    <!-- We want the JavaDoc JAR published with the release -->
-                    <plugin>
-                        <inherited>true</inherited>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>deploy</id>
+            <modules>
+                <module>build</module>
+                <module>core</module>
+                <module>common</module>
+                <module>tooling</module>
+                <module>archetypes</module>
+                <module>deployables</module>
+                <module>servicemix-itests</module>
+                <module>samples</module>
+                <module>web</module>
+                <module>platforms</module>
+                <module>distributions</module>
+            </modules>
+            <build>
+                <defaultGoal>deploy</defaultGoal>
+                 <plugins>
+                   <plugin>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>2.2</version>
                         <executions>
@@ -329,9 +351,8 @@
                             <source>1.5</source>
                             <attach>true</attach>
                         </configuration>
-                    </plugin>
-                    <!-- Force source JAR to be published -->
-                    <plugin>
+                   </plugin>
+                   <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
                         <version>2.0.2</version>
@@ -349,7 +370,7 @@
                 </plugins>
             </build>
         </profile>
-	      <profile>
+        <profile>
 	          <id>setup.eclipse</id>
             <modules>
                 <module>build</module>
@@ -656,194 +677,194 @@
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-jbi</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-services</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-core</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-audit</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-components</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-common</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-console</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-gbean</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-jms</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-jsr181</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-http</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-sca</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-soap</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-soap2</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-shared</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-wsn2005</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-lwcontainer</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-bean</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-eip</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-script</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-file</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-ftp</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-xmpp</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-quartz</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-saxon</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-truezip</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-cxf-bc</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-cxf-se</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-camel</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>servicemix-web</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
                 <type>war</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>wsdl-first</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
                 <type>pom</type>
             </dependency>
             
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>cxf-wsdl-first</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>loan-broker</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>bridge</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>basic</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-beanflow</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-web-console</artifactId>
-                <version>3.2-SNAPSHOT</version>
+                <version>3.2</version>
                 <type>war</type>
             </dependency>
 
@@ -1967,7 +1988,7 @@
                 <plugin>
                     <groupId>org.apache.servicemix.tooling</groupId>
                     <artifactId>jbi-maven-plugin</artifactId>
-                    <version>3.2-SNAPSHOT</version>
+                    <version>3.2</version>
                     <extensions>true</extensions>
                 </plugin>
                 <plugin>

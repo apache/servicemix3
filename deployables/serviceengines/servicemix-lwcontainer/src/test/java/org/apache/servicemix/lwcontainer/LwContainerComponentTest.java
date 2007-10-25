@@ -111,14 +111,14 @@ public class LwContainerComponentTest extends TestCase {
         InstallSharedLibrary isl = new InstallSharedLibrary();
         isl.setGroupId("org.apache.servicemix");
         isl.setArtifactId("servicemix-shared");
-        isl.setVersion("3.2-SNAPSHOT");
+        isl.setVersion("3.2");
         isl.afterPropertiesSet();
         isl.deploy(container);
 
         InstallComponent ic = new InstallComponent();
         ic.setGroupId("org.apache.servicemix");
         ic.setArtifactId("servicemix-quartz");
-        ic.setVersion("3.2-SNAPSHOT");
+        ic.setVersion("3.2");
         ic.afterPropertiesSet();
         ic.deploy(container);
 
