@@ -179,6 +179,12 @@
         <name>Springframework Maven SNAPSHOT Repository</name>
         <url>http://static.springframework.org/maven2-snapshots/</url>
       </repository>
+	<!-- Spring external dependencies -->
+	    <repository>
+	      <id>spring-ext</id>
+	      <name>Spring External Dependencies Repository</name>
+	      <url>http://springframework.svn.sourceforge.net/svnroot/springframework/repos/repo-ext/</url>
+	    </repository>
   </repositories>
 
   <build>
