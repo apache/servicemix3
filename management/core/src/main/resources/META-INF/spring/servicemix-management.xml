@@ -64,7 +64,7 @@
     <!-- The JMXAuthenticator OSGi reference -->
     <!-- By default, it will point to the simple authenticator below, unless
          another one is exported by a bundle with a higher ranking -->
-    <osgi:reference id="jmxAuthenticator" interface="javax.management.remote.JMXAuthenticator" mandatory="false"/>
+    <osgi:reference id="jmxAuthenticator" interface="javax.management.remote.JMXAuthenticator" cardinality="0..1"/>
 
     <!-- Export the factory as a managed factory in OSGi -->
     <osgi:service ref="jmxConnectorServiceFactory">
