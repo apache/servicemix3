@@ -160,8 +160,8 @@ public class Main
         String profileDirName = configProps.getProperty(BundleCache.CACHE_PROFILE_DIR_PROP);
 
         // Print welcome banner.
-        System.out.println("\nWelcome to Felix.");
-        System.out.println("=================\n");
+        System.out.println("\nWelcome to ServiceMix.");
+        System.out.println("=====================\n");
 
         // If no profile or profile directory is specified in the
         // properties, then ask for a profile name.

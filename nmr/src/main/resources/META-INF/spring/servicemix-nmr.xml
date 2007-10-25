@@ -27,7 +27,7 @@
   http://www.springframework.org/schema/util
   http://www.springframework.org/schema/util/spring-util.xsd
   http://www.springframework.org/schema/osgi
-  http://www.springframework.org/schema/osgi/spring-osgi-1.0-m3.xsd">
+  http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
     <!-- ServiceMix NMR -->
     <bean id="servicemix" class="org.apache.servicemix.core.ServiceMix">

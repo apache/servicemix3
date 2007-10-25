@@ -49,6 +49,7 @@
         </exclusion-->
       </exclusions>
     </dependency>
+    <!--
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.bundlerepository</artifactId>
@@ -64,11 +65,7 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>org.apache.directory.daemon</groupId>
-      <artifactId>daemon-bootstrappers</artifactId>
-      <version>1.1.1</version>
-    </dependency>
+    -->
   </dependencies>
   <build>
     <plugins>

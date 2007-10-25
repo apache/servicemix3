@@ -131,4 +131,12 @@ public class ServiceMixExchange implements Exchange {
     public Exchange newInstance() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    public void setIn(Message message) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void setOut(Message message) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
