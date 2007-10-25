@@ -143,6 +143,21 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.servicemix.jbi</groupId>
+      <artifactId>org.apache.servicemix.jbi.api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.jbi</groupId>
+      <artifactId>org.apache.servicemix.jbi.runtime</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.jbi</groupId>
+      <artifactId>org.apache.servicemix.jbi.osgi</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-core</artifactId>
       <version>${camel.version}</version>
@@ -196,6 +211,11 @@
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-servlet_2.5_spec</artifactId>
       <version>1.1.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-activation_1.1_spec</artifactId>
+      <version>1.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>

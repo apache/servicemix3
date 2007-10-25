@@ -34,6 +34,7 @@
   <name>ServiceMix JBI</name>
 
   <modules>
+    <module>api</module>
     <module>runtime</module>
     <module>osgi</module>
   </modules>
