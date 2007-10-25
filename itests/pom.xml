@@ -175,6 +175,30 @@
           <groupId>org.apache.felix</groupId>
           <artifactId>org.osgi.compendium</artifactId>
           <version>0.9.0-SNAPSHOT</version>
+          <exclusions>
+	        <exclusion>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.osgi.core</artifactId>
+	        </exclusion>
+	        <exclusion>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.osgi.foundation</artifactId>
+	        </exclusion>
+	        <exclusion>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>javax.servlet</artifactId>
+	        </exclusion>
+	      </exclusions>
+      </dependency>
+      <dependency>
+          <groupId>org.ops4j.pax.logging</groupId>
+          <artifactId>pax-logging-api</artifactId>
+          <version>0.9.7-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+          <groupId>org.ops4j.pax.logging</groupId>
+          <artifactId>pax-logging-service</artifactId>
+          <version>0.9.7-SNAPSHOT</version>
       </dependency>
   </dependencies>
 
