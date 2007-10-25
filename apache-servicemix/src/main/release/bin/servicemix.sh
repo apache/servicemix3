@@ -35,6 +35,22 @@ if [ "x$JAVA_MAX_MEM" = "x" ]; then
     export JAVA_MAX_MEM
 fi
 
+warn() {
+    echo "${PROGNAME}: $*"
+}
+
+die() {
+    warn "$*"
+    exit 1
+}
+
+maybeSource() {
+    file="$1"
+    if [ -f "$file" ] ; then
+        . $file
+    fi
+}
+
 detectOS() {
     # OS specific support (must be 'true' or 'false').
     cygwin=false;
@@ -119,8 +135,11 @@ locateJava() {
         [ -n "$JAVA" ] && JAVA=`cygpath --unix "$JAVA"`
         [ -n "$JAVA_HOME" ] && JAVA_HOME=`cygpath --unix "$JAVA_HOME"`
     fi
-    
+
     if [ "x$JAVA" = "x" ]; then
+        if [ "x$JAVA_HOME" = "x" ] && [ "$darwin" = "true" ]; then
+            JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
+        fi
         if [ "x$JAVA_HOME" != "x" ]; then
             if [ ! -d "$JAVA_HOME" ]; then
                 die "JAVA_HOME is not valid: $JAVA_HOME"
