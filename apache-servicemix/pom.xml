@@ -98,23 +98,23 @@
       <version>${spring.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
+      <groupId>org.apache.servicemix.nmr</groupId>
       <artifactId>org.apache.servicemix.api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
+      <groupId>org.apache.servicemix.nmr</groupId>
       <artifactId>org.apache.servicemix.core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
+      <groupId>org.apache.servicemix.nmr</groupId>
       <artifactId>org.apache.servicemix.spring</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
-      <artifactId>org.apache.servicemix.nmr</artifactId>
+      <groupId>org.apache.servicemix.nmr</groupId>
+      <artifactId>org.apache.servicemix.osgi</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

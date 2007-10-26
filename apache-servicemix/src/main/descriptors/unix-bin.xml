@@ -127,15 +127,16 @@
             </includes>
         </dependencySet>
 
-        <!-- ServiceMix bundles -->
+        <!-- NMR -->
         <dependencySet>
             <outputDirectory>/bundle</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
             <includes>
-                <include>org.apache.servicemix:org.apache.servicemix.api</include>
-                <include>org.apache.servicemix:org.apache.servicemix.core</include>
-                <include>org.apache.servicemix:org.apache.servicemix.nmr</include>
+                <include>org.apache.servicemix.nmr:org.apache.servicemix.api</include>
+                <include>org.apache.servicemix.nmr:org.apache.servicemix.core</include>
+                <include>org.apache.servicemix.nmr:org.apache.servicemix.spring</include>
+                <include>org.apache.servicemix.nmr:org.apache.servicemix.osgi</include>
             </includes>
         </dependencySet>
 

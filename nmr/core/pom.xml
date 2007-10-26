@@ -22,30 +22,27 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.servicemix</groupId>
-    <artifactId>servicemix</artifactId>
+    <groupId>org.apache.servicemix.nmr</groupId>
+    <artifactId>org.apache.servicemix.nmr</artifactId>
     <version>4.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.apache.servicemix</groupId>
-  <artifactId>org.apache.servicemix.api</artifactId>
+  <groupId>org.apache.servicemix.nmr</groupId>
+  <artifactId>org.apache.servicemix.core</artifactId>
   <packaging>bundle</packaging>
   <version>4.0-SNAPSHOT</version>
-  <name>org.apache.servicemix.api</name>
+  <name>org.apache.servicemix.core</name>
 
   <dependencies>
 	<dependency>
+	  <groupId>org.apache.servicemix.nmr</groupId>
+	  <artifactId>org.apache.servicemix.api</artifactId>
+	</dependency>
+	<dependency>
 	  <groupId>junit</groupId>
 	  <artifactId>junit</artifactId>
-	  <version>${junit.version}</version>
 	  <scope>test</scope>
 	</dependency>
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <version>${felix.version}</version>
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
 
   <build>
@@ -55,9 +52,8 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-Name>${pom.name}</Bundle-Name>
             <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
-            <Export-Package>${pom.artifactId},${pom.artifactId}.service,${pom.artifactId}.event,${pom.artifactId}.internal</Export-Package>
+            <Export-Package>${pom.artifactId}</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>

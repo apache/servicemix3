@@ -35,7 +35,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
+      <groupId>org.apache.servicemix.nmr</groupId>
       <artifactId>org.apache.servicemix.core</artifactId>
     </dependency>
     <dependency>
@@ -45,6 +45,17 @@
     <dependency>
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-eip</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+	      <groupId>org.apache.servicemix</groupId>
+	      <artifactId>servicemix-shared</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-common</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

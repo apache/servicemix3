@@ -22,39 +22,54 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.servicemix</groupId>
-    <artifactId>servicemix</artifactId>
+    <groupId>org.apache.servicemix.nmr</groupId>
+    <artifactId>org.apache.servicemix.nmr</artifactId>
     <version>4.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.apache.servicemix</groupId>
-  <artifactId>org.apache.servicemix.spring</artifactId>
+  <groupId>org.apache.servicemix.nmr</groupId>
+  <artifactId>org.apache.servicemix.osgi</artifactId>
   <packaging>bundle</packaging>
   <version>4.0-SNAPSHOT</version>
-  <name>org.apache.servicemix.spring</name>
+  <name>org.apache.servicemix.osgi</name>
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
+      <groupId>org.apache.servicemix.nmr</groupId>
       <artifactId>org.apache.servicemix.api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.nmr</groupId>
+      <artifactId>org.apache.servicemix.core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.nmr</groupId>
+      <artifactId>org.apache.servicemix.spring</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.osgi</groupId>
       <artifactId>spring-osgi-core</artifactId>
+      <version>${spring.osgi.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.osgi.core</artifactId>
+      <version>${felix.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
+      <version>${commons.logging.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -67,8 +82,9 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
-            <Export-Package>${pom.artifactId}</Export-Package>
+            <Import-Package></Import-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
+            <Spring-Context>*;publish-context:=false</Spring-Context>
           </instructions>
         </configuration>
       </plugin>

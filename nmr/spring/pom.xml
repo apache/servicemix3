@@ -22,27 +22,41 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.servicemix</groupId>
-    <artifactId>servicemix</artifactId>
+    <groupId>org.apache.servicemix.nmr</groupId>
+    <artifactId>org.apache.servicemix.nmr</artifactId>
     <version>4.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.apache.servicemix</groupId>
-  <artifactId>org.apache.servicemix.core</artifactId>
+  <groupId>org.apache.servicemix.nmr</groupId>
+  <artifactId>org.apache.servicemix.spring</artifactId>
   <packaging>bundle</packaging>
   <version>4.0-SNAPSHOT</version>
-  <name>org.apache.servicemix.core</name>
+  <name>org.apache.servicemix.spring</name>
 
   <dependencies>
-	<dependency>
-	  <groupId>org.apache.servicemix</groupId>
-	  <artifactId>org.apache.servicemix.api</artifactId>
-	</dependency>
-	<dependency>
-	  <groupId>junit</groupId>
-	  <artifactId>junit</artifactId>
-	  <scope>test</scope>
-	</dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.nmr</groupId>
+      <artifactId>org.apache.servicemix.api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.osgi</groupId>
+      <artifactId>spring-osgi-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

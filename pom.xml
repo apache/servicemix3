@@ -28,9 +28,6 @@
   <name>servicemix</name>
 
   <modules>
-	<module>api</module>
-	<module>core</module>
-	<module>spring</module>
 	<module>nmr</module>
 	<module>camel</module>
 	<module>bundles</module>
@@ -163,18 +160,18 @@
   <dependencyManagement>
 	<dependencies>
 		<dependency>
-		  <groupId>org.apache.servicemix</groupId>
+		  <groupId>org.apache.servicemix.nmr</groupId>
 		  <artifactId>org.apache.servicemix.api</artifactId>
 	      <version>${project.version}</version>
 		</dependency>
 		<dependency>
-		  <groupId>org.apache.servicemix</groupId>
+		  <groupId>org.apache.servicemix.nmr</groupId>
 		  <artifactId>org.apache.servicemix.core</artifactId>
 	      <version>${project.version}</version>
 		</dependency>
 	    <dependency>
-	      <groupId>org.apache.servicemix</groupId>
-	      <artifactId>org.apache.servicemix.nmr</artifactId>
+	      <groupId>org.apache.servicemix.nmr</groupId>
+	      <artifactId>org.apache.servicemix.osgi</artifactId>
 	      <version>${project.version}</version>
 	    </dependency>
 	    <dependency>
@@ -278,6 +275,11 @@
 	      <version>3.1.2</version>
 	    </dependency>
 	    <dependency>
+	      <groupId>org.apache.servicemix</groupId>
+	      <artifactId>servicemix-common</artifactId>
+	      <version>3.1.2</version>
+	    </dependency>
+	    <dependency>
 	      <groupId>org.jencks</groupId>
 	      <artifactId>jencks</artifactId>
 	      <version>2.1</version>
@@ -301,19 +303,16 @@
 	      <groupId>org.springframework.osgi</groupId>
 	      <artifactId>spring-osgi-test</artifactId>
 	      <version>${spring.osgi.version}</version>
-	      <scope>test</scope>
 	    </dependency>
 	    <dependency>
 	      <groupId>org.springframework.osgi</groupId>
 	      <artifactId>spring-osgi-extender</artifactId>
 	      <version>${spring.osgi.version}</version>
-	      <scope>test</scope>
 	    </dependency>
 	    <dependency>
 	      <groupId>org.springframework.osgi</groupId>
 	      <artifactId>spring-osgi-annotation</artifactId>
 	      <version>${spring.osgi.version}</version>
-	      <scope>test</scope>
 	    </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

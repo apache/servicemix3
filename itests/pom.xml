@@ -39,8 +39,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
-      <artifactId>org.apache.servicemix.nmr</artifactId>
+      <groupId>org.apache.servicemix.nmr</groupId>
+      <artifactId>org.apache.servicemix.osgi</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
