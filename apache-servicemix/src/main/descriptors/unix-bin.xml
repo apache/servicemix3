@@ -16,82 +16,86 @@
     limitations under the License.
 -->
 <assembly>
-  <id>unix-bin</id>
-  <formats>
-    <format>tar.gz</format>
-  </formats>
-  <fileSets>
+    <id>unix-bin</id>
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    <fileSets>
 
-    <!-- Copy license and other files from root -->
-    <fileSet>
-        <directory>..</directory>
-        <outputDirectory>/</outputDirectory>
-        <includes>
-            <include>*.txt</include>
-        </includes>
-    </fileSet>
+        <!-- Copy license and other files from root -->
+        <fileSet>
+            <directory>..</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>*.txt</include>
+            </includes>
+        </fileSet>
 
-    <!-- Copy over everything that needs to get unix line endings -->
-    <fileSet>
-      <directory>src/main/release</directory>
-      <outputDirectory>/</outputDirectory>
-      <excludes>
-        <exclude>bin/**</exclude>
-      </excludes>
-      <lineEnding>unix</lineEnding>
-    </fileSet>
-    <fileSet>
-      <directory>src/main/release</directory>
-      <outputDirectory>/</outputDirectory>
-      <includes>
-        <include>bin/macosx/wrapper.conf</include>
-        <include>bin/linux/wrapper.conf</include>
-      </includes>
-      <lineEnding>unix</lineEnding>
-    </fileSet>
+        <!-- Copy over everything that needs to get unix line endings -->
+        <fileSet>
+            <directory>src/main/release</directory>
+            <outputDirectory>/</outputDirectory>
+            <excludes>
+                <exclude>bin/**</exclude>
+            </excludes>
+            <lineEnding>unix</lineEnding>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/release</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>bin/macosx/wrapper.conf</include>
+                <include>bin/linux/wrapper.conf</include>
+                <include>bin/win32/wrapper.conf</include>
+                <include>bin/win32/*.bat</include>
+            </includes>
+            <lineEnding>unix</lineEnding>
+        </fileSet>
 
-    <!-- Copy over files that should not get the line endings converted -->
-    <fileSet>
-      <directory>src/main/release</directory>
-      <outputDirectory>/</outputDirectory>
-      <includes>
-        <include>bin/*.jar</include>
-      </includes>
-    </fileSet>
+        <!-- Copy over files that should not get the line endings converted -->
+        <fileSet>
+            <directory>src/main/release</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>bin/*.jar</include>
+                <include>bin/win32/wrapper.dll</include>
+                <include>bin/win32/wrapper.exe</include>
+            </includes>
+        </fileSet>
 
-    <!-- Copy over the files that should not get the line endings converted but need to be chmod to 755 -->
-    <fileSet>
-      <directory>src/main/release</directory>
-      <outputDirectory></outputDirectory>
-      <includes>
-        <include>bin/linux/wrapper</include>
-        <include>bin/linux/libwrapper.so</include>
-        <include>bin/macosx/wrapper</include>
-        <include>bin/macosx/libwrapper.jnilib</include>
-      </includes>
-      <fileMode>0755</fileMode>
-    </fileSet>
+        <!-- Copy over the files that should not get the line endings converted but need to be chmod to 755 -->
+        <fileSet>
+            <directory>src/main/release</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>bin/linux/wrapper</include>
+                <include>bin/linux/libwrapper.so</include>
+                <include>bin/macosx/wrapper</include>
+                <include>bin/macosx/libwrapper.jnilib</include>
+            </includes>
+            <fileMode>0755</fileMode>
+        </fileSet>
 
-    <!-- Copy over the files that need unix line endings and also chmod to 755 -->
-    <fileSet>
-      <directory>src/main/release</directory>
-      <outputDirectory></outputDirectory>
-      <includes>
-        <include>bin/servicemix.sh</include>
-        <include>bin/macosx/servicemix.sh</include>
-        <include>bin/linux/servicemix.sh</include>
-      </includes>
-      <fileMode>0755</fileMode>
-      <lineEnding>unix</lineEnding>
-    </fileSet>
+        <!-- Copy over the files that need unix line endings and also chmod to 755 -->
+        <fileSet>
+            <directory>src/main/release</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>bin/servicemix.sh</include>
+                <include>bin/macosx/servicemix.sh</include>
+                <include>bin/linux/servicemix.sh</include>
+            </includes>
+            <fileMode>0755</fileMode>
+            <lineEnding>unix</lineEnding>
+        </fileSet>
 
-    <!-- Copy over jar files -->
-    <fileSet>
-        <directory>target/dependencies</directory>
-        <outputDirectory>/bin/</outputDirectory>
-    </fileSet>
+        <!-- Copy over jar files -->
+        <fileSet>
+            <directory>target/dependencies</directory>
+            <outputDirectory>/bin/</outputDirectory>
+        </fileSet>
 
-  </fileSets>
+    </fileSets>
 
     <dependencySets>
 
@@ -103,7 +107,7 @@
             <includes>
                 <!-- Compendium -->
                 <include>org.apache.felix:org.osgi.compendium</include>
-  		        <include>org.apache.geronimo.specs:geronimo-servlet_2.5_spec</include>
+                <include>org.apache.geronimo.specs:geronimo-servlet_2.5_spec</include>
 
                 <!-- PAX Logging -->
                 <include>org.ops4j.pax.logging:pax-logging-api</include>
@@ -146,8 +150,8 @@
             <unpack>false</unpack>
             <scope>runtime</scope>
             <includes>
-		        <include>org.apache.servicemix.gshell:org.apache.servicemix.gshell.core</include>
-		        <include>org.apache.servicemix.gshell:org.apache.servicemix.gshell.osgi</include>
+                <include>org.apache.servicemix.gshell:org.apache.servicemix.gshell.core</include>
+                <include>org.apache.servicemix.gshell:org.apache.servicemix.gshell.osgi</include>
             </includes>
         </dependencySet>
 

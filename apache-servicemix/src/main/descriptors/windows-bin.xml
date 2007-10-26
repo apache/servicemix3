@@ -6,9 +6,9 @@
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
     the License.  You may obtain a copy of the License at
-   
+
     http://www.apache.org/licenses/LICENSE-2.0
-   
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,128 +16,181 @@
     limitations under the License.
 -->
 <assembly>
-  <id>windows-bin</id>
-  <formats>
-    <format>zip</format>
-  </formats>
-  <fileSets>
+    <id>windows-bin</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <fileSets>
 
-    <!-- Copy over everything that needs to get dos line endings -->
-    <fileSet>
-      <directory>src/main/release</directory>
-      <outputDirectory>/</outputDirectory>
-      <excludes>
-        <!--<exclude>bin/**</exclude>-->
-      </excludes>
-      <lineEnding>dos</lineEnding>
-    </fileSet>
+        <!-- Copy license and other files from root -->
+        <fileSet>
+            <directory>..</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>*.txt</include>
+            </includes>
+        </fileSet>
 
-    <!-- copy the website docs 
-    <fileSet>
-      <directory>${basedir}/target/website</directory>
-      <outputDirectory>/doc/website</outputDirectory>
-    </fileSet>
-    -->
+        <!-- Copy over everything that needs to get unix line endings -->
+        <fileSet>
+            <directory>src/main/release</directory>
+            <outputDirectory>/</outputDirectory>
+            <excludes>
+                <exclude>bin/**</exclude>
+            </excludes>
+            <lineEnding>unix</lineEnding>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/release</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>bin/macosx/wrapper.conf</include>
+                <include>bin/linux/wrapper.conf</include>
+                <include>bin/win32/wrapper.conf</include>
+                <include>bin/win32/*.bat</include>
+            </includes>
+            <lineEnding>dos</lineEnding>
+        </fileSet>
 
-    <!-- copy the manual docs -->
-    <!--
-    <fileSet>
-      <directory>${basedir}/../tooling/camel-manual/target/site/manual/</directory>
-      <outputDirectory>/doc</outputDirectory>
-      <includes>
-        <include>*.pdf</include>
-      </includes>
-    </fileSet>
+        <!-- Copy over files that should not get the line endings converted -->
+        <fileSet>
+            <directory>src/main/release</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>bin/*.jar</include>
+                <include>bin/win32/wrapper.dll</include>
+                <include>bin/win32/wrapper.exe</include>
+            </includes>
+        </fileSet>
 
-    <!-- copy the examples -->
-    <fileSet>
-      <directory>../examples</directory>
-      <outputDirectory>/examples</outputDirectory>
-      <excludes>
-        <!-- disable build and IDEA files -->
-        <exclude>**/*.i*</exclude>
-        <exclude>**/target/</exclude>
-        <exclude>**/target/*</exclude>
-        <exclude>**/*.ser</exclude>
-        <exclude>**/*.log</exclude>
-      </excludes>
-      <lineEnding>dos</lineEnding>
-    </fileSet>
+        <!-- Copy over the files that should not get the line endings converted but need to be chmod to 755 -->
+        <fileSet>
+            <directory>src/main/release</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>bin/linux/wrapper</include>
+                <include>bin/linux/libwrapper.so</include>
+                <include>bin/macosx/wrapper</include>
+                <include>bin/macosx/libwrapper.jnilib</include>
+            </includes>
+            <fileMode>0755</fileMode>
+        </fileSet>
 
-    <!-- Copy over jar files -->
-    <fileSet>
-      <directory>target</directory>
-      <outputDirectory>/</outputDirectory>
-      <includes>
-        <include>${pom.artifactId}-${pom.version}.jar</include>
-      </includes>
-    </fileSet>
-    <fileSet>
-      <directory>target</directory>
-      <outputDirectory>/bin</outputDirectory>
-      <includes>
-        <include>run.jar</include>
-      </includes>
-    </fileSet>
-  </fileSets>
+        <!-- Copy over the files that need unix line endings and also chmod to 755 -->
+        <fileSet>
+            <directory>src/main/release</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>bin/servicemix.sh</include>
+                <include>bin/macosx/servicemix.sh</include>
+                <include>bin/linux/servicemix.sh</include>
+            </includes>
+            <fileMode>0755</fileMode>
+            <lineEnding>dos</lineEnding>
+        </fileSet>
 
-  <dependencySets>
-    <dependencySet>
-      <outputDirectory>/lib</outputDirectory>
-      <unpack>false</unpack>
-      <scope>runtime</scope>
-      <includes>
-        <include>org.apache.camel:camel-activemq</include>
-        <include>org.apache.camel:camel-atom</include>
-        <include>org.apache.camel:camel-bam</include>
-        <include>org.apache.camel:camel-core</include>
-        <include>org.apache.camel:camel-cxf</include>
-        <include>org.apache.camel:camel-ftp</include>
-        <include>org.apache.camel:camel-http</include>
-        <include>org.apache.camel:camel-ibatis</include>
-        <include>org.apache.camel:camel-irc</include>
-        <include>org.apache.camel:camel-jaxb</include>
-        <include>org.apache.camel:camel-jdbc</include>
-        <include>org.apache.camel:camel-jetty</include>
-        <include>org.apache.camel:camel-jing</include>
-        <include>org.apache.camel:camel-jms</include>
-        <include>org.apache.camel:camel-josql</include>
-        <include>org.apache.camel:camel-jpa</include>
-        <include>org.apache.camel:camel-juel</include>
-        <include>org.apache.camel:camel-mail</include>
-        <include>org.apache.camel:camel-msv</include>
-        <include>org.apache.camel:camel-ognl</include>
-        <include>org.apache.camel:camel-quartz</include>
-        <include>org.apache.camel:camel-rmi</include>
-        <include>org.apache.camel:camel-mina</include>
-        <include>org.apache.camel:camel-saxon</include>
-        <include>org.apache.camel:camel-script</include>
-        <include>org.apache.camel:camel-spring</include>
-        <include>org.apache.camel:camel-xmlbeans</include>
-        <include>org.apache.camel:camel-xmpp</include>
-        <include>org.apache.camel:camel-xstream</include>
-        <include>commons-logging:commons-logging</include>
-      </includes>
-    </dependencySet>
-    <dependencySet>
-      <outputDirectory>/lib/optional</outputDirectory>
-      <unpack>false</unpack>
-      <scope>runtime</scope>
-      <includes>
-        <include>${pom.groupId}:apache-activemq</include>
-        <include>commons-beanutils:commons-beanutils</include>
-        <include>commons-collections:commons-collections</include>
-        <include>commons-httpclient:commons-httpclient</include>
-        <include>commons-dbcp:commons-dbcp</include>
-        <include>commons-pool:commons-pool</include>
-        <include>log4j:log4j</include>
-        <include>org.apache.geronimo.specs:geronimo-j2ee-management_1.0_spec</include>
-        <include>org.apache.geronimo.specs:geronimo-jms_1.1_spec</include>
-        <include>org.apache.geronimo.specs:geronimo-j2ee-jacc_1.0_spec</include>
-        <include>org.apache.geronimo.specs:geronimo-j2ee-connector_1.5_spec</include>
-        <include>org.apache.xbean:xbean-spring</include>
-        <include>org.springframework:spring</include>
-      </includes>
-    </dependencySet>
-  </dependencySets>
+        <!-- Copy over jar files -->
+        <fileSet>
+            <directory>target/dependencies</directory>
+            <outputDirectory>/bin/</outputDirectory>
+        </fileSet>
+
+    </fileSets>
+
+    <dependencySets>
+
+        <!-- Mandatory bundles for everything -->
+        <dependencySet>
+            <outputDirectory>/bundle</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <includes>
+                <!-- Compendium -->
+                <include>org.apache.felix:org.osgi.compendium</include>
+                <include>org.apache.geronimo.specs:geronimo-servlet_2.5_spec</include>
+
+                <!-- PAX Logging -->
+                <include>org.ops4j.pax.logging:pax-logging-api</include>
+                <include>org.ops4j.pax.logging:pax-logging-service</include>
+
+                <!-- PAX config -->
+                <include>org.apache.felix:org.apache.felix.configadmin</include>
+                <include>org.ops4j.pax.confman:pax-confman-propsloader</include>
+
+                <!-- Spring OSGi -->
+                <include>org.springframework:spring-aop</include>
+                <include>org.springframework:spring-beans</include>
+                <include>org.springframework:spring-context</include>
+                <include>org.springframework:spring-core</include>
+                <include>org.springframework.osgi:spring-osgi-core</include>
+                <include>org.springframework.osgi:spring-osgi-extender</include>
+                <include>org.springframework.osgi:spring-osgi-io</include>
+                <include>org.apache.servicemix.bundles:org.apache.servicemix.bundles.aopalliance</include>
+                <include>org.apache.servicemix.bundles:org.apache.servicemix.bundles.cglib</include>
+
+            </includes>
+        </dependencySet>
+
+        <!-- NMR -->
+        <dependencySet>
+            <outputDirectory>/bundle</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <includes>
+                <include>org.apache.servicemix.nmr:org.apache.servicemix.nmr.api</include>
+                <include>org.apache.servicemix.nmr:org.apache.servicemix.nmr.core</include>
+                <include>org.apache.servicemix.nmr:org.apache.servicemix.nmr.spring</include>
+                <include>org.apache.servicemix.nmr:org.apache.servicemix.nmr.osgi</include>
+            </includes>
+        </dependencySet>
+
+        <!-- GShell -->
+        <dependencySet>
+            <outputDirectory>/bundle</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <includes>
+                <include>org.apache.servicemix.gshell:org.apache.servicemix.gshell.core</include>
+                <include>org.apache.servicemix.gshell:org.apache.servicemix.gshell.osgi</include>
+            </includes>
+        </dependencySet>
+
+        <!-- Transaction Manager -->
+        <dependencySet>
+            <outputDirectory>/bundle</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <includes>
+                <include>org.apache.geronimo.specs:geronimo-jta_1.1_spec</include>
+                <include>org.apache.geronimo.specs:geronimo-j2ee-connector_1.5_spec</include>
+                <include>org.springframework:spring-tx</include>
+                <include>org.apache.servicemix:org.apache.servicemix.transaction</include>
+            </includes>
+        </dependencySet>
+
+        <!-- Management -->
+        <dependencySet>
+            <outputDirectory>/bundle</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <includes>
+                <include>org.apache.servicemix.management:org.apache.servicemix.management.core</include>
+            </includes>
+        </dependencySet>
+
+        <!-- JBI 1.0 -->
+        <dependencySet>
+            <outputDirectory>/bundle</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <includes>
+                <include>org.apache.geronimo.specs:geronimo-activation_1.1_spec</include>
+                <include>org.apache.servicemix.jbi:org.apache.servicemix.jbi.api</include>
+                <include>org.apache.servicemix.jbi:org.apache.servicemix.jbi.runtime</include>
+                <include>org.apache.servicemix.jbi:org.apache.servicemix.jbi.osgi</include>
+            </includes>
+        </dependencySet>
+
+    </dependencySets>
+
 </assembly>
