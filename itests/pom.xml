@@ -40,7 +40,7 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.servicemix.nmr</groupId>
-      <artifactId>org.apache.servicemix.osgi</artifactId>
+      <artifactId>org.apache.servicemix.nmr.osgi</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

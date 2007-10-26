@@ -161,24 +161,64 @@
 	<dependencies>
 		<dependency>
 		  <groupId>org.apache.servicemix.nmr</groupId>
-		  <artifactId>org.apache.servicemix.api</artifactId>
+		  <artifactId>org.apache.servicemix.nmr.api</artifactId>
 	      <version>${project.version}</version>
 		</dependency>
 		<dependency>
 		  <groupId>org.apache.servicemix.nmr</groupId>
-		  <artifactId>org.apache.servicemix.core</artifactId>
+		  <artifactId>org.apache.servicemix.nmr.core</artifactId>
 	      <version>${project.version}</version>
 		</dependency>
-	    <dependency>
-	      <groupId>org.apache.servicemix.nmr</groupId>
-	      <artifactId>org.apache.servicemix.osgi</artifactId>
-	      <version>${project.version}</version>
-	    </dependency>
-	    <dependency>
-	      <groupId>org.apache.servicemix.jbi</groupId>
-	      <artifactId>org.apache.servicemix.jbi.api</artifactId>
-	      <version>${project.version}</version>
-	    </dependency>
+        <dependency>
+          <groupId>org.apache.servicemix.nmr</groupId>
+          <artifactId>org.apache.servicemix.nmr.osgi</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.servicemix.nmr</groupId>
+          <artifactId>org.apache.servicemix.nmr.spring</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.servicemix</groupId>
+          <artifactId>org.apache.servicemix.transaction</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.servicemix.gshell</groupId>
+          <artifactId>org.apache.servicemix.gshell.core</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.servicemix.gshell</groupId>
+          <artifactId>org.apache.servicemix.gshell.osgi</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.servicemix.management</groupId>
+          <artifactId>org.apache.servicemix.management.core</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.servicemix.management</groupId>
+          <artifactId>org.apache.servicemix.management.acegi</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.servicemix.jbi</groupId>
+          <artifactId>org.apache.servicemix.jbi.api</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.servicemix.jbi</groupId>
+          <artifactId>org.apache.servicemix.jbi.runtime</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.servicemix.jbi</groupId>
+          <artifactId>org.apache.servicemix.jbi.osgi</artifactId>
+          <version>${project.version}</version>
+        </dependency>
 	    <dependency>
 	      <groupId>org.apache.camel</groupId>
 	      <artifactId>camel-spring</artifactId>

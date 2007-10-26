@@ -36,7 +36,7 @@
   <dependencies>
 	<dependency>
 	  <groupId>org.apache.servicemix.nmr</groupId>
-	  <artifactId>org.apache.servicemix.api</artifactId>
+	  <artifactId>org.apache.servicemix.nmr.api</artifactId>
       <version>${project.version}</version>
 	</dependency>
 	<dependency>

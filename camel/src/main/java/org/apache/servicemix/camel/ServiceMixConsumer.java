@@ -18,9 +18,9 @@ package org.apache.servicemix.camel;
 
 import org.apache.camel.Processor;
 import org.apache.camel.impl.DefaultConsumer;
-import org.apache.servicemix.api.Channel;
-import org.apache.servicemix.api.Exchange;
-import org.apache.servicemix.api.Status;
+import org.apache.servicemix.nmr.api.Channel;
+import org.apache.servicemix.nmr.api.Exchange;
+import org.apache.servicemix.nmr.api.Status;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,7 +29,7 @@ import org.apache.servicemix.api.Status;
  * Time: 8:59:46 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ServiceMixConsumer extends DefaultConsumer implements org.apache.servicemix.api.Endpoint {
+public class ServiceMixConsumer extends DefaultConsumer implements org.apache.servicemix.nmr.api.Endpoint {
 
     private Channel channel;
 

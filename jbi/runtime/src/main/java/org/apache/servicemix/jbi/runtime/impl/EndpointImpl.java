@@ -16,9 +16,9 @@
  */
 package org.apache.servicemix.jbi.runtime.impl;
 
-import org.apache.servicemix.api.Channel;
-import org.apache.servicemix.api.Endpoint;
-import org.apache.servicemix.api.Exchange;
+import org.apache.servicemix.nmr.api.Channel;
+import org.apache.servicemix.nmr.api.Endpoint;
+import org.apache.servicemix.nmr.api.Exchange;
 import org.w3c.dom.DocumentFragment;
 
 import javax.jbi.servicedesc.ServiceEndpoint;

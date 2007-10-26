@@ -16,7 +16,7 @@
  */
 package org.apache.servicemix.jbi.runtime;
 
-import org.apache.servicemix.api.service.ServiceRegistry;
+import org.apache.servicemix.nmr.api.service.ServiceRegistry;
 
 import javax.jbi.component.Component;
 

@@ -70,6 +70,6 @@
         <property name="nmr" ref="nmr" />
     </bean>
 
-    <osgi:reference id="nmr" interface="org.apache.servicemix.api.NMR" mandatory="true" />
+    <osgi:reference id="nmr" interface="org.apache.servicemix.nmr.api.NMR" mandatory="true" />
 
 </beans>

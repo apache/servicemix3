@@ -18,7 +18,7 @@ package org.apache.servicemix.camel;
 
 import org.apache.camel.Endpoint;
 import org.apache.camel.impl.DefaultComponent;
-import org.apache.servicemix.api.NMR;
+import org.apache.servicemix.nmr.api.NMR;
 
 import java.util.Map;
 
@@ -45,11 +45,11 @@ public class ServiceMixComponent extends DefaultComponent {
         return new ServiceMixEndpoint(this, uri);
     }
 
-    public void registerEndpoint(org.apache.servicemix.api.Endpoint endpoint, Map<String, ?> properties) {
+    public void registerEndpoint(org.apache.servicemix.nmr.api.Endpoint endpoint, Map<String, ?> properties) {
         nmr.getEndpointRegistry().register(endpoint, properties);
     }
 
-    public void unregisterEndpoint(org.apache.servicemix.api.Endpoint endpoint, Map<String, ?> properties) {
+    public void unregisterEndpoint(org.apache.servicemix.nmr.api.Endpoint endpoint, Map<String, ?> properties) {
         nmr.getEndpointRegistry().unregister(endpoint, properties);
     }
 }

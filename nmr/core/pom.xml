@@ -23,12 +23,12 @@
 
   <parent>
     <groupId>org.apache.servicemix.nmr</groupId>
-    <artifactId>org.apache.servicemix.nmr</artifactId>
+    <artifactId>nmr</artifactId>
     <version>4.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.servicemix.nmr</groupId>
-  <artifactId>org.apache.servicemix.core</artifactId>
+  <artifactId>org.apache.servicemix.nmr.core</artifactId>
   <packaging>bundle</packaging>
   <version>4.0-SNAPSHOT</version>
   <name>org.apache.servicemix.core</name>
@@ -36,7 +36,7 @@
   <dependencies>
 	<dependency>
 	  <groupId>org.apache.servicemix.nmr</groupId>
-	  <artifactId>org.apache.servicemix.api</artifactId>
+	  <artifactId>org.apache.servicemix.nmr.api</artifactId>
 	</dependency>
 	<dependency>
 	  <groupId>junit</groupId>

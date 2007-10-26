@@ -43,7 +43,7 @@
 
     <!-- Reference to the ServiceMix NMR -->
     <osgi:reference id="nmr"
-                    interface="org.apache.servicemix.api.NMR" />
+                    interface="org.apache.servicemix.nmr.api.NMR" />
 
     <!-- Expose the JBI components registry in OSGi -->
     <osgi:service ref="componentRegistry">

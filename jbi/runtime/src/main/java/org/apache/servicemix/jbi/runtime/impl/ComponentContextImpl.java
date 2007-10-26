@@ -39,10 +39,9 @@ import javax.xml.namespace.QName;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 
-import org.apache.servicemix.api.Channel;
-import org.apache.servicemix.api.Endpoint;
-import org.apache.servicemix.api.Exchange;
-import org.apache.servicemix.api.NMR;
+import org.apache.servicemix.nmr.api.Endpoint;
+import org.apache.servicemix.nmr.api.Exchange;
+import org.apache.servicemix.nmr.api.NMR;
 
 /**
  * Created by IntelliJ IDEA.

@@ -33,12 +33,12 @@ import java.util.Map;
  */
 public class ServiceMixExchange implements Exchange {
 
-    private org.apache.servicemix.api.Exchange exchange;
+    private org.apache.servicemix.nmr.api.Exchange exchange;
     private ServiceMixMessage in;
     private ServiceMixMessage out;
     private ServiceMixMessage fault;
 
-    public ServiceMixExchange(org.apache.servicemix.api.Exchange exchange) {
+    public ServiceMixExchange(org.apache.servicemix.nmr.api.Exchange exchange) {
         this.exchange = exchange;
     }
 

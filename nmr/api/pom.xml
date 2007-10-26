@@ -23,12 +23,12 @@
 
   <parent>
     <groupId>org.apache.servicemix.nmr</groupId>
-    <artifactId>org.apache.servicemix.nmr</artifactId>
+    <artifactId>nmr</artifactId>
     <version>4.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.servicemix.nmr</groupId>
-  <artifactId>org.apache.servicemix.api</artifactId>
+  <artifactId>org.apache.servicemix.nmr.api</artifactId>
   <packaging>bundle</packaging>
   <version>4.0-SNAPSHOT</version>
   <name>org.apache.servicemix.api</name>

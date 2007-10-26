@@ -16,7 +16,7 @@
  */
 package org.apache.servicemix.jbi.runtime.impl;
 
-import org.apache.servicemix.api.Message;
+import org.apache.servicemix.nmr.api.Message;
 
 import javax.jbi.messaging.Fault;
 

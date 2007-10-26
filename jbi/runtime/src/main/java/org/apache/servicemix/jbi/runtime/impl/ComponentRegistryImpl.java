@@ -16,9 +16,9 @@
  */
 package org.apache.servicemix.jbi.runtime.impl;
 
-import org.apache.servicemix.api.NMR;
-import org.apache.servicemix.api.ServiceMixException;
-import org.apache.servicemix.core.ServiceRegistryImpl;
+import org.apache.servicemix.nmr.api.NMR;
+import org.apache.servicemix.nmr.api.ServiceMixException;
+import org.apache.servicemix.nmr.core.ServiceRegistryImpl;
 import org.apache.servicemix.jbi.runtime.ComponentRegistry;
 
 import javax.jbi.JBIException;

@@ -27,10 +27,10 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
-import org.apache.servicemix.api.Exchange;
-import org.apache.servicemix.api.Message;
-import org.apache.servicemix.api.Status;
-import org.apache.servicemix.core.MessageImpl;
+import org.apache.servicemix.nmr.api.Exchange;
+import org.apache.servicemix.nmr.api.Message;
+import org.apache.servicemix.nmr.api.Status;
+import org.apache.servicemix.nmr.core.MessageImpl;
 
 /**
  * MessageExchange wrapper on top of an Exchange.
@@ -66,7 +66,7 @@ public class MessageExchangeImpl implements MessageExchange  {
     }
 
     public MessageExchange.Role getRole() {
-        return exchange.getRole() == org.apache.servicemix.api.Role.Consumer ? MessageExchange.Role.CONSUMER : MessageExchange.Role.PROVIDER;
+        return exchange.getRole() == org.apache.servicemix.nmr.api.Role.Consumer ? MessageExchange.Role.CONSUMER : MessageExchange.Role.PROVIDER;
     }
 
     public ExchangeStatus getStatus() {

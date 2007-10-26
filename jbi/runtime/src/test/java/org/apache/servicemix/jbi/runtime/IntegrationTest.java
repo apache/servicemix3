@@ -21,13 +21,13 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.apache.servicemix.api.Channel;
-import org.apache.servicemix.api.Endpoint;
-import org.apache.servicemix.api.Exchange;
-import org.apache.servicemix.api.Pattern;
-import org.apache.servicemix.api.Status;
-import org.apache.servicemix.api.service.ServiceHelper;
-import org.apache.servicemix.core.ServiceMix;
+import org.apache.servicemix.nmr.api.Channel;
+import org.apache.servicemix.nmr.api.Endpoint;
+import org.apache.servicemix.nmr.api.Exchange;
+import org.apache.servicemix.nmr.api.Pattern;
+import org.apache.servicemix.nmr.api.Status;
+import org.apache.servicemix.nmr.api.service.ServiceHelper;
+import org.apache.servicemix.nmr.core.ServiceMix;
 import org.apache.servicemix.eip.EIPComponent;
 import org.apache.servicemix.eip.EIPEndpoint;
 import org.apache.servicemix.eip.patterns.WireTap;

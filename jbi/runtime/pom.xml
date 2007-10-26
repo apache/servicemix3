@@ -36,7 +36,7 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.servicemix.nmr</groupId>
-      <artifactId>org.apache.servicemix.core</artifactId>
+      <artifactId>org.apache.servicemix.nmr.core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix.jbi</groupId>
@@ -85,7 +85,6 @@
             <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
             <Export-Package>${pom.artifactId}*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
-            <Spring-Context>*;publish-context:=false</Spring-Context>
           </instructions>
         </configuration>
       </plugin>

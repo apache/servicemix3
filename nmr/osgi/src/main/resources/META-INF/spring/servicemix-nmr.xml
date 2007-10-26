@@ -30,48 +30,48 @@
   http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
     <!-- ServiceMix NMR -->
-    <bean id="servicemix" class="org.apache.servicemix.core.ServiceMix">
+    <bean id="servicemix" class="org.apache.servicemix.nmr.core.ServiceMix">
         <property name="endpointRegistry" ref="endpointRegistry" />
         <property name="listenerRegistry" ref="listenerRegistry" />
         <property name="flowRegistry" ref="flowRegistry" />
     </bean>
     <osgi:service ref="servicemix">
         <osgi:interfaces>
-            <value>org.apache.servicemix.api.NMR</value>
+            <value>org.apache.servicemix.nmr.api.NMR</value>
         </osgi:interfaces>
     </osgi:service>
 
     <!-- Flow registry and service tracker -->
-    <bean id="flowRegistry" class="org.apache.servicemix.core.FlowRegistryImpl" />
+    <bean id="flowRegistry" class="org.apache.servicemix.nmr.core.FlowRegistryImpl" />
     <osgi:list id="flows"
-               interface="org.apache.servicemix.api.internal.Flow"
+               interface="org.apache.servicemix.nmr.api.internal.Flow"
                cardinality="0..N">
         <osgi:listener ref="flowRegistry" bind-method="register" unbind-method="unregister" />
     </osgi:list>
 
     <!-- Listener registry and service tracker -->
-    <bean id="listenerRegistry" class="org.apache.servicemix.core.ListenerRegistryImpl" />
+    <bean id="listenerRegistry" class="org.apache.servicemix.nmr.core.ListenerRegistryImpl" />
     <osgi:list id="listeners"
-               interface="org.apache.servicemix.api.event.Listener"
+               interface="org.apache.servicemix.nmr.api.event.Listener"
                cardinality="0..N">
         <osgi:listener ref="listenerRegistry" bind-method="register" unbind-method="unregister" />
     </osgi:list>
 
     <!-- Endpoint registry and service tracker -->
-    <bean id="endpointRegistry" class="org.apache.servicemix.core.EndpointRegistryImpl">
+    <bean id="endpointRegistry" class="org.apache.servicemix.nmr.core.EndpointRegistryImpl">
         <property name="nmr" ref="servicemix" />
     </bean>
     <osgi:list id="endpoints"
-               interface="org.apache.servicemix.api.Endpoint"
+               interface="org.apache.servicemix.nmr.api.Endpoint"
                cardinality="0..N">
         <osgi:listener ref="endpointRegistry" bind-method="register" unbind-method="unregister" />
     </osgi:list>
 
     <!-- Register the Straight-Through flow -->
-    <bean id="staightThroughFlow" class="org.apache.servicemix.core.StraightThroughFlow" />
+    <bean id="staightThroughFlow" class="org.apache.servicemix.nmr.core.StraightThroughFlow" />
     <osgi:service ref="staightThroughFlow">
         <osgi:interfaces>
-            <value>org.apache.servicemix.api.internal.Flow</value>
+            <value>org.apache.servicemix.nmr.api.internal.Flow</value>
         </osgi:interfaces>
     </osgi:service>
 

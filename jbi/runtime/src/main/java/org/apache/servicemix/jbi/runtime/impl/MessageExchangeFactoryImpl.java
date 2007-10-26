@@ -29,8 +29,8 @@ import javax.jbi.messaging.RobustInOnly;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
-import org.apache.servicemix.api.Pattern;
-import org.apache.servicemix.core.ExchangeImpl;
+import org.apache.servicemix.nmr.api.Pattern;
+import org.apache.servicemix.nmr.core.ExchangeImpl;
 
 /**
  * Resolver for URI patterns

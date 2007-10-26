@@ -16,7 +16,7 @@
  */
 package org.apache.servicemix;
 
-import org.apache.servicemix.api.NMR;
+import org.apache.servicemix.nmr.api.NMR;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.springframework.core.io.InputStreamResource;
@@ -72,10 +72,10 @@ public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
             "org.apache.camel,camel-osgi," + camelVersion,
             "org.apache.camel,camel-jms," + camelVersion,
             "org.apache.camel,camel-jhc," + camelVersion,
-            "org.apache.servicemix.nmr,org.apache.servicemix.api," + servicemixVersion,
-            "org.apache.servicemix.nmr,org.apache.servicemix.core," + servicemixVersion,
-			"org.apache.servicemix.nmr,org.apache.servicemix.spring," + servicemixVersion,
-            "org.apache.servicemix.nmr,org.apache.servicemix.osgi," + servicemixVersion,
+            "org.apache.servicemix.nmr,org.apache.servicemix.nmr.api," + servicemixVersion,
+            "org.apache.servicemix.nmr,org.apache.servicemix.nmr.core," + servicemixVersion,
+			"org.apache.servicemix.nmr,org.apache.servicemix.nmr.spring," + servicemixVersion,
+            "org.apache.servicemix.nmr,org.apache.servicemix.nmr.osgi," + servicemixVersion,
             "org.apache.servicemix,org.apache.servicemix.camel," + servicemixVersion,
             "org.apache.servicemix.examples,org.apache.servicemix.examples.intermediary," + servicemixVersion,
 		};

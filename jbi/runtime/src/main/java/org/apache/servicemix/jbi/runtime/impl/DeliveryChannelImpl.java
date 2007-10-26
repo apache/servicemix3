@@ -29,12 +29,12 @@ import javax.jbi.messaging.MessagingException;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
-import org.apache.servicemix.api.Channel;
-import org.apache.servicemix.api.Endpoint;
-import org.apache.servicemix.api.Exchange;
-import org.apache.servicemix.api.Pattern;
-import org.apache.servicemix.api.Reference;
-import org.apache.servicemix.api.internal.InternalExchange;
+import org.apache.servicemix.nmr.api.Channel;
+import org.apache.servicemix.nmr.api.Endpoint;
+import org.apache.servicemix.nmr.api.Exchange;
+import org.apache.servicemix.nmr.api.Pattern;
+import org.apache.servicemix.nmr.api.Reference;
+import org.apache.servicemix.nmr.api.internal.InternalExchange;
 
 /**
  * Implementation of the DeliveryChannel.

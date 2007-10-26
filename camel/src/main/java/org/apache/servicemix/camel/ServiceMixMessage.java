@@ -34,10 +34,10 @@ public class ServiceMixMessage implements Message {
     private static final UuidGenerator DEFALT_ID_GENERATOR = new UuidGenerator();
 
     private ServiceMixExchange exchange;
-    private org.apache.servicemix.api.Message message;
+    private org.apache.servicemix.nmr.api.Message message;
     private String messageId = DEFALT_ID_GENERATOR.generateId();
 
-    public ServiceMixMessage(ServiceMixExchange exchange, org.apache.servicemix.api.Message message) {
+    public ServiceMixMessage(ServiceMixExchange exchange, org.apache.servicemix.nmr.api.Message message) {
         this.message = message;
     }
 

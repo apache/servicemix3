@@ -16,7 +16,7 @@
  */
 package org.apache.servicemix.jbi.runtime.impl;
 
-import org.apache.servicemix.api.Exchange;
+import org.apache.servicemix.nmr.api.Exchange;
 
 import javax.jbi.messaging.InOut;
 
