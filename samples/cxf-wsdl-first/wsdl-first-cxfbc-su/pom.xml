@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.apache.servicemix.samples</groupId>
         <artifactId>cxf-wsdl-first</artifactId>
-        <version>3.2</version>
+        <version>3.2.1-SNAPSHOT</version>
     </parent>
 
     <groupId>org.apache.servicemix.samples.cxf-wsdl-first</groupId>
@@ -36,7 +36,7 @@
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-cxf-bc</artifactId>
-            <version>3.2</version>
+            <version>3.2.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
