@@ -45,8 +45,8 @@
           <version>${cxf.version}</version>
         </dependency>
         <dependency>
-          <groupId>org.apache.servicemix</groupId>
-          <artifactId>org.apache.servicemix.api</artifactId>
+          <groupId>org.apache.servicemix.nmr</groupId>
+          <artifactId>org.apache.servicemix.nmr.api</artifactId>
           <version>${project.version}</version>
         </dependency>
         <dependency>
