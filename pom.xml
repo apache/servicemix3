@@ -211,7 +211,7 @@
         <jencks-version>2.1</jencks-version>
         <jetty-version>6.1.5</jetty-version>
         <geronimo-version>2.0.1</geronimo-version>
-        <servicemix-version>3.2-SNAPSHOT</servicemix-version>
+        <servicemix-version>3.3-SNAPSHOT</servicemix-version>
         <wsdl4j-version>1.6.1</wsdl4j-version>
         <commons-beanutils-version>1.7.0</commons-beanutils-version>
         <commons-fileupload-version>1.1.1</commons-fileupload-version>
