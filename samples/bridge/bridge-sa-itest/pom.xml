@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.servicemix.samples</groupId>
     <artifactId>bridge</artifactId>
-    <version>3.2-SNAPSHOT</version>
+    <version>3.3-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.servicemix.samples.bridge</groupId>
@@ -38,14 +38,14 @@
       <groupId>org.apache.servicemix.samples.bridge</groupId>
       <artifactId>bridge-sa</artifactId>
       <type>zip</type>
-      <version>3.2-SNAPSHOT</version>
+      <version>3.3-SNAPSHOT</version>
     </dependency>
 
     <!-- for testing -->
     <dependency>
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-core</artifactId>
-      <version>3.2-SNAPSHOT</version>
+      <version>3.3-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
