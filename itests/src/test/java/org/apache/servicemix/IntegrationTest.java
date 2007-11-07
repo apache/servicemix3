@@ -16,6 +16,7 @@
  */
 package org.apache.servicemix;
 
+import org.apache.servicemix.nmr.api.Endpoint;
 import org.apache.servicemix.nmr.api.NMR;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -72,12 +73,15 @@ public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
             "org.apache.camel,camel-osgi," + camelVersion,
             "org.apache.camel,camel-jms," + camelVersion,
             "org.apache.camel,camel-jhc," + camelVersion,
+            "org.apache.servicemix.jbi,org.apache.servicemix.jbi.api," + servicemixVersion,
             "org.apache.servicemix.nmr,org.apache.servicemix.nmr.api," + servicemixVersion,
             "org.apache.servicemix.nmr,org.apache.servicemix.nmr.core," + servicemixVersion,
 			"org.apache.servicemix.nmr,org.apache.servicemix.nmr.spring," + servicemixVersion,
             "org.apache.servicemix.nmr,org.apache.servicemix.nmr.osgi," + servicemixVersion,
             "org.apache.servicemix,org.apache.servicemix.camel," + servicemixVersion,
+            "org.apache.servicemix,org.apache.servicemix.jaxws," + servicemixVersion,
             "org.apache.servicemix.examples,org.apache.servicemix.examples.intermediary," + servicemixVersion,
+            "org.apache.servicemix.examples,org.apache.servicemix.examples.jaxws," + servicemixVersion,
 		};
 	}
 
@@ -112,10 +116,16 @@ public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
 		waitOnContextCreation("org.apache.servicemix.examples.intermediary");
 		BundleContext context = getBundleContext();
         ServiceReference ref = context.getServiceReference(NMR.class.getName());
+        ServiceReference endpointRef = context.getServiceReference(Endpoint.class.getName());
         assertNotNull("Service Reference is null", ref);
+        assertNotNull("Endpoint Reference is null", endpointRef);
         try {
             NMR nmr = (NMR) context.getService(ref);
             assertNotNull("Cannot find the service", nmr);
+            Endpoint jaxwsProvider = (Endpoint) context.getService(endpointRef);
+            assertNotNull(jaxwsProvider);
+            assertEquals(jaxwsProvider.getClass().getName(), 
+            		"org.apache.servicemix.jaxws.JAXWSProvider");
         } finally {
             context.ungetService(ref);
         }

@@ -53,7 +53,7 @@ public class BundleExtTest extends TestCase {
         ctx.addBeanFactoryPostProcessor(processor);
         ctx.refresh();
         Object str = ctx.getBean("string");
-        //System.err.println(str);
+        System.err.println(str);
         assertNotNull(str);
         assertEquals("bundle://" + bundleId + "///schema.xsd", str);
     }

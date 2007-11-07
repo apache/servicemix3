@@ -40,6 +40,7 @@
         <module>itests</module>
         <module>main</module>
         <module>apache-servicemix</module>
+        <module>jaxws</module>
     </modules>
 
     <distributionManagement>
@@ -69,6 +70,7 @@
         <commons.logging.version>1.1</commons.logging.version>
         <gshell.version>1.0-alpha-1-SNAPSHOT</gshell.version>
         <acegi.version>1.0.0</acegi.version>
+        <cxf.version>2.0.2-incubator</cxf.version>
     </properties>
 
     <repositories>
@@ -160,6 +162,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.apache.servicemix</groupId>
+                <artifactId>org.apache.servicemix.jaxws</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.nmr</groupId>
                 <artifactId>org.apache.servicemix.nmr.api</artifactId>
