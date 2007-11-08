@@ -92,7 +92,7 @@ public class DescriptorFactory {
             copyInputStream(url.openStream(), baos);
             // Validate descriptor
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XSD_SCHEMA_LANGUAGE);
-            Schema schema = schemaFactory.newSchema(DescriptorFactory.class.getResource("/jbi-descriptor.xsd"));
+            Schema schema = schemaFactory.newSchema(DescriptorFactory.class.getResource("jbi-descriptor.xsd"));
             Validator validator = schema.newValidator();
             validator.setErrorHandler(new ErrorHandler() {
                 public void warning(SAXParseException exception) throws SAXException {
