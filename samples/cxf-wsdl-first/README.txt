@@ -29,7 +29,7 @@ To run this sample, launch the following commands:
   mvn install jbi:projectDeploy
 
 You can browse the WSDL at
-  http://localhost:8192/PersonService?wsdl
+  http://localhost:8092/PersonService?wsdl
   
 You can also open the client.html page in a browser
 to send a request to the service.

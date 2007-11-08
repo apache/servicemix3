@@ -21,4 +21,4 @@ Welcome to the ServiceMix Examples
 This distribution contains several examples that are a good
 starting point.  You will find more informations on the
 user guide:
-  http://incubator.apache.org/servicemix/users-guide.html
+  http://servicemix.apache.org/users-guide.html

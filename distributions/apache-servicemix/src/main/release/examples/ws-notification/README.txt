@@ -44,5 +44,5 @@ the topic named MyTopic.
 
 WS-Notification demand publishing and filters will be added soon. 
 
-See http://incubator.apache.org/servicemix/ws-notification-clustered.html
+See http://servicemix.apache.org/ws-notification-clustered.html
 for more informations.

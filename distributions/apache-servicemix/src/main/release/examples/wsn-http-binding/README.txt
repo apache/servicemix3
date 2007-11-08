@@ -31,5 +31,5 @@ This will start the wsn-http-binding demo.
 You can see the exposed service (and its WSDL) browsing at
    http://localhost:8192/
 
-See http://incubator.apache.org/servicemix/ws-notification-http-binding.html
+See http://servicemix.apache.org/ws-notification-http-binding.html
 for more informations.
