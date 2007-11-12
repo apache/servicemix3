@@ -1,4 +1,4 @@
-package org.apache.servicemix.offline;
+package org.apache.servicemix.jbi.offline;
 
 
 import java.io.File;
