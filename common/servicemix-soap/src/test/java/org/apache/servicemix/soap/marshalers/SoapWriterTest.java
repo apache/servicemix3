@@ -23,25 +23,25 @@ import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import junit.framework.TestCase;
 
 public class SoapWriterTest extends TestCase {
-			
-	public void testGetContentTypeSimpleMessage() throws Exception {
-		SoapWriter writer = new SoapWriter(new SoapMarshaler(), new SoapMessage());
-		assertEquals("text/xml;charset=UTF-8", writer.getContentType());
-	}
-	
-	public void testGetContentTypeSimpleMessageDefaultCharsetChanged() throws Exception {
-		SourceTransformer.defaultCharset = "ISO-8859-1";
-		SoapWriter writer = new SoapWriter(new SoapMarshaler(), new SoapMessage());
-		assertEquals("text/xml;charset=ISO-8859-1", writer.getContentType());
-		SourceTransformer.defaultCharset = "UTF-8";
-	}
-	
-	public void testGetContentTypeComplexMessage() throws Exception {
-		SoapMessage message = new SoapMessage();
-		DataHandler handler = new DataHandler(new Object(), "mime/type");
-		message.addAttachment("attachment", handler);
-		
-		SoapWriter writer = new SoapWriter(new SoapMarshaler(), message);
-		assertTrue(writer.getContentType().startsWith("multipart/related; type=\"text/xml\""));		
-	}
+
+    public void testGetContentTypeSimpleMessage() throws Exception {
+        SoapWriter writer = new SoapWriter(new SoapMarshaler(), new SoapMessage());
+        assertEquals("text/xml;charset=UTF-8", writer.getContentType());
+    }
+
+    public void testGetContentTypeSimpleMessageDefaultCharsetChanged() throws Exception {
+        SourceTransformer.defaultCharset = "ISO-8859-1";
+        SoapWriter writer = new SoapWriter(new SoapMarshaler(), new SoapMessage());
+        assertEquals("text/xml;charset=ISO-8859-1", writer.getContentType());
+        SourceTransformer.defaultCharset = "UTF-8";
+    }
+
+    public void testGetContentTypeComplexMessage() throws Exception {
+        SoapMessage message = new SoapMessage();
+        DataHandler handler = new DataHandler(new Object(), "mime/type");
+        message.addAttachment("attachment", handler);
+
+        SoapWriter writer = new SoapWriter(new SoapMarshaler(), message);
+        assertTrue(writer.getContentType().startsWith("multipart/related; type=\"text/xml\""));
+    }
 }
