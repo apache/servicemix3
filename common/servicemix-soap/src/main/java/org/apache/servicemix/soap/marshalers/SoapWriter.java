@@ -97,7 +97,7 @@ public class SoapWriter {
             parts = new MimeMultipart("related; type=\"text/xml\"; start=\"<" + SOAP_PART_ID + ">\"");
             return parts.getContentType();
         } else {
-            return "text/xml";
+            return "text/xml;charset=utf-8";
         }
     }
 
