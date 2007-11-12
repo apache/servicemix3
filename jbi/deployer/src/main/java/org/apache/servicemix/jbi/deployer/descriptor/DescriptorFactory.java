@@ -80,16 +80,46 @@ public class DescriptorFactory {
 
     /**
      * Build a jbi descriptor from the specified URL
-     * 
+     *
      * @param url
      *            url to the jbi descriptor
      * @return the Descriptor object
      */
     public static Descriptor buildDescriptor(final URL url) {
         try {
+            return buildDescriptor(url.openStream());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    /**
+     * Build a jbi descriptor from the specified stream
+     *
+     * @param stream
+     *            input stream to the jbi descriptor
+     * @return the Descriptor object
+     */
+    public static Descriptor buildDescriptor(final InputStream stream) {
+        try {
             // Read descriptor
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            copyInputStream(url.openStream(), baos);
+            copyInputStream(stream, baos);
+            return buildDescriptor(baos.toByteArray());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Build a jbi descriptor from the specified binary data
+     * 
+     * @param bytes
+     * @return the Descriptor object
+     */
+    public static Descriptor buildDescriptor(final byte[] bytes) {
+        try {
             // Validate descriptor
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XSD_SCHEMA_LANGUAGE);
             Schema schema = schemaFactory.newSchema(DescriptorFactory.class.getResource("jbi-descriptor.xsd"));
@@ -105,12 +135,12 @@ public class DescriptorFactory {
                     throw exception;
                 }
             });
-            validator.validate(new StreamSource(new ByteArrayInputStream(baos.toByteArray())));
+            validator.validate(new StreamSource(new ByteArrayInputStream(bytes)));
             // Parse descriptor
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
             DocumentBuilder docBuilder = factory.newDocumentBuilder();
-            Document doc = docBuilder.parse(new ByteArrayInputStream(baos.toByteArray()));
+            Document doc = docBuilder.parse(new ByteArrayInputStream(bytes));
             Element jbi = doc.getDocumentElement();
             Descriptor desc = new Descriptor();
             desc.setVersion(Double.parseDouble(getAttribute(jbi, "version")));

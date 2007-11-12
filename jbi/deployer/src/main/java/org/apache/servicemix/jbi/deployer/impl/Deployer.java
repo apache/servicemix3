@@ -24,22 +24,29 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jbi.component.Component;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.deployer.SharedLibrary;
 import org.apache.servicemix.jbi.deployer.descriptor.Descriptor;
 import org.apache.servicemix.jbi.deployer.descriptor.DescriptorFactory;
 import org.apache.servicemix.jbi.deployer.descriptor.SharedLibraryList;
-import org.apache.xbean.classloader.JarFileClassLoader;
+import org.apache.xbean.classloader.MultiParentClassLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.osgi.context.BundleContextAware;
 import org.springframework.osgi.internal.context.support.BundleDelegatingClassLoader;
 
 /**
  * Deployer for JBI artifacts
  *
  */
-public class Deployer implements BundleListener {
+public class Deployer implements BundleListener, BundleContextAware, InitializingBean, DisposableBean {
+
+    private static final Log LOGGER = LogFactory.getLog(Deployer.class);
 
     private static final String JBI_DESCRIPTOR = "META-INF/jbi.xml";
 
@@ -58,13 +65,23 @@ public class Deployer implements BundleListener {
         this.context = context;
     }
 
+    public void afterPropertiesSet() throws Exception {
+        this.context.addBundleListener(this);
+    }
+
+    public void destroy() throws Exception {
+        this.context.removeBundleListener(this);
+    }
+
     public void bundleChanged(BundleEvent event) {
         try {
             if (event.getType() == BundleEvent.INSTALLED) {
+                LOGGER.debug("Checking bundle: " + event.getBundle().getSymbolicName());
                 URL url = event.getBundle().getResource(JBI_DESCRIPTOR);
                 Descriptor descriptor = DescriptorFactory.buildDescriptor(url);
                 // TODO: check descriptor
                 if (descriptor.getComponent() != null) {
+                    LOGGER.debug("Bundle '" + event.getBundle().getSymbolicName() + "' is a JBI component");
                     // Create component class loader
                     ClassLoader classLoader = createComponentClassLoader(descriptor.getComponent(), event.getBundle());
                     // Instanciate component
@@ -75,10 +92,13 @@ public class Deployer implements BundleListener {
                     props.put(NAME, descriptor.getComponent().getIdentification().getName());
                     props.put(TYPE, descriptor.getComponent().getType());
                     // register the component in the OSGi registry
+                    LOGGER.debug("Registering JBI component");
                     context.registerService(Component.class.getName(), component, props);
                 } else if (descriptor.getServiceAssembly() != null) {
+                    LOGGER.debug("Bundle '" + event.getBundle().getSymbolicName() + "' is a JBI service assembly");
                     // TODO:
                 } else if (descriptor.getSharedLibrary() != null) {
+                    LOGGER.debug("Bundle '" + event.getBundle().getSymbolicName() + "' is a JBI shared library");
                     SharedLibraryImpl sl = new SharedLibraryImpl(descriptor.getSharedLibrary(), event.getBundle());
                     sharedLibraries.put(sl.getName(), sl);
                     //context.registerService(SharedLibrary.class.getName(), sl, new Properties());
@@ -87,8 +107,7 @@ public class Deployer implements BundleListener {
                 }
             }
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.error("Error handling bundle event", e);
         }
     }
 
@@ -103,7 +122,7 @@ public class Deployer implements BundleListener {
         } else {
             parents = new ClassLoader[1];
         }
-        parents[0] = BundleDelegatingClassLoader.createBundleClassLoaderFor(bundle, null);
+        parents[0] = BundleDelegatingClassLoader.createBundleClassLoaderFor(bundle, getClass().getClassLoader());
 
         // Create urls
         String[] classPathNames = component.getComponentClassPath().getPathElements();
@@ -116,7 +135,7 @@ public class Deployer implements BundleListener {
         }
 
         // Create classloader
-        return new JarFileClassLoader(
+        return new MultiParentClassLoader(
                         component.getIdentification().getName(),
                         urls,
                         parents,

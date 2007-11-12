@@ -7,6 +7,7 @@ import java.net.URL;
 import org.apache.servicemix.jbi.deployer.SharedLibrary;
 import org.apache.servicemix.jbi.deployer.descriptor.ClassPath;
 import org.apache.xbean.classloader.JarFileClassLoader;
+import org.apache.xbean.classloader.MultiParentClassLoader;
 import org.osgi.framework.Bundle;
 import org.springframework.osgi.internal.context.support.BundleDelegatingClassLoader;
 
@@ -41,7 +42,7 @@ public class SharedLibraryImpl implements SharedLibrary {
 
     public ClassLoader createClassLoader() {
         // Make the current ClassLoader the parent
-        ClassLoader parent = BundleDelegatingClassLoader.createBundleClassLoaderFor(bundle, null);
+        ClassLoader parent = BundleDelegatingClassLoader.createBundleClassLoaderFor(bundle, getClass().getClassLoader());
         boolean parentFirst = library.isParentFirstClassLoaderDelegation();
         ClassPath cp = library.getSharedLibraryClassPath();
         String[] classPathNames = cp.getPathElements();
@@ -52,7 +53,7 @@ public class SharedLibraryImpl implements SharedLibrary {
                 throw new IllegalArgumentException("SharedLibrary classpath entry not found: '" +  classPathNames[i] + "'");
             }
         }
-        return new JarFileClassLoader(
+        return new MultiParentClassLoader(
                         library.getIdentification().getName(),
                         urls,
                         parent,
