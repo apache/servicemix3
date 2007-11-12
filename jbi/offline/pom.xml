@@ -56,7 +56,6 @@
       <groupId>org.springframework.osgi</groupId>
       <artifactId>spring-osgi-test</artifactId>
       <version>${spring.osgi.version}</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
