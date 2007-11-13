@@ -91,7 +91,6 @@
             <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
             <Export-Package>${pom.artifactId}*</Export-Package>
             <Import-Package>org.springframework*;resolution:=optional,*</Import-Package>
-            <Spring-Context>*;publish-context:=false</Spring-Context>
           </instructions>
         </configuration>
       </plugin>

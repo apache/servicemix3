@@ -17,6 +17,7 @@
 package org.apache.servicemix.jbi;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -102,8 +103,9 @@ public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
     protected String getBundleVersion(String groupId, String artifactId) {
         if (dependencies == null) {
             try {
+                File f = new File(System.getProperty("basedir"), "target/classes/META-INF/maven/dependencies.properties");
                 Properties prop = new Properties();
-                prop.load(getClass().getResourceAsStream("/META-INF/maven/dependencies.properties"));
+                prop.load(new FileInputStream(f));
                 dependencies = prop;
             } catch (IOException e) {
                 throw new IllegalStateException("Unable to load dependencies informations", e);
@@ -111,7 +113,7 @@ public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
         }
         String version = dependencies.getProperty(groupId + "/" + artifactId + "/version");
         if (version == null) {
-            throw new IllegalStateException("Unable to find dependency information for: " + groupId + " / " + artifactId);
+            throw new IllegalStateException("Unable to find dependency information for: " + groupId + "/" + artifactId + "/version");
         }
         return version;
     }
@@ -130,15 +132,14 @@ public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
 
     public void testJbiComponent() throws Exception {
         // Test currently fails
-        installArtifact("org.apache.servicemix", "servicemix-shared-compat", "3.2.1-SNAPSHOT", "installer", "zip");
-        //installArtifact("org.apache.servicemix", "servicemix-shared-compat", "3.2.1-SNAPSHOT", "installer", "zip");
-        installArtifact("org.apache.servicemix", "servicemix-eip", "3.2.1-SNAPSHOT", "installer", "zip");
+        installArtifact("org.apache.servicemix", "servicemix-shared-compat", "installer", "zip");
+        installArtifact("org.apache.servicemix", "servicemix-eip", "installer", "zip");
 
         Thread.sleep(1000);
     }
 
-    protected void installArtifact(String groupId, String artifactId, String version, String classifier, String type) throws Exception {
-        version = getBundleVersion(groupId, artifactId);
+    protected void installArtifact(String groupId, String artifactId, String classifier, String type) throws Exception {
+        String version = getBundleVersion(groupId, artifactId);
         File in = localMavenBundle(groupId, artifactId, version, classifier, type);
         File out = File.createTempFile("smx", ".jar");
         new Main().run(in.toString(), out.toString());
