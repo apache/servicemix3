@@ -58,7 +58,7 @@ public class SpringJBIContainer extends JBIContainer implements InitializingBean
     private ApplicationContext applicationContext;
     private String[] deployArchives;
     private DeploySupport[] deployments;
-    private Object shutdownLock;
+    private Runnable onShutDown;
     private Map components;
     private Map endpoints;
 
@@ -304,19 +304,22 @@ public class SpringJBIContainer extends JBIContainer implements InitializingBean
     }
 
     public void shutDown() throws JBIException {
-        if (shutdownLock != null) {
-            synchronized (shutdownLock) {
-                shutdownLock.notify();
-            }
+        if (onShutDown != null) {
+            onShutDown.run();
+        } else {
+            //no shutdown handler has been set
+            //shutting down the container ourselves
+            super.shutDown();
         }
     }
 
     /**
-     * @param lock
-     * @org.apache.xbean.Property hidden="true"
+     * Set a {@link Runnable} which can handle the shutdown of the container
+     * 
+     * @param runnable the shutdown handler
      */
-    public void setShutdownLock(Object lock) {
-        this.shutdownLock = lock;
+    public void onShutDown(Runnable runnable) {
+        this.onShutDown = runnable;
     }
 
     /**
@@ -340,5 +343,5 @@ public class SpringJBIContainer extends JBIContainer implements InitializingBean
     public void setEndpoints(Map endpoints) {
         this.endpoints = endpoints;
     }
-
+    
 }
