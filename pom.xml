@@ -333,6 +333,7 @@
                 <module>web</module>
                 <module>platforms</module>
                 <module>distributions</module>
+                <module>parent</module>
             </modules>
             <build>
                 <defaultGoal>deploy</defaultGoal>
