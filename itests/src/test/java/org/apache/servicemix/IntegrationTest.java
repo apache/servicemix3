@@ -16,17 +16,20 @@
  */
 package org.apache.servicemix;
 
+import java.io.IOException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
+
 import org.apache.servicemix.nmr.api.Endpoint;
 import org.apache.servicemix.nmr.api.NMR;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 import org.springframework.osgi.test.AbstractConfigurableBundleCreatorTests;
 
 public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
 
-    private static final String TEST_FRAMEWORK_BUNDLES_CONF_FILE = "/org/apache/servicemix/boot-bundles.properties";
+    private Properties dependencies;
 
     /**
 	 * The manifest to use for the "virtual bundle" created
@@ -55,51 +58,82 @@ public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
 	 * to be specified here.
 	 */
 	protected String[] getTestBundlesNames() {
-        String servicemixVersion = "4.0-SNAPSHOT";
-        String camelVersion = "1.3-SNAPSHOT";
         return new String[] {
-            "org.apache.geronimo.specs,geronimo-jms_1.1_spec,1.1.1-SNAPSHOT",
-            "org.apache.geronimo.specs,geronimo-j2ee-management_1.1_spec,1.0.1-SNAPSHOT",
-            "org.apache.geronimo.specs,geronimo-stax-api_1.0_spec,1.0.1-SNAPSHOT",
-            "org.apache.geronimo.specs,geronimo-activation_1.1_spec,1.0.1-SNAPSHOT",
-            "org.apache.servicemix.bundles,org.apache.servicemix.bundles.jaxb-api,2.0-" + servicemixVersion,
-            "org.apache.servicemix.bundles,org.apache.servicemix.bundles.jaxb-impl,2.0.3-" + servicemixVersion,
-            "org.apache.servicemix.bundles,org.apache.servicemix.bundles.httpcore,4.0-alpha5-" + servicemixVersion,
-            "org.apache.activemq,activemq-core,5.0-SNAPSHOT",
-            "org.springframework,spring-tx," + getSpringBundledVersion(),
-            "org.springframework,spring-jms," + getSpringBundledVersion(),
-            "org.apache.camel,camel-core," + camelVersion,
-            "org.apache.camel,camel-spring," + camelVersion,
-            "org.apache.camel,camel-osgi," + camelVersion,
-            "org.apache.camel,camel-jms," + camelVersion,
-            "org.apache.camel,camel-jhc," + camelVersion,
-            "org.apache.servicemix.jbi,org.apache.servicemix.jbi.api," + servicemixVersion,
-            "org.apache.servicemix.nmr,org.apache.servicemix.nmr.api," + servicemixVersion,
-            "org.apache.servicemix.nmr,org.apache.servicemix.nmr.core," + servicemixVersion,
-			"org.apache.servicemix.nmr,org.apache.servicemix.nmr.spring," + servicemixVersion,
-            "org.apache.servicemix.nmr,org.apache.servicemix.nmr.osgi," + servicemixVersion,
-            "org.apache.servicemix,org.apache.servicemix.camel," + servicemixVersion,
-            "org.apache.servicemix,org.apache.servicemix.jaxws," + servicemixVersion,
-            "org.apache.servicemix.examples,org.apache.servicemix.examples.intermediary," + servicemixVersion,
-            "org.apache.servicemix.examples,org.apache.servicemix.examples.jaxws," + servicemixVersion,
+            getBundle("org.apache.geronimo.specs", "geronimo-jms_1.1_spec"),
+            getBundle("org.apache.geronimo.specs", "geronimo-servlet_2.5_spec"),
+            getBundle("org.apache.geronimo.specs", "geronimo-j2ee-management_1.1_spec"),
+            getBundle("org.apache.geronimo.specs", "geronimo-stax-api_1.0_spec"),
+            getBundle("org.apache.geronimo.specs", "geronimo-activation_1.1_spec"),
+            getBundle("org.apache.felix", "org.osgi.compendium"),
+            getBundle("org.ops4j.pax.logging", "pax-logging-api"),
+            getBundle("org.ops4j.pax.logging", "pax-logging-service"),
+            getBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.aopalliance"),
+            getBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jaxb-api"),
+            getBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.jaxb-impl"),
+            getBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.httpcore"),
+            getBundle("org.apache.activemq", "activemq-core"),
+            getBundle("org.springframework", "spring-beans"),
+            getBundle("org.springframework", "spring-core"),
+            getBundle("org.springframework", "spring-context"),
+            getBundle("org.springframework", "spring-aop"),
+            getBundle("org.springframework", "spring-test"),
+            getBundle("org.springframework", "spring-tx"),
+            getBundle("org.springframework", "spring-jms"),
+            getBundle("org.springframework.osgi", "spring-osgi-core"),
+            getBundle("org.springframework.osgi", "spring-osgi-io"),
+            getBundle("org.springframework.osgi", "spring-osgi-extender"),
+            getBundle("org.springframework.osgi", "spring-osgi-test"),
+            getBundle("org.springframework.osgi", "spring-osgi-annotation"),
+            getBundle("org.springframework.osgi", "junit.osgi"),
+            getBundle("org.springframework.osgi", "asm.osgi"),
+            getBundle("org.apache.camel", "camel-core"),
+            getBundle("org.apache.camel", "camel-spring"),
+            getBundle("org.apache.camel", "camel-osgi"),
+            getBundle("org.apache.camel", "camel-jms"),
+            getBundle("org.apache.camel", "camel-jhc"),
+            getBundle("org.apache.servicemix.jbi", "org.apache.servicemix.jbi.api"),
+            getBundle("org.apache.servicemix.nmr", "org.apache.servicemix.nmr.api"),
+            getBundle("org.apache.servicemix.nmr", "org.apache.servicemix.nmr.core"),
+			getBundle("org.apache.servicemix.nmr", "org.apache.servicemix.nmr.spring"),
+            getBundle("org.apache.servicemix.nmr", "org.apache.servicemix.nmr.osgi"),
+            getBundle("org.apache.servicemix", "org.apache.servicemix.camel"),
+            getBundle("org.apache.servicemix", "org.apache.servicemix.jaxws"),
+            getBundle("org.apache.servicemix.examples", "org.apache.servicemix.examples.intermediary"),
+            getBundle("org.apache.servicemix.examples", "org.apache.servicemix.examples.jaxws"),
 		};
 	}
 
-    protected Resource getTestingFrameworkBundlesConfiguration() {
-        return new InputStreamResource(getClass().getResourceAsStream(TEST_FRAMEWORK_BUNDLES_CONF_FILE));
-    }
-    
-    protected String getSpringBundledVersion() {
-        return "2.5-rc1";
+    protected String getBundle(String groupId, String artifactId) {
+        return groupId + "," + artifactId + "," + getBundleVersion(groupId, artifactId);
     }
 
+    protected String getBundleVersion(String groupId, String artifactId) {
+        if (dependencies == null) {
+            try {
+                File f = new File(System.getProperty("basedir"), "target/classes/META-INF/maven/dependencies.properties");
+                Properties prop = new Properties();
+                prop.load(new FileInputStream(f));
+                dependencies = prop;
+            } catch (IOException e) {
+                throw new IllegalStateException("Unable to load dependencies informations", e);
+            }
+        }
+        String version = dependencies.getProperty(groupId + "/" + artifactId + "/version");
+        if (version == null) {
+            throw new IllegalStateException("Unable to find dependency information for: " + groupId + "/" + artifactId + "/version");
+        }
+        return version;
+    }
+
+    protected String[] getTestFrameworkBundlesNames() {
+        return null;
+    }
 
     /**
 	 * The superclass provides us access to the root bundle
 	 * context via the 'getBundleContext' operation
 	 */
 	public void testOSGiStartedOk() {
-		BundleContext bundleContext = getBundleContext();
 		assertNotNull(bundleContext);
 	}
 	
@@ -114,20 +148,19 @@ public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
 	 */
 	public void testSimpleServiceExported() {
 		waitOnContextCreation("org.apache.servicemix.examples.intermediary");
-		BundleContext context = getBundleContext();
-        ServiceReference ref = context.getServiceReference(NMR.class.getName());
-        ServiceReference endpointRef = context.getServiceReference(Endpoint.class.getName());
+        ServiceReference ref = bundleContext.getServiceReference(NMR.class.getName());
+        ServiceReference endpointRef = bundleContext.getServiceReference(Endpoint.class.getName());
         assertNotNull("Service Reference is null", ref);
         assertNotNull("Endpoint Reference is null", endpointRef);
         try {
-            NMR nmr = (NMR) context.getService(ref);
+            NMR nmr = (NMR) bundleContext.getService(ref);
             assertNotNull("Cannot find the service", nmr);
-            Endpoint jaxwsProvider = (Endpoint) context.getService(endpointRef);
+            Endpoint jaxwsProvider = (Endpoint) bundleContext.getService(endpointRef);
             assertNotNull(jaxwsProvider);
             assertEquals(jaxwsProvider.getClass().getName(), 
             		"org.apache.servicemix.jaxws.JAXWSProvider");
         } finally {
-            context.ungetService(ref);
+            bundleContext.ungetService(ref);
         }
 	}
 
