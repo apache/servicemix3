@@ -19,7 +19,6 @@ package org.apache.servicemix;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observer;
 
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.apache.xbean.server.repository.FileSystemRepository;
