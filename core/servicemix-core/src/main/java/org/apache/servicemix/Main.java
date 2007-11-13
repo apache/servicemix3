@@ -19,6 +19,7 @@ package org.apache.servicemix;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observer;
 
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.apache.xbean.server.repository.FileSystemRepository;
@@ -48,7 +49,7 @@ public final class Main {
             System.out.println("Starting Apache ServiceMix ESB" + version);
             System.out.println();
 
-            ApplicationContext context = null;
+            final ApplicationContext context;
             if (args.length <= 0) {
                 System.out.println("Loading Apache ServiceMix from servicemix.xml on the CLASSPATH");
                 context = new ClassPathXmlApplicationContext("servicemix.xml");
@@ -66,17 +67,20 @@ public final class Main {
                 System.out.println("Loading Apache ServiceMix from file: " + file);
                 context = new FileSystemXmlApplicationContext(file, processors);
             }
-            SpringJBIContainer container = (SpringJBIContainer) context.getBean("jbi");
-            Object lock = new Object();
-            container.setShutdownLock(lock);
-
-            // lets wait until we're killed.
-            synchronized (lock) {
-                lock.wait();
-            }
-            if (context instanceof DisposableBean) {
-                ((DisposableBean) context).destroy();
-            }
+            SpringJBIContainer container = (SpringJBIContainer) context.getBean("jbi");            
+            container.onShutDown(new Runnable() {
+                public void run() {
+                    if (context instanceof DisposableBean) {
+                        try {
+                            ((DisposableBean) context).destroy();
+                        } catch (Exception e) {
+                            System.out.println("Caught: " + e);
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+            
         } catch (Exception e) {
             System.out.println("Caught: " + e);
             e.printStackTrace();
