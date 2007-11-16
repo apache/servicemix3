@@ -38,14 +38,20 @@
         <module>acegi</module>
         <module>aopalliance</module>
         <module>cglib</module>
+        <module>cxf</module>
         <module>jaxb-api</module>
         <module>jaxb-impl</module>
+        <module>jaxws-api</module>
         <module>httpcore</module>
+        <module>openejb</module>
+        <module>openjpa</module>
+        <module>wsdl4j</module>
     </modules>
 
     <properties>
         <servicemix.osgi.export.pkg></servicemix.osgi.export.pkg>
         <servicemix.osgi.import.pkg></servicemix.osgi.import.pkg>
+        <servicemix.osgi.private.pkg></servicemix.osgi.private.pkg>
     </properties>
 
     <build>
@@ -67,7 +73,7 @@
                         <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
                         <Export-Package>${servicemix.osgi.export.pkg}*;version=${pkgVersion}</Export-Package>
                         <Import-Package>${servicemix.osgi.import.pkg}*</Import-Package>
-                        <DynamicImport-Package>*</DynamicImport-Package>
+                        <Private-Package>${servicemix.osgi.private.pkg}</Private-Package>
                     </instructions>
                 </configuration>
             </plugin>
