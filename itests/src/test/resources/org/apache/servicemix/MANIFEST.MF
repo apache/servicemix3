@@ -24,4 +24,6 @@ Import-Package: junit.framework,
  org.springframework.core.io,
  org.springframework.osgi.test,
  org.apache.servicemix.nmr.api,
- org.apache.servicemix.nmr.core
+ org.apache.servicemix.nmr.core,
+ javax.jms
+
