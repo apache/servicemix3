@@ -16,6 +16,7 @@
  */
 package org.apache.servicemix.jbi.nmr.flow.jms;
 
+import javax.jbi.JBIException;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -40,8 +41,11 @@ import org.apache.activemq.pool.PooledConnectionFactory;
  */
 public class JMSFlow extends AbstractJMSFlow {
 
+    private PooledConnectionFactory factory;
+
     protected ConnectionFactory createConnectionFactoryFromUrl(String jmsURL) {
-        return (jmsURL != null) ? new PooledConnectionFactory(jmsURL) : new PooledConnectionFactory();
+        factory = (jmsURL != null) ? new PooledConnectionFactory(jmsURL) : new PooledConnectionFactory();
+        return factory;
     }
 
     /**
@@ -74,4 +78,15 @@ public class JMSFlow extends AbstractJMSFlow {
         });
     }
 
+    @Override
+    public void shutDown() throws JBIException {
+        super.shutDown();
+        if (factory != null) {
+            try {
+                factory.stop();
+            } catch (Exception e) {
+                log.warn("Unable to stop JMS connection pool: " + e, e);
+            }
+        }
+    }
 }

@@ -24,7 +24,7 @@
        xmlns:amqra="http://activemq.org/ra/1.0"
        xmlns:util="http://www.springframework.org/schema/util">
 
-  <bean id="jndi" 
+  <bean id="jndi" depends-on="broker"
         class="org.apache.xbean.spring.jndi.SpringInitialContextFactory" 
         factory-method="makeInitialContext"
         singleton="true">

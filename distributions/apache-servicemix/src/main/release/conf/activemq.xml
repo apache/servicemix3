@@ -20,7 +20,7 @@
 <beans xmlns:amq="http://activemq.org/config/1.0">
   
   <!-- ActiveMQ JMS Broker configuration -->
-  <amq:broker depends-on="jmxServer" useShutdownHook="false">
+  <amq:broker id="broker" depends-on="jmxServer" useShutdownHook="false">
 
     <!-- Disable creation of the jmx connector 
          which is created in the jmx.xml configuration file -->
