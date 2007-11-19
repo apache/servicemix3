@@ -38,33 +38,17 @@
     </description>
 
     <properties>
-        <pkgArtifactId>jaxws-api</pkgArtifactId>
-        <pkgVersion>2.0</pkgVersion>
+        <pkgArtifactId>asm</pkgArtifactId>
+        <pkgVersion>2.2.3</pkgVersion>
         <pomVersion>4.0-SNAPSHOT</pomVersion>
-        <servicemix.osgi.export.pkg>javax.xml.ws*</servicemix.osgi.export.pkg>
-        <servicemix.osgi.import.pkg>
-            javax.xml.soap*;resolution:=optional,
-            *
-        </servicemix.osgi.import.pkg>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>javax.xml.ws</groupId>
-            <artifactId>${pkgArtifactId}</artifactId>
+            <groupId>asm</groupId>
+            <artifactId>asm-all</artifactId>
             <version>${pkgVersion}</version>
-            <exclusions>
-                <groupId>javax.xml.bind</groupId>
-                <artifactId>jaxb-api</artifactId>
-            </exclusions>
-        </dependency>
-        <dependency>
-		    <groupId>org.apache.servicemix.bundles</groupId>
-            <artifactId>org.apache.servicemix.bundles.jaxb-api</artifactId>
-        </dependency>
-        <dependency>
-		    <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-saaj_1.1_spec</artifactId>
         </dependency>
     </dependencies>
+
 </project>

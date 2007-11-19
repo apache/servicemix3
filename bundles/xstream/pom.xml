@@ -38,33 +38,32 @@
     </description>
 
     <properties>
-        <pkgArtifactId>jaxws-api</pkgArtifactId>
-        <pkgVersion>2.0</pkgVersion>
+        <pkgArtifactId>xstream</pkgArtifactId>
+        <pkgVersion>1.2.2</pkgVersion>
         <pomVersion>4.0-SNAPSHOT</pomVersion>
-        <servicemix.osgi.export.pkg>javax.xml.ws*</servicemix.osgi.export.pkg>
+        <servicemix.osgi.export.pkg>
+            com.thoughtworks.xstream*
+        </servicemix.osgi.export.pkg>
         <servicemix.osgi.import.pkg>
-            javax.xml.soap*;resolution:=optional,
+            net.sf.cglib*;resolution:=optional,
+            nu.xom*;resolution:=optional,
+            org.codehaus.aspectwerkz*;resolution:=optional,
+            org.codehaus.jettison*;resolution:=optional,
+            org.dom4j*;resolution:=optional,
+            org.jdom*;resolution:=optional,
+            org.joda.time*;resolution:=optional,
+            org.xmlpull*;resolution:=optional,
+            sun*;resolution:=optional,
             *
         </servicemix.osgi.import.pkg>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>javax.xml.ws</groupId>
+            <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>${pkgArtifactId}</artifactId>
             <version>${pkgVersion}</version>
-            <exclusions>
-                <groupId>javax.xml.bind</groupId>
-                <artifactId>jaxb-api</artifactId>
-            </exclusions>
-        </dependency>
-        <dependency>
-		    <groupId>org.apache.servicemix.bundles</groupId>
-            <artifactId>org.apache.servicemix.bundles.jaxb-api</artifactId>
-        </dependency>
-        <dependency>
-		    <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-saaj_1.1_spec</artifactId>
         </dependency>
     </dependencies>
+
 </project>

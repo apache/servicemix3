@@ -37,6 +37,7 @@
     <modules>
         <module>acegi</module>
         <module>aopalliance</module>
+        <module>asm</module>
         <module>cglib</module>
         <module>cxf</module>
         <module>jaxb-api</module>
@@ -46,6 +47,7 @@
         <module>openejb</module>
         <module>openjpa</module>
         <module>wsdl4j</module>
+        <module>xstream</module>
     </modules>
 
     <properties>
