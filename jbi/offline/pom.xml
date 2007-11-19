@@ -58,6 +58,7 @@
         <classifier>installer</classifier>
         <type>zip</type>
         <version>3.1.2</version>
+        <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>

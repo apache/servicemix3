@@ -101,7 +101,11 @@ public class Deployer implements BundleListener, BundleContextAware, Initializin
                     LOGGER.debug("Bundle '" + event.getBundle().getSymbolicName() + "' is a JBI shared library");
                     SharedLibraryImpl sl = new SharedLibraryImpl(descriptor.getSharedLibrary(), event.getBundle());
                     sharedLibraries.put(sl.getName(), sl);
-                    //context.registerService(SharedLibrary.class.getName(), sl, new Properties());
+                    Dictionary<String, String> props = new Hashtable<String, String>();
+                    // populate props from the library meta-data
+                    props.put(NAME, descriptor.getSharedLibrary().getIdentification().getName());
+                    LOGGER.debug("Registering JBI Shared Library");
+                    context.registerService(SharedLibrary.class.getName(), sl, props);
                 } else {
                     // WARN: unhandled JBI artifact
                 }

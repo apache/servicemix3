@@ -17,33 +17,8 @@
 package org.apache.servicemix.jbi.deployer;
 
 /**
- * This interface represents a JBI Shared Library and will be registered in
- * the OSGi registry
+ * This interface represents a JBI Service Assembly and will be registered
+ * in the OSGi registry
  */
-public interface SharedLibrary {
-
-    /**
-     * Retrieves the name of this shared library
-     * @return the name
-     */
-    String getName();
-
-    /**
-     * Retrieves the description of this shared library
-     * @return the description
-     */
-    String getDescription();
-
-    /**
-     * Retrieves the version of this shared library
-     * @return the version
-     */
-    String getVersion();
-
-    /**
-     * Create a classloader for this shared library
-     * @return a new classloader
-     */
-    ClassLoader createClassLoader();
-    
+public interface ServiceAssembly {
 }

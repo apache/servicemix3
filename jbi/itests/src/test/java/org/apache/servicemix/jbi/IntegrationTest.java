@@ -18,12 +18,23 @@ package org.apache.servicemix.jbi;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
+import javax.jbi.component.Component;
+
 import org.apache.servicemix.jbi.offline.Main;
+import org.apache.servicemix.nmr.api.NMR;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
 import org.springframework.osgi.test.AbstractConfigurableBundleCreatorTests;
+import org.springframework.osgi.util.OsgiFilterUtils;
+import org.springframework.osgi.util.OsgiListenerUtils;
+import org.springframework.osgi.internal.util.concurrent.Counter;
 
 public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
 
@@ -122,20 +133,23 @@ public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
         return null;
     }
 
-    /**
-	 * The superclass provides us access to the root bundle
-	 * context via the 'getBundleContext' operation
-	 */
-	public void testOSGiStartedOk() {
-		assertNotNull(bundleContext);
-	}
-
     public void testJbiComponent() throws Exception {
-        // Test currently fails
-        installArtifact("org.apache.servicemix", "servicemix-shared-compat", "installer", "zip");
-        installArtifact("org.apache.servicemix", "servicemix-eip", "installer", "zip");
+        System.out.println("Waiting for NMR");
+        NMR nmr = getOsgiService(NMR.class);
+        assertNotNull(nmr);
+        installBundle(getArtifact("servicemix-shared-compat"));
+        installBundle(getArtifact("servicemix-eip"));
+        System.out.println("Waiting for JBI Component");
+        Component cmp = (Component) getOsgiService(Component.class);
+        assertNotNull(cmp);
+    }
 
-        Thread.sleep(1000);
+    protected File getArtifact(final String id) {
+        return new File("target/components/").listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.startsWith(id);
+            }
+        })[0];
     }
 
     protected void installArtifact(String groupId, String artifactId, String classifier, String type) throws Exception {
@@ -143,7 +157,16 @@ public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
         File in = localMavenBundle(groupId, artifactId, version, classifier, type);
         File out = File.createTempFile("smx", ".jar");
         new Main().run(in.toString(), out.toString());
-        Bundle bundle = bundleContext.installBundle(out.toURI().toString());
+        installBundle(out);
+    }
+
+    protected void installBundle(File file) throws Exception {
+        installBundle(file.getAbsoluteFile().toURI().toString());
+    }
+
+    protected void installBundle(String uri) throws Exception {
+        System.out.println("Installing bundle " + uri);
+        Bundle bundle = bundleContext.installBundle(uri);
         bundle.start();
     }
 
@@ -168,6 +191,98 @@ public class IntegrationTest extends AbstractConfigurableBundleCreatorTests {
         location.append(type);
 
         return new File(repositoryHome, location.toString());
+    }
+
+    public <T> T getOsgiService(Class<T> type) {
+        return getOsgiService(type, DEFAULT_WAIT_TIME);
+    }
+
+    public <T> T getOsgiService(Class<T> type, long timeout) {
+        // translate from seconds to miliseconds
+        long time = timeout * 1000;
+
+        // use the counter to make sure the threads block
+        final Counter counter = new Counter("waitForOsgiService on bnd=" + type.getName());
+
+        counter.increment();
+
+        final List<T> services = new ArrayList<T>();
+
+        ServiceListener listener = new ServiceListener() {
+            public void serviceChanged(ServiceEvent event) {
+                if (event.getType() == ServiceEvent.REGISTERED) {
+                    services.add((T) bundleContext.getService(event.getServiceReference()));
+                    counter.decrement();
+                }
+            }
+        };
+
+        String filter = OsgiFilterUtils.unifyFilter(type.getName(), null);
+        OsgiListenerUtils.addServiceListener(bundleContext, listener, filter);
+
+        if (logger.isDebugEnabled())
+            logger.debug("start waiting for OSGi service=" + type.getName());
+
+        try {
+            if (counter.waitForZero(time)) {
+                logger.warn("waiting for OSGi service=" + type.getName() + " timed out");
+                throw new RuntimeException("Gave up waiting for OSGi service '" + type.getName() + "' to be created");
+            }
+            else if (logger.isDebugEnabled()) {
+                logger.debug("found OSGi service=" + type.getName());
+            }
+            return services.get(0);
+        }
+        finally {
+            // inform waiting thread
+            bundleContext.removeServiceListener(listener);
+        }
+    }
+
+    /**
+     * Place the current (test) thread to wait for the a Spring application
+     * context to be published under the given symbolic name. This method allows
+     * waiting for full initialization of Spring OSGi bundles before starting
+     * the actual test execution.
+     *
+     * @param interfaceName
+     * @param timeout
+     */
+    public void waitForOsgiService(String interfaceName, long timeout) {
+        // translate from seconds to miliseconds
+        long time = timeout * 1000;
+
+        // use the counter to make sure the threads block
+        final Counter counter = new Counter("waitForOsgiService on bnd=" + interfaceName);
+
+        counter.increment();
+
+        ServiceListener listener = new ServiceListener() {
+            public void serviceChanged(ServiceEvent event) {
+                if (event.getType() == ServiceEvent.REGISTERED)
+                    counter.decrement();
+            }
+        };
+
+        String filter = OsgiFilterUtils.unifyFilter(interfaceName, null);
+        OsgiListenerUtils.addServiceListener(bundleContext, listener, filter);
+
+        if (logger.isDebugEnabled())
+            logger.debug("start waiting for OSGi service=" + interfaceName);
+
+        try {
+            if (counter.waitForZero(time)) {
+                logger.warn("waiting for OSGi service=" + interfaceName + " timed out");
+                throw new RuntimeException("Gave up waiting for OSGi service '" + interfaceName + "' to be created");
+            }
+            else if (logger.isDebugEnabled()) {
+                logger.debug("found OSGi service=" + interfaceName);
+            }
+        }
+        finally {
+            // inform waiting thread
+            bundleContext.removeServiceListener(listener);
+        }
     }
 
 }
