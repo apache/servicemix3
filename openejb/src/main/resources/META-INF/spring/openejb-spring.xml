@@ -20,9 +20,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:osgi="http://www.springframework.org/schema/osgi"
+       xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
        xmlns:util="http://www.springframework.org/schema/util"
-       xmlns:camel="http://activemq.apache.org/camel/schema/spring"
-       xmlns:camel-osgi="http://activemq.apache.org/camel/schema/osgi"
        xsi:schemaLocation="
   http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -30,34 +29,33 @@
   http://www.springframework.org/schema/util/spring-util.xsd
   http://www.springframework.org/schema/osgi
   http://www.springframework.org/schema/osgi/spring-osgi.xsd
-  http://activemq.apache.org/camel/schema/spring
-  http://activemq.apache.org/camel/schema/spring/camel-spring.xsd
-  http://activemq.apache.org/camel/schema/osgi
-  http://activemq.apache.org/camel/schema/osgi/camel-osgi.xsd">
+  http://www.springframework.org/schema/osgi-compendium
+  http://www.springframework.org/schema/osgi/spring-osgi-compendium.xsd">
 
-    <!-- Camel context -->
-    <camel-osgi:camelContext id="camel">
-        <camel:package>org.apache.servicemix.examples.intermediary</camel:package>
-    </camel-osgi:camelContext>
-
-    <!-- ActiveMQ component and broker -->
-    <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
-        <property name="connectionFactory" ref="connectionFactory" />
-        <property name="transactionManager" ref="jmsTransactionManager" />
+    <!-- OpenEJB factory that will initialize the EJB container -->
+    <bean id="openEjb" class="org.apache.servicemix.openejb.OpenEjbFactory">
+        <property name="properties">
+            <props>
+                
+            </props>
+        </property>
+        <property name="transactionManager" ref="transactionManager" />
+        <property name="wsRegistry" ref="wsRegistry" />
     </bean>
 
-    <bean id="jmsTransactionManager" class="org.springframework.jms.connection.JmsTransactionManager">
-        <constructor-arg ref="connectionFactory" />
+    <!-- The EJB deployer -->
+    <bean id="osgiDeployer" class="org.apache.servicemix.openejb.OsgiDeployer" />
+
+    <!-- Web service registry based on the OSGi HTTP service -->
+    <bean id="wsRegistry" class="org.apache.servicemix.openejb.OsgiWsRegistry">
+        <property name="httpService" ref="httpService" />
     </bean>
 
-    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-        <constructor-arg value="vm://localhost?persistent=false" />
-    </bean>
+    <!-- Reference to the transaction manager -->
+    <osgi:reference id="transactionManager"
+                    interface="javax.transaction.TransactionManager" />
 
-    <bean id="smx" class="org.apache.servicemix.camel.ServiceMixComponent">
-        <property name="nmr" ref="nmr" />
-    </bean>
-
-    <osgi:reference id="nmr" interface="org.apache.servicemix.nmr.api.NMR" />
-
+    <!-- Reference to the OSGi http service -->
+    <osgi:reference id="httpService"
+                    interface="org.osgi.service.http.HttpService" />
 </beans>

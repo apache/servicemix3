@@ -28,9 +28,7 @@
   http://www.springframework.org/schema/util
   http://www.springframework.org/schema/util/spring-util.xsd
   http://www.springframework.org/schema/osgi
-  http://www.springframework.org/schema/osgi/spring-osgi-1.0-m3.xsd
-
-">
+  http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 	<!-- jaxws:provider id="providerEndpoint">
 	    <jaxws:nmr ref="nmr"/>
     </jaxws:provider-->
@@ -42,6 +40,6 @@
             <value>org.apache.servicemix.nmr.api.Endpoint</value>
         </osgi:interfaces>
     </osgi:service>
-    <osgi:reference id="nmr" interface="org.apache.servicemix.nmr.api.NMR" mandatory="true"/>
+    <osgi:reference id="nmr" interface="org.apache.servicemix.nmr.api.NMR" />
 
 </beans>
