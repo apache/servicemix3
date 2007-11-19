@@ -81,10 +81,12 @@ public class JMSFlow extends AbstractJMSFlow {
     @Override
     public void shutDown() throws JBIException {
         super.shutDown();
-        try {
-            factory.stop();
-        } catch (Exception e) {
-            log.warn("Unable to stop JMS connection pool: " + e.getMessage(), e);
+        if (factory != null) {
+            try {
+                factory.stop();
+            } catch (Exception e) {
+                log.warn("Unable to stop JMS connection pool: " + e.getMessage(), e);
+            }
         }
     }
 }
