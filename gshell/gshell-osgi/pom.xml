@@ -67,14 +67,10 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Name>${artifactId}</Bundle-Name>
                         <Bundle-SymbolicName>${groupId}.${artifactId}</Bundle-SymbolicName>
                         <Export-Package>org.apache.geronimo.gshell.osgi*;version=${project.version}</Export-Package>
                         <Import-Package>*</Import-Package>
                         <Private-Package>!*</Private-Package>
-                        <Implementation-Title>Apache GShell</Implementation-Title>
-                        <Implementation-Version>${project.version}</Implementation-Version>
-                        <DynamicImport-Package>*</DynamicImport-Package>
                         <Spring-Context>*;publish-context:=false</Spring-Context>
                     </instructions>
                 </configuration>

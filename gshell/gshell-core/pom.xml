@@ -46,6 +46,7 @@
             net.sf.cglib*;resolution:=optional,
             org.codehaus.jettison*;resolution:=optional,
             org.codehaus.plexus*;resolution:=optional,
+            org.apache.mina*;resolution:=optional,
             org.dom4j*;resolution:=optional,
             org.joda*;resolution:=optional,
             org.jdom*;resolution:=optional,
@@ -103,6 +104,26 @@
         <dependency>
             <groupId>org.apache.geronimo.gshell</groupId>
             <artifactId>gshell-parser</artifactId>
+            <version>${gshell.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.gshell</groupId>
+            <artifactId>gshell-whisper</artifactId>
+            <version>${gshell.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.gshell</groupId>
+            <artifactId>gshell-whisper</artifactId>
+            <version>${gshell.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.gshell.remote</groupId>
+            <artifactId>gshell-remote-common</artifactId>
+            <version>${gshell.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.gshell.remote</groupId>
+            <artifactId>gshell-remote-server</artifactId>
             <version>${gshell.version}</version>
         </dependency>
         <dependency>
@@ -197,13 +218,11 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Name>${artifactId}</Bundle-Name>
                         <Bundle-SymbolicName>${groupId}-${artifactId}</Bundle-SymbolicName>
                         <Import-Package>${gshell.osgi.import}</Import-Package>
+                        <DynamicImport-Package>sun.misc.*</DynamicImport-Package>
                         <Export-Package>${gshell.osgi.export}</Export-Package>
                         <Private-Package>${gshell.osgi.private}</Private-Package>
-                        <Implementation-Title>Apache GShell</Implementation-Title>
-                        <Implementation-Version>${project.version}</Implementation-Version>
                         <Spring-Context>*;publish-context:=false</Spring-Context>
                     </instructions>
                 </configuration>

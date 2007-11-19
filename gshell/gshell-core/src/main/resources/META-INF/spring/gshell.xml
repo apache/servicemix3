@@ -37,13 +37,14 @@
 
     <bean id="terminal" class="jline.Terminal" factory-method="getTerminal" />
 
-    <bean id="promptReader" class="org.apache.geronimo.gshell.console.PromptReader">
+    <bean id="promptReader" class="org.apache.geronimo.gshell.console.PromptReader" init-method="initialize">
         <constructor-arg ref="terminal" />
         <constructor-arg ref="io" />
     </bean>
 
     <bean id="commandExecutor" class="org.apache.geronimo.gshell.spring.SpringCommandExecutor" init-method="init">
         <property name="commandLineBuilder" ref="commandLineBuilder" />
+        <property name="commandRegistry" ref="commandRegistry" />
         <property name="env" ref="environment" />
         <property name="layoutManager" ref="layoutManager" />
     </bean>
@@ -61,13 +62,12 @@
         <constructor-arg ref="branding" />
     </bean>
 
-    <bean id="layoutManager" class="org.apache.geronimo.gshell.layout.DefaultLayoutManager">
-        <constructor-arg ref="commandRegistry" />
-        <constructor-arg ref="layoutLoader" />
-        <constructor-arg ref="environment" />
+    <bean id="layoutManager" class="org.apache.geronimo.gshell.layout.DefaultLayoutManager" init-method="initialize">
+        <constructor-arg ref="layoutLoader" index="0" type="org.apache.geronimo.gshell.layout.loader.LayoutLoader" />
+        <constructor-arg ref="environment" index="1" />
     </bean>
 
-    <bean id="layoutLoader" class="org.apache.geronimo.gshell.layout.loader.XMLLayoutLoader">
+    <bean id="layoutLoader" class="org.apache.geronimo.gshell.layout.loader.XMLLayoutLoader" init-method="initialize">
         <constructor-arg ref="shellInfo" />
     </bean>
 

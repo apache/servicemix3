@@ -18,6 +18,7 @@ package org.apache.geronimo.gshell.spring;
 
 import org.apache.geronimo.gshell.CommandLineBuilder;
 import org.apache.geronimo.gshell.DefaultCommandExecutor;
+import org.apache.geronimo.gshell.registry.CommandRegistry;
 import org.apache.geronimo.gshell.command.CommandExecutor;
 import org.apache.geronimo.gshell.layout.LayoutManager;
 import org.apache.geronimo.gshell.shell.Environment;
@@ -31,11 +32,16 @@ public class SpringCommandExecutor implements CommandExecutor {
 
     private CommandExecutor executor;
     private LayoutManager layoutManager;
+    private CommandRegistry commandRegistry;
     private CommandLineBuilder commandLineBuilder;
     private Environment env;
 
     public void setLayoutManager(LayoutManager layoutManager) {
         this.layoutManager = layoutManager;
+    }
+
+    public void setCommandRegistry(CommandRegistry commandRegistry) {
+        this.commandRegistry = commandRegistry;
     }
 
     public void setCommandLineBuilder(CommandLineBuilder commandLineBuilder) {
@@ -47,7 +53,7 @@ public class SpringCommandExecutor implements CommandExecutor {
     }
     
     public void init() {
-        executor = new DefaultCommandExecutor(layoutManager, commandLineBuilder, env);
+        executor = new DefaultCommandExecutor(layoutManager, commandRegistry, commandLineBuilder, env);
     }
 
     public Object execute(String s) throws Exception {

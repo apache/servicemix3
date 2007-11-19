@@ -26,7 +26,7 @@ import org.apache.geronimo.gshell.command.annotation.CommandComponent;
  * Time: 12:10:15 PM
  * To change this template use File | Settings | File Templates.
  */
-@CommandComponent(id="stop", description="Stop bundle")
+@CommandComponent(id="osgi:stop", description="Stop bundle")
 public class StopBundle extends BundleCommand {
 
     protected void doExecute(Bundle bundle) throws Exception {

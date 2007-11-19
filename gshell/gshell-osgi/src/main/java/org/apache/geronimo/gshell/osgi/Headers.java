@@ -33,7 +33,7 @@ import org.osgi.framework.Constants;
  * Time: 12:10:15 PM
  * To change this template use File | Settings | File Templates.
  */
-@CommandComponent(id="headers", description="Display headers")
+@CommandComponent(id="osgi:headers", description="Display headers")
 public class Headers extends OsgiCommandSupport {
 
     @Argument(required = false, multiValued = true, description = "Bundles ids")

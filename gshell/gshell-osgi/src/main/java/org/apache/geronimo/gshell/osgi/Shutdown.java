@@ -26,7 +26,7 @@ import org.osgi.framework.Bundle;
  * Time: 1:59:04 PM
  * To change this template use File | Settings | File Templates.
  */
-@CommandComponent(id="shutdown", description="Shutdown")
+@CommandComponent(id="osgi:shutdown", description="Shutdown")
 public class Shutdown extends OsgiCommandSupport {
 
     protected Object doExecute() throws Exception {

@@ -28,7 +28,7 @@ import org.osgi.service.packageadmin.PackageAdmin;
  * Time: 12:37:30 PM
  * To change this template use File | Settings | File Templates.
  */
-@CommandComponent(id="resolve", description="Resolve bundle")
+@CommandComponent(id="osgi:resolve", description="Resolve bundle")
 public class ResolveBundle extends BundleCommand {
 
     protected void doExecute(Bundle bundle) throws Exception {

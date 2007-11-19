@@ -36,7 +36,7 @@ public class ServiceMixBranding extends BrandingSupport {
     }
 
     public String getName() {
-        return "smx";
+        return "servicemix";
     }
 
     public String getDisplayName() {

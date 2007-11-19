@@ -26,7 +26,7 @@ import org.apache.geronimo.gshell.command.annotation.CommandComponent;
  * Time: 12:37:30 PM
  * To change this template use File | Settings | File Templates.
  */
-@CommandComponent(id="uninstall", description="Uninstall bundle")
+@CommandComponent(id="osgi:uninstall", description="Uninstall bundle")
 public class UninstallBundle extends BundleCommand {
 
     protected void doExecute(Bundle bundle) throws Exception {

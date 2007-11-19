@@ -26,6 +26,8 @@
   http://www.springframework.org/schema/util
   http://www.springframework.org/schema/util/spring-util.xsd">
 
+    <bean id="clear" class="org.apache.geronimo.gshell.commands.builtins.ClearCommand" />
+
     <bean id="echo" class="org.apache.geronimo.gshell.commands.builtins.EchoCommand" />
 
     <bean id="exit" class="org.apache.geronimo.gshell.commands.builtins.ExitCommand" />

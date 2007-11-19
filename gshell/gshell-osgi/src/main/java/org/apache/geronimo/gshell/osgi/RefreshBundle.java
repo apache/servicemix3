@@ -29,7 +29,7 @@ import org.osgi.service.packageadmin.PackageAdmin;
  * Time: 12:37:30 PM
  * To change this template use File | Settings | File Templates.
  */
-@CommandComponent(id="refresh", description="Refresh bundle")
+@CommandComponent(id="osgi:refresh", description="Refresh bundle")
 public class RefreshBundle extends OsgiCommandSupport {
 
     @Argument(required = false)
