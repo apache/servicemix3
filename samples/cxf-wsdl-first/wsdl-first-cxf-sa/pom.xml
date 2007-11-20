@@ -28,7 +28,7 @@
     </parent>
 
     <groupId>org.apache.servicemix.samples.cxf-wsdl-first</groupId>
-    <artifactId>wsdl-first-sa</artifactId>
+    <artifactId>wsdl-first-cxf-sa</artifactId>
     <packaging>jbi-service-assembly</packaging>
     <name>ServiceMix :: Samples :: WSDL first :: SA</name>
 
