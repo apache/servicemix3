@@ -588,7 +588,7 @@
         <repository>
             <id>servicemix-m2-repo</id>
             <name>Servicemix Maven2 Repository</name>
-            <url>http://svn.apache.org/repos/asf/incubator/servicemix/m2-repo</url>
+            <url>http://svn.apache.org/repos/asf/servicemix/m2-repo</url>
         </repository>
         <!-- Apache incubating -->
         <repository>
@@ -645,7 +645,7 @@
         <pluginRepository>
             <id>servicemix-m2-repo</id>
             <name>Servicemix Maven2 Repository</name>
-            <url>http://svn.apache.org/repos/asf/incubator/servicemix/m2-repo</url>
+            <url>http://svn.apache.org/repos/asf/servicemix/m2-repo</url>
         </pluginRepository>
         <!-- Apache incubating -->
         <pluginRepository>
