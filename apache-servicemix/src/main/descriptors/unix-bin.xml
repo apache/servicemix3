@@ -219,6 +219,7 @@
                 <include>org.apache.xbean:xbean-naming</include>
                 <include>org.apache.xbean:xbean-finder</include>
                 <include>org.apache.xbean:xbean-reflect</include>
+                <include>org.ops4j.pax.web:pax-web-service</include>
                 <include>org.apache.servicemix.openejb:org.apache.servicemix.openejb</include>
             </includes>
         </dependencySet>

@@ -125,6 +125,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.servicemix</groupId>
+            <artifactId>org.apache.servicemix.transaction</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.servicemix.examples</groupId>
             <artifactId>org.apache.servicemix.examples.intermediary</artifactId>
             <scope>provided</scope>
@@ -464,28 +469,22 @@
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.configadmin</artifactId>
-            <version>0.9.0-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>org.osgi.core</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.logging</groupId>
             <artifactId>pax-logging-api</artifactId>
-            <version>0.9.7-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.logging</groupId>
             <artifactId>pax-logging-service</artifactId>
-            <version>0.9.7-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.confman</groupId>
             <artifactId>pax-confman-propsloader</artifactId>
-            <version>0.3.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.web</groupId>
+            <artifactId>pax-web-service</artifactId>
         </dependency>
     </dependencies>
 

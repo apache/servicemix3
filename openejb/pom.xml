@@ -164,6 +164,8 @@
                             javax.xml.rpc*;resolution:=optional,
                             *
                         </Import-Package>
+                        <!-- Needed for jaxb annotations classes -->
+                        <DynamicImport-Package>javax.xml.bind.annotation.*</DynamicImport-Package>
                         <Export-Package>${pom.artifactId}*</Export-Package>
                         <Private-Package></Private-Package>
                         <Spring-Context>*;publish-context:=false</Spring-Context>

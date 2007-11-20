@@ -14,16 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix;
+package org.apache.servicemix.openejb;
 
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.AbstractIntegrationTest;
 
-public class EjbIntegrationTest extends AbstractIntegrationTest {
+public class OpenEjbIntegrationTest extends AbstractIntegrationTest {
 
-    private static final Log LOGGER = LogFactory.getLog(EjbIntegrationTest.class);
+    private static final Log LOGGER = LogFactory.getLog(OpenEjbIntegrationTest.class);
 
     private Properties dependencies;
 
@@ -55,6 +56,7 @@ public class EjbIntegrationTest extends AbstractIntegrationTest {
      */
     protected String[] getTestBundlesNames() {
         return new String[] {
+            getBundle("org.springframework", "spring-tx"),
             getBundle("org.apache.xbean", "xbean-finder"),
             getBundle("org.apache.xbean", "xbean-naming"),
             getBundle("org.apache.xbean", "xbean-reflect"),
@@ -85,7 +87,8 @@ public class EjbIntegrationTest extends AbstractIntegrationTest {
             getBundle("org.apache.servicemix.nmr", "org.apache.servicemix.nmr.core"),
             getBundle("org.apache.servicemix.nmr", "org.apache.servicemix.nmr.spring"),
             getBundle("org.apache.servicemix.nmr", "org.apache.servicemix.nmr.osgi"),
-            getBundle("org.apache.servicemix.openejb", "org.apache.servicemix.openejb"),
+            getBundle("org.apache.servicemix", "org.apache.servicemix.transaction"),
+            getBundle("org.ops4j.pax.web", "pax-web-service"),
         };
     }
 
@@ -94,13 +97,25 @@ public class EjbIntegrationTest extends AbstractIntegrationTest {
 	 * context via the 'getBundleContext' operation
 	 */
 	public void testOSGiStartedOk() throws Exception {
+        /*
+        Thread.sleep(2000);
+        System.out.println("Installing transaction manager");
+        installBundle("org.apache.servicemix", "org.apache.servicemix.transaction", null, "jar");
+        Thread.sleep(2000);
+        System.out.println("Installing http service");
+        installBundle("org.ops4j.pax.web", "pax-web-service", null, "jar");
+        */
+        Thread.sleep(2000);
+        System.out.println("Installing openejb");
+        installBundle("org.apache.servicemix.openejb", "org.apache.servicemix.openejb", null, "jar");
+        Thread.sleep(2000);
         System.out.println("Checking that EJB bundle is started");
         checkBundleStarted("org.apache.servicemix.openejb");
-        Thread.sleep(1000);
+        Thread.sleep(2000);
         System.out.println("Installing ejbjar bundle");
         installBundle("org.apache.servicemix.itests", "org.apache.servicemix.itests.ejbjar", null, "jar");
         System.out.println("ejbjar bundle installed");
-        Thread.sleep(1000);
+        Thread.sleep(2000);
     }
 
 }

@@ -112,4 +112,32 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>${felix.version}</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+                        <Export-Package>${servicemix.osgi.export.pkg}*;version=${pkgVersion}</Export-Package>
+                        <Import-Package>${servicemix.osgi.import.pkg}*</Import-Package>
+                        <!-- Needed for jaxb annotations classes -->
+                        <DynamicImport-Package>javax.xml.bind.annotation.*</DynamicImport-Package>
+                        <Private-Package>${servicemix.osgi.private.pkg}</Private-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

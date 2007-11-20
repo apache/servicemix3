@@ -50,12 +50,16 @@ public class Deployer {
     private static final Log LOGGER = LogFactory.getLog(Deployer.class);
 
     public void deploy(ClassLoader classLoader, String location) throws Exception {
+
+        // TODO: this does not work
         Map<String, URL> descriptors = new ResourceFinder(null, classLoader).getResourcesMap("META-INF/");
 
-        URL ejbJarXmlUrl = descriptors.get("ejb-jar.xml");
+        URL ejbJarXmlUrl = classLoader.getResource("META-INF/ejb-jar.xml");
         if (ejbJarXmlUrl == null) {
+            System.out.println("Descriptor ejb-jar.xml not found");
             return;
         }
+        System.out.println("Descriptor ejb-jar.xml found!");
         EjbJar ejbJar = ReadDescriptors.readEjbJar(ejbJarXmlUrl);
         // create the EJB Module
         EjbModule ejbModule = new EjbModule(classLoader, location, ejbJar, null);
@@ -77,16 +81,7 @@ public class Deployer {
         Assembler assembler = (Assembler) SystemInstance.get().getComponent(org.apache.openejb.spi.Assembler.class);
         AppInfo appInfo = configurationFactory.configureApplication(appModule);
         assembler.createApplication(appInfo, classLoader);
-    }
-
-    private Map<String, URL> getDescriptors(URL moduleUrl) throws OpenEJBException {
-        try {
-            ResourceFinder finder = new ResourceFinder(moduleUrl);
-            return finder.getResourcesMap("META-INF/");
-
-        } catch (IOException e) {
-            throw new OpenEJBException("Unable to determine descriptors in jar.", e);
-        }
+        System.out.println("EJB deployed");
     }
 
     private void addWebservices(WsModule wsModule) throws OpenEJBException {
