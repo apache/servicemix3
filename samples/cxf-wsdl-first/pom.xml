@@ -85,7 +85,7 @@
     <modules>
       <module>wsdl-first-cxfse-su</module>
       <module>wsdl-first-cxfbc-su</module>
-      <module>wsdl-first-sa</module>
+      <module>wsdl-first-cxf-sa</module>
     </modules>
     
     <build>
