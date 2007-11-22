@@ -65,27 +65,28 @@ public class Component implements GBeanLifecycle {
         this.installDir = rootDir.resolve("install/");
         this.workDir = rootDir.resolve("workspace/");
         this.classLoader = classLoader;
-        log.info("Created JBI component: " + name);
+        log.debug("Created JBI component: " + name);
     }
 
     public void doStart() throws Exception {
-        log.info("doStart called for JBI component: " + name);
+        log.debug("doStart called for JBI component: " + name);
         try {
             component = (javax.jbi.component.Component) classLoader.loadClass(className).newInstance();
             container.register(this);
         } catch (ClassNotFoundException e) {
             log.error(classLoader);
         }
+        log.info("Started servicemix JBI component: " + name);
     }
 
     public void doStop() throws Exception {
-        log.info("doStop called for JBI component: " + name);
+        log.debug("doStop called for JBI component: " + name);
         container.unregister(this);
         component = null;
     }
 
     public void doFail() {
-        log.info("doFail called for JBI component: " + name);
+        log.debug("doFail called for JBI component: " + name);
         component = null;
     }
 

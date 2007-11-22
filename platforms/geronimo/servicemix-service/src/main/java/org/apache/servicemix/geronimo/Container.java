@@ -16,6 +16,7 @@
  */
 package org.apache.servicemix.geronimo;
 
+import org.apache.servicemix.jbi.container.JBIContainer;
 
 public interface Container {
 
@@ -27,4 +28,5 @@ public interface Container {
 
     public void unregister(ServiceAssembly assembly) throws Exception;
 
+    public JBIContainer getJBIContainer();
 }
