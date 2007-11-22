@@ -30,7 +30,6 @@ import org.apache.geronimo.gbean.GBeanInfo;
 import org.apache.geronimo.gbean.GBeanInfoBuilder;
 import org.apache.geronimo.gbean.GBeanLifecycle;
 import org.apache.geronimo.kernel.GBeanNotFoundException;
-import org.apache.geronimo.kernel.InternalKernelException;
 import org.apache.geronimo.kernel.Kernel;
 import org.apache.geronimo.naming.java.RootContext;
 import org.apache.servicemix.jbi.container.ComponentEnvironment;
@@ -69,9 +68,9 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
     }
 
     public ServiceMixGBean(String name, 
-    					   String directory, 
-    					   AbstractNameQuery transactionManagerName, 
-    					   Kernel kernel) {
+                           String directory, 
+                           AbstractNameQuery transactionManagerName, 
+                           Kernel kernel) {
         this.name = name;
         this.directory = directory;
         this.transactionManagerName = transactionManagerName;
@@ -145,8 +144,10 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
 
     private JBIContainer createContainer() throws GBeanNotFoundException {
         JBIContainer container = new JBIContainer();
+        container.setUseShutdownHook(false);
         container.setName(name);
         container.setRootDir(directory);
+        container.setUseMBeanServer(true);
         TransactionManager tm = getTransactionManager();
         container.setTransactionManager(tm);
         container.setMonitorInstallationDirectory(false);
@@ -167,6 +168,15 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
         return tm;
     }
 
+    /**
+     * Returns the JBIContainer
+     * 
+     * @return JBIContainer
+     */
+    public JBIContainer getJBIContainer() {
+        return container;
+    }
+    
     public void register(Component component) throws Exception {
         ComponentNameSpace cns = new ComponentNameSpace(container.getName(), component.getName());
         ComponentContextImpl context = new ComponentContextImpl(container, cns);
@@ -177,44 +187,45 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
         context.setEnvironment(env);
         
         container.activateComponent(null,
-        							component.getComponent(),
-        							component.getDescription(),
-        							context,
-        							component.getType().equals("binding-component"),
-        							component.getType().equals("service-engine"),
+                                    component.getComponent(),
+                                    component.getDescription(),
+                                    context,
+                                    component.getType().equals("binding-component"),
+                                    component.getType().equals("service-engine"),
                                     null);
         ComponentMBeanImpl cmb = container.getComponent(component.getName());
         File stateFile = cmb.getContext().getEnvironment().getStateFile();
         if (stateFile.isFile()) {
-        	cmb.setInitialRunningState();
+            cmb.setInitialRunningState();
         } else {
-        	cmb.start();
+            cmb.start();
         }
     }
 
     public void unregister(Component component) throws Exception {
-    	container.deactivateComponent(component.getName());
+        container.deactivateComponent(component.getName());
     }
     
     public void register(ServiceAssembly assembly) throws Exception {
-    	File rootDir = new File(assembly.getRootDir());
-    	ServiceAssemblyEnvironment env = new ServiceAssemblyEnvironment();
-    	env.setRootDir(rootDir);
-    	env.setInstallDir(new File(rootDir, "install"));
-    	env.setSusDir(new File(rootDir, "sus"));
-    	env.setStateFile(new File(rootDir, "state.xml"));
-    	ServiceAssemblyLifeCycle salc = container.getRegistry().registerServiceAssembly(assembly.getDescriptor().getServiceAssembly(), env);
-    	if (env.getStateFile().isFile()) {
-    		salc.restore();
-    	} else {
-    		salc.start();
-    	}
+        File rootDir = new File(assembly.getRootDir());
+        ServiceAssemblyEnvironment env = new ServiceAssemblyEnvironment();
+        env.setRootDir(rootDir);
+        env.setInstallDir(new File(rootDir, "install"));
+        env.setSusDir(new File(rootDir, "sus"));
+        env.setStateFile(new File(rootDir, "state.xml"));
+        ServiceAssemblyLifeCycle salc = container.getRegistry().registerServiceAssembly(assembly.getDescriptor().getServiceAssembly(), env);
+        if (env.getStateFile().isFile()) {
+            salc.restore();
+        } else {
+            salc.start();
+        }
     }
     
     public void unregister(ServiceAssembly assembly) throws Exception {
-    	ServiceAssemblyLifeCycle salc = container.getRegistry().getServiceAssembly(assembly.getName());
-    	salc.shutDown(false);
-    	container.getRegistry().unregisterServiceAssembly(assembly.getName());
+        ServiceAssemblyLifeCycle salc = container.getRegistry().getServiceAssembly(assembly.getName());
+        salc.shutDown(false);
+        assembly.undeploySus();
+        container.getRegistry().unregisterServiceAssembly(assembly.getName());
     }
 
 }
