@@ -101,7 +101,7 @@
 
         <!-- Mandatory bundles for everything -->
         <dependencySet>
-            <outputDirectory>/bundle</outputDirectory>
+            <outputDirectory>/system</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
             <includes>
@@ -133,7 +133,7 @@
 
         <!-- NMR -->
         <dependencySet>
-            <outputDirectory>/bundle</outputDirectory>
+            <outputDirectory>/system</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
             <includes>
@@ -146,7 +146,7 @@
 
         <!-- GShell -->
         <dependencySet>
-            <outputDirectory>/bundle</outputDirectory>
+            <outputDirectory>/system</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
             <includes>
@@ -157,7 +157,7 @@
 
         <!-- Transaction Manager -->
         <dependencySet>
-            <outputDirectory>/bundle</outputDirectory>
+            <outputDirectory>/system</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
             <includes>
@@ -170,7 +170,7 @@
 
         <!-- Management -->
         <dependencySet>
-            <outputDirectory>/bundle</outputDirectory>
+            <outputDirectory>/system</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
             <includes>
@@ -180,7 +180,7 @@
 
         <!-- JBI 1.0 -->
         <dependencySet>
-            <outputDirectory>/bundle</outputDirectory>
+            <outputDirectory>/system</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
             <includes>

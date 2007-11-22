@@ -373,7 +373,7 @@ public class Main
                     "conf");
                 bundleDir = new File(
                     new File(new File(jarLocation).getAbsolutePath()).getParent(),
-                    "bundle");
+                    "system");
             }
             else
             {
