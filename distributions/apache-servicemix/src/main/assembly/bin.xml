@@ -114,7 +114,7 @@
         <include>org.springframework:spring-context</include>
         <include>org.springframework:spring-jmx</include>
         <include>org.springframework:spring-dao</include>
-        
+        <include>org.springframework:spring-aop</include>
         <include>org.apache.geronimo.specs:geronimo-jms_1.1_spec</include>
         <include>org.apache.geronimo.specs:geronimo-jta_1.1_spec</include>
         <include>org.apache.geronimo.specs:geronimo-j2ee-management_1.0_spec</include>
