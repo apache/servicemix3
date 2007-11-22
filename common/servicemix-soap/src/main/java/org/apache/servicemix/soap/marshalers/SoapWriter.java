@@ -346,7 +346,7 @@ public class SoapWriter {
                 }
             }
         } else {
-            XMLStreamReader reader = marshaler.getSourceTransformer().toXMLStreamReader(details);
+            XMLStreamReader reader = marshaler.getSourceTransformer().toXMLStreamReader(domDetails);
             XMLStreamHelper.copy(reader, writer);
         }
     }
