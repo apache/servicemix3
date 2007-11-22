@@ -75,6 +75,10 @@
         <acegi.version>1.0.0</acegi.version>
         <cxf.version>2.0.2-incubator</cxf.version>
         <xbean.version>3.3-SNAPSHOT</xbean.version>
+        <jaxb.api.version>2.0</jaxb.api.version>
+        <jaxb.impl.version>2.0.5</jaxb.impl.version>
+        <openejb.version>3.0.0-SNAPSHOT</openejb.version>
+        <openjpa.version>1.0.0</openjpa.version>
     </properties>
 
     <repositories>
@@ -404,6 +408,11 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-jaxrpc_1.1_spec</artifactId>
+                <version>2.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-jpa_3.0_spec</artifactId>
                 <version>1.1.1-SNAPSHOT</version>
             </dependency>
@@ -662,6 +671,36 @@
                 <groupId>org.ops4j.pax.web</groupId>
                 <artifactId>pax-web-service</artifactId>
                 <version>0.2.1</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb.api.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.xml</groupId>
+                        <artifactId>jsr173</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.activation</groupId>
+                        <artifactId>activation</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>${jaxb.impl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>activemq-core</artifactId>
+                <version>${activemq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ws.commons.schema</groupId>
+                <artifactId>XmlSchema</artifactId>
+                <version>SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

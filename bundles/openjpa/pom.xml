@@ -39,7 +39,7 @@
 
     <properties>
         <pkgArtifactId>openjpa</pkgArtifactId>
-        <pkgVersion>1.0.0</pkgVersion>
+        <pkgVersion>${openjpa.version}</pkgVersion>
         <pomVersion>4.0-SNAPSHOT</pomVersion>
 		<servicemix.osgi.export.pkg>org.apache.openjpa</servicemix.osgi.export.pkg>
         <servicemix.osgi.import.pkg>
@@ -62,36 +62,43 @@
             <groupId>org.apache.openjpa</groupId>
             <artifactId>openjpa-jdbc</artifactId>
             <version>${pkgVersion}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.openjpa</groupId>
             <artifactId>openjpa-jdbc-5</artifactId>
             <version>${pkgVersion}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.openjpa</groupId>
             <artifactId>openjpa-kernel</artifactId>
             <version>${pkgVersion}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.openjpa</groupId>
             <artifactId>openjpa-kernel-5</artifactId>
             <version>${pkgVersion}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.openjpa</groupId>
             <artifactId>openjpa-lib</artifactId>
             <version>${pkgVersion}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.openjpa</groupId>
             <artifactId>openjpa-persistence</artifactId>
             <version>${pkgVersion}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.openjpa</groupId>
             <artifactId>openjpa-persistence-jdbc</artifactId>
             <version>${pkgVersion}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

@@ -3,8 +3,19 @@ package org.apache.servicemix.openejb;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Dictionary;
+
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
 
 import junit.framework.TestCase;
+import org.apache.openejb.server.httpd.HttpListener;
+import org.apache.openejb.server.webservices.WsRegistry;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.http.HttpContext;
+import org.osgi.service.http.NamespaceException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,7 +29,22 @@ public class Test extends TestCase {
     public void test() throws Exception {
         System.setProperty("openejb.deployments.classpath", "false");
 
+        final List<String> servlets = new ArrayList<String>();
+        HttpService http = new HttpService() {
+            public void registerServlet(String s, Servlet servlet, Dictionary dictionary, HttpContext httpContext) throws ServletException, NamespaceException {
+                servlets.add(s);
+            }
+            public void registerResources(String s, String s1, HttpContext httpContext) throws NamespaceException {
+            }
+            public void unregister(String s) {
+            }
+            public HttpContext createDefaultHttpContext() {
+                return null;
+            }
+        };
+
         OsgiWsRegistry registry = new OsgiWsRegistry();
+        registry.setHttpService(http);;
         OpenEjbFactory factory = new OpenEjbFactory();
         factory.setWsRegistry(registry);
         factory.init();
@@ -28,6 +54,8 @@ public class Test extends TestCase {
         URLClassLoader cl = new URLClassLoader(new URL[] {url}, Test.class.getClassLoader());
         System.out.println(url.toString());
         new Deployer().deploy(cl, url.toString());
+
+        assertEquals(1, servlets.size());
     }
 
 }

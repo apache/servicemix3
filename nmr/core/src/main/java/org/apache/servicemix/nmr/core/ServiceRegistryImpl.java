@@ -34,10 +34,12 @@ public class ServiceRegistryImpl<T> implements ServiceRegistry<T> {
     private Map<T, Map<String, ?>> registry = new ConcurrentHashMap<T, Map<String, ?>>();
 
     public void register(T service, Map<String, ?> properties) {
+        assert service != null : "service should not be null";
         registry.put(service, properties);
     }                                                                                                                                   
 
     public void unregister(T service, Map<String, ?> properties) {
+        assert service != null : "service should not be null";
         registry.remove(service);
     }
 

@@ -53,6 +53,7 @@
             <groupId>javax.xml.ws</groupId>
             <artifactId>${pkgArtifactId}</artifactId>
             <version>${pkgVersion}</version>
+            <scope>provided</scope>
             <exclusions>
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>

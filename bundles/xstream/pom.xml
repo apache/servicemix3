@@ -63,6 +63,7 @@
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>${pkgArtifactId}</artifactId>
             <version>${pkgVersion}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

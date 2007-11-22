@@ -16,10 +16,13 @@
  */
 package org.apache.servicemix.openejb;
 
+import java.lang.annotation.Annotation;
+import java.net.URL;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.openejb.config.ReadDescriptors;
 import org.apache.servicemix.AbstractIntegrationTest;
 
 public class OpenEjbIntegrationTest extends AbstractIntegrationTest {
@@ -38,7 +41,7 @@ public class OpenEjbIntegrationTest extends AbstractIntegrationTest {
 	 * of the entire manifest...
 	 */
 	protected String getManifestLocation() {
-		return "classpath:org/apache/servicemix/MANIFEST.MF";
+		return "classpath:org/apache/servicemix/openejb/MANIFEST.MF";
 	}
 
     /**
@@ -60,6 +63,7 @@ public class OpenEjbIntegrationTest extends AbstractIntegrationTest {
             getBundle("org.apache.xbean", "xbean-finder"),
             getBundle("org.apache.xbean", "xbean-naming"),
             getBundle("org.apache.xbean", "xbean-reflect"),
+            getBundle("org.apache.ws.commons.schema", "XmlSchema"),
             getBundle("org.apache.geronimo.specs", "geronimo-activation_1.1_spec"),
             getBundle("org.apache.geronimo.specs", "geronimo-annotation_1.0_spec"),
             getBundle("org.apache.geronimo.specs", "geronimo-ejb_3.0_spec"),
@@ -97,25 +101,22 @@ public class OpenEjbIntegrationTest extends AbstractIntegrationTest {
 	 * context via the 'getBundleContext' operation
 	 */
 	public void testOSGiStartedOk() throws Exception {
-        /*
-        Thread.sleep(2000);
-        System.out.println("Installing transaction manager");
-        installBundle("org.apache.servicemix", "org.apache.servicemix.transaction", null, "jar");
-        Thread.sleep(2000);
-        System.out.println("Installing http service");
-        installBundle("org.ops4j.pax.web", "pax-web-service", null, "jar");
-        */
-        Thread.sleep(2000);
-        System.out.println("Installing openejb");
-        installBundle("org.apache.servicemix.openejb", "org.apache.servicemix.openejb", null, "jar");
-        Thread.sleep(2000);
-        System.out.println("Checking that EJB bundle is started");
-        checkBundleStarted("org.apache.servicemix.openejb");
-        Thread.sleep(2000);
-        System.out.println("Installing ejbjar bundle");
-        installBundle("org.apache.servicemix.itests", "org.apache.servicemix.itests.ejbjar", null, "jar");
-        System.out.println("ejbjar bundle installed");
-        Thread.sleep(2000);
+        try {
+            Thread.sleep(2000);
+            System.out.println("Installing openejb");
+            installBundle("org.apache.servicemix.openejb", "org.apache.servicemix.openejb", null, "jar");
+            Thread.sleep(2000);
+            System.out.println("Checking that EJB bundle is started");
+            checkBundleStarted("org.apache.servicemix.openejb");
+            Thread.sleep(2000);
+            System.out.println("Installing ejbjar bundle");
+            installBundle("org.apache.servicemix.itests", "org.apache.servicemix.itests.ejbjar", null, "jar");
+            System.out.println("ejbjar bundle installed");
+            Thread.sleep(2000);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception(e.getMessage()) ;
+        }
     }
 
 }

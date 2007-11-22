@@ -42,6 +42,7 @@ public class EndpointRegistryImpl implements EndpointRegistry {
 
     private NMR nmr;
     private Map<Endpoint, InternalEndpoint> endpoints = new ConcurrentHashMap<Endpoint, InternalEndpoint>();
+    private Map<InternalEndpoint, Endpoint> wrappers = new ConcurrentHashMap<InternalEndpoint, Endpoint>();
     private ServiceRegistry<InternalEndpoint> registry = new ServiceRegistryImpl<InternalEndpoint>();
 
     public EndpointRegistryImpl() {
@@ -79,6 +80,7 @@ public class EndpointRegistryImpl implements EndpointRegistry {
         ChannelImpl channel = new ChannelImpl(wrapper, executor, nmr);
         wrapper.setChannel(channel);
         endpoints.put(endpoint, wrapper);
+        wrappers.put(wrapper, endpoint);
         registry.register(wrapper, properties);
     }
 
@@ -89,7 +91,15 @@ public class EndpointRegistryImpl implements EndpointRegistry {
      * @param endpoint the endpoint to unregister
      */
     public void unregister(Endpoint endpoint, Map<String, ?> properties) {
-        InternalEndpoint wrapper = endpoints.remove(endpoint);
+        InternalEndpoint wrapper;
+        if (endpoint instanceof InternalEndpoint) {
+            wrapper = (InternalEndpoint) endpoint;
+            endpoint = wrappers.remove(wrapper);
+            endpoints.remove(endpoint);
+        } else {
+            wrapper = endpoints.remove(endpoint);
+            wrappers.remove(wrapper);
+        }
         registry.unregister(wrapper, properties);
     }
 

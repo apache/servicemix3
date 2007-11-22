@@ -47,14 +47,23 @@
         <servicemix.osgi.import.pkg>
             com.ibm*;resolution:=optional,
             com.sun*;resolution:=optional,
+            javanet.staxutils*;resolution:=optional,
+            javax.jms*;resolution:=optional,
             junit.framework*;resolution:=optional,
+            org.apache.axiom*;resolution:=optional,
             org.apache.commons.lang*;resolution:=optional,
             org.apache.log4j*;resolution:=optional,
             org.apache.tools.ant*;resolution:=optional,
             org.apache.velocity*;resolution:=optional,
+            org.apache.xmlbeans*;resolution:=optional,
+            org.apache.ws.security*;resolution:=optional,
+            org.codehaus.jra*;resolution:=optional,
+            org.jdom*;resolution:=optional,
             org.junit*;resolution:=optional,
             org.mortbay*;resolution:=optional,
+            org.mozilla.javascript*;resolution:=optional,
             org.springframework*;resolution:=optional,
+            sun.misc*;resolution:=optional,
             *
         </servicemix.osgi.import.pkg>
         <servicemix.osgi.private.pkg>
@@ -62,7 +71,6 @@
             org.apache.xml.resolver*,
             org.apache.neethi*,
             org.xmlsoap.schemas.wsdl.http,
-            schema.*
         </servicemix.osgi.private.pkg>
     </properties>
 
