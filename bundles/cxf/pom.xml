@@ -39,26 +39,31 @@
 
     <properties>
         <pkgArtifactId>cxf</pkgArtifactId>
-        <pkgVersion>2.0.2-incubator</pkgVersion>
+        <pkgVersion>${cxf.version}</pkgVersion>
         <pomVersion>4.0-SNAPSHOT</pomVersion>
-		<servicemix.osgi.export.pkg>org.apache.cxf</servicemix.osgi.export.pkg>
+		<servicemix.osgi.export.pkg>
+            org.apache.cxf
+        </servicemix.osgi.export.pkg>
         <servicemix.osgi.import.pkg>
             com.ibm*;resolution:=optional,
             com.sun*;resolution:=optional,
             junit.framework*;resolution:=optional,
             org.apache.commons.lang*;resolution:=optional,
             org.apache.log4j*;resolution:=optional,
-            org.apache.neethi*;resolution:=optional,
             org.apache.tools.ant*;resolution:=optional,
             org.apache.velocity*;resolution:=optional,
-            org.apache.ws.commons.schema*;resolution:=optional,
-            org.apache.xml.resolver*;resolution:=optional,
             org.junit*;resolution:=optional,
             org.mortbay*;resolution:=optional,
             org.springframework*;resolution:=optional,
-            org.xmlsoap.schemas.wsdl.http*;resolution:=optional,
             *
         </servicemix.osgi.import.pkg>
+        <servicemix.osgi.private.pkg>
+            META-INF*,
+            org.apache.xml.resolver*,
+            org.apache.neethi*,
+            org.xmlsoap.schemas.wsdl.http,
+            schema.*
+        </servicemix.osgi.private.pkg>
     </properties>
 
     <repositories>
@@ -71,63 +76,27 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-api</artifactId>
+            <artifactId>cxf-bundle</artifactId>
             <version>${pkgVersion}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-common-schemas</artifactId>
-            <version>${pkgVersion}</version>
+            <groupId>xml-resolver</groupId>
+            <artifactId>xml-resolver</artifactId>
+            <version>1.2</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-common-utilities</artifactId>
-            <version>${pkgVersion}</version>
+            <groupId>org.apache.neethi</groupId>
+            <artifactId>neethi</artifactId>
+            <version>2.0.2</version>
+            <scope>provided</scope>
         </dependency>
+
+        <!-- Dependency on other bundles -->
         <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-bindings-soap</artifactId>
-            <version>${pkgVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-bindings-xml</artifactId>
-            <version>${pkgVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-core</artifactId>
-            <version>${pkgVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-databinding-jaxb</artifactId>
-            <version>${pkgVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxws</artifactId>
-            <version>${pkgVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-simple</artifactId>
-            <version>${pkgVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http</artifactId>
-            <version>${pkgVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http-jetty</artifactId>
-            <version>${pkgVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-tools-common</artifactId>
-            <version>${pkgVersion}</version>
+            <groupId>org.apache.ws.commons.schema</groupId>
+            <artifactId>XmlSchema</artifactId>
         </dependency>
     </dependencies>
 
