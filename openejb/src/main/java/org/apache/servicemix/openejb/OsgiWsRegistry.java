@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.apache.openejb.server.httpd.HttpListener;
 import org.apache.openejb.server.webservices.WsRegistry;
+import org.apache.openejb.server.webservices.WsServlet;
 import org.osgi.service.http.HttpService;
 
 /**
