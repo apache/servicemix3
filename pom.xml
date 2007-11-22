@@ -655,12 +655,12 @@
             <dependency>
                 <groupId>org.ops4j.pax.logging</groupId>
                 <artifactId>pax-logging-api</artifactId>
-                <version>0.9.7-SNAPSHOT</version>
+                <version>0.9.7</version>
             </dependency>
             <dependency>
                 <groupId>org.ops4j.pax.logging</groupId>
                 <artifactId>pax-logging-service</artifactId>
-                <version>0.9.7-SNAPSHOT</version>
+                <version>0.9.7</version>
             </dependency>
             <dependency>
                 <groupId>org.ops4j.pax.confman</groupId>
