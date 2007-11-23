@@ -32,32 +32,22 @@
   http://www.springframework.org/schema/osgi-compendium
   http://www.springframework.org/schema/osgi/spring-osgi-compendium.xsd
   ">
-    		
-	<bean id="broker" class="org.apache.activemq.broker.BrokerService" init-method="start">
-	    <property name="transportConnectorURIs">
-	      <list>
-	        <value>${brokerURL}</value>
-	      </list>
-	    </property>
-	    <property name="useJmx">
-	    	<value>${useJmx}</value>
-	    </property>
-	    <property name="persistent">
-	    	<value>${persistent}</value>
-	    </property>
+	
+	<bean id="activemqBroker" class="org.apache.activemq.xbean.BrokerFactoryBean">
+	    <property name="config" value="${configFile}" />
+	    <property name="start" value="${brokerStart}" />
 	</bean>
 	
-	<bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-	 	<property name="brokerURL">
-	   		<value>${brokerURL}</value>
-	 	</property>
-	</bean>
-	
-	<bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop">
-    	<property name="connectionFactory">
-      		<ref bean="connectionFactory" />
+  	<bean id="pooledConnectionFactory" class="org.jencks.amqpool.JcaPooledConnectionFactory">
+    	<constructor-arg value="${brokerURL}" />
+    	<property name="maxConnections" value="${maxConnections}" />
+    	<property name="transactionManager">
+    		<ref bean="brokerTransaction" />
     	</property>
   	</bean>
+	
+	<osgi:reference id="brokerTransaction" interface="javax.transaction.TransactionManager"
+		  cardinality="0..1"/>
 	
     <osgi:service ref="pooledConnectionFactory">
         <osgi:interfaces>
@@ -65,11 +55,12 @@
         </osgi:interfaces>
     </osgi:service>
 
-    <osgix:property-placeholder persistent-id="org.apache.servicemix.jms.activemq">
+    <osgix:property-placeholder persistent-id="org.apache.servicemix.activemq">
         <osgix:default-properties>
             <prop key="brokerURL">tcp://localhost:61616</prop>
-            <prop key="persistent">false</prop>
-            <prop key="useJmx">false</prop>
+            <prop key="configFile">classpath:/META-INF/servicemix/activemq.xml</prop>
+            <prop key="maxConnections">10</prop>
+            <prop key="brokerStart">true</prop>
         </osgix:default-properties>
     </osgix:property-placeholder>
 

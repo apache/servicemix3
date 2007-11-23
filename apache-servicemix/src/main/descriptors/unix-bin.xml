@@ -168,6 +168,18 @@
                 <include>org.apache.servicemix:org.apache.servicemix.transaction</include>
             </includes>
         </dependencySet>
+		
+		<!-- ActiveMQ -->
+		<dependencySet>
+			<outputDirectory>/system</outputDirectory>
+			<unpack>false</unpack>
+			<scope>runtime</scope>
+			<includes>
+				<include>org.apache.activemq:activemq-core</include>
+				<include>org.apache.servicemix:org.apache.servicemix.activemq</include>
+				<include>org.apache.geronimo.specs:geronimo-jms_1.1_spec</include>
+			</includes>
+		</dependencySet>
 
         <!-- Management -->
         <dependencySet>

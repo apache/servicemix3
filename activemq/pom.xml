@@ -36,6 +36,8 @@
     
     <properties>
     	<commons-pool.version>1.3</commons-pool.version>
+    	<jencks.version>2.1</jencks.version>
+    	<xbean.version>3.2</xbean.version>
     </properties>
 
     <dependencies>
@@ -75,6 +77,20 @@
             <artifactId>commons-logging</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.components</groupId>
+            <artifactId>geronimo-transaction</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jencks</groupId>
+            <artifactId>jencks-amqpool</artifactId>
+            <version>${jencks.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xbean</groupId>
+            <artifactId>xbean-spring</artifactId>
+            <version>${xbean.version}</version>
+        </dependency>        
     </dependencies>
 
     <build>
@@ -89,10 +105,13 @@
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Private-Package>
 	                        org.apache.commons.pool*,
-	                        javax.transaction*
+	                        javax.transaction*,
+	                        org.jencks.amqpool*,
+	                        org.apache.xbean.spring*
                         </Private-Package>
                         <Export-Package>
-                        	org.apache.commons.pool
+                        	org.apache.commons.pool,
+                        	org.apache.xbean.spring.context*
                         </Export-Package>
                     </instructions>
                 </configuration>

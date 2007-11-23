@@ -127,7 +127,7 @@ public class IntegrationTest extends AbstractIntegrationTest {
             
             ConnectionFactory connFactory = (ConnectionFactory)bundleContext.getService(connectionFactoryRef);
             assertNotNull(connFactory);
-            assertEquals(connFactory.getClass().getName(), "org.apache.activemq.pool.PooledConnectionFactory");
+            assertEquals(connFactory.getClass().getName(), "org.jencks.amqpool.JcaPooledConnectionFactory");
         } finally {
             bundleContext.ungetService(ref);
         }
