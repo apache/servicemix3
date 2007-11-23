@@ -76,6 +76,10 @@
       <outputDirectory>examples/basic</outputDirectory>
     </fileSet>
     <fileSet>
+      <directory>target/samples/camel-${servicemix-version}</directory>
+      <outputDirectory>examples/camel</outputDirectory>
+    </fileSet>
+    <fileSet>
       <directory>target/dummy</directory>
       <outputDirectory>lib/optional</outputDirectory>
     </fileSet>

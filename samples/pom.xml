@@ -39,6 +39,7 @@
     <module>bridge</module>
     <module>servicemix-web</module>
     <module>basic</module>
+    <module>camel</module>
   </modules>
 
     <build>

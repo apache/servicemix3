@@ -525,6 +525,25 @@
             </configuration>
           </execution>
           <execution>
+            <id>copy-camel-sa</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <id>camel</id>
+              <outputDirectory>target/samples/camel-${servicemix-version}</outputDirectory>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.servicemix.samples</groupId>
+                  <artifactId>camel-sa</artifactId>
+                  <version>${servicemix-version}</version>
+                  <type>zip</type>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
             <id>unpack-samples</id>
             <phase>generate-resources</phase>
             <goals>
@@ -571,6 +590,13 @@
                 <artifactItem>
                   <groupId>org.apache.servicemix.samples</groupId>
                   <artifactId>basic</artifactId>
+                  <version>${servicemix-version}</version>
+                  <classifier>src</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.servicemix.samples</groupId>
+                  <artifactId>camel</artifactId>
                   <version>${servicemix-version}</version>
                   <classifier>src</classifier>
                   <type>zip</type>
