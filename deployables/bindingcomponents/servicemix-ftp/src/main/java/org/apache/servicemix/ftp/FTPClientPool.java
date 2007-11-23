@@ -33,11 +33,14 @@ import java.io.IOException;
  */
 public class FTPClientPool extends SocketClientPoolSupport {
 
+    public static final int DEFAULT_DATA_TIMEOUT = 120000; // two minutes
+
     private String username;
     private String password;
     private boolean binaryMode = true;
     private boolean passiveMode = false;
     private FTPClientConfig config;
+    private int dataTimeout = DEFAULT_DATA_TIMEOUT;
 
     public boolean validateObject(Object object) {
         FTPClient client = (FTPClient) object;
@@ -107,6 +110,20 @@ public class FTPClientPool extends SocketClientPoolSupport {
         this.config = config;
     }
 
+    /**
+     * @return the dataTimeout
+     */
+    public int getDataTimeout() {
+        return dataTimeout;
+    }
+
+    /**
+     * @param dataTimeout the dataTimeout to set
+     */
+    public void setDataTimeout(int dataTimeout) {
+        this.dataTimeout = dataTimeout;
+    }
+
     // Implementation methods
     //-------------------------------------------------------------------------
     protected void connect(SocketClient client) throws Exception {
@@ -115,6 +132,8 @@ public class FTPClientPool extends SocketClientPoolSupport {
         if (config != null) {
             ftp.configure(config);
         }
+        ftp.setDataTimeout(getDataTimeout());
+
         super.connect(client);
 
         int code = ftp.getReplyCode();
