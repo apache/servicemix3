@@ -42,7 +42,7 @@ public class ServiceMixComponent extends DefaultComponent {
     }
 
     protected Endpoint createEndpoint(String uri, String remaining, Map parameters) throws Exception {
-        return new ServiceMixEndpoint(this, uri);
+        return new ServiceMixEndpoint(this, uri, remaining);
     }
 
     public void registerEndpoint(org.apache.servicemix.nmr.api.Endpoint endpoint, Map<String, ?> properties) {

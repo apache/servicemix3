@@ -18,6 +18,7 @@ package org.apache.servicemix.camel;
 
 import org.apache.camel.Message;
 import org.apache.camel.Exchange;
+import org.apache.camel.impl.DefaultMessage;
 import org.apache.camel.util.UuidGenerator;
 
 import java.util.Map;
@@ -29,7 +30,7 @@ import java.util.Map;
  * Time: 9:06:27 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ServiceMixMessage implements Message {
+public class ServiceMixMessage extends DefaultMessage {
 
     private static final UuidGenerator DEFALT_ID_GENERATOR = new UuidGenerator();
 
@@ -38,7 +39,16 @@ public class ServiceMixMessage implements Message {
     private String messageId = DEFALT_ID_GENERATOR.generateId();
 
     public ServiceMixMessage(ServiceMixExchange exchange, org.apache.servicemix.nmr.api.Message message) {
+    	this.exchange = exchange;
         this.message = message;
+    }
+    
+    public ServiceMixMessage(org.apache.servicemix.nmr.api.Message message) {
+    	this.message = message;
+    }
+    
+    public ServiceMixMessage() {
+    	
     }
 
     public String getMessageId() {

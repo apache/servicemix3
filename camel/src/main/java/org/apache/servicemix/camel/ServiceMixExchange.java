@@ -16,11 +16,12 @@
  */
 package org.apache.servicemix.camel;
 
-import org.apache.camel.Exchange;
+
 import org.apache.camel.ExchangePattern;
-import org.apache.camel.Message;
+
 import org.apache.camel.CamelContext;
-import org.apache.camel.spi.UnitOfWork;
+import org.apache.camel.impl.DefaultExchange;
+
 
 import java.util.Map;
 
@@ -31,22 +32,43 @@ import java.util.Map;
  * Time: 8:50:07 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ServiceMixExchange implements Exchange {
+public class ServiceMixExchange extends DefaultExchange {
 
     private org.apache.servicemix.nmr.api.Exchange exchange;
-    private ServiceMixMessage in;
-    private ServiceMixMessage out;
-    private ServiceMixMessage fault;
+  
 
-    public ServiceMixExchange(org.apache.servicemix.nmr.api.Exchange exchange) {
+    public ServiceMixExchange(org.apache.servicemix.nmr.api.Exchange exchange, CamelContext camelContext) {
+    	super(camelContext);
         this.exchange = exchange;
+        setIn(new ServiceMixMessage(exchange.getIn()));
+        setOut(new ServiceMixMessage(exchange.getOut()));
+        if (exchange.getFault() != null) {
+            setFault(new ServiceMixMessage(exchange.getFault()));
+        }    
     }
 
-    public ExchangePattern getPattern() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public ServiceMixExchange(CamelContext context, ExchangePattern pattern, org.apache.servicemix.nmr.api.Exchange exchange) {
+        super(context, pattern);        
+        this.exchange = exchange;
+        setIn(new ServiceMixMessage(exchange.getIn()));
+        setOut(new ServiceMixMessage(exchange.getOut()));
+        if (exchange.getFault() != null) {
+            setFault(new ServiceMixMessage(exchange.getFault()));
+        }
     }
 
-    public Object getProperty(String name) {
+    public ServiceMixExchange(CamelContext context, ExchangePattern exchangePattern, org.apache.servicemix.nmr.api.Message inMessage,
+    		org.apache.servicemix.nmr.api.Exchange exchange) {
+    	super(context, exchangePattern);
+    	setIn(new ServiceMixMessage(exchange.getIn()));
+        setOut(new ServiceMixMessage(exchange.getOut()));
+        if (exchange.getFault() != null) {
+            setFault(new ServiceMixMessage(exchange.getFault()));
+        }
+    	this.exchange = exchange;
+	}
+
+	public Object getProperty(String name) {
         return exchange.getProperty(name);
     }
 
@@ -55,7 +77,7 @@ public class ServiceMixExchange implements Exchange {
     }
 
     public void setProperty(String name, Object value) {
-        exchange.setProperty(name, value);
+    	exchange.setProperty(name, value);
     }
 
     public Object removeProperty(String name) {
@@ -68,75 +90,40 @@ public class ServiceMixExchange implements Exchange {
         return exchange.getProperties();
     }
 
-    public Message getIn() {
-        return null;
+
+    public ServiceMixMessage getIn() {
+        return (ServiceMixMessage) super.getIn();
     }
 
-    public Message getOut() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+
+    public ServiceMixMessage getOut() {
+        return (ServiceMixMessage) super.getOut();
     }
 
-    public Message getOut(boolean lazyCreate) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+
+    public ServiceMixMessage getOut(boolean lazyCreate) {
+        return (ServiceMixMessage) super.getOut(lazyCreate);
     }
 
-    public Message getFault() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+
+    public ServiceMixMessage getFault() {
+        return (ServiceMixMessage) super.getFault();
+    }
+    
+
+    @Override
+    protected ServiceMixMessage createInMessage() {
+        return new ServiceMixMessage();
     }
 
-    public Message getFault(boolean lazyCreate) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    @Override
+    protected ServiceMixMessage createOutMessage() {
+        return new ServiceMixMessage();
+    }
+    
+    @Override
+    protected org.apache.camel.Message createFaultMessage() {
+        return new ServiceMixMessage();
     }
 
-    public Throwable getException() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void setException(Throwable e) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public boolean isFailed() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public CamelContext getContext() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public Exchange copy() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void copyFrom(Exchange source) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public UnitOfWork getUnitOfWork() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public String getExchangeId() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void setExchangeId(String id) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void setUnitOfWork(UnitOfWork unitOfWork) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public Exchange newInstance() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void setIn(Message message) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void setOut(Message message) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
 }

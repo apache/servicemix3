@@ -16,9 +16,13 @@
  */
 package org.apache.servicemix.camel;
 
+import org.apache.camel.component.cxf.CxfConstants;
 import org.apache.camel.impl.DefaultProducer;
 import org.apache.camel.Exchange;
-import org.apache.camel.Endpoint;
+import org.apache.servicemix.nmr.api.Channel;
+import org.apache.servicemix.nmr.api.NMR;
+import org.apache.servicemix.nmr.api.Pattern;
+import org.apache.servicemix.nmr.api.service.ServiceHelper;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,7 +31,7 @@ import org.apache.camel.Endpoint;
  * Time: 8:59:25 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ServiceMixProducer extends DefaultProducer {
+public class ServiceMixProducer extends DefaultProducer<ServiceMixExchange> {
 
     public ServiceMixProducer(ServiceMixEndpoint endpoint) {
         super(endpoint);
@@ -38,6 +42,27 @@ public class ServiceMixProducer extends DefaultProducer {
     }
 
     public void process(Exchange exchange) throws Exception {
-        //To change body of implemented methods use File | Settings | File Templates.
+    	
+    	NMR nmr = getEndpoint().getComponent().getNmr();
+    	Channel client = nmr.createChannel();
+    	
+    	// there is a bug in camel cxf exchange.getPattern().getWsdlUri() is always inonly
+    	// fix it in my working copy
+        org.apache.servicemix.nmr.api.Exchange e = client.createExchange(
+        		Pattern.fromWsdlUri(exchange.getPattern().getWsdlUri()));
+        
+        try {
+        	e.setTarget(nmr.getEndpointRegistry().lookup(
+        		ServiceHelper.createMap(org.apache.servicemix.nmr.api.Endpoint.NAME, 
+        				getEndpoint().getEndpointName())));
+        } catch (Exception ex) {
+        	ex.printStackTrace();
+        }
+        e.getIn().setBody(exchange.getIn().getBody());
+        e.getIn().setHeader(CxfConstants.OPERATION_NAME, 
+        		exchange.getIn().getHeader(CxfConstants.OPERATION_NAME));
+        client.sendSync(e);
+        exchange.getOut().setBody(e.getOut().getBody());
+        
     }
 }

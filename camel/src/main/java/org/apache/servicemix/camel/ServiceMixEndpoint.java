@@ -16,11 +16,14 @@
  */
 package org.apache.servicemix.camel;
 
+
 import org.apache.camel.impl.DefaultEndpoint;
+import org.apache.camel.ExchangePattern;
 import org.apache.camel.Producer;
 import org.apache.camel.Consumer;
 import org.apache.camel.Processor;
-import org.apache.camel.Component;
+import org.apache.servicemix.nmr.api.Exchange;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,8 +34,11 @@ import org.apache.camel.Component;
  */
 public class ServiceMixEndpoint extends DefaultEndpoint {
 
-    public ServiceMixEndpoint(ServiceMixComponent component, String uri) {
+	private String endpointName;
+	
+    public ServiceMixEndpoint(ServiceMixComponent component, String uri, String endpointName) {
         super(uri, component);
+        this.setEndpointName(endpointName);
     }
 
     public ServiceMixComponent getComponent() {
@@ -50,4 +56,25 @@ public class ServiceMixEndpoint extends DefaultEndpoint {
     public Consumer createConsumer(Processor processor) throws Exception {
         return new ServiceMixConsumer(this, processor);
     }
+    
+    public ServiceMixExchange createExchange(Exchange exchange) {
+        return new ServiceMixExchange(getContext(), getExchangePattern(), exchange);
+    }
+
+    public ServiceMixExchange createExchange(ExchangePattern pattern, Exchange exchange) {
+        return new ServiceMixExchange(getContext(), pattern, exchange);
+    }
+
+    public ServiceMixExchange createExchange(org.apache.servicemix.nmr.api.Message inMessage, Exchange exchange) {
+        return new ServiceMixExchange(getContext(), getExchangePattern(), inMessage, exchange);
+    }
+
+
+	public void setEndpointName(String endpointName) {
+		this.endpointName = endpointName;
+	}
+
+	public String getEndpointName() {
+		return endpointName;
+	}
 }
