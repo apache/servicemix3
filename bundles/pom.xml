@@ -36,6 +36,7 @@
 
     <modules>
         <module>acegi</module>
+        <module>ant</module>
         <module>aopalliance</module>
         <module>asm</module>
         <module>cglib</module>
