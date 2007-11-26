@@ -156,6 +156,17 @@
             </includes>
         </dependencySet>
 
+        <!-- FileMonitor -->
+        <dependencySet>
+            <outputDirectory>/system</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <includes>
+              <include>org.apache.servicemix:org.apache.servicemix.runtime.filemonitor</include>
+              <include>org.apache.servicemix.bundles:org.apache.servicemix.bundles.ant</include>
+            </includes>
+        </dependencySet>
+      
         <!-- Transaction Manager -->
         <dependencySet>
             <outputDirectory>/system</outputDirectory>
@@ -204,6 +215,19 @@
             </includes>
         </dependencySet>
 
+        <!-- Camel -->
+        <dependencySet>
+            <outputDirectory>/system</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <includes>
+                <include>org.apache.camel:camel-core</include>
+                <include>org.apache.camel:camel-spring</include>
+                <include>org.apache.camel:camel-jms</include>
+            </includes>
+        </dependencySet>
+
+                                 
         <!-- OpenEJB -->
         <dependencySet>
             <outputDirectory>/system</outputDirectory>

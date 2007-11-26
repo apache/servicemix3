@@ -53,10 +53,14 @@
             <version>1.0.1</version>
         </dependency>
 
-        <!-- Felix Dependencies -->
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>org.apache.servicemix.main</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix</groupId>
+            <artifactId>org.apache.servicemix.runtime.filemonitor</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
@@ -160,7 +164,7 @@
             <artifactId>camel-core</artifactId>
             <version>${camel.version}</version>
         </dependency>
-		<dependency>
+		  <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-core</artifactId>
         </dependency>
@@ -305,9 +309,21 @@
             <artifactId>xbean-finder</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.ws.commons.schema</groupId>
-            <artifactId>XmlSchema</artifactId>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-spring</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-jms</artifactId>
+        </dependency>
+      <dependency>
+        <groupId>org.apache.ws.commons.schema</groupId>
+        <artifactId>XmlSchema</artifactId>
+      </dependency>
     </dependencies>
     <build>
         <plugins>

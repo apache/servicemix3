@@ -39,7 +39,7 @@
         <module>management</module>
         <module>examples</module>
         <module>itests</module>
-        <module>main</module>
+        <module>runtime</module>
         <module>apache-servicemix</module>
         <module>jaxws</module>
         <module>openejb</module>
