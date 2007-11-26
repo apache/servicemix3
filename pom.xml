@@ -73,13 +73,13 @@
         <commons.logging.version>1.1</commons.logging.version>
         <gshell.version>1.0-alpha-1-SNAPSHOT</gshell.version>
         <acegi.version>1.0.0</acegi.version>
-        <cxf.version>2.0.2-incubator</cxf.version>
+        <cxf.version>2.0.3-incubator</cxf.version>
         <xbean.version>3.3-SNAPSHOT</xbean.version>
         <jaxb.api.version>2.0</jaxb.api.version>
         <jaxb.impl.version>2.0.5</jaxb.impl.version>
         <jaxws.api.version>2.0</jaxws.api.version>
         <openejb.version>3.0.0-SNAPSHOT</openejb.version>
-        <openjpa.version>1.0.0</openjpa.version>
+        <openjpa.version>1.0.1</openjpa.version>
     </properties>
 
     <repositories>
