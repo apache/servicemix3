@@ -39,7 +39,7 @@
 
     <properties>
         <pkgArtifactId>jaxws-api</pkgArtifactId>
-        <pkgVersion>2.0</pkgVersion>
+        <pkgVersion>${jaxws.api.version}</pkgVersion>
         <pomVersion>4.0-SNAPSHOT</pomVersion>
         <servicemix.osgi.export.pkg>javax.xml.ws*</servicemix.osgi.export.pkg>
         <servicemix.osgi.import.pkg>
