@@ -105,6 +105,9 @@
               <value>log4j-tests.properties</value>
             </property>
           </systemProperties>
+          <includes>
+            <include>**/*NoVersionsTest.*</include>
+          </includes>
         </configuration>
       </plugin>
     </plugins>
