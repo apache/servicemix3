@@ -17,9 +17,11 @@
  */
 package org.apache.servicemix.test;
 
+import java.io.File;
 import junit.framework.TestCase;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * @version $Revision: 1.1 $
@@ -28,11 +30,12 @@ public class IntegrationTest extends TestCase {
     protected ConfigurableApplicationContext applicationContext;
 
     public void testDeploy() throws Exception {
-        Thread.sleep(50000);
+        Thread.sleep(5000);
     }
 
     @Override
     protected void setUp() throws Exception {
+        FileUtil.deleteFile(new File("rootDir"));
         super.setUp();
         applicationContext = createApplicationContext();
         assertNotNull("Could not create the applicationContext!", applicationContext);
