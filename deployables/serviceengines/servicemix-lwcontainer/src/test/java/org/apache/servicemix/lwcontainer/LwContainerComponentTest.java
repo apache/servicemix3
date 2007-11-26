@@ -111,14 +111,14 @@ public class LwContainerComponentTest extends TestCase {
         InstallSharedLibrary isl = new InstallSharedLibrary();
         isl.setGroupId("org.apache.servicemix");
         isl.setArtifactId("servicemix-shared");
-        isl.setVersion("3.2-SNAPSHOT");
+        isl.setVersion(getServiceMixVersion());
         isl.afterPropertiesSet();
         isl.deploy(container);
 
         InstallComponent ic = new InstallComponent();
         ic.setGroupId("org.apache.servicemix");
         ic.setArtifactId("servicemix-quartz");
-        ic.setVersion("3.2-SNAPSHOT");
+        ic.setVersion(getServiceMixVersion());
         ic.afterPropertiesSet();
         ic.deploy(container);
 
@@ -133,6 +133,11 @@ public class LwContainerComponentTest extends TestCase {
 
         component.getServiceUnitManager().stop("su2");
         component.getServiceUnitManager().shutDown("su2");
+    }
+
+    protected String getServiceMixVersion() throws Exception {
+        Package p = Package.getPackage("org.apache.servicemix");
+        return p.getImplementationVersion();
     }
 
     /*
