@@ -40,6 +40,11 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-jbi</artifactId>
+      <version>${servicemix-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-shared</artifactId>
       <version>${servicemix-version}</version>
     </dependency>
@@ -112,11 +117,23 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-jbi</artifactId>
       <version>${cxf-version}</version>
+      <exclusions>
+	    <exclusion>
+	      <groupId>org.apache.servicemix</groupId>
+	      <artifactId>servicemix-jbi</artifactId>
+	    </exclusion>
+	  </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-bindings-jbi</artifactId>
       <version>${cxf-version}</version>
+      <exclusions>
+	    <exclusion>
+	      <groupId>org.apache.servicemix</groupId>
+	      <artifactId>servicemix-jbi</artifactId>
+	    </exclusion>
+	  </exclusions>
     </dependency>
 
     <dependency>
