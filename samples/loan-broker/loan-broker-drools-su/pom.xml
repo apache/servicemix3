@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.apache.servicemix.samples</groupId>
         <artifactId>loan-broker</artifactId>
-        <version>3.2.1-SNAPSHOT</version>
+        <version>3.2.1</version>
     </parent>
 
     <groupId>org.apache.servicemix.samples.loan-broker</groupId>
@@ -36,18 +36,18 @@
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-drools</artifactId>
-            <version>3.2.1-SNAPSHOT</version>
+            <version>3.2.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-core</artifactId>
-            <version>3.2.1-SNAPSHOT</version>
+            <version>3.2.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-common</artifactId>
-            <version>3.2.1-SNAPSHOT</version>
+            <version>3.2.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
