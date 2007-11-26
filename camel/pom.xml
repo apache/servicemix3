@@ -34,12 +34,6 @@
     <version>4.0-SNAPSHOT</version>
     <name>ServiceMix Camel</name>
 
-    <properties>
-        <cxf.version>2.0.3-incubator</cxf.version>
-        <jaxb-impl.version>2.0.1</jaxb-impl.version>
-        <jaxb-api.version>2.0</jaxb-api.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.servicemix.nmr</groupId>
@@ -90,13 +84,13 @@
         <dependency>
             <groupId>org.apache.servicemix.bundles</groupId>
 	    <artifactId>org.apache.servicemix.bundles.jaxb-impl</artifactId>
-	    <version>${jaxb-impl.version}-${pom.version}</version>
+	    <version>${jaxb.impl.version}-${pom.version}</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.servicemix.bundles</groupId>
             <artifactId>org.apache.servicemix.bundles.jaxb-api</artifactId>
-            <version>${jaxb-api.version}-${pom.version}</version>
+            <version>${jaxb.api.version}-${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.servicemix.bundles</groupId>
