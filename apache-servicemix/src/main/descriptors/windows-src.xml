@@ -44,7 +44,9 @@
             </includes>
             <excludes>
                 <exclude>**/eclipse-classes/**</exclude>
+                <exclude>**/eclipse_config/**</exclude>
                 <exclude>**/target/**</exclude>
+                <exclude>**/data/**</exclude>
             </excludes>
         </fileSet>
 
@@ -77,6 +79,8 @@
                 <exclude>activemq-data/**</exclude>
                 <exclude>*/activemq-data/**</exclude>
                 <exclude>**/eclipse-classes/**</exclude>
+                <exclude>**/eclipse_config/**</exclude>
+                <exclude>**/data/**</exclude>
                 <exclude>**/.*</exclude>
                 <exclude>**/.*/**</exclude>
 

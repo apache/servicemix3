@@ -69,7 +69,7 @@
         <camel.version>1.3-SNAPSHOT</camel.version>
         <activemq.version>5.0-SNAPSHOT</activemq.version>
         <spring.osgi.version>1.0-m3</spring.osgi.version>
-        <spring.version>2.5-rc2</spring.version>
+        <spring.version>2.5</spring.version>
         <commons.logging.version>1.1</commons.logging.version>
         <gshell.version>1.0-alpha-1-SNAPSHOT</gshell.version>
         <acegi.version>1.0.0</acegi.version>
@@ -80,6 +80,7 @@
         <jaxws.api.version>2.0</jaxws.api.version>
         <openejb.version>3.0.0-SNAPSHOT</openejb.version>
         <openjpa.version>1.0.1</openjpa.version>
+        <pax.logging.version>0.9.8-SNAPSHOT</pax.logging.version>
     </properties>
 
     <repositories>
@@ -661,12 +662,12 @@
             <dependency>
                 <groupId>org.ops4j.pax.logging</groupId>
                 <artifactId>pax-logging-api</artifactId>
-                <version>0.9.7</version>
+                <version>${pax.logging.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.ops4j.pax.logging</groupId>
                 <artifactId>pax-logging-service</artifactId>
-                <version>0.9.7</version>
+                <version>${pax.logging.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.ops4j.pax.confman</groupId>
