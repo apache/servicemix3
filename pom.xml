@@ -643,6 +643,11 @@
                 <version>${xbean.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.xbean</groupId>
+                <artifactId>xbean-spring</artifactId>
+                <version>${xbean.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>org.apache.felix.configadmin</artifactId>
                 <version>0.9.0-SNAPSHOT</version>

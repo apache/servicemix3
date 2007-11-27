@@ -88,7 +88,7 @@ public class IntegrationTest extends AbstractIntegrationTest {
             getBundle("org.apache.servicemix.examples", "org.apache.servicemix.examples.jaxws"),
             getBundle("org.apache.felix","org.apache.felix.configadmin"),
             getBundle("org.apache.geronimo.specs","geronimo-jta_1.1_spec"),
-            getBundle("org.apache.servicemix","org.apache.servicemix.activemq")
+            //getBundle("org.apache.servicemix","org.apache.servicemix.activemq")
 		};
 	}
 
@@ -113,10 +113,10 @@ public class IntegrationTest extends AbstractIntegrationTest {
 		waitOnContextCreation("org.apache.servicemix.examples.intermediary");
         ServiceReference ref = bundleContext.getServiceReference(NMR.class.getName());
         ServiceReference endpointRef = bundleContext.getServiceReference(Endpoint.class.getName());
-        ServiceReference connectionFactoryRef = bundleContext.getServiceReference(ConnectionFactory.class.getName());
+        //ServiceReference connectionFactoryRef = bundleContext.getServiceReference(ConnectionFactory.class.getName());
         assertNotNull("Service Reference is null", ref);
         assertNotNull("Endpoint Reference is null", endpointRef);
-        assertNotNull("ConnectionFacotory Reference is null", connectionFactoryRef);
+        //assertNotNull("ConnectionFacotory Reference is null", connectionFactoryRef);
         try {
             NMR nmr = (NMR) bundleContext.getService(ref);
             assertNotNull("Cannot find the service", nmr);
@@ -125,9 +125,9 @@ public class IntegrationTest extends AbstractIntegrationTest {
             assertEquals(jaxwsProvider.getClass().getName(), 
             		"org.apache.servicemix.jaxws.JAXWSProvider");
             
-            ConnectionFactory connFactory = (ConnectionFactory)bundleContext.getService(connectionFactoryRef);
-            assertNotNull(connFactory);
-            assertEquals(connFactory.getClass().getName(), "org.jencks.amqpool.JcaPooledConnectionFactory");
+            //ConnectionFactory connFactory = (ConnectionFactory)bundleContext.getService(connectionFactoryRef);
+            //assertNotNull(connFactory);
+            //assertEquals(connFactory.getClass().getName(), "org.jencks.amqpool.JcaPooledConnectionFactory");
         } finally {
             bundleContext.ungetService(ref);
         }

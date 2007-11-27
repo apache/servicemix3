@@ -48,6 +48,7 @@
                 <include>bin/linux/wrapper.conf</include>
                 <include>bin/win32/wrapper.conf</include>
                 <include>bin/win32/*.bat</include>
+				<include>bin/*.bat</include>
             </includes>
             <lineEnding>dos</lineEnding>
         </fileSet>
@@ -191,6 +192,7 @@
 				<include>org.apache.activemq:activemq-core</include>
 				<include>org.apache.servicemix:org.apache.servicemix.activemq</include>
 				<include>org.apache.geronimo.specs:geronimo-jms_1.1_spec</include>
+				<include>org.apache.xbean:xbean-spring</include>
 			</includes>
 		</dependencySet>
 
