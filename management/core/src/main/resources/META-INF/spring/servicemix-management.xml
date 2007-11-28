@@ -52,7 +52,12 @@
     </bean>
 
     <!-- Create a JMX connector ServiceFactory -->
-    <bean id="jmxConnectorServiceFactory" class="org.apache.servicemix.management.JmxConnectorServiceFactory">
+    <bean id="jmxConnectorService" class="org.springframework.jmx.support.ConnectorServerFactoryBean">
+        <property name="server" ref="mbeanServer" />
+        <property name="serviceUrl" value="${serviceUrl}" />
+        <property name="daemon" value="${daemon}" />
+        <property name="threaded" value="${threaded}" />
+        <property name="objectName" value="${objectName}" />
         <property name="environment" ref="jmxConnectorEnvironment" />
     </bean>
 
@@ -66,22 +71,16 @@
          another one is exported by a bundle with a higher ranking -->
     <osgi:reference id="jmxAuthenticator" interface="javax.management.remote.JMXAuthenticator" cardinality="0..1"/>
 
-    <!-- Export the factory as a managed factory in OSGi -->
-    <osgi:service ref="jmxConnectorServiceFactory">
-        <osgi:interfaces>
-            <value>org.osgi.service.cm.ManagedServiceFactory</value>
-        </osgi:interfaces>
-        <osgi:service-properties>
-            <entry key="service.pid" value="org.apache.servicemix.management.JmxConnectorServiceFactory" />
-        </osgi:service-properties>
-    </osgi:service>
-
     <!-- Property place holder -->
     <osgix:property-placeholder persistent-id="org.apache.servicemix.management">
         <osgix:default-properties>
             <prop key="rmiRegistryPort">1099</prop>
             <prop key="jmxLogin">smx</prop>
             <prop key="jmxPassword">smx</prop>
+            <prop key="serviceUrl">service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi</prop>
+            <prop key="daemon">true</prop>
+            <prop key="threaded">true</prop>
+            <prop key="objectName">connector:name=rmi</prop>
         </osgix:default-properties>
     </osgix:property-placeholder>
 
