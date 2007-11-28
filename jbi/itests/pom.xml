@@ -260,7 +260,7 @@
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-core</artifactId>
-            <version>5.0-SNAPSHOT</version>
+            <version>${activemq.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -316,14 +316,14 @@
                                 <artifactItem>
                                     <groupId>org.apache.servicemix</groupId>
                                     <artifactId>servicemix-shared-compat</artifactId>
-                                    <version>3.2.1-SNAPSHOT</version>
+                                    <version>${servicemix3.version}</version>
                                     <classifier>installer</classifier>
                                     <type>zip</type>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.servicemix</groupId>
                                     <artifactId>servicemix-eip</artifactId>
-                                    <version>3.2.1-SNAPSHOT</version>
+                                    <version>${servicemix3.version}</version>
                                     <classifier>installer</classifier>
                                     <type>zip</type>
                                 </artifactItem>

@@ -523,27 +523,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skip>true</skip>
+                    <forkMode>pertest</forkMode>
+                    <systemProperties>
+                        <property>
+                            <name>org.springframework.osgi.test.framework</name>
+                            <value>${osgi.test.platform}</value>
+                        </property>
+                    </systemProperties>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>default</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <skip>false</skip>
-                            <forkMode>pertest</forkMode>
-                            <systemProperties>
-                                <property>
-                                    <name>org.springframework.osgi.test.framework</name>
-                                    <value>${osgi.test.platform}</value>
-                                </property>
-                            </systemProperties>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

@@ -76,11 +76,12 @@
         <cxf.version>2.0.3-incubator</cxf.version>
         <xbean.version>3.3-SNAPSHOT</xbean.version>
         <jaxb.api.version>2.0</jaxb.api.version>
-        <jaxb.impl.version>2.0.5</jaxb.impl.version>
+        <jaxb.impl.version>2.0.3</jaxb.impl.version>
         <jaxws.api.version>2.0</jaxws.api.version>
         <openejb.version>3.0.0-SNAPSHOT</openejb.version>
         <openjpa.version>1.0.1</openjpa.version>
         <pax.logging.version>0.9.8-SNAPSHOT</pax.logging.version>
+        <servicemix3.version>3.2.1-SNAPSHOT</servicemix3.version>
     </properties>
 
     <repositories>
@@ -144,7 +145,7 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
-        <!-- Apache snapshot -->
+        <!-- OPS4J snapshot -->
         <repository>
             <id>ops4j-snapshots</id>
             <name>OPS4J Snapshot repository</name>
@@ -170,15 +171,20 @@
         </repository>
         <!-- ServiceMix repo -->
         <repository>
-            <id>servicemix-snapshots</id>
+            <id>servicemix</id>
             <name>ServiceMix Repository</name>
             <url>http://svn.apache.org/repos/asf/servicemix/m2-repo</url>
             <releases>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
             </releases>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+        </repository>
+        <!-- Apache Incubating repository -->
+        <repository>
+            <id>apache-incubator</id>
+            <url>http://people.apache.org/repo/m2-incubating-repository</url>
         </repository>
     </repositories>
 
@@ -202,7 +208,7 @@
             <dependency>
                 <groupId>org.apache.servicemix.bundles</groupId>
                 <artifactId>org.apache.servicemix.bundles.cxf</artifactId>
-                <version>2.0.2-incubator-4.0-SNAPSHOT</version>
+                <version>${cxf.version}-4.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.bundles</groupId>
@@ -227,12 +233,12 @@
             <dependency>
                 <groupId>org.apache.servicemix.bundles</groupId>
                 <artifactId>org.apache.servicemix.bundles.openejb</artifactId>
-                <version>3.0.0-SNAPSHOT-4.0-SNAPSHOT</version>
+                <version>${openejb.version}-4.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.bundles</groupId>
                 <artifactId>org.apache.servicemix.bundles.openjpa</artifactId>
-                <version>1.0.0-4.0-SNAPSHOT</version>
+                <version>${openjpa.version}-4.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.bundles</groupId>
@@ -491,7 +497,7 @@
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-core</artifactId>
-                <version>3.1.2</version>
+                <version>${servicemix3.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.springframework</groupId>
@@ -502,12 +508,12 @@
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-eip</artifactId>
-                <version>3.1.2</version>
+                <version>${servicemix3.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-common</artifactId>
-                <version>3.1.2</version>
+                <version>${servicemix3.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jencks</groupId>
