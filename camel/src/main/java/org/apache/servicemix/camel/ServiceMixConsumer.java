@@ -16,10 +16,12 @@
  */
 package org.apache.servicemix.camel;
 
+import org.apache.camel.ExchangePattern;
 import org.apache.camel.Processor;
 import org.apache.camel.impl.DefaultConsumer;
 import org.apache.servicemix.nmr.api.Channel;
 import org.apache.servicemix.nmr.api.Exchange;
+import org.apache.servicemix.nmr.api.Pattern;
 import org.apache.servicemix.nmr.api.Status;
 import org.apache.servicemix.nmr.api.service.ServiceHelper;
 
@@ -64,12 +66,17 @@ public class ServiceMixConsumer extends DefaultConsumer<ServiceMixExchange> impl
     	if (exchange.getStatus() == Status.Active) {
             try {
             	ServiceMixExchange smExchange = getEndpoint().createExchange(exchange.getIn(), exchange);
+            	smExchange.setPattern(ExchangePattern.fromWsdlUri(exchange.getPattern().getWsdlUri()));
                 getAsyncProcessor().process(smExchange);
                 exchange.setStatus(Status.Done);
-                
-                //there is a bug in camel cxf so the smExchange.getOut().getBody() is null;
-                // fixed in my working copy
-                exchange.getOut().setBody(smExchange.getOut().getBody());
+                if (exchange.getPattern() != Pattern.InOnly) {
+                	
+                	if (smExchange.getFault().getBody() != null) {
+                		exchange.getFault().setBody(smExchange.getFault().getBody());
+                	} else {
+                		exchange.getOut().setBody(smExchange.getOut().getBody());
+                	}
+                }
                 channel.send(exchange);
             } catch (Exception e) {
             	e.printStackTrace();

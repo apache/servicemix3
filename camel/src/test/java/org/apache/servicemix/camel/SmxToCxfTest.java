@@ -31,7 +31,7 @@ import org.apache.cxf.frontend.ClientProxyFactoryBean;
 import org.apache.cxf.frontend.ServerFactoryBean;
 import org.apache.servicemix.nmr.api.NMR;
 import org.apache.servicemix.nmr.core.ServiceMix;
-import org.w3c.dom.Document;
+
 
 
 
@@ -67,6 +67,8 @@ public class SmxToCxfTest extends ContextTestSupport {
 
         server = (ServerImpl)svrBean.create();
         server.start();
+        
+  
     }
     
     @Override
@@ -106,14 +108,14 @@ public class SmxToCxfTest extends ContextTestSupport {
         clientBean.setServiceClass(HelloService.class);
         clientBean.setBus(bus);        
         
-        //this test works if patch for CAMEL-243 get applied
-        /*HelloService client = (HelloService) proxyFactory.create();
+        HelloService client = (HelloService) proxyFactory.create();
         String result = client.echo("hello world");
-        assertEquals("we should get the right answer from router", "hello world echo", result);*/
+        assertEquals("we should get the right answer from router", "hello world echo", result);
         
                 
     }
     
+        
     class PojoInvokeDispatchProcessor implements Processor {
         public void process(Exchange exchange) throws Exception {
             System.out.println("PojoInvokeDispatchProcessor " + exchange.getIn().getBody());

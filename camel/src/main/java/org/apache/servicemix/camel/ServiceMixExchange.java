@@ -21,6 +21,7 @@ import org.apache.camel.ExchangePattern;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultExchange;
+import org.apache.servicemix.nmr.api.Pattern;
 
 
 import java.util.Map;
@@ -41,7 +42,11 @@ public class ServiceMixExchange extends DefaultExchange {
     	super(camelContext);
         this.exchange = exchange;
         setIn(new ServiceMixMessage(exchange.getIn()));
-        setOut(new ServiceMixMessage(exchange.getOut()));
+        if (exchange.getPattern() != Pattern.InOnly) {
+            setOut(new ServiceMixMessage(exchange.getOut()));
+        } else {
+        	setOut(null);
+        }
         if (exchange.getFault() != null) {
             setFault(new ServiceMixMessage(exchange.getFault()));
         }    
@@ -51,7 +56,12 @@ public class ServiceMixExchange extends DefaultExchange {
         super(context, pattern);        
         this.exchange = exchange;
         setIn(new ServiceMixMessage(exchange.getIn()));
-        setOut(new ServiceMixMessage(exchange.getOut()));
+        if (exchange.getPattern() != Pattern.InOnly) {
+            setOut(new ServiceMixMessage(exchange.getOut()));
+        } else {
+        	setOut(null);
+        }
+
         if (exchange.getFault() != null) {
             setFault(new ServiceMixMessage(exchange.getFault()));
         }
@@ -61,7 +71,11 @@ public class ServiceMixExchange extends DefaultExchange {
     		org.apache.servicemix.nmr.api.Exchange exchange) {
     	super(context, exchangePattern);
     	setIn(new ServiceMixMessage(exchange.getIn()));
-        setOut(new ServiceMixMessage(exchange.getOut()));
+    	if (exchange.getPattern() != Pattern.InOnly) {
+    	    setOut(new ServiceMixMessage(exchange.getOut()));
+    	} else {
+    		setOut(null);
+    	}
         if (exchange.getFault() != null) {
             setFault(new ServiceMixMessage(exchange.getFault()));
         }

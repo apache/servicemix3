@@ -46,8 +46,6 @@ public class ServiceMixProducer extends DefaultProducer<ServiceMixExchange> {
     	NMR nmr = getEndpoint().getComponent().getNmr();
     	Channel client = nmr.createChannel();
     	
-    	// there is a bug in camel cxf exchange.getPattern().getWsdlUri() is always inonly
-    	// fix it in my working copy
         org.apache.servicemix.nmr.api.Exchange e = client.createExchange(
         		Pattern.fromWsdlUri(exchange.getPattern().getWsdlUri()));
         
@@ -61,8 +59,16 @@ public class ServiceMixProducer extends DefaultProducer<ServiceMixExchange> {
         e.getIn().setBody(exchange.getIn().getBody());
         e.getIn().setHeader(CxfConstants.OPERATION_NAME, 
         		exchange.getIn().getHeader(CxfConstants.OPERATION_NAME));
-        client.sendSync(e);
-        exchange.getOut().setBody(e.getOut().getBody());
         
-    }
+        
+        client.sendSync(e);
+        if (e.getPattern() != Pattern.InOnly) {
+        	if (e.getFault().getBody() != null) {
+        		exchange.getFault().setBody(e.getFault().getBody());
+        	} else
+        		exchange.getOut().setBody(e.getOut().getBody());
+    		}
+    	}
+        
+    
 }

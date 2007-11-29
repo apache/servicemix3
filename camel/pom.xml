@@ -97,6 +97,12 @@
             <artifactId>org.apache.servicemix.bundles.cxf</artifactId>
             <version>${cxf.version}-${pom.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-testutils</artifactId>
+            <version>${cxf.version}</version>
+            <!--scope>test</scope-->
+        </dependency>
     </dependencies>
 
     <build>
