@@ -29,6 +29,28 @@
   http://www.springframework.org/schema/osgi
   http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
+    <bean id="bundle-level" class="org.apache.geronimo.gshell.osgi.BundleLevel" />
+
+    <bean id="headers" class="org.apache.geronimo.gshell.osgi.Headers" />
+
+    <bean id="list-bundles" class="org.apache.geronimo.gshell.osgi.ListBundles" />
+
+    <bean id="list-services" class="org.apache.geronimo.gshell.osgi.ListServices" />
+
+    <bean id="refresh-bundle" class="org.apache.geronimo.gshell.osgi.RefreshBundle" />
+
+    <bean id="resolve-bundle" class="org.apache.geronimo.gshell.osgi.ResolveBundle" />
+
+    <bean id="shutdown" class="org.apache.geronimo.gshell.osgi.Shutdown" />
+
+    <bean id="start-bundle" class="org.apache.geronimo.gshell.osgi.StartBundle" />
+
+    <bean id="start-level" class="org.apache.geronimo.gshell.osgi.StartLevel" />
+
+    <bean id="stop-bundle" class="org.apache.geronimo.gshell.osgi.StopBundle" />
+
+    <bean id="uninstall-bundle" class="org.apache.geronimo.gshell.osgi.UninstallBundle" />
+
     <osgi:service ref="headers" interface="org.apache.geronimo.gshell.command.Command" />
 
     <osgi:service ref="list-bundles" interface="org.apache.geronimo.gshell.command.Command" />

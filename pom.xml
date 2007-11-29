@@ -50,7 +50,7 @@
         <repository>
             <id>servicemix</id>
             <name>Apache Release Distribution Repository</name>
-            <url>scp://people.apache.org/www/people.apache.org/repo/m2-incubating-repository</url>
+            <url>scp://people.apache.org/www/people.apache.org/repo/m2-ibiblio-rsync-repository</url>
         </repository>
         <snapshotRepository>
             <id>apache.snapshots</id>
@@ -59,7 +59,7 @@
         </snapshotRepository>
         <site>
             <id>servicemix</id>
-            <url>scp://people.apache.org/www/incubator.apache.org/servicemix/dist/servicemix-${version}/site</url>
+            <url>scp://people.apache.org/www/servicemix.apache.org/dist/servicemix-${version}/site</url>
         </site>
     </distributionManagement>
 
@@ -82,6 +82,7 @@
         <openjpa.version>1.0.1</openjpa.version>
         <pax.logging.version>0.9.8-SNAPSHOT</pax.logging.version>
         <servicemix3.version>3.2.1-SNAPSHOT</servicemix3.version>
+        <bundlerepository.version>1.0.0</bundlerepository.version>
     </properties>
 
     <repositories>
@@ -283,6 +284,11 @@
             <dependency>
                 <groupId>org.apache.servicemix.gshell</groupId>
                 <artifactId>org.apache.servicemix.gshell.osgi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.servicemix.gshell</groupId>
+                <artifactId>org.apache.servicemix.gshell.obr</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

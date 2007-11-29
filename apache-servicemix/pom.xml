@@ -329,10 +329,15 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-jms</artifactId>
         </dependency>
-      <dependency>
-        <groupId>org.apache.ws.commons.schema</groupId>
-        <artifactId>XmlSchema</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.schema</groupId>
+            <artifactId>XmlSchema</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.bundlerepository</artifactId>
+            <version>${bundlerepository.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
