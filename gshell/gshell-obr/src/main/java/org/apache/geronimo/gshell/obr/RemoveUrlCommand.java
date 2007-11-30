@@ -27,11 +27,11 @@ import org.osgi.service.obr.RepositoryAdmin;
 public class RemoveUrlCommand extends ObrCommandSupport {
 
     @Argument(required = true, multiValued = true, description = "Repository URLs")
-    List<URL> urls;
+    List<String> urls;
 
-    protected void doExecute(RepositoryAdmin admin) {
-        for (URL url : urls) {
-            admin.removeRepository(url);
+    protected void doExecute(RepositoryAdmin admin) throws Exception {
+        for (String url : urls) {
+            admin.removeRepository(new URL(url));
         }
     }
 }

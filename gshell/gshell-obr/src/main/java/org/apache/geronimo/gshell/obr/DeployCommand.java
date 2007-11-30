@@ -28,7 +28,7 @@ import org.osgi.service.obr.Resource;
 @CommandComponent(id="obr:deploy", description="Deploy")
 public class DeployCommand extends ObrCommandSupport {
 
-    @Argument(required = true, index = 1, multiValued = true, description = "List of bundles")
+    @Argument(required = true, multiValued = true, description = "List of bundles")
     List<String> bundles;
 
     protected void doExecute(RepositoryAdmin admin) throws Exception {

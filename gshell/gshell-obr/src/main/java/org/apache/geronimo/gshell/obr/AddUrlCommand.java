@@ -27,11 +27,11 @@ import org.osgi.service.obr.RepositoryAdmin;
 public class AddUrlCommand extends ObrCommandSupport {
 
     @Argument(required = true, multiValued = true, description = "Repository URLs")
-    List<URL> urls;
+    List<String> urls;
 
     protected void doExecute(RepositoryAdmin admin) throws Exception {
-        for (URL url : urls) {
-            admin.addRepository(url);
+        for (String url : urls) {
+            admin.addRepository(new URL(url));
         }
     }
 }
