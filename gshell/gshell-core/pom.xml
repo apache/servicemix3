@@ -218,7 +218,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>${groupId}-${artifactId}</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>${artifactId}</Bundle-SymbolicName>
                         <Import-Package>${gshell.osgi.import}</Import-Package>
                         <DynamicImport-Package>sun.misc.*</DynamicImport-Package>
                         <Export-Package>${gshell.osgi.export}</Export-Package>

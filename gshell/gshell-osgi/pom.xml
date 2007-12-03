@@ -67,7 +67,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>${groupId}.${artifactId}</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>${artifactId}</Bundle-SymbolicName>
                         <Export-Package>org.apache.geronimo.gshell.osgi*;version=${project.version}</Export-Package>
                         <Import-Package>*</Import-Package>
                         <Private-Package>!*</Private-Package>

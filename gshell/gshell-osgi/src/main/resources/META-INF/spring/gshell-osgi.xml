@@ -51,6 +51,8 @@
 
     <bean id="uninstall-bundle" class="org.apache.geronimo.gshell.osgi.UninstallBundle" />
 
+    <osgi:service ref="bundle-level" interface="org.apache.geronimo.gshell.command.Command" />
+
     <osgi:service ref="headers" interface="org.apache.geronimo.gshell.command.Command" />
 
     <osgi:service ref="list-bundles" interface="org.apache.geronimo.gshell.command.Command" />
