@@ -1,0 +1,1679 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<repository lastmodified="20071203194254.669" name="ServiceMixRepository">
+  <resource id="0" presentationname="OPS4J Pax Web Extender Service" symbolicname="org.ops4j.pax.web.extender" uri="http://repository.ops4j.org/maven2/org/ops4j/pax/web/pax-web-extender/0.1.0/pax-web-extender-0.1.0.jar" version="0.1.0">
+    <description>
+      Pax Web Extender facilitates easy servlet registration
+    </description>
+    <size>
+      14827
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.html
+    </license>
+    <documentation>
+      http://www.ops4j.org/
+    </documentation>
+    <capability name="bundle">
+      <p n="manifestversion" v="2"/>
+      <p n="presentationname" v="OPS4J Pax Web Extender Service"/>
+      <p n="symbolicname" v="org.ops4j.pax.web.extender"/>
+      <p n="version" t="version" v="0.1.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.ops4j.pax.web.extender"/>
+      <p n="version" t="version" v="0.1.0"/>
+    </capability>
+    <require extend="false" filter="(&amp;(package=javax.servlet)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package javax.servlet
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.servlet.http)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package javax.servlet.http
+    </require>
+    <require extend="false" filter="(&amp;(package=org.apache.commons.logging)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.apache.commons.logging
+    </require>
+    <require extend="false" filter="(&amp;(package=org.ops4j.pax.web.extender)(version&gt;=0.1.0))" multiple="false" name="package" optional="false">
+      Import package org.ops4j.pax.web.extender ;version=0.1.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.osgi.framework)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.osgi.framework
+    </require>
+    <require extend="false" filter="(&amp;(package=org.osgi.service.http)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.osgi.service.http
+    </require>
+    <require extend="false" filter="(&amp;(package=org.osgi.util.tracker)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.osgi.util.tracker
+    </require>
+  </resource>
+  <resource id="1" presentationname="OPS4J Pax Web - Service" symbolicname="org.ops4j.pax.web.pax.web.service" uri="http://repository.ops4j.org/maven2/org/ops4j/pax/web/pax-web-service/0.2.1/pax-web-service-0.2.1.jar" version="0.2.1">
+    <description>
+      Pax Web is a OSGi Http Service based on Jetty 6
+    </description>
+    <size>
+      752769
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.html
+    </license>
+    <documentation>
+      http://www.ops4j.org/
+    </documentation>
+    <capability name="bundle">
+      <p n="manifestversion" v="2"/>
+      <p n="presentationname" v="OPS4J Pax Web - Service"/>
+      <p n="symbolicname" v="org.ops4j.pax.web.pax.web.service"/>
+      <p n="version" t="version" v="0.2.1"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="javax.servlet.http"/>
+      <p n="uses:" v="javax.servlet"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="javax.servlet"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="javax.servlet.resources"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="javax.servlet.jsp.resources"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.ops4j.pax.web.service"/>
+      <p n="uses:" v="org.osgi.service.http,org.osgi.framework,org.apache.commons.logging,org.osgi.util.tracker,org.ops4j.pax.web.service.internal,org.osgi.service.cm"/>
+      <p n="version" t="version" v="0.2.1"/>
+    </capability>
+    <require extend="false" filter="(&amp;(package=javax.net.ssl)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package javax.net.ssl
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.security.cert)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package javax.security.cert
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.servlet)(version&gt;=2.5.0))" multiple="false" name="package" optional="false">
+      Import package javax.servlet ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.servlet.http)(version&gt;=2.5.0))" multiple="false" name="package" optional="false">
+      Import package javax.servlet.http ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.servlet.jsp.resources)(version&gt;=2.5.0))" multiple="false" name="package" optional="false">
+      Import package javax.servlet.jsp.resources ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.servlet.resources)(version&gt;=2.5.0))" multiple="false" name="package" optional="false">
+      Import package javax.servlet.resources ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.xml.parsers)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package javax.xml.parsers
+    </require>
+    <require extend="false" filter="(&amp;(package=org.apache.commons.logging)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.apache.commons.logging
+    </require>
+    <require extend="false" filter="(&amp;(package=org.ops4j.pax.web.service)(version&gt;=0.2.1))" multiple="false" name="package" optional="false">
+      Import package org.ops4j.pax.web.service ;version=0.2.1
+    </require>
+    <require extend="false" filter="(&amp;(package=org.osgi.framework)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.osgi.framework
+    </require>
+    <require extend="false" filter="(&amp;(package=org.osgi.service.cm)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.osgi.service.cm
+    </require>
+    <require extend="false" filter="(&amp;(package=org.osgi.service.http)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.osgi.service.http
+    </require>
+    <require extend="false" filter="(&amp;(package=org.osgi.util.tracker)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.osgi.util.tracker
+    </require>
+    <require extend="false" filter="(&amp;(package=org.xml.sax)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.xml.sax
+    </require>
+    <require extend="false" filter="(&amp;(package=org.xml.sax.helpers)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.xml.sax.helpers
+    </require>
+  </resource>
+  <resource id="2" presentationname="spring-aop" symbolicname="org.springframework.bundle.spring.aop" uri="http://repo1.maven.org/maven2/org/springframework/spring-aop/2.5/spring-aop-2.5.jar" version="2.5.0">
+    <description>
+      Spring Framework
+    </description>
+    <size>
+      322942
+    </size>
+    <capability name="bundle">
+      <p n="manifestversion" v="2"/>
+      <p n="presentationname" v="spring-aop"/>
+      <p n="symbolicname" v="org.springframework.bundle.spring.aop"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.aop.support"/>
+      <p n="uses:" v="org.apache.commons.logging,org.springframework.aop,org.aopalliance.intercept,org.springframework.util,org.aopalliance.aop,org.springframework.core,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.aop.aspectj.autoproxy"/>
+      <p n="uses:" v="org.springframework.core,org.aspectj.util,org.springframework.aop.framework.autoproxy,org.springframework.aop,org.springframework.util,org.springframework.aop.aspectj,org.aopalliance.aop"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.aop.framework.adapter"/>
+      <p n="uses:" v="org.springframework.aop.support,org.apache.commons.logging,org.aopalliance.intercept,org.springframework.aop,org.springframework.util,org.springframework.beans,org.springframework.beans.factory.config,org.aopalliance.aop"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.aop.target"/>
+      <p n="uses:" v="org.springframework.aop.support,org.apache.commons.logging,org.springframework.aop,org.apache.commons.pool.impl,org.springframework.util,org.apache.commons.pool,org.springframework.beans,org.springframework.beans.factory.config,org.springframework.core,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.aop.interceptor"/>
+      <p n="uses:" v="org.springframework.aop.support,org.apache.commons.logging,org.aopalliance.intercept,org.springframework.aop,org.springframework.util,org.aopalliance.aop,com.jamonapi,org.springframework.core,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.aop"/>
+      <p n="uses:" v="org.springframework.core,org.aopalliance.intercept,org.aopalliance.aop"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.aop.scope"/>
+      <p n="uses:" v="org.springframework.aop.support,org.springframework.aop.target,org.springframework.aop,org.springframework.util,org.springframework.beans,org.springframework.beans.factory.config,org.aopalliance.aop,org.springframework.beans.factory.support,org.springframework.aop.framework.autoproxy,org.springframework.aop.framework,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.aop.target.dynamic"/>
+      <p n="uses:" v="org.apache.commons.logging,org.springframework.aop,org.springframework.util,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.aop.aspectj"/>
+      <p n="uses:" v="org.springframework.aop.support,org.apache.commons.logging,org.springframework.aop.interceptor,org.aspectj.weaver,org.aopalliance.intercept,org.springframework.aop,org.aspectj.bridge,org.aspectj.weaver.tools,org.aspectj.lang,org.springframework.core,org.aspectj.weaver.patterns,org.springframework.aop.framework.autoproxy,org.aspectj.weaver.ast,org.springframework.beans.factory,org.aspectj.runtime.internal,org.springframework.util,org.aopalliance.aop,org.aspectj.lang.reflect,org.aspectj.weaver.internal.tools,org.springframework.aop.framework,org.aspectj.weaver.reflect"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.aop.support.annotation"/>
+      <p n="uses:" v="org.springframework.aop.support,org.springframework.aop,org.springframework.util,org.springframework.core.annotation"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.aop.framework.autoproxy.target"/>
+      <p n="uses:" v="org.springframework.beans.factory.support,org.springframework.aop.target,org.apache.commons.logging,org.springframework.aop.framework.autoproxy,org.springframework.aop,org.springframework.beans.factory.config,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.aop.config"/>
+      <p n="uses:" v="org.springframework.aop.support,org.springframework.aop.aspectj.autoproxy,org.springframework.util,org.springframework.aop.scope,org.springframework.beans,org.springframework.aop.aspectj,org.springframework.beans.factory.xml,org.springframework.beans.factory.config,org.springframework.beans.factory.parsing,org.springframework.util.xml,org.w3c.dom,org.springframework.beans.factory.support,org.springframework.core,org.springframework.aop.framework.autoproxy,org.springframework.aop.framework,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.aop.framework.autoproxy"/>
+      <p n="uses:" v="org.springframework.aop.support,org.springframework.aop.target,org.apache.commons.logging,org.springframework.aop.framework.adapter,org.springframework.aop,org.springframework.util,org.springframework.beans,org.springframework.beans.factory.config,org.aopalliance.aop,org.springframework.core,org.springframework.aop.framework,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.aop.framework"/>
+      <p n="uses:" v="org.springframework.aop.support,org.apache.commons.logging,org.springframework.aop.target,org.springframework.aop.framework.adapter,org.aopalliance.intercept,net.sf.cglib.proxy,org.springframework.aop,org.springframework.util,org.springframework.beans,org.aopalliance.aop,org.springframework.core,net.sf.cglib.transform.impl,net.sf.cglib.core,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.aop.aspectj.annotation"/>
+      <p n="uses:" v="org.springframework.aop.support,org.springframework.aop.aspectj.autoproxy,org.apache.commons.logging,org.springframework.aop,org.springframework.util,org.springframework.aop.aspectj,org.springframework.beans.factory.config,org.aopalliance.aop,org.springframework.core.annotation,org.aspectj.lang.annotation,org.springframework.core,org.aspectj.lang.reflect,org.springframework.aop.framework,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <require extend="false" filter="(&amp;(package=com.jamonapi)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package com.jamonapi
+    </require>
+    <require extend="false" filter="(&amp;(package=net.sf.cglib.core)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package net.sf.cglib.core
+    </require>
+    <require extend="false" filter="(&amp;(package=net.sf.cglib.proxy)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package net.sf.cglib.proxy
+    </require>
+    <require extend="false" filter="(&amp;(package=net.sf.cglib.transform.impl)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package net.sf.cglib.transform.impl
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aopalliance.aop)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aopalliance.aop
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aopalliance.intercept)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aopalliance.intercept
+    </require>
+    <require extend="false" filter="(&amp;(package=org.apache.commons.logging)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.apache.commons.logging
+    </require>
+    <require extend="false" filter="(&amp;(package=org.apache.commons.pool)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.apache.commons.pool
+    </require>
+    <require extend="false" filter="(&amp;(package=org.apache.commons.pool.impl)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.apache.commons.pool.impl
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aspectj.bridge)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aspectj.bridge
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aspectj.lang)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aspectj.lang
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aspectj.lang.annotation)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aspectj.lang.annotation
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aspectj.lang.reflect)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aspectj.lang.reflect
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aspectj.runtime.internal)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aspectj.runtime.internal
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aspectj.util)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aspectj.util
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aspectj.weaver)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aspectj.weaver
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aspectj.weaver.ast)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aspectj.weaver.ast
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aspectj.weaver.internal.tools)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aspectj.weaver.internal.tools
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aspectj.weaver.patterns)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aspectj.weaver.patterns
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aspectj.weaver.reflect)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aspectj.weaver.reflect
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aspectj.weaver.tools)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aspectj.weaver.tools
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.aspectj)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop.aspectj ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.aspectj.annotation)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop.aspectj.annotation ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.aspectj.autoproxy)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop.aspectj.autoproxy ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.config)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop.config ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.framework)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop.framework ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.framework.adapter)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop.framework.adapter ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.framework.autoproxy)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop.framework.autoproxy
+       ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.framework.autoproxy.target)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop.framework.autoproxy.target
+       ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.interceptor)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop.interceptor ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.scope)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop.scope ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.support)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop.support ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.support.annotation)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop.support.annotation ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.target)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop.target ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.target.dynamic)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop.target.dynamic ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans.factory
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.config)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans.factory.config
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.parsing)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans.factory.parsing
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.support)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans.factory.support
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.xml)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans.factory.xml
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.annotation)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.annotation
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.util)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.util
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.util.xml)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.util.xml
+    </require>
+    <require extend="false" filter="(&amp;(package=org.w3c.dom)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.w3c.dom
+    </require>
+  </resource>
+  <resource id="3" presentationname="spring-beans" symbolicname="org.springframework.bundle.spring.beans" uri="http://repo1.maven.org/maven2/org/springframework/spring-beans/2.5/spring-beans-2.5.jar" version="2.5.0">
+    <description>
+      Spring Framework
+    </description>
+    <size>
+      461339
+    </size>
+    <capability name="bundle">
+      <p n="manifestversion" v="2"/>
+      <p n="presentationname" v="spring-beans"/>
+      <p n="symbolicname" v="org.springframework.bundle.spring.beans"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.beans.factory.serviceloader"/>
+      <p n="uses:" v="org.springframework.util,org.springframework.beans.factory.config,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.beans.annotation"/>
+      <p n="uses:" v="org.springframework.util,org.springframework.beans"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.beans.support"/>
+      <p n="uses:" v="org.apache.commons.logging,org.springframework.util,org.springframework.core.io,org.springframework.beans,org.springframework.core.io.support,org.springframework.beans.propertyeditors"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.beans.factory.generic"/>
+      <p n="uses:" v="org.springframework.util,org.springframework.beans,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.beans.factory.annotation"/>
+      <p n="uses:" v="org.apache.commons.logging,org.springframework.util,org.springframework.beans,org.springframework.beans.factory.config,org.springframework.core.annotation,org.springframework.beans.factory.support,org.springframework.beans.factory.wiring,org.springframework.core,org.springframework.core.type,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.beans"/>
+      <p n="uses:" v="org.apache.commons.logging,org.springframework.util,org.springframework.core.io,org.springframework.core.io.support,org.springframework.beans.propertyeditors,org.springframework.core"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.beans.factory.xml"/>
+      <p n="uses:" v="org.apache.commons.logging,org.springframework.util,org.springframework.beans,org.springframework.core.io,javax.xml.parsers,org.springframework.core.io.support,org.springframework.beans.factory.config,org.springframework.beans.factory.parsing,org.springframework.util.xml,org.w3c.dom,org.xml.sax,org.springframework.beans.factory.support,org.springframework.core,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.beans.factory.parsing"/>
+      <p n="uses:" v="org.apache.commons.logging,org.springframework.util,org.springframework.core.io,org.springframework.beans,org.springframework.beans.factory.config,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.beans.factory.config"/>
+      <p n="uses:" v="org.apache.commons.logging,org.springframework.beans.support,org.springframework.util,org.springframework.beans,org.springframework.core.io.support,org.springframework.core,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.beans.propertyeditors"/>
+      <p n="uses:" v="org.springframework.util,org.springframework.core.io"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.beans.factory.wiring"/>
+      <p n="uses:" v="org.apache.commons.logging,org.springframework.util,org.springframework.beans.factory.config,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.beans.factory.support"/>
+      <p n="uses:" v="org.apache.commons.logging,net.sf.cglib.proxy,org.springframework.util,org.springframework.core.io,org.springframework.beans,org.springframework.core.io.support,org.springframework.beans.factory.config,org.springframework.core,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.beans.factory.access"/>
+      <p n="uses:" v="org.springframework.beans.factory.support,org.apache.commons.logging,org.springframework.core.io,org.springframework.beans,org.springframework.beans.factory.xml,org.springframework.core.io.support,org.springframework.beans.factory.config,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.beans.factory"/>
+      <p n="uses:" v="org.springframework.core,org.springframework.util,org.springframework.beans"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <require extend="false" filter="(&amp;(package=javax.xml.parsers)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package javax.xml.parsers
+    </require>
+    <require extend="false" filter="(&amp;(package=net.sf.cglib.proxy)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package net.sf.cglib.proxy
+    </require>
+    <require extend="false" filter="(&amp;(package=org.apache.commons.logging)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.apache.commons.logging
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.annotation)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans.annotation ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans.factory ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.access)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans.factory.access ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.annotation)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans.factory.annotation
+       ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.config)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans.factory.config ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.generic)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans.factory.generic ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.parsing)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans.factory.parsing ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.serviceloader)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans.factory.serviceloader
+       ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.support)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans.factory.support ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.wiring)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans.factory.wiring ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.xml)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans.factory.xml ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.propertyeditors)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans.propertyeditors ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.support)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.beans.support ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.annotation)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.annotation
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.io)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.io
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.io.support)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.io.support
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.type)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.type
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.util)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.util
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.util.xml)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.util.xml
+    </require>
+    <require extend="false" filter="(&amp;(package=org.w3c.dom)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.w3c.dom
+    </require>
+    <require extend="false" filter="(&amp;(package=org.xml.sax)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.xml.sax
+    </require>
+  </resource>
+  <resource id="4" presentationname="spring-context" symbolicname="org.springframework.bundle.spring.context" uri="http://repo1.maven.org/maven2/org/springframework/spring-context/2.5/spring-context-2.5.jar" version="2.5.0">
+    <description>
+      Spring Framework
+    </description>
+    <size>
+      442210
+    </size>
+    <capability name="bundle">
+      <p n="manifestversion" v="2"/>
+      <p n="presentationname" v="spring-context"/>
+      <p n="symbolicname" v="org.springframework.bundle.spring.context"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.instrument.classloading.weblogic"/>
+      <p n="uses:" v="org.springframework.instrument.classloading,org.springframework.util"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.context.access"/>
+      <p n="uses:" v="javax.naming,org.apache.commons.logging,org.springframework.util,org.springframework.context.support,org.springframework.beans,org.springframework.context,org.springframework.core.io.support,org.springframework.jndi,org.springframework.beans.factory.access,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.context.support"/>
+      <p n="uses:" v="org.apache.commons.logging,org.springframework.context.i18n,org.springframework.beans.support,org.springframework.util,org.springframework.core.io,org.springframework.beans,org.springframework.beans.factory.xml,org.springframework.context,org.springframework.beans.factory.config,org.springframework.core.io.support,org.springframework.context.event,org.xml.sax,org.springframework.beans.factory.support,org.springframework.core,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.instrument.classloading.glassfish"/>
+      <p n="uses:" v="org.springframework.instrument.classloading,com.sun.enterprise.loader,org.springframework.util,javax.persistence.spi"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.jmx"/>
+      <p n="uses:" v="org.springframework.core"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.scripting.bsh"/>
+      <p n="uses:" v="org.springframework.aop.support,org.springframework.core,org.springframework.util,org.springframework.scripting,bsh,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.scheduling.concurrent"/>
+      <p n="uses:" v="org.apache.commons.logging,org.springframework.scheduling,org.springframework.util,org.springframework.scheduling.support,org.springframework.core.task,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.jmx.access"/>
+      <p n="uses:" v="org.apache.commons.logging,javax.management.openmbean,org.aopalliance.intercept,org.springframework.util,org.springframework.jmx,org.springframework.beans,javax.management,org.springframework.core,javax.management.remote,org.springframework.jmx.support,org.springframework.aop.framework,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.scheduling.support"/>
+      <p n="uses:" v="org.apache.commons.logging,org.springframework.beans.support,org.springframework.util,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.context.annotation"/>
+      <p n="uses:" v="javax.annotation,javax.ejb,org.springframework.beans.factory.annotation,org.springframework.beans,org.springframework.beans.factory.config,javax.xml.namespace,org.springframework.core,org.springframework.beans.factory.support,org.springframework.jndi.support,org.springframework.core.type,org.springframework.beans.factory,org.springframework.util,org.springframework.aop.scope,org.springframework.core.io,org.springframework.beans.factory.xml,org.springframework.context,org.springframework.beans.factory.parsing,org.springframework.core.io.support,org.w3c.dom,org.springframework.core.type.filter,org.springframework.core.type.classreading,javax.xml.ws,org.springframework.stereotype"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.jmx.export"/>
+      <p n="uses:" v="org.springframework.aop.support,org.springframework.aop.target,org.apache.commons.logging,org.springframework.jmx.export.assembler,org.springframework.aop,org.springframework.util,org.springframework.jmx,org.springframework.beans.factory.config,javax.management,org.springframework.core,org.springframework.jmx.support,org.springframework.jmx.export.naming,org.springframework.aop.framework,javax.management.modelmbean,org.springframework.jmx.export.notification,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.jndi"/>
+      <p n="uses:" v="org.springframework.core,javax.naming,org.apache.commons.logging,org.springframework.aop,org.springframework.util,org.springframework.aop.framework,org.springframework.beans.propertyeditors,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.remoting.support"/>
+      <p n="uses:" v="org.apache.commons.logging,org.aopalliance.intercept,org.springframework.util,org.springframework.aop.framework,org.aopalliance.aop,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.scheduling.backportconcurrent"/>
+      <p n="uses:" v="edu.emory.mathcs.backport.java.util.concurrent,org.apache.commons.logging,org.springframework.scheduling,org.springframework.util,org.springframework.scheduling.support,org.springframework.core.task,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.instrument.classloading"/>
+      <p n="uses:" v="org.springframework.core,org.apache.commons.logging,org.springframework.util,org.springframework.instrument"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.scripting.jruby"/>
+      <p n="uses:" v="org.springframework.aop.support,org.jruby,org.jruby.runtime,org.jruby.exceptions,org.springframework.util,org.jruby.javasupport,org.jruby.ast,org.springframework.core,org.jruby.runtime.builtin,org.springframework.scripting,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.validation"/>
+      <p n="uses:" v="org.apache.commons.logging,org.springframework.util,org.springframework.context.support,org.springframework.beans"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.jndi.support"/>
+      <p n="uses:" v="org.springframework.jndi,javax.naming,org.springframework.beans,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.remoting.rmi"/>
+      <p n="uses:" v="org.springframework.aop.support,javax.naming,org.apache.commons.logging,org.aopalliance.intercept,org.springframework.util,org.omg.CORBA,org.omg.CORBA.portable,org.springframework.jndi,org.springframework.remoting,org.springframework.remoting.support,org.omg.CORBA_2_3.portable,org.springframework.aop.framework,javax.rmi,javax.rmi.CORBA,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.jmx.export.notification"/>
+      <p n="uses:" v="org.springframework.util,org.springframework.jmx,javax.management,javax.management.modelmbean"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.remoting.soap"/>
+      <p n="uses:" v="org.springframework.remoting,javax.xml.namespace"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.ejb.access"/>
+      <p n="uses:" v="javax.naming,javax.ejb,org.apache.commons.logging,org.aopalliance.intercept,org.springframework.util,org.springframework.jndi,org.springframework.core,org.springframework.remoting,org.springframework.aop.framework,javax.rmi,org.springframework.remoting.rmi,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.ejb.support"/>
+      <p n="uses:" v="org.apache.commons.logging,javax.ejb,javax.jms,org.springframework.context.access,org.springframework.beans.factory.access,org.springframework.util,org.springframework.beans,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.scripting.support"/>
+      <p n="uses:" v="org.springframework.aop.support,org.apache.commons.logging,org.springframework.aop,net.sf.cglib.proxy,net.sf.cglib.asm,org.springframework.util,org.springframework.aop.target.dynamic,org.springframework.beans,org.springframework.core.io,org.springframework.context,org.springframework.beans.factory.config,org.aopalliance.aop,org.springframework.beans.factory.support,org.springframework.core,org.springframework.aop.framework,net.sf.cglib.core,org.springframework.scripting,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.jmx.export.metadata"/>
+      <p n="uses:" v="org.springframework.metadata,org.springframework.util,org.springframework.jmx,org.springframework.beans,javax.management.modelmbean,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.context.weaving"/>
+      <p n="uses:" v="org.aspectj.weaver.loadtime,org.springframework.instrument.classloading.weblogic,org.apache.commons.logging,org.springframework.util,org.springframework.instrument.classloading.glassfish,org.springframework.beans,org.springframework.instrument,org.springframework.beans.factory.config,org.springframework.core,org.springframework.instrument.classloading,org.springframework.instrument.classloading.oc4j,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.ui.context"/>
+      <p n="uses:" v="org.springframework.context"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.context.i18n"/>
+      <p n="uses:" v="org.springframework.util"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.jmx.export.assembler"/>
+      <p n="uses:" v="org.springframework.aop.support,org.springframework.jmx.export.metadata,org.springframework.util,org.springframework.beans,javax.management,org.springframework.core,org.springframework.jmx.support,org.springframework.aop.framework,javax.management.modelmbean,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.instrument"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.context"/>
+      <p n="uses:" v="org.springframework.core.io,org.springframework.beans,org.springframework.core.io.support,org.springframework.beans.factory.config,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.ejb.config"/>
+      <p n="uses:" v="org.springframework.jndi,org.springframework.beans.factory.support,org.springframework.util,org.springframework.beans.factory.xml,org.springframework.beans.factory.config,org.springframework.util.xml,org.w3c.dom"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.context.event"/>
+      <p n="uses:" v="org.springframework.core,org.aopalliance.intercept,org.springframework.beans,org.springframework.context,org.springframework.core.task,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.remoting"/>
+      <p n="uses:" v="org.springframework.core"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.context.config"/>
+      <p n="uses:" v="org.springframework.util,org.springframework.core.io,org.springframework.beans,org.springframework.beans.factory.xml,org.springframework.beans.factory.config,org.springframework.beans.factory.parsing,org.w3c.dom,org.springframework.core,org.springframework.beans.factory.support,org.springframework.jndi,org.springframework.jmx.support"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.ui"/>
+      <p n="uses:" v="org.springframework.core,org.springframework.util"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.ui.context.support"/>
+      <p n="uses:" v="org.apache.commons.logging,org.springframework.ui.context,org.springframework.util,org.springframework.context.support,org.springframework.context"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.jmx.export.annotation"/>
+      <p n="uses:" v="org.springframework.beans.annotation,org.springframework.jmx.export.metadata,org.springframework.jmx.export.assembler,org.springframework.util,org.springframework.jmx.export.naming,org.springframework.beans,org.springframework.core.annotation,org.springframework.jmx.export"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.jmx.support"/>
+      <p n="uses:" v="javax.naming,org.springframework.aop.target,org.apache.commons.logging,org.springframework.aop,org.springframework.util,org.springframework.jmx,javax.management,org.springframework.jndi,org.springframework.core,javax.management.remote,org.springframework.aop.framework,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.scheduling"/>
+      <p n="uses:" v="org.springframework.core,org.springframework.core.task"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.scripting.groovy"/>
+      <p n="uses:" v="groovy.lang,org.springframework.util,org.springframework.beans,org.springframework.beans.factory.config,org.springframework.scripting,org.codehaus.groovy.control,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.scripting.config"/>
+      <p n="uses:" v="org.springframework.beans.factory.support,org.springframework.scripting.support,org.springframework.util,org.springframework.beans,org.springframework.beans.factory.xml,org.springframework.beans.factory.config,org.springframework.util.xml,org.w3c.dom"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.instrument.classloading.oc4j"/>
+      <p n="uses:" v="org.springframework.instrument.classloading,org.springframework.util,oracle.classloader.util"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.jmx.export.naming"/>
+      <p n="uses:" v="org.springframework.aop.support,org.apache.commons.logging,org.springframework.jmx.export.metadata,org.springframework.util,org.springframework.core.io,org.springframework.core.io.support,javax.management,org.springframework.jmx.support,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.scripting"/>
+      <p n="uses:" v="org.springframework.core"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.scheduling.timer"/>
+      <p n="uses:" v="org.springframework.core,org.apache.commons.logging,org.springframework.scheduling,org.springframework.util,org.springframework.scheduling.support,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.stereotype"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <require extend="false" filter="(&amp;(package=bsh)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package bsh
+    </require>
+    <require extend="false" filter="(&amp;(package=com.ibm.websphere.management)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package com.ibm.websphere.management
+    </require>
+    <require extend="false" filter="(&amp;(package=com.sun.enterprise.loader)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package com.sun.enterprise.loader
+    </require>
+    <require extend="false" filter="(&amp;(package=edu.emory.mathcs.backport.java.util.concurrent)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package edu.emory.mathcs.backport.java.util.concurrent
+    </require>
+    <require extend="false" filter="(&amp;(package=groovy.lang)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package groovy.lang
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.annotation)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package javax.annotation
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.ejb)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package javax.ejb
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.jms)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package javax.jms
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.management)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package javax.management
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.management.modelmbean)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package javax.management.modelmbean
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.management.openmbean)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package javax.management.openmbean
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.management.remote)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package javax.management.remote
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.naming)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package javax.naming
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.persistence.spi)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package javax.persistence.spi
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.rmi)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package javax.rmi
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.rmi.CORBA)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package javax.rmi.CORBA
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.xml.namespace)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package javax.xml.namespace
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.xml.ws)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package javax.xml.ws
+    </require>
+    <require extend="false" filter="(&amp;(package=net.sf.cglib.asm)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package net.sf.cglib.asm
+    </require>
+    <require extend="false" filter="(&amp;(package=net.sf.cglib.core)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package net.sf.cglib.core
+    </require>
+    <require extend="false" filter="(&amp;(package=net.sf.cglib.proxy)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package net.sf.cglib.proxy
+    </require>
+    <require extend="false" filter="(&amp;(package=oracle.classloader.util)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package oracle.classloader.util
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aopalliance.aop)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aopalliance.aop
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aopalliance.intercept)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aopalliance.intercept
+    </require>
+    <require extend="false" filter="(&amp;(package=org.apache.commons.logging)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.apache.commons.logging
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aspectj.weaver.loadtime)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aspectj.weaver.loadtime
+    </require>
+    <require extend="false" filter="(&amp;(package=org.codehaus.groovy.control)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.codehaus.groovy.control
+    </require>
+    <require extend="false" filter="(&amp;(package=org.jruby)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.jruby
+    </require>
+    <require extend="false" filter="(&amp;(package=org.jruby.ast)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.jruby.ast
+    </require>
+    <require extend="false" filter="(&amp;(package=org.jruby.exceptions)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.jruby.exceptions
+    </require>
+    <require extend="false" filter="(&amp;(package=org.jruby.javasupport)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.jruby.javasupport
+    </require>
+    <require extend="false" filter="(&amp;(package=org.jruby.runtime)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.jruby.runtime
+    </require>
+    <require extend="false" filter="(&amp;(package=org.jruby.runtime.builtin)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.jruby.runtime.builtin
+    </require>
+    <require extend="false" filter="(&amp;(package=org.omg.CORBA)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.omg.CORBA
+    </require>
+    <require extend="false" filter="(&amp;(package=org.omg.CORBA.portable)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.omg.CORBA.portable
+    </require>
+    <require extend="false" filter="(&amp;(package=org.omg.CORBA_2_3.portable)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.omg.CORBA_2_3.portable
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.framework)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop.framework
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.scope)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop.scope
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.support)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop.support
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.target)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop.target
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.target.dynamic)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.aop.target.dynamic
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans)(version&gt;=2.5.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.annotation)(version&gt;=2.5.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans.annotation ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory)(version&gt;=2.5.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans.factory ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.access)(version&gt;=2.5.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans.factory.access ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.annotation)(version&gt;=2.5.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans.factory.annotation
+       ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.config)(version&gt;=2.5.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans.factory.config ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.parsing)(version&gt;=2.5.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans.factory.parsing ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.support)(version&gt;=2.5.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans.factory.support ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.xml)(version&gt;=2.5.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans.factory.xml ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.propertyeditors)(version&gt;=2.5.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans.propertyeditors ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.support)(version&gt;=2.5.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans.support ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.context)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.context ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.context.access)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.context.access ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.context.annotation)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.context.annotation ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.context.config)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.context.config ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.context.event)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.context.event ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.context.i18n)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.context.i18n ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.context.support)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.context.support ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.context.weaving)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.context.weaving ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.annotation)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.annotation
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.io)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.io
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.io.support)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.io.support
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.task)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.task
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.type)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.type
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.type.classreading)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.type.classreading
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.type.filter)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.type.filter
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.ejb.access)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.ejb.access ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.ejb.config)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.ejb.config ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.ejb.support)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.ejb.support ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.instrument)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.instrument ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.instrument.classloading)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.instrument.classloading
+       ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.instrument.classloading.glassfish)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.instrument.classloading.glassfish
+       ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.instrument.classloading.oc4j)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.instrument.classloading.oc4j
+       ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.instrument.classloading.weblogic)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.instrument.classloading.weblogic
+       ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.jmx)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.jmx ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.jmx.access)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.jmx.access ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.jmx.export)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.jmx.export ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.jmx.export.annotation)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.jmx.export.annotation ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.jmx.export.assembler)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.jmx.export.assembler ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.jmx.export.metadata)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.jmx.export.metadata ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.jmx.export.naming)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.jmx.export.naming ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.jmx.export.notification)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.jmx.export.notification
+       ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.jmx.support)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.jmx.support ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.jndi)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.jndi ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.jndi.support)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.jndi.support ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.metadata)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.metadata
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.remoting)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.remoting ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.remoting.rmi)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.remoting.rmi ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.remoting.soap)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.remoting.soap ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.remoting.support)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.remoting.support ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.scheduling)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.scheduling ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.scheduling.backportconcurrent)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.scheduling.backportconcurrent
+       ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.scheduling.concurrent)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.scheduling.concurrent ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.scheduling.support)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.scheduling.support ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.scheduling.timer)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.scheduling.timer ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.scripting)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.scripting ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.scripting.bsh)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.scripting.bsh ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.scripting.config)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.scripting.config ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.scripting.groovy)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.scripting.groovy ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.scripting.jruby)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.scripting.jruby ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.scripting.support)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.scripting.support ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.stereotype)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.stereotype ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.ui)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.ui ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.ui.context)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.ui.context ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.ui.context.support)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.ui.context.support ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.util)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.util
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.util.xml)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.util.xml
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.validation)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.validation ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.w3c.dom)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.w3c.dom
+    </require>
+    <require extend="false" filter="(&amp;(package=org.xml.sax)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.xml.sax
+    </require>
+  </resource>
+  <resource id="5" presentationname="spring-core" symbolicname="org.springframework.bundle.spring.core" uri="http://repo1.maven.org/maven2/org/springframework/spring-core/2.5/spring-core-2.5.jar" version="2.5.0">
+    <description>
+      Spring Framework
+    </description>
+    <size>
+      270968
+    </size>
+    <capability name="bundle">
+      <p n="manifestversion" v="2"/>
+      <p n="presentationname" v="spring-core"/>
+      <p n="symbolicname" v="org.springframework.bundle.spring.core"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.asm"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.util.comparator"/>
+      <p n="uses:" v="org.springframework.util"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.metadata.commons"/>
+      <p n="uses:" v="org.springframework.metadata,org.apache.commons.attributes"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.asm.signature"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.util"/>
+      <p n="uses:" v="org.apache.commons.logging,org.apache.log4j,org.apache.log4j.xml"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.core.io"/>
+      <p n="uses:" v="org.springframework.core,org.springframework.util"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.core.io.support"/>
+      <p n="uses:" v="org.apache.commons.logging,org.springframework.util,org.springframework.core.io"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.core.annotation"/>
+      <p n="uses:" v="org.springframework.core,org.springframework.util"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.util.xml"/>
+      <p n="uses:" v="org.apache.commons.logging,javax.xml.transform,org.springframework.util,org.w3c.dom,org.xml.sax"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.core"/>
+      <p n="uses:" v="org.springframework.asm,org.apache.commons.logging,org.apache.commons.collections,org.springframework.util,edu.emory.mathcs.backport.java.util.concurrent,org.springframework.asm.commons,org.apache.commons.collections.map"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.asm.commons"/>
+      <p n="uses:" v="org.springframework.asm"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.core.task.support"/>
+      <p n="uses:" v="org.springframework.util,org.springframework.core.task"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.core.type.filter"/>
+      <p n="uses:" v="org.aspectj.weaver,org.aspectj.weaver.patterns,org.springframework.core.type.classreading,org.springframework.util,org.aspectj.bridge,org.aspectj.weaver.bcel,org.springframework.core.type"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.metadata"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.core.type.classreading"/>
+      <p n="uses:" v="org.springframework.asm,org.springframework.asm.commons,org.springframework.util,org.springframework.core.io,org.springframework.core.type"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.core.style"/>
+      <p n="uses:" v="org.springframework.core,org.springframework.util"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.core.enums"/>
+      <p n="uses:" v="org.springframework.util.comparator,org.apache.commons.logging,org.springframework.util"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.core.task"/>
+      <p n="uses:" v="org.springframework.core,org.springframework.util"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.core.type"/>
+      <p n="uses:" v="org.springframework.core.annotation"/>
+      <p n="version" t="version" v="2.5.0"/>
+    </capability>
+    <require extend="false" filter="(&amp;(package=edu.emory.mathcs.backport.java.util.concurrent)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package edu.emory.mathcs.backport.java.util.concurrent
+    </require>
+    <require extend="false" filter="(&amp;(package=javax.xml.transform)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package javax.xml.transform
+    </require>
+    <require extend="false" filter="(&amp;(package=org.apache.commons.attributes)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.apache.commons.attributes
+    </require>
+    <require extend="false" filter="(&amp;(package=org.apache.commons.collections)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.apache.commons.collections
+    </require>
+    <require extend="false" filter="(&amp;(package=org.apache.commons.collections.map)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.apache.commons.collections.map
+    </require>
+    <require extend="false" filter="(&amp;(package=org.apache.commons.logging)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.apache.commons.logging
+    </require>
+    <require extend="false" filter="(&amp;(package=org.apache.log4j)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.apache.log4j
+    </require>
+    <require extend="false" filter="(&amp;(package=org.apache.log4j.xml)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.apache.log4j.xml
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aspectj.bridge)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aspectj.bridge
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aspectj.weaver)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aspectj.weaver
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aspectj.weaver.bcel)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aspectj.weaver.bcel
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aspectj.weaver.patterns)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aspectj.weaver.patterns
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.asm)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.asm ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.asm.commons)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.asm.commons ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.asm.signature)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.asm.signature ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.annotation)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.annotation ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.enums)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.enums ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.io)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.io ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.io.support)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.io.support ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.style)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.style ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.task)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.task ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.task.support)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.task.support ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.type)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.type ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.type.classreading)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.type.classreading ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.type.filter)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.core.type.filter ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.metadata)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.metadata ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.metadata.commons)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.metadata.commons ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.util)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.util ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.util.comparator)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.util.comparator ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.util.xml)(version&gt;=2.5.0))" multiple="false" name="package" optional="true">
+      Import package org.springframework.util.xml ;version=2.5.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.w3c.dom)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.w3c.dom
+    </require>
+    <require extend="false" filter="(&amp;(package=org.xml.sax)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.xml.sax
+    </require>
+  </resource>
+  <resource id="6" presentationname="spring-osgi-core" symbolicname="org.springframework.osgi.spring-osgi-core" uri="http://s3.amazonaws.com/maven.springframework.org/milestone/org/springframework/osgi/spring-osgi-core/1.0-m3/spring-osgi-core-1.0-m3.jar" version="1.0.0.m3">
+    <description>
+      Spring/OSGi core classes. Offers OSGi-based application context
+       and importer/exporter functionality.
+    </description>
+    <size>
+      209968
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0
+    </license>
+    <documentation>
+      http://www.springframework.org
+    </documentation>
+    <capability name="bundle">
+      <p n="manifestversion" v="2"/>
+      <p n="presentationname" v="spring-osgi-core"/>
+      <p n="symbolicname" v="org.springframework.osgi.spring-osgi-core"/>
+      <p n="version" t="version" v="1.0.0.m3"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.osgi.internal.util"/>
+      <p n="uses:" v="org.osgi.framework,org.apache.commons.logging,org.aopalliance.intercept,org.springframework.osgi.util,org.springframework.beans.factory.config,org.springframework.aop.framework,org.springframework.util,org.aopalliance.aop,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="0.0.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.osgi.compendium.config"/>
+      <p n="version" t="version" v="1.0.0.m3"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.osgi.internal.util.concurrent"/>
+      <p n="uses:" v="org.apache.commons.logging,org.springframework.util"/>
+      <p n="version" t="version" v="0.0.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.osgi.internal.config"/>
+      <p n="uses:" v="org.springframework.util.xml,org.springframework.core,org.w3c.dom,org.apache.commons.logging,org.springframework.beans.factory.support,org.springframework.beans.factory.config,org.springframework.beans.factory.xml,org.springframework.beans,org.springframework.osgi.service,org.springframework.util,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="0.0.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.osgi.internal.context.support"/>
+      <p n="uses:" v="org.springframework.osgi.internal.util,org.osgi.framework,org.apache.commons.logging,org.springframework.context,org.aopalliance.intercept,org.springframework.osgi.util,org.springframework.beans.factory.config,org.springframework.osgi.context.support,org.springframework.beans,org.springframework.util,org.springframework.beans.factory,org.springframework.osgi.internal.context"/>
+      <p n="version" t="version" v="0.0.0"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.osgi.service.importer"/>
+      <p n="uses:" v="org.springframework.osgi.internal.util,org.springframework.osgi.internal.service,org.springframework.core,org.springframework.osgi.internal.service.importer,org.springframework.osgi.internal.context.support,org.osgi.framework,org.apache.commons.logging,org.springframework.osgi.internal.service.collection,org.springframework.osgi.internal.service.interceptor,org.springframework.osgi.util,org.springframework.osgi.internal.service.support,org.springframework.osgi.context,org.springframework.aop.framework,org.springframework.osgi.service.exporter,org.springframework.osgi.service,org.springframework.util,org.aopalliance.aop,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="1.0.0.m3"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.osgi.config"/>
+      <p n="version" t="version" v="1.0.0.m3"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.osgi.util"/>
+      <p n="uses:" v="org.springframework.core,org.osgi.framework,org.springframework.aop.framework,org.apache.commons.logging,org.springframework.util"/>
+      <p n="version" t="version" v="1.0.0.m3"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.osgi.context"/>
+      <p n="uses:" v="org.osgi.framework,org.springframework.context"/>
+      <p n="version" t="version" v="1.0.0.m3"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.osgi"/>
+      <p n="version" t="version" v="1.0.0.m3"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.osgi.context.support"/>
+      <p n="uses:" v="org.springframework.osgi.internal.util,org.osgi.service.startlevel,org.springframework.core.io.support,org.xml.sax,org.springframework.osgi.internal.context.support,org.osgi.framework,org.apache.commons.logging,org.springframework.context.support,org.springframework.osgi.util,org.springframework.beans.factory.support,org.springframework.osgi.context,org.springframework.beans.factory.config,org.springframework.beans.propertyeditors,org.springframework.beans.factory.xml,org.springframework.core.io,org.springframework.osgi.io,org.springframework.beans,org.springframework.util,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="1.0.0.m3"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.osgi.service"/>
+      <p n="uses:" v="org.osgi.framework"/>
+      <p n="version" t="version" v="1.0.0.m3"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.osgi.service.exporter"/>
+      <p n="uses:" v="org.springframework.osgi.internal.util,org.springframework.core,org.springframework.osgi.internal.service,org.osgi.framework,org.springframework.osgi.internal.context.support,org.apache.commons.logging,org.springframework.osgi.internal.service.interceptor,org.springframework.osgi.util,org.springframework.osgi.context,org.springframework.beans.factory.config,org.springframework.osgi.internal.service.exporter,org.springframework.aop.framework,org.springframework.beans,org.springframework.osgi.service,org.springframework.util,org.aopalliance.aop,org.springframework.beans.factory"/>
+      <p n="version" t="version" v="1.0.0.m3"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.osgi.internal.context"/>
+      <p n="uses:" v="org.springframework.osgi.context,org.springframework.beans"/>
+      <p n="version" t="version" v="0.0.0"/>
+    </capability>
+    <require extend="false" filter="(&amp;(package=org.aopalliance.aop)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aopalliance.aop
+    </require>
+    <require extend="false" filter="(&amp;(package=org.aopalliance.intercept)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.aopalliance.intercept
+    </require>
+    <require extend="false" filter="(&amp;(package=org.apache.commons.logging)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.apache.commons.logging
+    </require>
+    <require extend="false" filter="(&amp;(package=org.osgi.framework)(version&gt;=1.3.0))" multiple="false" name="package" optional="false">
+      Import package org.osgi.framework ;version=1.3.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.osgi.service.cm)(version&gt;=1.2.0))" multiple="false" name="package" optional="true">
+      Import package org.osgi.service.cm ;version=1.2.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.osgi.service.startlevel)(version&gt;=1.0.0))" multiple="false" name="package" optional="false">
+      Import package org.osgi.service.startlevel ;version=1.0.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.aop ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.framework)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.aop.framework ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.framework.adapter)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.aop.framework.adapter ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.aop.support)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.aop.support ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans.factory ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.config)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans.factory.config ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.support)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans.factory.support ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.xml)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans.factory.xml ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.propertyeditors)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans.propertyeditors ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.context)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.context ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.context.support)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.context.support ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.core ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.io)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.core.io ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.io.support)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.core.io.support ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi)(version&gt;=1.0.0.m3))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi ;version=1.0.0.m3
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.compendium.config)(version&gt;=1.0.0.m3))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.compendium.config ;version=1.0.0.m3
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.config)(version&gt;=1.0.0.m3))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.config ;version=1.0.0.m3
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.context)(version&gt;=1.0.0.m3))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.context ;version=1.0.0.m3
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.context.support)(version&gt;=1.0.0.m3))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.context.support ;version=1.0.0.m3
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.internal.config)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.internal.config
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.internal.context)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.internal.context
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.internal.context.support)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.internal.context.support
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.internal.util)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.internal.util
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.internal.util.concurrent)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.internal.util.concurrent
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.io)(version&gt;=1.0.0.m3))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.io ;version=1.0.0.m3
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.service)(version&gt;=1.0.0.m3))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.service ;version=1.0.0.m3
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.service.exporter)(version&gt;=1.0.0.m3))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.service.exporter ;version=1.0.0.m3
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.service.importer)(version&gt;=1.0.0.m3))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.service.importer ;version=1.0.0.m3
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.util)(version&gt;=1.0.0.m3))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.util ;version=1.0.0.m3
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.util)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.util ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.util.xml)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.util.xml ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.w3c.dom)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.w3c.dom
+    </require>
+    <require extend="false" filter="(&amp;(package=org.xml.sax)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.xml.sax
+    </require>
+  </resource>
+  <resource id="7" presentationname="spring-osgi-extender" symbolicname="org.springframework.osgi.spring-osgi-extender" uri="http://s3.amazonaws.com/maven.springframework.org/milestone/org/springframework/osgi/spring-osgi-extender/1.0-m3/spring-osgi-extender-1.0-m3.jar" version="1.0.0.m3">
+    <description>
+      Spring/OSGi extender. Listens for and bootstraps Spring-powered
+       OSGi bundles.
+    </description>
+    <size>
+      51568
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0
+    </license>
+    <documentation>
+      http://www.springframework.org
+    </documentation>
+    <capability name="bundle">
+      <p n="manifestversion" v="2"/>
+      <p n="presentationname" v="spring-osgi-extender"/>
+      <p n="symbolicname" v="org.springframework.osgi.spring-osgi-extender"/>
+      <p n="version" t="version" v="1.0.0.m3"/>
+    </capability>
+    <require extend="false" filter="(&amp;(package=org.apache.commons.logging)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.apache.commons.logging
+    </require>
+    <require extend="false" filter="(&amp;(package=org.osgi.framework)(version&gt;=1.3.0))" multiple="false" name="package" optional="false">
+      Import package org.osgi.framework ;version=1.3.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans.factory
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.config)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans.factory.config
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.beans.factory.xml)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.beans.factory.xml
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.context)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.context
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.core
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.enums)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.core.enums
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.task)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.core.task
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.context)(version&gt;=1.0.0.m3))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.context ;version=1.0.0.m3
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.context.support)(version&gt;=1.0.0.m3))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.context.support ;version=1.0.0.m3
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.internal.context)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.internal.context
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.internal.context.support)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.internal.context.support
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.internal.util.concurrent)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.internal.util.concurrent
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.service.importer)(version&gt;=1.0.0.m3))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.service.importer ;version=1.0.0.m3
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.util)(version&gt;=1.0.0.m3))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.util ;version=1.0.0.m3
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.util)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.springframework.util
+    </require>
+    <require extend="false" filter="(&amp;(package=org.xml.sax)(version&gt;=0.0.0))" multiple="false" name="package" optional="true">
+      Import package org.xml.sax
+    </require>
+  </resource>
+  <resource id="8" presentationname="spring-osgi-io" symbolicname="org.springframework.osgi.spring-osgi-io" uri="http://s3.amazonaws.com/maven.springframework.org/milestone/org/springframework/osgi/spring-osgi-io/1.0-m3/spring-osgi-io-1.0-m3.jar" version="1.0.0.m3">
+    <description>
+      Spring/OSGi IO abstract classes. Provides Resource, ResourceLoader
+       and ResourcePatternResolver for OSGi environments.
+    </description>
+    <size>
+      13146
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0
+    </license>
+    <documentation>
+      http://www.springframework.org
+    </documentation>
+    <capability name="bundle">
+      <p n="manifestversion" v="2"/>
+      <p n="presentationname" v="spring-osgi-io"/>
+      <p n="symbolicname" v="org.springframework.osgi.spring-osgi-io"/>
+      <p n="version" t="version" v="1.0.0.m3"/>
+    </capability>
+    <capability name="package">
+      <p n="package" v="org.springframework.osgi.io"/>
+      <p n="uses:" v="org.springframework.core.io.support,org.springframework.core.io,org.springframework.core,org.osgi.framework,org.apache.commons.logging,org.springframework.util"/>
+      <p n="version" t="version" v="1.0.0.m3"/>
+    </capability>
+    <require extend="false" filter="(&amp;(package=org.apache.commons.logging)(version&gt;=0.0.0))" multiple="false" name="package" optional="false">
+      Import package org.apache.commons.logging
+    </require>
+    <require extend="false" filter="(&amp;(package=org.osgi.framework)(version&gt;=1.3.0))" multiple="false" name="package" optional="false">
+      Import package org.osgi.framework ;version=1.3.0
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.core ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.io)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.core.io ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.core.io.support)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.core.io.support ;version=2.1.0.m4
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.osgi.io)(version&gt;=1.0.0.m3))" multiple="false" name="package" optional="false">
+      Import package org.springframework.osgi.io ;version=1.0.0.m3
+    </require>
+    <require extend="false" filter="(&amp;(package=org.springframework.util)(version&gt;=2.1.0.m4))" multiple="false" name="package" optional="false">
+      Import package org.springframework.util ;version=2.1.0.m4
+    </require>
+  </resource>
+</repository>
