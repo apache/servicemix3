@@ -138,6 +138,10 @@
         </dependency>
         <dependency>
             <groupId>org.apache.servicemix.gshell</groupId>
+            <artifactId>org.apache.servicemix.gshell.obr</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.gshell</groupId>
             <artifactId>org.apache.servicemix.gshell.osgi</artifactId>
         </dependency>
         <dependency>

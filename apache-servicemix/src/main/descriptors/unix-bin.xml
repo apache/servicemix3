@@ -165,7 +165,7 @@
             <unpack>false</unpack>
             <scope>runtime</scope>
             <includes>
-                <include>org.apache.felix:bundlerepository</include>
+                <include>org.apache.felix:org.apache.felix.bundlerepository</include>
                 <include>org.apache.servicemix.gshell:org.apache.servicemix.gshell.obr</include>
             </includes>
         </dependencySet>
