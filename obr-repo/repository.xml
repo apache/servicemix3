@@ -15,7 +15,6 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <repository lastmodified="20071203194254.669" name="ServiceMixRepository">
   <resource id="0" presentationname="OPS4J Pax Web Extender Service" symbolicname="org.ops4j.pax.web.extender" uri="http://repository.ops4j.org/maven2/org/ops4j/pax/web/pax-web-extender/0.1.0/pax-web-extender-0.1.0.jar" version="0.1.0">
     <description>
