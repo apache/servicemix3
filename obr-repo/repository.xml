@@ -3624,4 +3624,921 @@
       Import package org.xml.sax
     </require>
   </resource>
+  <resource id='16' presentationname='geronimo-activation_1.1_spec' symbolicname='org.apache.geronimo.specs.geronimo-activation_1.1_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-activation_1.1_spec/1.0.1-SNAPSHOT/geronimo-activation_1.1_spec-1.0.1-SNAPSHOT.jar' version='1.0.1.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      35749
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-activation_1.1_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-activation_1.1_spec'/>
+      <p n='version' t='version' v='1.0.1.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.activation'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.activation)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.activation ;version=1.1.0
+    </require>
+  </resource>
+  <resource id='17' presentationname='geronimo-annotation_1.0_spec' symbolicname='org.apache.geronimo.specs.geronimo-annotation_1.0_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-annotation_1.0_spec/1.1.1-SNAPSHOT/geronimo-annotation_1.0_spec-1.1.1-SNAPSHOT.jar' version='1.1.1.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      12992
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-annotation_1.0_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-annotation_1.0_spec'/>
+      <p n='version' t='version' v='1.1.1.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.annotation'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.annotation.security'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.annotation)(version&gt;=1.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.annotation ;version=1.0.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.annotation.security)(version&gt;=1.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.annotation.security ;version=1.0.0
+    </require>
+  </resource>
+  <resource id='18' presentationname='geronimo-commonj_1.1_spec' symbolicname='org.apache.geronimo.specs.geronimo-commonj_1.1_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-commonj_1.1_spec/1.1-SNAPSHOT/geronimo-commonj_1.1_spec-1.1-SNAPSHOT.jar' version='1.1.0.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      7046
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-commonj_1.1_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-commonj_1.1_spec'/>
+      <p n='version' t='version' v='1.1.0.SNAPSHOT'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=*)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package *
+    </require>
+  </resource>
+  <resource id='19' presentationname='geronimo-ejb_3.0_spec' symbolicname='org.apache.geronimo.specs.geronimo-ejb_3.0_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-ejb_3.0_spec/1.0.1-SNAPSHOT/geronimo-ejb_3.0_spec-1.0.1-SNAPSHOT.jar' version='1.0.1.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      33449
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-ejb_3.0_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-ejb_3.0_spec'/>
+      <p n='version' t='version' v='1.0.1.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.ejb'/>
+      <p n='uses:' v='javax.xml.rpc.handler,javax.transaction'/>
+      <p n='version' t='version' v='0.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.xml.rpc.handler'/>
+      <p n='version' t='version' v='3.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.ejb.spi'/>
+      <p n='uses:' v='javax.ejb'/>
+      <p n='version' t='version' v='0.0.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.ejb)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.ejb
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.ejb.spi)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.ejb.spi
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.transaction)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.transaction ;version=1.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.rpc.handler)(version&gt;=3.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.rpc.handler ;version=3.0.0
+    </require>
+  </resource>
+  <resource id='20' presentationname='geronimo-el_1.0_spec' symbolicname='org.apache.geronimo.specs.geronimo-el_1.0_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-el_1.0_spec/1.0.1-SNAPSHOT/geronimo-el_1.0_spec-1.0.1-SNAPSHOT.jar' version='1.0.1.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      35248
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-el_1.0_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-el_1.0_spec'/>
+      <p n='version' t='version' v='1.0.1.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.el'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.el)(version&gt;=1.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.el ;version=1.0.0
+    </require>
+  </resource>
+  <resource id='21' presentationname='geronimo-interceptor_3.0_spec' symbolicname='org.apache.geronimo.specs.geronimo-interceptor_3.0_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-interceptor_3.0_spec/1.0.1-SNAPSHOT/geronimo-interceptor_3.0_spec-1.0.1-SNAPSHOT.jar' version='1.0.1.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      9639
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-interceptor_3.0_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-interceptor_3.0_spec'/>
+      <p n='version' t='version' v='1.0.1.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.interceptor'/>
+      <p n='version' t='version' v='3.0.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.interceptor)(version&gt;=3.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.interceptor ;version=3.0.0
+    </require>
+  </resource>
+  <resource id='22' presentationname='geronimo-j2ee-connector_1.5_spec' symbolicname='org.apache.geronimo.specs.geronimo-j2ee-connector_1.5_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-j2ee-connector_1.5_spec/2.0-SNAPSHOT/geronimo-j2ee-connector_1.5_spec-2.0-SNAPSHOT.jar' version='2.0.0.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      38865
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-j2ee-connector_1.5_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-j2ee-connector_1.5_spec'/>
+      <p n='version' t='version' v='2.0.0.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.resource.spi.endpoint'/>
+      <p n='uses:' v='javax.resource.spi,javax.resource,javax.transaction.xa'/>
+      <p n='version' t='version' v='1.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.resource.spi'/>
+      <p n='uses:' v='javax.resource.spi.endpoint,javax.resource.spi.work,javax.resource,javax.transaction.xa,javax.security.auth'/>
+      <p n='version' t='version' v='1.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.resource.spi.work'/>
+      <p n='uses:' v='javax.resource,javax.transaction.xa'/>
+      <p n='version' t='version' v='1.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.resource.spi.security'/>
+      <p n='uses:' v='javax.resource.spi'/>
+      <p n='version' t='version' v='1.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.resource'/>
+      <p n='uses:' v='javax.naming'/>
+      <p n='version' t='version' v='1.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.resource.cci'/>
+      <p n='uses:' v='javax.resource'/>
+      <p n='version' t='version' v='1.5.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.naming)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.naming
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.resource)(version&gt;=1.5.0))' multiple='false' name='package' optional='false'>
+      Import package javax.resource ;version=1.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.resource.cci)(version&gt;=1.5.0))' multiple='false' name='package' optional='false'>
+      Import package javax.resource.cci ;version=1.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.resource.spi)(version&gt;=1.5.0))' multiple='false' name='package' optional='false'>
+      Import package javax.resource.spi ;version=1.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.resource.spi.endpoint)(version&gt;=1.5.0))' multiple='false' name='package' optional='false'>
+      Import package javax.resource.spi.endpoint ;version=1.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.resource.spi.security)(version&gt;=1.5.0))' multiple='false' name='package' optional='false'>
+      Import package javax.resource.spi.security ;version=1.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.resource.spi.work)(version&gt;=1.5.0))' multiple='false' name='package' optional='false'>
+      Import package javax.resource.spi.work ;version=1.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.security.auth)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.security.auth
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.transaction.xa)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.transaction.xa ;version=1.1.0
+    </require>
+  </resource>
+  <resource id='23' presentationname='geronimo-j2ee-management_1.1_spec' symbolicname='org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-j2ee-management_1.1_spec/1.0.1-SNAPSHOT/geronimo-j2ee-management_1.1_spec-1.0.1-SNAPSHOT.jar' version='1.0.1.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      21199
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-j2ee-management_1.1_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec'/>
+      <p n='version' t='version' v='1.0.1.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.management.j2ee.statistics'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.management.j2ee'/>
+      <p n='uses:' v='javax.ejb,javax.management'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.ejb)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.ejb
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.management)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.management
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.management.j2ee)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.management.j2ee ;version=1.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.management.j2ee.statistics)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.management.j2ee.statistics ;version=1.1.0
+    </require>
+  </resource>
+  <resource id='24' presentationname='geronimo-jacc_1.1_spec' symbolicname='org.apache.geronimo.specs.geronimo-jacc_1.1_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-jacc_1.1_spec/1.0.1-SNAPSHOT/geronimo-jacc_1.1_spec-1.0.1-SNAPSHOT.jar' version='1.0.1.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      34574
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-jacc_1.1_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-jacc_1.1_spec'/>
+      <p n='version' t='version' v='1.0.1.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.security.jacc'/>
+      <p n='uses:' v='javax.servlet.http'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.security.jacc)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.security.jacc ;version=1.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet.http)(version&gt;=2.5.0))' multiple='false' name='package' optional='false'>
+      Import package javax.servlet.http ;version=2.5.0
+    </require>
+  </resource>
+  <resource id='25' presentationname='geronimo-jaspi_1.0_spec' symbolicname='org.apache.geronimo.specs.geronimo-jaspi_1.0_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-jaspi_1.0_spec/1.0-SNAPSHOT/geronimo-jaspi_1.0_spec-1.0-SNAPSHOT.jar' version='1.0.0.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      30026
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-jaspi_1.0_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-jaspi_1.0_spec'/>
+      <p n='version' t='version' v='1.0.0.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.security.auth.message.config'/>
+      <p n='uses:' v='javax.security.auth,javax.security.auth.message,javax.security.auth.callback'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.security.auth.message.callback'/>
+      <p n='uses:' v='javax.security.auth.x500,javax.crypto,javax.security.auth,javax.security.auth.callback'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.security.auth.message'/>
+      <p n='uses:' v='javax.security.auth.login,javax.security.auth'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.security.auth.message.module'/>
+      <p n='uses:' v='javax.security.auth.message,javax.security.auth.callback'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.crypto)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.crypto
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.security.auth)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.security.auth
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.security.auth.callback)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.security.auth.callback
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.security.auth.login)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.security.auth.login
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.security.auth.message)(version&gt;=1.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.security.auth.message ;version=1.0.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.security.auth.message.callback)(version&gt;=1.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.security.auth.message.callback ;version=1.0.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.security.auth.message.config)(version&gt;=1.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.security.auth.message.config ;version=1.0.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.security.auth.message.module)(version&gt;=1.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.security.auth.message.module ;version=1.0.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.security.auth.x500)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.security.auth.x500
+    </require>
+  </resource>
+  <resource id='26' presentationname='geronimo-javamail_1.4_spec' symbolicname='org.apache.geronimo.specs.geronimo-javamail_1.4_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-javamail_1.4_spec/1.2-SNAPSHOT/geronimo-javamail_1.4_spec-1.2-SNAPSHOT.jar' version='1.2.0.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      200269
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-javamail_1.4_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-javamail_1.4_spec'/>
+      <p n='version' t='version' v='1.2.0.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.mail.search'/>
+      <p n='uses:' v='javax.mail'/>
+      <p n='version' t='version' v='1.4.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.mail.util'/>
+      <p n='uses:' v='javax.mail.internet,javax.activation'/>
+      <p n='version' t='version' v='1.4.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.mail.event'/>
+      <p n='uses:' v='javax.mail'/>
+      <p n='version' t='version' v='1.4.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.mail.internet'/>
+      <p n='uses:' v='javax.activation,javax.mail,org.apache.geronimo.mail.util'/>
+      <p n='version' t='version' v='1.4.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.mail'/>
+      <p n='uses:' v='javax.mail.search,javax.mail.event,javax.activation'/>
+      <p n='version' t='version' v='1.4.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.activation)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.activation ;version=1.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.mail)(version&gt;=1.4.0))' multiple='false' name='package' optional='false'>
+      Import package javax.mail ;version=1.4.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.mail.event)(version&gt;=1.4.0))' multiple='false' name='package' optional='false'>
+      Import package javax.mail.event ;version=1.4.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.mail.internet)(version&gt;=1.4.0))' multiple='false' name='package' optional='false'>
+      Import package javax.mail.internet ;version=1.4.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.mail.search)(version&gt;=1.4.0))' multiple='false' name='package' optional='false'>
+      Import package javax.mail.search ;version=1.4.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.mail.util)(version&gt;=1.4.0))' multiple='false' name='package' optional='false'>
+      Import package javax.mail.util ;version=1.4.0
+    </require>
+  </resource>
+  <resource id='27' presentationname='geronimo-jaxr_1.0_spec' symbolicname='org.apache.geronimo.specs.geronimo-jaxr_1.0_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-jaxr_1.0_spec/2.0-SNAPSHOT/geronimo-jaxr_1.0_spec-2.0-SNAPSHOT.jar' version='2.0.0.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      35609
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-jaxr_1.0_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-jaxr_1.0_spec'/>
+      <p n='version' t='version' v='2.0.0.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.xml.registry.infomodel'/>
+      <p n='uses:' v='javax.activation,javax.xml.registry'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.xml.registry'/>
+      <p n='uses:' v='javax.activation,javax.xml.registry.infomodel'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.activation)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.activation ;version=1.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.registry)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.registry ;version=1.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.registry.infomodel)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.registry.infomodel ;version=1.1.0
+    </require>
+  </resource>
+  <resource id='28' presentationname='geronimo-jaxrpc_1.1_spec' symbolicname='org.apache.geronimo.specs.geronimo-jaxrpc_1.1_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-jaxrpc_1.1_spec/2.0-SNAPSHOT/geronimo-jaxrpc_1.1_spec-2.0-SNAPSHOT.jar' version='2.0.0.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      36613
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-jaxrpc_1.1_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-jaxrpc_1.1_spec'/>
+      <p n='version' t='version' v='2.0.0.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.xml.rpc.handler'/>
+      <p n='uses:' v='javax.xml.namespace'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.xml.rpc.holders'/>
+      <p n='uses:' v='javax.xml.namespace'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.xml.rpc.encoding'/>
+      <p n='uses:' v='javax.xml.namespace'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.xml.rpc'/>
+      <p n='uses:' v='javax.xml.rpc.handler,javax.xml.rpc.encoding,javax.xml.namespace'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.xml.rpc.handler.soap'/>
+      <p n='uses:' v='javax.xml.soap,javax.xml.rpc.handler'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.xml.rpc.server'/>
+      <p n='uses:' v='javax.servlet.http,javax.servlet,javax.xml.rpc.handler,javax.xml.rpc'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.xml.rpc.soap'/>
+      <p n='uses:' v='javax.xml.soap,javax.xml.namespace'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.servlet)(version&gt;=2.5.0))' multiple='false' name='package' optional='false'>
+      Import package javax.servlet ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet.http)(version&gt;=2.5.0))' multiple='false' name='package' optional='false'>
+      Import package javax.servlet.http ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.namespace)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.namespace
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.rpc)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.rpc ;version=1.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.rpc.encoding)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.rpc.encoding ;version=1.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.rpc.handler)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.rpc.handler ;version=1.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.rpc.handler.soap)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.rpc.handler.soap ;version=1.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.rpc.holders)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.rpc.holders ;version=1.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.rpc.server)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.rpc.server ;version=1.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.rpc.soap)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.rpc.soap ;version=1.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.soap)(version&gt;=1.3.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.soap ;version=1.3.0
+    </require>
+  </resource>
+  <resource id='29' presentationname='geronimo-jms_1.1_spec' symbolicname='org.apache.geronimo.specs.geronimo-jms_1.1_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-jms_1.1_spec/1.1.1-SNAPSHOT/geronimo-jms_1.1_spec-1.1.1-SNAPSHOT.jar' version='1.1.1.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      33546
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-jms_1.1_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-jms_1.1_spec'/>
+      <p n='version' t='version' v='1.1.1.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.jms'/>
+      <p n='uses:' v='javax.transaction.xa'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.jms)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.jms ;version=1.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.transaction.xa)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.transaction.xa
+    </require>
+  </resource>
+  <resource id='30' presentationname='geronimo-jpa_3.0_spec' symbolicname='org.apache.geronimo.specs.geronimo-jpa_3.0_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-jpa_3.0_spec/1.1.1-SNAPSHOT/geronimo-jpa_3.0_spec-1.1.1-SNAPSHOT.jar' version='1.1.1.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      54691
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-jpa_3.0_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-jpa_3.0_spec'/>
+      <p n='version' t='version' v='1.1.1.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.persistence.spi'/>
+      <p n='uses:' v='javax.persistence,javax.sql'/>
+      <p n='version' t='version' v='3.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.persistence'/>
+      <p n='uses:' v='javax.persistence.spi'/>
+      <p n='version' t='version' v='3.0.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.persistence)(version&gt;=3.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.persistence ;version=3.0.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.persistence.spi)(version&gt;=3.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.persistence.spi ;version=3.0.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.sql)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.sql
+    </require>
+  </resource>
+  <resource id='31' presentationname='geronimo-jsp_2.1_spec' symbolicname='org.apache.geronimo.specs.geronimo-jsp_2.1_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-jsp_2.1_spec/1.0.1-SNAPSHOT/geronimo-jsp_2.1_spec-1.0.1-SNAPSHOT.jar' version='1.0.1.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      56793
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-jsp_2.1_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-jsp_2.1_spec'/>
+      <p n='version' t='version' v='1.0.1.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.servlet.jsp.tagext'/>
+      <p n='uses:' v='javax.servlet.jsp'/>
+      <p n='version' t='version' v='2.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.servlet.jsp.el'/>
+      <p n='uses:' v='javax.servlet.http,javax.servlet,javax.servlet.jsp,javax.el'/>
+      <p n='version' t='version' v='2.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.servlet.jsp'/>
+      <p n='uses:' v='javax.servlet.http,javax.servlet,javax.servlet.jsp.tagext,javax.servlet.jsp.el,javax.el'/>
+      <p n='version' t='version' v='2.1.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.el)(version&gt;=1.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.el ;version=1.0.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet)(version&gt;=2.5.0))' multiple='false' name='package' optional='false'>
+      Import package javax.servlet ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet.http)(version&gt;=2.5.0))' multiple='false' name='package' optional='false'>
+      Import package javax.servlet.http ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet.jsp)(version&gt;=2.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.servlet.jsp ;version=2.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet.jsp.el)(version&gt;=2.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.servlet.jsp.el ;version=2.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet.jsp.tagext)(version&gt;=2.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.servlet.jsp.tagext ;version=2.1.0
+    </require>
+  </resource>
+  <resource id='32' presentationname='geronimo-jta_1.1_spec' symbolicname='org.apache.geronimo.specs.geronimo-jta_1.1_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-jta_1.1_spec/1.1.1-SNAPSHOT/geronimo-jta_1.1_spec-1.1.1-SNAPSHOT.jar' version='1.1.1.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      16523
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-jta_1.1_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-jta_1.1_spec'/>
+      <p n='version' t='version' v='1.1.1.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.transaction.xa'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.transaction'/>
+      <p n='uses:' v='javax.transaction.xa'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.transaction)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.transaction ;version=1.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.transaction.xa)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.transaction.xa ;version=1.1.0
+    </require>
+  </resource>
+  <resource id='33' presentationname='geronimo-saaj_1.3_spec' symbolicname='org.apache.geronimo.specs.geronimo-saaj_1.3_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-saaj_1.3_spec/1.0-SNAPSHOT/geronimo-saaj_1.3_spec-1.0-SNAPSHOT.jar' version='1.0.0.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      30058
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-saaj_1.3_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-saaj_1.3_spec'/>
+      <p n='version' t='version' v='1.0.0.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.xml.soap'/>
+      <p n='uses:' v='javax.xml.transform.dom,javax.xml.namespace,javax.activation,org.w3c.dom,javax.xml.transform'/>
+      <p n='version' t='version' v='1.3.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.activation)(version&gt;=1.1.0))' multiple='false' name='package' optional='false'>
+      Import package javax.activation ;version=1.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.namespace)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.namespace
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.soap)(version&gt;=1.3.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.soap ;version=1.3.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.transform)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.transform
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.transform.dom)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.transform.dom
+    </require>
+    <require extend='false' filter='(&amp;(package=org.w3c.dom)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package org.w3c.dom
+    </require>
+  </resource>
+  <resource id='34' presentationname='geronimo-servlet_2.5_spec' symbolicname='org.apache.geronimo.specs.geronimo-servlet_2.5_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-servlet_2.5_spec/1.1.1-SNAPSHOT/geronimo-servlet_2.5_spec-1.1.1-SNAPSHOT.jar' version='1.1.1.SNAPSHOT'>
+    <description>
+      Servlet 2.5 Specification
+    </description>
+    <size>
+      71739
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-servlet_2.5_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-servlet_2.5_spec'/>
+      <p n='version' t='version' v='1.1.1.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.servlet.http'/>
+      <p n='uses:' v='javax.servlet'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.servlet'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.servlet.resources'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.servlet)(version&gt;=2.5.0))' multiple='false' name='package' optional='false'>
+      Import package javax.servlet ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet.http)(version&gt;=2.5.0))' multiple='false' name='package' optional='false'>
+      Import package javax.servlet.http ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet.resources)(version&gt;=2.5.0))' multiple='false' name='package' optional='false'>
+      Import package javax.servlet.resources ;version=2.5.0
+    </require>
+  </resource>
+  <resource id='35' presentationname='geronimo-stax-api_1.0_spec' symbolicname='org.apache.geronimo.specs.geronimo-stax-api_1.0_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-stax-api_1.0_spec/1.0.1-SNAPSHOT/geronimo-stax-api_1.0_spec-1.0.1-SNAPSHOT.jar' version='1.0.1.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      28833
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-stax-api_1.0_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-stax-api_1.0_spec'/>
+      <p n='version' t='version' v='1.0.1.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.xml.stream.events'/>
+      <p n='uses:' v='javax.xml.namespace,javax.xml.stream'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.xml.stream.util'/>
+      <p n='uses:' v='javax.xml.stream.events,javax.xml.namespace,javax.xml.stream'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.xml.stream'/>
+      <p n='uses:' v='javax.xml.stream.events,javax.xml.namespace,javax.xml.transform,javax.xml.stream.util'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.xml.namespace)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.namespace
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.stream)(version&gt;=1.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.stream ;version=1.0.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.stream.events)(version&gt;=1.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.stream.events ;version=1.0.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.stream.util)(version&gt;=1.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.stream.util ;version=1.0.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.transform)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.xml.transform
+    </require>
+  </resource>
+  <resource id='36' presentationname='geronimo-ws-metadata_2.0_spec' symbolicname='org.apache.geronimo.specs.geronimo-ws-metadata_2.0_spec' uri='http://people.apache.org/repo/m2-snapshot-repository/org/apache/geronimo/specs/geronimo-ws-metadata_2.0_spec/1.1.2-SNAPSHOT/geronimo-ws-metadata_2.0_spec-1.1.2-SNAPSHOT.jar' version='1.1.2.SNAPSHOT'>
+    <description>
+      Provides open-source implementations of Sun specifications.
+    </description>
+    <size>
+      15261
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+    </license>
+    <documentation>
+      http://www.apache.org
+    </documentation>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='geronimo-ws-metadata_2.0_spec'/>
+      <p n='symbolicname' v='org.apache.geronimo.specs.geronimo-ws-metadata_2.0_spec'/>
+      <p n='version' t='version' v='1.1.2.SNAPSHOT'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.jws.soap'/>
+      <p n='version' t='version' v='2.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='javax.jws'/>
+      <p n='version' t='version' v='2.0.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.jws)(version&gt;=2.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.jws ;version=2.0.0
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.jws.soap)(version&gt;=2.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.jws.soap ;version=2.0.0
+    </require>
+  </resource>
 </repository>
