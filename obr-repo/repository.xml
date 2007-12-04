@@ -1675,4 +1675,1953 @@
       Import package org.springframework.util ;version=2.1.0.m4
     </require>
   </resource>
+ <resource id='9' presentationname='spring-context-support' symbolicname='org.springframework.bundle.spring.context.support' uri='http://repo1.maven.org/maven2/org/springframework/spring-context-support/2.5/spring-context-support-2.5.jar' version='2.5.0'>
+    <description>
+      Spring Framework
+    </description>
+    <size>
+      92832
+    </size>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='spring-context-support'/>
+      <p n='symbolicname' v='org.springframework.bundle.spring.context.support'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.scheduling.commonj'/>
+      <p n='uses:' v='javax.naming,org.apache.commons.logging,org.springframework.util,org.springframework.context,org.springframework.jndi,commonj.work,org.springframework.scheduling,commonj.timers,org.springframework.core.task,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.ui.jasperreports'/>
+      <p n='uses:' v='net.sf.jasperreports.engine.data,net.sf.jasperreports.engine.export,net.sf.jasperreports.engine'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.ui.velocity'/>
+      <p n='uses:' v='org.apache.velocity.runtime,org.apache.commons.logging,org.apache.commons.collections,org.springframework.util,org.apache.velocity.exception,org.apache.velocity.context,org.springframework.core.io,org.springframework.context,org.springframework.core.io.support,org.apache.velocity.runtime.log,org.apache.velocity,org.apache.velocity.app,org.apache.velocity.runtime.resource,org.apache.velocity.runtime.resource.loader,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.cache.ehcache'/>
+      <p n='uses:' v='org.apache.commons.logging,org.springframework.util,org.springframework.core.io,net.sf.ehcache.store,net.sf.ehcache.bootstrap,net.sf.ehcache,net.sf.ehcache.constructs.blocking,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.mail.javamail'/>
+      <p n='uses:' v='javax.activation,org.springframework.util,javax.mail.internet,org.springframework.core.io,javax.mail,org.springframework.mail,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.mail'/>
+      <p n='uses:' v='org.springframework.core,org.springframework.util'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.ui.freemarker'/>
+      <p n='uses:' v='org.apache.commons.logging,freemarker.cache,org.springframework.util,org.springframework.core.io,org.springframework.context,org.springframework.core.io.support,freemarker.template,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.scheduling.quartz'/>
+      <p n='uses:' v='org.apache.commons.logging,org.quartz.xml,org.quartz.simpl,org.springframework.beans,org.quartz.impl.jdbcjobstore,org.springframework.core,org.quartz.utils,org.springframework.jdbc.datasource,org.springframework.beans.factory,org.springframework.transaction,org.quartz.spi,org.springframework.beans.support,org.quartz,org.springframework.util,org.springframework.core.io,org.springframework.context,org.springframework.core.io.support,org.springframework.scheduling,org.quartz.impl,javax.sql,org.springframework.core.task,org.springframework.transaction.support'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=commonj.timers)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package commonj.timers
+    </require>
+    <require extend='false' filter='(&amp;(package=commonj.work)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package commonj.work
+    </require>
+    <require extend='false' filter='(&amp;(package=freemarker.cache)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package freemarker.cache
+    </require>
+    <require extend='false' filter='(&amp;(package=freemarker.template)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package freemarker.template
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.activation)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.activation
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.mail)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.mail
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.mail.internet)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.mail.internet
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.naming)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.naming
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.sql)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.sql
+    </require>
+    <require extend='false' filter='(&amp;(package=net.sf.ehcache)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package net.sf.ehcache
+    </require>
+    <require extend='false' filter='(&amp;(package=net.sf.ehcache.bootstrap)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package net.sf.ehcache.bootstrap
+    </require>
+    <require extend='false' filter='(&amp;(package=net.sf.ehcache.constructs.blocking)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package net.sf.ehcache.constructs.blocking
+    </require>
+    <require extend='false' filter='(&amp;(package=net.sf.ehcache.store)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package net.sf.ehcache.store
+    </require>
+    <require extend='false' filter='(&amp;(package=net.sf.jasperreports.engine)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package net.sf.jasperreports.engine
+    </require>
+    <require extend='false' filter='(&amp;(package=net.sf.jasperreports.engine.data)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package net.sf.jasperreports.engine.data
+    </require>
+    <require extend='false' filter='(&amp;(package=net.sf.jasperreports.engine.export)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package net.sf.jasperreports.engine.export
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.commons.collections)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.commons.collections
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.commons.logging)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package org.apache.commons.logging
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.velocity)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.velocity
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.velocity.app)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.velocity.app
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.velocity.context)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.velocity.context
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.velocity.exception)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.velocity.exception
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.velocity.runtime)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.velocity.runtime
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.velocity.runtime.log)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.velocity.runtime.log
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.velocity.runtime.resource)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.velocity.runtime.resource
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.velocity.runtime.resource.loader)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.velocity.runtime.resource.loader
+    </require>
+    <require extend='false' filter='(&amp;(package=org.quartz)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.quartz
+    </require>
+    <require extend='false' filter='(&amp;(package=org.quartz.impl)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.quartz.impl
+    </require>
+    <require extend='false' filter='(&amp;(package=org.quartz.impl.jdbcjobstore)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.quartz.impl.jdbcjobstore
+    </require>
+    <require extend='false' filter='(&amp;(package=org.quartz.simpl)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.quartz.simpl
+    </require>
+    <require extend='false' filter='(&amp;(package=org.quartz.spi)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.quartz.spi
+    </require>
+    <require extend='false' filter='(&amp;(package=org.quartz.utils)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.quartz.utils
+    </require>
+    <require extend='false' filter='(&amp;(package=org.quartz.xml)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.quartz.xml
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.cache.ehcache)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.cache.ehcache ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.context)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.context
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core.io)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core.io
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core.io.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core.io.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core.task)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core.task
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.datasource)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.datasource
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jndi)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jndi
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.mail)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.mail ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.mail.javamail)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.mail.javamail ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.scheduling)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.scheduling
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.scheduling.commonj)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.scheduling.commonj ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.scheduling.quartz)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.scheduling.quartz ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.transaction)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.transaction
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.transaction.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.transaction.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.ui.freemarker)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.ui.freemarker ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.ui.jasperreports)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.ui.jasperreports ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.ui.velocity)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.ui.velocity ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.util)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.util
+    </require>
+  </resource>
+  <resource id='10' presentationname='spring-jdbc' symbolicname='org.springframework.bundle.spring.jdbc' uri='http://repo1.maven.org/maven2/org/springframework/spring-jdbc/2.5/spring-jdbc-2.5.jar' version='2.5.0'>
+    <description>
+      Spring Framework
+    </description>
+    <size>
+      306790
+    </size>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='spring-jdbc'/>
+      <p n='symbolicname' v='org.springframework.bundle.spring.jdbc'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jdbc'/>
+      <p n='uses:' v='org.springframework.dao'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jdbc.core.simple'/>
+      <p n='uses:' v='org.apache.commons.logging,org.springframework.jdbc.core.namedparam,org.springframework.jdbc.core.support,org.springframework.util,org.springframework.jdbc.support.nativejdbc,org.springframework.jdbc.support,javax.sql,org.springframework.jdbc.core,org.springframework.jdbc.core.metadata,org.springframework.dao'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jdbc.core.namedparam'/>
+      <p n='uses:' v='org.springframework.jdbc.core.support,org.springframework.util,org.springframework.beans,org.springframework.jdbc.support.rowset,org.springframework.dao.support,org.springframework.jdbc.support,javax.sql,org.springframework.jdbc.core,org.springframework.dao'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jdbc.core.support'/>
+      <p n='uses:' v='org.springframework.jdbc,org.springframework.util,org.springframework.dao.support,org.springframework.beans.factory.support,org.springframework.jdbc.support,javax.sql,org.springframework.jdbc.support.lob,org.springframework.jdbc.core,org.springframework.dao,org.springframework.jdbc.datasource'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jdbc.support.nativejdbc'/>
+      <p n='uses:' v='org.springframework.util,com.mchange.v2.c3p0,org.enhydra.jdbc.core,org.springframework.jdbc.datasource'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jdbc.support.rowset'/>
+      <p n='uses:' v='org.springframework.jdbc'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jdbc.datasource.lookup'/>
+      <p n='uses:' v='javax.naming,org.springframework.transaction,org.springframework.util,org.springframework.beans,org.springframework.jndi,org.springframework.core,javax.sql,org.springframework.dao,org.springframework.jdbc.datasource,org.springframework.transaction.support,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jdbc.support'/>
+      <p n='uses:' v='org.springframework.jdbc,org.apache.commons.logging,org.springframework.util,org.springframework.core.io,org.springframework.beans,org.springframework.beans.factory.xml,org.springframework.beans.factory.support,org.springframework.core,javax.sql,org.springframework.dao,org.springframework.jdbc.datasource,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jdbc.support.incrementer'/>
+      <p n='uses:' v='org.springframework.jdbc.support,javax.sql,org.springframework.dao,org.springframework.jdbc.datasource,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jdbc.support.lob'/>
+      <p n='uses:' v='org.springframework.transaction,org.apache.commons.logging,org.springframework.util,org.springframework.jdbc.support.nativejdbc,javax.transaction,org.springframework.dao,org.springframework.transaction.support'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jdbc.core'/>
+      <p n='uses:' v='org.springframework.jdbc,org.apache.commons.logging,org.springframework.util,org.springframework.beans,com.sun.rowset,org.springframework.jdbc.support.nativejdbc,org.springframework.jdbc.support.rowset,org.springframework.dao.support,org.springframework.core,org.springframework.jdbc.support,javax.sql,javax.sql.rowset,org.springframework.dao,org.springframework.jdbc.datasource'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jdbc.core.metadata'/>
+      <p n='uses:' v='org.springframework.jdbc.support,org.apache.commons.logging,org.springframework.jdbc.core.namedparam,javax.sql,org.springframework.jdbc.core,org.springframework.dao'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jdbc.object'/>
+      <p n='uses:' v='org.springframework.jdbc,org.apache.commons.logging,org.springframework.jdbc.core.namedparam,org.springframework.jdbc.support.nativejdbc,org.springframework.dao.support,org.springframework.jdbc.support,javax.sql,org.springframework.jdbc.core,org.springframework.dao,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jdbc.datasource'/>
+      <p n='uses:' v='org.springframework.transaction,org.springframework.jdbc,org.apache.commons.logging,org.springframework.util,org.springframework.core,javax.sql,org.springframework.transaction.support,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=com.ibm.websphere.rsadapter)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.ibm.websphere.rsadapter
+    </require>
+    <require extend='false' filter='(&amp;(package=com.ibm.ws.rsadapter.jdbc)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.ibm.ws.rsadapter.jdbc
+    </require>
+    <require extend='false' filter='(&amp;(package=com.mchange.v2.c3p0)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.mchange.v2.c3p0
+    </require>
+    <require extend='false' filter='(&amp;(package=com.sun.rowset)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.sun.rowset
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.naming)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.naming
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.sql)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.sql
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.sql.rowset)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.sql.rowset
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.transaction)(version&gt;=1.0.1))' multiple='false' name='package' optional='true'>
+      Import package javax.transaction ;version=1.0.1
+    </require>
+    <require extend='false' filter='(&amp;(package=oracle.sql)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package oracle.sql
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.commons.logging)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package org.apache.commons.logging
+    </require>
+    <require extend='false' filter='(&amp;(package=org.enhydra.jdbc.core)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.enhydra.jdbc.core
+    </require>
+    <require extend='false' filter='(&amp;(package=org.jboss.resource.adapter.jdbc)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.jboss.resource.adapter.jdbc
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.xml)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.xml
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core.io)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core.io
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.dao)(version&gt;=2.5.0))' multiple='false' name='package' optional='false'>
+      Import package org.springframework.dao ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.dao.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='false'>
+      Import package org.springframework.dao.support ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.core)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.core ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.core.metadata)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.core.metadata ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.core.namedparam)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.core.namedparam ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.core.simple)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.core.simple ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.core.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.core.support ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.datasource)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.datasource ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.datasource.lookup)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.datasource.lookup ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.object)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.object ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.support ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.support.incrementer)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.support.incrementer
+       ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.support.lob)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.support.lob ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.support.nativejdbc)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.support.nativejdbc
+       ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.support.rowset)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.support.rowset ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jndi)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jndi
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.transaction)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.transaction
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.transaction.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.transaction.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.util)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.util
+    </require>
+    <require extend='false' filter='(&amp;(package=weblogic.jdbc.extensions)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package weblogic.jdbc.extensions
+    </require>
+  </resource>
+  <resource id='11' presentationname='spring-jms' symbolicname='org.springframework.bundle.spring.jms' uri='http://repo1.maven.org/maven2/org/springframework/spring-jms/2.5/spring-jms-2.5.jar' version='2.5.0'>
+    <description>
+      Spring Framework
+    </description>
+    <size>
+      171946
+    </size>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='spring-jms'/>
+      <p n='symbolicname' v='org.springframework.bundle.spring.jms'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jms.listener'/>
+      <p n='uses:' v='org.springframework.transaction,org.apache.commons.logging,javax.jms,org.springframework.util,org.springframework.context,org.springframework.jms,org.springframework.jms.support.destination,org.springframework.core,org.springframework.scheduling,org.springframework.jms.connection,org.springframework.jms.support,org.springframework.core.task,org.springframework.transaction.support,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jms.listener.serversession'/>
+      <p n='uses:' v='org.springframework.jms.listener,org.apache.commons.logging,javax.jms,org.springframework.jms.support,org.apache.commons.pool.impl,org.springframework.util,org.apache.commons.pool,org.springframework.core.task,org.springframework.scheduling.timer'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jms.config'/>
+      <p n='uses:' v='org.springframework.beans.factory.support,org.springframework.util,org.springframework.beans,org.springframework.beans.factory.xml,org.springframework.beans.factory.config,org.springframework.beans.factory.parsing,org.w3c.dom'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jms'/>
+      <p n='uses:' v='org.springframework.core,javax.jms'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jms.support.destination'/>
+      <p n='uses:' v='javax.naming,org.apache.commons.logging,javax.jms,org.springframework.util,org.springframework.beans,org.springframework.jms,org.springframework.jndi,org.springframework.core,org.springframework.jms.support,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jms.support.converter'/>
+      <p n='uses:' v='javax.jms,org.springframework.util,org.springframework.jms'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jms.listener.endpoint'/>
+      <p n='uses:' v='org.springframework.jca.endpoint,javax.resource,org.apache.commons.logging,javax.jms,javax.resource.spi,org.springframework.beans,javax.resource.spi.endpoint,org.springframework.jms.support.destination'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jms.core.support'/>
+      <p n='uses:' v='org.apache.commons.logging,javax.jms,org.springframework.jms.core,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jms.connection'/>
+      <p n='uses:' v='org.springframework.transaction,org.apache.commons.logging,javax.jms,org.springframework.util,org.springframework.jms,org.springframework.transaction.support,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jms.support'/>
+      <p n='uses:' v='org.springframework.core,org.apache.commons.logging,javax.jms,org.springframework.util,org.springframework.jms,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jms.remoting'/>
+      <p n='uses:' v='org.springframework.jms.listener,org.springframework.aop.support,org.apache.commons.logging,javax.jms,org.aopalliance.intercept,org.springframework.util,org.springframework.jms.support.destination,org.springframework.jms.support.converter,org.springframework.remoting.support,org.springframework.remoting,org.springframework.jms.connection,org.springframework.jms.support,org.springframework.aop.framework,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jms.listener.adapter'/>
+      <p n='uses:' v='org.springframework.jms.support.converter,org.springframework.jms.listener,org.apache.commons.logging,javax.jms,org.springframework.jms.support,org.springframework.util,org.springframework.jms,org.springframework.jms.support.destination'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jms.core'/>
+      <p n='uses:' v='org.springframework.jms.support.converter,org.apache.commons.logging,org.springframework.jms.connection,javax.jms,org.springframework.jms.support,org.springframework.util,org.springframework.transaction.support,org.springframework.jms,org.springframework.jms.support.destination'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.jms)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package javax.jms
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.naming)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.naming
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.resource)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.resource
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.resource.spi)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.resource.spi
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.resource.spi.endpoint)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.resource.spi.endpoint
+    </require>
+    <require extend='false' filter='(&amp;(package=org.aopalliance.intercept)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.aopalliance.intercept
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.commons.logging)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package org.apache.commons.logging
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.commons.pool)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.commons.pool
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.commons.pool.impl)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.commons.pool.impl
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.aop.framework)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.aop.framework
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.aop.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.aop.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.config)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.config
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.parsing)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.parsing
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.xml)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.xml
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.context)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.context
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core.task)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core.task
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jca.endpoint)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jca.endpoint
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jms)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jms ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jms.config)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jms.config ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jms.connection)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jms.connection ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jms.core)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jms.core ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jms.core.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jms.core.support ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jms.listener)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jms.listener ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jms.listener.adapter)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jms.listener.adapter ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jms.listener.endpoint)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jms.listener.endpoint ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jms.listener.serversession)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jms.listener.serversession
+       ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jms.remoting)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jms.remoting ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jms.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jms.support ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jms.support.converter)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jms.support.converter ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jms.support.destination)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jms.support.destination
+       ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jndi)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jndi
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.remoting)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.remoting
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.remoting.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.remoting.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.scheduling)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.scheduling
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.scheduling.timer)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.scheduling.timer
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.transaction)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.transaction
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.transaction.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.transaction.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.util)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.util
+    </require>
+    <require extend='false' filter='(&amp;(package=org.w3c.dom)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.w3c.dom
+    </require>
+  </resource>
+  <resource id='12' presentationname='spring-orm' symbolicname='org.springframework.bundle.spring.orm' uri='http://repo1.maven.org/maven2/org/springframework/spring-orm/2.5/spring-orm-2.5.jar' version='2.5.0'>
+    <description>
+      Spring Framework
+    </description>
+    <size>
+      361623
+    </size>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='spring-orm'/>
+      <p n='symbolicname' v='org.springframework.bundle.spring.orm'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.orm.jpa'/>
+      <p n='uses:' v='org.apache.commons.logging,org.aopalliance.intercept,org.springframework.beans,org.springframework.dao.support,org.springframework.instrument.classloading,javax.persistence,org.springframework.jdbc.datasource,org.springframework.beans.factory,org.springframework.transaction,org.springframework.context.weaving,org.springframework.util,org.springframework.core.io,org.springframework.context,org.springframework.jdbc.datasource.lookup,javax.sql,org.springframework.orm,org.springframework.orm.jpa.persistenceunit,javax.persistence.spi,org.springframework.dao,org.springframework.transaction.support'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.orm.toplink'/>
+      <p n='uses:' v='oracle.toplink.expressions,oracle.toplink.jndi,org.apache.commons.logging,org.aopalliance.intercept,org.springframework.beans,org.springframework.dao.support,oracle.toplink.sessionbroker,oracle.toplink.queryframework,org.springframework.jdbc.datasource,oracle.toplink.tools.sessionmanagement,org.springframework.beans.factory,org.springframework.transaction,oracle.toplink.sessions,oracle.toplink.tools.sessionconfiguration,org.springframework.util,oracle.toplink.exceptions,oracle.toplink.publicinterface,org.springframework.jdbc.support,org.springframework.orm,javax.sql,oracle.toplink.threetier,oracle.toplink.internal.databaseaccess,org.springframework.dao,org.springframework.transaction.support'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.orm.ibatis'/>
+      <p n='uses:' v='org.springframework.jdbc,org.apache.commons.logging,com.ibatis.sqlmap.engine.impl,org.springframework.util,org.springframework.core.io,com.ibatis.common.util,com.ibatis.sqlmap.engine.transaction,org.springframework.jdbc.support,com.ibatis.sqlmap.engine.transaction.external,javax.sql,com.ibatis.sqlmap.client.event,org.springframework.jdbc.support.lob,com.ibatis.sqlmap.client,org.springframework.dao,org.springframework.jdbc.datasource,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.orm.hibernate3.annotation'/>
+      <p n='uses:' v='org.hibernate,org.hibernate.cfg,org.springframework.orm.hibernate3'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.orm.jdo'/>
+      <p n='uses:' v='org.springframework.transaction,org.apache.commons.logging,org.aopalliance.intercept,org.springframework.util,org.springframework.core.io,org.springframework.core.io.support,org.springframework.dao.support,javax.jdo.datastore,org.springframework.jdbc.support,javax.sql,org.springframework.orm,javax.jdo,org.springframework.dao,org.springframework.transaction.support,org.springframework.jdbc.datasource,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.orm.jpa.support'/>
+      <p n='uses:' v='org.springframework.orm.jpa,org.apache.commons.logging,org.springframework.beans.factory.annotation,org.springframework.beans,org.springframework.beans.factory.config,org.springframework.dao.support,org.springframework.core,org.springframework.jndi,javax.servlet,javax.persistence,org.springframework.beans.factory,javax.naming,org.springframework.web.filter,org.springframework.util,org.springframework.web.context,org.springframework.ui,org.springframework.web.context.request,org.springframework.dao,org.springframework.transaction.support,org.springframework.web.context.support,javax.servlet.http'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.orm.toplink.support'/>
+      <p n='uses:' v='org.springframework.orm.toplink,oracle.toplink.sessions,org.apache.commons.logging,org.springframework.util,oracle.toplink.exceptions,oracle.toplink.logging,oracle.toplink.publicinterface,org.springframework.dao.support,oracle.toplink.internal.databaseaccess,org.springframework.dao,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.orm.ibatis.support'/>
+      <p n='uses:' v='org.springframework.orm.ibatis,javax.sql,org.springframework.jdbc.support.lob,com.ibatis.sqlmap.client,org.springframework.dao.support,org.springframework.transaction.support,com.ibatis.sqlmap.engine.type'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.orm.hibernate3.support'/>
+      <p n='uses:' v='org.springframework.aop.support,org.hibernate.util,org.apache.commons.logging,org.hibernate.event,org.springframework.dao.support,javax.servlet,org.hibernate.event.def,org.hibernate.engine,org.hibernate.persister.entity,org.springframework.web.filter,org.springframework.aop.scope,org.springframework.web.context,org.springframework.jdbc.support,org.springframework.ui,org.springframework.web.context.request,org.hibernate,org.springframework.jdbc.support.lob,javax.transaction,org.hibernate.usertype,org.springframework.dao,org.springframework.orm.hibernate3,org.springframework.web.context.support,org.springframework.transaction.support,javax.servlet.http'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.orm'/>
+      <p n='uses:' v='org.springframework.dao'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.orm.jpa.vendor'/>
+      <p n='uses:' v='org.springframework.orm.jpa,org.springframework.transaction,oracle.toplink.essentials.ejb.cmp3,oracle.toplink.essentials.internal.databaseaccess,org.springframework.jdbc.support,org.hibernate.dialect,org.hibernate,oracle.toplink.essentials.internal.sessions,org.apache.openjpa.persistence,oracle.toplink.essentials.sessions,javax.persistence.spi,org.springframework.dao,javax.persistence,org.springframework.jdbc.datasource,org.springframework.orm.hibernate3,org.hibernate.ejb'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.orm.jpa.persistenceunit'/>
+      <p n='uses:' v='org.apache.commons.logging,org.springframework.context.weaving,org.springframework.util,org.springframework.core.io,javax.xml.parsers,org.springframework.instrument,org.springframework.context,org.springframework.core.io.support,org.springframework.util.xml,org.w3c.dom,org.xml.sax,org.springframework.jdbc.datasource.lookup,javax.sql,org.springframework.instrument.classloading,javax.persistence.spi,javax.persistence,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.orm.jdo.support'/>
+      <p n='uses:' v='org.apache.commons.logging,org.springframework.web.filter,org.springframework.web.context,org.springframework.dao.support,org.springframework.orm.jdo,javax.servlet,org.springframework.ui,org.springframework.web.context.request,javax.jdo,org.springframework.dao,org.springframework.transaction.support,org.springframework.web.context.support,javax.servlet.http'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.orm.hibernate3'/>
+      <p n='uses:' v='org.hibernate.util,org.apache.commons.logging,org.aopalliance.intercept,org.springframework.beans,org.hibernate.type,org.hibernate.exception,org.hibernate.event,org.springframework.dao.support,org.springframework.core,org.hibernate.connection,org.hibernate.classic,org.hibernate.impl,org.hibernate.transaction,org.hibernate.context,org.springframework.jdbc.datasource,org.springframework.beans.factory,org.springframework.transaction,org.hibernate.engine,org.hibernate.cfg,org.springframework.util,org.springframework.core.io,org.springframework.jdbc.support,org.hibernate.dialect,org.hibernate,javax.sql,org.springframework.orm,org.springframework.jdbc.support.lob,org.hibernate.criterion,javax.transaction,org.hibernate.tool.hbm2ddl,org.springframework.transaction.jta,org.springframework.dao,org.springframework.transaction.support'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=com.ibatis.common.util)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.ibatis.common.util
+    </require>
+    <require extend='false' filter='(&amp;(package=com.ibatis.sqlmap.client)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.ibatis.sqlmap.client
+    </require>
+    <require extend='false' filter='(&amp;(package=com.ibatis.sqlmap.client.event)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.ibatis.sqlmap.client.event
+    </require>
+    <require extend='false' filter='(&amp;(package=com.ibatis.sqlmap.engine.impl)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.ibatis.sqlmap.engine.impl
+    </require>
+    <require extend='false' filter='(&amp;(package=com.ibatis.sqlmap.engine.transaction)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.ibatis.sqlmap.engine.transaction
+    </require>
+    <require extend='false' filter='(&amp;(package=com.ibatis.sqlmap.engine.transaction.external)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.ibatis.sqlmap.engine.transaction.external
+    </require>
+    <require extend='false' filter='(&amp;(package=com.ibatis.sqlmap.engine.type)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.ibatis.sqlmap.engine.type
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.jdo)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.jdo
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.jdo.datastore)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.jdo.datastore
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.naming)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.naming
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.persistence)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.persistence
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.persistence.spi)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.persistence.spi
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.servlet
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet.http)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.servlet.http
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.sql)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.sql
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.transaction)(version&gt;=1.0.1))' multiple='false' name='package' optional='true'>
+      Import package javax.transaction ;version=1.0.1
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.parsers)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.xml.parsers
+    </require>
+    <require extend='false' filter='(&amp;(package=oracle.toplink.essentials.ejb.cmp3)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package oracle.toplink.essentials.ejb.cmp3
+    </require>
+    <require extend='false' filter='(&amp;(package=oracle.toplink.essentials.internal.databaseaccess)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package oracle.toplink.essentials.internal.databaseaccess
+    </require>
+    <require extend='false' filter='(&amp;(package=oracle.toplink.essentials.internal.sessions)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package oracle.toplink.essentials.internal.sessions
+    </require>
+    <require extend='false' filter='(&amp;(package=oracle.toplink.essentials.sessions)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package oracle.toplink.essentials.sessions
+    </require>
+    <require extend='false' filter='(&amp;(package=oracle.toplink.exceptions)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package oracle.toplink.exceptions
+    </require>
+    <require extend='false' filter='(&amp;(package=oracle.toplink.expressions)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package oracle.toplink.expressions
+    </require>
+    <require extend='false' filter='(&amp;(package=oracle.toplink.internal.databaseaccess)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package oracle.toplink.internal.databaseaccess
+    </require>
+    <require extend='false' filter='(&amp;(package=oracle.toplink.jndi)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package oracle.toplink.jndi
+    </require>
+    <require extend='false' filter='(&amp;(package=oracle.toplink.logging)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package oracle.toplink.logging
+    </require>
+    <require extend='false' filter='(&amp;(package=oracle.toplink.publicinterface)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package oracle.toplink.publicinterface
+    </require>
+    <require extend='false' filter='(&amp;(package=oracle.toplink.queryframework)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package oracle.toplink.queryframework
+    </require>
+    <require extend='false' filter='(&amp;(package=oracle.toplink.sessionbroker)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package oracle.toplink.sessionbroker
+    </require>
+    <require extend='false' filter='(&amp;(package=oracle.toplink.sessions)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package oracle.toplink.sessions
+    </require>
+    <require extend='false' filter='(&amp;(package=oracle.toplink.threetier)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package oracle.toplink.threetier
+    </require>
+    <require extend='false' filter='(&amp;(package=oracle.toplink.tools.sessionconfiguration)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package oracle.toplink.tools.sessionconfiguration
+    </require>
+    <require extend='false' filter='(&amp;(package=oracle.toplink.tools.sessionmanagement)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package oracle.toplink.tools.sessionmanagement
+    </require>
+    <require extend='false' filter='(&amp;(package=org.aopalliance.intercept)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.aopalliance.intercept
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.commons.logging)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package org.apache.commons.logging
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.openjpa.persistence)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.openjpa.persistence
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hibernate)(version&gt;=3.1.0))' multiple='false' name='package' optional='true'>
+      Import package org.hibernate ;version=3.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hibernate.cfg)(version&gt;=3.1.0))' multiple='false' name='package' optional='true'>
+      Import package org.hibernate.cfg ;version=3.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hibernate.classic)(version&gt;=3.1.0))' multiple='false' name='package' optional='true'>
+      Import package org.hibernate.classic ;version=3.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hibernate.connection)(version&gt;=3.1.0))' multiple='false' name='package' optional='true'>
+      Import package org.hibernate.connection ;version=3.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hibernate.context)(version&gt;=3.1.0))' multiple='false' name='package' optional='true'>
+      Import package org.hibernate.context ;version=3.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hibernate.criterion)(version&gt;=3.1.0))' multiple='false' name='package' optional='true'>
+      Import package org.hibernate.criterion ;version=3.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hibernate.dialect)(version&gt;=3.1.0))' multiple='false' name='package' optional='true'>
+      Import package org.hibernate.dialect ;version=3.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hibernate.ejb)(version&gt;=3.1.0))' multiple='false' name='package' optional='true'>
+      Import package org.hibernate.ejb ;version=3.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hibernate.engine)(version&gt;=3.1.0))' multiple='false' name='package' optional='true'>
+      Import package org.hibernate.engine ;version=3.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hibernate.event)(version&gt;=3.1.0))' multiple='false' name='package' optional='true'>
+      Import package org.hibernate.event ;version=3.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hibernate.event.def)(version&gt;=3.1.0))' multiple='false' name='package' optional='true'>
+      Import package org.hibernate.event.def ;version=3.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hibernate.exception)(version&gt;=3.1.0))' multiple='false' name='package' optional='true'>
+      Import package org.hibernate.exception ;version=3.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hibernate.impl)(version&gt;=3.1.0))' multiple='false' name='package' optional='true'>
+      Import package org.hibernate.impl ;version=3.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hibernate.persister.entity)(version&gt;=3.1.0))' multiple='false' name='package' optional='true'>
+      Import package org.hibernate.persister.entity ;version=3.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hibernate.tool.hbm2ddl)(version&gt;=3.1.0))' multiple='false' name='package' optional='true'>
+      Import package org.hibernate.tool.hbm2ddl ;version=3.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hibernate.transaction)(version&gt;=3.1.0))' multiple='false' name='package' optional='true'>
+      Import package org.hibernate.transaction ;version=3.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hibernate.type)(version&gt;=3.1.0))' multiple='false' name='package' optional='true'>
+      Import package org.hibernate.type ;version=3.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hibernate.usertype)(version&gt;=3.1.0))' multiple='false' name='package' optional='true'>
+      Import package org.hibernate.usertype ;version=3.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hibernate.util)(version&gt;=3.1.0))' multiple='false' name='package' optional='true'>
+      Import package org.hibernate.util ;version=3.1.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.aop.scope)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.aop.scope
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.aop.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.aop.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.annotation)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.annotation
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.config)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.config
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.context)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.context
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.context.weaving)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.context.weaving
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core.io)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core.io
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core.io.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core.io.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.dao)(version&gt;=2.5.0))' multiple='false' name='package' optional='false'>
+      Import package org.springframework.dao ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.dao.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='false'>
+      Import package org.springframework.dao.support ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.instrument)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.instrument
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.instrument.classloading)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.instrument.classloading
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.datasource)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.datasource
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.datasource.lookup)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.datasource.lookup
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.support.lob)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.support.lob
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jndi)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jndi
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.orm)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.orm ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.orm.hibernate3)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.orm.hibernate3 ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.orm.hibernate3.annotation)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.orm.hibernate3.annotation
+       ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.orm.hibernate3.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.orm.hibernate3.support ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.orm.ibatis)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.orm.ibatis ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.orm.ibatis.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.orm.ibatis.support ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.orm.jdo)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.orm.jdo ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.orm.jdo.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.orm.jdo.support ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.orm.jpa)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.orm.jpa ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.orm.jpa.persistenceunit)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.orm.jpa.persistenceunit
+       ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.orm.jpa.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.orm.jpa.support ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.orm.jpa.vendor)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.orm.jpa.vendor ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.orm.toplink)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.orm.toplink ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.orm.toplink.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.orm.toplink.support ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.transaction)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.transaction
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.transaction.jta)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.transaction.jta
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.transaction.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.transaction.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.ui)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.ui
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.util)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.util
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.util.xml)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.util.xml
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.context)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.context
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.context.request)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.context.request
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.context.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.context.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.filter)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.filter
+    </require>
+    <require extend='false' filter='(&amp;(package=org.w3c.dom)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.w3c.dom
+    </require>
+    <require extend='false' filter='(&amp;(package=org.xml.sax)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.xml.sax
+    </require>
+  </resource>
+  <resource id='13' presentationname='spring-test' symbolicname='org.springframework.bundle.spring.test' uri='http://repo1.maven.org/maven2/org/springframework/spring-test/2.5/spring-test-2.5.jar' version='2.5.0'>
+    <description>
+      Spring Framework
+    </description>
+    <size>
+      177484
+    </size>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='spring-test'/>
+      <p n='symbolicname' v='org.springframework.bundle.spring.test'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.test'/>
+      <p n='uses:' v='org.springframework.transaction,org.apache.commons.logging,org.springframework.util,org.springframework.context.support,org.springframework.core.io,org.springframework.context,org.springframework.beans.factory.xml,org.springframework.beans.factory.config,org.springframework.beans.factory.support,junit.framework,javax.sql,org.springframework.jdbc.core,org.springframework.dao,org.springframework.transaction.support,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.test.web'/>
+      <p n='uses:' v='junit.framework,org.springframework.web.servlet'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.test.util'/>
+      <p n='uses:' v='org.apache.commons.logging,org.springframework.util'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.test.context.testng'/>
+      <p n='uses:' v='org.apache.commons.logging,org.springframework.jdbc.core.simple,org.testng.annotations,org.springframework.beans.factory.annotation,org.springframework.test.context.support,org.springframework.core.io,org.springframework.context,org.testng,org.springframework.test.context.transaction,org.springframework.test.context,javax.sql,org.springframework.transaction.annotation,org.springframework.test.jdbc,org.springframework.dao'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.test.context.support'/>
+      <p n='uses:' v='org.apache.commons.logging,org.springframework.util,org.springframework.context.support,org.springframework.beans.factory.xml,org.springframework.context,org.springframework.beans.factory.config,org.springframework.context.annotation,org.springframework.beans.factory.support,org.springframework.core,org.springframework.test.annotation,org.springframework.test.context'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.test.context.junit4'/>
+      <p n='uses:' v='org.apache.commons.logging,org.springframework.jdbc.core.simple,org.junit.internal.runners,org.springframework.beans.factory.annotation,org.springframework.test.context.support,org.springframework.core.io,org.junit.runner.notification,org.springframework.context,org.junit,org.springframework.test.context.transaction,org.springframework.test.annotation,org.springframework.test.context,javax.sql,org.springframework.transaction.annotation,org.junit.runner,org.springframework.test.jdbc,org.springframework.dao'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.test.context.transaction'/>
+      <p n='uses:' v='org.springframework.transaction,org.apache.commons.logging,org.springframework.util,org.springframework.test.context.support,org.springframework.context,org.springframework.transaction.interceptor,org.springframework.core.annotation,org.springframework.test.annotation,org.springframework.test.context,org.springframework.transaction.annotation,org.springframework.core.style'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.test.annotation'/>
+      <p n='uses:' v='org.springframework.transaction,org.apache.commons.logging,org.springframework.test,org.springframework.jdbc.core.simple,org.springframework.util,org.springframework.context,org.springframework.transaction.interceptor,org.springframework.core.annotation,junit.framework,org.springframework.transaction.annotation,javax.sql,org.springframework.jdbc.core'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.test.jpa'/>
+      <p n='uses:' v='org.aspectj.weaver.loadtime,org.springframework.orm.jpa,org.springframework.util,org.springframework.context.support,org.springframework.beans,org.springframework.context,org.springframework.beans.factory.xml,org.springframework.instrument,org.springframework.beans.factory.config,org.springframework.beans.factory.support,org.springframework.test.annotation,junit.framework,org.springframework.instrument.classloading,org.springframework.orm.jpa.persistenceunit,javax.persistence'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.test.context.junit38'/>
+      <p n='uses:' v='org.apache.commons.logging,org.springframework.jdbc.core.simple,org.springframework.beans.factory.annotation,org.springframework.core.io,org.springframework.test.context.support,org.springframework.context,org.springframework.test.context.transaction,org.springframework.test.annotation,junit.framework,org.springframework.test.context,javax.sql,org.springframework.transaction.annotation,org.springframework.test.jdbc,org.springframework.dao'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.test.context'/>
+      <p n='uses:' v='org.springframework.core,org.apache.commons.logging,org.springframework.util,org.springframework.beans,org.springframework.core.style,org.springframework.context,org.springframework.core.annotation'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.mock.jndi'/>
+      <p n='uses:' v='org.springframework.jndi,javax.naming,org.apache.commons.logging,org.springframework.util,javax.naming.spi'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.test.jdbc'/>
+      <p n='uses:' v='org.apache.commons.logging,org.springframework.jdbc.core.simple,org.springframework.util,org.springframework.core.io,org.springframework.dao'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.mock.web.portlet'/>
+      <p n='uses:' v='org.springframework.web.multipart,org.apache.commons.logging,org.springframework.util,org.springframework.core.io,org.springframework.web.portlet.multipart,javax.portlet'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.mock.web'/>
+      <p n='uses:' v='org.springframework.web.multipart,org.apache.commons.logging,org.springframework.util,org.springframework.core.io,javax.servlet.jsp,javax.activation,org.apache.taglibs.standard.lang.support,javax.servlet,javax.servlet.jsp.el,javax.servlet.jsp.tagext,javax.servlet.http'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=javax.activation)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.activation
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.naming)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.naming
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.naming.spi)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.naming.spi
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.persistence)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.persistence
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.portlet)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.portlet
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.servlet
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet.http)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.servlet.http
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet.jsp)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.servlet.jsp
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet.jsp.el)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.servlet.jsp.el
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet.jsp.tagext)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.servlet.jsp.tagext
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.sql)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.sql
+    </require>
+    <require extend='false' filter='(&amp;(package=junit.framework)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package junit.framework
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.commons.logging)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package org.apache.commons.logging
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.taglibs.standard.lang.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.taglibs.standard.lang.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.aspectj.weaver.loadtime)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.aspectj.weaver.loadtime
+    </require>
+    <require extend='false' filter='(&amp;(package=org.junit)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.junit
+    </require>
+    <require extend='false' filter='(&amp;(package=org.junit.internal.runners)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.junit.internal.runners
+    </require>
+    <require extend='false' filter='(&amp;(package=org.junit.runner)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.junit.runner
+    </require>
+    <require extend='false' filter='(&amp;(package=org.junit.runner.notification)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.junit.runner.notification
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.annotation)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.annotation
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.config)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.config
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.xml)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.xml
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.context)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.context
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.context.annotation)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.context.annotation
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.context.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.context.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core.annotation)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core.annotation
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core.io)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core.io
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core.style)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core.style
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.dao)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.dao
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.instrument)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.instrument
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.instrument.classloading)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.instrument.classloading
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.core)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.core
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jdbc.core.simple)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jdbc.core.simple
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jndi)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jndi
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.mock.jndi)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.mock.jndi ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.mock.web)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.mock.web ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.mock.web.portlet)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.mock.web.portlet ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.orm.jpa)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.orm.jpa
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.orm.jpa.persistenceunit)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.orm.jpa.persistenceunit
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.test)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.test ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.test.annotation)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.test.annotation ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.test.context)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.test.context ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.test.context.junit38)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.test.context.junit38 ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.test.context.junit4)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.test.context.junit4 ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.test.context.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.test.context.support ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.test.context.testng)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.test.context.testng ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.test.context.transaction)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.test.context.transaction
+       ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.test.jdbc)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.test.jdbc ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.test.jpa)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.test.jpa ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.test.util)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.test.util ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.test.web)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.test.web ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.transaction)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.transaction
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.transaction.annotation)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.transaction.annotation
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.transaction.interceptor)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.transaction.interceptor
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.transaction.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.transaction.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.util)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.util
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.multipart)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.multipart
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.portlet.multipart)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.portlet.multipart
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.servlet)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.servlet
+    </require>
+    <require extend='false' filter='(&amp;(package=org.testng)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.testng
+    </require>
+    <require extend='false' filter='(&amp;(package=org.testng.annotations)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.testng.annotations
+    </require>
+  </resource>
+  <resource id='14' presentationname='spring-tx' symbolicname='org.springframework.bundle.spring.tx' uri='http://repo1.maven.org/maven2/org/springframework/spring-tx/2.5/spring-tx-2.5.jar' version='2.5.0'>
+    <description>
+      Spring Framework
+    </description>
+    <size>
+      220734
+    </size>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='spring-tx'/>
+      <p n='symbolicname' v='org.springframework.bundle.spring.tx'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.transaction'/>
+      <p n='uses:' v='org.springframework.core,org.springframework.util'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jca.support'/>
+      <p n='uses:' v='javax.resource,javax.resource.spi,org.springframework.util,org.springframework.beans,javax.resource.spi.work,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.transaction.config'/>
+      <p n='uses:' v='org.springframework.util,org.springframework.beans,org.springframework.beans.factory.xml,org.springframework.beans.factory.config,org.springframework.beans.factory.parsing,org.springframework.transaction.interceptor,org.springframework.util.xml,org.w3c.dom,org.springframework.core,org.springframework.beans.factory.support,org.springframework.aop.config,org.springframework.transaction.jta'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jca.cci.object'/>
+      <p n='uses:' v='javax.resource,javax.resource.cci,org.springframework.jca.cci.core.support,org.springframework.jca.cci.core,org.springframework.dao,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.transaction.interceptor'/>
+      <p n='uses:' v='org.springframework.aop.support,org.springframework.transaction,org.apache.commons.logging,org.aopalliance.intercept,org.springframework.aop,org.springframework.util,org.aopalliance.aop,org.springframework.beans.propertyeditors,org.springframework.core,org.springframework.metadata,org.springframework.aop.framework,org.springframework.transaction.support,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.dao.support'/>
+      <p n='uses:' v='org.apache.commons.logging,org.aopalliance.intercept,org.springframework.util,org.springframework.beans,org.springframework.dao,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jca.work'/>
+      <p n='uses:' v='org.springframework.scheduling,javax.resource.spi,org.springframework.util,javax.transaction.xa,org.springframework.jca.context,javax.resource.spi.work,org.springframework.core.task'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jca.endpoint'/>
+      <p n='uses:' v='org.springframework.aop.support,org.apache.commons.logging,javax.resource,org.aopalliance.intercept,org.springframework.util,org.springframework.context,org.aopalliance.aop,javax.resource.spi.endpoint,javax.resource.spi,javax.transaction,org.springframework.aop.framework,javax.transaction.xa,org.springframework.transaction.jta,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jca.cci'/>
+      <p n='uses:' v='javax.resource,org.springframework.dao'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jca.cci.core.support'/>
+      <p n='uses:' v='org.springframework.jca.cci,javax.resource.cci,org.springframework.jca.cci.core,org.springframework.util,org.springframework.dao.support,org.springframework.jca.cci.connection'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jca.cci.core'/>
+      <p n='uses:' v='org.springframework.jca.cci,org.apache.commons.logging,javax.resource,javax.resource.cci,org.springframework.util,org.springframework.dao,org.springframework.jca.cci.connection'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.transaction.annotation'/>
+      <p n='uses:' v='javax.ejb,org.springframework.util,org.springframework.transaction.interceptor,org.springframework.transaction.support'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.transaction.jta'/>
+      <p n='uses:' v='javax.naming,org.springframework.transaction,com.ibm.wsspi.uow,org.apache.commons.logging,org.springframework.util,org.objectweb.jotm,org.springframework.jndi,javax.transaction,org.springframework.transaction.support,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.dao.annotation'/>
+      <p n='uses:' v='org.springframework.aop.support,org.springframework.aop,org.springframework.util,org.springframework.beans,org.springframework.aop.support.annotation,org.springframework.beans.factory.config,org.aopalliance.aop,org.springframework.dao.support,org.springframework.core,org.springframework.aop.framework,org.springframework.stereotype,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jca.context'/>
+      <p n='uses:' v='org.apache.commons.logging,javax.resource,org.springframework.util,org.springframework.context.support,org.springframework.beans,org.springframework.beans.factory.xml,org.springframework.context,org.springframework.beans.factory.config,javax.resource.spi.endpoint,org.springframework.beans.factory.support,javax.resource.spi,javax.transaction.xa'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.dao'/>
+      <p n='uses:' v='org.springframework.core'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.transaction.support'/>
+      <p n='uses:' v='org.springframework.core,org.springframework.transaction,org.apache.commons.logging,org.springframework.util,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.jca.cci.connection'/>
+      <p n='uses:' v='org.springframework.transaction,javax.naming,org.apache.commons.logging,javax.resource,org.springframework.util,javax.resource.cci,org.springframework.jca.cci,javax.resource.spi,org.springframework.transaction.support,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=com.evermind.server)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.evermind.server
+    </require>
+    <require extend='false' filter='(&amp;(package=com.ibm.ws.Transaction)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.ibm.ws.Transaction
+    </require>
+    <require extend='false' filter='(&amp;(package=com.ibm.wsspi.uow)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.ibm.wsspi.uow
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.ejb)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.ejb
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.naming)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.naming
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.resource)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.resource
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.resource.cci)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.resource.cci
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.resource.spi)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.resource.spi
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.resource.spi.endpoint)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.resource.spi.endpoint
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.resource.spi.work)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.resource.spi.work
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.transaction)(version&gt;=1.0.1))' multiple='false' name='package' optional='true'>
+      Import package javax.transaction ;version=1.0.1
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.transaction.xa)(version&gt;=1.0.1))' multiple='false' name='package' optional='true'>
+      Import package javax.transaction.xa ;version=1.0.1
+    </require>
+    <require extend='false' filter='(&amp;(package=oracle.j2ee.transaction)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package oracle.j2ee.transaction
+    </require>
+    <require extend='false' filter='(&amp;(package=org.aopalliance.aop)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.aopalliance.aop
+    </require>
+    <require extend='false' filter='(&amp;(package=org.aopalliance.intercept)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.aopalliance.intercept
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.commons.logging)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package org.apache.commons.logging
+    </require>
+    <require extend='false' filter='(&amp;(package=org.objectweb.jotm)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.objectweb.jotm
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.aop)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.aop
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.aop.config)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.aop.config
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.aop.framework)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.aop.framework
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.aop.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.aop.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.aop.support.annotation)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.aop.support.annotation
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.config)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.config
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.parsing)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.parsing
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.xml)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.xml
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.propertyeditors)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.propertyeditors
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.context)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.context
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.context.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.context.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core.task)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core.task
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.dao)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.dao ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.dao.annotation)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.dao.annotation ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.dao.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.dao.support ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jca.cci)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jca.cci ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jca.cci.connection)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jca.cci.connection ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jca.cci.core)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jca.cci.core ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jca.cci.core.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jca.cci.core.support ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jca.cci.object)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jca.cci.object ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jca.context)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jca.context ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jca.endpoint)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jca.endpoint ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jca.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jca.support ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jca.work)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jca.work ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.jndi)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.jndi
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.metadata)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.metadata
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.scheduling)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.scheduling
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.stereotype)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.stereotype
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.transaction)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.transaction ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.transaction.annotation)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.transaction.annotation ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.transaction.config)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.transaction.config ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.transaction.interceptor)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.transaction.interceptor
+       ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.transaction.jta)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.transaction.jta ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.transaction.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.transaction.support ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.util)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.util
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.util.xml)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.util.xml
+    </require>
+    <require extend='false' filter='(&amp;(package=org.w3c.dom)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.w3c.dom
+    </require>
+  </resource>
+  <resource id='15' presentationname='spring-web' symbolicname='org.springframework.bundle.spring.web' uri='http://repo1.maven.org/maven2/org/springframework/spring-web/2.5/spring-web-2.5.jar' version='2.5.0'>
+    <description>
+      Spring Framework
+    </description>
+    <size>
+      221465
+    </size>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='spring-web'/>
+      <p n='symbolicname' v='org.springframework.bundle.spring.web'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.web.multipart'/>
+      <p n='uses:' v='org.springframework.core,javax.servlet.http'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.web'/>
+      <p n='uses:' v='javax.servlet,javax.servlet.http'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.web.bind.support'/>
+      <p n='uses:' v='org.springframework.web.context.request,org.springframework.web.bind,org.springframework.util,org.springframework.beans,org.springframework.validation'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.remoting.caucho'/>
+      <p n='uses:' v='org.springframework.web,com.caucho.hessian.client,com.caucho.hessian.io,org.aopalliance.intercept,org.springframework.util,com.caucho.hessian.server,com.caucho.burlap.io,javax.servlet,org.springframework.remoting.support,org.springframework.remoting,com.caucho.burlap.server,org.springframework.aop.framework,com.caucho.burlap.client,org.springframework.web.util,javax.servlet.http,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.web.jsf.el'/>
+      <p n='uses:' v='javax.el,org.apache.commons.logging,javax.faces.context,org.springframework.beans,org.springframework.web.jsf,org.springframework.web.context,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.web.filter'/>
+      <p n='uses:' v='org.apache.commons.logging,org.springframework.context.i18n,org.apache.log4j,org.springframework.util,org.springframework.beans,org.springframework.core.io,org.springframework.web.context,javax.servlet,org.springframework.web.context.request,org.springframework.web.util,org.springframework.web.context.support,org.springframework.beans.factory,javax.servlet.http'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.web.multipart.commons'/>
+      <p n='uses:' v='org.springframework.web.multipart,org.apache.commons.fileupload.disk,org.apache.commons.logging,org.apache.commons.fileupload,org.springframework.util,org.apache.commons.fileupload.servlet,org.springframework.core.io,org.springframework.web.context,javax.servlet,org.springframework.web.multipart.support,org.springframework.web.util,javax.servlet.http'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.web.jsf'/>
+      <p n='uses:' v='org.apache.commons.logging,javax.faces.application,javax.faces.context,org.springframework.util,javax.faces.el,org.springframework.web.util,org.springframework.web.context,javax.faces.event,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.web.context'/>
+      <p n='uses:' v='org.apache.commons.logging,org.springframework.context.access,org.springframework.util,org.springframework.beans,org.springframework.core.io,org.springframework.context,org.springframework.core.io.support,javax.servlet,org.springframework.beans.factory.access,javax.servlet.http,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.remoting.jaxrpc'/>
+      <p n='uses:' v='org.springframework.aop.support,org.apache.commons.logging,org.aopalliance.intercept,org.springframework.context.support,org.springframework.beans,javax.xml.namespace,javax.servlet,javax.xml.rpc.server,org.springframework.web.util,org.springframework.remoting.rmi,org.springframework.beans.factory,org.springframework.remoting.soap,org.springframework.util,org.springframework.context,org.springframework.web.context,javax.xml.rpc,org.springframework.remoting,org.springframework.aop.framework,javax.xml.rpc.soap,org.springframework.web.context.support'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.remoting.jaxrpc.support'/>
+      <p n='uses:' v='javax.xml.rpc.encoding,org.springframework.util,org.apache.axis.encoding.ser,org.springframework.remoting.jaxrpc,org.springframework.beans.factory,javax.xml.namespace,javax.xml.rpc'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.web.context.request'/>
+      <p n='uses:' v='org.apache.commons.logging,org.apache.log4j,org.springframework.context.i18n,org.springframework.util,org.springframework.beans.factory.config,javax.servlet,org.springframework.ui,org.springframework.web.util,org.springframework.beans.factory,javax.servlet.http'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.web.bind'/>
+      <p n='uses:' v='org.springframework.web.multipart,javax.servlet,org.springframework.web,org.springframework.beans,org.springframework.validation,org.springframework.web.util,javax.servlet.http'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.remoting.jaxws'/>
+      <p n='uses:' v='org.springframework.aop.support,javax.jws,org.aopalliance.intercept,org.springframework.util,javax.xml.namespace,javax.xml.ws.handler,org.springframework.remoting,org.springframework.core.task.support,org.springframework.aop.framework,javax.xml.soap,org.springframework.core.task,javax.xml.ws,org.springframework.remoting.soap,org.springframework.beans.factory,javax.xml.ws.soap'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.web.bind.annotation'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.web.multipart.support'/>
+      <p n='uses:' v='org.springframework.web.multipart,org.apache.commons.logging,org.springframework.web.filter,org.springframework.web.context,org.springframework.beans.propertyeditors,javax.servlet,org.springframework.web.context.support,javax.servlet.http'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.web.util'/>
+      <p n='uses:' v='org.apache.commons.logging,org.springframework.util,org.springframework.beans,javax.servlet.jsp,org.springframework.core,org.apache.taglibs.standard.lang.support,javax.servlet,javax.servlet.jsp.el,javax.servlet.jsp.tagext,javax.servlet.http'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.web.context.support'/>
+      <p n='uses:' v='org.springframework.web,org.apache.commons.logging,org.springframework.ui.context,org.springframework.util,org.springframework.context.support,org.springframework.beans,org.springframework.core.io,org.springframework.beans.factory.xml,org.springframework.context,org.springframework.beans.factory.config,org.springframework.core.io.support,org.springframework.web.context,org.xml.sax,org.springframework.beans.factory.support,javax.servlet,org.springframework.web.context.request,org.springframework.ui.context.support,org.springframework.web.util,org.springframework.beans.factory,javax.servlet.http'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.springframework.remoting.httpinvoker'/>
+      <p n='uses:' v='org.springframework.aop.support,org.springframework.web,org.apache.commons.logging,org.aopalliance.intercept,org.springframework.util,org.apache.commons.httpclient,javax.servlet,org.springframework.remoting,org.springframework.remoting.support,org.apache.commons.httpclient.methods,org.apache.commons.httpclient.params,org.springframework.aop.framework,org.springframework.web.util,org.springframework.remoting.rmi,javax.servlet.http,org.springframework.beans.factory'/>
+      <p n='version' t='version' v='2.5.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=com.caucho.burlap.client)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.caucho.burlap.client
+    </require>
+    <require extend='false' filter='(&amp;(package=com.caucho.burlap.io)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.caucho.burlap.io
+    </require>
+    <require extend='false' filter='(&amp;(package=com.caucho.burlap.server)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.caucho.burlap.server
+    </require>
+    <require extend='false' filter='(&amp;(package=com.caucho.hessian.client)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.caucho.hessian.client
+    </require>
+    <require extend='false' filter='(&amp;(package=com.caucho.hessian.io)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.caucho.hessian.io
+    </require>
+    <require extend='false' filter='(&amp;(package=com.caucho.hessian.server)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package com.caucho.hessian.server
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.el)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.el
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.faces.application)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.faces.application
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.faces.context)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.faces.context
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.faces.el)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.faces.el
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.faces.event)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.faces.event
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.jws)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.jws
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.servlet
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet.http)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.servlet.http
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet.jsp)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.servlet.jsp
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet.jsp.el)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.servlet.jsp.el
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet.jsp.tagext)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.servlet.jsp.tagext
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.namespace)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.xml.namespace
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.rpc)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.xml.rpc
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.rpc.encoding)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.xml.rpc.encoding
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.rpc.server)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.xml.rpc.server
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.rpc.soap)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.xml.rpc.soap
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.soap)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.xml.soap
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.ws)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.xml.ws
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.ws.handler)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.xml.ws.handler
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.ws.soap)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.xml.ws.soap
+    </require>
+    <require extend='false' filter='(&amp;(package=org.aopalliance.intercept)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.aopalliance.intercept
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.axis.encoding.ser)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.axis.encoding.ser
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.commons.fileupload)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.commons.fileupload
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.commons.fileupload.disk)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.commons.fileupload.disk
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.commons.fileupload.servlet)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.commons.fileupload.servlet
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.commons.httpclient)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.commons.httpclient
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.commons.httpclient.methods)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.commons.httpclient.methods
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.commons.httpclient.params)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.commons.httpclient.params
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.commons.logging)(version&gt;=0.0.0))' multiple='false' name='package' optional='false'>
+      Import package org.apache.commons.logging
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.log4j)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.log4j
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.taglibs.standard.lang.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.taglibs.standard.lang.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.aop.framework)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.aop.framework
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.aop.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.aop.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.access)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.access
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.config)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.config
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.factory.xml)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.factory.xml
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.beans.propertyeditors)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.beans.propertyeditors
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.context)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.context
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.context.access)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.context.access
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.context.i18n)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.context.i18n
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.context.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.context.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core.io)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core.io
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core.io.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core.io.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core.task)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core.task
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.core.task.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.core.task.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.remoting)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.remoting
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.remoting.caucho)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.remoting.caucho ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.remoting.httpinvoker)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.remoting.httpinvoker ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.remoting.jaxrpc)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.remoting.jaxrpc ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.remoting.jaxrpc.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.remoting.jaxrpc.support
+       ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.remoting.jaxws)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.remoting.jaxws ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.remoting.rmi)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.remoting.rmi
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.remoting.soap)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.remoting.soap
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.remoting.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.remoting.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.ui)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.ui
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.ui.context)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.ui.context
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.ui.context.support)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.ui.context.support
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.util)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.util
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.validation)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.validation
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.bind)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.bind ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.bind.annotation)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.bind.annotation ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.bind.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.bind.support ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.context)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.context ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.context.request)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.context.request ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.context.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.context.support ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.filter)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.filter ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.jsf)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.jsf ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.jsf.el)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.jsf.el ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.multipart)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.multipart ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.multipart.commons)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.multipart.commons ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.multipart.support)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.multipart.support ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.springframework.web.util)(version&gt;=2.5.0))' multiple='false' name='package' optional='true'>
+      Import package org.springframework.web.util ;version=2.5.0
+    </require>
+    <require extend='false' filter='(&amp;(package=org.xml.sax)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.xml.sax
+    </require>
+  </resource>
 </repository>
