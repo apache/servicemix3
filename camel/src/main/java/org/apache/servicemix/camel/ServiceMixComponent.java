@@ -19,6 +19,7 @@ package org.apache.servicemix.camel;
 import org.apache.camel.Endpoint;
 import org.apache.camel.impl.DefaultComponent;
 import org.apache.servicemix.nmr.api.NMR;
+import org.apache.servicemix.nmr.core.ServiceMix;
 
 import java.util.Map;
 
@@ -32,6 +33,13 @@ import java.util.Map;
 public class ServiceMixComponent extends DefaultComponent {
 
     private NMR nmr;
+    
+    public ServiceMixComponent() {
+    	if (nmr == null) {
+    		nmr = new ServiceMix();
+        	((ServiceMix)nmr).init();
+    	}
+    }
 
     public NMR getNmr() {
         return nmr;

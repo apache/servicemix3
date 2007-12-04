@@ -17,12 +17,17 @@
 package org.apache.servicemix.camel;
 
 
+import org.apache.camel.component.cxf.CxfConstants;
 import org.apache.camel.impl.DefaultEndpoint;
+import org.apache.camel.spring.SpringCamelContext;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.Producer;
 import org.apache.camel.Consumer;
 import org.apache.camel.Processor;
+import org.apache.servicemix.camel.spring.ServiceMixEndpointBean;
 import org.apache.servicemix.nmr.api.Exchange;
+import org.apache.servicemix.nmr.api.NMR;
+import org.apache.servicemix.nmr.core.ServiceMix;
 
 
 /**
@@ -31,20 +36,45 @@ import org.apache.servicemix.nmr.api.Exchange;
  * Date: Sep 19, 2007
  * Time: 8:54:34 AM
  * To change this template use File | Settings | File Templates.
+ * @org.apache.xbean.XBean element="smxEndpoint"
  */
 public class ServiceMixEndpoint extends DefaultEndpoint {
 
+	public static final String SPRING_CONTEXT_ENDPOINT = "bean:";
 	private String endpointName;
 	
     public ServiceMixEndpoint(ServiceMixComponent component, String uri, String endpointName) {
         super(uri, component);
         this.setEndpointName(endpointName);
+        if (endpointName.startsWith(CxfConstants.SPRING_CONTEXT_ENDPOINT)) {
+            String  beanId = endpointName.substring(CxfConstants.SPRING_CONTEXT_ENDPOINT.length());
+            if (beanId.startsWith("//")) {
+               beanId = beanId.substring(2);     
+            }
+            SpringCamelContext context = (SpringCamelContext) this.getContext();
+            
+            ServiceMixEndpointBean smxEndpointBean = (ServiceMixEndpointBean) context.getApplicationContext().getBean(beanId);
+            
+            assert(smxEndpointBean != null);
+            NMR nmr = smxEndpointBean.getNmr();
+            if (nmr != null) {
+            	((ServiceMix)nmr).init();
+            	getComponent().setNmr(nmr);
+            }
+            
+        }
     }
 
+    public ServiceMixEndpoint() {
+    	super("uri", new ServiceMixComponent());
+    }
+    
+    
     public ServiceMixComponent getComponent() {
         return (ServiceMixComponent) super.getComponent();
     }
-
+    
+    
     public boolean isSingleton() {
         return true;
     }

@@ -89,13 +89,7 @@ public class SmxToCxfTest extends ContextTestSupport {
     
     protected CamelContext createCamelContext() throws Exception {
     	camelContext = new DefaultCamelContext();
-    	
-    	smxComponent = new ServiceMixComponent();
-    	nmr = new ServiceMix();
-    	((ServiceMix)nmr).init();
-    	smxComponent.setNmr(nmr);
-    	camelContext.addComponent("smx", smxComponent);
-        return camelContext;
+    	return camelContext;
     }
 
     
