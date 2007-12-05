@@ -69,67 +69,67 @@
             <groupId>org.apache.openejb</groupId>
             <artifactId>openejb-core</artifactId>
             <version>${pkgVersion}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.openejb</groupId>
             <artifactId>openejb-client</artifactId>
             <version>${pkgVersion}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.openejb</groupId>
             <artifactId>openejb-javaagent</artifactId>
             <version>${pkgVersion}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.openejb</groupId>
             <artifactId>openejb-jee</artifactId>
             <version>${pkgVersion}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.openejb</groupId>
             <artifactId>openejb-loader</artifactId>
             <version>${pkgVersion}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.openejb</groupId>
             <artifactId>openejb-cxf</artifactId>
             <version>${pkgVersion}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.openejb</groupId>
             <artifactId>openejb-http</artifactId>
             <version>${pkgVersion}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.openejb</groupId>
             <artifactId>openejb-server</artifactId>
             <version>${pkgVersion}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.openejb</groupId>
             <artifactId>openejb-ejbd</artifactId>
             <version>${pkgVersion}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.openejb</groupId>
             <artifactId>openejb-webservices</artifactId>
             <version>${pkgVersion}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.codehaus.swizzle</groupId>
             <artifactId>swizzle-stream</artifactId>
             <version>1.0.1</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

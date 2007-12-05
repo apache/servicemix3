@@ -49,16 +49,19 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>${pkgArtifactId}</artifactId>
             <version>${pkgVersion}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>${pkgArtifactId}-nio</artifactId>
             <version>${pkgVersion}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>${pkgArtifactId}-niossl</artifactId>
             <version>${pkgVersion}</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

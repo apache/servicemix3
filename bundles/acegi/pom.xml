@@ -49,16 +49,19 @@
             <groupId>org.acegisecurity</groupId>
             <artifactId>acegi-security</artifactId>
             <version>${pkgVersion}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.acegisecurity</groupId>
             <artifactId>acegi-security-cas</artifactId>
             <version>${pkgVersion}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.acegisecurity</groupId>
             <artifactId>acegi-security-tiger</artifactId>
             <version>${pkgVersion}</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

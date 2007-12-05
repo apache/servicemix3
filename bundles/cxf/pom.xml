@@ -79,19 +79,19 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-bundle</artifactId>
             <version>${pkgVersion}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>xml-resolver</groupId>
             <artifactId>xml-resolver</artifactId>
             <version>1.2</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.neethi</groupId>
             <artifactId>neethi</artifactId>
             <version>2.0.2</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <!-- Dependency on other bundles -->
