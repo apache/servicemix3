@@ -29,8 +29,7 @@ import org.apache.cxf.endpoint.ServerImpl;
 import org.apache.cxf.frontend.ClientFactoryBean;
 import org.apache.cxf.frontend.ClientProxyFactoryBean;
 import org.apache.cxf.frontend.ServerFactoryBean;
-import org.apache.servicemix.nmr.api.NMR;
-import org.apache.servicemix.nmr.core.ServiceMix;
+
 
 
 
@@ -45,9 +44,7 @@ public class SmxToCxfTest extends ContextTestSupport {
     
     private ServerImpl server;
     private CamelContext camelContext;
-    private ServiceMixComponent smxComponent;
-    private NMR nmr;
-    
+       
     
     @Override
     protected void setUp() throws Exception {

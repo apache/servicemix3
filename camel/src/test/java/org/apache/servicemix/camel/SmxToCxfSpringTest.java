@@ -23,7 +23,7 @@ import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class SmxToCxfSpringTest extends SmxToCxfTest {
-protected AbstractXmlApplicationContext applicationContext;
+	protected AbstractXmlApplicationContext applicationContext;
     
     @Override
     protected void setUp() throws Exception {
