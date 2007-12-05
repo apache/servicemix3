@@ -118,21 +118,6 @@
                     </instructions>
                 </configuration>
             </plugin>
-            <!--plugin>
-	        <groupId>org.apache.xbean</groupId>
-        	<artifactId>maven-xbean-plugin</artifactId>
-	        <version>3.2</version>
-	        <executions>
-        	  <execution>
-	            <goals>
-        	      <goal>mapping</goal>
-	            </goals>
-        	    <configuration>
-	              <namespace>http://servicemix.apache.org/camelEndpoint/</namespace>
-        	    </configuration>
-		  </execution>
-	        </executions>
-	     </plugin-->
          </plugins>
     </build>
 

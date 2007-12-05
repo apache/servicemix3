@@ -42,6 +42,7 @@ To change this template use File | Settings | File Templates.
       <xs:attribute name='executorService' type='xs:string'/>
       <xs:attribute name='uri' type='xs:string'/>
       <xs:attribute name='nmr' type='xs:string'/>
+      <xs:attribute name='flow' type='xs:string'/>
       <xs:attribute name='id' type='xs:ID'/>
       <xs:anyAttribute namespace='##other' processContents='lax'/>
     </xs:complexType>
