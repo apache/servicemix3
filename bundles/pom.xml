@@ -45,6 +45,7 @@
         <module>jaxb-impl</module>
         <module>jaxws-api</module>
         <module>httpcore</module>
+        <module>mina</module>
         <module>openejb</module>
         <module>openjpa</module>
         <module>wsdl4j</module>
