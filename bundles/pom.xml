@@ -44,6 +44,7 @@
         <module>jaxb-api</module>
         <module>jaxb-impl</module>
         <module>jaxws-api</module>
+        <module>junit</module>
         <module>httpcore</module>
         <module>mina</module>
         <module>openejb</module>

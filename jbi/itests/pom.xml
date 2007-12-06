@@ -46,6 +46,10 @@
         </dependency>
         <dependency>
             <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.asm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
             <artifactId>org.apache.servicemix.bundles.jaxb-api</artifactId>
             <scope>test</scope>
         </dependency>
@@ -53,6 +57,10 @@
             <groupId>org.apache.servicemix.bundles</groupId>
             <artifactId>org.apache.servicemix.bundles.jaxb-impl</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.junit</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.servicemix.bundles</groupId>
@@ -163,18 +171,6 @@
         <dependency>
             <groupId>org.springframework.osgi</groupId>
             <artifactId>spring-osgi-annotation</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.osgi</groupId>
-            <artifactId>junit.osgi</artifactId>
-            <version>3.8.2-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.osgi</groupId>
-            <artifactId>asm.osgi</artifactId>
-            <version>2.2.3-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -332,38 +328,18 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- run tests during the integration-test phase, not
-                 the normal test phase -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skip>true</skip>
+                    <forkMode>pertest</forkMode>
+                    <systemProperties>
+                        <property>
+                            <name>org.springframework.osgi.test.framework</name>
+                            <value>${osgi.test.platform}</value>
+                        </property>
+                    </systemProperties>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>default</id>
-                        <phase>test</phase>
-                        <goals></goals>
-                    </execution>
-                    <execution>
-                        <id>integration-test</id>
-                        <phase>integration-test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <skip>false</skip>
-                            <forkMode>pertest</forkMode>
-                            <systemProperties>
-                                <property>
-                                    <name>org.springframework.osgi.test.framework</name>
-                                    <value>${osgi.test.platform}</value>
-                                </property>
-                            </systemProperties>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

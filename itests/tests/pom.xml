@@ -46,6 +46,11 @@
         </dependency>
         <dependency>
             <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.asm</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
             <artifactId>org.apache.servicemix.bundles.cxf</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -67,6 +72,11 @@
         <dependency>
             <groupId>org.apache.servicemix.bundles</groupId>
             <artifactId>org.apache.servicemix.bundles.jaxws-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.junit</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -214,18 +224,6 @@
             <groupId>org.springframework.osgi</groupId>
             <artifactId>spring-osgi-annotation</artifactId>
             <version>${spring.osgi.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.osgi</groupId>
-            <artifactId>junit.osgi</artifactId>
-            <version>3.8.2-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.osgi</groupId>
-            <artifactId>asm.osgi</artifactId>
-            <version>2.2.3-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -438,21 +436,8 @@
       </dependency>
       -->
         <dependency>
-            <groupId>org.springframework.osgi</groupId>
-            <artifactId>junit.osgi</artifactId>
-            <version>3.8.2-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.osgi</groupId>
-            <artifactId>asm.osgi</artifactId>
-            <version>2.2.3-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.osgi.compendium</artifactId>
-            <version>0.9.0-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -517,8 +502,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- run tests during the integration-test phase, not
-                 the normal test phase -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

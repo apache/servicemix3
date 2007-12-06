@@ -38,46 +38,24 @@
     </description>
 
     <properties>
-        <pkgArtifactId>mina</pkgArtifactId>
-        <pkgVersion>${mina.version}</pkgVersion>
+        <pkgArtifactId>junit</pkgArtifactId>
+        <pkgVersion>${junit.version}</pkgVersion>
         <pomVersion>4.0-SNAPSHOT</pomVersion>
+        <servicemix.osgi.export.pkg>
+            org.junit*,
+            junit*
+        </servicemix.osgi.export.pkg>
         <servicemix.osgi.import.pkg>
-             com.jcraft.jzlib*;resolution:=optional,
-             net.gleamynode.netty2*;resolution:=optional,
+            org.hamcrest*;resolution:=optional,
             *
         </servicemix.osgi.import.pkg>
-		<servicemix.osgi.export.pkg>org.apache.mina</servicemix.osgi.export.pkg>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.mina</groupId>
-            <artifactId>mina-core</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.mina</groupId>
-            <artifactId>mina-filter-codec-netty</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.mina</groupId>
-            <artifactId>mina-filter-compression</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.mina</groupId>
-            <artifactId>mina-filter-ssl</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.mina</groupId>
-            <artifactId>mina-integration-jmx</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.mina</groupId>
-            <artifactId>mina-integration-spring</artifactId>
+            <groupId>junit</groupId>
+            <artifactId>${pkgArtifactId}</artifactId>
+            <version>${pkgVersion}</version>
             <optional>true</optional>
         </dependency>
     </dependencies>
