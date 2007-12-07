@@ -23,31 +23,28 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.apache.servicemix</groupId>
-        <artifactId>servicemix</artifactId>
-        <version>4.0-SNAPSHOT</version>
+        <groupId>org.apache.servicemix.runtime</groupId>
+        <artifactId>runtime</artifactId>
+        <version>0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.apache.servicemix</groupId>
+    <groupId>org.apache.servicemix.runtime.bundles</groupId>
     <artifactId>bundles</artifactId>
     <packaging>pom</packaging>
-    <version>4.0-SNAPSHOT</version>
     <name>ServiceMix OSGI Common Bundles</name>
 
     <modules>
-        <module>acegi</module>
-        <module>cxf</module>
-        <module>jaxb-api</module>
-        <module>jaxb-impl</module>
-        <module>jaxws-api</module>
+        <module>ant</module>
+        <module>aopalliance</module>
+        <module>asm</module>
+        <module>cglib</module>
         <module>junit</module>
-        <module>httpcore</module>
-        <module>openejb</module>
-        <module>openjpa</module>
-        <module>wsdl4j</module>
+        <module>mina</module>
+        <module>xstream</module>
     </modules>
 
     <properties>
+        <servicemix.osgi.export>${servicemix.osgi.export.pkg}*;version=${pkgVersion}</servicemix.osgi.export>
         <servicemix.osgi.export.pkg></servicemix.osgi.export.pkg>
         <servicemix.osgi.import.pkg></servicemix.osgi.import.pkg>
         <servicemix.osgi.private.pkg></servicemix.osgi.private.pkg>
@@ -58,8 +55,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>${felix.version}</version>
-                <extensions>true</extensions>
                 <executions>
                     <execution>
                         <goals>
@@ -70,10 +65,11 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
-                        <Export-Package>${servicemix.osgi.export.pkg}*;version=${pkgVersion}</Export-Package>
+                        <Export-Package>${servicemix.osgi.export}</Export-Package>
                         <Import-Package>${servicemix.osgi.import.pkg}*</Import-Package>
                         <Private-Package>${servicemix.osgi.private.pkg}</Private-Package>
                     </instructions>
+                    <unpackBundle>true</unpackBundle>
                 </configuration>
             </plugin>
         </plugins>
