@@ -82,7 +82,7 @@
         <pax.logging.version>0.9.8-SNAPSHOT</pax.logging.version>
         <servicemix3.version>3.2.1</servicemix3.version>
         <bundlerepository.version>1.1.0-SNAPSHOT</bundlerepository.version>
-        <mina.version>1.1.6-r601820-patched</mina.version>
+        <mina.version>1.1.6-r602102</mina.version>
     </properties>
 
     <repositories>
