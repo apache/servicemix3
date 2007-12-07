@@ -37,7 +37,7 @@ import org.apache.servicemix.nmr.core.StraightThroughFlow;
  * 
  * @org.apache.xbean.XBean element="smxEndpoint"
  */
-public class ServiceMixEndpoint extends DefaultEndpoint {
+public class ServiceMixEndpoint extends DefaultEndpoint<ServiceMixExchange> {
 
 	public static final String SPRING_CONTEXT_ENDPOINT = "bean:";
 
@@ -97,11 +97,11 @@ public class ServiceMixEndpoint extends DefaultEndpoint {
 		return true;
 	}
 
-	public Producer createProducer() throws Exception {
+	public Producer<ServiceMixExchange> createProducer() throws Exception {
 		return new ServiceMixProducer(this);
 	}
 
-	public Consumer createConsumer(Processor processor) throws Exception {
+	public Consumer<ServiceMixExchange> createConsumer(Processor processor) throws Exception {
 		return new ServiceMixConsumer(this, processor);
 	}
 

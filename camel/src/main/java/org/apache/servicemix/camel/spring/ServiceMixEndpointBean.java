@@ -25,19 +25,7 @@ public class ServiceMixEndpointBean {
 	private NMR nmr;
 	private Flow flow;
 	
-	public ServiceMixEndpointBean() {
-		if (getNmr() != null && getNmr().getFlowRegistry() != null) {
-			if (getFlow() != null) {
-				// set Flow we get from configuration file
-				getNmr().getFlowRegistry().register(getFlow(), 
-						ServiceHelper.createMap(Flow.ID, getFlow().getClass().getName()));
-			} else {
-				// set defaule Flow
-				getNmr().getFlowRegistry().register(
-						new StraightThroughFlow(), ServiceHelper.createMap(Flow.ID, StraightThroughFlow.class.getName()));
-			}
-		}
-	}
+
 	public void setNmr(NMR nmr) {
 		this.nmr = nmr;
 	}

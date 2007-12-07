@@ -18,8 +18,6 @@ package org.apache.servicemix.camel;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.ContextTestSupport;
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.cxf.Bus;
@@ -107,10 +105,5 @@ public class SmxToCxfTest extends ContextTestSupport {
     }
     
         
-    class PojoInvokeDispatchProcessor implements Processor {
-        public void process(Exchange exchange) throws Exception {
-            System.out.println("PojoInvokeDispatchProcessor " + exchange.getIn().getBody());
-            
-        }
-    }
+    
 }

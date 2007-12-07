@@ -59,8 +59,7 @@ public class ServiceMixProducer extends DefaultProducer<ServiceMixExchange> {
         e.getIn().setBody(exchange.getIn().getBody());
         e.getIn().setHeader(CxfConstants.OPERATION_NAME, 
         		exchange.getIn().getHeader(CxfConstants.OPERATION_NAME));
-        
-        
+                
         client.sendSync(e);
         if (e.getPattern() != Pattern.InOnly) {
         	if (e.getFault().getBody() != null) {
