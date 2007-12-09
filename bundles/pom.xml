@@ -37,11 +37,10 @@
     <modules>
         <module>acegi</module>
         <module>cxf</module>
+        <module>httpcore</module>
         <module>jaxb-api</module>
         <module>jaxb-impl</module>
         <module>jaxws-api</module>
-        <module>junit</module>
-        <module>httpcore</module>
         <module>openejb</module>
         <module>openjpa</module>
         <module>wsdl4j</module>
