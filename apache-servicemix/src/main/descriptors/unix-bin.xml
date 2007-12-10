@@ -83,6 +83,9 @@
             <includes>
                 <include>bin/servicemix.bat</include>
                 <include>bin/servicemix.sh</include>
+                <include>bin/convert.sh</include>
+                <include>bin/convert.bat</include>
+
                 <include>bin/linux/servicemix.sh</include>
                 <include>bin/macosx/servicemix.sh</include>
                 <include>bin/win32/servicemix.bat</include>
@@ -96,6 +99,15 @@
             <directory>target/dependencies</directory>
             <outputDirectory>/bin/</outputDirectory>
         </fileSet>
+
+        <!--Copy convert jar to bin folder -->
+         <fileSet>
+             <directory>../jbi/offline/target</directory>
+             <outputDirectory>/bin/</outputDirectory>
+             <includes>
+                 <include>convert.jar</include>
+             </includes>
+         </fileSet>
 
     </fileSets>
 

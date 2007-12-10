@@ -33,6 +33,7 @@
   <version>4.0-SNAPSHOT</version>
   <name>ServiceMix JBI Offline Tool</name>
 
+
   <dependencies>
     <!--dependency>
       <groupId>org.apache.servicemix</groupId>
@@ -83,6 +84,7 @@
   </dependencies>
 
   <build>
+    <finalName>convert</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -91,6 +93,7 @@
           <instructions>
             <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
             <Export-Package>${pom.artifactId}*</Export-Package>
+            <Private-Package>org.apache.servicemix.jbi.deployer*</Private-Package>
             <Import-Package>org.springframework*;resolution:=optional,*</Import-Package>
           </instructions>
         </configuration>
