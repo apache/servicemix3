@@ -35,7 +35,7 @@
         <dependency>
             <groupId>org.apache.servicemix.geronimo</groupId>
             <artifactId>dependencies</artifactId>
-            <version>3.3-SNAPSHOT</version>
+            <version>${servicemix-version}</version>
             <scope>provided</scope>
         </dependency>
 
