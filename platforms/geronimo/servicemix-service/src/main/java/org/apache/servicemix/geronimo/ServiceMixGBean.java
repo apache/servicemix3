@@ -17,6 +17,7 @@
 package org.apache.servicemix.geronimo;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.jbi.JBIException;
@@ -39,27 +40,32 @@ import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.framework.ComponentNameSpace;
 import org.apache.servicemix.jbi.framework.ServiceAssemblyLifeCycle;
+import org.apache.servicemix.jbi.nmr.flow.Flow;
 
 public class ServiceMixGBean implements GBeanLifecycle, Container {
 
     private Log log = LogFactory.getLog(getClass().getName());
     
     private JBIContainer container;
+    private boolean persistent = false;
     private String name;
     private String directory;
     private final AbstractNameQuery transactionManagerName;
+    private final AbstractNameQuery flows;
     private Kernel kernel;
 
     public static final GBeanInfo GBEAN_INFO;
 
     static {
-        GBeanInfoBuilder infoFactory = new GBeanInfoBuilder("ServiceMix JBI Container", ServiceMixGBean.class, "JBIContainer");
+        GBeanInfoBuilder infoFactory = new GBeanInfoBuilder("ServiceMixJBIContainer", ServiceMixGBean.class, "JBIContainer");
         infoFactory.addInterface(Container.class);
         infoFactory.addAttribute("name", String.class, true);
+        infoFactory.addAttribute("persistent", boolean.class, true);
         infoFactory.addAttribute("directory", String.class, true);
         infoFactory.addAttribute("transactionManager", AbstractNameQuery.class, true, true);
+        infoFactory.addAttribute("flows", AbstractNameQuery.class, true, true);
         infoFactory.addAttribute("kernel", Kernel.class, false);
-        infoFactory.setConstructor(new String[]{"name", "directory", "transactionManager", "kernel"});
+        infoFactory.setConstructor(new String[]{"name", "directory", "transactionManager", "flows", "kernel"});
         GBEAN_INFO = infoFactory.getBeanInfo();
     }
 
@@ -69,11 +75,13 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
 
     public ServiceMixGBean(String name, 
                            String directory, 
-                           AbstractNameQuery transactionManagerName, 
+                           AbstractNameQuery transactionManagerName,
+                           AbstractNameQuery flows,
                            Kernel kernel) {
         this.name = name;
         this.directory = directory;
         this.transactionManagerName = transactionManagerName;
+        this.flows = flows;
         this.kernel = kernel;
         if (log.isDebugEnabled()) {
             log.debug("ServiceMixGBean created");
@@ -81,11 +89,20 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
     }
     
     /**
+     * Sets the persistent flag
+     * 
+     * @param persistent flag for the JBIContainer
+     */
+    public void setPersistent(boolean persistent) {
+        this.persistent = persistent;
+    }
+    
+    /**
      * Starts the GBean.  This informs the GBean that it is about to transition to the running state.
      *
      * @throws Exception if the target failed to start; this will cause a transition to the failed state
      */
-    public void doStart() throws Exception {
+    public void doStart() throws Exception {        
         if (log.isDebugEnabled()) {
             log.debug("ServiceMixGBean doStart");
         }
@@ -101,6 +118,7 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
+
     }
 
     /**
@@ -144,6 +162,7 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
 
     private JBIContainer createContainer() throws GBeanNotFoundException {
         JBIContainer container = new JBIContainer();
+        
         container.setUseShutdownHook(false);
         container.setName(name);
         container.setRootDir(directory);
@@ -152,6 +171,13 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
         container.setTransactionManager(tm);
         container.setMonitorInstallationDirectory(false);
         container.setMonitorDeploymentDirectory(false);
+        
+        container.setPersistent(persistent);
+        
+        if (flows != null) {
+            container.setFlows(getFlows());
+        }
+
         return container;
     }
     
@@ -168,6 +194,29 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
         return tm;
     }
 
+    /**
+     * Determines the configured Flows and starts them if necessary
+     * 
+     * @return Flow Array
+     * @throws GBeanNotFoundException
+     */
+    @SuppressWarnings("unchecked")
+    private Flow[] getFlows() throws GBeanNotFoundException {
+        
+        Set<Flow> flowSet = new HashSet<Flow>();
+        
+        Set<AbstractName> listGBeans = kernel.listGBeans(flows);
+        for (AbstractName name: listGBeans) {
+            if (!kernel.isRunning(name)) {
+                kernel.startGBean(name);
+            }
+            Flow flow = (Flow) kernel.getGBean(name);
+            flowSet.add(flow);
+        }
+        
+        return flowSet.toArray(new Flow[0]);
+    }
+    
     /**
      * Returns the JBIContainer
      * 
@@ -224,8 +273,11 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
     public void unregister(ServiceAssembly assembly) throws Exception {
         ServiceAssemblyLifeCycle salc = container.getRegistry().getServiceAssembly(assembly.getName());
         salc.shutDown(false);
+
         assembly.undeploySus();
+
         container.getRegistry().unregisterServiceAssembly(assembly.getName());
+
     }
 
 }

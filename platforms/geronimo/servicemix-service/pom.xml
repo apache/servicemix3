@@ -30,6 +30,10 @@
     <artifactId>servicemix-service</artifactId>
     <name>ServiceMix :: Geronimo :: ServiceMix service</name>
 
+    <properties>
+        <activemq-version>4.1.1</activemq-version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.servicemix</groupId>
@@ -40,13 +44,30 @@
             <groupId>org.apache.geronimo.modules</groupId>
             <artifactId>geronimo-kernel</artifactId>
             <version>${geronimo-version}</version>
-			<scope>provided</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.geronimo.modules</groupId>
             <artifactId>geronimo-naming</artifactId>
             <version>${geronimo-version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.modules</groupId>
+            <artifactId>geronimo-connector</artifactId>
+            <version>${geronimo-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.modules</groupId>
+            <artifactId>geronimo-management</artifactId>
+            <version>${geronimo-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-ra</artifactId>
+            <version>${activemq-version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>

@@ -22,9 +22,19 @@ Configuration for ServiceMix container.
 -->
 <module xmlns="http://geronimo.apache.org/xml/ns/deployment-${geronimoSchemaVersion}">
 
+    <gbean name="JMSFlow" class="org.apache.servicemix.geronimo.flow.JMSFlowGBean">
+        <attribute name="jmsURL">tcp://localhost:61616</attribute>
+        <attribute name="broadcastDestinationName">org.apache.servicemix.JMSFlow</attribute>
+    </gbean>
+
+    <gbean name="StFlow" class="org.apache.servicemix.geronimo.flow.StFlowGBean">
+    </gbean>
+
     <gbean name="ServiceMixJBIContainer" class="org.apache.servicemix.geronimo.ServiceMixGBean">
         <attribute name="name">servicemix</attribute>
+        <attribute name="persistent">true</attribute>
         <attribute name="transactionManager">?name=TransactionManager</attribute>
+        <attribute name="flows">?j2eeType=ServiceMixFlow</attribute>
         <!-- relative to bin directory -->
         <attribute name="directory">../var/servicemix</attribute>
     </gbean>
