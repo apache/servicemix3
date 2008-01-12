@@ -68,7 +68,9 @@
     <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-core</artifactId>
-       <version>${activemq-version}</version>
+      <!-- TODO switch after 5.0 has been released so we can use the nice spring XML stuff -->
+      <!--<version>${activemq-version}</version>-->
+      <version>5.0.0</version>
       <scope>test</scope>
     </dependency>
     
