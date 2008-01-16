@@ -50,7 +50,7 @@
     <modules>
         <module>servicemix-service</module>
         <module>deployer-service</module>
-        <module>dependencies</module>
+        <!--<module>dependencies</module>-->
         <module>servicemix</module>
         <module>deployer</module>
     </modules>

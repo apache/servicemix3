@@ -39,13 +39,26 @@
             <version>1.1</version>
         </dependency>
 
-        <!-- Needed to download Geronimo dependencies -->
         <dependency>
-            <groupId>org.apache.servicemix.geronimo</groupId>
-            <artifactId>dependencies</artifactId>
-            <version>${version}</version>
-            <scope>provided</scope>
+          <groupId>org.apache.geronimo.configs</groupId>
+          <artifactId>geronimo-gbean-deployer</artifactId>
+          <version>${geronimo-version}</version>
+          <type>car</type>
+          <scope>provided</scope>
         </dependency>
+        <dependency>
+          <groupId>org.apache.geronimo.configs</groupId>
+          <artifactId>j2ee-server</artifactId>
+          <version>${geronimo-version}</version>
+          <type>car</type>
+          <exclusions>
+            <exclusion>
+              <groupId>org.apache.geronimo.modules</groupId>
+              <artifactId>geronimo-webservices</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+
         <!-- For build ordering -->
         <dependency>
             <groupId>org.apache.servicemix.geronimo</groupId>
