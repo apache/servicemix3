@@ -31,12 +31,23 @@
     <packaging>car</packaging>
 
     <dependencies>
-        <!-- Needed to download dependencies -->
         <dependency>
-            <groupId>org.apache.servicemix.geronimo</groupId>
-            <artifactId>dependencies</artifactId>
-            <version>3.2.2-SNAPSHOT</version>
-            <scope>provided</scope>
+          <groupId>org.apache.geronimo.configs</groupId>
+          <artifactId>geronimo-gbean-deployer</artifactId>
+          <version>${geronimo-version}</version>
+          <type>car</type>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.geronimo.configs</groupId>
+          <artifactId>j2ee-server</artifactId>
+          <version>${geronimo-version}</version>
+          <type>car</type>
+          <exclusions>
+            <exclusion>
+              <groupId>org.apache.geronimo.modules</groupId>
+              <artifactId>geronimo-webservices</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
 
         <dependency>
@@ -44,21 +55,26 @@
             <artifactId>deployer-service</artifactId>
             <version>${servicemix-version}</version>
             <type>jar</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.geronimo.configs</groupId>
-            <artifactId>geronimo-gbean-deployer</artifactId>
-            <version>${geronimo-version}</version>
-            <type>car</type>
+            <exclusions>
+              <exclusion>
+                <groupId>org.apache.geronimo.configs</groupId>
+                <artifactId>j2ee-deployer</artifactId>
+              </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.apache.servicemix.geronimo</groupId>
-			<artifactId>servicemix</artifactId>
+            <artifactId>servicemix</artifactId>
             <version>${version}</version>
             <type>car</type>
             <scope>runtime</scope>
+            <exclusions>
+              <exclusion>
+                <groupId>org.apache.geronimo.configs</groupId>
+                <artifactId>geronimo-gbean-deployer</artifactId>
+              </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
