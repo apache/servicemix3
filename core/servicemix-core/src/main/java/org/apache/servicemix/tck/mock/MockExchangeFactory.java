@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.soap.interceptors.jbi;
+package org.apache.servicemix.tck.mock;
 
 import java.net.URI;
 
@@ -29,6 +29,11 @@ import javax.xml.namespace.QName;
 
 public class MockExchangeFactory implements MessageExchangeFactory {
     
+    public static final URI IN_ONLY = URI.create("http://www.w3.org/2004/08/wsdl/in-only");
+    public static final URI IN_OUT = URI.create("http://www.w3.org/2004/08/wsdl/in-out");
+    public static final URI IN_OPTIONAL_OUT = URI.create("http://www.w3.org/2004/08/wsdl/in-opt-out");
+    public static final URI ROBUST_IN_ONLY = URI.create("http://www.w3.org/2004/08/wsdl/robust-in-only");
+    
     public MessageExchange createExchange(QName serviceName, QName operationName) throws MessagingException {
         throw new UnsupportedOperationException();
     }
@@ -39,13 +44,13 @@ public class MockExchangeFactory implements MessageExchangeFactory {
             pattern = URI.create(str);
         }
         MessageExchange me;
-        if (JbiConstants.IN_ONLY.equals(pattern)) {
+        if (IN_ONLY.equals(pattern)) {
             me = createInOnlyExchange();
-        } else if (JbiConstants.IN_OUT.equals(pattern)) {
+        } else if (IN_OUT.equals(pattern)) {
             me = createInOutExchange();
-        } else if (JbiConstants.IN_OPTIONAL_OUT.equals(pattern)) {
+        } else if (IN_OPTIONAL_OUT.equals(pattern)) {
             me = createInOptionalOutExchange();
-        } else if (JbiConstants.ROBUST_IN_ONLY.equals(pattern)) {
+        } else if (ROBUST_IN_ONLY.equals(pattern)) {
             me = createRobustInOnlyExchange();
         } else {
             throw new IllegalArgumentException("Unhandled pattern: " + pattern);

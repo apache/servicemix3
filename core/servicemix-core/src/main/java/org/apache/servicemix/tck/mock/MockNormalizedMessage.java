@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.soap.interceptors.jbi;
+package org.apache.servicemix.tck.mock;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +29,7 @@ import javax.xml.transform.Source;
 public class MockNormalizedMessage implements NormalizedMessage {
 
     private Source content;
-    private Map<String,Object> properties = new HashMap<String, Object>();
+    private Map<String, Object> properties = new HashMap<String, Object>();
     private Map<String, DataHandler> attachments = new HashMap<String, DataHandler>();
     private Subject securitySubject;
 
@@ -37,7 +37,7 @@ public class MockNormalizedMessage implements NormalizedMessage {
      * @return the content
      */
     public Source getContent() {
-        return content;
+        return this.content;
     }
     /**
      * @param content the content to set
@@ -57,8 +57,8 @@ public class MockNormalizedMessage implements NormalizedMessage {
     public void setSecuritySubject(Subject securitySubject) {
         this.securitySubject = securitySubject;
     }
-    public void addAttachment(String id, DataHandler content) throws MessagingException {
-        attachments.put(id, content);
+    public void addAttachment(String id, DataHandler data) throws MessagingException {
+        attachments.put(id, data);
     }
     public DataHandler getAttachment(String id) {
         return attachments.get(id);

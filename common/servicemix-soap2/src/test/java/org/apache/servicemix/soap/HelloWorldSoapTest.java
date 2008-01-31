@@ -48,12 +48,12 @@ import org.apache.servicemix.soap.bindings.soap.SoapVersion;
 import org.apache.servicemix.soap.core.MessageImpl;
 import org.apache.servicemix.soap.core.PhaseInterceptorChain;
 import org.apache.servicemix.soap.interceptors.jbi.JbiConstants;
-import org.apache.servicemix.soap.interceptors.jbi.MockExchangeFactory;
-import org.apache.servicemix.soap.interceptors.jbi.MockMessageExchange;
 import org.apache.servicemix.soap.util.DomUtil;
 import org.apache.servicemix.soap.wsdl.BindingFactory;
 import org.apache.servicemix.soap.wsdl.WSDLUtils;
 import org.apache.servicemix.soap.wsdl.validator.WSIBPValidator;
+import org.apache.servicemix.tck.mock.MockExchangeFactory;
+import org.apache.servicemix.tck.mock.MockMessageExchange;
 
 public class HelloWorldSoapTest extends TestCase {
     private static transient Log log = LogFactory.getLog(HelloWorldSoapTest.class);

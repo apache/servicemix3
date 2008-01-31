@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.soap.interceptors.jbi;
+package org.apache.servicemix.tck.mock;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -43,7 +43,7 @@ public class MockMessageExchange implements MessageExchange {
     private NormalizedMessage inMessage;
     private NormalizedMessage outMessage;
     private Fault fault;
-    private Map<String,Object> properties = new HashMap<String,Object>();
+    private Map<String, Object> properties = new HashMap<String, Object>();
     
     /**
      * @return the endpoint
