@@ -31,6 +31,7 @@ import junit.framework.TestCase;
 import org.apache.servicemix.soap.api.Interceptor;
 import org.apache.servicemix.soap.api.Message;
 import org.apache.servicemix.soap.core.MessageImpl;
+import org.apache.servicemix.tck.mock.MockExchangeFactory;
 
 public class JbiInInterceptorTest extends TestCase {
 
