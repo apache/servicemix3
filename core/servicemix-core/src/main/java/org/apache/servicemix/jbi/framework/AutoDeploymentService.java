@@ -16,8 +16,7 @@
  */
 package org.apache.servicemix.jbi.framework;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -29,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.zip.ZipFile;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -635,7 +635,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 for (int i = 0; i < files.length; i++) {
                     final File file = files[i];
                     tmpList.add(file.getName());
-                    if (isAllowedExtension(file.getName())) {
+                    if (isAllowedExtension(file.getName()) && isAvailable(file)) {
                         ArchiveEntry lastEntry = fileMap.get(file.getName());
                         if (lastEntry == null || file.lastModified() > lastEntry.lastModified.getTime()) {
                             try {
@@ -672,6 +672,34 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 persistState(root, fileMap);
             }
         }
+    }
+
+    private boolean isAvailable(File file) {
+        // First check to see if the file is still growing
+        long targetLength = file.length();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            //Do nothing
+        }
+        long target2Length = file.length();
+
+        if (targetLength != target2Length) {
+            LOG.warn("File is still being copied, deployment deferred to next cycle: " + file.getName());
+            return false;
+        }
+
+        // If file size is consistent, do a foolproof check of the zip file
+        try {
+            ZipFile zip = new ZipFile(file);
+            zip.size();
+            zip.close();
+        } catch (IOException e) {
+            LOG.warn("Unable to open deployment file, deployment deferred to next cycle: " + file.getName());
+            return false;
+        }
+
+        return true;
     }
 
     private boolean isAllowedExtension(String file) {

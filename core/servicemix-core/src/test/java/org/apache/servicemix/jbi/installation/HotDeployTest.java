@@ -16,9 +16,7 @@
  */
 package org.apache.servicemix.jbi.installation;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 
 import javax.jbi.JBIException;
 import javax.jbi.component.Bootstrap;
@@ -92,6 +90,88 @@ public class HotDeployTest extends AbstractManagementTest {
         container.setMonitorInstallationDirectory(true);
         container.setMonitorDeploymentDirectory(true);
         container.setMonitorInterval(1);
+    }
+
+    /**
+     * Simulate a slow copy or a large file deployment by copying small chinks of the file at a time.
+     * 
+     * @param in
+     * @param out
+     * @throws IOException
+     */
+    private static void slowCopyInputStream(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[1];
+        int len = in.read(buffer);
+        while (len >= 0) {
+            try {
+                Thread.sleep(10) ;
+            } catch (InterruptedException e) {
+                // Do nothing
+            }
+            out.write(buffer, 0, len);
+            len = in.read(buffer);
+        }
+        in.close();
+        out.close();
+    }
+
+    /**
+     * Test a slow copy or similar type of file copy such as scp or ftp remote upload.
+     * 
+     * @throws Exception
+     */
+
+    public void testHotDeploySlowCopy() throws Exception {
+        final Object lock = new Object();
+        // configure mocks
+        Bootstrap1.setDelegate(new BootstrapDelegate(bootstrap) {
+            public void cleanUp() throws JBIException {
+                super.cleanUp();
+                synchronized (lock) {
+                    lock.notify();
+                }
+            }
+        });
+        reset();
+        bootstrap.init(null);
+        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
+        bootstrap.getExtensionMBeanName();
+        bootstrapMock.setReturnValue(null);
+        bootstrap.onInstall();
+        bootstrap.cleanUp();
+        component.getLifeCycle();
+        componentMock.setReturnValue(lifecycle);
+        lifecycle.init(null);
+        lifecycleMock.setMatcher(MockControl.ALWAYS_MATCHER);
+        lifecycle.start();
+        replay();
+        // test component installation
+        startContainer(true);
+        String installJarUrl = createInstallerArchive("component1").getAbsolutePath();
+        File hdInstaller = new File(container.getEnvironmentContext().getInstallationDir(), new File(installJarUrl).getName());
+
+        synchronized (lock) {
+            slowCopyInputStream(new FileInputStream(installJarUrl), new FileOutputStream(hdInstaller));
+            lock.wait(5000);
+        }
+        Thread.sleep(50);
+
+        ObjectName lifecycleName = container.getComponent("component1").getMBeanName();
+        assertNotNull(lifecycleName);
+        LifeCycleMBean lifecycleMBean = (LifeCycleMBean) MBeanServerInvocationHandler.newProxyInstance(container.getMBeanServer(),
+                        lifecycleName, LifeCycleMBean.class, false);
+        assertEquals(LifeCycleMBean.STARTED, lifecycleMBean.getCurrentState());
+        // check mocks
+        verify();
+
+        // Clean shutdown
+        reset();
+        component.getLifeCycle();
+        componentMock.setReturnValue(lifecycle);
+        lifecycle.stop();
+        lifecycle.shutDown();
+        replay();
+        shutdownContainer();
     }
 
     public void testHotDeployComponent() throws Exception {
