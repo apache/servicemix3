@@ -531,7 +531,7 @@ public class JBIContainer extends BaseLifeCycle {
             log.info("ServiceMix " + 
                      EnvironmentContext.getVersion() +
                      " JBI Container (" + getName() + ") is starting");
-            log.info("For help or more informations please see: http://incubator.apache.org/servicemix/");
+            log.info("For help or more information please see: http://servicemix.apache.org/");
             addShutdownHook();
             if (this.executorFactory == null) {
                 this.executorFactory = createExecutorFactory();
