@@ -110,7 +110,7 @@ public class XsltEndpoint extends SaxonEndpoint {
         return new DOMSource(parse(res));
     }
 
-    public Templates getTemplates() throws Exception {
+    public synchronized Templates getTemplates() throws Exception {
         if (templates == null) {
             templates = createTemplates();
         }
