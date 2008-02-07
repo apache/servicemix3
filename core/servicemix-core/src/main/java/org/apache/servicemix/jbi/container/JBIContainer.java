@@ -564,7 +564,7 @@ public class JBIContainer extends BaseLifeCycle {
     public void init() throws JBIException {
         if (containerInitialized.compareAndSet(false, true)) {
             LOG.info("ServiceMix " + EnvironmentContext.getVersion() + " JBI Container (" + getName() + ") is starting");
-            LOG.info("For help or more informations please see: http://incubator.apache.org/servicemix/");
+            LOG.info("For help or more information please see: http://servicemix.apache.org/");
             addShutdownHook();
             if (this.executorFactory == null) {
                 this.executorFactory = createExecutorFactory();
