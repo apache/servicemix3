@@ -104,7 +104,7 @@ public class HotDeployTest extends AbstractManagementTest {
         int len = in.read(buffer);
         while (len >= 0) {
             try {
-                Thread.sleep(10) ;
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 // Do nothing
             }
