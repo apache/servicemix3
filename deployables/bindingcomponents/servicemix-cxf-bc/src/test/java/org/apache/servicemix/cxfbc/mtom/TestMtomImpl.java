@@ -51,9 +51,5 @@ public class TestMtomImpl implements TestMtom {
         
     }
 
-    public org.apache.cxf.mime.types.XopStringType testXopString(
-        org.apache.cxf.mime.types.XopStringType data) {
-        return null;
-    }
 
 }
