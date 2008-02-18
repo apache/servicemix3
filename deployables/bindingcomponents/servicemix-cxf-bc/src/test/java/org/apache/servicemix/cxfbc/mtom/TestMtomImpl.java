@@ -25,12 +25,14 @@ import javax.jws.WebService;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.ws.Holder;
 
+import org.apache.cxf.mime.TestMtom;
+
 @WebService(serviceName = "TestMtomService", 
         portName = "TestMtomPort", 
         targetNamespace = "http://cxf.apache.org/mime", 
         endpointInterface = "org.apache.cxf.mime.TestMtom",
             wsdlLocation = "testutils/mtom_xop.wsdl")
-public class TestMtomImpl {
+public class TestMtomImpl implements TestMtom {
     public void testXop(Holder<String> name, Holder<DataHandler> attachinfo) {
         
         try {
@@ -49,5 +51,9 @@ public class TestMtomImpl {
         
     }
 
+    public org.apache.cxf.mime.types.XopStringType testXopString(
+        org.apache.cxf.mime.types.XopStringType data) {
+        return null;
+    }
 
 }
