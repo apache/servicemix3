@@ -172,7 +172,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
      * @return the specified attachment
      */
     public DataHandler getAttachment(String id) {
-        if (attachments != null) {
+        if (attachments != null && attachments.get(id) != null) {
             return new DataHandler((DataSource) attachments.get(id));
         }
         return null;
