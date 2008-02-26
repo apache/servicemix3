@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
 <!--
 
     Licensed to the Apache Software Foundation (ASF) under one or more
@@ -19,34 +17,17 @@
     limitations under the License.
 -->
 
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.servicemix</groupId>
-    <artifactId>parent</artifactId>
+    <artifactId>archetypes</artifactId>
     <version>3.3-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.apache.servicemix</groupId>
-  <artifactId>serviceengines</artifactId>
-  <version>3.3-SNAPSHOT</version>
-  <name>ServiceMix :: Service Engines</name>
-  <packaging>pom</packaging>
-
-  <modules>
-    <module>servicemix-bean</module>
-    <module>servicemix-bpe</module>
-    <module>servicemix-camel</module>
-    <module>servicemix-cxf-se</module>
-    <module>servicemix-drools</module>
-    <module>servicemix-eip</module>
-    <module>servicemix-jsr181</module>
-    <module>servicemix-lwcontainer</module>
-    <module>servicemix-osworkflow</module>
-    <module>servicemix-quartz</module>
-    <module>servicemix-saxon</module>
-    <module>servicemix-script</module>
-    <module>servicemix-wsn2005</module>
-  </modules>
+  <groupId>org.apache.servicemix.tooling</groupId>
+  <artifactId>servicemix-osworkflow-service-unit</artifactId>
+  <name>ServiceMix :: Archetypes :: OSWorkflowServiceUnit</name>
 
 </project>
