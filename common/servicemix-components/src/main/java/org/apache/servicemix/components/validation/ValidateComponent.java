@@ -20,6 +20,7 @@ import org.apache.servicemix.components.util.TransformComponentSupport;
 import org.apache.servicemix.jbi.FaultException;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.util.MessageUtil;
 import org.springframework.core.io.Resource;
 import org.xml.sax.SAXException;
 
@@ -52,6 +53,11 @@ public class ValidateComponent extends TransformComponentSupport {
     private Source schemaSource;
     private Resource schemaResource;
     private MessageAwareErrorHandlerFactory errorHandlerFactory = new CountingErrorHandlerFactory();
+    
+    public static final String FAULT_FLOW = "FAULT_FLOW";
+    public static final String FAULT_JBI = "FAULT_JBI";
+    
+    private String handlingErrorMethod = "FAULT_JBI";
 
     public Schema getSchema() {
         return schema;
@@ -143,9 +149,13 @@ public class ValidateComponent extends TransformComponentSupport {
             if (errorHandler.hasErrors()) {
                 Fault fault = exchange.createFault();
                 
-                // set the schema and source document as properties on the fault
-                fault.setProperty("org.apache.servicemix.schema", schema);
-                fault.setProperty("org.apache.servicemix.xml", src);
+                // Dont set the schema and source document as properties on the fault
+                // because they are not serializable
+                //fault.setProperty("org.apache.servicemix.xml", src);
+                // Dont set the schema because it contains an instance of
+                // com.sun.org.apache.xerces.internal.jaxp.validation.xs.SchemaImpl that
+                // is not serializable
+                //fault.setProperty("org.apache.servicemix.schema", schema);
                 
                 /* 
                  * check if this error handler supports the capturing of
@@ -181,7 +191,13 @@ public class ValidateComponent extends TransformComponentSupport {
                      */
                     fault.setContent(new DOMSource(result.getNode(), result.getSystemId()));
                 }
-                throw new FaultException("Failed to validate against schema: " + schema, exchange, fault);
+                if (!handlingErrorMethod.equalsIgnoreCase(FAULT_FLOW)) {
+                	// HANDLE AS JBI FAULT
+                	throw new FaultException("Failed to validate against schema: " + schema, exchange, fault);
+                } else {
+                	MessageUtil.transfer(fault, out);
+                	return true;
+                }
             }
             else {
                 // Retrieve the ouput of the validation
@@ -207,4 +223,13 @@ public class ValidateComponent extends TransformComponentSupport {
     protected void doValidation(Validator validator, DOMSource src, DOMResult result) throws SAXException, IOException {
         validator.validate(src,result);
     }
+
+	public String getHandlingErrorMethod() {
+		return handlingErrorMethod;
+	}
+
+	public void setHandlingErrorMethod(String handlingErrorMethod) {
+		this.handlingErrorMethod = handlingErrorMethod;
+	}
 }
+
