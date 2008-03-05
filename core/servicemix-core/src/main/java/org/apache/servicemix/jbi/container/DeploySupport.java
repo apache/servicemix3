@@ -121,7 +121,11 @@ public abstract class DeploySupport implements InitializingBean {
 
     public String getRepositoryDir() {
         if (repositoryDir == null) {
-            repositoryDir = getHomeDir() + "/.m2/repository";
+            if (System.getProperty("localRepository") != null) {
+                repositoryDir = System.getProperty("localRepository");
+            } else {
+                repositoryDir = getHomeDir() + "/.m2/repository";
+            }
         }
         return repositoryDir;
     }
