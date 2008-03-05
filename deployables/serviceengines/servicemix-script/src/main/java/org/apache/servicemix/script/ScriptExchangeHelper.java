@@ -31,7 +31,7 @@ import javax.jbi.messaging.MessagingException;
  */
 public class ScriptExchangeHelper implements ScriptHelper {
 
-    private ScriptExchangeProcessorEndpoint endpoint;
+    protected ScriptExchangeProcessorEndpoint endpoint;
 
     /*
      * (non-Javadoc)
