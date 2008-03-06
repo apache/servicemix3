@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
 <!--
 
     Licensed to the Apache Software Foundation (ASF) under one or more
@@ -19,29 +17,17 @@
     limitations under the License.
 -->
 
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.servicemix</groupId>
-    <artifactId>parent</artifactId>
+    <artifactId>archetypes</artifactId>
     <version>3.3-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.apache.servicemix</groupId>
-  <artifactId>bindingcomponents</artifactId>
-  <version>3.3-SNAPSHOT</version>
-  <name>ServiceMix :: Binding Components</name>
-  <packaging>pom</packaging>
-
-  <modules>
-	<module>servicemix-cxf-bc</module>
-    <module>servicemix-file</module>
-    <module>servicemix-ftp</module>
-    <module>servicemix-http</module>
-    <module>servicemix-jms</module>
-    <module>servicemix-mail</module>
-    <module>servicemix-truezip</module>
-    <module>servicemix-xmpp</module>
-  </modules>
+  <groupId>org.apache.servicemix.tooling</groupId>
+  <artifactId>servicemix-mail-service-unit</artifactId>
+  <name>ServiceMix :: Archetypes :: MailServiceUnit</name>
 
 </project>
