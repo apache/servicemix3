@@ -35,12 +35,12 @@ public class ByteArrayDataSource implements DataSource, Serializable {
     private static final long serialVersionUID = 1L;
 
     private byte[] data;
-    private String type;
+    private String contentType;
     private String name = "unused";
 
-    public ByteArrayDataSource(byte[] data, String type) {
+    public ByteArrayDataSource(byte[] data, String contentType) {
         this.data = data;
-        this.type = type;
+        this.contentType = contentType;
     }
 
     public InputStream getInputStream() throws IOException {
@@ -55,7 +55,7 @@ public class ByteArrayDataSource implements DataSource, Serializable {
     }
 
     public String getContentType() {
-        return type;
+        return contentType;
     }
 
     public String getName() {
