@@ -18,6 +18,8 @@ package org.apache.servicemix.jbi.framework;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,7 +62,8 @@ import org.apache.servicemix.jbi.util.XmlPersistenceSupport;
 public class AutoDeploymentService extends BaseSystemService implements AutoDeploymentServiceMBean {
 
     private static final Log LOG = LogFactory.getLog(AutoDeploymentService.class);
-    
+        
+    private static String filePrefix = "file:///";
     private EnvironmentContext environmentContext;
     private DeploymentService deploymentService;
     private InstallationService installationService;
@@ -556,8 +559,14 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
      */
     protected static File unpackLocation(File tmpRoot, String location) throws DeploymentException {
         File tmpDir = null;
-        try {
-            File file = new File(location);
+        File file = null;
+        try {   
+            if (location.startsWith(filePrefix)) {
+                URI uri = new URI(location);
+                file = new File(uri);
+            } else {
+                file = new File(location);
+            }
             if (file.isDirectory()) {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Deploying an exploded jar/zip, we will create a temporary jar for it.");
@@ -593,6 +602,8 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             }
         } catch (IOException e) {
             throw new DeploymentException(e);
+        } catch (URISyntaxException ex) {
+            throw new DeploymentException(ex);
         }
         return tmpDir;
     }
