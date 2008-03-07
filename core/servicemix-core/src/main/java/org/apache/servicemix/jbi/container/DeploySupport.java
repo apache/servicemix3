@@ -212,7 +212,13 @@ public abstract class DeploySupport implements InitializingBean {
     }
 
     protected String getFilePrefix() {
-        return isFileUrlFormat() ? "file://" : "";
+        String filePrefix = "file://";
+        String os = System.getProperty("os.name");
+        if (os.startsWith("Windows")) {
+            filePrefix = "file:///";
+        }
+
+        return isFileUrlFormat() ? filePrefix : "";
     }
 
     protected boolean isFileUrlFormat() {
