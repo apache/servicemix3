@@ -46,6 +46,7 @@ echo   su [type]         Creates a SU of the specified type
 echo SU types:         
 echo                     http-consumer, http-provider,
 echo                     jms-consumer, jms-provider,
+echo                     file-poller, file-sender,
 echo                     ftp-poller, ftp-sender,
 echo                     jsr181-annotated, jsr181-wsdl-first,
 echo                     saxon-xquery, saxon-xslt, osworkflow,
