@@ -16,19 +16,32 @@
  */
 package org.apache.servicemix.cxfbc;
 
+import java.util.concurrent.Future;
+
 import javax.jbi.component.ComponentContext;
 import javax.jws.WebService;
+import javax.xml.ws.AsyncHandler;
+import javax.xml.ws.Response;
 
 import org.apache.cxf.calculator.AddNumbersFault;
 import org.apache.cxf.calculator.CalculatorPortType;
+import org.apache.hello_world_soap_http.BadRecordLitFault;
 import org.apache.hello_world_soap_http.Greeter;
+import org.apache.hello_world_soap_http.NoSuchCodeLitFault;
+import org.apache.hello_world_soap_http.types.GreetMeLaterResponse;
+import org.apache.hello_world_soap_http.types.GreetMeResponse;
+import org.apache.hello_world_soap_http.types.GreetMeSometimeResponse;
+import org.apache.hello_world_soap_http.types.SayHiResponse;
+import org.apache.hello_world_soap_http.types.TestDocLitFaultResponse;
+import org.apache.hello_world_soap_http.types.TestNillableResponse;
+
 
 @WebService(serviceName = "SOAPServiceProvider", 
         portName = "SoapPort", 
         endpointInterface = "org.apache.hello_world_soap_http.Greeter", 
         targetNamespace = "http://apache.org/hello_world_soap_http")
 
-public class GreeterImplForProvider {
+public class GreeterImplForProvider implements Greeter {
     private ComponentContext context;
     private CalculatorPortType calculator;
     private Greeter greeter;
@@ -46,13 +59,37 @@ public class GreeterImplForProvider {
                 ret = "oneway";
             } else if ("https test".equals(me)) {
                 ret = ret + securityGreeter.greetMe("ffang");
+            } else if ("concurrency test".equals(me)) {
+                MultiClientThread[] clients = new MultiClientThread[10];
+                for (int i = 0; i < clients.length; i++) {
+                    clients[i] = new MultiClientThread(getCalculator(), i);
+                }
+                
+                for (int i = 0; i < clients.length; i++) {
+                    clients[i].start();
+                }
+                
+                for (int i = 0; i < clients.length; i++) {
+                    clients[i].join();
+                }
+                
+                for (int i = 0; i < clients.length; i++) {
+                    ret += i * 2 + " ";
+                }
             }
                         
         } catch (AddNumbersFault e) {
             //should catch exception here if negative number is passed
             ret = ret + e.getFaultInfo().getMessage();
+        } catch (InterruptedException e) {
+            //
         }
         return "Hello " + me  + " " + ret;
+    }
+
+    public String greetMeLater(long requestType) {
+        // TODO Auto-generated method stub
+        return null;
     }
     
     public ComponentContext getContext() {
@@ -87,5 +124,111 @@ public class GreeterImplForProvider {
         return securityGreeter;
     }
 
+    public Response<GreetMeResponse> greetMeAsync(String requestType) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
+    public Future<?> greetMeAsync(String requestType, AsyncHandler<GreetMeResponse> asyncHandler) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Response<GreetMeLaterResponse> greetMeLaterAsync(long requestType) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Future<?> greetMeLaterAsync(long requestType, AsyncHandler<GreetMeLaterResponse> asyncHandler) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void greetMeOneWay(String requestType) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public String greetMeSometime(String requestType) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Response<GreetMeSometimeResponse> greetMeSometimeAsync(String requestType) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Future<?> greetMeSometimeAsync(String requestType, AsyncHandler<GreetMeSometimeResponse> asyncHandler) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String sayHi() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Response<SayHiResponse> sayHiAsync() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Future<?> sayHiAsync(AsyncHandler<SayHiResponse> asyncHandler) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void testDocLitFault(String faultType) throws BadRecordLitFault, NoSuchCodeLitFault {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public Response<TestDocLitFaultResponse> testDocLitFaultAsync(String faultType) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Future<?> testDocLitFaultAsync(String faultType, AsyncHandler<TestDocLitFaultResponse> asyncHandler) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String testNillable(String nillElem, int intElem) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Response<TestNillableResponse> testNillableAsync(String nillElem, int intElem) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Future<?> testNillableAsync(String nillElem, int intElem, AsyncHandler<TestNillableResponse> asyncHandler) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    class MultiClientThread extends Thread {
+        private CalculatorPortType port;
+        private int index;
+        private int ret;
+        public MultiClientThread(CalculatorPortType port, int i) {
+            this.port = port;
+            this.index = i;
+        }
+        
+        public void run() {
+            try {
+                ret = port.add(index, index);
+            } catch (AddNumbersFault e) {
+                //  
+            }
+        }
+        
+        public int getRet() {
+            return ret;
+        }
+    }
 }
