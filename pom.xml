@@ -627,6 +627,12 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <!-- Java.net -->
+        <repository>
+            <id>java.net</id>
+            <url>http://download.java.net/maven/1</url>
+            <layout>legacy</layout>
+        </repository>
     </repositories>
     <pluginRepositories>
         <!-- Apache releases -->
