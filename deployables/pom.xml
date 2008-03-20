@@ -24,12 +24,12 @@
     <parent>
         <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix</artifactId>
-        <version>3.2.2-SNAPSHOT</version>
+        <version>3.2.2</version>
     </parent>
 
     <groupId>org.apache.servicemix</groupId>
     <artifactId>deployables</artifactId>
-    <version>3.2.2-SNAPSHOT</version>
+    <version>3.2.2</version>
     <name>ServiceMix :: Deployables</name>
     <packaging>pom</packaging>
 
@@ -60,7 +60,7 @@
                     <dependency>
                         <groupId>org.apache.servicemix</groupId>
                         <artifactId>build</artifactId>
-                        <version>3.2.2-SNAPSHOT</version>
+                        <version>3.2.2</version>
                     </dependency>
                 </dependencies>
             </plugin>

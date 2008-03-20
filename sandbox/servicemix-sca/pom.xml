@@ -37,7 +37,7 @@
   <parent>
     <groupId>org.apache.servicemix</groupId>
     <artifactId>serviceengines</artifactId>
-    <version>3.2.2-SNAPSHOT</version>
+    <version>3.2.2</version>
   </parent>
 
   <artifactId>servicemix-sca</artifactId>
