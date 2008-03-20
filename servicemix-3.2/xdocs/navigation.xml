@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project name="activemq" repository="activemq" href="http://activemq.org">
+    <title>ActiveMQ</title>
+    <body>
+        <links />
+        <menu name="Overview">
+            <item name="Home" href="http://servicemix.org/Home" />
+            <item name="Introduction to ESB" href="http://servicemix.org/Introduction+to+ESB" />
+            <item name="News" href="http://servicemix.org/Background+to+ServiceMix" />
+            <item name="FAQ" href="http://servicemix.org/FAQ" />
+            <item name="Download" href="http://servicemix.org/Download" />
+        </menu>
+        <menu name="Community">
+            <item name="Wiki" href="http://docs.codehaus.org/pages/listpages.action?key=SM" />
+            <item name="Mailing Lists" href="http://servicemix.org/Mailing+Lists" />
+            <item name="Contributing" href="http://servicemix.org/Contributing" />
+            <item name="Team" href="http://servicemix.org/Team" />
+        </menu>
+        <menu name="Documentation">
+            <item name="Getting Started" href="http://servicemix.org/Getting+Started" />
+            <item name="Running" href="http://servicemix.org/Running" />
+            <item name="Examples" href="http://servicemix.org/Examples" />
+            <item name="Use Cases" href="http://servicemix.org/Use+Cases" />
+            <item name="Configuration" href="http://servicemix.org/Configuration" />
+            <item name="Xml Reference" href="http://servicemix.org/Xml+Reference" />
+            <item name="Management" href="http://servicemix.org/Management" />
+            <item name="Architecture" href="http://servicemix.org/Architecture" />
+            <item name="Clustering" href="http://servicemix.org/Clustering" />
+            <item name="NMR Flows" href="http" />
+            <item name="Articles" href="http://servicemix.org/Articles" />
+        </menu>
+        <menu name="Reference">
+            <item name="JBI API" href="http://java.sun.com/integration/1.0/docs/sdk/api/index.html" />
+            <item name="JavaDocs" href="http://servicemix.codehaus.org/maven/servicemix-core/apidocs/" />
+            <item name="Glossary" href="http://servicemix.org/Glossary" />
+        </menu>
+        <menu name="Features">
+            <item name="Components" href="http://servicemix.org/Components" />
+            <item name="Routing" href="http://servicemix.org/Routing" />
+            <item name="Transformation" href="http://servicemix.org/Transformation" />
+            <item name="Spring Client Toolkit" href="http://servicemix.org/Spring+Client+Toolkit" />
+            <item name="Client API" href="http://servicemix.org/Client+API" />
+            <item name="POJO Support" href="http://servicemix.org/POJO+support" />
+            <item name="Expressions" href="http://servicemix.org/Expressions" />
+            <item name="Component helper classes" href="http://servicemix.org/Component+helper+classes" />
+            <item name="Ant Tasks" href="http://servicemix.org/Ant+Tasks" />
+            <item name="JMX Console" href="http://servicemix.org/JMX+Console" />
+        </menu>
+        <menu name="Integration">
+            <item name="Spring support" href="http://servicemix.org/Spring+support" />
+            <item name="Geronimo Integration" href="http://servicemix.org/Geronimo+Integration" />
+            <item name="JBoss Integration" href="http://servicemix.org/JBoss+Deployer" />
+            <item name="Tomcat Integration" href="http://servicemix.org/Tomcat+Integration" />
+            <item name="JNDI configuration" href="http://servicemix.org/JNDI+configuration" />
+        </menu>
+        <menu name="ServiceMix Components">
+            <item name="BPEL" href="http://servicemix.org/BPEL" />
+            <item name="Cache" href="http://servicemix.org/Cache" />
+            <item name="Drools" href="http://servicemix.org/Drools" />
+            <item name="Email" href="http://servicemix.org/Email" />
+            <item name="File" href="http://servicemix.org/File" />
+            <item name="FTP" href="http://servicemix.org/FTP" />
+            <item name="Groovy" href="http://servicemix.org/Groovy" />
+            <item name="HTTP" href="http://servicemix.org/HTTP" />
+            <item name="Jabber" href="http://servicemix.org/Jabber" />
+            <item name="JAX WS" href="http://servicemix.org/JAX+WS" />
+            <item name="JCA" href="http://servicemix.org/JCA" />
+            <item name="JMS" href="http://servicemix.org/JMS" />
+            <item name="Quartz" href="http://servicemix.org/Quartz" />
+            <item name="Reflection" href="http://servicemix.org/Reflection" />
+            <item name="RSS" href="http://servicemix.org/RSS" />
+            <item name="SAAJ" href="http://servicemix.org/SAAJ" />
+            <item name="Scripting" href="http://servicemix.org/Scripting" />
+            <item name="ServiceMix" href="http://servicemix.org/ServiceMix" />
+            <item name="Validation" href="http://servicemix.org/Validation" />
+            <item name="XFire" href="http://servicemix.org/XFire" />
+            <item name="XPath Router" href="http://servicemix.org/XPath+Router" />
+            <item name="XSLT" href="http://servicemix.org/XSLT" />
+            <item name="XSQL" href="http://servicemix.org/XSQL" />
+            <item name="VFS" href="http://servicemix.org/VFS" />
+            <item name="WSIF" href="http://servicemix.org/WSIF" />
+        </menu>
+        <menu name="Tooling">
+            <item name="Eclipse plugin" href="http://servicemix.org/Eclipse+plugin" />
+            <item name="JBoss Deployer" href="http://servicemix.org/JBoss+Deployer" />
+            <item name="WAR Deployment" href="http://servicemix.org/WAR+Deployment" />
+            <item name="Maven JBI plugin" href="http://servicemix.org/Maven+JBI+plugin" />
+            <item name="Maven SAR plugin" href="http://servicemix.org/Maven+SAR+plugin" />
+        </menu>
+        <menu name="Other JBI Software">
+            <item name="Celtix" href="http://forge.objectweb.org/projects/celtix/" />
+            <item name="PXE BPEL Engine" href="http://pxe.fivesight.com/wiki/display/PXE/Home" />
+        </menu>
+        <menu name="Related Projects">
+            <item name="ActiveMQ" href="http://activemq.codehaus.org/" />
+            <item name="Jencks" href="http://jencks.org/" />
+            <item name="Lingo" href="http://lingo.codehaus.org/" />
+            <item name="ActiveSOAP" href="http://activesoap.codehaus.org/" />
+            <item name="Spring" href="http://www.springframework.org/" />
+            <item name="Geronimo" href="http://geronimo.apache.org/" />
+        </menu>
+        <menu name="Support">
+            <item name="Roadmap" href="http://jira.logicblaze.com/browse/SM?report=com.atlassian.jira.plugin.system.project:roadmap-panel" />
+            <item name="Change log" href="http://jira.logicblaze.com/browse/SM?report=com.atlassian.jira.plugin.system.project:changelog-panel" />
+        </menu>
+        <menu name="Developers">
+            <item name="Roadmap" href="http://servicemix.org/Roadmap" />
+            <item name="Ideas" href="http://servicemix.org/Ideas" />
+            <item name="Becoming a committer" href="http://servicemix.org/Becoming+a+committer" />
+            <item name="Release Guide" href="http://servicemix.org/Release+Guide" />
+            <item name="XSD" href="http://servicemix.codehaus.org/maven/servicemix.xsd.html" />
+        </menu>
+    </body>
+</project>

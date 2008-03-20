@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+	     xmlns:lb="http://servicemix.org/demos/loan-broker">
+	                     
+  <classpath>
+    <location>.</location>
+  </classpath>
+                         
+	<sm:serviceunit id="jbi">
+		<sm:activationSpecs>
+		
+		  <!-- In/out binding -->
+		  <sm:activationSpec componentName="loanBrokerJmsBinding"
+		                     destinationService="lb:loan-broker">
+		    <sm:component>
+		      <bean class="org.apache.servicemix.components.jms.JmsServiceComponent">
+		        <property name="template">
+		          <bean class="org.springframework.jms.core.JmsTemplate">
+		            <property name="connectionFactory" ref="jmsFactory" />
+					<property name="defaultDestinationName" value="demo.org.servicemix.source" />
+					<property name="pubSubDomain" value="false" />
+		          </bean>
+		        </property>
+		      </bean>
+		    </sm:component>
+		  </sm:activationSpec>
+		
+		  <!-- Loan broker component -->
+		  <sm:activationSpec componentName="loanBroker" 
+                             service="lb:loan-broker">
+		    <sm:component>
+		      <bean class="loanbroker.LoanBroker" />
+		    </sm:component>
+		  </sm:activationSpec>
+		  
+		  <!-- Credit Agency -->
+		  <sm:activationSpec componentName="creditAgency"
+		                     service="lb:credit-agency">
+		    <sm:component>
+		      <bean class="loanbroker.CreditAgency" />
+		    </sm:component>
+		  </sm:activationSpec>
+		  
+		  <!-- Lender Gateway -->
+		  <sm:activationSpec componentName="lenderGateway"
+		                     service="lb:lender-gateway">
+		    <sm:component>
+		      <bean class="loanbroker.LenderGateway" />
+		    </sm:component>
+		  </sm:activationSpec>
+		  
+		  <!-- Banks -->
+		  <sm:activationSpec componentName="bank1" service="lb:bank1">
+		    <sm:component><bean class="loanbroker.Bank" /></sm:component>
+		  </sm:activationSpec>
+		  <sm:activationSpec componentName="bank2" service="lb:bank2">
+		    <sm:component><bean class="loanbroker.Bank" /></sm:component>
+		  </sm:activationSpec>
+		  <sm:activationSpec componentName="bank3" service="lb:bank3">
+		    <sm:component><bean class="loanbroker.Bank" /></sm:component>
+		  </sm:activationSpec>
+		  <sm:activationSpec componentName="bank4" service="lb:bank4">
+		    <sm:component><bean class="loanbroker.Bank" /></sm:component>
+		  </sm:activationSpec>
+		  <sm:activationSpec componentName="bank5" service="lb:bank5">
+		    <sm:component><bean class="loanbroker.Bank" /></sm:component>
+		  </sm:activationSpec>
+		  
+		</sm:activationSpecs>
+	</sm:serviceunit>                
+	                       
+	<bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+		<property name="connectionFactory">
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
+				<property name="brokerURL" value="tcp://localhost:61616" />
+			</bean>
+		</property>
+	</bean>
+
+</beans>

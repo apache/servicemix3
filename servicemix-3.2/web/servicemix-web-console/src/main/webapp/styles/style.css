@@ -1,0 +1,269 @@
+/*
+ * This CSS is licensed under the Creative Commons 2.5
+ * http://creativecommons.org/licenses/by/2.5/
+ *
+ * Css originally by mejobloggs  Design by Aran @ stuio7designs.com
+ * Please email me if you use this, as I would love to see how it is being used,
+ * also you can join my linkshare to help you with your google ranking
+ */
+
+body {
+  font-family: trebuchet ms, verdana, arial, tahoma;
+  font-size: 90%;
+  color: #888;
+  background-color: white;
+  line-height: 180%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Set the page width */
+#wrapper-menu-top, #header, #wrapper-content, #wrapper-footer {
+  width: 85%;
+  margin: 0 auto;
+  text-align: left;
+}
+
+#wrapper-menu-top {
+  background: white url( '../images/bg02-white-left.png' ) no-repeat left top;
+}
+
+#menu-top {
+  background: transparent url( '../images/bg02-white-right.png' ) no-repeat right top;
+  overflow: hidden; /* no idea why this works, but it fixes a FF problem */
+  height: 3em;
+}
+
+#menu-top ul {
+  margin: 0 20px;
+  padding: 1em 0 0 0;
+  list-style: none;
+  font-size: 85%;
+  float: left;
+}
+
+#menu-top li {
+  display: inline;
+  float: left;
+}
+
+#menu-top a {
+  float: left;
+  background: url( ../images/menuleft.png ) no-repeat left top;
+  margin: 0;
+  padding: 0 0 0 4px;
+  text-decoration: none;
+  line-height: 1.5em;
+}
+
+#menu-top a span {
+  background: transparent url( ../images/menuright.png ) no-repeat right top;
+  padding: 5px 15px 4px 6px;
+  color: #5b8fbe;
+  display: block;
+  float: left;
+  cursor: pointer; /* IE doesnt display the hand when you roll over the link for some reason. This fixes it */
+}
+
+#menu-top a:hover {
+  background-position: 0% -42px;
+}
+
+#menu-top a:hover span {
+  background-position: 100% -42px;
+}
+
+#menu-left {
+  overflow: hidden; /* no idea why this works, but it fixes a FF problem */
+  padding-top: 5px;
+}
+
+#menu-left ul {
+  margin: 0 20px;
+  padding: 1em 0 0 0;
+  list-style: none;
+  font-size: 85%;
+  float: left;
+}
+
+#menu-left li {
+  display: inline;
+  float: left;
+}
+
+#menu-left a {
+  float: left;
+  background: url( ../images/menuleft.png ) no-repeat left top;
+  margin: 0;
+  padding: 0 0 0 4px;
+  text-decoration: none;
+  line-height: 1.5em;
+}
+
+#menu-left a span {
+  background: transparent url( ../images/menuright.png ) no-repeat right top;
+  padding: 5px 15px 4px 6px;
+  color: #5b8fbe;
+  display: block;
+  float: left;
+  cursor: pointer; /* IE doesnt display the hand when you roll over the link for some reason. This fixes it */
+  width: 110px;
+}
+
+#menu-left a:hover {
+  background-position: 0% -42px;
+}
+
+#menu-left a:hover span {
+  background-position: 100% -42px;
+}
+
+#wrapper-header {
+  background: transparent url( '../images/bg.png' ) top center repeat-x;
+}
+
+#header {
+  background: transparent url( '../images/banner_mountains.jpg' ) no-repeat center top;
+}
+
+#wrapper-header2 {
+  background: transparent url( '../images/bg02-blue-left.png' ) top left no-repeat;
+}
+
+#wrapper-header3 {
+  background: transparent url( '../images/bg02-blue-right.png' ) top right no-repeat;
+  padding: 5px;
+}
+
+#wrapper-header4 {
+  margin: 0px 20px;
+  padding: 0px 0px 0px 250px;
+  font-size: 200%;
+  min-height: 6em;
+  background: white url( '../images/servicemix.jpg' ) center left no-repeat;
+  text-align: center;
+}
+#wrapper-header4 div {
+  vertical-align: bottom;
+}
+#wrapper-header4 div div {
+  padding: 89px 10px 10px 10px;
+}
+
+#header h1 {
+  margin: 0 20px;
+  padding: 0;
+  height: 192px;
+  line-height: 3em;
+  color: #ccc;
+  font-size: 130%;
+}
+
+#wrapper-content {
+  background: white url( '../images/bg02-white-left.png' ) no-repeat left top;
+  min-height: 214px;
+}
+
+* html #wrapper-content {
+  height: 1%;
+}
+
+#content {
+  background: transparent url( '../images/bg02-white-right.png' ) no-repeat right top;
+  padding: 5px 25px 5px 240px;
+  display: block;
+  text-align: left;
+  min-height: 214px;
+}
+
+#wrapper-menu-page {
+  float: left;
+  width: 180px;
+  margin: 20px 30px 3em 2em;
+  background: transparent url( '../images/menu.png' ) no-repeat;
+  text-align: center;
+  line-height: 140%;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", arial, sans-serif;
+}
+
+* html #wrapper-menu-page {
+  margin-right: 15px;
+}
+
+#menu-page {
+  padding-top: 5px;
+}
+
+#menu-page ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 90%;
+}
+
+#menu-page h3 {
+  font-size: 75%;
+  text-transform: uppercase;
+  margin: 1em 0 0.3em 0;
+  color: #5b8fbe;
+  font-weight: normal;
+  letter-spacing: 0.15em;
+}
+
+#menu-page a:link, #menu-page a:visited {
+  color: #888;
+}
+
+#menu-page a:hover {
+  color: #5b8fbe;
+}
+
+#wrapper-footer {
+  margin-top: 1em;
+  text-align: center;
+}
+
+#footer {
+  margin: 0 20px;
+  background-color: #e5f0fc;
+  border: 1px solid #ccc;
+  border-bottom: 0;
+  clear: both;
+}
+
+h2 {
+  font-size: 110%;
+}
+
+h3 {
+  font-size: 100%;
+}
+
+a:link, a:visited {
+  color: #5b8fbe;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #666;
+  text-decoration: none;
+}
+
+
+table.align {
+  padding: 0px;
+  border: none;
+}
+
+td.align {
+  padding: 0px;
+  border: none;
+}
+
+#error {
+  line-height: 100%;
+  border-style: solid; 
+  border-width: 1px;
+  padding: 1em;
+  overflow: scroll;
+}

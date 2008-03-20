@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project name="jms-binding" default="run" basedir=".">
+
+  <property name="build.dir" value="build"/>
+  <property name="comp.build.dir" value="${build.dir}/components"/>
+  <property name="client.build.dir" value="${build.dir}/client"/>
+  
+  <property name="src.dir" value="src"/>
+  <property name="comp.src.dir" value="${src.dir}/components"/>
+  <property name="client.src.dir" value="${src.dir}/client"/>
+  <property name="su.src.dir" value="${src.dir}/su"/>
+  <property name="sa.src.dir" value="${src.dir}/sa"/>
+
+  <target name="clean">
+    <delete dir="target" quiet="true"/>
+    <delete dir="${build.dir}" quiet="true"/>
+  </target>
+
+  <target name="init">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${comp.build.dir}"/>
+    <mkdir dir="${client.build.dir}"/>
+
+    <get src="http://repo1.maven.org/maven2/org/logicblaze/lingo/lingo/1.3/lingo-1.3.jar"
+         dest="../../lib/optional/lingo-1.3.jar" 
+         usetimestamp="true" />
+    <get src="http://repo1.maven.org/maven2/commons-pool/commons-pool/1.2/commons-pool-1.2.jar"
+         dest="../../lib/optional/commons-pool-1.2.jar" 
+         usetimestamp="true" />
+    <get src="http://repo1.maven.org/maven2/commons-collections/commons-collections/3.1/commons-collections-3.1.jar"
+         dest="../../lib/optional/commons-collections-3.1.jar" 
+         usetimestamp="true" />
+    <get src="http://repo1.maven.org/maven2/org/springframework/spring-jms/2.0.6/spring-jms-2.0.6.jar"
+         dest="../../lib/optional/spring-jms-2.0.6.jar" 
+         usetimestamp="true" />
+    <copy todir="../../lib/optional">
+      <fileset dir="../../extras" includes="servicemix-components*.jar"/>
+    </copy>
+
+    <path id="javac.classpath">
+      <pathelement path="${comp.build.dir}"/>
+      <pathelement path="${client.build.dir}"/>
+      <pathelement path="../../conf"/>
+      <fileset dir="../../lib">
+        <include name="**/*.jar"/>
+      </fileset>
+      <fileset dir="../..">
+        <include name="*.jar"/>
+      </fileset>
+    </path>
+  </target>
+
+  <target name="build-components" depends="init" description="Build components">
+    <javac srcdir="${comp.src.dir}" destdir="${comp.build.dir}" debug="on" source="1.4" target="1.4">
+      <classpath refid="javac.classpath"/>
+    </javac>
+  </target>
+  
+  <target name="build-su" depends="build-components" description="Build the service unit">
+    <zip destfile="${build.dir}/loanbroker-su.zip">
+      <fileset dir="${comp.build.dir}"/>
+      <fileset dir="${su.src.dir}"/>
+    </zip>
+  </target>
+
+  <target name="build-sa" depends="build-su" description="Build the service assembly">
+    <zip destfile="${build.dir}/loanbroker-sa.zip">
+      <fileset dir="${build.dir}" includes="loanbroker-su.zip"/>
+      <fileset dir="${sa.src.dir}"/>
+    </zip>
+  </target>
+  
+  <target name="setup" depends="build-sa" description="Setup servicemix">
+    <mkdir dir="install"/>
+    <mkdir dir="deploy"/>
+    <copy todir="install">
+      <fileset dir="../../hotdeploy" includes="*shared*"/>
+      <fileset dir="../../hotdeploy" includes="*lwcontainer*"/>
+    </copy>
+    <copy file="${build.dir}/loanbroker-sa.zip" todir="deploy"/>
+  </target>
+
+  <target name="build-client" depends="init" description="Build components">
+    <javac srcdir="${client.src.dir}" destdir="${client.build.dir}" debug="on" source="1.4" target="1.4">
+      <classpath refid="javac.classpath"/>
+    </javac>
+  </target>
+  
+  <target name="run" depends="build-client" description="Runs the example client">
+    <echo>Running exsample client</echo>
+    <java classname="JMSClient" fork="yes" maxmemory="100M">
+      <classpath refid="javac.classpath"/>
+    </java>
+  </target>
+	
+  <target name="run-loop" depends="build-client" description="Runs the example client">
+    <echo>Running exsample client</echo>
+    <java classname="JMSClient" fork="yes" maxmemory="100M">
+      <classpath refid="javac.classpath"/>
+      <arg value="100000"/>
+    </java>
+  </target>
+	
+</project>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+   
+    http://www.apache.org/licenses/LICENSE-2.0
+   
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+                             http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+         version="2.4">
+
+    <description>
+      Apache ServiceMix Console
+    </description>
+    <display-name>Apache ServiceMix Console</display-name>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/applicationContext.xml /WEB-INF/servicemix.xml</param-value>
+    </context-param>
+    <context-param>
+        <param-name>contextClass</param-name>
+        <param-value>org.apache.xbean.spring.context.XmlWebApplicationContext</param-value>
+    </context-param>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--              Configuration of the SiteMesh Filter.                                                                 -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <filter>
+        <filter-name>sitemesh</filter-name>
+        <filter-class>com.opensymphony.module.sitemesh.filter.PageFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>sitemesh</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--              Expose Spring POJOs to JSP                   .                                                             -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <filter>
+        <filter-name>spring</filter-name>
+        <filter-class>org.apache.servicemix.web.filter.ApplicationContextFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>spring</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--              ServiceMix servlets                                                                                                -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--              Spring listener.                   -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+		<listener>
+		  <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+		</listener>
+    <listener>
+      <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+		</listener>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--         Configuration of the Spring MVC dispatcher              -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+		<servlet>
+			<servlet-name>dispatcher</servlet-name>
+			<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+			<load-on-startup>2</load-on-startup>
+		</servlet>
+		
+		<servlet>
+		  <servlet-name>servicemix-http</servlet-name>
+		  <servlet-class>org.apache.servicemix.web.http.HttpManagedServlet</servlet-class>
+		</servlet>
+
+    <servlet-mapping>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>*.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>*.svg</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>servicemix-http</servlet-name>
+        <url-pattern>/jbi/*</url-pattern>
+    </servlet-mapping>
+
+	  <welcome-file-list>
+			<welcome-file>index.html</welcome-file>
+			<welcome-file>index.jsp</welcome-file>
+		</welcome-file-list>
+		
+		<error-page>
+		  <exception-type>java.lang.Exception</exception-type>
+		  <location>/error.jsp</location>
+		</error-page>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--         Factor out common headers in JSP pages            -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	  <jsp-config>
+      <taglib>
+        <taglib-uri>
+          http://www.opensymphony.com/sitemesh/decorator
+        </taglib-uri>
+        <taglib-location>
+          /WEB-INF/sitemesh-decorator.tld
+        </taglib-location>
+      </taglib>
+      <taglib>
+        <taglib-uri>
+          http://www.opensymphony.com/sitemesh/page
+        </taglib-uri>
+        <taglib-location>
+          /WEB-INF/sitemesh-page.tld
+        </taglib-location>
+      </taglib>
+	    <jsp-property-group>
+	       <url-pattern>*.jsp</url-pattern>
+	       <include-prelude>/WEB-INF/jspf/headertags.jspf</include-prelude>
+	     </jsp-property-group>
+   </jsp-config>
+</web-app>

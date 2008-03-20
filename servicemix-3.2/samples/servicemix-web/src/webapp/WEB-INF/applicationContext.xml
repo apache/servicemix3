@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+    
+    http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+       xmlns:http="http://servicemix.apache.org/http/1.0"
+	     xmlns:my="http://servicemix.apache.org/demo/"
+       xmlns:foo="http://servicemix.apache.org/demo/">
+
+  <!-- the JBI container -->
+  <sm:container id="jbi"
+      rootDir="#rootDir"
+      useMBeanServer="true"
+		  createMBeanServer="false"
+      MBeanServer="#jmxServer" 
+      installationDirPath="#installDir"
+      deploymentDirPath="#deployDir"
+		  monitorInstallationDirectory="true" 
+      transactionManager="#transactionManager"
+      depends-on="broker">
+
+    <sm:activationSpecs>
+
+      <!--  an example HTTP binding for use by the SpringBindingServlet  -->
+      <!-- START SNIPPET: http -->
+      <sm:activationSpec componentName="servicemix-http" service="foo:httpBinding" destinationService="foo:echo">
+        <sm:component>
+          <http:component>
+            <http:configuration managed="true" />
+            <http:endpoints>
+              <http:endpoint service="foo:httpBinding"
+                             endpoint="endpoint"
+                             targetService="foo:echo" 
+                             role="consumer"
+                             locationURI="http://localhost/exampleUri/"
+                             defaultMep="http://www.w3.org/2004/08/wsdl/in-out" />
+            </http:endpoints>
+          </http:component>
+        </sm:component>
+      </sm:activationSpec>
+      <!-- END SNIPPET: http -->
+
+      <!--  a simple Echo service to test InOut message exchanges using HTTP-->
+      <sm:activationSpec componentName="echo" service="foo:echo" >
+        <sm:component>
+          <bean class="org.apache.servicemix.components.HelloWorldComponent">
+            <property name="property" value="name"/>
+          </bean>
+        </sm:component>
+      </sm:activationSpec>
+
+      <!-- lets kick off a timer to send messages on an input destination topic -->
+      <sm:activationSpec componentName="timer" service="my:timer" destinationService="my:inputSender">
+        <sm:component>
+          <bean class="org.apache.servicemix.components.quartz.QuartzComponent">
+            <property name="triggers">
+              <map>
+              <!--
+                <entry>
+                  <key>
+                    <bean class="org.quartz.SimpleTrigger">
+                      <property name="repeatInterval" value="10000"/>
+                      <property name="repeatCount" value="-1"/>
+                    </bean>
+                  </key>
+                  <bean class="org.quartz.JobDetail">
+                    <property name="name" value="My Example Job"/>
+                    <property name="group" value="ServiceMix"/>
+                  </bean>
+                </entry>
+                -->
+              </map>
+            </property>
+          </bean>
+        </sm:component>
+      </sm:activationSpec>
+      
+      <sm:activationSpec componentName="inputSender" service="my:inputSender">
+        <sm:component>
+          <bean class="org.apache.servicemix.components.jms.JmsSenderComponent">
+            <property name="template">
+              <bean class="org.springframework.jms.core.JmsTemplate">
+                <property name="connectionFactory">
+                  <ref local="jmsFactory"/>
+                </property>
+                <property name="defaultDestinationName" value="demo.org.apache.servicemix.source"/>
+                <property name="pubSubDomain" value="true"/>
+              </bean>
+            </property>
+          </bean>
+        </sm:component>
+      </sm:activationSpec>
+
+
+      <!-- lets subscribe and republish on a different JMS destination - i.e. make a JMS bridge -->
+      <sm:activationSpec componentName="inputReceiver" service="my:inputReceiver" destinationService="my:outputSender">
+        <sm:component>
+          <bean class="org.apache.servicemix.components.jms.JmsInUsingJCABinding">
+            <property name="jcaContainer" ref="jencks"/>
+            <property name="activationSpec">
+              <bean class="org.apache.activemq.ra.ActiveMQActivationSpec">
+                <property name="destination" value="demo.org.apache.servicemix.source"/>
+                <property name="destinationType" value="javax.jms.Topic"/>
+              </bean>
+            </property>
+          </bean>
+        </sm:component>
+      </sm:activationSpec>
+
+
+      <sm:activationSpec componentName="outputSender" service="my:outputSender">
+        <sm:component>
+          <bean class="org.apache.servicemix.components.jms.JmsSenderComponent">
+            <property name="template">
+              <bean class="org.springframework.jms.core.JmsTemplate">
+                <property name="connectionFactory" ref="jmsFactory"/>
+                <property name="defaultDestinationName" value="demo.org.apache.servicemix.result"/>
+                <property name="pubSubDomain" value="true"/>
+              </bean>
+            </property>
+          </bean>
+        </sm:component>
+      </sm:activationSpec>
+
+
+      <!-- just to demonstrate that we are sending messages, lets trace the messages we receive -->
+      <sm:activationSpec componentName="jmsTrace" service="my:jmsTrace" destinationService="my:trace">
+        <sm:component>
+          <bean class="org.apache.servicemix.components.jms.JmsInUsingJCABinding">
+            <property name="jcaContainer" ref="jencks"/>
+            <property name="activationSpec">
+              <bean class="org.apache.activemq.ra.ActiveMQActivationSpec">
+                <property name="destination" value="demo.org.apache.servicemix.result"/>
+                <property name="destinationType" value="javax.jms.Topic"/>
+              </bean>
+            </property>
+          </bean>
+        </sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec componentName="trace" service="my:trace">
+        <sm:component>
+          <bean class="org.apache.servicemix.components.util.TraceComponent"/>
+        </sm:component>
+      </sm:activationSpec>
+    </sm:activationSpecs>
+  </sm:container>
+
+
+  <!-- the JCA container -->
+  <bean id="jencks" class="org.jencks.JCAContainer" singleton="true">
+
+    <!-- lets use the default configuration of work manager and transaction manager-->
+    <property name="bootstrapContext">
+      <bean class="org.jencks.factory.BootstrapContextFactoryBean">
+        <property name="threadPoolSize" value="25"/>
+        <property name="transactionManager" ref="transactionManager"/>
+      </bean>
+    </property>
+
+    <!-- the JCA Resource Adapter -->
+    <property name="resourceAdapter">
+      <bean id="activeMQResourceAdapter" class="org.apache.activemq.ra.ActiveMQResourceAdapter" singleton="true">
+        <property name="serverUrl" value="tcp://localhost:61636"/>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="transactionManager" class="org.jencks.factory.TransactionManagerFactoryBean"/>
+
+  <bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+    <property name="connectionFactory">
+      <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+        <constructor-arg value="tcp://localhost:61636"/>
+      </bean>
+    </property>
+  </bean>
+
+  <!-- Directories relative to web app -->
+  <bean id="servletContext" class="org.springframework.web.context.support.ServletContextFactoryBean" />
+  <bean id="rootDir" class="org.springframework.web.util.WebUtils" factory-method="getRealPath">
+    <constructor-arg ref="servletContext" />
+    <constructor-arg value="/wdir" />
+  </bean>
+  <bean id="installDir" class="org.springframework.web.util.WebUtils" factory-method="getRealPath">
+    <constructor-arg ref="servletContext" />
+    <constructor-arg value="/install" />
+  </bean>
+  <bean id="deployDir" class="org.springframework.web.util.WebUtils" factory-method="getRealPath">
+    <constructor-arg ref="servletContext" />
+    <constructor-arg value="/deploy" />
+  </bean>
+
+</beans>

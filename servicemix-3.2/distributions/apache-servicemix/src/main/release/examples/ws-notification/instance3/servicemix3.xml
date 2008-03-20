@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
+       xmlns:amq="http://activemq.org/config/1.0"
+       xmlns:test="http://servicemix.org/test"
+       xmlns:my="http://servicemix.apache.org/demo"
+       xmlns:wsn="http://servicemix.apache.org/wsn/1.0">
+
+  <bean id="jndi" class="org.apache.xbean.spring.jndi.SpringInitialContextFactory"
+        factory-method="makeInitialContext" singleton="true" />
+  <!-- We need to include the WS-Notification component dependencies in the classpath -->
+  <classpath>
+    <location>../lib/servicemix-wsn2005-@{servicemix-version}.jar</location>
+    <location>../lib/servicemix-common-@{servicemix-version}.jar</location>
+    <location>../lib/jaxb-api-2.0.jar</location>
+    <location>../lib/jaxb-impl-2.0.1.jar</location>
+    <location>../lib/xfire-jsr181-api-1.0-M1.jar</location>
+  </classpath>
+
+  <!-- the JBI container -->
+  <sm:container id="jbi" 
+                name="wsn3"
+                embedded="true" 
+                MBeanServer="#jmxServer"
+                createJmxConnector="false">
+
+    <!-- Use a SEDA flow + JMS flow for clustering. -->
+    <sm:flows>
+      <sm:sedaFlow />
+      <sm:jmsFlow connectionFactory="#connectionFactory" />
+    </sm:flows>
+
+    <sm:activationSpecs>
+
+      <!-- WS-Notification component -->
+      <sm:activationSpec componentName="servicemix-wsn2005">
+        <sm:component>
+          <wsn:component connectionFactory="#connectionFactory" />
+          <!-- Using plain spring syntax -->
+          <!--
+          <bean class="org.apache.servicemix.wsn.spring.WSNSpringComponent">
+            <property name="connectionFactory" ref="connectionFactory" />
+          </bean>
+          -->
+        </sm:component>
+      </sm:activationSpec>
+
+      <!-- Publisher proxy to the NotificationBroker -->
+      <sm:activationSpec componentName="publisher-proxy" service="test:publisher" endpoint="endpoint">
+        <sm:component>
+          <wsn:publisher topic="myTopic" />
+          <!-- Using plain spring syntax -->
+          <!--
+          <bean class="org.apache.servicemix.wsn.spring.PublisherComponent">
+            <property name="topic" value="myTopic" />
+          </bean>
+          -->
+        </sm:component>
+      </sm:activationSpec>
+
+      <!-- Quartz component which sends message to the publisher -->
+      <sm:activationSpec componentName="quartz-publisher" destinationService="test:publisher" destinationEndpoint="endpoint">
+        <sm:component>
+          <bean class="org.apache.servicemix.components.quartz.QuartzComponent">
+            <property name="triggers">
+              <map>
+                <entry>
+                  <key>
+                    <bean class="org.quartz.SimpleTrigger">
+                      <property name="repeatInterval" value="2000"/>
+                      <property name="repeatCount" value="20"/>
+                    </bean>
+                  </key>
+                    <bean class="org.quartz.JobDetail">
+                      <property name="name" value="My Example Job"/>
+                      <property name="group" value="ServiceMix"/>
+                    </bean>
+                </entry>
+              </map>
+            </property>
+          </bean>
+        </sm:component>
+      </sm:activationSpec>
+
+    </sm:activationSpecs>
+  </sm:container>
+
+  <!-- JMX server and connector -->
+  <sm:rmiRegistry id="rmiRegistry" port="1093" />
+  <sm:jmxServer id="jmxServer" locateExistingServerIfPossible="true" />
+  <sm:jmxConnector objectName="connector:name=rmi"
+                   serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:1093/jmxrmi"
+                   threaded="true"
+                   daemon="true" 
+                   depends-on="rmiRegistry jmxServer" />
+
+  <!-- JMS connection factory -->
+  <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+    <!-- We use an embedded non persistent broker with multicast discovery (peer:// protocol) -->
+    <property name="brokerURL" value="peer://localhost/wsnbroker3?broker.persistent=false" />
+  </bean>
+
+</beans>

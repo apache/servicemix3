@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+	   xmlns:foo="http://servicemix.org/cheese/">
+
+	<!-- the JBI container -->
+	<container id="jbi" embedded="true" xmlns="http://servicemix.apache.org/config/1.0">
+		<activationSpecs>
+
+			<activationSpec componentName="sender" 
+							destinationUri="service:http://servicemix.org/cheese//transformer">
+				<component>
+					<SenderComponent xmlns="java://org.apache.servicemix.tck"/>
+				</component>
+			</activationSpec>
+
+			<activationSpec componentName="transformer" 
+							service="foo:transformer"
+							destinationUri="endpoint:http://servicemix.org/cheese//receiver/receiver">
+				<component>
+					<MockServiceComponent xmlns="java://org.apache.servicemix.components.util">
+						<property xmlns="" name="responseProperties">
+							<map>
+								<entry key="foo" value="hello"/>
+								<entry key="someList">
+									<list>
+										<value type="java.lang.Integer">1</value>
+										<value type="java.lang.Integer">2</value>
+										<value type="java.lang.Integer">3</value>
+									</list>
+								</entry>
+							</map>
+						</property>
+						<property xmlns="" name="responseXml">
+							<value><![CDATA[ <hello/> ]]></value>
+						</property>
+					</MockServiceComponent>
+				</component>
+			</activationSpec>
+
+			<activationSpec componentName="receiver" service="foo:receiver" endpoint="receiver">
+				<component>
+					<bean xmlns="" class="org.apache.servicemix.tck.ReceiverComponent" />
+				</component>
+			</activationSpec>
+
+		</activationSpecs>
+	</container>
+
+</beans>

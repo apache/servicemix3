@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+	     xmlns:my="http://servicemix.apache.org/demo/">
+
+  <bean id="jndi" class="org.apache.xbean.spring.jndi.SpringInitialContextFactory" 
+        factory-method="makeInitialContext" singleton="true" />
+
+	<!-- the JBI container -->
+	<sm:container id="jbi" useMBeanServer="true" createMBeanServer="true">
+
+		<sm:activationSpecs>
+
+      <!-- START SNIPPET: rss -->
+      <!-- lets poll for updates to news sites -->
+      <sm:activationSpec componentName="rss" service="my:rss" destinationService="my:trace">
+      	<sm:component>
+      		<bean class="org.apache.servicemix.components.rss.RssPollingComponent">
+        <property name="outputType" value="rss_2.0"/>
+        <property name="period" value="5000"/>
+        <property name="lastPolledDate">
+          <value>2005/08/10</value>
+        </property>
+
+
+        <property name="urlStrings">
+          <list>
+            <value>http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml</value>
+            <value>http://rss.cnn.com/rss/cnn_topstories.rss</value>
+          </list>
+        </property>
+      		</bean>
+      	</sm:component>
+      </sm:activationSpec>
+      <!-- END SNIPPET: rss -->
+
+      <!-- Route the event to a trace component that just outputs the event to the console -->
+			<sm:activationSpec componentName="trace" service="my:trace">
+				<sm:component>
+					<bean class="org.apache.servicemix.components.util.StreamWriterComponent" />
+				</sm:component>
+			</sm:activationSpec>
+    </sm:activationSpecs>
+  </sm:container>
+
+
+  <!-- Custom editor for the Date variable lastPolledDate so we can see immediate output -->
+  <bean id="customEditorConfigurer"
+        class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+    <property name="customEditors">
+      <map>
+
+        <entry key="java.util.Date">
+          <bean class="org.springframework.beans.propertyeditors.CustomDateEditor">
+            <constructor-arg index="0">
+              <bean class="java.text.SimpleDateFormat">
+                <constructor-arg>
+                  <value>yyyy/MM/dd</value>
+                </constructor-arg>
+              </bean>
+            </constructor-arg>
+            <constructor-arg index="1">
+              <value>true</value>
+            </constructor-arg>
+          </bean>
+        </entry>
+
+      </map>
+    </property>
+  </bean>
+
+
+</beans>

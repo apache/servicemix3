@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+    
+-->
+
+<project
+    xmlns:j="jelly:core"
+    xmlns:util="jelly:util"
+    xmlns:x="jelly:xml"
+    xmlns:ant="jelly:ant"
+    xmlns:doc="doc"
+    xmlns:maven="jelly:maven">
+    
+    <preGoal name="java:compile">
+    </preGoal>
+    
+    <goal name="default">
+        <attainGoal name="dist:izpack-jar-installer"/>
+    </goal>
+    
+    <goal name="dist:izpack-jar-installer"
+          description="Generate a IzPack platform independent distributiion installer jar.">
+        <attainGoal name="validateBinAssembly"/>
+        <attainGoal name="izpack:configure"/>
+        <attainGoal name="izpack:jar-installer"/>
+    </goal>
+    
+    <!-- Validates if there is -->
+    <goal name="validateBinAssembly" description="validates if distribution has been created. If not then it will throw an exception.">
+        <util:file var="assemblyDir" name="${maven.dist.bin.assembly.dir}" />
+        <j:if test="${!assemblyDir.exists()}">
+          <fail>Unable to find the distribution build. Please execute first the default or dist:build-bin in servicemix-assembly module.</fail>
+        </j:if>
+    </goal>	
+</project>

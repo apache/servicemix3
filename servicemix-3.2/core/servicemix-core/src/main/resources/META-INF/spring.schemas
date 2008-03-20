@@ -1,0 +1,5 @@
+
+http\://incubator.apache.org/servicemix/schema/core/servicemix-core.xsd = servicemix.xsd
+
+# TODO remove the old value which is pointless
+http\://servicemix.apache.org/config/1.0=servicemix.xsd

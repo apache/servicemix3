@@ -1,0 +1,59 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+                      Apache ServiceMix 3.2.1
+                      =======================
+
+See the README file for more general informations about ServiceMix.
+
+
+ServiceMix URLs:
+----------------
+Home Page:     http://servicemix.apache.org/
+Downloads:     http://servicemix.apache.org/download.html
+Documentation: http://servicemix.apache.org/documentation.html
+Mailing Lists: http://servicemix.apache.org/mailing-lists.html
+Source Code:   http://servicemix.apache.org/source.html
+Bug Tracking:  http://issues.apache.org/activemq/browse/SM
+
+Changes:
+--------
+
+** Bug
+    * [SM-822] - java.lang.IllegalStateException: component is not owner, with jmsflow and jcaflow
+    * [SM-915] - FTP poller stalls with threads waiting on PlainSocketImpl.socketAccept()
+    * [SM-1051] - servicemix.bat contains unix style environment variables, instead of all windows style environment variables
+    * [SM-1119] - Encoding problem in text returned by HTTP-SU
+    * [SM-1124] - Message content silently dropped when conversion fails
+    * [SM-1131] - Redeployment fails for Geronimo integration
+    * [SM-1132] - No clean shutdown of ServiceMix
+    * [SM-1143] - Both wsdl-first-sa projects have the same artifactId
+    * [SM-1144] - Error in writeDetails method when I need return fault messages
+    * [SM-1145] - NoClassDefFound (org.springframework.aop.support.AopUtils) when deploying the Camel example
+    * [SM-1149] - the resource path shouldn't include any "target" to avoid being filtered when build the src kit
+    * [SM-1151] - LwContainer test has the version number hard coded inside
+
+** Improvement
+    * [SM-180] - Update JavaDoc link on in website template
+    * [SM-810] - Create single complete ServiceMix Shared Library
+
+
+** Task
+    * [SM-1146] - Change servicemix repo url due to the svn relation out of the incubator area
+
+

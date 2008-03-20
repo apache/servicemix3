@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<deployment:components
+    xmlns:deployment="http://servicemix.apache.org/deployment">
+    <component name="servicemix-lwcontainer"
+        description="ServiceMix Lightweight Container"
+        type="service-engine">
+        <deployment:assets>
+            <deployment:connection name="defaultDestination"
+                description="Default destination" />
+            <deployment:artifact name="servicemix.xml"
+                description="ServiceMix Definition" extension="xml" />
+            <deployment:engine>
+                <packaging:ServiceAssemblyPackagingEngine
+                    xmlns:packaging="java://org.apache.servicemix.packaging.engine">
+                    <injectors>
+                        <packaging:ManifestInjector />
+                        <packaging:ServiceAssemblyDescriptorInjector />
+                        <packaging:ServiceUnitZipInjector>
+                            <serviceUnitInjectors>
+                                <packaging:ManifestInjector />
+                                <packaging:ArtifactInjector />
+                            </serviceUnitInjectors>
+                        </packaging:ServiceUnitZipInjector>
+                    </injectors>
+                </packaging:ServiceAssemblyPackagingEngine>
+            </deployment:engine>
+        </deployment:assets>
+    </component>
+</deployment:components>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<j:whitespace xmlns:j="jelly:core" 
+              xmlns:util="jelly:util" 
+              xmlns:x="jelly:xml"
+	      xmlns:ant="jelly:ant" 
+	      xmlns="dummy" 
+	      trim="true">
+<project>
+
+	<pomVersion>3</pomVersion>
+	<name>${projectName}</name>
+	<id>${projectName}</id>
+	<currentVersion>1.0</currentVersion>
+	<package>org.apache.servicemix.demo</package>
+	<shortDescription>
+          A new JBI component
+	</shortDescription>
+	<description>
+          A new JBI component
+	</description>
+
+	<dependencies>
+	<dependency>
+	  <groupId>incubator-servicemix</groupId>
+	  <artifactId>servicemix</artifactId>
+	  <version>%pom.currentVersion%</version>
+	  <type>jar</type>
+	  <url>http://www.servicemix.org</url>
+        </dependency>
+        <dependency>
+          <groupId>servicemix</groupId>
+          <artifactId>jaxp</artifactId>
+          <version>1.3</version>
+        </dependency>
+	<dependency>
+	  <groupId>mx4j</groupId>
+	  <artifactId>mx4j-jmx</artifactId>
+	  <version>2.1.1</version>
+        </dependency>
+        <dependency>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+          <version>1.0.3</version>
+          <url>http://jakarta.apache.org/commons/logging/</url>
+        </dependency>
+        <dependency>
+          <groupId>servicemix</groupId>
+          <artifactId>servicemix-client</artifactId>
+          <version>1.0</version>
+          <properties>
+            <jbi.bundle>true</jbi.bundle>
+            </properties>
+          </dependency>
+	</dependencies>
+	
+	<build>
+	  <sourceDirectory>src/main/java</sourceDirectory>
+          <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
+	</build>
+	
+</project>
+</j:whitespace>

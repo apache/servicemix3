@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
+	   xmlns:my="http://servicemix.org/demo/">
+
+
+  <!-- the JBI container -->
+  <sm:container id="jbi" embedded="true">
+    <sm:activationSpecs>
+
+      <sm:activationSpec componentName="echo" service="my:receiver">
+        <sm:component><bean class="org.apache.servicemix.components.util.EchoComponent"/></sm:component>
+      </sm:activationSpec>
+    </sm:activationSpecs>
+  </sm:container>
+
+
+
+<!-- client side proxy-->
+  <bean id="client" class="org.logicblaze.lingo.jms.JmsProxyFactoryBean">
+    <property name="serviceInterface" value="org.apache.servicemix.client.ServiceMixClient"/>
+    <property name="connectionFactory" ref="jmsFactory"/>
+    <property name="destination" ref="exampleDestination"/>
+  </bean>
+
+
+ <!-- the server side inside ServiceMix Container-->
+  <bean id="server" class="org.logicblaze.lingo.jms.JmsServiceExporter">
+    <property name="service" ref="serverClientSideImpl"/>
+    <property name="serviceInterface" value="org.apache.servicemix.client.ServiceMixClient"/>
+    <property name="connectionFactory" ref="jmsFactory"/>
+    <property name="destination" ref="exampleDestination"/>
+  </bean>
+ 
+ 
+ <!-- JMS ConnectionFactory to use -->
+  <bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+    <property name="brokerURL" value="vm://localhost?broker.persistent=false&amp;broker.useJmx=false"/>
+  </bean>
+
+  <bean id="exampleDestination" class="org.apache.activemq.command.ActiveMQQueue">
+    <constructor-arg index="0" value="test.org.logicblaze.lingo.example"/>
+  </bean>
+
+
+
+
+  <bean id="serverClientSideImpl" class="org.apache.servicemix.client.DefaultServiceMixClient">
+    <constructor-arg ref="jbi"/>
+    <constructor-arg>
+      <!-- lets hardwire this client to talk to instances of a service by default -->
+      <sm:activationSpec destinationService="my:receiver"/>
+    </constructor-arg>
+  </bean>
+  
+
+</beans>

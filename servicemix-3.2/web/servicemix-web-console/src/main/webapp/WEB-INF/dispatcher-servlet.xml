@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+   
+    http://www.apache.org/licenses/LICENSE-2.0
+   
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+  
+  <bean id="handlerMapping" class="org.apache.servicemix.web.handler.BindingBeanNameUrlHandlerMapping" />
+
+  <bean name="/installComponent.action" class="org.apache.servicemix.web.controller.InstallComponent" scope="request">
+    <constructor-arg ref="adminCommandsServiceMBean" />
+    <property name="commandClass" value="org.apache.servicemix.web.controller.FileUploadBean" />
+    <property name="formView" value="redirect:/components.jsp" />
+    <property name="successView" value="redirect:/components.jsp" />
+  </bean>
+  <bean name="/startComponent.action" class="org.apache.servicemix.web.controller.ComponentLifeCycle" scope="request">
+    <constructor-arg ref="adminCommandsServiceMBean" />
+    <constructor-arg value="start" />
+    <property name="view" value="redirect:/components.jsp" />
+  </bean>
+  <bean name="/stopComponent.action" class="org.apache.servicemix.web.controller.ComponentLifeCycle" scope="request">
+    <constructor-arg ref="adminCommandsServiceMBean" />
+    <constructor-arg value="stop" />
+    <property name="view" value="redirect:/components.jsp" />
+  </bean>
+  <bean name="/shutdownComponent.action" class="org.apache.servicemix.web.controller.ComponentLifeCycle" scope="request">
+    <constructor-arg ref="adminCommandsServiceMBean" />
+    <constructor-arg value="shutdown" />
+    <property name="view" value="redirect:/components.jsp" />
+  </bean>
+  <bean name="/uninstallComponent.action" class="org.apache.servicemix.web.controller.ComponentLifeCycle" scope="request">
+    <constructor-arg ref="adminCommandsServiceMBean" />
+    <constructor-arg value="uninstall" />
+    <property name="view" value="redirect:/components.jsp" />
+  </bean>
+
+  <bean name="/installSharedLibrary.action" class="org.apache.servicemix.web.controller.InstallSharedLibrary" scope="request">
+    <constructor-arg ref="adminCommandsServiceMBean" />
+    <property name="commandClass" value="org.apache.servicemix.web.controller.FileUploadBean" />
+    <property name="formView" value="redirect:/shared-libraries.jsp" />
+    <property name="successView" value="redirect:/shared-libraries.jsp" />
+  </bean>
+  <bean name="/uninstallSharedLibrary.action" class="org.apache.servicemix.web.controller.SharedLibraryLifeCycle" scope="request">
+    <constructor-arg ref="adminCommandsServiceMBean" />
+    <constructor-arg value="uninstall" />
+    <property name="view" value="redirect:/shared-libraries.jsp" />
+  </bean>
+
+  <bean name="/deployServiceAssembly.action" class="org.apache.servicemix.web.controller.DeployServiceAssembly" scope="request">
+    <constructor-arg ref="adminCommandsServiceMBean" />
+    <property name="commandClass" value="org.apache.servicemix.web.controller.FileUploadBean" />
+    <property name="formView" value="redirect:/service-assemblies.jsp" />
+    <property name="successView" value="redirect:/service-assemblies.jsp" />
+  </bean>
+  <bean name="/startServiceAssembly.action" class="org.apache.servicemix.web.controller.ServiceAssemblyLifeCycle" scope="request">
+    <constructor-arg ref="adminCommandsServiceMBean" />
+    <constructor-arg value="start" />
+    <property name="view" value="redirect:/service-assemblies.jsp" />
+  </bean>
+  <bean name="/stopServiceAssembly.action" class="org.apache.servicemix.web.controller.ServiceAssemblyLifeCycle" scope="request">
+    <constructor-arg ref="adminCommandsServiceMBean" />
+    <constructor-arg value="stop" />
+    <property name="view" value="redirect:/service-assemblies.jsp" />
+  </bean>
+  <bean name="/shutdownServiceAssembly.action" class="org.apache.servicemix.web.controller.ServiceAssemblyLifeCycle" scope="request">
+    <constructor-arg ref="adminCommandsServiceMBean" />
+    <constructor-arg value="shutdown" />
+    <property name="view" value="redirect:/service-assemblies.jsp" />
+  </bean>
+  <bean name="/undeployServiceAssembly.action" class="org.apache.servicemix.web.controller.ServiceAssemblyLifeCycle" scope="request">
+    <constructor-arg ref="adminCommandsServiceMBean" />
+    <constructor-arg value="undeploy" />
+    <property name="view" value="redirect:/service-assemblies.jsp" />
+  </bean>
+  <bean name="/startAuditor.action" class="org.apache.servicemix.web.controller.ServiceLifeCycle" scope="request">
+    <constructor-arg ref="jdbcAuditorMBean" />
+    <constructor-arg value="start" />
+    <property name="view" value="redirect:/audit.jsp" />
+  </bean>
+  <bean name="/stopAuditor.action" class="org.apache.servicemix.web.controller.ServiceLifeCycle" scope="request">
+    <constructor-arg ref="jdbcAuditorMBean" />
+    <constructor-arg value="stop" />
+    <property name="view" value="redirect:/audit.jsp" />
+  </bean>
+  
+  <bean name="/dot-flow.svg" class="org.apache.servicemix.web.controller.DotViewController" scope="session">
+    <constructor-arg ref="dotViewServiceMBean" />
+    <property name="type" value="flow" />
+    <property name="view" ref="dotView" />
+  </bean>
+  
+  <bean name="/dot-endpoints.svg" class="org.apache.servicemix.web.controller.DotViewController" scope="request">
+    <constructor-arg ref="dotViewServiceMBean" />
+    <property name="type" value="endpoints" />
+    <property name="view" ref="dotView" />
+  </bean>
+  
+  <!--
+    - This bean resolves specific types of exception to corresponding error views.
+    - The default behaviour of DispatcherServlet is to propagate all exceptions to the
+    - servlet container: This will happen here with all other types of exception.
+  -->
+  <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+    <property name="exceptionMappings">
+      <props><!-- <prop key="org.springframework.dao.DataAccessException">dataAccessFailure</prop> --></props>
+    </property>
+  </bean>
+  
+  <bean id="dotView" class="org.apache.servicemix.web.view.DotView">
+    <property name="dotFormat" value="svg" />
+  </bean>
+
+</beans>

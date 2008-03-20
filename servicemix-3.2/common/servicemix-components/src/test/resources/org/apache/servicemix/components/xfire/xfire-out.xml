@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
+	   xmlns:xfire="http://xfire.components.servicemix.org">
+
+  <!-- the JBI container -->
+  <sm:container id="jbi" embedded="true">
+    <sm:activationSpecs>
+      <sm:activationSpec componentName="sender" endpoint="sender" service="xfire:sender" destinationService="xfire:OneWayService">
+        <sm:component><bean class="org.apache.servicemix.tck.SenderComponent"/></sm:component>
+      </sm:activationSpec>
+
+      <!-- START SNIPPET: xfire -->
+      <sm:activationSpec componentName="binding" service="xfire:OneWayService">
+        <sm:component><bean class="org.apache.servicemix.components.xfire.XFireOutBinding">
+          <property name="xfire" ref="xfire"/>
+        </bean></sm:component>
+      </sm:activationSpec>
+      <!-- END SNIPPET: xfire -->
+    </sm:activationSpecs>
+  </sm:container>
+
+  <!-- The Service Bean -->
+  <bean id="xfireReceiverService" class="org.apache.servicemix.components.xfire.OneWayService" singleton="true"/>
+
+  <bean id="client" class="org.apache.servicemix.client.DefaultServiceMixClient">
+    <constructor-arg ref="jbi"/>
+  </bean>
+  
+  <bean id="messageServiceFactory" 
+        class="org.codehaus.xfire.service.binding.ObjectServiceFactory"
+        singleton="true">
+    <constructor-arg index="0">
+        <ref bean="xfire.transportManager"/>
+    </constructor-arg>
+    <constructor-arg index="1">
+        <ref bean="xfire.aegisBindingProvider"/>
+    </constructor-arg>
+    <property name="voidOneWay" value="true"/>
+    <property name="style" value="message"/>
+  </bean>
+  
+  <bean name="OneWayService" class="org.codehaus.xfire.spring.ServiceBean">
+    <property name="serviceBean" ref="xfireReceiverService"/>
+    <property name="serviceFactory" ref="messageServiceFactory"/>
+    <property name="xfire" ref="xfire"/>
+  </bean>
+
+</beans>
+
+
+

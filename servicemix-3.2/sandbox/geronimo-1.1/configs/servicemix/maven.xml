@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<!-- $Rev: 356022 $ $Date: 2005-12-11 12:58:34 -0800 (dim., 11 déc. 2005) $ -->
+
+<project default="default"
+         xmlns:j="jelly:core">
+
+  <goal name="default">
+    <attainGoal name="car:install"/>
+  </goal>
+
+  <goal name="nightly" prereqs="clean, car:install, car:deploy"/>
+  
+  <postGoal name="car:package">
+    <copy todir="${basedir}/target/repository/${pom.groupId}/${pom.artifactId}/${pom.currentVersion}/${pom.artifactId}-${pom.currentVersion}.car">
+      <fileset dir="${basedir}/src/resources" />
+    </copy>
+  </postGoal>
+    
+  <goal name="deploy">
+    <j:if test="${geronimo.home == null}">
+      <echo>Set the geronimo.home property</echo>
+    </j:if>
+    <j:if test="${geronimo.home != null}">
+      <j:forEach var="artifact" items="${pom.artifacts}">
+        <j:set var="dependency" value="${artifact.dependency}"/>
+        <j:if test="${dependency.getProperty('geronimo.include') == 'true'}">
+            <j:set var="groupId" value="${dependency.groupId}"/>
+            <copy todir="${geronimo.home}/repository/${groupId.replace('.','/')}/${dependency.artifactId}/${dependency.version}" file="${artifact.path}"/>
+        </j:if>
+      </j:forEach>
+      <java jar="${geronimo.home}/bin/deployer.jar" fork="true">
+        <arg value="deploy"/>
+        <arg value="${basedir}/target/plan/plan.xml"/>
+      </java>
+    </j:if>
+  </goal>
+    
+</project>

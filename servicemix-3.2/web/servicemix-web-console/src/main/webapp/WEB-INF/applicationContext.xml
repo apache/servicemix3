@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+   
+    http://www.apache.org/licenses/LICENSE-2.0
+   
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+  
+  <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+  </bean>
+  
+  <bean id="jmxProxy" abstract="true" class="org.springframework.jmx.access.MBeanProxyFactoryBean">
+    <property name="server" ref="server"/>
+    <property name="useStrictCasing" value="false" />
+    <property name="connectOnStartup" value="false" />
+  </bean>
+  
+  <bean id="jdbcAuditorMBean" parent="jmxProxy">
+    <property name="objectName" value="${jdbc-auditor-mbean-name}" />
+    <property name="proxyInterface" value="org.apache.servicemix.jbi.audit.AuditorMBean" />
+  </bean>
+  
+  <bean id="adminCommandsServiceMBean" parent="jmxProxy">
+    <property name="objectName" value="${admin-commands-service-mbean-name}" />
+    <property name="proxyInterface" value="org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean" />
+  </bean>
+  
+  <bean id="registryMBean" parent="jmxProxy">
+    <property name="objectName" value="${registry-mbean-service-name}" />
+    <property name="proxyInterface" value="org.apache.servicemix.jbi.framework.RegistryMBean" />
+  </bean>
+  
+  <bean id="dotViewServiceMBean" parent="jmxProxy">
+    <property name="objectName" value="${dot-view-mbean-service-name}" />
+    <property name="proxyInterface" value="org.apache.servicemix.jbi.view.DotViewServiceMBean" />
+  </bean>
+  
+  <bean id="proxyManager" class="org.apache.servicemix.web.model.ProxyManager">
+    <constructor-arg ref="server" />
+  </bean>
+  
+  <bean id="registry" class="org.apache.servicemix.web.model.Registry">
+    <constructor-arg ref="proxyManager" />
+    <constructor-arg ref="registryMBean" />
+  </bean>
+  
+  <bean id="auditor" class="org.apache.servicemix.web.Auditor" scope="prototype">
+    <constructor-arg ref="jdbcAuditorMBean" />
+  </bean>
+  <bean id="components" factory-bean="registry" factory-method="getComponents" scope="prototype" />
+  <bean id="endpoints" factory-bean="registry" factory-method="getEndpoints" scope="prototype" />
+  <bean id="serviceAssemblies" factory-bean="registry" factory-method="getServiceAssemblies" scope="prototype" />
+  <bean id="serviceUnits" factory-bean="registry" factory-method="getServiceUnits" scope="prototype" />
+  <bean id="sharedLibraries" factory-bean="registry" factory-method="getSharedLibraries" scope="prototype" />
+  <bean id="component" class="org.apache.servicemix.web.ComponentFactoryBean">
+    <property name="registry" ref="registry" />
+  </bean>
+  <bean id="endpoint" class="org.apache.servicemix.web.EndpointFactoryBean">
+    <property name="registry" ref="registry" />
+  </bean>
+  <bean id="serviceUnit" class="org.apache.servicemix.web.ServiceUnitFactoryBean">
+    <property name="registry" ref="registry" />
+  </bean>
+  <bean id="serviceAssembly" class="org.apache.servicemix.web.ServiceAssemblyFactoryBean">
+    <property name="registry" ref="registry" />
+  </bean>
+  <bean id="sharedLibrary" class="org.apache.servicemix.web.SharedLibraryFactoryBean">
+    <property name="registry" ref="registry" />
+  </bean>
+  
+</beans>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<beans xmlns="http://xbean.org/schemas/spring/1.0"
+	xmlns:spring="http://xbean.org/schemas/spring/1.0"
+	xmlns:sm="http://servicemix.apache.org/config/1.0"
+	xmlns:pxe="uri:fivesight.com/examples/AsyncProcessJBI">
+
+	<!-- the JBI container -->
+	<sm:container spring:id="jbi" spring:depends-on="jndi"
+		rootDir="./wdir"
+		useMBeanServer="true"
+		createMBeanServer="true"
+		installationDirPath="./install"
+		deploymentDirPath="./deploy"
+		monitorInstallationDirectory="true"
+		dumpStats="true"
+		statsInterval="10"
+		transactionManager="#transactionManager">
+
+		<sm:activationSpecs>
+
+			<!-- Subscribe to a JMS destination -->
+			<sm:activationSpec componentName="myComponent"
+				service="pxe:JmsService" destinationService="pxe:ProcessSVC"
+				destinationEndpoint="ProcessPORT" destinationOperation="Run">
+				<sm:component>
+					<bean
+						class="org.apache.servicemix.components.jms.JmsServiceComponent"
+						depends-on="broker">
+						<property name="template">
+							<bean
+								class="org.springframework.jms.core.JmsTemplate">
+								<property name="connectionFactory">
+									<ref local="jmsFactory" />
+								</property>
+								<property name="defaultDestinationName"
+									value="demo.org.servicemix.source" />
+								<property name="pubSubDomain"
+									value="true" />
+							</bean>
+						</property>
+					</bean>
+				</sm:component>
+			</sm:activationSpec>
+		</sm:activationSpecs>
+	</sm:container>
+
+
+	<!-- JNDI configurration -->
+	<bean id="jndi"
+		class="org.apache.xbean.spring.jndi.SpringInitialContextFactory"
+		factory-method="makeInitialContext" singleton="true">
+		<property name="entries">
+			<map>
+				<entry key="jdbc/pxe__pm">
+					<bean class="org.hsqldb.jdbc.jdbcDataSource">
+						<property name="database"
+							value="jdbc:hsqldb:mem:pxe" />
+						<property name="user" value="sa" />
+						<property name="password" value="" />
+					</bean>
+				</entry>
+
+				<entry key="javax.transaction.TransactionManager" value-ref="transactionManager" />
+			</map>
+		</property>
+	</bean>
+
+	<!-- message broker -->
+	<bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean">
+		<property name="config" value="classpath:activemq.xml" />
+	</bean>
+
+	<bean id="transactionContextManager" class="org.jencks.factory.TransactionContextManagerFactoryBean"/>
+	<bean id="transactionManager" class="org.jencks.factory.GeronimoTransactionManagerFactoryBean" />
+
+	<bean id="jmsFactory"
+		class="org.apache.activemq.pool.PooledConnectionFactory">
+		<property name="connectionFactory">
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
+				<property name="brokerURL">
+					<value>tcp://localhost:61616</value>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+</beans>

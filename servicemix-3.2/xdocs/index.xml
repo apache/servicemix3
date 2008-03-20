@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<document url="http://servicemix.apache.org/index.xml">
+    <properties>
+    <title>ServiceMix</title>
+    </properties>
+    <body>
+        <h1 style="color: #333333;">Welcome to ServiceMix</h1>
+        <div id="downloadbox" style="float: right; margin: 0 10px 20px 20px; padding: 5px; border: 1px solid #999; background-color: #eee;">
+            <h5 style="color: #000; margin: 0; border-bottom: 1px solid #aaaaaa; font-size: smaller; padding: 0;">Get ServiceMix 3.0-SNAPSHOT</h5>
+            <p style="margin-top: 1em; margin-bottom: 0;">
+                <a href="http://servicemix.org/Download">
+                <img valign="top"
+                src="http://maven.apache.org/images/folder-open.gif" border="0" alt="" title="download" />Download</a>
+                ServiceMix 3.0-SNAPSHOT
+            </p>
+            <ul style="margin-top: 0; margin-bottom: 1em; list-style-type: disc;">
+                <li style="font-size: smaller;"><a href="http://servicemix.org/Getting+Started">Getting Started</a></li>
+                <li style="font-size: smaller;"><a href="http://servicemix.org/Configuration">Configuration</a></li>          
+                <li style="font-size: smaller;"><a href="http://servicemix.org/Running">Running</a></li>          
+                <li style="font-size: smaller;"><a href="http://servicemix.org/FAQ">FAQ</a></li>                         
+            </ul>
+        </div>
+        <p>
+        Apache ServiceMix is an open source distributed Enterprise Service Bus (ESB) and SOA toolkit built from the ground up on the
+        semantics and APIs of the Java Business Integration (JBI) specification 
+        <a href="http://www.jcp.org/en/jsr/detail?id=208">JSR
+        208</a> and released under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache license</a>.
+        </p>
+
+        <p>
+        ServiceMix is lightweight and easily embeddable, has integrated <a href="http://servicemix.org/Spring+support">Spring support</a> 
+        and can be run at the edge of the network (inside a client or server), as a standalone ESB provider or as a service within another
+        ESB. You can use ServiceMix in Java SE or a Java EE application server.
+        </p>
+
+        <p>
+        ServiceMix uses <a href="http://www.activemq.org/">ActiveMQ</a> to provide remoting, clustering, reliability
+        and distributed failover.
+        </p>
+
+        <p>
+        ServiceMix is completely integrated into <a href="http://servicemix.org/Geronimo+Integration">Apache Geronimo</a>, which allows
+        you to deploy JBI components and services directly into Geronimo.  ServiceMix is being JBI certified as part of the Geronimo project.
+        </p>
+
+        <p>
+        Other J2EE application servers ServiceMix has been integrated with
+        include <a href="http://servicemix.org/JBoss+Deployer">JBoss</a> with more to follow.
+        </p>
+
+        <p>
+        The <a href="http://servicemix.org/What+is+JBI">aim of JBI</a> is to allow integration components and services to be integrated 
+        in a vendor independent way, allowing users and vendors to plug and play.
+        </p>
+
+
+        <h2>News</h2>
+        <p>
+        <h3>Wednesday, January 25, 2006</h3>
+        <h4><a href="http://docs.codehaus.org/display/SM/2006/01/25/ServiceMix+at+JavaWorld">ServiceMix at JavaWorld</a></h4>
+        Jeff Hanson has written a good article on ServiceMix as an enterprise service bus at JavaWorld
+        </p>
+
+        <p>
+        <h3>Tuesday, January 3, 2006</h3>
+        <h4><a href="http://docs.codehaus.org/display/SM/2006/01/03/Servicemix+3.0-SNAPSHOT">ServiceMix-3.0-SNAPSHOT</a></h4>
+        ServiceMix version is now 3.0-SNAPSHOT.  Packages have been renamed to org.apache.servicemix.  
+        Nightly snapshots of the distribution can be downloaded from: 
+        <br />
+        <br />
+        <a href="http://dist.codehaus.org/org.apache.servicemix/distributions/">http://dist.codehaus.org/org.apache.servicemix/distributions/</a>.
+        </p>
+
+        <p>
+        <h3>Monday, January 23, 2006</h3>
+        <h4><a href="http://www.itarchitect.co.uk/articles/display.asp?id=222">Awesome ServiceMix Article</a></h4>
+        This article gives a nice overview of JBI and ServiceMix
+        </p>
+
+        <p>
+        <h3>Monday, December 12, 2005</h3>
+        <h4><a href="http://docs.codehaus.org/display/SM/2005/12/12/Subversion+has+moved+to+Apache"></a>Subversion has moved to Apache</h4>
+        We have now moved the <a href="http://servicemix.org/Source">Source</a> of ServiceMix to Apache. You can surf and
+        checkout the latest code from here:
+        <br />
+        <br />
+        <a href="https://svn.apache.org/repos/asf/incubator/servicemix/">https://svn.apache.org/repos/asf/incubator/servicemix/</a>
+        Also we now have a set of Apache based <a href="http://servicemix.org/Mailing+Lists">Mailing Lists</a>
+        </p>
+
+        <p>
+        <h3>Wednesday, November 23, 2005</h3>
+        <h4><a href="http://docs.codehaus.org/display/SM/2005/11/23/ServiceMix+discussion+forum+open">ServiceMix discussion forum open</a></h4>
+        There is a new <a href="http://forums.logicblaze.com/forums/show/3.page">discussion
+        forum</a> now open to dicusss all things ServiceMix, ESB or JBI.
+        </p>
+
+        <p>
+        <h3>Tuesday, November 15, 2005</h3>
+        <h4><a href="http://docs.codehaus.org/display/SM/2005/11/15/ServiceMix+2.0.2+Release">ServiceMix 2.0.2 Release</a></h4>
+        The ServiceMix team is pleased to announce the <a href="http://servicemix.org/ServiceMix+2.0+Release">ServiceMix 2.0.2 Release</a>.
+        This release provides a few bug fixes.
+        </p>
+
+        <p>
+        <h3>Monday, November 7, 2005</h3>
+        <h4><a href="http://docs.codehaus.org/display/SM/2005/11/07/ServiceMix+2.0+Released+with+improved+JBI%2C+publish+subscribe+routing+and+better+support+for+XBean+and+JAX+WS">
+        ServiceMix 2.0 Released with improved JBI, publish subscribe routing and better support for XBean and JAX WS</a></h4>
+        We are pleased to announce the <a href="http://servicemix.org/ServiceMix+2.0+Release">ServiceMix 2.0 Release</a>. 
+        New features include...
+        <ul type="disc">
+        <li>Improved JBI support including both interface based routing as well as service based routing together with improved WSDL parsing</li>
+        <li>Support for <a href="http://servicemix.org/Publish+Subscribe+Routing">Publish Subscribe Routing</a></li> 
+        <li>Improved <a href="http://servicemix.org/JAX+WS">JAX WS support</a></li>
+        <li>Migration to <a href="http://xbean.org/">XBean</a> as the XML configuration mechanism which works with any Spring release and allows us to mix 
+            and match ServiceMix configuration with other XML configuration mechanisms like ActiveMQ and Jencks</li>
+        <li>Migration to backport.util.concurrent to make it easier to move direct to a pure Java 5 solution</li>
+        <li>A new Loan Broker example from the <a href="http://www.eaipatterns.com/ComposedMessagingWS.html">EIP Patterns Book</a></li>
+        <li>A new simpler POJO based deployment model</li>
+        <li>Build reorganised to make ServiceMix more modular</li>
+        <li>A new ChainedComponent which implements simple pipelines of components easily</li>
+        </ul>
+        </p>
+
+        <p>
+        <h3>Wednesday, October 26, 2005</h3>
+        <h4><a href="http://docs.codehaus.org/display/SM/2005/10/26/ServiceMix+1.1+Released+with+JAX+WS+support%2C+publish+subscribe+routing%2C+WS+Notification+and+improved+RSS+support">
+        ServiceMix 1.1 Released with JAX WS support, publish subscribe routing, WS Notification and improved RSS support</a></h4>
+        We're proud to announce the ServiceMix 1.1 Release
+
+        New in this release
+        <ul type="disc">
+        <li><a href="http://servicemix.org/JAX+WS">JAX WS</a> support</li>
+        <li><a href="http://servicemix.org/Publish+Subscribe+Routing">Publish Subscribe Routing</a> for 1-many message dispatching</li>
+        <li>a new <a href="http://servicemix.org/RSS">RSS</a> outbound component as well as inbound so you can generate RSS feeds from message flows</li>
+        <li>new JMS flow for reliable asynchronous message pipelines</li>
+        <li><a href="http://servicemix.org/WS+Notification">WS Notification</a> support into and out of JBI</li>
+        </ul>
+
+        In addition a number of bug fixes and performance enhancements were made.
+
+        For more information please see the <a href="http://servicemix.org/ServiceMix+1.1+Release">Release Notes</a>
+        </p>
+
+        <p>
+        <h3>Tuesday, November 8, 2005</h3>
+        <h4><a href="http://docs.codehaus.org/display/SM/2005/11/08/Improved+getting+started+documentation+available">Improved getting started documentation available</a></h4>
+        We're continually trying to improve our documentation; here's a bunch
+        of new documents and guides to help you get started with ServiceMix
+
+        <ul type="disc">
+        <li><a href="http://servicemix.org/Getting+Started">Getting Started</a></li>
+        <li><a href="http://servicemix.org/Spring+Client+Toolkit">Spring Client Toolkit</a></li>
+        <li><a href="http://servicemix.org/JMX+Console">JMX Console</a></li>
+        <li><a href="http://servicemix.org/Use+Cases">Use Cases</a></li>
+        <li><a href="http://servicemix.org/Tomcat+Integration">Tomcat Integration</a></li>
+        </ul>
+        </p>
+
+        <p>
+        <h3>Tuesday, September 13, 2005</h3>
+        <h4><a href="http://docs.codehaus.org/display/SM/2005/09/13/The+ServiceMix+team+is+proud+to+support+the+SOA+Tooling+Project">
+        The ServiceMix team is proud to support the SOA Tooling Project</a></h4>
+        <p>
+        As well as our <a href="http://mail-archives.apache.org/mod_mbox/incubator-general/200508.mbox/%3c245FBCC4-1C5B-4085-8F4D-C46EA22EFF1D@mac.com%3e">support</a> and contributions to both
+        <a href="http://celtix.objectweb.org" rel="nofollow">Celtix</a> and Apache Synapse, we're
+        happy to announce our support for the Eclipse <a href="http://www.eclipse.org/proposals/stp/">SOA Tooling Project</a> to provide
+        tooling for ESB and JBI. Our <a href="http://servicemix.org/Team" title="Team">Team</a> is looking forward to working with the
+        other <a href="http://www.eclipse.org/proposals/stp/">supporters</a> to make some great
+        Eclipse tooling. 
+        </p>
+
+        <p>
+        BTW if you've not seen it yet the current <a href="http://www.eclipse.org/webtools/index.html">WebTools project</a>
+        provides good JSP, web, XML, XSD, WSDL support and <a href="http://www.eclipse.org/birt/">BIRT</a> provides good
+        reporting.
+        </p>
+        </p>
+
+    </body>
+</document>

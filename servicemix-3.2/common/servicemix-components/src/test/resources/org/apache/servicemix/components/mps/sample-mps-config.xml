@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<mps>
+
+	 <property-set name="hello">
+	     
+	     <!-- set a static string value -->
+	     <property name="my-superdooper.property">
+	         <static-value><![CDATA[wishAusMadeItTotheFinals]]></static-value>
+	     </property>
+	 </property-set>
+	 
+	 
+	 <property-set name="propertySetOne">
+	     
+	     <!-- set a static string value -->
+	     <property name="property.1">
+	         <static-value><![CDATA[foobarAndCheese]]></static-value>
+	     </property>
+	     
+	     <!--
+	        xpath and a default string
+	     -->
+	     <property name="property.2">
+	         <xpath-expression>
+		 	      <![CDATA[/sample/@id]]>
+		 	 </xpath-expression>
+		 	 <static-value><![CDATA[sampleIdNotFound]]></static-value>
+	     </property>
+
+		<!-- 
+		   an xpath that doesn't work
+		 -->	     
+	     <property name="prop.xpath.or.keep.existing">
+	        <xpath-expression>
+		 	    <![CDATA[/someexpath/statement/that/wont/match]]>
+		 	</xpath-expression>
+		 	<existing-property/>
+	     </property>
+	     
+	     <property name="new.prop.name">
+		 	<existing-property name="other.property"/>
+	     </property>
+	     
+	     <property name="property.3">
+		 	<existing-property name="other.set.property"/>
+	     </property>
+	     	     
+	 </property-set>
+	 
+
+
+</mps>

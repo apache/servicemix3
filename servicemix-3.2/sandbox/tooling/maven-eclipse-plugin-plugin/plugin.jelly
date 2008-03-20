@@ -1,0 +1,57 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns:ant="jelly:ant" xmlns:jelly="jelly:core">	
+  <goal name="eclipseplugin:generateManifest">
+  <jelly:set var="includedLibs" value=""/>
+  <jelly:set var="referencedPlugins" value=""/>
+  <jelly:set var="eclipseVersion" value="${pom.currentVersion}"/>  
+  <jelly:set var="eclipseVersion" value="${eclipseVersion.replaceAll('-SNAPSHOT','')}"/>    
+  <jelly:forEach var="lib" items="${pom.artifacts}">   			
+  	<jelly:set var="dep" value="${lib.dependency}"/>   
+   	<jelly:if test="${dep.getProperty('eclipse.required.bundle')!='true'}">
+	  <jelly:set var="includedLibs" value="${includedLibs}target/${lib.file.name},&#10; "/>
+	  <ant:copy
+		   file="${pom.getDependencyPath(lib.dependency.getId())}"
+		   todir="${basedir}/target" />   				
+   	</jelly:if>	
+   	<jelly:if test="${dep.getProperty('eclipse.required.bundle')=='true'}">
+      <jelly:if test="${referencedPlugins.equals('')}">
+        <jelly:set var="referencedPlugins" value="${referencedPlugins}${lib.dependency.getArtifactId()};visibility:=reexport&#10; "/>   				
+      </jelly:if>
+	  <jelly:if test="${!referencedPlugins.equals('')}">
+        <jelly:set var="referencedPlugins" value="${referencedPlugins},${lib.dependency.getArtifactId()};visibility:=reexport&#10; "/>   				
+      </jelly:if>
+   	</jelly:if>   					
+	</jelly:forEach>
+	<ant:mkdir dir="${basedir}/META-INF"/>
+  	<jelly:file name="${basedir}/META-INF/MANIFEST.MF" omitXmlDeclaration="true"><![CDATA[
+     Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ${pom.name}
+Bundle-SymbolicName: ${eclipse.plugin.symbolicName}; singleton:=true
+Bundle-Version: ${eclipseVersion}
+Bundle-ClassPath: ${includedLibs}${maven.final.name}.jar
+Bundle-Activator: ${eclipse.plugin.bundle.activator}
+Bundle-Vendor: ${pom.organisation.name}
+Bundle-Localization: plugin
+Export-Package: .
+Require-Bundle: ${referencedPlugins}
+Eclipse-AutoStart: true]]></jelly:file>
+  </goal>
+</project>
