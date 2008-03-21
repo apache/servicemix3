@@ -23,12 +23,12 @@ import java.net.URI;
  * 
  * @version $Revision$
  */
-public class MessageExchangeSupport {
+public final class MessageExchangeSupport {
+    
     /**
      * In Only MEP.
      */
     public static final URI IN_ONLY = URI.create("http://www.w3.org/2004/08/wsdl/in-only");
-
     /**
      * In Out MEP.
      */
@@ -38,11 +38,6 @@ public class MessageExchangeSupport {
      * In Optional Out MEP.
      */
     public static final URI IN_OPTIONAL_OUT = URI.create("http://www.w3.org/2004/08/wsdl/in-opt-out");
-
-    /**
-     * Robust In Only MEP.
-     */
-    public static final URI ROBUST_IN_ONLY = URI.create("http://www.w3.org/2004/08/wsdl/robust-in-only");
 
     /**
      * Out Only MEP.
@@ -60,6 +55,11 @@ public class MessageExchangeSupport {
     public static final URI OUT_OPTIONAL_IN = URI.create("http://www.w3.org/2004/08/wsdl/out-opt-in");
 
     /**
+     * Robust In Only MEP.
+     */
+    public static final URI ROBUST_IN_ONLY = URI.create("http://www.w3.org/2004/08/wsdl/robust-in-only");
+
+    /**
      * Robust Out Only MEP.
      */
     public static final URI ROBUST_OUT_ONLY = URI.create("http://www.w3.org/2004/08/wsdl/robust-out-only");
@@ -70,14 +70,14 @@ public class MessageExchangeSupport {
     public static final URI WSDL2_IN_ONLY = URI.create("http://www.w3.org/2006/01/wsdl/in-only");
 
     /**
-     * In Out MEP.
-     */
-    public static final URI WSDL2_IN_OUT = URI.create("http://www.w3.org/2006/01/wsdl/in-out");
-
-    /**
      * In Optional Out MEP.
      */
     public static final URI WSDL2_IN_OPTIONAL_OUT = URI.create("http://www.w3.org/2006/01/wsdl/in-opt-out");
+
+    /**
+     * In Out MEP.
+     */
+    public static final URI WSDL2_IN_OUT = URI.create("http://www.w3.org/2006/01/wsdl/in-out");
 
     /**
      * Robust In Only MEP.
@@ -103,4 +103,8 @@ public class MessageExchangeSupport {
      * Robust Out Only MEP.
      */
     public static final URI WSDL2_ROBUST_OUT_ONLY = URI.create("http://www.w3.org/2006/01/wsdl/robust-out-only");
+
+    private MessageExchangeSupport() {
+      // Private constructor to keep checkstyle 4.3 happy.
+    }
 }
