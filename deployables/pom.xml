@@ -35,8 +35,8 @@
 
     <modules>
         <module>sharedlibraries</module>
-        <module>bindingcomponents</module>
         <module>serviceengines</module>
+        <module>bindingcomponents</module>
     </modules>
 
     <build>
