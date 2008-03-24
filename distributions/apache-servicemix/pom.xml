@@ -628,6 +628,9 @@
 		  <filters>
 		    <servicemix-version>${servicemix-version}</servicemix-version>
 		    <releases-repo-url>${releases-repo-url}</releases-repo-url>
+                    <jaxb.version>${jaxb.version}</jaxb.version>
+                    <jaxb.impl.version>${jaxb.impl.version}</jaxb.impl.version>
+                    <xfire-jsr181-api-version>${xfire-jsr181-api-version}</xfire-jsr181-api-version>
 		  </filters>
 		</configuration>
 		<executions>
