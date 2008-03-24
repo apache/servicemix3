@@ -27,9 +27,9 @@
   <classpath>
     <location>../lib/servicemix-wsn2005-@{servicemix-version}.jar</location>
     <location>../lib/servicemix-common-@{servicemix-version}.jar</location>
-    <location>../lib/jaxb-api-2.0.jar</location>
-    <location>../lib/jaxb-impl-2.0.1.jar</location>
-    <location>../lib/xfire-jsr181-api-1.0-M1.jar</location>
+    <location>../lib/jaxb-api-@{jaxb.version}.jar</location>
+    <location>../lib/jaxb-impl-@{jaxb.impl.version}.jar</location>
+    <location>../lib/xfire-jsr181-api-@{xfire-jsr181-api-version}.jar</location>
   </classpath>
   <bean id="jndi" class="org.apache.xbean.spring.jndi.SpringInitialContextFactory"
         factory-method="makeInitialContext" singleton="true" />  

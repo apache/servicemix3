@@ -220,6 +220,8 @@
         <sitemesh-version>2.2.1</sitemesh-version>
         <woden-version>1.0.0M6</woden-version>
         <cxf-version>2.1-incubator-SNAPSHOT</cxf-version>
+        <jaxb.version>2.1</jaxb.version>
+        <jaxb.impl.version>2.1.4</jaxb.impl.version>
         <derby-version>10.2.2.0</derby-version>
 	    <saxon-version>8.9</saxon-version>
 
@@ -903,7 +905,7 @@
             <dependency>
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-impl</artifactId>
-                <version>2.1.4</version>
+                <version>${jaxb.impl.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.xml</groupId>
@@ -922,7 +924,7 @@
             <dependency>
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>
-                <version>2.1</version>
+                <version>${jaxb.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.xml</groupId>
