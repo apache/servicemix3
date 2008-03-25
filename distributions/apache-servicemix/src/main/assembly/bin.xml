@@ -109,8 +109,6 @@
         <include>org.apache.servicemix:servicemix-audit</include>
         <include>org.apache.xbean:xbean-spring</include>
         <include>org.apache.xbean:xbean-classloader</include>
-        <include>org.apache.xbean:xbean-server</include>
-        <include>org.apache.xbean:xbean-kernel</include>
         <include>wsdl4j:wsdl4j</include>
         <include>org.apache.woden:woden</include>
         <include>org.springframework:spring-core</include>

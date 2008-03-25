@@ -399,17 +399,29 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
         return new ExecutorFactoryImpl();
     }
 
-    protected ExecutorFactory findExecutorFactory() {
-        // If inside ServiceMix, retrieve its executor factory
+    public Object getSmx3Container() {
         try {
             Method getContainerMth = context.getClass().getMethod("getContainer", new Class[0]);
             Object container = getContainerMth.invoke(context, new Object[0]);
-            Method getWorkManagerMth = container.getClass().getMethod("getExecutorFactory", new Class[0]);
-            return (ExecutorFactory) getWorkManagerMth.invoke(container, new Object[0]);
+            return container;
         } catch (Throwable t) {
             if (logger.isDebugEnabled()) {
-                logger.debug("JBI container is not ServiceMix. Will create our own ExecutorFactory", t);
+                logger.debug("JBI container is not ServiceMix 3 (" + t + ")");
             }
+        }
+        return null;
+    }
+
+    protected ExecutorFactory findExecutorFactory() {
+        // If inside ServiceMix, retrieve its executor factory
+        try {
+            Object container = getSmx3Container();
+            if (container != null) {
+                Method getWorkManagerMth = container.getClass().getMethod("getExecutorFactory", new Class[0]);
+                return (ExecutorFactory) getWorkManagerMth.invoke(container, new Object[0]);
+            }
+        } catch (Throwable t) {
+            // Ignore
         }
         // TODO: should look in jndi for an existing ExecutorFactory
         return null;
@@ -535,8 +547,10 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
             if (logger.isDebugEnabled()) {
                 logger.debug("Retrieved correlation id: " + correlationID);
             }
+            EndpointDeliveryChannel.setEndpoint(ep);
             processor.process(exchange);
         } finally {
+            EndpointDeliveryChannel.setEndpoint(null);
             Thread.currentThread().setContextClassLoader(oldCl);
             // Clean the threadlocal variable
             correlationId.set(null);

@@ -1635,22 +1635,6 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.xbean</groupId>
-                <artifactId>xbean-kernel</artifactId>
-                <version>${xbean-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.xbean</groupId>
-                <artifactId>xbean-server</artifactId>
-                <version>${xbean-version}</version>
-                <exclusions>
-                  <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring</artifactId>
-                  </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.xbean</groupId>
                 <artifactId>xbean-spring</artifactId>
                 <version>${xbean-version}</version>
                 <exclusions>

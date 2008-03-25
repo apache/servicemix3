@@ -16,61 +16,43 @@
  */
 package org.apache.servicemix.common.xbean;
 
-import org.apache.servicemix.common.ServiceUnit;
-import org.apache.xbean.kernel.Kernel;
-import org.apache.xbean.kernel.ServiceFactory;
-import org.apache.xbean.kernel.ServiceName;
-import org.apache.xbean.kernel.ServiceNotFoundException;
-
 import javax.jbi.JBIException;
+
+import org.apache.servicemix.common.ServiceUnit;
+import org.springframework.context.support.AbstractXmlApplicationContext;
 
 public class XBeanServiceUnit extends ServiceUnit {
 
-    private Kernel kernel;
-    private ServiceName configuration;
     private ClassLoader classLoader;
+    private AbstractXmlApplicationContext applicationContext;
 
-    /**
-     * @return Returns the kernel.
-     */
-    public Kernel getKernel() {
-        return kernel;
+    public AbstractXmlApplicationContext getApplicationContext() {
+        return applicationContext;
     }
 
-    /**
-     * @param kernel The kernel to set.
-     */
-    public void setKernel(Kernel kernel) {
-        this.kernel = kernel;
+    public void setApplicationContext(AbstractXmlApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
-    public ServiceName getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(ServiceName configuration) {
-        this.configuration = configuration;
-    }
-    
     /* (non-Javadoc)
      * @see org.apache.servicemix.common.ServiceUnit#shutDown()
      */
     public void shutDown() throws JBIException {
         super.shutDown();
         classLoader = null;
-        if (kernel != null) {
-            kernel.destroy();
+        try {
+            if (applicationContext != null) {
+                applicationContext.destroy();
+            }
+            applicationContext = null;
+        } catch (Exception e) {
+            throw new JBIException("Unable to close application context", e);
         }
     }
     
     public ClassLoader getConfigurationClassLoader() {
-        if (classLoader == null && kernel != null && configuration != null) {
-            try {
-                ServiceFactory sf = kernel.getServiceFactory(configuration);
-                classLoader = sf.getClassLoader();
-            } catch (ServiceNotFoundException e) {
-                // This should never happen
-            }
+        if (classLoader == null && applicationContext != null) {
+            classLoader = applicationContext.getClassLoader();
         }
         ClassLoader cl = classLoader;
         if (cl == null) {

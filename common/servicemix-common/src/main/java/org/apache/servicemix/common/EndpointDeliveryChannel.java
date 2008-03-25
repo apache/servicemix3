@@ -16,12 +16,15 @@
  */
 package org.apache.servicemix.common;
 
+import java.util.List;
+
+import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
-import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
@@ -35,12 +38,19 @@ import javax.xml.namespace.QName;
  */
 public class EndpointDeliveryChannel implements DeliveryChannel {
 
+    private static final ThreadLocal<Endpoint> ENDPOINT_TLS = new ThreadLocal<Endpoint>();
+
     private final DeliveryChannel channel;
     private final Endpoint endpoint;
-    
+
     public EndpointDeliveryChannel(Endpoint endpoint) throws MessagingException {
         this.endpoint = endpoint;
         this.channel = endpoint.getServiceUnit().getComponent().getComponentContext().getDeliveryChannel();
+    }
+
+    public EndpointDeliveryChannel(ComponentContext context) throws MessagingException {
+        this.endpoint = null;
+        this.channel = context.getDeliveryChannel();
     }
 
     public MessageExchange accept() throws MessagingException {
@@ -72,26 +82,35 @@ public class EndpointDeliveryChannel implements DeliveryChannel {
     }
 
     public void send(MessageExchange exchange) throws MessagingException {
-        if (exchange.getStatus() == ExchangeStatus.ACTIVE && exchange.getRole() == Role.CONSUMER) {
-            ServiceMixComponent comp = endpoint.getServiceUnit().getComponent();
-            comp.prepareConsumerExchange(exchange, endpoint);
-        }
+        prepareExchange(exchange);
         channel.send(exchange);
     }
 
     public boolean sendSync(MessageExchange exchange, long timeout) throws MessagingException {
-        if (exchange.getStatus() == ExchangeStatus.ACTIVE && exchange.getRole() == Role.CONSUMER) {
-            ServiceMixComponent comp = endpoint.getServiceUnit().getComponent();
-            comp.prepareConsumerExchange(exchange, endpoint);
-        }
+        prepareExchange(exchange);
         return channel.sendSync(exchange, timeout);
     }
 
     public boolean sendSync(MessageExchange exchange) throws MessagingException {
-        if (exchange.getStatus() == ExchangeStatus.ACTIVE && exchange.getRole() == Role.CONSUMER) {
-            ServiceMixComponent comp = endpoint.getServiceUnit().getComponent();
-            comp.prepareConsumerExchange(exchange, endpoint);
-        }
+        prepareExchange(exchange);
         return channel.sendSync(exchange);
+    }
+
+    protected void prepareExchange(MessageExchange exchange) throws MessagingException {
+        if (exchange.getStatus() == ExchangeStatus.ACTIVE && exchange.getRole() == Role.CONSUMER) {
+            Endpoint ep = getEndpoint();
+            getEndpoint().prepareConsumerExchange(exchange);
+        }
+    }
+
+    protected Endpoint getEndpoint() {
+        if (endpoint != null) {
+            return endpoint;
+        }
+        return ENDPOINT_TLS.get();
+    }
+
+    public static void setEndpoint(Endpoint endpoint) {
+        ENDPOINT_TLS.set(endpoint);
     }
 }

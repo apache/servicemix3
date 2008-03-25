@@ -54,6 +54,11 @@ public interface ServiceMixComponent extends Component {
     public ComponentContext getComponentContext();
 
     /**
+     * @return the servicemix 3 container if deployed into it
+     */
+    public Object getSmx3Container();
+
+    /**
      * @return Returns the name of the component
      */
     public String getComponentName();

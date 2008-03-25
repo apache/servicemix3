@@ -17,14 +17,16 @@
 package org.apache.servicemix.lwcontainer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.servicemix.common.BaseComponent;
+import org.apache.servicemix.common.Endpoint;
 import org.apache.servicemix.common.xbean.AbstractXBeanDeployer;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.SpringServiceUnitContainer;
-import org.apache.xbean.kernel.Kernel;
-import org.apache.xbean.kernel.StringServiceName;
+import org.springframework.context.support.AbstractXmlApplicationContext;
 
 public class LwContainerXBeanDeployer extends AbstractXBeanDeployer {
 
@@ -36,21 +38,23 @@ public class LwContainerXBeanDeployer extends AbstractXBeanDeployer {
         return "servicemix";
     }
 
-    protected List getServices(Kernel kernel) {
+    @Override
+    protected Collection<Endpoint> getServices(AbstractXmlApplicationContext applicationContext) throws Exception {
         try {
-            Object jbi = kernel.getService(new StringServiceName("jbi"));
-            SpringServiceUnitContainer suContainer = (SpringServiceUnitContainer) jbi; 
-            ActivationSpec[] specs = suContainer.getActivationSpecs();
-            List services = new ArrayList();
-            if (specs != null) {
-                for (int i = 0; i < specs.length; i++) {
-                    services.add(new LwContainerEndpoint(specs[i]));
+            List<Endpoint> services = new ArrayList<Endpoint>();
+            Map<String, SpringServiceUnitContainer> containers = applicationContext.getBeansOfType(SpringServiceUnitContainer.class);
+            for (SpringServiceUnitContainer suContainer : containers.values()) { 
+                ActivationSpec[] specs = suContainer.getActivationSpecs();
+                if (specs != null) {
+                    for (int i = 0; i < specs.length; i++) {
+                        services.add(new LwContainerEndpoint(specs[i]));
+                    }
                 }
-            }
-            if (suContainer.getComponents() != null || suContainer.getEndpoints() != null
-                    || suContainer.getListeners() != null || suContainer.getServices() != null) {
-                services.add(new LwContainerExtra(suContainer.getComponents(), suContainer.getEndpoints(),
+                if (suContainer.getComponents() != null || suContainer.getEndpoints() != null
+                        || suContainer.getListeners() != null || suContainer.getServices() != null) {
+                    services.add(new LwContainerExtra(suContainer.getComponents(), suContainer.getEndpoints(),
                                                   suContainer.getListeners(), suContainer.getServices()));
+                }
             }
             return services;
         } catch (Exception e) {

@@ -42,7 +42,11 @@ public class EndpointComponentContext implements ComponentContext {
         this.endpoint = endpoint;
         this.context = endpoint.getServiceUnit().getComponent().getComponentContext();
     }
-    
+
+    public EndpointComponentContext(ComponentContext context) {
+        this.context = context;
+    }
+
     public Endpoint getEndpoint() {
         return endpoint;
     }
@@ -69,7 +73,11 @@ public class EndpointComponentContext implements ComponentContext {
 
     public DeliveryChannel getDeliveryChannel() throws MessagingException {
         if (this.channel == null) {
-            this.channel = new EndpointDeliveryChannel(endpoint);
+            if (endpoint != null) {
+                this.channel = new EndpointDeliveryChannel(endpoint);
+            } else {
+                this.channel = new EndpointDeliveryChannel(context);
+            }
         }
         return this.channel;
     }

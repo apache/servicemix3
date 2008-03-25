@@ -21,6 +21,7 @@ import org.w3c.dom.Document;
 
 import javax.jbi.management.DeploymentException;
 import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.MessageExchange.Role;
 import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
@@ -118,6 +119,10 @@ public abstract class Endpoint {
     public boolean isExchangeOkay(MessageExchange exchange) {
         // TODO: We could check the MEP here 
         return true;
+    }
+
+    public void prepareConsumerExchange(MessageExchange exchange) throws MessagingException {
+        getServiceUnit().getComponent().prepareConsumerExchange(exchange, this);
     }
 
     public abstract void activate() throws Exception;

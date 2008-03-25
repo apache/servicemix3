@@ -190,6 +190,10 @@ public abstract class BaseComponent implements ServiceMixComponent {
         return lifeCycle.getExecutor();
     }
 
+    public Object getSmx3Container() {
+        return lifeCycle.getSmx3Container();
+    }
+
     public void sendConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException {
         lifeCycle.sendConsumerExchange(exchange, endpoint);
     }

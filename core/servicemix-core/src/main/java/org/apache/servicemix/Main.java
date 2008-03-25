@@ -21,8 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
-import org.apache.xbean.server.repository.FileSystemRepository;
-import org.apache.xbean.server.spring.configuration.ClassLoaderXmlPreprocessor;
+import org.apache.servicemix.xbean.ClassLoaderXmlPreprocessor;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.apache.xbean.spring.context.FileSystemXmlApplicationContext;
 import org.springframework.beans.factory.DisposableBean;
@@ -62,7 +61,7 @@ public final class Main {
                 }
                 
                 List processors = new ArrayList();
-                processors.add(new ClassLoaderXmlPreprocessor(new FileSystemRepository(new File("."))));
+                processors.add(new ClassLoaderXmlPreprocessor(new File(".")));
                 System.out.println("Loading Apache ServiceMix from file: " + file);
                 context = new FileSystemXmlApplicationContext(file, processors);
             }

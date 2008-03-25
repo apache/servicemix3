@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -31,9 +32,6 @@ import org.apache.servicemix.jbi.framework.SharedLibrary;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.xbean.classloader.JarFileClassLoader;
-import org.apache.xbean.server.repository.FileSystemRepository;
-import org.apache.xbean.server.repository.Repository;
-import org.apache.xbean.server.spring.loader.SpringLoader;
 import org.apache.xbean.spring.context.SpringApplicationContext;
 import org.apache.xbean.spring.context.SpringXmlPreprocessor;
 import org.springframework.beans.FatalBeanException;
@@ -54,18 +52,15 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
     public static final String CLASSPATH_XML = "classpath.xml";
     public static final String LIB_DIR = "/lib";
     
-    private final FileSystemRepository repository;
+    private final File root;
     private final JBIContainer container;
     
-    public ClassLoaderXmlPreprocessor(Repository repository) {
-        this(repository, null);
+    public ClassLoaderXmlPreprocessor(File root) {
+        this(root, null);
     }
 
-    public ClassLoaderXmlPreprocessor(Repository repository, JBIContainer container) {
-        if (repository instanceof FileSystemRepository == false) {
-            throw new IllegalArgumentException("repository must be a FileSystemRepository");
-        }
-        this.repository = (FileSystemRepository) repository;
+    public ClassLoaderXmlPreprocessor(File root, JBIContainer container) {
+        this.root = root;
         this.container = container;
     }
 
@@ -75,7 +70,7 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
         NodeList classpathElements = document.getDocumentElement().getElementsByTagName("classpath");
         if (classpathElements.getLength() == 0) {
             // Check if a classpath.xml file exists in the root of the SU
-            URL url = repository.getResource(CLASSPATH_XML);
+            URL url = getResource(CLASSPATH_XML);
             if (url != null) {
                 try {
                     DocumentBuilder builder = new SourceTransformer().createDocumentBuilder();
@@ -102,10 +97,24 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
         applicationContext.setClassLoader(classLoader);
         Thread.currentThread().setContextClassLoader(classLoader);
     }
+
+    protected URL getResource(String location) {
+        URI uri = root.toURI().resolve(location);
+        File file = new File(uri);
+
+        if (!file.canRead()) {
+            return null;
+        }
+
+        try {
+            return file.toURL();
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("Malformed resource " + uri);
+        }
+    }
     
     protected URL[] getDefaultLocations() {
         try {
-            File root = repository.getRoot();
             File[] jars = new File(root, LIB_DIR).listFiles(new FilenameFilter() {
                 public boolean accept(File dir, String name) {
                     name = name.toLowerCase();
@@ -200,7 +209,7 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
                 urls = new URL[classpath.size()];
                 for (ListIterator<String> iterator = classpath.listIterator(); iterator.hasNext();) {
                     String location = iterator.next();
-                    URL url = repository.getResource(location);
+                    URL url = getResource(location);
                     if (url == null) {
                         throw new FatalBeanException("Unable to resolve classpath location " + location);
                     }
@@ -240,13 +249,13 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
         return classLoader;
     }
 
-    private static ClassLoader getParentClassLoader(SpringApplicationContext applicationContext) {
+    private ClassLoader getParentClassLoader(SpringApplicationContext applicationContext) {
         ClassLoader classLoader = applicationContext.getClassLoader();
         if (classLoader == null) {
             classLoader = Thread.currentThread().getContextClassLoader();
         }
         if (classLoader == null) {
-            classLoader = SpringLoader.class.getClassLoader();
+            classLoader = getClass().getClassLoader();
         }
         return classLoader;
     }
