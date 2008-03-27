@@ -34,6 +34,7 @@ import org.apache.servicemix.bean.Content;
 import org.apache.servicemix.bean.Operation;
 import org.apache.servicemix.bean.Property;
 import org.apache.servicemix.bean.XPath;
+import org.apache.servicemix.client.DefaultNamespaceContext;
 import org.apache.servicemix.components.util.MessageHelper;
 import org.apache.servicemix.expression.Expression;
 import org.apache.servicemix.expression.JAXPStringXPathExpression;
@@ -174,7 +175,13 @@ public class BeanInfo {
             return createContentExpression(marshaller);
         } else if (annotation instanceof XPath) {
             XPath xpathAnnotation = (XPath) annotation;
-            return new JAXPStringXPathExpression(xpathAnnotation.xpath());
+            JAXPStringXPathExpression expr = new JAXPStringXPathExpression(xpathAnnotation.xpath());
+            if (!xpathAnnotation.prefix().equals("") && !xpathAnnotation.uri().equals("")) {
+                DefaultNamespaceContext ctx = new DefaultNamespaceContext();
+                ctx.add(xpathAnnotation.prefix(), xpathAnnotation.uri());
+                expr.setNamespaceContext(ctx);
+            }
+            return expr; 
         }
         return null;
     }
