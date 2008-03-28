@@ -22,14 +22,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
 import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 
 import org.apache.servicemix.jbi.util.FileUtil;
+import org.apache.servicemix.jbi.util.StreamDataSource;
 
 /**
  * A FileMarshaler that converts the given input stream into a binary
@@ -84,8 +83,7 @@ public class BinaryFileMarshaler extends DefaultFileMarshaler {
     public void readMessage(MessageExchange exchange, NormalizedMessage message, InputStream in, String path)
         throws IOException, JBIException {
         File polledFile = new File(path);
-        DataSource ds = new FileDataSource(polledFile);
-        DataHandler handler = new DataHandler(ds);
+        DataHandler handler = new DataHandler(new StreamDataSource(in));
         message.addAttachment(attachment, handler);
         message.setProperty(FILE_NAME_PROPERTY, polledFile.getName());
         message.setProperty(FILE_PATH_PROPERTY, path);
