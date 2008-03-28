@@ -41,7 +41,7 @@ import org.apache.servicemix.jbi.util.StreamDataSource;
 public class BinaryFileMarshaler extends DefaultFileMarshaler {
 
     private String attachment = FILE_CONTENT;
-    private String contentType;
+    private String contentType = "application/octet-stream";
 
     /**
      * returns the key used to add the attachment to the message
@@ -83,7 +83,7 @@ public class BinaryFileMarshaler extends DefaultFileMarshaler {
     public void readMessage(MessageExchange exchange, NormalizedMessage message, InputStream in, String path)
         throws IOException, JBIException {
         File polledFile = new File(path);
-        DataHandler handler = new DataHandler(new StreamDataSource(in));
+        DataHandler handler = new DataHandler(new StreamDataSource(in, getContentType(), polledFile.getName()));
         message.addAttachment(attachment, handler);
         message.setProperty(FILE_NAME_PROPERTY, polledFile.getName());
         message.setProperty(FILE_PATH_PROPERTY, path);
