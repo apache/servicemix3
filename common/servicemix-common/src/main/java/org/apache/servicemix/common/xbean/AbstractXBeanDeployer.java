@@ -94,7 +94,7 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
 
             // Retrieve endpoints
             Collection<Endpoint> endpoints = getServices(applicationContext);
-            if (endpoints != null || endpoints.size() == 0) {
+            if (endpoints == null || endpoints.isEmpty()) {
                 throw failure("deploy", "No endpoints found", null);
             }
             for (Endpoint endpoint : endpoints) {
