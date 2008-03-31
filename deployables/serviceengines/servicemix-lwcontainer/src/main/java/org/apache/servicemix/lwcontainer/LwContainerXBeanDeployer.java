@@ -21,8 +21,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import javax.jbi.management.DeploymentException;
+
 import org.apache.servicemix.common.BaseComponent;
 import org.apache.servicemix.common.Endpoint;
+import org.apache.servicemix.common.ServiceUnit;
 import org.apache.servicemix.common.xbean.AbstractXBeanDeployer;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.SpringServiceUnitContainer;
@@ -60,6 +63,9 @@ public class LwContainerXBeanDeployer extends AbstractXBeanDeployer {
         } catch (Exception e) {
             throw new RuntimeException("Can not find 'jbi' bean", e);
         }
+    }
+
+    protected void validate(ServiceUnit su) throws DeploymentException {
     }
 
 }

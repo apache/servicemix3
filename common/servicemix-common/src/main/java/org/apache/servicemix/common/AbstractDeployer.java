@@ -57,4 +57,11 @@ public abstract class AbstractDeployer implements Deployer {
     protected void validate(Endpoint endpoint) throws DeploymentException {
         endpoint.validate();
     }
+
+    protected void validate(ServiceUnit su) throws DeploymentException {
+        if (su.getEndpoints().size() == 0) {
+            throw failure("deploy", "No endpoint found", null);
+        }
+    }
+
 }
