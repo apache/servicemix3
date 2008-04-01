@@ -102,8 +102,13 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
             validate(su);
             return su;
         } catch (Throwable e) {
+            logger.error(e);
             if (applicationContext != null) {
-                applicationContext.destroy();
+                try {
+                    applicationContext.destroy();
+                } catch (Exception ne) {
+                    logger.error(ne);
+                }
             }
             // There is a chance the thread context classloader has been changed by the xbean kernel,
             // so put back a good one
