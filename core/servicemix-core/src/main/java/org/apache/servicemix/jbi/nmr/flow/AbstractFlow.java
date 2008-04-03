@@ -167,7 +167,12 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
         ComponentMBeanImpl lcc = broker.getContainer().getRegistry().getComponent(id.getName());
         if (lcc != null) {
             if (lcc.getDeliveryChannel() != null) {
-                lcc.getDeliveryChannel().processInBound(me);
+                try {
+                    lock.readLock().lock();
+                    lcc.getDeliveryChannel().processInBound(me);
+                } finally {
+                    lock.readLock().unlock();
+                }
             } else {
                 throw new MessagingException("Component " + id.getName() + " is shut down");
             }

@@ -67,7 +67,10 @@ public class CxfBcComponent extends DefaultComponent {
             SpringBusFactory bf = new SpringBusFactory();
             bus = bf.createBus(getBusConfig());
         } else {
-            bus = BusFactory.newInstance().createBus();
+            bus = BusFactory.getDefaultBus();
+            if (bus == null) {
+                bus = BusFactory.newInstance().createBus();
+            }
         }
         super.doInit();
     }
