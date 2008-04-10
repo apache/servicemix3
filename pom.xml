@@ -221,7 +221,8 @@
         <woden-version>1.0.0M6</woden-version>
         <cxf-version>2.1-incubator-SNAPSHOT</cxf-version>
         <jaxb.version>2.1</jaxb.version>
-        <jaxb.impl.version>2.1.4</jaxb.impl.version>
+        <jaxb.impl.version>2.1.6</jaxb.impl.version>
+        <jaxb.xjc.version>2.1.6</jaxb.xjc.version>
         <derby-version>10.2.2.0</derby-version>
 	    <saxon-version>8.9</saxon-version>
 
@@ -918,6 +919,17 @@
                     <exclusion>
                         <groupId>javax.activation</groupId>
                         <artifactId>activation</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-xjc</artifactId>
+                <version>${jaxb.xjc.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.xml.bind</groupId>
+                        <artifactId>jsr173_api</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
