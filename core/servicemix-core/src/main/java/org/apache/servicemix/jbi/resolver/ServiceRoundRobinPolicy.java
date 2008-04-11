@@ -48,6 +48,10 @@ public class ServiceRoundRobinPolicy implements EndpointChooser {
             return null;
         }
 
+        if (exchange.getService() == null) {
+            return endpoints[0];
+        }
+        
         // check for saved index for that service
         if (lastIndexMap.containsKey(exchange.getService())) {
             // ok, there is already something
