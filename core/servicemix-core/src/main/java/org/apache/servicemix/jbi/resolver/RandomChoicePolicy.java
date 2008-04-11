@@ -21,7 +21,7 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.servicedesc.ServiceEndpoint;
 
 /**
- * A simple selection policy where the first endpoint is chosen.
+ * A simple selection policy where the the endpoint is chosen randomly.
  *
  * @version $Revision$
  */
