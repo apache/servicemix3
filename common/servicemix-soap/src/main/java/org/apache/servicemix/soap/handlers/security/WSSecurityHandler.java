@@ -123,7 +123,7 @@ public class WSSecurityHandler extends WSHandler implements Handler {
             try {
                 WSSecurityHandler handler = WSSecurityHandler.getCurrentHandler();
                 lastPrincipalFound = verifyXMLSignature((Element) elem,
-                        crypto, returnCert, returnElements, signatureValue);
+                        crypto, returnCert, returnElements, null, signatureValue);
                 if (lastPrincipalFound instanceof WSUsernameTokenPrincipal) {
                     WSUsernameTokenPrincipal p = (WSUsernameTokenPrincipal) lastPrincipalFound;
                     handler.checkUser(p.getName(), p.getPassword());
