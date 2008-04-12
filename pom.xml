@@ -1878,7 +1878,7 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>wss4j</groupId>
+                <groupId>org.apache.ws.security</groupId>
                 <artifactId>wss4j</artifactId>
                 <version>1.5.1</version>
             </dependency>
