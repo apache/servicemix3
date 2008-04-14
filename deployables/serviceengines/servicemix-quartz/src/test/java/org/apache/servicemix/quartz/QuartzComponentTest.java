@@ -53,8 +53,8 @@ public class QuartzComponentTest extends TestCase {
         assertTrue(receiver.getMessageList().flushMessages().size() > 0);
         
         quartz.stop();
-        receiver.getMessageList().flushMessages();
         Thread.sleep(1000);
+        receiver.getMessageList().flushMessages();
         assertEquals(0, receiver.getMessageList().flushMessages().size());
         
         quartz.start();
