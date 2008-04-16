@@ -19,6 +19,7 @@ package org.apache.servicemix.components.util;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 
 import org.apache.commons.logging.Log;
@@ -54,8 +55,14 @@ public class TraceComponent extends ComponentSupport implements MessageExchangeL
         this.sourceTransformer = sourceTransformer;
     }
 
+    /** 
+     * Intercepts the {@link MessageExchange} to output the message and its 
+     * properties for debugging purposes. 
+     * 
+     * @param exchange A JBI {@link MessageExchange} between two endpoints
+     */
     public void onMessageExchange(MessageExchange exchange) throws MessagingException {
-        // lets dump the incoming message
+        // lets dump the incoming message  
         NormalizedMessage message = exchange.getMessage("in");
         if (message == null) {
             log.warn("Received null message from exchange: " + exchange);
@@ -66,7 +73,40 @@ public class TraceComponent extends ComponentSupport implements MessageExchangeL
             } catch (TransformerException e) {
                 log.error("Failed to turn message body into text: " + e, e);
             }
+            outputProperties(message);
         }
         done(exchange);
+    }
+    
+    /**
+     * Outputs the properties on the {@link NormalizedMessage}. Properties of 
+     * type {@link Source} are transformed to a {@link String} before 
+     * being output.
+     *
+     * @param message The {@link NormalizedMessage} to be processed
+     */
+    @SuppressWarnings("unchecked")
+    protected void outputProperties(NormalizedMessage message) {
+        // Loop over all the properties on the normalized message 
+        for (Object o : message.getPropertyNames()) {
+            // NormalizedMessage API does not use generics. This interface is
+            // written in Java older than 5.0. On the basis of other methods and
+            // the default implementation of this interface we can assume that
+            // only String keys are allowed.
+            String key = (String) o;
+            try {
+                Object contents = message.getProperty(key);
+                // Is this the only value type that we would like to treat
+                // differently? The default behavior is to invoke toString() on
+                // the object.
+                if (contents instanceof Source) {
+                    contents = getSourceTransformer().toString((Source) contents);
+                }
+
+                log.info("Value for property '" + key + "' is: " + contents);
+            } catch (TransformerException e) {
+                log.error("Failed to turn property '" + key + "' value into text: " + e, e);
+            }
+        }
     }
 }
