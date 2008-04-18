@@ -38,31 +38,60 @@
     <module>apache-servicemix-web</module>
   </modules>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.servicemix</groupId>
-                <artifactId>build</artifactId>
-                <version>${servicemix-version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.servicemix</groupId>
-                        <artifactId>build</artifactId>
-                        <version>3.2.2-SNAPSHOT</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
+  <build>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.servicemix</groupId>
+              <artifactId>build</artifactId>
+              <version>${servicemix-version}</version>
+              <executions>
+                  <execution>
+                      <goals>
+                          <goal>copy</goal>
+                      </goals>
+                  </execution>
+              </executions>
+          </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-checkstyle-plugin</artifactId>
+              <dependencies>
+                  <dependency>
+                      <groupId>org.apache.servicemix</groupId>
+                      <artifactId>build</artifactId>
+                      <version>3.2.2-SNAPSHOT</version>
+                  </dependency>
+              </dependencies>
+          </plugin>
+          <plugin>
+              <artifactId>maven-remote-resources-plugin</artifactId>
+              <version>1.0</version>
+              <dependencies>
+                  <dependency>
+                      <groupId>org.apache.servicemix</groupId>
+                      <artifactId>build</artifactId>
+                      <version>${project.version}</version>
+                  </dependency>
+              </dependencies>
+              <executions>
+                  <execution>
+                      <goals>
+                         <goal>process</goal>
+                      </goals>
+                      <configuration>
+                          <resourceBundles>
+                              <resourceBundle>org.apache:apache-jar-resource-bundle:1.4</resourceBundle>
+                          </resourceBundles>
+                          <supplementalModels>
+                              <supplementalModel>notice-supplements.xml</supplementalModel>
+                          </supplementalModels>
+                          <properties>
+                              <projectName>Apache ServiceMix</projectName>
+                          </properties>
+                      </configuration>
+                  </execution>
+              </executions>
+          </plugin>
         </plugins>
     </build>
 
