@@ -19,7 +19,7 @@ Welcome to the Servicemix Web Application example
 =================================================
 
 To quickly run it, just launch
-   mvn jetty:run
+   mvn org.mortbay.jetty:maven-jetty-plugin:run
    
 and browse the application at
    http://localhost:8080/servicemix-web
