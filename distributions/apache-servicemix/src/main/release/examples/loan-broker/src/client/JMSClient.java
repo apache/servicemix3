@@ -66,6 +66,7 @@ public class JMSClient implements Runnable {
         }
         System.out.println("Closing.");
         requestor.close();
+        System.exit(0);
     }
     
     public void run() {
