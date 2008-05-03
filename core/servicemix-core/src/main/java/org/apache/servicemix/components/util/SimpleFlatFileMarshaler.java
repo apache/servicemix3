@@ -19,14 +19,17 @@ package org.apache.servicemix.components.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.Iterator;
 import java.util.List;
 
+import java.util.NoSuchElementException;
 import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 
@@ -88,6 +91,11 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
      */
     private String columnSeparator = ";";
 
+    /**
+     * Line separator for csv flat files, be carefull when changing the default.
+     * Null means the default Java line separator (See BufferedReader.readLine)
+     */
+    private String lineSeparator;
     private ColumnExtractor columnExtractor;
 
     private int[] columnLengths;
@@ -109,6 +117,85 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
     private boolean insertColContentInAttribut;
 
     private int headerlinesCount;
+
+    private static class CustomEndOfLineIterator
+            implements Iterator {
+
+        private InputStreamReader inr;
+        private String lineSeparator;
+        private String next;
+        private boolean eof;
+
+        public CustomEndOfLineIterator(InputStream in, String encoding,
+                String lineSeparator) {
+
+            if (encoding == null) {
+                inr = new InputStreamReader(in);
+            } else {
+                try {
+                    inr = new InputStreamReader(in, encoding);
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            this.lineSeparator = lineSeparator;
+            this.eof = false;
+            readNext();
+        }
+
+        public void close() {
+            eof = true;
+            IOUtils.closeQuietly(inr);
+            next = null;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException("Remove unsupported on CustomEndOfLineIterator");
+        }
+
+        public boolean hasNext() {
+            if (next == null && !eof) {
+                readNext();
+            }
+            return !eof;
+        }
+
+        public Object next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            String res = next;
+            readNext();
+            return res;
+        }
+
+        private void readNext() {
+            if (eof) {
+                next = null;
+                return;
+            }
+            StringBuilder sb = new StringBuilder();
+            while (true) {
+                int b;
+                try {
+                    b = inr.read();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                if (b == -1) {
+                    eof = true;
+                    break;
+                }
+
+                sb.append((char) b);
+
+                if ((char) b == lineSeparator.charAt(0)) {
+                    break; //FIXME: handle multi-character line separators
+                }
+            }
+            next = sb.toString();
+        }
+    }
 
     public void readMessage(MessageExchange exchange,
                             NormalizedMessage message, 
@@ -134,7 +221,12 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
 
     protected String convertLinesToString(NormalizedMessage message,
                                           InputStream in, String path) throws IOException {
-        LineIterator lines = IOUtils.lineIterator(in, this.encoding);
+        Iterator lines;
+        if (lineSeparator == null) {
+            lines = IOUtils.lineIterator(in, this.encoding);
+        } else {
+            lines = new CustomEndOfLineIterator(in, this.encoding, lineSeparator);
+        }
 
         StringBuffer aBuffer = new StringBuffer(1024);
 
@@ -162,7 +254,7 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
 
         int lineNumber = 1;
         while (lines.hasNext()) {
-            String lineText = lines.nextLine();
+            String lineText = (String) lines.next();
             aBuffer.append(XML_OPEN + this.lineElementname);
 
             if (this.insertLineNumbers || this.insertRawData) {
@@ -201,11 +293,11 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
         return aBuffer.toString();
     }
 
-    protected void processHeaderLines(StringBuffer buffer, LineIterator lines) {
+    protected void processHeaderLines(StringBuffer buffer, Iterator lines) {
         if ((this.headerlinesCount > 0) && (lines.hasNext())) {
             int counter = 0;
             do {
-                String headerline = lines.nextLine();
+                String headerline = (String) lines.next();
                 this.convertHeaderline(buffer, headerline);
 
                 counter++;
@@ -217,7 +309,7 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
     }
 
     protected void extractColumns(StringBuffer buffer, String lineText,
-            LineIterator lines) {
+            Iterator lines) {
         String[] rawcolContents = this.extractColumnContents(lineText, lines);
 
         if ((rawcolContents != null) && (rawcolContents.length > 0)) {
@@ -263,7 +355,7 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
         }
     }
 
-    protected String[] extractColumnContents(String lineText, LineIterator lines) {
+    protected String[] extractColumnContents(String lineText, Iterator lines) {
         String[] result = null;
 
         if ((lineText != null) && (lineText.length() > 0)) {
@@ -422,6 +514,25 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
 
     public final void setColumnSeparator(String columnSeparator) {
         this.columnSeparator = columnSeparator;
+    }
+
+    public final void setColumnSeparatorCode(int columnSeparatorCode) {
+        this.columnSeparator = new String(new char[]{(char) columnSeparatorCode});
+    }
+
+    public final String getLineSeparator() {
+        return lineSeparator;
+    }
+
+    public final void setLineSeparator(String lineSeparator) {
+        if (lineSeparator != null && lineSeparator.length() > 1) {
+            throw new IllegalArgumentException("Currently only 1 character separators are supported, or null.");
+        }
+        this.lineSeparator = lineSeparator;
+    }
+
+    public final void setLineSeparatorCode(int lineSeparatorCode) {
+        this.lineSeparator = new String(new char[]{(char) lineSeparatorCode});
     }
 
     public final String getDocElementNamespace() {
