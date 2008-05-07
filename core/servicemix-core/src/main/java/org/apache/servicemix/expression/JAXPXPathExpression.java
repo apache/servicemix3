@@ -22,9 +22,11 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.NamespaceContext;
+import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
@@ -96,17 +98,45 @@ public class JAXPXPathExpression implements Expression, InitializingBean {
     }
 
     /**
+     * Evaluates the XPath expression and returns the string values for the XML items described
+     * by that expression.
+     *
      * Before evaluating the xpath expression, it will be compiled by calling
      * the {@link #afterPropertiesSet()} method.
+     *
+     * @param exchange MessageExchange to use on MessageVariableResolver
+     * @param message  NormalizedMessage to use on MessageVariableResolver
+     *
+     * @return Object  Contains the string values for the XML items described by the provided XPath
+     *                 expression
      */
     public Object evaluate(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
+        return evaluate(exchange, message, XPathConstants.STRING);
+    }
+
+    /**
+     * Evaluates the XPath expression and the XML items described by that expression. The type is
+     * determined by the returnType parameter.  
+     *
+     * Before evaluating the xpath expression, it will be compiled by calling
+     * the {@link #afterPropertiesSet()} method.
+     *
+     * @param exchange    MessageExchange to use on MessageVariableResolver
+     * @param message     NormalizedMessage to use on MessageVariableResolver
+     * @param returnType  QName as defined by javax.xml.xpath.XPathConstants that describes the
+     *                    desired type of the object to be retuned
+     *
+     * @return Object    Contains the XML items described by the provided XPath expression. The type is
+     *                   determined by the returnType parameter.
+     */
+    public Object evaluate(MessageExchange exchange, NormalizedMessage message, QName returnType) throws MessagingException {
         try {
             afterPropertiesSet();
             Object object = getXMLNode(exchange, message);
             synchronized (this) {
                 variableResolver.setExchange(exchange);
                 variableResolver.setMessage(message);
-                return evaluateXPath(object);
+                return evaluateXPath(object, returnType);
             }
         } catch (TransformerException e) {
             throw new MessagingException(e);
@@ -194,6 +224,10 @@ public class JAXPXPathExpression implements Expression, InitializingBean {
     // -------------------------------------------------------------------------
     protected Object evaluateXPath(Object object) throws XPathExpressionException {
         return xPathExpression.evaluate(object);
+    }
+
+    protected Object evaluateXPath(Object object, QName returnType) throws XPathExpressionException {
+        return xPathExpression.evaluate(object, returnType);
     }
 
     protected XPathExpression getXPathExpression() {
