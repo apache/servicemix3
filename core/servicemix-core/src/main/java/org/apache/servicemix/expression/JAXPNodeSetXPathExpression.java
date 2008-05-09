@@ -16,8 +16,10 @@
  */
 package org.apache.servicemix.expression;
 
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
+import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
 
 /**
  * Evaluates an XPath expression and coerces the result into a String.
@@ -33,7 +35,7 @@ public class JAXPNodeSetXPathExpression extends JAXPXPathExpression {
         super(xpath);
     }
 
-    public Object evaluateXPath(Object object) throws XPathExpressionException {
-        return getXPathExpression().evaluate(object, XPathConstants.NODESET);
+    public Object evaluate(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
+        return evaluate(exchange, message, XPathConstants.NODESET);
     }
 }
