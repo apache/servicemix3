@@ -25,6 +25,7 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
@@ -35,7 +36,7 @@ import org.apache.camel.util.ExchangeHelper;
 
 /**
  * The binding of how Camel messages get mapped to JBI and back again
- * 
+ *
  * @version $Revision: 563665 $
  */
 public class JbiBinding {
@@ -122,6 +123,15 @@ public class JbiBinding {
                 answer = exchangeFactory.createInOutExchange();
             }
         }
+
+        if (camelExchange.getProperty("jbi.operation") != null) {
+
+            String operationName = (String) camelExchange.getProperty("jbi.operation");
+            QName operationQName = QName.valueOf(operationName);
+            answer.setOperation(operationQName);
+
+        }
+
         return answer;
     }
 
