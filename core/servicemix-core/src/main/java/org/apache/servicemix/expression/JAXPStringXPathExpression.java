@@ -20,6 +20,7 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
 
 /**
  * Evaluates an XPath expression and coerces the result into a String.
@@ -35,6 +36,10 @@ public class JAXPStringXPathExpression extends JAXPXPathExpression {
 
     public JAXPStringXPathExpression(String xpath) {
         super(xpath);
+    }
+
+    public Object evaluateXPath(Object object) throws XPathExpressionException {
+        return getXPathExpression().evaluate(object, XPathConstants.STRING);
     }
 
     public Object evaluate(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
