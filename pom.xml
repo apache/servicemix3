@@ -189,6 +189,14 @@
             <name>George Gastaldi</name>
             <email>gastaldi@apache.org</email>
         </developer>
+        <developer>
+            <id>lhein</id>
+            <name>Lars Heinemann</name>
+            <email>lhein@apache.org</email>
+            <organization>Compart Systemhaus GmbH</organization>
+            <organizationUrl>http://www.compart.net/</organizationUrl>
+            <timezone>+1</timezone>
+        </developer>
     </developers>
 
     <scm>
