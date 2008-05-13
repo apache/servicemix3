@@ -18,7 +18,6 @@ package org.apache.servicemix.eip.support;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.xml.xpath.XPathConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,7 +45,7 @@ public class XPathPredicate extends JAXPBooleanXPathExpression implements Predic
     public boolean matches(MessageExchange exchange) {
         try {
             NormalizedMessage in = exchange.getMessage("in");
-            Boolean match = (Boolean) evaluate(exchange, in, XPathConstants.BOOLEAN);
+            Boolean match = (Boolean) evaluate(exchange, in);
             return Boolean.TRUE.equals(match);
         } catch (Exception e) {
             LOG.warn("Could not evaluate xpath expression", e);
