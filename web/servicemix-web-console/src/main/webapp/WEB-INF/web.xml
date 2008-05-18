@@ -108,7 +108,7 @@
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!--         Factor out common headers in JSP pages            -->
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	  <jsp-config>
+   <jsp-config>
       <taglib>
         <taglib-uri>
           http://www.opensymphony.com/sitemesh/decorator
@@ -125,9 +125,10 @@
           /WEB-INF/sitemesh-page.tld
         </taglib-location>
       </taglib>
-	    <jsp-property-group>
-	       <url-pattern>*.jsp</url-pattern>
-	       <include-prelude>/WEB-INF/jspf/headertags.jspf</include-prelude>
-	     </jsp-property-group>
+	  <jsp-property-group>
+	     <url-pattern>*.jsp</url-pattern>
+	     <el-ignored>false</el-ignored>
+	     <include-prelude>/WEB-INF/jspf/headertags.jspf</include-prelude>
+	  </jsp-property-group>
    </jsp-config>
 </web-app>
