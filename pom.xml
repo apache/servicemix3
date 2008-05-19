@@ -232,7 +232,7 @@
 		<snapshots-repo-id>apache.snapshots</snapshots-repo-id>
 		<snapshots-repo-name>Apache Snapshots Repository</snapshots-repo-name>
 		<snapshots-repo-url>http://people.apache.org/repo/m2-snapshot-repository</snapshots-repo-url>
-       <previous.releases>3.1.2,3.2.1</previous.releases>
+       <previous.releases>3.1.2,3.2,3.2.1</previous.releases>
     </properties>
 
     <profiles>

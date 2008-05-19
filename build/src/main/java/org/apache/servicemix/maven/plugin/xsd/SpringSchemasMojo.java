@@ -81,6 +81,10 @@ public class SpringSchemasMojo extends AbstractMojo {
      * {@inheritDoc}
      */
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (!getSpringSchemas().exists()) {
+            getLog().info("Skipping - spring.schemas file does not exist in " + project.getArtifactId());
+            return;
+        }
         readOriginalSpringSchemas();
         getLog().info("Adding spring.schemas entries for earlier versions");
         if (project.getProperties().containsKey(PREVIOUS_RELEASES)) {

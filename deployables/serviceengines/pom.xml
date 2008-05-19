@@ -49,4 +49,20 @@
     <module>servicemix-wsn2005</module>
   </modules>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>build</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>spring.schemas</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
