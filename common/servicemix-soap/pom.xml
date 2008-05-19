@@ -73,6 +73,17 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>build</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>spring.schemas</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.xbean</groupId>
         <artifactId>maven-xbean-plugin</artifactId>
         <executions>
