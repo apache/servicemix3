@@ -37,7 +37,6 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.components.util.FileMarshaler;
 import org.apache.servicemix.jbi.audit.AbstractAuditor;
 import org.apache.servicemix.jbi.audit.AuditorException;
 import org.apache.servicemix.jbi.event.ExchangeEvent;
@@ -163,7 +162,7 @@ public class FileAuditor extends AbstractAuditor implements InitializingBean {
     /*
      * Convenience PrintWriter implementation
      */
-    private class MessageExchangeWriter extends PrintWriter {
+    private final class MessageExchangeWriter extends PrintWriter {
       
         private MessageExchangeWriter(OutputStream os) {
             super(os);
@@ -182,7 +181,7 @@ public class FileAuditor extends AbstractAuditor implements InitializingBean {
             for (Object key : message.getPropertyNames()) {
                 writeProperty(key, message.getProperty(key.toString()));
             }
-            println();println("- content -");
+            println(); println("- content -");
         }
 
         
@@ -196,10 +195,10 @@ public class FileAuditor extends AbstractAuditor implements InitializingBean {
      */
     private class FileAuditorStrategyImpl implements FileAuditorStrategy {
         
-        private final DateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd");
+        private final DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
         
         public String getFileName(MessageExchange exchange) {
-            return DATEFORMAT.format(new Date()) + File.separatorChar + exchange.getExchangeId().replaceAll("[:\\.]", "_");
+            return dateformat.format(new Date()) + File.separatorChar + exchange.getExchangeId().replaceAll("[:\\.]", "_");
         }
     }
 }

@@ -19,23 +19,19 @@ package org.apache.servicemix.jbi.audit.file;
 import java.io.File;
 import java.util.Locale;
 
-import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOnly;
-import javax.jbi.messaging.MessageExchange;
 
 import junit.framework.TestCase;
 
-import org.apache.servicemix.jbi.audit.file.FileAuditor;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.servicemix.tck.ReceiverComponent;
 import org.apache.servicemix.tck.SenderComponent;
-import org.hsqldb.jdbc.jdbcDataSource;
 
 public class FileAuditorTest extends TestCase {
 
-    private static final File directory = new File("target/tests/FileAuditor");
+    private static final File DIRECTORY = new File("target/tests/FileAuditor");
 
     private JBIContainer jbi;
 
@@ -44,8 +40,8 @@ public class FileAuditorTest extends TestCase {
         jbi.setFlowName("st");
         jbi.setEmbedded(true);
         jbi.init();
-        FileUtil.deleteFile(directory); 
-        directory.mkdirs();
+        FileUtil.deleteFile(DIRECTORY); 
+        DIRECTORY.mkdirs();
     }
 
     protected void tearDown() throws Exception {
@@ -63,7 +59,7 @@ public class FileAuditorTest extends TestCase {
 
         FileAuditor auditor = new FileAuditor();
         auditor.setContainer(jbi);
-        auditor.setDirectory(directory);
+        auditor.setDirectory(DIRECTORY);
         auditor.afterPropertiesSet();
 
         InOnly inonly = sender.createInOnlyExchange(ReceiverComponent.SERVICE, null, null);

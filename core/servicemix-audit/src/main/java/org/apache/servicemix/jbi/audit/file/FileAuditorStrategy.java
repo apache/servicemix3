@@ -26,6 +26,6 @@ public interface FileAuditorStrategy {
     /**
      * Get the file name for writing the given {@link MessageExchange}
      */
-    public String getFileName(MessageExchange exchange);
+    String getFileName(MessageExchange exchange);
 
 }
