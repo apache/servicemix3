@@ -51,6 +51,8 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
 
     public static final ContentConverter TEXT_STRIPPER = new TextStripConverter();
 
+    public static final ContentConverter XML_CONVERTER = new XmlEscapingConverter();
+
     public static final int LINEFORMAT_FIXLENGTH = 0;
     public static final int LINEFORMAT_CSV = 1;
     public static final int LINEFORMAT_VARIABLE = 2;
@@ -118,12 +120,16 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
     
     private boolean alwaysStripColContents = true;
     
+    private boolean alwaysEscapeColContents;
+
     private boolean insertRawData;
 
     private boolean insertColContentInAttribut;
 
     private int headerlinesCount;
-
+    
+    private int columnNamesInLineNumber = -1;
+    
     public boolean isSkipAnyEmptyCols() {
         return skipAnyEmptyCols;
     }
@@ -201,11 +207,11 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
                     break;
                 }
 
-                sb.append((char) b);
-
                 if ((char) b == lineSeparator.charAt(0)) {
                     break; //FIXME: handle multi-character line separators
                 }
+
+                sb.append((char) b);
             }
             next = sb.toString();
         }
@@ -260,7 +266,7 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
         private InputStream in;
         private String path;
         private String outEncoding;
-        private int headerLinesLeft;
+        private int headerlinesRead;
         private Iterator lines;
         private int lineNumber;
         private boolean isFooterFilled;
@@ -276,7 +282,6 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
             this.in = in;
             this.path = path;
             this.outEncoding = outEncoding;
-            this.headerLinesLeft = headerlinesCount;
             if (lineSeparator == null) {
                 lines = IOUtils.lineIterator(in, encoding);
             } else {
@@ -316,7 +321,7 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
                 }
             }
 
-            if (headerLinesLeft > 0) {
+            if (headerlinesRead < headerlinesCount) {
                 fillHeader();
             } else {
                 fillBody();
@@ -354,9 +359,12 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
         }
 
         private void fillHeader() throws IOException {
-            headerLinesLeft--;
             StringBuffer aBuffer = new StringBuffer(1024);
             String headerLine = (String) lines.next();
+            if (columnNamesInLineNumber == headerlinesRead++) {
+                columnNames = extractColumnContents(headerLine, lines);
+            } 
+                
             convertHeaderline(aBuffer, headerLine);
             fill(aBuffer.toString());
         }
@@ -387,7 +395,7 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
             processHeaderLines(aBuffer, lines);
             if (aBuffer.length() != overridenCheck) {
                 //headers were proceed by an overriden method, supress futher processing
-                headerLinesLeft = 0;
+                headerlinesRead = Integer.MAX_VALUE;
             }
             fill(aBuffer.toString());
         }
@@ -547,6 +555,9 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
             ContentConverter converter = (ContentConverter) this.columnConverters.get(index);
             return converter.convertToXml(contents);
         } else {
+            if (this.alwaysEscapeColContents) {
+                return XML_CONVERTER.convertToXml(contents);
+            }
             if (this.alwaysStripColContents) {
                 return TEXT_STRIPPER.convertToXml(contents);
             } else {
@@ -636,6 +647,14 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
         this.alwaysStripColContents = alwaysStripColContents;
     }
 
+    public final boolean isAlwaysEscapeColContents() {
+        return alwaysEscapeColContents;
+    }
+
+    public final void setAlwaysEscapeColContents(boolean alwaysEscapeColContents) {
+        this.alwaysEscapeColContents = alwaysEscapeColContents;
+    }
+
     public final int getLineFormat() {
         return lineFormat;
     }
@@ -685,6 +704,18 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
 
     public final void setHeaderlinesCount(int headerlinesCount) {
         this.headerlinesCount = headerlinesCount;
+    }
+    
+    public final int getColumnNamesInLineNumber() {
+        return this.columnNamesInLineNumber;
+    }
+    
+    /**
+     * 
+     * @param columnNamesInLineNumber line number containing  
+     */
+    public void setColumnNamesInLineNumber(int columnNamesInLineNumber) {
+        this.columnNamesInLineNumber = columnNamesInLineNumber;
     }
 
     public final boolean isInsertColContentInAttribut() {
