@@ -73,7 +73,6 @@
                     <linkXRef>false</linkXRef>
                     <suppressionsLocation>smx-checkstyle-suppressions.xml</suppressionsLocation>
                     <sourceDirectory>${basedir}/src</sourceDirectory>
-                    <headerLocation>LICENSE</headerLocation>
                   </configuration>
                   <goals>
                     <goal>checkstyle</goal>
