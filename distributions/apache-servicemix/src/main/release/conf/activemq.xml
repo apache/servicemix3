@@ -30,13 +30,15 @@
       </bean>
     </amq:managementContext>
 
-    <!-- Use journaled JDBC persistence -->
+    <!-- Use AMQ Message Store as default broker persistence adapter -->
     <amq:persistenceAdapter>
+      <amq:amqPersistenceAdapter directory="file://./data/amq"/>
+    
+      <!-- Examples for journaledJDBC if JDBC is required -->
+      <!--
       <amq:journaledJDBC journalLogFiles="5" dataDirectory="./data/amq"/>
-      <!-- To use a different datasource, use th following syntax : -->
-      <!-- 
       <amq:journaledJDBC journalLogFiles="5" dataDirectory="../data" dataSource="#postgres-ds"/>
-       -->
+      -->
     </amq:persistenceAdapter>
   
     <amq:transportConnectors>

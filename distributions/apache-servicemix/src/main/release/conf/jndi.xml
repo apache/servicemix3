@@ -21,7 +21,7 @@
 <!-- START SNIPPET: jndi -->
 <beans xmlns:jencks="http://jencks.org/2.0" 
        xmlns:amq="http://activemq.org/config/1.0"
-       xmlns:amqra="http://activemq.org/ra/1.0"
+       xmlns:amqra="http://activemq.apache.org/schema/ra"
        xmlns:util="http://www.springframework.org/schema/util">
 
   <bean id="jndi" depends-on="broker"
