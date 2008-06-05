@@ -225,7 +225,7 @@ public class WSNComponentTest extends TestCase {
         Thread.sleep(150);
     }
 
-    public void testPullWithFilter() throws Exception {
+    public void xtestPullWithFilter() throws Exception {
         PullPoint pullPoint1 = wsnCreatePullPoint.createPullPoint();
         PullPoint pullPoint2 = wsnCreatePullPoint.createPullPoint();
         wsnBroker.subscribe(pullPoint1.getEndpoint(), "myTopic", "@type = 'a'");
