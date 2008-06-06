@@ -27,7 +27,7 @@ public class RemoteServiceMixClientTest extends ServiceMixClientTest {
     protected void tearDown() throws Exception {
         ((RemoteServiceMixClient) client).shutDown();
         super.tearDown();
-        Set servers = VMTransportFactory.servers.keySet();
+        Set servers = VMTransportFactory.SERVERS.keySet();
         String[] serverNames = (String[]) servers.toArray(new String[servers.size()]);
         for (int i = 0; i < serverNames.length; i++) {
             VMTransportFactory.stopped(serverNames[i]);
