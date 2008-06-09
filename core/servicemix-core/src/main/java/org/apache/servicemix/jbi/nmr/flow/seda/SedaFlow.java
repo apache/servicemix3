@@ -94,7 +94,8 @@ public class SedaFlow extends AbstractFlow {
             return false;
         }
         // we have the mirror, so the role is the one for the target component
-        if (isTransacted(me) && !isSynchronous(me) && me.getStatus() == ExchangeStatus.ACTIVE) {
+        if (!broker.getContainer().isUseNewTransactionModel() 
+                && isTransacted(me) && !isSynchronous(me) && me.getStatus() == ExchangeStatus.ACTIVE) {
             return false;
         }
         return true;
@@ -280,6 +281,9 @@ public class SedaFlow extends AbstractFlow {
     }
 
     protected void suspendTx(MessageExchangeImpl me) throws MessagingException {
+        if (broker.getContainer().isUseNewTransactionModel()) {
+            return;
+        }
         try {
             Transaction oldTx = me.getTransactionContext();
             if (oldTx != null) {
@@ -301,6 +305,9 @@ public class SedaFlow extends AbstractFlow {
     }
 
     protected void resumeTx(MessageExchangeImpl me) throws MessagingException {
+        if (broker.getContainer().isUseNewTransactionModel()) {
+            return;
+        }
         try {
             Transaction oldTx = me.getTransactionContext();
             if (oldTx != null) {

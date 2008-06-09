@@ -113,6 +113,7 @@ public class JBIContainer extends BaseLifeCycle {
     protected EventListenerList listeners = new EventListenerList();
     protected EventListener[] configuredListeners;
     protected boolean useShutdownHook = true;
+    protected boolean useNewTransactionModel;
     protected transient Thread shutdownHook;
     protected ExecutorFactory executorFactory;
     private String name = DEFAULT_NAME;
@@ -232,7 +233,7 @@ public class JBIContainer extends BaseLifeCycle {
     /**
      * Set the broker message flows
      *
-     * @param flow
+     * @param flows
      */
     public void setFlows(Flow[] flows) {
         getDefaultBroker().setFlows(flows);
@@ -256,6 +257,18 @@ public class JBIContainer extends BaseLifeCycle {
      */
     public void setUseShutdownHook(boolean useShutdownHook) {
         this.useShutdownHook = useShutdownHook;
+    }
+
+    public boolean isUseNewTransactionModel() {
+        return useNewTransactionModel;
+    }
+
+    /**
+     * Sets whether the new transaction model should be used.  
+     * @param useNewTransactionModel
+     */
+    public void setUseNewTransactionModel(boolean useNewTransactionModel) {
+        this.useNewTransactionModel = useNewTransactionModel;
     }
 
     /**

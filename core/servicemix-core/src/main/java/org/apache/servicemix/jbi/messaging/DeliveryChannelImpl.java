@@ -728,7 +728,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     }
 
     protected void suspendTx(MessageExchangeImpl me) {
-        if (transactionManager != null) {
+        if (transactionManager != null && !container.isUseNewTransactionModel()) {
             try {
                 Transaction oldTx = me.getTransactionContext();
                 if (oldTx != null) {
@@ -749,7 +749,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
     }
 
     protected void resumeTx(MessageExchangeImpl me) throws MessagingException {
-        if (transactionManager != null) {
+        if (transactionManager != null && !container.isUseNewTransactionModel()) {
             try {
                 Transaction oldTx = me.getTransactionContext();
                 if (oldTx != null) {
@@ -771,7 +771,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
      * @throws MessagingException
      */
     protected void autoEnlistInTx(MessageExchangeImpl me) throws MessagingException {
-        if (transactionManager != null && container.isAutoEnlistInTransaction()) {
+        if (transactionManager != null && container.isAutoEnlistInTransaction() && !container.isUseNewTransactionModel()) {
             try {
                 Transaction tx = transactionManager.getTransaction();
                 if (tx != null) {
