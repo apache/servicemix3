@@ -33,6 +33,7 @@ import javax.management.ObjectName;
  *    use this class directly, but copy it, or rely on the maven-jbi-plugin
  *    to provide a default implementation.
  */
+@Deprecated
 public class DefaultBootstrap implements Bootstrap
 {
 

@@ -22,6 +22,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.BeanDefinitionStoreException;
 
 /**
  * A simple BeanFactory containing a set of predefined beans which can be used
@@ -47,7 +48,7 @@ public class SimpleBeanFactory implements BeanFactory {
         return new String[0];
     }
     public Object getBean(String name) throws BeansException {
-        return getBean(name, null);
+        return getBean(name, (Class) null);
     }
     public Object getBean(String name, Class requiredType) throws BeansException {
         Object bean = beans.get(name);
@@ -58,6 +59,12 @@ public class SimpleBeanFactory implements BeanFactory {
             throw new BeanNotOfRequiredTypeException(name, requiredType, bean.getClass());
         }
         return bean;
+    }
+    public Object getBean(String name, Object[] args) throws BeansException {
+        if (args != null) {
+            throw new BeanDefinitionStoreException("Bean is not a prototype");
+        }
+        return getBean(name, (Class) null);
     }
     public Class getType(String name) throws NoSuchBeanDefinitionException {
         Object bean = beans.get(name);

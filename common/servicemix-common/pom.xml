@@ -72,6 +72,20 @@
       <artifactId>activemq-ra</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <version>1.0.0</version>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+  <dependency>
+    <groupId>org.springframework.osgi</groupId>
+    <artifactId>spring-osgi-core</artifactId>
+    <version>1.0</version>
+    <scope>provided</scope>
+      <optional>true</optional>
+  </dependency>
   </dependencies>
 
   <build>
@@ -90,6 +104,45 @@
 
             <exclude>**/TransactionsTest.*</exclude>
           </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>1.4.0</version>
+        <configuration>
+          <instructions>
+            <Bundle-Name>${project.name}</Bundle-Name>
+            <Bundle-SymbolicName>${artifactId}</Bundle-SymbolicName>
+            <Export-Package>org.apache.servicemix*</Export-Package>
+            <Import-Package>
+              com.ibm.wsdl*;resolution:=optional,
+              javax.resource.spi.work;resolution:=optional,
+              org.apache.servicemix;resolution:=optional,
+              org.apache.servicemix.jbi*;resolution:=optional,
+              org.apache.servicemix.components*;resolution:=optional,
+              *
+            </Import-Package>
+          </instructions>
+        </configuration>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
         </configuration>
       </plugin>
     </plugins>

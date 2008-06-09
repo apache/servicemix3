@@ -34,6 +34,7 @@ import javax.management.ObjectName;
 import javax.transaction.Status;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
+import javax.transaction.SystemException;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
@@ -86,6 +87,8 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
     protected ThreadLocal<String> correlationId;
     
     protected String currentState = LifeCycleMBean.UNKNOWN;
+
+    protected Container container;
 
     public AsyncBaseLifeCycle() {
         this.running = new AtomicBoolean(false);
@@ -189,6 +192,7 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
             if (logger.isDebugEnabled()) {
                 logger.debug("Component initialized");
             }
+            container = Container.detect(context);
         } catch (JBIException e) {
             throw e;
         } catch (Exception e) {
@@ -315,7 +319,7 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
                 if (exchange != null) {
                     final Transaction tx = (Transaction) exchange
                                     .getProperty(MessageExchange.JTA_TRANSACTION_PROPERTY_NAME);
-                    if (tx != null) {
+                    if (tx != null && container.handleTransactions()) {
                         if (transactionManager == null) {
                             throw new IllegalStateException(
                                             "Exchange is enlisted in a transaction, but no transaction manager is available");
@@ -400,14 +404,8 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
     }
 
     public Object getSmx3Container() {
-        try {
-            Method getContainerMth = context.getClass().getMethod("getContainer", new Class[0]);
-            Object container = getContainerMth.invoke(context, new Object[0]);
-            return container;
-        } catch (Throwable t) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("JBI container is not ServiceMix 3 (" + t + ")");
-            }
+        if (container instanceof Container.Smx3Container) {
+            return ((Container.Smx3Container) container).getSmx3Container();
         }
         return null;
     }
@@ -438,9 +436,13 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
             try {
                 // If we are transacted, check if this exception should
                 // rollback the transaction
-                if (transactionManager != null && transactionManager.getStatus() == Status.STATUS_ACTIVE
-                                && exceptionShouldRollbackTx(e)) {
-                    transactionManager.setRollbackOnly();
+                if (transactionManager != null && transactionManager.getStatus() == Status.STATUS_ACTIVE) {
+                    if (exceptionShouldRollbackTx(e)) {
+                        transactionManager.setRollbackOnly();
+                    }
+                    if (!container.handleTransactions()) {
+                        transactionManager.suspend();
+                    }
                 }
                 exchange.setError(e);
                 channel.send(exchange);
@@ -473,6 +475,35 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
 
     protected boolean exceptionShouldRollbackTx(Exception e) {
         return false;
+    }
+
+    public void onMessageExchange(MessageExchange exchange) {
+        if (!container.handleTransactions()) {
+            final Transaction tx = (Transaction) exchange.getProperty(MessageExchange.JTA_TRANSACTION_PROPERTY_NAME);
+            processExchangeInTx(exchange, tx);
+            return;
+        }
+        try {
+            processExchange(exchange);
+        } catch (Exception e) {
+            logger.error("Error processing exchange " + exchange, e);
+            try {
+                // If we are transacted and this is a runtime exception
+                // try to mark transaction as rollback
+                if (transactionManager != null &&
+                    transactionManager.getStatus() == Status.STATUS_ACTIVE &&
+                    exceptionShouldRollbackTx(e)) {
+                    transactionManager.setRollbackOnly();
+                    if (!container.handleTransactions()) {
+                        transactionManager.suspend();
+                    }
+                }
+                exchange.setError(e);
+                channel.send(exchange);
+            } catch (Exception inner) {
+                logger.error("Error setting exchange status to ERROR", inner);
+            }
+        }
     }
 
     protected void processExchange(MessageExchange exchange) throws Exception {
@@ -557,60 +588,45 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
         }
     }
 
-    /**
-     * 
-     * @param exchange
-     * @param processor
-     * @throws MessagingException
-     * @deprecated use sendConsumerExchange(MessageExchange, Endpoint) instead
-     */
-    public void sendConsumerExchange(MessageExchange exchange, ExchangeProcessor processor) throws MessagingException {
-        // If the exchange is not ACTIVE, no answer is expected
-        if (exchange.getStatus() == ExchangeStatus.ACTIVE) {
-            processors.put(exchange.getExchangeId(), processor);
-        }
-        channel.send(exchange);
-    }
-
-    /**
-     * This method allows the component to keep no state in memory so that
-     * components can be clustered and provide fail-over and load-balancing.
-     * 
-     * @param exchange
-     * @param endpoint
-     * @throws MessagingException
-     */
-    public void sendConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException {
-        prepareConsumerExchange(exchange, endpoint);
-        // Send the exchange
-        channel.send(exchange);
-    }
-    
-    public void prepareConsumerExchange(MessageExchange exchange, Endpoint endpoint) {
-        // Check if a correlation id is already set on the exchange, otherwise create it
-        String correlationIDValue = (String) exchange.getProperty(JbiConstants.CORRELATION_ID);
-        if (correlationIDValue == null) {
-            // Retrieve correlation id from thread local variable, if exist
-            correlationIDValue = correlationId.get();
+    public void prepareExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException {
+        if (exchange.getRole() == Role.CONSUMER) {
+            // Check if a correlation id is already set on the exchange, otherwise create it
+            String correlationIDValue = (String) exchange.getProperty(JbiConstants.CORRELATION_ID);
             if (correlationIDValue == null) {
-                // Set a correlation id property that have to be propagated in all components
-                // to trace the process instance
-                correlationIDValue = exchange.getExchangeId();
-                exchange.setProperty(JbiConstants.CORRELATION_ID, exchange.getExchangeId());
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Created correlation id: " + correlationIDValue);
-                }
-            } else {
-                // Use correlation id retrieved from previous message exchange
-                exchange.setProperty(JbiConstants.CORRELATION_ID, correlationIDValue);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Correlation id retrieved from ThreadLocal: " + correlationIDValue);
+                // Retrieve correlation id from thread local variable, if exist
+                correlationIDValue = correlationId.get();
+                if (correlationIDValue == null) {
+                    // Set a correlation id property that have to be propagated in all components
+                    // to trace the process instance
+                    correlationIDValue = exchange.getExchangeId();
+                    exchange.setProperty(JbiConstants.CORRELATION_ID, exchange.getExchangeId());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Created correlation id: " + correlationIDValue);
+                    }
+                } else {
+                    // Use correlation id retrieved from previous message exchange
+                    exchange.setProperty(JbiConstants.CORRELATION_ID, correlationIDValue);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Correlation id retrieved from ThreadLocal: " + correlationIDValue);
+                    }
                 }
             }
+            // Set the sender endpoint property
+            String key = EndpointSupport.getKey(endpoint);
+            exchange.setProperty(JbiConstants.SENDER_ENDPOINT, key);
         }
-        // Set the sender endpoint property
-        String key = EndpointSupport.getKey(endpoint);
-        exchange.setProperty(JbiConstants.SENDER_ENDPOINT, key);
+        // Handle transaction
+        if (!container.handleTransactions()) {
+            try {
+                if ((exchange.getRole() == Role.CONSUMER && exchange.getStatus() == ExchangeStatus.ACTIVE) || exchange.getRole() == Role.PROVIDER) {
+                    if (transactionManager != null && transactionManager.getStatus() == Status.STATUS_ACTIVE) {
+                        exchange.setProperty(MessageExchange.JTA_TRANSACTION_PROPERTY_NAME, transactionManager.suspend());
+                    }
+                }
+            } catch (SystemException e) {
+                throw new MessagingException("Error handling transaction", e);
+            }
+        }
     }
 
     /**

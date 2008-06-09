@@ -31,9 +31,9 @@ import java.util.Properties;
  * configuration.
  * 
  * @author Guillaume Nodet
- * @deprecated
  * @since 3.0
  */
+@Deprecated
 public class PersistentConfiguration {
     
     public final static String CONFIG_FILE = "component.properties"; 

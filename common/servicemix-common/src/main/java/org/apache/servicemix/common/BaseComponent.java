@@ -194,12 +194,8 @@ public abstract class BaseComponent implements ServiceMixComponent {
         return lifeCycle.getSmx3Container();
     }
 
-    public void sendConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException {
-        lifeCycle.sendConsumerExchange(exchange, endpoint);
-    }
-
-    public void prepareConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException {
-        lifeCycle.prepareConsumerExchange(exchange, endpoint);
+    public void prepareExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException {
+        lifeCycle.prepareExchange(exchange, endpoint);
     }
 
     public QName getEPRElementName() {

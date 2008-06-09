@@ -14,31 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.common;
+package org.apache.servicemix.common.osgi;
 
-import javax.jbi.servicedesc.ServiceEndpoint;
-import javax.xml.namespace.QName;
+import org.apache.servicemix.common.Endpoint;
 
+/**
+ * The EndpointWrapper is a very simple interface that wraps an Endpoint.
+ * The main purpose of this wrapper is that Spring-DM creates proxy when using
+ * collections, so that we don't have access to the real class anymore and can not
+ * do anything based on the clas itself.  Going through a wrapper works around
+ * this problem.
+ */
+public interface EndpointWrapper {
 
-public class EndpointSupport {
+    Endpoint getEndpoint();
 
-    public static String getKey(QName service, String endpoint) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("{");
-        sb.append(service.getNamespaceURI());
-        sb.append("}");
-        sb.append(service.getLocalPart());
-        sb.append(":");
-        sb.append(endpoint);
-        return sb.toString();
-    }
-    
-    public static String getKey(ServiceEndpoint endpoint) {
-        return getKey(endpoint.getServiceName(), endpoint.getEndpointName());
-    }
-    
-    public static String getKey(Endpoint endpoint) {
-        return endpoint.getKey();
-    }
-    
 }

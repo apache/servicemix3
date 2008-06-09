@@ -64,24 +64,14 @@ public interface ServiceMixComponent extends Component {
     public String getComponentName();
     
     /**
-     * Prepare a consumer exchange from the given endpoint.
+     * Prepare an exchange sent from the given endpoint.
      * The caller need to send / sendSync the exchange. 
      * 
      * @param exchange the exchange to send
      * @param endpoint the endpoint sending the exchange
      * @throws MessagingException
      */
-    public void prepareConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException;
-
-    /**
-     * Sends a consumer exchange from the given endpoint. 
-     * 
-     * @param exchange the exchange to send
-     * @param endpoint the endpoint sending the exchange
-     * @throws MessagingException
-     * @deprecated use prepareConsumerExchange
-     */
-    public void sendConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException;
+    public void prepareExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException;
 
     /**
      * @return the QName of the element used in EPR

@@ -28,6 +28,7 @@ import org.apache.servicemix.MessageExchangeListener;
  * @author Guillaume Nodet
  * @version $Revision$
  * @since 3.0
+ * @deprecated use SyncLifeCycleWrapper instead
  */
 public class BaseLifeCycle extends AsyncBaseLifeCycle implements MessageExchangeListener {
 
@@ -36,30 +37,6 @@ public class BaseLifeCycle extends AsyncBaseLifeCycle implements MessageExchange
     
     public BaseLifeCycle(ServiceMixComponent component) {
         super(component);
-    }
-    
-    /* (non-Javadoc)
-     * @see org.apache.servicemix.common.AsyncBaseLifeCycle#onMessageExchange(javax.jbi.messaging.MessageExchange)
-     */
-    public void onMessageExchange(MessageExchange exchange) {
-        try {
-            processExchange(exchange);
-        } catch (Exception e) {
-            logger.error("Error processing exchange " + exchange, e);
-            try {
-                // If we are transacted and this is a runtime exception
-                // try to mark transaction as rollback
-                if (transactionManager != null && 
-                    transactionManager.getStatus() == Status.STATUS_ACTIVE && 
-                    exceptionShouldRollbackTx(e)) {
-                    transactionManager.setRollbackOnly();
-                }
-                exchange.setError(e);
-                channel.send(exchange);
-            } catch (Exception inner) {
-                logger.error("Error setting exchange status to ERROR", inner);
-            }
-        }
     }
     
 }

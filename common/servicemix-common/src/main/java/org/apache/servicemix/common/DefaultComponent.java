@@ -43,13 +43,14 @@ import java.util.Collections;
  *
  * @version $Revision$
  */
-public abstract class DefaultComponent extends BaseLifeCycle implements ServiceMixComponent {
+public abstract class DefaultComponent extends AsyncBaseLifeCycle implements ServiceMixComponent {
 
     protected final transient Log logger = LogFactory.getLog(getClass());
 
     protected Registry registry;
     protected BaseServiceUnitManager serviceUnitManager;
     protected ServiceUnit serviceUnit;
+    protected ComponentLifeCycle lifeCycle;
 
     public DefaultComponent() {
         setComponent(this);
@@ -61,7 +62,16 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
      * @see javax.jbi.component.Component#getLifeCycle()
      */
     public ComponentLifeCycle getLifeCycle() {
-        return this;
+        if (lifeCycle == null) {
+            try {
+                // This should fail if not inside smx3
+                lifeCycle = new SyncLifeCycleWrapper(this);
+            } catch (Throwable t) {
+                // In such a case, just not wrap the lifecycle
+                lifeCycle = this;
+            }
+        }
+        return lifeCycle;
     }
 
     /* (non-Javadoc)
@@ -315,23 +325,27 @@ public abstract class DefaultComponent extends BaseLifeCycle implements ServiceM
     }
 
 
+    public boolean isKnownEndpoint(Endpoint endpoint) {
+        Class[] endpointClasses = getEndpointClasses();
+        if (endpointClasses != null) {
+            for (int i = 0; i < endpointClasses.length; i++) {
+                Class endpointClass = endpointClasses[i];
+                if (endpointClass.isInstance(endpoint)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Provides a hook to validate the statically configured endpoint
      */
     protected void validateEndpoint(Endpoint endpoint) throws DeploymentException {
-        Class[] endpointClasses = getEndpointClasses();
-        if (endpointClasses != null) {
-            boolean valid = false;
-            for (int i = 0; i < endpointClasses.length; i++) {
-                Class endpointClass = endpointClasses[i];
-                if (endpointClass.isInstance(endpoint)) {
-                    valid = true;
-                }
-            }
-            if (!valid) {
-                throw new DeploymentException("The endpoint: " + endpoint
-                        + " is not an instance of any of the allowable types: " + Arrays.asList(endpointClasses));
-            }
+        if (!isKnownEndpoint(endpoint)) {
+            throw new DeploymentException("The endpoint: " + endpoint
+                    + " is not an instance of any of the allowable types: " + Arrays.asList(getEndpointClasses()));
         }
     }
 

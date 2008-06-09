@@ -14,31 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.common;
+package org.apache.servicemix.common.osgi;
 
-import javax.jbi.servicedesc.ServiceEndpoint;
-import javax.xml.namespace.QName;
+import org.apache.servicemix.common.Endpoint;
 
+public class EndpointWrapperImpl implements EndpointWrapper {
 
-public class EndpointSupport {
+    private final Endpoint endpoint;
 
-    public static String getKey(QName service, String endpoint) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("{");
-        sb.append(service.getNamespaceURI());
-        sb.append("}");
-        sb.append(service.getLocalPart());
-        sb.append(":");
-        sb.append(endpoint);
-        return sb.toString();
+    public EndpointWrapperImpl(Endpoint endpoint) {
+        this.endpoint = endpoint;
     }
-    
-    public static String getKey(ServiceEndpoint endpoint) {
-        return getKey(endpoint.getServiceName(), endpoint.getEndpointName());
+
+    public Endpoint getEndpoint() {
+        return endpoint;
     }
-    
-    public static String getKey(Endpoint endpoint) {
-        return endpoint.getKey();
-    }
-    
 }

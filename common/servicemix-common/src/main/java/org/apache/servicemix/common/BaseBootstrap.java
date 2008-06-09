@@ -37,6 +37,7 @@ import javax.management.ObjectName;
  * @deprecated
  * @since 3.0
  */
+@Deprecated
 public class BaseBootstrap implements Bootstrap {
 
     protected final transient Log logger = LogFactory.getLog(getClass());

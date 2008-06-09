@@ -121,8 +121,8 @@ public abstract class Endpoint {
         return true;
     }
 
-    public void prepareConsumerExchange(MessageExchange exchange) throws MessagingException {
-        getServiceUnit().getComponent().prepareConsumerExchange(exchange, this);
+    public void prepareExchange(MessageExchange exchange) throws MessagingException {
+        getServiceUnit().getComponent().prepareExchange(exchange, this);
     }
 
     public abstract void activate() throws Exception;

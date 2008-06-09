@@ -16,8 +16,6 @@
  */
 package org.apache.servicemix.common;
 
-import java.util.List;
-
 import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
@@ -97,10 +95,7 @@ public class EndpointDeliveryChannel implements DeliveryChannel {
     }
 
     protected void prepareExchange(MessageExchange exchange) throws MessagingException {
-        if (exchange.getStatus() == ExchangeStatus.ACTIVE && exchange.getRole() == Role.CONSUMER) {
-            Endpoint ep = getEndpoint();
-            getEndpoint().prepareConsumerExchange(exchange);
-        }
+        getEndpoint().prepareExchange(exchange);
     }
 
     protected Endpoint getEndpoint() {
