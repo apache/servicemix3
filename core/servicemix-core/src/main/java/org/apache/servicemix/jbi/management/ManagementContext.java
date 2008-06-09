@@ -154,6 +154,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         if (container.isEmbedded() && server == null) {
             mbeanServerContext.setUseMBeanServer(false);
             mbeanServerContext.setCreateMBeanServer(false);
+            mbeanServerContext.setCreateConnector(false);
         }
         mbeanServerContext.setMBeanServer(server);
         try {
