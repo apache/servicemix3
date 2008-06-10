@@ -36,7 +36,6 @@
         <dependency>wsdl4j/wsdl4j//jar</dependency>
         <dependency>org.jencks/jencks//jar</dependency>
         <dependency>commons-beanutils/commons-beanutils-core//jar</dependency>
-        <dependency>backport-util-concurrent/backport-util-concurrent//car</dependency>
         <dependency>org.springframework/spring-beans//jar</dependency>
         <dependency>org.springframework/spring-core//jar</dependency>
         <dependency>org.springframework/spring-context//jar</dependency>

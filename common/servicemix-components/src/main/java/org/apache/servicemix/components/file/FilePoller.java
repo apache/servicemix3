@@ -23,7 +23,7 @@ import org.apache.servicemix.components.util.FileMarshaler;
 import org.apache.servicemix.components.util.PollingComponentSupport;
 import org.apache.servicemix.jbi.util.FileUtil;
 
-import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.jbi.JBIException;
 import javax.jbi.management.DeploymentException;

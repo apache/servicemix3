@@ -33,7 +33,7 @@ import org.apache.servicemix.components.util.DefaultFileMarshaler;
 import org.apache.servicemix.components.util.FileMarshaler;
 import org.apache.servicemix.components.util.PollingComponentSupport;
 
-import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * A  component which polls for files to arrive on an FTP server

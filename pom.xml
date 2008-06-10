@@ -213,7 +213,6 @@
         <spring-version>2.0.6</spring-version>
         <activemq-version>5.1.0</activemq-version>
         <activeio-version>3.1.0</activeio-version>
-        <backport-util-concurrent-version>2.2</backport-util-concurrent-version>
         <camel-version>1.3.0</camel-version>
         <jencks-version>2.1</jencks-version>
         <jetty-version>6.1.6</jetty-version>
@@ -1047,11 +1046,6 @@
                 <groupId>axis</groupId>
                 <artifactId>axis-saaj</artifactId>
                 <version>1.3</version>
-            </dependency>
-            <dependency>
-                <groupId>backport-util-concurrent</groupId>
-                <artifactId>backport-util-concurrent</artifactId>
-                <version>${backport-util-concurrent-version}</version>
             </dependency>
             <dependency>
                 <groupId>castor</groupId>
