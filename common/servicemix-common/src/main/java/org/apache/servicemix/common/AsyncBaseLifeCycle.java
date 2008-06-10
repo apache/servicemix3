@@ -629,6 +629,25 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
         }
     }
 
+    @Deprecated
+    public void sendConsumerExchange(MessageExchange exchange, ExchangeProcessor processor) throws MessagingException {
+        if (exchange.getStatus() == ExchangeStatus.ACTIVE) {
+            processors.put(exchange.getExchangeId(), processor);
+        }
+        channel.send(exchange);
+    }
+
+    @Deprecated
+    public void prepareConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException {
+        prepareExchange(exchange, endpoint);
+    }
+
+    @Deprecated
+    public void sendConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException {
+        prepareExchange(exchange, endpoint);
+        channel.send(exchange);
+    }
+
     /**
      * Handle an exchange sent to an EPR resolved by this component
      * 

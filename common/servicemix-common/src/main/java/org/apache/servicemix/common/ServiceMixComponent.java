@@ -73,6 +73,12 @@ public interface ServiceMixComponent extends Component {
      */
     public void prepareExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException;
 
+    @Deprecated
+    public void prepareConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException;
+
+    @Deprecated
+    public void sendConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException;
+
     /**
      * @return the QName of the element used in EPR
      */
