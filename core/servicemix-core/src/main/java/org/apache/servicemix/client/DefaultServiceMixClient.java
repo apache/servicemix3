@@ -230,6 +230,7 @@ public class DefaultServiceMixClient extends ComponentSupport implements Service
             throw new JBIException(error);
         }
         if (exchange.getFault() != null) {
+            done(exchange);
             throw FaultException.newInstance(exchange);
         }
 
@@ -238,7 +239,9 @@ public class DefaultServiceMixClient extends ComponentSupport implements Service
         if (outMessage == null) {
             throw new NoOutMessageAvailableException(exchange);
         }
-        return getMarshaler().unmarshal(exchange, outMessage);
+        Object result = getMarshaler().unmarshal(exchange, outMessage);
+        done(exchange);
+        return result;
     }
 
     /**
