@@ -203,4 +203,13 @@ public abstract class BaseComponent implements ServiceMixComponent {
         return null;
     }
 
+    @Deprecated
+    public void prepareConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException {
+        lifeCycle.prepareConsumerExchange(exchange, endpoint);
+    }
+
+    @Deprecated
+    public void sendConsumerExchange(MessageExchange exchange, Endpoint endpoint) throws MessagingException {
+        lifeCycle.sendConsumerExchange(exchange, endpoint);
+    }
 }
