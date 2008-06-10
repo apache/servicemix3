@@ -259,6 +259,7 @@ public class ServiceMixClientFacade implements ServiceMixClient {
             throw new JBIException(error);
         }
         if (exchange.getFault() != null) {
+            done(exchange);
             throw FaultException.newInstance(exchange);
         }
 
