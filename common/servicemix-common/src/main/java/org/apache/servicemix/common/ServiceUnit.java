@@ -142,7 +142,8 @@ public class ServiceUnit {
     }
 
     public void removeEndpoint(Endpoint endpoint) throws DeploymentException {
-        if (this.endpoints.remove(endpoint) != null) {
+        String key = EndpointSupport.getKey(endpoint);
+        if (this.endpoints.remove(key) == null) {
             throw new DeploymentException("Endpoint not found in the SU for key: " + EndpointSupport.getKey(endpoint));
         }
         if (this.status == LifeCycleMBean.STARTED) {
