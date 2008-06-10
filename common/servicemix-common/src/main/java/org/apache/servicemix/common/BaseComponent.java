@@ -38,6 +38,7 @@ import javax.xml.namespace.QName;
  * @version $Revision$
  * @since 3.0
  */
+@Deprecated
 public abstract class BaseComponent implements ServiceMixComponent {
 
     protected final transient Log logger = LogFactory.getLog(getClass());

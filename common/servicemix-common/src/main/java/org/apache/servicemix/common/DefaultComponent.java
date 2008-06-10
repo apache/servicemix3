@@ -282,8 +282,9 @@ public abstract class DefaultComponent extends AsyncBaseLifeCycle implements Ser
     }
 
     /* (non-Javadoc)
-    * @see org.servicemix.common.BaseLifeCycle#doInit()
+    * @see org.apache.servicemix.common.AsyncBaseLifeCycle#doInit()
     */
+    @Override
     protected void doInit() throws Exception {
         super.doInit();
         List endpoints = getConfiguredEndpoints();
@@ -351,8 +352,9 @@ public abstract class DefaultComponent extends AsyncBaseLifeCycle implements Ser
 
 
     /* (non-Javadoc)
-    * @see org.servicemix.common.BaseLifeCycle#doStart()
+    * @see org.apache.servicemix.common.AsyncBaseLifeCycle#doStart()
     */
+    @Override
     protected void doStart() throws Exception {
         super.doStart();
         if (serviceUnit != null) {
@@ -364,8 +366,9 @@ public abstract class DefaultComponent extends AsyncBaseLifeCycle implements Ser
     }
 
     /* (non-Javadoc)
-    * @see org.servicemix.common.BaseLifeCycle#doStop()
+    * @see org.apache.servicemix.common.AsyncBaseLifeCycle#doStop()
     */
+    @Override
     protected void doStop() throws Exception {
         if (serviceUnit != null) {
             serviceUnit.stop();
@@ -374,8 +377,9 @@ public abstract class DefaultComponent extends AsyncBaseLifeCycle implements Ser
     }
 
     /* (non-Javadoc)
-    * @see org.servicemix.common.BaseLifeCycle#doShutDown()
+    * @see org.apache.servicemix.common.AsyncBaseLifeCycle#doShutDown()
     */
+    @Override
     protected void doShutDown() throws Exception {
         if (serviceUnit != null) {
             serviceUnit.shutDown();

@@ -28,7 +28,6 @@ import java.util.Map;
 import javax.jbi.management.DeploymentException;
 
 import org.apache.servicemix.common.AbstractDeployer;
-import org.apache.servicemix.common.BaseLifeCycle;
 import org.apache.servicemix.common.Endpoint;
 import org.apache.servicemix.common.EndpointComponentContext;
 import org.apache.servicemix.common.ServiceMixComponent;
@@ -167,7 +166,7 @@ public class AbstractXBeanDeployer extends AbstractDeployer {
 
     protected Map getParentBeansMap() {
         Map beans = new HashMap();
-        beans.put("context", new EndpointComponentContext(((BaseLifeCycle) component.getLifeCycle()).getContext()));
+        beans.put("context", new EndpointComponentContext(component.getComponentContext()));
         beans.put("component", component);
         Object smx3 = component.getSmx3Container();
         if (smx3 != null) {
