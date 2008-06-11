@@ -53,7 +53,7 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-compiler</artifactId>
-            <version>3.0.3</version>
+            <version>4.0.7</version>
             <scope>test</scope>
             <exclusions>
               <exclusion>
