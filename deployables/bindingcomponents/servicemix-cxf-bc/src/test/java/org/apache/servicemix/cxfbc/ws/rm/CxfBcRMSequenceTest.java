@@ -772,7 +772,7 @@ public class CxfBcRMSequenceTest extends SpringTestSupport {
         greeter.greetMe("one");
 
         try {
-            Thread.sleep(500);
+            Thread.sleep(200);
         } catch (InterruptedException ex) {
             // ignore
         }
@@ -787,7 +787,7 @@ public class CxfBcRMSequenceTest extends SpringTestSupport {
             assertTrue("Unexpected reason.", sf.getReason().endsWith("is not a known Sequence identifier."));
         }
 
-        awaitMessages(3, 3, 5000);
+        awaitMessages(3, 3, 2000);
 
         MessageFlow mf = new MessageFlow(outRecorder.getOutboundMessages(), inRecorder.getInboundMessages());
 
