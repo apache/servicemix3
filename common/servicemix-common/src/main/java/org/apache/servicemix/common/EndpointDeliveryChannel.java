@@ -25,6 +25,10 @@ import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
+import javax.transaction.Transaction;
+import javax.transaction.TransactionManager;
+import javax.transaction.InvalidTransactionException;
+import javax.transaction.SystemException;
 
 /**
  * This class is a wrapper around an existing DeliveryChannel
@@ -86,12 +90,34 @@ public class EndpointDeliveryChannel implements DeliveryChannel {
 
     public boolean sendSync(MessageExchange exchange, long timeout) throws MessagingException {
         prepareExchange(exchange);
-        return channel.sendSync(exchange, timeout);
+        boolean ret = channel.sendSync(exchange, timeout);
+        if (ret) {
+            resumeTx(exchange);
+        }
+        return ret;
     }
 
     public boolean sendSync(MessageExchange exchange) throws MessagingException {
         prepareExchange(exchange);
-        return channel.sendSync(exchange);
+        boolean ret = channel.sendSync(exchange);
+        if (ret) {
+            resumeTx(exchange);
+        }
+        return ret;
+    }
+
+    private void resumeTx(MessageExchange exchange) throws MessagingException {
+        Transaction tx = (Transaction) exchange.getProperty(MessageExchange.JTA_TRANSACTION_PROPERTY_NAME);
+        if (tx != null) {
+            TransactionManager txmgr = (TransactionManager) endpoint.getServiceUnit().getComponent().getComponentContext().getTransactionManager();
+            try {
+                txmgr.resume(tx);
+            } catch (InvalidTransactionException e) {
+                throw new MessagingException(e);
+            } catch (SystemException e) {
+                throw new MessagingException(e);
+            }
+        }
     }
 
     protected void prepareExchange(MessageExchange exchange) throws MessagingException {

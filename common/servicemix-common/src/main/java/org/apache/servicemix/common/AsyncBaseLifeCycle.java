@@ -619,7 +619,7 @@ public class AsyncBaseLifeCycle implements ComponentLifeCycle {
         if (!container.handleTransactions()) {
             try {
                 if ((exchange.getRole() == Role.CONSUMER && exchange.getStatus() == ExchangeStatus.ACTIVE) || exchange.getRole() == Role.PROVIDER) {
-                    if (transactionManager != null && transactionManager.getStatus() == Status.STATUS_ACTIVE) {
+                    if (transactionManager != null) {
                         exchange.setProperty(MessageExchange.JTA_TRANSACTION_PROPERTY_NAME, transactionManager.suspend());
                     }
                 }

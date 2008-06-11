@@ -16,9 +16,14 @@
  */
 package org.apache.servicemix.common;
 
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.InOut;
 import javax.jbi.component.Component;
 import javax.xml.namespace.QName;
 import javax.transaction.Status;
@@ -29,9 +34,14 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.nmr.flow.Flow;
 import org.apache.servicemix.jbi.nmr.flow.seda.SedaFlow;
+import org.apache.servicemix.jbi.util.MessageUtil;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
+import org.apache.servicemix.common.endpoints.SimpleEndpoint;
+import org.apache.servicemix.common.endpoints.ConsumerEndpoint;
+import org.apache.servicemix.common.endpoints.PollingEndpoint;
+import org.apache.servicemix.tck.ExchangeCompletedListener;
 import org.jencks.GeronimoPlatformTransactionManager;
 import junit.framework.TestCase;
 
@@ -39,10 +49,12 @@ public class NewTransactionsTest extends TestCase {
 
     protected JBIContainer jbi;
     protected TransactionManager txManager;
-    protected Component component;
+    protected TestComponent component;
     protected ServiceMixClient client;
     protected Exception exceptionToThrow;
     protected boolean exceptionShouldRollback;
+    protected boolean useInOut;
+    protected ExchangeCompletedListener listener;
 
     protected void setUp() throws Exception {
         exceptionToThrow = null;
@@ -50,6 +62,7 @@ public class NewTransactionsTest extends TestCase {
 
         txManager = new GeronimoPlatformTransactionManager();
 
+        listener = new ExchangeCompletedListener();
         jbi = new JBIContainer();
         jbi.setFlows(new Flow[] { new SedaFlow() });
         jbi.setEmbedded(true);
@@ -57,6 +70,7 @@ public class NewTransactionsTest extends TestCase {
         jbi.setTransactionManager(txManager);
         jbi.setAutoEnlistInTransaction(true);
         jbi.setUseNewTransactionModel(true);
+        jbi.addListener(listener);
         jbi.init();
         jbi.start();
         component = new TestComponent();
@@ -69,9 +83,10 @@ public class NewTransactionsTest extends TestCase {
     }
 
     public void testTxOkAsync() throws Exception {
+        component.addProvider();
         txManager.begin();
         InOnly me = client.createInOnlyExchange();
-        me.setService(new QName("service"));
+        me.setService(new QName("provider"));
         me.getInMessage().setContent(new StringSource("<hello>world</hello>"));
         assertEquals(Status.STATUS_ACTIVE, txManager.getStatus());
         me.setProperty(MessageExchange.JTA_TRANSACTION_PROPERTY_NAME, txManager.suspend());
@@ -87,9 +102,10 @@ public class NewTransactionsTest extends TestCase {
     }
 
     public void testTxOkSync() throws Exception {
+        component.addProvider();
         txManager.begin();
         InOnly me = client.createInOnlyExchange();
-        me.setService(new QName("service"));
+        me.setService(new QName("provider"));
         me.getInMessage().setContent(new StringSource("<hello>world</hello>"));
         assertEquals(Status.STATUS_ACTIVE, txManager.getStatus());
         me.setProperty(MessageExchange.JTA_TRANSACTION_PROPERTY_NAME, txManager.suspend());
@@ -103,10 +119,11 @@ public class NewTransactionsTest extends TestCase {
     }
 
     public void testTxExceptionAsync() throws Exception {
+        component.addProvider();
         exceptionToThrow = new Exception("Business exception");
         txManager.begin();
         InOnly me = client.createInOnlyExchange();
-        me.setService(new QName("service"));
+        me.setService(new QName("provider"));
         me.getInMessage().setContent(new StringSource("<hello>world</hello>"));
         assertEquals(Status.STATUS_ACTIVE, txManager.getStatus());
         me.setProperty(MessageExchange.JTA_TRANSACTION_PROPERTY_NAME, txManager.suspend());
@@ -122,10 +139,11 @@ public class NewTransactionsTest extends TestCase {
     }
 
     public void testTxExceptionSync() throws Exception {
+        component.addProvider();
         exceptionToThrow = new Exception("Business exception");
         txManager.begin();
         InOnly me = client.createInOnlyExchange();
-        me.setService(new QName("service"));
+        me.setService(new QName("provider"));
         me.getInMessage().setContent(new StringSource("<hello>world</hello>"));
         assertEquals(Status.STATUS_ACTIVE, txManager.getStatus());
         me.setProperty(MessageExchange.JTA_TRANSACTION_PROPERTY_NAME, txManager.suspend());
@@ -140,11 +158,12 @@ public class NewTransactionsTest extends TestCase {
     }
 
     public void testTxExceptionRollbackAsync() throws Exception {
+        component.addProvider();
         exceptionToThrow = new Exception("Business exception");
         exceptionShouldRollback = true;
         txManager.begin();
         InOnly me = client.createInOnlyExchange();
-        me.setService(new QName("service"));
+        me.setService(new QName("provider"));
         me.getInMessage().setContent(new StringSource("<hello>world</hello>"));
         assertEquals(Status.STATUS_ACTIVE, txManager.getStatus());
         me.setProperty(MessageExchange.JTA_TRANSACTION_PROPERTY_NAME, txManager.suspend());
@@ -159,11 +178,12 @@ public class NewTransactionsTest extends TestCase {
     }
 
     public void testTxExceptionRollbackSync() throws Exception {
+        component.addProvider();
         exceptionToThrow = new RuntimeException("Runtime exception");
         exceptionShouldRollback = true;
         txManager.begin();
         InOnly me = client.createInOnlyExchange();
-        me.setService(new QName("service"));
+        me.setService(new QName("provider"));
         me.getInMessage().setContent(new StringSource("<hello>world</hello>"));
         assertEquals(Status.STATUS_ACTIVE, txManager.getStatus());
         me.setProperty(MessageExchange.JTA_TRANSACTION_PROPERTY_NAME, txManager.suspend());
@@ -177,50 +197,86 @@ public class NewTransactionsTest extends TestCase {
         txManager.rollback();
     }
 
-    protected class TestComponent extends BaseComponent {
+    public void testExceptionWithConsumerInOnly() throws Exception {
+        useInOut = false;
+        component.addProvider();
+        component.addConsumer();
+        assertTrue(component.commited.await(1, TimeUnit.SECONDS));
+        listener.assertExchangeCompleted();
+    }
+
+    public void testExceptionWithConsumerInOut() throws Exception {
+        useInOut = true;
+        component.addProvider();
+        component.addConsumer();
+        assertTrue(component.commited.await(1, TimeUnit.SECONDS));
+        listener.assertExchangeCompleted();
+    }
+
+    protected class TestComponent extends DefaultComponent {
+        public CountDownLatch commited = new CountDownLatch(1);
         public TestComponent() {
             super();
         }
-        protected BaseLifeCycle createLifeCycle() {
-            return new TestLifeCycle();
+        public void addProvider() throws Exception {
+            TestProviderEndpoint ep = new TestProviderEndpoint();
+            ep.setService(new QName("provider"));
+            ep.setEndpoint("endpoint");
+            addEndpoint(ep);
         }
-
-        protected class TestLifeCycle extends BaseLifeCycle {
-            protected ServiceUnit su;
-            public TestLifeCycle() {
-                super(TestComponent.this);
-            }
-            protected void doInit() throws Exception {
-                super.doInit();
-                su = new ServiceUnit();
-                su.setComponent(component);
-                TestEndpoint ep = new TestEndpoint();
-                ep.setService(new QName("service"));
-                ep.setEndpoint("endpoint");
-                ep.setServiceUnit(su);
-                su.addEndpoint(ep);
-                getRegistry().registerServiceUnit(su);
-            }
-            protected void doStart() throws Exception {
-                super.doStart();
-                su.start();
-            }
-            protected void doStop() throws Exception {
-                super.doStop();
-                su.stop();
-            }
-            protected boolean exceptionShouldRollbackTx(Exception e) {
-                return exceptionShouldRollback;
+        public void addConsumer() throws Exception {
+            TestConsumerEndpoint ep = new TestConsumerEndpoint();
+            ep.setService(new QName("consumer"));
+            ep.setEndpoint("endpoint");
+            ep.setTargetService(new QName("provider"));
+            addEndpoint(ep);
+        }
+        protected boolean exceptionShouldRollbackTx(Exception e) {
+            return exceptionShouldRollback;
+        }
+        protected class TestProviderEndpoint extends ProviderEndpoint {
+            public void process(MessageExchange exchange) throws Exception {
+                if (exchange.getStatus() != ExchangeStatus.ACTIVE) {
+                    return;
+                }
+                if (exceptionToThrow != null) {
+                    throw exceptionToThrow;
+                }
+                if (exchange instanceof InOut) {
+                    MessageUtil.transferInToOut(exchange, exchange);
+                } else {
+                    exchange.setStatus(ExchangeStatus.DONE);
+                }
+                send(exchange);
             }
         }
-
-        protected class TestEndpoint extends ProviderEndpoint {
+        protected class TestConsumerEndpoint extends ConsumerEndpoint {
             public void process(MessageExchange exchange) throws Exception {
                 if (exceptionToThrow != null) {
                     throw exceptionToThrow;
                 }
-                exchange.setStatus(ExchangeStatus.DONE);
-                send(exchange);
+                if (exchange instanceof InOut) {
+                    done(exchange);
+                }
+                txManager.commit();
+                commited.countDown();
+            }
+            public void start() throws Exception {
+                super.start();
+                txManager.begin();
+                if (useInOut) {
+                    InOut exchange = channel.createExchangeFactory().createInOutExchange();
+                    exchange.setInMessage(exchange.createMessage());
+                    exchange.getInMessage().setContent(new StringSource("<hello>world</hello>"));
+                    configureExchangeTarget(exchange);
+                    send(exchange);
+                } else {
+                    InOnly exchange = channel.createExchangeFactory().createInOnlyExchange();
+                    exchange.setInMessage(exchange.createMessage());
+                    exchange.getInMessage().setContent(new StringSource("<hello>world</hello>"));
+                    configureExchangeTarget(exchange);
+                    send(exchange);
+                }
             }
         }
     }

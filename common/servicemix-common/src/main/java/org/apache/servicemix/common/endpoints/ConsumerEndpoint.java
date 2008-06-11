@@ -74,7 +74,15 @@ public abstract class ConsumerEndpoint extends SimpleEndpoint {
         }
     }
 
-    public abstract String getLocationURI();
+    /**
+     * Return the URI identifying this external endpoint.
+     * This must be overriden so that endpoint resolution can work correctly.
+     *
+     * @return the URI identifying this external endpoint 
+     */
+    public String getLocationURI() {
+        return null;
+    }
 
     /**
      * @return the targetEndpoint

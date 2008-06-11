@@ -57,30 +57,31 @@ public abstract class Container {
     }
 
     public static class Smx3Container extends Container {
+        private boolean handleTransactions;
+        private Object container;
         public Smx3Container(ComponentContext context) {
             super(context);
+            try {
+                Method getContainerMth = context.getClass().getMethod("getContainer", new Class[0]);
+                container = getContainerMth.invoke(context, new Object[0]);
+            } catch (Throwable t) {
+            }
+            try {
+                Method isUseNewTransactionModelMth = container.getClass().getMethod("isUseNewTransactionModel", new Class[0]);
+                Boolean b = (Boolean) isUseNewTransactionModelMth.invoke(container, new Object[0]);
+                handleTransactions = !b;
+            } catch (Throwable t) {
+                handleTransactions = true;
+            }
         }
         public Type getType() {
             return Type.ServiceMix3;
         }
         public boolean handleTransactions() {
-            try {
-                Object container = getSmx3Container();
-                Method isUseNewTransactionModelMth = container.getClass().getMethod("isUseNewTransactionModel", new Class[0]);
-                Boolean b = (Boolean) isUseNewTransactionModelMth.invoke(container, new Object[0]);
-                return !b;
-            } catch (Throwable t) {
-            }
-            return true;
+            return handleTransactions;
         }
         public Object getSmx3Container() {
-            try {
-                Method getContainerMth = context.getClass().getMethod("getContainer", new Class[0]);
-                Object container = getContainerMth.invoke(context, new Object[0]);
-                return container;
-            } catch (Throwable t) {
-            }
-            return null;
+            return container;
         }
     }
 

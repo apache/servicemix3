@@ -37,6 +37,7 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.nmr.flow.Flow;
 import org.apache.servicemix.jbi.nmr.flow.jca.JCAFlow;
 import org.apache.servicemix.jbi.nmr.flow.seda.SedaFlow;
+import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.jencks.GeronimoPlatformTransactionManager;
 
 public class TransactionsTest extends TestCase {
@@ -58,7 +59,7 @@ public class TransactionsTest extends TestCase {
         broker.addConnector("tcp://localhost:61616");
         broker.start();
         
-        txManager = (TransactionManager) new GeronimoPlatformTransactionManager();
+        txManager = new GeronimoPlatformTransactionManager();
         
         jbi = new JBIContainer();
         jbi.setFlows(new Flow[] { new SedaFlow(), new JCAFlow() });
@@ -165,70 +166,29 @@ public class TransactionsTest extends TestCase {
         txManager.rollback();
     }
     
-    private class TestComponent extends BaseComponent {
+    private class TestComponent extends DefaultComponent {
         public TestComponent() {
             super();
         }
-        protected BaseLifeCycle createLifeCycle() {
-            return new TestLifeCycle();
+        protected void doInit() throws Exception {
+            super.doInit();
+            TestEndpoint ep = new TestEndpoint();
+            ep.setService(new QName("service"));
+            ep.setEndpoint("endpoint");
+            addEndpoint(ep);
         }
-        
-        protected class TestLifeCycle extends BaseLifeCycle {
-            protected ServiceUnit su;
-            public TestLifeCycle() {
-                super(TestComponent.this);
-            }
-            protected void doInit() throws Exception {
-                super.doInit();
-                su = new ServiceUnit();
-                su.setComponent(component);
-                TestEndpoint ep = new TestEndpoint();
-                ep.setService(new QName("service"));
-                ep.setEndpoint("endpoint");
-                ep.setServiceUnit(su);
-                su.addEndpoint(ep);
-                getRegistry().registerServiceUnit(su);
-            }
-            protected void doStart() throws Exception {
-                super.doStart();
-                su.start();
-            }
-            protected void doStop() throws Exception {
-                super.doStop();
-                su.stop();
-            }
-            protected boolean exceptionShouldRollbackTx(Exception e) {
-                return exceptionShouldRollback;
-            }
+        protected boolean exceptionShouldRollbackTx(Exception e) {
+            return exceptionShouldRollback;
         }
-        
-        protected class TestEndpoint extends Endpoint implements ExchangeProcessor {
+
+        protected class TestEndpoint extends ProviderEndpoint implements ExchangeProcessor {
             protected ServiceEndpoint activated;
-            public void activate() throws Exception {
-                ComponentContext ctx = this.serviceUnit.getComponent().getComponentContext();
-                activated = ctx.activateEndpoint(service, endpoint);
-            }
-            public void deactivate() throws Exception {
-                ComponentContext ctx = this.serviceUnit.getComponent().getComponentContext();
-                ctx.deactivateEndpoint(activated);
-                activated = null;
-            }
-            public ExchangeProcessor getProcessor() {
-                return this;
-            }
-            public Role getRole() {
-                return Role.PROVIDER;
-            }
             public void process(MessageExchange exchange) throws Exception {
                 if (exceptionToThrow != null) {
                     throw exceptionToThrow;
                 }
                 exchange.setStatus(ExchangeStatus.DONE);
                 getComponentContext().getDeliveryChannel().send(exchange);
-            }
-            public void start() throws Exception {
-            }
-            public void stop() throws Exception {
             }
         }
     }

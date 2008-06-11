@@ -19,8 +19,9 @@ package org.apache.servicemix.common.xbean;
 import java.io.File;
 import java.net.URL;
 
-import org.apache.servicemix.common.BaseComponent;
 import org.apache.servicemix.common.ServiceUnit;
+import org.apache.servicemix.common.ServiceMixComponent;
+import org.apache.servicemix.common.DefaultComponent;
 import org.apache.xbean.classloader.JarFileClassLoader;
 
 import junit.framework.TestCase;
@@ -36,7 +37,7 @@ public class XBeanDeployerTest extends TestCase {
     }
     
     public void testDeployWithProperties() throws Exception {
-        MyXBeanDeployer deployer = new MyXBeanDeployer(new BaseComponent() { });
+        MyXBeanDeployer deployer = new MyXBeanDeployer(new DefaultComponent());
         ServiceUnit su = deployer.deploy("xbean", getServiceUnitPath("xbean"));
         assertNotNull(su);
         assertEquals(1, su.getEndpoints().size());
@@ -45,7 +46,7 @@ public class XBeanDeployerTest extends TestCase {
     }
     
     public void testDeployWithClasspathXml() throws Exception {
-        MyXBeanDeployer deployer = new MyXBeanDeployer(new BaseComponent() { });
+        MyXBeanDeployer deployer = new MyXBeanDeployer(new DefaultComponent() { });
         ServiceUnit su = deployer.deploy("xbean-cp", getServiceUnitPath("xbean-cp"));
         assertNotNull(su);
         ClassLoader cl = su.getConfigurationClassLoader();
@@ -56,7 +57,7 @@ public class XBeanDeployerTest extends TestCase {
     }
     
     public void testDeployWithInlineClasspath() throws Exception {
-        MyXBeanDeployer deployer = new MyXBeanDeployer(new BaseComponent() { });
+        MyXBeanDeployer deployer = new MyXBeanDeployer(new DefaultComponent() { });
         ServiceUnit su = deployer.deploy("xbean-inline", getServiceUnitPath("xbean-inline"));
         assertNotNull(su);
         ClassLoader cl = su.getConfigurationClassLoader();
@@ -67,7 +68,7 @@ public class XBeanDeployerTest extends TestCase {
     }
     
     public void testDeployWithDefaultClasspath() throws Exception {
-        MyXBeanDeployer deployer = new MyXBeanDeployer(new BaseComponent() { });
+        MyXBeanDeployer deployer = new MyXBeanDeployer(new DefaultComponent() { });
         ServiceUnit su = deployer.deploy("xbean-lib", getServiceUnitPath("xbean-lib"));
         assertNotNull(su);
         ClassLoader cl = su.getConfigurationClassLoader();
@@ -79,7 +80,7 @@ public class XBeanDeployerTest extends TestCase {
     
     public static class MyXBeanDeployer extends AbstractXBeanDeployer {
 
-        public MyXBeanDeployer(BaseComponent component) {
+        public MyXBeanDeployer(ServiceMixComponent component) {
             super(component);
         }
         

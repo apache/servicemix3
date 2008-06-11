@@ -43,7 +43,7 @@ import java.util.Collections;
  *
  * @version $Revision$
  */
-public abstract class DefaultComponent extends AsyncBaseLifeCycle implements ServiceMixComponent {
+public class DefaultComponent extends AsyncBaseLifeCycle implements ServiceMixComponent {
 
     protected final transient Log logger = LogFactory.getLog(getClass());
 
@@ -261,7 +261,9 @@ public abstract class DefaultComponent extends AsyncBaseLifeCycle implements Ser
     /**
      * Returns an array of configured endpoints for the component or null if there are no configured endpoints
      */
-    protected abstract List getConfiguredEndpoints();
+    protected List getConfiguredEndpoints() {
+        return null;
+    }
 
     /**
      * Returns a list of valid endpoint classes or null if the component does not wish to programmatically
@@ -269,7 +271,9 @@ public abstract class DefaultComponent extends AsyncBaseLifeCycle implements Ser
      *
      * @return the endpoint classes used to validate configuration or null to disable the validation
      */
-    protected abstract Class[] getEndpointClasses();
+    protected Class[] getEndpointClasses() {
+        return null;
+    }
 
     /**
      * A little helper method to turn a possibly null list of endpoints into a list of endpoints
