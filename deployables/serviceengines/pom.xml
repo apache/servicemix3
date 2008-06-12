@@ -47,6 +47,7 @@
     <module>servicemix-script</module>
     <module>servicemix-scripting</module>
     <module>servicemix-wsn2005</module>
+    <module>servicemix-validation</module>
   </modules>
 
   <build>
