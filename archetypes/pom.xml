@@ -60,6 +60,7 @@
         <module>servicemix-drools-service-unit</module>
         <module>servicemix-cxf-bc-service-unit</module>
         <module>servicemix-cxf-se-service-unit</module>
+        <module>servicemix-cxf-se-wsdl-first-service-unit</module>
         <module>servicemix-osworkflow-service-unit</module>
         <module>servicemix-project-root</module>
         <module>servicemix-archetype-catalog</module>
@@ -91,6 +92,7 @@
 					<filters>
 						<servicemix-version>${servicemix-version}</servicemix-version>
 						<xbean-version>${xbean-version}</xbean-version>
+                                                <cxf-version>${cxf-version}</cxf-version>
 						<camel-version>${camel-version}</camel-version>
 						<xfire-version>${xfire-version}</xfire-version>
                                                 <activemq-version>${activemq-version}</activemq-version>
