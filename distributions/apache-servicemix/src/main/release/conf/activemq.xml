@@ -32,7 +32,7 @@
 
     <!-- Use AMQ Message Store as default broker persistence adapter -->
     <amq:persistenceAdapter>
-      <amq:amqPersistenceAdapter directory="file://./data/amq"/>
+      <amq:amqPersistenceAdapter directory="file:./data/amq"/>
     
       <!-- Examples for journaledJDBC if JDBC is required -->
       <!--
