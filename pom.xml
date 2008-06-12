@@ -803,6 +803,11 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
+                <artifactId>servicemix-scripting</artifactId>
+                <version>3.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-file</artifactId>
                 <version>3.3-SNAPSHOT</version>
             </dependency>

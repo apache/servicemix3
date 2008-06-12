@@ -45,6 +45,7 @@
     <module>servicemix-osworkflow</module>
     <module>servicemix-saxon</module>
     <module>servicemix-script</module>
+    <module>servicemix-scripting</module>
     <module>servicemix-wsn2005</module>
   </modules>
 
