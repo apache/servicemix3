@@ -91,12 +91,15 @@ public class JbiBinding {
                                                        String defaultMep)
         throws MessagingException, URISyntaxException {
 
-        ExchangePattern mep = camelExchange.getPattern();
+        // option 1 -- use the MEP that was configured on the endpoint URI
+        ExchangePattern mep = ExchangePattern.fromWsdlUri(defaultMep);
         if (mep == null) {
-            mep = ExchangePattern.fromWsdlUri(defaultMep);
+            // option 2 -- use the MEP configured on the ToJbiProcessor
+            mep = ExchangePattern.fromWsdlUri(getMessageExchangePattern());
         }
         if (mep == null) {
-            mep = ExchangePattern.fromWsdlUri(getMessageExchangePattern());
+            // option 3 -- use the MEP from the Camel Exchange
+            mep = camelExchange.getPattern();
         }
         MessageExchange answer = null;
         if (mep != null) {
