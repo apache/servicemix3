@@ -134,7 +134,7 @@
     <!--<rule ref="rulesets/junit.xml/UseAssertSameInsteadOfAssertTrue"/>-->
 
     <!--<rule ref="rulesets/logging-java.xml/AvoidPrintStackTrace"/>-->
-    <rule ref="rulesets/logging-java.xml/LoggerIsNotStaticFinal"/>
+    <!--rule ref="rulesets/logging-java.xml/LoggerIsNotStaticFinal"/>-->
     <!--<rule ref="rulesets/logging-java.xml/MoreThanOneLogger"/>-->
     <!--<rule ref="rulesets/logging-java.xml/LoggerIsNotStaticFinal"/>-->
     <!--<rule ref="rulesets/logging-java.xml/LogBlockWithoutIf"/>-->
