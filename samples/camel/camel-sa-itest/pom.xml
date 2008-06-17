@@ -34,13 +34,7 @@
   <name>ServiceMix :: Samples :: Camel :: SA :: iTest</name>
 
   <dependencies>
-<!--
-    <dependency>
-      <groupId>org.apache.servicemix.samples</groupId>
-      <artifactId>camel-simple-su</artifactId>
-      <version>3.3-SNAPSHOT</version>
-    </dependency>
--->
+
     <dependency>
       <groupId>org.apache.servicemix.samples</groupId>
       <artifactId>camel-sa</artifactId>
@@ -52,7 +46,10 @@
     <dependency>
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-core</artifactId>
-      <version>3.3-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-camel</artifactId>      
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -106,7 +103,7 @@
             </property>
           </systemProperties>
           <includes>
-            <include>**/*NoVersionsTest.*</include>
+            <include>**/*Test.*</include>
           </includes>
         </configuration>
       </plugin>

@@ -30,11 +30,15 @@
         <include>LICENSE*</include>
         <include>NOTICE*</include>
         <include>pom.xml</include>
-        <include>*.html</include>
-        <include>src/**/*</include>
+        <include>*.html</include>        
         <include>*/pom.xml</include>
-        <include>*/src/**/*</include>
+        <include>camel-sa/*</include>
+        <include>camel-simple-su/*</include>       
       </includes>
+       <excludes>
+        <exclude>camel-sa-itest/*</exclude>
+        <exclude>*/target/**</exclude>
+      </excludes>
     </fileSet>
   </fileSets>
 </assembly>
