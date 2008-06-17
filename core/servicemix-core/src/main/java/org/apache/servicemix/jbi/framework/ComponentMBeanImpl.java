@@ -197,7 +197,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
             fireEvent(ComponentEvent.COMPONENT_INITIALIZED);
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             try {
-                Thread.currentThread().setContextClassLoader(getLifeCycle().getClass().getClassLoader());
+                Thread.currentThread().setContextClassLoader(component.getClass().getClassLoader());
                 getLifeCycle().init(context);
             } finally {
                 Thread.currentThread().setContextClassLoader(loader);
@@ -289,7 +289,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
         if (!isStarted()) {
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             try {
-                Thread.currentThread().setContextClassLoader(getLifeCycle().getClass().getClassLoader());
+                Thread.currentThread().setContextClassLoader(component.getClass().getClassLoader());
                 getLifeCycle().start();
             } finally {
                 Thread.currentThread().setContextClassLoader(loader);
@@ -312,7 +312,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
             stopServiceAssemblies();
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             try {
-                Thread.currentThread().setContextClassLoader(getLifeCycle().getClass().getClassLoader());
+                Thread.currentThread().setContextClassLoader(component.getClass().getClassLoader());
                 getLifeCycle().stop();
             } finally {
                 Thread.currentThread().setContextClassLoader(loader);
@@ -335,7 +335,7 @@ public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean 
             shutDownServiceAssemblies();
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             try {
-                Thread.currentThread().setContextClassLoader(getLifeCycle().getClass().getClassLoader());
+                Thread.currentThread().setContextClassLoader(component.getClass().getClassLoader());
                 getLifeCycle().shutDown();
             } finally {
                 Thread.currentThread().setContextClassLoader(loader);
