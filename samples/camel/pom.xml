@@ -88,6 +88,22 @@
       </repository>
     </repositories>
 
+    <dependencyManagement>
+    <dependencies>    
+     <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-camel</artifactId>
+      <version>3.2.2-SNAPSHOT</version>
+     </dependency>
+
+     <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-core</artifactId>
+      <version>3.2.2-SNAPSHOT</version>      
+     </dependency>  
+    </dependencies>
+  </dependencyManagement> 
+
     <build>
         <plugins>
             <plugin>
