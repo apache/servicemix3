@@ -20,6 +20,8 @@ import java.io.StringReader;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.ws.EndpointReference;
+import javax.xml.ws.wsaddressing.W3CEndpointReference;
 
 import junit.framework.TestCase;
 
@@ -33,9 +35,8 @@ import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.soap.SoapHelper;
 import org.apache.servicemix.tck.ReceiverComponent;
 import org.apache.servicemix.wsn.client.NotificationBroker;
+import org.apache.servicemix.wsn.client.AbstractWSAClient;
 import org.apache.servicemix.wsn.component.WSNComponent;
-import org.w3._2005._08.addressing.AttributedURIType;
-import org.w3._2005._08.addressing.EndpointReferenceType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -92,6 +93,7 @@ public class WSNComponentTest extends TestCase {
         HttpEndpoint httpReceiver = new HttpEndpoint();
         httpReceiver.setService(new QName("receiver"));
         httpReceiver.setEndpoint("endpoint");
+        httpReceiver.setRoleAsString("consumer");
         httpReceiver.setLocationURI("http://localhost:8192/Receiver/");
         httpReceiver.setDefaultMep(SoapHelper.IN_ONLY);
         httpReceiver.setSoap(true);
@@ -104,9 +106,7 @@ public class WSNComponentTest extends TestCase {
         receiver.setEndpoint("endpoint");
         jbi.activateComponent(new ActivationSpec("receiver", receiver));
 
-        EndpointReferenceType epr = new EndpointReferenceType();
-        epr.setAddress(new AttributedURIType());
-        epr.getAddress().setValue("http://localhost:8192/Receiver/?http.soap=true");
+        W3CEndpointReference epr = AbstractWSAClient.createWSA("http://localhost:8192/Receiver/?http.soap=true");
         wsnBroker.subscribe(epr, "myTopic", null);
         wsnBroker.notify("myTopic", parse("<hello>world</hello>"));
 
