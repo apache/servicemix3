@@ -35,9 +35,9 @@ import org.apache.servicemix.tck.mock.MockNormalizedMessage;
  */
 public class DefaultFileMarshalerTest extends TestCase {
     
-    private DefaultFileMarshaler marshaler = new DefaultFileMarshaler();
     private static final String MESSAGE = "<test>l'élève est à l'école</test>";
     private static final SourceTransformer TRANSFORMER = new SourceTransformer();
+    private DefaultFileMarshaler marshaler = new DefaultFileMarshaler();
     
     public void testReadExplicitEncoding() throws Exception {
         //create a mock exchange
