@@ -36,7 +36,6 @@
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-jsr181</artifactId>
-            <version>${servicemix-version}</version>
         </dependency>
     </dependencies>
 
@@ -52,7 +51,7 @@
             <plugin>
                 <groupId>org.apache.servicemix.tooling</groupId>
                 <artifactId>xfire-maven-plugin</artifactId>
-                <version>${servicemix-version}</version>
+                <version>4.0-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>
@@ -72,7 +71,6 @@
             <plugin>
                 <groupId>org.apache.servicemix.tooling</groupId>
                 <artifactId>jbi-maven-plugin</artifactId>
-                <version>${servicemix-version}</version>
                 <extensions>true</extensions>
             </plugin>
         </plugins>

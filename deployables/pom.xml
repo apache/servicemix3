@@ -34,9 +34,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>sharedlibraries</module>
         <module>serviceengines</module>
-        <module>bindingcomponents</module>
     </modules>
 
     <build>

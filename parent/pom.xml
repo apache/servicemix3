@@ -58,8 +58,8 @@
               <dependencies>
                 <dependency>
                   <groupId>org.apache.servicemix</groupId>
-                  <artifactId>build</artifactId>
-                  <version>${project.version}</version>
+                  <artifactId>servicemix-build</artifactId>
+                  <version>1.0</version>
                 </dependency>
               </dependencies>
               <executions>
@@ -87,8 +87,8 @@
               <dependencies>
                 <dependency>
                   <groupId>org.apache.servicemix</groupId>
-                  <artifactId>build</artifactId>
-                  <version>${project.version}</version>
+                  <artifactId>servicemix-build</artifactId>
+                  <version>1.0</version>
                 </dependency>
               </dependencies>
               <configuration>
@@ -141,8 +141,8 @@
                       <dependencies>
                           <dependency>
                               <groupId>org.apache.servicemix</groupId>
-                              <artifactId>build</artifactId>
-                              <version>${project.version}</version>
+                              <artifactId>servicemix-build</artifactId>
+                              <version>1.0</version>
                           </dependency>
                       </dependencies>
                       <executions>
@@ -180,8 +180,8 @@
           <dependencies>
               <dependency>
                   <groupId>org.apache.servicemix</groupId>
-                  <artifactId>build</artifactId>
-                  <version>${project.version}</version>
+                  <artifactId>servicemix-build</artifactId>
+                  <version>1.0</version>
               </dependency>
           </dependencies>
           <executions>

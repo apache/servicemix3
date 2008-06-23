@@ -49,8 +49,8 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>quartz</groupId>
-      <artifactId>quartz</artifactId>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-quartz</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -64,6 +64,26 @@
           <type>service-engine</type>
           <bootstrap>org.apache.servicemix.lwcontainer.LwContainerBootstrap</bootstrap>
           <component>org.apache.servicemix.lwcontainer.LwContainerComponent</component>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemProperties>
+            <property>
+              <name>log4j.configuration</name>
+              <value>log4j-tests.properties</value>
+            </property>
+            <property>
+              <name>servicemix-shared-version</name>
+              <value>${servicemix-shared-version}</value>
+            </property>
+            <property>
+              <name>servicemix-quartz-version</name>
+              <value>${servicemix-quartz-version}</value>
+            </property>
+          </systemProperties>
         </configuration>
       </plugin>
     </plugins>

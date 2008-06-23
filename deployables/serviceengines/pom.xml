@@ -34,27 +34,14 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>servicemix-bean</module>
-    <module>servicemix-camel</module>
-    <module>servicemix-cxf-se</module>
-    <module>servicemix-drools</module>
-    <module>servicemix-eip</module>
-    <module>servicemix-jsr181</module>
-    <module>servicemix-quartz</module>
     <module>servicemix-lwcontainer</module>
-    <module>servicemix-osworkflow</module>
-    <module>servicemix-saxon</module>
-    <module>servicemix-script</module>
-    <module>servicemix-scripting</module>
-    <module>servicemix-wsn2005</module>
-    <module>servicemix-validation</module>
   </modules>
 
   <build>
     <plugins>
       <plugin>
         <groupId>org.apache.servicemix</groupId>
-        <artifactId>build</artifactId>
+        <artifactId>servicemix-build</artifactId>
         <executions>
           <execution>
             <goals>
