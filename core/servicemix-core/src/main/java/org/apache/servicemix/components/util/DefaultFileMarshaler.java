@@ -19,9 +19,11 @@ package org.apache.servicemix.components.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 
 import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
@@ -54,10 +56,15 @@ public class DefaultFileMarshaler extends MarshalerSupport implements FileMarsha
 
     private Expression fileName = FILE_NAME_EXPRESSION;
     private Expression content = FILE_CONTENT_EXPRESSION;
+    private String encoding;
 
     public void readMessage(MessageExchange exchange, NormalizedMessage message, 
                             InputStream in, String path) throws IOException, JBIException {
-        message.setContent(new StreamSource(in, path));
+        if (encoding == null) {
+            message.setContent(new StreamSource(in, path));
+        } else {
+            message.setContent(new StreamSource(new InputStreamReader(in, Charset.forName(encoding)), path));
+        }
         message.setProperty(FILE_NAME_PROPERTY, new File(path).getName());
         message.setProperty(FILE_PATH_PROPERTY, path);
     }
@@ -97,6 +104,14 @@ public class DefaultFileMarshaler extends MarshalerSupport implements FileMarsha
     public void setFileName(Expression fileName) {
         this.fileName = fileName;
     }
+    
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
+    
+    public String getEncoding() {
+        return encoding;
+    }
 
     // Implementation methods
     //-------------------------------------------------------------------------
@@ -134,9 +149,10 @@ public class DefaultFileMarshaler extends MarshalerSupport implements FileMarsha
             throw new NoMessageContentAvailableException(exchange);
         }
         try {
-            getTransformer().toResult(src, new StreamResult(out));
+            getTransformer().toResult(src, new StreamResult(out), encoding);
         } catch (TransformerException e) {
             throw new MessagingException(e);
         }
     }
+
 }
