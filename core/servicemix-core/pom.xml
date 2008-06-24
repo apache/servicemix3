@@ -36,10 +36,14 @@
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-jbi</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.apache.servicemix</groupId>
-      <artifactId>servicemix-services</artifactId>
-    </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>servicemix-services</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>servicemix-utils</artifactId>
+      </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
@@ -169,10 +173,6 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>jaxen</groupId>
-      <artifactId>jaxen</artifactId>
-    </dependency>
-    <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils-core</artifactId>
     </dependency>
@@ -205,16 +205,6 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>xmlbeans</groupId>
-      <artifactId>xmlpublic</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>xmlbeans</groupId>
-      <artifactId>xbean</artifactId>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.logicblaze.lingo</groupId>

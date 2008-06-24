@@ -27,10 +27,10 @@
     <version>3.3-SNAPSHOT</version>
   </parent>
 
-  <artifactId>servicemix-services</artifactId>
+  <artifactId>servicemix-utils</artifactId>
   <packaging>jar</packaging>
-  <name>ServiceMix :: Services</name>
-  <description>Various services that can be used by the container or components</description>
+  <name>ServiceMix :: Utils</name>
+  <description>Various JBI related utilities</description>
 
   <dependencies>
     <dependency>
@@ -73,7 +73,7 @@
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>spring-beans</artifactId>
+        <artifactId>spring-context</artifactId>
           <version>${spring-version}</version>
         <optional>true</optional>
       </dependency>
@@ -123,6 +123,21 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
+      <dependency>
+        <groupId>xalan</groupId>
+        <artifactId>xalan</artifactId>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.xbean</groupId>
+        <artifactId>xbean-spring</artifactId>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.woodstox</groupId>
+        <artifactId>wstx-asl</artifactId>
+          <scope>test</scope>
+      </dependency>
   </dependencies>
 
     <build>
@@ -137,7 +152,14 @@
               <Bundle-SymbolicName>${artifactId}</Bundle-SymbolicName>
               <Export-Package>org.apache.servicemix*</Export-Package>
               <Import-Package>
+                com.thoughtworks.xstream*;resolution:=optional,
+                javax.activation;resolution:=optional,
                 javax.resource.spi.work;resolution:=optional,
+                javax.security.auth;resolution:=optional,
+                javax.xml.stream*;resolution:=optional,
+                org.apache.xmlbeans*;resolution:=optional,
+                org.jaxen*;resolution:=optional,
+                org.springframework*;resolution:=optional,
                 *
               </Import-Package>
             </instructions>
