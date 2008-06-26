@@ -18,6 +18,7 @@ package org.apache.servicemix.http.endpoints;
 
 import java.io.IOException;
 
+import javax.jbi.management.DeploymentException;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
@@ -65,15 +66,6 @@ public class HttpProviderEndpoint extends ProviderEndpoint implements HttpEndpoi
         this.locationURI = locationURI;
     }
 
-    public void start() throws Exception {
-        if (marshaler == null) {
-            DefaultHttpProviderMarshaler m = new DefaultHttpProviderMarshaler();
-            m.setLocationURI(locationURI);
-            marshaler = m;
-        }
-        super.start();
-    }
-    
     /*
     public BasicAuthCredentials getBasicAuthentication() {
         return basicAuthentication;
@@ -149,6 +141,16 @@ public class HttpProviderEndpoint extends ProviderEndpoint implements HttpEndpoi
         }
         protected void onException(Throwable throwable) {
             throw new RuntimeException(throwable);
+        }
+    }
+
+    public void validate() throws DeploymentException {
+        super.validate();
+        if (marshaler == null) {
+            marshaler = new DefaultHttpProviderMarshaler();
+        }
+        if (marshaler instanceof DefaultHttpProviderMarshaler && locationURI != null) {
+            ((DefaultHttpProviderMarshaler) marshaler).setLocationURI(locationURI);
         }
     }
 

@@ -16,8 +16,8 @@
  */
 package org.apache.servicemix.http;
 
-import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.ExchangeStatus;
+import javax.jbi.messaging.InOut;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
