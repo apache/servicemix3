@@ -147,6 +147,9 @@ public class HttpProviderEndpoint extends ProviderEndpoint implements HttpEndpoi
         protected void onResponseComplete() throws IOException {
             handle(this, jbiExchange);
         }
+        protected void onException(Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
     }
 
 }
