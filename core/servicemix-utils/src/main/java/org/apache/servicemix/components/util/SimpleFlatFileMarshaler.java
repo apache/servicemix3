@@ -16,22 +16,23 @@
  */
 package org.apache.servicemix.components.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.List;
 
 import java.util.NoSuchElementException;
+
 import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 
 import javax.xml.transform.stream.StreamSource;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -64,6 +65,7 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
     private static final String XML_CLOSE_NEWLINE = ">\n";
     private static final String XML_CLOSE_ATTR_NEWLINE = "\">\n";
     private static final String XML_CLOSE_ATTR = "\">";
+
     protected final Log log = LogFactory.getLog(getClass());
     
     private boolean xmlDeclaration = true;
@@ -129,7 +131,7 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
     private int headerlinesCount;
     
     private int columnNamesInLineNumber = -1;
-    
+
     public boolean isSkipAnyEmptyCols() {
         return skipAnyEmptyCols;
     }
@@ -165,7 +167,7 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
 
         public void close() {
             eof = true;
-            IOUtils.closeQuietly(inr);
+            closeQuietly(inr);
             next = null;
         }
 
@@ -234,7 +236,7 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
         //if buffer is untouched, headers will be proceed line-by-line
         String wholeFileConverted = this.convertLinesToString(message, in, path);
         if (wholeFileConverted != null) {
-            return IOUtils.toInputStream(wholeFileConverted, "UTF-8");
+            return new ByteArrayInputStream(wholeFileConverted.getBytes("UTF-8"));
         } else {
             return new InputStreamWrapper(in, path, "UTF-8");
         }
@@ -283,7 +285,13 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
             this.path = path;
             this.outEncoding = outEncoding;
             if (lineSeparator == null) {
-                lines = IOUtils.lineIterator(in, encoding);
+                Reader reader = null;
+                if (encoding == null) {
+                    reader = new InputStreamReader(in);
+                } else {
+                    reader = new InputStreamReader(in, encoding);
+                }
+                lines = new LineIterator(reader);
             } else {
                 lines =
                         new CustomEndOfLineIterator(in, encoding, lineSeparator);
@@ -522,8 +530,7 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
                     }
                 }
             } else if (this.lineFormat == LINEFORMAT_CSV) {
-                result = StringUtils.splitPreserveAllTokens(lineText,
-                        this.columnSeparator);
+                result = StringUtils.splitWorker(lineText, this.columnSeparator, -1, true);
             } else if (this.lineFormat == LINEFORMAT_VARIABLE) {
                 if (this.columnExtractor == null) {
                     throw new IllegalStateException("No Column Extractor defined");
@@ -737,6 +744,24 @@ public class SimpleFlatFileMarshaler extends DefaultFileMarshaler {
 
     public final void setColumnExtractor(ColumnExtractor columnExtractor) {
         this.columnExtractor = columnExtractor;
+    }
+
+    /**
+     * Unconditionally close an <code>Reader</code>.
+     * <p>
+     * Equivalent to {@link Reader#close()}, except any exceptions will be ignored.
+     * This is typically used in finally blocks.
+     *
+     * @param input  the Reader to close, may be null or already closed
+     */
+    protected static void closeQuietly(Reader input) {
+        try {
+            if (input != null) {
+                input.close();
+            }
+        } catch (IOException ioe) {
+            // ignore
+        }
     }
 
 }

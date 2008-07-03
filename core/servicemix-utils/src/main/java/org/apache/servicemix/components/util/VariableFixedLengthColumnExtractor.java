@@ -19,8 +19,6 @@ package org.apache.servicemix.components.util;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-
 /**
  * Column extractor for SimpleFlatFileMarshaler that can extract columns from
  * fixed-length flat files that have a variable count of columns based on a
@@ -72,7 +70,7 @@ public class VariableFixedLengthColumnExtractor implements ColumnExtractor {
         }
         if (result.length > this.discriminatorIndex) {
             String discriminatorValue = result[this.discriminatorIndex];
-            if (StringUtils.isNotBlank(discriminatorValue) && (this.variableColumnLengths != null)
+            if (!StringUtils.isBlank(discriminatorValue) && (this.variableColumnLengths != null)
                             && (this.variableColumnLengths.containsKey(discriminatorValue))) {
                 int[] variableLengths = (int[]) this.variableColumnLengths.get(discriminatorValue);
 
@@ -126,11 +124,11 @@ public class VariableFixedLengthColumnExtractor implements ColumnExtractor {
 
     public final void setStringEncodedVariableColumnLengths(String columnLengths) {
         this.variableColumnLengths = null;
-        String[] entries = StringUtils.split(columnLengths, ";");
+        String[] entries = StringUtils.splitWorker(columnLengths, ";", -1, false);
         if ((entries != null) && (entries.length > 0)) {
             this.variableColumnLengths = new LinkedHashMap();
             for (int i = 0; i < entries.length; i++) {
-                String[] colLengths = StringUtils.splitPreserveAllTokens(entries[i], ",");
+                String[] colLengths = StringUtils.splitWorker(entries[i], ",", -1, true);
                 if ((colLengths != null) && (colLengths.length > 1)) {
                     int[] lengths = new int[colLengths.length - 1];
                     for (int j = 1; j < colLengths.length; j++) {
@@ -141,4 +139,5 @@ public class VariableFixedLengthColumnExtractor implements ColumnExtractor {
             }
         }
     }
+
 }

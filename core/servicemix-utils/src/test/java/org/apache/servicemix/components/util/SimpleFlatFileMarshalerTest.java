@@ -16,20 +16,20 @@
  */
 package org.apache.servicemix.components.util;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.jbi.JBIException;
 import junit.framework.TestCase;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 
 public class SimpleFlatFileMarshalerTest extends TestCase {
 
@@ -47,7 +47,7 @@ public class SimpleFlatFileMarshalerTest extends TestCase {
         assertTrue(result.contains("<File"));
         assertTrue(result.endsWith("</File>"));
 
-        assertTrue(StringUtils.countMatches(result, "<Line") == 3);
+        assertTrue(countMatches(result, "<Line") == 3);
     }
 
     public void testFixedLengthWithColNamesMarshalling() throws FileNotFoundException, IOException, JBIException {
@@ -65,10 +65,10 @@ public class SimpleFlatFileMarshalerTest extends TestCase {
         assertTrue(result.contains("<File"));
         assertTrue(result.endsWith("</File>"));
 
-        assertTrue(StringUtils.countMatches(result, "<Line") == 3);
-        assertTrue(StringUtils.countMatches(result, "<First") == 3);
-        assertTrue(StringUtils.countMatches(result, "<Second") == 3);
-        assertTrue(StringUtils.countMatches(result, "<Third") == 3);
+        assertTrue(countMatches(result, "<Line") == 3);
+        assertTrue(countMatches(result, "<First") == 3);
+        assertTrue(countMatches(result, "<Second") == 3);
+        assertTrue(countMatches(result, "<Third") == 3);
     }
 
     public void testFixedLengthWithConversionMarshalling() throws FileNotFoundException, IOException, JBIException {
@@ -93,11 +93,11 @@ public class SimpleFlatFileMarshalerTest extends TestCase {
         assertTrue(result.contains("<File"));
         assertTrue(result.endsWith("</File>"));
 
-        assertTrue(StringUtils.countMatches(result, "<Line") == 3);
-        assertTrue(StringUtils.countMatches(result, "<Number") == 3);
-        assertTrue(StringUtils.countMatches(result, "<Text1") == 3);
-        assertTrue(StringUtils.countMatches(result, "<Text2") == 3);
-        assertTrue(StringUtils.countMatches(result, "<Date") == 2);
+        assertTrue(countMatches(result, "<Line") == 3);
+        assertTrue(countMatches(result, "<Number") == 3);
+        assertTrue(countMatches(result, "<Text1") == 3);
+        assertTrue(countMatches(result, "<Text2") == 3);
+        assertTrue(countMatches(result, "<Date") == 2);
     }
 
     public void testCSVMarshalling() throws FileNotFoundException, IOException, JBIException {
@@ -113,7 +113,7 @@ public class SimpleFlatFileMarshalerTest extends TestCase {
         assertTrue(result.contains("<File"));
         assertTrue(result.endsWith("</File>"));
 
-        assertTrue(StringUtils.countMatches(result, "<Line") == 3);
+        assertTrue(countMatches(result, "<Line") == 3);
     }
     
     class FileFewTimes extends InputStream {
@@ -160,10 +160,91 @@ public class SimpleFlatFileMarshalerTest extends TestCase {
             String path) throws IOException, JBIException {
         InputStream out = marshaler.convertLines(null, fileInputStream, path);
         StringBuilder sb = new StringBuilder();
-        for (Object string : IOUtils.readLines(out)) {
+        for (Object string : readLines(new InputStreamReader(out))) {
             sb.append(string);
         }
         return sb.toString();
     }
 
+    /**
+     * Get the contents of a <code>Reader</code> as a list of Strings,
+     * one entry per line.
+     * <p>
+     * This method buffers the input internally, so there is no need to use a
+     * <code>BufferedReader</code>.
+     *
+     * @param input  the <code>Reader</code> to read from, not null
+     * @return the list of Strings, never null
+     * @throws NullPointerException if the input is null
+     * @throws IOException if an I/O error occurs
+     * @since Commons IO 1.1
+     */
+    private static List<String> readLines(Reader input) throws IOException {
+        BufferedReader reader = new BufferedReader(input);
+        List<String> list = new ArrayList<String>();
+        String line = reader.readLine();
+        while (line != null) {
+            list.add(line);
+            line = reader.readLine();
+        }
+        return list;
+    }
+
+    /**
+     * <p>Counts how many times the substring appears in the larger String.</p>
+     *
+     * <p>A <code>null</code> or empty ("") String input returns <code>0</code>.</p>
+     *
+     * <pre>
+     * countMatches(null, *)       = 0
+     * countMatches("", *)         = 0
+     * countMatches("abba", null)  = 0
+     * countMatches("abba", "")    = 0
+     * countMatches("abba", "a")   = 2
+     * countMatches("abba", "ab")  = 1
+     * countMatches("abba", "xxx") = 0
+     * </pre>
+     *
+     * @param str  the String to check, may be null
+     * @param sub  the substring to count, may be null
+     * @return the number of occurrences, 0 if either String is <code>null</code>
+     */
+    private static int countMatches(String str, String sub) {
+        if (isEmpty(str) || isEmpty(sub)) {
+            return 0;
+        }
+        int count = 0;
+        int idx = 0;
+        for (;;) {
+            idx = str.indexOf(sub, idx);
+            if (idx == -1) {
+                break;
+            }
+            idx += sub.length();
+            count++;
+        }
+        return count;
+    }
+
+    /**
+     * <p>Checks if a String is empty ("") or null.</p>
+     *
+     * <pre>
+     * StringUtils.isEmpty(null)      = true
+     * StringUtils.isEmpty("")        = true
+     * StringUtils.isEmpty(" ")       = false
+     * StringUtils.isEmpty("bob")     = false
+     * StringUtils.isEmpty("  bob  ") = false
+     * </pre>
+     *
+     * <p>NOTE: This method changed in Lang version 2.0.
+     * It no longer trims the String.
+     * That functionality is available in isBlank().</p>
+     *
+     * @param str  the String to check, may be null
+     * @return <code>true</code> if the String is empty or null
+     */
+    public static boolean isEmpty(String str) {
+        return str == null || str.length() == 0;
+    }
 }

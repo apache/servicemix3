@@ -16,8 +16,6 @@
  */
 package org.apache.servicemix.components.util;
 
-import org.apache.commons.lang.StringUtils;
-
 /**
  * Column converter for SimpleFlatFileMarshaler that converts string
  * representations of numbers. Zero values and blank columns in flat files can
@@ -37,7 +35,7 @@ public class NumberConverter implements ContentConverter {
     public String convertToXml(String contents) {
         if (contents != null) {
             int number = 0;
-            if (StringUtils.isNotBlank(contents)) {
+            if (!StringUtils.isBlank(contents)) {
                 try {
                     number = Integer.parseInt(contents);
                 } catch (NumberFormatException e) {

@@ -27,9 +27,6 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 
-import org.apache.servicemix.jbi.util.FileUtil;
-import org.apache.servicemix.jbi.util.StreamDataSource;
-
 /**
  * A FileMarshaler that converts the given input stream into a binary
  * attachment.
@@ -96,6 +93,25 @@ public class BinaryFileMarshaler extends DefaultFileMarshaler {
             throw new MessagingException("Could not find attachment: " + attachment);
         }
         InputStream is = handler.getInputStream();
-        FileUtil.copyInputStream(is, out);
+        copyInputStream(is, out);
     }
+
+    /**
+     * Copy in stream to an out stream
+     *
+     * @param in
+     * @param out
+     * @throws IOException
+     */
+    protected static void copyInputStream(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[8192];
+        int len = in.read(buffer);
+        while (len >= 0) {
+            out.write(buffer, 0, len);
+            len = in.read(buffer);
+        }
+        in.close();
+        out.close();
+    }
+
 }

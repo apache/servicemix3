@@ -16,25 +16,23 @@
  */
 package org.apache.servicemix.components.util;
 
-import org.apache.commons.lang.StringUtils;
-
 /**
  * Column converter for SimpleFlatFileMarshaler that strips off leading and
  * trailing whitespaces from flat file columns
  * 
  * @author Mayrbaeurl
  * @since 3.2
- * @see StringUtils#strip(String)
  */
 public class TextStripConverter implements ContentConverter {
 
     // Implementation methods
     // -------------------------------------------------------------------------
     public String convertToXml(String contents) {
-        return StringUtils.strip(contents);
+        return StringUtils.strip(contents, null);
     }
 
     public String convertToFlatFileContent(String contents) {
         return contents;
     }
+
 }

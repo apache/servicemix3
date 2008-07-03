@@ -20,8 +20,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import org.apache.commons.lang.StringUtils;
-
 /**
  * Column converter for SimpleFlatFileMarshaler that converts date contents
  * using defined date formats
@@ -75,7 +73,7 @@ public class DateConverter implements ContentConverter {
     // -------------------------------------------------------------------------
     public String convertToXml(String contents) {
         if (contents != null) {
-            if (StringUtils.isNotBlank(contents)) {
+            if (!StringUtils.isBlank(contents)) {
                 try {
                     return this.outputformat.format(this.inputformat
                             .parse(contents));
@@ -84,7 +82,7 @@ public class DateConverter implements ContentConverter {
                 }
             } else {
                 if (this.blankValueIsNull) {
-                    return StringUtils.EMPTY;
+                    return "";
                 } else {
                     return contents;
                 }

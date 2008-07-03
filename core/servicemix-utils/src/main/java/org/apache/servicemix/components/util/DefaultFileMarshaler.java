@@ -36,7 +36,6 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.servicemix.expression.Expression;
 import org.apache.servicemix.expression.PropertyExpression;
-import org.apache.servicemix.jbi.NoMessageContentAvailableException;
 
 /**
  * A default file transformer which assumes the file is already in XML format and
@@ -146,7 +145,7 @@ public class DefaultFileMarshaler extends MarshalerSupport implements FileMarsha
                                        OutputStream out, String path) throws MessagingException {
         Source src = message.getContent();
         if (src == null) {
-            throw new NoMessageContentAvailableException(exchange);
+            throw new MessagingException("No message content in the inbound message for message exchange: " + exchange);
         }
         try {
             getTransformer().toResult(src, new StreamResult(out), encoding);
