@@ -20,7 +20,6 @@ import java.io.StringReader;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.ws.EndpointReference;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
 
 import junit.framework.TestCase;
@@ -32,10 +31,10 @@ import org.apache.servicemix.http.HttpEndpoint;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.soap.SoapHelper;
+import org.apache.servicemix.soap.interceptors.jbi.JbiConstants;
 import org.apache.servicemix.tck.ReceiverComponent;
-import org.apache.servicemix.wsn.client.NotificationBroker;
 import org.apache.servicemix.wsn.client.AbstractWSAClient;
+import org.apache.servicemix.wsn.client.NotificationBroker;
 import org.apache.servicemix.wsn.component.WSNComponent;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -95,7 +94,7 @@ public class WSNComponentTest extends TestCase {
         httpReceiver.setEndpoint("endpoint");
         httpReceiver.setRoleAsString("consumer");
         httpReceiver.setLocationURI("http://localhost:8192/Receiver/");
-        httpReceiver.setDefaultMep(SoapHelper.IN_ONLY);
+        httpReceiver.setDefaultMep(JbiConstants.IN_ONLY);
         httpReceiver.setSoap(true);
 
         httpComponent.setEndpoints(new HttpEndpoint[] { httpWSNBroker, httpReceiver });

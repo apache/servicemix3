@@ -72,6 +72,8 @@
         <servicemix-cxf-se-version>4.0-SNAPSHOT</servicemix-cxf-se-version>
         <servicemix-drools-version>4.0-SNAPSHOT</servicemix-drools-version>
         <servicemix-file-version>4.0-SNAPSHOT</servicemix-file-version>
+        <res-maven-plugin-version>4.0-SNAPSHOT</res-maven-plugin-version>
+        <servicemix-build-version>1.0</servicemix-build-version>
         
         <xfire-jsr181-api-version>1.0-M1</xfire-jsr181-api-version>
         <xfire-version>1.2.5</xfire-version>
