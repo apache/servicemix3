@@ -33,10 +33,10 @@
         <include>*.html</include>        
         <include>*/pom.xml</include>
         <include>camel-sa/*</include>
-        <include>camel-simple-su/*</include>       
+        <include>camel-simple-su/*</include>
+        <include>camel-sa-itest/*</include>       
       </includes>
-       <excludes>
-        <exclude>camel-sa-itest/*</exclude>
+       <excludes>        
         <exclude>*/target/**</exclude>
       </excludes>
     </fileSet>
