@@ -146,6 +146,9 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     private int timeout = 10;
 
     private boolean useJBIWrapper = true;
+    
+        
+    private EndpointInfo ei;
 
     /**
      * @return the wsdl
@@ -228,6 +231,10 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     @Override
     public void stop() throws Exception {
         server.stop();
+        if (ei.getAddress().startsWith("https")) {
+            bus.shutdown(false);
+            bus = null;
+        }
         super.stop();
     }
 
@@ -253,7 +260,7 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
             
             Service cxfService = factory.create();
 
-            EndpointInfo ei = cxfService.getServiceInfos().iterator().next()
+            ei = cxfService.getServiceInfos().iterator().next()
                     .getEndpoints().iterator().next();
             for (ServiceInfo serviceInfo : cxfService.getServiceInfos()) {
                 if (serviceInfo.getName().equals(service)
@@ -345,7 +352,6 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
 
             chain = new JbiChainInitiationObserver(ep, getBus());
             server = new ServerImpl(getBus(), ep, null, chain);
-
             super.validate();
         } catch (DeploymentException e) {
             throw e;
