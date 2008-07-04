@@ -19,7 +19,6 @@ package org.apache.servicemix.locks.impl;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.servicemix.locks.LockManager;
 
@@ -30,7 +29,7 @@ public class SimpleLockManager implements LockManager {
     public Lock getLock(String id) {
         Lock lock = locks.get(id);
         if (lock == null) {
-            lock = new ReentrantLock();
+            lock = new SimpleLock();
             Lock oldLock = locks.putIfAbsent(id, lock);
             if (oldLock != null) {
                 lock = oldLock;
