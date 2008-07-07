@@ -21,7 +21,7 @@
 
   <target name="setup">
 
-    <get src="http://repo.mergere.com/maven2/quartz/quartz/1.5.1/quartz-1.5.1.jar"
+    <get src="http://repo1.maven.org/maven2/quartz/quartz/1.5.1/quartz-1.5.1.jar"
          dest="../../lib/optional/quartz-1.5.1.jar" 
          usetimestamp="true" />
     <copy todir="../../lib/optional">

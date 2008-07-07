@@ -30,7 +30,7 @@
     <mkdir dir="${class.dir}"/>
     <mkdir dir="lib"/>
 
-    <get src="http://repo.mergere.com/maven2/org/logicblaze/lingo/lingo/1.3/lingo-1.3.jar"
+    <get src="http://repo1.maven.org/maven2/org/logicblaze/lingo/lingo/1.3/lingo-1.3.jar"
          dest="lib/lingo-1.3.jar" 
          usetimestamp="true" />
 
