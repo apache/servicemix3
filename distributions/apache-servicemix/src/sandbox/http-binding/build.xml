@@ -23,25 +23,25 @@
 
   <target name="setup">
 
-    <get src="http://repo.mergere.com/maven2/jaxen/jaxen/1.1-beta-9/jaxen-1.1-beta-9.jar"
+    <get src="http://repo1.maven.org/maven2/jaxen/jaxen/1.1-beta-9/jaxen-1.1-beta-9.jar"
          dest="../../lib/optional/jaxen-1.1-beta9.jar" 
          usetimestamp="true" />
-    <get src="http://repo.mergere.com/maven2/org/mortbay/jetty/jetty/6.0.0beta17/jetty-6.0.0beta17.jar"
+    <get src="http://repo1.maven.org/maven2/org/mortbay/jetty/jetty/6.0.0beta17/jetty-6.0.0beta17.jar"
          dest="../../lib/optional/jetty-6.0.0beta17.jar" 
          usetimestamp="true" />
-    <get src="http://repo.mergere.com/maven2/org/mortbay/jetty/jetty-util/6.0.0beta17/jetty-util-6.0.0beta17.jar"
+    <get src="http://repo1.maven.org/maven2/org/mortbay/jetty/jetty-util/6.0.0beta17/jetty-util-6.0.0beta17.jar"
          dest="../../lib/optional/jetty-util-6.0.0beta17.jar" 
          usetimestamp="true" />
-    <get src="http://repo.mergere.com/maven2/axis/axis-jaxrpc/1.4/axis-jaxrpc-1.4.jar"
+    <get src="http://repo1.maven.org/maven2/axis/axis-jaxrpc/1.4/axis-jaxrpc-1.4.jar"
          dest="../../lib/optional/axis-jaxrpc-1.4.jar" 
          usetimestamp="true" />
-    <get src="http://repo.mergere.com/maven2/axis/axis-saaj/1.4/axis-saaj-1.4.jar"
+    <get src="http://repo1.maven.org/maven2/axis/axis-saaj/1.4/axis-saaj-1.4.jar"
          dest="../../lib/optional/axis-saaj-1.4.jar" 
          usetimestamp="true" />
-    <get src="http://repo.mergere.com/maven2/axis/axis/1.4/axis-1.4.jar"
+    <get src="http://repo1.maven.org/maven2/axis/axis/1.4/axis-1.4.jar"
          dest="../../lib/optional/axis-1.4.jar" 
          usetimestamp="true" />
-    <get src="http://repo.mergere.com/maven2/commons-discovery/commons-discovery/0.2/commons-discovery-0.2.jar"
+    <get src="http://repo1.maven.org/maven2/commons-discovery/commons-discovery/0.2/commons-discovery-0.2.jar"
          dest="../../lib/optional/commons-discovery-0.2.jar" 
          usetimestamp="true" />
     <copy todir="../../lib/optional">
