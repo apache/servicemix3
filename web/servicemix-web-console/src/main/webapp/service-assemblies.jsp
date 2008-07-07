@@ -28,6 +28,11 @@
 
 <h2>Service Assemblies</h2>
 
+<c:choose>
+<c:when test="${empty requestContext.serviceAssemblies}">
+	No service assemblies found.
+</c:when>
+<c:otherwise>
 <table id="serviceAssemblies" class="sortable autostripe">
   <thead>
     <tr>
@@ -61,6 +66,8 @@
     </c:forEach>
   </tbody>
 </table>
+</c:otherwise>
+</c:choose>
 
 </body>
 </html>

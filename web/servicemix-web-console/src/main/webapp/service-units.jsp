@@ -21,6 +21,11 @@
 <body>
 <h2>Service Units</h2>
 
+<c:choose>
+<c:when test="${empty requestContext.serviceUnits}">
+	No service units found.
+</c:when>
+<c:otherwise>
 <table id="serviceUnits" class="sortable autostripe">
   <thead>
     <tr>
@@ -41,6 +46,8 @@
     </c:forEach>
   </tbody>
 </table>
+</c:otherwise>
+</c:choose>
 
 </body>
 </html>
