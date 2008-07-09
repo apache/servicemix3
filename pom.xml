@@ -224,15 +224,14 @@
         <jaxb.version>2.0</jaxb.version>
         <jaxb.impl.version>2.0.1</jaxb.impl.version>
         <derby-version>10.2.2.0</derby-version>
-	    <saxon-version>8.9</saxon-version>
-
-		<releases-repo-id>apache</releases-repo-id>
-		<releases-repo-name>Apache Repository</releases-repo-name>
-		<releases-repo-url>http://people.apache.org/repo/m2-ibiblio-rsync-repository</releases-repo-url>
-		<snapshots-repo-id>apache.snapshots</snapshots-repo-id>
-		<snapshots-repo-name>Apache Snapshots Repository</snapshots-repo-name>
-		<snapshots-repo-url>http://people.apache.org/repo/m2-snapshot-repository</snapshots-repo-url>
-       <previous.releases>3.1.2,3.2,3.2.1</previous.releases>
+        <saxon-version>8.9</saxon-version>
+        <releases-repo-id>apache</releases-repo-id>
+        <releases-repo-name>Apache Repository</releases-repo-name>
+        <releases-repo-url>http://people.apache.org/repo/m2-ibiblio-rsync-repository</releases-repo-url>
+        <snapshots-repo-id>apache.snapshots</snapshots-repo-id>
+        <snapshots-repo-name>Apache Snapshots Repository</snapshots-repo-name>
+        <snapshots-repo-url>http://people.apache.org/repo/m2-snapshot-repository</snapshots-repo-url>
+        <previous.releases>3.1.2,3.2,3.2.1</previous.releases>
     </properties>
 
     <profiles>
@@ -1632,12 +1631,17 @@
             <dependency>
                 <groupId>org.apache.xbean</groupId>
                 <artifactId>xbean-kernel</artifactId>
+                <version>3.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.xbean</groupId>
+                <artifactId>xbean-classloader</artifactId>
                 <version>${xbean-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.xbean</groupId>
                 <artifactId>xbean-server</artifactId>
-                <version>${xbean-version}</version>
+                <version>3.3</version>
                 <exclusions>
                   <exclusion>
                     <groupId>org.springframework</groupId>
