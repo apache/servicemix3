@@ -16,14 +16,13 @@
  */
 package org.apache.servicemix.locks.impl;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.AbstractQueuedSynchronizer;
-import java.io.ObjectInputStream;
-import java.io.IOException;
-import java.io.Serializable;
 
 /**
  * @author lhein
