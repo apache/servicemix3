@@ -201,7 +201,7 @@
     </dependency>
     <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>spring-dao</artifactId>
+        <artifactId>spring-tx</artifactId>
         <version>${spring-version}</version>
     </dependency>
     <dependency>
