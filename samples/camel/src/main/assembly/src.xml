@@ -29,16 +29,27 @@
         <include>README*</include>
         <include>LICENSE*</include>
         <include>NOTICE*</include>
-        <include>pom.xml</include>
         <include>*.html</include>        
         <include>*/pom.xml</include>
-        <include>camel-sa/*</include>
-        <include>camel-simple-su/*</include>
-        <include>camel-sa-itest/*</include>       
+        <include>camel-sa/**/*</include>
+        <include>camel-simple-su/**/*</include>
+        <include>src/**/*</include>
       </includes>
-       <excludes>        
+      <excludes>
+        <exclude>camel-sa-itest/*</exclude>
         <exclude>*/target/**</exclude>
+        <exclude>*/.classpath</exclude>
+        <exclude>*/.project</exclude>
+        <exclude>.settings/*</exclude>
       </excludes>
     </fileSet>
   </fileSets>
+  <files>
+    <file>
+      <source>${basedir}/src/main/assembly/kit_camel_example_pom.xml</source>
+      <outputDirectory>./</outputDirectory>
+      <destName>pom.xml</destName>
+      <fileMode>0777</fileMode>
+    </file>
+  </files>
 </assembly>
