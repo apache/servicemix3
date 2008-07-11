@@ -18,6 +18,7 @@ package org.apache.servicemix.locks;
 
 import java.util.concurrent.locks.Lock;
 
+@Deprecated
 public interface LockManager {
 
     Lock getLock(String id);

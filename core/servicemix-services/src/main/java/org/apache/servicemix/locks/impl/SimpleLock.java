@@ -27,6 +27,7 @@ import java.util.concurrent.locks.Lock;
 /**
  * @author lhein
  */
+@Deprecated
 public class SimpleLock implements Lock, Serializable {
 
     // Our internal helper class

@@ -22,6 +22,7 @@ import java.util.concurrent.locks.Lock;
 
 import org.apache.servicemix.locks.LockManager;
 
+@Deprecated
 public class SimpleLockManager implements LockManager {
 
     private ConcurrentMap<String, Lock> locks = new ConcurrentHashMap<String, Lock>();
