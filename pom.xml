@@ -129,37 +129,6 @@
             </modules>
         </profile>
         <profile>
-            <id>step1</id>
-            <activation>
-                <property>
-                    <name>profile</name>
-                    <value>step1</value>
-                </property>
-            </activation>
-            <modules>
-                <module>parent</module>
-                <module>core</module>
-                <module>common</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>step2</id>
-            <activation>
-                <property>
-                    <name>profile</name>
-                    <value>step2</value>
-                </property>
-            </activation>
-            <modules>
-                <module>servicemix-itests</module>
-                <module>samples</module>
-                <module>web</module>
-                <module>platforms</module>
-                <module>distributions</module>
-            </modules>
-        </profile>
-	   
-        <profile>
             <id>release</id>
             <build>
                 <plugins>
