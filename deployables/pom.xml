@@ -42,7 +42,7 @@
             <plugin>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-build</artifactId>
-                <version>1.1-SNAPSHOT</version>
+                <version>${servicemix-build-version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -57,8 +57,8 @@
                 <dependencies>
                     <dependency>
                         <groupId>org.apache.servicemix</groupId>
-                        <artifactId>build</artifactId>
-                        <version>3.3-SNAPSHOT</version>
+                        <artifactId>servicemix-build</artifactId>
+                        <version>${servicemix-build-version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
