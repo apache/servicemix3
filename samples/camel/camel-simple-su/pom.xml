@@ -42,11 +42,6 @@
       <artifactId>servicemix-camel</artifactId>      
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.servicemix</groupId>
-      <artifactId>servicemix-core</artifactId>      
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
 
   <build>
