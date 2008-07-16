@@ -16,10 +16,11 @@
  */
 package org.apache.servicemix.web.handler;
 
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping;
-
 import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.servlet.HandlerExecutionChain;
+import org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping;
 
 /**
  * 
@@ -35,7 +36,14 @@ public class BindingBeanNameUrlHandlerMapping extends BeanNameUrlHandlerMapping 
             object = getApplicationContext().getBean(handlerName);
         }
 
-        ServletRequestDataBinder binder = new ServletRequestDataBinder(object, null);
+        // support both Spring 2.0 that returns a Handler
+        // and Spring 2.5 that returns a HandlerExecutionChain
+        Object handler = object;
+        if (object instanceof HandlerExecutionChain) {
+            handler = ((HandlerExecutionChain) object).getHandler();
+        }
+
+        ServletRequestDataBinder binder = new ServletRequestDataBinder(handler, null);
         binder.bind(request);
         return object;
     }
