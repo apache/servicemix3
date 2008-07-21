@@ -61,6 +61,7 @@ public class HttpEndpoint extends SoapEndpoint implements HttpEndpointType {
     protected boolean synchronous;
     protected boolean wantContentTypeHeaderFromExchangeIntoHttpRequest;
     protected int timeout;
+    protected String overrideContentTypeHeader;
 
     public boolean isWantContentTypeHeaderFromExchangeIntoHttpRequest() {
         return wantContentTypeHeaderFromExchangeIntoHttpRequest;
@@ -68,6 +69,14 @@ public class HttpEndpoint extends SoapEndpoint implements HttpEndpointType {
 
     public void setWantContentTypeHeaderFromExchangeIntoHttpRequest(boolean wantContentTypeHeaderFromExchangeIntoHttpRequest) {
         this.wantContentTypeHeaderFromExchangeIntoHttpRequest = wantContentTypeHeaderFromExchangeIntoHttpRequest;
+    }
+
+    public String getOverrideContentTypeHeader() {
+        return overrideContentTypeHeader;
+    }
+
+    public void setOverrideContentTypeHeader(String overrideContentTypeHeader) {
+        this.overrideContentTypeHeader = overrideContentTypeHeader;
     }
 
     /**
