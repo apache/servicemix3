@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.apache.servicemix.samples</groupId>
         <artifactId>loan-broker</artifactId>
-        <version>3.2.2-SNAPSHOT</version>
+        <version>3.2.2</version>
     </parent>
 
     <groupId>org.apache.servicemix.samples.loan-broker</groupId>
