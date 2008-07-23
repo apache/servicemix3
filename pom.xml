@@ -207,7 +207,7 @@
         <activemq-version>4.1.1</activemq-version>
         <activeio-version>3.0.0-incubator</activeio-version>
         <backport-util-concurrent-version>2.2</backport-util-concurrent-version>
-        <camel-version>1.4-SNAPSHOT</camel-version>
+        <camel-version>1.4.0</camel-version>
         <jencks-version>2.1</jencks-version>
         <jetty-version>6.1.6</jetty-version>
         <geronimo-version>2.0.1</geronimo-version>
@@ -220,7 +220,7 @@
         <oro-version>2.0.8</oro-version>
         <sitemesh-version>2.2.1</sitemesh-version>
         <woden-version>1.0.0M6</woden-version>
-        <cxf-version>2.0.7-SNAPSHOT</cxf-version>
+        <cxf-version>2.0.7</cxf-version>
         <jaxb.version>2.0</jaxb.version>
         <jaxb.impl.version>2.0.1</jaxb.impl.version>
         <derby-version>10.2.2.0</derby-version>
