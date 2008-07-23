@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.servicemix</groupId>
     <artifactId>core</artifactId>
-    <version>3.2.2</version>
+    <version>3.2.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>servicemix-core</artifactId>
@@ -317,6 +317,17 @@
       </testResource>
     </testResources>
     <plugins>
+      <plugin>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>build</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>spring.schemas</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.xbean</groupId>
         <artifactId>maven-xbean-plugin</artifactId>

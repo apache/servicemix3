@@ -35,6 +35,7 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceRef;
 
 import org.apache.cxf.Bus;
+import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.interceptor.InterceptorProvider;
 import org.apache.cxf.jaxws.EndpointImpl;
@@ -42,6 +43,7 @@ import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
 import org.apache.cxf.jaxws.ServiceImpl;
 import org.apache.cxf.jaxws.support.JaxWsImplementorInfo;
 import org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean;
+import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transport.ConduitInitiatorManager;
 import org.apache.cxf.transport.jbi.JBIDestination;
 import org.apache.cxf.transport.jbi.JBIDispatcherUtil;
@@ -49,6 +51,7 @@ import org.apache.cxf.transport.jbi.JBITransportFactory;
 import org.apache.cxf.wsdl11.ServiceWSDLBuilder;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.apache.servicemix.cxfse.interceptors.AttachmentInInterceptor;
+import org.apache.servicemix.cxfse.interceptors.AttachmentOutInterceptor;
 import org.apache.servicemix.cxfse.support.ReflectionUtils;
 import org.apache.servicemix.id.IdGenerator;
 import org.springframework.util.ReflectionUtils.FieldCallback;
@@ -163,6 +166,7 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
         endpoint.setOutFaultInterceptors(getOutFaultInterceptors());
         if (isMtomEnabled()) {
             endpoint.getInInterceptors().add(new AttachmentInInterceptor());
+            endpoint.getOutInterceptors().add(new AttachmentOutInterceptor());
         }
         JaxWsImplementorInfo implInfo = new JaxWsImplementorInfo(getPojo()
                 .getClass());
@@ -179,9 +183,25 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
      */
     @Override
     public void process(MessageExchange exchange) throws Exception {
+        
+        QName opeName = exchange.getOperation();
+        EndpointInfo ei = endpoint.getServer().getEndpoint().getEndpointInfo();
+        if (opeName == null) {
+            // if interface only have one operation, may not specify the opeName in MessageExchange
+            if (ei.getBinding().getOperations().size() == 1) {
+                opeName = ei.getBinding().getOperations().iterator().next().getName();
+                exchange.setOperation(opeName);
+            } else {
+                throw new Fault(
+                            new Exception("Operation not bound on this MessageExchange"));
+                
+            }
+        } 
+        
         JBITransportFactory jbiTransportFactory = (JBITransportFactory) getBus()
                 .getExtension(ConduitInitiatorManager.class)
                 .getConduitInitiator(CxfSeComponent.JBI_TRANSPORT_ID);
+        
         QName serviceName = exchange.getService();
         if (serviceName == null) {
             serviceName = getService();
@@ -197,6 +217,7 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
                         + interfaceName.toString());
         DeliveryChannel dc = getContext().getDeliveryChannel();
         jbiTransportFactory.setDeliveryChannel(dc);
+        
         jbiDestination.setDeliveryChannel(dc);
         if (exchange.getStatus() == ExchangeStatus.ACTIVE) {
             jbiDestination.getJBIDispatcherUtil().dispatch(exchange);
@@ -213,7 +234,12 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
     public void start() throws Exception {
         super.start();
         address = "jbi://" + ID_GENERATOR.generateSanitizedId();
-        endpoint.publish(address);
+        try {
+            endpoint.publish(address);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
         setService(endpoint.getServer().getEndpoint().getService().getName());
         setEndpoint(endpoint.getServer().getEndpoint().getEndpointInfo()
                 .getName().getLocalPart());
@@ -252,6 +278,7 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
      */
     @Override
     public void stop() throws Exception {
+        endpoint.stop();
         ReflectionUtils.callLifecycleMethod(getPojo(), PreDestroy.class);
         JBIDispatcherUtil.clean();
         JBITransportFactory jbiTransportFactory = (JBITransportFactory) getBus()

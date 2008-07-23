@@ -24,12 +24,12 @@
   <parent>
     <groupId>org.apache.servicemix</groupId>
     <artifactId>parent</artifactId>
-    <version>3.2.2</version>
+    <version>3.2.2-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.servicemix</groupId>
   <artifactId>bindingcomponents</artifactId>
-  <version>3.2.2</version>
+  <version>3.2.2-SNAPSHOT</version>
   <name>ServiceMix :: Binding Components</name>
   <packaging>pom</packaging>
 
@@ -42,5 +42,21 @@
     <module>servicemix-truezip</module>
     <module>servicemix-xmpp</module>
   </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>build</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>spring.schemas</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

@@ -111,7 +111,13 @@ public abstract class DeploySupport implements InitializingBean {
     public String getHomeDir() {
         if (homeDir == null) {
             homeDir = System.getProperty("user.home", "~");
+            String os = System.getProperty("os.name");
+            if (os.startsWith("Windows")) {
+                homeDir = homeDir.replace('\\', '/');
+                homeDir = homeDir.replaceAll(" ", "%20");
+            }
         }
+        
         return homeDir;
     }
 

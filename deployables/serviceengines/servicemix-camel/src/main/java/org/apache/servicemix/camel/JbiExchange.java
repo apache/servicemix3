@@ -16,6 +16,8 @@
  */
 package org.apache.servicemix.camel;
 
+import javax.jbi.JBIException;
+import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 
@@ -27,7 +29,7 @@ import org.apache.camel.impl.DefaultExchange;
  * An {@link org.apache.camel.Exchange} working with JBI which exposes the underlying JBI
  * features such as the JBI {@link #getMessageExchange()},
  * {@link #getInMessage()} and {@link #getOutMessage()}
- * 
+ *
  * @version $Revision: 563665 $
  */
 public class JbiExchange extends DefaultExchange {
@@ -49,11 +51,6 @@ public class JbiExchange extends DefaultExchange {
         this.messageExchange = messageExchange;
 
         setPattern(ExchangePattern.fromWsdlUri(messageExchange.getPattern().toString()));
-        // TODO we could maybe use the typesafe APIs of different derived APIs
-        // from JBI
-        setIn(new JbiMessage(messageExchange.getMessage("in")));
-        setOut(new JbiMessage(messageExchange.getMessage("out")));
-        setFault(new JbiMessage(messageExchange.getMessage("fault")));
         populateProperties();
     }
 
@@ -82,6 +79,11 @@ public class JbiExchange extends DefaultExchange {
         return (JbiMessage) super.getFault(lazyCreate);
     }
 
+    @Override
+    public org.apache.camel.Exchange newInstance() {        
+        return new JbiExchange(this.getContext(), this.getBinding(), this.getMessageExchange());
+    }
+
     /**
      * @return the Camel <-> JBI binding
      */
@@ -95,7 +97,7 @@ public class JbiExchange extends DefaultExchange {
     /**
      * Returns the underlying JBI message exchange for an inbound exchange or
      * null for outbound messages
-     * 
+     *
      * @return the inbound message exchange
      */
     public MessageExchange getMessageExchange() {
@@ -104,7 +106,7 @@ public class JbiExchange extends DefaultExchange {
 
     /**
      * Returns the underlying In {@link NormalizedMessage}
-     * 
+     *
      * @return the In message
      */
     public NormalizedMessage getInMessage() {
@@ -113,7 +115,7 @@ public class JbiExchange extends DefaultExchange {
 
     /**
      * Returns the underlying Out {@link NormalizedMessage}
-     * 
+     *
      * @return the Out message
      */
     public NormalizedMessage getOutMessage() {
@@ -122,7 +124,7 @@ public class JbiExchange extends DefaultExchange {
 
     /**
      * Returns the underlying Fault {@link NormalizedMessage}
-     * 
+     *
      * @return the Fault message
      */
     public NormalizedMessage getFaultMessage() {
@@ -134,17 +136,39 @@ public class JbiExchange extends DefaultExchange {
 
     @Override
     protected JbiMessage createInMessage() {
-        return new JbiMessage();
+        return createMessage("in");
     }
 
     @Override
     protected JbiMessage createOutMessage() {
-        return new JbiMessage();
+        if (messageExchange instanceof InOnly) {
+            //just create an Camel Message without trying to create a matching JBI 'out' NormalizedMessage
+            return new JbiMessage();
+        } else {
+            return createMessage("out");
+        }
     }
 
     @Override
     protected JbiMessage createFaultMessage() {
-        return new JbiMessage();
+        return createMessage("fault");
+    }
+
+    private JbiMessage createMessage(String name) {
+        if (messageExchange != null) {
+            try {
+                NormalizedMessage msg = messageExchange.getMessage(name);
+                if (msg == null) {
+                    msg = messageExchange.createMessage();
+                    messageExchange.setMessage(msg, name);
+                }
+                return new JbiMessage(msg);
+            } catch (JBIException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            return new JbiMessage();
+        }
     }
 
     private void populateProperties() {

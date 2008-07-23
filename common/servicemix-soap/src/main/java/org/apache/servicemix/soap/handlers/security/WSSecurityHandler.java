@@ -123,7 +123,7 @@ public class WSSecurityHandler extends WSHandler implements Handler {
             try {
                 WSSecurityHandler handler = WSSecurityHandler.getCurrentHandler();
                 lastPrincipalFound = verifyXMLSignature((Element) elem,
-                        crypto, returnCert, returnElements, signatureValue);
+                        crypto, returnCert, returnElements, null, signatureValue);
                 if (lastPrincipalFound instanceof WSUsernameTokenPrincipal) {
                     WSUsernameTokenPrincipal p = (WSUsernameTokenPrincipal) lastPrincipalFound;
                     handler.checkUser(p.getName(), p.getPassword());
@@ -572,7 +572,7 @@ public class WSSecurityHandler extends WSHandler implements Handler {
         if (context.getProperty(Context.AUTHENTICATION_SERVICE) != null) {
             setAuthenticationService((AuthenticationService) context.getProperty(Context.AUTHENTICATION_SERVICE));
         }
-        if (crypto == null && context.getProperty(Context.KEYSTORE_MANAGER) != null) {
+        if (crypto == null && context.getProperty(Context.KEYSTORE_MANAGER) != null && keystore != null) {
             KeystoreManager km = (KeystoreManager) context.getProperty(Context.KEYSTORE_MANAGER);
             setCrypto(new KeystoreInstanceCrypto(km, keystore));
         }

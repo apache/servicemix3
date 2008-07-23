@@ -21,10 +21,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Set;
+
+import javax.activation.DataHandler;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
@@ -35,7 +38,7 @@ import org.apache.camel.util.ExchangeHelper;
 
 /**
  * The binding of how Camel messages get mapped to JBI and back again
- * 
+ *
  * @version $Revision: 563665 $
  */
 public class JbiBinding {
@@ -66,6 +69,7 @@ public class JbiBinding {
         }
         normalizedMessage.setContent(getJbiInContent(camelExchange));
         addJbiHeaders(jbiExchange, normalizedMessage, camelExchange);
+        addJbiAttachments(jbiExchange, normalizedMessage, camelExchange);
         return jbiExchange;
     }
 
@@ -90,12 +94,15 @@ public class JbiBinding {
                                                        String defaultMep)
         throws MessagingException, URISyntaxException {
 
-        ExchangePattern mep = camelExchange.getPattern();
+        // option 1 -- use the MEP that was configured on the endpoint URI
+        ExchangePattern mep = ExchangePattern.fromWsdlUri(defaultMep);
         if (mep == null) {
-            mep = ExchangePattern.fromWsdlUri(defaultMep);
+            // option 2 -- use the MEP configured on the ToJbiProcessor
+            mep = ExchangePattern.fromWsdlUri(getMessageExchangePattern());
         }
         if (mep == null) {
-            mep = ExchangePattern.fromWsdlUri(getMessageExchangePattern());
+            // option 3 -- use the MEP from the Camel Exchange
+            mep = camelExchange.getPattern();
         }
         MessageExchange answer = null;
         if (mep != null) {
@@ -122,6 +129,15 @@ public class JbiBinding {
                 answer = exchangeFactory.createInOutExchange();
             }
         }
+
+        if (camelExchange.getProperty("jbi.operation") != null) {
+
+            String operationName = (String) camelExchange.getProperty("jbi.operation");
+            QName operationQName = QName.valueOf(operationName);
+            answer.setOperation(operationQName);
+
+        }
+
         return answer;
     }
 
@@ -138,6 +154,16 @@ public class JbiBinding {
         Set<Map.Entry<String, Object>> entries = camelExchange.getIn().getHeaders().entrySet();
         for (Map.Entry<String, Object> entry : entries) {
             normalizedMessage.setProperty(entry.getKey(), entry.getValue());
+        }
+    }
+
+    protected void addJbiAttachments(MessageExchange jbiExchange, NormalizedMessage normalizedMessage,
+                                     Exchange camelExchange)
+        throws MessagingException {
+
+        Set<Map.Entry<String, DataHandler>> entries = camelExchange.getIn().getAttachments().entrySet();
+        for (Map.Entry<String, DataHandler> entry : entries) {
+            normalizedMessage.addAttachment(entry.getKey(), entry.getValue());
         }
     }
 

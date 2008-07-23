@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.servicemix</groupId>
     <artifactId>bindingcomponents</artifactId>
-    <version>3.2.2</version>
+    <version>3.2.2-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -278,6 +278,29 @@
                <artifactId>wstx-asl</artifactId>
            </exclusion>
        </exclusions>
+ 
+    </dependency>
+    <dependency>
+        <groupId>commons-httpclient</groupId>
+        <artifactId>commons-httpclient</artifactId>
+        <scope>test</scope>
+        <exclusions>         
+            <exclusion>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+    <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <scope>test</scope>
+        <exclusions>
+            <exclusion>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+            </exclusion>
+        </exclusions>
     </dependency>
   </dependencies>
 

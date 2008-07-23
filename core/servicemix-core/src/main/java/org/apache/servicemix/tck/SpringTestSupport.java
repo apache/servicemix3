@@ -60,6 +60,13 @@ public abstract class SpringTestSupport extends TestCase {
 
     protected SpringJBIContainer jbi;
 
+    protected SpringTestSupport(String name) {
+        super(name);
+    }
+    
+    protected SpringTestSupport() {
+    }
+    
     protected void setUp() throws Exception {
         transformer = new SourceTransformer();
         context = createBeanFactory();

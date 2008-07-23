@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.apache.servicemix.tooling</groupId>
         <artifactId>tooling</artifactId>
-        <version>3.2.2</version>
+        <version>3.2.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>xfire-maven-plugin</artifactId>
@@ -87,7 +87,11 @@
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+            <version>${jaxb.impl.version}</version>
+        </dependency>
   
     </dependencies>
 

@@ -63,9 +63,14 @@ public class DotView extends AbstractView {
             FileWriter w = new FileWriter(dotSrc);
             w.write(o.toString());
             w.close();
-            dotImg = File.createTempFile("smx_", ".dot." + getDotFormat());
-            
-            String cmd = "-T" + getDotFormat() + " \"" + dotSrc.getCanonicalPath() + "\" -o\"" + dotImg.getAbsolutePath() + "\"";
+            dotImg = new File(dotSrc.getAbsolutePath() + "." + getDotFormat());
+
+            String cmd;
+            if (System.getProperty("os.name").contains("Windows")) {
+	            cmd = "-T" + getDotFormat() + " \"" + dotSrc.getAbsolutePath() + "\" -o\"" + dotImg.getAbsolutePath() + "\"";
+            } else {
+	            cmd = "-T " + getDotFormat() + " " + dotSrc.getAbsolutePath() + " -o " + dotImg.getAbsolutePath();
+            }
             Dot.run(cmd);
             
             InputStream is = new FileInputStream(dotImg);
@@ -77,7 +82,7 @@ public class DotView extends AbstractView {
             FileUtil.copyInputStream(is, response.getOutputStream());
         } finally {
             if (dotSrc != null) {
-                //dotSrc.delete();
+                dotSrc.delete();
             }
             if (dotImg != null) {
                 dotImg.delete();

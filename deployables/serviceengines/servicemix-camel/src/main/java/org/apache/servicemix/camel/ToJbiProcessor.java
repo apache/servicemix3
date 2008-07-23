@@ -17,7 +17,6 @@
 package org.apache.servicemix.camel;
 
 import java.net.URISyntaxException;
-import java.util.Map;
 import java.util.Set;
 
 import javax.jbi.component.ComponentContext;
@@ -27,16 +26,16 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.xml.namespace.QName;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
-import org.apache.camel.util.URISupport;
 import org.apache.servicemix.jbi.resolver.URIResolver;
 
 /**
  * A
- * 
+ *
  * @{link Processor} which takes a Camel {@link Exchange} and invokes it into
  *        JBI using the straight JBI API
  * @version $Revision: 563665 $
@@ -46,27 +45,12 @@ public class ToJbiProcessor implements Processor {
 
     private ComponentContext componentContext;
 
-    private String destinationUri;
+    private JbiEndpoint jbiEndpoint;
 
-    private String mep;
-
-    public ToJbiProcessor(JbiBinding binding, ComponentContext componentContext, String destinationUri) {
+    public ToJbiProcessor(JbiBinding binding, ComponentContext componentContext, JbiEndpoint endpoint) {
         this.binding = binding;
         this.componentContext = componentContext;
-        this.destinationUri = destinationUri;
-        try {
-            int idx = destinationUri.indexOf('?');
-            if (idx > 0) {
-                Map params = URISupport.parseQuery(destinationUri.substring(idx + 1));
-                mep = (String) params.get("mep");
-                if (mep != null && !mep.startsWith("http://www.w3.org/ns/wsdl/")) {
-                    mep = "http://www.w3.org/ns/wsdl/" + mep;
-                }
-                this.destinationUri = destinationUri.substring(0, idx);
-            }
-        } catch (URISyntaxException e) {
-            throw new JbiException(e);
-        }
+        jbiEndpoint = endpoint;
     }
 
     private void addHeaders(MessageExchange messageExchange, Exchange camelExchange) {
@@ -85,13 +69,25 @@ public class ToJbiProcessor implements Processor {
         }
     }
 
+    private void addAttachments(NormalizedMessage normalizedMessage, Message camelMessage) {
+        Set entries = normalizedMessage.getAttachmentNames();
+        for (Object o : entries) {
+            String id = o.toString();
+            camelMessage.addAttachment(id, normalizedMessage.getAttachment(id));
+        }
+    }
+
     public void process(Exchange exchange) {
         try {
             DeliveryChannel deliveryChannel = componentContext.getDeliveryChannel();
             MessageExchangeFactory exchangeFactory = deliveryChannel.createExchangeFactory();
-            MessageExchange messageExchange = binding.makeJbiMessageExchange(exchange, exchangeFactory, mep);
+            MessageExchange messageExchange = binding.makeJbiMessageExchange(exchange, exchangeFactory, jbiEndpoint.getMep());
 
-            URIResolver.configureExchange(messageExchange, componentContext, destinationUri);
+            if (jbiEndpoint.getOperation() != null) {
+                messageExchange.setOperation(QName.valueOf(jbiEndpoint.getOperation()));
+            }
+
+            URIResolver.configureExchange(messageExchange, componentContext, jbiEndpoint.getDestinationUri());
             deliveryChannel.sendSync(messageExchange);
 
             if (messageExchange.getStatus() == ExchangeStatus.ERROR) {
@@ -101,9 +97,11 @@ public class ToJbiProcessor implements Processor {
                 if (messageExchange.getFault() != null) {
                     exchange.getFault().setBody(messageExchange.getFault().getContent());
                     addHeaders(messageExchange.getFault(), exchange.getFault());
+                    addAttachments(messageExchange.getFault(), exchange.getFault());
                 } else {
                     exchange.getOut().setBody(messageExchange.getMessage("out").getContent());
                     addHeaders(messageExchange.getMessage("out"), exchange.getOut());
+                    addAttachments(messageExchange.getMessage("out"), exchange.getOut());
                 }
                 messageExchange.setStatus(ExchangeStatus.DONE);
                 deliveryChannel.send(messageExchange);

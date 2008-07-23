@@ -34,6 +34,7 @@ import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor;
 import org.apache.cxf.binding.soap.model.SoapBindingInfo;
 import org.apache.cxf.binding.soap.model.SoapHeaderInfo;
 import org.apache.cxf.endpoint.Endpoint;
+import org.apache.cxf.headers.Header;
 import org.apache.cxf.helpers.NSStack;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Message;
@@ -101,6 +102,10 @@ public class JbiOutWsdl1Interceptor extends AbstractSoapInterceptor {
 
             BindingOperationInfo bop = message.getExchange().get(
                     BindingOperationInfo.class);
+            if (bop == null) {
+                throw new Fault(
+                        new Exception("Operation not bound on this message"));
+            }
             BindingMessageInfo msg = isRequestor(message) ? bop.getInput()
                     : bop.getOutput();
 
@@ -193,13 +198,17 @@ public class JbiOutWsdl1Interceptor extends AbstractSoapInterceptor {
             partsContent.add(nodes);
         }
             
+        List<Header> headerList = message.getHeaders();
         List<SoapHeaderInfo> headers = msg.getExtensors(SoapHeaderInfo.class);
         for (SoapHeaderInfo header : headers) {
-            NodeList nl = partsContent.get(header.getPart().getIndex());
-            Element headerElement = message.get(Element.class);
-            for (int i = 0; i < nl.getLength(); i++) {
-                headerElement.appendChild(nl.item(i));
+            NodeList nl = partsContent.get(0);
+            if (header.getPart().getConcreteName().getNamespaceURI().equals(nl.item(0).getNamespaceURI())
+                    && header.getPart().getConcreteName().getLocalPart().equals(nl.item(0).getLocalName())) {
+                headerList.add(new Header(header.getPart().getConcreteName(),
+                        nl.item(0)));
+                partsContent.remove(0);
             }
+                       
         }
         
         return partsContent;

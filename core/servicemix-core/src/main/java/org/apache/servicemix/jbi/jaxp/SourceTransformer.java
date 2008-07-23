@@ -97,17 +97,31 @@ public class SourceTransformer {
     }
 
     /**
-     * Converts the given input Source into the required result
+     * Converts the given input Source into the required result, using the default charset
      */
     public void toResult(Source source, Result result) throws TransformerException {
+        toResult(source, result, defaultCharset);
+    }
+
+    /**
+     * Converts the given input Source into the required result, using the specified encoding
+     * @param source the input Source
+     * @param result the output Result
+     * @param charset the required charset, if you specify <code>null</code> the default charset will be used
+     */
+    public void toResult(Source source, Result result, String charset)
+        throws TransformerConfigurationException, TransformerException {
         if (source == null) {
             return;
+        }
+        if (charset == null) {
+            charset = defaultCharset;
         }
         Transformer transformer = createTransfomer();
         if (transformer == null) {
             throw new TransformerException("Could not create a transformer - JAXP is misconfigured!");
         }
-        transformer.setOutputProperty(OutputKeys.ENCODING, defaultCharset);
+        transformer.setOutputProperty(OutputKeys.ENCODING, charset);
         transformer.transform(source, result);
     }
 

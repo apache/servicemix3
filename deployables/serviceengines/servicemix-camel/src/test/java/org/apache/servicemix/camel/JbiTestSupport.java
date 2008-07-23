@@ -28,10 +28,11 @@ import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
+import org.apache.camel.ProducerTemplate;
 import org.apache.camel.TestSupport;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.apache.camel.util.ProducerCache;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 
@@ -51,7 +52,7 @@ public abstract class JbiTestSupport extends TestSupport {
 
     protected String startEndpointUri = "jbi:endpoint:serviceNamespace:serviceA:endpointA";
 
-    protected ProducerCache<Exchange> client = new ProducerCache<Exchange>();
+    protected ProducerTemplate<Exchange> client = camelContext.createProducerTemplate();
 
     /**
      * Sends an exchange to the endpoint
@@ -120,6 +121,11 @@ public abstract class JbiTestSupport extends TestSupport {
         camelContext.stop();
         super.tearDown();
     }
+    
+    protected MockEndpoint getMockEndpoint(String uri) {
+        return (MockEndpoint)camelContext.getEndpoint(uri);
+    }
+
 
     protected abstract void appendJbiActivationSpecs(
             List<ActivationSpec> activationSpecList);

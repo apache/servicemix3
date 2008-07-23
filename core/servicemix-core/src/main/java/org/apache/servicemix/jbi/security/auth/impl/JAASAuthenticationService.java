@@ -65,6 +65,9 @@ public class JAASAuthenticationService implements AuthenticationService {
             }
         });
         loginContext.login();
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Authenticating " + user + " successfully");
+        }
     }
 
 }

@@ -16,7 +16,7 @@
  */
 
 
-                      Apache ServiceMix 3.2.2
+                      Apache ServiceMix 3.2.1
                       =======================
 
 See the README file for more general informations about ServiceMix.
@@ -33,94 +33,27 @@ Bug Tracking:  http://issues.apache.org/activemq/browse/SM
 
 Changes:
 --------
-Bug
 
-    * [SM-607] - Files dropped into the install directory sometimes result in a "file in use by another process" error
-    * [SM-1136] - PreDestroy being called for each exchange when it's not configured that way.
-    * [SM-1157] - maven-jbi-plugin creates wrong classpath entries in jbi.xml for SE
-    * [SM-1158] - Cxf BC provider should handle soap message correctly when soap message has empty soap header
-    * [SM-1159] - Cxf bc provider should check MessageExchange status before send out the message to avoid "Out not supported" exception.
-    * [SM-1161] - jbi-service-unit causes infinite loop when dependency graph is not cycle-free
-    * [SM-1163] - CXF SE missing type attribute in jbi outbound message
-    * [SM-1170] - Geronimo deployer and plugin build failures
-    * [SM-1171] - BeanEndpoint can receive messages before it has fully started, causing exceptions
-    * [SM-1172] - namespace prefix missing from jbi mesage to soap message
-    * [SM-1175] - spring-jmx is dependent on spring-aop and needs included in the servicemix/lib directory
-    * [SM-1184] - Data loss due to random exceptions in a saxon service unit
-    * [SM-1186] - NormalizedMessageImpl.getAttachment() returns DataHandler when it should return null
-    * [SM-1189] - Race condintion in Auto Deployer
-    * [SM-1191] - Couldn't deploy >1 separate servicemix-camel service-units
-    * [SM-1193] - Cxf Se endpoint should support the interfaceName is null in the incoming exchange
-    * [SM-1196] - XmlSchema version upgrade required for CXF components
-    * [SM-1197] - Archetype itests failing
-    * [SM-1198] - servicemix-jms unit tests are hanging
-    * [SM-1199] - Current release of ServiceMix 3.2.1 (as per 2008/01/20) still required MyBootstrap class for a ServiceEngine
-    * [SM-1200] - Problems using document('') inside xslt, depending on the source type
-    * [SM-1201] - Move mock classes from servicemix-soap2 subproject to a better location
-    * [SM-1209] - JmsConsumerEndpoint doesn't shut down the Spring AbstractMessageListenerContainer properly
-    * [SM-1210] - provide locationURI attribute for cxfbc:consumer endpoint so that customer can specify the address which will override the one in wsdl.
-    * [SM-1214] - Sitemesh TLD contains illegal short-name in web-console
-    * [SM-1216] - NoClassDefFoundError: org/aopalliance/intercept/MethodInvocation
-    * [SM-1217] - Deployment fails with ZipException
-    * [SM-1219] - camel pipeline does not copy over properties
-    * [SM-1220] - MTOM not returning attachments from NormalizedMessages
-    * [SM-1225] - cxf bc provider should support exchange without specifing the operationName if portType only have one operation
-    * [SM-1228] - MTomCheckInterceptor force attachment writing even if there are no attachments
-    * [SM-1232] - Mtom not working correctly with cxf-bc provider
-    * [SM-1240] - jbi:embeddedServicemix goal does not wait forever anymore
-    * [SM-1243] - servicemix-cxf-se proxy can not be used without the #context attribute
-    * [SM-1251] - CXF BC provider doesn't produce WS-Addressing Headers
-    * [SM-1252] - CXF BC provider doesn't detect automatically the SOAP version of the message to send
-    * [SM-1254] - Possible memory leak when the jms consumer can not send the response back to the broker
-    * [SM-1259] - Error in CxfBc WrapperOutInterceptor - uses the location in the iterator.
-    * [SM-1260] - CXFBC doesn't support multiple parts defined in wsdl.
-    * [SM-1262] - SMX 3.2 org.apache.servicemix.lwcontainer.LwContainerComponentTest fails if the maven repository location is non-default.
-    * [SM-1263] - LwContainerComponentTest fails on windows on the 3.2.2 branch
-    * [SM-1265] - Truncation of SM_STORE.ID field by eip component when using a jdbcStore
-    * [SM-1267] - maven-jbi-plugin refuses to include jbi-component jars into SE packages
-    * [SM-1268] - ServiceMix 3.2.2 servicemix-cxf-se /CxfSeSpringTest failing due to recent changes to the component.
-    * [SM-1272] - cocurrency problem in cxf bc provider
-    * [SM-1273] - Add repository entry for java.net dependencies
-    * [SM-1274] - Deployables should build before archetypes
-    * [SM-1275] - SMX parent pom do not have maven-checkstyle-plugin version locked so picking up checkstyle 4.3 version gives some checkstyle errors.
-    * [SM-1276] - ServiceMix 3.2 deployables/serviceengines/servicemix-lwcontainer had test dependency on servicemix-quartz but SMX-quartz get build later than lwcontainer component.
-    * [SM-1278] - While using DefaultMessageListenerContainer transactions are not properly rolled back
-    * [SM-1280] - FTP poller stalls because the connection pool is empty
-    * [SM-1283] - SMX 3.2 deployables should build serviceengines before bindingcomponents to avoid servicemix-cxf-bc test failure on clean repo.
-    * [SM-1286] - Saxon does not resolve xsl imports / includes relative to the location
-    * [SM-1287] - <drools:namespace-context /> element does not work anymore
-    * [SM-1288] - <http:consumer/> endpoints do not work when used with another web server than jetty
-    * [SM-1301] - should use getDefaultBus api but not create bus explicitly
-    * [SM-1303] - generate endpoint description for cxf se endpoint so that we can see the wsdl from webconsole when deploy into tomcat
-    * [SM-1304] - Servicemix-cxf-bc provider fails to send a correct soap msg when useJBIWrapper=false
-    * [SM-1309] - SmxHttpExchange: Method intended to override HttpExchange not named correctly
-    * [SM-1312] - build broken for servicemix-wsn2005 module
+** Bug
+    * [SM-822] - java.lang.IllegalStateException: component is not owner, with jmsflow and jcaflow
+    * [SM-915] - FTP poller stalls with threads waiting on PlainSocketImpl.socketAccept()
+    * [SM-1051] - servicemix.bat contains unix style environment variables, instead of all windows style environment variables
+    * [SM-1119] - Encoding problem in text returned by HTTP-SU
+    * [SM-1124] - Message content silently dropped when conversion fails
+    * [SM-1131] - Redeployment fails for Geronimo integration
+    * [SM-1132] - No clean shutdown of ServiceMix
+    * [SM-1143] - Both wsdl-first-sa projects have the same artifactId
+    * [SM-1144] - Error in writeDetails method when I need return fault messages
+    * [SM-1145] - NoClassDefFound (org.springframework.aop.support.AopUtils) when deploying the Camel example
+    * [SM-1149] - the resource path shouldn't include any "target" to avoid being filtered when build the src kit
+    * [SM-1151] - LwContainer test has the version number hard coded inside
 
-Improvement
+** Improvement
+    * [SM-180] - Update JavaDoc link on in website template
+    * [SM-810] - Create single complete ServiceMix Shared Library
 
-    * [SM-1112] - Add a way to access the Delivery Channel inside the ScriptExchangeHelper to create new Message Exchanges etc.
-    * [SM-1115] - FilePoller should offer configurable targetOperation
-    * [SM-1123] - Namespace support for the xpath parameter annotation.
-    * [SM-1130] - FtpPoller should offer configurable targetOperation
-    * [SM-1155] - New component: OSWorkflow JBI Component
-    * [SM-1174] - update cxf version used in servicemix
-    * [SM-1218] - ServiceMix logging refers to the incubator website
-    * [SM-1222] - FilePoller and FileSender archetypes
-    * [SM-1233] - add jms transport support for cxf-bc
-    * [SM-1236] - CXF BC should be able to manage WSA Headers as a Map of Strings
-    * [SM-1248] - ServiceMix Drools Enhancements
-    * [SM-1253] - checkstyle error in servicemix-osworkflow
-    * [SM-1255] - Ability to not check duplicate files when uploading
-    * [SM-1256] - exclusion axiom-impl dependency for woden in servicemix-soap2
-    * [SM-1261] - Allow script component to send InOut exchanges as a consumer
-    * [SM-1264] - Cleanup the servicemix-binding-component archetype so the BCs it creates pass the Checkstyle rules
-    * [SM-1271] - Make ComponentContext available to beans configured in BeanComponent service unit xbean.xml
-    * [SM-1284] - should avoid using hardcode lib version of ws-notification sample
-    * [SM-1313] - cxf bc provider should add SoapActionOutInterceptor by default
 
-New Feature
+** Task
+    * [SM-1146] - Change servicemix repo url due to the svn relation out of the incubator area
 
-    * [SM-971] - SU archetype for servicemix-drools
-    * [SM-1226] - Validation component should optionally handle errors by propagating a "correct JBI message" with "fault content"
-    * [SM-1239] - EIP StaticRecipientList should propagate properties in asynchronous exchanges
 

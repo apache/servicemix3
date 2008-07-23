@@ -562,6 +562,12 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
         File file = null;
         try {   
             if (location.startsWith(filePrefix)) {
+                String os = System.getProperty("os.name");
+                if (os.startsWith("Windows")) {
+                    
+                    location = location.replace('\\', '/');
+                    location = location.replaceAll(" ", "%20");
+                }
                 URI uri = new URI(location);
                 file = new File(uri);
             } else {

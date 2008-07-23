@@ -34,7 +34,10 @@ import org.apache.hello_world_soap_http.types.GreetMeSometimeResponse;
 import org.apache.hello_world_soap_http.types.SayHiResponse;
 import org.apache.hello_world_soap_http.types.TestDocLitFaultResponse;
 import org.apache.hello_world_soap_http.types.TestNillableResponse;
-
+import uri.helloworld.HelloFault_Exception;
+import uri.helloworld.HelloHeader;
+import uri.helloworld.HelloPortType;
+import uri.helloworld.HelloRequest;
 
 @WebService(serviceName = "SOAPServiceProvider", 
         portName = "SoapPort", 
@@ -46,9 +49,11 @@ public class GreeterImplForProvider implements Greeter {
     private CalculatorPortType calculator;
     private Greeter greeter;
     private Greeter securityGreeter;
+    private HelloPortType hello;
+
     public String greetMe(String me) {
         String ret = "";
-        
+
         try {
             if ("ffang".equals(me)) {
                 ret = ret + getCalculator().add(1, 2);
@@ -57,7 +62,14 @@ public class GreeterImplForProvider implements Greeter {
             } else if ("oneway test".equals(me)) {
                 getGreeter().greetMeOneWay("oneway");
                 ret = "oneway";
-            } else if ("https test".equals(me)) {
+            } else if ("header test".equals(me)) { 
+                HelloRequest req = new HelloRequest();
+                req.setText("12");
+                HelloHeader header = new HelloHeader();
+                header.setId("345");
+                ret = ret + hello.hello(req, header).getText();
+            
+            } else if ("https test".equals(me) || "provider security test".equals(me)) {
                 ret = ret + securityGreeter.greetMe("ffang");
             } else if ("concurrency test".equals(me)) {
                 MultiClientThread[] clients = new MultiClientThread[10];
@@ -76,13 +88,20 @@ public class GreeterImplForProvider implements Greeter {
                 for (int i = 0; i < clients.length; i++) {
                     ret += i * 2 + " ";
                 }
+            } else if ("ffang with no server".equals(me)) {
+                //should catch exception since external server is stop
+                getCalculator().add(1, 2);
             }
                         
         } catch (AddNumbersFault e) {
             //should catch exception here if negative number is passed
             ret = ret + e.getFaultInfo().getMessage();
+        } catch (HelloFault_Exception e) {
+            ret = ret + e.getFaultInfo().getId();
         } catch (InterruptedException e) {
             //
+        } catch (Exception e) {
+            ret = ret + "server is stop";
         }
         return "Hello " + me  + " " + ret;
     }
@@ -114,6 +133,14 @@ public class GreeterImplForProvider implements Greeter {
 
     public Greeter getGreeter() {
         return greeter;
+    }
+
+    public void setHello(HelloPortType hello) {
+        this.hello = hello;
+    }
+
+    public HelloPortType getHello() {
+        return hello;
     }
 
     public void setSecurityGreeter(Greeter securityGreeter) {

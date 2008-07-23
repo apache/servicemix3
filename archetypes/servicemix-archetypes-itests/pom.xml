@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.servicemix</groupId>
     <artifactId>archetypes</artifactId>
-    <version>3.2.2</version>
+    <version>3.2.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>servicemix-archetypes-itests</artifactId>
@@ -163,12 +163,22 @@
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix.tooling</groupId>
+      <artifactId>servicemix-cxf-se-wsdl-first-service-unit</artifactId>
+      <version>${servicemix-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.tooling</groupId>
       <artifactId>servicemix-cxf-bc-service-unit</artifactId>
       <version>${servicemix-version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix.tooling</groupId>
       <artifactId>servicemix-osworkflow-service-unit</artifactId>
+      <version>${servicemix-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.tooling</groupId>
+      <artifactId>servicemix-project-root</artifactId>
       <version>${servicemix-version}</version>
     </dependency>
 
@@ -231,6 +241,13 @@
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-osworkflow</artifactId>
       <version>${servicemix-version}</version>
+    </dependency>
+    <!-- somehow, this is needed to get the itests running successfully -->
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-core</artifactId>
+      <version>${servicemix-version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   

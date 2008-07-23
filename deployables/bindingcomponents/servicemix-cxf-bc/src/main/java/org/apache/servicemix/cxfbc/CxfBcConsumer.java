@@ -16,30 +16,35 @@
  */
 package org.apache.servicemix.cxfbc;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.activation.DataHandler;
+import javax.jbi.JBIException;
 import javax.jbi.component.ComponentContext;
 import javax.jbi.management.DeploymentException;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.NormalizedMessage;
+import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.wsdl.WSDLException;
-import javax.wsdl.factory.WSDLFactory;
-import javax.wsdl.xml.WSDLReader;
+import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import com.ibm.wsdl.extensions.soap.SOAPAddressImpl;
+import com.ibm.wsdl.extensions.soap.SOAPBindingImpl;
 
-import com.ibm.wsdl.Constants;
 import org.apache.cxf.Bus;
 import org.apache.cxf.attachment.AttachmentImpl;
 import org.apache.cxf.binding.AbstractBindingFactory;
@@ -56,6 +61,7 @@ import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.endpoint.EndpointImpl;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.endpoint.ServerImpl;
+import org.apache.cxf.endpoint.ServerRegistry;
 import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.interceptor.AttachmentInInterceptor;
 import org.apache.cxf.interceptor.AttachmentOutInterceptor;
@@ -78,6 +84,8 @@ import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.service.model.MessagePartInfo;
 import org.apache.cxf.service.model.ServiceInfo;
 import org.apache.cxf.transport.ChainInitiationObserver;
+import org.apache.cxf.transport.http_jetty.JettyHTTPDestination;
+import org.apache.cxf.transport.http_jetty.JettyHTTPServerEngine;
 import org.apache.cxf.ws.addressing.AddressingProperties;
 import org.apache.cxf.ws.rm.Servant;
 import org.apache.cxf.wsdl.WSDLManager;
@@ -85,13 +93,15 @@ import org.apache.cxf.wsdl11.WSDLServiceFactory;
 import org.apache.servicemix.common.endpoints.ConsumerEndpoint;
 import org.apache.servicemix.cxfbc.interceptors.JbiInInterceptor;
 import org.apache.servicemix.cxfbc.interceptors.JbiInWsdl1Interceptor;
+import org.apache.servicemix.cxfbc.interceptors.JbiJAASInterceptor;
 import org.apache.servicemix.cxfbc.interceptors.JbiOperationInterceptor;
 import org.apache.servicemix.cxfbc.interceptors.JbiOutWsdl1Interceptor;
 import org.apache.servicemix.cxfbc.interceptors.MtomCheckInterceptor;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.messaging.NormalizedMessageImpl;
 import org.apache.servicemix.soap.util.DomUtil;
+import org.mortbay.jetty.Handler;
 import org.springframework.core.io.Resource;
+
 
 /**
  * 
@@ -136,6 +146,9 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     private int timeout = 10;
 
     private boolean useJBIWrapper = true;
+    
+        
+    private EndpointInfo ei;
 
     /**
      * @return the wsdl
@@ -197,12 +210,31 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     @Override
     public void start() throws Exception {
         super.start();
+        registerListServiceHandler();
         server.start();
+    }
+
+    private void registerListServiceHandler() {
+        if (server.getDestination() instanceof JettyHTTPDestination) {
+            JettyHTTPDestination jettyDest = (JettyHTTPDestination) server.getDestination();
+            JettyHTTPServerEngine jettyEng = (JettyHTTPServerEngine) jettyDest.getEngine();
+            List<Handler> handlers = jettyEng.getHandlers();
+            if (handlers == null) {
+                handlers = new ArrayList<Handler>();
+                jettyEng.setHandlers(handlers);
+            }
+            handlers.add(new ListServiceHandler(getBus().getExtension(ServerRegistry.class)));
+                
+        }
     }
 
     @Override
     public void stop() throws Exception {
         server.stop();
+        if (ei.getAddress().startsWith("https")) {
+            bus.shutdown(false);
+            bus = null;
+        }
         super.stop();
     }
 
@@ -210,23 +242,8 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     public void validate() throws DeploymentException {
         try {
             if (definition == null) {
-                if (wsdl == null) {
-                    throw new DeploymentException("wsdl property must be set");
-                }
-                description = DomUtil.parse(wsdl.getInputStream());
-                WSDLFactory wsdlFactory = WSDLFactory.newInstance();
-                WSDLReader reader = wsdlFactory.newWSDLReader();
-                reader.setFeature(Constants.FEATURE_VERBOSE, false);
-                // definition = reader.readWSDL(wsdl.getURL().toString(),
-                // description);
-                try {
-                    // use wsdl manager to parse wsdl or get cached definition
-                    definition = getBus().getExtension(WSDLManager.class)
-                            .getDefinition(wsdl.getURL());
-                } catch (WSDLException ex) {
-                    // throw new ServiceConstructionException(new
-                    // Message("SERVICE_CREATION_MSG", LOG), ex);
-                }
+                
+                retrieveWSDL();
             }
             if (service == null) {
                 // looking for the servicename according to targetServiceName
@@ -240,9 +257,10 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
             }
             WSDLServiceFactory factory = new WSDLServiceFactory(getBus(),
                     definition, service);
+            
             Service cxfService = factory.create();
 
-            EndpointInfo ei = cxfService.getServiceInfos().iterator().next()
+            ei = cxfService.getServiceInfos().iterator().next()
                     .getEndpoints().iterator().next();
             for (ServiceInfo serviceInfo : cxfService.getServiceInfos()) {
                 if (serviceInfo.getName().equals(service)
@@ -276,6 +294,9 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
             cxfService.getInInterceptors().add(
                     new JbiInWsdl1Interceptor(isUseJBIWrapper()));
             cxfService.getInInterceptors().add(new JbiInInterceptor());
+            cxfService.getInInterceptors().add(new JbiJAASInterceptor(
+                    ((CxfBcComponent)this.getServiceUnit().getComponent()).
+                    getConfiguration().getAuthenticationService()));
             cxfService.getInInterceptors().add(new JbiInvokerInterceptor());
             cxfService.getInInterceptors().add(new JbiPostInvokerInterceptor());
 
@@ -283,6 +304,7 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
 
             cxfService.getOutInterceptors().add(
                     new JbiOutWsdl1Interceptor(isUseJBIWrapper()));
+
             cxfService.getOutInterceptors().add(new SoapActionOutInterceptor());
             cxfService.getOutInterceptors().add(new AttachmentOutInterceptor());
             cxfService.getOutInterceptors().add(
@@ -295,6 +317,7 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
             cxfService.getOutFaultInterceptors().add(
                     new SoapOutInterceptor(getBus()));
 
+            
             ep = new EndpointImpl(getBus(), cxfService, ei);
             getInInterceptors().addAll(getBus().getInInterceptors());
             getInFaultInterceptors().addAll(getBus().getInFaultInterceptors());
@@ -329,12 +352,58 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
 
             chain = new JbiChainInitiationObserver(ep, getBus());
             server = new ServerImpl(getBus(), ep, null, chain);
-
             super.validate();
         } catch (DeploymentException e) {
             throw e;
         } catch (Exception e) {
             throw new DeploymentException(e);
+        }
+    }
+
+    private void retrieveWSDL() throws JBIException, WSDLException, DeploymentException, IOException {
+        if (wsdl == null) {
+            if (getTargetService() != null && getTargetEndpoint() != null) {
+                ServiceEndpoint serviceEndpoint 
+                    = getServiceUnit().getComponent().getComponentContext().getEndpoint(getTargetService(), getTargetEndpoint());
+                if (serviceEndpoint != null) {
+                    description = 
+                        this.getServiceUnit().getComponent().getComponentContext().getEndpointDescriptor(serviceEndpoint);
+                    definition = getBus().getExtension(WSDLManager.class)
+                        .getDefinition((Element)description.getFirstChild());
+                    List address = definition.getService(getTargetService()).getPort(getTargetEndpoint()).getExtensibilityElements();
+                    if (address == null || address.size() == 0) {
+                        SOAPAddressImpl soapAddress = new SOAPAddressImpl();
+                        //specify default transport if there is no one in the internal wsdl
+                        soapAddress.setLocationURI("http://localhost");
+                        definition.getService(getTargetService()).getPort(getTargetEndpoint()).addExtensibilityElement(soapAddress);
+                    }
+                    List binding = definition.getService(getTargetService()).getPort(
+                            getTargetEndpoint()).getBinding().getExtensibilityElements();
+                    if (binding == null || binding.size() == 0) {
+                        //no binding info in the internal wsdl so we need add default soap11 binding
+                        SOAPBinding soapBinding = new SOAPBindingImpl();
+                        soapBinding.setTransportURI("http://schemas.xmlsoap.org/soap/http");
+                        soapBinding.setStyle("document");
+                        definition.getService(getTargetService()).getPort(getTargetEndpoint()).getBinding().
+                            addExtensibilityElement(soapBinding);
+                    }
+                    
+                }
+            } else {
+                throw new DeploymentException("can't get wsdl");
+            }
+            
+        } else {
+            description = DomUtil.parse(wsdl.getInputStream());
+            try {
+                // use wsdl manager to parse wsdl or get cached
+                // definition
+                definition = getBus().getExtension(WSDLManager.class)
+                        .getDefinition(wsdl.getURL());
+            } catch (WSDLException ex) {
+                // throw new ServiceConstructionException(new
+                // Message("SERVICE_CREATION_MSG", LOG), ex);
+            }
         }
     }
 
@@ -527,7 +596,8 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
                         outMessage = endpoint.getBinding().createMessage();
                         ex.setOutMessage(outMessage);
                     }
-                    NormalizedMessageImpl norMessage = (NormalizedMessageImpl) exchange
+                    
+                    NormalizedMessage norMessage = (NormalizedMessage) exchange
                             .getMessage("out");
 
                     if (outMessage instanceof SoapMessage) {
@@ -540,9 +610,11 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
                     List<Attachment> attachmentList = new ArrayList<Attachment>();
                     outMessage.setContent(Source.class, exchange.getMessage(
                             "out").getContent());
-                    Iterator<String> iter = norMessage.listAttachments();
+                    Set attachmentNames = norMessage.getAttachmentNames();
+                    
+                    Iterator iter = attachmentNames.iterator();
                     while (iter.hasNext()) {
-                        String id = iter.next();
+                        String id = (String)iter.next();
                         DataHandler dh = norMessage.getAttachment(id);
                         attachmentList.add(new AttachmentImpl(id, dh));
                     }

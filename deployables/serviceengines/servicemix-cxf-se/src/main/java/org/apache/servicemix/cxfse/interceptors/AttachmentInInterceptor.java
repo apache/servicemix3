@@ -17,24 +17,23 @@
 package org.apache.servicemix.cxfse.interceptors;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Set;
 
 import javax.activation.DataHandler;
 import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.NormalizedMessage;
 
 import org.apache.cxf.attachment.AttachmentImpl;
-import org.apache.cxf.common.logging.LogUtils;
+
 import org.apache.cxf.message.Attachment;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
-import org.apache.servicemix.jbi.messaging.NormalizedMessageImpl;
+
 
 public class AttachmentInInterceptor extends AbstractPhaseInterceptor<Message> {
-    private static final Logger LOG = LogUtils.getL7dLogger(AttachmentInInterceptor.class);
-    
+     
     
     public AttachmentInInterceptor() {
         super(Phase.RECEIVE);
@@ -43,16 +42,15 @@ public class AttachmentInInterceptor extends AbstractPhaseInterceptor<Message> {
     public void handleMessage(Message message) {
         List<Attachment> attachmentList = new ArrayList<Attachment>();
         MessageExchange exchange = message.get(MessageExchange.class);
-        NormalizedMessageImpl norMessage = 
-            (NormalizedMessageImpl) exchange.getMessage("in");
-        Iterator<String> iter = norMessage.listAttachments();
-        while (iter.hasNext()) {
-            String id = iter.next();
+        NormalizedMessage norMessage = 
+            (NormalizedMessage) exchange.getMessage("in");
+        Set names = norMessage.getAttachmentNames();
+        for (Object obj : names) {
+            String id = (String)obj;
             DataHandler dh = norMessage.getAttachment(id);
             attachmentList.add(new AttachmentImpl(id, dh));
         }
         
-        LOG.info("the attachment size is " + attachmentList.size());
         message.setAttachments(attachmentList);
     }
 

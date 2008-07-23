@@ -52,14 +52,26 @@ public class CxfBcProviderSecurityTest extends SpringTestSupport {
             "Server failed to launch",
             // run the server in another process
             // set this to false to fork
-            launchServer(HttpsServer.class, false));
+            launchServer(SecurityServer.class, false));
+    }
+    
+    protected void tearDown() throws Exception {
+        component.getServiceUnitManager().stop("proxy");
+        component.getServiceUnitManager().shutDown("proxy");
+        component.getServiceUnitManager().undeploy("proxy", getServiceUnitPath("provider"));
+        try {
+            sl.stopServer();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            fail("failed to stop server " + sl.getClass());
+        } 
     }
     
     public boolean launchServer(Class<?> clz, boolean inProcess) {
         boolean ok = false;
         try { 
             sl = new ServerLauncher(clz.getName(), inProcess);
-            ok = sl.launchServer();
+            ok = sl.launchServer();            
             assertTrue("server failed to launch", ok);
             
         } catch (IOException ex) {
@@ -82,19 +94,19 @@ public class CxfBcProviderSecurityTest extends SpringTestSupport {
                 "<message xmlns='http://java.sun.com/xml/ns/jbi/wsdl-11-wrapper'>"
               + "<part> "
               + "<greetMe xmlns='http://apache.org/hello_world_soap_http/types'><requestType>"
-              + "https test"
+              + "provider security test"
               + "</requestType></greetMe>"
               + "</part> "
               + "</message>"));
         client.sendSync(io);
         assertTrue(new SourceTransformer().contentToString(
-                io.getOutMessage()).indexOf("Hello https test Hello ffang") >= 0);
+                io.getOutMessage()).indexOf("provider security test Hello ffang") >= 0);
 
     }
 
     @Override
     protected AbstractXmlApplicationContext createBeanFactory() {
-        return new ClassPathXmlApplicationContext("org/apache/servicemix/cxfbc/ws/security/provider.xml");
+        return new ClassPathXmlApplicationContext("org/apache/servicemix/cxfbc/ws/security/security_provider.xml");
     }
 
     protected String getServiceUnitPath(String name) {

@@ -41,6 +41,7 @@ import org.apache.servicemix.jbi.security.auth.impl.JAASAuthenticationService;
 import org.apache.servicemix.jbi.security.keystore.KeystoreManager;
 import org.apache.servicemix.jbi.util.IntrospectionSupport;
 import org.apache.servicemix.jbi.util.URISupport;
+import org.mortbay.thread.BoundedThreadPool;
 
 /**
  * 
@@ -224,6 +225,9 @@ public class HttpComponent extends DefaultComponent {
         // Create connectionPool
         if (connectionPool == null) {
             connectionPool = new org.mortbay.jetty.client.HttpClient();
+            BoundedThreadPool btp = new BoundedThreadPool();
+            btp.setMaxThreads(this.configuration.getJettyClientThreadPoolSize());
+            connectionPool.setThreadPool(btp);
             connectionPool.start();
         }
         // Create serverManager

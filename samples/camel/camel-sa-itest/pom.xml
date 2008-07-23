@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.servicemix.samples</groupId>
     <artifactId>camel</artifactId>
-    <version>3.2.2</version>
+    <version>3.2.2-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.servicemix.samples</groupId>
@@ -34,25 +34,22 @@
   <name>ServiceMix :: Samples :: Camel :: SA :: iTest</name>
 
   <dependencies>
-<!--
-    <dependency>
-      <groupId>org.apache.servicemix.samples</groupId>
-      <artifactId>camel-simple-su</artifactId>
-      <version>3.2.2</version>
-    </dependency>
--->
+
     <dependency>
       <groupId>org.apache.servicemix.samples</groupId>
       <artifactId>camel-sa</artifactId>
       <type>zip</type>
-      <version>3.2.2</version>
+      <version>3.2.2-SNAPSHOT</version>
     </dependency>
 
     <!-- for testing -->
     <dependency>
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-core</artifactId>
-      <version>3.2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-camel</artifactId>      
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -106,7 +103,7 @@
             </property>
           </systemProperties>
           <includes>
-            <include>**/*NoVersionsTest.*</include>
+            <include>**/*Test.*</include>
           </includes>
         </configuration>
       </plugin>

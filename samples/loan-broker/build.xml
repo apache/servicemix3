@@ -19,7 +19,7 @@
 -->
 <project name="loan-broker-client" default="run" basedir=".">
 
-  <property name="class.dir" value="classes"/>
+  <property name="class.dir" value="target/classes"/>
 
   <target name="clean">
     <delete dir="target" quiet="true"/>
@@ -30,7 +30,7 @@
     <mkdir dir="${class.dir}"/>
     <mkdir dir="lib"/>
 
-    <get src="http://repo.mergere.com/maven2/org/logicblaze/lingo/lingo/1.3/lingo-1.3.jar"
+    <get src="http://repo1.maven.org/maven2/org/logicblaze/lingo/lingo/1.3/lingo-1.3.jar"
          dest="lib/lingo-1.3.jar" 
          usetimestamp="true" />
 
@@ -47,7 +47,7 @@
   </target>
 
   <target name="compile" depends="init" description="Compile all Java">
-    <javac srcdir="." destdir="${class.dir}">
+    <javac srcdir="src/main/java" destdir="${class.dir}">
       <classpath refid="javac.classpath"/>
     </javac>
   </target>

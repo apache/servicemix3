@@ -24,12 +24,12 @@
     <parent>
         <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix</artifactId>
-        <version>3.2.2</version>
+        <version>3.2.2-SNAPSHOT</version>
     </parent>
 
     <groupId>org.apache.servicemix</groupId>
     <artifactId>archetypes</artifactId>
-    <version>3.2.2</version>
+    <version>3.2.2-SNAPSHOT</version>
     <name>ServiceMix :: Archetypes</name>
     <packaging>pom</packaging>
 
@@ -58,10 +58,13 @@
         <module>servicemix-saxon-xslt-service-unit</module>
         <module>servicemix-bean-service-unit</module>
         <module>servicemix-drools-service-unit</module>
-        <module>servicemix-archetypes-itests</module>
         <module>servicemix-cxf-bc-service-unit</module>
         <module>servicemix-cxf-se-service-unit</module>
+        <module>servicemix-cxf-se-wsdl-first-service-unit</module>
         <module>servicemix-osworkflow-service-unit</module>
+        <module>servicemix-project-root</module>
+        <module>servicemix-archetype-catalog</module>
+        <module>servicemix-archetypes-itests</module>
     </modules>
 
     <build>
@@ -89,8 +92,10 @@
 					<filters>
 						<servicemix-version>${servicemix-version}</servicemix-version>
 						<xbean-version>${xbean-version}</xbean-version>
+                                                <cxf-version>${cxf-version}</cxf-version>
 						<camel-version>${camel-version}</camel-version>
 						<xfire-version>${xfire-version}</xfire-version>
+                                                <activemq-version>${activemq-version}</activemq-version>
 						<repositories><![CDATA[  
   <repositories>
     <repository>

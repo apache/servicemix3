@@ -49,6 +49,7 @@ import org.apache.cxf.phase.Phase;
 import org.apache.cxf.service.model.BindingMessageInfo;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.MessagePartInfo;
+import org.apache.cxf.service.model.SchemaInfo;
 import org.apache.cxf.staxutils.PartialXMLStreamReader;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.servicemix.jbi.util.QNameUtil;
@@ -108,10 +109,18 @@ public class JbiInWsdl1Interceptor extends AbstractSoapInterceptor {
                 throw new IllegalArgumentException(
                         "messageType namespace is null or empty");
             }
-            root
-                    .setAttribute(XMLConstants.XMLNS_ATTRIBUTE + ":"
+            root.setAttribute(XMLConstants.XMLNS_ATTRIBUTE + ":"
                             + JbiConstants.WSDL11_WRAPPER_MESSAGE_PREFIX,
                             typeNamespace);
+            
+            root.setAttribute(XMLConstants.XMLNS_ATTRIBUTE + ":"
+                    + JbiConstants.WSDL11_WRAPPER_XSD_PREFIX,
+                    XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
+            root.setAttribute(XMLConstants.XMLNS_ATTRIBUTE + ":"
+                    + JbiConstants.WSDL11_WRAPPER_XSI_PREFIX,
+                    XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
+            
             String typeLocalName = wsdlMessage.getMessageInfo().getName()
                     .getLocalPart();
             if (typeLocalName == null || typeLocalName.length() == 0) {
@@ -192,7 +201,9 @@ public class JbiInWsdl1Interceptor extends AbstractSoapInterceptor {
                 MessagePartInfo part = header.getPart();
                 Header param = findHeader(headerElement, part);
                 int idx = part.getIndex();
-                QName element = part.getElementQName();
+                QName element = part.isElement() ? part.getElementQName() : part.getTypeQName();
+                
+                
                 Header hdr = getHeaderElement(message, element);
                 if (hdr == null) {
                     throw new Fault(new Exception(
@@ -212,7 +223,6 @@ public class JbiInWsdl1Interceptor extends AbstractSoapInterceptor {
 
     private void handleJBIFault(SoapMessage message, Element soapFault) {
         Document doc = DomUtil.createDocument();
-
         Element jbiFault = DomUtil.createElement(doc, new QName(
                 JBIConstants.NS_JBI_BINDING, JBIFault.JBI_FAULT_ROOT));
         Node jbiFaultDetail = null;
@@ -223,11 +233,34 @@ public class JbiInWsdl1Interceptor extends AbstractSoapInterceptor {
             jbiFaultDetail = doc.importNode(soapFault.getElementsByTagName(
                     "soap:Detail").item(0).getFirstChild(), true);
         }
+        SchemaInfo schemaInfo = 
+            getOperation(message).getBinding().getService().getSchema(jbiFaultDetail.getNamespaceURI());
+        if (schemaInfo != null && !schemaInfo.isElementFormQualified()) {
+            //that's unquailied fault
+            jbiFaultDetail = addEmptyDefaultTns((Element)jbiFaultDetail);
+        }
         jbiFault.appendChild(jbiFaultDetail);
         message.setContent(Source.class, new DOMSource(doc));
         message.put("jbiFault", true);
     }
 
+    private Element addEmptyDefaultTns(Element ret) {
+        
+        if (!ret.hasAttribute("xmlns")) {
+            ret.setAttribute("xmlns", "");
+        }
+        NodeList nodes = ret.getChildNodes();
+        for (int i = 0; i < nodes.getLength(); i++) {
+            if (nodes.item(i) instanceof Element) {
+                Element ele = (Element) nodes.item(i);
+                ele = addEmptyDefaultTns(ele);
+
+            }
+        }
+        return ret;
+    }
+
+    
     private NodeList wrapNodeList(final NodeList childNodes) {
         return new NodeList() {
             public int getLength() {
@@ -283,7 +316,9 @@ public class JbiInWsdl1Interceptor extends AbstractSoapInterceptor {
         }
         List<Header> headerElement = message.getHeaders();
         for (SoapHeaderInfo header : headers) {
-            if (header.getPart().getElementQName().equals(name)) {
+            QName qname = header.getPart().isElement() 
+                ? header.getPart().getElementQName() : header.getPart().getTypeQName();
+            if (qname.equals(name)) {
                 MessagePartInfo mpi = header.getPart();
                 return findHeader(headerElement, mpi);
             }
@@ -320,13 +355,21 @@ public class JbiInWsdl1Interceptor extends AbstractSoapInterceptor {
         if (headerElement != null) {
             QName name = mpi.getConcreteName();
             for (Header header : headerElement) {
-                if (header.getName().getNamespaceURI() != null
+                if (mpi.isElement()) {
+                    if (header.getName().getNamespaceURI() != null
                         && header.getName().getNamespaceURI().equals(
                                 name.getNamespaceURI())
                         && header.getName().getLocalPart() != null
                         && header.getName().getLocalPart().equals(
                                 name.getLocalPart())) {
-                    param = header;
+                        param = header;
+                    }
+                } else {
+                    if (header.getName().getLocalPart() != null
+                            && header.getName().getLocalPart().equals(
+                                name.getLocalPart())) {
+                        param = header;
+                    }
                 }
             }
         }

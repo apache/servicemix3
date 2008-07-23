@@ -19,6 +19,7 @@ package org.apache.servicemix.camel;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.activation.DataHandler;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.transform.Source;
@@ -28,7 +29,7 @@ import org.apache.camel.impl.DefaultMessage;
 /**
  * A JBI {@link org.apache.camel.Message} which provides access to the underlying JBI features
  * such as {@link #getNormalizedMessage()}
- * 
+ *
  * @version $Revision: 563665 $
  */
 public class JbiMessage extends DefaultMessage {
@@ -50,14 +51,13 @@ public class JbiMessage extends DefaultMessage {
         }
     }
 
-    @Override
-    public JbiExchange getExchange() {
+    public JbiExchange getJbiExchange() {
         return (JbiExchange) super.getExchange();
     }
 
     /**
      * Returns the underlying JBI message
-     * 
+     *
      * @return the underlying JBI message
      */
     public NormalizedMessage getNormalizedMessage() {
@@ -81,6 +81,40 @@ public class JbiMessage extends DefaultMessage {
     }
 
     @Override
+    public void setHeader(String name , Object value) {
+        if (normalizedMessage != null) {
+            normalizedMessage.setProperty(name, value);
+        } else {
+            super.setHeader(name, value);
+        }
+    }
+
+    @Override
+    public DataHandler getAttachment(String id) {
+        DataHandler answer = null;
+        if (normalizedMessage != null) {
+            answer = normalizedMessage.getAttachment(id);
+        }
+        if (answer == null) {
+            answer = super.getAttachment(id);
+        }
+        return answer;
+    }
+
+    @Override
+    public void addAttachment(String id, DataHandler content) {
+        if (normalizedMessage != null) {
+            try {
+                normalizedMessage.addAttachment(id, content);
+            } catch (MessagingException e) {
+                throw new JbiException(e);
+            }
+        } else {
+            super.addAttachment(id, content);
+        }
+    }
+
+    @Override
     public JbiMessage newInstance() {
         return new JbiMessage();
     }
@@ -88,7 +122,10 @@ public class JbiMessage extends DefaultMessage {
     @Override
     protected Object createBody() {
         if (normalizedMessage != null) {
-            return getExchange().getBinding().extractBodyFromJbi(getExchange(), normalizedMessage);
+            JbiExchange jbiExchange = getJbiExchange();
+            if (jbiExchange != null) {
+                return jbiExchange.getBinding().extractBodyFromJbi(jbiExchange, normalizedMessage);
+            }
         }
         return null;
     }
@@ -105,11 +142,26 @@ public class JbiMessage extends DefaultMessage {
         }
     }
 
+    @Override
+    protected void populateInitialAttachments(Map<String, DataHandler> map) {
+        if (normalizedMessage != null) {
+            Iterator iter = normalizedMessage.getAttachmentNames().iterator();
+            while (iter.hasNext()) {
+                String id = iter.next().toString();
+                DataHandler content = normalizedMessage.getAttachment(id);
+                map.put(id, content);
+            }
+        }
+    }
+
 //    @Override
     public void setBody(Object body) {
         if (normalizedMessage != null) {
             if (!(body instanceof Source)) {
-                body = getExchange().getBinding().convertBodyToJbi(getExchange(), body);
+                JbiExchange jbiExchange = getJbiExchange();
+                if (jbiExchange != null) {
+                    body = jbiExchange.getBinding().convertBodyToJbi(jbiExchange, body);
+                }
             }
             try {
                 normalizedMessage.setContent((Source) body);

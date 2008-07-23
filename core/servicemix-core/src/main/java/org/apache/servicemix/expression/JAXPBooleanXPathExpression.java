@@ -16,6 +16,9 @@
  */
 package org.apache.servicemix.expression;
 
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
+import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
@@ -37,5 +40,9 @@ public class JAXPBooleanXPathExpression extends JAXPXPathExpression {
 
     public Object evaluateXPath(Object object) throws XPathExpressionException {
         return getXPathExpression().evaluate(object, XPathConstants.BOOLEAN);
+    }
+
+    public Object evaluate(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
+        return evaluate(exchange, message, XPathConstants.BOOLEAN);
     }
 }

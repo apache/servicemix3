@@ -83,6 +83,24 @@ public final class FileUtil {
     public static boolean buildDirectory(File file) {
         return file.exists() || file.mkdirs();
     }
+    
+    /**
+     * Count files in a directory (including files in all subdirectories)
+     * @param directory the directory to start in
+     * @return the total number of files
+     */
+    public static int countFilesInDirectory(File directory) {
+        int count = 0;
+        for (File file : directory.listFiles()) {
+            if (file.isFile()) {
+                count++;
+            }
+            if (file.isDirectory()) {
+                count += countFilesInDirectory(file);
+            }
+        }
+        return count;
+    }
 
     /**
      * Copy in stream to an out stream
@@ -294,4 +312,6 @@ public final class FileUtil {
             }
         }
     }
+    
+    
 }

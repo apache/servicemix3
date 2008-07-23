@@ -96,6 +96,13 @@ public class ProviderProcessor extends AbstractProcessor implements ExchangeProc
         return relUri;
     }
 
+    private void overrideContentType(PostMethod method) {
+        if (endpoint.getOverrideContentTypeHeader() != null) {
+            method.removeRequestHeader(HEADER_CONTENT_TYPE);
+            method.addRequestHeader(HEADER_CONTENT_TYPE, "\"" + endpoint.getOverrideContentTypeHeader() + "\"");
+        }
+    }
+
     public void process(MessageExchange exchange) throws Exception {
         if (exchange.getStatus() == ExchangeStatus.DONE || exchange.getStatus() == ExchangeStatus.ERROR) {
             PostMethod method = methods.remove(exchange.getExchangeId());
@@ -133,6 +140,8 @@ public class ProviderProcessor extends AbstractProcessor implements ExchangeProc
             method.removeRequestHeader(HEADER_CONTENT_TYPE);
             method.addRequestHeader(HEADER_CONTENT_TYPE, entity.getContentType());
         }
+         // override content-type header
+        overrideContentType(method);
         if (entity.getContentLength() < 0) {
             method.removeRequestHeader(HEADER_CONTENT_LENGTH);
         } else {
@@ -330,7 +339,9 @@ public class ProviderProcessor extends AbstractProcessor implements ExchangeProc
 
     protected HttpClient getClient() {
         HttpComponent comp =  (HttpComponent) endpoint.getServiceUnit().getComponent();
-        return comp.getClient();
+        HttpClient client = comp.getClient();
+        client.getParams().setSoTimeout(endpoint.getTimeout());
+        return client;
     }
 
     public static class StreamingRequestEntity implements RequestEntity {

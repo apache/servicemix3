@@ -24,7 +24,7 @@
 	<parent>
 		<groupId>org.apache.servicemix</groupId>
 		<artifactId>serviceengines</artifactId>
-		<version>3.2.2</version>
+		<version>3.2.2-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.apache.servicemix</groupId>
@@ -98,6 +98,12 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>asm</groupId>
+			<artifactId>asm-all</artifactId>
+			<version>2.2.3</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

@@ -60,6 +60,8 @@ public class HttpEndpoint extends SoapEndpoint implements HttpEndpointType {
     protected ProxyParameters proxy;
     protected boolean synchronous;
     protected boolean wantContentTypeHeaderFromExchangeIntoHttpRequest;
+    protected int timeout;
+    protected String overrideContentTypeHeader;
 
     public boolean isWantContentTypeHeaderFromExchangeIntoHttpRequest() {
         return wantContentTypeHeaderFromExchangeIntoHttpRequest;
@@ -67,6 +69,14 @@ public class HttpEndpoint extends SoapEndpoint implements HttpEndpointType {
 
     public void setWantContentTypeHeaderFromExchangeIntoHttpRequest(boolean wantContentTypeHeaderFromExchangeIntoHttpRequest) {
         this.wantContentTypeHeaderFromExchangeIntoHttpRequest = wantContentTypeHeaderFromExchangeIntoHttpRequest;
+    }
+
+    public String getOverrideContentTypeHeader() {
+        return overrideContentTypeHeader;
+    }
+
+    public void setOverrideContentTypeHeader(String overrideContentTypeHeader) {
+        this.overrideContentTypeHeader = overrideContentTypeHeader;
     }
 
     /**
@@ -154,8 +164,8 @@ public class HttpEndpoint extends SoapEndpoint implements HttpEndpointType {
     }
 
     /**
-     * @param basicAuthentication
-     *            The basicAuthentication to set.
+     * @param basicAuthCredentials
+     *            The basicAuthCredentials to set.
      */
     public void setBasicAuthentication(BasicAuthCredentials basicAuthCredentials) {
         this.basicAuthentication = basicAuthCredentials;
@@ -182,6 +192,14 @@ public class HttpEndpoint extends SoapEndpoint implements HttpEndpointType {
      */
     public void setRoleAsString(String role) {
         super.setRoleAsString(role);
+    }
+
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
 
     public void reloadWsdl() {
