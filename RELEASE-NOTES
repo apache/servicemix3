@@ -134,9 +134,11 @@ Bug
     * [SM-1431] - CXF (se proxy) routing issues with same servicenames
     * [SM-1434] - servicemix-jms does not honor jms 1.02 when sending the out message as a consumer
     * [SM-1443] - The servicemix-binding-component archetype test named MySpringComponentTest is missing a public constructor
+    * [SM-1458] - servicemix-ftp is unable to poll subdirectories on GuildFTP
     * [SM-1464] - The 'rescheduleTimeouts' property of the SplitAggregator does not work
     * [SM-1471] - cxf bc provider should handle response message with security soap header correctly
     * [SM-1472] - servicemix-archetypes-itests tests failed
+    * [SM-1482] - ServiceMix doesn't start: no matching PropertyEditor found for String -> ObjectName
 
 Improvement
 
@@ -173,6 +175,7 @@ Improvement
     * [SM-1364] - allow SimpleFlatFileMarshaler to use XmlEscapingCoverter
     * [SM-1367] - Provide logging statements when doing authorization in SMX
     * [SM-1372] - support exception check for cxf bc provider outgoing chain
+    * [SM-1478] - ServiceMix http binding component should allow option to create jetty Client per HttpProvider.
     * [SM-1379] - CXF BC provider should support dynamic HTTP location URI
     * [SM-1402] - Cleaning up the ServiceMix-Camel component pom
     * [SM-1403] - Clean up the ServiceMix example of Camel

@@ -20,7 +20,6 @@ import java.util.Map;
 
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -109,17 +108,6 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
         this.objectName = objectName;
     }
     
-    /**
-     * Set the <code>ObjectName</code> used to register the <code>JMXConnectorServer</code>
-     * itself with the <code>MBeanServer</code>.
-     * @param objectName
-     * @throws MalformedObjectNameException if the <code>ObjectName</code> is malformed
-     * @see org.springframework.jmx.support.ConnectorServerFactoryBean#setObjectName(java.lang.String)
-     */
-    public void setObjectName(ObjectName objectName) throws MalformedObjectNameException {
-        this.objectName = objectName;
-    }
-
     /**
      * Specify  what action should be taken when attempting to register an MBean
      * under an {@link javax.management.ObjectName} that already exists.
