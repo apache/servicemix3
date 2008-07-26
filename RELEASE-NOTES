@@ -175,7 +175,6 @@ Improvement
     * [SM-1364] - allow SimpleFlatFileMarshaler to use XmlEscapingCoverter
     * [SM-1367] - Provide logging statements when doing authorization in SMX
     * [SM-1372] - support exception check for cxf bc provider outgoing chain
-    * [SM-1478] - ServiceMix http binding component should allow option to create jetty Client per HttpProvider.
     * [SM-1379] - CXF BC provider should support dynamic HTTP location URI
     * [SM-1402] - Cleaning up the ServiceMix-Camel component pom
     * [SM-1403] - Clean up the ServiceMix example of Camel
@@ -184,6 +183,7 @@ Improvement
     * [SM-1450] - Allow the jetty client thread pool size to be configurable
     * [SM-1452] - remove camel-itests from camel example in kit
     * [SM-1463] - ship commons-lang and commons-io in kit since they are used by servicemix-core
+    * [SM-1478] - ServiceMix http binding component should allow option to create jetty Client per HttpProvider.
 
 New Feature
 
