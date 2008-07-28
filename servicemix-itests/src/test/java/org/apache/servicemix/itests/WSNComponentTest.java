@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
+import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.http.HttpComponent;
 import org.apache.servicemix.http.HttpEndpoint;
 import org.apache.servicemix.jbi.container.ActivationSpec;
@@ -67,7 +68,7 @@ public class WSNComponentTest extends TestCase {
         as.setComponent(wsnComponent);
         jbi.activateComponent(as);
 
-        wsnBroker = new NotificationBroker(jbi);
+        wsnBroker = new NotificationBroker(new DefaultServiceMixClient(jbi).getContext());
     }
 
     protected void tearDown() throws Exception {
