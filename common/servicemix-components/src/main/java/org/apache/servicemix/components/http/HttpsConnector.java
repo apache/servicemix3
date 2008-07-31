@@ -18,6 +18,7 @@ package org.apache.servicemix.components.http;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.Security;
 
 import javax.jbi.JBIException;
 import javax.jbi.component.ComponentContext;
@@ -55,8 +56,14 @@ public class HttpsConnector extends HttpInOutBinding {
     private String keyStorePassword;
     private String keyStoreType = "JKS"; // type of the key store
     private String protocol = "TLS";
-    private String keyManagerFactoryAlgorithm = "SunX509"; // cert algorithm
-    private String trustManagerFactoryAlgorithm = "SunX509"; // cert algorithm
+    // cert algorithm
+    private String keyManagerFactoryAlgorithm = Security.getProperty(
+        "ssl.KeyManagerFactory.algorithm") == null
+        ? "SunX509" : Security.getProperty("ssl.KeyManagerFactory.algorithm");
+    // cert algorithm
+    private String trustManagerFactoryAlgorithm = Security.getProperty(
+        "ssl.TrustManagerFactory.algorithm") == null
+        ? "SunX509" : Security.getProperty("ssl.TrustManagerFactory.algorithm");
     private boolean wantClientAuth = false;
     private boolean needClientAuth = false;
 

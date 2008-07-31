@@ -52,7 +52,7 @@
           <optional>true</optional>
       </dependency>
       <dependency>
-        <groupId>xstream</groupId>
+        <groupId>com.thoughtworks.xstream</groupId>
         <artifactId>xstream</artifactId>
           <optional>true</optional>
       </dependency>

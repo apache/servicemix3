@@ -236,6 +236,14 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
             // Outbound connector
             ActiveMQResourceAdapter outboundRa = new ActiveMQResourceAdapter();
             outboundRa.setConnectionFactory(connectionFactory);
+            //
+            // We need to explicitly set the server url unless we use the
+            // default jms url, so set it.
+            //
+            if (outboundRa.getInfo().getServerUrl() == null) {
+                log.info("ActiveMQResourceAdapter server url was null.  Setting it to: " + jmsURL);
+                outboundRa.getInfo().setServerUrl(jmsURL);
+            }
             ActiveMQManagedConnectionFactory mcf = new ActiveMQManagedConnectionFactory();
             mcf.setResourceAdapter(outboundRa);
             managedConnectionFactory = (ConnectionFactory) mcf.createConnectionFactory(getConnectionManager());

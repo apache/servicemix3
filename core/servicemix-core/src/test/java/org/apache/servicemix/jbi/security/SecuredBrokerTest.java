@@ -19,6 +19,7 @@ package org.apache.servicemix.jbi.security;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +59,20 @@ public class SecuredBrokerTest extends TestCase {
             }
         }
         LOG.info("Path to login config: " + path);
+        //
+        // This test depends on the "policy.allowSystemProperty" security
+        // property being set to true.  If we don't ensure it is set here,
+        // ibmjdk 5 SR2 will fail with the following message:
+        // "Unable to locate a login configuration".
+        //
+        try {
+            if (!"true".equals(Security.getProperty("policy.allowSystemProperty"))) {
+                Security.setProperty("policy.allowSystemProperty", "true");
+                LOG.info("Reset security property 'policy.allowSystemProperty' to 'true'");
+            }
+        } catch (SecurityException e) {
+            // Ignore.
+        }
     }
 
     protected JBIContainer jbi;
