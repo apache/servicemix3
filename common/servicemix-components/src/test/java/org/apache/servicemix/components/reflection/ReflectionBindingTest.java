@@ -37,7 +37,7 @@ public class ReflectionBindingTest extends TestCase {
         for (int i = 1; i <= messageCount; i++) {
             counter.increment();
         }        
-        Thread.sleep(100);
+        Thread.sleep(1000);
         SimpleCounter simpleCounter = (SimpleCounter) getBean("counter");
         assertEquals(messageCount, simpleCounter.getValue() );
         

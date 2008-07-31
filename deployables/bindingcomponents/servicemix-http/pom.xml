@@ -211,7 +211,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>xstream</groupId>
+      <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
       <scope>provided</scope>
     </dependency>

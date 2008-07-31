@@ -48,7 +48,7 @@ public abstract class AbstractEIPTransactionalTest extends AbstractEIPTest {
         broker = new BrokerService();
         broker.setUseJmx(false);
         broker.setPersistent(false);
-        broker.addConnector("tcp://localhost:61616");
+        String jmsURL = broker.addConnector("tcp://localhost:0").getUri().toString();
         broker.start();
         
         tm = new GeronimoPlatformTransactionManager();
@@ -68,13 +68,13 @@ public abstract class AbstractEIPTransactionalTest extends AbstractEIPTest {
         store = storeFactory.open("store");
         
         jbi = new JBIContainer();
-        jbi.setFlows(new Flow[] {new SedaFlow(), new JCAFlow() });
+        jbi.setFlows(new Flow[] {new SedaFlow(), new JCAFlow(jmsURL) });
         jbi.setEmbedded(true);
         jbi.setUseMBeanServer(false);
         jbi.setCreateMBeanServer(false);
         jbi.setTransactionManager(tm);
         jbi.setAutoEnlistInTransaction(true);
-        listener = new ExchangeCompletedListener();
+        listener = new ExchangeCompletedListener(2000);
         jbi.addListener(listener);
         jbi.init();
         jbi.start();
@@ -83,9 +83,12 @@ public abstract class AbstractEIPTransactionalTest extends AbstractEIPTest {
     }
     
     protected void tearDown() throws Exception {
-        listener.assertExchangeCompleted();
-        jbi.shutDown();
-        broker.stop();
+        try {
+            listener.assertExchangeCompleted();
+        } finally {
+            jbi.shutDown();
+            broker.stop();
+        }
     }
 
     protected void configurePattern(EIPEndpoint endpoint) {

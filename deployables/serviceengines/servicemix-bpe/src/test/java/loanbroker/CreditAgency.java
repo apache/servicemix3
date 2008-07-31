@@ -30,13 +30,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
 
-import com.sun.org.apache.xpath.internal.CachedXPathAPI;
 
 import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.util.DOMUtil;
+import org.apache.xpath.CachedXPathAPI;
 
 public class CreditAgency extends ComponentSupport implements MessageExchangeListener {
 

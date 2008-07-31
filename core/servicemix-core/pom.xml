@@ -154,7 +154,7 @@
       <artifactId>geronimo-transaction</artifactId>
     </dependency>
     <dependency>
-      <groupId>xstream</groupId>
+      <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
     <dependency>
@@ -393,4 +393,39 @@
     </plugins>
   </build>
 
+    <!--
+        Checkstyle chokes on files containing non-ascii characters when
+        using the ibmjdk, so add a profile here to allow checkstyle to
+        skip those two test source files.
+    -->
+    <profiles>
+        <profile>
+            <id>ibmjdk</id>
+            <activation>
+                <property>
+                    <name>java.vendor</name>
+                    <value>IBM Corporation</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.servicemix</groupId>
+                                <artifactId>build</artifactId>
+                                <version>${servicemix-version}</version>
+                            </dependency>
+                        </dependencies>
+                        <!-- Skip StaxSourceTest and SourceTransformerTest -->
+                        <configuration>
+                            <excludes>**/*Source*Test.java</excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

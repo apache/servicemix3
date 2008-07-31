@@ -110,7 +110,12 @@ public class ContentBasedRouterTxTest extends AbstractEIPTransactionalTest {
         InOnly me = client.createInOnlyExchange();
         me.setService(new QName("router"));
         me.getInMessage().setContent(createSource("<hello id='1' />"));
-        client.send(me);
+        try {
+            client.send(me);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
         
         me = client.createInOnlyExchange();
         me.setService(new QName("router"));

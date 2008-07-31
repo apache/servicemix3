@@ -59,12 +59,12 @@
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-core</artifactId>
-            <version>3.2.2-SNAPSHOT</version>          
+            <version>${servicemix-version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-common</artifactId>
-            <version>3.2.2-SNAPSHOT</version>          
+            <version>${servicemix-version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
@@ -139,4 +139,39 @@
         <topDirectoryLocation>../..</topDirectoryLocation>
     </properties>
 
+    <!--
+        Checkstyle chokes on files containing non-ascii characters when
+        using the ibmjdk, so add a profile here to allow skipping those
+        source files.
+    -->
+    <profiles>
+        <profile>
+            <id>ibmjdk</id>
+            <activation>
+                <property>
+                    <name>java.vendor</name>
+                    <value>IBM Corporation</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.servicemix</groupId>
+                                <artifactId>build</artifactId>
+                                <version>${servicemix-version}</version>
+                            </dependency>
+                        </dependencies>
+                        <!-- Skip JbiServiceUnitDescriptorWriterTest.java -->
+                        <configuration>
+                            <excludes>**/JbiServiceUnitDescriptorWriterTest.java</excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
