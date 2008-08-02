@@ -18,10 +18,6 @@
 # $Id: servicemix 979 2005-11-30 22:50:55Z bsnyder $
 #
 
-if [ "$SERVICEMIX_VERSION" = "" ] ; then
-  SERVICEMIX_VERSION=@{servicemix-version}
-fi
-
 if [ "$DEF_GROUP_ID" = "" ] ; then
   DEF_GROUP_ID=com.mycompany
 fi
@@ -82,6 +78,7 @@ else
   echo "                    eip, lwcontainer, bean, ode, camel, scripting,"
   echo "                    cxf-se, cxf-se-wsdl-first, cxf-bc, validation"
   echo "Optional arguments:"
+  echo "  -DarchetypeVersion=x.y.z-classifier (if not specified, the latest released version will be used)"
   echo "  -DgroupId=xxxx"
   echo "  -DartifactId=xxxx"
   exit 1
@@ -92,7 +89,6 @@ mvn archetype:create \
   -DremoteRepositories=@{releases-repo-url} \
   -DarchetypeGroupId=org.apache.servicemix.tooling \
   -DarchetypeArtifactId=$ARCHETYPE \
-  -DarchetypeVersion=$SERVICEMIX_VERSION \
   -DgroupId=$DEF_GROUP_ID \
   -DartifactId=$DEF_ARTIFACT_ID \
   "$@"

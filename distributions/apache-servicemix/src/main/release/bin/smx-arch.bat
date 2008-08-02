@@ -20,10 +20,6 @@ rem
 rem $Id: servicemix.bat 979 2005-11-30 22:50:55Z bsnyder $
 rem 
 
-if "%SERVICEMIX_VERSION%" == "" (
-    set SERVICEMIX_VERSION=@{servicemix-version}
-)
-
 if "%DEF_GROUP_ID%" == "" (
     set DEF_GROUP_ID=com.mycompany
 )
@@ -53,6 +49,7 @@ echo                     saxon-xquery, saxon-xslt, osworkflow,
 echo                     eip, lwcontainer, bean, ode, camel, scripting,
 echo                     cxf-se, cxf-se-wsdl-first, cxf-bc, validation
 echo Optional arguments:
+echo   -DarchetypeVersion=x.y.z-classifier (if not specified, the latest released version will be used)
 echo   -DgroupId=xxxx
 echo   -DartifactId=xxxx
 goto end
@@ -103,7 +100,7 @@ set CMD_LINE_ARGS=%CMD_LINE_ARGS% %1
 shift
 goto setArgs
 :doneSetArgs
-mvn archetype:create -DremoteRepositories=@{releases-repo-url} -DarchetypeGroupId=org.apache.servicemix.tooling -DarchetypeArtifactId=%ARCHETYPE% -DarchetypeVersion=%SERVICEMIX_VERSION% -DgroupId=%DEF_GROUP_ID% -DartifactId=%DEF_ARTIFACT_ID% %CMD_LINE_ARGS%
+mvn archetype:create -DremoteRepositories=@{releases-repo-url} -DarchetypeGroupId=org.apache.servicemix.tooling -DarchetypeArtifactId=%ARCHETYPE% -DgroupId=%DEF_GROUP_ID% -DartifactId=%DEF_ARTIFACT_ID% %CMD_LINE_ARGS%
 goto end
 
 :end
