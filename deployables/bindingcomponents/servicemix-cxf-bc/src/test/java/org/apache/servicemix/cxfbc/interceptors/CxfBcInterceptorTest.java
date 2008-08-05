@@ -22,6 +22,8 @@ import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 
 import org.apache.cxf.common.logging.LogUtils;
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.servicemix.cxfbc.interceptors.types.quote.Quote;
 
 import org.apache.servicemix.tck.SpringTestSupport;
@@ -45,8 +47,9 @@ public class CxfBcInterceptorTest extends SpringTestSupport {
 
         javax.xml.ws.Holder<java.lang.String> retailTicker =  
             new javax.xml.ws.Holder<java.lang.String>("RetailerRPC");                
-        
+        ClientProxy.getClient(port).getOutInterceptors().add(new LoggingOutInterceptor());
         Quote quote = port.getStockQuote("FUSE", retailTicker);
+        
         Thread.sleep(1000);
         //Thread.sleep(10 * 60 * 1000); 
         

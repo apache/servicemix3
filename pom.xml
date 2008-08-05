@@ -220,7 +220,7 @@
         <oro-version>2.0.8</oro-version>
         <sitemesh-version>2.2.1</sitemesh-version>
         <woden-version>1.0.0M6</woden-version>
-        <cxf-version>2.0.7</cxf-version>
+        <cxf-version>2.0.9-SNAPSHOT</cxf-version>
         <jaxb.version>2.0</jaxb.version>
         <jaxb.impl.version>2.0.1</jaxb.impl.version>
         <derby-version>10.2.2.0</derby-version>
@@ -1885,7 +1885,7 @@
             <dependency>
                 <groupId>org.apache.ws.security</groupId>
                 <artifactId>wss4j</artifactId>
-                <version>1.5.2</version>
+                <version>1.5.4</version>
             </dependency>
             <dependency>
                 <groupId>bouncycastle</groupId>

@@ -51,8 +51,10 @@ public class CxfBcProviderTest extends SpringTestSupport {
     private DefaultServiceMixClient client;
     private InOut io;
     private CxfSeComponent component;
-    
-    
+    private JaxWsServerFactoryBean factory;
+    private Server server;
+    private Endpoint endpoint;
+    private ServiceInfo service;
     
     protected void setUp() throws Exception {
         super.setUp();
@@ -97,17 +99,17 @@ public class CxfBcProviderTest extends SpringTestSupport {
            
         
         //start external service
-        JaxWsServerFactoryBean factory = new JaxWsServerFactoryBean();
+        factory = new JaxWsServerFactoryBean();
         factory.setServiceClass(CalculatorPortType.class);
         factory.setServiceBean(new CalculatorImpl());
         String address = "http://localhost:9001/providertest";
         factory.setAddress(address);
         factory.setBindingId("http://schemas.xmlsoap.org/wsdl/soap12/");
-        Server server = factory.create();
-        Endpoint endpoint = server.getEndpoint();
+        server = factory.create();
+        endpoint = server.getEndpoint();
         endpoint.getInInterceptors().add(new LoggingInInterceptor());
         endpoint.getOutInterceptors().add(new LoggingOutInterceptor());
-        ServiceInfo service = endpoint.getEndpointInfo().getService();
+        service = endpoint.getEndpointInfo().getService();
         assertNotNull(service);
         client = new DefaultServiceMixClient(jbi);
         io = client.createInOutExchange();
@@ -124,10 +126,29 @@ public class CxfBcProviderTest extends SpringTestSupport {
               + "</part> "
               + "</message>"));
         client.sendSync(io);
+        client.done(io);
         assertTrue(new SourceTransformer().contentToString(
                 io.getOutMessage()).indexOf("Hello ffang 3") >= 0);
 
         //test exception handle
+        exceptionHandle();
+        
+        
+        //test onway
+        oneWay();
+        
+        
+        
+        //test soap header using helloworld
+        soapHeader();
+        
+        //test concurrency
+        concurrency();
+        // Shutdown CXF Service/Endpoint so that next test doesn't fail.
+        factory.getBus().shutdown(true);
+    }
+
+    private void concurrency() throws Exception {
         io = client.createInOutExchange();
         io.setService(new QName("http://apache.org/hello_world_soap_http", "SOAPServiceProvider"));
         io.setInterfaceName(new QName("http://apache.org/hello_world_soap_http", "Greeter"));
@@ -136,16 +157,36 @@ public class CxfBcProviderTest extends SpringTestSupport {
                 "<message xmlns='http://java.sun.com/xml/ns/jbi/wsdl-11-wrapper'>"
               + "<part> "
               + "<greetMe xmlns='http://apache.org/hello_world_soap_http/types'><requestType>"
-              + "exception test"
+              + "concurrency test"
               + "</requestType></greetMe>"
               + "</part> "
               + "</message>"));
         client.sendSync(io);
+        client.done(io);
         assertTrue(new SourceTransformer().contentToString(
-                io.getOutMessage()).indexOf("Hello exception test Negative number cant be added!") >= 0);
-        
-        
-        //test onway
+                io.getOutMessage()).indexOf("Hello concurrency test 0 2 4 6 8 10 12 14 16 18") >= 0);
+    }
+
+    private void soapHeader() throws Exception {
+        io = client.createInOutExchange();
+        io.setService(new QName("http://apache.org/hello_world_soap_http", "SOAPServiceProvider"));
+        io.setInterfaceName(new QName("http://apache.org/hello_world_soap_http", "Greeter"));
+        io.setOperation(new QName("http://apache.org/hello_world_soap_http", "greetMe"));
+        io.getInMessage().setContent(new StringSource(
+            "<message xmlns='http://java.sun.com/xml/ns/jbi/wsdl-11-wrapper'>"
+            + "<part> "
+            + "<greetMe xmlns='http://apache.org/hello_world_soap_http/types'><requestType>"
+            + "header test"
+            + "</requestType></greetMe>"
+            + "</part> "
+            + "</message>"));
+        client.sendSync(io);
+        assertTrue(new SourceTransformer().contentToString(
+            io.getOutMessage()).indexOf("Hello header test 12345") >= 0);
+    }
+
+    private void oneWay() throws Exception {
+        String address;
         factory = new JaxWsServerFactoryBean();
         factory.setServiceClass(Greeter.class);
         factory.setServiceBean(new GreeterImpl());
@@ -171,6 +212,7 @@ public class CxfBcProviderTest extends SpringTestSupport {
               + "</part> "
               + "</message>"));
         client.sendSync(io);
+        client.done(io);
         assertTrue(new SourceTransformer().contentToString(
                 io.getOutMessage()).indexOf("Hello oneway test oneway") >= 0);
         
@@ -185,27 +227,9 @@ public class CxfBcProviderTest extends SpringTestSupport {
         endpoint.getOutInterceptors().add(new LoggingOutInterceptor());
         service = endpoint.getEndpointInfo().getService();
         assertNotNull(service);
-        
-        
-        
-        //test soap header using helloworld
-        io = client.createInOutExchange();
-        io.setService(new QName("http://apache.org/hello_world_soap_http", "SOAPServiceProvider"));
-        io.setInterfaceName(new QName("http://apache.org/hello_world_soap_http", "Greeter"));
-        io.setOperation(new QName("http://apache.org/hello_world_soap_http", "greetMe"));
-        io.getInMessage().setContent(new StringSource(
-            "<message xmlns='http://java.sun.com/xml/ns/jbi/wsdl-11-wrapper'>"
-            + "<part> "
-            + "<greetMe xmlns='http://apache.org/hello_world_soap_http/types'><requestType>"
-            + "header test"
-            + "</requestType></greetMe>"
-            + "</part> "
-            + "</message>"));
-        client.sendSync(io);
-        assertTrue(new SourceTransformer().contentToString(
-            io.getOutMessage()).indexOf("Hello header test 12345") >= 0);
-        
-        //test concurrency
+    }
+
+    private void exceptionHandle() throws Exception {
         io = client.createInOutExchange();
         io.setService(new QName("http://apache.org/hello_world_soap_http", "SOAPServiceProvider"));
         io.setInterfaceName(new QName("http://apache.org/hello_world_soap_http", "Greeter"));
@@ -214,15 +238,14 @@ public class CxfBcProviderTest extends SpringTestSupport {
                 "<message xmlns='http://java.sun.com/xml/ns/jbi/wsdl-11-wrapper'>"
               + "<part> "
               + "<greetMe xmlns='http://apache.org/hello_world_soap_http/types'><requestType>"
-              + "concurrency test"
+              + "exception test"
               + "</requestType></greetMe>"
               + "</part> "
               + "</message>"));
         client.sendSync(io);
+        client.done(io);
         assertTrue(new SourceTransformer().contentToString(
-                io.getOutMessage()).indexOf("Hello concurrency test 0 2 4 6 8 10 12 14 16 18") >= 0);
-        // Shutdown CXF Service/Endpoint so that next test doesn't fail.
-        factory.getBus().shutdown(true);
+                io.getOutMessage()).indexOf("Hello exception test Negative number cant be added!") >= 0);
     }
     
      
