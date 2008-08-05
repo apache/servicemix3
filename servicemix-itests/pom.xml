@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.servicemix</groupId>
     <artifactId>servicemix</artifactId>
-    <version>3.2.2-SNAPSHOT</version>
+    <version>3.2.3-SNAPSHOT</version>
   </parent>
 
   <artifactId>servicemix-itests</artifactId>
@@ -141,7 +141,7 @@
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>build</artifactId>
-                <version>3.2.2-SNAPSHOT</version>
+                <version>3.2.3-SNAPSHOT</version>
             </dependency>
         </dependencies>
       </plugin>
