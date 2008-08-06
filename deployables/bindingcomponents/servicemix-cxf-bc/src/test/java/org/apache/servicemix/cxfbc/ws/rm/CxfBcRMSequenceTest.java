@@ -994,7 +994,7 @@ public class CxfBcRMSequenceTest extends SpringTestSupport {
         mf.verifyAcknowledgements(new boolean[] {false, false, false}, false);
     }
 
-    public void testConcurrency() throws Exception {
+    public void xtestConcurrency() throws Exception {
         setUpJBI("org/apache/servicemix/cxfbc/ws/rm/rminterceptors.xml");
         if (!doTestConcurrency) {
             return;
