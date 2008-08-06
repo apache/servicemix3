@@ -128,6 +128,21 @@ public class HttpProviderEndpoint extends ProviderEndpoint implements HttpEndpoi
             throw (IOException) new IOException(e.getMessage()).initCause(e);
         }
     }
+    
+    protected void handleConnectionFailed(Throwable throwable, MessageExchange exchange) {
+        try {
+            Exception e;
+            if (throwable instanceof Exception) {
+                e = (Exception) throwable;
+            } else {
+                e = new Exception(throwable);
+            }
+            exchange.setError(e);
+            send(exchange);
+        } catch (Exception e) {
+            logger.warn("Unable to send back exchange in error", e);
+        }
+    }
 
     protected org.mortbay.jetty.client.HttpClient getConnectionPool() throws Exception {
         if (jettyClient == null) {
@@ -152,7 +167,11 @@ public class HttpProviderEndpoint extends ProviderEndpoint implements HttpEndpoi
             handle(this, jbiExchange);
         }
         protected void onException(Throwable throwable) {
+            throwable.printStackTrace();
             throw new RuntimeException(throwable);
+        }
+        protected void onConnectionFailed(Throwable throwable) {
+            handleConnectionFailed(throwable, jbiExchange);
         }
     }
 

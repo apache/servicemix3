@@ -168,6 +168,9 @@ public class HttpComponent extends DefaultComponent {
         BoundedThreadPool btp = new BoundedThreadPool();
         btp.setMaxThreads(comp.getConfiguration().getJettyClientThreadPoolSize());
         tempClient.setThreadPool(btp);
+        tempClient.setConnectorType(
+                org.mortbay.jetty.client.HttpClient.CONNECTOR_SELECT_CHANNEL);
+
         tempClient.start();
         return tempClient;
     }
