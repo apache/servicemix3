@@ -190,11 +190,11 @@ public abstract class AbstractJmsProcessor implements ExchangeProcessor {
         return soapHelper.createContext();
     }
     
-    protected Message fromNMS(NormalizedMessage nm, Session session) throws Exception {
+    protected Message fromNMS(NormalizedMessage nm, Session mySession) throws Exception {
         SoapMessage soap = new SoapMessage();
         soapHelper.getJBIMarshaler().fromNMS(soap, nm);
         Map headers = (Map) nm.getProperty(JbiConstants.PROTOCOL_HEADERS);
-        return endpoint.getMarshaler().toJMS(soap, headers, session);
+        return endpoint.getMarshaler().toJMS(soap, headers, mySession);
     }
     
     protected MessageExchange toNMS(Message message, Context ctx) throws Exception {
@@ -207,7 +207,7 @@ public abstract class AbstractJmsProcessor implements ExchangeProcessor {
         return exchange;
     }
     
-    protected Message fromNMSResponse(MessageExchange exchange, Context ctx, Session session) throws Exception {
+    protected Message fromNMSResponse(MessageExchange exchange, Context ctx, Session mySession) throws Exception {
         Message response = null;
         if (exchange.getStatus() == ExchangeStatus.ERROR) {
             // marshal error
@@ -215,7 +215,7 @@ public abstract class AbstractJmsProcessor implements ExchangeProcessor {
             if (e == null) {
                 e = new Exception("Unkown error");
             }
-            response = endpoint.getMarshaler().toJMS(e, session);
+            response = endpoint.getMarshaler().toJMS(e, mySession);
         } else if (exchange.getStatus() == ExchangeStatus.ACTIVE) {
             // check for fault
             Fault jbiFault = exchange.getFault(); 
@@ -224,24 +224,24 @@ public abstract class AbstractJmsProcessor implements ExchangeProcessor {
                 SoapFault fault = new SoapFault(SoapFault.RECEIVER, null, null, null, jbiFault.getContent());
                 SoapMessage soapFault = soapHelper.onFault(ctx, fault);
                 Map headers = (Map) jbiFault.getProperty(JbiConstants.PROTOCOL_HEADERS);
-                response = endpoint.getMarshaler().toJMS(soapFault, headers, session);
+                response = endpoint.getMarshaler().toJMS(soapFault, headers, mySession);
             } else {
                 NormalizedMessage outMsg = exchange.getMessage("out");
                 if (outMsg != null) {
                     SoapMessage out = soapHelper.onReply(ctx, outMsg);
                     Map headers = (Map) outMsg.getProperty(JbiConstants.PROTOCOL_HEADERS);
-                    response = endpoint.getMarshaler().toJMS(out, headers, session);
+                    response = endpoint.getMarshaler().toJMS(out, headers, mySession);
                 }
             }
         }
         return response;
     }
     
-    protected Message createMessageFromExchange(Session session,
+    protected Message createMessageFromExchange(Session mySession,
             MessageExchange exchange) throws Exception {
 //        TextMessage msg = session.createTextMessage();
         NormalizedMessage nm = exchange.getMessage("in");
-        Message msg = fromNMS(nm, session);
+        Message msg = fromNMS(nm, mySession);
 
         // Build the SoapAction from <interface namespace>/<interface
         // name>/<operation name>
