@@ -24,6 +24,7 @@ import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.jbi.messaging.RobustInOnly;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,7 +41,7 @@ import org.drools.WorkingMemory;
 
 /**
  * A helper class for use inside a rule to forward a message to an endpoint
- *
+ * 
  * @version $Revision: 426415 $
  */
 public class JbiHelper {
@@ -50,9 +51,7 @@ public class JbiHelper {
     private WorkingMemory memory;
     private FactHandle exchangeFactHandle;
 
-    public JbiHelper(DroolsEndpoint endpoint, 
-                     MessageExchange exchange,
-                     WorkingMemory memory) {
+    public JbiHelper(DroolsEndpoint endpoint, MessageExchange exchange, WorkingMemory memory) {
         this.endpoint = endpoint;
         this.exchange = new Exchange(exchange, endpoint.getNamespaceContext());
         this.memory = memory;
@@ -85,26 +84,25 @@ public class JbiHelper {
 
     /**
      * Forwards the inbound message to the given
-     *
+     * 
      * @param uri
      * @param localPart
      */
     /*
-    public void forward(String uri) throws MessagingException {
-        if (exchange instanceof InOnly || exchange instanceof RobustInOnly) {
-            MessageExchange me = getChannel().createExchangeFactory().createExchange(exchange.getPattern());
-            URIResolver.configureExchange(me, getContext(), uri);
-            MessageUtil.transferToIn(in, me);
-            getChannel().sendSync(me);
-        } else {
-            throw new MessagingException("Only InOnly and RobustInOnly exchanges can be forwarded");
-        }
-    }
-    */
+     * public void forward(String uri) throws MessagingException { if (exchange
+     * instanceof InOnly || exchange instanceof RobustInOnly) { MessageExchange
+     * me =
+     * getChannel().createExchangeFactory().createExchange(exchange.getPattern
+     * ()); URIResolver.configureExchange(me, getContext(), uri);
+     * MessageUtil.transferToIn(in, me); getChannel().sendSync(me); } else {
+     * throw new
+     * MessagingException("Only InOnly and RobustInOnly exchanges can be forwarded"
+     * ); } }
+     */
     public void route(String uri) throws MessagingException {
         routeTo(null, uri);
     }
-    
+
     public void routeTo(String content, String uri) throws MessagingException {
         MessageExchange me = this.exchange.getInternalExchange();
         String correlationId = (String)exchange.getProperty(JbiConstants.CORRELATION_ID);
@@ -140,9 +138,47 @@ public class JbiHelper {
         }
         update();
     }
-    
+
     public void routeToDefault(String content) throws MessagingException {
         routeTo(content, endpoint.getDefaultRouteURI());
+    }
+
+    /**
+     * This method allows for an asynchronous send().  
+     * It has no error handling support or support for InOut/InOptionalOut MEPs.
+     * 
+     * @param content
+     * @param uri
+     * @throws MessagingException
+     */
+    @Deprecated
+    public void sendTo(String content, String uri) throws MessagingException {
+
+        MessageExchange me = this.exchange.getInternalExchange();
+
+        if ((me instanceof InOnly) || (me instanceof RobustInOnly)) {
+            NormalizedMessage in = null;
+            if (content == null) {
+                in = me.getMessage("in");
+            } else {
+                in = me.createMessage();
+                in.setContent(new StringSource(content));
+            }
+            MessageExchange newMe = getChannel().createExchangeFactory().createExchange(me.getPattern());
+            URIResolver.configureExchange(newMe, getContext(), uri);
+            MessageUtil.transferToIn(in, newMe);
+
+            // If i am in route method could send back the done
+            me.setStatus(ExchangeStatus.DONE);
+            getChannel().send(me);
+
+            // And send forward the new me
+            getChannel().send(newMe);
+            update();
+        } else {
+            throw new IllegalStateException("sendTo() method should be used for InOnly or RobustInOnly");
+        }
+
     }
 
     public void fault(String content) throws Exception {
@@ -158,8 +194,6 @@ public class JbiHelper {
         }
         update();
     }
-    
-    
 
     public void answer(String content) throws Exception {
         MessageExchange me = this.exchange.getInternalExchange();
