@@ -482,6 +482,11 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
             try {
                 Queue queue = inboundSession.createQueue(destination);
                 ObjectMessage msg = inboundSession.createObjectMessage(me);
+                // Set message priority.
+                Integer priority = (Integer) me.getProperty(JbiConstants.MESSAGE_PRIORITY);
+                if (null != priority) {
+                    msg.setJMSPriority(priority);
+                }
                 MessageProducer queueProducer = inboundSession.createProducer(queue);
                 queueProducer.send(msg);
             } finally {

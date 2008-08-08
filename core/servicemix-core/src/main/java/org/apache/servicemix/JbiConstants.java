@@ -50,4 +50,8 @@ public interface JbiConstants {
      */
     String CORRELATION_ID = "org.apache.servicemix.correlationId";
 
+    /**
+     * Constant for JMS Message Priority.
+     */
+    String MESSAGE_PRIORITY = "org.apache.servicemix.jms.messagePriority";
 }
