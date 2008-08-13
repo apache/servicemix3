@@ -225,6 +225,8 @@
         <jaxb.impl.version>2.0.1</jaxb.impl.version>
         <derby-version>10.2.2.0</derby-version>
         <saxon-version>8.9</saxon-version>
+        <bcprov-version>136</bcprov-version>
+        <junit-version>3.8.1</junit-version>
         <releases-repo-id>apache</releases-repo-id>
         <releases-repo-name>Apache Repository</releases-repo-name>
         <releases-repo-url>http://people.apache.org/repo/m2-ibiblio-rsync-repository</releases-repo-url>
@@ -1474,7 +1476,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>3.8.1</version>
+                <version>${junit-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.logicblaze.lingo</groupId>

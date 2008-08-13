@@ -46,9 +46,14 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+       <groupId>xalan</groupId>
+       <artifactId>xalan</artifactId>
+       <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>${junit-version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

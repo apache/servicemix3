@@ -69,6 +69,11 @@
                     <artifactId>stax-api</artifactId>
                     <scope>provided</scope>
                 </dependency>
+                <dependency>
+                    <groupId>xalan</groupId>
+                    <artifactId>xalan</artifactId>
+                    <scope>provided</scope>
+                </dependency>
 
 		<dependency>
 		    <groupId>org.apache.cxf</groupId>
@@ -147,8 +152,14 @@
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-testutils</artifactId>
 			<version>${cxf-version}</version>
-                        <scope>provided</scope>
+            <scope>provided</scope>
 		</dependency>
+        <dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+            <version>${junit-version}</version>
+            <scope>test</scope>
+        </dependency>
 
 	</dependencies>
 	<build>

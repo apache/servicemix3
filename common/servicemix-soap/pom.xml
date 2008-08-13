@@ -55,6 +55,11 @@
     <dependency>
       <groupId>org.apache.ws.security</groupId>
       <artifactId>wss4j</artifactId>
+      <exclusions>
+          <groupId>xalan</groupId>
+          <artifactId>xalan</artifactId>
+      </exclusions>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>bouncycastle</groupId>

@@ -40,6 +40,11 @@
       <version>${servicemix-version}</version>
     </dependency>
     <dependency>
+        <groupId>xalan</groupId>
+        <artifactId>xalan</artifactId>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-core</artifactId>
       <version>${servicemix-version}</version>
@@ -56,7 +61,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>${junit-version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
