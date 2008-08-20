@@ -49,6 +49,7 @@ import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transport.MessageObserver;
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.cxfbc.interceptors.JbiInWsdl1Interceptor;
+import org.apache.servicemix.cxfbc.interceptors.ParseContentTypeInterceptor;
 
 
 public class CxfBcProviderMessageObserver implements MessageObserver {
@@ -130,6 +131,7 @@ public class CxfBcProviderMessageObserver implements MessageObserver {
             inList.add(new JbiInWsdl1Interceptor(this.providerEndpoint.isUseJBIWrapper()));
             if (providerEndpoint.isMtomEnabled()) {
                 inList.add(new AttachmentInInterceptor());
+                inList.add(new ParseContentTypeInterceptor());
             }
             PhaseInterceptorChain inChain = inboundChainCache.get(pm
                     .getInPhases(), inList);
@@ -140,35 +142,7 @@ public class CxfBcProviderMessageObserver implements MessageObserver {
             soapMessage.setInterceptorChain(inChain);
             inChain.doIntercept(soapMessage);
            
-            if (boi.getOperationInfo().isOneWay()) {
-                messageExchange.setStatus(ExchangeStatus.DONE);
-            } else if (soapMessage.get("jbiFault") != null
-                    && soapMessage.get("jbiFault").equals(true)) {
-                Fault fault = messageExchange.createFault();
-                fault.setContent(soapMessage.getContent(Source.class));
-                messageExchange.setFault(fault);
-            } else if (messageExchange instanceof InOut) {
-                NormalizedMessage msg = messageExchange.createMessage();
-                msg.setContent(soapMessage.getContent(Source.class));
-                if (providerEndpoint.isMtomEnabled()) {
-                    toNMSAttachments(msg, soapMessage);
-                }
-                messageExchange.setMessage(msg, "out");
-            } else if (messageExchange instanceof InOptionalOut) {
-                if (soapMessage.getContent(Source.class) != null) {
-                    NormalizedMessage msg = messageExchange.createMessage();
-                    msg.setContent(soapMessage.getContent(Source.class));
-                    if (providerEndpoint.isMtomEnabled()) {
-                        toNMSAttachments(msg, soapMessage);
-                    }
-                    messageExchange.setMessage(msg, "out");
-                } else {
-                    messageExchange.setStatus(ExchangeStatus.DONE);
-                }
-            } else {
-                messageExchange.setStatus(ExchangeStatus.DONE);
-
-            }
+            setMessageStatus(soapMessage, boi);
             boolean txSync = messageExchange.getStatus() == ExchangeStatus.ACTIVE
                     && messageExchange.isTransacted()
                     && Boolean.TRUE.equals(messageExchange
@@ -188,6 +162,38 @@ public class CxfBcProviderMessageObserver implements MessageObserver {
                 written = true;
                 notifyAll();
             }
+        }
+    }
+
+    private void setMessageStatus(SoapMessage soapMessage, BindingOperationInfo boi) throws MessagingException {
+        if (boi.getOperationInfo().isOneWay()) {
+            messageExchange.setStatus(ExchangeStatus.DONE);
+        } else if (soapMessage.get("jbiFault") != null
+                && soapMessage.get("jbiFault").equals(true)) {
+            Fault fault = messageExchange.createFault();
+            fault.setContent(soapMessage.getContent(Source.class));
+            messageExchange.setFault(fault);
+        } else if (messageExchange instanceof InOut) {
+            NormalizedMessage msg = messageExchange.createMessage();
+            msg.setContent(soapMessage.getContent(Source.class));
+            if (providerEndpoint.isMtomEnabled()) {
+                toNMSAttachments(msg, soapMessage);
+            }
+            messageExchange.setMessage(msg, "out");
+        } else if (messageExchange instanceof InOptionalOut) {
+            if (soapMessage.getContent(Source.class) != null) {
+                NormalizedMessage msg = messageExchange.createMessage();
+                msg.setContent(soapMessage.getContent(Source.class));
+                if (providerEndpoint.isMtomEnabled()) {
+                    toNMSAttachments(msg, soapMessage);
+                }
+                messageExchange.setMessage(msg, "out");
+            } else {
+                messageExchange.setStatus(ExchangeStatus.DONE);
+            }
+        } else {
+            messageExchange.setStatus(ExchangeStatus.DONE);
+
         }
     }
     

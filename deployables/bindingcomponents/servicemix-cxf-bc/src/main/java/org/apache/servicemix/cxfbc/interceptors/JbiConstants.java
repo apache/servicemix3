@@ -80,6 +80,10 @@ public final class JbiConstants {
     public static final QName WSDL11_WRAPPER_PART = new QName(
             WSDL11_WRAPPER_NAMESPACE, WSDL11_WRAPPER_PART_LOCALNAME,
             WSDL11_WRAPPER_PREFIX);
+    public static final String CONTENT_TYPE = "content.type";
+    
+    public static final String TRANSPORT_PROTOCOL_HEADERS = "transport.protocol.header"; 
+
     private JbiConstants() {
         //Added to keep checkstyle 4.3 happy.
     }

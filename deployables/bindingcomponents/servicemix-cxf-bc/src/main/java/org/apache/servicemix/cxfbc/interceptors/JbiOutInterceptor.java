@@ -164,6 +164,7 @@ public class JbiOutInterceptor extends AbstractPhaseInterceptor<Message> {
             attachmentList.add(attachment);
         }
         message.setAttachments(attachmentList);
+        
         if (message instanceof SoapMessage) {
             SoapMessage soapMessage = (SoapMessage)message;
             SoapVersion soapVersion = soapMessage.getVersion();
@@ -210,6 +211,8 @@ public class JbiOutInterceptor extends AbstractPhaseInterceptor<Message> {
                 }
             }
         }
+        
+        
     }
 
     private boolean isRequestor(org.apache.cxf.message.Message message) {

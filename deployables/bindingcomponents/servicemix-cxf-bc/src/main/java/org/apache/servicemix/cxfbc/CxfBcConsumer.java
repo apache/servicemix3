@@ -97,6 +97,7 @@ import org.apache.servicemix.cxfbc.interceptors.JbiJAASInterceptor;
 import org.apache.servicemix.cxfbc.interceptors.JbiOperationInterceptor;
 import org.apache.servicemix.cxfbc.interceptors.JbiOutWsdl1Interceptor;
 import org.apache.servicemix.cxfbc.interceptors.MtomCheckInterceptor;
+import org.apache.servicemix.cxfbc.interceptors.ParseContentTypeInterceptor;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.soap.util.DomUtil;
 import org.mortbay.jetty.Handler;
@@ -299,6 +300,9 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
                     getConfiguration().getAuthenticationService()));
             cxfService.getInInterceptors().add(new JbiInvokerInterceptor());
             cxfService.getInInterceptors().add(new JbiPostInvokerInterceptor());
+            if (isMtomEnabled()) {
+                cxfService.getInInterceptors().add(new ParseContentTypeInterceptor());
+            }
 
             cxfService.getInInterceptors().add(new OutgoingChainInterceptor());
 
@@ -309,6 +313,7 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
             cxfService.getOutInterceptors().add(new AttachmentOutInterceptor());
             cxfService.getOutInterceptors().add(
                     new MtomCheckInterceptor(isMtomEnabled()));
+            
             cxfService.getOutInterceptors().add(new StaxOutInterceptor());
             cxfService.getOutInterceptors().add(
                     new SoapPreProtocolOutInterceptor());

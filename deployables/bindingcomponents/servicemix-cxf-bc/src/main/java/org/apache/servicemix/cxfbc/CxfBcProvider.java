@@ -56,6 +56,7 @@ import org.apache.cxf.binding.soap.interceptor.SoapPreProtocolOutInterceptor;
 import org.apache.cxf.bus.spring.SpringBusFactory;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.endpoint.EndpointImpl;
+import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.interceptor.AttachmentOutInterceptor;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.interceptor.Interceptor;
@@ -171,6 +172,52 @@ public class CxfBcProvider extends ProviderEndpoint implements
         cxfExchange.put(BindingOperationInfo.class, boi);
         cxfExchange.put(Endpoint.class, ep);
         cxfExchange.put(Service.class, cxfService);
+        PhaseInterceptorChain outChain = createInterceptorChain(message);
+        InputStream is = JBIMessageHelper.convertMessageToInputStream(nm
+                .getContent());
+
+        StreamSource source = new StreamSource(is);
+        message.setContent(Source.class, source);
+
+        message.setContent(InputStream.class, is);
+                
+        conduit.prepare(message);
+        OutputStream os = message.getContent(OutputStream.class);
+        message.put(org.apache.cxf.message.Message.REQUESTOR_ROLE, true);
+        try {
+            outChain.doIntercept(message);
+            //Check to see if there is a Fault from the outgoing chain
+            Exception ex = message.getContent(Exception.class);
+            if (ex != null) {
+                throw ex;
+            }
+            ex = message.getExchange().get(Exception.class);
+            if (ex != null) {
+                throw ex;
+            }
+            String contentType = (String)message.get(Message.CONTENT_TYPE);
+                        
+            Map<String, List<String>> headers = getSetProtocolHeaders(message);
+            if (headers.get(Message.CONTENT_TYPE) == null) {
+                List<String> ct = new ArrayList<String>();
+                ct.add(contentType);
+                headers.put(Message.CONTENT_TYPE, ct);
+            }  else {
+                List<String> ct = headers.get(Message.CONTENT_TYPE);
+                ct.add(contentType);
+            }
+            
+            os = message.getContent(OutputStream.class);
+            os.flush();
+            is.close();
+            os.close();
+        } catch (Exception e) {
+            faultProcess(exchange, message, e);
+        }
+
+    }
+
+    private PhaseInterceptorChain createInterceptorChain(Message message) {
         PhaseChainCache outboundChainCache = new PhaseChainCache();
         PhaseManager pm = getBus().getExtension(PhaseManager.class);
         List<Interceptor> outList = new ArrayList<Interceptor>();
@@ -199,40 +246,19 @@ public class CxfBcProvider extends ProviderEndpoint implements
         outChain.add(getOutInterceptors());
         outChain.add(getOutFaultInterceptors());
         message.setInterceptorChain(outChain);
-        InputStream is = JBIMessageHelper.convertMessageToInputStream(nm
-                .getContent());
-
-        StreamSource source = new StreamSource(is);
-        message.setContent(Source.class, source);
-
-        message.setContent(InputStream.class, is);
-
-        conduit.prepare(message);
-        OutputStream os = message.getContent(OutputStream.class);
-        
-        message.put(org.apache.cxf.message.Message.REQUESTOR_ROLE, true);
-        try {
-            outChain.doIntercept(message);
-            //Check to see if there is a Fault from the outgoing chain
-            Exception ex = message.getContent(Exception.class);
-            if (ex != null) {
-                throw ex;
-            }
-            ex = message.getExchange().get(Exception.class);
-            if (ex != null) {
-                throw ex;
-            }
-            
-            
-            os = message.getContent(OutputStream.class);
-            os.flush();
-            is.close();
-            os.close();
-        } catch (Exception e) {
-            faultProcess(exchange, message, e);
-        }
-
+        return outChain;
     }
+    
+    private Map<String, List<String>> getSetProtocolHeaders(Message message) {
+        Map<String, List<String>> headers =
+            CastUtils.cast((Map<?, ?>)message.get(Message.PROTOCOL_HEADERS));        
+        if (null == headers) {
+            headers = new HashMap<String, List<String>>();
+            message.put(Message.PROTOCOL_HEADERS, headers);
+        }
+        return headers;
+    }
+    
 
     private void faultProcess(MessageExchange exchange, Message message, Exception e) throws MessagingException {
         javax.jbi.messaging.Fault fault = exchange.createFault();
