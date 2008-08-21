@@ -26,10 +26,11 @@ import javax.jbi.messaging.NormalizedMessage;
 
 import org.apache.servicemix.http.jetty.SmxHttpExchange;
 import org.apache.servicemix.soap.api.InterceptorChain;
-import org.apache.servicemix.soap.api.InterceptorProvider.Phase;
 import org.apache.servicemix.soap.api.Message;
 import org.apache.servicemix.soap.api.Policy;
+import org.apache.servicemix.soap.api.InterceptorProvider.Phase;
 import org.apache.servicemix.soap.api.model.Binding;
+import org.apache.servicemix.soap.bindings.soap.SoapConstants;
 import org.apache.servicemix.soap.interceptors.jbi.JbiConstants;
 import org.apache.servicemix.soap.interceptors.xml.StaxInInterceptor;
 import org.mortbay.io.ByteArrayBuffer;
@@ -46,6 +47,7 @@ public class HttpSoapProviderMarshaler implements HttpProviderMarshaler {
     private boolean useJbiWrapper = true;
     private Policy[] policies;
     private String baseUrl;
+    private String soapAction;
 
     public Binding<?> getBinding() {
         return binding;
@@ -78,7 +80,15 @@ public class HttpSoapProviderMarshaler implements HttpProviderMarshaler {
     public void setPolicies(Policy[] policies) {
         this.policies = policies;
     }
-
+    
+    public void setSoapAction(String soapAction) {
+        this.soapAction = soapAction;
+    }
+    
+    public String getSoapAction() {
+        return soapAction;
+    }
+    
     public void createRequest(final MessageExchange exchange, 
                               final NormalizedMessage inMsg, 
                               final SmxHttpExchange httpExchange) throws Exception {
@@ -95,14 +105,20 @@ public class HttpSoapProviderMarshaler implements HttpProviderMarshaler {
         httpExchange.setMethod(HttpMethods.POST);
         httpExchange.setURL(baseUrl);
         httpExchange.setRequestContent(new ByteArrayBuffer(baos.toByteArray()));
+        
+        for (String header : msg.getTransportHeaders().keySet()) {
+            httpExchange.setRequestHeader(header, msg.getTransportHeaders().get(header));
+        }
+        if (soapAction != null) {
+            httpExchange.setRequestHeader(SoapConstants.SOAP_ACTION_HEADER, soapAction);
+        }
         /*
         httpExchange.setRequestEntity(new Entity() {
             public void write(OutputStream os, Writer w) throws IOException {
                 // TODO: handle http headers: Content-Type, ... 
             }
         });
-        */
-        // TODO: add transport headers
+        */        
         // TODO: use streaming when appropriate (?)
     }
 

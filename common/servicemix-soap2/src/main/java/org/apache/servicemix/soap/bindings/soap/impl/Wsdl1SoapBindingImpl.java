@@ -22,6 +22,8 @@ import org.apache.servicemix.soap.api.Interceptor;
 import org.apache.servicemix.soap.api.Message;
 import org.apache.servicemix.soap.bindings.soap.SoapVersion;
 import org.apache.servicemix.soap.bindings.soap.interceptors.MustUnderstandInterceptor;
+import org.apache.servicemix.soap.bindings.soap.interceptors.SoapActionInOperationInterceptor;
+import org.apache.servicemix.soap.bindings.soap.interceptors.SoapActionOutOperationInterceptor;
 import org.apache.servicemix.soap.bindings.soap.interceptors.SoapFaultInInterceptor;
 import org.apache.servicemix.soap.bindings.soap.interceptors.SoapFaultOutInterceptor;
 import org.apache.servicemix.soap.bindings.soap.interceptors.SoapInInterceptor;
@@ -63,6 +65,7 @@ public class Wsdl1SoapBindingImpl extends AbstractBinding<Wsdl1SoapOperation> im
         phase.add(new AttachmentsInInterceptor());
         phase.add(new StaxInInterceptor());
         phase.add(new SoapInInterceptor(soapVersion));
+        phase.add(new SoapActionInOperationInterceptor());
         phase.add(new WsdlOperationInInterceptor());
         phase.add(new MustUnderstandInterceptor());
         phase.add(new JbiInWsdl1Interceptor(true));
@@ -88,6 +91,7 @@ public class Wsdl1SoapBindingImpl extends AbstractBinding<Wsdl1SoapOperation> im
         phase = getInterceptors(Phase.ClientOut);
         phase.add(new JbiOutInterceptor(false));
         phase.add(new JbiOutWsdl1Interceptor(false));
+        phase.add(new SoapActionOutOperationInterceptor());
         phase.add(new AttachmentsOutInterceptor());
         phase.add(new StaxOutInterceptor());
         phase.add(new SoapOutInterceptor(soapVersion));
