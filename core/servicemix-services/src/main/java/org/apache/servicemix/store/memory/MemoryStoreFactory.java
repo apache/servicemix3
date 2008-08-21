@@ -24,10 +24,17 @@ import org.apache.servicemix.id.IdGenerator;
 import org.apache.servicemix.store.Store;
 import org.apache.servicemix.store.StoreFactory;
 
+/**
+ * {@link StoreFactory} for creating memory-based {@link Store} implementations
+ * 
+ * If a timeout has been specified, a {@link TimeoutMemoryStore} will be created,
+ * otherwise the factory will build a plain {@link MemoryStore}
+ */
 public class MemoryStoreFactory implements StoreFactory {
 
     private IdGenerator idGenerator = new IdGenerator();
     private Map<String, MemoryStore> stores = new HashMap<String, MemoryStore>();
+    private long timeout = -1;
     
     /* (non-Javadoc)
      * @see org.apache.servicemix.store.ExchangeStoreFactory#get(java.lang.String)
@@ -35,7 +42,11 @@ public class MemoryStoreFactory implements StoreFactory {
     public synchronized Store open(String name) throws IOException {
         MemoryStore store = stores.get(name);
         if (store == null) {
-            store = new MemoryStore(idGenerator);
+            if (timeout <= 0) {
+                store = new MemoryStore(idGenerator);
+            } else {
+                store = new TimeoutMemoryStore(idGenerator, timeout);
+            }
             stores.put(name, store);
         }
         return store;
@@ -48,4 +59,7 @@ public class MemoryStoreFactory implements StoreFactory {
         stores.remove(store);
     }
     
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
+    }
 }
