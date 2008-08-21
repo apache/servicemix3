@@ -33,7 +33,6 @@ import org.apache.servicemix.eip.EIPEndpoint;
 import org.apache.servicemix.jbi.util.MessageUtil;
 import org.apache.servicemix.store.Store;
 import org.apache.servicemix.store.StoreFactory;
-import org.apache.servicemix.store.memory.MemoryStore;
 import org.apache.servicemix.store.memory.MemoryStoreFactory;
 import org.apache.servicemix.timers.Timer;
 import org.apache.servicemix.timers.TimerListener;

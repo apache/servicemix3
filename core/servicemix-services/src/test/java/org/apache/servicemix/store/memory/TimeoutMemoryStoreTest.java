@@ -25,7 +25,7 @@ import org.apache.servicemix.store.Store;
  */
 public class TimeoutMemoryStoreTest extends TestCase {
     
-    private static final long TIMEOUT = 250l; 
+    private static final long TIMEOUT = 250L; 
     
     private Store store;
     private final MemoryStoreFactory factory = new MemoryStoreFactory();
