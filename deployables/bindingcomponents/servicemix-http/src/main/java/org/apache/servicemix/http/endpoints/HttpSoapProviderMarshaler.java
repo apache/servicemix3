@@ -26,9 +26,9 @@ import javax.jbi.messaging.NormalizedMessage;
 
 import org.apache.servicemix.http.jetty.SmxHttpExchange;
 import org.apache.servicemix.soap.api.InterceptorChain;
+import org.apache.servicemix.soap.api.InterceptorProvider.Phase;
 import org.apache.servicemix.soap.api.Message;
 import org.apache.servicemix.soap.api.Policy;
-import org.apache.servicemix.soap.api.InterceptorProvider.Phase;
 import org.apache.servicemix.soap.api.model.Binding;
 import org.apache.servicemix.soap.bindings.soap.SoapConstants;
 import org.apache.servicemix.soap.interceptors.jbi.JbiConstants;
