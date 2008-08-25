@@ -49,6 +49,8 @@
     </scm>
 
     <properties>
+        <servicemix-utils-version>1.0-SNAPSHOT</servicemix-utils-version>
+        <servicemix-specs-version>1.1-SNAPSHOT</servicemix-specs-version>
         <servicemix-shared-version>4.0-SNAPSHOT</servicemix-shared-version>
         <servicemix-quartz-version>4.0-SNAPSHOT</servicemix-quartz-version>  
         <servicemix-jms-version>4.0-SNAPSHOT</servicemix-jms-version>
@@ -515,19 +517,14 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.apache.servicemix</groupId>
-                <artifactId>servicemix-jbi</artifactId>
-                <version>3.3-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.servicemix</groupId>
-                <artifactId>servicemix-services</artifactId>
-                <version>3.3-SNAPSHOT</version>
+                <groupId>org.apache.servicemix.specs</groupId>
+                <artifactId>org.apache.servicemix.specs.jbi-api-1.0</artifactId>
+                <version>${servicemix-specs-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-utils</artifactId>
-                <version>3.3-SNAPSHOT</version>
+                <version>${servicemix-utils-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
