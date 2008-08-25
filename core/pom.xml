@@ -34,7 +34,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>servicemix-jbi</module>
         <module>servicemix-core</module>
         <module>servicemix-audit</module>
     </modules>
