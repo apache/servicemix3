@@ -1649,6 +1649,18 @@
                     <groupId>org.springframework</groupId>
                     <artifactId>spring</artifactId>
                   </exclusion>
+                  <exclusion>
+                    <groupId>org.apache.xbean</groupId>
+                    <artifactId>xbean-kernel</artifactId>
+                  </exclusion>
+                  <exclusion>
+                    <groupId>org.apache.xbean</groupId>
+                    <artifactId>xbean-classloader</artifactId>
+                  </exclusion>
+                  <exclusion>
+                    <groupId>org.apache.xbean</groupId>
+                    <artifactId>xbean-spring</artifactId>
+                  </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
