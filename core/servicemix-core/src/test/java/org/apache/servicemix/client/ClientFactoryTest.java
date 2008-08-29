@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 import org.apache.servicemix.components.util.EchoComponent;
+import org.apache.servicemix.jbi.api.Destination;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.StringSource;

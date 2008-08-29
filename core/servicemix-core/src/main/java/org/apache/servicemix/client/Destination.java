@@ -27,7 +27,7 @@ import javax.jbi.messaging.RobustInOnly;
  * 
  * @version $Revision: $
  */
-public interface Destination {
+public interface Destination extends org.apache.servicemix.jbi.api.Destination {
 
     /**
      * Creates an {@link InOnly} (one way) message exchange.

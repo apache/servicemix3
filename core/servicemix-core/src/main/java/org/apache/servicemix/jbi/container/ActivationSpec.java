@@ -20,9 +20,9 @@ import java.io.Serializable;
 
 import javax.xml.namespace.QName;
 
+import org.apache.servicemix.jbi.api.EndpointResolver;
 import org.apache.servicemix.jbi.messaging.PojoMarshaler;
 import org.apache.servicemix.jbi.resolver.EndpointChooser;
-import org.apache.servicemix.jbi.resolver.EndpointResolver;
 import org.apache.servicemix.jbi.resolver.InterfaceNameEndpointResolver;
 import org.apache.servicemix.jbi.resolver.ServiceAndEndpointNameResolver;
 import org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver;

@@ -16,9 +16,6 @@
  */
 package org.apache.servicemix;
 
-import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
-
 /**
  * If a Component implements this interface, MessageExchange will be delivered directly to the listener
  * asynchronously rather than using the usual asynchronous delivery with a thread used up per consuming
@@ -28,13 +25,5 @@ import javax.jbi.messaging.MessagingException;
  * @deprecated
  */
 public interface MessageExchangeListener extends org.apache.servicemix.jbi.listener.MessageExchangeListener {
-
-    /**
-     * MessageExchange passed directly to the listener instead of being queued
-     *
-     * @param exchange
-     * @throws MessagingException
-     */
-    void onMessageExchange(MessageExchange exchange) throws MessagingException;
 
 }

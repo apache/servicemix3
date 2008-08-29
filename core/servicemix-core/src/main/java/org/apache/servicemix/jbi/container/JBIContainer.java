@@ -57,6 +57,7 @@ import org.apache.servicemix.components.util.PojoSupport;
 import org.apache.servicemix.executors.ExecutorFactory;
 import org.apache.servicemix.executors.impl.ExecutorFactoryImpl;
 import org.apache.servicemix.id.IdGenerator;
+import org.apache.servicemix.jbi.api.Container;
 import org.apache.servicemix.jbi.event.ComponentListener;
 import org.apache.servicemix.jbi.event.ContainerAware;
 import org.apache.servicemix.jbi.event.DeploymentListener;
@@ -87,7 +88,7 @@ import org.apache.servicemix.jbi.nmr.flow.Flow;
  *
  * @version $Revision$
  */
-public class JBIContainer extends BaseLifeCycle {
+public class JBIContainer extends BaseLifeCycle implements Container {
     /**
      * Default Container name - must be unique if used in a cluster
      */

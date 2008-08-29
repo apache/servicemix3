@@ -39,12 +39,13 @@ import org.w3c.dom.DocumentFragment;
 
 import org.apache.servicemix.jbi.FaultException;
 import org.apache.servicemix.jbi.NoOutMessageAvailableException;
+import org.apache.servicemix.jbi.api.EndpointResolver;
+import org.apache.servicemix.jbi.api.Message;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.messaging.DefaultMarshaler;
 import org.apache.servicemix.jbi.messaging.PojoMarshaler;
 import org.apache.servicemix.jbi.resolver.EndpointFilter;
-import org.apache.servicemix.jbi.resolver.EndpointResolver;
 import org.apache.servicemix.jbi.resolver.ExternalInterfaceNameEndpointResolver;
 import org.apache.servicemix.jbi.resolver.ExternalServiceNameEndpointResolver;
 import org.apache.servicemix.jbi.resolver.InterfaceNameEndpointResolver;

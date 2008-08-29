@@ -21,6 +21,8 @@ import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.servicedesc.ServiceEndpoint;
 
+import org.apache.servicemix.jbi.api.EndpointFilter;
+
 /**
  * A useful base class for {@link EndpointResolver} implementations.
  *

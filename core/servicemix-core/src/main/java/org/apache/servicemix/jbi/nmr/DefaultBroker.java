@@ -31,6 +31,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.api.EndpointResolver;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
@@ -48,7 +49,6 @@ import org.apache.servicemix.jbi.nmr.flow.FlowProvider;
 import org.apache.servicemix.jbi.resolver.ConsumerComponentEndpointFilter;
 import org.apache.servicemix.jbi.resolver.EndpointChooser;
 import org.apache.servicemix.jbi.resolver.EndpointFilter;
-import org.apache.servicemix.jbi.resolver.EndpointResolver;
 import org.apache.servicemix.jbi.resolver.FirstChoicePolicy;
 import org.apache.servicemix.jbi.resolver.ProducerComponentEndpointFilter;
 import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;

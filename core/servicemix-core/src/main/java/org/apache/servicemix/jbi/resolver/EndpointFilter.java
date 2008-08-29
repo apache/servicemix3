@@ -16,20 +16,13 @@
  */
 package org.apache.servicemix.jbi.resolver;
 
-import javax.jbi.messaging.MessageExchange;
-import javax.jbi.servicedesc.ServiceEndpoint;
 
 /**
  * Represents a filter used to exclude endpoints before choosing which endpoint to use
  *
  * @version $Revision$
+ * @deprecated
  */
-public interface EndpointFilter {
-
-    /**
-     * Performs the filter on the endpoint returning true if the endpoint is suitable, based on some
-     * capabilities evaluation or false if the endpoint should be ignored.
-     */
-    boolean evaluate(ServiceEndpoint endpoint, MessageExchange exchange);
+public interface EndpointFilter extends org.apache.servicemix.jbi.api.EndpointFilter {
 
 }

@@ -25,8 +25,8 @@ import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
 import org.apache.servicemix.components.util.ComponentSupport;
+import org.apache.servicemix.jbi.api.EndpointResolver;
 import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.resolver.EndpointResolver;
 import org.apache.servicemix.jbi.resolver.NullEndpointFilter;
 
 /**

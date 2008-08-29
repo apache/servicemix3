@@ -23,14 +23,10 @@ import javax.jbi.JBIException;
  * An implementation should be bound in the JNDI context
  * 
  * @author <a href="mailto:gnodet [at] apache.org">Guillaume Nodet</a>
+ * @deprecated
  */
-public interface ClientFactory {
+public interface ClientFactory extends org.apache.servicemix.jbi.api.ClientFactory {
 
-    /**
-     * Default location to where the object should be looked for in JNDI
-     */
-    String DEFAULT_JNDI_NAME = "java:comp/env/jbi/ClientFactory";
-    
     /**
      * Create a new client to interact with the JBI bus
      * 
