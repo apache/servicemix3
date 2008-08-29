@@ -23,10 +23,11 @@ import javax.jbi.messaging.MessagingException;
  * If a Component implements this interface, MessageExchange will be delivered directly to the listener
  * asynchronously rather than using the usual asynchronous delivery with a thread used up per consuming
  * component.
- *
+ * 
  * @version $Revision$
+ * @deprecated
  */
-public interface MessageExchangeListener {
+public interface MessageExchangeListener extends org.apache.servicemix.jbi.listener.MessageExchangeListener {
 
     /**
      * MessageExchange passed directly to the listener instead of being queued

@@ -240,6 +240,10 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
     public Object getBody(PojoMarshaler marshaler) throws MessagingException {
         return marshaler.unmarshal(exchange, this);
     }
+    
+    public Object getBody(org.apache.servicemix.jbi.marshaler.PojoMarshaler marshaler) throws MessagingException {
+        return marshaler.unmarshal(exchange, this);
+    }
 
     public void setBody(Object body) throws MessagingException {
         this.body = body;

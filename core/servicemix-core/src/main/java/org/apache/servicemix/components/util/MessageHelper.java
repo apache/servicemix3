@@ -28,6 +28,7 @@ import org.apache.servicemix.jbi.messaging.PojoMarshaler;
  * Some helper methods for working with messages
  *
  * @version $Revision: $
+ * @deprecated
  */
 public final class MessageHelper {
     

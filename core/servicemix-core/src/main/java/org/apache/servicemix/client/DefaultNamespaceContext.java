@@ -16,80 +16,25 @@
  */
 package org.apache.servicemix.client;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.namespace.NamespaceContext;
-import javax.xml.xpath.XPathFactory;
 
 /**
  * An implementation of {@link NamespaceContext} which uses a simple Map where
  * the keys are the prefixes and the values are the URIs
  * 
  * @version $Revision: $
+ * @deprecated
  */
-public class DefaultNamespaceContext implements NamespaceContext {
-
-    private final Map map;
-    private final NamespaceContext parent;
+public class DefaultNamespaceContext extends org.apache.servicemix.jbi.jaxp.DefaultNamespaceContext {
 
     public DefaultNamespaceContext() {
-        this.map = new HashMap();
-        XPathFactory factory = XPathFactory.newInstance();
-        this.parent = factory.newXPath().getNamespaceContext();
+        super();
     }
 
     public DefaultNamespaceContext(NamespaceContext parent, Map map) {
-        this.parent = parent;
-        this.map = map;
-    }
-
-    /**
-     * A helper method to make it easy to create newly populated instances
-     */
-    public DefaultNamespaceContext add(String prefix, String uri) {
-        map.put(prefix, uri);
-        return this;
+        super(parent, map);
     }
     
-    public String getNamespaceURI(String prefix) {
-        String answer = (String) map.get(prefix);
-        if (answer == null && parent != null) {
-            return parent.getNamespaceURI(prefix);
-        }
-        return answer;
-    }
-
-    public String getPrefix(String namespaceURI) {
-        for (Iterator iter = map.entrySet().iterator(); iter.hasNext();) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            if (namespaceURI.equals(entry.getValue())) {
-                return (String) entry.getKey();
-            }
-        }
-        if (parent != null) {
-            return parent.getPrefix(namespaceURI);
-        }
-        return null;
-    }
-
-    public Iterator getPrefixes(String namespaceURI) {
-        Set set = new HashSet();
-        for (Iterator iter = map.entrySet().iterator(); iter.hasNext();) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            if (namespaceURI.equals(entry.getValue())) {
-                set.add(entry.getKey());
-            }
-        }
-        if (parent != null) {
-            Iterator iter = parent.getPrefixes(namespaceURI);
-            while (iter.hasNext()) {
-                set.add(iter.next());
-            }
-        }
-        return set.iterator();
-    }
 }

@@ -16,23 +16,12 @@
  */
 package org.apache.servicemix;
 
-import javax.xml.transform.Source;
-
 /**
  * Represents an API to a JAXP {@link Source} which is capable of holding on to a POJO
  *
  * @version $Revision$
+ * @deprecated
  */
-public interface JavaSource extends Source {
-
-    /**
-     * Returns the POJO equivalent of the Source
-     */
-    Object getObject();
-
-    /**
-     * Sets the POJO equivalent of the Source
-     */
-    void setObject(Object object);
+public interface JavaSource extends org.apache.servicemix.jbi.jaxp.JavaSource {
 
 }

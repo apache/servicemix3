@@ -16,15 +16,7 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
-import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
-import javax.jbi.messaging.NormalizedMessage;
-import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMSource;
-
-import org.w3c.dom.Node;
-
-import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.marshaler.PojoMarshaler;
 
 /**
  * Default implementation of {@link PojoMarshaler} which will pass through
@@ -32,63 +24,17 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
  * payload is stored in a message property.
  * 
  * @version $Revision$
+ * @deprecated
  */
-public class DefaultMarshaler implements PojoMarshaler {
-
-    private PojoMarshaler parent;
-
+public class DefaultMarshaler extends org.apache.servicemix.jbi.marshaler.DefaultMarshaler 
+                              implements org.apache.servicemix.jbi.messaging.PojoMarshaler {
+    
     public DefaultMarshaler() {
+        super();
     }
 
     public DefaultMarshaler(PojoMarshaler parent) {
-        this.parent = parent;
-    }
+        super(parent);
+    }    
 
-    public PojoMarshaler getParent() {
-        return parent;
-    }
-
-    public void marshal(MessageExchange exchange, NormalizedMessage message, Object body) throws MessagingException {
-        if (body instanceof Source) {
-            message.setContent((Source) body);
-        } else {
-            message.setProperty(BODY, body);
-            Source content = asContent(message, body);
-            message.setContent(content);
-        }
-    }
-
-    public Object unmarshal(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
-        Object answer = message.getProperty(BODY);
-        if (answer == null) {
-            if (parent != null) {
-                answer = parent.unmarshal(exchange, message);
-            }
-            if (answer == null) {
-                answer = defaultUnmarshal(exchange, message);
-            }
-        }
-        return answer;
-    }
-
-    protected Object defaultUnmarshal(MessageExchange exchange, NormalizedMessage message) {
-        Source content = message.getContent();
-        if (content instanceof DOMSource) {
-            DOMSource source = (DOMSource) content;
-            return source.getNode();
-        }
-        return content;
-    }
-
-    protected Source asContent(NormalizedMessage message, Object body) {
-        if (body instanceof Source) {
-            return (Source) body;
-        } else if (body instanceof String) {
-            // lets assume String is the XML to send
-            return new StringSource((String) body);
-        } else if (body instanceof Node) {
-            return new DOMSource((Node) body);
-        }
-        return null;
-    }
 }

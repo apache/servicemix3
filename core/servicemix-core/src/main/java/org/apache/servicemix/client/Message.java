@@ -19,16 +19,18 @@ package org.apache.servicemix.client;
 import javax.jbi.messaging.Fault;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
-import javax.jbi.messaging.NormalizedMessage;
+
+import org.apache.servicemix.jbi.messaging.PojoMarshaler;
 
 /**
- * An extension of the standard {@link NormalizedMessage} which allows you to
+ * An extension of the standard {@link javax.jbi.messaging.NormalizedMessage} which allows you to
  * work directly with message bodies as POJOs ignoring the XML stuff or passing a binary
  * message around as a ByteBuffer or byte[]
  * 
  * @version $Revision: 359151 $
+ * @deprecated
  */
-public interface Message extends NormalizedMessage {
+public interface Message extends org.apache.servicemix.jbi.api.Message {
 
     /**
      * Returns the body as a POJO. Depending on the implementation this could be
@@ -40,6 +42,11 @@ public interface Message extends NormalizedMessage {
      * Sets the body as a POJO
      */
     void setBody(Object body) throws MessagingException;
+    
+    /**
+     * 
+     */
+    Object getBody(PojoMarshaler marshaler) throws MessagingException;
 
     /**
      * Returns the message exchange
