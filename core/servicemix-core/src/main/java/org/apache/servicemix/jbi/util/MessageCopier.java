@@ -31,6 +31,7 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
  * A thread-safe copier for NormalizedMessage onjects.
  * 
  * @author Martin Krasser
+ * @deprecated use {@link org.apache.servicemix.jbi.transformer.CopyTransformer} instead
  */
 public class MessageCopier {
 

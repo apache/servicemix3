@@ -34,6 +34,7 @@ import java.util.zip.ZipOutputStream;
  * File utilities
  * 
  * @version $Revision$
+ * @deprecated use {@link FileUtil} instead
  */
 public final class FileUtil {
     

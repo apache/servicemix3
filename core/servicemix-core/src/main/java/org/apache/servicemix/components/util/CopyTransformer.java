@@ -31,6 +31,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.xml.sax.SAXException;
 
+import org.apache.servicemix.jbi.helper.MessageUtil;
 import org.apache.servicemix.jbi.jaxp.BytesSource;
 import org.apache.servicemix.jbi.jaxp.ResourceSource;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
@@ -41,6 +42,7 @@ import org.apache.servicemix.jbi.messaging.PojoMarshaler;
  * A simple transformer which copies the properties and content from the source message to the destination message.
  *
  * @version $Revision$
+ * @deprecated
  */
 public class CopyTransformer implements MessageTransformer {
 
@@ -140,6 +142,13 @@ public class CopyTransformer implements MessageTransformer {
         }
 
         return true;
+    }
+    
+    public NormalizedMessage transform(MessageExchange exchange, NormalizedMessage in)
+        throws MessagingException {
+        NormalizedMessage out = new MessageUtil.NormalizedMessageImpl();
+        transform(exchange, in, out);
+        return out;
     }
 
     /**

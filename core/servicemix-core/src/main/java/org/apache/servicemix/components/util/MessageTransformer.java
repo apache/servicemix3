@@ -16,22 +16,12 @@
  */
 package org.apache.servicemix.components.util;
 
-import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
-import javax.jbi.messaging.NormalizedMessage;
-
 /**
  * Represents a transformer of an input message into an output message
  *
  * @version $Revision$
+ * @deprecated
  */
-public interface MessageTransformer {
+public interface MessageTransformer extends org.apache.servicemix.jbi.transformer.MessageTransformer {
 
-    /**
-     * Transfers the state in the input message into the output message
-     * @param exchange the exchange on which the messages are flowing
-     * @param in the input message
-     * @param out an empty out message ready to contain the result of the transformation
-     */
-    boolean transform(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws MessagingException;
 }

@@ -16,53 +16,16 @@
  */
 package org.apache.servicemix.jbi.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
-
-import javax.activation.DataSource;
-
 /**
  * Byte array DataSource for Mail and message attachments
  * 
  * @author George Gastaldi
  * @since 3.0
+ * @deprecated
  */
-public class ByteArrayDataSource implements DataSource, Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    private byte[] data;
-    private String contentType;
-    private String name = "unused";
+public class ByteArrayDataSource extends org.apache.servicemix.util.jaf.ByteArrayDataSource {
 
     public ByteArrayDataSource(byte[] data, String contentType) {
-        this.data = data;
-        this.contentType = contentType;
-    }
-
-    public InputStream getInputStream() throws IOException {
-        if (data == null) {
-            throw new IOException("no data");
-        }
-        return new ByteArrayInputStream(data);
-    }
-
-    public OutputStream getOutputStream() throws IOException {
-        throw new IOException("getOutputStream() not supported");
-    }
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        super(data, contentType);
     }
 }

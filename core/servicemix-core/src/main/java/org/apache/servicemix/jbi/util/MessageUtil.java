@@ -44,6 +44,8 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 /**
  * @author gnodet
  * @version $Revision: 376451 $
+ * 
+ * @deprecated use {@link org.apache.servicemix.jbi.helper.MessageUtil} instead
  */
 public final class MessageUtil {
     
