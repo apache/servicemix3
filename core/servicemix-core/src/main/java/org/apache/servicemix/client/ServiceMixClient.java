@@ -25,5 +25,6 @@ package org.apache.servicemix.client;
  */
 public interface ServiceMixClient extends org.apache.servicemix.jbi.api.ServiceMixClient {
 
+    
 
 }

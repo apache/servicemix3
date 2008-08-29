@@ -20,14 +20,13 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 
-import org.w3c.dom.Node;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.resolver.EndpointResolver;
+import org.apache.servicemix.jbi.api.EndpointResolver;
 import org.apache.servicemix.tck.TestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
+import org.w3c.dom.Node;
 
 /**
  * @version $Revision$

@@ -39,13 +39,13 @@ import org.w3c.dom.DocumentFragment;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.FaultException;
 import org.apache.servicemix.jbi.NoOutMessageAvailableException;
-import org.apache.servicemix.jbi.api.EndpointResolver;
 import org.apache.servicemix.jbi.api.Message;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.messaging.DefaultMarshaler;
 import org.apache.servicemix.jbi.messaging.PojoMarshaler;
 import org.apache.servicemix.jbi.resolver.EndpointFilter;
+import org.apache.servicemix.jbi.resolver.EndpointResolver;
 import org.apache.servicemix.jbi.resolver.ExternalInterfaceNameEndpointResolver;
 import org.apache.servicemix.jbi.resolver.ExternalServiceNameEndpointResolver;
 import org.apache.servicemix.jbi.resolver.InterfaceNameEndpointResolver;
@@ -344,5 +344,50 @@ public class DefaultServiceMixClient extends ComponentSupport implements Service
                 message.setProperty((String) entry.getKey(), entry.getValue());
             }
         }
+    }
+
+    public void send(org.apache.servicemix.client.Message message) throws MessagingException {
+        
+    }
+
+    public InOnly createInOnlyExchange(org.apache.servicemix.jbi.api.EndpointResolver arg0)
+        throws JBIException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public InOptionalOut createInOptionalOutExchange(org.apache.servicemix.jbi.api.EndpointResolver arg0)
+        throws JBIException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public InOut createInOutExchange(org.apache.servicemix.jbi.api.EndpointResolver arg0) throws JBIException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public RobustInOnly createRobustInOnlyExchange(org.apache.servicemix.jbi.api.EndpointResolver arg0)
+        throws JBIException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Object request(org.apache.servicemix.jbi.api.EndpointResolver arg0, Map arg1, Map arg2, Object arg3)
+        throws JBIException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void send(org.apache.servicemix.jbi.api.EndpointResolver arg0, Map arg1, Map arg2, Object arg3)
+        throws JBIException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public boolean sendSync(org.apache.servicemix.jbi.api.EndpointResolver arg0, Map arg1, Map arg2,
+                            Object arg3) throws JBIException {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

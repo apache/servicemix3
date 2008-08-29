@@ -66,9 +66,8 @@
             <version>${version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.servicemix</groupId>
-            <artifactId>servicemix-jbi</artifactId>
-            <version>${version}</version>
+            <groupId>org.apache.servicemix.specs</groupId>
+            <artifactId>org.apache.servicemix.specs.jbi-api-1.0</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.servicemix</groupId>
@@ -77,8 +76,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.servicemix</groupId>
-            <artifactId>servicemix-services</artifactId>
-            <version>${version}</version>
+            <artifactId>servicemix-utils</artifactId>
         </dependency>
 
         <dependency>
