@@ -104,8 +104,7 @@
         <include>commons-beanutils:commons-beanutils-core</include>
         <include>commons-lang:commons-lang</include>
         <include>commons-io:commons-io</include>
-        <include>org.apache.servicemix:servicemix-jbi</include>
-        <include>org.apache.servicemix:servicemix-services</include>
+        <include>org.apache.servicemix.specs:org.apache.servicemix.specs.jbi-api-1.0</include>
         <include>org.apache.servicemix:servicemix-core</include>
         <include>org.apache.servicemix:servicemix-audit</include>
         <include>org.apache.servicemix:servicemix-utils</include>
