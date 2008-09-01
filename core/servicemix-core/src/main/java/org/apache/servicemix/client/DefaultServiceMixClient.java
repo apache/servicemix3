@@ -347,47 +347,82 @@ public class DefaultServiceMixClient extends ComponentSupport implements Service
     }
 
     public void send(org.apache.servicemix.client.Message message) throws MessagingException {
-        
+        send(message.getExchange());
     }
 
-    public InOnly createInOnlyExchange(org.apache.servicemix.jbi.api.EndpointResolver arg0)
+    public InOnly createInOnlyExchange(org.apache.servicemix.jbi.api.EndpointResolver resolver)
         throws JBIException {
-        // TODO Auto-generated method stub
-        return null;
+        InOnly exchange = createInOnlyExchange();
+        configureEndpoint(exchange, resolver);
+        return exchange;
     }
 
-    public InOptionalOut createInOptionalOutExchange(org.apache.servicemix.jbi.api.EndpointResolver arg0)
+    public InOptionalOut createInOptionalOutExchange(org.apache.servicemix.jbi.api.EndpointResolver resolver)
         throws JBIException {
-        // TODO Auto-generated method stub
-        return null;
+        InOptionalOut exchange = createInOptionalOutExchange();
+        configureEndpoint(exchange, resolver);
+        return exchange;
     }
 
-    public InOut createInOutExchange(org.apache.servicemix.jbi.api.EndpointResolver arg0) throws JBIException {
-        // TODO Auto-generated method stub
-        return null;
+    public InOut createInOutExchange(org.apache.servicemix.jbi.api.EndpointResolver resolver) throws JBIException {
+        InOut exchange = createInOutExchange();
+        configureEndpoint(exchange, resolver);
+        return exchange;
     }
 
-    public RobustInOnly createRobustInOnlyExchange(org.apache.servicemix.jbi.api.EndpointResolver arg0)
+    public RobustInOnly createRobustInOnlyExchange(org.apache.servicemix.jbi.api.EndpointResolver resolver)
         throws JBIException {
-        // TODO Auto-generated method stub
-        return null;
+        RobustInOnly exchange = getExchangeFactory().createRobustInOnlyExchange();
+        configureEndpoint(exchange, resolver);
+        return exchange;
     }
 
-    public Object request(org.apache.servicemix.jbi.api.EndpointResolver arg0, Map arg1, Map arg2, Object arg3)
-        throws JBIException {
-        // TODO Auto-generated method stub
-        return null;
+    public Object request(org.apache.servicemix.jbi.api.EndpointResolver resolver, Map exchangeProperties, 
+                          Map inMessageProperties, Object content) throws JBIException {
+        InOut exchange = createInOutExchange(resolver);
+        populateMessage(exchange, exchangeProperties, inMessageProperties, content);
+        boolean answer = sendSync(exchange);
+        if (!answer) {
+            throw new JBIException("Exchange aborted");
+        }
+        Exception error = exchange.getError();
+        if (error != null) {
+            throw new JBIException(error);
+        }
+        if (exchange.getFault() != null) {
+            done(exchange);
+            throw FaultException.newInstance(exchange);
+        }
+
+
+        NormalizedMessage outMessage = exchange.getOutMessage();
+        if (outMessage == null) {
+            throw new NoOutMessageAvailableException(exchange);
+        }
+        Object result = getMarshaler().unmarshal(exchange, outMessage);
+        done(exchange);
+        return result;
     }
 
-    public void send(org.apache.servicemix.jbi.api.EndpointResolver arg0, Map arg1, Map arg2, Object arg3)
-        throws JBIException {
-        // TODO Auto-generated method stub
-        
+    public void send(org.apache.servicemix.jbi.api.EndpointResolver resolver, Map exchangeProperties, 
+                     Map inMessageProperties, Object content) throws JBIException {
+        InOnly exchange = createInOnlyExchange(resolver);
+        populateMessage(exchange, exchangeProperties, inMessageProperties, content);
+        send(exchange);        
     }
 
-    public boolean sendSync(org.apache.servicemix.jbi.api.EndpointResolver arg0, Map arg1, Map arg2,
-                            Object arg3) throws JBIException {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean sendSync(org.apache.servicemix.jbi.api.EndpointResolver resolver, 
+                            Map exchangeProperties, Map inMessageProperties,
+                            Object content) throws JBIException {
+        InOnly exchange = createInOnlyExchange(resolver);
+        populateMessage(exchange, exchangeProperties, inMessageProperties, content);
+        return sendSync(exchange);
+    }
+    
+    protected void configureEndpoint(MessageExchange exchange, 
+        org.apache.servicemix.jbi.api.EndpointResolver resolver) throws JBIException {
+        if (resolver != null) {
+            exchange.setEndpoint(resolver.resolveEndpoint(getContext(), exchange, filter));
+        }
     }
 }
