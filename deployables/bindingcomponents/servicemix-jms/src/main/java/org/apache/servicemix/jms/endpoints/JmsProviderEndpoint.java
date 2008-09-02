@@ -411,14 +411,12 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
         // Create selector
         String jmsId = sendJmsMsg.getJMSMessageID();
         String selector = MSG_SELECTOR_START + jmsId + MSG_SELECTOR_END;
-        Message receiveJmsMsg;
-        synchronized (template) {
-            // Receiving JMS Message, Creating and Returning NormalizedMessage out
-            receiveJmsMsg = template.receiveSelected(replyDest, selector);
-            if (receiveJmsMsg == null) {
-                throw new IllegalStateException("Unable to receive response");
-            }
-        }    
+
+        // Receiving JMS Message, Creating and Returning NormalizedMessage out
+        Message receiveJmsMsg = template.receiveSelected(replyDest, selector);
+        if (receiveJmsMsg == null) {
+            throw new IllegalStateException("Unable to receive response");
+        }
         marshaler.populateMessage(receiveJmsMsg, exchange, out);
     }
 
