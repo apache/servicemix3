@@ -16,6 +16,7 @@
  */
 package org.apache.servicemix.camel;
 
+import java.io.Serializable;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -153,7 +154,9 @@ public class JbiBinding {
     protected void addJbiHeaders(MessageExchange jbiExchange, NormalizedMessage normalizedMessage, Exchange camelExchange) {
         Set<Map.Entry<String, Object>> entries = camelExchange.getIn().getHeaders().entrySet();
         for (Map.Entry<String, Object> entry : entries) {
-            normalizedMessage.setProperty(entry.getKey(), entry.getValue());
+            if (entry.getValue() instanceof Serializable) {
+                normalizedMessage.setProperty(entry.getKey(), entry.getValue());
+            }
         }
     }
 
