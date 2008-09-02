@@ -147,6 +147,8 @@
         <artifactId>maven-jetty-plugin</artifactId>
         <configuration>
           <scanIntervalSeconds>1</scanIntervalSeconds>
+          <stopKey>smxweb</stopKey>
+          <stopPort>9191</stopPort>
           <webAppSourceDirectory>${basedir}/src/webapp</webAppSourceDirectory>
           <systemProperties>
             <systemProperty>
