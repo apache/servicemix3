@@ -21,7 +21,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -313,10 +312,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
         try {
             convertAttachments();
             out.writeObject(attachments);
-            //since we can't guarantee all properties is Serializable, so only write the
-            //properties which is serializable to the external to avoid NotSerializableException
-            Map serialiableProperties = getSeriableProperties(properties);
-            out.writeObject(serialiableProperties);
+            out.writeObject(properties);
             String src = TRANSFORMER.toString(content);
             out.writeObject(src);
             // We have read the source
@@ -330,18 +326,6 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
         }
     }
 
-    private Map getSeriableProperties(Map originalProperties) {
-        if (originalProperties == null) {
-            return originalProperties;
-        }
-        Map ret = new HashMap();
-        for (Object key : originalProperties.keySet()) {
-            if (originalProperties.get(key) instanceof Serializable) {
-                ret.put(key, originalProperties.get(key));
-            }
-        }
-        return ret;
-    }
  
    
     private void convertAttachments() throws IOException {
