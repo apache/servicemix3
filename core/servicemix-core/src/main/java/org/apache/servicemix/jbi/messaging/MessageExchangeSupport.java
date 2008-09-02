@@ -22,6 +22,7 @@ import java.net.URI;
  * Resolver for URI patterns
  * 
  * @version $Revision$
+ * @deprecated use {@link org.apache.servicemix.jbi.helper.MessageExchangePattern} instead
  */
 public final class MessageExchangeSupport {
     
