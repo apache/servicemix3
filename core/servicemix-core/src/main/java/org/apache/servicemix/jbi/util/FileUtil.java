@@ -34,7 +34,7 @@ import java.util.zip.ZipOutputStream;
  * File utilities
  * 
  * @version $Revision$
- * @deprecated use {@link FileUtil} instead
+ * @deprecated use {@link org.apache.servicemix.util.FileUtil} instead
  */
 public final class FileUtil {
     
