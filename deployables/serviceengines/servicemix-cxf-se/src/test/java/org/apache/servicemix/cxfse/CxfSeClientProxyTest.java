@@ -27,6 +27,8 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 import org.apache.cxf.common.logging.LogUtils;
+import org.apache.cxf.transport.ConduitInitiatorManager;
+import org.apache.cxf.transport.jbi.JBITransportFactory;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
@@ -73,7 +75,10 @@ public class CxfSeClientProxyTest extends TestCase {
         component.getServiceUnitManager().shutDown("target");
         component.getServiceUnitManager().undeploy("target", getServiceUnitPath("proxytarget"));
         
-        
+        JBITransportFactory jbiTransportFactory = (JBITransportFactory) component.getBus()
+            .getExtension(ConduitInitiatorManager.class)
+            .getConduitInitiator(CxfSeComponent.JBI_TRANSPORT_ID);
+        assertNull(jbiTransportFactory.getDeliveryChannel());
         component.getServiceUnitManager().init("target", getServiceUnitPath("proxytarget"));
         component.getServiceUnitManager().start("target");
         
