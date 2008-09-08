@@ -29,7 +29,10 @@ import org.apache.servicemix.id.IdGenerator;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.locks.impl.SimpleLockManager;
 import org.apache.servicemix.soap.interceptors.jbi.JbiConstants;
+import org.apache.servicemix.store.Store;
+import org.apache.servicemix.store.StoreFactory;
 import org.apache.servicemix.store.memory.MemoryStore;
+import org.apache.servicemix.store.memory.MemoryStoreFactory;
 import org.apache.servicemix.tck.mock.MockExchangeFactory;
 import org.apache.servicemix.tck.mock.MockMessageExchange;
 import org.apache.servicemix.tck.mock.MockNormalizedMessage;
@@ -50,6 +53,7 @@ public class BaseAbstractAggregatorTest extends TestCase {
         aggregator.getTimerManager().start();
         aggregator.setLockManager(new SimpleLockManager());
         aggregator.setStore(new MemoryStore(new IdGenerator()));
+        aggregator.start();
         factory = new MockExchangeFactory();
     }
     
@@ -92,6 +96,8 @@ public class BaseAbstractAggregatorTest extends TestCase {
     private class MockAggregator extends AbstractAggregator {
 
         private int scheduleCount;
+        private Store mockClosedAggregates;
+        private StoreFactory mockClosedAggregatesStoreFactory;
 
         @Override
         protected boolean addMessage(Object aggregate, NormalizedMessage message, MessageExchange exchange)
@@ -130,7 +136,23 @@ public class BaseAbstractAggregatorTest extends TestCase {
         protected void send(MessageExchange me) throws MessagingException {
             // graciously do nothing
         }
+
+        @Override
+        public void start() throws Exception {
+            if (mockClosedAggregatesStoreFactory == null) {
+                mockClosedAggregatesStoreFactory = new MemoryStoreFactory();
+            }
+            mockClosedAggregates = mockClosedAggregatesStoreFactory.open("mock-closed-aggregates");
+        }
         
+        protected boolean isAggregationClosed(String correlationId) throws Exception {
+            // TODO: implement this using a persistent / cached behavior
+            Object data = mockClosedAggregates.load(correlationId);
+            if (data != null) {
+                mockClosedAggregates.store(correlationId, data);
+            }
+            return data != null;
+        }
     }
 
 }
