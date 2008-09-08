@@ -485,6 +485,16 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                 // if (messageExchangeImpl.getSyncSenderThread() != null) {
                 resumeTx(me);
                 // }
+                // Call input listeners
+                ExchangeListener[] l = (ExchangeListener[]) container.getListeners(ExchangeListener.class);
+                ExchangeEvent event = new ExchangeEvent(me, ExchangeEvent.EXCHANGE_ACCEPTED);
+                for (int i = 0; i < l.length; i++) {
+                    try {
+                        l[i].exchangeSent(event);
+                    } catch (Exception e) {
+                        LOG.warn("Error calling listener: " + e.getMessage(), e);
+                    }
+                }
                 result = true;
             } else {
                 // JBI 5.5.2.1.3: the exchange should be set to ERROR status
