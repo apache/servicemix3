@@ -91,30 +91,40 @@ public class HttpConsumerEndpoint extends ConsumerEndpoint implements HttpProces
     }
 
     /**
-     * @return the locationUri
+     * Returns the URI at which the endpoint listens for new requests.
+     * 
+     * @return a string representing the endpoint's URI
      */
     public String getLocationURI() {
         return locationURI;
     }
 
     /**
-     * @param locationURI
-     *            the locationUri to set
+     * Sets the URI at which an endpoint listens for requests.
+     * 
+     * @param locationURI a string representing the URI
+     * @org.apache.xbean.Property description="the URI at which the endpoint listens for requests"
      */
     public void setLocationURI(String locationURI) {
         this.locationURI = locationURI;
     }
 
     /**
-     * @return the timeout
+     * Returns the timeout value for an HTTP endpoint.
+     * 
+     * @return the timeout specified in milliseconds
      */
     public long getTimeout() {
         return timeout;
     }
 
     /**
-     * @param timeout
-     *            the timeout to set
+     * Specifies the timeout value for an HTTP consumer endpoint. The timeout is specified in milliseconds. The default value is 0
+     * which means that the endpoint will never timeout.
+     * 
+     * @org.apache.xbean.Property description="the timeout is specified in milliseconds. The default value is 0 which 
+     *       means that the endpoint will never timeout."
+     * @param timeout the length time, in milliseconds, to wait before timing out
      */
     public void setTimeout(long timeout) {
         this.timeout = timeout;
@@ -128,23 +138,31 @@ public class HttpConsumerEndpoint extends ConsumerEndpoint implements HttpProces
     }
 
     /**
-     * @param marshaler
-     *            the marshaler to set
+     * Sets the class used to marshal messages.
+     * 
+     * @param marshaler the marshaler to set
+     * @org.apache.xbean.Property description="the bean used to marshal HTTP messages. The default is a
+     *                            <code>DefaultHttpConsumerMarshaler</code>."
      */
     public void setMarshaler(HttpConsumerMarshaler marshaler) {
         this.marshaler = marshaler;
     }
 
     /**
-     * @return the authMethod
+     * Returns a string describing the authentication scheme being used by an endpoint.
+     * 
+     * @return a string representing the authentication method used by an endpoint
      */
     public String getAuthMethod() {
         return authMethod;
     }
 
     /**
-     * @param authMethod
-     *            the authMethod to set
+     * Specifies the authentication method used by a secure endpoint. The authentication method is a string naming the scheme used
+     * for authenticating users.
+     * 
+     * @param authMethod a string naming the authentication scheme a secure endpoint should use
+     * @org.apache.xbean.Property description="a string naming the scheme used for authenticating users"
      */
     public void setAuthMethod(String authMethod) {
         this.authMethod = authMethod;
@@ -158,23 +176,31 @@ public class HttpConsumerEndpoint extends ConsumerEndpoint implements HttpProces
     }
 
     /**
-     * @param ssl
-     *            the sslParameters to set
+     * Sets the properties used to configure SSL for the endpoint.
+     * 
+     * @param ssl an <code>SslParameters</code> object containing the SSL properties
+     * @org.apache.xbean.Property description="a bean containing the SSL configuration properties"
      */
     public void setSsl(SslParameters ssl) {
         this.ssl = ssl;
     }
 
     /**
-     * @return defaultMep of the endpoint
+     * Returns a URI representing the default message exachange pattern(MEP) used by an endpoint.
+     * 
+     * @return a URI representing an endpoint's default MEP
      */
     public URI getDefaultMep() {
         return defaultMep;
     }
 
     /**
-     * @param defaultMep -
-     *            defaultMep of the endpoint
+     * Sets the default message exchange pattern(MEP) for an endpoint. The default MEP is specified as a URI and the default is
+     * <code>JbiConstants.IN_OUT</code>.
+     * 
+     * @param defaultMep a URI representing the default MEP of the endpoint
+     * @org.apache.xbean.Property description="a URI representing the endpoint's default MEP. The default is
+     *                            <code>JbiConstants.IN_OUT</code>."
      */
     public void setDefaultMep(URI defaultMep) {
         this.defaultMep = defaultMep;
@@ -193,15 +219,25 @@ public class HttpConsumerEndpoint extends ConsumerEndpoint implements HttpProces
     }
 
     public void process(MessageExchange exchange) throws Exception {
-        Continuation cont = locks.remove(exchange.getExchangeId());
+        // Receive the exchange response
+        // First, check if the continuation has not been removed from the map,
+        // which would mean it has timed out.  If this is the case, throw an exception
+        // that will set the exchange status to ERROR.
+        Continuation cont = locks.get(exchange.getExchangeId());
         if (cont == null) {
-            throw new Exception("HTTP request has timed out");
+            throw new Exception("HTTP request has timed out for exchange: " + exchange.getExchangeId());
         }
+        // synchronized block
         synchronized (cont) {
+            if (locks.remove(exchange.getExchangeId()) == null) {
+                throw new Exception("HTTP request has timed out for exchange: " + exchange.getExchangeId());
+            }
             if (logger.isDebugEnabled()) {
                 logger.debug("Resuming continuation for exchange: " + exchange.getExchangeId());
             }
+            // Put the new exchange
             exchanges.put(exchange.getExchangeId(), exchange);
+            // Resume continuation
             cont.resume();
         }
     }
@@ -216,46 +252,77 @@ public class HttpConsumerEndpoint extends ConsumerEndpoint implements HttpProces
             if (handleStaticResource(request, response)) {
                 return;
             }
-            // Not giving a specific mutex will synchronize on the continuation itself
+            // Not giving a specific mutex will synchronize on the continuation
+            // itself
             Continuation cont = ContinuationSupport.getContinuation(request, null);
             // If the continuation is not a retry
             if (!cont.isPending()) {
+                // Create the exchange
                 exchange = createExchange(request);
-                locks.put(exchange.getExchangeId(), cont);
+                // Put the exchange in a map so that we can later retrieve it
+                // We don't put the exchange on the request directly in case the JMS flow is involved
+                // because the exchange coming back may not be the same object as the one send.
+                exchanges.put(exchange.getExchangeId(), exchange);
+                // Put the exchange id on the request to be able to retrieve the exchange later
                 request.setAttribute(MessageExchange.class.getName(), exchange.getExchangeId());
+                // Put the continuation in a map under the exchange id key
+                locks.put(exchange.getExchangeId(), cont);
                 synchronized (cont) {
+                    // Send the exchange
                     send(exchange);
                     if (logger.isDebugEnabled()) {
                         logger.debug("Suspending continuation for exchange: " + exchange.getExchangeId());
                     }
+                    // Suspend the continuation for the configured timeout
+                    // If a SelectConnector is used, the call to suspend will throw a RetryRequest exception
+                    // else, the call will block until the continuation is resumed
                     long to = this.timeout;
                     if (to == 0) {
-                        to = ((HttpComponent) getServiceUnit().getComponent()).getConfiguration()
-                                            .getConsumerProcessorSuspendTime();
+                        to = ((HttpComponent) getServiceUnit().getComponent()).getConfiguration().getConsumerProcessorSuspendTime();
                     }
-                    exchanges.put(exchange.getExchangeId(), exchange);
                     boolean result = cont.suspend(to);
+                    // The call has not thrown a RetryRequest, which means we don't use a SelectConnector
+                    // and we must handle the exchange in this very method call.
+                    // If result is false, the continuation has timed out.
+                    // So get the exchange (in case the object has changed) and remove it from the map
                     exchange = exchanges.remove(exchange.getExchangeId());
+                    // remove the exchange id from the request as we don't need it anymore
+                    request.removeAttribute(MessageExchange.class.getName());
+                    // If a timeout occurred, throw an exception that will be sent back to the HTTP client
+                    // Whenever the exchange comes back, the process(MessageExchange) method will thrown an
+                    // exception and the exchange will be set in an ERROR status
                     if (!result) {
+                        // Remove the continuation from the map.
+                        // This indicates the continuation has been fully processed
                         locks.remove(exchange.getExchangeId());
                         throw new Exception("Exchange timed out");
                     }
-                    request.removeAttribute(MessageExchange.class.getName());
                 }
+            // The continuation is a retry.
+            // This happens when the SelectConnector is used and in two cases:
+            //  * the continuation has been resumed because the exchange has been received
+            //  * the continuation has timed out
             } else {
-                String id = (String) request.getAttribute(MessageExchange.class.getName());
-                locks.remove(id);
-                exchange = exchanges.remove(id);
-                request.removeAttribute(MessageExchange.class.getName());
-                boolean result = cont.suspend(0);
-                // Check if this is a timeout
-                if (exchange == null) {
-                    throw new IllegalStateException("Exchange not found");
-                }
-                if (!result) {
-                    throw new Exception("Timeout");
+                synchronized (cont) {
+                    // Get the exchange id from the request
+                    String id = (String) request.getAttribute(MessageExchange.class.getName());
+                    // Remove the continuation from the map, indicating it has been processed or timed out
+                    locks.remove(id);
+                    exchange = exchanges.remove(id);
+                    request.removeAttribute(MessageExchange.class.getName());
+                    // Check if this is a timeout
+                    if (exchange == null) {
+                        throw new IllegalStateException("Exchange not found");
+                    }
+                    if (!cont.isResumed()) {
+                        Exception e = new Exception("Exchange timed out: " + exchange.getExchangeId());
+                        fail(exchange, e);
+                        throw e;
+                    }
                 }
             }
+            // At this point, we have received the exchange response,
+            // so process it and send back the HTTP response
             if (exchange.getStatus() == ExchangeStatus.ERROR) {
                 Exception e = exchange.getError();
                 if (e == null) {
@@ -273,11 +340,9 @@ public class HttpConsumerEndpoint extends ConsumerEndpoint implements HttpProces
                             sendOut(exchange, outMsg, request, response);
                         }
                     }
-                    exchange.setStatus(ExchangeStatus.DONE);
-                    send(exchange);
+                    done(exchange);
                 } catch (Exception e) {
-                    exchange.setError(e);
-                    send(exchange);
+                    fail(exchange, e);
                     throw e;
                 }
             } else if (exchange.getStatus() == ExchangeStatus.DONE) {
@@ -298,10 +363,8 @@ public class HttpConsumerEndpoint extends ConsumerEndpoint implements HttpProces
     /**
      * Handle static resources
      * 
-     * @param request
-     *            the http request
-     * @param response
-     *            the http response
+     * @param request the http request
+     * @param response the http response
      * @return <code>true</code> if the request has been handled
      * @throws IOException
      * @throws ServletException
@@ -333,8 +396,8 @@ public class HttpConsumerEndpoint extends ConsumerEndpoint implements HttpProces
             response.setStatus(200);
             response.setContentType("text/xml");
             try {
-                new SourceTransformer().toResult(new DOMSource((Node) res),
-                                new StreamResult(response.getOutputStream()));
+                new SourceTransformer().toResult(new DOMSource((Node)res), 
+                                                 new StreamResult(response.getOutputStream()));
             } catch (TransformerException e) {
                 throw new ServletException("Error while sending xml resource", e);
             }
@@ -372,23 +435,23 @@ public class HttpConsumerEndpoint extends ConsumerEndpoint implements HttpProces
         return me;
     }
 
-    public void sendAccepted(MessageExchange exchange, HttpServletRequest request, HttpServletResponse response)
-        throws Exception {
+    public void sendAccepted(MessageExchange exchange, HttpServletRequest request,
+                             HttpServletResponse response) throws Exception {
         marshaler.sendAccepted(exchange, request, response);
     }
 
     public void sendError(MessageExchange exchange, Exception error, HttpServletRequest request,
-        HttpServletResponse response) throws Exception {
+                          HttpServletResponse response) throws Exception {
         marshaler.sendError(exchange, error, request, response);
     }
 
     public void sendFault(MessageExchange exchange, Fault fault, HttpServletRequest request,
-        HttpServletResponse response) throws Exception {
+                          HttpServletResponse response) throws Exception {
         marshaler.sendFault(exchange, fault, request, response);
     }
 
     public void sendOut(MessageExchange exchange, NormalizedMessage outMsg, HttpServletRequest request,
-        HttpServletResponse response) throws Exception {
+                        HttpServletResponse response) throws Exception {
         marshaler.sendOut(exchange, outMsg, request, response);
     }
 

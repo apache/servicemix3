@@ -60,10 +60,6 @@ import org.mortbay.util.ajax.ContinuationSupport;
 
 public class ConsumerProcessor extends AbstractProcessor implements ExchangeProcessor, HttpProcessor {
 
-    public static final URI IN_ONLY = URI.create("http://www.w3.org/2004/08/wsdl/in-only");
-    public static final URI IN_OUT = URI.create("http://www.w3.org/2004/08/wsdl/in-out");
-    public static final URI ROBUST_IN_ONLY = URI.create("http://www.w3.org/2004/08/wsdl/robust-in-only");
-    
     private static Log log = LogFactory.getLog(ConsumerProcessor.class);
 
     protected Object httpContext;
@@ -94,17 +90,19 @@ public class ConsumerProcessor extends AbstractProcessor implements ExchangeProc
     }
     
     public void process(MessageExchange exchange) throws Exception {
-        Continuation cont = locks.remove(exchange.getExchangeId());
-        if (cont != null) {
-            synchronized (cont) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Resuming continuation for exchange: " + exchange.getExchangeId());
-                }
-                exchanges.put(exchange.getExchangeId(), exchange);
-                cont.resume();
+        Continuation cont = locks.get(exchange.getExchangeId());
+        if (cont == null) {
+            throw new Exception("HTTP request has timed out");
+        }
+        synchronized (cont) {
+            if (locks.remove(exchange.getExchangeId()) == null) {
+                throw new Exception("HTTP request has timed out");
             }
-        } else {
-            throw new IllegalStateException("Exchange not found");
+            if (log.isDebugEnabled()) {
+                log.debug("Resuming continuation for exchange: " + exchange.getExchangeId());
+            }
+            exchanges.put(exchange.getExchangeId(), exchange);
+            cont.resume();
         }
     }
 
@@ -137,20 +135,10 @@ public class ConsumerProcessor extends AbstractProcessor implements ExchangeProc
         // If the continuation is not a retry
         if (!cont.isPending()) {
             try {
-                SoapMessage message = soapHelper.getSoapMarshaler().createReader().read(
-                                            request.getInputStream(), 
-                                            request.getHeader(HEADER_CONTENT_TYPE));
-                Context ctx = soapHelper.createContext(message);
-                if (request.getUserPrincipal() != null) {
-                    if (request.getUserPrincipal() instanceof JaasJettyPrincipal) {
-                        Subject subject = ((JaasJettyPrincipal) request.getUserPrincipal()).getSubject();
-                        ctx.getInMessage().setSubject(subject);
-                    } else {
-                        ctx.getInMessage().addPrincipal(request.getUserPrincipal());
-                    }
-                }
+                Context ctx = createContext(request);
                 request.setAttribute(Context.class.getName(), ctx);
                 exchange = soapHelper.onReceive(ctx);
+                exchanges.put(exchange.getExchangeId(), exchange);
                 NormalizedMessage inMessage = exchange.getMessage("in");
                 if (getConfiguration().isWantHeadersFromHttpIntoExchange()) {
                     inMessage.setProperty(JbiConstants.PROTOCOL_HEADERS, getHeaders(request));
@@ -164,11 +152,11 @@ public class ConsumerProcessor extends AbstractProcessor implements ExchangeProc
                     }
                     boolean result = cont.suspend(suspentionTime);
                     exchange = exchanges.remove(exchange.getExchangeId());
+                    request.removeAttribute(MessageExchange.class.getName());
                     if (!result) {
                         locks.remove(exchange.getExchangeId());
-                        throw new Exception("Error sending exchange: aborted");
+                        throw new Exception("Exchange timed out");
                     }
-                    request.removeAttribute(MessageExchange.class.getName());
                 }
             } catch (RetryRequest retry) {
                 throw retry;
@@ -176,21 +164,26 @@ public class ConsumerProcessor extends AbstractProcessor implements ExchangeProc
                 sendFault(fault, request, response);
                 return;
             } catch (Exception e) {
-                SoapFault fault = new SoapFault(e);
-                sendFault(fault, request, response);
+                sendFault(new SoapFault(e), request, response);
                 return;
             }
         } else {
-            String id = (String) request.getAttribute(MessageExchange.class.getName());
-            exchange = exchanges.remove(id);
-            request.removeAttribute(MessageExchange.class.getName());
-            boolean result = cont.suspend(0); 
-            // Check if this is a timeout
-            if (exchange == null) {
-                throw new IllegalStateException("Exchange not found");
-            }
-            if (!result) {
-                throw new Exception("Timeout");
+            synchronized (cont) {
+                String id = (String) request.getAttribute(MessageExchange.class.getName());
+                locks.remove(id);
+                exchange = exchanges.remove(id);
+                request.removeAttribute(MessageExchange.class.getName());
+                // Check if this is a timeout
+                if (exchange == null) {
+                    throw new IllegalStateException("Exchange not found");
+                }
+                if (!cont.isResumed()) {
+                    Exception e = new Exception("Exchange timed out: " + exchange.getExchangeId());
+                    exchange.setError(e);
+                    channel.send(exchange);
+                    sendFault(new SoapFault(e), request, response);
+                    return;
+                }
             }
         }
         if (exchange.getStatus() == ExchangeStatus.ERROR) {
@@ -214,6 +207,22 @@ public class ConsumerProcessor extends AbstractProcessor implements ExchangeProc
             // This happens when there is no response to send back
             response.setStatus(HttpServletResponse.SC_ACCEPTED);
         }
+    }
+
+    private Context createContext(HttpServletRequest request) throws Exception {
+        SoapMessage message = soapHelper.getSoapMarshaler().createReader().read(
+                                    request.getInputStream(),
+                                    request.getHeader(HEADER_CONTENT_TYPE));
+        Context ctx = soapHelper.createContext(message);
+        if (request.getUserPrincipal() != null) {
+            if (request.getUserPrincipal() instanceof JaasJettyPrincipal) {
+                Subject subject = ((JaasJettyPrincipal) request.getUserPrincipal()).getSubject();
+                ctx.getInMessage().setSubject(subject);
+            } else {
+                ctx.getInMessage().addPrincipal(request.getUserPrincipal());
+            }
+        }
+        return ctx;
     }
 
     private void processResponse(MessageExchange exchange, HttpServletRequest request, HttpServletResponse response) throws Exception {
