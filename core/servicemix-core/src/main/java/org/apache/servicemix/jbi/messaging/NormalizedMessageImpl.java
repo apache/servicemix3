@@ -321,6 +321,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
                             && !(content instanceof BytesSource) && !(content instanceof ResourceSource)) {
                 content = new StringSource(src);
             }
+            out.writeObject(securitySubject);
         } catch (TransformerException e) {
             throw (IOException) new IOException("Could not transform content to string").initCause(e);
         }
@@ -362,6 +363,7 @@ public class NormalizedMessageImpl implements NormalizedMessage, Externalizable,
         if (src != null) {
             content = new StringSource(src);
         }
+        securitySubject = (Subject) in.readObject();
     }
 
 }
