@@ -21,6 +21,9 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.EventListener;
 import java.util.MissingResourceException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
@@ -127,6 +130,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
     private AtomicBoolean started = new AtomicBoolean(false);
     private AtomicBoolean containerInitialized = new AtomicBoolean(false);
     private IdGenerator idGenerator = new IdGenerator();
+    private long forceShutdown;
 
     /**
      * Default Constructor
@@ -554,6 +558,20 @@ public class JBIContainer extends BaseLifeCycle implements Container {
     public boolean isGenerateRootDir() {
         return generateRootDir;
     }
+    
+    public long getForceShutdown() {
+        return forceShutdown;
+    }
+    
+    /**
+     * Set the timeout (in ms) before a shutdown is forced by cancelling all pending exchanges.
+     * The default value is 0 -- no forced shutdown
+     * 
+     * @param forceShutdown the timeout in ms
+     */
+    public void setForceShutdown(long forceShutdown) {
+        this.forceShutdown = forceShutdown;
+    }
 
     /**
      * Creates an auto-generated rootDir which is useful for integration testing
@@ -700,12 +718,8 @@ public class JBIContainer extends BaseLifeCycle implements Container {
             // Shutdown broker before registry to avoid the JCA/JMS flow to send
             // lots of messages when components and endpoints are stopped.
             broker.shutDown();
-            registry.shutDown();
-            if (services != null) {
-                for (int i = services.length - 1; i >= 0; i--) {
-                    services[i].shutDown();
-                }
-            }
+            shutdownRegistry();           
+            shutdownServices();
             clientFactory.shutDown();
             environmentContext.shutDown();
             // shutdown the management context last, because it will close the mbean server
@@ -713,6 +727,40 @@ public class JBIContainer extends BaseLifeCycle implements Container {
             managementContext.unregisterMBean(this);
             managementContext.shutDown();
             LOG.info("ServiceMix JBI Container (" + getName() + ") stopped");
+        }
+    }
+
+    private void shutdownServices() throws JBIException {
+        if (services != null) {
+            for (int i = services.length - 1; i >= 0; i--) {
+                services[i].shutDown();
+            }
+        }
+    }
+
+    private void shutdownRegistry() throws JBIException {
+        FutureTask<Boolean> shutdown = new FutureTask<Boolean>(new Callable<Boolean>() {
+            public Boolean call() throws Exception {
+                registry.shutDown();
+                return true;
+            };
+        });
+
+        executorFactory.createExecutor("ServiceMix -- shutting down registry").execute(shutdown);
+        
+        try {
+            if (forceShutdown > 0) {
+                LOG.info("Waiting another " + forceShutdown + " ms for complete shutdown of the components and service assemblies");
+                shutdown.get(forceShutdown, TimeUnit.MILLISECONDS);
+            } else {
+                LOG.info("Waiting for complete shutdown of the components and service assemblies");
+                shutdown.get();
+            }
+            LOG.info("Components and service assemblies have been shut down");
+        } catch (Exception e) {
+            LOG.warn("Unable to shutdown components and service assemblies normally: " + e, e);
+            LOG.warn("Forcing shutdown by cancelling all pending exchanges");
+            registry.cancelPendingExchanges();
         }
     }
 

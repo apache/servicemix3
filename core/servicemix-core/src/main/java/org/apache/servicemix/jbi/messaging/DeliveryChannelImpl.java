@@ -806,4 +806,16 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         return "DeliveryChannel{" + component.getName() + "}";
     }
 
+    /**
+     * Cancel all pending exchanges currently being handled by the DeliveryChannel
+     */
+    public void cancelPendingExchanges() {
+        for (String id : exchangesById.keySet()) {
+            MessageExchange exchange = exchangesById.get(id);
+            synchronized (exchange) {
+                exchange.notifyAll();   
+            }
+        }
+    }
+
 }

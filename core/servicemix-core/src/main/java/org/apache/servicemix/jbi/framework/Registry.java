@@ -52,6 +52,7 @@ import org.apache.servicemix.jbi.deployment.ServiceAssembly;
 import org.apache.servicemix.jbi.deployment.ServiceUnit;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseSystemService;
+import org.apache.servicemix.jbi.messaging.DeliveryChannelImpl;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.resolver.URIResolver;
 import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
@@ -943,6 +944,19 @@ public class Registry extends BaseSystemService implements RegistryMBean {
         helper.addAttribute(getObjectToManage(), "endpointNames", "list of endpoints");
         helper.addAttribute(getObjectToManage(), "sharedLibraryNames", "list of shared libraries");
         return AttributeInfoHelper.join(super.getAttributeInfos(), helper.getAttributeInfos());
+    }
+
+    /**
+     * Cancel pending exchanges in all components
+     */
+    public void cancelPendingExchanges() {
+        for (ComponentMBeanImpl mbean : componentRegistry.getComponents()) {
+            DeliveryChannelImpl channel = mbean.getDeliveryChannel();
+            if (channel != null) {
+                channel.cancelPendingExchanges();
+            }
+        }
+        
     }
 
 }
