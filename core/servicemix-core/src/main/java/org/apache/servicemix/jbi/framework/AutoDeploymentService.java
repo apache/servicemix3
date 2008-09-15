@@ -624,6 +624,9 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             }
             timerTask = new TimerTask() {
                 public void run() {
+                    if (!isStarted()) {
+                        return;
+                    }
                     if (isMonitorInstallationDirectory()) {
                         monitorDirectory(environmentContext.getInstallationDir(), installFileMap);
                     }
