@@ -16,21 +16,21 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-import javax.xml.namespace.QName;
 import javax.jbi.JBIException;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
+import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
-import org.apache.servicemix.jbi.container.JBIContainer;
-import org.apache.servicemix.jbi.event.ExchangeListener;
-import org.apache.servicemix.jbi.event.ExchangeEvent;
-import org.apache.servicemix.jbi.api.ServiceMixClient;
-import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.components.util.EchoComponent;
+import org.apache.servicemix.jbi.api.ServiceMixClient;
+import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.event.ExchangeEvent;
+import org.apache.servicemix.jbi.event.ExchangeListener;
+import org.apache.servicemix.jbi.jaxp.StringSource;
 
 public class ExchangeListenerTest extends TestCase {
 
@@ -65,15 +65,19 @@ public class ExchangeListenerTest extends TestCase {
 
     public static class TestListener implements ExchangeListener {
 
-        public List<ExchangeEvent> events = new ArrayList<ExchangeEvent>();
+        List<ExchangeEvent> events = new ArrayList<ExchangeEvent>();
 
         public void exchangeSent(ExchangeEvent e) {
-            System.err.println((e.getType() == ExchangeEvent.EXCHANGE_ACCEPTED ? "accepted" : "sent    ") + " " + e.getExchange().getStatus() + " " + (e.getExchange().getRole() == MessageExchange.Role.CONSUMER ? "consumer" : "provider"));
+            System.err.println((e.getType() == ExchangeEvent.EXCHANGE_ACCEPTED ? "accepted" : "sent    ") 
+                                + " " + e.getExchange().getStatus() + " "
+                                + (e.getExchange().getRole() == MessageExchange.Role.CONSUMER ? "consumer" : "provider"));
             events.add(e);
         }
 
         public void exchangeAccepted(ExchangeEvent e) {
-            System.err.println((e.getType() == ExchangeEvent.EXCHANGE_ACCEPTED ? "accepted" : "sent    ") + " " + e.getExchange().getStatus() + " " + (e.getExchange().getRole() == MessageExchange.Role.CONSUMER ? "consumer" : "provider"));
+            System.err.println((e.getType() == ExchangeEvent.EXCHANGE_ACCEPTED ? "accepted" : "sent    ")
+                                + " " + e.getExchange().getStatus() + " "
+                                + (e.getExchange().getRole() == MessageExchange.Role.CONSUMER ? "consumer" : "provider"));
             events.add(e);
         }
     }
