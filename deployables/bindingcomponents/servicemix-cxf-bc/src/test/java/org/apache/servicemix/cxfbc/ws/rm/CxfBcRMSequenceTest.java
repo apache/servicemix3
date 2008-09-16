@@ -114,7 +114,7 @@ public class CxfBcRMSequenceTest extends SpringTestSupport {
 
     public void setUp() throws Exception {
         //override super setup
-        LOG.info("setUp is invoked");
+        LOG.info("setUp is invoked " + outRecorder);
     }
 
     public void setUpJBI(String beanFile) throws Exception {
@@ -133,6 +133,7 @@ public class CxfBcRMSequenceTest extends SpringTestSupport {
     }
 
     public void tearDown() throws Exception {
+        LOG.info("tearDown " + outRecorder);
         stopGreeter();
         stopControl();
         if (context != null) {
