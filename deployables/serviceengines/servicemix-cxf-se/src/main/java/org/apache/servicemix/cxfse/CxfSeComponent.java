@@ -27,7 +27,7 @@ import org.apache.servicemix.common.Deployer;
 /**
  * 
  * @author gnodet
- * @org.apache.xbean.XBean element="component"
+* @org.apache.xbean.XBean element="component"  description="a component for hosting JAX-WS pojos. It is based on the CXF runtime."
  */
 public class CxfSeComponent extends DefaultComponent {
 
@@ -49,6 +49,7 @@ public class CxfSeComponent extends DefaultComponent {
 
     /**
      * @param endpoints the endpoints to set
+     * @org.apache.xbean.Property description="the endpoints hosted by a component"
      */
     public void setEndpoints(CxfSeEndpoint[] endpoints) {
         this.endpoints = endpoints;
