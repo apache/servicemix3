@@ -715,10 +715,8 @@ public class JBIContainer extends BaseLifeCycle implements Container {
             autoDeployService.shutDown();
             deploymentService.shutDown();
             installationService.shutDown();
-            // Shutdown broker before registry to avoid the JCA/JMS flow to send
-            // lots of messages when components and endpoints are stopped.
-            broker.shutDown();
             shutdownRegistry();           
+            broker.shutDown();
             shutdownServices();
             clientFactory.shutDown();
             environmentContext.shutDown();
