@@ -31,22 +31,22 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.xml.transform.Source;
 
+import org.apache.servicemix.common.JbiConstants;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.messaging.MessageExchangeSupport;
 
-public class DefaultConsumerMarshaler implements JmsConsumerMarshaler {
-    
+public class DefaultConsumerMarshaler extends AbstractJmsMarshaler implements JmsConsumerMarshaler {
+
     private URI mep;
 
     public DefaultConsumerMarshaler() {
-        this.mep = MessageExchangeSupport.IN_ONLY;
+        this.mep = JbiConstants.IN_ONLY;
     }
-    
+
     public DefaultConsumerMarshaler(URI mep) {
         this.mep = mep;
     }
-    
+
     /**
      * @return the mep
      */
@@ -65,32 +65,44 @@ public class DefaultConsumerMarshaler implements JmsConsumerMarshaler {
         return new Context(message);
     }
 
-    public MessageExchange createExchange(JmsContext jmsContext, ComponentContext jbiContext) throws Exception {
-        Context ctx = (Context) jmsContext;
-        MessageExchange exchange = jbiContext.getDeliveryChannel().createExchangeFactory().createExchange(mep);
+    public MessageExchange createExchange(JmsContext jmsContext, ComponentContext jbiContext)
+        throws Exception {
+        Context ctx = (Context)jmsContext;
+        MessageExchange exchange = jbiContext.getDeliveryChannel().createExchangeFactory()
+            .createExchange(mep);
         NormalizedMessage inMessage = exchange.createMessage();
         populateMessage(ctx.message, inMessage);
+        if (isCopyProperties()) {
+            copyPropertiesFromJMS(ctx.message, inMessage);
+        }
         exchange.setMessage(inMessage, "in");
         return exchange;
     }
 
-    public Message createOut(MessageExchange exchange, NormalizedMessage outMsg, Session session, JmsContext context) throws Exception {
+    public Message createOut(MessageExchange exchange, NormalizedMessage outMsg, Session session,
+                             JmsContext context) throws Exception {
         String text = new SourceTransformer().contentToString(outMsg);
-        return session.createTextMessage(text);
+        TextMessage textMessage = session.createTextMessage(text);
+        if (isCopyProperties()) {
+            copyPropertiesFromNM(outMsg, textMessage);
+        }
+        return textMessage;
     }
 
-    public Message createFault(MessageExchange exchange, Fault fault, Session session, JmsContext context) throws Exception {
+    public Message createFault(MessageExchange exchange, Fault fault, Session session, JmsContext context)
+        throws Exception {
         String text = new SourceTransformer().contentToString(fault);
         return session.createTextMessage(text);
     }
 
-    public Message createError(MessageExchange exchange, Exception error, Session session, JmsContext context) throws Exception {
+    public Message createError(MessageExchange exchange, Exception error, Session session, JmsContext context)
+        throws Exception {
         throw error;
     }
 
     protected void populateMessage(Message message, NormalizedMessage normalizedMessage) throws Exception {
         if (message instanceof TextMessage) {
-            TextMessage textMessage = (TextMessage) message;
+            TextMessage textMessage = (TextMessage)message;
             Source source = new StringSource(textMessage.getText());
             normalizedMessage.setContent(source);
         } else {
@@ -100,17 +112,21 @@ public class DefaultConsumerMarshaler implements JmsConsumerMarshaler {
 
     protected static class Context implements JmsContext, Serializable {
         Message message;
+
         Context(Message message) {
             this.message = message;
         }
+
         public Message getMessage() {
             return this.message;
         }
+
         private void writeObject(ObjectOutputStream out) throws IOException {
             out.writeObject(message);
         }
+
         private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-            message = (Message) in.readObject();
+            message = (Message)in.readObject();
         }
     }
 

@@ -28,11 +28,11 @@ import javax.xml.transform.Source;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 
-public class DefaultProviderMarshaler implements JmsProviderMarshaler {
+public class DefaultProviderMarshaler extends AbstractJmsMarshaler implements JmsProviderMarshaler {
 
     private Map<String, Object> jmsProperties;
     private SourceTransformer transformer = new SourceTransformer();
-    
+
     /**
      * @return the jmsProperties
      */
@@ -47,7 +47,8 @@ public class DefaultProviderMarshaler implements JmsProviderMarshaler {
         this.jmsProperties = jmsProperties;
     }
 
-    public Message createMessage(MessageExchange exchange, NormalizedMessage in, Session session) throws Exception {
+    public Message createMessage(MessageExchange exchange, NormalizedMessage in, Session session)
+        throws Exception {
         TextMessage text = session.createTextMessage();
         text.setText(transformer.contentToString(in));
         if (jmsProperties != null) {
@@ -55,17 +56,27 @@ public class DefaultProviderMarshaler implements JmsProviderMarshaler {
                 text.setObjectProperty(e.getKey(), e.getValue());
             }
         }
+
+        if (isCopyProperties()) {
+            copyPropertiesFromNM(in, text);
+        }
+
         return text;
     }
 
-    public void populateMessage(Message message, MessageExchange exchange, NormalizedMessage normalizedMessage) throws Exception {
+    public void populateMessage(Message message, MessageExchange exchange, NormalizedMessage normalizedMessage)
+        throws Exception {
         if (message instanceof TextMessage) {
-            TextMessage textMessage = (TextMessage) message;
+            TextMessage textMessage = (TextMessage)message;
             Source source = new StringSource(textMessage.getText());
             normalizedMessage.setContent(source);
+
+            if (isCopyProperties()) {
+                copyPropertiesFromJMS(textMessage, normalizedMessage);
+            }
         } else {
             throw new UnsupportedOperationException("JMS message is not a TextMessage");
         }
     }
-    
+
 }
