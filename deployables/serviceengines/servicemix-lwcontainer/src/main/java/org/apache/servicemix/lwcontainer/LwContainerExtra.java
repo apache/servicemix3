@@ -34,6 +34,7 @@ import javax.xml.namespace.QName;
 import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.Endpoint;
 import org.apache.servicemix.common.ExchangeProcessor;
+import org.apache.servicemix.common.endpoints.AbstractEndpoint;
 import org.apache.servicemix.id.IdGenerator;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
@@ -46,7 +47,7 @@ import org.springframework.util.ClassUtils;
 /**
  * Fake endpoint that hold components, endpoints, listeners and services.
  */
-public class LwContainerExtra extends Endpoint {
+public class LwContainerExtra extends AbstractEndpoint {
 
     private Map components;
     private Map endpoints;
@@ -235,6 +236,21 @@ public class LwContainerExtra extends Endpoint {
 
     protected String createComponentID() {
         return idGenerator.generateId();
+    }
+
+    @Override
+    public void process(MessageExchange exchange) throws Exception {
+        getProcessor().process(exchange);
+    }
+
+    @Override
+    public void start() throws Exception {
+        // gracefully do nothing
+    }
+
+    @Override
+    public void stop() throws Exception {
+        // gracefully do nothing
     }
 
 }

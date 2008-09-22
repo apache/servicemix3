@@ -16,9 +16,12 @@
  */
 package org.apache.servicemix.lwcontainer;
 
+import javax.jbi.messaging.MessageExchange;
+
 import org.apache.servicemix.common.BaseComponent;
 import org.apache.servicemix.common.BaseServiceUnitManager;
 import org.apache.servicemix.common.Deployer;
+import org.apache.servicemix.common.Endpoint;
 
 public class LwContainerComponent extends BaseComponent {
 
@@ -28,6 +31,14 @@ public class LwContainerComponent extends BaseComponent {
     public BaseServiceUnitManager createServiceUnitManager() {
         Deployer[] deployers = new Deployer[] {new LwContainerXBeanDeployer(this) };
         return new BaseServiceUnitManager(this, deployers);
+    }
+    
+    public void prepareShutdown(Endpoint endpoint) throws InterruptedException {
+        lifeCycle.prepareShutdown(endpoint);
+    }
+    
+    public void handleExchange(Endpoint endpoint, MessageExchange exchange, boolean add) {
+        lifeCycle.handleExchange(endpoint, exchange, add);
     }
 
 }

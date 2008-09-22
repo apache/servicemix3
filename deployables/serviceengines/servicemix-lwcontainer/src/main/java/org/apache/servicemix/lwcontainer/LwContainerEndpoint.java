@@ -17,17 +17,18 @@
 package org.apache.servicemix.lwcontainer;
 
 import javax.jbi.component.ComponentContext;
+import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessageExchange.Role;
 import javax.xml.namespace.QName;
 
 import org.apache.activemq.util.IdGenerator;
-import org.apache.servicemix.common.Endpoint;
 import org.apache.servicemix.common.ExchangeProcessor;
+import org.apache.servicemix.common.endpoints.AbstractEndpoint;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 
-public class LwContainerEndpoint extends Endpoint {
+public class LwContainerEndpoint extends AbstractEndpoint {
 
     private static final QName SERVICE_NAME = new QName("http://lwcontainer.servicemix.org", "LwContainerComponent");
 
@@ -60,13 +61,29 @@ public class LwContainerEndpoint extends Endpoint {
     public ExchangeProcessor getProcessor() {
         throw new UnsupportedOperationException();
     }
-
+    
     public JBIContainer getContainer() {
         ComponentContext context = getServiceUnit().getComponent().getComponentContext();
         if (context instanceof ComponentContextImpl) {
             return ((ComponentContextImpl) context).getContainer();
         }
         throw new IllegalStateException("LwContainer component can only be deployed in ServiceMix");
+    }
+
+    @Override
+    public void process(MessageExchange exchange) throws Exception {
+        getProcessor().process(exchange);
+    }
+
+    @Override
+    public void start() throws Exception {
+        // gracefully do nothing
+    }
+
+    @Override
+    public void stop() throws Exception {
+        // gracefully do nothing
+        
     }
 
 }
