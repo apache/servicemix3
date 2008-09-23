@@ -114,6 +114,8 @@ public class CxfBcProvider extends ProviderEndpoint implements
     private Bus bus;
 
     private ConduitInitiator conduitInit;
+    
+    private Conduit conduit;
 
     private URI locationURI;
 
@@ -143,13 +145,10 @@ public class CxfBcProvider extends ProviderEndpoint implements
             ei.setAddress((String) newDestinationURI);
         }
         
-        Conduit conduit = conduitInit.getConduit(ei);
-        CxfBcProviderMessageObserver obs = new CxfBcProviderMessageObserver(
-                exchange, this);
-        conduit.setMessageObserver(obs);
         Message message = ep.getBinding().createMessage();
         message.put(MessageExchange.class, exchange);
         Exchange cxfExchange = new ExchangeImpl();
+        cxfExchange.put(MessageExchange.class, exchange);
 
         message.setExchange(cxfExchange);
         cxfExchange.setOutMessage(message);
@@ -484,6 +483,9 @@ public class CxfBcProvider extends ProviderEndpoint implements
                         ConduitInitiatorManager.class);
                 conduitInit = conduitMgr.getConduitInitiator(ei
                         .getTransportId());
+                conduit = conduitInit.getConduit(ei);
+                CxfBcProviderMessageObserver obs = new CxfBcProviderMessageObserver(this);
+                conduit.setMessageObserver(obs);
                 super.validate();
             }
         } catch (DeploymentException e) {

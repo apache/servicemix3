@@ -59,13 +59,9 @@ public class CxfBcProviderMessageObserver implements MessageObserver {
 
     String contentType;
 
-    private MessageExchange messageExchange;
-
     private CxfBcProvider providerEndpoint;
 
-    public CxfBcProviderMessageObserver(MessageExchange exchange,
-            CxfBcProvider providerEndpoint) {
-        this.messageExchange = exchange;
+    public CxfBcProviderMessageObserver(CxfBcProvider providerEndpoint) {
         this.providerEndpoint = providerEndpoint;
     }
 
@@ -84,6 +80,7 @@ public class CxfBcProviderMessageObserver implements MessageObserver {
 
     public void onMessage(Message message) {
         try {
+            MessageExchange messageExchange = message.getExchange().get(MessageExchange.class);
             if (messageExchange.getStatus() != ExchangeStatus.ACTIVE) {
                 return;
             }
@@ -142,7 +139,7 @@ public class CxfBcProviderMessageObserver implements MessageObserver {
             soapMessage.setInterceptorChain(inChain);
             inChain.doIntercept(soapMessage);
            
-            setMessageStatus(soapMessage, boi);
+            setMessageStatus(soapMessage, boi, messageExchange);
             boolean txSync = messageExchange.getStatus() == ExchangeStatus.ACTIVE
                     && messageExchange.isTransacted()
                     && Boolean.TRUE.equals(messageExchange
@@ -165,7 +162,8 @@ public class CxfBcProviderMessageObserver implements MessageObserver {
         }
     }
 
-    private void setMessageStatus(SoapMessage soapMessage, BindingOperationInfo boi) throws MessagingException {
+    private void setMessageStatus(SoapMessage soapMessage, BindingOperationInfo boi, MessageExchange messageExchange) 
+        throws MessagingException {
         if (boi.getOperationInfo().isOneWay()) {
             messageExchange.setStatus(ExchangeStatus.DONE);
         } else if (soapMessage.get("jbiFault") != null
