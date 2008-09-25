@@ -17,6 +17,7 @@
 package org.apache.servicemix.camel;
 
 import javax.jbi.JBIException;
+import javax.jbi.messaging.Fault;
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
@@ -159,8 +160,14 @@ public class JbiExchange extends DefaultExchange {
             try {
                 NormalizedMessage msg = messageExchange.getMessage(name);
                 if (msg == null) {
-                    msg = messageExchange.createMessage();
-                    messageExchange.setMessage(msg, name);
+                    if ("fault".equals(name)) {
+                        Fault f = messageExchange.createFault();
+                        messageExchange.setFault(f);
+                        msg = f;
+                    } else {
+                        msg = messageExchange.createMessage();
+                        messageExchange.setMessage(msg, name);
+                    }
                 }
                 return new JbiMessage(msg);
             } catch (JBIException e) {
