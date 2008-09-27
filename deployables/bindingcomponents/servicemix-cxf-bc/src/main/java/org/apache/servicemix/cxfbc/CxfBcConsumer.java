@@ -592,8 +592,9 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
             message.getExchange().setOneWay(CxfBcConsumer.this.isOneway);
 
             try {
-                if (CxfBcConsumer.this.isSynchronous()
-                        && !CxfBcConsumer.this.isOneway) {
+                if (CxfBcConsumer.this.isOneway) {
+                    context.getDeliveryChannel().send(exchange);
+                } else if (CxfBcConsumer.this.isSynchronous()) {
                     context.getDeliveryChannel().sendSync(exchange,
                             timeout * 1000);
                     process(exchange);
