@@ -46,10 +46,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.servicemix</groupId>
-			<artifactId>servicemix-jbi</artifactId>
-            <version>${version}</version>
-            <type>jar</type>
+            <groupId>org.apache.servicemix.specs</groupId>
+            <artifactId>org.apache.servicemix.specs.jbi-api-1.0</artifactId>
         </dependency>
         
         <dependency>
