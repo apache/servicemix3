@@ -228,8 +228,10 @@ public class CxfBCSEProviderSystemTest extends SpringTestSupport {
         if ("ffang".equals(name)) {
             //in this case, the server is intended to sleep 3 sec, 
             //which will cause time out both for sync and async invoke
+            System.out.println("the response is " + new SourceTransformer().contentToString(
+                    io.getFault()));
             assertTrue(new SourceTransformer().contentToString(
-                    io.getFault()).indexOf(" timed out") >= 0);
+                    io.getFault()).indexOf("Timeout receiving message") >= 0);
         } else {
             //in this case, both sync and async invocation shouldn't see the timeout problem
             assertTrue(new SourceTransformer().contentToString(
