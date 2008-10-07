@@ -134,16 +134,21 @@ public class CxfBcRMSequenceTest extends SpringTestSupport {
 
     public void tearDown() throws Exception {
         LOG.info("tearDown " + outRecorder);
-        stopGreeter();
-        stopControl();
-        if (context != null) {
-            context.destroy();
-            context = null;
-        }
-        if (jbi != null) {
-            jbi.shutDown();
-            jbi.destroy();
-            jbi = null;
+        try {
+            stopGreeter();
+            stopControl();
+            if (context != null) {
+                context.destroy();
+                context = null;
+            }
+        } catch (Throwable t) {
+            // Ignore.
+        } finally {
+            if (jbi != null) {
+                jbi.shutDown();
+                jbi.destroy();
+                jbi = null;
+            }
         }
     }
 
