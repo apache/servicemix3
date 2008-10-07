@@ -47,7 +47,7 @@ public class JAASAuthenticationService implements AuthenticationService {
                              final String user, 
                              final Object credentials) throws GeneralSecurityException {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Authenticating '" + user + "' with '" + credentials + "'");
+            LOG.debug("Authenticating '" + user);
         }
         LoginContext loginContext = new LoginContext(domain, subject, new CallbackHandler() {
             public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
@@ -64,9 +64,16 @@ public class JAASAuthenticationService implements AuthenticationService {
                 }
             }
         });
-        loginContext.login();
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Authenticating " + user + " successfully");
+        try {
+            loginContext.login();
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Authenticating " + user + " successfully");
+            }
+        } catch (GeneralSecurityException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Error authenticating " + user, e);
+            }
+            throw e;
         }
     }
 
