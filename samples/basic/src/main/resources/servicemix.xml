@@ -21,7 +21,7 @@
 	     xmlns:sm="http://servicemix.apache.org/config/1.0"
 	     xmlns:jms="http://servicemix.apache.org/jms/1.0"
 	     xmlns:amq="http://activemq.org/config/1.0"
-	     xmlns:amqra="http://activemq.org/ra/1.0"
+	     xmlns:amqra="http://activemq.apache.org/schema/ra"
 	     xmlns:amqpool="http://jencks.org/amqpool/2.0"
        xmlns:jencks="http://jencks.org/2.0"
 	     xmlns:my="http://servicemix.apache.org/demo/">
