@@ -48,9 +48,20 @@
       <artifactId>servicemix-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
-      <artifactId>servicemix-camel</artifactId>      
-      <scope>test</scope>
+       <groupId>org.apache.servicemix</groupId>
+       <artifactId>servicemix-camel</artifactId>
+       <classifier>installer</classifier>
+       <type>zip</type>
+       <version>2008.01-SNAPSHOT</version>
+       <scope>test</scope>
+    </dependency>
+    <dependency>
+       <groupId>org.apache.servicemix</groupId>
+       <artifactId>servicemix-shared</artifactId>
+       <classifier>installer</classifier>
+       <type>zip</type>
+       <version>2008.01-SNAPSHOT</version>
+       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

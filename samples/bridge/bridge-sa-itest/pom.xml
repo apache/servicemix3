@@ -63,6 +63,42 @@
       <artifactId>log4j</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+       <groupId>org.apache.servicemix</groupId>
+       <artifactId>servicemix-eip</artifactId>
+       <classifier>installer</classifier>
+       <type>zip</type>
+       <version>2008.01-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+       <groupId>org.apache.servicemix</groupId>
+       <artifactId>servicemix-http</artifactId>
+       <classifier>installer</classifier>
+       <type>zip</type>
+       <version>2008.01-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+       <groupId>org.apache.servicemix</groupId>
+       <artifactId>servicemix-jms</artifactId>
+       <classifier>installer</classifier>
+       <type>zip</type>
+       <version>2008.01-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+       <groupId>org.apache.servicemix</groupId>
+       <artifactId>servicemix-shared</artifactId>
+       <classifier>installer</classifier>
+       <type>zip</type>
+       <version>2008.01-SNAPSHOT</version>
+       <scope>test</scope>
+    </dependency>
+    <dependency>
+       <groupId>org.apache.servicemix</groupId>
+       <artifactId>servicemix-saxon</artifactId>
+       <classifier>installer</classifier>
+       <type>zip</type>
+       <version>2008.01-SNAPSHOT</version>
+    </dependency>
 
 		<!-- testing -->
     <dependency>
