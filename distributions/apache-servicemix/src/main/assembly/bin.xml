@@ -96,7 +96,7 @@
       <outputDirectory>lib</outputDirectory>
       <includes>
         <include>classworlds:classworlds</include>
-
+        <include>backport-util-concurrent:backport-util-concurrent</include>
         <include>org.apache.activemq:activemq-core</include>
         <include>org.apache.activemq:activemq-ra</include>
         <include>org.apache.activemq:activeio-core</include>
