@@ -316,6 +316,16 @@
       <artifactId>backport-util-concurrent</artifactId>
       <version>2.2</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jaxws_2.1_spec</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-ws-metadata_2.0_spec</artifactId>
+      <version>1.1.2</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -664,10 +674,13 @@
 		  <outputDirectory>${basedir}/target/filtered</outputDirectory>
 		  <filters>
 		    <servicemix-version>${servicemix-version}</servicemix-version>
+                    <servicemix-common-version>${servicemix-common-version}</servicemix-common-version>
+                    <servicemix-wsn2005-version>${servicemix-common-version}</servicemix-wsn2005-version>
 		    <releases-repo-url>${releases-repo-url}</releases-repo-url>
                     <jaxb.version>${jaxb.version}</jaxb.version>
                     <jaxb.impl.version>${jaxb.impl.version}</jaxb.impl.version>
-                    <xfire-jsr181-api-version>${xfire-jsr181-api-version}</xfire-jsr181-api-version>
+                    <ws.metadata.version>1.1.2</ws.metadata.version>
+                    <jaxws.version>1.0</jaxws.version>
 		  </filters>
 		</configuration>
 		<executions>

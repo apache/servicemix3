@@ -27,11 +27,12 @@
         factory-method="makeInitialContext" singleton="true" />
   <!-- We need to include the WS-Notification component dependencies in the classpath -->
   <classpath>
-    <location>../lib/servicemix-wsn2005-@{servicemix-version}.jar</location>
-    <location>../lib/servicemix-common-@{servicemix-version}.jar</location>
+    <location>../lib/servicemix-wsn2005-@{servicemix-wsn2005-version}.jar</location>
+    <location>../lib/servicemix-common-@{servicemix-common-version}.jar</location>
     <location>../lib/jaxb-api-@{jaxb.version}.jar</location>
     <location>../lib/jaxb-impl-@{jaxb.impl.version}.jar</location>
-    <location>../lib/xfire-jsr181-api-@{xfire-jsr181-api-version}.jar</location>
+    <location>../lib/geronimo-ws-metadata_2.0_spec-@{ws.metadata.version}.jar</location>
+    <location>../lib/geronimo-jaxws_2.1_spec-@{jaxws.version}.jar</location>
   </classpath>
 
   <!-- the JBI container -->

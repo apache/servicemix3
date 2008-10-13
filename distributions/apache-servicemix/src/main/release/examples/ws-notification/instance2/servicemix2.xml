@@ -25,11 +25,12 @@
 
   <!-- We need to include the WS-Notification component dependencies in the classpath -->
   <classpath>
-    <location>../lib/servicemix-wsn2005-@{servicemix-version}.jar</location>
-    <location>../lib/servicemix-common-@{servicemix-version}.jar</location>
+    <location>../lib/servicemix-wsn2005-@{servicemix-wsn2005-version}.jar</location>
+    <location>../lib/servicemix-common-@{servicemix-common-version}.jar</location>
     <location>../lib/jaxb-api-@{jaxb.version}.jar</location>
     <location>../lib/jaxb-impl-@{jaxb.impl.version}.jar</location>
-    <location>../lib/xfire-jsr181-api-@{xfire-jsr181-api-version}.jar</location>
+    <location>../lib/geronimo-ws-metadata_2.0_spec-@{ws.metadata.version}.jar</location>
+    <location>../lib/geronimo-jaxws_2.1_spec-@{jaxws.version}.jar</location>
   </classpath>
   <bean id="jndi" class="org.apache.xbean.spring.jndi.SpringInitialContextFactory"
         factory-method="makeInitialContext" singleton="true" />  
@@ -48,6 +49,15 @@
     </sm:flows>
 
     <sm:activationSpecs>
+      
+      <!-- The trace component will receive notifications from the above subscription
+           and display the message on the console -->
+      <sm:activationSpec componentName="trace" service="my:trace" endpoint="endpoint">
+        <sm:component>
+          <bean  class="org.apache.servicemix.components.util.TraceComponent" />
+        </sm:component>
+      </sm:activationSpec>
+
 
       <!-- WS-Notification component -->
       <sm:activationSpec componentName="servicemix-wsn2005">
@@ -74,13 +84,6 @@
         </sm:component>
       </sm:activationSpec>
 
-      <!-- The trace component will receive notifications from the above subscription
-           and display the message on the console -->
-      <sm:activationSpec componentName="trace" service="my:trace" endpoint="endpoint">
-        <sm:component>
-          <bean  class="org.apache.servicemix.components.util.TraceComponent" />
-        </sm:component>
-      </sm:activationSpec>
 
     </sm:activationSpecs>
   </sm:container>
