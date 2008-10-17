@@ -37,7 +37,7 @@
     <dependency>
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-shared</artifactId>
-      <version>2008.01-SNAPSHOT</version>
+      <version>2008.01</version>
       <classifier>installer</classifier>
       <type>zip</type>
     </dependency>
@@ -55,7 +55,7 @@
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-quartz</artifactId>
       <scope>test</scope>
-      <version>2008.01-SNAPSHOT</version>
+      <version>2008.01</version>
       <classifier>installer</classifier>
       <type>zip</type>
     </dependency>
