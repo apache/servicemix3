@@ -36,6 +36,9 @@ public class TestMtomImpl implements TestMtom {
     public void testXop(Holder<String> name, Holder<DataHandler> attachinfo) {
         
         try {
+            if ("runtime exception".equals(name.value)) {
+                throw new RuntimeException("throw runtime exception");
+            }
             InputStream bis = attachinfo.value.getDataSource().getInputStream();
             byte b[] = new byte[6];
             bis.read(b, 0, 6);
