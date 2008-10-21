@@ -29,7 +29,7 @@
 
     <groupId>org.apache.servicemix</groupId>
     <artifactId>servicemix</artifactId>
-    <version>3.3-SNAPSHOT</version>
+    <version>3.3</version>
     <packaging>pom</packaging>
 
     <name>ServiceMix</name>
@@ -60,7 +60,7 @@
         <servicemix-mail-version>2008.01</servicemix-mail-version>
         <servicemix-osworkflow-version>2008.01</servicemix-osworkflow-version>
         <servicemix-wsn2005-version>2008.01</servicemix-wsn2005-version>
-        <servicemix-lwcontainer-version>3.3-SNAPSHOT</servicemix-lwcontainer-version>
+        <servicemix-lwcontainer-version>3.3</servicemix-lwcontainer-version>
         <servicemix-bean-version>2008.01</servicemix-bean-version>
         <servicemix-eip-version>2008.01</servicemix-eip-version>
         <servicemix-script-version>2008.01</servicemix-script-version>
@@ -89,7 +89,7 @@
         <jencks-version>2.1</jencks-version>
         <jetty-version>6.1.12rc1</jetty-version>
         <geronimo-version>2.0.1</geronimo-version>
-        <servicemix-version>3.3-SNAPSHOT</servicemix-version>
+        <servicemix-version>3.3</servicemix-version>
         <wsdl4j-version>1.6.2</wsdl4j-version>
         <commons-beanutils-version>1.7.0</commons-beanutils-version>
         <commons-fileupload-version>1.1.1</commons-fileupload-version>
@@ -349,7 +349,7 @@
 	          <plugin>
 	            <groupId>org.codehaus.mojo</groupId>
 	            <artifactId>rat-maven-plugin</artifactId>
-	            <version>1.0-alpha-1-SNAPSHOT</version>
+	            <version>1.0-alpha-1</version>
 	            <executions>
 	              <execution>
 	                <phase>verify</phase>
@@ -531,17 +531,17 @@
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-core</artifactId>
-                <version>3.3-SNAPSHOT</version>
+                <version>3.3</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-audit</artifactId>
-                <version>3.3-SNAPSHOT</version>
+                <version>3.3</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-components</artifactId>
-                <version>3.3-SNAPSHOT</version>
+                <version>3.3</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
@@ -551,13 +551,13 @@
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-console</artifactId>
-                <version>3.3-SNAPSHOT</version>
+                <version>3.3</version>
             </dependency>
             <!--
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-gbean</artifactId>
-                <version>3.3-SNAPSHOT</version>
+                <version>3.3</version>
             </dependency>
           -->
             <dependency>
@@ -589,7 +589,7 @@
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-sca</artifactId>
-                <version>3.3-SNAPSHOT</version>
+                <version>3.3</version>
             </dependency>
           -->
             <dependency>
@@ -695,51 +695,51 @@
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>servicemix-web</artifactId>
-                <version>3.3-SNAPSHOT</version>
+                <version>3.3</version>
                 <type>war</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>wsdl-first</artifactId>
-                <version>3.3-SNAPSHOT</version>
+                <version>3.3</version>
                 <type>pom</type>
             </dependency>
             
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>cxf-wsdl-first</artifactId>
-                <version>3.3-SNAPSHOT</version>
+                <version>3.3</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>loan-broker</artifactId>
-                <version>3.3-SNAPSHOT</version>
+                <version>3.3</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>bridge</artifactId>
-                <version>3.3-SNAPSHOT</version>
+                <version>3.3</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>basic</artifactId>
-                <version>3.3-SNAPSHOT</version>
+                <version>3.3</version>
                 <type>pom</type>
             </dependency>
             <!--
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-beanflow</artifactId>
-                <version>3.3-SNAPSHOT</version>
+                <version>3.3</version>
             </dependency>
           -->
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-web-console</artifactId>
-                <version>3.3-SNAPSHOT</version>
+                <version>3.3</version>
                 <type>war</type>
             </dependency>
 
