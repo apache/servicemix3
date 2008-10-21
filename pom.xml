@@ -106,7 +106,7 @@
         <saxon-version>8.9</saxon-version>
         <releases-repo-id>apache.incubating</releases-repo-id>
         <releases-repo-name>Apache Incubating Repository</releases-repo-name>
-        <releases-repo-url>http://people.apache.org/repo/m2-incubating-repository</releases-repo-url>
+        <releases-repo-url>http://people.apache.org/repo/m2-ibiblio-rsync-repository</releases-repo-url>
         <snapshots-repo-id>apache.snapshots</snapshots-repo-id>
         <snapshots-repo-name>Apache Snapshots Repository</snapshots-repo-name>
         <snapshots-repo-url>http://people.apache.org/repo/m2-snapshot-repository</snapshots-repo-url>
