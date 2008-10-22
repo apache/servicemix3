@@ -218,6 +218,7 @@ Bug
     * [SM-1626] - basic sample failed with trunk
     * [SM-1627] - loan-broker sample doesn't work
     * [SM-1628] - ws-notification sample doesn't
+    * [SM-1641] - remoteRepositories is incorrect in smx-arch scripts
 
 Improvement
 
@@ -305,7 +306,6 @@ Improvement
     * [SM-1579] - The registry should be shutdown before the flow so that existing exchanges can be correctly processed before stopping
     * [SM-1586] - Copying properties from and to JMS messages
     * [SM-1587] - Improve the generated schema documentation for the JMS component
-    * [SM-1635] - New Component: SNMP BC
 
 New Feature
 
@@ -322,6 +322,7 @@ New Feature
     * [SM-1361] - cxf bc should delegate ws-security to jaas
     * [SM-1380] - maven archetype to support wsdl-first development with servicemix-cxf-se
     * [SM-1385] - Add a flag to disable transaction processing and behave like smx4
+    * [SM-1387] - Make servicemix components OSGi friendly (without requiring the JBI packaging)
     * [SM-1400] - cxf bc consumer should be able to retrieve wsdl from internal endpoint of JBI bus if there is one
     * [SM-1448] - Make servicemix-ftp poller endpoint use asynchronous send
     * [SM-1470] - Implement a proxy transformer endpoint to transform in / out / fault requests between two services
@@ -364,3 +365,4 @@ Test
 Wish
 
     * [SM-1437] - get MessageExchange in cxf-se
+
