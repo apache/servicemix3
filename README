@@ -56,6 +56,11 @@ software:
    http://ws.apache.org/wss4j/
 
 
+
+Known Issues
+===============
+When shutdown the servicemix, we can see javax.jms.JMSException, this is innocuous, and tracked by http://issues.apache.org/activemq/browse/SM-1438.
+
 Getting Started
 ===============
 To find out how to get started try this
