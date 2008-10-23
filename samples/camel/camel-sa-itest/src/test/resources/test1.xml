@@ -27,9 +27,9 @@
   <sm:container generateRootDir="true">
 
     <sm:deployments>
-      <sm:installSharedLibrary groupId="org.apache.servicemix" artifactId="servicemix-shared" version="3.2.2-SNAPSHOT"/>
-      <sm:installComponent groupId="org.apache.servicemix" artifactId="servicemix-camel" version="3.2.2-SNAPSHOT"/>
-      <sm:deployServiceAssembly groupId="org.apache.servicemix.samples" artifactId="camel-sa" version="3.2.2-SNAPSHOT"/>
+      <sm:installSharedLibrary groupId="org.apache.servicemix" artifactId="servicemix-shared" version="3.2.3-SNAPSHOT"/>
+      <sm:installComponent groupId="org.apache.servicemix" artifactId="servicemix-camel" version="3.2.3-SNAPSHOT"/>
+      <sm:deployServiceAssembly groupId="org.apache.servicemix.samples" artifactId="camel-sa" version="3.2.3-SNAPSHOT"/>
     </sm:deployments>
 
   </sm:container>

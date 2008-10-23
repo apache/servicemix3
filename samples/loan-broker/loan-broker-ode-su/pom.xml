@@ -44,7 +44,6 @@
     </dependencies>
 
     <properties>
-        <ode-version>2.0-SNAPSHOT</ode-version>
         <componentName>OdeBpelEngine</componentName>
     </properties>
 
