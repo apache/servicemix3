@@ -25,6 +25,7 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.messaging.RobustInOnly;
+import javax.xml.transform.Source;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,30 +33,40 @@ import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClientFacade;
 import org.apache.servicemix.common.EndpointSupport;
+import org.apache.servicemix.drools.DroolsComponent;
 import org.apache.servicemix.drools.DroolsEndpoint;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.resolver.URIResolver;
 import org.apache.servicemix.jbi.util.MessageUtil;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.event.ActivationCreatedEvent;
+import org.drools.event.DefaultAgendaEventListener;
 
 /**
  * A helper class for use inside a rule to forward a message to an endpoint
  * 
  * @version $Revision: 426415 $
  */
-public class JbiHelper {
+public class JbiHelper extends DefaultAgendaEventListener {
 
     private DroolsEndpoint endpoint;
     private Exchange exchange;
     private WorkingMemory memory;
     private FactHandle exchangeFactHandle;
+    private int rulesFired;
+    private boolean exchangeHandled;
 
     public JbiHelper(DroolsEndpoint endpoint, MessageExchange exchange, WorkingMemory memory) {
         this.endpoint = endpoint;
         this.exchange = new Exchange(exchange, endpoint.getNamespaceContext());
         this.memory = memory;
+        
+        this.memory.addEventListener(this);
         this.exchangeFactHandle = this.memory.assertObject(this.exchange);
+        
+        
     }
 
     public DroolsEndpoint getEndpoint() {
@@ -105,7 +116,6 @@ public class JbiHelper {
 
     public void routeTo(String content, String uri) throws MessagingException {
         MessageExchange me = this.exchange.getInternalExchange();
-        String correlationId = (String)exchange.getProperty(JbiConstants.CORRELATION_ID);
         NormalizedMessage in = null;
         if (content == null) {
             in = me.getMessage("in");
@@ -119,24 +129,9 @@ public class JbiHelper {
         // Set the sender endpoint property
         String key = EndpointSupport.getKey(endpoint);
         newMe.setProperty(JbiConstants.SENDER_ENDPOINT, key);
-        newMe.setProperty(JbiConstants.CORRELATION_ID, correlationId);
-        getChannel().sendSync(newMe);
-        if (newMe.getStatus() == ExchangeStatus.DONE) {
-            me.setStatus(ExchangeStatus.DONE);
-            getChannel().send(me);
-        } else if (newMe.getStatus() == ExchangeStatus.ERROR) {
-            me.setStatus(ExchangeStatus.ERROR);
-            me.setError(newMe.getError());
-            getChannel().send(me);
-        } else {
-            if (newMe.getFault() != null) {
-                MessageUtil.transferFaultToFault(newMe, me);
-            } else {
-                MessageUtil.transferOutToOut(newMe, me);
-            }
-            getChannel().sendSync(me);
-        }
-        update();
+        newMe.setProperty(JbiConstants.CORRELATION_ID, DroolsEndpoint.getCorrelationId(this.exchange.getInternalExchange()));
+        newMe.setProperty(DroolsComponent.DROOLS_CORRELATION_ID, me.getExchangeId());
+        getChannel().send(newMe);
     }
 
     public void routeToDefault(String content) throws MessagingException {
@@ -182,30 +177,76 @@ public class JbiHelper {
     }
 
     public void fault(String content) throws Exception {
+        fault(new StringSource(content));
+    }
+    /**
+     * Send a JBI Error message (for InOnly) or JBI Fault message (for the other MEPs)
+     * 
+     * @param content the error content
+     * @throws Exception
+     */
+    public void fault(Source content) throws Exception {
         MessageExchange me = this.exchange.getInternalExchange();
         if (me instanceof InOnly) {
-            me.setError(new Exception(content));
+            me.setError(new Exception(new SourceTransformer().toString(content)));
             getChannel().send(me);
         } else {
             Fault fault = me.createFault();
-            fault.setContent(new StringSource(content));
+            fault.setContent(content);
             me.setFault(fault);
-            getChannel().sendSync(me);
+            getChannel().send(me);
         }
-        update();
+        exchangeHandled = true;
     }
 
     public void answer(String content) throws Exception {
+        answer(new StringSource(content));
+    }
+    
+    /**
+     * Answer the exchange with the given response content
+     * 
+     * @param content the response
+     * @throws Exception
+     */    
+    public void answer(Source content) throws Exception {
         MessageExchange me = this.exchange.getInternalExchange();
         NormalizedMessage out = me.createMessage();
-        out.setContent(new StringSource(content));
+        out.setContent(content);
         me.setMessage(out, "out");
         getChannel().sendSync(me);
+        exchangeHandled = true;
         update();
     }
 
-    protected void update() {
+    public void update() {
         this.memory.modifyObject(this.exchangeFactHandle, this.exchange);
+    }
+    
+    /**
+     * Get the number of rules that were fired
+     * 
+     * @return the number of rules
+     */
+    public int getRulesFired() {
+        return rulesFired;
+    }
+    
+    /**
+     * Has the MessageExchange been handled by the drools endpoint?
+     * 
+     * @return
+     */
+    
+    public boolean isExchangeHandled() {
+        return exchangeHandled;
+    }
+
+
+    // event handler callbacks
+    @Override
+    public void activationCreated(ActivationCreatedEvent event) {
+        rulesFired++;
     }
 
 }

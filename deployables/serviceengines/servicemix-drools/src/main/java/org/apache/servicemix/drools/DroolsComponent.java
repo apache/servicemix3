@@ -25,7 +25,12 @@ import org.apache.servicemix.common.DefaultComponent;
  * @author gnodet
  * @org.apache.xbean.XBean element="component"
  */
+@SuppressWarnings("unchecked")
 public class DroolsComponent extends DefaultComponent {
+    /**
+     * Property to correlate servicemix-drools exchanges
+     */
+    public static final String DROOLS_CORRELATION_ID = "org.apache.servicemix.drools.correlation_id";
 
     private DroolsEndpoint[] endpoints;
     
