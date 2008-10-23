@@ -71,6 +71,7 @@ Improvement
 
     * [SM-1271] - Make ComponentContext available to beans configured in BeanComponent service unit xbean.xml
     * [SM-1364] - allow SimpleFlatFileMarshaler to use XmlEscapingCoverter
+    * [SM-1486] - servicemix-camel should use asynchronous messaging
     * [SM-1501] - ServiceMix 3.2 should change the Jetty HttpClient from blocking mode to Non blocking (similar to 3.3 trunk version)
     * [SM-1512] - update file component generated reference docs
     * [SM-1515] - Allow override of SOAPAction on new HTTP provider endpoint
@@ -86,6 +87,7 @@ Improvement
     * [SM-1603] - Develop cxf-bc provider test case to verify that MTOM response is successfully handled regardless of mtomEnabled flag value
     * [SM-1610] - Upgrade ServiceMix 3.2.x branch to Spring 2.0.8
     * [SM-1621] - New JMS in/out provider should support temporary queues/topics (as reply destinations)
+    * [SM-1640] - Backporting SM-1502 servicemix-drools should allow for asynchronous message handling.
 
 Task
 
@@ -100,5 +102,4 @@ Test
     * [SM-1553] - testEndpointDoc of CxfBcComponentTest failed due to recent changes in cxf
     * [SM-1557] - CxfBCSEProviderSystemTest failed due to recent refactor of JMS transport in cxf
     * [SM-1558] - BaseAbstractAggregatorTest failed
-
 

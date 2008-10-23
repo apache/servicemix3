@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.servicemix.samples</groupId>
     <artifactId>camel</artifactId>
-    <version>3.2.3-SNAPSHOT</version>
+    <version>3.2.3</version>
   </parent>
 
   <groupId>org.apache.servicemix.samples</groupId>
@@ -39,7 +39,7 @@
       <groupId>org.apache.servicemix.samples</groupId>
       <artifactId>camel-sa</artifactId>
       <type>zip</type>
-      <version>3.2.3-SNAPSHOT</version>
+      <version>3.2.3</version>
     </dependency>
 
     <!-- for testing -->
