@@ -51,7 +51,7 @@ public class CamelSpringDeployer extends AbstractXBeanDeployer {
         }
     };
 
-    private List<CamelJbiEndpoint> activatedEndpoints = new ArrayList<CamelJbiEndpoint>();
+    private List<CamelProviderEndpoint> activatedEndpoints = new ArrayList<CamelProviderEndpoint>();
 
     private String serviceUnitName;
 
@@ -85,14 +85,14 @@ public class CamelSpringDeployer extends AbstractXBeanDeployer {
         return serviceUnit;
     }
 
-    public void addService(CamelJbiEndpoint endpoint) {
+    public void addService(CamelProviderEndpoint endpoint) {
         activatedEndpoints.add(endpoint);
     }
 
     @Override
     protected List getServices(Kernel kernel) {
         try {
-            List<CamelJbiEndpoint> services = new ArrayList<CamelJbiEndpoint>(activatedEndpoints);
+            List<org.apache.servicemix.common.Endpoint> services = new ArrayList<org.apache.servicemix.common.Endpoint>(activatedEndpoints);
             activatedEndpoints.clear();
 
             ApplicationContext applicationContext = springLoader.getApplicationContext();
