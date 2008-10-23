@@ -18,12 +18,17 @@ package org.apache.servicemix.jbi.messaging;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.jbi.JBIException;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.transaction.Status;
+import javax.transaction.SystemException;
+import javax.transaction.Transaction;
+import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
@@ -34,6 +39,8 @@ import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+
+import static org.easymock.EasyMock.*;
 
 public class DeliveryChannelImplTest extends TestCase {
 
@@ -126,6 +133,57 @@ public class DeliveryChannelImplTest extends TestCase {
 
         assertTrue("Secondary thread didn't finish", done.get());
         assertTrue("Exception in secondary thread", success.get());
+    }
+    
+    public void testAutoEnlistInActiveTx() throws JBIException, SystemException {
+        // set up a mock TransactionManager for the container
+        final TransactionManager manager = createMock(TransactionManager.class);
+        container.setTransactionManager(manager);
+        container.setAutoEnlistInTransaction(true);
+        
+        // create DeliveryChannel and MessageExchange
+        final DeliveryChannelImpl channel = createDeliveryChannel();
+        MessageExchangeImpl exchange = createMessageExchange(channel);
+        
+        // auto-enlistment should only occur when Transaction status is ACTIVE
+        final Transaction transaction = createMock(Transaction.class);
+        expect(manager.getTransaction()).andReturn(transaction);
+        expect(transaction.getStatus()).andReturn(Status.STATUS_ACTIVE);
+        replay(manager);
+        replay(transaction);
+        channel.autoEnlistInTx(exchange);
+        assertSame(transaction, exchange.getTransactionContext());
+    }
+    
+    public void testNoAutoEnlistInNonActiveTx() throws JBIException, SystemException {
+        // set up a mock TransactionManager for the container        
+        final TransactionManager manager = createMock(TransactionManager.class);
+        container.setTransactionManager(manager);
+        container.setAutoEnlistInTransaction(true);
+        final Transaction transaction = createMock(Transaction.class);
+
+        // create DeliveryChannel and MessageExchange
+        final DeliveryChannelImpl channel = createDeliveryChannel();
+        MessageExchangeImpl exchange = createMessageExchange(channel);
+        
+        // auto-enlistment should not occur when Transaction status is NO_TRANSACTION or any other status (not tested)
+        expect(manager.getTransaction()).andReturn(transaction);
+        expect(transaction.getStatus()).andReturn(Status.STATUS_NO_TRANSACTION);
+        replay(manager);
+        replay(transaction);
+        channel.autoEnlistInTx(exchange);
+        assertNull(exchange.getTransactionContext());
+    }
+
+    private MessageExchangeImpl createMessageExchange(final DeliveryChannelImpl channel) throws MessagingException {
+        MessageExchangeFactory factory = channel.createExchangeFactoryForService(new QName("service"));    
+        return (MessageExchangeImpl) factory.createInOutExchange();
+    }
+
+    private DeliveryChannelImpl createDeliveryChannel() throws JBIException, MessagingException {
+        TestComponent component = new TestComponent(new QName("service"), "endpoint");
+        container.activateComponent(new ActivationSpec("component", component));
+        return (DeliveryChannelImpl) component.getChannel();
     }
 
     public static class TestComponent extends ComponentSupport {
