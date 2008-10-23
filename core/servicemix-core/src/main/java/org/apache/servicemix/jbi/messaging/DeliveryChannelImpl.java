@@ -35,6 +35,7 @@ import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.messaging.MessageExchangeFactory;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.servicedesc.ServiceEndpoint;
+import javax.transaction.Status;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
@@ -784,7 +785,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         if (transactionManager != null && container.isAutoEnlistInTransaction()) {
             try {
                 Transaction tx = transactionManager.getTransaction();
-                if (tx != null) {
+                if (tx != null && tx.getStatus() == Status.STATUS_ACTIVE) {
                     Object oldTx = me.getTransactionContext();
                     if (oldTx == null) {
                         me.setTransactionContext(tx);
