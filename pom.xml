@@ -1053,11 +1053,6 @@
                 <version>2.1</version>
             </dependency>
             <dependency>
-                <groupId>easymock</groupId>
-                <artifactId>easymock</artifactId>
-                <version>1.2_Java1.3</version>
-            </dependency>
-            <dependency>
                 <groupId>emberio</groupId>
                 <artifactId>emberio</artifactId>
                 <version>0.3-alpha</version>
@@ -1802,6 +1797,11 @@
                         <artifactId>XmlSchema</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>2.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
