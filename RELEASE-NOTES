@@ -219,6 +219,7 @@ Bug
     * [SM-1627] - loan-broker sample doesn't work
     * [SM-1628] - ws-notification sample doesn't
     * [SM-1641] - remoteRepositories is incorrect in smx-arch scripts
+    * [SM-1658] - can't shundown container from jmx console
 
 Improvement
 
