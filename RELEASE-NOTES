@@ -66,6 +66,7 @@ Bug
     * [SM-1622] - servicemix-eip content enricher should copy original message properties in the way the pipeline does
     * [SM-1632] - Backport a change to Smx 3.2 branch to allow artifacts that use the servicemix-bean component to deploy on Smx4
     * [SM-1637] - smx-cxf-bc provider throws NPE at JbiInWsdl1Interceptor.handleJBIFault(JbiInWsdl1Interceptor.java:237)
+    * [SM-1658] - can't shundown container from jmx console
 
 Improvement
 
