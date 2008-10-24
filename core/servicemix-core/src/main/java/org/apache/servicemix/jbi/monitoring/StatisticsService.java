@@ -43,6 +43,7 @@ import org.apache.servicemix.jbi.event.EndpointListener;
 import org.apache.servicemix.jbi.event.ExchangeEvent;
 import org.apache.servicemix.jbi.event.ExchangeListener;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
+import org.apache.servicemix.jbi.framework.Endpoint;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.management.ManagementContext;
@@ -156,28 +157,8 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
     }
 
     public void init(JBIContainer container) throws JBIException {
-        endpointListener = new EndpointAdapter() {
-            public void internalEndpointRegistered(EndpointEvent event) {
-                onEndpointRegistered(event);
-            }
-            public void internalEndpointUnregistered(EndpointEvent event) {
-                onEndpointUnregistered(event);
-            }
-            public void externalEndpointRegistered(EndpointEvent event) {
-                onEndpointRegistered(event);
-            }
-            public void externalEndpointUnregistered(EndpointEvent event) {
-                onEndpointUnregistered(event);
-            }
-        };
-        componentListener = new ComponentAdapter() {
-            public void componentInitialized(ComponentEvent event) {
-                onComponentInitialized(event);
-            }
-            public void componentShutDown(ComponentEvent event) {
-                onComponentShutDown(event);
-            }
-        };
+        initComponentListener(container);
+        initEndpointListener(container);
         exchangeListener = new ExchangeListener() {
             public void exchangeSent(ExchangeEvent event) {
                 onExchangeSent(event);
@@ -186,82 +167,47 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
                 onExchangeAccepted(event);
             }
         };
-        container.addListener(componentListener);
-        container.addListener(endpointListener);
         super.init(container);
     }
-    
-    protected void onComponentInitialized(ComponentEvent event) {
-        ComponentMBeanImpl component = event.getComponent();
-        String key = component.getName();
-        ComponentStats stats = new ComponentStats(component);
-        componentStats.putIfAbsent(key, stats);
-        // Register MBean
-        ManagementContext context = container.getManagementContext();
-        try {
-            context.registerMBean(context.createObjectName(context.createObjectNameProps(stats, true)), 
-                    stats, 
-                    ComponentStatsMBean.class);
-        } catch (Exception e) {
-            LOG.info("Unable to register component statistics MBean: " + e.getMessage());
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Unable to register component statistics MBean", e);
+
+    private void initComponentListener(final JBIContainer container) {
+        componentListener = new ComponentAdapter() {
+            public void componentInitialized(ComponentEvent event) {
+                createComponentStats(container, event.getComponent());
             }
+            public void componentShutDown(ComponentEvent event) {
+                removeComponentStats(container, event.getComponent());
+            }
+        };
+        container.addListener(componentListener);
+        // add components that were initialized/started before we added the listener
+        for (ComponentMBeanImpl component : container.getRegistry().getComponentRegistry().getComponents()) {
+            createComponentStats(container, component);
         }
     }
-    
-    protected void onComponentShutDown(ComponentEvent event) {
-        ComponentMBeanImpl component = event.getComponent();
-        String key = component.getName();
-        ComponentStats stats = componentStats.remove(key);
-        if (stats == null) {
-            return;
-        }
-        // Register MBean
-        ManagementContext context = container.getManagementContext();
-        try {
-            context.unregisterMBean(context.createObjectName(context.createObjectNameProps(stats, true)));
-        } catch (Exception e) {
-            LOG.info("Unable to unregister component statistics MBean: " + e);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Unable to unregister component statistics MBean", e);
+
+    private void initEndpointListener(final JBIContainer container) {
+        endpointListener = new EndpointAdapter() {
+            public void internalEndpointRegistered(EndpointEvent event) {
+                createEndpointStats(container, (AbstractServiceEndpoint) event.getEndpoint());
             }
-        }
-    }
-    
-    protected void onEndpointRegistered(EndpointEvent event) {
-        AbstractServiceEndpoint endpoint = (AbstractServiceEndpoint) event.getEndpoint();
-        String key = EndpointSupport.getUniqueKey(endpoint);
-        ComponentStats compStats = componentStats.get(endpoint.getComponentNameSpace().getName()); 
-        EndpointStats stats = new EndpointStats(endpoint, compStats.getMessagingStats());
-        endpointStats.putIfAbsent(key, stats);
-        // Register MBean
-        ManagementContext context = container.getManagementContext();
-        try {
-            context.registerMBean(context.createObjectName(context.createObjectNameProps(stats, true)), 
-                                  stats, 
-                                  EndpointStatsMBean.class);
-        } catch (Exception e) {
-            LOG.info("Unable to register endpoint statistics MBean: " + e.getMessage());
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Unable to register endpoint statistics MBean", e);
+            public void internalEndpointUnregistered(EndpointEvent event) {
+                removeEndpointStats(container, (AbstractServiceEndpoint) event.getEndpoint());
             }
-        }
-    }
-    
-    protected void onEndpointUnregistered(EndpointEvent event) {
-        AbstractServiceEndpoint endpoint = (AbstractServiceEndpoint) event.getEndpoint();
-        String key = EndpointSupport.getUniqueKey(endpoint);
-        EndpointStats stats = endpointStats.remove(key);
-        // Register MBean
-        ManagementContext context = container.getManagementContext();
-        try {
-            context.unregisterMBean(context.createObjectName(context.createObjectNameProps(stats, true)));
-        } catch (Exception e) {
-            LOG.info("Unable to unregister endpoint statistics MBean: " + e.getMessage());
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Unable to unregister endpoint statistics MBean", e);
+            public void externalEndpointRegistered(EndpointEvent event) {
+                createEndpointStats(container, (AbstractServiceEndpoint) event.getEndpoint());
             }
+            public void externalEndpointUnregistered(EndpointEvent event) {
+                removeEndpointStats(container, (AbstractServiceEndpoint) event.getEndpoint());
+            }
+        };
+        container.addListener(endpointListener);
+        // add endpoints that were registered before we added the listener
+        for (Endpoint mbean : container.getDefaultBroker().getRegistry().getEndpointRegistry().getEndpointMBeans()) {
+            AbstractServiceEndpoint endpoint = 
+                (AbstractServiceEndpoint) container.getEndpoint(container.getComponent(mbean.getComponentName()).getContext(), 
+                                                                mbean.getServiceName(), mbean.getEndpointName());
+            createEndpointStats(container, endpoint);
         }
     }
 
@@ -354,5 +300,104 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
         helper.addOperation(getObjectToManage(), "resetAllStats", "reset all statistics");
         return OperationInfoHelper.join(super.getOperationInfos(), helper.getOperationInfos());
     }
+    
+    /*
+     * Creates a {@link ComponentStats} instance for a component and adds it to the Map
+     */
+    private void createComponentStats(JBIContainer container, ComponentMBeanImpl component) {
+        String key = component.getName();
+        ComponentStats stats = new ComponentStats(component);
+        componentStats.putIfAbsent(key, stats);
+        // Register MBean
+        ManagementContext context = container.getManagementContext();
+        try {
+            context.registerMBean(context.createObjectName(context.createObjectNameProps(stats, true)), 
+                    stats, 
+                    ComponentStatsMBean.class);
+        } catch (Exception e) {
+            LOG.info("Unable to register component statistics MBean: " + e.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Unable to register component statistics MBean", e);
+            }
+        }
+    }
 
+    /*
+     * Removes the {@link ComponentStats} for this component from the Map
+     */
+    private void removeComponentStats(JBIContainer container, ComponentMBeanImpl component) {
+        String key = component.getName();
+        ComponentStats stats = componentStats.remove(key);
+        if (stats == null) {
+            return;
+        }
+        // Register MBean
+        ManagementContext context = container.getManagementContext();
+        try {
+            context.unregisterMBean(context.createObjectName(context.createObjectNameProps(stats, true)));
+        } catch (Exception e) {
+            LOG.info("Unable to unregister component statistics MBean: " + e);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Unable to unregister component statistics MBean", e);
+            }
+        }
+    }
+    
+    /*
+     * Create an {@link EndpointStats} instance for the endpoint and adds it to the Map
+     */
+    private void createEndpointStats(JBIContainer container, AbstractServiceEndpoint endpoint) {
+        String key = EndpointSupport.getUniqueKey(endpoint);
+        ComponentStats compStats = componentStats.get(endpoint.getComponentNameSpace().getName()); 
+        EndpointStats stats = new EndpointStats(endpoint, compStats.getMessagingStats());
+        endpointStats.putIfAbsent(key, stats);
+        // Register MBean
+        ManagementContext context = container.getManagementContext();
+        try {
+            context.registerMBean(context.createObjectName(context.createObjectNameProps(stats, true)), 
+                                  stats, 
+                                  EndpointStatsMBean.class);
+        } catch (Exception e) {
+            LOG.info("Unable to register endpoint statistics MBean: " + e.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Unable to register endpoint statistics MBean", e);
+            }
+        }
+    }
+
+    /*
+     * Removes the {@link EndpointStats} instance for the endpoint from the Map
+     */
+    private void removeEndpointStats(JBIContainer containner, AbstractServiceEndpoint endpoint) {
+        String key = EndpointSupport.getUniqueKey(endpoint);
+        EndpointStats stats = endpointStats.remove(key);
+        // Register MBean
+        ManagementContext context = container.getManagementContext();
+        try {
+            context.unregisterMBean(context.createObjectName(context.createObjectNameProps(stats, true)));
+        } catch (Exception e) {
+            LOG.info("Unable to unregister endpoint statistics MBean: " + e.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Unable to unregister endpoint statistics MBean", e);
+            }
+        }
+    }
+    
+    /**
+     * Access the {@link EndpointStats} for all the endpoints that are currently registered
+     * 
+     * @return the Map of {@link EndpointStats}
+     */
+    protected ConcurrentHashMap<String, EndpointStats> getEndpointStats() {
+        return endpointStats;
+    }
+    
+    /**
+     * Access the {@link ComponentStats} for all the endpoints that are currently initialized/started 
+     * 
+     * @return the Map of {@link ComponentStats}
+     */    
+    protected ConcurrentHashMap<String, ComponentStats> getComponentStats() {
+        return componentStats;
+    }
 }
