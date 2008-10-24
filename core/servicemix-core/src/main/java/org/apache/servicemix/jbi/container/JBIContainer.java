@@ -731,8 +731,12 @@ public class JBIContainer extends BaseLifeCycle {
                 return true;
             };
         });
-
-        executorFactory.createExecutor("ServiceMix -- shutting down registry").execute(shutdown);
+        
+        //use daemon thread to run this shutdown task
+        //fix the container hang when shutdown container from the jmx console
+        Thread daemonShutDownThread = new Thread(shutdown);
+        daemonShutDownThread.setDaemon(true);
+        daemonShutDownThread.start();
         
         try {
             if (forceShutdown > 0) {
