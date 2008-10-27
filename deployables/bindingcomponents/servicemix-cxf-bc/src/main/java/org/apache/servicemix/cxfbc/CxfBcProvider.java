@@ -93,8 +93,9 @@ import org.springframework.core.io.Resource;
 /**
  * 
  * @author gnodet
- * @org.apache.xbean.XBean element="provider" description="a provider endpoint that is capable of 
- * exposing SOAP/HTTP or SOAP/JMS services"
+ * @org.apache.xbean.XBean element="provider" description="a provider endpoint
+ *                         that is capable of exposing SOAP/HTTP or SOAP/JMS
+ *                         services"
  */
 public class CxfBcProvider extends ProviderEndpoint implements
         CxfBcEndpointWithInterceptor {
@@ -114,7 +115,7 @@ public class CxfBcProvider extends ProviderEndpoint implements
     private Bus bus;
 
     private ConduitInitiator conduitInit;
-    
+
     private Conduit conduit;
 
     private URI locationURI;
@@ -129,6 +130,8 @@ public class CxfBcProvider extends ProviderEndpoint implements
 
     private boolean useJBIWrapper = true;
 
+    private boolean synchronous = true;
+
     public void processExchange(MessageExchange exchange) {
 
     }
@@ -140,14 +143,16 @@ public class CxfBcProvider extends ProviderEndpoint implements
         }
         NormalizedMessage nm = exchange.getMessage("in");
 
-        Object newDestinationURI = nm.getProperty(JbiConstants.HTTP_DESTINATION_URI);
+        Object newDestinationURI = nm
+                .getProperty(JbiConstants.HTTP_DESTINATION_URI);
         if (newDestinationURI != null) {
             ei.setAddress((String) newDestinationURI);
         }
-        
+
         Message message = ep.getBinding().createMessage();
         message.put(MessageExchange.class, exchange);
         Exchange cxfExchange = new ExchangeImpl();
+        cxfExchange.setSynchronous(isSynchronous());
         cxfExchange.put(MessageExchange.class, exchange);
 
         message.setExchange(cxfExchange);
@@ -172,6 +177,7 @@ public class CxfBcProvider extends ProviderEndpoint implements
         cxfExchange.put(BindingOperationInfo.class, boi);
         cxfExchange.put(Endpoint.class, ep);
         cxfExchange.put(Service.class, cxfService);
+        cxfExchange.put(Bus.class, getBus());
         PhaseInterceptorChain outChain = createInterceptorChain(message);
         InputStream is = JBIMessageHelper.convertMessageToInputStream(nm
                 .getContent());
@@ -180,13 +186,13 @@ public class CxfBcProvider extends ProviderEndpoint implements
         message.setContent(Source.class, source);
 
         message.setContent(InputStream.class, is);
-                
+
         conduit.prepare(message);
         OutputStream os = message.getContent(OutputStream.class);
         message.put(org.apache.cxf.message.Message.REQUESTOR_ROLE, true);
         try {
             outChain.doIntercept(message);
-            //Check to see if there is a Fault from the outgoing chain
+            // Check to see if there is a Fault from the outgoing chain
             Exception ex = message.getContent(Exception.class);
             if (ex != null) {
                 throw ex;
@@ -195,18 +201,18 @@ public class CxfBcProvider extends ProviderEndpoint implements
             if (ex != null) {
                 throw ex;
             }
-            String contentType = (String)message.get(Message.CONTENT_TYPE);
-                        
+            String contentType = (String) message.get(Message.CONTENT_TYPE);
+
             Map<String, List<String>> headers = getSetProtocolHeaders(message);
             if (headers.get(Message.CONTENT_TYPE) == null) {
                 List<String> ct = new ArrayList<String>();
                 ct.add(contentType);
                 headers.put(Message.CONTENT_TYPE, ct);
-            }  else {
+            } else {
                 List<String> ct = headers.get(Message.CONTENT_TYPE);
                 ct.add(contentType);
             }
-            
+
             os = message.getContent(OutputStream.class);
             os.flush();
             is.close();
@@ -234,13 +240,11 @@ public class CxfBcProvider extends ProviderEndpoint implements
         outList.add(new SoapOutInterceptor(getBus()));
         outList.add(new SoapActionOutInterceptor());
         outList.add(new StaxOutInterceptor());
-        
-        
+
         getInInterceptors().addAll(getBus().getInInterceptors());
         getInFaultInterceptors().addAll(getBus().getInFaultInterceptors());
         getOutInterceptors().addAll(getBus().getOutInterceptors());
-        getOutFaultInterceptors()
-                .addAll(getBus().getOutFaultInterceptors());
+        getOutFaultInterceptors().addAll(getBus().getOutFaultInterceptors());
         PhaseInterceptorChain outChain = outboundChainCache.get(pm
                 .getOutPhases(), outList);
         outChain.add(getOutInterceptors());
@@ -248,19 +252,19 @@ public class CxfBcProvider extends ProviderEndpoint implements
         message.setInterceptorChain(outChain);
         return outChain;
     }
-    
+
     private Map<String, List<String>> getSetProtocolHeaders(Message message) {
-        Map<String, List<String>> headers =
-            CastUtils.cast((Map<?, ?>)message.get(Message.PROTOCOL_HEADERS));        
+        Map<String, List<String>> headers = CastUtils.cast((Map<?, ?>) message
+                .get(Message.PROTOCOL_HEADERS));
         if (null == headers) {
             headers = new HashMap<String, List<String>>();
             message.put(Message.PROTOCOL_HEADERS, headers);
         }
         return headers;
     }
-    
 
-    private void faultProcess(MessageExchange exchange, Message message, Exception e) throws MessagingException {
+    private void faultProcess(MessageExchange exchange, Message message,
+            Exception e) throws MessagingException {
         javax.jbi.messaging.Fault fault = exchange.createFault();
         if (e.getCause() != null) {
             handleJBIFault(message, e.getCause().getMessage());
@@ -280,109 +284,120 @@ public class CxfBcProvider extends ProviderEndpoint implements
         }
     }
 
-   
     private void handleJBIFault(Message message, String detail) {
         Document doc = DomUtil.createDocument();
         Element jbiFault = DomUtil.createElement(doc, new QName(
                 JBIConstants.NS_JBI_BINDING, JBIFault.JBI_FAULT_ROOT));
-        Node jbiFaultDetail = DomUtil.createElement(jbiFault, new QName("", JBIFault.JBI_FAULT_DETAIL));
+        Node jbiFaultDetail = DomUtil.createElement(jbiFault, new QName("",
+                JBIFault.JBI_FAULT_DETAIL));
         jbiFaultDetail.setTextContent(detail);
         jbiFault.appendChild(jbiFaultDetail);
         message.setContent(Source.class, new DOMSource(doc));
         message.put("jbiFault", true);
     }
-    
+
     /**
-        * Returns the list of interceptors used to process fault messages being
-        * sent back to the consumer.
-        *
-        * @return a list of <code>Interceptor</code> objects
-        * */
+     * Returns the list of interceptors used to process fault messages being
+     * sent back to the consumer.
+     * 
+     * @return a list of <code>Interceptor</code> objects
+     */
     public List<Interceptor> getOutFaultInterceptors() {
         return outFault;
     }
 
     /**
-        * Returns the list of interceptors used to process fault messages being
-        * recieved by the endpoint.
-        *
-        * @return a list of <code>Interceptor</code> objects
-        * */
+     * Returns the list of interceptors used to process fault messages being
+     * recieved by the endpoint.
+     * 
+     * @return a list of <code>Interceptor</code> objects
+     */
     public List<Interceptor> getInFaultInterceptors() {
         return inFault;
     }
 
     /**
-        * Returns the list of interceptors used to process requests being 
-        * recieved by the endpoint.
-        *
-        * @return a list of <code>Interceptor</code> objects
-        * */
+     * Returns the list of interceptors used to process requests being recieved
+     * by the endpoint.
+     * 
+     * @return a list of <code>Interceptor</code> objects
+     */
     public List<Interceptor> getInInterceptors() {
         return in;
     }
 
     /**
-        * Returns the list of interceptors used to process responses being
-        * sent back to the consumer.
-        *
-        * @return a list of <code>Interceptor</code> objects
-        * */
+     * Returns the list of interceptors used to process responses being sent
+     * back to the consumer.
+     * 
+     * @return a list of <code>Interceptor</code> objects
+     */
     public List<Interceptor> getOutInterceptors() {
         return out;
     }
 
     /**
-        * Specifies a list of interceptors used to process requests recieved
-        * by the endpoint.
-        *
-        * @param interceptors   a list of <code>Interceptor</code> objects
-        * @org.apache.xbean.Property description="a list of beans configuring interceptors that process incoming requests"
-        * */
+     * Specifies a list of interceptors used to process requests recieved by the
+     * endpoint.
+     * 
+     * @param interceptors
+     *            a list of <code>Interceptor</code> objects
+     * @org.apache.xbean.Property description="a list of beans configuring
+     *                            interceptors that process incoming requests"
+     */
     public void setInInterceptors(List<Interceptor> interceptors) {
         in = interceptors;
     }
 
     /**
-        * Specifies a list of interceptors used to process faults recieved by
-         * the endpoint.
-        *
-        * @param interceptors   a list of <code>Interceptor</code> objects
-        * @org.apache.xbean.Property description="a list of beans configuring interceptors that process incoming faults"
-        * */
+     * Specifies a list of interceptors used to process faults recieved by the
+     * endpoint.
+     * 
+     * @param interceptors
+     *            a list of <code>Interceptor</code> objects
+     * @org.apache.xbean.Property description="a list of beans configuring
+     *                            interceptors that process incoming faults"
+     */
     public void setInFaultInterceptors(List<Interceptor> interceptors) {
         inFault = interceptors;
     }
 
     /**
-        * Specifies a list of interceptors used to process responses sent by 
-        * the endpoint.
-        *
-        * @param interceptors   a list of <code>Interceptor</code> objects
-        * @org.apache.xbean.Property description="a list of beans configuring interceptors that process responses"
-        * */
+     * Specifies a list of interceptors used to process responses sent by the
+     * endpoint.
+     * 
+     * @param interceptors
+     *            a list of <code>Interceptor</code> objects
+     * @org.apache.xbean.Property description="a list of beans configuring
+     *                            interceptors that process responses"
+     */
     public void setOutInterceptors(List<Interceptor> interceptors) {
         out = interceptors;
     }
 
     /**
-        * Specifies a list of interceptors used to process faults sent by 
-        * the endpoint.
-        *
-        * @param interceptors   a list of <code>Interceptor</code> objects
-        * @org.apache.xbean.Property description="a list of beans configuring interceptors that process fault 
-        * messages being returned to the consumer"
-        * */
+     * Specifies a list of interceptors used to process faults sent by the
+     * endpoint.
+     * 
+     * @param interceptors
+     *            a list of <code>Interceptor</code> objects
+     * @org.apache.xbean.Property description="a list of beans configuring
+     *                            interceptors that process fault messages being
+     *                            returned to the consumer"
+     */
     public void setOutFaultInterceptors(List<Interceptor> interceptors) {
         outFault = interceptors;
     }
 
     /**
-          * Specifies the location of the WSDL defining the endpoint's interface.
-          *
-          * @param wsdl the location of the WSDL contract as a <code>Resource</code> object
-          * @org.apache.xbean.Property description="the location of the WSDL document defining the endpoint's interface"
-          **/
+     * Specifies the location of the WSDL defining the endpoint's interface.
+     * 
+     * @param wsdl
+     *            the location of the WSDL contract as a <code>Resource</code>
+     *            object
+     * @org.apache.xbean.Property description="the location of the WSDL document
+     *                            defining the endpoint's interface"
+     */
     public void setWsdl(Resource wsdl) {
         this.wsdl = wsdl;
     }
@@ -428,7 +443,7 @@ public class CxfBcProvider extends ProviderEndpoint implements
 
                     }
                 }
-                
+
                 ServiceInfo serInfo = new ServiceInfo();
 
                 Map<String, Element> schemaList = new HashMap<String, Element>();
@@ -438,7 +453,7 @@ public class CxfBcProvider extends ProviderEndpoint implements
                 serInfo = ei.getService();
                 List<ServiceInfo> serviceInfos = new ArrayList<ServiceInfo>();
                 serviceInfos.add(serInfo);
-                //transform import xsd to inline xsd
+                // transform import xsd to inline xsd
                 ServiceWSDLBuilder swBuilder = new ServiceWSDLBuilder(getBus(),
                         serviceInfos);
                 for (String key : schemaList.keySet()) {
@@ -448,7 +463,7 @@ public class CxfBcProvider extends ProviderEndpoint implements
                                 "http://www.w3.org/2001/XMLSchema", "import")
                                 .item(0);
                         if (sInfo.getNamespaceURI() == null // it's import
-                                                            // schema
+                                // schema
                                 && nl != null
                                 && ((Element) nl)
                                         .getAttribute("namespace")
@@ -460,7 +475,7 @@ public class CxfBcProvider extends ProviderEndpoint implements
                         }
                     }
                 }
-                
+
                 serInfo.setProperty(WSDLServiceBuilder.WSDL_DEFINITION, null);
                 description = WSDLFactory.newInstance().newWSDLWriter()
                         .getDocument(swBuilder.build());
@@ -484,7 +499,8 @@ public class CxfBcProvider extends ProviderEndpoint implements
                 conduitInit = conduitMgr.getConduitInitiator(ei
                         .getTransportId());
                 conduit = conduitInit.getConduit(ei);
-                CxfBcProviderMessageObserver obs = new CxfBcProviderMessageObserver(this);
+                CxfBcProviderMessageObserver obs = new CxfBcProviderMessageObserver(
+                        this);
                 conduit.setMessageObserver(obs);
                 super.validate();
             }
@@ -514,14 +530,18 @@ public class CxfBcProvider extends ProviderEndpoint implements
     }
 
     /**
-        * Specifies the location of the CXF configuraiton file used to configure
-        * the CXF bus. This allows you to access features like JMS runtime 
-        * behavior and WS-RM.
-        *
-        * @param busCfg a string containing the relative path to the configuration file
-        * @org.apache.xbean.Property description="the location of the CXF configuration file used to configure the CXF bus. 
-        * This allows you to configure features like WS-RM and JMS runtime behavior."
-        **/
+     * Specifies the location of the CXF configuraiton file used to configure
+     * the CXF bus. This allows you to access features like JMS runtime behavior
+     * and WS-RM.
+     * 
+     * @param busCfg
+     *            a string containing the relative path to the configuration
+     *            file
+     * @org.apache.xbean.Property description="the location of the CXF
+     *                            configuration file used to configure the CXF
+     *                            bus. This allows you to configure features
+     *                            like WS-RM and JMS runtime behavior."
+     */
     public void setBusCfg(String busCfg) {
         this.busCfg = busCfg;
     }
@@ -531,13 +551,15 @@ public class CxfBcProvider extends ProviderEndpoint implements
     }
 
     /**
-           * Specifies the HTTP address of the exposed service. This value will
-           * overide any value specified in the WSDL.
-           *
-           * @param locationURI a <code>URI</code> object
-           * @org.apache.xbean.Property description="the HTTP address of the exposed service. This value will overide 
-           * any value specified in the WSDL."
-           **/
+     * Specifies the HTTP address of the exposed service. This value will
+     * overide any value specified in the WSDL.
+     * 
+     * @param locationURI
+     *            a <code>URI</code> object
+     * @org.apache.xbean.Property description="the HTTP address of the exposed
+     *                            service. This value will overide any value
+     *                            specified in the WSDL."
+     */
     public void setLocationURI(URI locationURI) {
         this.locationURI = locationURI;
     }
@@ -545,8 +567,6 @@ public class CxfBcProvider extends ProviderEndpoint implements
     public URI getLocationURI() {
         return locationURI;
     }
-
-    
 
     Endpoint getCxfEndpoint() {
         return this.ep;
@@ -557,12 +577,14 @@ public class CxfBcProvider extends ProviderEndpoint implements
     }
 
     /**
-          * Specifies if the endpoint can support binnary attachments.
-          *
-          * @param  mtomEnabled a boolean
-          * @org.apache.xbean.Property description="Specifies if MTOM / attachment support is enabled. 
-          * Default is <code>false</code>."
-          **/
+     * Specifies if the endpoint can support binnary attachments.
+     * 
+     * @param mtomEnabled
+     *            a boolean
+     * @org.apache.xbean.Property description="Specifies if MTOM / attachment
+     *                            support is enabled. Default is
+     *                            <code>false</code>."
+     */
     public void setMtomEnabled(boolean mtomEnabled) {
         this.mtomEnabled = mtomEnabled;
     }
@@ -572,19 +594,40 @@ public class CxfBcProvider extends ProviderEndpoint implements
     }
 
     /**
-          * Specifies if the endpoint expects messages to use the JBI wrapper 
-          * for SOAP messages.
-          *
-          * @param  useJBIWrapper a boolean
-          * @org.apache.xbean.Property description="Specifies if the JBI wrapper is sent in the body of the message. 
-          * Default is <code>true</code>."
-          **/
+     * Specifies if the endpoint expects messages to use the JBI wrapper for
+     * SOAP messages.
+     * 
+     * @param useJBIWrapper
+     *            a boolean
+     * @org.apache.xbean.Property description="Specifies if the JBI wrapper is
+     *                            sent in the body of the message. Default is
+     *                            <code>true</code>."
+     */
     public void setUseJBIWrapper(boolean useJBIWrapper) {
         this.useJBIWrapper = useJBIWrapper;
     }
 
     public boolean isUseJBIWrapper() {
         return useJBIWrapper;
+    }
+
+    /**
+     * Specifies if the endpoints send message synchronously to external server
+     * using underlying jms/http transport
+     *  *
+     * @param synchronous
+     *            a boolean
+     * @org.apache.xbean.Property description="Specifies if the endpoints send
+     *                            message synchronously to external server using
+     *                            underlying jms/http transport. Default is
+     *                            <code>true</code>."
+     */
+    public void setSynchronous(boolean synchronous) {
+        this.synchronous = synchronous;
+    }
+
+    public boolean isSynchronous() {
+        return synchronous;
     }
 
 }

@@ -16,17 +16,13 @@
  */
 package org.apache.servicemix.cxfbc;
 
-
-
-@javax.jws.WebService(
-        serviceName = "HelloWorldService", 
-        portName = "HelloWorldPortProxy", 
-        endpointInterface = "org.apache.hello_world_soap_http.Greeter",
-        targetNamespace = "http://apache.org/hello_world_soap_http",
-        wsdlLocation = "org/apache/servicemix/cxfbc/ws/security/hello_world.wsdl"
-    )
-public class GreeterImplTwoWayJMS 
-    extends org.apache.hello_world_soap_http.GreeterImpl {
+@javax.jws.WebService(serviceName = "HelloWorldService", 
+                    portName = "HelloWorldPortProxy", 
+                    endpointInterface = "org.apache.hello_world_soap_http.Greeter", 
+                    targetNamespace = "http://apache.org/hello_world_soap_http", 
+                    wsdlLocation = "org/apache/servicemix/cxfbc/ws/security/hello_world.wsdl")
+public class GreeterImplTwoWayJMS extends
+        org.apache.hello_world_soap_http.GreeterImpl {
     public String greetMe(String me) {
         System.out.println("\n\n*** GreetMe called with: " + me + "***\n\n");
         if ("ffang".equals(me)) {
@@ -37,7 +33,15 @@ public class GreeterImplTwoWayJMS
                 e.printStackTrace();
             }
         }
+        if ("wait".equals(me)) {
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
         return "Hello " + me;
     }
-        
+
 }
