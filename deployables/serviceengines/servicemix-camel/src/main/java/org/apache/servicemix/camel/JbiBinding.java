@@ -38,6 +38,8 @@ import org.apache.camel.ExchangePattern;
 import org.apache.camel.Message;
 import org.apache.camel.NoTypeConversionAvailableException;
 import org.apache.camel.util.ExchangeHelper;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * The binding of how Camel messages get mapped to JBI and back again
@@ -45,6 +47,9 @@ import org.apache.camel.util.ExchangeHelper;
  * @version $Revision: 563665 $
  */
 public class JbiBinding {
+
+    private static final Log LOG = LogFactory.getLog(JbiBinding.class);
+
     private String messageExchangePattern;
 
     /**
@@ -56,10 +61,15 @@ public class JbiBinding {
     }
 
     public Source convertBodyToJbi(Exchange exchange, Object body) {
-        try {
-            return ExchangeHelper.convertToType(exchange, Source.class, body);    
-        } catch (NoTypeConversionAvailableException e) {
-            return null;
+        if (body instanceof Source) {
+            return (Source) body;
+        } else {
+            try {
+                return ExchangeHelper.convertToType(exchange, Source.class, body);
+            } catch (NoTypeConversionAvailableException e) {
+                LOG.warn("Unable to convert message body of type " + body.getClass() + " into an XML Source");
+                return null;
+            }
         }
     }
 

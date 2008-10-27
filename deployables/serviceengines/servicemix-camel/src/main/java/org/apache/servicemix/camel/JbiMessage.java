@@ -51,7 +51,7 @@ public class JbiMessage extends DefaultMessage {
         }
     }
 
-    public JbiExchange getJbiExchange() {
+    public JbiExchange getExchange() {
         return (JbiExchange) super.getExchange();
     }
 
@@ -122,7 +122,7 @@ public class JbiMessage extends DefaultMessage {
     @Override
     protected Object createBody() {
         if (normalizedMessage != null) {
-            JbiExchange jbiExchange = getJbiExchange();
+            JbiExchange jbiExchange = getExchange();
             if (jbiExchange != null) {
                 return jbiExchange.getBinding().extractBodyFromJbi(jbiExchange, normalizedMessage);
             }
@@ -157,17 +157,14 @@ public class JbiMessage extends DefaultMessage {
 //    @Override
     public void setBody(Object body) {
         if (normalizedMessage != null) {
-            if (!(body instanceof Source)) {
-                JbiExchange jbiExchange = getJbiExchange();
-                if (jbiExchange != null) {
-                    body = jbiExchange.getBinding().convertBodyToJbi(jbiExchange, body);
+            Source source = getExchange().getBinding().convertBodyToJbi(getExchange(), body);
+            if (source != null) {
+                try {
+                    normalizedMessage.setContent(source);
+                } catch (MessagingException e) {
+                    throw new JbiException(e);
                 }
-            }
-            try {
-                normalizedMessage.setContent((Source) body);
-            } catch (MessagingException e) {
-                throw new JbiException(e);
-            }
+            }        
         }
         super.setBody(body);
     }
