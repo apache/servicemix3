@@ -203,7 +203,7 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
         };
         container.addListener(endpointListener);
         // add endpoints that were registered before we added the listener
-        for (Endpoint mbean : container.getDefaultBroker().getRegistry().getEndpointRegistry().getEndpointMBeans()) {
+        for (Endpoint mbean : container.getRegistry().getEndpointRegistry().getEndpointMBeans()) {
             AbstractServiceEndpoint endpoint = 
                 (AbstractServiceEndpoint) container.getEndpoint(container.getComponent(mbean.getComponentName()).getContext(), 
                                                                 mbean.getServiceName(), mbean.getEndpointName());
