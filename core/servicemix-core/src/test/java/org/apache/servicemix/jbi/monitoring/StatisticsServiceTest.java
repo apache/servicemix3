@@ -25,6 +25,7 @@ import junit.framework.TestCase;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
+import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.messaging.DeliveryChannelImplTest.TestComponent;
 import org.apache.servicemix.jbi.servicedesc.EndpointSupport;
 
@@ -74,6 +75,17 @@ public class StatisticsServiceTest extends TestCase {
         // StatisticsService should have learn about existing endpoints/components at startup
         assertNotNull(service.getComponentStats().get(COMPONENT));
         assertNotNull(service.getEndpointStats().get(EndpointSupport.getUniqueKey(endpoint)));
+    }
+    
+    public void testInitByContainer() throws Exception {
+        JBIContainer con = new JBIContainer();
+        con.setEmbedded(true);
+        BaseSystemService[] services = new BaseSystemService[] {new StatisticsService()};
+        con.setServices(services);
+        con.init();
+        for (BaseSystemService srv : services) {
+            assertTrue(srv.isInitialized());
+        }
     }
 
     private ServiceEndpoint registerEndpoint() throws JBIException {
