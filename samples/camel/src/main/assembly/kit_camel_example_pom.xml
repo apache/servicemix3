@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.apache.servicemix</groupId>
         <artifactId>samples</artifactId>
-        <version>3.3-SNAPSHOT</version>
+        <version>${servicemix.version}</version>
     </parent>
 
     <groupId>org.apache.servicemix.samples</groupId>
@@ -89,26 +89,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.1</version>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <id>src</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/main/assembly/src.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.servicemix.tooling</groupId>
                 <artifactId>jbi-maven-plugin</artifactId>

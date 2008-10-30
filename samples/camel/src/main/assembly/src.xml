@@ -48,6 +48,7 @@
     <file>
       <source>${basedir}/src/main/assembly/kit_camel_example_pom.xml</source>
       <outputDirectory>./</outputDirectory>
+      <filtered>true</filtered>
       <destName>pom.xml</destName>
       <fileMode>0777</fileMode>
     </file>
