@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Lock;
 
 import javax.jbi.messaging.ExchangeStatus;
@@ -75,6 +76,8 @@ public abstract class AbstractAggregator extends EIPEndpoint {
     private boolean reportErrors;
 
     private boolean reportClosedAggregatesAsErrors;
+    
+    private boolean reportTimeoutAsErrors;
     
     private ConcurrentMap<String, Timer> timers = new ConcurrentHashMap<String, Timer>();
     
@@ -170,6 +173,26 @@ public abstract class AbstractAggregator extends EIPEndpoint {
     public void setReportClosedAggregatesAsErrors(boolean reportClosedAggregatesAsErrors) {
         this.reportClosedAggregatesAsErrors = reportClosedAggregatesAsErrors;
     }
+    
+    /**
+     * Sets whether the aggregator should reports errors on incoming exchanges already received when
+     * a timeout occurs.
+     * The default value is <code>false</code>, meaning that such exchanges will be silently sent back
+     * a DONE status.
+     *  
+     * @param reportTimeoutAsErrors <code>boolean</code> indicating if exchanges received prior to a
+     *        timeout should be sent back with an ERROR status
+     */
+    public void setReportTimeoutAsErrors(boolean reportTimeoutAsErrors) {
+        this.reportTimeoutAsErrors = reportTimeoutAsErrors;
+    }
+
+    /**
+     * @return the reportTimeoutAsErrors
+     */
+    public boolean isReportTimeoutAsErrors() {
+        return reportTimeoutAsErrors;
+    }
 
     /* (non-Javadoc)
      * @see org.apache.servicemix.eip.EIPEndpoint#processSync(javax.jbi.messaging.MessageExchange)
@@ -210,6 +233,10 @@ public abstract class AbstractAggregator extends EIPEndpoint {
             closedAggregatesStoreFactory = new MemoryStoreFactory();
         }
         closedAggregates = closedAggregatesStoreFactory.open(getService().toString() + getEndpoint() + "-closed-aggregates");
+        if (reportTimeoutAsErrors && !reportErrors) {
+            throw new IllegalArgumentException(
+                "ReportTimeoutAsErrors property may only be set if ReportTimeout property is also set!");
+        }
     }
 
     /* (non-Javadoc)
@@ -352,7 +379,20 @@ public abstract class AbstractAggregator extends EIPEndpoint {
             timers.remove(correlationId);
             Object aggregation = store.load(correlationId);
             if (aggregation != null) {
-                sendAggregate(processCorrelationId, correlationId, aggregation, true, isSynchronous());
+                if (reportTimeoutAsErrors) {
+                    List<MessageExchange> exchanges = (List<MessageExchange>) store.load(correlationId + "-exchanges");
+                    if (exchanges != null) {
+                        TimeoutException timeoutException = new TimeoutException();
+                        for (MessageExchange me : exchanges) {
+                            me.setError(timeoutException);
+                            me.setStatus(ExchangeStatus.ERROR);
+                            send(me);
+                        }
+                    }
+                    closeAggregation(correlationId);
+                } else {
+                    sendAggregate(processCorrelationId, correlationId, aggregation, true, isSynchronous());
+                }
             } else if (!isAggregationClosed(correlationId)) {
                 throw new IllegalStateException("Aggregation is not closed, but can not be retrieved from the store");
             } else {
