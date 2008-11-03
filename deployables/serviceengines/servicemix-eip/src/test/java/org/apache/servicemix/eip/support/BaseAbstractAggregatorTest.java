@@ -18,6 +18,7 @@ package org.apache.servicemix.eip.support;
 
 import java.util.Date;
 
+import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.messaging.MessagingException;
@@ -86,6 +87,7 @@ public class BaseAbstractAggregatorTest extends TestCase {
 
     private MessageExchange createExchange() throws MessagingException {
         MockMessageExchange me = (MockMessageExchange)factory.createExchange(JbiConstants.IN_ONLY);
+        me.setStatus(ExchangeStatus.ACTIVE);
         me.setRole(Role.PROVIDER);
         NormalizedMessage message = new MockNormalizedMessage();
         message.setContent(new StringSource("<test/>"));

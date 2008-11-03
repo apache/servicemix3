@@ -24,6 +24,8 @@ import javax.jbi.messaging.Fault;
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
+import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.messaging.RobustInOnly;
 import javax.wsdl.Definition;
 
@@ -91,6 +93,16 @@ public class Pipeline extends EIPEndpoint {
     private String correlationTarget;
 
     /**
+     * Should message properties be copied ?
+     */
+    private boolean copyProperties;
+
+    /**
+     * Should message attachments be copied ?
+     */
+    private boolean copyAttachments;
+
+    /**
      * @return Returns the target.
      */
     public ExchangeTarget getTarget() {
@@ -146,6 +158,22 @@ public class Pipeline extends EIPEndpoint {
         this.transformer = transformer;
     }
 
+    public boolean isCopyProperties() {
+        return copyProperties;
+    }
+
+    public void setCopyProperties(boolean copyProperties) {
+        this.copyProperties = copyProperties;
+    }
+
+    public boolean isCopyAttachments() {
+        return copyAttachments;
+    }
+
+    public void setCopyAttachments(boolean copyAttachments) {
+        this.copyAttachments = copyAttachments;
+    }
+
     /* (non-Javadoc)
      * @see org.apache.servicemix.eip.EIPEndpoint#validate()
      */
@@ -197,6 +225,7 @@ public class Pipeline extends EIPEndpoint {
             MessageExchange me = getExchangeFactory().createExchange(exchange.getPattern());
             target.configureTarget(me, getContext());
             MessageUtil.transferOutToIn(tme, me);
+            copyPropertiesAndAttachments(exchange.getMessage("in"), me.getMessage("in"));
             sendSync(me);
             done(tme);
             if (me.getStatus() == ExchangeStatus.DONE) {
@@ -229,6 +258,7 @@ public class Pipeline extends EIPEndpoint {
             MessageExchange me = getExchangeFactory().createExchange(exchange.getPattern());
             (faultsTarget != null ? faultsTarget : target).configureTarget(me, getContext());
             MessageUtil.transferToIn(tme.getFault(), me);
+            copyPropertiesAndAttachments(exchange.getMessage("in"), me.getMessage("in"));
             sendSync(me);
             done(tme);
             if (me.getStatus() == ExchangeStatus.DONE) {
@@ -362,6 +392,7 @@ public class Pipeline extends EIPEndpoint {
                 me.setProperty(correlationTransformer, exchange.getExchangeId());
                 store.store(exchange.getExchangeId(), exchange);
                 MessageUtil.transferToIn(exchange.getFault(), me);
+                copyPropertiesAndAttachments(exchange.getMessage("in"), me.getMessage("in"));
                 send(me);
             // Faults must be sent back to the consumer
             } else {
@@ -391,6 +422,15 @@ public class Pipeline extends EIPEndpoint {
             me.setProperty(correlationTransformer, exchange.getExchangeId());
             store.store(exchange.getExchangeId(), exchange);
             MessageUtil.transferOutToIn(exchange, me);
+            if (copyProperties || copyAttachments) {
+                MessageExchange cme = (MessageExchange) store.load(consumerId);
+                if (cme != null) {
+                    NormalizedMessage cmeInMsg = cme.getMessage("in");
+                    NormalizedMessage meInMsg = me.getMessage("in");
+                    copyPropertiesAndAttachments(cmeInMsg, meInMsg);
+                    store.store(consumerId, cme);
+                }
+            }
             send(me);
         // This should not happen
         } else {
@@ -451,6 +491,22 @@ public class Pipeline extends EIPEndpoint {
             // need to massage the result wsdl so that it described an in only exchange
         }
         return rc;
+    }
+
+    /**
+     * Copies properties and attachments from one message to another
+     * depending on the endpoint configuration
+     *
+     * @param from the message containing the properties and attachments
+     * @param to the destination message where the properties and attachments are set
+     */
+    private void copyPropertiesAndAttachments(NormalizedMessage from, NormalizedMessage to) throws MessagingException {
+        if (copyProperties) {
+            copyProperties(from, to);
+        }
+        if (copyAttachments) {
+            copyAttachments(from, to);
+        }
     }
 
 }
