@@ -40,7 +40,6 @@ public class JbiInOnlyWithErrorHandledTrueSpringDSLTest extends SpringJbiTestSup
     private ReceiverComponent receiver;
     private ReceiverComponent deadLetter;
 
-    @Override
     protected void setUp() throws Exception {
         receiver = new ReceiverComponent();
         deadLetter = new ReceiverComponent();
@@ -53,12 +52,13 @@ public class JbiInOnlyWithErrorHandledTrueSpringDSLTest extends SpringJbiTestSup
         InOnly exchange = smxClient.createInOnlyExchange();
         exchange.setEndpoint(jbiContainer.getRegistry().getEndpointsForService(TEST_SERVICE)[0]);
 
-        smxClient.sendSync(exchange);
-
-/* not supported in Camel 1.4    
+        smxClient.send(exchange);
+    
+        exchange = (InOnly) smxClient.receive();
         assertEquals(ExchangeStatus.DONE, exchange.getStatus());
+        
         receiver.getMessageList().assertMessagesReceived(1);
-        deadLetter.getMessageList().assertMessagesReceived(0); */
+        deadLetter.getMessageList().assertMessagesReceived(0); 
     }
 
     @Override
