@@ -24,12 +24,12 @@
     <parent>
         <groupId>org.apache.servicemix</groupId>
         <artifactId>parent</artifactId>
-        <version>3.2.3-SNAPSHOT</version>
+        <version>3.2.4-SNAPSHOT</version>
     </parent>
     
     <groupId>org.apache.servicemix.tooling</groupId>
     <artifactId>tooling</artifactId>
-    <version>3.2.3-SNAPSHOT</version>
+    <version>3.2.4-SNAPSHOT</version>
     <name>ServiceMix :: Tooling</name>
     <url>http://servicemix.org</url>
     <packaging>pom</packaging>
