@@ -45,7 +45,6 @@ public class JbiInOutCamelErrorHandlingTest extends JbiCamelErrorHandlingTestSup
         exchange.setService(new QName("urn:test", "no-handle-fault"));
         exchange.getInMessage().setContent(new StringSource(MESSAGE));
         client.sendSync(exchange);
-        System.err.println(exchange);
         assertEquals(ExchangeStatus.ACTIVE, exchange.getStatus());
         assertNotNull(exchange.getFault());
         client.done(exchange);
