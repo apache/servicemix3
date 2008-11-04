@@ -207,7 +207,7 @@
         <activemq-version>4.1.1</activemq-version>
         <activeio-version>3.0.0-incubator</activeio-version>
         <backport-util-concurrent-version>2.2</backport-util-concurrent-version>
-        <camel-version>1.4.0</camel-version>
+        <camel-version>1.5.0</camel-version>
         <jencks-version>2.1</jencks-version>
         <jetty-version>6.1.12rc1</jetty-version>
         <geronimo-version>2.0.1</geronimo-version>
