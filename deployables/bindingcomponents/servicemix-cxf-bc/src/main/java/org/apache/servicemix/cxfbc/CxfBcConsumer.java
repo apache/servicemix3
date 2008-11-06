@@ -148,6 +148,8 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
 
     private boolean useJBIWrapper = true;
     
+    private boolean useSOAPEnvelope = true;
+    
         
     private EndpointInfo ei;
 
@@ -350,7 +352,7 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
             cxfService.getInInterceptors().add(
                     new JbiOperationInterceptor());
             cxfService.getInInterceptors().add(
-                    new JbiInWsdl1Interceptor(isUseJBIWrapper()));
+                    new JbiInWsdl1Interceptor(isUseJBIWrapper(), isUseSOAPEnvelope()));
             cxfService.getInInterceptors().add(new JbiInInterceptor());
             cxfService.getInInterceptors().add(new JbiJAASInterceptor(
                     ((CxfBcComponent)this.getServiceUnit().getComponent()).
@@ -644,19 +646,21 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
                     } else {
                         Element details = toElement(exchange.getFault()
                                 .getContent());
-                        
-                        
-                        details = (Element) details.getElementsByTagNameNS(
+                                     
+                        if (isUseSOAPEnvelope()) {
+                            details = (Element) details.getElementsByTagNameNS(
                                 details.getNamespaceURI(), "Body").item(0);
-                        assert details != null;
-                        details = (Element) details.getElementsByTagNameNS(
+                            assert details != null;
+                            details = (Element) details.getElementsByTagNameNS(
                                 details.getNamespaceURI(), "Fault").item(0);
+                        }
                         assert details != null;
                         if (exchange.getProperty("faultstring") != null) {
                             details = (Element) details.getElementsByTagName("faultstring").item(0);
                         } else {
                             details = (Element) details.getElementsByTagName("detail").item(0);
                         }
+
                         assert details != null;
                         f = new SoapFault(
                                 new org.apache.cxf.common.i18n.Message(
@@ -823,13 +827,14 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     }
 
     /**
-          * Specifies if the endpoint expects messages to use the JBI wrapper 
-          * for SOAP messages.
-          *
-          * @param  useJBIWrapper a boolean
-          * @org.apache.xbean.Property description="Specifies if the JBI wrapper is sent in the body of the message. 
-          * Default is <code>true</code>."
-          **/
+     * Specifies if the endpoint expects messages to use the JBI wrapper 
+     * for SOAP messages.
+     *
+     * @param  useJBIWrapper a boolean
+     * @org.apache.xbean.Property description="Specifies if the JBI wrapper 
+     * is sent in the body of the message. Default is <code>true</code>.
+     *  Ignore the value of useSOAPEnvelope if useJBIWrapper is true"
+     **/
     public void setUseJBIWrapper(boolean useJBIWrapper) {
         this.useJBIWrapper = useJBIWrapper;
     }
@@ -837,7 +842,21 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     public boolean isUseJBIWrapper() {
         return useJBIWrapper;
     }
+   
+    /**
+     * Specifies if the endpoint expects soap messages when useJBIWrapper is false, 
+     * if useJBIWrapper is true then ignore useSOAPEnvelope
+     *
+     * @org.apache.xbean.Property description="Specifies if the endpoint expects soap messages when useJBIWrapper is false, 
+     *              if useJBIWrapper is true then ignore useSOAPEnvelope. The  default is <code>true</code>.
+     * */
+    public void setUseSOAPEnvelope(boolean useSOAPEnvelope) {
+        this.useSOAPEnvelope = useSOAPEnvelope;
+    }
 
+    public boolean isUseSOAPEnvelope() {
+        return useSOAPEnvelope;
+    }
     /**
      * Specifies if the endpoint expects send messageExchange by sendSync 
      * @param  synchronous a boolean

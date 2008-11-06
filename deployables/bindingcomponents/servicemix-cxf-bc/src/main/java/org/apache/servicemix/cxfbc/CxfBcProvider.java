@@ -130,6 +130,8 @@ public class CxfBcProvider extends ProviderEndpoint implements
 
     private boolean useJBIWrapper = true;
 
+    private boolean useSOAPEnvelope = true;
+
     private boolean synchronous = true;
 
     public void processExchange(MessageExchange exchange) {
@@ -602,7 +604,8 @@ public class CxfBcProvider extends ProviderEndpoint implements
      *            a boolean
      * @org.apache.xbean.Property description="Specifies if the JBI wrapper is
      *                            sent in the body of the message. Default is
-     *                            <code>true</code>."
+     *                            <code>true</code>. Ignore the value of
+     *                            useSOAPEnvelope if useJBIWrapper is true"
      */
     public void setUseJBIWrapper(boolean useJBIWrapper) {
         this.useJBIWrapper = useJBIWrapper;
@@ -613,9 +616,27 @@ public class CxfBcProvider extends ProviderEndpoint implements
     }
 
     /**
+     * Specifies if the endpoint expects soap messages when useJBIWrapper is
+     * false, if useJBIWrapper is true then ignore useSOAPEnvelope
+     * 
+     * @org.apache.xbean.Property description="Specifies if the endpoint expects
+     *                            soap messages when useJBIWrapper is false, if
+     *                            useJBIWrapper is true then ignore
+     *                            useSOAPEnvelope. The default is
+     *                            <code>true</code>.
+     */
+    public void setUseSOAPEnvelope(boolean useSOAPEnvelope) {
+        this.useSOAPEnvelope = useSOAPEnvelope;
+    }
+
+    public boolean isUseSOAPEnvelope() {
+        return useSOAPEnvelope;
+    }
+
+    /**
      * Specifies if the endpoints send message synchronously to external server
-     * using underlying jms/http transport
-     *  *
+     * using underlying jms/http transport *
+     * 
      * @param synchronous
      *            a boolean
      * @org.apache.xbean.Property description="Specifies if the endpoints send

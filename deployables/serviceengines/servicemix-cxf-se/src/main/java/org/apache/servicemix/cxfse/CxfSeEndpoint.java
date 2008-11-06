@@ -59,7 +59,8 @@ import org.springframework.util.ReflectionUtils.FieldCallback;
 /**
  * 
  * @author gnodet
- * @org.apache.xbean.XBean element="endpoint" description="an endpoint using CXF's JAX-WS frontend"
+ * @org.apache.xbean.XBean element="endpoint" description="an endpoint using
+ *                         CXF's JAX-WS frontend"
  */
 public class CxfSeEndpoint extends ProviderEndpoint implements
         InterceptorProvider {
@@ -79,19 +80,20 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
     private List<Interceptor> outFault = new CopyOnWriteArrayList<Interceptor>();
 
     private List<Interceptor> inFault = new CopyOnWriteArrayList<Interceptor>();
-    
+
     private Map properties;
-    
+
     private boolean mtomEnabled;
-    
+
     private boolean useJBIWrapper = true;
-    
-    
+
+    private boolean useSOAPEnvelope = true;
+
     /**
-        * Returns the object implementing the endpoint's functionality. It is 
-        * returned as a generic Java <code>Object</code> that can be cast to 
-        * the proper type.
-        *
+     * Returns the object implementing the endpoint's functionality. It is
+     * returned as a generic Java <code>Object</code> that can be cast to the
+     * proper type.
+     * 
      * @return the pojo
      */
     public Object getPojo() {
@@ -99,98 +101,108 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
     }
 
     /**
-        * Specifies the object implementing the endpoint's functionality. This 
-        * object should use the JAX-WS annotations.
-        *
-     * @param pojo  a JAX-WS annotated object
-
-     * @org.apache.xbean.Property description="a bean configuring the JAX-WS annotated implementation for the endpoint"
+     * Specifies the object implementing the endpoint's functionality. This
+     * object should use the JAX-WS annotations.
+     * 
+     * @param pojo
+     *            a JAX-WS annotated object
+     * 
+     * @org.apache.xbean.Property description="a bean configuring the JAX-WS
+     *                            annotated implementation for the endpoint"
      */
     public void setPojo(Object pojo) {
         this.pojo = pojo;
     }
 
     /**
-        * Returns the list of interceptors used to process fault messages being
-        * sent back to the consumer.
-        *
-        * @return a list of <code>Interceptor</code> objects
-        * */
+     * Returns the list of interceptors used to process fault messages being
+     * sent back to the consumer.
+     * 
+     * @return a list of <code>Interceptor</code> objects
+     */
     public List<Interceptor> getOutFaultInterceptors() {
         return outFault;
     }
 
     /**
-        * Returns the list of interceptors used to process fault messages being
-        * recieved by the endpoint.
-        *
-        * @return a list of <code>Interceptor</code> objects
-        * */
+     * Returns the list of interceptors used to process fault messages being
+     * recieved by the endpoint.
+     * 
+     * @return a list of <code>Interceptor</code> objects
+     */
     public List<Interceptor> getInFaultInterceptors() {
         return inFault;
     }
 
     /**
-        * Returns the list of interceptors used to process messages being 
-        * recieved by the endpoint.
-        *
-        * @return a list of <code>Interceptor</code> objects
-        * */
+     * Returns the list of interceptors used to process messages being recieved
+     * by the endpoint.
+     * 
+     * @return a list of <code>Interceptor</code> objects
+     */
     public List<Interceptor> getInInterceptors() {
         return in;
     }
 
     /**
-        * Returns the list of interceptors used to process responses being
-        * sent back to the consumer.
-        *
-        * @return a list of <code>Interceptor</code> objects
-        * */
+     * Returns the list of interceptors used to process responses being sent
+     * back to the consumer.
+     * 
+     * @return a list of <code>Interceptor</code> objects
+     */
     public List<Interceptor> getOutInterceptors() {
         return out;
     }
 
     /**
-        * Specifies a list of interceptors used to process requests recieved
-        * by the endpoint.
-        *
-        * @param interceptors   a list of <code>Interceptor</code> objects
-        * @org.apache.xbean.Property description="a list of beans configuring interceptors that process incoming requests"
-        * */
+     * Specifies a list of interceptors used to process requests recieved by the
+     * endpoint.
+     * 
+     * @param interceptors
+     *            a list of <code>Interceptor</code> objects
+     * @org.apache.xbean.Property description="a list of beans configuring
+     *                            interceptors that process incoming requests"
+     */
     public void setInInterceptors(List<Interceptor> interceptors) {
         in = interceptors;
     }
 
     /**
-        * Specifies a list of interceptors used to process faults recieved by
-         * the endpoint.
-        *
-        * @param interceptors   a list of <code>Interceptor</code> objects
-        * @org.apache.xbean.Property description="a list of beans configuring interceptors that process incoming faults"
-        * */
+     * Specifies a list of interceptors used to process faults recieved by the
+     * endpoint.
+     * 
+     * @param interceptors
+     *            a list of <code>Interceptor</code> objects
+     * @org.apache.xbean.Property description="a list of beans configuring
+     *                            interceptors that process incoming faults"
+     */
     public void setInFaultInterceptors(List<Interceptor> interceptors) {
         inFault = interceptors;
     }
 
     /**
-        * Specifies a list of interceptors used to process responses sent by 
-        * the endpoint.
-        *
-        * @param interceptors   a list of <code>Interceptor</code> objects
-        * @org.apache.xbean.Property description="a list of beans configuring interceptors that process response messages"
-        * */
+     * Specifies a list of interceptors used to process responses sent by the
+     * endpoint.
+     * 
+     * @param interceptors
+     *            a list of <code>Interceptor</code> objects
+     * @org.apache.xbean.Property description="a list of beans configuring
+     *                            interceptors that process response messages"
+     */
     public void setOutInterceptors(List<Interceptor> interceptors) {
         out = interceptors;
     }
 
     /**
-        * Specifies a list of interceptors used to process faults sent by 
-        * the endpoint.
-        *
-        * @param interceptors   a list of <code>Interceptor</code> objects
-        * @org.apache.xbean.Property description="a list of beans configuring interceptors that process 
-        *     fault messages being returned to the consumer"
-        * */
+     * Specifies a list of interceptors used to process faults sent by the
+     * endpoint.
+     * 
+     * @param interceptors
+     *            a list of <code>Interceptor</code> objects
+     * @org.apache.xbean.Property description="a list of beans configuring
+     *                            interceptors that process fault messages being
+     *                            returned to the consumer"
+     */
     public void setOutFaultInterceptors(List<Interceptor> interceptors) {
         outFault = interceptors;
     }
@@ -202,7 +214,6 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
     public void setProperties(Map properties) {
         this.properties = properties;
     }
-
 
     /*
      * (non-Javadoc)
@@ -219,7 +230,8 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
         endpoint = new EndpointImpl(getBus(), getPojo(),
                 new JaxWsServerFactoryBean(serviceFactory));
         if (isUseJBIWrapper()) {
-            endpoint.setBindingUri(org.apache.cxf.binding.jbi.JBIConstants.NS_JBI_BINDING);
+            endpoint
+                    .setBindingUri(org.apache.cxf.binding.jbi.JBIConstants.NS_JBI_BINDING);
         }
         endpoint.setInInterceptors(getInInterceptors());
         endpoint.setInFaultInterceptors(getInFaultInterceptors());
@@ -237,6 +249,15 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
         super.validate();
     }
 
+    private void removeInterceptor(List<Interceptor> interceptors,
+            String whichInterceptor) {
+        for (Interceptor interceptor : interceptors) {
+            if (interceptor.getClass().getName().endsWith(whichInterceptor)) {
+                interceptors.remove(interceptor);
+            }
+        }
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -244,25 +265,27 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
      */
     @Override
     public void process(MessageExchange exchange) throws Exception {
-        
+
         QName opeName = exchange.getOperation();
         EndpointInfo ei = endpoint.getServer().getEndpoint().getEndpointInfo();
         if (opeName == null) {
-            // if interface only have one operation, may not specify the opeName in MessageExchange
+            // if interface only have one operation, may not specify the opeName
+            // in MessageExchange
             if (ei.getBinding().getOperations().size() == 1) {
-                opeName = ei.getBinding().getOperations().iterator().next().getName();
+                opeName = ei.getBinding().getOperations().iterator().next()
+                        .getName();
                 exchange.setOperation(opeName);
             } else {
-                throw new Fault(
-                            new Exception("Operation not bound on this MessageExchange"));
-                
+                throw new Fault(new Exception(
+                        "Operation not bound on this MessageExchange"));
+
             }
-        } 
-        
+        }
+
         JBITransportFactory jbiTransportFactory = (JBITransportFactory) getBus()
                 .getExtension(ConduitInitiatorManager.class)
                 .getConduitInitiator(CxfSeComponent.JBI_TRANSPORT_ID);
-        
+
         QName serviceName = exchange.getService();
         if (serviceName == null) {
             serviceName = getService();
@@ -278,12 +301,12 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
                         + interfaceName.toString());
         DeliveryChannel dc = getContext().getDeliveryChannel();
         jbiTransportFactory.setDeliveryChannel(dc);
-        
+
         jbiDestination.setDeliveryChannel(dc);
         if (exchange.getStatus() == ExchangeStatus.ACTIVE) {
             jbiDestination.getJBIDispatcherUtil().dispatch(exchange);
         }
-        
+
     }
 
     /*
@@ -300,15 +323,29 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         setService(endpoint.getServer().getEndpoint().getService().getName());
         setEndpoint(endpoint.getServer().getEndpoint().getEndpointInfo()
                 .getName().getLocalPart());
+        if (!isUseJBIWrapper() && !isUseSOAPEnvelope()) {
+            removeInterceptor(endpoint.getServer().getEndpoint().getBinding()
+                    .getInInterceptors(), "ReadHeadersInterceptor");
+            removeInterceptor(endpoint.getServer().getEndpoint().getBinding()
+                    .getInFaultInterceptors(), "ReadHeadersInterceptor");
+            removeInterceptor(endpoint.getServer().getEndpoint().getBinding()
+                    .getOutInterceptors(), "SoapOutInterceptor");
+            removeInterceptor(endpoint.getServer().getEndpoint().getBinding()
+                    .getOutFaultInterceptors(), "SoapOutInterceptor");
+            removeInterceptor(endpoint.getServer().getEndpoint().getBinding()
+                    .getOutInterceptors(), "StaxOutInterceptor");
+        }
+
         try {
             definition = new ServiceWSDLBuilder(getBus(), endpoint.getServer()
                     .getEndpoint().getService().getServiceInfos().iterator()
                     .next()).build();
-            description = WSDLFactory.newInstance().newWSDLWriter().getDocument(definition);
+            description = WSDLFactory.newInstance().newWSDLWriter()
+                    .getDocument(definition);
         } catch (WSDLException e) {
             throw new DeploymentException(e);
         }
@@ -331,7 +368,6 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
         injectPojo();
     }
 
-
     /*
      * (non-Javadoc)
      * 
@@ -343,11 +379,11 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
         ReflectionUtils.callLifecycleMethod(getPojo(), PreDestroy.class);
         JBIDispatcherUtil.clean();
         JBITransportFactory jbiTransportFactory = (JBITransportFactory) getBus()
-            .getExtension(ConduitInitiatorManager.class)
-            .getConduitInitiator(CxfSeComponent.JBI_TRANSPORT_ID);
+                .getExtension(ConduitInitiatorManager.class)
+                .getConduitInitiator(CxfSeComponent.JBI_TRANSPORT_ID);
         jbiTransportFactory.setDeliveryChannel(null);
         jbiTransportFactory.removeDestination(getService().toString()
-                    + getInterfaceName().toString());
+                + getInterfaceName().toString());
         super.stop();
     }
 
@@ -355,28 +391,32 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
         return ((CxfSeComponent) getServiceUnit().getComponent()).getBus();
     }
 
-    
     @PostConstruct
     protected void injectPojo() {
         try {
             ComponentContext context = getContext();
-            Method mth = pojo.getClass().getMethod("setContext", new Class[] {ComponentContext.class });
+            Method mth = pojo.getClass().getMethod("setContext",
+                    new Class[] {ComponentContext.class});
             if (mth != null) {
                 mth.invoke(pojo, new Object[] {context});
             }
         } catch (Exception e) {
-            logger.debug("Unable to inject ComponentContext: " + e.getMessage());
+            logger
+                    .debug("Unable to inject ComponentContext: "
+                            + e.getMessage());
         }
-        
+
     }
 
     /**
-        * Specifies if the endpoint can process messages with binary data.
-        *
-        * @param    mtomEnabled     a <code>boolean</code>
-        * @org.apache.xbean.Property description="Specifies if the service can  consume MTOM formatted binary data. 
-        * The  default is <code>false</code>."
-        * */
+     * Specifies if the endpoint can process messages with binary data.
+     * 
+     * @param mtomEnabled
+     *            a <code>boolean</code>
+     * @org.apache.xbean.Property description="Specifies if the service can
+     *                            consume MTOM formatted binary data. The
+     *                            default is <code>false</code>."
+     */
     public void setMtomEnabled(boolean mtomEnabled) {
         this.mtomEnabled = mtomEnabled;
     }
@@ -386,13 +426,16 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
     }
 
     /**
-        * Specifies if the endpoint expects messages that are encased in the 
-        * JBI wrapper used for SOAP messages.
-        *
-        * @param    mtomEnabled     a <code>boolean</code>
-        * @org.apache.xbean.Property description="Specifies if the endpoint expects to receive the JBI wrapper in 
-        * the message received from the NMR. The  default is <code>true</code>."
-        * */
+     * Specifies if the endpoint expects messages that are encased in the JBI
+     * wrapper used for SOAP messages.
+     * 
+     * @param mtomEnabled
+     *            a <code>boolean</code>
+     * @org.apache.xbean.Property description="Specifies if the endpoint expects
+     *                            to receive the JBI wrapper in the message
+     *                            received from the NMR. The default is
+     *                            <code>true</code>."
+     */
     public void setUseJBIWrapper(boolean useJBIWrapper) {
         this.useJBIWrapper = useJBIWrapper;
     }
@@ -400,4 +443,23 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
     public boolean isUseJBIWrapper() {
         return useJBIWrapper;
     }
+
+    /**
+     * Specifies if the endpoint expects soap messages when useJBIWrapper is
+     * false, if useJBIWrapper is true then ignore useSOAPEnvelope
+     * 
+     * @org.apache.xbean.Property description="Specifies if the endpoint expects
+     *                            soap messages when useJBIWrapper is false, if
+     *                            useJBIWrapper is true then ignore
+     *                            useSOAPEnvelope. The default is
+     *                            <code>true</code>.
+     */
+    public void setUseSOAPEnvelope(boolean useSOAPEnvelope) {
+        this.useSOAPEnvelope = useSOAPEnvelope;
+    }
+
+    public boolean isUseSOAPEnvelope() {
+        return useSOAPEnvelope;
+    }
+
 }

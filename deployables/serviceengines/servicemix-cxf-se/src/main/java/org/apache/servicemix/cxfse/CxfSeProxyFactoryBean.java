@@ -16,6 +16,8 @@
  */
 package org.apache.servicemix.cxfse;
 
+import java.util.List;
+
 import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.naming.InitialContext;
@@ -24,6 +26,8 @@ import javax.xml.namespace.QName;
 import org.apache.activemq.util.IdGenerator;
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.ConduitInitiatorManager;
 import org.apache.cxf.transport.jbi.JBITransportFactory;
@@ -65,8 +69,10 @@ public class CxfSeProxyFactoryBean implements FactoryBean, InitializingBean,
     private boolean propagateSecuritySubject;
 
     private ServiceMixClient client;
-    
+
     private boolean useJBIWrapper = true;
+
+    private boolean useSOAPEnvelope = true;
 
     public Object getObject() throws Exception {
         if (proxy == null) {
@@ -79,24 +85,52 @@ public class CxfSeProxyFactoryBean implements FactoryBean, InitializingBean,
         JaxWsProxyFactoryBean cf = new JaxWsProxyFactoryBean();
         cf.setServiceName(getService());
         if (getEndpoint() != null) {
-            cf.setEndpointName(new QName(getService().getNamespaceURI(), getEndpoint()));
+            cf.setEndpointName(new QName(getService().getNamespaceURI(),
+                    getEndpoint()));
         }
         cf.setServiceClass(type);
         cf.setAddress("jbi://" + new IdGenerator().generateSanitizedId());
         if (isUseJBIWrapper()) {
-            cf.setBindingId(org.apache.cxf.binding.jbi.JBIConstants.NS_JBI_BINDING);
+            cf
+                    .setBindingId(org.apache.cxf.binding.jbi.JBIConstants.NS_JBI_BINDING);
         }
         Bus bus = BusFactory.getDefaultBus();
         JBITransportFactory jbiTransportFactory = (JBITransportFactory) bus
                 .getExtension(ConduitInitiatorManager.class)
                 .getConduitInitiator(CxfSeComponent.JBI_TRANSPORT_ID);
-        if (getInternalContext() != null) { 
+        if (getInternalContext() != null) {
             DeliveryChannel dc = getInternalContext().getDeliveryChannel();
             if (dc != null) {
                 jbiTransportFactory.setDeliveryChannel(dc);
             }
         }
-        return cf.create();
+
+        Object retProxy = cf.create();
+        if (!isUseJBIWrapper() && !isUseSOAPEnvelope()) {
+            removeInterceptor(ClientProxy.getClient(retProxy).getEndpoint()
+                    .getBinding().getInInterceptors(), "ReadHeadersInterceptor");
+            removeInterceptor(ClientProxy.getClient(retProxy).getEndpoint()
+                    .getBinding().getInFaultInterceptors(),
+                    "ReadHeadersInterceptor");
+            removeInterceptor(ClientProxy.getClient(retProxy).getEndpoint()
+                    .getBinding().getOutInterceptors(), "SoapOutInterceptor");
+            removeInterceptor(ClientProxy.getClient(retProxy).getEndpoint()
+                    .getBinding().getOutFaultInterceptors(),
+                    "SoapOutInterceptor");
+            removeInterceptor(ClientProxy.getClient(retProxy).getEndpoint()
+                    .getBinding().getOutInterceptors(), "StaxOutInterceptor");
+        }
+        return retProxy;
+
+    }
+
+    private void removeInterceptor(List<Interceptor> interceptors,
+            String whichInterceptor) {
+        for (Interceptor interceptor : interceptors) {
+            if (interceptor.getClass().getName().endsWith(whichInterceptor)) {
+                interceptors.remove(interceptor);
+            }
+        }
     }
 
     public Class getObjectType() {
@@ -248,6 +282,24 @@ public class CxfSeProxyFactoryBean implements FactoryBean, InitializingBean,
 
     public boolean isUseJBIWrapper() {
         return useJBIWrapper;
+    }
+
+    /**
+     * Specifies if the endpoint expects soap messages when useJBIWrapper is
+     * false, if useJBIWrapper is true then ignore useSOAPEnvelope
+     * 
+     * @org.apache.xbean.Property description="Specifies if the endpoint expects
+     *                            soap messages when useJBIWrapper is false, if
+     *                            useJBIWrapper is true then ignore
+     *                            useSOAPEnvelope. The default is
+     *                            <code>true</code>.
+     */
+    public void setUseSOAPEnvelope(boolean useSOAPEnvelope) {
+        this.useSOAPEnvelope = useSOAPEnvelope;
+    }
+
+    public boolean isUseSOAPEnvelope() {
+        return useSOAPEnvelope;
     }
 
 }

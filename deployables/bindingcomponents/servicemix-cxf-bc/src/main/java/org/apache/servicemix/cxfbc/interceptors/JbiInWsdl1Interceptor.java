@@ -61,11 +61,13 @@ import org.apache.servicemix.soap.util.DomUtil;
 public class JbiInWsdl1Interceptor extends AbstractSoapInterceptor {
 
     private boolean useJBIWrapper = true;
+    private boolean useSOAPEnvelope = true;
 
-    public JbiInWsdl1Interceptor(boolean useJBIWrapper) {
+    public JbiInWsdl1Interceptor(boolean useJBIWrapper, boolean useSOAPEnvelope) {
         super(Phase.PRE_INVOKE);
         addAfter(JbiOperationInterceptor.class.getName());
         this.useJBIWrapper = useJBIWrapper;
+        this.useSOAPEnvelope = useSOAPEnvelope;
     }
 
     public void handleMessage(SoapMessage message) {
@@ -78,20 +80,26 @@ public class JbiInWsdl1Interceptor extends AbstractSoapInterceptor {
         if (!useJBIWrapper) {
             
             SoapVersion soapVersion = message.getVersion();
-            Element soapEnv = DomUtil.createElement(document, new QName(
+            if (useSOAPEnvelope) {
+                Element soapEnv = DomUtil.createElement(document, new QName(
                     soapVersion.getEnvelope().getNamespaceURI(), soapVersion
                             .getEnvelope().getLocalPart(), soapVersion
                             .getPrefix()));
-            Element soapBody = DomUtil.createElement(soapEnv, new QName(
+                Element soapBody = DomUtil.createElement(soapEnv, new QName(
                     soapVersion.getBody().getNamespaceURI(), soapVersion
                             .getBody().getLocalPart(), soapVersion
                             .getPrefix()));
-            soapEnv.appendChild(soapBody);
-            Element body = getBodyElement(message);
-            
-            if (body != null) {
-                soapBody.appendChild(soapBody.getOwnerDocument().importNode(body,
-                    true));
+                soapEnv.appendChild(soapBody);
+                Element body = getBodyElement(message);
+                if (body != null) {
+                    soapBody.appendChild(soapBody.getOwnerDocument().importNode(body,
+                            true));
+                }
+            } else {
+                Element body = getBodyElement(message);
+                if (body != null) {
+                    document.appendChild(document.importNode(body, true));
+                }
             }
         } else {
 
