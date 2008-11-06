@@ -209,7 +209,7 @@
         <backport-util-concurrent-version>2.2</backport-util-concurrent-version>
         <camel-version>1.5.0</camel-version>
         <jencks-version>2.1</jencks-version>
-        <jetty-version>6.1.12rc1</jetty-version>
+        <jetty-version>6.1.12</jetty-version>
         <geronimo-version>2.0.1</geronimo-version>
         <servicemix-version>3.2.4-SNAPSHOT</servicemix-version>
         <wsdl4j-version>1.6.2</wsdl4j-version>
