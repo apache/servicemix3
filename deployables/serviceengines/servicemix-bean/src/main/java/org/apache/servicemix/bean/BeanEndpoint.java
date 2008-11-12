@@ -58,7 +58,6 @@ import org.apache.servicemix.bean.support.Holder;
 import org.apache.servicemix.bean.support.MethodInvocationStrategy;
 import org.apache.servicemix.bean.support.ReflectionUtils;
 import org.apache.servicemix.bean.support.Request;
-import org.apache.servicemix.common.EndpointComponentContext;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.apache.servicemix.expression.JAXPStringXPathExpression;
 import org.apache.servicemix.expression.PropertyExpression;
@@ -90,27 +89,30 @@ public class BeanEndpoint extends ProviderEndpoint implements ApplicationContext
     private Map<String, Holder> exchanges = new ConcurrentHashMap<String, Holder>();
     private Map<Object, Request> requests = new ConcurrentHashMap<Object, Request>();
     private ThreadLocal<Request> currentRequest = new ThreadLocal<Request>();
-    private ComponentContext context;
-    private DeliveryChannel channel;
-
+    private ServiceEndpoint serviceEndpoint;
+    
     public BeanEndpoint() {
     }
 
     public BeanEndpoint(BeanComponent component, ServiceEndpoint serviceEndpoint) {
         super(component, serviceEndpoint);
         this.applicationContext = component.getApplicationContext();
+        this.serviceEndpoint = serviceEndpoint;
     }
 
     public void start() throws Exception {
         super.start();
-        context = new EndpointComponentContext(this);
-        channel = context.getDeliveryChannel();
+        if (serviceEndpoint == null) {
+            serviceEndpoint = getContext().getEndpoint(getService(), getEndpoint());
+        }
         Object pojo = getBean();
         if (pojo != null) {
+            beanType = pojo.getClass();
             injectBean(pojo);
             ReflectionUtils.callLifecycleMethod(pojo, PostConstruct.class);
+        } else {
+            beanType = createBean().getClass();
         }
-        beanType = pojo != null ? pojo.getClass() : createBean().getClass();
         if (getMethodInvocationStrategy() == null) {
             throw new IllegalArgumentException("No 'methodInvocationStrategy' property set");
         }
@@ -216,17 +218,7 @@ public class BeanEndpoint extends ProviderEndpoint implements ApplicationContext
 
     protected void onProviderExchange(MessageExchange exchange) throws Exception {
         Object corId = getCorrelation(exchange);
-        Request req = requests.get(corId);
-        if (req == null) {
-            Object pojo = getBean();
-            if (pojo == null) {
-                pojo = createBean();
-                injectBean(pojo);
-                ReflectionUtils.callLifecycleMethod(pojo, PostConstruct.class);
-            }
-            req = new Request(pojo, exchange);
-            requests.put(corId, req);
-        }
+        Request req = getOrCreateCurrentRequest(exchange);
         currentRequest.set(req);
         synchronized (req) {
             // If the bean implements MessageExchangeListener,
@@ -271,6 +263,22 @@ public class BeanEndpoint extends ProviderEndpoint implements ApplicationContext
         }
     }
 
+    protected Request getOrCreateCurrentRequest(MessageExchange exchange) throws Exception {
+        Object corId = getCorrelation(exchange);
+        Request req = requests.get(corId);
+        if (req == null) {
+            Object pojo = getBean();
+            if (pojo == null) {
+                pojo = createBean();
+                injectBean(pojo);
+                ReflectionUtils.callLifecycleMethod(pojo, PostConstruct.class);
+            }
+            req = new Request(pojo, exchange);
+            requests.put(corId, req);
+        }
+        return req;
+    }
+
     protected void onConsumerExchange(MessageExchange exchange) throws Exception {
         Object corId = exchange.getExchangeId();
         Request req = requests.remove(corId);
@@ -299,11 +307,11 @@ public class BeanEndpoint extends ProviderEndpoint implements ApplicationContext
     }
 
     protected Object createBean() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        if (beanName == null && beanType == null) {
-            throw new IllegalArgumentException("Property 'beanName' has not been set!");
-        }
         if (beanType == null && beanClassName != null) {
             beanType = Class.forName(beanClassName, true, getServiceUnit().getConfigurationClassLoader());
+        }
+        if (beanName == null && beanType == null) {
+            throw new IllegalArgumentException("Property 'bean', 'beanName' or 'beanClassName' has not been set!");
         }
         if (beanType != null) {
             return beanType.newInstance();
@@ -346,6 +354,8 @@ public class BeanEndpoint extends ProviderEndpoint implements ApplicationContext
                         ReflectionUtils.setField(f, target, ctx);
                     } else if (DeliveryChannel.class.isAssignableFrom(f.getType())) {
                         ReflectionUtils.setField(f, target, ch);
+                    } else if (ServiceEndpoint.class.isAssignableFrom(f.getType())) {
+                        ReflectionUtils.setField(f, target, BeanEndpoint.this.serviceEndpoint);
                     }
                 }
             }
@@ -453,27 +463,27 @@ public class BeanEndpoint extends ProviderEndpoint implements ApplicationContext
         private DeliveryChannel channel = new PojoChannel();
 
         public ServiceEndpoint activateEndpoint(QName qName, String s) throws JBIException {
-            return context.activateEndpoint(qName, s);
+            return getContext().activateEndpoint(qName, s);
         }
 
-        public void deactivateEndpoint(ServiceEndpoint serviceEndpoint) throws JBIException {
-            context.deactivateEndpoint(serviceEndpoint);
+        public void deactivateEndpoint(ServiceEndpoint se) throws JBIException {
+            getContext().deactivateEndpoint(se);
         }
 
-        public void registerExternalEndpoint(ServiceEndpoint serviceEndpoint) throws JBIException {
-            context.registerExternalEndpoint(serviceEndpoint);
+        public void registerExternalEndpoint(ServiceEndpoint se) throws JBIException {
+            getContext().registerExternalEndpoint(se);
         }
 
-        public void deregisterExternalEndpoint(ServiceEndpoint serviceEndpoint) throws JBIException {
-            context.deregisterExternalEndpoint(serviceEndpoint);
+        public void deregisterExternalEndpoint(ServiceEndpoint se) throws JBIException {
+            getContext().deregisterExternalEndpoint(se);
         }
 
         public ServiceEndpoint resolveEndpointReference(DocumentFragment documentFragment) {
-            return context.resolveEndpointReference(documentFragment);
+            return getContext().resolveEndpointReference(documentFragment);
         }
 
         public String getComponentName() {
-            return context.getComponentName();
+            return getContext().getComponentName();
         }
 
         public DeliveryChannel getDeliveryChannel() throws MessagingException {
@@ -481,102 +491,111 @@ public class BeanEndpoint extends ProviderEndpoint implements ApplicationContext
         }
 
         public ServiceEndpoint getEndpoint(QName qName, String s) {
-            return context.getEndpoint(qName, s);
+            return getContext().getEndpoint(qName, s);
         }
 
-        public Document getEndpointDescriptor(ServiceEndpoint serviceEndpoint) throws JBIException {
-            return context.getEndpointDescriptor(serviceEndpoint);
+        public Document getEndpointDescriptor(ServiceEndpoint se) throws JBIException {
+            return getContext().getEndpointDescriptor(se);
         }
 
         public ServiceEndpoint[] getEndpoints(QName qName) {
-            return context.getEndpoints(qName);
+            return getContext().getEndpoints(qName);
         }
 
         public ServiceEndpoint[] getEndpointsForService(QName qName) {
-            return context.getEndpointsForService(qName);
+            return getContext().getEndpointsForService(qName);
         }
 
         public ServiceEndpoint[] getExternalEndpoints(QName qName) {
-            return context.getExternalEndpoints(qName);
+            return getContext().getExternalEndpoints(qName);
         }
 
         public ServiceEndpoint[] getExternalEndpointsForService(QName qName) {
-            return context.getExternalEndpointsForService(qName);
+            return getContext().getExternalEndpointsForService(qName);
         }
 
         public String getInstallRoot() {
-            return context.getInstallRoot();
+            return getContext().getInstallRoot();
         }
 
         public Logger getLogger(String s, String s1) throws MissingResourceException, JBIException {
-            return context.getLogger(s, s1);
+            return getContext().getLogger(s, s1);
         }
 
         public MBeanNames getMBeanNames() {
-            return context.getMBeanNames();
+            return getContext().getMBeanNames();
         }
 
         public MBeanServer getMBeanServer() {
-            return context.getMBeanServer();
+            return getContext().getMBeanServer();
         }
 
         public InitialContext getNamingContext() {
-            return context.getNamingContext();
+            return getContext().getNamingContext();
         }
 
         public Object getTransactionManager() {
-            return context.getTransactionManager();
+            return getContext().getTransactionManager();
         }
 
         public String getWorkspaceRoot() {
-            return context.getWorkspaceRoot();
+            return getContext().getWorkspaceRoot();
         }
     }
 
     protected class PojoChannel implements DeliveryChannel {
 
         public void close() throws MessagingException {
-            BeanEndpoint.this.channel.close();
         }
 
         public MessageExchangeFactory createExchangeFactory() {
-            return BeanEndpoint.this.channel.createExchangeFactory();
+            return getChannel().createExchangeFactory();
         }
 
         public MessageExchangeFactory createExchangeFactory(QName qName) {
-            return BeanEndpoint.this.channel.createExchangeFactory(qName);
+            return getChannel().createExchangeFactory(qName);
         }
 
         public MessageExchangeFactory createExchangeFactoryForService(QName qName) {
-            return BeanEndpoint.this.channel.createExchangeFactoryForService(qName);
+            return getChannel().createExchangeFactoryForService(qName);
         }
 
-        public MessageExchangeFactory createExchangeFactory(ServiceEndpoint serviceEndpoint) {
-            return BeanEndpoint.this.channel.createExchangeFactory(serviceEndpoint);
+        public MessageExchangeFactory createExchangeFactory(ServiceEndpoint se) {
+            return getChannel().createExchangeFactory(se);
         }
 
         public MessageExchange accept() throws MessagingException {
-            return BeanEndpoint.this.channel.accept();
+            return getChannel().accept();
         }
 
         public MessageExchange accept(long l) throws MessagingException {
-            return BeanEndpoint.this.channel.accept(l);
+            return getChannel().accept(l);
         }
 
         public void send(MessageExchange messageExchange) throws MessagingException {
-            if (messageExchange.getRole() == MessageExchange.Role.CONSUMER
-                    && messageExchange.getStatus() == ExchangeStatus.ACTIVE) {
-                requests.put(messageExchange.getExchangeId(), currentRequest.get());
+            try {
+                if (messageExchange.getRole() == MessageExchange.Role.CONSUMER
+                        && messageExchange.getStatus() == ExchangeStatus.ACTIVE) {
+                    Request req = getOrCreateCurrentRequest(messageExchange);
+                    if (!(req.getBean() instanceof MessageExchangeListener)) {
+                        throw new IllegalStateException("A bean acting as a consumer and using the channel "
+                            + "to send exchanges must implement the MessageExchangeListener interface");
+                    }
+                }
+                getChannel().send(messageExchange);
+            } catch (MessagingException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new MessagingException(e);
             }
-            BeanEndpoint.this.channel.send(messageExchange);
         }
 
         public boolean sendSync(MessageExchange messageExchange) throws MessagingException {
-            return BeanEndpoint.this.channel.sendSync(messageExchange);
+            return getChannel().sendSync(messageExchange);
         }
 
         public boolean sendSync(MessageExchange messageExchange, long l) throws MessagingException {
-            return BeanEndpoint.this.channel.sendSync(messageExchange, l);
+            return getChannel().sendSync(messageExchange, l);
         }
 
     }
