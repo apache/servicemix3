@@ -21,7 +21,7 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.xml.namespace.QName;
 
-import org.apache.servicemix.MessageExchangeListener;
+import org.apache.servicemix.jbi.listener.MessageExchangeListener;
 
 /**
  * A {@link ComponentAdaptor} which also supports the direct

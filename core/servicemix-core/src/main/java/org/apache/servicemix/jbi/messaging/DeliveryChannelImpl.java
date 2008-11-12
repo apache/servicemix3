@@ -43,7 +43,6 @@ import javax.xml.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.JbiConstants;
-import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.id.IdGenerator;
 import org.apache.servicemix.jbi.ExchangeTimeoutException;
 import org.apache.servicemix.jbi.container.ActivationSpec;
@@ -52,6 +51,7 @@ import org.apache.servicemix.jbi.event.ExchangeEvent;
 import org.apache.servicemix.jbi.event.ExchangeListener;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
+import org.apache.servicemix.jbi.listener.MessageExchangeListener;
 
 /**
  * DeliveryChannel implementation
