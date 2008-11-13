@@ -35,6 +35,9 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceRef;
 
 import org.apache.cxf.Bus;
+import org.apache.cxf.aegis.databinding.AegisDatabinding;
+import org.apache.cxf.endpoint.Server;
+import org.apache.cxf.frontend.ServerFactoryBean;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.interceptor.InterceptorProvider;
@@ -72,6 +75,8 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
     private EndpointImpl endpoint;
 
     private String address;
+    
+    private ServerFactoryBean sf;
 
     private List<Interceptor> in = new CopyOnWriteArrayList<Interceptor>();
 
@@ -82,6 +87,8 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
     private List<Interceptor> inFault = new CopyOnWriteArrayList<Interceptor>();
 
     private Map properties;
+    
+    private Server server;
 
     private boolean mtomEnabled;
 
@@ -89,6 +96,8 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
 
     private boolean useSOAPEnvelope = true;
 
+    private boolean useAegis;
+    
     /**
      * Returns the object implementing the endpoint's functionality. It is
      * returned as a generic Java <code>Object</code> that can be cast to the
@@ -225,27 +234,59 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
         if (getPojo() == null) {
             throw new DeploymentException("pojo must be set");
         }
-        JaxWsServiceFactoryBean serviceFactory = new JaxWsServiceFactoryBean();
-        serviceFactory.setPopulateFromClass(true);
-        endpoint = new EndpointImpl(getBus(), getPojo(),
+        if (isUseAegis()) {
+            sf = new ServerFactoryBean();
+            sf.setServiceBean(getPojo());
+            sf.setAddress("jbi://" + ID_GENERATOR.generateSanitizedId());
+            sf.getServiceFactory().setDataBinding(new AegisDatabinding());
+            sf.getServiceFactory().setPopulateFromClass(true);
+            sf.setStart(false);
+            if (isUseJBIWrapper()) {
+                sf.setBindingId(org.apache.cxf.binding.jbi.JBIConstants.NS_JBI_BINDING);
+            }
+            server = sf.create();
+            server.getEndpoint().getInInterceptors().addAll(getInInterceptors());
+            server.getEndpoint().getInFaultInterceptors().addAll(getInFaultInterceptors());
+            server.getEndpoint().getOutInterceptors().addAll(getOutInterceptors());
+            server.getEndpoint().getOutFaultInterceptors().addAll(getOutFaultInterceptors());
+            if (isMtomEnabled()) {
+                server.getEndpoint().getInInterceptors().add(new AttachmentInInterceptor());
+                server.getEndpoint().getOutInterceptors().add(new AttachmentOutInterceptor());
+            }
+            if (sf.getServiceFactory().getServiceQName() != null) {
+                setService(sf.getServiceFactory().getServiceQName());
+            }
+            if (sf.getServiceFactory().getEndpointInfo().getName() != null) {
+                setEndpoint(sf.getServiceFactory().getEndpointInfo().getName().getLocalPart());
+            }
+            if (sf.getServiceFactory().getInterfaceName() != null) {
+                setInterfaceName(sf.getServiceFactory().getInterfaceName());
+            }
+        } else {
+            JaxWsServiceFactoryBean serviceFactory = new JaxWsServiceFactoryBean();
+            serviceFactory.setPopulateFromClass(true);
+            endpoint = new EndpointImpl(getBus(), getPojo(),
                 new JaxWsServerFactoryBean(serviceFactory));
-        if (isUseJBIWrapper()) {
-            endpoint
+            if (isUseJBIWrapper()) {
+                endpoint
                     .setBindingUri(org.apache.cxf.binding.jbi.JBIConstants.NS_JBI_BINDING);
-        }
-        endpoint.setInInterceptors(getInInterceptors());
-        endpoint.setInFaultInterceptors(getInFaultInterceptors());
-        endpoint.setOutInterceptors(getOutInterceptors());
-        endpoint.setOutFaultInterceptors(getOutFaultInterceptors());
-        if (isMtomEnabled()) {
-            endpoint.getInInterceptors().add(new AttachmentInInterceptor());
-            endpoint.getOutInterceptors().add(new AttachmentOutInterceptor());
-        }
-        JaxWsImplementorInfo implInfo = new JaxWsImplementorInfo(getPojo()
+            }   
+            endpoint.setInInterceptors(getInInterceptors());
+            endpoint.setInFaultInterceptors(getInFaultInterceptors());
+            endpoint.setOutInterceptors(getOutInterceptors());
+            endpoint.setOutFaultInterceptors(getOutFaultInterceptors());
+            if (isMtomEnabled()) {
+                endpoint.getInInterceptors().add(new AttachmentInInterceptor());
+                endpoint.getOutInterceptors().add(new AttachmentOutInterceptor());
+            }
+            JaxWsImplementorInfo implInfo = new JaxWsImplementorInfo(getPojo()
                 .getClass());
-        setService(implInfo.getServiceName());
-        setInterfaceName(implInfo.getInterfaceName());
-        setEndpoint(implInfo.getEndpointName().getLocalPart());
+            setService(implInfo.getServiceName());
+            
+            setInterfaceName(implInfo.getInterfaceName());
+            setEndpoint(implInfo.getEndpointName().getLocalPart());
+            
+        }
         super.validate();
     }
 
@@ -267,7 +308,8 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
     public void process(MessageExchange exchange) throws Exception {
 
         QName opeName = exchange.getOperation();
-        EndpointInfo ei = endpoint.getServer().getEndpoint().getEndpointInfo();
+        EndpointInfo ei = server.getEndpoint().getEndpointInfo();
+               
         if (opeName == null) {
             // if interface only have one operation, may not specify the opeName
             // in MessageExchange
@@ -281,7 +323,6 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
 
             }
         }
-
         JBITransportFactory jbiTransportFactory = (JBITransportFactory) getBus()
                 .getExtension(ConduitInitiatorManager.class)
                 .getConduitInitiator(CxfSeComponent.JBI_TRANSPORT_ID);
@@ -319,29 +360,34 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
         super.start();
         address = "jbi://" + ID_GENERATOR.generateSanitizedId();
         try {
-            endpoint.publish(address);
+            if (isUseAegis()) {
+                server.start();
+            } else {
+                endpoint.publish(address);
+                server = endpoint.getServer();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        setService(endpoint.getServer().getEndpoint().getService().getName());
-        setEndpoint(endpoint.getServer().getEndpoint().getEndpointInfo()
+        setService(server.getEndpoint().getService().getName());
+        setEndpoint(server.getEndpoint().getEndpointInfo()
                 .getName().getLocalPart());
         if (!isUseJBIWrapper() && !isUseSOAPEnvelope()) {
-            removeInterceptor(endpoint.getServer().getEndpoint().getBinding()
+            removeInterceptor(server.getEndpoint().getBinding()
                     .getInInterceptors(), "ReadHeadersInterceptor");
-            removeInterceptor(endpoint.getServer().getEndpoint().getBinding()
+            removeInterceptor(server.getEndpoint().getBinding()
                     .getInFaultInterceptors(), "ReadHeadersInterceptor");
-            removeInterceptor(endpoint.getServer().getEndpoint().getBinding()
+            removeInterceptor(server.getEndpoint().getBinding()
                     .getOutInterceptors(), "SoapOutInterceptor");
-            removeInterceptor(endpoint.getServer().getEndpoint().getBinding()
+            removeInterceptor(server.getEndpoint().getBinding()
                     .getOutFaultInterceptors(), "SoapOutInterceptor");
-            removeInterceptor(endpoint.getServer().getEndpoint().getBinding()
+            removeInterceptor(server.getEndpoint().getBinding()
                     .getOutInterceptors(), "StaxOutInterceptor");
         }
 
         try {
-            definition = new ServiceWSDLBuilder(getBus(), endpoint.getServer()
+            definition = new ServiceWSDLBuilder(getBus(), server
                     .getEndpoint().getService().getServiceInfos().iterator()
                     .next()).build();
             description = WSDLFactory.newInstance().newWSDLWriter()
@@ -375,7 +421,11 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
      */
     @Override
     public void stop() throws Exception {
-        endpoint.stop();
+        if (isUseAegis()) {
+            server.stop();
+        } else {
+            endpoint.stop();
+        }
         ReflectionUtils.callLifecycleMethod(getPojo(), PreDestroy.class);
         JBIDispatcherUtil.clean();
         JBITransportFactory jbiTransportFactory = (JBITransportFactory) getBus()
@@ -460,6 +510,21 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
 
     public boolean isUseSOAPEnvelope() {
         return useSOAPEnvelope;
+    }
+
+    /**
+     * Specifies if the endpoint use aegis databinding to marshell/unmarshell message
+     * 
+     * @org.apache.xbean.Property description="Specifies if the endpoint use aegis databinding to marshell/unmarshell message. 
+     * The default is <code>false</code>.
+     */
+    public void setUseAegis(boolean useAegis) {
+        this.useAegis = useAegis;
+    }
+
+    
+    public boolean isUseAegis() {
+        return useAegis;
     }
 
 }
