@@ -16,9 +16,11 @@
  */
 package org.apache.servicemix.bean.support;
 
+import java.net.URI;
+
 import javax.annotation.PostConstruct;
 import javax.jbi.messaging.ExchangeStatus;
-import javax.jbi.messaging.InOnly;
+import javax.jbi.messaging.Fault;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
@@ -26,6 +28,7 @@ import javax.jbi.messaging.NormalizedMessage;
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.components.util.CopyTransformer;
 import org.apache.servicemix.jbi.listener.MessageExchangeListener;
+import org.apache.servicemix.jbi.util.MessageUtil;
 import org.apache.servicemix.store.Store;
 import org.apache.servicemix.store.StoreFactory;
 import org.apache.servicemix.store.memory.MemoryStoreFactory;
@@ -33,9 +36,11 @@ import org.apache.servicemix.store.memory.MemoryStoreFactory;
 /**
  * A useful base class for a transform component.
  *
- * @version $Revision: 709820 $
+ * @version $Revision: 713955 $
  */
 public abstract class TransformBeanSupport extends BeanSupport implements MessageExchangeListener {
+    
+    private String correlation;
     
     private ExchangeTarget target;
 
@@ -110,45 +115,37 @@ public abstract class TransformBeanSupport extends BeanSupport implements Messag
             }
             store = storeFactory.open(getService().toString() + getEndpoint());
         }
+        correlation = "TransformBeanSupport.Correlation." + getService() + "." + getEndpoint();
     }
 
     public void onMessageExchange(MessageExchange exchange) throws MessagingException {
-        // Handle consumer exchanges
-        if (exchange.getRole() == MessageExchange.Role.CONSUMER) {
-            MessageExchange original = null;
-            try {
-                original = (MessageExchange) store.load(exchange.getExchangeId());
-            } catch (Exception e) {
-                // We can't do, so just return
-                return;
-            }
-            if (exchange.getStatus() == ExchangeStatus.ERROR) {
-                original.setStatus(ExchangeStatus.ERROR);
-                original.setError(exchange.getError());
-                send(original);
-            }
-            return;
+        // Handle consumer exchanges && non-active RobustInOnly provider exchanges
+        if (exchange.getRole() == MessageExchange.Role.CONSUMER
+                || exchange.getProperty(correlation) != null) {
+            processOngoingExchange(exchange);
+        } else {
+            processFirstExchange(exchange);
         }
-        // Skip done exchanges
-        if (exchange.getStatus() == ExchangeStatus.DONE) {
-            return;
-        // Handle error exchanges
-        } else if (exchange.getStatus() == ExchangeStatus.ERROR) {
-            return;
-        }
+    }
+
+    protected void processFirstExchange(MessageExchange exchange) {
         try {
-            InOnly outExchange = null;
+            MessageExchange outExchange = null;
             NormalizedMessage in = getInMessage(exchange);
             NormalizedMessage out;
             if (isInAndOut(exchange)) {
                 out = exchange.createMessage();
             } else {
+                URI pattern = exchange.getPattern();
                 if (target == null) {
-                    throw new IllegalStateException("An IN-ONLY TransformBean has no Target specified");
+                    throw new IllegalStateException("A TransformBean with MEP " + pattern + " has no Target specified");
                 }
-                outExchange = getExchangeFactory().createInOnlyExchange();
+                outExchange = getExchangeFactory().createExchange(pattern);
                 target.configureTarget(outExchange, getContext());
                 outExchange.setProperty(JbiConstants.SENDER_ENDPOINT, getService() + ":" + getEndpoint());
+                // Set correlations
+                outExchange.setProperty(correlation, exchange.getExchangeId());
+                exchange.setProperty(correlation, outExchange.getExchangeId());
                 String processCorrelationId = (String)exchange.getProperty(JbiConstants.CORRELATION_ID);
                 if (processCorrelationId != null) {
                     outExchange.setProperty(JbiConstants.CORRELATION_ID, processCorrelationId);
@@ -169,17 +166,28 @@ public abstract class TransformBeanSupport extends BeanSupport implements Messag
                     outExchange.setMessage(out, "in");
                     if (txSync) {
                         sendSync(outExchange);
-                        if (outExchange.getStatus() == ExchangeStatus.ERROR) {
-                            exchange.setStatus(ExchangeStatus.ERROR);
-                            exchange.setError(outExchange.getError());
-                            send(exchange);
+                        if (outExchange.getStatus() == ExchangeStatus.DONE) {
+                            done(exchange);
+                        } else if (outExchange.getStatus() == ExchangeStatus.ERROR) {
+                            fail(exchange, outExchange.getError());
+                        } else if (outExchange.getFault() != null) {
+                            Fault fault = MessageUtil.copyFault(outExchange);
+                            done(outExchange);
+                            MessageUtil.transferToFault(fault, exchange);
+                            sendSync(exchange);
                         } else {
-                            exchange.setStatus(ExchangeStatus.DONE);
-                            send(exchange);
+                            done(outExchange);
+                            throw new IllegalStateException("Exchange status is " + ExchangeStatus.ACTIVE
+                                    + " but has no Out nor Fault message");
                         }
                     } else {
-                        store.store(outExchange.getExchangeId(), exchange);
-                        send(outExchange);
+                        store.store(exchange.getExchangeId(), exchange);
+                        try {
+                            send(outExchange);
+                        } catch (Exception e) {
+                            store.load(exchange.getExchangeId());
+                            throw e;
+                        }
                     }
                 }
             } else {
@@ -194,6 +202,53 @@ public abstract class TransformBeanSupport extends BeanSupport implements Messag
                 if (logger.isDebugEnabled()) {
                     logger.debug("Original error: " + e, e);
                 }
+            }
+        }
+    }
+
+    protected void processOngoingExchange(MessageExchange exchange) {
+        MessageExchange original = null;
+        String id = null;
+        try {
+            id = (String) exchange.getProperty(correlation);
+            original = (MessageExchange) store.load(id);
+        } catch (Exception e) {
+            // We can't do, so just return
+            return;
+        }
+        try {
+            if (exchange.getStatus() == ExchangeStatus.DONE) {
+                done(original);
+            // Reproduce ERROR status to the other side
+            } else if (exchange.getStatus() == ExchangeStatus.ERROR) {
+                fail(original, exchange.getError());
+            // Reproduce faults to the other side and listeners
+            } else if (exchange.getFault() != null) {
+                store.store(exchange.getExchangeId(), exchange);
+                try {
+                    MessageUtil.transferTo(exchange, original, "fault");
+                    send(original);
+                } catch (Exception e) {
+                    store.load(exchange.getExchangeId());
+                    throw e;
+                }
+            // Reproduce answers to the other side
+            } else if (exchange.getMessage("out") != null) {
+                store.store(exchange.getExchangeId(), exchange);
+                try {
+                    MessageUtil.transferTo(exchange, original, "out");
+                    send(original);
+                } catch (Exception e) {
+                    store.load(exchange.getExchangeId());
+                    throw e;
+                }
+            } else {
+                throw new IllegalStateException("Exchange status is " + ExchangeStatus.ACTIVE
+                        + " but has no Out nor Fault message");
+            }
+        } catch (Exception e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Original error: " + e, e);
             }
         }
     }
