@@ -20,6 +20,8 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 
+import javax.activation.DataHandler;
+import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.NormalizedMessage;
@@ -27,6 +29,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import javax.mail.util.ByteArrayDataSource;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
@@ -71,6 +74,7 @@ public class JMSComponentTest extends AbstractJmsTestSupport {
         File path = new File(new URI(url.toString()));
         path = path.getParentFile();
         component.getServiceUnitManager().deploy("provider", path.getAbsolutePath());
+        component.getServiceUnitManager().init("provider", path.getAbsolutePath());
         component.getServiceUnitManager().start("provider");
 
         // Call it
@@ -108,6 +112,7 @@ public class JMSComponentTest extends AbstractJmsTestSupport {
         File path = new File(new URI(url.toString()));
         path = path.getParentFile();
         component.getServiceUnitManager().deploy("provider", path.getAbsolutePath());
+        component.getServiceUnitManager().init("provider", path.getAbsolutePath());
         component.getServiceUnitManager().start("provider");
 
         // Call it
@@ -139,6 +144,7 @@ public class JMSComponentTest extends AbstractJmsTestSupport {
         File path = new File(new URI(url.toString()));
         path = path.getParentFile();
         component.getServiceUnitManager().deploy("consumer", path.getAbsolutePath());
+        component.getServiceUnitManager().init("consumer", path.getAbsolutePath());
         component.getServiceUnitManager().start("consumer");
 
         // Send test message
@@ -175,6 +181,7 @@ public class JMSComponentTest extends AbstractJmsTestSupport {
         File path = new File(new URI(url.toString()));
         path = path.getParentFile();
         component.getServiceUnitManager().deploy("provider", path.getAbsolutePath());
+        component.getServiceUnitManager().init("provider", path.getAbsolutePath());
         component.getServiceUnitManager().start("provider");
 
         // Deploy Consumer SU
@@ -183,19 +190,59 @@ public class JMSComponentTest extends AbstractJmsTestSupport {
         path = new File(new URI(url.toString()));
         path = path.getParentFile();
         component.getServiceUnitManager().deploy("consumer", path.getAbsolutePath());
+        component.getServiceUnitManager().init("consumer", path.getAbsolutePath());
         component.getServiceUnitManager().start("consumer");
 
-        // Call it
-        InOut inout = client.createInOutExchange();
+        InOut inout = null;
+        boolean result = false;
+        DataHandler dh = null;
+        
+        // Test successful return
+        inout = client.createInOutExchange();
         inout.setInterfaceName(new QName("http://jms.servicemix.org/Test", "ProviderInterface"));
         inout.getInMessage().setContent(new StringSource("<hello>world</hello>"));
-        boolean result = client.sendSync(inout);
+        dh = new DataHandler(new ByteArrayDataSource("myImage", "application/octet-stream"));
+        inout.getInMessage().addAttachment("myImage", dh);
+        result = client.sendSync(inout);
         assertTrue(result);
         NormalizedMessage out = inout.getOutMessage();
         assertNotNull(out);
         Source src = out.getContent();
         assertNotNull(src);
+        dh = out.getAttachment("myImage");
+        assertNotNull(dh);
+        
         logger.info(new SourceTransformer().toString(src));
+
+        // Test fault return 
+        container.deactivateComponent("receiver");
+        ReturnFaultComponent fault = new ReturnFaultComponent();
+        ActivationSpec asFault = new ActivationSpec("receiver", fault);
+        asFault.setService(new QName("http://jms.servicemix.org/Test", "Echo"));
+        container.activateComponent(asFault);
+
+        inout = client.createInOutExchange();
+        inout.setInterfaceName(new QName("http://jms.servicemix.org/Test", "ProviderInterface"));
+        inout.getInMessage().setContent(new StringSource("<hello>world</hello>"));
+        result = client.sendSync(inout);
+        assertTrue(result);
+        assertNotNull(inout.getFault());
+        client.done(inout);
+
+        // Test error return
+        container.deactivateComponent("receiver");
+        ReturnErrorComponent error = new ReturnErrorComponent(new IllegalArgumentException());
+        ActivationSpec asError = new ActivationSpec("receiver", error);
+        asError.setService(new QName("http://jms.servicemix.org/Test", "Echo"));
+        container.activateComponent(asError);
+
+        inout = client.createInOutExchange();
+        inout.setInterfaceName(new QName("http://jms.servicemix.org/Test", "ProviderInterface"));
+        inout.getInMessage().setContent(new StringSource("<hello>world</hello>"));
+        client.sendSync(inout);
+        assertEquals(ExchangeStatus.ERROR, inout.getStatus());
+        assertTrue("An IllegalArgumentException was expected", inout.getError() instanceof IllegalArgumentException);
+
     }
 
 }
