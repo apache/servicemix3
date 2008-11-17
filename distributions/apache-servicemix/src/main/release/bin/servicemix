@@ -216,7 +216,7 @@ setupDefaults() {
 
 setupClassworlds() {
     # Setup the classpath
-    CLASSPATH="$CLASSPATH:$SERVICEMIX_HOME/lib/classworlds-1.0.1.jar"
+    CLASSPATH="$CLASSPATH:$SERVICEMIX_HOME/lib/classworlds-1.1.jar"
     
     # Setup Classworlds options
     CLASSWORLDS_CONF="$SERVICEMIX_HOME/conf/servicemix.conf"

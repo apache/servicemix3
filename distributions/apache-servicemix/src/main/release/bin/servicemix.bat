@@ -108,7 +108,7 @@ if "%SERVICEMIX_PROFILER%" == "" goto :SERVICEMIX_PROFILER_END
 :SERVICEMIX_PROFILER_END
 
 rem Setup the classpath
-set CLASSPATH=%CLASSPATH%;%SERVICEMIX_HOME%\lib\classworlds-1.0.1.jar
+set CLASSPATH=%CLASSPATH%;%SERVICEMIX_HOME%\lib\classworlds-1.1.jar
 
 rem Setup boot options
 set CLASSWORLDS_CONF=%SERVICEMIX_HOME%\conf\servicemix.conf

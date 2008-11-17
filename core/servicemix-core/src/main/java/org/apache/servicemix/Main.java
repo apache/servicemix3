@@ -79,9 +79,20 @@ public final class Main {
                     }
                 }
             });
+            //this is for classworlds 1.1 launcher which use System.exit() 
+            //explicitly after lauch Main. To avoid System.exit() being invoked
+            //during servicemix runing, we need keep ServiceMix main thread alive.
+            while (true) {
+                try {
+                    Thread.sleep(60000);
+                } catch (InterruptedException e) {
+                    //
+                }
+            }
         } catch (Exception e) {
             System.out.println("Caught: " + e);
             e.printStackTrace();
         }
     }
 }
+
