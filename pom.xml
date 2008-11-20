@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix-pom</artifactId>
-        <version>2-SNAPSHOT</version>
+        <version>2</version>
     </parent>
 
     <groupId>org.apache.servicemix</groupId>
@@ -75,6 +75,7 @@
         <servicemix-cxf-se-version>2008.01</servicemix-cxf-se-version>
         <servicemix-drools-version>2008.01</servicemix-drools-version>
         <servicemix-file-version>2008.01</servicemix-file-version>
+        <servicemix-snmp-version>2008.01</servicemix-snmp-version>
         <res-maven-plugin-version>4.0</res-maven-plugin-version>
         <servicemix-build-version>1.0</servicemix-build-version>
         
@@ -579,6 +580,11 @@
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-mail</artifactId>
                 <version>${servicemix-mail-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.servicemix</groupId>
+                <artifactId>servicemix-snmp</artifactId>
+                <version>${servicemix-snmp-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>

@@ -82,6 +82,10 @@
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-snmp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-osworkflow</artifactId>
     </dependency>
     <dependency>
@@ -446,6 +450,13 @@
                   <groupId>org.apache.servicemix</groupId>
                   <artifactId>servicemix-mail</artifactId>
                   <version>${servicemix-mail-version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.servicemix</groupId>
+                  <artifactId>servicemix-snmp</artifactId>
+                  <version>${servicemix-snmp-version}</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
                 </artifactItem>
