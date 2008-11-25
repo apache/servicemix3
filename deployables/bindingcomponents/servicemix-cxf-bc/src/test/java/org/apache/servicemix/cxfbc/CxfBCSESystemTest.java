@@ -134,10 +134,15 @@ public class CxfBCSESystemTest extends SpringTestSupport {
         for (int i = 0; i < clients.length; i++) {
             clients[i].join();
         }
+        
+        for (int i = 0; i < clients.length; i++) {
+            assertEquals(clients[i].getResult(), 3);
+        }
     }
     
     class MultiClientThread extends Thread {
         private CalculatorPortType port;
+        private int ret;
         
         public MultiClientThread(CalculatorPortType port) {
             this.port = port;
@@ -145,10 +150,14 @@ public class CxfBCSESystemTest extends SpringTestSupport {
         
         public void run() {
             try {
-                assertEquals(port.add(1, 2), 3);
+                ret = port.add(1, 2);
             } catch (AddNumbersFault e) {
                 fail();
             }
+        }
+        
+        public int getResult() {
+            return ret;
         }
     }
 
