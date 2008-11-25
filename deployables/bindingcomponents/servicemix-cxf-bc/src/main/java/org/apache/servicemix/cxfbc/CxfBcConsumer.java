@@ -57,6 +57,8 @@ import org.apache.cxf.binding.soap.interceptor.SoapActionOutInterceptor;
 import org.apache.cxf.binding.soap.interceptor.SoapOutInterceptor;
 import org.apache.cxf.binding.soap.interceptor.SoapPreProtocolOutInterceptor;
 import org.apache.cxf.bus.spring.SpringBusFactory;
+import org.apache.cxf.continuations.Continuation;
+import org.apache.cxf.continuations.ContinuationProvider;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.endpoint.EndpointImpl;
 import org.apache.cxf.endpoint.Server;
@@ -103,12 +105,12 @@ import org.apache.servicemix.soap.util.DomUtil;
 import org.mortbay.jetty.Handler;
 import org.springframework.core.io.Resource;
 
-
 /**
  * 
  * @author gnodet
- * @org.apache.xbean.XBean element="consumer" description="a consumer endpoint that is capable of using SOAP/HTTP or SOAP/JMS"
-*/
+ * @org.apache.xbean.XBean element="consumer" description="a consumer endpoint
+ *                         that is capable of using SOAP/HTTP or SOAP/JMS"
+ */
 public class CxfBcConsumer extends ConsumerEndpoint implements
         CxfBcEndpointWithInterceptor {
 
@@ -147,12 +149,12 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     private int timeout = 10;
 
     private boolean useJBIWrapper = true;
-    
-    private boolean useSOAPEnvelope = true;
-    
-        
-    private EndpointInfo ei;
 
+    private boolean useSOAPEnvelope = true;
+
+    private EndpointInfo ei;
+    
+    
     /**
      * @return the wsdl
      */
@@ -161,110 +163,131 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     }
 
     /**
-             * Specifies the location of the WSDL defining the endpoint's interface.
-          *
-          * @param wsdl the location of the WSDL contract as a <code>Resource</code> object
-          * @org.apache.xbean.Property description="the location of the WSDL document defining the endpoint's interface"
-          **/
+     * Specifies the location of the WSDL defining the endpoint's interface.
+     * 
+     * @param wsdl
+     *            the location of the WSDL contract as a <code>Resource</code>
+     *            object
+     * @org.apache.xbean.Property description="the location of the WSDL document
+     *                            defining the endpoint's interface"
+     */
     public void setWsdl(Resource wsdl) {
         this.wsdl = wsdl;
     }
 
-/**
-        * Returns the list of interceptors used to process fault messages being
-        * sent to the provider.
-        *
-        * @return a list of <code>Interceptor</code> objects
-        * */
+    /**
+     * Returns the list of interceptors used to process fault messages being
+     * sent to the provider.
+     * 
+     * @return a list of <code>Interceptor</code> objects
+     */
     public List<Interceptor> getOutFaultInterceptors() {
         return outFault;
     }
 
     /**
-        * Returns the list of interceptors used to process fault messages being
-        * recieved by the endpoint.
-        *
-        * @return a list of <code>Interceptor</code> objects
-        * */
+     * Returns the list of interceptors used to process fault messages being
+     * recieved by the endpoint.
+     * 
+     * @return a list of <code>Interceptor</code> objects
+     */
     public List<Interceptor> getInFaultInterceptors() {
         return inFault;
     }
 
     /**
-        * Returns the list of interceptors used to process responses being 
-        * recieved by the endpoint.
-        *
-        * @return a list of <code>Interceptor</code> objects
-        * */
+     * Returns the list of interceptors used to process responses being recieved
+     * by the endpoint.
+     * 
+     * @return a list of <code>Interceptor</code> objects
+     */
     public List<Interceptor> getInInterceptors() {
         return in;
     }
 
-        /**
-        * Returns the list of interceptors used to process requests being
-        * sent to the provider.
-        *
-        * @return a list of <code>Interceptor</code> objects
-        * */
+    /**
+     * Returns the list of interceptors used to process requests being sent to
+     * the provider.
+     * 
+     * @return a list of <code>Interceptor</code> objects
+     */
     public List<Interceptor> getOutInterceptors() {
         return out;
     }
 
     /**
-        * Specifies a list of interceptors used to process responses recieved
-        * by the endpoint.
-        *
-        * @param interceptors   a list of <code>Interceptor</code> objects
-        * @org.apache.xbean.Property description="a list of beans configuring interceptors that process incoming responses"
-        * */
+     * Specifies a list of interceptors used to process responses recieved by
+     * the endpoint.
+     * 
+     * @param interceptors
+     *            a list of <code>Interceptor</code> objects
+     * @org.apache.xbean.Property description="a list of beans configuring
+     *                            interceptors that process incoming responses"
+     */
     public void setInInterceptors(List<Interceptor> interceptors) {
         in = interceptors;
     }
 
     /**
-        * Specifies a list of interceptors used to process faults recieved by
-         * the endpoint.
-        *
-        * @param interceptors   a list of <code>Interceptor</code> objects
-        * @org.apache.xbean.Property description="a list of beans configuring interceptors that process incoming faults"
-        * */
+     * Specifies a list of interceptors used to process faults recieved by the
+     * endpoint.
+     * 
+     * @param interceptors
+     *            a list of <code>Interceptor</code> objects
+     * @org.apache.xbean.Property description="a list of beans configuring
+     *                            interceptors that process incoming faults"
+     */
     public void setInFaultInterceptors(List<Interceptor> interceptors) {
         inFault = interceptors;
     }
 
     /**
-        * Specifies a list of interceptors used to process requests sent by 
-        * the endpoint.
-        *
-        * @param interceptors   a list of <code>Interceptor</code> objects
-        * @org.apache.xbean.Property description="a list of beans configuring interceptors that process requests"
-        * */
+     * Specifies a list of interceptors used to process requests sent by the
+     * endpoint.
+     * 
+     * @param interceptors
+     *            a list of <code>Interceptor</code> objects
+     * @org.apache.xbean.Property description="a list of beans configuring
+     *                            interceptors that process requests"
+     */
     public void setOutInterceptors(List<Interceptor> interceptors) {
         out = interceptors;
     }
 
     /**
-        * Specifies a list of interceptors used to process faults sent by 
-        * the endpoint.
-        *
-        * @param interceptors   a list of <code>Interceptor</code> objects
-        * @org.apache.xbean.Property description="a list of beans configuring interceptors that process fault 
-        * messages being returned to the consumer"
-        * */
+     * Specifies a list of interceptors used to process faults sent by the
+     * endpoint.
+     * 
+     * @param interceptors
+     *            a list of <code>Interceptor</code> objects
+     * @org.apache.xbean.Property description="a list of beans configuring
+     *                            interceptors that process fault messages being
+     *                            returned to the consumer"
+     */
     public void setOutFaultInterceptors(List<Interceptor> interceptors) {
         outFault = interceptors;
     }
 
     public void process(MessageExchange exchange) throws Exception {
-        synchronized (messages.get(exchange.getExchangeId())) {
-            messages.get(exchange.getExchangeId()).notifyAll();
-        }
+        
         Message message = messages.remove(exchange.getExchangeId());
-        if (exchange.getStatus() == ExchangeStatus.ACTIVE) {
-            exchange.setStatus(ExchangeStatus.DONE);
-            message.getExchange().get(ComponentContext.class)
+                
+        synchronized (message.getInterceptorChain()) {
+            
+            if (!isSynchronous()) {
+                                     
+                ContinuationProvider continuationProvider = (ContinuationProvider) message
+                        .get(ContinuationProvider.class.getName());
+                continuationProvider.getContinuation().resume();
+            } 
+            if (exchange.getStatus() == ExchangeStatus.ACTIVE) {
+                exchange.setStatus(ExchangeStatus.DONE);
+                message.getExchange().get(ComponentContext.class)
                     .getDeliveryChannel().send(exchange);
+            }
         }
+        
+        
     }
 
     @Override
@@ -276,15 +299,18 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
 
     private void registerListServiceHandler() {
         if (server.getDestination() instanceof JettyHTTPDestination) {
-            JettyHTTPDestination jettyDest = (JettyHTTPDestination) server.getDestination();
-            JettyHTTPServerEngine jettyEng = (JettyHTTPServerEngine) jettyDest.getEngine();
+            JettyHTTPDestination jettyDest = (JettyHTTPDestination) server
+                    .getDestination();
+            JettyHTTPServerEngine jettyEng = (JettyHTTPServerEngine) jettyDest
+                    .getEngine();
             List<Handler> handlers = jettyEng.getHandlers();
             if (handlers == null) {
                 handlers = new ArrayList<Handler>();
                 jettyEng.setHandlers(handlers);
             }
-            handlers.add(new ListServiceHandler(getBus().getExtension(ServerRegistry.class)));
-                
+            handlers.add(new ListServiceHandler(getBus().getExtension(
+                    ServerRegistry.class)));
+
         }
     }
 
@@ -302,7 +328,7 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     public void validate() throws DeploymentException {
         try {
             if (definition == null) {
-                
+
                 retrieveWSDL();
             }
             if (service == null) {
@@ -317,11 +343,11 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
             }
             WSDLServiceFactory factory = new WSDLServiceFactory(getBus(),
                     definition, service);
-            
+
             Service cxfService = factory.create();
 
-            ei = cxfService.getServiceInfos().iterator().next()
-                    .getEndpoints().iterator().next();
+            ei = cxfService.getServiceInfos().iterator().next().getEndpoints()
+                    .iterator().next();
             for (ServiceInfo serviceInfo : cxfService.getServiceInfos()) {
                 if (serviceInfo.getName().equals(service)
                         && getEndpoint() != null
@@ -349,18 +375,20 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
             cxfService.getInInterceptors().add(new StaxInInterceptor());
             cxfService.getInInterceptors().add(
                     new ReadHeadersInterceptor(getBus()));
+            cxfService.getInInterceptors().add(new JbiOperationInterceptor());
             cxfService.getInInterceptors().add(
-                    new JbiOperationInterceptor());
-            cxfService.getInInterceptors().add(
-                    new JbiInWsdl1Interceptor(isUseJBIWrapper(), isUseSOAPEnvelope()));
+                    new JbiInWsdl1Interceptor(isUseJBIWrapper(),
+                            isUseSOAPEnvelope()));
             cxfService.getInInterceptors().add(new JbiInInterceptor());
-            cxfService.getInInterceptors().add(new JbiJAASInterceptor(
-                    ((CxfBcComponent)this.getServiceUnit().getComponent()).
-                    getConfiguration().getAuthenticationService()));
+            cxfService.getInInterceptors().add(
+                    new JbiJAASInterceptor(((CxfBcComponent) this
+                            .getServiceUnit().getComponent())
+                            .getConfiguration().getAuthenticationService()));
             cxfService.getInInterceptors().add(new JbiInvokerInterceptor());
             cxfService.getInInterceptors().add(new JbiPostInvokerInterceptor());
             if (isMtomEnabled()) {
-                cxfService.getInInterceptors().add(new ParseContentTypeInterceptor());
+                cxfService.getInInterceptors().add(
+                        new ParseContentTypeInterceptor());
             }
 
             cxfService.getInInterceptors().add(new OutgoingChainInterceptor());
@@ -372,7 +400,7 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
             cxfService.getOutInterceptors().add(new AttachmentOutInterceptor());
             cxfService.getOutInterceptors().add(
                     new MtomCheckInterceptor(isMtomEnabled()));
-            
+
             cxfService.getOutInterceptors().add(new StaxOutInterceptor());
             cxfService.getOutInterceptors().add(
                     new SoapPreProtocolOutInterceptor());
@@ -381,7 +409,6 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
             cxfService.getOutFaultInterceptors().add(
                     new SoapOutInterceptor(getBus()));
 
-            
             ep = new EndpointImpl(getBus(), cxfService, ei);
             getInInterceptors().addAll(getBus().getInInterceptors());
             getInFaultInterceptors().addAll(getBus().getInFaultInterceptors());
@@ -424,39 +451,52 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
         }
     }
 
-    private void retrieveWSDL() throws JBIException, WSDLException, DeploymentException, IOException {
+    private void retrieveWSDL() throws JBIException, WSDLException,
+            DeploymentException, IOException {
         if (wsdl == null) {
             if (getTargetService() != null && getTargetEndpoint() != null) {
-                ServiceEndpoint serviceEndpoint 
-                    = getServiceUnit().getComponent().getComponentContext().getEndpoint(getTargetService(), getTargetEndpoint());
+                ServiceEndpoint serviceEndpoint = getServiceUnit()
+                        .getComponent().getComponentContext().getEndpoint(
+                                getTargetService(), getTargetEndpoint());
                 if (serviceEndpoint != null) {
-                    description = 
-                        this.getServiceUnit().getComponent().getComponentContext().getEndpointDescriptor(serviceEndpoint);
+                    description = this.getServiceUnit().getComponent()
+                            .getComponentContext().getEndpointDescriptor(
+                                    serviceEndpoint);
                     definition = getBus().getExtension(WSDLManager.class)
-                        .getDefinition((Element)description.getFirstChild());
-                    List address = definition.getService(getTargetService()).getPort(getTargetEndpoint()).getExtensibilityElements();
+                            .getDefinition(
+                                    (Element) description.getFirstChild());
+                    List address = definition.getService(getTargetService())
+                            .getPort(getTargetEndpoint())
+                            .getExtensibilityElements();
                     if (address == null || address.size() == 0) {
                         SOAPAddressImpl soapAddress = new SOAPAddressImpl();
-                        //specify default transport if there is no one in the internal wsdl
+                        // specify default transport if there is no one in the
+                        // internal wsdl
                         soapAddress.setLocationURI("http://localhost");
-                        definition.getService(getTargetService()).getPort(getTargetEndpoint()).addExtensibilityElement(soapAddress);
+                        definition.getService(getTargetService()).getPort(
+                                getTargetEndpoint()).addExtensibilityElement(
+                                soapAddress);
                     }
-                    List binding = definition.getService(getTargetService()).getPort(
-                            getTargetEndpoint()).getBinding().getExtensibilityElements();
+                    List binding = definition.getService(getTargetService())
+                            .getPort(getTargetEndpoint()).getBinding()
+                            .getExtensibilityElements();
                     if (binding == null || binding.size() == 0) {
-                        //no binding info in the internal wsdl so we need add default soap11 binding
+                        // no binding info in the internal wsdl so we need add
+                        // default soap11 binding
                         SOAPBinding soapBinding = new SOAPBindingImpl();
-                        soapBinding.setTransportURI("http://schemas.xmlsoap.org/soap/http");
+                        soapBinding
+                                .setTransportURI("http://schemas.xmlsoap.org/soap/http");
                         soapBinding.setStyle("document");
-                        definition.getService(getTargetService()).getPort(getTargetEndpoint()).getBinding().
-                            addExtensibilityElement(soapBinding);
+                        definition.getService(getTargetService()).getPort(
+                                getTargetEndpoint()).getBinding()
+                                .addExtensibilityElement(soapBinding);
                     }
-                    
+
                 }
             } else {
                 throw new DeploymentException("can't get wsdl");
             }
-            
+
         } else {
             description = DomUtil.parse(wsdl.getInputStream());
             try {
@@ -484,13 +524,15 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     }
 
     /**
-           * Specifies the HTTP address to which requests are sent. This value
-           * will overide any value specified in the WSDL.
-           *
-           * @param locationURI the URI as a string
-           * @org.apache.xbean.Property description="the HTTP address to which requests are sent. 
-           * This value will overide any value specified in the WSDL."
-           **/
+     * Specifies the HTTP address to which requests are sent. This value will
+     * overide any value specified in the WSDL.
+     * 
+     * @param locationURI
+     *            the URI as a string
+     * @org.apache.xbean.Property description="the HTTP address to which
+     *                            requests are sent. This value will overide any
+     *                            value specified in the WSDL."
+     */
     public void setLocationURI(String locationURI) {
         this.locationURI = locationURI;
     }
@@ -601,11 +643,27 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
                             timeout * 1000);
                     process(exchange);
                 } else {
-                    synchronized (CxfBcConsumer.this.messages.get(exchange.getExchangeId())) {
-                        context.getDeliveryChannel().send(exchange);
-                        CxfBcConsumer.this.messages.get(exchange.getExchangeId()).wait(timeout * 1000);
+                    synchronized (((ContinuationProvider) message.get(
+                            ContinuationProvider.class.getName())).getContinuation()) {
+                        ContinuationProvider continuationProvider = 
+                            (ContinuationProvider) message.get(ContinuationProvider.class.getName());
+                        Continuation continuation = continuationProvider.getContinuation();
+                        if (!continuation.isPending()) {
+                            context.getDeliveryChannel().send(exchange);
+                            continuation.suspend(timeout * 1000);
+                        } else {
+                            //retry or timeout
+                            if (!continuation.isResumed()) {
+                                //exchange timeout
+                                throw new Exception("Exchange timed out: " + exchange.getExchangeId());
+                            }
+                                                       
+                        }
+
                     }
                 }
+            } catch (org.apache.cxf.continuations.SuspendedInvocationException e) {
+                throw e;
             } catch (Exception e) {
                 throw new Fault(e);
             }
@@ -635,30 +693,32 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
                                 new org.apache.cxf.common.i18n.Message(
                                         "Fault occured", (ResourceBundle) null));
                         if (exchange.getProperty("faultstring") != null) {
-                            f.setMessage((String)exchange.getProperty("faultstring"));
+                            f.setMessage((String) exchange
+                                    .getProperty("faultstring"));
                         } else {
                             Element details = toElement(exchange.getFault()
-                                .getContent());
+                                    .getContent());
                             f.setDetail(details);
                         }
-                        
-                                                
+
                     } else {
                         Element details = toElement(exchange.getFault()
                                 .getContent());
-                                     
+
                         if (isUseSOAPEnvelope()) {
                             details = (Element) details.getElementsByTagNameNS(
-                                details.getNamespaceURI(), "Body").item(0);
+                                    details.getNamespaceURI(), "Body").item(0);
                             assert details != null;
                             details = (Element) details.getElementsByTagNameNS(
-                                details.getNamespaceURI(), "Fault").item(0);
+                                    details.getNamespaceURI(), "Fault").item(0);
                         }
                         assert details != null;
                         if (exchange.getProperty("faultstring") != null) {
-                            details = (Element) details.getElementsByTagName("faultstring").item(0);
+                            details = (Element) details.getElementsByTagName(
+                                    "faultstring").item(0);
                         } else {
-                            details = (Element) details.getElementsByTagName("detail").item(0);
+                            details = (Element) details.getElementsByTagName(
+                                    "detail").item(0);
                         }
 
                         assert details != null;
@@ -668,13 +728,13 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
                                 new QName(details.getNamespaceURI(), "detail"));
                         f.setDetail(details);
                         if (exchange.getProperty("faultstring") != null) {
-                            f.setMessage((String)exchange.getProperty("faultstring"));
+                            f.setMessage((String) exchange
+                                    .getProperty("faultstring"));
                         }
 
                     }
                     processFaultDetail(f, message);
                     message.put(BindingFaultInfo.class, faultWanted);
-                    
 
                     throw f;
                 } else if (exchange.getMessage("out") != null) {
@@ -684,7 +744,7 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
                         outMessage = endpoint.getBinding().createMessage();
                         ex.setOutMessage(outMessage);
                     }
-                    
+
                     NormalizedMessage norMessage = (NormalizedMessage) exchange
                             .getMessage("out");
 
@@ -699,10 +759,10 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
                     outMessage.setContent(Source.class, exchange.getMessage(
                             "out").getContent());
                     Set attachmentNames = norMessage.getAttachmentNames();
-                    
+
                     Iterator iter = attachmentNames.iterator();
                     while (iter.hasNext()) {
-                        String id = (String)iter.next();
+                        String id = (String) iter.next();
                         DataHandler dh = norMessage.getAttachment(id);
                         attachmentList.add(new AttachmentImpl(id, dh));
                     }
@@ -718,7 +778,7 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
             if (fault.getDetail() == null) {
                 return;
             }
-            
+
             Element exDetail = (Element) DOMUtils.getChild(fault.getDetail(),
                     Node.ELEMENT_NODE);
             if (exDetail == null) {
@@ -779,14 +839,18 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     }
 
     /**
-        * Specifies the location of the CXF configuraiton file used to configure
-        * the CXF bus. This allows you to access features like JMS runtime 
-        * behavior and WS-RM.
-        *
-        * @param busCfg a string containing the relative path to the configuration file
-        * @org.apache.xbean.Property description="the location of the CXF configuration file used to configure the CXF bus. 
-        * This allows you to configure features like WS-RM and JMS runtime behavior."
-        **/
+     * Specifies the location of the CXF configuraiton file used to configure
+     * the CXF bus. This allows you to access features like JMS runtime behavior
+     * and WS-RM.
+     * 
+     * @param busCfg
+     *            a string containing the relative path to the configuration
+     *            file
+     * @org.apache.xbean.Property description="the location of the CXF
+     *                            configuration file used to configure the CXF
+     *                            bus. This allows you to configure features
+     *                            like WS-RM and JMS runtime behavior."
+     */
     public void setBusCfg(String busCfg) {
         this.busCfg = busCfg;
     }
@@ -796,12 +860,14 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     }
 
     /**
-          * Specifies if the endpoint can support binnary attachments.
-          *
-          * @param  mtomEnabled a boolean
-          * @org.apache.xbean.Property description="Specifies if MTOM / attachment support is enabled. 
-          * Default is <code>false</code>."
-          **/
+     * Specifies if the endpoint can support binnary attachments.
+     * 
+     * @param mtomEnabled
+     *            a boolean
+     * @org.apache.xbean.Property description="Specifies if MTOM / attachment
+     *                            support is enabled. Default is
+     *                            <code>false</code>."
+     */
     public void setMtomEnabled(boolean mtomEnabled) {
         this.mtomEnabled = mtomEnabled;
     }
@@ -811,13 +877,15 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     }
 
     /**
-          * Specifies the interval for which the endpoint will wait for a 
-          * response, This is specified in seconds.
-          *
-          * @param  timeout the number of millis to wait for a response
-          * @org.apache.xbean.Property description="the number of millis the endpoint will wait for a response. 
-          * The default is 1 hour."
-          **/
+     * Specifies the interval for which the endpoint will wait for a response,
+     * This is specified in seconds.
+     * 
+     * @param timeout
+     *            the number of millis to wait for a response
+     * @org.apache.xbean.Property description="the number of millis the endpoint
+     *                            will wait for a response. The default is 1
+     *                            hour."
+     */
     public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
@@ -827,14 +895,16 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     }
 
     /**
-     * Specifies if the endpoint expects messages to use the JBI wrapper 
-     * for SOAP messages.
-     *
-     * @param  useJBIWrapper a boolean
-     * @org.apache.xbean.Property description="Specifies if the JBI wrapper 
-     * is sent in the body of the message. Default is <code>true</code>.
-     *  Ignore the value of useSOAPEnvelope if useJBIWrapper is true"
-     **/
+     * Specifies if the endpoint expects messages to use the JBI wrapper for
+     * SOAP messages.
+     * 
+     * @param useJBIWrapper
+     *            a boolean
+     * @org.apache.xbean.Property description="Specifies if the JBI wrapper is
+     *                            sent in the body of the message. Default is
+     *                            <code>true</code>. Ignore the value of
+     *                            useSOAPEnvelope if useJBIWrapper is true"
+     */
     public void setUseJBIWrapper(boolean useJBIWrapper) {
         this.useJBIWrapper = useJBIWrapper;
     }
@@ -842,14 +912,17 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     public boolean isUseJBIWrapper() {
         return useJBIWrapper;
     }
-   
+
     /**
-     * Specifies if the endpoint expects soap messages when useJBIWrapper is false, 
-     * if useJBIWrapper is true then ignore useSOAPEnvelope
-     *
-     * @org.apache.xbean.Property description="Specifies if the endpoint expects soap messages when useJBIWrapper is false, 
-     *              if useJBIWrapper is true then ignore useSOAPEnvelope. The  default is <code>true</code>.
-     * */
+     * Specifies if the endpoint expects soap messages when useJBIWrapper is
+     * false, if useJBIWrapper is true then ignore useSOAPEnvelope
+     * 
+     * @org.apache.xbean.Property description="Specifies if the endpoint expects
+     *                            soap messages when useJBIWrapper is false, if
+     *                            useJBIWrapper is true then ignore
+     *                            useSOAPEnvelope. The default is
+     *                            <code>true</code>.
+     */
     public void setUseSOAPEnvelope(boolean useSOAPEnvelope) {
         this.useSOAPEnvelope = useSOAPEnvelope;
     }
@@ -857,12 +930,16 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     public boolean isUseSOAPEnvelope() {
         return useSOAPEnvelope;
     }
+
     /**
-     * Specifies if the endpoint expects send messageExchange by sendSync 
-     * @param  synchronous a boolean
-     * @org.apache.xbean.Property description="Specifies if the endpoint expects send messageExchange by sendSync . 
-     * Default is <code>true</code>."
-     **/
+     * Specifies if the endpoint expects send messageExchange by sendSync
+     * 
+     * @param synchronous
+     *            a boolean
+     * @org.apache.xbean.Property description="Specifies if the endpoint expects
+     *                            send messageExchange by sendSync . Default is
+     *                            <code>true</code>."
+     */
     public void setSynchronous(boolean synchronous) {
         this.synchronous = synchronous;
     }
