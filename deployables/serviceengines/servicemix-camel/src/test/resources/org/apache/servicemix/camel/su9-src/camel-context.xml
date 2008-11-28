@@ -29,17 +29,8 @@
     <route errorHandlerRef="deadLetterErrorHandler">
       <from uri="jbi:service:urn:test:fault-handled-true"/>
       <onException>
-        <!-- Catch exception from in-only message exchange -->
+        <!-- Catch exception from in-only/robust-in-only message exchange -->
         <exception>org.apache.servicemix.jbi.FaultException</exception>
-        <redeliveryPolicy maximumRedeliveries="0"/>
-        <handled>
-          <constant>true</constant>
-        </handled>
-        <to uri="jbi:service:urn:test:receiver-service"/>
-      </onException>
-      <onException>
-        <!-- Catch exception from robust-in-only message exchange -->
-        <exception>org.apache.camel.CamelException</exception>
         <redeliveryPolicy maximumRedeliveries="0"/>
         <handled>
           <constant>true</constant>
