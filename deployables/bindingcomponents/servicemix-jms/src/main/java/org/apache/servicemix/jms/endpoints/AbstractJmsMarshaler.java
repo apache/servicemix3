@@ -32,6 +32,12 @@ import javax.jms.Message;
  */
 public abstract class AbstractJmsMarshaler {
 
+    public static final String DONE_JMS_PROPERTY = "JBIDone";
+
+    public static final String FAULT_JMS_PROPERTY = "JBIFault";
+
+    public static final String ERROR_JMS_PROPERTY = "JBIError";
+
     /**
      * Should marshaler copy properties set in messages?
      */
@@ -108,7 +114,7 @@ public abstract class AbstractJmsMarshaler {
      * @param value the property value
      * @return true if it should be copied
      */
-    private boolean shouldIncludeHeader(String name, Object value) {
+    protected boolean shouldIncludeHeader(String name, Object value) {
         boolean allowed = value instanceof Boolean || value instanceof Byte || value instanceof Short;
         allowed |= value instanceof Integer || value instanceof Long || value instanceof Float;
         allowed |= value instanceof Double || value instanceof String;
