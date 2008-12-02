@@ -16,6 +16,8 @@
  */
 package org.apache.servicemix.jbi.monitoring;
 
+import java.util.concurrent.CountDownLatch;
+
 import javax.jbi.JBIException;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
@@ -24,6 +26,8 @@ import junit.framework.TestCase;
 
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.event.EndpointAdapter;
+import org.apache.servicemix.jbi.event.EndpointEvent;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.messaging.DeliveryChannelImplTest.TestComponent;
@@ -51,13 +55,25 @@ public class StatisticsServiceTest extends TestCase {
         service = new StatisticsService();
     }
     
-    public void testAddEndpointStatsByListener() throws JBIException {
+    public void testAddEndpointStatsByListener() throws JBIException, InterruptedException {
+        // setup a latch to keep track of events being fired by a background thread
+        final CountDownLatch latch = new CountDownLatch(1);
+        container.addListener(new EndpointAdapter() {
+            @Override
+            public void internalEndpointRegistered(EndpointEvent event) {
+                latch.countDown();
+            } 
+        });
+        
         // initialize and start the StatisticsService
         service.init(container);
         service.start();
-
+        
         // now register a new endpoint
         ServiceEndpoint endpoint = registerEndpoint();
+        
+        // ensure that the event has been fired by the event dispatch thread
+        latch.await();
 
         // StatisticsService should know about the endpoint/component through listener callbacks
         assertNotNull(service.getComponentStats().get(COMPONENT));

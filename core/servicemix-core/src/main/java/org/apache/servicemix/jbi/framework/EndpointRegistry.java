@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import javax.jbi.JBIException;
 import javax.jbi.component.ComponentContext;
@@ -65,6 +67,8 @@ public class EndpointRegistry {
     
     private List<EndpointProcessor> endpointProcessors;
     
+    private Executor executor = Executors.newSingleThreadExecutor();
+    
     /**
      * Constructor
      * 
@@ -78,6 +82,11 @@ public class EndpointRegistry {
         this.linkedEndpoints = new ConcurrentHashMap<String, ServiceEndpoint>();
         this.interfaceConnections = new ConcurrentHashMap<QName, InterfaceConnection>();
         this.endpointProcessors = getEndpointProcessors();
+        this.executor.execute(new Runnable() {
+            public void run() {
+                LOG.debug("Initializing endpoint event dispatch thread");
+            }
+        });
     }
     
     private List<EndpointProcessor> getEndpointProcessors() {
@@ -517,40 +526,42 @@ public class EndpointRegistry {
         }
     }
 
-    protected void fireEvent(ServiceEndpoint ep, int type) {
-        EndpointEvent event = new EndpointEvent(ep, type);
-        EndpointListener[] listeners = (EndpointListener[]) registry.getContainer().getListeners(EndpointListener.class);
-        for (int i = 0; i < listeners.length; i++) {
-            switch (type) {
-            case EndpointEvent.INTERNAL_ENDPOINT_REGISTERED:
-                listeners[i].internalEndpointRegistered(event);
-                break;
-            case EndpointEvent.INTERNAL_ENDPOINT_UNREGISTERED:
-                listeners[i].internalEndpointUnregistered(event);
-                break;
-            case EndpointEvent.EXTERNAL_ENDPOINT_REGISTERED:
-                listeners[i].externalEndpointRegistered(event);
-                break;
-            case EndpointEvent.EXTERNAL_ENDPOINT_UNREGISTERED:
-                listeners[i].externalEndpointUnregistered(event);
-                break;
-            case EndpointEvent.LINKED_ENDPOINT_REGISTERED:
-                listeners[i].linkedEndpointRegistered(event);
-                break;
-            case EndpointEvent.LINKED_ENDPOINT_UNREGISTERED:
-                listeners[i].linkedEndpointUnregistered(event);
-                break;
-            case EndpointEvent.REMOTE_ENDPOINT_REGISTERED:
-                listeners[i].remoteEndpointRegistered(event);
-                break;
-            case EndpointEvent.REMOTE_ENDPOINT_UNREGISTERED:
-                listeners[i].remoteEndpointUnregistered(event);
-                break;
-            default:
-                break;
+    protected synchronized void fireEvent(final ServiceEndpoint ep, final int type) {
+        executor.execute(new Runnable() {
+            public void run() {
+                EndpointEvent event = new EndpointEvent(ep, type);
+                EndpointListener[] listeners = (EndpointListener[]) registry.getContainer().getListeners(EndpointListener.class);
+                for (int i = 0; i < listeners.length; i++) {
+                    switch (type) {
+                    case EndpointEvent.INTERNAL_ENDPOINT_REGISTERED:
+                        listeners[i].internalEndpointRegistered(event);
+                        break;
+                    case EndpointEvent.INTERNAL_ENDPOINT_UNREGISTERED:
+                        listeners[i].internalEndpointUnregistered(event);
+                        break;
+                    case EndpointEvent.EXTERNAL_ENDPOINT_REGISTERED:
+                        listeners[i].externalEndpointRegistered(event);
+                        break;
+                    case EndpointEvent.EXTERNAL_ENDPOINT_UNREGISTERED:
+                        listeners[i].externalEndpointUnregistered(event);
+                        break;
+                    case EndpointEvent.LINKED_ENDPOINT_REGISTERED:
+                        listeners[i].linkedEndpointRegistered(event);
+                        break;
+                    case EndpointEvent.LINKED_ENDPOINT_UNREGISTERED:
+                        listeners[i].linkedEndpointUnregistered(event);
+                        break;
+                    case EndpointEvent.REMOTE_ENDPOINT_REGISTERED:
+                        listeners[i].remoteEndpointRegistered(event);
+                        break;
+                    case EndpointEvent.REMOTE_ENDPOINT_UNREGISTERED:
+                        listeners[i].remoteEndpointUnregistered(event);
+                        break;
+                    default:
+                        break;
+                    }
+                }
             }
-        }
-        
+        });
     }
-
 }
