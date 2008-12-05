@@ -16,20 +16,29 @@
  */
 package org.apache.servicemix.cxfse;
 
+import java.util.concurrent.Future;
 
 import javax.jbi.component.ComponentContext;
 import javax.jws.WebService;
+import javax.xml.ws.AsyncHandler;
+import javax.xml.ws.Response;
 
 import org.apache.cxf.calculator.CalculatorPortType;
-
-
+import org.apache.hello_world_soap_http.BadRecordLitFault;
+import org.apache.hello_world_soap_http.Greeter;
+import org.apache.hello_world_soap_http.NoSuchCodeLitFault;
+import org.apache.hello_world_soap_http.types.GreetMeLaterResponse;
+import org.apache.hello_world_soap_http.types.GreetMeResponse;
+import org.apache.hello_world_soap_http.types.GreetMeSometimeResponse;
+import org.apache.hello_world_soap_http.types.SayHiResponse;
+import org.apache.hello_world_soap_http.types.TestDocLitFaultResponse;
+import org.apache.hello_world_soap_http.types.TestNillableResponse;
 
 @WebService(serviceName = "SOAPService", 
         portName = "SoapPort", 
         endpointInterface = "org.apache.hello_world_soap_http.Greeter", 
         targetNamespace = "http://apache.org/hello_world_soap_http")
-
-public class GreeterImplForClientProxy {
+public class GreeterImplForClientProxy implements Greeter {
 
     private ComponentContext context;
     private CalculatorPortType calculator;
@@ -61,6 +70,73 @@ public class GreeterImplForClientProxy {
         return calculator;
     }
 
-    
+    public Response<GreetMeResponse> greetMeAsync(String arg0) {
+        return null;
+    }
 
+    public Future<?> greetMeAsync(String arg0, AsyncHandler<GreetMeResponse> arg1) {
+        return null;
+    }
+
+    public String greetMeLater(long arg0) {
+        return null;
+    }
+
+    public Response<GreetMeLaterResponse> greetMeLaterAsync(long arg0) {
+        return null;
+    }
+
+    public Future<?> greetMeLaterAsync(long arg0, AsyncHandler<GreetMeLaterResponse> arg1) {
+        return null;
+    }
+
+    public void greetMeOneWay(String arg0) {        
+    }
+
+    public String greetMeSometime(String arg0) {
+        return null;
+    }
+
+    public Response<GreetMeSometimeResponse> greetMeSometimeAsync(String arg0) {
+        return null;
+    }
+
+    public Future<?> greetMeSometimeAsync(String arg0, AsyncHandler<GreetMeSometimeResponse> arg1) {
+        return null;
+    }
+
+    public String sayHi() {
+        return null;
+    }
+
+    public Response<SayHiResponse> sayHiAsync() {
+        return null;
+    }
+
+    public Future<?> sayHiAsync(AsyncHandler<SayHiResponse> arg0) {
+        return null;
+    }
+
+    public void testDocLitFault(String arg0) throws BadRecordLitFault, NoSuchCodeLitFault {
+    }
+
+    public Response<TestDocLitFaultResponse> testDocLitFaultAsync(String arg0) {
+        return null;
+    }
+
+    public Future<?> testDocLitFaultAsync(String arg0, AsyncHandler<TestDocLitFaultResponse> arg1) {
+        return null;
+    }
+
+    public String testNillable(String arg0, int arg1) {
+        return null;
+    }
+
+    public Response<TestNillableResponse> testNillableAsync(String arg0, int arg1) {
+        return null;
+    }
+
+    public Future<?> testNillableAsync(String arg0, int arg1, AsyncHandler<TestNillableResponse> arg2) {
+        return null;
+    }
 }
