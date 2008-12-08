@@ -503,6 +503,8 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                     LOG.debug("Exchange " + messageExchange.getExchangeId() + " has been aborted");
                 }
                 me.getPacket().setAborted(true);
+                me.getPacket().setError(new RuntimeException("sendSync timeout for " 
+                        + messageExchange.getExchangeId()));
                 result = false;
             }
         } catch (InterruptedException e) {

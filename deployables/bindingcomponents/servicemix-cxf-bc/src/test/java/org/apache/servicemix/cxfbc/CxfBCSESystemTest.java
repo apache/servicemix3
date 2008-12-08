@@ -94,6 +94,8 @@ public class CxfBCSESystemTest extends SpringTestSupport {
         calculatorTestBase();
     }
     
+    
+    
     public void testMultipleClientWithJBIWrapper() throws Exception {
         setUpJBI("org/apache/servicemix/cxfbc/xbean.xml");
         multiClientTestBase();
@@ -104,6 +106,23 @@ public class CxfBCSESystemTest extends SpringTestSupport {
         multiClientTestBase();
     }
     
+    public void testConsumerSendSyncTimeout() throws Exception {
+        setUpJBI("org/apache/servicemix/cxfbc/xbean_timeout.xml");
+        URL wsdl = getClass().getResource("/wsdl/calculator.wsdl");
+        assertNotNull(wsdl);
+        CalculatorService service = new CalculatorService(wsdl, new QName(
+                "http://apache.org/cxf/calculator", "CalculatorService"));
+        CalculatorPortType port = service.getCalculatorPort();
+        ClientProxy.getClient(port).getInFaultInterceptors().add(new LoggingInInterceptor());
+        ClientProxy.getClient(port).getInInterceptors().add(new LoggingInInterceptor());
+                
+        try {
+            port.add(1, 1);
+            fail("should get exception since this will cause sendSync timeout");
+        } catch (Exception e) {
+            assertTrue(e.getMessage().startsWith("sendSync timeout"));
+        }
+    }
 
     
     private void calculatorTestBase() throws Exception {
