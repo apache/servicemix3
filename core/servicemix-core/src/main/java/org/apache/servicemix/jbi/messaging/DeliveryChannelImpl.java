@@ -491,7 +491,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
                 ExchangeEvent event = new ExchangeEvent(me, ExchangeEvent.EXCHANGE_ACCEPTED);
                 for (int i = 0; i < l.length; i++) {
                     try {
-                        l[i].exchangeSent(event);
+                        l[i].exchangeAccepted(event);
                     } catch (Exception e) {
                         LOG.warn("Error calling listener: " + e.getMessage(), e);
                     }
