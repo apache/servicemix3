@@ -44,7 +44,7 @@ echo                     http-consumer, http-provider,
 echo                     jms-consumer, jms-provider,
 echo                     file-poller, file-sender,
 echo                     ftp-poller, ftp-sender,
-echo                     jsr181-annotated, jsr181-wsdl-first, mail, 
+echo                     jsr181-annotated, jsr181-wsdl-first, mail, quartz, 
 echo                     saxon-xquery, saxon-xslt, snmp, osworkflow,
 echo                     eip, lwcontainer, bean, ode, camel, scripting,
 echo                     cxf-se, cxf-se-wsdl-first, cxf-bc, validation
