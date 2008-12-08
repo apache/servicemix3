@@ -16,7 +16,8 @@
  */
 package org.apache.servicemix.jbi.framework;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -51,8 +52,8 @@ import org.apache.servicemix.jbi.event.DeploymentEvent;
 import org.apache.servicemix.jbi.event.DeploymentListener;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseSystemService;
-import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.servicemix.jbi.util.XmlPersistenceSupport;
+import org.apache.servicemix.util.FileUtil;
 
 /**
  * Monitors install and deploy directories to auto install/deploy archives
@@ -696,15 +697,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
 
     private boolean isAvailable(File file) {
         // First check to see if the file is still growing
-        long targetLength = file.length();
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            //Do nothing
-        }
-        long target2Length = file.length();
-
-        if (targetLength != target2Length) {
+        if (!FileUtil.isFileFullyAvailable(file)) {
             LOG.warn("File is still being copied, deployment deferred to next cycle: " + file.getName());
             return false;
         }
