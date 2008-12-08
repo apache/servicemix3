@@ -62,6 +62,12 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-mina</artifactId>
+      <version>${camel-version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-shared</artifactId>
     </dependency>
@@ -204,6 +210,8 @@
             <include>**/*Test.*</include>
           </includes>
           <excludes>
+            <!-- Enable this test when we upgrade to Camel 1.5.1 or 2.0.0 (Fix is in CAMEL-1146) -->
+            <exclude>**/MinaEndpointSpringDSLTest.*</exclude>
           </excludes>
         </configuration>
       </plugin>
