@@ -30,10 +30,6 @@
     <artifactId>servicemix-service</artifactId>
     <name>ServiceMix :: Geronimo :: ServiceMix service</name>
 
-    <properties>
-        <activemq-version>4.1.1</activemq-version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.servicemix</groupId>
