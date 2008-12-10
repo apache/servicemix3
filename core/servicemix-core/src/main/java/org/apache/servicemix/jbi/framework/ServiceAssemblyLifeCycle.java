@@ -98,6 +98,28 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
     }
 
     /**
+     * Initialize all SUs in Service Assembly.
+     *
+     * @return Result/Status of this operation
+     * @throws Exception
+     */
+    public synchronized String init() throws Exception {
+        LOG.info("Initializing service assembly: " + getName());
+        // Init service units
+        List<Element> componentFailures = new ArrayList<Element>();
+        for (int i = 0; i < sus.length; i++) {
+            if (!sus[i].isStarted()) { 
+                sus[i].init();
+            }
+        } 
+        if (componentFailures.size() == 0) {
+            return ManagementSupport.createSuccessMessage("init");
+        } else {
+            throw ManagementSupport.failure("init", componentFailures);
+        }
+    }
+
+    /**
      * Start a Service Assembly and put it in the STARTED state.
      *
      * @return Result/Status of this operation.
@@ -319,17 +341,26 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
         }
         return null;
     }
-    
+   
     /**
      * Restore this service assembly to its state at shutdown.
      * @throws Exception
      */
     public synchronized void restore() throws Exception {
+        restore(true);
+    }
+ 
+    /**
+     * Restore this service assembly to its state at shutdown.
+     * @param forceInit
+     * @throws Exception
+     */
+    public synchronized void restore(boolean forceInit) throws Exception {
         String state = getRunningStateFromStore();
         if (STARTED.equals(state)) {
             start(false);
         } else {
-            stop(false, true);
+            stop(false, forceInit);
             if (SHUTDOWN.equals(state)) {
                 shutDown(false);
             }

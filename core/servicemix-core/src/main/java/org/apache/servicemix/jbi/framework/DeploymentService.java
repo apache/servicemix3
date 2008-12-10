@@ -94,14 +94,26 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
     public void start() throws javax.jbi.JBIException {
         super.start();
         String[] sas = registry.getDeployedServiceAssemblies();
+        // This loop will initialize all SAs
+        container.getBroker().suspend();
+        for (int j = 0; j < sas.length; j++) {
+            try {
+                ServiceAssemblyLifeCycle sa = registry.getServiceAssembly(sas[j]);
+                sa.init();
+            } catch (Exception e) {
+                LOG.error("Unable to initialize state for service assembly " + sas[j], e);
+            }
+        }
+        // This loop will restore SAs
         for (int i = 0; i < sas.length; i++) {
             try {
                 ServiceAssemblyLifeCycle sa = registry.getServiceAssembly(sas[i]);
-                sa.restore();
+                sa.restore(false); // Do not force init SUs 
             } catch (Exception e) {
                 LOG.error("Unable to restore state for service assembly " + sas[i], e);
             }
         }
+        container.getBroker().resume();
     }
     
     /**
