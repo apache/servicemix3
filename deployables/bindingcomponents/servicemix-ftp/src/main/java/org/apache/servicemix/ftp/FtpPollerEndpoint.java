@@ -272,7 +272,7 @@ public class FtpPollerEndpoint extends PollingEndpoint implements FtpEndpointTyp
             }
         });
     }
-
+    
     protected boolean processFileAndDelete(String file) {
         FTPClient ftp = null;
         boolean unlock = true;
@@ -281,7 +281,7 @@ public class FtpPollerEndpoint extends PollingEndpoint implements FtpEndpointTyp
             if (logger.isDebugEnabled()) {
                 logger.debug("Processing file " + file);
             }
-            if (ftp.listFiles(file).length > 0) {
+            if (isFileExistingOnServer(ftp, file)) {
                 // Process the file. If processing fails, an exception should be thrown.
                 processFile(ftp, file);
                 // Processing is successful
@@ -305,6 +305,36 @@ public class FtpPollerEndpoint extends PollingEndpoint implements FtpEndpointTyp
         return unlock;
     }
 
+    /**
+     * checks if file specified exists on server
+     * 
+     * @param ftp       the ftp client
+     * @param file      the full file path
+     * @return          true if found on server
+     */
+    private boolean isFileExistingOnServer(FTPClient ftp, String file) throws IOException {
+        boolean foundFile = false;
+        int lastIndex = file.lastIndexOf("/");
+        String directory = ".";
+        String rawName = file;
+        if (lastIndex > 0) { 
+            directory = file.substring(0, lastIndex);
+            rawName = file.substring(lastIndex + 1);
+        }
+
+        FTPFile[] files = listFiles(ftp, directory);
+        if (files.length > 0) {
+            for (FTPFile f : files) {
+                if (f.getName().equals(rawName)) {
+                    foundFile = true;
+                    break;
+                }
+            }
+        }
+
+        return foundFile;
+    }
+    
     protected void processFile(FTPClient ftp, String file) throws Exception {
         InputStream in = ftp.retrieveFileStream(file);
         InOnly exchange = getExchangeFactory().createInOnlyExchange();
