@@ -54,8 +54,11 @@ import org.apache.cxf.binding.soap.interceptor.SoapActionOutInterceptor;
 import org.apache.cxf.binding.soap.interceptor.SoapOutInterceptor;
 import org.apache.cxf.binding.soap.interceptor.SoapPreProtocolOutInterceptor;
 import org.apache.cxf.bus.spring.SpringBusFactory;
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.endpoint.ClientImpl;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.endpoint.EndpointImpl;
+import org.apache.cxf.feature.AbstractFeature;
 import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.interceptor.AttachmentOutInterceptor;
 import org.apache.cxf.interceptor.Fault;
@@ -134,6 +137,8 @@ public class CxfBcProvider extends ProviderEndpoint implements
     private boolean useSOAPEnvelope = true;
 
     private boolean synchronous = true;
+    
+    private List<AbstractFeature> features = new CopyOnWriteArrayList<AbstractFeature>();
 
     public void processExchange(MessageExchange exchange) {
 
@@ -521,10 +526,20 @@ public class CxfBcProvider extends ProviderEndpoint implements
 
     @Override
     public void start() throws Exception {
+        applyFeatures();
         super.start();
 
     }
 
+    private void applyFeatures() {
+        Client client = new ClientImpl(getBus(), ep, conduit);
+        if (getFeatures() != null) {
+            for (AbstractFeature feature : getFeatures()) {
+                feature.initialize(client, getBus());
+            }
+        }
+    }
+    
     protected Bus getBus() {
         if (getBusCfg() != null) {
             if (bus == null) {
@@ -655,6 +670,14 @@ public class CxfBcProvider extends ProviderEndpoint implements
 
     public boolean isSynchronous() {
         return synchronous;
+    }
+
+    public void setFeatures(List<AbstractFeature> features) {
+        this.features = features;
+    }
+
+    public List<AbstractFeature> getFeatures() {
+        return features;
     }
 
 }

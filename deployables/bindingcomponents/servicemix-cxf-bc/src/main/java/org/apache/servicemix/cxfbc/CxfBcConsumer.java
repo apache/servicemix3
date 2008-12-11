@@ -64,6 +64,7 @@ import org.apache.cxf.endpoint.EndpointImpl;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.endpoint.ServerImpl;
 import org.apache.cxf.endpoint.ServerRegistry;
+import org.apache.cxf.feature.AbstractFeature;
 import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.interceptor.AttachmentInInterceptor;
 import org.apache.cxf.interceptor.AttachmentOutInterceptor;
@@ -153,6 +154,8 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     private boolean useSOAPEnvelope = true;
 
     private EndpointInfo ei;
+    
+    private List<AbstractFeature> features = new CopyOnWriteArrayList<AbstractFeature>();
     
     
     /**
@@ -294,7 +297,16 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     public void start() throws Exception {
         super.start();
         registerListServiceHandler();
+        applyFeatures();
         server.start();
+    }
+    
+    private void applyFeatures() {
+        if (getFeatures() != null) {
+            for (AbstractFeature feature : getFeatures()) {
+                feature.initialize(server, getBus());
+            }
+        }
     }
 
     private void registerListServiceHandler() {
@@ -946,6 +958,14 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
 
     public boolean isSynchronous() {
         return synchronous;
+    }
+
+    public void setFeatures(List<AbstractFeature> features) {
+        this.features = features;
+    }
+
+    public List<AbstractFeature> getFeatures() {
+        return features;
     }
 
 }
