@@ -197,7 +197,7 @@ public class TransactionsTest extends TestCase {
                 super.doStop();
                 su.stop();
             }
-            protected boolean exceptionShouldRollbackTx(Exception e) {
+            protected boolean exceptionShouldRollbackTx(Throwable t) {
                 return exceptionShouldRollback;
             }
         }
