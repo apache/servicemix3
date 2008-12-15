@@ -165,13 +165,13 @@
     <dependency>
       <groupId>org.livetribe</groupId>
       <artifactId>livetribe-jsr223</artifactId>
-      <version>2.0.3</version>
+      <version>2.0.5</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>com.sun.script</groupId>
       <artifactId>groovy-engine</artifactId>
-      <version>20070112</version>
+      <version>20080611</version>
       <optional>true</optional>
     </dependency>
     <dependency>
