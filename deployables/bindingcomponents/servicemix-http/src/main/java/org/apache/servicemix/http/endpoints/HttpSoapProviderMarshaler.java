@@ -20,6 +20,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
@@ -34,6 +37,7 @@ import org.apache.servicemix.soap.bindings.soap.SoapConstants;
 import org.apache.servicemix.soap.interceptors.jbi.JbiConstants;
 import org.apache.servicemix.soap.interceptors.xml.StaxInInterceptor;
 import org.mortbay.io.ByteArrayBuffer;
+import org.mortbay.jetty.HttpHeaders;
 import org.mortbay.jetty.HttpMethods;
 
 /**
@@ -43,11 +47,22 @@ import org.mortbay.jetty.HttpMethods;
  */
 public class HttpSoapProviderMarshaler implements HttpProviderMarshaler {
 
+    private static final Set<String> DEFAULT_HEADER_BLACKLIST =
+            new HashSet<String>(
+                Arrays.asList(HttpHeaders.AUTHORIZATION,
+                              HttpHeaders.EXPECT,
+                              HttpHeaders.FORWARDED,
+                              HttpHeaders.FROM,
+                              HttpHeaders.HOST,
+                              HttpHeaders.CONTENT_ENCODING,
+                              HttpHeaders.CONTENT_TYPE));
+
     private Binding<?> binding;
     private boolean useJbiWrapper = true;
     private Policy[] policies;
     private String baseUrl;
     private String soapAction;
+    private Set<String> headerBlackList = DEFAULT_HEADER_BLACKLIST;
 
     public Binding<?> getBinding() {
         return binding;
@@ -89,6 +104,19 @@ public class HttpSoapProviderMarshaler implements HttpProviderMarshaler {
         return soapAction;
     }
     
+    public Set<String> getHeaderBlackList() {
+        return headerBlackList;
+    }
+
+    /**
+     * Specifies a list of headers to not include in the HTTP request.
+     * 
+     * @param headerBlackList list of headers to not include in the HTTP request
+     */
+    public void setHeaderBlackList(Set<String> headerBlackList) {
+        this.headerBlackList = headerBlackList;
+    }
+
     public void createRequest(final MessageExchange exchange, 
                               final NormalizedMessage inMsg, 
                               final SmxHttpExchange httpExchange) throws Exception {
@@ -107,7 +135,9 @@ public class HttpSoapProviderMarshaler implements HttpProviderMarshaler {
         httpExchange.setRequestContent(new ByteArrayBuffer(baos.toByteArray()));
         
         for (String header : msg.getTransportHeaders().keySet()) {
-            httpExchange.setRequestHeader(header, msg.getTransportHeaders().get(header));
+            if (!isBlackListed(header)) {
+                httpExchange.setRequestHeader(header, msg.getTransportHeaders().get(header));
+            }
         }
         if (soapAction != null) {
             httpExchange.setRequestHeader(SoapConstants.SOAP_ACTION_HEADER, soapAction);
@@ -143,6 +173,16 @@ public class HttpSoapProviderMarshaler implements HttpProviderMarshaler {
             }
         }
         return chain;
+    }
+
+    /**
+     * checks if a property is on black list
+     *
+     * @param name the property
+     * @return true if on black list
+     */
+    protected boolean isBlackListed(String name) {
+        return this.headerBlackList != null && this.headerBlackList.contains(name);
     }
 
 }
