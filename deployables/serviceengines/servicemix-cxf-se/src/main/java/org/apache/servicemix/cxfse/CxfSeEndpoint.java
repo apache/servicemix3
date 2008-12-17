@@ -28,6 +28,7 @@ import javax.jbi.component.ComponentContext;
 import javax.jbi.management.DeploymentException;
 import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.ExchangeStatus;
+import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.MessageExchange;
 import javax.wsdl.WSDLException;
 import javax.wsdl.factory.WSDLFactory;
@@ -347,7 +348,10 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
         if (exchange.getStatus() == ExchangeStatus.ACTIVE) {
             jbiDestination.getJBIDispatcherUtil().dispatch(exchange);
         }
-
+        if (exchange instanceof InOnly) {
+            exchange.setStatus(ExchangeStatus.DONE);
+            dc.send(exchange);
+        }
     }
 
     /*

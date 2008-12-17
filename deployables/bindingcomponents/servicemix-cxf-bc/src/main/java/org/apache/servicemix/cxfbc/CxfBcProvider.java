@@ -229,6 +229,10 @@ public class CxfBcProvider extends ProviderEndpoint implements
         } catch (Exception e) {
             faultProcess(exchange, message, e);
         }
+        if (boi.getOperationInfo().isOneWay()) {
+            exchange.setStatus(ExchangeStatus.DONE);
+            this.getChannel().send(exchange);
+        }
 
     }
 
