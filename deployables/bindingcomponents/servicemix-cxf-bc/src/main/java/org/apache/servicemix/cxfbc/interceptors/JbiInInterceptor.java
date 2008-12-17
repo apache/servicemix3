@@ -107,11 +107,7 @@ public class JbiInInterceptor extends AbstractPhaseInterceptor<Message> {
                 BindingOperationInfo.class);
         if (operation != null) {
             if (operation.getOutput() == null) {
-                if (operation.getFaults().size() == 0) {
-                    mep = MessageExchangeSupport.IN_ONLY;
-                } else {
-                    mep = MessageExchangeSupport.ROBUST_IN_ONLY;
-                }
+                mep = MessageExchangeSupport.IN_ONLY;
             } else {
                 mep = MessageExchangeSupport.IN_OUT;
             }
