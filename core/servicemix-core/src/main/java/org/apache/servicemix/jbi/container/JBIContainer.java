@@ -59,6 +59,7 @@ import org.apache.servicemix.components.util.PojoSupport;
 import org.apache.servicemix.executors.ExecutorFactory;
 import org.apache.servicemix.executors.impl.ExecutorFactoryImpl;
 import org.apache.servicemix.id.IdGenerator;
+import org.apache.servicemix.jbi.api.ComponentUtil;
 import org.apache.servicemix.jbi.api.Container;
 import org.apache.servicemix.jbi.event.ComponentListener;
 import org.apache.servicemix.jbi.event.ContainerAware;
@@ -1025,6 +1026,16 @@ public class JBIContainer extends BaseLifeCycle implements Container {
      * @return the component
      */
     public ComponentMBeanImpl getComponent(String componentName) {
+        return registry.getComponent(componentName);
+    }
+
+    /**
+     * Get the component associated with the given component ID
+     *
+     * @param componentName
+     * @return the component
+     */
+    public ComponentUtil getComponentByName(String componentName) {
         return registry.getComponent(componentName);
     }
 
