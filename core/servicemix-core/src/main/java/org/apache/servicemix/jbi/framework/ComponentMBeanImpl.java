@@ -33,7 +33,6 @@ import javax.management.ObjectName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.api.ComponentUtil;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.event.ComponentEvent;
@@ -49,7 +48,7 @@ import org.apache.xbean.classloader.DestroyableClassLoader;
 /**
  * Defines basic statistics on the Component
  */
-public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean, ComponentUtil {
+public class ComponentMBeanImpl extends BaseLifeCycle implements ComponentMBean {
     
     private static final Log LOG = LogFactory.getLog(ComponentMBeanImpl.class);
     

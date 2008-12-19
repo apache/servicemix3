@@ -1030,16 +1030,6 @@ public class JBIContainer extends BaseLifeCycle implements Container {
     }
 
     /**
-     * Get the component associated with the given component ID
-     *
-     * @param componentName
-     * @return the component
-     */
-    public ComponentUtil getComponentByName(String componentName) {
-        return registry.getComponent(componentName);
-    }
-
-    /**
      * @return all local ComponentConnectors
      */
     public Collection getLocalComponentConnectors() {
