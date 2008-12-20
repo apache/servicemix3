@@ -57,6 +57,7 @@ import org.apache.cxf.binding.soap.interceptor.SoapActionOutInterceptor;
 import org.apache.cxf.binding.soap.interceptor.SoapOutInterceptor;
 import org.apache.cxf.binding.soap.interceptor.SoapPreProtocolOutInterceptor;
 import org.apache.cxf.bus.spring.SpringBusFactory;
+import org.apache.cxf.catalog.OASISCatalogManager;
 import org.apache.cxf.continuations.Continuation;
 import org.apache.cxf.continuations.ContinuationProvider;
 import org.apache.cxf.endpoint.Endpoint;
@@ -341,7 +342,6 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     public void validate() throws DeploymentException {
         try {
             if (definition == null) {
-
                 retrieveWSDL();
             }
             if (service == null) {
@@ -510,6 +510,8 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
         } else {
             description = DomUtil.parse(wsdl.getInputStream());
             try {
+                //ensure the jax-ws-catalog is loaded
+                OASISCatalogManager.getCatalogManager(getBus()).loadContextCatalogs();
                 // use wsdl manager to parse wsdl or get cached
                 // definition
                 definition = getBus().getExtension(WSDLManager.class)
