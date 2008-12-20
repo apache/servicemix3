@@ -17,10 +17,8 @@
 package org.apache.servicemix.cxfbc.interceptors;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -39,7 +37,6 @@ import org.apache.cxf.binding.soap.model.SoapBindingInfo;
 import org.apache.cxf.binding.soap.model.SoapHeaderInfo;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.headers.Header;
-import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.helpers.NSStack;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Message;
@@ -149,8 +146,7 @@ public class JbiOutWsdl1Interceptor extends AbstractSoapInterceptor {
             if ("rpc".equals(style)) {
                 xmlWriter.writeEndElement();
             }
-            
-            setContentType(message);
+                       
         } catch (Fault e) {
             throw e;
         } catch (Exception e) {
@@ -176,25 +172,6 @@ public class JbiOutWsdl1Interceptor extends AbstractSoapInterceptor {
 
     
     
-    private void setContentType(SoapMessage message) {
-        String contentType = (String) message.get(Message.CONTENT_TYPE);
-        Map<String, List<String>> headers =
-            CastUtils.cast((Map<?, ?>)message.get(Message.PROTOCOL_HEADERS));        
-        if (null == headers) {
-            headers = new HashMap<String, List<String>>();
-            message.put(Message.PROTOCOL_HEADERS, headers);
-        }
-        if (headers.get(Message.CONTENT_TYPE) == null) {
-            List<String> ct = new ArrayList<String>();
-            ct.add(contentType);
-            headers.put(Message.CONTENT_TYPE, ct);
-        }  else {
-            List<String> ct = headers.get(Message.CONTENT_TYPE);
-            ct.add(contentType);
-        }
-        
-    }
-
     private void getRPCPartWrapper(BindingMessageInfo msg, 
                                    Element element,
                                    SoapMessage message, 

@@ -49,7 +49,7 @@ import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transport.MessageObserver;
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.cxfbc.interceptors.JbiInWsdl1Interceptor;
-import org.apache.servicemix.cxfbc.interceptors.ParseContentTypeInterceptor;
+
 
 
 public class CxfBcProviderMessageObserver implements MessageObserver {
@@ -128,7 +128,6 @@ public class CxfBcProviderMessageObserver implements MessageObserver {
             inList.add(new JbiInWsdl1Interceptor(this.providerEndpoint.isUseJBIWrapper(),
                     this.providerEndpoint.isUseSOAPEnvelope()));
             inList.add(new AttachmentInInterceptor());
-            inList.add(new ParseContentTypeInterceptor());
             PhaseInterceptorChain inChain = inboundChainCache.get(pm
                     .getInPhases(), inList);
             inChain.add(providerEndpoint.getInInterceptors());

@@ -59,7 +59,6 @@ import org.apache.cxf.endpoint.ClientImpl;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.endpoint.EndpointImpl;
 import org.apache.cxf.feature.AbstractFeature;
-import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.interceptor.AttachmentOutInterceptor;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.interceptor.Interceptor;
@@ -210,18 +209,6 @@ public class CxfBcProvider extends ProviderEndpoint implements
             if (ex != null) {
                 throw ex;
             }
-            String contentType = (String) message.get(Message.CONTENT_TYPE);
-
-            Map<String, List<String>> headers = getSetProtocolHeaders(message);
-            if (headers.get(Message.CONTENT_TYPE) == null) {
-                List<String> ct = new ArrayList<String>();
-                ct.add(contentType);
-                headers.put(Message.CONTENT_TYPE, ct);
-            } else {
-                List<String> ct = headers.get(Message.CONTENT_TYPE);
-                ct.add(contentType);
-            }
-
             os = message.getContent(OutputStream.class);
             os.flush();
             is.close();
@@ -266,15 +253,6 @@ public class CxfBcProvider extends ProviderEndpoint implements
         return outChain;
     }
 
-    private Map<String, List<String>> getSetProtocolHeaders(Message message) {
-        Map<String, List<String>> headers = CastUtils.cast((Map<?, ?>) message
-                .get(Message.PROTOCOL_HEADERS));
-        if (null == headers) {
-            headers = new HashMap<String, List<String>>();
-            message.put(Message.PROTOCOL_HEADERS, headers);
-        }
-        return headers;
-    }
 
     private void faultProcess(MessageExchange exchange, Message message,
             Exception e) throws MessagingException {
