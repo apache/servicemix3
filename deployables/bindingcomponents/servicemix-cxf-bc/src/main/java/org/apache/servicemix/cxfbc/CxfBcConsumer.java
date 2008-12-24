@@ -34,6 +34,7 @@ import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
+import javax.transaction.TransactionManager;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.xml.namespace.QName;
@@ -85,11 +86,15 @@ import org.apache.cxf.service.invoker.Invoker;
 import org.apache.cxf.service.model.BindingFaultInfo;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.EndpointInfo;
+import org.apache.cxf.service.model.FaultInfo;
 import org.apache.cxf.service.model.MessagePartInfo;
 import org.apache.cxf.service.model.ServiceInfo;
 import org.apache.cxf.transport.ChainInitiationObserver;
+import org.apache.cxf.transport.Destination;
 import org.apache.cxf.transport.http_jetty.JettyHTTPDestination;
 import org.apache.cxf.transport.http_jetty.JettyHTTPServerEngine;
+import org.apache.cxf.transport.jms.JMSConfiguration;
+import org.apache.cxf.transport.jms.JMSDestination;
 import org.apache.cxf.ws.addressing.AddressingProperties;
 import org.apache.cxf.ws.rm.Servant;
 import org.apache.cxf.wsdl.WSDLManager;
@@ -105,6 +110,7 @@ import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.soap.util.DomUtil;
 import org.mortbay.jetty.Handler;
 import org.springframework.core.io.Resource;
+import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * 
@@ -157,7 +163,8 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     
     private List<AbstractFeature> features = new CopyOnWriteArrayList<AbstractFeature>();
     
-    
+    private boolean transactionEnabled;
+        
     /**
      * @return the wsdl
      */
@@ -276,7 +283,7 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
         
         
         Message message = messages.remove(exchange.getExchangeId());
-                
+                       
         synchronized (message.getInterceptorChain()) {
             boolean oneway = message.getExchange().get(
                     BindingOperationInfo.class).getOperationInfo().isOneWay();
@@ -300,9 +307,29 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
         super.start();
         registerListServiceHandler();
         applyFeatures();
+        checkJmsTransportTransaction();
         server.start();
     }
     
+    private void checkJmsTransportTransaction() {
+        Destination destination = server.getDestination();
+        if (destination instanceof JMSDestination) {
+            JMSDestination jmsDestination = (JMSDestination)destination;
+            JMSConfiguration jmsConfig = jmsDestination.getJmsConfig();
+            if (jmsConfig.isSessionTransacted()) {
+                TransactionManager tm = (TransactionManager) getContext().getTransactionManager();
+                if (tm == null) {
+                    throw new IllegalStateException("No TransactionManager available");
+                } else if (tm instanceof PlatformTransactionManager) {
+                    jmsConfig.setTransactionManager((PlatformTransactionManager)tm);
+                    setSynchronous(true);
+                    transactionEnabled = true;
+                }
+            }
+        } 
+        
+    }
+
     private void applyFeatures() {
         if (getFeatures() != null) {
             for (AbstractFeature feature : getFeatures()) {
@@ -398,8 +425,8 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
                             .getServiceUnit().getComponent())
                             .getConfiguration().getAuthenticationService()));
             cxfService.getInInterceptors().add(new JbiInvokerInterceptor());
+                
             cxfService.getInInterceptors().add(new JbiPostInvokerInterceptor());
-            
 
             cxfService.getInInterceptors().add(new OutgoingChainInterceptor());
 
@@ -552,6 +579,8 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     public String getLocationURI() {
         return locationURI;
     }
+    
+    
 
     protected class JbiChainInitiationObserver extends ChainInitiationObserver {
 
@@ -782,8 +811,35 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
                     outMessage.setAttachments(attachmentList);
                 }
             }
-
+            
         }
+        
+        public void handleFault(Message message) {
+            if (transactionEnabled) {
+                //detect if the fault is defined in the wsdl, which means need return to client and 
+                //jms transactionManger just commit
+                Exchange ex = message.getExchange();
+                BindingOperationInfo boi = ex.get(BindingOperationInfo.class);
+                for (BindingFaultInfo bfi : boi.getFaults()) {
+                    FaultInfo fi = bfi.getFaultInfo();
+                    //get fault details
+                    MessagePartInfo mpi = fi.getMessageParts().get(0);
+                    if (mpi != null) {
+                        Fault fault = (Fault) message.getContent(Exception.class);
+                        Element detail = fault.getDetail();
+                        if (detail != null 
+                                && detail.getFirstChild().getLocalName().equals(mpi.getName().getLocalPart())) {
+                            //it's fault defined in the wsdl, so let it go back to the client
+                            return;
+                        }
+                    }
+                }
+                //this exception is undefined in the wsdl, so tell the transactionManager injected into
+                //jms transport need rollback
+                throw new RuntimeException("rollback");
+            }
+        }
+
 
         // this method is used for ws-policy to set BindingFaultInfo
         protected void processFaultDetail(Fault fault, Message msg) {

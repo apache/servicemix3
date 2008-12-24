@@ -23,6 +23,7 @@ package org.apache.servicemix.cxfbc;
                     wsdlLocation = "org/apache/servicemix/cxfbc/ws/security/hello_world.wsdl")
 public class GreeterImplTwoWayJMS extends
         org.apache.hello_world_soap_http.GreeterImpl {
+    static int count = 3;
     public String greetMe(String me) {
         System.out.println("\n\n*** GreetMe called with: " + me + "***\n\n");
         if ("ffang".equals(me)) {
@@ -40,6 +41,11 @@ public class GreeterImplTwoWayJMS extends
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+        }
+        if ("transaction".equals(me) && count > 0) {
+            //do some test designed for CxfBcJmsTransactionTest
+            count--;
+            throw new RuntimeException("triger jms transport transaction rollback");
         }
         return "Hello " + me;
     }

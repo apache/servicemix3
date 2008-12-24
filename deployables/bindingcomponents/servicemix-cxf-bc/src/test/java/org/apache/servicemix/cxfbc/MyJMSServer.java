@@ -18,6 +18,9 @@ package org.apache.servicemix.cxfbc;
 
 import javax.xml.ws.Endpoint;
 
+import org.apache.cxf.interceptor.LoggingInInterceptor;
+import org.apache.cxf.interceptor.LoggingOutInterceptor;
+import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.testutil.common.AbstractBusTestServerBase;
 
 public class MyJMSServer extends AbstractBusTestServerBase {
@@ -26,7 +29,9 @@ public class MyJMSServer extends AbstractBusTestServerBase {
         System.out.println("Starting Server");
         Object implementor = new GreeterImplTwoWayJMS();
         String address = "http://localhost:9000/SoapContext/SoapPort";
-        Endpoint.publish(address, implementor);
+        EndpointImpl endpoint = (EndpointImpl) Endpoint.publish(address, implementor);
+        endpoint.getInFaultInterceptors().add(new LoggingInInterceptor());
+        endpoint.getOutInterceptors().add(new LoggingOutInterceptor());
     }
   
     public static void main(String args[]) throws Exception {
