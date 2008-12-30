@@ -198,6 +198,12 @@
       <version>${junit-version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jencks</groupId>
+      <artifactId>jencks-amqpool</artifactId>
+      <version>${jencks-version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

@@ -83,8 +83,7 @@ public class DefaultConsumerMarshaler extends AbstractJmsMarshaler implements Jm
     public MessageExchange createExchange(JmsContext jmsContext, ComponentContext jbiContext)
         throws Exception {
         Context ctx = (Context)jmsContext;
-        MessageExchange exchange = jbiContext.getDeliveryChannel().createExchangeFactory()
-            .createExchange(mep);
+        MessageExchange exchange = jbiContext.getDeliveryChannel().createExchangeFactory().createExchange(mep);
         NormalizedMessage inMessage = exchange.createMessage();
         populateMessage(ctx.message, inMessage);
         if (isCopyProperties()) {
