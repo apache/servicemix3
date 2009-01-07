@@ -104,6 +104,18 @@
         <url-pattern>/jbi/*</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+      <servlet-name>cxf</servlet-name>
+      <display-name>cxf</display-name>
+      <description>Apache CXF Endpoint</description>
+      <servlet-class>org.apache.servicemix.web.cxf.CXFManagedServlet</servlet-class>
+      <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>cxf</servlet-name>
+      <url-pattern>/services/*</url-pattern>
+  </servlet-mapping>
+
 	  <welcome-file-list>
 			<welcome-file>index.html</welcome-file>
 			<welcome-file>index.jsp</welcome-file>
