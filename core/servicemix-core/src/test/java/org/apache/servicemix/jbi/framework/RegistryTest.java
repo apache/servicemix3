@@ -36,6 +36,7 @@ public class RegistryTest extends TestCase {
         container.start();
         
         EchoComponent component = new EchoComponent();
+        component.setService(new QName("http://foo.bar.com", "myService"));
         container.activateComponent(component, "component");
         ServiceEndpoint ep = component.getContext().activateEndpoint(new QName("http://foo.bar.com", "myService"), "myEndpoint");
         DocumentFragment epr = ep.getAsReference(null);
@@ -50,6 +51,7 @@ public class RegistryTest extends TestCase {
         container.start();
         
         EchoComponent component = new EchoComponent();
+        component.setService(new QName("http://foo.bar.com", "myService"));
         container.activateComponent(component, "component");
         ServiceEndpoint ep = component.getContext().activateEndpoint(new QName("http://foo.bar.com", "myService"), "myEndpoint");
         DocumentFragment epr = URIResolver.createWSAEPR("endpoint:http://foo.bar.com/myService/myEndpoint");

@@ -22,8 +22,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.jbi.JBIException;
+import javax.jbi.messaging.ExchangeStatus;
+import javax.jbi.messaging.Fault;
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.InOut;
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
@@ -32,8 +36,11 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.client.ServiceMixClient;
+import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.api.EndpointResolver;
+import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.tck.Receiver;
@@ -47,6 +54,7 @@ public class ServiceMixClientTest extends TestCase {
     private static transient Log log = LogFactory.getLog(ServiceMixClientTest.class);
 
     protected AbstractXmlApplicationContext context;
+    protected SpringJBIContainer container;
     protected ServiceMixClient client;
     protected Receiver receiver;
 
@@ -68,6 +76,44 @@ public class ServiceMixClientTest extends TestCase {
         client.send(exchange);
 
         receiver.getMessageList().assertMessagesReceived(1);
+    }
+
+    public void testSendWithErrorUsingJbiAPIs() throws Exception {
+
+        MessageExchange exchange = client.createInOnlyExchange();
+
+        NormalizedMessage message = exchange.getMessage("in");
+        message.setProperty("name", "James");
+        message.setContent(new StreamSource(new StringReader("<hello>world</hello>")));
+
+        activateComponent(new ReturnErrorComponent(), "error");
+        
+        QName service = new QName("error");
+        exchange.setService(service);
+        client.send(exchange);
+        
+        exchange = client.receive();
+        assertEquals(ExchangeStatus.ERROR, exchange.getStatus());
+    }
+
+    public void testSendWithFaultUsingJbiAPIs() throws Exception {
+
+        MessageExchange exchange = client.createRobustInOnlyExchange();
+
+        NormalizedMessage message = exchange.getMessage("in");
+        message.setProperty("name", "James");
+        message.setContent(new StreamSource(new StringReader("<hello>world</hello>")));
+
+        activateComponent(new ReturnFaultComponent(), "fault");
+        
+        QName service = new QName("fault");
+        exchange.setService(service);
+        client.send(exchange);
+        
+        exchange = client.receive();
+        assertEquals(ExchangeStatus.ACTIVE, exchange.getStatus());
+        assertNotNull(exchange.getFault());
+        client.done(exchange);
     }
 
     public void testSendUsingMapAndPOJOsByServiceName() throws Exception {
@@ -188,8 +234,8 @@ public class ServiceMixClientTest extends TestCase {
         // TODO
         //receiver = (Receiver) getBean("receiver");
 
-        SpringJBIContainer jbi = (SpringJBIContainer) getBean("jbi");
-        receiver = (Receiver) jbi.getBean("receiver");
+        container = (SpringJBIContainer) getBean("jbi");
+        receiver = (Receiver) container.getBean("receiver");
         assertNotNull("receiver not found in JBI container", receiver);
     }
 
@@ -211,4 +257,31 @@ public class ServiceMixClientTest extends TestCase {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/groovy/example.xml");
 
     }
+
+    protected void activateComponent(ComponentSupport comp, String name) throws Exception {
+        comp.setService(new QName(name));
+        comp.setEndpoint("endpoint");
+        container.activateComponent(comp, name);
+    }
+    
+    public static class ReturnErrorComponent extends ComponentSupport implements MessageExchangeListener {
+
+        public void onMessageExchange(MessageExchange exchange) throws MessagingException {
+            if (exchange.getStatus() == ExchangeStatus.ACTIVE) {
+                fail(exchange, new Exception());
+            }
+        }
+    }
+
+    public static class ReturnFaultComponent extends ComponentSupport implements MessageExchangeListener {
+        
+        public void onMessageExchange(MessageExchange exchange) throws MessagingException {
+            if (exchange.getStatus() == ExchangeStatus.ACTIVE) {
+                Fault fault = exchange.createFault();
+                fault.setContent(new StringSource("<fault/>"));
+                fail(exchange, fault);
+            }
+        }
+    }
+    
 }
