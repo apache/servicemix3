@@ -74,7 +74,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
     private String password;
     private String broadcastDestinationName = "org.apache.servicemix.JMSFlow";
     private MessageConsumer broadcastConsumer;
-    private Map<String, MessageConsumer> consumerMap = new ConcurrentHashMap<String, MessageConsumer>();
+    private Map<String, MessageConsumerSession> consumerMap = new ConcurrentHashMap<String, MessageConsumerSession>();
     private EndpointListener endpointListener;
     private ComponentListener componentListener;
     private Executor executor;
@@ -344,11 +344,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
         try {
             String key = EndpointSupport.getKey(event.getEndpoint());
             if (!consumerMap.containsKey(key)) {
-                Session inboundSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                Queue queue = inboundSession.createQueue(INBOUND_PREFIX + key);
-                MessageConsumer consumer = inboundSession.createConsumer(queue);
-                consumer.setMessageListener(this);
-                consumerMap.put(key, consumer);
+                consumerMap.put(key, new MessageConsumerSession(key, this));
             }
             if (broadcast) {
                 broadcast(event);
@@ -361,7 +357,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
     public void onInternalEndpointUnregistered(EndpointEvent event, boolean broadcast) {
         try {
             String key = EndpointSupport.getKey(event.getEndpoint());
-            MessageConsumer consumer = consumerMap.remove(key);
+            MessageConsumerSession consumer = consumerMap.remove(key);
             if (consumer != null) {
                 consumer.close();
             }
@@ -396,11 +392,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
         try {
             String key = event.getComponent().getName();
             if (!consumerMap.containsKey(key)) {
-                Session inboundSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                Queue queue = inboundSession.createQueue(INBOUND_PREFIX + key);
-                MessageConsumer consumer = inboundSession.createConsumer(queue);
-                consumer.setMessageListener(this);
-                consumerMap.put(key, consumer);
+                consumerMap.put(key, new MessageConsumerSession(key, this));
             }
         } catch (Exception e) {
             log.error("Cannot create consumer for component " + event.getComponent().getName(), e);
@@ -410,7 +402,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
     public void onComponentStopped(ComponentEvent event) {
         try {
             String key = event.getComponent().getName();
-            MessageConsumer consumer = consumerMap.remove(key);
+            MessageConsumerSession consumer = consumerMap.remove(key);
             if (consumer != null) {
                 consumer.close();
             }
@@ -574,5 +566,31 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
     public void setJmsURL(String jmsURL) {
         this.jmsURL = jmsURL;
     }
+    
+    
+    /*
+     * Creates a message consumer and holds on to both consumer and session
+     * to allow closing both of them together.
+     */
+    private final class MessageConsumerSession {
+        
+        private Session session;
+        private MessageConsumer consumer;
+        
+        private MessageConsumerSession(String key, MessageListener listener) throws JMSException {
+            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Queue queue = session.createQueue(INBOUND_PREFIX + key);
+            consumer = session.createConsumer(queue);
+            consumer.setMessageListener(listener);            
+        }
 
+        private void close() throws JMSException {
+            if (consumer != null) {
+                consumer.close();
+            }
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
 }
