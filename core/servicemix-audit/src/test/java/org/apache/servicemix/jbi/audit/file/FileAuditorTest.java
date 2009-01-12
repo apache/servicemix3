@@ -20,10 +20,13 @@ import java.io.File;
 import java.util.Locale;
 
 import javax.jbi.messaging.InOnly;
+import javax.jbi.messaging.MessagingException;
+import javax.xml.transform.Source;
 
 import junit.framework.TestCase;
 
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.servicemix.tck.ReceiverComponent;
@@ -32,6 +35,7 @@ import org.apache.servicemix.tck.SenderComponent;
 public class FileAuditorTest extends TestCase {
 
     private static final File DIRECTORY = new File("target/tests/FileAuditor");
+    private final SourceTransformer transformer = new SourceTransformer();
 
     private JBIContainer jbi;
 
@@ -62,15 +66,22 @@ public class FileAuditorTest extends TestCase {
         auditor.setDirectory(DIRECTORY);
         auditor.afterPropertiesSet();
 
-        InOnly inonly = sender.createInOnlyExchange(ReceiverComponent.SERVICE, null, null);
-        inonly.setInMessage(inonly.createMessage());
-        inonly.getInMessage().setContent(new StringSource("<hello>world</hello>"));
-        inonly.getInMessage().setProperty("from", Locale.getDefault().getCountry());
-        sender.send(inonly);
+        sendMessageExchange(sender, new StringSource("<hello>world</hello>"));
 
-        //check if a message has been audited
-        int nbMessages = auditor.getExchangeCount();
-        assertEquals(1, nbMessages);
+        //check if the message has been audited
+        assertEquals(1, auditor.getExchangeCount());
+        
+        sendMessageExchange(sender, transformer.toDOMSource(new StringSource("<hello>world</hello>")));
+        
+        //check if the message has been audited
+        assertEquals(2, auditor.getExchangeCount());
     }
 
+    private void sendMessageExchange(SenderComponent sender, Source content) throws MessagingException {
+        InOnly inonly = sender.createInOnlyExchange(ReceiverComponent.SERVICE, null, null);
+        inonly.setInMessage(inonly.createMessage());
+        inonly.getInMessage().setContent(content);
+        inonly.getInMessage().setProperty("from", Locale.getDefault().getCountry());
+        sender.send(inonly);
+    }
 }
