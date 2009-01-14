@@ -31,7 +31,6 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.xml.namespace.QName;
 
-import org.apache.activemq.pool.PooledConnectionFactory;
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
@@ -51,10 +50,30 @@ public class JmsProviderEndpointTest extends AbstractJmsTestSupport {
     private static final String MSG_PROPERTY_BLACKLISTED = "BadPropertyTest";
 
     protected List<String> blackList;
-
+    
     public void testSendWithoutProperties() throws Exception {
         container.activateComponent(createEndpoint(false), "servicemix-jms");
+        
+        InOnly me = client.createInOnlyExchange();
+        NormalizedMessage inMessage = me.getInMessage();
+        inMessage.setProperty(MSG_PROPERTY, "Test-Value");
+        inMessage.setProperty(MSG_PROPERTY_BLACKLISTED, "Unwanted value");
+        inMessage.setContent(new StringSource("<hello>world</hello>"));
+        me.setService(new QName("jms"));
+        client.sendSync(me);
+        assertEquals(ExchangeStatus.DONE, me.getStatus());
+        
+        Message msg = jmsTemplate.receive("destination");
+        assertNull("Found not expected property", msg
+            .getStringProperty(MSG_PROPERTY));
+        assertNull("Found blacklisted property", msg
+                   .getStringProperty(MSG_PROPERTY_BLACKLISTED));
+        assertNotNull(msg);
+    }
 
+    public void testSendSimple() throws Exception {
+        container.activateComponent(createEndpoint(), "servicemix-jms");
+        
         InOnly me = client.createInOnlyExchange();
         NormalizedMessage inMessage = me.getInMessage();
         inMessage.setProperty(MSG_PROPERTY, "Test-Value");
@@ -64,51 +83,30 @@ public class JmsProviderEndpointTest extends AbstractJmsTestSupport {
         me.setService(new QName("jms"));
         client.sendSync(me);
         assertEquals(ExchangeStatus.DONE, me.getStatus());
-
+        
         Message msg = jmsTemplate.receive("destination");
-        assertNull("Found not expected property", msg.getStringProperty(MSG_PROPERTY));
-        assertNull("Found blacklisted property", msg.getStringProperty(MSG_PROPERTY_BLACKLISTED));
-        assertNull("Found " + JbiConstants.DATESTAMP_PROPERTY_NAME + " property", 
-            msg.getObjectProperty(JbiConstants.DATESTAMP_PROPERTY_NAME));
+        assertNotNull("Expected property not found", msg
+            .getStringProperty(MSG_PROPERTY));
+        assertNull("Found blacklisted property", msg
+            .getStringProperty(MSG_PROPERTY_BLACKLISTED));
+        assertNull("Found " + JbiConstants.DATESTAMP_PROPERTY_NAME + " property", msg
+            .getObjectProperty(JbiConstants.DATESTAMP_PROPERTY_NAME));
         assertNotNull(msg);
     }
-
-    public void testSendSimple() throws Exception {
-        container.activateComponent(createEndpoint(), "servicemix-jms");
-
-        InOnly me = client.createInOnlyExchange();
-        NormalizedMessage inMessage = me.getInMessage();
-        inMessage.setProperty(MSG_PROPERTY, "Test-Value");
-        inMessage.setProperty(MSG_PROPERTY_BLACKLISTED, "Unwanted value");
-        inMessage.setContent(new StringSource("<hello>world</hello>"));
-        me.setService(new QName("jms"));
-        client.sendSync(me);
-        assertEquals(ExchangeStatus.DONE, me.getStatus());
-
-        Message msg = jmsTemplate.receive("destination");
-        assertNotNull("Expected property not found", msg.getStringProperty(MSG_PROPERTY));
-        assertNull("Found blacklisted property", msg.getStringProperty(MSG_PROPERTY_BLACKLISTED));
-        assertNotNull(msg);
-    }
-
-    public void testSoapProviderInOnly() throws Exception {
+    
+    public void testProviderInOnlyWithoutReplyDest() throws Exception {
         JmsComponent component = new JmsComponent();
 
-        JmsSoapProviderEndpoint endpoint = new JmsSoapProviderEndpoint();
+        JmsProviderEndpoint endpoint = new JmsProviderEndpoint();
         endpoint.setService(new QName("uri:HelloWorld", "HelloService"));
         endpoint.setEndpoint("HelloPort");
-        endpoint.setConnectionFactory(connectionFactory);
         endpoint.setDestinationName("destination");
-        endpoint.setWsdl(new ClassPathResource("org/apache/servicemix/jms/HelloWorld-RPC.wsdl"));
+        endpoint.setConnectionFactory(connectionFactory);
         component.setEndpoints(new JmsProviderEndpoint[] {endpoint});
         container.activateComponent(component, "servicemix-jms");
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        FileUtil
-            .copyInputStream(
-                             new ClassPathResource(
-                                                   "org/apache/servicemix/jms/HelloWorld-RPC-Input-OneWay.xml")
-                                 .getInputStream(), baos);
+        FileUtil.copyInputStream(new ClassPathResource("org/apache/servicemix/jms/HelloWorld-RPC-Input-OneWay.xml").getInputStream(), baos);
         InOnly me = client.createInOnlyExchange();
         me.getInMessage().setContent(new StringSource(baos.toString()));
 
@@ -119,19 +117,17 @@ public class JmsProviderEndpointTest extends AbstractJmsTestSupport {
 
         Message msg = jmsTemplate.receive("destination");
         assertNotNull(msg);
-        System.err.println(((TextMessage)msg).getText());
+        System.err.println(((TextMessage) msg).getText());
     }
 
-    public void testSoapProviderInOut() throws Exception {
+    public void testProviderInOutWithoutReplyDest() throws Exception {
         JmsComponent component = new JmsComponent();
 
-        JmsSoapProviderEndpoint endpoint = new JmsSoapProviderEndpoint();
+        JmsProviderEndpoint endpoint = new JmsProviderEndpoint();
         endpoint.setService(new QName("uri:HelloWorld", "HelloService"));
         endpoint.setEndpoint("HelloPort");
-        endpoint.setConnectionFactory(connectionFactory);
         endpoint.setDestinationName("destination");
-        endpoint.setReplyDestinationName("reply");
-        endpoint.setWsdl(new ClassPathResource("org/apache/servicemix/jms/HelloWorld-RPC.wsdl"));
+        endpoint.setConnectionFactory(connectionFactory);
         component.setEndpoints(new JmsProviderEndpoint[] {endpoint});
         container.activateComponent(component, "servicemix-jms");
 
@@ -141,16 +137,12 @@ public class JmsProviderEndpointTest extends AbstractJmsTestSupport {
                     final Message msg = jmsTemplate.receive("destination");
                     assertNotNull(msg);
                     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    FileUtil
-                        .copyInputStream(
-                                         new ClassPathResource(
-                                                               "org/apache/servicemix/jms/HelloWorld-RPC-Output.xml")
-                                             .getInputStream(), baos);
-                    jmsTemplate.send("reply", new MessageCreator() {
+                    FileUtil.copyInputStream(new ClassPathResource("org/apache/servicemix/jms/HelloWorld-RPC-Output.xml")
+                                .getInputStream(), baos);
+                    jmsTemplate.send(msg.getJMSReplyTo(), new MessageCreator() {
                         public Message createMessage(Session session) throws JMSException {
                             TextMessage rep = session.createTextMessage(baos.toString());
-                            rep.setJMSCorrelationID(msg.getJMSCorrelationID() != null ? msg
-                                .getJMSCorrelationID() : msg.getJMSMessageID());
+                            rep.setJMSCorrelationID(msg.getJMSCorrelationID() != null ? msg.getJMSCorrelationID() : msg.getJMSMessageID());
                             return rep;
                         }
                     });
@@ -162,10 +154,79 @@ public class JmsProviderEndpointTest extends AbstractJmsTestSupport {
         th.start();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        FileUtil
-            .copyInputStream(
-                             new ClassPathResource("org/apache/servicemix/jms/HelloWorld-RPC-Input-Hello.xml")
-                                 .getInputStream(), baos);
+        FileUtil.copyInputStream(new ClassPathResource("org/apache/servicemix/jms/HelloWorld-RPC-Input-OneWay.xml").getInputStream(), baos);
+        InOut me = client.createInOutExchange();
+        me.getInMessage().setContent(new StringSource(baos.toString()));
+        me.setOperation(new QName("uri:HelloWorld", "OneWay"));
+        me.setService(new QName("uri:HelloWorld", "HelloService"));
+        client.sendSync(me);
+        assertEquals(ExchangeStatus.ACTIVE, me.getStatus());
+        assertNotNull(me.getOutMessage());
+        assertNotNull(me.getOutMessage().getContent());
+        System.err.println(new SourceTransformer().contentToString(me.getOutMessage()));
+        client.done(me);
+    }
+
+    public void testSoapProviderInOnly() throws Exception {
+        JmsComponent component = new JmsComponent();
+        
+        JmsSoapProviderEndpoint endpoint = new JmsSoapProviderEndpoint();
+        endpoint.setService(new QName("uri:HelloWorld", "HelloService"));
+        endpoint.setEndpoint("HelloPort");
+        endpoint.setConnectionFactory(connectionFactory);
+        endpoint.setDestinationName("destination");
+        endpoint.setWsdl(new ClassPathResource("org/apache/servicemix/jms/HelloWorld-RPC.wsdl"));
+        component.setEndpoints(new JmsProviderEndpoint[] {endpoint});
+        container.activateComponent(component, "servicemix-jms");
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        FileUtil.copyInputStream(new ClassPathResource("org/apache/servicemix/jms/HelloWorld-RPC-Input-OneWay.xml").getInputStream(), baos);
+        InOnly me = client.createInOnlyExchange();
+        me.getInMessage().setContent(new StringSource(baos.toString()));
+
+        me.setOperation(new QName("uri:HelloWorld", "OneWay"));
+        me.setService(new QName("uri:HelloWorld", "HelloService"));
+        client.sendSync(me);
+        assertEquals(ExchangeStatus.DONE, me.getStatus());
+    }
+    
+    public void testSoapProviderInOut() throws Exception {
+        JmsComponent component = new JmsComponent();
+        
+        JmsSoapProviderEndpoint endpoint = new JmsSoapProviderEndpoint();
+        endpoint.setService(new QName("uri:HelloWorld", "HelloService"));
+        endpoint.setEndpoint("HelloPort");
+        endpoint.setConnectionFactory(connectionFactory);
+        endpoint.setDestinationName("destination");
+        endpoint.setReplyDestinationName("reply");
+        endpoint.setWsdl(new ClassPathResource("org/apache/servicemix/jms/HelloWorld-RPC.wsdl"));
+        component.setEndpoints(new JmsProviderEndpoint[] {endpoint});
+        container.activateComponent(component, "servicemix-jms");
+        
+        Thread th = new Thread() {
+            public void run() {
+                try {
+                    final Message msg = jmsTemplate.receive("destination");
+                    assertNotNull(msg);
+                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    FileUtil.copyInputStream(new ClassPathResource("org/apache/servicemix/jms/HelloWorld-RPC-Output.xml")
+                                .getInputStream(), baos);
+                    jmsTemplate.send("reply", new MessageCreator() {
+                        public Message createMessage(Session session) throws JMSException {
+                            TextMessage rep = session.createTextMessage(baos.toString());
+                            rep.setJMSCorrelationID(msg.getJMSCorrelationID() != null ? msg.getJMSCorrelationID() : msg.getJMSMessageID());
+                            return rep;
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        th.start();
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        FileUtil.copyInputStream(new ClassPathResource("org/apache/servicemix/jms/HelloWorld-RPC-Input-Hello.xml").getInputStream(), baos);
         InOut me = client.createInOutExchange();
         me.getInMessage().setContent(new StringSource(baos.toString()));
         me.setOperation(new QName("uri:HelloWorld", "Hello"));
@@ -176,7 +237,6 @@ public class JmsProviderEndpointTest extends AbstractJmsTestSupport {
         assertNotNull(me.getOutMessage().getContent());
         System.err.println(new SourceTransformer().contentToString(me.getOutMessage()));
         client.done(me);
-
     }
 
     public void testSoapProviderInOutWithoutReplyDest() throws Exception {
@@ -185,7 +245,7 @@ public class JmsProviderEndpointTest extends AbstractJmsTestSupport {
         JmsSoapProviderEndpoint endpoint = new JmsSoapProviderEndpoint();
         endpoint.setService(new QName("uri:HelloWorld", "HelloService"));
         endpoint.setEndpoint("HelloPort");
-        endpoint.setConnectionFactory(new PooledConnectionFactory(connectionFactory));
+        endpoint.setConnectionFactory(connectionFactory);
         endpoint.setDestinationName("destination");
         endpoint.setWsdl(new ClassPathResource("org/apache/servicemix/jms/HelloWorld-RPC.wsdl"));
         component.setEndpoints(new JmsProviderEndpoint[] {endpoint});
@@ -237,7 +297,7 @@ public class JmsProviderEndpointTest extends AbstractJmsTestSupport {
         // initialize the black list
         blackList = new LinkedList<String>();
         blackList.add(MSG_PROPERTY_BLACKLISTED);
-
+        
         JmsComponent component = new JmsComponent();
         JmsProviderEndpoint endpoint = new JmsProviderEndpoint();
         endpoint.setService(new QName("jms"));

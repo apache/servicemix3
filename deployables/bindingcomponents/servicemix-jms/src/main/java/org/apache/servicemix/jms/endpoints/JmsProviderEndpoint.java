@@ -61,7 +61,7 @@ import org.springframework.jms.support.destination.DynamicDestinationResolver;
  */
 public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpointType {
 
-    private static final String MSG_SELECTOR_START = "JMSCorrelationID='";    
+    private static final String MSG_SELECTOR_START = "JMSCorrelationID='";
     private static final String MSG_SELECTOR_END = "'";
 
     private JmsProviderMarshaler marshaler = new DefaultProviderMarshaler();
@@ -116,8 +116,8 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
     }
 
     /**
-    * Specifies a string identifying the JMS destination used to send 
-     * messages. The destination is resolved using the 
+    * Specifies a string identifying the JMS destination used to send
+     * messages. The destination is resolved using the
      * <code>DesitinationResolver</code>.
      *
      * @param destinationName the destination name
@@ -136,9 +136,9 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
     }
 
     /**
-    * Specifies if the provider uses JMS 1.0.2 compliant APIs. Defaults to 
+    * Specifies if the provider uses JMS 1.0.2 compliant APIs. Defaults to
     * <code>false</code>.
-    * 
+    *
      * @param jms102 provider is JMS 1.0.2 compliant?
      */
     public void setJms102(boolean jms102) {
@@ -169,7 +169,7 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
     }
 
     /**
-    * Specifies the JMS delivery mode used for the reply. Defaults to 
+    * Specifies the JMS delivery mode used for the reply. Defaults to
     * (2)(<code>PERSISTENT</code>).
     *
      * @param deliveryMode the JMS delivery mode
@@ -186,7 +186,7 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
     }
 
     /**
-    * Specifies a class implementing logic for choosing the destination used 
+    * Specifies a class implementing logic for choosing the destination used
     * to send messages.
     *
      * @param destinationChooser the destination chooser for sending messages
@@ -206,7 +206,7 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
     }
 
     /**
-    * Specifies a class implementing logic for choosing the destination used 
+    * Specifies a class implementing logic for choosing the destination used
     * to recieve replies.
     *
      * @param replyDestinationChooser the destination chooser used for the reply destination
@@ -222,7 +222,7 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
     }
 
     /**
-    * Specifies the class implementing logic for converting strings into 
+    * Specifies the class implementing logic for converting strings into
     * destinations. The default is <code>DynamicDestinationResolver</code>.
     *
      * @param destinationResolver the destination resolver implementation
@@ -239,7 +239,7 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
     }
 
     /**
-    * Specifies if the QoS values specified for the endpoint are explicitly 
+    * Specifies if the QoS values specified for the endpoint are explicitly
     * used when a messages is sent. The default is <code>false</code>.
     *
      * @param explicitQosEnabled should the QoS values be sent?
@@ -256,8 +256,8 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
     }
 
     /**
-    * Specifies the class implementing the message marshaler. The message 
-    * marshaller is responsible for marshalling and unmarshalling JMS messages. 
+    * Specifies the class implementing the message marshaler. The message
+    * marshaller is responsible for marshalling and unmarshalling JMS messages.
     * The default is <code>DefaultProviderMarshaler</code>.
     *
      * @param marshaler the marshaler implementation
@@ -277,14 +277,14 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
     }
 
     /**
-    * Specifies if your endpoint requires JMS message IDs. Setting the 
-    * <code>messageIdEnabled</code> property to <code>false</code> causes the 
-    * endpoint to call its message producer's 
-    * <code>setDisableMessageID() </code> with a value of <code>true</code>. 
-    * The JMS broker is then given a hint that it does not need to generate 
-    * message IDs or add them to the messages from the endpoint. The JMS 
+    * Specifies if your endpoint requires JMS message IDs. Setting the
+    * <code>messageIdEnabled</code> property to <code>false</code> causes the
+    * endpoint to call its message producer's
+    * <code>setDisableMessageID() </code> with a value of <code>true</code>.
+    * The JMS broker is then given a hint that it does not need to generate
+    * message IDs or add them to the messages from the endpoint. The JMS
     * broker can choose to accept the hint or ignore it.
-    * 
+    *
      * @param messageIdEnabled the endpoint requires message IDs?
      */
     public void setMessageIdEnabled(boolean messageIdEnabled) {
@@ -299,14 +299,14 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
     }
 
     /**
-    * Specifies if your endpoints requires time stamps on its messages. 
-    * Setting the <code>messageTimeStampEnabled</code> property to 
-    * <code>false</code> causes the endpoint to call its message producer's 
-    * <code>setDisableMessageTimestamp() </code> method with a value of 
-    * <code>true</code>. The JMS broker is then given a hint that it does not 
-    * need to generate message IDs or add them to the messages from the 
+    * Specifies if your endpoints requires time stamps on its messages.
+    * Setting the <code>messageTimeStampEnabled</code> property to
+    * <code>false</code> causes the endpoint to call its message producer's
+    * <code>setDisableMessageTimestamp() </code> method with a value of
+    * <code>true</code>. The JMS broker is then given a hint that it does not
+    * need to generate message IDs or add them to the messages from the
     * endpoint. The JMS broker can choose to accept the hint or ignore it.
-    * 
+    *
      * @param messageTimestampEnabled the endpoint requires time stamps?
      */
     public void setMessageTimestampEnabled(boolean messageTimestampEnabled) {
@@ -337,8 +337,8 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
     }
 
     /**
-    * Specifies if the destination is a topic. <code>true</code> means the 
-    * destination is a topic. <code>false</code> means the destination is a 
+    * Specifies if the destination is a topic. <code>true</code> means the
+    * destination is a topic. <code>false</code> means the destination is a
     * queue.
     *
      * @param pubSubDomain the destination is a topic?
@@ -355,7 +355,7 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
     }
 
     /**
-    * Specifies if messages published by the listener's <code>Connection</code> 
+    * Specifies if messages published by the listener's <code>Connection</code>
     * are suppressed. The default is <code>false</code>.
     *
      * @param pubSubNoLocal messages are surpressed?
@@ -579,7 +579,7 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
         };
         template.execute(callback, true);
     }
-    
+
     /**
      * Process an InOnly or RobustInOnly exchange inside a JMS session.
      * This method delegates the JMS message creation to the marshaler and uses
@@ -596,17 +596,39 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
     protected void processInOutInSession(final MessageExchange exchange,
                                          final NormalizedMessage in,
                                          final Session session) throws Exception {
+        // TODO: the following code may not work in pub/sub domain with temporary topics.
+        // The reason is that the the consumer is created after the request is sent.
+        // This mean that the response may be sent before the consumer is created, which would
+        // mean the consumer will not receive the response as it does not use durable subscriptions.
+
         // Create destinations
-        final Destination dest = getDestination(exchange, in, session);
-        final Destination replyDest = getReplyDestination(exchange, in, session);
+        Destination dest = getDestination(exchange, in, session);
+        // Find reply destination
+        // If we use the replyDestination / replyDestinationName, set the async flag to true
+        // to indicate we will use the listener container
+        boolean asynchronous = false;
+        boolean useSelector = true;
+        Destination replyDest = chooseDestination(exchange, in, session, replyDestinationChooser, null);
+        if (replyDest == null) {
+            useSelector = false;
+            replyDest = chooseDestination(exchange, in, session, null,
+                                          replyDestination != null ? replyDestination : replyDestinationName);
+            if (replyDest != null) {
+                asynchronous = true;
+            } else {
+                if (isPubSubDomain()) {
+                    replyDest = session.createTemporaryTopic();
+                } else {
+                    replyDest = session.createTemporaryQueue();
+                }
+            }
+        }
         // Create message and send it
         final Message sendJmsMsg = marshaler.createMessage(exchange, in, session);
         sendJmsMsg.setJMSReplyTo(replyDest);
         // handle correlation ID
-        String correlationId = sendJmsMsg.getJMSMessageID() != null ? sendJmsMsg.getJMSMessageID() : exchange.getExchangeId(); 
+        String correlationId = sendJmsMsg.getJMSMessageID() != null ? sendJmsMsg.getJMSMessageID() : exchange.getExchangeId();
         sendJmsMsg.setJMSCorrelationID(correlationId);
-
-        boolean asynchronous = replyDest.equals(replyDestination);
 
         if (asynchronous) {
             createAndStartListener();
@@ -624,7 +646,7 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
 
         if (!asynchronous) {
             // Create selector
-            String selector = MSG_SELECTOR_START + sendJmsMsg.getJMSCorrelationID() + MSG_SELECTOR_END;
+            String selector = useSelector ? (MSG_SELECTOR_START + sendJmsMsg.getJMSCorrelationID() + MSG_SELECTOR_END) : null;
             // Receiving JMS Message, Creating and Returning NormalizedMessage out
             Message receiveJmsMsg = receiveSelected(session, replyDest, selector);
             if (receiveJmsMsg == null) {
@@ -686,8 +708,8 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
         }
     }
 
-    private Message receiveSelected(final Session session, 
-                                    final Destination dest, 
+    private Message receiveSelected(final Session session,
+                                    final Destination dest,
                                     final String messageSelector) throws JMSException {
         // Do not call directly the template to avoid the cost of creating a new connection / session
 //        return template.doReceive(session, dest, messageSelector);
@@ -708,7 +730,7 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
      * Process a JMS response message.
      * This method delegates to the marshaler for the JBI out message creation
      * and sends it in to the NMR.
-     * 
+     *
      * @param message
      */
     protected void onMessage(Message message) {
@@ -773,37 +795,12 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
      * @throws JMSException
      */
     protected Destination getDestination(MessageExchange exchange, Object message, Session session) throws JMSException {
-        Destination dest = chooseDestination(exchange, message, session, destinationChooser, 
+        Destination dest = chooseDestination(exchange, message, session, destinationChooser,
                                              destination != null ? destination : destinationName);
         if (dest == null) {
             throw new IllegalStateException("Unable to choose a destination for exchange " + exchange);
         }
         return dest;
-    }
-
-    /**
-     * Choose the JMS destination for the reply message.
-     * If no default destination is specified or can be extracted from the JBI exchange,
-     * a temporary destination will be created.
-     *
-     * @param exchange
-     * @param message
-     * @param session
-     * @return
-     * @throws JMSException
-     */
-    protected Destination getReplyDestination(MessageExchange exchange, Object message, Session session) throws JMSException {
-        Destination dest = chooseDestination(exchange, message, session, replyDestinationChooser, 
-                                             replyDestination != null ? replyDestination : replyDestinationName);
-        if (dest == null) {
-            if (isPubSubDomain()) {
-                return session.createTemporaryQueue();
-            } else {
-                return session.createTemporaryTopic();
-            }
-        } else {
-            return dest;
-        }
     }
 
     /**
@@ -834,8 +831,8 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
         if (dest instanceof Destination) {
             return (Destination) dest;
         } else if (dest instanceof String) {
-            return destinationResolver.resolveDestinationName(session, 
-                                                              (String) dest, 
+            return destinationResolver.resolveDestinationName(session,
+                                                              (String) dest,
                                                               isPubSubDomain());
         }
         return null;
@@ -867,7 +864,7 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
 
     /**
      * Stops this endpoint.
-     * 
+     *
      * @throws Exception
      */
     public synchronized void deactivate() throws Exception {
@@ -887,7 +884,7 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
 
     /**
      * Validate this endpoint.
-     * 
+     *
      * @throws DeploymentException
      */
     public void validate() throws DeploymentException {
@@ -939,7 +936,7 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
 
     /**
      * Create the message listener container to receive response messages.
-     * 
+     *
      * @return
      */
     protected AbstractMessageListenerContainer createListenerContainer() {
@@ -967,5 +964,5 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
         cont.afterPropertiesSet();
         return cont;
     }
-    
+
 }
