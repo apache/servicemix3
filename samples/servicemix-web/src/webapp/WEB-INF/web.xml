@@ -55,7 +55,7 @@
   <servlet>
     <servlet-name>HttpManagedServlet</servlet-name>
     <servlet-class>
-      org.apache.servicemix.http.HttpManagedServlet
+      org.apache.servicemix.web.http.HttpManagedServlet
     </servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
