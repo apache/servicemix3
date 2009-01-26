@@ -56,10 +56,15 @@
       <groupId>org.apache.ws.security</groupId>
       <artifactId>wss4j</artifactId>
       <exclusions>
-          <groupId>xalan</groupId>
-          <artifactId>xalan</artifactId>
+          <exclusion>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+          </exclusion>
       </exclusions>
-
     </dependency>
     <dependency>
       <groupId>bouncycastle</groupId>
