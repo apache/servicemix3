@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.apache.servicemix.jboss</groupId>
+        <artifactId>jboss</artifactId>
+        <version>3.3.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>deployer</artifactId>
+    <name>ServiceMix :: JBoss :: Deployer</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-core</artifactId>
+      <version>${pom.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.geronimo.specs</groupId>
+          <artifactId>geronimo-ejb_2.1_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.geronimo.specs</groupId>
+          <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.geronimo.specs</groupId>
+          <artifactId>geronimo-activation_1.0.2_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.geronimo.specs</groupId>
+          <artifactId>geronimo-j2ee-jacc_1.0_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.geronimo.specs</groupId>
+          <artifactId>geronimo-j2ee-management_1.0_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.geronimo.specs</groupId>
+          <artifactId>geronimo-jms_1.1_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.geronimo.specs</groupId>
+          <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.geronimo.specs</groupId>
+          <artifactId>geronimo-jta_1.1_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.geronimo.specs</groupId>
+          <artifactId>geronimo-qname_1.1_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.geronimo.specs</groupId>
+          <artifactId>geronimo-servlet_2.4_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>mx4j</groupId>
+          <artifactId>mx4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>mx4j</groupId>
+          <artifactId>mx4j-remote</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>xmlbeans</groupId>
+          <artifactId>xbean</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>xmlbeans</groupId>
+          <artifactId>xmlpublic</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>xalan</groupId>
+          <artifactId>xalan</artifactId>
+        </exclusion>
+          <exclusion>
+              <groupId>javax.xml.stream</groupId>
+              <artifactId>stax-api</artifactId>
+          </exclusion>
+          <exclusion>
+              <groupId>stax</groupId>
+              <artifactId>stax-api</artifactId>
+          </exclusion>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>xerces</groupId>
+          <artifactId>xercesImpl</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>jboss</groupId>
+      <artifactId>jboss-system</artifactId>
+      <version>${jboss-version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>jboss</groupId>
+      <artifactId>jboss-jmx</artifactId>
+      <version>${jboss-version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>jboss</groupId>
+      <artifactId>jboss-common</artifactId>
+      <version>${jboss-version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>wsdl4j</groupId>
+      <artifactId>wsdl4j</artifactId>
+      <version>${wsdl4j-version}</version>
+    </dependency>
+  </dependencies>
+  
+  <pluginRepositories>
+    <pluginRepository>
+      <id>codehaus.snapshots</id>
+      <url>http://snapshots.repository.codehaus.org/</url>
+    </pluginRepository>
+  </pluginRepositories>
+  <repositories>
+    <repository>
+      <id>codehaus.snapshots</id>
+      <url>http://snapshots.repository.codehaus.org/</url>
+    </repository>
+  </repositories>
+  
+  <build>
+    <defaultGoal>install</defaultGoal>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>xdoclet-maven-plugin</artifactId>
+        <version>1.0-alpha-2</version>
+        <dependencies>
+          <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>${ant-version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>xdoclet</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <jmxdoclet destdir="${project.build.directory}/generated-sources/xdoclet">
+                  <fileset dir="${basedir}/src/main/java" includes="**/*.java" />
+                  <mbeaninterface />
+                </jmxdoclet>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jboss-packaging-maven-plugin</artifactId>
+        <version>2.0-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>sar</goal>
+            </goals>
+            <configuration>
+              <deploymentDescriptorFile>src/sar/META-INF/jboss-service.xml</deploymentDescriptorFile>
+              <excludes>
+                <exclude>jboss:jboss-system</exclude>
+                <exclude>jboss:jboss-jmx</exclude>
+                <exclude>jboss:jboss-common</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
