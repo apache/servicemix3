@@ -165,9 +165,9 @@ public class InstallerMBeanImpl implements InstallerMBean {
             result = activateComponent();
             ComponentMBeanImpl lcc = container.getComponent(context.getComponentName());
             lcc.persistRunningState();
-            context.setInstall(false);
         } finally {
             cleanUpBootstrap();
+            context.setInstall(false);
         }
         return result;
     }
@@ -240,11 +240,13 @@ public class InstallerMBeanImpl implements InstallerMBean {
         String componentName = context.getComponentName();
         try {
             container.deactivateComponent(componentName);
+            //keep tck happy.
+            bootstrap.init(this.context);
+            bootstrap.getExtensionMBeanName();            
             bootstrap.onUninstall();
-            context.setInstall(true);
         } finally {
             cleanUpBootstrap();
-            
+            context.setInstall(true);
             // If it was found by a destroyable classloader destroy it
             // XXX Should we be holding the classloader as a member as always destroying it?
             if (bootstrap.getClass().getClassLoader() instanceof DestroyableClassLoader) {
