@@ -22,4 +22,6 @@ public interface LockManager {
 
     Lock getLock(String id);
     
+    void removeLock(String id);
+
 }

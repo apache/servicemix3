@@ -310,7 +310,13 @@ public class FilePollerEndpoint extends PollingEndpoint implements FileEndpointT
                         unlock = processFileAndDelete(aFile);
                     } finally {
                         if (unlock) {
-                            lock.unlock();
+                            try {
+                                lock.unlock();
+                            } catch (Exception ex) {
+                                //can't release the lock
+                                logger.error(ex);
+                            }
+                            lockManager.removeLock(uri);
                         }
                     }
                 } else {

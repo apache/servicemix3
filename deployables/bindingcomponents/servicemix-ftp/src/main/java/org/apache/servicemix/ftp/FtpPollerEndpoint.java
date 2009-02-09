@@ -265,7 +265,14 @@ public class FtpPollerEndpoint extends PollingEndpoint implements FtpEndpointTyp
                         unlock = processFileAndDelete(file);
                     } finally {
                         if (unlock) {
-                            lock.unlock();
+                            try {
+                                lock.unlock();
+                            } catch (Exception ex) {
+                                // can't release the lock
+                                logger.error(ex);
+                            }
+                            lockManager.removeLock(file);
+
                         }
                     }
                 }

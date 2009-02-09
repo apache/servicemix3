@@ -38,5 +38,9 @@ public class SimpleLockManager implements LockManager {
         }
         return lock;
     }
+    
+    public void removeLock(String id) {
+        locks.remove(id);
+    }
 
 }
