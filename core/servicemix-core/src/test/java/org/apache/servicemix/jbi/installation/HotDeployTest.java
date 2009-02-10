@@ -268,6 +268,10 @@ public class HotDeployTest extends AbstractManagementTest {
 
         // Configure mocks
         reset();
+        bootstrap.init(null);
+        bootstrapMock.setMatcher(MockControl.ALWAYS_MATCHER);
+        bootstrap.getExtensionMBeanName();
+        bootstrapMock.setReturnValue(null);
         bootstrap.onUninstall();
         bootstrap.cleanUp();
         lifecycle.stop();
