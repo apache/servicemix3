@@ -364,6 +364,11 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
             bus.shutdown(false);
             bus = null;
         }
+        if (!isComponentBus()) {
+            //if use the endpoint own bus, then shutdown it
+            bus.shutdown(true);
+            bus = null;
+        }
         super.stop();
     }
 
@@ -569,6 +574,10 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
         }
     }
 
+    private boolean isComponentBus() {
+        return getBus() ==  ((CxfBcComponent) getServiceUnit().getComponent()).getBus();
+    }
+    
     /**
      * Specifies the HTTP address to which requests are sent. This value will
      * overide any value specified in the WSDL.
