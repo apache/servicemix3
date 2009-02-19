@@ -33,26 +33,26 @@ import org.apache.servicemix.tck.ReceiverComponent;
  * Tests to check correct handling of the ?mep=xxx setting on a Camel JBI endpoint
  */
 public class JbiEndpointWithMepSpecifiedTest extends JbiTestSupport {
-    
+
     private MyReceiverComponent component;
-    
+
     @Override
     protected void setUp() throws Exception {
         component = new MyReceiverComponent();
         super.setUp();
     }
-    
+
     public void testCamelInOutSendJbiInOnly() throws Exception {
         client.send("direct:a", new DefaultExchange(camelContext) {
-            
+
             @Override
             public ExchangePattern getPattern() {
                 //let's explicitly send an in-out Exchange
                 return ExchangePattern.InOut;
             }
-            
+
         });
-        assertEquals(1, component.count);
+        assertEquals(1, component.getCount());
     }
 
     @Override
@@ -73,15 +73,15 @@ public class JbiEndpointWithMepSpecifiedTest extends JbiTestSupport {
             }
         };
     }
-    
+
     private class MyReceiverComponent extends ReceiverComponent {
-        
+
         private int count;
- 
+
         public int getCount() {
             return count;
         }
-        
+
         @Override
         public void onMessageExchange(MessageExchange exchange) throws MessagingException {
             if (exchange instanceof InOnly) {
@@ -89,7 +89,7 @@ public class JbiEndpointWithMepSpecifiedTest extends JbiTestSupport {
                 done(exchange);
             } else {
                 fail(exchange, new Exception("Unexpected MEP: " + exchange.getPattern()));
-            }            
+            }
         }
     }
 }

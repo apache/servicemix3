@@ -47,7 +47,8 @@ public class CamelSpringDeployer extends AbstractXBeanDeployer {
         @Override
         protected AbstractXmlApplicationContext createXmlApplicationContext(String configLocation) {
             ApplicationContext parentAppContext = createParentApplicationContext(getXmlPreprocessors());
-            return new FileSystemXmlApplicationContext(new String[] {configLocation}, false, parentAppContext, getXmlPreprocessors());
+            return new FileSystemXmlApplicationContext(new String[] {configLocation}, false,
+                                                       parentAppContext, getXmlPreprocessors());
         }
     };
 
@@ -65,11 +66,17 @@ public class CamelSpringDeployer extends AbstractXBeanDeployer {
         return "camel-context";
     }
 
+    public void undeploy(ServiceUnit su) throws DeploymentException {
+        // Remove the jbiComponent form CamelJbiComponent
+        component.removeJbiComponent(su.getName());
+        super.undeploy(su);
+    }
+
     /*
      * (non-Javadoc)
      *
      * @see org.apache.servicemix.common.Deployer#deploy(java.lang.String,
-     *      java.lang.String)
+     * java.lang.String)
      */
     @Override
     public ServiceUnit deploy(String suName, String serviceUnitRootPath) throws DeploymentException {
@@ -81,7 +88,7 @@ public class CamelSpringDeployer extends AbstractXBeanDeployer {
 
         // lets install the context class loader
         ServiceUnit serviceUnit = super.deploy(suName, serviceUnitRootPath);
-//        Thread.currentThread().setContextClassLoader(serviceUnit.getConfigurationClassLoader());
+        // Thread.currentThread().setContextClassLoader(serviceUnit.getConfigurationClassLoader());
         return serviceUnit;
     }
 
@@ -92,27 +99,32 @@ public class CamelSpringDeployer extends AbstractXBeanDeployer {
     @Override
     protected List getServices(Kernel kernel) {
         try {
-            List<org.apache.servicemix.common.Endpoint> services = new ArrayList<org.apache.servicemix.common.Endpoint>(activatedEndpoints);
+            List<org.apache.servicemix.common.Endpoint> services =
+                new ArrayList<org.apache.servicemix.common.Endpoint>(activatedEndpoints);
             activatedEndpoints.clear();
 
             ApplicationContext applicationContext = springLoader.getApplicationContext();
             SpringCamelContext camelContext = SpringCamelContext.springCamelContext(applicationContext);
 
+            JbiComponent jbiComponent = camelContext.getComponent("jbi", JbiComponent.class);
             // now lets iterate through all the endpoints
             Collection<Endpoint> endpoints = camelContext.getSingletonEndpoints();
 
-            for (Endpoint endpoint : endpoints) {
-                if (component.isEndpointExposedOnNmr(endpoint)) {
-                    services.add(component.createJbiEndpointFromCamel(endpoint));
+            if (jbiComponent != null) {
+                // set the SU Name
+                jbiComponent.setSuName(serviceUnitName);
+                for (Endpoint endpoint : endpoints) {
+                    if (component.isEndpointExposedOnNmr(endpoint)) {
+                        services.add(jbiComponent.createJbiEndpointFromCamel(endpoint));
+                    }
                 }
+                // lets add a control bus endpoint to ensure we have at least
+                // one endpoint to deploy
+                BeanComponent beanComponent = camelContext.getComponent("bean", BeanComponent.class);
+                Endpoint endpoint = beanComponent.createEndpoint(new CamelControlBus(camelContext),
+                                                                 "camel:" + serviceUnitName + "-controlBus");
+                services.add(jbiComponent.createJbiEndpointFromCamel(endpoint));
             }
-
-            // lets add a control bus endpoint to ensure we have at least one endpoint to deploy
-            BeanComponent beanComponent = camelContext.getComponent("bean", BeanComponent.class);
-            Endpoint endpoint = beanComponent.createEndpoint(new CamelControlBus(camelContext),
-                                                             "camel:" + serviceUnitName + "-controlBus");
-            services.add(component.createJbiEndpointFromCamel(endpoint));
-
             return services;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -130,7 +142,8 @@ public class CamelSpringDeployer extends AbstractXBeanDeployer {
      */
     protected ApplicationContext createParentApplicationContext(List xmlProcessors) {
         GenericApplicationContext answer = new GenericApplicationContext();
-        answer.getBeanFactory().registerSingleton("jbi", component);
+        answer.getBeanFactory().registerSingleton("servicemix-camel", component);
+        answer.getBeanFactory().registerSingleton("jbi", new JbiComponent(component));
         answer.setClassLoader(Thread.currentThread().getContextClassLoader());
         answer.start();
         answer.refresh();

@@ -60,7 +60,7 @@ public class CamelProviderEndpoint extends ProviderEndpoint {
     public void process(MessageExchange exchange) throws Exception {
         // The component acts as a provider, this means that another component has requested our service
         // As this exchange is active, this is either an in or a fault (out are sent by this component)
-        
+
         if (exchange.getRole() == MessageExchange.Role.PROVIDER) {
             // Exchange is finished
             if (exchange.getStatus() == ExchangeStatus.DONE) {
@@ -92,7 +92,7 @@ public class CamelProviderEndpoint extends ProviderEndpoint {
                 }
                 JbiExchange camelExchange = new JbiExchange(camelEndpoint.getCamelContext(), binding, exchange);
                 camelProcessor.process(camelExchange);
-                if (camelExchange.isFailed() 
+                if (camelExchange.isFailed()
                     && (camelExchange.getFault(false) == null || camelExchange.getFault(false).getBody() == null)) {
                     Throwable t = camelExchange.getException();
                     Exception e;
@@ -113,7 +113,7 @@ public class CamelProviderEndpoint extends ProviderEndpoint {
                 }
                 JbiExchange camelExchange = new JbiExchange(camelEndpoint.getCamelContext(), binding, exchange);
                 camelProcessor.process(camelExchange);
-                if (camelExchange.isFailed() 
+                if (camelExchange.isFailed()
                     && (camelExchange.getFault(false) == null || camelExchange.getFault(false).getBody() == null)) {
                     Throwable t = camelExchange.getException();
                     Exception e;
@@ -134,7 +134,7 @@ public class CamelProviderEndpoint extends ProviderEndpoint {
                     }
                 }
             }
-        // This is not compliant with the default MEPs
+        // This is not complaint with the default MEPs
         } else {
             throw new IllegalStateException("Provider exchange is ACTIVE, but no in or fault is provided");
         }

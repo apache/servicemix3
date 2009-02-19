@@ -22,25 +22,21 @@ import java.net.URL;
 
 import org.apache.camel.CamelContext;
 
-public class TwoServicemixCamelSusTest extends
-        NonJbiCamelEndpointsIntegrationTest {
-    
-    private void deploySu(CamelJbiComponent component, String suName)
-        throws Exception {
+public class TwoServicemixCamelSusTest extends NonJbiCamelEndpointsIntegrationTest {
+
+    private void deploySu(CamelJbiComponent component, String suName) throws Exception {
         String serviceUnitConfiguration = suName + "-src/camel-context.xml";
         URL url = getClass().getResource(serviceUnitConfiguration);
         File path = new File(new URI(url.toString()));
         path = path.getParentFile();
 
         // Deploy and start su
-        component.getServiceUnitManager()
-                .deploy(suName, path.getAbsolutePath());
+        component.getServiceUnitManager().deploy(suName, path.getAbsolutePath());
         component.getServiceUnitManager().init(suName, path.getAbsolutePath());
         component.getServiceUnitManager().start(suName);
     }
 
-    private void undeploySu(CamelJbiComponent component, String suName)
-        throws Exception {
+    private void undeploySu(CamelJbiComponent component, String suName) throws Exception {
         String serviceUnitConfiguration = suName + "-src/camel-context.xml";
         URL url = getClass().getResource(serviceUnitConfiguration);
         File path = new File(new URI(url.toString()));
@@ -49,8 +45,7 @@ public class TwoServicemixCamelSusTest extends
         // Stop and undeploy
         component.getServiceUnitManager().stop(suName);
         component.getServiceUnitManager().shutDown(suName);
-        component.getServiceUnitManager().undeploy(suName,
-                path.getAbsolutePath());
+        component.getServiceUnitManager().undeploy(suName, path.getAbsolutePath());
     }
 
     public void testComponentInstallation() throws Exception {
@@ -60,13 +55,16 @@ public class TwoServicemixCamelSusTest extends
 
         // deploy two sus here
         deploySu(component, "su3");
-        CamelContext su3CamelContext = component.getCamelContext();
+        JbiComponent jbiComponent = component.getJbiComponent("su3");
+        assertNotNull("JbiComponent should not be null ", jbiComponent);
+        CamelContext su3CamelContext = jbiComponent.getCamelContext();
         assertNotNull("We should get a camel context here ", su3CamelContext);
         deploySu(component, "su6");
-        CamelContext su6CamelContext = component.getCamelContext();
+        jbiComponent = component.getJbiComponent("su6");
+        assertNotNull("JbiComponent should not be null ", jbiComponent);
+        CamelContext su6CamelContext = jbiComponent.getCamelContext();
         assertNotNull("We should get a camel context here ", su6CamelContext);
-        assertTrue("Here should be two different camel contexts",
-                !su3CamelContext.equals(su6CamelContext));
+        assertTrue("Here should be two different camel contexts", !su3CamelContext.equals(su6CamelContext));
 
         // deploy two sus here
         undeploySu(component, "su3");
