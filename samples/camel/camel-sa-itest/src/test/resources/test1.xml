@@ -29,7 +29,7 @@
     <sm:deployments>
       <sm:installSharedLibrary groupId="org.apache.servicemix" artifactId="servicemix-shared" version="2008.01"/>
       <sm:installComponent groupId="org.apache.servicemix" artifactId="servicemix-camel" version="2008.01"/>
-      <sm:deployServiceAssembly groupId="org.apache.servicemix.samples" artifactId="camel-sa" version="3.3-SNAPSHOT"/>
+      <sm:deployServiceAssembly groupId="org.apache.servicemix.samples" artifactId="camel-sa" version="3.3.1-SNAPSHOT"/>
     </sm:deployments>
 
   </sm:container>
