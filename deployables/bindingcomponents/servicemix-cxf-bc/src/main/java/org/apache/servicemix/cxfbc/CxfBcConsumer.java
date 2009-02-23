@@ -166,6 +166,7 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     
     private boolean transactionEnabled;
         
+    
     /**
      * @return the wsdl
      */
@@ -965,10 +966,9 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
      * This is specified in seconds.
      * 
      * @param timeout
-     *            the number of millis to wait for a response
-     * @org.apache.xbean.Property description="the number of millis the endpoint
-     *                            will wait for a response. The default is 1
-     *                            hour."
+     *            the number of second to wait for a response
+     * @org.apache.xbean.Property description="the number of second the endpoint
+     *                            will wait for a response. The default is 10 secs."
      */
     public void setTimeout(int timeout) {
         this.timeout = timeout;
