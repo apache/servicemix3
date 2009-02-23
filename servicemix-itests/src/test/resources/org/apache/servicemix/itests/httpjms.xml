@@ -22,7 +22,7 @@
 	   xmlns:http="http://servicemix.apache.org/http/1.0"
 	   xmlns:eip="http://servicemix.apache.org/eip/1.0"
 	   xmlns:jms="http://servicemix.apache.org/jms/1.0"
-	   xmlns:amq="http://activemq.org/config/1.0"
+	   xmlns:amq="http://activemq.apache.org/schema/core"
 	   xmlns:test="http://servicemix.org/test">
 	
 	<sm:container id="jbi" embedded="true" depends-on="broker">

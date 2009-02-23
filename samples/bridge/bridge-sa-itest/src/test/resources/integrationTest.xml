@@ -23,11 +23,11 @@
        xsi:schemaLocation="
          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
          http://servicemix.apache.org/config/1.0 http://repo1.maven.org/maven2/org/apache/servicemix/servicemix-core/3.1.2/servicemix-core-3.1.2.xsd
-         http://activemq.org/config/1.0 http://activemq.apache.org/schema/activemq-core.xsd
+         http://activemq.apache.org/schema/core http://activemq.apache.org/schema/activemq-core.xsd
          http://activemq.apache.org/camel/schema/spring http://activemq.apache.org/camel/schema/spring/camel-spring.xsd">
 
   <!-- Run a local ActiveMQ broker for testing -->
-  <broker xmlns="http://activemq.org/config/1.0" brokerName="localhost" persistent="false">
+  <broker xmlns="http://activemq.apache.org/schema/core" brokerName="localhost" persistent="false">
     <transportConnectors>
       <transportConnector name="openwire" uri="tcp://localhost:61616"/>
     </transportConnectors>

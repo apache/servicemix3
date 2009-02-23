@@ -19,7 +19,7 @@
 -->
 <beans xmlns:sm="http://servicemix.apache.org/config/1.0"
   xmlns:rac="http://example.com/performancetest" xmlns:jms="http://servicemix.apache.org/jms/1.0"
-  xmlns:amq="http://activemq.org/config/1.0" xmlns:eip="http://servicemix.apache.org/eip/1.0">
+  xmlns:amq="http://activemq.apache.org/schema/core" xmlns:eip="http://servicemix.apache.org/eip/1.0">
 
   <bean id="jndi" class="org.apache.xbean.spring.jndi.SpringInitialContextFactory"
     factory-method="makeInitialContext" singleton="true">

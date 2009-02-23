@@ -21,7 +21,7 @@
 <!-- START SNIPPET: xbean -->
 <beans>
 
-  <broker xmlns="http://activemq.org/config/1.0" persistent="false" useJmx="false">
+  <broker xmlns="http://activemq.apache.org/schema/core" persistent="false" useJmx="false">
 
     <transportConnectors>
       <transportConnector uri="tcp://localhost:61216" />

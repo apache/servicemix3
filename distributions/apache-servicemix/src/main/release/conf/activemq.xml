@@ -17,7 +17,7 @@
     limitations under the License.
 
 -->
-<beans xmlns:amq="http://activemq.org/config/1.0">
+<beans xmlns:amq="http://activemq.apache.org/schema/core">
   
   <!-- ActiveMQ JMS Broker configuration -->
   <amq:broker id="broker" depends-on="jmxServer" useShutdownHook="false">
