@@ -97,6 +97,14 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
     private long timeToLive = Message.DEFAULT_TIME_TO_LIVE;
 
     private Destination replyDestination;
+    
+    /**
+     * @deprecated The stateless property is no longer used.
+     * For backward compatibility purpose only.
+     */
+    @Deprecated
+    private boolean stateless;
+
     private String replyDestinationName;
 
     private StoreFactory storeFactory;
@@ -406,6 +414,24 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
      */
     public void setTimeToLive(long timeToLive) {
         this.timeToLive = timeToLive;
+    }
+
+    /**
+     * @deprecated The stateless property is no longer used.
+     * For backward compatibility purpose only.
+     */
+    @Deprecated
+    public boolean isStateless() {
+        return stateless;
+    }
+
+    /**
+     * @deprecated The stateless property is no longer used.
+     * For backward compatibility purpose only.
+     */
+    @Deprecated
+    public void setStateless(boolean stateless) {
+        this.stateless = stateless;
     }
 
     public StoreFactory getStoreFactory() {
