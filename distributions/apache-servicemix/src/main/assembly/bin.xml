@@ -52,6 +52,10 @@
       <outputDirectory>hotdeploy</outputDirectory>
     </fileSet>
     <fileSet>
+      <directory>target/schemas</directory>
+      <outputDirectory>schemas</outputDirectory>
+    </fileSet>
+    <fileSet>
       <directory>target/samples/servicemix-web-${servicemix-version}</directory>
       <outputDirectory>examples/servicemix-web</outputDirectory>
     </fileSet>
