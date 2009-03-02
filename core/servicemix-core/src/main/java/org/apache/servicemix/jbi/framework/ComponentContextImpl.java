@@ -454,7 +454,7 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      */
     public Logger getLogger(String suffix, String resourceBundleName) throws MissingResourceException, JBIException {
         String name = suffix != null ? suffix : "";
-        name += componentName.getName();
+        name = componentName.getName() + name;
         return container.getLogger(name, resourceBundleName);
     }
 
