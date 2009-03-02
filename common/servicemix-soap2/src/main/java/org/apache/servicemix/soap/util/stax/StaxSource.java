@@ -49,6 +49,14 @@ public class StaxSource extends SAXSource implements XMLReader {
     public XMLReader getXMLReader() {
         return this;
     }
+    
+    /**
+     * Access the underlying XML stream reader
+     * @return the stream reader
+     */
+    public XMLStreamReader getStreamReader() {
+        return streamReader;
+    }
 
     protected void parse() throws SAXException {
         try {
