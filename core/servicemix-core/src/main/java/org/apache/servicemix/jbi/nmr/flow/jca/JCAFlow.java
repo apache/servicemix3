@@ -114,6 +114,8 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
     private ActiveMQTopic advisoryTopic;
     private EndpointListener endpointListener;
     private ComponentListener componentListener;
+    private String userName;
+    private String password;
 
     public JCAFlow() {
     }
@@ -190,6 +192,40 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
 
     public TransactionManager getTransactionManager() {
         return (TransactionManager) broker.getContainer().getTransactionManager();
+    }
+
+    /**
+     *
+     * @return Returns the password used for the JMS connections.
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * Set the password to use in JMS connections.
+     *
+     * @param password
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    /**
+     *
+     * @return Returns the userName used for the JMS connections.
+     */
+    public String getUserName() {
+        return userName;
+    }
+
+    /**
+     * Sets the userName to use in JMS connections.
+     *
+     * @param userName
+     */
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     /**
@@ -601,7 +637,12 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
                 return;
             }
         }
-        Connection connection = managedConnectionFactory.createConnection();
+        Connection connection;
+        if (userName != null) {
+            connection = managedConnectionFactory.createConnection(userName, password);
+        } else {
+            connection = managedConnectionFactory.createConnection();
+        }
         try {
             Session session = connection.createSession(transacted, transacted ? Session.SESSION_TRANSACTED : Session.AUTO_ACKNOWLEDGE);
             ObjectMessage msg = session.createObjectMessage(object);
