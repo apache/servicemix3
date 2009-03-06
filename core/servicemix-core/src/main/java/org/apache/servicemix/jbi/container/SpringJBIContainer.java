@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Semaphore;
 
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
@@ -61,6 +62,7 @@ public class SpringJBIContainer extends JBIContainer implements InitializingBean
     private Map components;
     private Map endpoints;
     private Runnable onShutDown;
+    private Semaphore block = new Semaphore(0);
 
     public void afterPropertiesSet() throws Exception {
         init();
@@ -301,6 +303,7 @@ public class SpringJBIContainer extends JBIContainer implements InitializingBean
 
     public void destroy() throws Exception {
         super.shutDown();
+        block.release();
     }
 
     public void shutDown() throws JBIException {
@@ -311,6 +314,10 @@ public class SpringJBIContainer extends JBIContainer implements InitializingBean
             //shutting down the container ourselves
             super.shutDown();
         }
+    }
+
+    public void block() throws InterruptedException {
+        block.acquire();
     }
 
     /**

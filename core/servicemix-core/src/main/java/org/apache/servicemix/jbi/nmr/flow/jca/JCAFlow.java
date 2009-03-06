@@ -20,8 +20,12 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.jbi.JBIException;
@@ -87,6 +91,7 @@ import org.apache.servicemix.jbi.servicedesc.EndpointSupport;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 import org.jencks.SingletonEndpointFactory;
 import org.jencks.factory.ConnectionManagerFactoryBean;
+
 
 /**
  * Use for message routing among a network of containers. All
@@ -682,10 +687,22 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
             ra.endpointActivation(endpointFactory, spec);
         }
 
-        public void stop() {
-            ra.endpointDeactivation(endpointFactory, spec);
-            ra.stop();
-            executor.shutdown();
+        public void stop() throws Exception {
+            
+            // In some cases these calls on the resource adapter can be blocked, causing
+            // servicemix to hang on shutdown.
+            FutureTask<Void> task = new FutureTask<Void>(new Callable<Void>() {
+                    public Void call() {
+                        ra.endpointDeactivation(endpointFactory, spec);
+                        ra.stop();
+                        executor.shutdown();
+                        return null;
+                    }
+                }
+            );
+            
+            Executors.newFixedThreadPool(1).execute(task);
+            task.get(500, TimeUnit.MILLISECONDS);
         }
     }
 
