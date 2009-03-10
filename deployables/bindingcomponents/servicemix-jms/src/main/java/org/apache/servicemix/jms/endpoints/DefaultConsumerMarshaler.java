@@ -53,6 +53,7 @@ import org.apache.servicemix.soap.util.stax.StaxSource;
 public class DefaultConsumerMarshaler extends AbstractJmsMarshaler implements JmsConsumerMarshaler {
 
     private URI mep;
+    private boolean rollbackOnError;
 
     public DefaultConsumerMarshaler() {
         this.mep = MessageExchangeSupport.IN_ONLY;
@@ -74,6 +75,17 @@ public class DefaultConsumerMarshaler extends AbstractJmsMarshaler implements Jm
      */
     public void setMep(URI mep) {
         this.mep = mep;
+    }
+
+    public boolean isRollbackOnError() {
+        return rollbackOnError;
+    }
+
+    /**
+     * @param rollbackOnError if exchange in errors should cause a rollback on the JMS side
+     */
+    public void setRollbackOnError(boolean rollbackOnError) {
+        this.rollbackOnError = rollbackOnError;
     }
 
     public JmsContext createContext(Message message) throws Exception {
@@ -146,9 +158,13 @@ public class DefaultConsumerMarshaler extends AbstractJmsMarshaler implements Jm
 
     public Message createError(MessageExchange exchange, Exception error, 
                                Session session, JmsContext context) throws Exception {
-        ObjectMessage message = session.createObjectMessage(error);
-        message.setBooleanProperty(ERROR_JMS_PROPERTY, true);
-        return message;
+        if (rollbackOnError) {
+            throw error;
+        } else {
+            ObjectMessage message = session.createObjectMessage(error);
+            message.setBooleanProperty(ERROR_JMS_PROPERTY, true);
+            return message;
+        }
     }
 
     protected void populateMessage(Message message, NormalizedMessage normalizedMessage) throws Exception {
