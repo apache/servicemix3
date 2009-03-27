@@ -753,7 +753,12 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
                         if (exchange.getProperty("faultstring") != null) {
                             f.setMessage((String) exchange
                                     .getProperty("faultstring"));
-                        } else {
+                        }
+                        if (exchange.getProperty("faultcode") != null) {
+                            f.setFaultCode((QName) exchange
+                                    .getProperty("faultcode"));
+                        } 
+                        if (exchange.getProperty("hasdetail") == null) {
                             Element details = toElement(exchange.getFault()
                                     .getContent());
                             f.setDetail(details);

@@ -237,31 +237,46 @@ public class JbiInWsdl1Interceptor extends AbstractSoapInterceptor {
                 JBIConstants.NS_JBI_BINDING, JBIFault.JBI_FAULT_ROOT));
         Node jbiFaultDetail = null;
         if (message.getVersion() instanceof Soap11) {
-            NodeList nodeList = soapFault.getElementsByTagName("detail");
-            if (nodeList == null || nodeList.getLength() == 0) {
-                //there is no detail in the fault, which means the fault is 
-                //thrown during soap header process according to soap spec,
-                //try get the mandatory elemenet faultstring
+            NodeList nodeList = soapFault.getElementsByTagName("faultcode");
+            String faultCode = nodeList.item(0).getFirstChild().getTextContent();
+            String prefix = faultCode.substring(0, faultCode.indexOf(":"));
+            String localName = faultCode.substring(faultCode.indexOf(":") + 1);
+            message.put("faultcode", new QName(prefix, localName));
+            nodeList = soapFault.getElementsByTagName("faultstring");
+            message.put("faultstring", nodeList.item(0).getFirstChild().getTextContent());
+            nodeList = soapFault.getElementsByTagName("detail");
+            if (nodeList != null && nodeList.getLength() > 0) {
+                jbiFaultDetail = doc.importNode(nodeList.item(0).getFirstChild(), true);
+            } else {
+                message.put("hasdetail", false);
                 nodeList = soapFault.getElementsByTagName("faultstring");
-                message.put("faultstring", nodeList.item(0).getTextContent());
+                jbiFaultDetail = doc.importNode(nodeList.item(0).getFirstChild(), true);
             }
-            jbiFaultDetail = doc.importNode(nodeList.item(0).getFirstChild(), true);
+            
         } else {
-            NodeList nodeList = soapFault.getElementsByTagName("soap:Detail");
-            if (nodeList == null || nodeList.getLength() == 0) {
-                //there is no detail in the fault, which means the fault is 
-                //thrown during soap header process according to soap spec,
-                //try get the mandatory elemenet soap:Reason
-                nodeList = soapFault.getElementsByTagName("soap:Reason");
-                message.put("faultstring", nodeList.item(0).getTextContent());
+            NodeList nodeList = soapFault.getElementsByTagName("soap:Code");
+            String faultCode = nodeList.item(0).getFirstChild().getTextContent();
+            String prefix = faultCode.substring(0, faultCode.indexOf(":"));
+            String localName = faultCode.substring(faultCode.indexOf(":") + 1);
+            message.put("faultcode", new QName(prefix, localName));
+            nodeList = soapFault.getElementsByTagName("soap:Reason");
+            message.put("faultstring", nodeList.item(0).getFirstChild().getTextContent());
+            nodeList = soapFault.getElementsByTagName("soap:Detail");
+            if (nodeList != null && nodeList.getLength() > 0) {
+                jbiFaultDetail = doc.importNode(nodeList.item(0).getFirstChild(), true);
+            } else {
+                message.put("hasdetail", false);
+                nodeList = soapFault.getElementsByTagName("faultstring");
+                jbiFaultDetail = doc.importNode(nodeList.item(0).getFirstChild(), true);
             }
-            jbiFaultDetail = doc.importNode(nodeList.item(0).getFirstChild(), true);
+            
         }
         SchemaInfo schemaInfo = 
             getOperation(message).getBinding().getService().getSchema(jbiFaultDetail.getNamespaceURI());
         if (schemaInfo != null && !schemaInfo.isElementFormQualified()) {
             //that's unquailied fault
             jbiFaultDetail = addEmptyDefaultTns((Element)jbiFaultDetail);
+            
         }
         jbiFault.appendChild(jbiFaultDetail);
         message.setContent(Source.class, new DOMSource(doc));
