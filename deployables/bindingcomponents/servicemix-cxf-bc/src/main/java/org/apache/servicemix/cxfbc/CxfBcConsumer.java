@@ -165,6 +165,8 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     private List<AbstractFeature> features = new CopyOnWriteArrayList<AbstractFeature>();
     
     private boolean transactionEnabled;
+    
+    private boolean isSTFlow; 
         
     
     /**
@@ -286,6 +288,7 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
         if (exchange.getStatus() != ExchangeStatus.ACTIVE) {
             return;
         }
+        
         Message message = messages.remove(exchange.getExchangeId());
                        
         synchronized (message.getInterceptorChain()) {
@@ -294,7 +297,13 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
             if (!isSynchronous() && !oneway) {
                 ContinuationProvider continuationProvider = (ContinuationProvider) message
                         .get(ContinuationProvider.class.getName());
-                continuationProvider.getContinuation().resume();
+                Continuation continuation = continuationProvider.getContinuation();
+                if (continuation.isPending()) {
+                    continuation.resume();
+                    isSTFlow = false;
+                } else {
+                    isSTFlow = true;
+                }
             } 
             if (exchange.getStatus() == ExchangeStatus.ACTIVE) {
                 exchange.setStatus(ExchangeStatus.DONE);
@@ -710,7 +719,9 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
                         Continuation continuation = continuationProvider.getContinuation();
                         if (!continuation.isPending()) {
                             context.getDeliveryChannel().send(exchange);
-                            continuation.suspend(timeout * 1000);
+                            if (!isSTFlow) {
+                                continuation.suspend(timeout * 1000);
+                            }
                         } else {
                             //retry or timeout
                             if (!continuation.isResumed()) {

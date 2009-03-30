@@ -69,6 +69,8 @@ public class ConsumerProcessor extends AbstractProcessor implements ExchangeProc
     protected Map<String, Continuation> locks;
     protected Map<String, MessageExchange> exchanges;
     protected int suspentionTime = 60000;
+    
+    private boolean isSTFlow;
         
     public ConsumerProcessor(HttpEndpoint endpoint) {
         super(endpoint);
@@ -91,24 +93,34 @@ public class ConsumerProcessor extends AbstractProcessor implements ExchangeProc
     
     public void process(MessageExchange exchange) throws Exception {
         Continuation cont = locks.get(exchange.getExchangeId());
-        if (cont == null) {
-            throw new Exception("HTTP request has timed out");
-        }
-        synchronized (cont) {
-            if (locks.remove(exchange.getExchangeId()) == null) {
+        if (!cont.isPending()) {
+            isSTFlow = true;
+        } else {
+            isSTFlow = false;
+            if (cont == null) {
                 throw new Exception("HTTP request has timed out");
             }
-            if (log.isDebugEnabled()) {
-                log.debug("Resuming continuation for exchange: " + exchange.getExchangeId());
-            }
-            exchanges.put(exchange.getExchangeId(), exchange);
-            cont.resume();
-            if (!cont.isResumed()) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Could not resume continuation for exchange: " + exchange.getExchangeId());
+            synchronized (cont) {
+                if (locks.remove(exchange.getExchangeId()) == null) {
+                    throw new Exception("HTTP request has timed out");
                 }
-                exchanges.remove(exchange.getExchangeId());
-                throw new Exception("HTTP request has timed out for exchange: " + exchange.getExchangeId());
+                if (log.isDebugEnabled()) {
+                    log.debug("Resuming continuation for exchange: "
+                            + exchange.getExchangeId());
+                }
+                exchanges.put(exchange.getExchangeId(), exchange);
+                cont.resume();
+                if (!cont.isResumed()) {
+                    if (log.isDebugEnabled()) {
+                        log
+                                .debug("Could not resume continuation for exchange: "
+                                        + exchange.getExchangeId());
+                    }
+                    exchanges.remove(exchange.getExchangeId());
+                    throw new Exception(
+                            "HTTP request has timed out for exchange: "
+                                    + exchange.getExchangeId());
+                }
             }
         }
     }
@@ -154,15 +166,17 @@ public class ConsumerProcessor extends AbstractProcessor implements ExchangeProc
                 request.setAttribute(MessageExchange.class.getName(), exchange.getExchangeId());
                 synchronized (cont) {
                     channel.send(exchange);
-                    if (log.isDebugEnabled()) {
-                        log.debug("Suspending continuation for exchange: " + exchange.getExchangeId());
-                    }
-                    boolean result = cont.suspend(suspentionTime);
-                    exchange = exchanges.remove(exchange.getExchangeId());
-                    request.removeAttribute(MessageExchange.class.getName());
-                    if (!result) {
-                        locks.remove(exchange.getExchangeId());
-                        throw new Exception("Exchange timed out");
+                    if (!isSTFlow) {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Suspending continuation for exchange: " + exchange.getExchangeId());
+                        }
+                        boolean result = cont.suspend(suspentionTime);
+                        exchange = exchanges.remove(exchange.getExchangeId());
+                        request.removeAttribute(MessageExchange.class.getName());
+                        if (!result) {
+                            locks.remove(exchange.getExchangeId());
+                            throw new Exception("Exchange timed out");
+                        }
                     }
                 }
             } catch (RetryRequest retry) {
