@@ -309,6 +309,9 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
     @Override
     public void process(MessageExchange exchange) throws Exception {
 
+        if (exchange.getStatus() != ExchangeStatus.ACTIVE) {
+            return;
+        }
         QName opeName = exchange.getOperation();
         EndpointInfo ei = server.getEndpoint().getEndpointInfo();
                
