@@ -93,13 +93,13 @@ public class ConsumerProcessor extends AbstractProcessor implements ExchangeProc
     
     public void process(MessageExchange exchange) throws Exception {
         Continuation cont = locks.get(exchange.getExchangeId());
+        if (cont == null) {
+            throw new Exception("HTTP request has timed out");
+        }
         if (!cont.isPending()) {
             isSTFlow = true;
         } else {
             isSTFlow = false;
-            if (cont == null) {
-                throw new Exception("HTTP request has timed out");
-            }
             synchronized (cont) {
                 if (locks.remove(exchange.getExchangeId()) == null) {
                     throw new Exception("HTTP request has timed out");
@@ -177,6 +177,11 @@ public class ConsumerProcessor extends AbstractProcessor implements ExchangeProc
                             locks.remove(exchange.getExchangeId());
                             throw new Exception("Exchange timed out");
                         }
+                    } else {
+                        String id = (String) request.getAttribute(MessageExchange.class.getName());
+                        locks.remove(id);
+                        exchange = exchanges.remove(id);
+                        request.removeAttribute(MessageExchange.class.getName());
                     }
                 }
             } catch (RetryRequest retry) {
