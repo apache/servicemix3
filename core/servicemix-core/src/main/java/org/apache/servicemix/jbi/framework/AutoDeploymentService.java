@@ -247,17 +247,12 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             throw failure("deploy", "Unable to find jbi descriptor: " + location);
         }
         if (root != null) {
-            try {
-                container.getBroker().suspend();
-                if (root.getComponent() != null) {
-                    updateComponent(entry, autoStart, tmpDir, root);
-                } else if (root.getSharedLibrary() != null) {
-                    updateSharedLibrary(entry, tmpDir, root);
-                } else if (root.getServiceAssembly() != null) {
-                    updateServiceAssembly(entry, autoStart, tmpDir, root);
-                }
-            } finally {
-                container.getBroker().resume();
+            if (root.getComponent() != null) {
+                updateComponent(entry, autoStart, tmpDir, root);
+            } else if (root.getSharedLibrary() != null) {
+                updateSharedLibrary(entry, tmpDir, root);
+            } else if (root.getServiceAssembly() != null) {
+                updateServiceAssembly(entry, autoStart, tmpDir, root);
             }
         }
     }
@@ -429,34 +424,29 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
         }
         // Standard processing
         LOG.info("Attempting to remove archive at: " + entry.location);
-        try {
-            container.getBroker().suspend();
-            if ("component".equals(entry.type)) {
-                LOG.info("Uninstalling component: " + entry.name);
-                // Ensure installer is loaded
-                installationService.loadInstaller(entry.name);
-                // Uninstall and delete component
-                installationService.unloadInstaller(entry.name, true);
-            }
-            if ("library".equals(entry.type)) {
-                LOG.info("Removing shared library: " + entry.name);
-                installationService.uninstallSharedLibrary(entry.name);
-            }
-            if ("assembly".equals(entry.type)) {
-                LOG.info("Undeploying service assembly " + entry.name);
-                try {
-                    if (deploymentService.isSaDeployed(entry.name)) {
-                        deploymentService.shutDown(entry.name);
-                        deploymentService.undeploy(entry.name);
-                    }
-                } catch (Exception e) {
-                    String errStr = "Failed to update service assembly: " + entry.name;
-                    LOG.error(errStr, e);
-                    throw new DeploymentException(errStr, e);
+        if ("component".equals(entry.type)) {
+            LOG.info("Uninstalling component: " + entry.name);
+            // Ensure installer is loaded
+            installationService.loadInstaller(entry.name);
+            // Uninstall and delete component
+            installationService.unloadInstaller(entry.name, true);
+        }
+        if ("library".equals(entry.type)) {
+            LOG.info("Removing shared library: " + entry.name);
+            installationService.uninstallSharedLibrary(entry.name);
+        }
+        if ("assembly".equals(entry.type)) {
+            LOG.info("Undeploying service assembly " + entry.name);
+            try {
+                if (deploymentService.isSaDeployed(entry.name)) {
+                    deploymentService.shutDown(entry.name);
+                    deploymentService.undeploy(entry.name);
                 }
+            } catch (Exception e) {
+                String errStr = "Failed to update service assembly: " + entry.name;
+                LOG.error(errStr, e);
+                throw new DeploymentException(errStr, e);
             }
-        } finally {
-            container.getBroker().resume();
         }
     }
 

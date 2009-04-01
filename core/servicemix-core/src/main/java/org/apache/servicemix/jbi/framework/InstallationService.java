@@ -180,7 +180,6 @@ public class InstallationService extends BaseSystemService implements Installati
     public boolean unloadInstaller(String componentName, boolean isToBeDeleted) {
         boolean result = false;
         try {
-            container.getBroker().suspend();
             InstallerMBeanImpl installer = installers.remove(componentName);
             result = installer != null;
             if (result) {
@@ -194,8 +193,6 @@ public class InstallationService extends BaseSystemService implements Installati
         } catch (JBIException e) {
             String errStr = "Problem shutting down Component: " + componentName;
             LOG.error(errStr, e);
-        } finally {
-            container.getBroker().resume();
         }
         return result;
     }
