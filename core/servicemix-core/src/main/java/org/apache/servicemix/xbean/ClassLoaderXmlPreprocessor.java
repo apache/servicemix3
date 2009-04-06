@@ -18,12 +18,18 @@ package org.apache.servicemix.xbean;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Properties;
+import java.util.jar.JarInputStream;
+import java.util.zip.ZipEntry;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -62,11 +68,11 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
         NodeList classpathElements = document.getDocumentElement().getElementsByTagName("classpath");
         if (classpathElements.getLength() == 0) {
             // Check if a classpath.xml file exists in the root of the SU
-            URL url = getResource(CLASSPATH_XML);
-            if (url != null) {
+            List<URL> classpathUrls = getResources(CLASSPATH_XML);
+            if (classpathUrls.size() == 1) {
                 try {
                     DocumentBuilder builder = new SourceTransformer().createDocumentBuilder();
-                    Document doc = builder.parse(url.toString());
+                    Document doc = builder.parse(classpathUrls.get(0).toString());
                     classLoader = getClassLoader(applicationContext, reader, doc);
                 } catch (Exception e) {
                     throw new FatalBeanException("Unable to load classpath.xml file", e);
@@ -89,20 +95,193 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
         applicationContext.setClassLoader(classLoader);
         Thread.currentThread().setContextClassLoader(classLoader);
     }
-
-    protected URL getResource(String location) {
-        URI uri = root.toURI().resolve(location);
-        File file = new File(uri);
-
-        if (!file.canRead()) {
-            return null;
+    
+    /**
+     * <p>Replaces a String with another String inside a larger String,
+     * for the first <code>max</code> values of the search String.</p>
+     * 
+     * <p>A <code>null</code> reference passed to this method is a no-op.</p>
+     * 
+     * @param text text to search and replace in, may be null
+     * @param searchString the String to search for, may be null
+     * @param replacement the String to replace it with, may be null
+     * @param max maximum number of value to replace, or <code>-1</code> if no maximum
+     * @return the text with any replacements processed, <code>null</code> if null String input
+     */
+    private static String replaceString(String text, String searchString, String replacement, int max) {
+        if (text == null || text.length() == 0
+                || searchString == null || searchString.length() == 0
+                || replacement == null
+                || max == 0) {
+            return text;
         }
+        int start = 0;
+        int end = text.indexOf(searchString, start);
+        if (end == -1) {
+            return text;
+        }
+        int replLength = searchString.length();
+        int increase = replacement.length() - replLength;
+        increase = increase < 0 ? 0 : increase;
+        increase *= max < 0 ? 16 : (max > 64 ? 64 : max);
+        StringBuffer buffer = new StringBuffer(text.length() + increase);
+        while (end != -1) {
+            buffer.append(text.substring(start, end)).append(replacement);
+            start = end + replLength;
+            if (--max == 0) {
+                break;
+            }
+            end = text.indexOf(searchString, start);
+        }
+        buffer.append(text.substring(start));
+        return buffer.toString();
+    }
 
+    /**
+     * <p>
+     * Get the URLs for a classpath location. This method supports standard
+     * relative file location, <code>file:</code> URL location (including entries
+     * regexp filter support), <code>jar:</code> URL location (including entries
+     * regexp filter support).
+     * </p>
+     * 
+     * @param location the location where to get the URLs
+     * @return the URLs list
+     */
+    protected List<URL> getResources(String location) {
+        // step 1: replace system properties in the location
+        Properties systemProperties = System.getProperties();
+        for (Iterator systemPropertiesIterator = systemProperties.keySet().iterator(); systemPropertiesIterator.hasNext();) {
+            String property = (String) systemPropertiesIterator.next();
+            String value = systemProperties.getProperty(property);
+            location = ClassLoaderXmlPreprocessor.replaceString(location, "${" + property + "}", value, -1);
+        }
+        // step 2: apply regexp search for file: and jar: protocol based URL
+        if (location.startsWith("jar:")) {
+            return this.getJarResources(location);
+        } else if (location.startsWith("file:")) {
+            return this.getFileResources(location);
+        } else {
+            // relative location
+            List<URL> urls = new LinkedList<URL>();
+            URI uri = root.toURI().resolve(location);
+            File file = new File(uri);
+            if (file.canRead()) {
+                try {
+                    urls.add(file.toURL());
+                } catch (MalformedURLException e) {
+                    throw new IllegalArgumentException("Malformed resource location " + uri);
+                }
+            }
+            return urls;
+        }
+    }
+    
+    /**
+     * <p>
+     * Get the URLs for a jar: protocol based location. This method supports
+     * regexp to add several entries.
+     * </p>
+     * 
+     * <pre>
+     * jar:file:/path/to/my.ear!/entry.jar
+     * jar:http:/path/to/my.ear!/en*.jar
+     * </pre>
+     * 
+     * @param location
+     * @return
+     */
+    protected List<URL> getJarResources(String location) {
+        List<URL> urls = new LinkedList<URL>();
+        // get the !/ separator index
+        int separatorIndex = location.indexOf("!/");
+        if (separatorIndex == -1) {
+            throw new IllegalArgumentException("The jar URL " + location + " is not valid. !/ separator not found.");
+        }
+        // extract the jar location
+        String jarLocation = location.substring(4, separatorIndex);
+        System.out.println("jarLocation: " + jarLocation);
+        // extract the entry location
+        String entryLocation = location.substring(separatorIndex + 2);
+        System.out.println("entryLocation: " + entryLocation);
+        if (jarLocation == null || jarLocation.trim().length() < 1
+                || entryLocation == null || entryLocation.trim().length() < 1) {
+            throw new IllegalArgumentException("The jar URL " + location + " is not valid. Jar URL or entry not found.");
+        }
+        // construct the Jar URL
+        JarInputStream jarInputStream;
         try {
-            return file.toURL();
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Malformed resource " + uri);
+            jarInputStream = new JarInputStream(new URL(jarLocation).openStream());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("The jar URL is not valid " + jarLocation + ".", e);
         }
+        // iterate into the entries
+        try {
+            ZipEntry entry = jarInputStream.getNextEntry();
+            while (entry != null) {
+                if (entry.getName().matches(entryLocation)) {
+                    // the entry matches the regexp, construct the entry URL
+                    String entryUrl = "jar:" + jarLocation + "!/" + entry.getName();
+                    // add the entry URL into the URLs list
+                    urls.add(new URL(entryUrl));
+                }
+                entry = jarInputStream.getNextEntry();
+            }
+        } catch (IOException ioException) {
+            throw new IllegalArgumentException("Can't read jar entries", ioException);
+        }
+        return urls;
+    }
+    
+    /**
+     * <p>
+     * Get the URLs for a file: protocol based location. This method supports
+     * regexp to add several entries.
+     * </p>
+     * 
+     * <pre>
+     * file:/path/to/my.jar
+     * file:/path/to/dir/en*.jar
+     * </pre>
+     * 
+     * @param location
+     * @return
+     */
+    protected List<URL> getFileResources(String location) {
+        List<URL> urls = new LinkedList<URL>();
+        int starIndex = location.indexOf("*");
+        if (starIndex == -1) {
+            // no regexp pattern found
+            try {
+                urls.add(new URL(location));
+            } catch (MalformedURLException urlException) {
+                throw new IllegalArgumentException("Invalid URL " + location);
+            }  
+        } else {
+            // user has defined a regexp file name filter
+            int lastSeparatorIndex = location.lastIndexOf("/");
+            if (starIndex < lastSeparatorIndex) {
+                throw new IllegalArgumentException("Regexp is supported only on files name, not on directories.");
+            }
+            String dirPath = location.substring(0, lastSeparatorIndex);
+            File dir = new File(dirPath);
+            if (!dir.isDirectory()) {
+                throw new IllegalArgumentException("The regexp basedir is not a directory.");
+            }
+            File[] entries = dir.listFiles();
+            String fileNameRegexp = location.substring(lastSeparatorIndex);
+            for (int i = 0; i < entries.length; i++) {
+                File entry = entries[i];
+                if (entry.getName().matches(fileNameRegexp)) {
+                    try {
+                        urls.add(new URL(dirPath + "/" + entry.getName()));
+                    } catch (Exception e) {
+                        throw new IllegalArgumentException("Invalid URL " + dirPath + "/" + entry.getName(), e);
+                    }
+                }
+            }
+        }
+        return urls;
     }
     
     protected URL[] getDefaultLocations() {
@@ -174,15 +353,15 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
             // convert the paths to URLS
             URL[] urls;
             if (classpath.size() != 0) {
-                urls = new URL[classpath.size()];
+                List<URL> urlsList = new LinkedList<URL>();
                 for (ListIterator<String> iterator = classpath.listIterator(); iterator.hasNext();) {
                     String location = iterator.next();
-                    URL url = getResource(location);
-                    if (url == null) {
-                        throw new FatalBeanException("Unable to resolve classpath location " + location);
+                    List<URL> locationUrls = getResources(location);
+                    for (URL url : locationUrls) {
+                        urlsList.add(url);
                     }
-                    urls[iterator.previousIndex()] = url;
                 }
+                urls = (URL[])urlsList.toArray();
             } else {
                 urls = getDefaultLocations();
             }
