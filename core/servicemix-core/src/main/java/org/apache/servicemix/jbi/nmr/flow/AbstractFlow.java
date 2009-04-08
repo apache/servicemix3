@@ -16,6 +16,7 @@
  */
 package org.apache.servicemix.jbi.nmr.flow;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 
 import javax.jbi.JBIException;
@@ -55,7 +56,9 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
     private ReadWriteLock lock = new ReentrantReadWriteLock();
     private Thread suspendThread;
     private String name;
-
+    private int writeLockTimeout = 5;
+    
+    
     /**
      * Initialize the Region
      * 
@@ -133,7 +136,11 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
         if (log.isDebugEnabled()) {
             log.debug("Called Flow suspend");
         }
-        lock.writeLock().lock();
+        try {
+            lock.writeLock().tryLock(writeLockTimeout, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            log.debug("try lock interrupted");
+        }
         suspendThread = Thread.currentThread();
     }
 
@@ -144,7 +151,11 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
         if (log.isDebugEnabled()) {
             log.debug("Called Flow resume");
         }
-        lock.writeLock().unlock();
+        try {
+            lock.writeLock().unlock();
+        } catch (IllegalMonitorStateException e) {
+            log.debug("not hold the write lock");
+        }
         suspendThread = null;
     }
 
@@ -270,6 +281,23 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      */
     public ExecutorFactory getExecutorFactory() {
         return executorFactory;
+    }
+
+    /**
+     * Specifies the interval for which ReentrantReadWriteLock.WriteLock.tryLock will elapse,
+     * This is specified in seconds.
+     * 
+     * @param writeLockTimeout
+     *            the number of second ReentrantReadWriteLock.WriteLock.tryLock will elapse
+     * @org.apache.xbean.Property description="the number of second ReentrantReadWriteLock.WriteLock.tryLock will elapse. 
+     *                             The default is 5 secs."
+     */
+    public void setWriteLockTimeout(int writeLockTimeout) {
+        this.writeLockTimeout = writeLockTimeout;
+    }
+
+    public int getWriteLockTimeout() {
+        return writeLockTimeout;
     }
 
 }
