@@ -731,6 +731,12 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
+                <artifactId>bridge-camel</artifactId>
+                <version>3.3.1-SNAPSHOT</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>basic</artifactId>
                 <version>3.3.1-SNAPSHOT</version>
                 <type>pom</type>

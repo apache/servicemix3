@@ -27,7 +27,7 @@
         <version>3.3.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.apache.servicemix.samples.bridge</groupId>
+    <groupId>org.apache.servicemix.samples.bridge-camel</groupId>
     <artifactId>bridge-camel-su</artifactId>
     <packaging>jbi-service-unit</packaging>
     <name>ServiceMix :: Samples :: Bridge :: Camel :: SU</name>

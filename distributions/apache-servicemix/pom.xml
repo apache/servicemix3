@@ -181,6 +181,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix.samples</groupId>
+      <artifactId>bridge-camel</artifactId>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.samples</groupId>
       <artifactId>basic</artifactId>
       <type>pom</type>
     </dependency>
@@ -676,6 +681,25 @@
               </artifactItems>
             </configuration>
           </execution>
+
+          <execution>
+            <id>copy-bridge-camel-sa</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/samples/bridge-camel-${servicemix-version}</outputDirectory>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.servicemix.samples.bridge-camel</groupId>
+                  <artifactId>bridge-camel-sa</artifactId>
+                  <version>${servicemix-version}</version>
+                  <type>zip</type>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
           <execution>
             <id>copy-loan-broker-sa</id>
             <phase>generate-resources</phase>
@@ -791,6 +815,13 @@
                 <artifactItem>
                   <groupId>org.apache.servicemix.samples</groupId>
                   <artifactId>bridge</artifactId>
+                  <version>${servicemix-version}</version>
+                  <classifier>src</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.servicemix.samples</groupId>
+                  <artifactId>bridge-camel</artifactId>
                   <version>${servicemix-version}</version>
                   <classifier>src</classifier>
                   <type>zip</type>
