@@ -37,6 +37,7 @@
     <module>cxf-wsdl-first</module>
     <module>loan-broker</module>
     <module>bridge</module>
+    <module>bridge-camel</module>
     <module>servicemix-web</module>
     <module>basic</module>
     <module>camel</module>
