@@ -43,6 +43,10 @@
       </excludes>
     </fileSet>
     <fileSet>
+      <directory>target/classes/conf</directory>
+      <outputDirectory>/conf</outputDirectory>
+    </fileSet>
+    <fileSet>
       <directory>target/filtered/bin</directory>
       <outputDirectory>/bin</outputDirectory>
       <fileMode>755</fileMode>
