@@ -48,6 +48,10 @@
       <fileMode>755</fileMode>
     </fileSet>
     <fileSet>
+      <directory>target/classes/conf</directory>
+      <outputDirectory>/conf</outputDirectory>
+    </fileSet>
+    <fileSet>
       <directory>target/components</directory>
       <outputDirectory>hotdeploy</outputDirectory>
     </fileSet>
