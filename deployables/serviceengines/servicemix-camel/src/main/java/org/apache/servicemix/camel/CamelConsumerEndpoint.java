@@ -17,7 +17,9 @@
 package org.apache.servicemix.camel;
 
 import java.net.URISyntaxException;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jbi.management.DeploymentException;
 import javax.jbi.messaging.ExchangeStatus;
@@ -45,6 +47,9 @@ public class CamelConsumerEndpoint extends ConsumerEndpoint implements AsyncProc
     private JbiBinding binding;
 
     private JbiEndpoint jbiEndpoint;
+    
+    private Map<String, AsyncCallback> callbacks = new ConcurrentHashMap<String, AsyncCallback>();
+    private Map<String, Exchange> exchanges = new ConcurrentHashMap<String, Exchange>();
 
     public CamelConsumerEndpoint(JbiBinding binding, JbiEndpoint jbiEndpoint) {
         setService(SERVICE_NAME);
@@ -54,24 +59,23 @@ public class CamelConsumerEndpoint extends ConsumerEndpoint implements AsyncProc
     }
 
     public void process(MessageExchange messageExchange) throws Exception {
-        Exchange exchange = (Exchange) messageExchange.getProperty(Exchange.class.getName());
-        AsyncCallback asyncCallback = (AsyncCallback) messageExchange.getProperty(AsyncCallback.class.getName());
-        if (messageExchange.getStatus() == ExchangeStatus.ERROR) {
-            exchange.setException(messageExchange.getError());
-        } else if (messageExchange.getStatus() == ExchangeStatus.ACTIVE) {
-            addHeaders(messageExchange, exchange);
-            if (messageExchange.getFault() != null) {
-                exchange.getFault().setBody(messageExchange.getFault().getContent());
-                addHeaders(messageExchange.getFault(), exchange.getFault());
-                addAttachments(messageExchange.getFault(), exchange.getFault());
-            } else {
-                exchange.getOut().setBody(messageExchange.getMessage("out").getContent());
-                addHeaders(messageExchange.getMessage("out"), exchange.getOut());
-                addAttachments(messageExchange.getMessage("out"), exchange.getOut());
+        Exchange exchange = exchanges.remove(messageExchange.getExchangeId());
+        if (exchange == null) {
+            String message = String.format("Unable to find Camel Exchange for JBI MessageExchange %s", messageExchange.getExchangeId());
+            logger.warn(message);
+            if (messageExchange.getStatus() == ExchangeStatus.ACTIVE) {
+                fail(messageExchange, new JbiException(message));
             }
-            done(messageExchange);
+        } else {
+            processReponse(messageExchange, exchange);
         }
-        asyncCallback.done(false);
+        
+        AsyncCallback asyncCallback = callbacks.remove(messageExchange.getExchangeId());
+        if (asyncCallback == null) {
+            logger.warn(String.format("Unable to find Camel AsyncCallback for JBI MessageExchange %s", messageExchange.getExchangeId()));
+        } else {
+            asyncCallback.done(false);
+        }
     }
 
     public boolean process(Exchange exchange, AsyncCallback asyncCallback) {
@@ -83,15 +87,15 @@ public class CamelConsumerEndpoint extends ConsumerEndpoint implements AsyncProc
             }
 
             URIResolver.configureExchange(messageExchange, getContext(), jbiEndpoint.getDestinationUri());
-            messageExchange.setProperty(Exchange.class.getName(), exchange);
-            messageExchange.setProperty(AsyncCallback.class.getName(), asyncCallback);
+            exchanges.put(messageExchange.getExchangeId(), exchange);
+            callbacks.put(messageExchange.getExchangeId(), asyncCallback);
 
             send(messageExchange);
             return false;
-        } catch (MessagingException e) {
-            throw new JbiException(e);
-        } catch (URISyntaxException e) {
-            throw new JbiException(e);
+        } catch (Exception e) {
+            exchange.setException(e);
+            asyncCallback.done(true);
+            return true;
         }
     }
 
@@ -107,32 +111,37 @@ public class CamelConsumerEndpoint extends ConsumerEndpoint implements AsyncProc
 
             sendSync(messageExchange);
 
-            if (messageExchange.getStatus() == ExchangeStatus.ERROR) {
-                exchange.setException(messageExchange.getError());
-            } else if (messageExchange.getStatus() == ExchangeStatus.ACTIVE) {
-                addHeaders(messageExchange, exchange);
-                if (messageExchange.getFault() != null) {
-                    exchange.getFault().setBody(messageExchange.getFault().getContent());
-                    addHeaders(messageExchange.getFault(), exchange.getFault());
-                    addAttachments(messageExchange.getFault(), exchange.getFault());
-                } else {
-                    exchange.getOut().setBody(messageExchange.getMessage("out").getContent());
-                    addHeaders(messageExchange.getMessage("out"), exchange.getOut());
-                    addAttachments(messageExchange.getMessage("out"), exchange.getOut());
-                }
-                done(messageExchange);
-            }
+            processReponse(messageExchange, exchange);
 
         } catch (MessagingException e) {
+            exchange.setException(e);
             throw new JbiException(e);
         } catch (URISyntaxException e) {
+            exchange.setException(e);
             throw new JbiException(e);
         }
     }
-    
-    @Override
+
     public String getLocationURI() {
         return null;
+    }    
+
+    private void processReponse(MessageExchange messageExchange, Exchange exchange) throws MessagingException {
+        if (messageExchange.getStatus() == ExchangeStatus.ERROR) {
+            exchange.setException(messageExchange.getError());
+        } else if (messageExchange.getStatus() == ExchangeStatus.ACTIVE) {
+            addHeaders(messageExchange, exchange);
+            if (messageExchange.getFault() != null) {
+                exchange.getFault().setBody(messageExchange.getFault().getContent());
+                addHeaders(messageExchange.getFault(), exchange.getFault());
+                addAttachments(messageExchange.getFault(), exchange.getFault());
+            } else if (messageExchange.getMessage("out") != null) {
+                exchange.getOut().setBody(messageExchange.getMessage("out").getContent());
+                addHeaders(messageExchange.getMessage("out"), exchange.getOut());
+                addAttachments(messageExchange.getMessage("out"), exchange.getOut());
+            }
+            done(messageExchange);
+        }
     }
 
     @Override
@@ -140,6 +149,7 @@ public class CamelConsumerEndpoint extends ConsumerEndpoint implements AsyncProc
         // No validation required
     }
 
+    @SuppressWarnings("unchecked")
     private void addHeaders(MessageExchange messageExchange, Exchange camelExchange) {
         Set entries = messageExchange.getPropertyNames();
         for (Object o : entries) {
@@ -148,6 +158,7 @@ public class CamelConsumerEndpoint extends ConsumerEndpoint implements AsyncProc
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void addHeaders(NormalizedMessage normalizedMessage, Message camelMessage) {
         Set entries = normalizedMessage.getPropertyNames();
         for (Object o : entries) {
@@ -156,6 +167,7 @@ public class CamelConsumerEndpoint extends ConsumerEndpoint implements AsyncProc
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void addAttachments(NormalizedMessage normalizedMessage, Message camelMessage) {
         Set entries = normalizedMessage.getAttachmentNames();
         for (Object o : entries) {
