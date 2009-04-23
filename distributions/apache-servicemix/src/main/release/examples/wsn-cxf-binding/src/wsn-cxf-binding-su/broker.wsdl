@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://servicemix.org/wsnotification" xmlns:tnspt="http://docs.oasis-open.org/wsn/brw-2" xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsn-b="http://docs.oasis-open.org/wsn/b-2" xmlns:wsn-br="http://docs.oasis-open.org/wsn/br-2" xmlns:wsn-brw="http://docs.oasis-open.org/wsn/brw-2" xmlns:wsn-bw="http://docs.oasis-open.org/wsn/bw-2" xmlns:wsnt="http://docs.oasis-open.org/wsn/b-2" xmlns:wsntw="http://docs.oasis-open.org/wsn/bw-2" xmlns:wsrf-bf="http://docs.oasis-open.org/wsrf/bf-2" xmlns:wsrf-r="http://docs.oasis-open.org/wsrf/r-2" xmlns:wsrf-rw="http://docs.oasis-open.org/wsrf/rw-2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" targetNamespace="http://servicemix.org/wsnotification">
+  <wsdl:import location="brw-2.wsdl" namespace="http://docs.oasis-open.org/wsn/brw-2">
+    </wsdl:import>
+  <wsdl:import location="bw-2.wsdl" namespace="http://docs.oasis-open.org/wsn/bw-2">
+    </wsdl:import>
+  <wsdl:binding name="http-bindingBinding" type="wsn-brw:NotificationBroker">
+    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="Notify">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="Subscribe">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="TopicNotSupportedFault">
+        <wsdlsoap:fault name="TopicNotSupportedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidTopicExpressionFault">
+        <wsdlsoap:fault name="InvalidTopicExpressionFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="UnsupportedPolicyRequestFault">
+        <wsdlsoap:fault name="UnsupportedPolicyRequestFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidMessageContentExpressionFault">
+        <wsdlsoap:fault name="InvalidMessageContentExpressionFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="UnacceptableInitialTerminationTimeFault">
+        <wsdlsoap:fault name="UnacceptableInitialTerminationTimeFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidProducerPropertiesExpressionFault">
+        <wsdlsoap:fault name="InvalidProducerPropertiesExpressionFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="TopicExpressionDialectUnknownFault">
+        <wsdlsoap:fault name="TopicExpressionDialectUnknownFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="SubscribeCreationFailedFault">
+        <wsdlsoap:fault name="SubscribeCreationFailedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidFilterFault">
+        <wsdlsoap:fault name="InvalidFilterFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="ResourceUnknownFault">
+        <wsdlsoap:fault name="ResourceUnknownFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="UnrecognizedPolicyRequestFault">
+        <wsdlsoap:fault name="UnrecognizedPolicyRequestFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="NotifyMessageNotSupportedFault">
+        <wsdlsoap:fault name="NotifyMessageNotSupportedFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentMessage">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="TopicNotSupportedFault">
+        <wsdlsoap:fault name="TopicNotSupportedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="MultipleTopicsSpecifiedFault">
+        <wsdlsoap:fault name="MultipleTopicsSpecifiedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidTopicExpressionFault">
+        <wsdlsoap:fault name="InvalidTopicExpressionFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="NoCurrentMessageOnTopicFault">
+        <wsdlsoap:fault name="NoCurrentMessageOnTopicFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="TopicExpressionDialectUnknownFault">
+        <wsdlsoap:fault name="TopicExpressionDialectUnknownFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="ResourceUnknownFault">
+        <wsdlsoap:fault name="ResourceUnknownFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterPublisher">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="TopicNotSupportedFault">
+        <wsdlsoap:fault name="TopicNotSupportedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidTopicExpressionFault">
+        <wsdlsoap:fault name="InvalidTopicExpressionFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="PublisherRegistrationFailedFault">
+        <wsdlsoap:fault name="PublisherRegistrationFailedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="UnacceptableInitialTerminationTimeFault">
+        <wsdlsoap:fault name="UnacceptableInitialTerminationTimeFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="PublisherRegistrationRejectedFault">
+        <wsdlsoap:fault name="PublisherRegistrationRejectedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="ResourceUnknownFault">
+        <wsdlsoap:fault name="ResourceUnknownFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="PullPointJBI" type="wsn-bw:PullPoint">
+                <soap:binding transport="http://schemas.xmlsoap.org/soap/http"
+                        style="document" />
+                <wsdl:operation name="GetMessages">
+                        <wsdl:input name="GetMessagesRequest">
+                                <soap:body use="literal" />
+                        </wsdl:input>
+                        <wsdl:output name="GetMessagesResponse">
+                                <soap:body use="literal" />
+                        </wsdl:output>
+                        <wsdl:fault name="ResourceUnknownFault">
+                                <soap:fault use="literal" name="ResourceUnknownFault" />
+                        </wsdl:fault>
+                </wsdl:operation>
+                <wsdl:operation name="DestroyPullPoint">
+                        <wsdl:input name="DestroyPullPointRequest">
+                                <soap:body use="literal" />
+                        </wsdl:input>
+                        <wsdl:output name="DestroyPullPointResponse">
+                                <soap:body use="literal" />
+                        </wsdl:output>
+                        <wsdl:fault name="UnableToDestroyPullPointFault">
+                                <soap:fault use="literal"
+                                        name="UnableToDestroyPullPointFault" />
+                        </wsdl:fault>
+                </wsdl:operation>
+                <wsdl:operation name="Notify">
+            <wsdl:input>
+                                <soap:body use="literal" />
+            </wsdl:input>
+                </wsdl:operation>
+        </wsdl:binding>
+
+  <wsdl:service name="NotificationBroker">
+    <wsdl:port binding="tns:http-bindingBinding" name="cxf-binding">
+      <wsdlsoap:address location="http://localhost:8192/Broker/"/>
+    </wsdl:port>
+  </wsdl:service>
+  <wsdl:service name="GetMessages">
+    <wsdl:port binding="tns:PullPointJBI" name="cxf-getMessages">
+      <wsdlsoap:address location="http://localhost:8192/GetMessages/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
