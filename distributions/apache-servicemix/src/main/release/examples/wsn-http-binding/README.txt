@@ -33,3 +33,11 @@ You can see the exposed service (and its WSDL) browsing at
 
 See http://servicemix.apache.org/ws-notification-http-binding.html
 for more informations.
+
+You can also open the client.html page in a browser
+1. create pull point
+2. subsribe
+3. Notify
+4. getMessages
+See http://servicemix.apache.org/example-scenario.html
+for more informations
