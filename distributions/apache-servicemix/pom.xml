@@ -86,6 +86,10 @@
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-smpp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-osworkflow</artifactId>
     </dependency>
     <dependency>
@@ -467,6 +471,13 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.servicemix</groupId>
+                  <artifactId>servicemix-smpp</artifactId>
+                  <version>${servicemix-smpp-version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.servicemix</groupId>
                   <artifactId>servicemix-osworkflow</artifactId>
                   <version>${servicemix-osworkflow-version}</version>
                   <classifier>installer</classifier>
@@ -627,6 +638,12 @@
                   <groupId>org.apache.servicemix</groupId>
                   <artifactId>servicemix-snmp</artifactId>
                   <version>${servicemix-snmp-version}</version>
+                  <type>xsd</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.servicemix</groupId>
+                  <artifactId>servicemix-smpp</artifactId>
+                  <version>${servicemix-smpp-version}</version>
                   <type>xsd</type>
                 </artifactItem>
                 <artifactItem>

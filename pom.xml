@@ -76,6 +76,7 @@
         <servicemix-drools-version>2009.01</servicemix-drools-version>
         <servicemix-file-version>2009.01</servicemix-file-version>
         <servicemix-snmp-version>2009.01</servicemix-snmp-version>
+        <servicemix-smpp-version>2009.01</servicemix-smpp-version>
         <res-maven-plugin-version>4.0</res-maven-plugin-version>
         <servicemix-build-version>1.0</servicemix-build-version>
         
@@ -585,6 +586,11 @@
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-snmp</artifactId>
                 <version>${servicemix-snmp-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.servicemix</groupId>
+                <artifactId>servicemix-smpp</artifactId>
+                <version>${servicemix-smpp-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
