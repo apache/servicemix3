@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<beans xmlns:cxfbc="http://servicemix.apache.org/cxfbc/1.0"
+       xmlns:wsn="http://servicemix.org/wsnotification">
+
+  <cxfbc:consumer wsdl="classpath:broker.wsdl" service="wsn:NotificationBroker"
+                 endpoint="cxf-binding"
+                 targetService="wsn:NotificationBroker"
+                 targetEndpoint="Broker"
+                 locationURI="http://localhost:8192/Broker/"
+                 useJBIWrapper="false"
+                 useSOAPEnvelope="false"
+                >	               
+      <cxfbc:inInterceptors>
+          <bean class="org.apache.servicemix.cxfbc.interceptors.JbiAddressingInterceptor"/>
+          <bean class="org.apache.cxf.ws.addressing.soap.MAPCodec"/>
+      </cxfbc:inInterceptors>
+  </cxfbc:consumer>
+
+  <cxfbc:consumer wsdl="classpath:broker.wsdl" service="wsn:GetMessages"
+                 endpoint="cxf-getMessages"
+                 targetService="wsn:NotificationBroker"
+                 targetEndpoint="Broker"
+                 locationURI="http://localhost:8192/GetMessages/"
+                 useJBIWrapper="false"
+                 useSOAPEnvelope="false"
+                >
+      <cxfbc:inInterceptors>
+          <bean class="org.apache.servicemix.cxfbc.interceptors.JbiAddressingInterceptor"/>
+          <bean class="org.apache.cxf.ws.addressing.soap.MAPCodec"/>
+      </cxfbc:inInterceptors>
+  </cxfbc:consumer>
+
+  <cxfbc:consumer wsdl="classpath:createpullpoint.wsdl" service="wsn:CreatePullPoint"
+                 endpoint="cxf-binding2"
+                 targetService="wsn:CreatePullPoint"
+                 targetEndpoint="Broker"
+                 locationURI="http://localhost:8192/CreatePullPoint/"
+                 useJBIWrapper="false"
+                 useSOAPEnvelope="false"/>
+
+</beans>
