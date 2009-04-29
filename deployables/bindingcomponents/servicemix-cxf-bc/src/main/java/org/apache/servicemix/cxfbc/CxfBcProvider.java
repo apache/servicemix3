@@ -401,7 +401,7 @@ public class CxfBcProvider extends ProviderEndpoint implements
      *                            interceptors that process incoming requests"
      */
     public void setInInterceptors(List<Interceptor> interceptors) {
-        in = interceptors;
+        in.addAll(interceptors);
     }
 
     /**
@@ -414,7 +414,7 @@ public class CxfBcProvider extends ProviderEndpoint implements
      *                            interceptors that process incoming faults"
      */
     public void setInFaultInterceptors(List<Interceptor> interceptors) {
-        inFault = interceptors;
+        inFault.addAll(interceptors);
     }
 
     /**
@@ -427,7 +427,7 @@ public class CxfBcProvider extends ProviderEndpoint implements
      *                            interceptors that process responses"
      */
     public void setOutInterceptors(List<Interceptor> interceptors) {
-        out = interceptors;
+        out.addAll(interceptors);
     }
 
     /**
@@ -441,7 +441,7 @@ public class CxfBcProvider extends ProviderEndpoint implements
      *                            returned to the consumer"
      */
     public void setOutFaultInterceptors(List<Interceptor> interceptors) {
-        outFault = interceptors;
+        outFault.addAll(interceptors);
     }
 
     /**

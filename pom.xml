@@ -220,7 +220,7 @@
         <oro-version>2.0.8</oro-version>
         <sitemesh-version>2.2.1</sitemesh-version>
         <woden-version>1.0.0M6</woden-version>
-        <cxf-version>2.0.11-SNAPSHOT</cxf-version>
+        <cxf-version>2.0.12-SNAPSHOT</cxf-version>
         <jaxb.version>2.0</jaxb.version>
         <jaxb.impl.version>2.0.1</jaxb.impl.version>
         <derby-version>10.2.2.0</derby-version>

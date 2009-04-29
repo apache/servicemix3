@@ -240,7 +240,7 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
      *                            interceptors that process incoming responses"
      */
     public void setInInterceptors(List<Interceptor> interceptors) {
-        in = interceptors;
+        in.addAll(interceptors);
     }
 
     /**
@@ -253,7 +253,7 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
      *                            interceptors that process incoming faults"
      */
     public void setInFaultInterceptors(List<Interceptor> interceptors) {
-        inFault = interceptors;
+        inFault.addAll(interceptors);
     }
 
     /**
@@ -266,7 +266,7 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
      *                            interceptors that process requests"
      */
     public void setOutInterceptors(List<Interceptor> interceptors) {
-        out = interceptors;
+        out.addAll(interceptors);
     }
 
     /**
@@ -280,7 +280,7 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
      *                            returned to the consumer"
      */
     public void setOutFaultInterceptors(List<Interceptor> interceptors) {
-        outFault = interceptors;
+        outFault.addAll(interceptors);
     }
 
     public void process(MessageExchange exchange) throws Exception {

@@ -175,7 +175,7 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
      *                            interceptors that process incoming requests"
      */
     public void setInInterceptors(List<Interceptor> interceptors) {
-        in = interceptors;
+        in.addAll(interceptors);
     }
 
     /**
@@ -188,7 +188,7 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
      *                            interceptors that process incoming faults"
      */
     public void setInFaultInterceptors(List<Interceptor> interceptors) {
-        inFault = interceptors;
+        inFault.addAll(interceptors);
     }
 
     /**
@@ -201,7 +201,7 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
      *                            interceptors that process response messages"
      */
     public void setOutInterceptors(List<Interceptor> interceptors) {
-        out = interceptors;
+        out.addAll(interceptors);
     }
 
     /**
@@ -215,7 +215,7 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
      *                            returned to the consumer"
      */
     public void setOutFaultInterceptors(List<Interceptor> interceptors) {
-        outFault = interceptors;
+        outFault.addAll(interceptors);
     }
 
     public Map getProperties() {
