@@ -17,6 +17,8 @@
 package org.apache.servicemix.cxfbc;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,9 +36,11 @@ import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.interceptor.MustUnderstandInterceptor;
 import org.apache.cxf.binding.soap.interceptor.ReadHeadersInterceptor;
 import org.apache.cxf.endpoint.Endpoint;
+import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.interceptor.AttachmentInInterceptor;
 import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.interceptor.StaxInInterceptor;
+import org.apache.cxf.io.CachedOutputStream;
 import org.apache.cxf.message.Attachment;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.ExchangeImpl;
@@ -144,7 +148,7 @@ public class CxfBcProviderMessageObserver implements MessageObserver {
             inChain.add(this.providerEndpoint.getInFaultInterceptors());
             soapMessage.setInterceptorChain(inChain);
             inChain.doIntercept(soapMessage);
-           
+            closeConnectionStream(soapMessage);
             setMessageStatus(soapMessage, boi, messageExchange);
             boolean txSync = messageExchange.getStatus() == ExchangeStatus.ACTIVE
                     && messageExchange.isTransacted()
@@ -166,6 +170,22 @@ public class CxfBcProviderMessageObserver implements MessageObserver {
                 notifyAll();
             }
         }
+    }
+
+    private void closeConnectionStream(SoapMessage soapMessage) throws IOException {
+        InputStream is = soapMessage.getContent(InputStream.class);
+        if (is != null) {
+            CachedOutputStream bos = new CachedOutputStream();
+            IOUtils.copy(is, bos);
+
+            bos.flush();
+            is.close();
+
+            soapMessage.setContent(InputStream.class, bos.getInputStream());
+
+            bos.close();
+        }
+
     }
 
     private void setMessageStatus(SoapMessage soapMessage, BindingOperationInfo boi, MessageExchange messageExchange) 
