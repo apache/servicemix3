@@ -361,7 +361,7 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
                         urlsList.add(url);
                     }
                 }
-                urls = (URL[])urlsList.toArray();
+                urls = urlsList.toArray(new URL[urlsList.size()]);
             } else {
                 urls = getDefaultLocations();
             }
