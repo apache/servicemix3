@@ -52,7 +52,7 @@
        <artifactId>servicemix-camel</artifactId>
        <classifier>installer</classifier>
        <type>zip</type>
-       <version>2008.01</version>
+       <version>${servicemix-camel-version}</version>
        <scope>test</scope>
     </dependency>
     <dependency>
@@ -60,7 +60,7 @@
        <artifactId>servicemix-shared</artifactId>
        <classifier>installer</classifier>
        <type>zip</type>
-       <version>2008.01</version>
+       <version>${servicemix-shared-version}</version>
        <scope>test</scope>
     </dependency>
     <dependency>
@@ -81,6 +81,12 @@
   </dependencies>
 
   <build>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
     <plugins>
 
       <!--
