@@ -24,7 +24,7 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 
 public class FilePollerEndpointTest extends TestCase {
-    
+
     private static final File DATA = new File("target/test/data");
     private static final File ARCHIVE = new File("target/test/archive");
     private FilePollerEndpoint endpoint;
@@ -34,13 +34,13 @@ public class FilePollerEndpointTest extends TestCase {
         endpoint = new FilePollerEndpoint();
         endpoint.setTargetService(new QName("urn:test", "service"));
     }
-    
+
     public void testValidateNoFile() throws Exception {
         try {
             endpoint.validate();
             fail("validate() should throw an exception when file has not been set");
         } catch (DeploymentException e) {
-            //test succeeds
+            // test succeeds
         }
     }
 
@@ -53,14 +53,14 @@ public class FilePollerEndpointTest extends TestCase {
             endpoint.validate();
             fail("validate() should throw an exception when archive doesn't refer to a directory");
         } catch (DeploymentException e) {
-            //test succeeds
+            // test succeeds
         } finally {
             if (archive != null) {
                 archive.delete();
             }
         }
     }
-    
+
     public void testValidateArchiveWithoutDelete() throws Exception {
         endpoint.setFile(DATA);
         endpoint.setArchive(ARCHIVE);
@@ -69,7 +69,7 @@ public class FilePollerEndpointTest extends TestCase {
             endpoint.validate();
             fail("validate() should throw an exception when archive was set without delete");
         } catch (DeploymentException e) {
-            //test succeeds
+            // test succeeds
         }
     }
 }
