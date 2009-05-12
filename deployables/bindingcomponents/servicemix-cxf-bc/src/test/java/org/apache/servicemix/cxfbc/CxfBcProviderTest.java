@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 
 import javax.jbi.messaging.InOut;
 import javax.xml.namespace.QName;
-import javax.xml.ws.soap.SOAPBinding;
 
 import org.apache.cxf.calculator.CalculatorImpl;
 import org.apache.cxf.calculator.CalculatorPortType;
@@ -31,13 +30,11 @@ import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
-import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
 import org.apache.cxf.service.model.ServiceInfo;
 import org.apache.hello_world_soap_http.Greeter;
 import org.apache.hello_world_soap_http.GreeterImpl;
 import org.apache.servicemix.client.DefaultServiceMixClient;
-import org.apache.servicemix.cxfbc.mtom.TestMtomImpl;
 import org.apache.servicemix.cxfse.CxfSeComponent;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
@@ -97,7 +94,7 @@ public class CxfBcProviderTest extends SpringTestSupport {
         
     }
     
-    public void xtestTargetServiceNotExist() throws Exception {
+    public void testTargetServiceNotExist() throws Exception {
         client = new DefaultServiceMixClient(jbi);
         io = client.createInOutExchange();
         io.setService(new QName("http://apache.org/hello_world_soap_http", "SOAPServiceProvider"));
@@ -118,35 +115,6 @@ public class CxfBcProviderTest extends SpringTestSupport {
         
     }
     
-    public void testMtom() throws Exception {
-        //start external service
-        EndpointImpl endpointMtom =
-            (EndpointImpl)javax.xml.ws.Endpoint.publish("http://localhost:9001/mtombridgetest", 
-                new TestMtomImpl());
-             
-        SOAPBinding binding = (SOAPBinding)endpointMtom.getBinding();
-        binding.setMTOMEnabled(true);
-        endpointMtom.getInInterceptors().add(new LoggingInInterceptor());
-        endpointMtom.getOutInterceptors().add(new LoggingOutInterceptor());
-        client = new DefaultServiceMixClient(jbi);
-        io = client.createInOutExchange();
-        io.setService(new QName("http://apache.org/hello_world_soap_http", "SOAPServiceProvider"));
-        io.setInterfaceName(new QName("http://apache.org/hello_world_soap_http", "Greeter"));
-        io.setOperation(new QName("http://apache.org/hello_world_soap_http", "greetMe"));
-        //send message to proxy
-        io.getInMessage().setContent(new StringSource(
-                "<message xmlns='http://java.sun.com/xml/ns/jbi/wsdl-11-wrapper'>"
-              + "<part> "
-              + "<greetMe xmlns='http://apache.org/hello_world_soap_http/types'><requestType>"
-              + "ffang with mtom"
-              + "</requestType></greetMe>"
-              + "</part> "
-              + "</message>"));
-        client.sendSync(io);
-        assertTrue(new SourceTransformer().contentToString(
-                io.getOutMessage()).indexOf("testfoobar") >= 0);
-        
-    }
     
     public void testProvider() throws Exception {
         LOG.info("test provider");
