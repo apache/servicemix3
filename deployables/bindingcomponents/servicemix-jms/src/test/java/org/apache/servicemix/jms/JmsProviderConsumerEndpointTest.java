@@ -66,31 +66,39 @@ public class JmsProviderConsumerEndpointTest extends AbstractJmsTestSupport {
         InOut inout = null;
         boolean result = false;
         DataHandler dh = null;
-        
+
         // Test successful return
-        inout = client.createInOutExchange();
-        inout.setService(new QName("http://jms.servicemix.org/Test", "Provider"));
-        inout.getInMessage().setContent(new StringSource("<hello>world</hello>"));
-        dh = new DataHandler(new ByteArrayDataSource("myImage", "application/octet-stream"));
-        inout.getInMessage().addAttachment("myImage", dh);
-        result = client.sendSync(inout);
-        assertTrue(result);
-        NormalizedMessage out = inout.getOutMessage();
-        assertNotNull(out);
-        Source src = out.getContent();
-        assertNotNull(src);
-        dh = out.getAttachment("myImage");
-        assertNotNull(dh);
-        
+        Source src = null;
+        for (int i = 0; i < 2; i++) {
+            inout = client.createInOutExchange();
+            inout.setService(new QName("http://jms.servicemix.org/Test", "Provider"));
+            inout.getInMessage().setContent(new StringSource("<hello>world</hello>"));
+            dh = new DataHandler(new ByteArrayDataSource("myImage", "application/octet-stream"));
+            inout.getInMessage().addAttachment("myImage", dh);
+            result = client.sendSync(inout);
+            assertTrue(result);
+            NormalizedMessage out = inout.getOutMessage();
+            assertNotNull(out);
+            src = out.getContent();
+            assertNotNull(src);
+            dh = out.getAttachment("myImage");
+            assertNotNull(dh);
+        }
+
+        // Ensure that only one temporary replyTo queue was created for multiple messages sent
+//
+//      Not working with smx-3.2 because of AMQ 4.1.1       
+//      assertEquals(0, countBrokerTemporaryQueues());
+
         logger.info(new SourceTransformer().toString(src));
 
-        // Test fault return 
+        // Test fault return
         container.deactivateComponent("receiver");
         ReturnFaultComponent fault = new ReturnFaultComponent();
         ActivationSpec asFault = new ActivationSpec("receiver", fault);
         asFault.setService(new QName("http://jms.servicemix.org/Test", "Echo"));
         container.activateComponent(asFault);
-        
+
         inout = client.createInOutExchange();
         inout.setService(new QName("http://jms.servicemix.org/Test", "Provider"));
         inout.getInMessage().setContent(new StringSource("<hello>world</hello>"));
@@ -106,7 +114,7 @@ public class JmsProviderConsumerEndpointTest extends AbstractJmsTestSupport {
         ActivationSpec asError = new ActivationSpec("receiver", error);
         asError.setService(new QName("http://jms.servicemix.org/Test", "Echo"));
         container.activateComponent(asError);
-        
+
         inout = client.createInOutExchange();
         inout.setService(new QName("http://jms.servicemix.org/Test", "Provider"));
         inout.getInMessage().setContent(new StringSource("<hello>world</hello>"));
@@ -138,7 +146,7 @@ public class JmsProviderConsumerEndpointTest extends AbstractJmsTestSupport {
                 super.onMessageExchange(exchange);
             }
         };
-        
+
         ActivationSpec asError = new ActivationSpec("receiver", error);
         asError.setService(new QName("http://jms.servicemix.org/Test", "Echo"));
         container.activateComponent(asError);
@@ -157,7 +165,7 @@ public class JmsProviderConsumerEndpointTest extends AbstractJmsTestSupport {
         }
 
         assertTrue("The message was never processed by servicemix-jms", receiveCount[0] > 0);
-        
+
         // Deactivate the JMS component so that it stops
         // trying to get the message from the queue
         container.deactivateComponent("servicemix-jms");
@@ -283,4 +291,11 @@ public class JmsProviderConsumerEndpointTest extends AbstractJmsTestSupport {
         endpoint.setDestinationName("destination");
         return endpoint;
     }
+
+/*
+    This test does not work on SMX-3.2 because it uses AMQ 4.1.1
+    private int countBrokerTemporaryQueues() throws Exception {
+        return ((RegionBroker) broker.getRegionBroker()).getTempQueueRegion().getDestinationMap().size();
+    }
+*/
 }

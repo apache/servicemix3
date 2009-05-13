@@ -39,6 +39,8 @@ import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import javax.jms.Session;
+import javax.jms.TemporaryQueue;
+import javax.jms.TemporaryTopic;
 import javax.jms.Topic;
 import javax.jms.TopicConnection;
 import javax.jms.TopicConnectionFactory;
@@ -97,7 +99,7 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
     private long timeToLive = Message.DEFAULT_TIME_TO_LIVE;
 
     private Destination replyDestination;
-    
+
     /**
      * @deprecated The stateless property is no longer used.
      * For backward compatibility purpose only.
@@ -646,6 +648,8 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
         // to indicate we will use the listener container
         boolean asynchronous = false;
         boolean useSelector = true;
+        // Indicate whether the replyTo destination is temporary or explicitely specified replyTo destination
+        boolean isReplyDestTemporary = false;
         Destination replyDest = chooseDestination(exchange, in, session, replyDestinationChooser, null);
         if (replyDest == null) {
             useSelector = false;
@@ -659,6 +663,7 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
                 } else {
                     replyDest = session.createTemporaryQueue();
                 }
+                isReplyDestTemporary = true;
             }
         }
         // Create message and send it
@@ -718,6 +723,15 @@ public class JmsProviderEndpoint extends ProviderEndpoint implements JmsEndpoint
                 sendSync(exchange);
             } else {
                 send(exchange);
+            }
+
+            // delete temporary queue/topic immediately to avoid accumulation in case that the connection is never destroyed
+            if (isReplyDestTemporary) {
+                if (isPubSubDomain()) {
+                    ((TemporaryTopic)replyDest).delete();
+                } else {
+                    ((TemporaryQueue)replyDest).delete();
+                }
             }
         }
     }
