@@ -85,6 +85,14 @@ public class JbiExchange extends DefaultExchange {
     public org.apache.camel.Exchange newInstance() {        
         return new JbiExchange(this.getContext(), this.getBinding(), this.getMessageExchange());
     }
+    
+    @Override
+    public final void setProperty(String key, Object value) {
+        if (messageExchange != null && messageExchange.getProperty(key) == null) {
+            messageExchange.setProperty(key, value);
+        }
+        super.setProperty(key, value);
+    }
 
     /**
      * @return the Camel <-> JBI binding
@@ -155,6 +163,7 @@ public class JbiExchange extends DefaultExchange {
     protected JbiMessage createFaultMessage() {
         return createMessage("fault");
     }
+    
 
     private JbiMessage createMessage(String name) {
         if (messageExchange != null) {

@@ -113,6 +113,7 @@ public class CamelProviderEndpoint extends ProviderEndpoint {
                 }
                 JbiExchange camelExchange = new JbiExchange(camelEndpoint.getCamelContext(), binding, exchange);
                 camelProcessor.process(camelExchange);
+                
                 if (camelExchange.isFailed()
                     && (camelExchange.getFault(false) == null || camelExchange.getFault(false).getBody() == null)) {
                     Throwable t = camelExchange.getException();
