@@ -319,10 +319,15 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     @Override
     public void start() throws Exception {
         super.start();
-        registerListServiceHandler();
-        applyFeatures();
-        checkJmsTransportTransaction();
-        server.start();
+        try {
+            registerListServiceHandler();
+            applyFeatures();
+            checkJmsTransportTransaction();
+            server.start();
+        } catch (Exception ex) {
+            super.stop();
+            throw ex;
+        }
     }
     
     private void checkJmsTransportTransaction() {
