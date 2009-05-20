@@ -124,6 +124,10 @@ public class CxfBCSESystemTest extends SpringTestSupport {
         }
     }
 
+    public void testCalculatrorWithDifferentServiceEndpointNmae() throws Exception {
+        setUpJBI("org/apache/servicemix/cxfbc/xbean_different_service_endpoint_name.xml");
+        calculatorTestBase();
+    }
     
     private void calculatorTestBase() throws Exception {
 

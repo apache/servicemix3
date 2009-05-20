@@ -100,6 +100,10 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
 
     private boolean useAegis;
     
+    private QName pojoService;
+    private String pojoEndpoint;
+    private QName pojoInterfaceName;
+    
     /**
      * Returns the object implementing the endpoint's functionality. It is
      * returned as a generic Java <code>Object</code> that can be cast to the
@@ -256,13 +260,22 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
                 server.getEndpoint().getOutInterceptors().add(new AttachmentOutInterceptor());
             }
             if (sf.getServiceFactory().getServiceQName() != null) {
-                setService(sf.getServiceFactory().getServiceQName());
+                setPojoService(sf.getServiceFactory().getServiceQName());
+                if (getService() == null) {
+                    setService(sf.getServiceFactory().getServiceQName());
+                }
             }
             if (sf.getServiceFactory().getEndpointInfo().getName() != null) {
-                setEndpoint(sf.getServiceFactory().getEndpointInfo().getName().getLocalPart());
+                setPojoEndpoint(sf.getServiceFactory().getEndpointInfo().getName().getLocalPart());
+                if (getEndpoint() == null) {
+                    setEndpoint(sf.getServiceFactory().getEndpointInfo().getName().getLocalPart());
+                }
             }
             if (sf.getServiceFactory().getInterfaceName() != null) {
-                setInterfaceName(sf.getServiceFactory().getInterfaceName());
+                setPojoInterfaceName(sf.getServiceFactory().getInterfaceName());
+                if (getInterfaceName() == null) {
+                    setInterfaceName(sf.getServiceFactory().getInterfaceName());
+                }
             }
         } else {
             JaxWsServiceFactoryBean serviceFactory = new JaxWsServiceFactoryBean();
@@ -283,10 +296,18 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
             }
             JaxWsImplementorInfo implInfo = new JaxWsImplementorInfo(getPojo()
                 .getClass());
-            setService(implInfo.getServiceName());
-            
-            setInterfaceName(implInfo.getInterfaceName());
-            setEndpoint(implInfo.getEndpointName().getLocalPart());
+            setPojoService(implInfo.getServiceName());
+            setPojoInterfaceName(implInfo.getInterfaceName());
+            setPojoEndpoint(implInfo.getEndpointName().getLocalPart());
+            if (getService() == null) {
+                setService(implInfo.getServiceName());
+            }
+            if (getInterfaceName() == null) {
+                setInterfaceName(implInfo.getInterfaceName());
+            }
+            if (getEndpoint() == null) {
+                setEndpoint(implInfo.getEndpointName().getLocalPart());
+            }
             
         }
         super.validate();
@@ -332,19 +353,11 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
                 .getExtension(ConduitInitiatorManager.class)
                 .getConduitInitiator(CxfSeComponent.JBI_TRANSPORT_ID);
 
-        QName serviceName = exchange.getService();
-        if (serviceName == null) {
-            serviceName = getService();
-            exchange.setService(serviceName);
-        }
-        QName interfaceName = exchange.getInterfaceName();
-        if (interfaceName == null) {
-            interfaceName = getInterfaceName();
-            exchange.setInterfaceName(interfaceName);
-        }
+        exchange.setService(getPojoService());
+        exchange.setInterfaceName(getInterfaceName());
         JBIDestination jbiDestination = jbiTransportFactory
-                .getDestination(serviceName.toString()
-                        + interfaceName.toString());
+                .getDestination(getPojoService().toString()
+                        + getInterfaceName().toString());
         DeliveryChannel dc = getContext().getDeliveryChannel();
         jbiTransportFactory.setDeliveryChannel(dc);
 
@@ -377,9 +390,15 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        setService(server.getEndpoint().getService().getName());
-        setEndpoint(server.getEndpoint().getEndpointInfo()
+        if (getService() == null) {
+            setService(server.getEndpoint().getService().getName());
+        }
+        if (getEndpoint() == null) {
+            setEndpoint(server.getEndpoint().getEndpointInfo()
+                .getName().getLocalPart());
+        }
+        setPojoService(server.getEndpoint().getService().getName());
+        setPojoEndpoint(server.getEndpoint().getEndpointInfo()
                 .getName().getLocalPart());
         if (!isUseJBIWrapper() && !isUseSOAPEnvelope()) {
             removeInterceptor(server.getEndpoint().getBinding()
@@ -440,8 +459,8 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
                 .getExtension(ConduitInitiatorManager.class)
                 .getConduitInitiator(CxfSeComponent.JBI_TRANSPORT_ID);
         jbiTransportFactory.setDeliveryChannel(null);
-        jbiTransportFactory.removeDestination(getService().toString()
-                + getInterfaceName().toString());
+        jbiTransportFactory.removeDestination(getPojoService().toString()
+                + getPojoInterfaceName().toString());
         super.stop();
     }
 
@@ -533,6 +552,30 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
     
     public boolean isUseAegis() {
         return useAegis;
+    }
+
+    protected void setPojoService(QName pojoService) {
+        this.pojoService = pojoService;
+    }
+
+    protected QName getPojoService() {
+        return pojoService;
+    }
+
+    protected void setPojoEndpoint(String pojoEndpoint) {
+        this.pojoEndpoint = pojoEndpoint;
+    }
+
+    protected String getPojoEndpoint() {
+        return pojoEndpoint;
+    }
+
+    protected void setPojoInterfaceName(QName pojoInterfaceName) {
+        this.pojoInterfaceName = pojoInterfaceName;
+    }
+
+    protected QName getPojoInterfaceName() {
+        return pojoInterfaceName;
     }
 
 }
