@@ -354,10 +354,10 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
                 .getConduitInitiator(CxfSeComponent.JBI_TRANSPORT_ID);
 
         exchange.setService(getPojoService());
-        exchange.setInterfaceName(getInterfaceName());
+        exchange.setInterfaceName(getPojoInterfaceName());
         JBIDestination jbiDestination = jbiTransportFactory
                 .getDestination(getPojoService().toString()
-                        + getInterfaceName().toString());
+                        + getPojoInterfaceName().toString());
         DeliveryChannel dc = getContext().getDeliveryChannel();
         jbiTransportFactory.setDeliveryChannel(dc);
 
