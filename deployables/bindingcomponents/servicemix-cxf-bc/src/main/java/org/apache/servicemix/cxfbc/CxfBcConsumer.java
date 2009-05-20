@@ -49,7 +49,6 @@ import com.ibm.wsdl.extensions.soap.SOAPBindingImpl;
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.attachment.AttachmentImpl;
-import org.apache.cxf.binding.AbstractBindingFactory;
 import org.apache.cxf.binding.jbi.JBIFault;
 import org.apache.cxf.binding.soap.SoapFault;
 import org.apache.cxf.binding.soap.SoapMessage;
@@ -433,8 +432,6 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
                 ei.setAddress(locationURI);
             }
 
-            ei.getBinding().setProperty(
-                    AbstractBindingFactory.DATABINDING_DISABLED, Boolean.TRUE);
 
             cxfService.getInInterceptors().add(new MustUnderstandInterceptor());
             cxfService.getInInterceptors().add(new AttachmentInInterceptor());
@@ -505,12 +502,30 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
                     getBus().getOutFaultInterceptors());
 
             chain = new JbiChainInitiationObserver(ep, getBus());
+            removeUnnecessaryInterceptprs();
             server = new ServerImpl(getBus(), ep, null, chain);
             super.validate();
         } catch (DeploymentException e) {
             throw e;
         } catch (Exception e) {
             throw new DeploymentException(e);
+        }
+    }
+
+    private void removeUnnecessaryInterceptprs() {
+        for (Interceptor interceptor : chain.getEndpoint().getBinding().getInInterceptors()) {
+            if (interceptor.getClass().getName().equals("org.apache.cxf.interceptor.DocLiteralInInterceptor")
+                || interceptor.getClass().getName().equals("org.apache.cxf.binding.soap.interceptor.SoapHeaderInterceptor")
+                || interceptor.getClass().getName().equals("org.apache.cxf.binding.soap.interceptor.RPCInInterceptor")) {
+                chain.getEndpoint().getBinding().getInInterceptors().remove(interceptor);
+            }
+        }
+        
+        for (Interceptor interceptor : chain.getEndpoint().getBinding().getOutInterceptors()) {
+            if (interceptor.getClass().getName().equals("org.apache.cxf.interceptor.WrappedOutInterceptor")
+                || interceptor.getClass().getName().equals("org.apache.cxf.interceptor.BareOutInterceptor")) {
+                chain.getEndpoint().getBinding().getOutInterceptors().remove(interceptor);
+            }
         }
     }
 

@@ -49,7 +49,6 @@ import org.xml.sax.SAXException;
 import com.ibm.wsdl.Constants;
 
 import org.apache.cxf.Bus;
-import org.apache.cxf.binding.AbstractBindingFactory;
 
 import org.apache.cxf.binding.jbi.JBIConstants;
 import org.apache.cxf.binding.jbi.JBIFault;
@@ -544,9 +543,7 @@ public class CxfBcProvider extends ProviderEndpoint implements
                 if (endpoint == null) {
                     endpoint = ei.getName().getLocalPart();
                 }
-                ei.getBinding().setProperty(
-                        AbstractBindingFactory.DATABINDING_DISABLED,
-                        Boolean.TRUE);
+                
 
                 ep = new EndpointImpl(getBus(), cxfService, ei);
 
@@ -563,7 +560,7 @@ public class CxfBcProvider extends ProviderEndpoint implements
                 CxfBcProviderMessageObserver obs = new CxfBcProviderMessageObserver(
                         this);
                 conduit.setMessageObserver(obs);
-
+                
                 checkWSRMInterceptors();
                           
 
