@@ -29,27 +29,22 @@ import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.interceptor.MustUnderstandInterceptor;
 import org.apache.cxf.binding.soap.interceptor.ReadHeadersInterceptor;
-import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.interceptor.AttachmentInInterceptor;
 import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.interceptor.StaxInInterceptor;
 import org.apache.cxf.io.CachedOutputStream;
 import org.apache.cxf.message.Attachment;
-import org.apache.cxf.message.Exchange;
-import org.apache.cxf.message.ExchangeImpl;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.PhaseChainCache;
 import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.phase.PhaseManager;
 import org.apache.cxf.service.model.BindingOperationInfo;
-import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transport.MessageObserver;
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.cxfbc.interceptors.JbiInWsdl1Interceptor;
@@ -90,10 +85,12 @@ public class CxfBcProviderMessageObserver implements MessageObserver {
                 MessageObserver messageObserver = message.getExchange().get(MessageObserver.class);
                 if (messageObserver != null) {
                     messageObserver.onMessage(message);
+                    return;
                 }
-                return;
+                 
+                
             }
-            if (messageExchange.getStatus() != ExchangeStatus.ACTIVE) {
+            if (messageExchange != null && messageExchange.getStatus() != ExchangeStatus.ACTIVE) {
                 return;
             }
 
@@ -101,33 +98,10 @@ public class CxfBcProviderMessageObserver implements MessageObserver {
             SoapMessage soapMessage = 
                 (SoapMessage) this.providerEndpoint.getCxfEndpoint().getBinding().createMessage(message);
             
-            EndpointInfo ei = this.providerEndpoint.getEndpointInfo();
-            QName opeName = messageExchange.getOperation();
-            BindingOperationInfo boi = null;
-            if (opeName == null) {
-                // if interface only have one operation, may not specify the opeName in MessageExchange
-                if (ei.getBinding().getOperations().size() == 1) {
-                    boi = ei.getBinding().getOperations().iterator().next();
-                } else {
-                    throw new org.apache.cxf.interceptor.Fault(
-                                new Exception("Operation not bound on this MessageExchange"));
-                    
-                }
-            } else {
-                boi = ei.getBinding().getOperation(messageExchange.getOperation());   
-            }
-            
-            if (boi.getOperationInfo().isOneWay()) {
-                return;
-            }
             
             soapMessage
                     .put(org.apache.cxf.message.Message.REQUESTOR_ROLE, true);
-            Exchange cxfExchange = new ExchangeImpl();
-            soapMessage.setExchange(cxfExchange);
 
-            cxfExchange.put(BindingOperationInfo.class, boi);
-            cxfExchange.put(Endpoint.class, providerEndpoint.getCxfEndpoint());
             // create Interceptor chain
 
             PhaseChainCache inboundChainCache = new PhaseChainCache();
@@ -149,7 +123,14 @@ public class CxfBcProviderMessageObserver implements MessageObserver {
             soapMessage.setInterceptorChain(inChain);
             inChain.doIntercept(soapMessage);
             closeConnectionStream(soapMessage);
-            setMessageStatus(soapMessage, boi, messageExchange);
+            if (soapMessage.getContent(Source.class) == null) {
+                return;
+            }
+          
+            messageExchange = soapMessage.getExchange().get(MessageExchange.class);
+            setMessageStatus(soapMessage, soapMessage.getExchange().get(BindingOperationInfo.class), 
+                    messageExchange);
+            
             boolean txSync = messageExchange.getStatus() == ExchangeStatus.ACTIVE
                     && messageExchange.isTransacted()
                     && Boolean.TRUE.equals(messageExchange
