@@ -227,6 +227,9 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
     
     public synchronized String shutDown(boolean writeState) throws Exception {
         LOG.info("Shutting down service assembly: " + getName());
+        if (currentState != STOPPED) {
+            this.stop(writeState, false);
+        }
         List<Element> componentFailures = new ArrayList<Element>();
         for (int i = 0; i < sus.length; i++) {
             if (sus[i].isStarted()) {
