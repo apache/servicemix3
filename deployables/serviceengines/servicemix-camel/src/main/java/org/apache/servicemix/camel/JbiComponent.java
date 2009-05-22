@@ -28,7 +28,7 @@ import org.apache.servicemix.id.IdGenerator;
 import org.apache.servicemix.jbi.resolver.URIResolver;
 
 public class JbiComponent implements Component<Exchange> {
-    private final CamelJbiComponent camelJbiComponent;
+    private CamelJbiComponent camelJbiComponent;
     private JbiBinding binding;
     private CamelContext camelContext;
     private IdGenerator idGenerator;
@@ -81,8 +81,7 @@ public class JbiComponent implements Component<Exchange> {
     // -------------------------------------------------------------------------
     public Endpoint<Exchange> createEndpoint(String uri) {
         if (uri.startsWith("jbi:")) {
-            uri = uri.substring("jbi:".length());
-            return new JbiEndpoint(this, uri);
+            return new JbiEndpoint(this, uri.substring("jbi:".length()));
         }
         return null;
     }

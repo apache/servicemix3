@@ -17,7 +17,6 @@
 package org.apache.servicemix.camel;
 
 import java.io.Serializable;
-import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
@@ -31,7 +30,6 @@ import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
@@ -160,11 +158,16 @@ public class JbiBinding {
 
     protected Source getJbiInContent(Exchange camelExchange) {
         // TODO this should be more smart
-        Object value = camelExchange.getIn().getBody();
-        if (value instanceof String) {
-            return new StreamSource(new StringReader(value.toString()));
+        Source content = null;
+        try {
+            content = camelExchange.getIn().getBody(Source.class);
+        } catch (NoTypeConversionAvailableException e) {
+            if (camelExchange.getIn().getBody() != null) {
+                LOG.warn("'in' message content of type " + camelExchange.getIn().getBody().getClass()
+                         + " could not be converted to Source and will be dropped");
+            }
         }
-        return camelExchange.getIn().getBody(Source.class);
+        return content;
     }
 
     protected void addJbiHeaders(MessageExchange jbiExchange, NormalizedMessage normalizedMessage, Exchange camelExchange) {

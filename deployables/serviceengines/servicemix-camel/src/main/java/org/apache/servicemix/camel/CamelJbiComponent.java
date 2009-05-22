@@ -21,8 +21,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import javax.jbi.servicedesc.ServiceEndpoint;
 
@@ -42,8 +40,6 @@ import org.apache.servicemix.jbi.util.URISupport;
 public class CamelJbiComponent extends DefaultComponent {
 
     protected CamelSpringDeployer deployer;
-
-    private ScheduledExecutorService executorService;
 
     private List<JbiComponent> jbiComponents = new ArrayList<JbiComponent>();
 
@@ -151,13 +147,6 @@ public class CamelJbiComponent extends DefaultComponent {
             }
         }
         return result;
-    }
-
-    public ScheduledExecutorService getExecutorService() {
-        if (executorService == null) {
-            executorService = new ScheduledThreadPoolExecutor(5);
-        }
-        return executorService;
     }
 
     /**
