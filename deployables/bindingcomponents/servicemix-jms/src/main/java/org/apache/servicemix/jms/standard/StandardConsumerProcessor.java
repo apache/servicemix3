@@ -89,7 +89,7 @@ public class StandardConsumerProcessor extends AbstractJmsProcessor {
             }
             MessageConsumer consumer = session.createConsumer(destination);
             while (running.get()) {
-                Message message = consumer.receive();
+                Message message = consumer.receive(1000L);
                 if (message != null) {
                     onMessage(message);
                 }
