@@ -263,8 +263,6 @@
           <excludes>
             <!-- exclude abstract test classes -->
             <exclude>**/Abstract*.*</exclude>
-
-            <exclude>**/JmsSpringJcaTest.*</exclude>
           </excludes>
           <forkMode>${surefire.fork.mode}</forkMode>
         </configuration>
