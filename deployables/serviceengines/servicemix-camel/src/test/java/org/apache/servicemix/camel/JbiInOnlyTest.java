@@ -18,6 +18,7 @@ package org.apache.servicemix.camel;
 
 import java.util.List;
 
+import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOnly;
 import javax.xml.namespace.QName;
 
@@ -44,6 +45,20 @@ public class JbiInOnlyTest extends JbiTestSupport {
         exchange.setService(new QName("urn:test", "in-only"));
         exchange.getInMessage().setContent(new StringSource(MESSAGE));
         client.send(exchange);
+        client.receive(1000);
+        assertEquals(ExchangeStatus.DONE, exchange.getStatus());
+        done.assertIsSatisfied();
+    }
+    
+    public void testInOnlyExchangeForwardAndConvertBody() throws Exception {
+        MockEndpoint done = getMockEndpoint("mock:done");
+        done.expectedBodiesReceived(MESSAGE);
+        
+        ServiceMixClient client = new DefaultServiceMixClient(jbiContainer);
+        InOnly exchange = client.createInOnlyExchange();
+        exchange.setService(new QName("urn:test", "forward"));
+        exchange.getInMessage().setContent(new StringSource(MESSAGE));
+        client.sendSync(exchange);
         
         done.assertIsSatisfied();
     }
@@ -52,6 +67,19 @@ public class JbiInOnlyTest extends JbiTestSupport {
     protected void appendJbiActivationSpecs(List<ActivationSpec> activationSpecList) {
         // no additional activation specs required
     }
+    
+    public void testInOnlyToAggregator() throws Exception {
+        ServiceMixClient smxClient = getServicemixClient();
+        getMockEndpoint("mock:aggregated").expectedMessageCount(1);
+        for (int i = 0; i < 50; i++) {
+            InOnly exchange = smxClient.createInOnlyExchange();
+            exchange.setService(new QName("urn:test", "in-only-aggregator"));
+            exchange.getInMessage().setProperty("key", "aggregate-this");
+            exchange.getInMessage().setContent(new StringSource("<request>Could you please aggregate this?</request>"));
+            smxClient.send(exchange);
+        }
+        getMockEndpoint("mock:aggregated").assertIsSatisfied();
+    }
 
     @Override
     protected RouteBuilder createRoutes() {
@@ -59,7 +87,12 @@ public class JbiInOnlyTest extends JbiTestSupport {
 
             @Override
             public void configure() throws Exception {
+                from("jbi:service:urn:test:forward").to("jbi:service:urn:test:in-only?mep=in-only");
                 from("jbi:service:urn:test:in-only").convertBodyTo(String.class).to("mock:done");
+                from("jbi:service:urn:test:in-only-aggregator")
+                    .aggregator(header("key"))
+                    .setHeader("aggregated").constant(true)
+                    .to("mock:aggregated");
             }
             
         };
