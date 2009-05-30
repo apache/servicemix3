@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
+import javax.xml.ws.soap.SOAPBinding;
 
 import org.apache.cxf.calculator.AddNumbersFault;
 import org.apache.cxf.calculator.CalculatorPortType;
@@ -37,8 +38,7 @@ import org.springframework.context.support.AbstractXmlApplicationContext;
 public class CxfBcSeStFlowTest extends SpringTestSupport {
     
     private static final Logger LOG = LogUtils.getL7dLogger(CxfBcSeStFlowTest.class);
-    
-   
+       
     
     public void setUp() throws Exception {
         //override super setup
@@ -85,7 +85,10 @@ public class CxfBcSeStFlowTest extends SpringTestSupport {
         assertNotNull(wsdl);
         CalculatorService service = new CalculatorService(wsdl, new QName(
                 "http://apache.org/cxf/calculator", "CalculatorService"));
-        CalculatorPortType port = service.getCalculatorPort();
+        QName endpoint = new QName("http://apache.org/cxf/calculator", "CalculatorPort");
+        service.addPort(endpoint, 
+                SOAPBinding.SOAP12HTTP_BINDING, "http://localhost:19000/CalculatorService/SoapPort");
+        CalculatorPortType port = service.getPort(endpoint, CalculatorPortType.class);
         ClientProxy.getClient(port).getInFaultInterceptors().add(new LoggingInInterceptor());
         ClientProxy.getClient(port).getInInterceptors().add(new LoggingInInterceptor());
         int ret = port.add(1, 2);
