@@ -41,11 +41,11 @@
   </http:destination>
 
   <httpj:engine-factory bus="cxf">
-   <httpj:engine port="9000">
+   <httpj:engine port="19000">
        <httpj:threadingParameters minThreads="1" maxThreads="3" />
        <httpj:connector>
            <bean class="org.mortbay.jetty.nio.SelectChannelConnector">
-               <property name = "port" value="9000" />
+               <property name = "port" value="19000" />
                <property name="threadPool">
                    <bean class="org.mortbay.thread.BoundedThreadPool"/>
                </property>

@@ -28,7 +28,7 @@ public class MyJMSServer extends AbstractBusTestServerBase {
     protected void run() {
         System.out.println("Starting Server");
         Object implementor = new GreeterImplTwoWayJMS();
-        String address = "http://localhost:9000/SoapContext/SoapPort";
+        String address = "http://localhost:19000/SoapContext/SoapPort";
         EndpointImpl endpoint = (EndpointImpl) Endpoint.publish(address, implementor);
         endpoint.getInFaultInterceptors().add(new LoggingInInterceptor());
         endpoint.getOutInterceptors().add(new LoggingOutInterceptor());
