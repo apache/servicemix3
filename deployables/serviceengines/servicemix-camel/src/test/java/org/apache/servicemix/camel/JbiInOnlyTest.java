@@ -92,6 +92,7 @@ public class JbiInOnlyTest extends JbiTestSupport {
                 from("jbi:service:urn:test:in-only-aggregator")
                     .aggregator(header("key"))
                     .setHeader("aggregated").constant(true)
+                    .to("log:info")
                     .to("mock:aggregated");
             }
             
