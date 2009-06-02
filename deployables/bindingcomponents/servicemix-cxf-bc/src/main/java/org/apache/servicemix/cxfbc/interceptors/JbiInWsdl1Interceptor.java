@@ -54,7 +54,6 @@ import org.apache.cxf.service.model.SchemaInfo;
 import org.apache.cxf.staxutils.DepthXMLStreamReader;
 import org.apache.cxf.staxutils.PartialXMLStreamReader;
 import org.apache.cxf.staxutils.StaxUtils;
-import org.apache.servicemix.jbi.util.QNameUtil;
 import org.apache.servicemix.soap.util.DomUtil;
 
 /**
@@ -211,15 +210,7 @@ public class JbiInWsdl1Interceptor extends AbstractSoapInterceptor {
                 MessagePartInfo part = header.getPart();
                 Header param = findHeader(headerElement, part);
                 int idx = part.getIndex();
-                QName element = part.isElement() ? part.getElementQName() : part.getTypeQName();
                 
-                
-                Header hdr = getHeaderElement(message, element);
-                if (hdr == null) {
-                    throw new Fault(new Exception(
-                            "Missing required header element: "
-                                    + QNameUtil.toString(element)));
-                }
                 if (idx > parts.size()) {
                     parts.add(param);
                 } else if (idx == -1) {

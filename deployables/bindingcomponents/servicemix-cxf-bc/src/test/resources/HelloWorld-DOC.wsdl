@@ -47,6 +47,13 @@
                     </all>
                 </complexType>
             </element>
+            <element name="ImplicitHeader">
+                <complexType>
+                    <all>
+                        <element name="id" type="string"/>
+                    </all>
+                </complexType>
+            </element>
             <element name="HelloFault">
                 <complexType>
                     <all>
@@ -70,6 +77,10 @@
         <part name="body" element="tns:HelloFault"/>
     </message>
 
+    <message name="implicit_header">
+        <part name="implicit_header" element="tns:ImplicitHeader"/>
+    </message>
+
     <portType name="HelloPortType">
         <operation name="Hello">
             <input message="tns:HelloRequest"/>
@@ -85,6 +96,7 @@
             <input>
                 <soap:body use="literal" parts="body"/>
                 <soap:header use="literal" message="tns:HelloRequest" part="header1"/>
+                <soap:header use="literal" message="tns:implicit_header" part="implicit_header"/>                 
             </input>
             <output>
                 <soap:body use="literal" parts="body"/>
