@@ -150,6 +150,50 @@ public class ConsumerEndpointTest extends TestCase {
         }
     }
 
+    public void testHttpInOutWithTimeout() throws Exception {
+        EchoComponent echo = null;
+        HttpComponent http = new HttpComponent();
+        HttpConsumerEndpoint ep = new HttpConsumerEndpoint();
+        ep.setService(new QName("urn:test", "svc"));
+        ep.setEndpoint("ep");
+        ep.setTargetService(new QName("urn:test", "echo"));
+        ep.setLocationURI("http://localhost:8192/ep1/");
+        ep.setDefaultMep(MessageExchangeSupport.IN_OUT);
+        ep.setTimeout(1000);
+        http.setEndpoints(new HttpEndpointType[] {ep});
+        container.activateComponent(http, "http");
+            
+        echo = new EchoComponent() {
+            public void onMessageExchange(MessageExchange exchange) throws MessagingException {
+                super.onMessageExchange(exchange);
+            }
+            protected boolean transform(MessageExchange ex, NormalizedMessage in, NormalizedMessage out) 
+                throws MessagingException {                    
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } 
+                return super.transform(ex, in, out);
+            }
+        };
+        echo.setService(new QName("urn:test", "echo"));
+        echo.setEndpoint("endpoint");
+        container.activateComponent(echo, "echo");
+
+        container.start();
+
+        PostMethod post = new PostMethod("http://localhost:8192/ep1/");
+        post.setRequestEntity(new StringRequestEntity("<hello>world</hello>"));
+        new HttpClient().executeMethod(post);
+        String res = post.getResponseBodyAsString();
+        log.info(res);
+        if (post.getStatusCode() != 500) {
+            throw new InvalidStatusResponseException(post.getStatusCode());
+        }
+        Thread.sleep(1000);
+    }
+    
     protected void initSoapEndpoints(boolean useJbiWrapper) throws Exception {
         HttpComponent http = new HttpComponent();
         HttpSoapConsumerEndpoint ep1 = new HttpSoapConsumerEndpoint();
