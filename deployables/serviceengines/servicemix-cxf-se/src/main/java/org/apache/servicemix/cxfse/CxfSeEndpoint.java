@@ -364,6 +364,7 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
                     sfForSoapBinding.setServiceBean(getPojo());
                     sfForSoapBinding.getServiceFactory().setPopulateFromClass(true);
                     sfForSoapBinding.setStart(false);
+                    sfForSoapBinding.setAddress("local://dummy");
                     soapBindingServer = sfForSoapBinding.create();
                 }
                 Message message = soapBindingServer.getEndpoint().getBinding().createMessage();
@@ -546,9 +547,7 @@ public class CxfSeEndpoint extends ProviderEndpoint implements
                 mth.invoke(pojo, new Object[] {context});
             }
         } catch (Exception e) {
-            logger
-                    .debug("Unable to inject ComponentContext: "
-                            + e.getMessage());
+            //setContext is optional for the pojo
         }
 
     }
