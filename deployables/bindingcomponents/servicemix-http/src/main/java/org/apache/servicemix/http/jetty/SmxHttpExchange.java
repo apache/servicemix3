@@ -19,6 +19,7 @@ package org.apache.servicemix.http.jetty;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
@@ -70,6 +71,14 @@ public class SmxHttpExchange extends HttpExchange {
     public Reader getResponseReader() throws UnsupportedEncodingException {
         if (responseContent != null) {
             return new InputStreamReader(new ByteArrayInputStream(responseContent.toByteArray()), encoding);
+        }
+        return null;
+    }
+
+     /* ------------------------------------------------------------ */
+    public InputStream getResponseStream() throws UnsupportedEncodingException {
+        if (responseContent != null) {
+            return new ByteArrayInputStream(responseContent.toByteArray());
         }
         return null;
     }

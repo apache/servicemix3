@@ -99,10 +99,10 @@ public class HttpServiceUnitAnalyzerTest extends TestCase {
 
     // Dummy Endpoint implementation for testing.
     public static class TestEndpoint extends Endpoint {
-        //private String key;
+        private String key;
 
         public TestEndpoint() {
-            //key = "test";
+            key = "test";
         }
         
         public TestEndpoint(ServiceUnit serviceUnit, QName service, String endpoint) {
@@ -110,7 +110,7 @@ public class HttpServiceUnitAnalyzerTest extends TestCase {
         }
 
         public String getKey() { 
-            return super.getKey();
+            return key;
         }
 
         public void activate() throws Exception {
@@ -130,7 +130,7 @@ public class HttpServiceUnitAnalyzerTest extends TestCase {
         public boolean isExchangeOkay(MessageExchange exchange) {
             return false;
         }
-
+        
     }
 
     protected class MyComponent extends DefaultComponent {
