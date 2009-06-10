@@ -59,6 +59,27 @@ public class SaxonComponentTest extends SpringTestSupport {
         assertEquals("2005", textValueOfXPath(el, "/transformed/bookstore/book[1]/year"));
         client.done(me);
     }
+    
+    public void testXsltString() throws Exception {
+        DefaultServiceMixClient client = new DefaultServiceMixClient(jbi);
+        InOut me = client.createInOutExchange();
+        me.setService(new QName("urn:test", "xslt-string"));
+        me.getInMessage().setContent(new StreamSource(getClass().getResourceAsStream("/books.xml")));
+        client.sendSync(me);
+        if (me.getStatus() == ExchangeStatus.ERROR) {
+            if (me.getError() != null) {
+                throw me.getError();
+            } else {
+                fail("Received ERROR status");
+            }
+        } else if (me.getFault() != null) {
+            fail("Received fault: " + new SourceTransformer().toString(me.getFault().getContent()));
+        }
+        log.info(transformer.toString(me.getOutMessage().getContent()));
+        Element el = transformer.toDOMElement(me.getOutMessage());
+        assertEquals("2005", textValueOfXPath(el, "/transformed/bookstore/book[1]/year"));
+        client.done(me);
+    }
 
     public void testXsltWithElement() throws Exception {
         DefaultServiceMixClient client = new DefaultServiceMixClient(jbi);
@@ -128,6 +149,26 @@ public class SaxonComponentTest extends SpringTestSupport {
         assertEquals("cheeseyCheese", textValueOfXPath(el, "//param"));
         assertEquals("4002", textValueOfXPath(el, "//integer"));
     }
+    
+    public void testXQueryWithParam() throws Exception {
+        DefaultServiceMixClient client = new DefaultServiceMixClient(jbi);
+        InOut me = client.createInOutExchange();
+        me.setService(new QName("urn:test", "xquery-params"));
+        me.getInMessage().setContent(new StringSource("<sample id='777888' sent='"
+                + new Date() + "'>hello world!</sample>"));
+        client.sendSync(me);
+        if (me.getStatus() == ExchangeStatus.ERROR) {
+            if (me.getError() != null) {
+                throw me.getError();
+            } else {
+                fail("Received ERROR status");
+            }
+        } else if (me.getFault() != null) {
+            fail("Received fault: " + new SourceTransformer().toString(me.getFault().getContent()));
+        }
+        log.info(transformer.toString(me.getOutMessage().getContent()));
+        client.done(me);
+    }
 
     public void testXsltWithDocCall() throws Exception {
         DefaultServiceMixClient client = new DefaultServiceMixClient(jbi);
@@ -167,6 +208,28 @@ public class SaxonComponentTest extends SpringTestSupport {
         assertEquals("XQuery Kick Start", textValueOfXPath(el, "/titles/title[1]"));
         client.done(me);
     }
+    
+    public void testXQueryString() throws Exception {
+        DefaultServiceMixClient client = new DefaultServiceMixClient(jbi);
+        InOut me = client.createInOutExchange();
+        me.setService(new QName("urn:test", "xquery-string"));
+        me.getInMessage().setContent(new StreamSource(getClass().getResourceAsStream("/books.xml")));
+        client.sendSync(me);
+        if (me.getStatus() == ExchangeStatus.ERROR) {
+            if (me.getError() != null) {
+                throw me.getError();
+            } else {
+                fail("Received ERROR status");
+            }
+        } else if (me.getFault() != null) {
+            fail("Received fault: " + new SourceTransformer().toString(me.getFault().getContent()));
+        }
+        log.info(transformer.toString(me.getOutMessage().getContent()));
+        Element el = transformer.toDOMElement(me.getOutMessage());
+        assertEquals("XQuery Kick Start", textValueOfXPath(el, "/titles/title[1]"));
+        client.done(me);
+    }
+    
 
     public void testXQueryInline() throws Exception {
         DefaultServiceMixClient client = new DefaultServiceMixClient(jbi);
@@ -219,5 +282,5 @@ public class SaxonComponentTest extends SpringTestSupport {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("spring.xml");
     }
-
+    
 }

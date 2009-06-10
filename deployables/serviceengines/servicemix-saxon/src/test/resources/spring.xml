@@ -50,6 +50,13 @@
       	        </property>
       	      </saxon:xslt>
       	      <!-- END SNIPPET: xslt-params --> 
+
+       
+              <!-- START SNIPPET: xslt-string -->
+              <saxon:xslt service="test:xslt-string" endpoint="endpoint" 
+                          resource="classpath:transform.xsl" result="string" />
+              <!-- END SNIPPET: xslt-string -->
+  
       	      
       	      <!-- START SNIPPET: xslt-dynamic -->
       	      <saxon:xslt service="test:xslt-dynamic" endpoint="endpoint">
@@ -67,10 +74,31 @@
                           useDomSourceForContent="false"
                           result="bytes" />
 
-              <!-- START SNIPPET: xquery -->
-      	      <saxon:xquery service="test:xquery" endpoint="endpoint"
-      	                    resource="classpath:query.xq" />
-      	      <!-- END SNIPPET: xquery --> 
+		     <!-- START SNIPPET: xquery -->
+		     <saxon:xquery service="test:xquery" endpoint="endpoint"
+		                   resource="classpath:query.xq" />
+		     <!-- END SNIPPET: xquery -->
+		       
+		     <!-- START SNIPPET: xquery-string -->
+		     <saxon:xquery service="test:xquery-string" endpoint="endpoint"
+		                   resource="classpath:query.xq" result="string" />
+		     <!-- END SNIPPET: xquery-string -->
+		       
+		     <!-- START SNIPPET: xquery-params -->
+		     <saxon:xquery service="test:xquery-params" endpoint="endpoint"
+		                   resource="classpath:parameter-test-query.xq" result="bytes" >
+		         <property name="parameters">
+		           <map>
+		             <entry key="max_price">
+		               <bean class="java.lang.Integer">
+		                 <constructor-arg index="0" value="30"/>
+		               </bean>
+		             </entry>
+		           </map>
+		         </property>
+		      </saxon:xquery>
+		      <!-- END SNIPPET: xquery-params -->
+    
       	      
       	      <!-- START SNIPPET: xquery-inline --> 
       	      <saxon:xquery service="test:xquery-inline" endpoint="endpoint">
