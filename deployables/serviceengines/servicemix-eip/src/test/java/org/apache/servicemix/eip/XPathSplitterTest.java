@@ -16,12 +16,14 @@
  */
 package org.apache.servicemix.eip;
 
+import javax.jbi.management.DeploymentException;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.InOut;
 import javax.xml.namespace.QName;
 
 import org.apache.servicemix.eip.patterns.XPathSplitter;
+import org.apache.servicemix.eip.support.ExchangeTarget;
 import org.apache.servicemix.tck.ReceiverComponent;
 
 public class XPathSplitterTest extends AbstractEIPTest {
@@ -56,6 +58,33 @@ public class XPathSplitterTest extends AbstractEIPTest {
         me.getInMessage().setContent(createSource("<hello><one/><two/><three/></hello>"));
         client.sendSync(me);
         assertEquals(ExchangeStatus.ERROR, me.getStatus());
+    }
+
+    // Test validate() with null target
+    public void testValidateNullTarget() throws Exception {
+        ExchangeTarget target = null;
+        splitter.setTarget(target);
+
+        try {
+            splitter.validate();
+            fail("ExchangeTarget is null, validate should throw an exception");
+        } catch (IllegalArgumentException iae) {
+            // test succeeds
+        }
+    }
+
+    // Test validate() with null XPath expression
+    public void testValidateNullXPathExpression() throws Exception {
+        XPathSplitter badSplitter = new XPathSplitter();
+        badSplitter.setTarget(createServiceExchangeTarget(new QName("target")));
+        badSplitter.setXPath(null);
+
+        try {
+            badSplitter.validate();
+            fail("XPath expression is null, validate should throw an exception");
+        } catch (DeploymentException de) {
+            // test succeeds
+        }
     }
 
 }

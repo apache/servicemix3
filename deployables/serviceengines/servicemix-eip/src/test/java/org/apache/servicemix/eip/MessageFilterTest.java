@@ -41,13 +41,13 @@ public class MessageFilterTest extends AbstractEIPTest {
     
     public void testInOnly() throws Exception {
         ReceiverComponent rec = activateReceiver("target");
-        
+
         InOnly me = client.createInOnlyExchange();
         me.setService(new QName("messageFilter"));
         me.getInMessage().setContent(createSource("<hello><one/><two/><three/></hello>"));
         client.sendSync(me);
         assertEquals(ExchangeStatus.DONE, me.getStatus());
-        
+
         rec.getMessageList().assertMessagesReceived(0); 
 
         me = client.createInOnlyExchange();
@@ -55,7 +55,7 @@ public class MessageFilterTest extends AbstractEIPTest {
         me.getInMessage().setContent(createSource("<hello id='1'><one/><two/><three/></hello>"));
         client.sendSync(me);
         assertEquals(ExchangeStatus.DONE, me.getStatus());
-        
+
         rec.getMessageList().assertMessagesReceived(1); 
     }
 
@@ -67,4 +67,24 @@ public class MessageFilterTest extends AbstractEIPTest {
         assertEquals(ExchangeStatus.ERROR, me.getStatus());
     }
 
+    // Test XPath filter when XPath expression is invalid.
+    public void testInvalidXPathExpression() throws Exception {
+        // Create an invalid XPath expression predicate and set it 
+        //as the filter.
+        XPathPredicate predicate = new XPathPredicate();
+        predicate.setXPath("\\invalid");
+        messageFilter.setFilter(predicate);
+        configurePattern(messageFilter);
+        ReceiverComponent rec = activateReceiver("target");
+
+        // Create an inOnly exchange and send a basic XML message.
+        InOnly me = client.createInOnlyExchange();
+        me.setService(new QName("messageFilter"));
+        me.getInMessage().setContent(createSource("<hello><one/><two/><three/></hello>"));
+        client.sendSync(me);
+        assertEquals("", ExchangeStatus.DONE, me.getStatus());
+
+        // No messages should be received due to the invalid XPath expression.
+        rec.getMessageList().assertMessagesReceived(0);
+    }
 }
