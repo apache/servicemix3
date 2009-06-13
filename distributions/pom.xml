@@ -24,12 +24,12 @@
   <parent>
     <groupId>org.apache.servicemix</groupId>
     <artifactId>servicemix</artifactId>
-    <version>3.3.2-SNAPSHOT</version>
+    <version>3.3.1-SNAPSHOT</version>
   </parent>
   
   <groupId>org.apache.servicemix</groupId>
   <artifactId>assemblies</artifactId>
-  <version>3.3.2-SNAPSHOT</version>
+  <version>3.3.1-SNAPSHOT</version>
   <name>ServiceMix :: Assemblies</name>
   <packaging>pom</packaging>
 

@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.apache.servicemix.geronimo</groupId>
         <artifactId>geronimo</artifactId>
-        <version>3.3.2-SNAPSHOT</version>
+        <version>3.3.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>servicemix-service</artifactId>
@@ -34,6 +34,7 @@
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-core</artifactId>
+            <version>${servicemix-version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.geronimo.modules</groupId>
