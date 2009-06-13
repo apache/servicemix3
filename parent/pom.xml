@@ -176,14 +176,6 @@
     <plugins>
       <plugin>
           <artifactId>maven-remote-resources-plugin</artifactId>
-          <version>1.0</version>
-          <dependencies>
-              <dependency>
-                  <groupId>org.apache.servicemix</groupId>
-                  <artifactId>servicemix-build</artifactId>
-                  <version>1.0</version>
-              </dependency>
-          </dependencies>
           <executions>
               <execution>
                   <goals>
