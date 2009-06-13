@@ -29,7 +29,7 @@
 
     <groupId>org.apache.servicemix</groupId>
     <artifactId>servicemix</artifactId>
-    <version>3.3.1-SNAPSHOT</version>
+    <version>3.3.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>ServiceMix</name>
@@ -285,12 +285,12 @@
 	                                <tasks>
 	                                    <path id="ecp.ws.path" location="${eclipse.workspace.dir}" />
 	                                    <property name="full.eclipse.workspace" refid="ecp.ws.path" />
-	                                    <path path="${basedir}/etc" id="etc.path"/>
+	                                    <path path="${basedir}/etc" id="etc.path" />
 
-	                                    <whichresource resource="/smx-eclipse-pmd" property="pmd.url"><classpath refid="etc.path"/></whichresource>
-	                                    <whichresource resource="/smx-pmd-ruleset.xml" property="pmdruleset.url"><classpath refid="etc.path"/></whichresource>
-	                                    <whichresource resource="/smx-eclipse-checkstyle" property="eclipse.checkstyle.url"><classpath refid="etc.path"/></whichresource>
-	                                    <whichresource resource="/smx-checkstyle.xml" property="checkstyle.url"><classpath refid="etc.path"/></whichresource>>
+	                                    <whichresource resource="/smx-eclipse-pmd" property="pmd.url"><classpath refid="etc.path" /></whichresource>
+	                                    <whichresource resource="/smx-pmd-ruleset.xml" property="pmdruleset.url"><classpath refid="etc.path" /></whichresource>
+	                                    <whichresource resource="/smx-eclipse-checkstyle" property="eclipse.checkstyle.url"><classpath refid="etc.path" /></whichresource>
+	                                    <whichresource resource="/smx-checkstyle.xml" property="checkstyle.url"><classpath refid="etc.path" /></whichresource>&gt;
 
 	                                    <mkdir dir="${full.eclipse.workspace}/.metadata/.plugins/org.eclipse.core.runtime/.settings" />
 	                                    <mkdir dir="${full.eclipse.workspace}/.metadata/.plugins/com.atlassw.tools.eclipse.checkstyle" />
@@ -410,7 +410,7 @@
 	          <releases>
 	            <enabled>false</enabled>
 	          </releases>
-	          <snapshots/>
+	          <snapshots />
 	          <id>Codehaus Snapshots</id>
 	          <url>http://snapshots.repository.codehaus.org/</url>
 	        </repository>
@@ -420,7 +420,7 @@
 	          <releases>
 	            <enabled>false</enabled>
 	          </releases>
-	          <snapshots/>
+	          <snapshots />
 	          <id>Codehaus Snapshots</id>
 	          <url>http://snapshots.repository.codehaus.org/</url>
 	        </pluginRepository>
