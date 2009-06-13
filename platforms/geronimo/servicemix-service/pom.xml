@@ -34,7 +34,6 @@
         <dependency>
             <groupId>org.apache.servicemix</groupId>
             <artifactId>servicemix-core</artifactId>
-            <version>${servicemix-version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.geronimo.modules</groupId>
