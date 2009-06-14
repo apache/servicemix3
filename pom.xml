@@ -29,7 +29,7 @@
 
     <groupId>org.apache.servicemix</groupId>
     <artifactId>servicemix</artifactId>
-    <version>3.3.1-SNAPSHOT</version>
+    <version>3.3.1</version>
     <packaging>pom</packaging>
 
     <name>ServiceMix</name>
@@ -43,9 +43,9 @@
     </prerequisites>
 
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/servicemix/smx3/trunk/</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/servicemix/smx3/trunk/</developerConnection>
-        <url>http://svn.apache.org/viewcvs.cgi/servicemix/smx3/trunk/</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/servicemix/smx3/tags/servicemix-3.3.1</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/servicemix/smx3/tags/servicemix-3.3.1</developerConnection>
+        <url>http://svn.apache.org/viewcvs.cgi/servicemix/smx3/tags/servicemix-3.3.1</url>
     </scm>
 
     <properties>
@@ -60,7 +60,7 @@
         <servicemix-mail-version>2009.01</servicemix-mail-version>
         <servicemix-osworkflow-version>2009.01</servicemix-osworkflow-version>
         <servicemix-wsn2005-version>2009.01</servicemix-wsn2005-version>
-        <servicemix-lwcontainer-version>3.3.1-SNAPSHOT</servicemix-lwcontainer-version>
+        <servicemix-lwcontainer-version>3.3.1</servicemix-lwcontainer-version>
         <servicemix-bean-version>2009.01</servicemix-bean-version>
         <servicemix-eip-version>2009.01</servicemix-eip-version>
         <servicemix-script-version>2009.01</servicemix-script-version>
@@ -285,12 +285,12 @@
 	                                <tasks>
 	                                    <path id="ecp.ws.path" location="${eclipse.workspace.dir}" />
 	                                    <property name="full.eclipse.workspace" refid="ecp.ws.path" />
-	                                    <path path="${basedir}/etc" id="etc.path"/>
+	                                    <path path="${basedir}/etc" id="etc.path" />
 
-	                                    <whichresource resource="/smx-eclipse-pmd" property="pmd.url"><classpath refid="etc.path"/></whichresource>
-	                                    <whichresource resource="/smx-pmd-ruleset.xml" property="pmdruleset.url"><classpath refid="etc.path"/></whichresource>
-	                                    <whichresource resource="/smx-eclipse-checkstyle" property="eclipse.checkstyle.url"><classpath refid="etc.path"/></whichresource>
-	                                    <whichresource resource="/smx-checkstyle.xml" property="checkstyle.url"><classpath refid="etc.path"/></whichresource>>
+	                                    <whichresource resource="/smx-eclipse-pmd" property="pmd.url"><classpath refid="etc.path" /></whichresource>
+	                                    <whichresource resource="/smx-pmd-ruleset.xml" property="pmdruleset.url"><classpath refid="etc.path" /></whichresource>
+	                                    <whichresource resource="/smx-eclipse-checkstyle" property="eclipse.checkstyle.url"><classpath refid="etc.path" /></whichresource>
+	                                    <whichresource resource="/smx-checkstyle.xml" property="checkstyle.url"><classpath refid="etc.path" /></whichresource>&gt;
 
 	                                    <mkdir dir="${full.eclipse.workspace}/.metadata/.plugins/org.eclipse.core.runtime/.settings" />
 	                                    <mkdir dir="${full.eclipse.workspace}/.metadata/.plugins/com.atlassw.tools.eclipse.checkstyle" />
@@ -410,7 +410,7 @@
 	          <releases>
 	            <enabled>false</enabled>
 	          </releases>
-	          <snapshots/>
+	          <snapshots />
 	          <id>Codehaus Snapshots</id>
 	          <url>http://snapshots.repository.codehaus.org/</url>
 	        </repository>
@@ -420,7 +420,7 @@
 	          <releases>
 	            <enabled>false</enabled>
 	          </releases>
-	          <snapshots/>
+	          <snapshots />
 	          <id>Codehaus Snapshots</id>
 	          <url>http://snapshots.repository.codehaus.org/</url>
 	        </pluginRepository>
@@ -444,22 +444,22 @@
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-core</artifactId>
-                <version>3.3.1-SNAPSHOT</version>
+                <version>3.3.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-audit</artifactId>
-                <version>3.3.1-SNAPSHOT</version>
+                <version>3.3.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-components</artifactId>
-                <version>3.3.1-SNAPSHOT</version>
+                <version>3.3.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.geronimo</groupId>
                 <artifactId>deployer-service</artifactId>
-                <version>3.3.1-SNAPSHOT</version>
+                <version>3.3.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
@@ -469,7 +469,7 @@
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-console</artifactId>
-                <version>3.3.1-SNAPSHOT</version>
+                <version>3.3.1</version>
             </dependency>
             <!--
             <dependency>
@@ -623,44 +623,44 @@
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>servicemix-web</artifactId>
-                <version>3.3.1-SNAPSHOT</version>
+                <version>3.3.1</version>
                 <type>war</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>wsdl-first</artifactId>
-                <version>3.3.1-SNAPSHOT</version>
+                <version>3.3.1</version>
                 <type>pom</type>
             </dependency>
             
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>cxf-wsdl-first</artifactId>
-                <version>3.3.1-SNAPSHOT</version>
+                <version>3.3.1</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>loan-broker</artifactId>
-                <version>3.3.1-SNAPSHOT</version>
+                <version>3.3.1</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>bridge</artifactId>
-                <version>3.3.1-SNAPSHOT</version>
+                <version>3.3.1</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>bridge-camel</artifactId>
-                <version>3.3.1-SNAPSHOT</version>
+                <version>3.3.1</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>basic</artifactId>
-                <version>3.3.1-SNAPSHOT</version>
+                <version>3.3.1</version>
                 <type>pom</type>
             </dependency>
             <!--
@@ -673,7 +673,7 @@
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-web-console</artifactId>
-                <version>3.3.1-SNAPSHOT</version>
+                <version>3.3.1</version>
                 <type>war</type>
             </dependency>
 

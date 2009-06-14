@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.servicemix.geronimo</groupId>
         <artifactId>geronimo</artifactId>
-        <version>3.3.1-SNAPSHOT</version>
+        <version>3.3.1</version>
     </parent>
 
     <artifactId>deployer</artifactId>
@@ -86,6 +86,14 @@
             <artifactId>org.apache.servicemix.specs.jbi-api-1.0</artifactId>
         </dependency>
 
+	<!-- only needed to build the car -->
+        <dependency>
+            <groupId>org.apache.geronimo.configs</groupId>
+            <artifactId>j2ee-system</artifactId>
+            <version>${geronimo-version}</version>
+            <type>car</type>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>

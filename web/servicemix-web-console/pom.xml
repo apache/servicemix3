@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.servicemix</groupId>
     <artifactId>servicemix</artifactId>
-    <version>3.3.1-SNAPSHOT</version>
+    <version>3.3.1</version>
   </parent>
 
   <artifactId>servicemix-web-console</artifactId>
@@ -227,7 +227,7 @@
             <!-- enable easy connection to JConsole -->
             <systemProperty>
               <name>com.sun.management.jmxremote</name>
-              <value></value>
+              <value />
             </systemProperty>
           </systemProperties>
           <scanIntervalSeconds>10</scanIntervalSeconds>
