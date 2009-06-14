@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.apache.servicemix.geronimo</groupId>
         <artifactId>geronimo</artifactId>
-        <version>3.3.1-SNAPSHOT</version>
+        <version>3.3.1</version>
     </parent>
 
     <artifactId>servicemix-service</artifactId>
@@ -56,13 +56,27 @@
             <artifactId>geronimo-management</artifactId>
             <version>${geronimo-version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-ra</artifactId>
             <version>${activemq-version}</version>
         </dependency>
 
+	<!-- only needed to build the car -->
+        <dependency>
+            <groupId>org.apache.geronimo.configs</groupId>
+            <artifactId>jee-specs</artifactId>
+            <version>${geronimo-version}</version>
+            <type>car</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.configs</groupId>
+            <artifactId>j2ee-system</artifactId>
+            <version>${geronimo-version}</version>
+            <type>car</type>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>

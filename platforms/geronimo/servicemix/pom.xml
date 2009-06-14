@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.apache.servicemix.geronimo</groupId>
         <artifactId>geronimo</artifactId>
-        <version>3.3.1-SNAPSHOT</version>
+        <version>3.3.1</version>
     </parent>
 
     <artifactId>servicemix</artifactId>
@@ -195,6 +195,27 @@
             <type>car</type>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.configs</groupId>
+            <artifactId>jee-specs</artifactId>
+            <version>${geronimo-version}</version>
+            <type>car</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.configs</groupId>
+            <artifactId>j2ee-server</artifactId>
+            <version>${geronimo-version}</version>
+            <type>car</type>
+            <scope>provided</scope>
+            <exclusions>
+              <exclusion>
+                <groupId>org.apache.geronimo.modules</groupId>
+                <artifactId>geronimo-webservices</artifactId>
+              </exclusion>
+            </exclusions>
+        </dependency>
+
     </dependencies>
 
     <build>
