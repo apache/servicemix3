@@ -16,6 +16,8 @@
  */
 package org.apache.servicemix.jbi.framework;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
@@ -24,8 +26,11 @@ import org.w3c.dom.DocumentFragment;
 import junit.framework.TestCase;
 
 import org.apache.servicemix.components.util.EchoComponent;
+import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.messaging.DeliveryChannelImpl;
 import org.apache.servicemix.jbi.resolver.URIResolver;
+import org.apache.servicemix.tck.ReceiverComponent;
 
 public class RegistryTest extends TestCase {
 
@@ -57,6 +62,37 @@ public class RegistryTest extends TestCase {
         DocumentFragment epr = URIResolver.createWSAEPR("endpoint:http://foo.bar.com/myService/myEndpoint");
         ServiceEndpoint ep2 = component.getContext().resolveEndpointReference(epr);
         assertSame(ep, ep2);
+    }
+    
+    /**
+     * Test canceling exchanges on the Registry will cancel pending exchanges in all the known components' DeliveryChannels
+     */
+    public void testCancelPendingExchanges() throws Exception {
+        JBIContainer container = new JBIContainer();
+        container.init();
+        
+        ActivationSpec spec = new ActivationSpec("component1", new ReceiverComponent());
+        spec.setService(new QName("urn:test", "service1"));
+        container.activateComponent(spec);
+        
+        container.start();
+        
+        final AtomicInteger canceled = new AtomicInteger();
+        
+        // injecting mock delivery channels to check if pending exchanges get canceled
+        for (ComponentMBeanImpl mbean : container.getRegistry().getComponents()) {
+            mbean.setDeliveryChannel(new DeliveryChannelImpl(mbean) {
+                @Override
+                public void cancelPendingExchanges() {
+                    canceled.incrementAndGet();
+                }
+            });
+        }
+        
+        // now let's try to cancel pending exchanges on the registry 
+        container.getRegistry().cancelPendingExchanges();
+        assertEquals("Should have canceled exchanges in all the delivery channels", 
+                     container.getRegistry().getComponents().size(), canceled.get());
     }
     
 }

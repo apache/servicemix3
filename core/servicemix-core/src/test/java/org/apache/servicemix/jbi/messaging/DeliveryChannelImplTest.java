@@ -16,6 +16,9 @@
  */
 package org.apache.servicemix.jbi.messaging;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.jbi.JBIException;
@@ -173,6 +176,32 @@ public class DeliveryChannelImplTest extends TestCase {
         replay(transaction);
         channel.autoEnlistInTx(exchange);
         assertNull(exchange.getTransactionContext());
+    }
+    
+    public void testCancelPendingExchanges() throws Exception {
+        final DeliveryChannelImpl channel = createDeliveryChannel();
+        final MessageExchangeImpl exchange = createMessageExchange(channel);
+        
+        final CountDownLatch pending = new CountDownLatch(1);
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            public void run() {
+                try {
+                    channel.sendSync(exchange);
+                    pending.countDown();
+                } catch (MessagingException e) {
+                    // no need to worry about this
+                }
+            }            
+        });
+        
+        // let's wait for a second until the exchange got sent
+        pending.await(1, TimeUnit.SECONDS);
+        
+        // now let's cancel the pending exchanges 
+        channel.cancelPendingExchanges();
+        pending.await(1, TimeUnit.SECONDS);
+        assertEquals("There should be no more pending exchanges", 0, pending.getCount());
+        assertEquals(ExchangeStatus.ERROR, exchange.getStatus());
     }
 
     private MessageExchangeImpl createMessageExchange(final DeliveryChannelImpl channel) throws MessagingException {

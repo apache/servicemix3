@@ -748,10 +748,19 @@ public class JBIContainer extends BaseLifeCycle {
             }
             LOG.info("Components and service assemblies have been shut down");
         } catch (Exception e) {
-            LOG.warn("Unable to shutdown components and service assemblies normally: " + e, e);
-            LOG.warn("Forcing shutdown by cancelling all pending exchanges");
-            registry.cancelPendingExchanges();
+            forceShutdown(e);
         }
+    }
+
+    /**
+     * Force a container shutdown by canceling all pending exchanges
+     * 
+     * @param e the exception that caused the forced container shutdown
+     */
+    protected void forceShutdown(Exception e) {
+        LOG.warn("Unable to shutdown components and service assemblies normally: " + e, e);
+        LOG.warn("Forcing shutdown by cancelling all pending exchanges");
+        registry.cancelPendingExchanges();
     }
 
     protected void addShutdownHook() {

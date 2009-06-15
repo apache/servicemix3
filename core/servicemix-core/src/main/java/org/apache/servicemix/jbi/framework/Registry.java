@@ -955,8 +955,6 @@ public class Registry extends BaseSystemService implements RegistryMBean {
             if (channel != null) {
                 channel.cancelPendingExchanges();
             }
-        }
-        
+        }      
     }
-
 }
