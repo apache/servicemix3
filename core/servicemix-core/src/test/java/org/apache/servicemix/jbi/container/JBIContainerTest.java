@@ -19,12 +19,10 @@ package org.apache.servicemix.jbi.container;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.jbi.JBIException;
-import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
 import org.apache.servicemix.jbi.framework.Registry;
-import org.apache.servicemix.tck.ReceiverComponent;
 
 /**
  * Test cases for {@link JBIContainer}
@@ -67,36 +65,5 @@ public class JBIContainerTest extends TestCase {
         assertTrue("Should have taken less than the shutdown delay (" + SHUTDOWN_DELAY  + "ms)", 
                    System.currentTimeMillis() - start < SHUTDOWN_DELAY);
     }
-    
-    public void testForceShutdownWithPendingSyncExchanges() throws Exception {
-        final JBIContainer container = new JBIContainer();
-        container.setForceShutdown(FORCE_SHUTDOWN_DELAY);
-        container.init();
-        container.start();
-
-        ActivationSpec spec = new ActivationSpec("receiver", new ReceiverComponent() {
-            public void stop() throws JBIException {
-                try {
-                    // this component will now wait before shutting down
-                    // (i.e. simulate component waiting for pending exchanges or a process to end)
-                    Thread.sleep(SHUTDOWN_DELAY);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                super.stop();
-            }
-        });
-        spec.setService(new QName("urn:test", "receiver"));
-        container.activateComponent(spec);
-        
-        long start = System.currentTimeMillis();
-        
-        // now let's shutdown the container and await the termination
-        container.shutDown();
-        long delay = System.currentTimeMillis() - start;
-        assertTrue("Should have taken less than " + delay  + "ms (estimated ca. " + FORCE_SHUTDOWN_DELAY + "ms)",
-                   delay < SHUTDOWN_DELAY);
-    }
-    
+       
 }
