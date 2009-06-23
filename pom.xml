@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix-pom</artifactId>
-        <version>3-SNAPSHOT</version>
+        <version>3</version>
     </parent>
 
     <groupId>org.apache.servicemix</groupId>
@@ -91,7 +91,7 @@
         <jencks-version>2.1</jencks-version>
         <jetty-version>6.1.14</jetty-version>
         <geronimo-version>2.0.2</geronimo-version>
-        <servicemix-version>3.3.1-SNAPSHOT</servicemix-version>
+        <servicemix-version>3.3.2-SNAPSHOT</servicemix-version>
         <wsdl4j-version>1.6.2</wsdl4j-version>
         <commons-beanutils-version>1.7.0</commons-beanutils-version>
         <commons-fileupload-version>1.1.1</commons-fileupload-version>
@@ -106,7 +106,7 @@
         <jaxb.xjc.version>2.1.6</jaxb.xjc.version>
         <derby-version>10.2.2.0</derby-version>
         <saxon-version>8.9</saxon-version>
-        <previous.releases>3.1.2,3.2,3.2.1</previous.releases>
+        <previous.releases>3.1.2,3.2,3.2.1,3.2.2,3.2.3,3.3,3.3.1</previous.releases>
     </properties>
 
     <!-- TODO: remove after the release of the new ServiceMix parent POM -->
