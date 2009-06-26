@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.cxfbc;
+package org.apache.servicemix.cxfse;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,53 +22,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.apache.servicemix.jbi.security.auth.AuthenticationService;
-
-public class CxfBcConfiguration {
+public class CxfSeConfiguration {
 
     public static final String CONFIG_FILE = "component.properties"; 
     
     private String rootDir;
-    private String componentName = "servicemix-cxf-bc";
+    private String componentName = "servicemix-cxf-se";
     private Properties properties = new Properties();
     private String busCfg;
-    private transient AuthenticationService authenticationService;
-    
-    
-    /**
-     * The JNDI name of the AuthenticationService object
-     */
-    private String authenticationServiceName = "java:comp/env/smx/AuthenticationService";
-    
-    
-    /**
-     * @return the authenticationService
-     */
-    public AuthenticationService getAuthenticationService() {
-        return authenticationService;
-    }
-
-    /**
-     * @param authenticationService the authenticationService to set
-     */
-    public void setAuthenticationService(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
-    }
-
-    /**
-     * @return the authenticationServiceName
-     */
-    public String getAuthenticationServiceName() {
-        return authenticationServiceName;
-    }
-
-    /**
-     * @param authenticationServiceName the authenticationServiceName to set
-     */
-    public void setAuthenticationServiceName(String authenticationServiceName) {
-        this.authenticationServiceName = authenticationServiceName;
-    }
-
     
     public boolean load() {
         File f = null;

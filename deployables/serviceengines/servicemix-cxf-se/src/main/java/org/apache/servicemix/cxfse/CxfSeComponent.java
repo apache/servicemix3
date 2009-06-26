@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
+import org.apache.cxf.bus.spring.SpringBusFactory;
 import org.apache.servicemix.common.BaseServiceUnitManager;
 import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.Deployer;
@@ -35,6 +36,8 @@ public class CxfSeComponent extends DefaultComponent {
     
     private CxfSeEndpoint[] endpoints;
     private Bus bus;
+    
+    private CxfSeConfiguration configuration = new CxfSeConfiguration();
     
     public CxfSeComponent() {
         
@@ -77,7 +80,16 @@ public class CxfSeComponent extends DefaultComponent {
     
     @Override
     protected void doInit() throws Exception {
-        bus = BusFactory.getDefaultBus();
+        //Load configuration
+        configuration.setRootDir(context.getWorkspaceRoot());
+        configuration.setComponentName(context.getComponentName());
+        configuration.load();
+        if (configuration.getBusCfg() != null && configuration.getBusCfg().length() > 0) {
+            SpringBusFactory bf = new SpringBusFactory();
+            bus = bf.createBus(configuration.getBusCfg());
+        } else {
+            bus = BusFactory.getDefaultBus();
+        }
         super.doInit();
     }
     
