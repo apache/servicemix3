@@ -85,6 +85,7 @@ public class JbiBinding {
         normalizedMessage.setContent(getJbiInContent(camelExchange));
         addJbiHeaders(jbiExchange, normalizedMessage, camelExchange);
         addJbiAttachments(jbiExchange, normalizedMessage, camelExchange);
+        addSecuritySubject(jbiExchange, normalizedMessage, camelExchange.getIn());
         return jbiExchange;
     }
 
@@ -133,7 +134,7 @@ public class JbiBinding {
                 answer = exchangeFactory.createExchange(new URI(mep.toString()));
             }
         }
-        // TODO: this is not really usefull as the out will not be
+        // TODO: this is not really useful as the out will not be
         // TODO: populated at that time
         if (answer == null) {
             // lets try choose the best MEP based on the camel message
@@ -181,6 +182,17 @@ public class JbiBinding {
         if (camelNormalizedMessage != null) {
             copyNormalizedMessageHeaders(normalizedMessage, camelNormalizedMessage);
         }
+    }
+    
+    protected void addSecuritySubject(MessageExchange jbiExchange, NormalizedMessage normalizedMessage, Message camelMessage) {
+        if (camelMessage instanceof JbiMessage) {
+            JbiMessage message = (JbiMessage)camelMessage;
+            if (message.getNormalizedMessage() != null) {
+                // copy the security subject
+                normalizedMessage.setSecuritySubject(message.getNormalizedMessage().getSecuritySubject());
+            }
+        }
+
     }
 
     private void copySerializableHeaders(Map<String, Object> headers, NormalizedMessage normalizedMessage) {
