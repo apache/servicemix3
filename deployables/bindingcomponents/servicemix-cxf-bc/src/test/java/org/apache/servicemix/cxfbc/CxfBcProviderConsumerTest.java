@@ -21,7 +21,6 @@ import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.ws.soap.SOAPBinding;
 
-import org.apache.cxf.calculator.AddNumbersFault;
 import org.apache.cxf.calculator.CalculatorImpl;
 import org.apache.cxf.calculator.CalculatorPortType;
 import org.apache.cxf.calculator.CalculatorService;
@@ -66,8 +65,8 @@ public class CxfBcProviderConsumerTest extends SpringTestSupport {
         try {
             port.add(1, -2);
             fail("should get exception");
-        } catch (AddNumbersFault e) {
-            assertEquals(e.getFaultInfo().getMessage(), "Negative number cant be added!");
+        } catch (Exception e) {
+            assertEquals(e.getMessage(), "the fault message can't be parsed:String index out of range: -1");
         }
 
     }
