@@ -42,7 +42,6 @@
             <plugin>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-build</artifactId>
-                <version>${servicemix-build-version}</version>
                 <executions>
                     <execution>
                         <goals>
