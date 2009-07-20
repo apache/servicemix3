@@ -19,3 +19,13 @@ Welcome to the ServiceMix JMX Client Example
 ============================================
 
 This example shows how to code a basic JMX client to connect to a remote ServiceMix instance.
+
+First start a ServiceMix server (if not already started) by running
+    bin/servicemix
+in the root dir of this distribution.
+
+To run this sample, launch the following commands:
+    mvn install exec:java
+    
+The list of components and service assemblies deployed into ServiceMix will be displayed
+on the standard output.    

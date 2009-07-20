@@ -19,10 +19,14 @@ package org.apache.servicemix.samples.clients.jmx;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.management.MBeanServerInvocationHandler;
+import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
+import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.framework.AdminCommandsServiceMBean;
 import org.apache.servicemix.jbi.management.ManagementContext;
 
 /**
@@ -50,7 +54,19 @@ public class Client {
         Map<String, Object> environment = new HashMap<String, Object>();
         environment.put(JMXConnector.CREDENTIALS, credentials);
         JMXConnector jmxConnector = JMXConnectorFactory.connect(jmxServiceUrl);
-        // TODO use Commons CLI to manage different SMX parameters.
+        
+        // get the AdminCommandsServiceMBean
+        ObjectName objectName = ManagementContext.getSystemObjectName(ManagementContext.DEFAULT_DOMAIN, JBIContainer.DEFAULT_NAME, AdminCommandsServiceMBean.class);
+        AdminCommandsServiceMBean adminCommandsServiceMBean = (AdminCommandsServiceMBean) MBeanServerInvocationHandler.newProxyInstance(jmxConnector.getMBeanServerConnection(), objectName, AdminCommandsServiceMBean.class, true);
+        
+        // list components deployed into the SMX instance
+        System.out.println("Components available: ");
+        System.out.println(adminCommandsServiceMBean.listComponents(false, false, false, null, null, null));
+        
+        // list service assemblies into the SMX instance
+        System.out.println("Service Assemblies available: ");
+        System.out.println(adminCommandsServiceMBean.listServiceAssemblies(null, null, null));
+        
         // close the JMX connection.
         jmxConnector.close();
     }
