@@ -362,7 +362,7 @@ public abstract class AbstractConsumerEndpoint extends ConsumerEndpoint {
                 throw exchange.getError();
             }
             // For InOnly exchanges, ignore DONE exchanges or those where isRollbackOnError is false
-            return;
+            return; 
         }
 
         // Create session if needed
@@ -413,6 +413,8 @@ public abstract class AbstractConsumerEndpoint extends ConsumerEndpoint {
         } else if (exchange.getStatus() == ExchangeStatus.DONE) {
             msg = session.createMessage();
             msg.setBooleanProperty(AbstractJmsMarshaler.DONE_JMS_PROPERTY, true);
+            dest = getReplyDestination(exchange, null, session, context);
+            setCorrelationId(context.getMessage(), msg);
             send(msg, session, dest);
         } else {
             throw new IllegalStateException("Unrecognized exchange status");
