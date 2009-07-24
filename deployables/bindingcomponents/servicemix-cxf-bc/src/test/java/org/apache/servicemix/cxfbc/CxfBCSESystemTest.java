@@ -85,6 +85,10 @@ public class CxfBCSESystemTest extends SpringTestSupport {
         calculatorTestBase();
     }
     
+    public void testCalculatrorCheckingNameSpace() throws Exception {
+        setUpJBI("org/apache/servicemix/cxfbc/xbean_namespace.xml");
+        calculatorTestBase();
+    } 
     public void testCalculatrorWithOutJBIWrapper() throws Exception {
         setUpJBI("org/apache/servicemix/cxfbc/xbean_without_jbi_wrapper.xml");
         calculatorTestBase();
