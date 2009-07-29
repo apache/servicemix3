@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-         
 <!--
 
     Licensed to the Apache Software Foundation (ASF) under one or more
@@ -19,24 +15,25 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
--->
 
-    <modelVersion>4.0.0</modelVersion>
-    
-    <parent>
-        <groupId>org.apache.servicemix</groupId>
-        <artifactId>samples</artifactId>
-        <version>3.3.2-SNAPSHOT</version>
-    </parent>         
-    
-    <groupId>org.apache.servicemix.samples</groupId>
-    <artifactId>clients</artifactId>
-    <name>ServiceMix :: Samples :: Clients</name>
-    <packaging>pom</packaging>
-    
-    <modules>
-        <module>jmx</module>
-        <module>jbi</module>
-    </modules>
-         
-</project>         
+-->
+<assembly>
+  <id>src</id>
+  <formats>
+    <format>tar.gz</format>
+    <format>zip</format>
+  </formats>
+  <fileSets>
+    <fileSet>
+      <includes>
+        <include>README*</include>
+        <include>LICENSE*</include>
+        <include>NOTICE*</include>
+        <include>pom.xml</include>
+        <include>src/**/*</include>
+        <include>*/pom.xml</include>
+        <include>*/src/**/*</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+</assembly>

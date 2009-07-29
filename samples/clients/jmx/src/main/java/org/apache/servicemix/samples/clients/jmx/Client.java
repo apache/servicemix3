@@ -46,7 +46,7 @@ public class Client {
      * @param args main arguments.
      * @throws Exception in case of error.
      */
-    public static void main(String[] args) throws Exception {
+    public static final void main(String[] args) throws Exception {
         // create the JMX service URL.
         JMXServiceURL jmxServiceUrl = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:" + ManagementContext.DEFAULT_CONNECTOR_PORT + ManagementContext.DEFAULT_CONNECTOR_PATH);
         // get the JMX connector.
