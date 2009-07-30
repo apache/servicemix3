@@ -117,6 +117,13 @@
                     <planFileName>geronimo-service.xml</planFileName>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <configuration>
+                    <projectNameTemplate>geronimo-[artifactId]</projectNameTemplate>
+                </configuration>
+            </plugin>
         </plugins>
     </build>    
 </project>
