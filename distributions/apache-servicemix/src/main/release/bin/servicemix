@@ -110,6 +110,9 @@ locateHome() {
         warn "Ignoring predefined value for SERVICEMIX_HOME"
     fi
     
+    # In POSIX shells the CDPATH may cause cd to write to stdout
+    (unset CDPATH) >/dev/null 2>&1 && unset CDPATH
+    
     SERVICEMIX_HOME=`cd $DIRNAME/..; pwd`
     if [ ! -d "$SERVICEMIX_HOME" ]; then
         die "SERVICEMIX_HOME is not valid: $SERVICEMIX_HOME"
