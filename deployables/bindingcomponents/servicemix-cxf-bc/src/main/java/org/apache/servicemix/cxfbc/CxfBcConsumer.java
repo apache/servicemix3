@@ -49,6 +49,7 @@ import com.ibm.wsdl.extensions.soap.SOAPBindingImpl;
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.attachment.AttachmentImpl;
+
 import org.apache.cxf.binding.jbi.JBIFault;
 import org.apache.cxf.binding.soap.SoapFault;
 import org.apache.cxf.binding.soap.SoapMessage;
@@ -106,6 +107,8 @@ import org.apache.servicemix.cxfbc.interceptors.JbiJAASInterceptor;
 import org.apache.servicemix.cxfbc.interceptors.JbiOperationInterceptor;
 import org.apache.servicemix.cxfbc.interceptors.JbiOutWsdl1Interceptor;
 import org.apache.servicemix.cxfbc.interceptors.MtomCheckInterceptor;
+import org.apache.servicemix.cxfbc.interceptors.SchemaValidationInInterceptor;
+import org.apache.servicemix.cxfbc.interceptors.SchemaValidationOutInterceptor;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.soap.util.DomUtil;
 import org.mortbay.jetty.Handler;
@@ -170,7 +173,8 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     private ClassLoader suClassLoader;
     
     private boolean x509;
-    
+
+    private boolean schemaValidationEnabled;    
     /**
      * @return the wsdl
      */
@@ -440,6 +444,14 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
             cxfService.getInInterceptors().add(
                     new JbiInWsdl1Interceptor(isUseJBIWrapper(),
                             isUseSOAPEnvelope()));
+            if (isSchemaValidationEnabled()) {
+                cxfService.getInInterceptors().add(new SchemaValidationInInterceptor(
+                        isUseJBIWrapper(), isUseSOAPEnvelope()));
+            }
+            if (isSchemaValidationEnabled()) {
+                cxfService.getOutInterceptors().add(new SchemaValidationOutInterceptor(
+                        isUseJBIWrapper(), isUseSOAPEnvelope()));
+            }
             cxfService.getInInterceptors().add(new JbiInInterceptor());
             cxfService.getInInterceptors().add(
                     new JbiJAASInterceptor(((CxfBcComponent) this
@@ -1110,5 +1122,21 @@ public class CxfBcConsumer extends ConsumerEndpoint implements
     public boolean isX509() {
         return x509;
     }
+    
+    public boolean isSchemaValidationEnabled() {
+        return schemaValidationEnabled;
+    }
 
+    /**
+     * Specifies if the endpoint use schemavalidation for the incoming/outgoing message.
+     * 
+     * @param schemaValidationEnabled
+     *            a boolean
+     * @org.apache.xbean.Property description="Specifies if the endpoint use schemavalidation for the incoming/outgoing message.
+     *  Default is <code>false</code>. 
+     */
+
+    public void setSchemaValidationEnabled(boolean schemaValidationEnabled) {
+        this.schemaValidationEnabled = schemaValidationEnabled;
+    }
 }
