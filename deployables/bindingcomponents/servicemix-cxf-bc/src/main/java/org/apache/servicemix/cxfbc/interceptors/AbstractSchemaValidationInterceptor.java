@@ -48,7 +48,10 @@ public abstract class AbstractSchemaValidationInterceptor extends
             if (schema != null) {
                 javax.xml.validation.Validator validator = schema.newValidator();
                 try {
+                    
+                    
                     Element sourceMessage = new SourceTransformer().toDOMElement(message.getContent(Source.class));
+                    message.setContent(Source.class, new DOMSource(sourceMessage));
                     if (!useJBIWrapper && !useSOAPEnvelope) {
                         validator.validate(new DOMSource(sourceMessage));
                     } else {

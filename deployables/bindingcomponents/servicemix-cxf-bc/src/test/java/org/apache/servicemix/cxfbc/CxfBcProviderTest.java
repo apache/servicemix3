@@ -161,11 +161,46 @@ public class CxfBcProviderTest extends SpringTestSupport {
         //test soap header using helloworld
         soapHeader();
         
+        //test schemavalidation
+        schemaValidation();
+        
         //test concurrency
         concurrency();
         // Shutdown CXF Service/Endpoint so that next test doesn't fail.
         Thread.sleep(5000); //sleep so we get chance to see the behavior of oneway exception
         factory.getBus().shutdown(true);
+    }
+
+    private void schemaValidation() throws Exception {
+        String address;
+        factory = new JaxWsServerFactoryBean();
+        factory.setServiceClass(org.apache.hello_world_soap_http_provider.Greeter.class);
+        factory.setServiceBean(new org.apache.servicemix.cxfbc.provider.GreeterImpl());
+        address = "http://localhost:9008/schemavalidation";
+        factory.setAddress(address);
+        server = factory.create();
+        endpoint = server.getEndpoint();
+        endpoint.getInInterceptors().add(new LoggingInInterceptor());
+        endpoint.getOutInterceptors().add(new LoggingOutInterceptor());
+        service = endpoint.getEndpointInfo().getService();
+        assertNotNull(service);
+        io = client.createInOutExchange();
+        io.setService(new QName("http://apache.org/hello_world_soap_http", "SOAPServiceProvider"));
+        io.setInterfaceName(new QName("http://apache.org/hello_world_soap_http", "Greeter"));
+        //send message to proxy
+        io.getInMessage().setContent(new StringSource(
+                "<message xmlns='http://java.sun.com/xml/ns/jbi/wsdl-11-wrapper'>"
+              + "<part> "
+              + "<greetMe xmlns='http://apache.org/hello_world_soap_http/types'><requestType>"
+              + "schemavalidation"
+              + "</requestType></greetMe>"
+              + "</part> "
+              + "</message>"));
+        client.sendSync(io);
+        client.done(io);
+        assertTrue(new SourceTransformer().contentToString(
+                io.getOutMessage()).indexOf("is not facet-valid with respect to maxLength '30' for type 'MyStringType'.") >= 0);
+        
     }
 
     private void concurrency() throws Exception {
