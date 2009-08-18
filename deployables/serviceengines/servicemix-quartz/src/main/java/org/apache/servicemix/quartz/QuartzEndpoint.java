@@ -176,6 +176,7 @@ public class QuartzEndpoint extends ConsumerEndpoint {
             }
             t.setJobName(jobDetail.getName());
             t.setJobGroup(jobDetail.getGroup());
+            t.setName(jobDetail.getName() + " - " + t.getName());
         }
     }
     
