@@ -89,7 +89,7 @@ public class JbiOutWsdl1Interceptor extends AbstractSoapInterceptor {
                             soapVersion.getBody().getLocalPart()).item(0);
                     }
                     if (bodyElement != null) {
-                        StaxUtils.writeElement((Element)bodyElement.getFirstChild(), xmlWriter, false);                           
+                        StaxUtils.writeElement(DomUtil.getFirstChildElement(bodyElement), xmlWriter, false);
                     } else {
                         // if this message is coming from the CxfBCProvider 
                         StaxUtils.writeElement(element, xmlWriter, false);

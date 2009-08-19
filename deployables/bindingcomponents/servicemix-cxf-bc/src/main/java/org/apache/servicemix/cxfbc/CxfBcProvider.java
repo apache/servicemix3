@@ -258,8 +258,8 @@ public class CxfBcProvider extends ProviderEndpoint implements
                 Element bodyElement = (Element) element.getElementsByTagNameNS(
                         element.getNamespaceURI(),
                         soapVersion.getBody().getLocalPart()).item(0);
-                if (bodyElement != null) {
-                    element = (Element) bodyElement.getFirstChild();                           
+                if (bodyElement != null) {    
+                    element = DomUtil.getFirstChildElement(bodyElement);
                 } 
             }
         } else {
