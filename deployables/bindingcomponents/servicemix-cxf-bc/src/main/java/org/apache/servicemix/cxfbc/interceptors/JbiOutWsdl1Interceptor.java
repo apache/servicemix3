@@ -24,9 +24,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.Source;
 
-import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -89,10 +87,10 @@ public class JbiOutWsdl1Interceptor extends AbstractSoapInterceptor {
                             soapVersion.getBody().getLocalPart()).item(0);
                     }
                     if (bodyElement != null) {
-                        StaxUtils.writeElement(DomUtil.getFirstChildElement(bodyElement), xmlWriter, false);
+                        StaxUtils.writeElement(DomUtil.getFirstChildElement(bodyElement), xmlWriter, true);
                     } else {
                         // if this message is coming from the CxfBCProvider 
-                        StaxUtils.writeElement(element, xmlWriter, false);
+                        StaxUtils.writeElement(element, xmlWriter, true);
                     }
                 }
                 return;
@@ -107,12 +105,7 @@ public class JbiOutWsdl1Interceptor extends AbstractSoapInterceptor {
                         + JbiConstants.WSDL11_WRAPPER_NAMESPACE + "}message'"));
             }
             
-            //save namespace which is potentially used by the soap message
-            List<Attr> nsList = saveLaterUsedNS(element);
-            //add the saved namespace to the soap body
-            for (Attr attr : nsList) {
-                xmlWriter.writeAttribute(attr.getName(), attr.getValue());
-            }
+           
 
             BindingOperationInfo bop = message.getExchange().get(
                     BindingOperationInfo.class);
@@ -141,7 +134,7 @@ public class JbiOutWsdl1Interceptor extends AbstractSoapInterceptor {
                     for (NodeList nl : partsContent) {
                         for (int i = 0; i < nl.getLength(); i++) {
                             Node n = nl.item(i);                            
-                            StaxUtils.writeNode(n, xmlWriter, false);
+                            StaxUtils.writeNode(n, xmlWriter, true);
                         }
                     }
                     partWrapper = DomUtil.getNextSiblingElement(partWrapper);
@@ -159,22 +152,7 @@ public class JbiOutWsdl1Interceptor extends AbstractSoapInterceptor {
         }
     }
 
-    private List<Attr> saveLaterUsedNS(Element element) {
-        List<Attr> nsList = new ArrayList<Attr>();
-        NamedNodeMap attributes = element.getAttributes();
-        for (int i = 0; i < attributes.getLength(); i++) {
-            if (attributes.item(i) instanceof Attr) {
-                Attr attr = (Attr) attributes.item(i);
-                if (attr.getName().startsWith("xmlns:")
-                        && !(attr.getName().startsWith("xmlns:" + JbiConstants.WSDL11_WRAPPER_MESSAGE_PREFIX)
-                                || attr.getName().startsWith("xmlns:" + JbiConstants.WSDL11_WRAPPER_PREFIX))) {
-                    nsList.add(attr);
-                }
-            }
-        }
-        return nsList;
-    }
-
+    
     
     
     private void getRPCPartWrapper(BindingMessageInfo msg, 
@@ -195,7 +173,7 @@ public class JbiOutWsdl1Interceptor extends AbstractSoapInterceptor {
                 for (NodeList nl : partsContent) {
                     for (int i = 0; i < nl.getLength(); i++) {
                         Node n = nl.item(i);
-                        StaxUtils.writeNode(n, xmlWriter, false);
+                        StaxUtils.writeNode(n, xmlWriter, true);
                     }
                 }
                 xmlWriter.writeEndElement();
