@@ -22,7 +22,7 @@
          xmlns:sm="http://servicemix.apache.org/config/1.0"
          xsi:schemaLocation="
          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-         http://servicemix.apache.org/config/1.0 http://people.apache.org/repo/m2-ibiblio-rsync-repository/org/apache/servicemix/servicemix-core/3.2/servicemix-core-3.2.xsd">
+         http://servicemix.apache.org/config/1.0 http://repo2.maven.org/maven2/org/apache/servicemix/servicemix-core/3.2/servicemix-core-3.2.xsd">
 
   <sm:container generateRootDir="true">
 
