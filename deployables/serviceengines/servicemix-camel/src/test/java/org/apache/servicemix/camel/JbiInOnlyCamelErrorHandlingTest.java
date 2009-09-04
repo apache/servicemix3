@@ -63,12 +63,16 @@ public class JbiInOnlyCamelErrorHandlingTest extends JbiCamelErrorHandlingTestSu
         exchange.setService(new QName("urn:test", "no-handle-fault"));
         exchange.getInMessage().setContent(new StringSource(MESSAGE));
         client.sendSync(exchange);
-        assertEquals(ExchangeStatus.DONE, exchange.getStatus());
+        assertEquals(ExchangeStatus.ACTIVE, exchange.getStatus());
         assertNotNull(exchange.getFault());
+        client.done(exchange);
 
         receiverComponent.getMessageList().assertMessagesReceived(0);
-        
+            
         errors.assertIsSatisfied();
+        
+        // let's wait a moment to make sure that the last DONE MessageExchange is handled
+        Thread.sleep(500);
     }
 
     public void testInOnlyWithHandleFault() throws Exception {
@@ -97,8 +101,9 @@ public class JbiInOnlyCamelErrorHandlingTest extends JbiCamelErrorHandlingTestSu
         exchange.setService(new QName("urn:test", "handle-fault"));
         exchange.getInMessage().setContent(new StringSource(MESSAGE));
         client.sendSync(exchange);
-        assertEquals(ExchangeStatus.DONE, exchange.getStatus());
-        assertNotNull(exchange.getFault());
+        // fault is being handled as an exception but no exception handler configured for it
+        assertEquals(ExchangeStatus.ERROR, exchange.getStatus());
+        assertTrue("A FaultException was expected", exchange.getError() instanceof FaultException);
 
         receiverComponent.getMessageList().assertMessagesReceived(0);
         
@@ -125,7 +130,7 @@ public class JbiInOnlyCamelErrorHandlingTest extends JbiCamelErrorHandlingTestSu
         errors.expectedMessageCount(0);
         
         ServiceMixClient client = new DefaultServiceMixClient(jbiContainer);
-        for (MessageExchange exchange : createInOnlyAndRobustInOnly(client)) {
+        for (MessageExchange exchange : createInOnlyAndRobustInOnly(client)) {            
             exchange.setService(new QName("urn:test", "error-handled-false"));
             exchange.getMessage("in").setContent(new StringSource(MESSAGE));
             client.sendSync(exchange);
@@ -136,7 +141,7 @@ public class JbiInOnlyCamelErrorHandlingTest extends JbiCamelErrorHandlingTestSu
         
         errors.assertIsSatisfied();
     }
-         
+    
     public void testInOnlyAndRobustInOnlyWithErrorHandledTrue() throws Exception {
         MockEndpoint errors = getMockEndpoint("mock:errors");
         errors.expectedMessageCount(0);

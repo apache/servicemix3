@@ -14,34 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.servicemix.camel;
+package org.apache.servicemix.camel.converter;
 
-import java.util.List;
+import javax.xml.transform.Source;
 
-import junit.framework.Assert;
-
-import org.apache.servicemix.jbi.container.ActivationSpec;
+import org.apache.camel.Converter;
+import org.apache.servicemix.jbi.FaultException;
 
 /**
- * This tests whether camel-mina can be deployed in ServiceMix (see CAMEL-1146)
+ * Type converter to and from JBI- and ServiceMix-specific types
  */
-public class MinaEndpointSpringDSLTest extends SpringJbiTestSupport {
+@Converter
+public class JbiConverter {
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Converter
+    public Source convertFaultExceptionToSource(FaultException e) {
+        return e.getFault().getContent();
     }
-
-    public void test() throws Exception {
-        Assert.assertTrue(true);
-    }
-
-    @Override
-    protected String getServiceUnitName() {
-        return "su10";
-    }
-
-    @Override
-    protected void appendJbiActivationSpecs(List<ActivationSpec> activationSpecList) {
-    }
-
+   
 }

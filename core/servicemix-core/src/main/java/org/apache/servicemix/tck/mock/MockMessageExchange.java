@@ -226,6 +226,8 @@ public class MockMessageExchange implements MessageExchange {
             return getInMessage();
         } else if ("out".equalsIgnoreCase(name)) {
             return getOutMessage();
+        } else if ("fault".equalsIgnoreCase(name)) {
+            return getFault();
         }
         return null;
     }

@@ -16,17 +16,26 @@
  */
 package org.apache.servicemix.camel;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
+import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 
+import org.apache.camel.processor.DeadLetterChannel;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.container.ActivationSpec;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.util.MessageUtil;
 import org.apache.servicemix.tck.ReceiverComponent;
 import org.springframework.util.Assert;
 
@@ -35,37 +44,60 @@ import org.springframework.util.Assert;
  */
 public class JbiInOnlyWithErrorHandledTrueSpringDSLTest extends SpringJbiTestSupport {
 
+    private static final Level LOG_LEVEL = Logger.getLogger("org.apache.servicemix").getEffectiveLevel();
+    private static final String MESSAGE = "<just><a>test</a></just>";
     private static final QName TEST_SERVICE = new QName("urn:test", "error-handled-true");
-    private static final String FAILURE_HANDLED_PROPERTY = "org.apache.camel.processor.DeadLetterChannel.FAILURE_HANDLED";
 
     private ReceiverComponent receiver;
     private ReceiverComponent deadLetter;
-
+    
     @Override
     protected void setUp() throws Exception {
         receiver = new ReceiverComponent() {
             public void onMessageExchange(MessageExchange exchange) throws MessagingException {
-                Object value = getInMessage(exchange).getProperty(FAILURE_HANDLED_PROPERTY);
-                Assert.notNull(value, FAILURE_HANDLED_PROPERTY + " property not set");
+                NormalizedMessage inMessage = getInMessage(exchange);
+                Object value = inMessage.getProperty(DeadLetterChannel.CAUGHT_EXCEPTION_HEADER);
+                Assert.notNull(value, DeadLetterChannel.CAUGHT_EXCEPTION_HEADER + " property not set");
+                try {
+                    MessageUtil.enableContentRereadability(inMessage);
+                    String message = new SourceTransformer().contentToString(inMessage);
+                    Assert.isTrue(message.contains(MESSAGE));
+                } catch (Exception e) {
+                    throw new MessagingException(e);
+                }
+                
                 super.onMessageExchange(exchange);
             }
         };
         deadLetter = new ReceiverComponent();
 
         super.setUp();
+
+        // change the log level to avoid the conversion to DOMSource 
+        Logger.getLogger("org.apache.servicemix").setLevel(Level.ERROR);
     }
 
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+
+        // restore the original log level
+        Logger.getLogger("org.apache.servicemix").setLevel(LOG_LEVEL);
+    }
+    
     public void testErrorHandledByExceptionClause() throws Exception {
         ServiceMixClient smxClient = getServicemixClient();
         MessageExchange[] exchanges = new MessageExchange[] {smxClient.createInOnlyExchange(), smxClient.createRobustInOnlyExchange()};
         for (MessageExchange exchange : exchanges) {
             exchange.setService(TEST_SERVICE);
+            Source content = new StreamSource(new ByteArrayInputStream(MESSAGE.getBytes()));
+            exchange.getMessage("in").setContent(content);
 
             smxClient.send(exchange);
 
             exchange = smxClient.receive();
             assertEquals(ExchangeStatus.DONE, exchange.getStatus());
-            assertNotNull(exchange.getProperty(FAILURE_HANDLED_PROPERTY));
+            assertNotNull(exchange.getMessage("in").getProperty(DeadLetterChannel.CAUGHT_EXCEPTION_HEADER));
         }
 
         receiver.getMessageList().assertMessagesReceived(2);
@@ -89,6 +121,13 @@ public class JbiInOnlyWithErrorHandledTrueSpringDSLTest extends SpringJbiTestSup
     protected static class ReturnNullPointerExceptionErrorComponent extends ComponentSupport implements MessageExchangeListener {
         public void onMessageExchange(MessageExchange exchange) throws MessagingException {
             if (exchange.getStatus() == ExchangeStatus.ACTIVE) {
+                // read the in message content before returning to ensure that the 
+                // Camel DeadLetterChannel caches the stream correctly prior to re-delivery
+                try {
+                    new SourceTransformer().contentToString(exchange.getMessage("in"));
+                } catch (Exception e) {
+                    throw new MessagingException(e);
+                }
                 fail(exchange, new NullPointerException());
             }
         }

@@ -27,6 +27,7 @@ import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.converter.jaxp.StringSource;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
+import org.apache.servicemix.jbi.FaultException;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 
 /**
@@ -54,7 +55,9 @@ public class JbiInOutCamelErrorHandlingTest extends JbiCamelErrorHandlingTestSup
 
     public void testInOutWithHandleFault() throws Exception {
         MockEndpoint errors = getMockEndpoint("mock:errors");
-        errors.expectedMessageCount(1);
+        errors.expectedMessageCount(0);
+        MockEndpoint faults = getMockEndpoint("mock:faults-handled");
+        faults.expectedMessageCount(1);
 
         ServiceMixClient client = new DefaultServiceMixClient(jbiContainer);
         InOut exchange = client.createInOutExchange();
@@ -62,7 +65,7 @@ public class JbiInOutCamelErrorHandlingTest extends JbiCamelErrorHandlingTestSup
         exchange.getInMessage().setContent(new StringSource(MESSAGE));
         client.sendSync(exchange);
         assertEquals(ExchangeStatus.ACTIVE, exchange.getStatus());
-        assertNotNull(exchange.getFault());
+        assertNull("Fault has been handled inside Camel route", exchange.getFault());
         client.done(exchange);
 
         errors.assertIsSatisfied();
@@ -124,6 +127,7 @@ public class JbiInOutCamelErrorHandlingTest extends JbiCamelErrorHandlingTestSup
             public void configure() throws Exception {
                 onException(IllegalStateException.class).handled(false).to("jbi:service:urn:test:receiver-service?mep=in-only");
                 onException(NullPointerException.class).handled(true).to("jbi:service:urn:test:receiver-service?mep=in-only");
+                onException(FaultException.class).handled(true).to("mock:faults-handled");
                 errorHandler(deadLetterChannel("mock:errors").maximumRedeliveries(1).initialRedeliveryDelay(300));
                 from("jbi:service:urn:test:no-handle-fault").to("jbi:service:urn:test:faulty-service");
                 from("jbi:service:urn:test:handle-fault").handleFault().to("jbi:service:urn:test:faulty-service");

@@ -34,6 +34,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.servicemix.common.endpoints.ConsumerEndpoint;
 import org.apache.servicemix.id.IdGenerator;
+import org.apache.servicemix.jbi.FaultException;
 import org.apache.servicemix.jbi.resolver.URIResolver;
 
 /**
@@ -132,7 +133,8 @@ public class CamelConsumerEndpoint extends ConsumerEndpoint implements AsyncProc
         } else if (messageExchange.getStatus() == ExchangeStatus.ACTIVE) {
             addHeaders(messageExchange, exchange);
             if (messageExchange.getFault() != null) {
-                exchange.getFault().setBody(messageExchange.getFault().getContent());
+                exchange.getFault().setBody(new FaultException("Fault occured for " + exchange.getPattern() + " exchange", 
+                        messageExchange, messageExchange.getFault()));
                 addHeaders(messageExchange.getFault(), exchange.getFault());
                 addAttachments(messageExchange.getFault(), exchange.getFault());
             } else if (messageExchange.getMessage("out") != null) {
