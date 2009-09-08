@@ -24,7 +24,7 @@ import java.net.URLConnection;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
-
+import javax.xml.ws.Holder;
 import junit.framework.TestCase;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -150,8 +150,10 @@ public class CxfBcComponentTest extends TestCase {
         HelloRequest req = new HelloRequest();
         req.setText("hello");
         HelloHeader header = new HelloHeader();
+        Holder<HelloHeader> header1 = new Holder<HelloHeader>();
+        header1.value = header;
         header.setId("ffang");
-        HelloResponse rep = port.hello(req, header);
+        HelloResponse rep = port.hello(req, header1);
         Thread.sleep(1000);
         assertEquals(rep.getText(), "helloffang");
     }
@@ -181,10 +183,13 @@ public class CxfBcComponentTest extends TestCase {
         HelloRequest req = new HelloRequest();
         req.setText("hello");
         HelloHeader header = new HelloHeader();
+        Holder<HelloHeader> header1 = new Holder<HelloHeader>();        
+        header1.value = header;
         header.setId("ffang");
-        HelloResponse rep = port.hello(req, header);
+        HelloResponse rep = port.hello(req, header1);
         Thread.sleep(1000);
         assertEquals(rep.getText(), "helloffang");
+        assertEquals(header1.value.getId(), "retffang");
     }
 
     public void testEndpointRPC() throws Exception {
