@@ -53,6 +53,7 @@ import uri.helloworld.HelloRequest;
 public class GreeterImplForProvider implements Greeter {
     private ComponentContext context;
     private CalculatorPortType calculator;
+    private CalculatorPortType calculatorWithMtom;
     private NoServicePortType calculatorNotExist;
     private Greeter greeter;
     private Greeter securityGreeter;
@@ -129,6 +130,8 @@ public class GreeterImplForProvider implements Greeter {
                 } catch (UndeclaredThrowableException ex) {
                     throw (Exception) ex.getCause();
                 }                
+            } else if ("ffang with mtom exception".equals(me)) {
+                getCalculatorWithMtom().add(-1, -1);
             }
                         
         } catch (AddNumbersFault e) {
@@ -295,6 +298,14 @@ public class GreeterImplForProvider implements Greeter {
 
     public TestMtom getMtom() {
         return mtom;
+    }
+
+    public void setCalculatorWithMtom(CalculatorPortType calculatorWithMtom) {
+        this.calculatorWithMtom = calculatorWithMtom;
+    }
+
+    public CalculatorPortType getCalculatorWithMtom() {
+        return calculatorWithMtom;
     }
 
 
