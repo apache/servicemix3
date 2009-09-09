@@ -80,6 +80,7 @@
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
+         	 port="${sm.port}"
              file="${sm.install.file}"/>  
       </target>
      
@@ -94,6 +95,7 @@
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
+         	 port="${sm.port}"
              name="${sm.component.name}"
          />
          
@@ -111,6 +113,7 @@
             username="${sm.username}" 
             password="${sm.password}"
             host="${sm.host}"
+        	port="${sm.port}"
             file="${sm.install.file}"
         />
      </target>
@@ -127,6 +130,7 @@
             username="${sm.username}" 
             password="${sm.password}"
             host="${sm.host}"
+         	port="${sm.port}"
             name="${sm.shared.library.name}"    
         />
          
@@ -144,6 +148,7 @@
             username="${sm.username}" 
             password="${sm.password}"
             host="${sm.host}"
+         	port="${sm.port}"
             name="${sm.component.name}"        
         />
      
@@ -161,6 +166,7 @@
             username="${sm.username}" 
             password="${sm.password}"
             host="${sm.host}"
+         	port="${sm.port}"
             name="${sm.component.name}"            
          />
           
@@ -178,6 +184,7 @@
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
+         	 port="${sm.port}"
              name="${sm.component.name}"                
          />
      </target>
@@ -194,6 +201,7 @@
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
+         	 port="${sm.port}"
              file="${sm.deploy.file}"                    
          />
      </target>
@@ -210,6 +218,7 @@
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
+         	 port="${sm.port}"
              name="${sm.service.assembly.name}"                        
          />
      
@@ -227,6 +236,7 @@
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
+         	 port="${sm.port}"
              name="${sm.service.assembly.name}"                            
          />
          
@@ -244,6 +254,7 @@
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
+         	 port="${sm.port}"
              name="${sm.service.assembly.name}"                                
          />     
      </target>
@@ -260,6 +271,7 @@
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
+         	 port="${sm.port}"
              name="${sm.service.assembly.name}"                                    
          />
      
@@ -279,6 +291,7 @@
              username="${sm.username}"
              password="${sm.password}"
              host="${sm.host}"
+         	 port="${sm.port}"
              state="${sm.state}"
              serviceAssemblyName="${sm.service.assembly.name}"
              sharedLibraryName="${sm.shared.library.name}"
@@ -300,6 +313,7 @@
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
+         	 port="${sm.port}"
              state="${sm.state}"
              sharedLibraryName="${sm.shared.library.name}"
              serviceAssemblyName="${sm.service.assembly.name}"
@@ -320,6 +334,7 @@
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
+         	 port="${sm.port}"
              componentName="${sm.component.name}"
              sharedLibraryName="${sm.shared.library.name}"
       />
@@ -339,6 +354,7 @@
              username="${sm.username}" 
              password="${sm.password}"
              host="${sm.host}"
+         	 port="${sm.port}"
              state="${sm.state}"
              componentName="${sm.component.name}"
              serviceAssemblyName="${sm.service.assembly.name}"
