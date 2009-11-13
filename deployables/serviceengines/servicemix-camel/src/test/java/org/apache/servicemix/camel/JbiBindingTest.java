@@ -16,7 +16,6 @@
  */
 package org.apache.servicemix.camel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.activation.DataHandler;
@@ -161,12 +160,5 @@ public class JbiBindingTest extends TestCase {
         binding.copyFromCamelToJbi(from.getIn(), to);
         assertSame("JBI SecuritySubject should have been set from the Camel Message header",
                    SUBJECT, to.getSecuritySubject());
-    }
-    
-    public void testIsSerializable() throws Exception {
-        assertTrue("A String is serializable", binding.isSerializable("test"));
-        assertFalse("JbiBinding is not serializable", binding.isSerializable(binding));
-        assertFalse("Maps can contain non-serializable data", binding.isSerializable(new HashMap()));
-        assertFalse("Collections can contain non-serializable data", binding.isSerializable(new ArrayList()));
     }
 }

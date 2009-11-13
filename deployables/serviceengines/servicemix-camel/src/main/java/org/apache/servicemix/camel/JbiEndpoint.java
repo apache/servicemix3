@@ -29,9 +29,12 @@ import org.apache.camel.Producer;
 import org.apache.camel.impl.DefaultConsumer;
 import org.apache.camel.impl.DefaultEndpoint;
 import org.apache.camel.impl.DefaultProducer;
+import org.apache.camel.spi.HeaderFilterStrategy;
+import org.apache.camel.spi.Registry;
 import org.apache.camel.util.URISupport;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.StringUtils;
 
 /**
  * Represents an {@link org.apache.camel.Endpoint} for interacting with JBI
@@ -39,6 +42,8 @@ import org.apache.commons.logging.LogFactory;
  * @version $Revision: 563665 $
  */
 public class JbiEndpoint extends DefaultEndpoint<Exchange> {
+
+    private static final String STRICT_SERIALIZATION = "strict";
 
     private String destinationUri;
 
@@ -48,13 +53,32 @@ public class JbiEndpoint extends DefaultEndpoint<Exchange> {
 
     private JbiProducer producer;
 
+    private boolean convertExceptions;
+
+    private boolean strictSerialization;
+
+    private HeaderFilterStrategy headerFilterStrategy;
+
     private final JbiComponent jbiComponent;
+
+    private final JbiBinding binding;
 
     public JbiEndpoint(JbiComponent jbiComponent, String uri) {
         super(uri, jbiComponent);
         this.jbiComponent = jbiComponent;
         parseUri(uri);
+
+        //now create the binding based on the information read from the URI
+        this.binding = createBinding();
     }
+
+    public final JbiBinding createBinding() {
+        JbiBinding result = new JbiBinding(this.getCamelContext(), strictSerialization);
+        result.setConvertExceptions(convertExceptions);
+        result.addHeaderFilterStrategy(headerFilterStrategy);
+        return result;
+    }
+
 
     public synchronized Producer<Exchange> createProducer() throws Exception {
         if (producer == null) {
@@ -75,7 +99,7 @@ public class JbiEndpoint extends DefaultEndpoint<Exchange> {
 
         @Override
         public void start() throws Exception {
-            consumer = new CamelConsumerEndpoint(jbiComponent.getBinding(), JbiEndpoint.this);
+            consumer = new CamelConsumerEndpoint(binding, JbiEndpoint.this);
             jbiComponent.getCamelJbiComponent().addEndpoint(consumer);
             super.start();
         }
@@ -107,6 +131,7 @@ public class JbiEndpoint extends DefaultEndpoint<Exchange> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void parseUri(String uri) {
         destinationUri = uri;
         try {
@@ -117,8 +142,36 @@ public class JbiEndpoint extends DefaultEndpoint<Exchange> {
                 if (mep != null && !mep.startsWith("http://www.w3.org/ns/wsdl/")) {
                     mep = "http://www.w3.org/ns/wsdl/" + mep;
                 }
-                operation = (String) params.get("operation");
+                String oper = (String) params.get("operation");
+                if (StringUtils.hasLength(oper)) {
+                    operation = oper;
+                }
                 this.destinationUri = destinationUri.substring(0, idx);
+
+                String filter = (String) params.get("headerFilterStrategy");
+                if (StringUtils.hasLength(filter)) {
+                    Registry registry = jbiComponent.getCamelContext().getRegistry();
+                    if (filter.indexOf('#') != -1) {
+                        filter = filter.substring(1);
+                    }
+                    Object object = registry.lookup(filter);
+                    if (object instanceof HeaderFilterStrategy) {
+                        headerFilterStrategy = (HeaderFilterStrategy) object;
+                    }
+                    params.remove("headerFilterStrategy");
+                }
+                String convert = (String) params.get("convertExceptions");
+                if (StringUtils.hasLength(convert)) {
+                    convertExceptions = Boolean.valueOf(convert);
+                    params.remove("convertExceptions");
+                }
+                String serialization = (String) params.get("serialization");
+                if (StringUtils.hasLength(serialization)) {
+                    strictSerialization = STRICT_SERIALIZATION.equalsIgnoreCase(serialization);
+                    params.remove("serialization");
+                }
+                String endpointUri = this.destinationUri + URISupport.createQueryString(params);
+                this.setEndpointUri(endpointUri);
             }
         } catch (URISyntaxException e) {
             throw new JbiException(e);
@@ -170,11 +223,31 @@ public class JbiEndpoint extends DefaultEndpoint<Exchange> {
         };
     }
 
-    public JbiBinding getBinding() {
-        return jbiComponent.getBinding();
-    }
-
     public boolean isSingleton() {
         return true;
+    }
+         
+    public HeaderFilterStrategy getHeaderFilterStrategy() {
+        return headerFilterStrategy;
+    }
+
+    public void setHeaderFilterStrategy(HeaderFilterStrategy strategy) {
+        this.headerFilterStrategy = strategy;
+    }
+
+    public void setConvertExceptions(boolean convertExceptions) {
+        this.convertExceptions = convertExceptions;
+    }
+
+    public boolean isConvertExceptions() {
+        return convertExceptions;
+    }
+
+    public void setStrictSerialization(boolean strictSerialization) {
+        this.strictSerialization = strictSerialization;
+    }
+
+    public boolean isStrictSerialization() {
+        return strictSerialization;
     }
 }

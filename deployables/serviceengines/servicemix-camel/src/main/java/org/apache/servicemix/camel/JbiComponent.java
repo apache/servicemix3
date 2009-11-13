@@ -29,7 +29,7 @@ import org.apache.servicemix.jbi.resolver.URIResolver;
 
 public class JbiComponent implements Component<Exchange> {
     private CamelJbiComponent camelJbiComponent;
-    private JbiBinding binding;
+
     private CamelContext camelContext;
     private IdGenerator idGenerator;
     private String suName;
@@ -57,24 +57,6 @@ public class JbiComponent implements Component<Exchange> {
 
     public String getSuName() {
         return suName;
-    }
-
-    /**
-     * @return the binding
-     */
-    public JbiBinding getBinding() {
-        if (binding == null) {
-            binding = new JbiBinding(camelContext);
-        }
-        return binding;
-    }
-
-    /**
-     * @param binding
-     *            the binding to set
-     */
-    public void setBinding(JbiBinding binding) {
-        this.binding = binding;
     }
 
     // Resolve Camel Endpoints
@@ -133,12 +115,23 @@ public class JbiComponent implements Component<Exchange> {
                     + endpointUri);
             }
             jbiEndpoint = new CamelProviderEndpoint(getCamelJbiComponent().getServiceUnit(), service,
-                                                    endpoint, getBinding(), processor);
+                                                    endpoint, createBinding(camelEndpoint), processor);
         } else {
             jbiEndpoint = new CamelProviderEndpoint(getCamelJbiComponent().getServiceUnit(), camelEndpoint,
-                                                    getBinding(), processor);
+                                                    createBinding(camelEndpoint), processor);
         }
         return jbiEndpoint;
+    }
+
+    /*
+    * Creates a binding for the given endpoint
+    */
+    protected JbiBinding createBinding(Endpoint camelEndpoint) {
+        if (camelEndpoint instanceof JbiEndpoint) {
+            return ((JbiEndpoint) camelEndpoint).createBinding();
+        } else {
+            return new JbiBinding(camelContext);
+        }
     }
 
     protected String createEndpointName() {

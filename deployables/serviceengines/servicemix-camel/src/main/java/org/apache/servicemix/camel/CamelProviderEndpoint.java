@@ -120,16 +120,7 @@ public class CamelProviderEndpoint extends ProviderEndpoint {
      */
     private void handleFailure(MessageExchange exchange, Exchange camelExchange) throws MessagingException {
         if (camelExchange.getFault(false) == null || camelExchange.getFault(false).getBody() == null) {
-            Throwable t = camelExchange.getException();
-            Exception e;
-            if (t == null) {
-                e = new Exception("Unknown error");
-            } else if (t instanceof Exception) {
-                e = (Exception) t;
-            } else {
-                e = new Exception(t);
-            }
-            fail(exchange, e);
+            fail(exchange, binding.extractException(camelExchange));
         } else {
             Fault fault = exchange.createFault();
             fault.setContent(camelExchange.getFault().getBody(Source.class));

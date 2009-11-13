@@ -16,11 +16,8 @@
  */
 package org.apache.servicemix.camel;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.Map;
 
 import javax.jbi.messaging.InOptionalOut;
 import javax.jbi.messaging.InOut;
@@ -38,8 +35,13 @@ import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.Message;
 import org.apache.camel.NoTypeConversionAvailableException;
+import org.apache.camel.spi.HeaderFilterStrategy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.camel.util.BasicSerializationHeaderFilterStrategy;
+import org.apache.servicemix.camel.util.HeaderFilterStrategies;
+import org.apache.servicemix.camel.util.StrictSerializationHeaderFilterStrategy;
+import org.apache.servicemix.jbi.FaultException;
 
 /**
  * The binding of how Camel messages get mapped to JBI and back again
@@ -58,10 +60,34 @@ public class JbiBinding {
     private static final Log LOG = LogFactory.getLog(JbiBinding.class);
 
     private final CamelContext context;
-    
+
+    private HeaderFilterStrategies strategies = new HeaderFilterStrategies();
+    private boolean convertExceptions;
+
+    /**
+     * Create the binding instance for a given CamelContext
+     *
+     * @param context the CamelContext
+     */
     public JbiBinding(CamelContext context) {
-        super();
+        this(context, false);    
+    }
+
+    public JbiBinding(CamelContext context, boolean strictSerialization) {
         this.context = context;
+        if (strictSerialization) {
+            strategies.add(new StrictSerializationHeaderFilterStrategy());
+        } else {
+            strategies.add(new BasicSerializationHeaderFilterStrategy());
+        }
+    }
+
+    public void addHeaderFilterStrategy(HeaderFilterStrategy strategy) {
+        strategies.add(strategy);
+    }
+
+    public void setConvertExceptions(boolean convertExceptions) {
+        this.convertExceptions = convertExceptions;
     }
 
     public MessageExchange makeJbiMessageExchange(Exchange camelExchange,
@@ -182,7 +208,7 @@ public class JbiBinding {
         
         for (String key : message.getHeaders().keySet()) {
             Object value = message.getHeader(key);
-            if (isSerializable(value)) {
+            if (!strategies.applyFilterToCamelHeaders(key, value)) {
                 normalizedMessage.setProperty(key, value);
             }
         }
@@ -212,10 +238,29 @@ public class JbiBinding {
         }
     }
 
+
+    /**
+     * Extract an Exception from the exchange.  This method will always return a
+     *
+     * @param exchange the Camel exchange
+     * @return an exception
+     */
+    public Exception extractException(Exchange exchange) {
+        Throwable e  = exchange.getException();
+        if (!(e instanceof Exception) || convertExceptions) {
+            e = context.getTypeConverter().convertTo(FaultException.class, exchange);
+        }
+        return (Exception) e;
+    }
+
     private boolean isOutCapable(MessageExchange exchange) {
         return exchange instanceof InOut || exchange instanceof InOptionalOut;
     }
 
+    /**
+     * Access the JBI MessageExchange that has been stored on the Camel Exchange
+     * @return the JBI MessageExchange
+     */
     public static MessageExchange getMessageExchange(Exchange exchange) {
         return exchange.getProperty(MESSAGE_EXCHANGE, MessageExchange.class);
     }
@@ -239,10 +284,5 @@ public class JbiBinding {
             return message.getHeader(SECURITY_SUBJECT, Subject.class);
         }
         return null;
-    }
-
-    @SuppressWarnings("unchecked")
-    protected boolean isSerializable(Object object) {
-        return (object instanceof Serializable) && !(object instanceof Map) && !(object instanceof Collection);
     }
 }
