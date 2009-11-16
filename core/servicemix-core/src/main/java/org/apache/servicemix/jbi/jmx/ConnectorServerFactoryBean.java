@@ -16,10 +16,17 @@
  */
 package org.apache.servicemix.jbi.jmx;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.security.AccessController;
 import java.util.Map;
 
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
+import javax.management.remote.JMXConnectorServer;
+import javax.management.remote.MBeanServerForwarder;
+import javax.security.auth.Subject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -75,7 +82,8 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
     private Object objectName;
     private int registrationBehavior = REGISTRATION_FAIL_ON_EXISTING;
     private MBeanServer server;
-    
+    private Policy policy;
+
 
     /**
      * Set whether any threads started for the <code>JMXConnectorServer</code> should be
@@ -178,6 +186,14 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
         return csfb.isSingleton();
     }
 
+    /**
+     * 
+     * @param policy
+     */
+    public void setPolicy(Policy policy) {
+        this.policy = policy;
+    }
+
     public void afterPropertiesSet() throws Exception {
         csfb = new org.springframework.jmx.support.ConnectorServerFactoryBean();
         csfb.setDaemon(daemon);
@@ -189,7 +205,23 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
         csfb.setServiceUrl(serviceUrl);
         csfb.setServer(server);
         csfb.afterPropertiesSet();
+        if (policy != null) {
+            log.info("Configuring JMX authorization policy: " + policy);
+            JMXConnectorServer jcs = (JMXConnectorServer) csfb.getObject();
+            jcs.setMBeanServerForwarder(createForwarder());
+        }
         log.info("JMX connector available at: " + serviceUrl);
+    }
+
+    private MBeanServerForwarder createForwarder() {
+        final InvocationHandler handler = new MBSFInvocationHandler(policy);
+
+        Object proxy = Proxy.newProxyInstance(
+                MBeanServerForwarder.class.getClassLoader(),
+                new Class[] {MBeanServerForwarder.class},
+                handler);
+
+        return MBeanServerForwarder.class.cast(proxy);
     }
 
     public void destroy() throws Exception {
@@ -202,4 +234,48 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
         }
     }
 
+    public static class MBSFInvocationHandler implements InvocationHandler {
+
+        private static final String GET_MBEAN_SERVER = "getMBeanServer";
+        private static final String SET_MBEAN_SERVER = "setMBeanServer";
+
+        private Policy policy;
+        private MBeanServer mbs;
+
+        public MBSFInvocationHandler(Policy policy) {
+            this.policy = policy;
+        }
+
+        public Object invoke(Object proxy, Method method, Object[] args)
+            throws Throwable {
+
+            final String methodName = method.getName();
+
+            if (GET_MBEAN_SERVER.equals(methodName)) {
+                return mbs;
+            }
+
+            if (SET_MBEAN_SERVER.equals(methodName)) {
+                if (args[0] == null) {
+                    throw new IllegalArgumentException("Null MBeanServer");
+                }
+                if (mbs != null) {
+                    throw new IllegalArgumentException("MBeanServer object already initialized");
+                }
+                mbs = (MBeanServer) args[0];
+                return null;
+            }
+
+            // Retrieve Subject from current AccessControlContext
+            Subject subject = Subject.getSubject(AccessController.getContext());
+
+            if (subject == null)  {
+                // running operation locally
+                return method.invoke(mbs, args);
+            } else {
+                policy.checkAuthorization(subject, mbs, method, args);
+                return method.invoke(mbs, args);
+            }
+        }
+    }
 }
