@@ -24,8 +24,6 @@ import java.util.Map;
 
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
-import javax.management.remote.JMXConnectorServer;
-import javax.management.remote.MBeanServerForwarder;
 import javax.security.auth.Subject;
 
 import org.apache.commons.logging.Log;
@@ -34,6 +32,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.Constants;
+import org.springframework.jmx.support.JmxUtils;
 
 /**
  * <code>FactoryBean</code> that creates a JSR-160 <code>JMXConnectorServer</code>,
@@ -203,25 +202,31 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
         csfb.setObjectName(objectName);
         serviceUrl = serviceUrl.replaceAll(" ", "");
         csfb.setServiceUrl(serviceUrl);
-        csfb.setServer(server);
-        csfb.afterPropertiesSet();
+        
+        MBeanServer mbs = server;
         if (policy != null) {
-            log.info("Configuring JMX authorization policy: " + policy);
-            JMXConnectorServer jcs = (JMXConnectorServer) csfb.getObject();
-            jcs.setMBeanServerForwarder(createForwarder());
-        }
+            log.info("Configuring JMX authorization policy: " + policy); 
+            if (mbs == null) {
+                mbs = createProxyForPolicy(JmxUtils.locateMBeanServer());
+            } else {
+                mbs = createProxyForPolicy(mbs);
+            }
+        } 
+        csfb.setServer(mbs);
+        
+        csfb.afterPropertiesSet();
         log.info("JMX connector available at: " + serviceUrl);
     }
 
-    private MBeanServerForwarder createForwarder() {
-        final InvocationHandler handler = new MBSFInvocationHandler(policy);
+    private MBeanServer createProxyForPolicy(final MBeanServer mbs) {
+        final InvocationHandler handler = new PolicyAwareInvocationHandler(policy, mbs);
 
         Object proxy = Proxy.newProxyInstance(
-                MBeanServerForwarder.class.getClassLoader(),
-                new Class[] {MBeanServerForwarder.class},
+                MBeanServer.class.getClassLoader(),
+                new Class[] {MBeanServer.class},
                 handler);
 
-        return MBeanServerForwarder.class.cast(proxy);
+        return MBeanServer.class.cast(proxy);
     }
 
     public void destroy() throws Exception {
@@ -234,37 +239,18 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
         }
     }
 
-    public static class MBSFInvocationHandler implements InvocationHandler {
+    public static class PolicyAwareInvocationHandler implements InvocationHandler {
 
-        private static final String GET_MBEAN_SERVER = "getMBeanServer";
-        private static final String SET_MBEAN_SERVER = "setMBeanServer";
+        private final Policy policy;
+        private final MBeanServer mbs;
 
-        private Policy policy;
-        private MBeanServer mbs;
-
-        public MBSFInvocationHandler(Policy policy) {
+        public PolicyAwareInvocationHandler(Policy policy, MBeanServer mbs) {
             this.policy = policy;
+            this.mbs = mbs;
         }
 
         public Object invoke(Object proxy, Method method, Object[] args)
             throws Throwable {
-
-            final String methodName = method.getName();
-
-            if (GET_MBEAN_SERVER.equals(methodName)) {
-                return mbs;
-            }
-
-            if (SET_MBEAN_SERVER.equals(methodName)) {
-                if (args[0] == null) {
-                    throw new IllegalArgumentException("Null MBeanServer");
-                }
-                if (mbs != null) {
-                    throw new IllegalArgumentException("MBeanServer object already initialized");
-                }
-                mbs = (MBeanServer) args[0];
-                return null;
-            }
 
             // Retrieve Subject from current AccessControlContext
             Subject subject = Subject.getSubject(AccessController.getContext());
