@@ -41,11 +41,11 @@
     </properties>
 
     <repositories>
-	    <repository>
-		   <id>geronimo-2.0.1-repo</id>
-		   <url>http://svn.apache.org/repos/asf/geronimo/server/tags/2.0.1/repository</url>
-		</repository>
-	</repositories>
+      <repository>
+        <id>geronimo-2.0.1-repo</id>
+        <url>http://svn.apache.org/repos/asf/geronimo/server/tags/2.0.1/repository</url>
+      </repository>
+    </repositories>
     
     <modules>
         <module>servicemix-service</module>
@@ -54,5 +54,24 @@
         <module>servicemix</module>
         <module>deployer</module>
     </modules>
+
+    <dependencyManagement>
+      <dependencies>
+        <!-- make sure to exclude myfaces-api everywhere so we don't hit maven-repository.dev.java.net -->
+        <dependency>
+          <groupId>org.apache.geronimo.configs</groupId>
+          <artifactId>jee-specs</artifactId>
+          <version>${geronimo-version}</version>
+          <type>car</type>
+          <scope>provided</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>org.apache.myfaces.core</groupId>
+              <artifactId>myfaces-api</artifactId>
+            </exclusion>
+          </exclusions>          
+        </dependency>
+      </dependencies>
+    </dependencyManagement>
 
 </project>

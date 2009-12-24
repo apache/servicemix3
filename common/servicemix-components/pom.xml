@@ -64,7 +64,17 @@
     </dependency>
     <dependency>
       <groupId>org.codehaus.xfire</groupId>
-      <artifactId>xfire-all</artifactId>
+      <artifactId>xfire-aegis</artifactId>
+      <optional>true</optional>      
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.xfire</groupId>
+      <artifactId>xfire-spring</artifactId>
+      <optional>true</optional>
+    </dependency>       
+    <dependency>
+      <groupId>org.codehaus.xfire</groupId>
+      <artifactId>xfire-core</artifactId>
       <optional>true</optional>
       <exclusions>
         <exclusion>

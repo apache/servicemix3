@@ -33,6 +33,26 @@
 
     <dependencies>
 
+      <!-- BEGIN OF HACK (feel free to come up with anything better)
+           adding these two up-front to avoid having to hit maven-repository.dev.java.net -->
+      <dependency>
+        <groupId>org.apache.myfaces.maven</groupId>
+        <artifactId>myfaces-master</artifactId>
+        <version>1.0.5</version>
+        <type>pom</type>
+        <scope>test</scope>
+        <optional>true</optional>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.myfaces.core</groupId>
+        <artifactId>myfaces-api</artifactId>
+        <version>1.2.0</version>
+        <scope>test</scope>
+        <optional>true</optional>
+      </dependency>
+      <!-- END OF HACK -->
+
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jta_1.1_spec</artifactId>
