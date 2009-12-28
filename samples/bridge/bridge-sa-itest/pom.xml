@@ -67,28 +67,28 @@
        <artifactId>servicemix-eip</artifactId>
        <classifier>installer</classifier>
        <type>zip</type>
-       <version>2008.01</version>
+       <version>2009.02</version>
     </dependency>
     <dependency>
        <groupId>org.apache.servicemix</groupId>
        <artifactId>servicemix-http</artifactId>
        <classifier>installer</classifier>
        <type>zip</type>
-       <version>2008.01</version>
+       <version>2009.02</version>
     </dependency>
     <dependency>
        <groupId>org.apache.servicemix</groupId>
        <artifactId>servicemix-jms</artifactId>
        <classifier>installer</classifier>
        <type>zip</type>
-       <version>2008.01</version>
+       <version>2009.02</version>
     </dependency>
     <dependency>
        <groupId>org.apache.servicemix</groupId>
        <artifactId>servicemix-shared</artifactId>
        <classifier>installer</classifier>
        <type>zip</type>
-       <version>2008.01</version>
+       <version>2009.02</version>
        <scope>test</scope>
     </dependency>
     <dependency>
@@ -96,7 +96,7 @@
        <artifactId>servicemix-saxon</artifactId>
        <classifier>installer</classifier>
        <type>zip</type>
-       <version>2008.01</version>
+       <version>2009.02</version>
     </dependency>
 
 		<!-- testing -->
