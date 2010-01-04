@@ -40,6 +40,7 @@
         <exclude>*/target/**</exclude>
         <exclude>*/.classpath</exclude>
         <exclude>*/.project</exclude>
+        <exclude>**/kit_camel_example_pom.xml</exclude>
         <exclude>.settings/*</exclude>
       </excludes>
     </fileSet>
