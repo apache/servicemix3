@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+       xmlns:container1="http://servicemix.org/example/1"
+       xmlns:container1a="http://servicemix.org/example/1a"
+       xmlns:container2="http://servicemix.org/example/2"
+       xmlns:container2a="http://servicemix.org/example/2a">
+
+  <sm:container id="jbi1" embedded="true" useMBeanServer="false" name="ServiceMix1">
+    <sm:broker>
+      <sm:securedBroker>
+        <sm:authorizationMap>
+	      <sm:authorizationMap>
+	        <sm:authorizationEntries>
+	          <sm:authorizationEntry service="*:*" roles="programmers" />
+	          <sm:authorizationEntry service="container1:*" roles="accounting" />
+	          <sm:authorizationEntry service="container1:receiver1" roles="testers" />
+	        </sm:authorizationEntries>
+	      </sm:authorizationMap>
+        </sm:authorizationMap>
+        <sm:flows>
+          <sm:jmsFlow jmsURL="tcp://localhost:61216" />
+        </sm:flows>
+      </sm:securedBroker>
+    </sm:broker>
+      
+    <sm:activationSpecs>
+      <sm:activationSpec id="receiver11" service="container1:receiver1">
+        <sm:component>
+          <bean class="org.apache.servicemix.tck.ReceiverComponent" />
+        </sm:component>
+      </sm:activationSpec>
+      <sm:activationSpec id="receiver12" service="container1:receiver2">
+        <sm:component>
+          <bean class="org.apache.servicemix.tck.ReceiverComponent" />
+        </sm:component>
+      </sm:activationSpec>
+      <sm:activationSpec id="receiver13" service="container1a:receiver1">
+        <sm:component>
+          <bean class="org.apache.servicemix.tck.ReceiverComponent" />
+        </sm:component>
+      </sm:activationSpec>
+    </sm:activationSpecs>
+  </sm:container>
+
+  <sm:container id="jbi2" embedded="true" useMBeanServer="false" name="ServiceMix2">
+    <sm:broker>
+      <sm:securedBroker>
+        <sm:authorizationMap>
+	      <sm:authorizationMap>
+	        <sm:authorizationEntries>
+	          <sm:authorizationEntry service="*:*" roles="programmers" />
+	          <sm:authorizationEntry service="container2:*" roles="accounting" />
+	          <sm:authorizationEntry service="container2:receiver1" roles="testers" />
+	        </sm:authorizationEntries>
+	      </sm:authorizationMap>
+        </sm:authorizationMap>
+        <sm:flows>
+          <sm:jmsFlow jmsURL="tcp://localhost:61216" />
+        </sm:flows>
+      </sm:securedBroker>
+    </sm:broker>
+
+    <sm:activationSpecs>
+      <sm:activationSpec id="receiver21" service="container2:receiver1">
+        <sm:component>
+          <bean class="org.apache.servicemix.tck.ReceiverComponent" />
+        </sm:component>
+      </sm:activationSpec>
+      <sm:activationSpec id="receiver22" service="container2:receiver2">
+        <sm:component>
+          <bean class="org.apache.servicemix.tck.ReceiverComponent" />
+        </sm:component>
+      </sm:activationSpec>
+      <sm:activationSpec id="receiver23" service="container2a:receiver1">
+        <sm:component>
+          <bean class="org.apache.servicemix.tck.ReceiverComponent" />
+        </sm:component>
+      </sm:activationSpec>
+    </sm:activationSpecs>
+  </sm:container>
+
+</beans>
