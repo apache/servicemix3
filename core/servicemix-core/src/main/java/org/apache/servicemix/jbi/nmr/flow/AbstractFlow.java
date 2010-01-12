@@ -40,6 +40,7 @@ import org.apache.servicemix.jbi.management.BaseLifeCycle;
 import org.apache.servicemix.jbi.messaging.ExchangePacket;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.Broker;
+import org.apache.servicemix.jbi.security.SecuredBroker;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 
 /**
@@ -169,6 +170,18 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
             if (lcc.getDeliveryChannel() != null) {
                 try {
                     lock.readLock().lock();
+                    if (!me.getSourceId().getContainerName().equalsIgnoreCase(broker.getContainer().getName())
+                        && broker instanceof SecuredBroker) {
+                        try {
+                            ((SecuredBroker)broker).checkSecurity(me);
+                        } catch (Exception e) {
+                            me.handleAccept();
+                            me.setError(e);
+                            me.handleSend(false);
+                            broker.getContainer().sendExchange(me.getMirror());
+                            throw new MessagingException(e);
+                        }
+                    }
                     lcc.getDeliveryChannel().processInBound(me);
                 } finally {
                     lock.readLock().unlock();
