@@ -16,6 +16,7 @@
  */
 package org.apache.servicemix.jbi.security;
 
+import java.io.Serializable;
 import java.security.Principal;
 
 
@@ -24,7 +25,7 @@ import java.security.Principal;
  * usually checked.
  *  
  */
-public class GroupPrincipal implements Principal {
+public class GroupPrincipal implements Principal, Serializable {
 
     public static final GroupPrincipal ANY = new GroupPrincipal("*"); 
     

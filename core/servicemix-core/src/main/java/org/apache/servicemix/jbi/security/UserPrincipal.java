@@ -16,13 +16,14 @@
  */
 package org.apache.servicemix.jbi.security;
 
+import java.io.Serializable;
 import java.security.Principal;
 
 
 /**
  *
  */
-public class UserPrincipal implements Principal {
+public class UserPrincipal implements Principal, Serializable {
 
     private final String name;
     private transient int hash;

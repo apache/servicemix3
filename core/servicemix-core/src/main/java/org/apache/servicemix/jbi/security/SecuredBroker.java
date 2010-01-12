@@ -65,27 +65,32 @@ public class SecuredBroker extends DefaultBroker {
     public void sendExchangePacket(MessageExchange me) throws JBIException {
         LOG.debug("send exchange with secure broker");
         MessageExchangeImpl exchange = (MessageExchangeImpl) me;
-        if (exchange.getRole() == Role.PROVIDER && exchange.getDestinationId() == null) {
-            resolveAddress(exchange);
-            ServiceEndpoint se = exchange.getEndpoint();
-            if (se != null) {
-                LOG.debug("service name :" + se.getServiceName());
-                LOG.debug("operation name :" + me.getOperation());
-                Set<Principal> acls = authorizationMap.getAcls(se, me.getOperation());
-                if (!acls.contains(GroupPrincipal.ANY)) { 
-                    Subject subject = exchange.getMessage("in").getSecuritySubject();
-                    if (subject == null) {
-                        throw new SecurityException("User not authenticated");
-                    }
-                    LOG.debug("authorization for " + subject);
-                    acls.retainAll(subject.getPrincipals());
-                    if (acls.size() == 0) {
-                        throw new SecurityException("Endpoint is not authorized for this user");
-                    }
-                }
-            }
+        if (exchange.getRole() == Role.PROVIDER) {
+            checkSecurity(exchange);
         }
         super.sendExchangePacket(me);
     }
 
+    public void checkSecurity(MessageExchangeImpl exchange) throws SecurityException, JBIException {
+        if (exchange.getDestinationId() == null) {
+            resolveAddress(exchange);
+        }
+        ServiceEndpoint se = exchange.getEndpoint();
+        if (se != null) {
+            LOG.debug("service name :" + se.getServiceName());
+            LOG.debug("operation name :" + exchange.getOperation());
+            Set<Principal> acls = authorizationMap.getAcls(se, exchange.getOperation());
+            if (!acls.contains(GroupPrincipal.ANY)) {
+                Subject subject = exchange.getMessage("in").getSecuritySubject();
+                if (subject == null) {
+                    throw new SecurityException("User not authenticated");
+                }
+                LOG.debug("authorization for " + subject);
+                acls.retainAll(subject.getPrincipals());
+                if (acls.size() == 0) {
+                    throw new SecurityException("Endpoint is not authorized for this user");
+                }
+            }
+        }
+    }
 }
