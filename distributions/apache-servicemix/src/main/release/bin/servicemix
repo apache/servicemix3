@@ -290,28 +290,85 @@ run() {
         CYGHOME=`cygpath --windows "$HOME"`
     fi
     
-    cd $SERVICEMIX_DATA
-    # Execute the Java Virtual Machine
-    # echo $JAVA \
-    #     $JAVA_OPTS \
-    #     $SERVICEMIX_OPTS \
-    #     -classpath "$CLASSPATH" \
-    #     -Dclassworlds.conf="$CLASSWORLDS_CONF" \
-    #     -Dservicemix.home="$SERVICEMIX_HOME" \
-    #     -Dcygwin.user.home="$CYGHOME" \
-    #     -Djava.endorsed.dirs="$SERVICEMIX_HOME/lib/endorsed" \
-    #     org.codehaus.classworlds.Launcher \
-    #     "$@"        
-    exec $JAVA \
-        $JAVA_OPTS \
-        $SERVICEMIX_OPTS \
-        -classpath "$CLASSPATH" \
-        -Dclassworlds.conf="$CLASSWORLDS_CONF" \
-        -Dservicemix.home="$SERVICEMIX_HOME" \
-        -Dcygwin.user.home="$CYGHOME" \
-        -Djava.endorsed.dirs="$SERVICEMIX_HOME/lib/endorsed" \
-        org.codehaus.classworlds.Launcher \
-        "$@"      
+    # if the first arg is start/stop/restart, manage it
+    case "$1" in
+        'start')
+                # go into ServiceMix home
+                cd $SERVICEMIX_HOME
+                
+                # shift on the arguments
+                shift
+                
+                # Execute the Java Virtual Machine
+                # echo $JAVA \
+                #     $JAVA_OPTS \
+                #     $SERVICEMIX_OPTS \
+                #     -classpath "$CLASSPATH" \
+                #     -Dclassworlds.conf="$CLASSWORLDS_CONF" \
+                #     -Dservicemix.home="$SERVICEMIX_HOME" \
+                #     -Dcygwin.user.home="$CYGHOME" \
+                #     -Djava.endorsed.dirs="$SERVICEMIX_HOME/lib/endorsed" \
+                #     org.codehaus.classworlds.Launcher \
+                #     "$@"        
+                exec $JAVA \
+                    $JAVA_OPTS \
+                    $SERVICEMIX_OPTS \
+                    -classpath "$CLASSPATH" \
+                    -Dclassworlds.conf="$CLASSWORLDS_CONF" \
+                    -Dservicemix.home="$SERVICEMIX_HOME" \
+                    -Dcygwin.user.home="$CYGHOME" \
+                    -Djava.endorsed.dirs="$SERVICEMIX_HOME/lib/endorsed" \
+                    org.codehaus.classworlds.Launcher \
+                    "$@" &
+                    
+                echo $! > $SERVICEMIX_HOME/data/servicemix.pid
+                exit 0               
+                ;;
+        'stop')
+            if [ -f $SERVICEMIX_HOME/data/servicemix.pid ]; then
+                read pid < $SERVICEMIX_HOME/data/servicemix.pid
+                kill $pid
+                rm $SERVICEMIX_HOME/data/servicemix.pid
+                echo "Apache ServiceMix stopped.";
+                exit 0
+            else
+                echo ""
+                echo "Apache ServiceMix PID file not found.";
+                exit 1
+            fi
+            ;;
+        'restart')
+            $0 stop
+            $0 start
+            ;;               
+        *)
+            # go into ServiceMix data
+            cd $SERVICEMIX_DATA
+            
+            # Execute the Java Virtual Machine
+            # echo $JAVA \
+            #     $JAVA_OPTS \
+            #     $SERVICEMIX_OPTS \
+            #     -classpath "$CLASSPATH" \
+            #     -Dclassworlds.conf="$CLASSWORLDS_CONF" \
+            #     -Dservicemix.home="$SERVICEMIX_HOME" \
+            #     -Dcygwin.user.home="$CYGHOME" \
+            #     -Djava.endorsed.dirs="$SERVICEMIX_HOME/lib/endorsed" \
+            #     org.codehaus.classworlds.Launcher \
+            #     "$@"        
+            exec $JAVA \
+                $JAVA_OPTS \
+                $SERVICEMIX_OPTS \
+                -classpath "$CLASSPATH" \
+                -Dclassworlds.conf="$CLASSWORLDS_CONF" \
+                -Dservicemix.home="$SERVICEMIX_HOME" \
+                -Dcygwin.user.home="$CYGHOME" \
+                -Djava.endorsed.dirs="$SERVICEMIX_HOME/lib/endorsed" \
+                org.codehaus.classworlds.Launcher \
+                "$@" 
+            ;;
+    esac
+    
 }
 
 main() {
