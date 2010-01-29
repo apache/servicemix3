@@ -79,7 +79,7 @@
         <servicemix-smpp-version>2009.02</servicemix-smpp-version>
         <servicemix-exec-version>2009.02</servicemix-exec-version>
 
-        <jbi-plugin-version>4.3-SNAPSHOT</jbi-plugin-version>
+        <jbi-plugin-version>4.3</jbi-plugin-version>
         <res-maven-plugin-version>4.1</res-maven-plugin-version>
         <servicemix-build-version>1.0</servicemix-build-version>
         
