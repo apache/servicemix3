@@ -115,7 +115,7 @@
         </exclusion>
         <exclusion>
           <groupId>woodstox</groupId>
-          <artifactId>wstx-asl</artifactId>
+          <artifactId>woodstox-core-asl</artifactId>
         </exclusion>
         <exclusion>
           <groupId>xalan</groupId>

@@ -102,7 +102,7 @@
         <wsdl4j-version>1.6.2</wsdl4j-version>
         <commons-beanutils-version>1.7.0</commons-beanutils-version>
         <commons-fileupload-version>1.1.1</commons-fileupload-version>
-        <woodstox-version>3.2.6</woodstox-version>
+        <woodstox-version>4.0.7</woodstox-version>
         <msv-version>20050913</msv-version>
         <oro-version>2.0.8</oro-version>
         <sitemesh-version>2.2.1</sitemesh-version>
@@ -1405,7 +1405,7 @@
             </dependency>
             <dependency>
                 <groupId>org.codehaus.woodstox</groupId>
-                <artifactId>wstx-asl</artifactId>
+                <artifactId>woodstox-core-asl</artifactId>
                 <version>${woodstox-version}</version>
             </dependency>
             <dependency>
