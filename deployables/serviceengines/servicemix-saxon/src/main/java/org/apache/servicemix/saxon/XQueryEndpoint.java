@@ -98,10 +98,8 @@ public class XQueryEndpoint extends SaxonEndpoint {
         staticEnv = new StaticQueryContext(config);
         if (getQuery() != null) {
             exp = staticEnv.compileQuery(getQuery());
-            staticEnv = exp.getStaticContext();
         } else if (getResource() != null) {
             exp = staticEnv.compileQuery(getResource().getInputStream(), null);
-            staticEnv = exp.getStaticContext();
         }
     }
     

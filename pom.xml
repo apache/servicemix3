@@ -224,7 +224,7 @@
         <jaxb.version>2.0</jaxb.version>
         <jaxb.impl.version>2.0.1</jaxb.impl.version>
         <derby-version>10.2.2.0</derby-version>
-        <saxon-version>8.9</saxon-version>
+        <saxon-version>9.1.0.8</saxon-version>
         <bcprov-version>140</bcprov-version>
         <junit-version>3.8.1</junit-version>
         <releases-repo-id>apache</releases-repo-id>
@@ -287,7 +287,7 @@
                 <module>servicemix-itests</module>
                 <module>samples</module>
                 <module>web</module>
-                <module>platforms</module>
+                <!--<module>platforms</module>-->
                 <module>distributions</module>
             </modules>
         </profile>
