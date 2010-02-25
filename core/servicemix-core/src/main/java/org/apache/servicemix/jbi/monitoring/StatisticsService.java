@@ -232,7 +232,9 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
                     if (EndpointSupport.getKey(ses[i]).equals(source)) {
                         source = EndpointSupport.getUniqueKey(ses[i]);
                         EndpointStats stats = endpointStats.get(source);
-                        stats.incrementOutbound();
+                        if (stats != null) {
+                            stats.incrementOutbound();
+                        }
                         break;
                     }
                 }
@@ -250,7 +252,9 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
                 && me instanceof MessageExchangeImpl) {
             String source = EndpointSupport.getUniqueKey(me.getEndpoint());
             EndpointStats stats = endpointStats.get(source);
-            stats.incrementInbound();
+            if (stats != null) {
+                stats.incrementInbound();
+            }
         }        
     }
     
