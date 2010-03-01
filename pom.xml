@@ -48,6 +48,15 @@
         <url>http://svn.apache.org/viewcvs.cgi/servicemix/smx3/trunk/</url>
     </scm>
 
+    <repositories>
+       <!-- For javax.mail waiting for the new servicemix-pom release -->
+       <repository>
+          <id>java.net</id>
+          <name>Java.net Maven Repository</name>
+          <url>http://download.java.net/maven/2/</url>
+       </repository>
+    </repositories>
+
     <properties>
         <servicemix-utils-version>1.2.0</servicemix-utils-version>
         <servicemix-specs-version>1.4.0</servicemix-specs-version>
