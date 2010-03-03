@@ -41,6 +41,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 
 import static org.easymock.EasyMock.*;
@@ -204,6 +205,71 @@ public class DeliveryChannelImplTest extends TestCase {
         assertEquals(ExchangeStatus.ERROR, exchange.getStatus());
     }
 
+    public void testThrottle() throws Exception {
+     // Retrieve a delivery channel
+        TestComponent component = new TestComponent(new QName("service"), "endpoint");
+        container.activateComponent(new ActivationSpec("component", component));
+        final DeliveryChannel channel = component.getChannel();
+        // test
+        ComponentMBeanImpl componentMbeanImpl = container.getRegistry().getComponent("component");
+        assertNotNull(componentMbeanImpl);
+        componentMbeanImpl.setExchangeThrottling(true);
+        componentMbeanImpl.setThrottlingTimeout(4000);
+        
+
+        class ProviderThread extends Thread {
+            private int counter;
+            private DeliveryChannel channel;
+            public ProviderThread(int counter, DeliveryChannel channel) {
+                this.counter = counter;
+                this.channel = channel;
+            }
+
+            public void run() {
+
+                try {
+                    InOut me = (InOut) channel.accept(10000);
+                    NormalizedMessage nm = me.createMessage();
+                    nm.setContent(new StringSource("<response>" + counter
+                            + "</response>"));
+                    me.setOutMessage(nm);
+                    channel.sendSync(me);
+
+                } catch (MessagingException e) {
+                    LOG.error(e.getMessage(), e);
+
+                }
+            }
+            
+        }
+        
+        
+        for (int i = 0; i < 6; i++) {
+           
+            MessageExchangeFactory factory = channel.createExchangeFactoryForService(new QName("service"));
+            InOut me = factory.createInOutExchange();
+            NormalizedMessage nm = me.createMessage();
+            nm.setContent(new StringSource("<request>" + i + "</request>"));
+            me.setInMessage(nm);
+            Thread t = new ProviderThread(i, channel);
+            t.start();
+            long before = System.currentTimeMillis();
+            channel.sendSync(me, 5000);
+            long after = System.currentTimeMillis();
+            if (i % 2 == 1) {
+                // throttle sleep 4000ms for every 2 message, so
+                // the duration should > 4000ms
+                assertTrue(after - before > 4000);
+            } else {
+                assertTrue(after - before < 4000);
+            }
+            assertEquals(ExchangeStatus.ACTIVE, me.getStatus());
+            me.setStatus(ExchangeStatus.DONE);
+            channel.send(me); 
+            t.join();
+        }
+    }
+    
     private MessageExchangeImpl createMessageExchange(final DeliveryChannelImpl channel) throws MessagingException {
         MessageExchangeFactory factory = channel.createExchangeFactoryForService(new QName("service"));    
         return (MessageExchangeImpl) factory.createInOutExchange();

@@ -338,16 +338,19 @@ public class DeliveryChannelImpl implements DeliveryChannel {
 
     protected void throttle() {
         if (component.isExchangeThrottling()) {
-            if (component.getThrottlingInterval() > intervalCount) {
-                intervalCount = 0;
+            if (component.getThrottlingInterval() <= intervalCount) {
+                intervalCount = -1;
                 try {
-                    Thread.sleep(component.getThrottlingTimeout());
+                    long timeout = component.getThrottlingTimeout();
+                    LOG.debug("throttling, sleep for: " + timeout);
+                    Thread.sleep(timeout);
                 } catch (InterruptedException e) {
                     LOG.warn("throttling failed", e);
                 }
             }
             intervalCount++;
         }
+
     }
 
     protected void doSend(MessageExchangeImpl me, boolean sync) throws MessagingException {
@@ -365,8 +368,14 @@ public class DeliveryChannelImpl implements DeliveryChannel {
             autoEnlistInTx(me);
             // Update persistence info
             autoSetPersistent(me);
-            // Throttle if needed
-            throttle();
+            if (me.getRole().equals(Role.CONSUMER) 
+                    && me.getStatus().equals(ExchangeStatus.ACTIVE)) {
+                // Throttle if needed
+                // the throttle should happen when send messageexchange from
+                //consumer to provider, so avoid throttling for response me and
+                //Done me
+                throttle();
+            }
             // Store the consumer component
             if (me.getRole() == Role.CONSUMER) {
                 me.setSourceId(component.getComponentNameSpace());
