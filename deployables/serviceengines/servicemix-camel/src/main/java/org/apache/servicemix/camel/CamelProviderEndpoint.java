@@ -24,7 +24,6 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.RobustInOnly;
 import javax.xml.namespace.QName;
-import javax.xml.transform.Source;
 
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
@@ -123,7 +122,7 @@ public class CamelProviderEndpoint extends ProviderEndpoint {
             fail(exchange, binding.extractException(camelExchange));
         } else {
             Fault fault = exchange.createFault();
-            fault.setContent(camelExchange.getFault().getBody(Source.class));
+            binding.copyFromCamelToJbi(camelExchange.getFault(), fault);
             if (isFaultCapable(exchange)) {
                 exchange.setFault(fault);
                 doSend(exchange);
