@@ -87,6 +87,7 @@
         <servicemix-snmp-version>2010.01</servicemix-snmp-version>
         <servicemix-smpp-version>2010.01</servicemix-smpp-version>
         <servicemix-exec-version>2010.01</servicemix-exec-version>
+        <servicemix-vfs-version>2010.01</servicemix-vfs-version>
 
         <jbi-plugin-version>4.3</jbi-plugin-version>
         <res-maven-plugin-version>4.1</res-maven-plugin-version>
@@ -615,6 +616,12 @@
                 <artifactId>servicemix-exec</artifactId>
                 <version>${servicemix-exec-version}</version>
             </dependency>
+            <dependency>
+                 <groupId>org.apache.servicemix</groupId>
+                 <artifactId>servicemix-vfs</artifactId>
+                 <version>${servicemix-vfs-version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>servicemix-web</artifactId>
