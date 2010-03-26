@@ -16,8 +16,8 @@
  */
 
 
-                      Apache ServiceMix 3.1
-                      =====================
+                      Apache ServiceMix 3.3.2
+                      ========================
 
 See the README file for more general informations about ServiceMix.
 
@@ -33,7 +33,254 @@ Bug Tracking:  http://issues.apache.org/activemq/browse/SM
 
 Changes:
 --------
+ServiceMix 3.3.2
+** Bug
+    * [SM-1875] - Use new snapshot repository location in archetypes
+    * [SM-1887] - should ship only one bcprov version in the kit
+    * [SM-1892] - Port property is not passed to any Servicemix Ant tasks in servicemix-ant-tasks.xml (install-component, etc)
+    * [SM-1914] - ServiceMix fails to start when JAVA is installed under path containing spaces
+    * [SM-1915] - Support more fine-grained authorization on JMX access
+    * [SM-1924] - @{releases-repo-url} not filtered in smx-arch/smx-arch.bat
+    * [SM-1925] - Add security check on remote broker when using JMSFlow/JCAFlow
+    * [SM-1926] - Statistics Service throws NPE with DynamicEndpoints
+    * [SM-1933] - Sample poms refer to people.apache.org instead of repository.apache.org for snapshot
+    * [SM-1935] - samples pom has SNAPSHOT dependency in kit
+    * [SM-1940] - Schemas folder doesn't contain all components xsd
+    * [SM-1941] - Add servicemix-vfs component in the distribution
+    * [SM-1942] - Scripts in bin folder don't depend of the distribution format
+** Improvement
+    * [SM-1878] - refactor client.html used in cxf-wsdl-first
+    * [SM-1899] - Upgrade to jenck 2.2
+    * [SM-1903] - Upgrade Apache ActiveMQ 5.3
+    * [SM-1905] - Upgrade ServiceMix 3 to ActiveMQ 5.3
+    * [SM-1922] - remove unnecessary kit_camel_example_pom.xml from camel example of kit
+    * [SM-1928] - Upgrade to ActiveMQ 5.3
+    * [SM-1929] - Upgrade SMX3 to use CXF 2.2.6
+    * [SM-1937] - Incorrect logic in throttle method of DeliveryChannelImpl.java
+    * [SM-1944] - Use ServiceMix Components 2010.01
+** New Feature
+    * [SM-788] - start/stop/restart on ServiceMix
+** Task
+    * [SM-1911] - Upgrade Derby to 10.5.3.0_1
+    * [SM-1930] - Upgrade geronimo jars to 2.1.1+
+    * [SM-1936] - Upgrade to use JavaMail 1.4.3
+** Wish
+    * [SM-1864] - Add a sample showing the usage of servicemix-bean with a database backend
 
+ServiceMix 3.3.1
+** Bug
+    * [SM-1438] - Exceptions while shutting down ServiceMix
+    * [SM-1456] - Statistics Service throws NPE on startup.
+    * [SM-1654] - Format of the Message cannot be different than XML within Camel
+    * [SM-1657] - Auto-enlistment should only occur when transactions status is ACTIVE
+    * [SM-1685] - The DeliveryChannel does not recognize the new MessageExchangeListener interface
+    * [SM-1712] - ExchangeListener is called with exchangeSent instead of exchangeAccepted when using sendSync
+    * [SM-1713] - servicemix common component should be moved before deployable as servicemix-lwcontainer need it. (this was fixed in 3.2 but not on trunk)
+    * [SM-1719] - org.apache.servicemix.jdbc.JDBCAdapter : bug in Statements and add of new functionnality doLoadData
+    * [SM-1749] - Incorrect Logger name creation in ComponentContextImpl
+    * [SM-1761] - AutoDeployment stops working after x deployments
+    * [SM-1766] - servicemix-web sample in Servicemix 3 trunk is broken because of the removal of ManagedHttpServlet from servicemix-http component.
+    * [SM-1773] - xercesImpl and xml-apis conflict when running inside Jboss
+    * [SM-1791] - org.apache.servicemix.jbi.framework.InstallerMBeanImpl is missing bootstrap.init() call on uninstall phase which is required as per JBI specs.
+    * [SM-1818] - invoking stop on SA in SHUTDOWN state brings it to STOPPED state
+    * [SM-1819] - jms archetypes generate extra http:// for xmlns:xsi namespace.
+    * [SM-1820] - Almost all archetypes generate extra http:// for xmlns:xsi namespace.
+    * [SM-1824] - BUG in JDK6 ReentrantReadWriteLock can cause SMX hang when redeploy SA
+    * [SM-1827] - servicemix-camel-service-unit archetype depends on non-existent servicemix-camel jbi-component
+    * [SM-1835] - whitespace interfering with ResolvedEndpoint.resolveEndpoint()
+    * [SM-1845] - keystore.jks should be filtered during distribution package
+    * [SM-1853] - ClassCast exception in ClassLoaderXmlPreprocessor
+** Improvement
+    * [SM-1317] - Add a system property to change CXF to use Log4J instead of JUL
+    * [SM-1360] - Add a reference to the XSD in the archetype-generated xbean.xml files
+    * [SM-1573] - Use of useJBIWrapper flag in smx-cxf-bc consumer and smx-http soap-consumer endpoints is inconsistent
+    * [SM-1607] - JBI container should be able to initialize all SAs first and then start them
+    * [SM-1621] - New JMS in/out provider should support temporary queues/topics (as reply destinations)
+    * [SM-1659] - should filter the version for kit_camel_example_pom.xml which is used in kit
+    * [SM-1660] - add createDaemonExecutor api for ExecutorFactory
+    * [SM-1688] - update classworlds version from 1.0.1 to 1.1
+    * [SM-1717] - getError() shouldn't return a null exception in case of sendSync timeout
+    * [SM-1808] - Back port the patch of SMXCOMP-455 to SMX 3.2 branch
+    * [SM-1810] - should use new activemq namsespace instead of the old one
+    * [SM-1817] - Publish components schema files as part of the distribution in a schemas/ directory
+    * [SM-1822] - Add JMS connection credentials to JCAFlow
+    * [SM-1843] - pick up new added bridge-camel sample in the distribution kit
+    * [SM-1848] - add client.html for wsn-http-binding example
+    * [SM-1870] - Upgrade to Geronimo 2.0.2
+** New Feature
+    * [SM-1756] - add CXFManagedServlet to apache-servicemix-web to enable servicemix-cxf-bc endpoint deploy into servlet container without starting jetty
+    * [SM-1782] - Add JBoss Deployer to platforms module
+    * [SM-1856] - Add archetype for servicemix-smpp component
+** Task
+    * [SM-1723] - Upgrade to ActiveMQ 5.2.0
+    * [SM-1846] - add wsn-cxfbc-binding example
+    * [SM-1867] - upgrade to spring 2.5.6
+** Test
+    * [SM-1306] - Improve success ratio of timing sensitive tests
+    * [SM-1811] - bridge-sa-itest failed due to missing activemq-camel dependency
+
+ServiceMix 3.3
+** Bug
+    * [SM-607] - Files dropped into the install directory sometimes result in a "file in use by another process" error
+    * [SM-1051] - servicemix.bat contains unix style environment variables, instead of all windows style environment variables
+    * [SM-1111] - Endpoint operation information lost when routing through camel
+    * [SM-1131] - Redeployment fails for Geronimo integration
+    * [SM-1132] - No clean shutdown of ServiceMix
+    * [SM-1143] - Both wsdl-first-sa projects have the same artifactId
+    * [SM-1145] - NoClassDefFound (org.springframework.aop.support.AopUtils) when deploying the Camel example
+    * [SM-1149] - the resource path shouldn't include any "target" to avoid being filtered when build the src kit
+    * [SM-1151] - LwContainer test has the version number hard coded inside
+    * [SM-1156] - SE archetype references but does not generate MyBootstrap class
+    * [SM-1157] - maven-jbi-plugin creates wrong classpath entries in jbi.xml for SE
+    * [SM-1161] - jbi-service-unit causes infinite loop when dependency graph is not cycle-free
+    * [SM-1170] - Geronimo deployer and plugin build failures
+    * [SM-1172] - namespace prefix missing from jbi mesage to soap message
+    * [SM-1175] - spring-jmx is dependent on spring-aop and needs included in the servicemix/lib directory
+    * [SM-1178] - Security subject is not propagated in a cluster
+    * [SM-1180] - in message truncated after first read from HTTP Consumer
+    * [SM-1181] - Incorrect groupId for JAXB API in parent pom
+    * [SM-1186] - NormalizedMessageImpl.getAttachment() returns DataHandler when it should return null
+    * [SM-1189] - Race condintion in Auto Deployer
+    * [SM-1197] - Archetype itests failing
+    * [SM-1201] - Move mock classes from servicemix-soap2 subproject to a better location
+    * [SM-1202] - Maven plugin not including jbi.xml and legal files in SA artifacts
+    * [SM-1214] - Sitemesh TLD contains illegal short-name in web-console
+    * [SM-1217] - Deployment fails with ZipException
+    * [SM-1224] - Maven archetype plugin unable to locate servicemix-* archetypes
+    * [SM-1240] - jbi:embeddedServicemix goal does not wait forever anymore
+    * [SM-1257] - Camel version in trunk POM not available in Apache Snapshot Repo
+    * [SM-1262] - SMX 3.2 org.apache.servicemix.lwcontainer.LwContainerComponentTest fails if the maven repository location is non-default.
+    * [SM-1263] - LwContainerComponentTest fails on windows on the 3.2.2 branch
+    * [SM-1267] - maven-jbi-plugin refuses to include jbi-component jars into SE packages
+    * [SM-1273] - Add repository entry for java.net dependencies
+    * [SM-1274] - Deployables should build before archetypes
+    * [SM-1276] - ServiceMix 3.2 deployables/serviceengines/servicemix-lwcontainer had test dependency on servicemix-quartz but SMX-quartz get build later than lwcontainer component.
+    * [SM-1278] - While using DefaultMessageListenerContainer transactions are not properly rolled back
+    * [SM-1283] - SMX 3.2 deployables should build serviceengines before bindingcomponents to avoid servicemix-cxf-bc test failure on clean repo.
+    * [SM-1285] - Missing jar sin the distribution of ServiceMix-web 3.2.1
+    * [SM-1295] - BinaryFileMarshaler does not work with FTPPoller Endpoint
+    * [SM-1296] - The lightweight container should allow deployment of SUs without any enpoints
+    * [SM-1312] - build broken for servicemix-wsn2005 module
+    * [SM-1318] - cxf bc provider should load transport according to endpoint from wsdl but not hardcoded
+    * [SM-1325] - README update for the servicemix-web sample
+    * [SM-1349] - SimpleFlatFileMarshaler runs out of memory on big files
+    * [SM-1357] - EL in web console are not evaluated in WebSphere 6.1
+    * [SM-1368] - Bug with backslashes in SMX 3.2.2-SNAPSHOT under Windows
+    * [SM-1369] - all modules in servicemix build failed when generate checkstyle report since it expect a LICENSE file in current folder
+    * [SM-1393] - ServiceMix client does not send the DONE status when using the request() method
+    * [SM-1396] - NoSuchMethodException .ArtifactResolutionResult.setArtifactResolutionNodes(Ljava/util/Set;)V with M2Eclipse / Maven 2.1
+    * [SM-1420] - Some servicemix pom refer to repo.mergere.com which is not online so needs to be changed to repo1.maven.org
+    * [SM-1425] - Property 'property' not found when xmlns="http://www.springframework.org/schema/beans" is defined
+    * [SM-1440] - ServiceMix 3 build is failing due to dependency relocation/rename.
+    * [SM-1443] - The servicemix-binding-component archetype test named MySpringComponentTest is missing a public constructor
+    * [SM-1455] - Reduce dependency cycle between ServiceMix 3 container and the components
+    * [SM-1457] - problems building 3.3-SNAPSHOT rev 675963 - missing dependencies
+    * [SM-1472] - servicemix-archetypes-itests tests failed
+    * [SM-1489] - camelendpoint should transform StreamSource to DomSource which support to be consumed multiple times
+    * [SM-1492] - smx-arch(.bat) uses wrong version for archetypes
+    * [SM-1495] - Missing dependency lib xstream
+    * [SM-1496] - jbi-maven-plugin fails on build
+    * [SM-1504] - Old version of wsdl4j.jar
+    * [SM-1531] - make servicemix-utils build successfully
+    * [SM-1546] - Namespace declarations missing in some cases when using the FragmentStreamReader / StaxSource
+    * [SM-1550] - Exchange Listeners may not be receiving all events
+    * [SM-1564] - wrong cxf version in main pom
+    * [SM-1582] - add wsdl4j dependency explicitly for jbi-maven-plugin
+    * [SM-1622] - servicemix-eip content enricher should copy original message properties in the way the pipeline does
+    * [SM-1626] - basic sample failed with trunk
+    * [SM-1627] - loan-broker sample doesn't work
+    * [SM-1628] - ws-notification sample doesn't
+    * [SM-1641] - remoteRepositories is incorrect in smx-arch scripts
+    * [SM-1658] - can't shundown container from jmx console
+    * [SM-1757] - TransformComponentSupport does not handle errors nor does it support robust-in-only MEPs
+    * [SM-1854] - AutoDeploymentService does not stop SA before shutting it down
+** Improvement
+    * [SM-810] - Create single complete ServiceMix Shared Library
+    * [SM-908] - Upgrade to ActiveMQ 5.0
+    * [SM-1135] - Put mandatory osgi entries in the JBI artifacts so that those artifacts can be deployed as bundles
+    * [SM-1150] - Additional Flow configuration for Geronimo ServiceMix Service
+    * [SM-1174] - update cxf version used in servicemix
+    * [SM-1218] - ServiceMix logging refers to the incubator website
+    * [SM-1222] - FilePoller and FileSender archetypes
+    * [SM-1246] - Deprecate backport-util-concurrent since ServiceMix requires Java 5
+    * [SM-1264] - Cleanup the servicemix-binding-component archetype so the BCs it creates pass the Checkstyle rules
+    * [SM-1284] - should avoid using hardcode lib version of ws-notification sample
+    * [SM-1315] - Enhance logging inside TraceComponent.java to log NormalizedMassage properties
+    * [SM-1320] - Add the maven-remote-resources-plugin to the build to automatically produce NOTICE, LICENSE and DEPENDENCIES files
+    * [SM-1333] - Support custom line separator for SimpleFlatFileMarshaler
+    * [SM-1355] - XML escaping converter for SimpleFlatFileMarshaler
+    * [SM-1358] - JAXPXPathExpression subclass returning any kind of object not only String
+    * [SM-1359] - Increase the default size of the thread pool
+    * [SM-1363] - Update the default persistence adapter from journaledJDBC to amqPersistenceAdapter
+    * [SM-1367] - Provide logging statements when doing authorization in SMX
+    * [SM-1381] - Upgrade to Activemq 5.1.0
+    * [SM-1403] - Clean up the ServiceMix example of Camel
+    * [SM-1415] - Allow specifying an encoding on the DefaultFileMarshaler
+    * [SM-1432] - information when no deployed service units or service assemblies found
+    * [SM-1447] - Add support for using Spring 2.5 as well as 2.0 in ServiceMix web console
+    * [SM-1452] - remove camel-itests from camel example in kit
+    * [SM-1453] - Upgrade to Spring 2.5.5
+    * [SM-1494] - Improve the generated schema documentation for the core component properties
+    * [SM-1506] - ServiceMix message priority patch
+    * [SM-1542] - Modify servicemix-web sample pom file to include jetty <stopKey> and <stopPort> configuration for gracefully stopping jetty plugin.
+    * [SM-1574] - Allow forced shutdown of the container by cancelling pending sendSync exchanges
+    * [SM-1579] - The registry should be shutdown before the flow so that existing exchanges can be correctly processed before stopping
+    * [SM-1586] - Copying properties from and to JMS messages
+    * [SM-1623] - New binding component: SMPP
+** New Feature
+    * [SM-971] - SU archetype for servicemix-drools
+    * [SM-1096] - File-based message auditor
+    * [SM-1226] - Validation component should optionally handle errors by propagating a "correct JBI message" with "fault content"
+    * [SM-1258] - New JBI component: Mail-BC
+    * [SM-1277] - New archetype: Top-level pom.xml with SA project
+    * [SM-1380] - maven archetype to support wsdl-first development with servicemix-cxf-se
+    * [SM-1385] - Add a flag to disable transaction processing and behave like smx4
+    * [SM-1387] - Make servicemix components OSGi friendly (without requiring the JBI packaging)
+** Task
+    * [SM-992] - Fix XSD schema locations for use with plain spring
+    * [SM-1146] - Change servicemix repo url due to the svn relation out of the incubator area
+    * [SM-1330] - Remove the deprecated servicemix-bpe component
+    * [SM-1439] - Move the marshaler related classes from servicemix-core to servicemix-utils
+    * [SM-1442] - Allow ServiceMix 3 to build using the ibm jdk.
+    * [SM-1511] - update cxf version to 2.1.3-SNAPSHOT
+    * [SM-1537] - update jetty version to 6.1.12rc1 for smx3
+** Test
+    * [SM-1532] - ServiceMixClientTest failed
+    * [SM-1620] - LwContainerComponentTest failed with clean local repo
+    * [SM-1625] - several samples test failed with clean local repo
+
+ServiceMix 3.2.3
+** Bug
+    * [SM-1404] - can't init servicemix-wsn2005 in the ServiceMix 3.3-SNAPSHOT
+    * [SM-1489] - camelendpoint should transform StreamSource to DomSource which support to be consumed multiple times
+    * [SM-1500] - Build failure: servicemix-soap doesn't compile after upgrade to wss4j 1.5.4
+    * [SM-1504] - Old version of wsdl4j.jar
+    * [SM-1510] - Servicemix kit size is increased from 78Mb to 132Mb in current snapshot.
+    * [SM-1525] - significant typo in servicemix classloader documentation
+    * [SM-1550] - Exchange Listeners may not be receiving all events
+    * [SM-1622] - servicemix-eip content enricher should copy original message properties in the way the pipeline does
+    * [SM-1632] - Backport a change to Smx 3.2 branch to allow artifacts that use the servicemix-bean component to deploy on Smx4
+    * [SM-1657] - Auto-enlistment should only occur when transactions status is ACTIVE
+    * [SM-1658] - can't shundown container from jmx console
+** Improvement
+    * [SM-1364] - allow SimpleFlatFileMarshaler to use XmlEscapingCoverter
+    * [SM-1501] - ServiceMix 3.2 should change the Jetty HttpClient from blocking mode to Non blocking (similar to 3.3 trunk version)
+    * [SM-1542] - Modify servicemix-web sample pom file to include jetty <stopKey> and <stopPort> configuration for gracefully stopping jetty plugin.
+    * [SM-1570] - CxfBcJmsTest fails frequently on slower machine
+    * [SM-1574] - Allow forced shutdown of the container by cancelling pending sendSync exchanges
+    * [SM-1586] - Copying properties from and to JMS messages
+    * [SM-1596] - The version of Spring included in ServiceMix 3.2.x contains a bug prohibiting the use of the <tx:annotation-driven> tag in XBean config files
+    * [SM-1610] - Upgrade ServiceMix 3.2.x branch to Spring 2.0.8
+    * [SM-1640] - Backporting SM-1502 servicemix-drools should allow for asynchronous message handling.
+** Task
+    * [SM-1442] - Allow ServiceMix 3 to build using the ibm jdk.
+    * [SM-1498] - update cxf version to 2.0.9-SNAPSHOT for smx3.2 branch to get lastest changes in cxf
+    * [SM-1638] - use cxf 2.0.9 for coming smx 3.2.3 release
+** Test
+    * [SM-1558] - BaseAbstractAggregatorTest failed
+    * [SM-1888] - fix camel-sa-itest failure
+
+ServiceMix 3.1
 ** Bug
     * [SM-410] - Component Uninstallation : ClassLoader not removed from JVM
     * [SM-482] - Missing jars in the BPE component
