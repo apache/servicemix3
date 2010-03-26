@@ -700,6 +700,18 @@
                   <version>${servicemix-cxf-bc-version}</version>
                   <type>xsd</type>
                 </artifactItem>
+                <artifactItem>
+                   <groupId>org.apache.servicemix</groupId>
+                   <artifactId>servicemix-exec</artifactId>
+                   <version>${servicemix-exec-version}</version>
+                   <type>xsd</type>
+                </artifactItem>
+                <artifactItem>
+                    <groupId>org.apache.servicemix</groupId>
+                    <artifactId>servicemix-vfs</artifactId>
+                    <version>${servicemix-vfs-version}</version>
+                    <type>xsd</type>
+                </artifactItem>
               </artifactItems>
             </configuration>
           </execution>
