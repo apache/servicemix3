@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<assembly>
+  <id></id>
+  <formats>
+    <format>tar.gz</format>
+  </formats>
+  <fileSets>
+    <fileSet>
+      <directory>../..</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>README</include>
+        <include>LICENSE</include>
+        <include>NOTICE</include>
+        <include>DISCLAIMER</include>
+        <include>RELEASE-NOTES</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>target/filtered</directory>
+      <outputDirectory>/</outputDirectory>
+      <excludes>
+        <exclude>bin/**</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+        <directory>target/filtered/bin</directory>
+        <outputDirectory>/bin/</outputDirectory>
+        <excludes>
+            <exclude>*.bat</exclude>
+        </excludes>
+        <fileMode>0755</fileMode>
+        <lineEnding>unix</lineEnding>
+    </fileSet>
+    <fileSet>
+      <directory>target/classes/conf</directory>
+      <outputDirectory>/conf</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/filtered/bin</directory>
+      <outputDirectory>/bin</outputDirectory>
+      <fileMode>755</fileMode>
+      <excludes>
+        <exclude>*.bat</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>target/components</directory>
+      <outputDirectory>hotdeploy</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/schemas</directory>
+      <outputDirectory>schemas</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/samples/servicemix-web-${servicemix-version}</directory>
+      <outputDirectory>examples/servicemix-web</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/samples/wsdl-first-${servicemix-version}</directory>
+      <outputDirectory>examples/wsdl-first</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/samples/cxf-wsdl-first-${servicemix-version}</directory>
+      <outputDirectory>examples/cxf-wsdl-first</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/samples/loan-broker-${servicemix-version}</directory>
+      <outputDirectory>examples/loan-broker-bpel</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/samples/bridge-${servicemix-version}</directory>
+      <outputDirectory>examples/bridge</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/samples/bridge-camel-${servicemix-version}</directory>
+      <outputDirectory>examples/bridge-camel</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/samples/basic-${servicemix-version}</directory>
+      <outputDirectory>examples/basic</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/samples/camel-${servicemix-version}</directory>
+      <outputDirectory>examples/camel</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/dummy</directory>
+      <outputDirectory>lib/optional</outputDirectory>
+    </fileSet>
+  </fileSets>
+  
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>extras</outputDirectory>
+      <includes>
+        <include>org.apache.servicemix:servicemix-components</include>
+        <include>org.apache.servicemix:servicemix-beanflow</include>
+      </includes>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+        <include>classworlds:classworlds</include>
+        <include>backport-util-concurrent:backport-util-concurrent</include>
+        <include>org.apache.activemq:activemq-core</include>
+        <include>org.apache.activemq:activemq-ra</include>
+        <include>org.apache.activemq:activemq-pool</include>
+        <include>org.apache.activemq:activeio-core</include>
+        <include>commons-logging:commons-logging</include>
+        <include>commons-beanutils:commons-beanutils-core</include>
+        <include>commons-lang:commons-lang</include>
+        <include>commons-io:commons-io</include>
+        <include>org.apache.servicemix.specs:org.apache.servicemix.specs.jbi-api-1.0</include>
+        <include>org.apache.servicemix:servicemix-core</include>
+        <include>org.apache.servicemix:servicemix-audit</include>
+        <include>org.apache.servicemix:servicemix-utils</include>
+        <include>org.apache.xbean:xbean-spring</include>
+        <include>org.apache.xbean:xbean-classloader</include>
+        <include>wsdl4j:wsdl4j</include>
+        <include>org.apache.woden:woden</include>
+        <include>org.springframework:spring-core</include>
+        <include>org.springframework:spring-beans</include>
+        <include>org.springframework:spring-context</include>
+        <include>org.springframework:spring-tx</include>
+        <include>org.springframework:spring-aop</include>
+        <include>aopalliance:aopalliance</include>
+        <include>org.apache.geronimo.specs:geronimo-jms_1.1_spec</include>
+        <include>org.apache.geronimo.specs:geronimo-jta_1.1_spec</include>
+        <include>org.apache.geronimo.specs:geronimo-j2ee-management_1.0_spec</include>
+        <include>org.apache.geronimo.specs:geronimo-j2ee-jacc_1.0_spec</include>
+        <include>org.apache.geronimo.specs:geronimo-j2ee-connector_1.5_spec</include>
+        <include>org.apache.geronimo.specs:geronimo-ejb_2.1_spec</include>
+        <include>org.apache.geronimo.specs:geronimo-servlet_2.4_spec</include>
+        
+        <include>org.jencks:jencks</include>
+        <include>org.objectweb.howl:howl</include>
+        
+        <include>org.apache.geronimo.components:geronimo-connector</include>
+        <include>org.apache.geronimo.components:geronimo-transaction</include>
+        <include>org.slf4j:slf4j-api</include>
+        <include>org.slf4j:slf4j-simple</include>
+
+        <include>javax.activation:activation</include>
+        <include>javax.mail:mail</include>
+        
+        <include>com.thoughtworks.xstream:xstream</include>
+        <include>xerces:xercesImpl</include>
+        <include>xalan:xalan</include>
+
+        <include>stax:stax-api</include>
+        <include>org.codehaus.woodstox:woodstox-core-asl</include>
+        <include>xml-apis:xml-apis</include>
+        <include>log4j:log4j</include>
+        <include>org.apache.derby:derby</include>
+      </includes>
+    </dependencySet>
+    <!-- dependency Set added by ka, 15.08.2006 -->
+    <dependencySet>
+      <outputDirectory>lib/optional</outputDirectory>
+      <includes>
+        <include>commons-pool:commons-pool</include>
+        <include>commons-collections:commons-collections</include>
+      </includes>
+    </dependencySet>
+        <!--
+    <dependencySet>
+      <outputDirectory>lib/optional</outputDirectory>
+      <includes>
+        <include>quartz:quartz</include>
+        <include>org.apache.servicemix:servicemix-components</include>
+        <include>commons-pool:commons-pool</include>
+        <include>commons-collections:commons-collections</include>
+        <include>commons-discovery:commons-discovery</include>
+        <include>xmlbeans:xmlpublic</include>
+        <include>lingo:lingo</include>
+        <include>jaxen:jaxen</include>
+        <include>org.mortbay.jetty:jetty</include>
+        <include>org.mortbay.jetty:jetty-util</include>
+        <include>drools:drools-all-jdk1.4</include>
+        <include>stax-utils:stax-utils</include>
+        <include>junit:junit</include>
+        <include>commons-vfs:commons-vfs</include>
+        <include>rome:rome</include>
+        <include>axis:axis</include>
+        <include>axis:axis-jaxrpc</include>
+        <include>axis:axis-saaj</include>
+      </includes>
+    </dependencySet>
+        -->
+  </dependencySets>
+</assembly>

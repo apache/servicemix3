@@ -18,9 +18,8 @@
 
 -->
 <assembly>
-  <id>bin</id>
+  <id></id>
   <formats>
-    <format>tar.gz</format>
     <format>zip</format>
   </formats>
   <fileSets>
@@ -39,17 +38,21 @@
       <directory>target/filtered</directory>
       <outputDirectory>/</outputDirectory>
       <excludes>
-        <exclude>bin</exclude>
+        <exclude>bin/**</exclude>
       </excludes>
+    </fileSet>
+    <fileSet>
+        <directory>target/filtered/bin</directory>
+        <outputDirectory>/bin/</outputDirectory>
+        <includes>
+            <include>*.bat</include>
+        </includes>
+        <fileMode>0755</fileMode>
+        <lineEnding>dos</lineEnding>
     </fileSet>
     <fileSet>
       <directory>target/classes/conf</directory>
       <outputDirectory>/conf</outputDirectory>
-    </fileSet>
-    <fileSet>
-      <directory>target/filtered/bin</directory>
-      <outputDirectory>/bin</outputDirectory>
-      <fileMode>755</fileMode>
     </fileSet>
     <fileSet>
       <directory>target/components</directory>
@@ -96,6 +99,7 @@
       <outputDirectory>lib/optional</outputDirectory>
     </fileSet>
   </fileSets>
+  
   <dependencySets>
     <dependencySet>
       <outputDirectory>extras</outputDirectory>

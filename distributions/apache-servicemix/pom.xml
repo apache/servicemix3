@@ -945,17 +945,30 @@
         <version>${mavenAssemblyPluginVersion}</version>
         <executions>
           <execution>
-            <id>bin</id>
+            <id>unix-bin</id>
             <phase>package</phase>
             <goals>
               <goal>attached</goal>
             </goals>
             <configuration>
               <descriptors>
-                <descriptor>src/main/assembly/bin.xml</descriptor>
+                <descriptor>src/main/assembly/unix-bin.xml</descriptor>
               </descriptors>
               <appendAssemblyId>false</appendAssemblyId>
               <tarLongFileMode>gnu</tarLongFileMode>
+            </configuration>
+          </execution>
+          <execution>
+            <id>windows-bin</id>
+            <phase>package</phase>
+            <goals>
+                <goal>attached</goal>
+            </goals>
+            <configuration>
+                <descriptors>
+                    <descriptor>src/main/assembly/windows-bin.xml</descriptor>
+                </descriptors>
+                <appendAssemblyId>false</appendAssemblyId>
             </configuration>
           </execution>
           <execution>
