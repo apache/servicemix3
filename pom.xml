@@ -69,7 +69,7 @@
         <servicemix-mail-version>2010.01</servicemix-mail-version>
         <servicemix-osworkflow-version>2010.01</servicemix-osworkflow-version>
         <servicemix-wsn2005-version>2010.01</servicemix-wsn2005-version>
-        <servicemix-lwcontainer-version>3.3.2-SNAPSHOT</servicemix-lwcontainer-version>
+        <servicemix-lwcontainer-version>${pom.version}</servicemix-lwcontainer-version>
         <servicemix-bean-version>2010.01</servicemix-bean-version>
         <servicemix-eip-version>2010.01</servicemix-eip-version>
         <servicemix-script-version>2010.01</servicemix-script-version>
