@@ -168,6 +168,7 @@
 
         <include>stax:stax-api</include>
         <include>org.codehaus.woodstox:woodstox-core-asl</include>
+        <include>org.codehaus.woodstox:stax2-api</include>
         <include>xml-apis:xml-apis</include>
         <include>log4j:log4j</include>
         <include>org.apache.derby:derby</include>
