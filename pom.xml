@@ -29,7 +29,7 @@
 
     <groupId>org.apache.servicemix</groupId>
     <artifactId>servicemix</artifactId>
-    <version>3.3.2</version>
+    <version>3.3.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>ServiceMix</name>
@@ -43,9 +43,9 @@
     </prerequisites>
 
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/servicemix/smx3/tags/servicemix-3.3.2</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/servicemix/smx3/tags/servicemix-3.3.2</developerConnection>
-        <url>http://svn.apache.org/viewcvs.cgi/servicemix/smx3/tags/servicemix-3.3.2</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/servicemix/smx3/trunk/</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/servicemix/smx3/trunk/</developerConnection>
+        <url>http://svn.apache.org/viewcvs.cgi/servicemix/smx3/trunk/</url>
     </scm>
 
     <repositories>
@@ -449,22 +449,22 @@
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-core</artifactId>
-                <version>3.3.2</version>
+                <version>3.3.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-audit</artifactId>
-                <version>3.3.2</version>
+                <version>3.3.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-components</artifactId>
-                <version>3.3.2</version>
+                <version>3.3.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.geronimo</groupId>
                 <artifactId>deployer-service</artifactId>
-                <version>3.3.2</version>
+                <version>3.3.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
@@ -474,7 +474,7 @@
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-console</artifactId>
-                <version>3.3.2</version>
+                <version>3.3.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
@@ -625,44 +625,44 @@
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>servicemix-web</artifactId>
-                <version>3.3.2</version>
+                <version>3.3.3-SNAPSHOT</version>
                 <type>war</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>wsdl-first</artifactId>
-                <version>3.3.2</version>
+                <version>3.3.3-SNAPSHOT</version>
                 <type>pom</type>
             </dependency>
             
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>cxf-wsdl-first</artifactId>
-                <version>3.3.2</version>
+                <version>3.3.3-SNAPSHOT</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>loan-broker</artifactId>
-                <version>3.3.2</version>
+                <version>3.3.3-SNAPSHOT</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>bridge</artifactId>
-                <version>3.3.2</version>
+                <version>3.3.3-SNAPSHOT</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>bridge-camel</artifactId>
-                <version>3.3.2</version>
+                <version>3.3.3-SNAPSHOT</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.servicemix.samples</groupId>
                 <artifactId>basic</artifactId>
-                <version>3.3.2</version>
+                <version>3.3.3-SNAPSHOT</version>
                 <type>pom</type>
             </dependency>
             <!--
@@ -675,7 +675,7 @@
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-web-console</artifactId>
-                <version>3.3.2</version>
+                <version>3.3.3-SNAPSHOT</version>
                 <type>war</type>
             </dependency>
 
