@@ -141,10 +141,12 @@ public class JbiEndpoint extends DefaultEndpoint<Exchange> {
                 mep = (String) params.get("mep");
                 if (mep != null && !mep.startsWith("http://www.w3.org/ns/wsdl/")) {
                     mep = "http://www.w3.org/ns/wsdl/" + mep;
+                    params.remove("mep");
                 }
                 String oper = (String) params.get("operation");
                 if (StringUtils.hasLength(oper)) {
                     operation = oper;
+                    params.remove("operation");
                 }
                 this.destinationUri = destinationUri.substring(0, idx);
 

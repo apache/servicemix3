@@ -27,10 +27,20 @@ public class JbiComponentTest extends TestCase {
     
     public void testGetUriWithMep() throws Exception {
         JbiComponent component = createJbiComponent();
-        JbiEndpoint endpoint = (JbiEndpoint) component.createEndpoint("jbi:endpoint:urn:test:service?mep=in-out");
-        assertEquals(IN_OUT, endpoint.getMep());        
+        JbiEndpoint endpoint =
+                (JbiEndpoint) component.createEndpoint("jbi:endpoint:urn:test:service:endpoint?mep=in-out");
+        assertEquals(IN_OUT, endpoint.getMep());
+        assertEquals("endpoint:urn:test:service:endpoint", endpoint.getEndpointUri());
     }
-    
+
+    public void testGetUriWithOperation() throws Exception {
+        JbiComponent component = createJbiComponent();
+        JbiEndpoint endpoint =
+                (JbiEndpoint) component.createEndpoint("jbi:endpoint:urn:test:service:endpoint?operation=doSomething");
+        assertEquals("doSomething", endpoint.getOperation());
+        assertEquals("endpoint:urn:test:service:endpoint", endpoint.getEndpointUri());
+    }
+
     public void testNullWhenNoJbiUri() throws Exception {
         assertNull(createJbiComponent().createEndpoint("somethingelse:service:urn:test"));
     }
