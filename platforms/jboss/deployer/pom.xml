@@ -24,11 +24,11 @@
     <parent>
         <groupId>org.apache.servicemix.jboss</groupId>
         <artifactId>jboss</artifactId>
-        <version>3.3.2</version>
+        <version>3.3.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>deployer</artifactId>
-    <version>3.3.2</version>
+    <version>3.3.3-SNAPSHOT</version>
     <packaging>jboss-sar</packaging>
     <name>ServiceMix :: JBoss :: Deployer</name>
 
