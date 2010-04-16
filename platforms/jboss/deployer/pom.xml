@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>deployer</artifactId>
-    <version>3.3.3-SNAPSHOT</version>
+    <version>3.3.2-SNAPSHOT</version>
     <packaging>jboss-sar</packaging>
     <name>ServiceMix :: JBoss :: Deployer</name>
 
