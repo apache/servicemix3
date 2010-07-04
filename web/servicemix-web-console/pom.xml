@@ -74,6 +74,10 @@
           <artifactId>stax-api</artifactId>
         </exclusion>
         <exclusion>
+          <groupId>javax.xml.stream</groupId>
+          <artifactId>stax-api</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.jencks</groupId>
           <artifactId>jencks</artifactId>
         </exclusion>

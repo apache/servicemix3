@@ -111,7 +111,7 @@
         <wsdl4j-version>1.6.2</wsdl4j-version>
         <commons-beanutils-version>1.7.0</commons-beanutils-version>
         <commons-fileupload-version>1.1.1</commons-fileupload-version>
-        <woodstox-version>4.0.7</woodstox-version>
+        <woodstox-version>4.0.8</woodstox-version>
         <woodstox.stax2api.version>3.0.1</woodstox.stax2api.version>        
         <msv-version>20050913</msv-version>
         <oro-version>2.0.8</oro-version>
@@ -1405,9 +1405,9 @@
                 <version>${spring-version}</version>
             </dependency>
             <dependency>
-                <groupId>stax</groupId>
+                <groupId>javax.xml.stream</groupId>
                 <artifactId>stax-api</artifactId>
-                <version>1.0.1</version>
+                <version>1.0-2</version>
             </dependency>
             <dependency>
                 <groupId>taglibs</groupId>

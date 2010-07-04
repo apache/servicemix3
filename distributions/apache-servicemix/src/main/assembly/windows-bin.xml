@@ -158,7 +158,7 @@
         <include>xerces:xercesImpl</include>
         <include>xalan:xalan</include>
 
-        <include>stax:stax-api</include>
+        <include>javax.xml.stream:stax-api</include>
         <include>org.codehaus.woodstox:woodstox-core-asl</include>
         <include>org.codehaus.woodstox:stax2-api</include>
         <include>xml-apis:xml-apis</include>
