@@ -68,11 +68,11 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
         NodeList classpathElements = document.getDocumentElement().getElementsByTagName("classpath");
         if (classpathElements.getLength() == 0) {
             // Check if a classpath.xml file exists in the root of the SU
-            List<URL> classpathUrls = getResources(CLASSPATH_XML);
-            if (classpathUrls.size() == 1) {
+            URL url = getResource(CLASSPATH_XML);
+            if (url != null) {
                 try {
                     DocumentBuilder builder = new SourceTransformer().createDocumentBuilder();
-                    Document doc = builder.parse(classpathUrls.get(0).toString());
+                    Document doc = builder.parse(url.toString());
                     classLoader = getClassLoader(applicationContext, reader, doc);
                 } catch (Exception e) {
                     throw new FatalBeanException("Unable to load classpath.xml file", e);
@@ -137,6 +137,29 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
         return buffer.toString();
     }
 
+    /**
+     * <p>
+     * Get an URL from a String location.
+     * </p>
+     * 
+     * @param location
+     * @return
+     */
+    protected URL getResource(String location) {
+        URI uri = root.toURI().resolve(location);
+        File file = new File(uri);
+        
+        if (!file.canRead()) {
+            return null;
+        }
+        
+        try {
+            return file.toURL();
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("Malformed resource " + uri);
+        }
+    }
+    
     /**
      * <p>
      * Get the URLs for a classpath location. This method supports standard
@@ -315,6 +338,21 @@ public class ClassLoaderXmlPreprocessor implements SpringXmlPreprocessor {
             throw new FatalBeanException("Expected only classpath element but found " + classpathElements.getLength());
         } else {
             Element classpathElement = (Element) classpathElements.item(0);
+            
+            String fileDelegation = classpathElement.getAttribute("file");
+            if (fileDelegation != null) {
+                URL url = getResource(fileDelegation);
+                if (url != null) {
+                    try {
+                        DocumentBuilder builder = new SourceTransformer().createDocumentBuilder();
+                        Document doc = builder.parse(url.toString());
+                        classLoader = getClassLoader(applicationContext, reader, doc);
+                        return classLoader;
+                    } catch (Exception e) {
+                        throw new FatalBeanException("Unable to load " + url + " file.", e);
+                    }
+                }
+            }
             
             // Delegation mode
             boolean inverse = false;
