@@ -40,6 +40,7 @@ import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.Topic;
 
+import org.apache.activemq.pool.PooledConnectionFactory;
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.executors.Executor;
 import org.apache.servicemix.jbi.event.ComponentAdapter;
@@ -470,7 +471,14 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
                 }
             }
 
-            Session inboundSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Connection cnx = connection;
+            // with a PooledConnectionFactory get a new connection from the pool
+            if (connectionFactory instanceof PooledConnectionFactory) {
+                connectionFactory.createConnection();
+                cnx.start();
+            }
+            
+            Session inboundSession = cnx.createSession(false, Session.AUTO_ACKNOWLEDGE);
             try {
                 Queue queue = inboundSession.createQueue(destination);
                 ObjectMessage msg = inboundSession.createObjectMessage(me);
@@ -483,6 +491,11 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
                 queueProducer.send(msg);
             } finally {
                 inboundSession.close();
+                if (connectionFactory instanceof PooledConnectionFactory) {
+                    // return connection to the pool
+                    cnx.stop();
+                    cnx.close();
+                }
             }
         } catch (JMSException e) {
             log.error("Failed to send exchange: " + me + " internal JMS Network", e);
