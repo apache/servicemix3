@@ -124,6 +124,7 @@
         <include>org.apache.activemq:activemq-core</include>
         <include>org.apache.activemq:activemq-ra</include>
         <include>org.apache.activemq:activemq-pool</include>
+        <include>org.apache.activemq:kahadb</include>
         <include>org.apache.activemq:activeio-core</include>
         <include>commons-logging:commons-logging</include>
         <include>commons-beanutils:commons-beanutils-core</include>
