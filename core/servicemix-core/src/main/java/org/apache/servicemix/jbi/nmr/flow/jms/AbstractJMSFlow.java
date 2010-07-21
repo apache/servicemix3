@@ -473,7 +473,9 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
 
             Connection cnx = connection;
             // with a PooledConnectionFactory get a new connection from the pool
-            if (connectionFactory instanceof PooledConnectionFactory) {
+            boolean useConnectionFromPool = (connectionFactory instanceof PooledConnectionFactory)
+                && ((PooledConnectionFactory)connectionFactory).getMaxConnections() > 1;
+            if (useConnectionFromPool) {
                 connectionFactory.createConnection();
                 cnx.start();
             }
@@ -491,7 +493,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
                 queueProducer.send(msg);
             } finally {
                 inboundSession.close();
-                if (connectionFactory instanceof PooledConnectionFactory) {
+                if (useConnectionFromPool) {
                     // return connection to the pool
                     cnx.stop();
                     cnx.close();
