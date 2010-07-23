@@ -23,7 +23,7 @@ import org.apache.servicemix.jbi.nmr.flow.jca.JCAFlow;
 import org.jencks.GeronimoPlatformTransactionManager;
 
 public class StatelessJcaFlowTest extends StatelessJmsFlowTest {
-
+    
     private TransactionManager tm;
 
     protected void setUp() throws Exception {
@@ -34,7 +34,7 @@ public class StatelessJcaFlowTest extends StatelessJmsFlowTest {
     protected JBIContainer createContainer(String name) throws Exception {
         JBIContainer container = new JBIContainer();
         container.setName(name);
-        JCAFlow flow = new JCAFlow("tcp://localhost:61616");
+        JCAFlow flow = new JCAFlow(ACTIVEMQ_URL);
         container.setTransactionManager(tm);
         container.setFlow(flow);
         container.setUseMBeanServer(false);

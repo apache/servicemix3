@@ -57,7 +57,10 @@ import org.tranql.connector.jdbc.AbstractXADataSourceMCF;
 public class TransactionsTest extends TestCase {
 
     public static final long TIMEOUT = 1000;
-    
+
+    private static final int ACTIVEMQ_PORT = Integer.parseInt(System.getProperty("activemq.port"));
+    private static final String ACTIVEMQ_URL = "tcp://localhost:" + ACTIVEMQ_PORT;
+
     private JBIContainer jbi;
     private BrokerService broker;
     private GeronimoPlatformTransactionManager tm;
@@ -73,7 +76,7 @@ public class TransactionsTest extends TestCase {
         broker = new BrokerService();
         broker.setUseJmx(false);
         broker.setPersistent(false);
-        broker.addConnector("tcp://localhost:61616");
+        broker.addConnector(ACTIVEMQ_URL);
         broker.start();
         
         tm = new GeronimoPlatformTransactionManager();
@@ -95,7 +98,7 @@ public class TransactionsTest extends TestCase {
         store = storeFactory.open("store");
         
         jbi = new JBIContainer();
-        jbi.setFlows(new Flow[] {new SedaFlow(), new JCAFlow() });
+        jbi.setFlows(new Flow[] {new SedaFlow(), new JCAFlow(ACTIVEMQ_URL) });
         jbi.setEmbedded(true);
         jbi.setUseMBeanServer(false);
         jbi.setCreateMBeanServer(false);

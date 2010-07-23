@@ -40,6 +40,9 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 
 public class StatelessJmsFlowTest extends TestCase {
 
+    protected static final int ACTIVEMQ_PORT = Integer.parseInt(System.getProperty("activemq.port"));
+    protected static final String ACTIVEMQ_URL = "tcp://localhost:" + ACTIVEMQ_PORT;
+
     protected JBIContainer jbi1;
     protected JBIContainer jbi2;
     protected BrokerService broker;
@@ -48,7 +51,7 @@ public class StatelessJmsFlowTest extends TestCase {
         broker = new BrokerService();
         broker.setPersistent(false);
         broker.setUseJmx(false);
-        broker.addConnector("tcp://localhost:61616");
+        broker.addConnector(ACTIVEMQ_URL);
         broker.start();
 
         jbi1 = createContainer("jbi1");
@@ -64,7 +67,7 @@ public class StatelessJmsFlowTest extends TestCase {
     protected JBIContainer createContainer(String name) throws Exception {
         JBIContainer container = new JBIContainer();
         container.setName(name);
-        container.setFlowName("jms?jmsURL=tcp://localhost:61616");
+        container.setFlowName("jms?jmsURL=" + ACTIVEMQ_URL);
         container.setUseMBeanServer(false);
         container.setEmbedded(true);
         container.init();

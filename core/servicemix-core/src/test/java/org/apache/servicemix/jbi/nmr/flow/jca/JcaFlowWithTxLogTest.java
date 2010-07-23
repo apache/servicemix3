@@ -44,6 +44,9 @@ import org.jencks.factory.TransactionManagerFactoryBean;
  */
 public class JcaFlowWithTxLogTest extends TestCase {
 
+    private static final int ACTIVEMQ_PORT = Integer.parseInt(System.getProperty("activemq.port"));
+    private static final String ACTIVEMQ_URL = "tcp://localhost:" + ACTIVEMQ_PORT;
+
     private JBIContainer senderContainer = new JBIContainer();
 
     private JBIContainer receiverContainer = new JBIContainer();
@@ -82,11 +85,11 @@ public class JcaFlowWithTxLogTest extends TestCase {
 
         broker = new BrokerService();
         broker.setPersistenceAdapter(new MemoryPersistenceAdapter());
-        broker.addConnector("tcp://localhost:61616");
+        broker.addConnector(ACTIVEMQ_URL);
         broker.start();
 
         JCAFlow senderFlow = new JCAFlow();
-        senderFlow.setJmsURL("tcp://localhost:61616");
+        senderFlow.setJmsURL(ACTIVEMQ_URL);
         senderContainer.setTransactionManager(tm);
         senderContainer.setEmbedded(true);
         senderContainer.setName("senderContainer");
@@ -97,7 +100,7 @@ public class JcaFlowWithTxLogTest extends TestCase {
         senderContainer.start();
 
         JCAFlow receiverFlow = new JCAFlow();
-        receiverFlow.setJmsURL("tcp://localhost:61616");
+        receiverFlow.setJmsURL(ACTIVEMQ_URL);
         receiverContainer.setTransactionManager(tm);
         receiverContainer.setEmbedded(true);
         receiverContainer.setName("receiverContainer");

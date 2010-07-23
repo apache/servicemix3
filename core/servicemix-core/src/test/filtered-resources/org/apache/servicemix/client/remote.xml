@@ -24,11 +24,11 @@
 
   <amq:broker id="broker" singleton="true" useJmx="false" persistent="false">
     <amq:transportConnectors>
-      <amq:transportConnector uri="tcp://localhost:61616"/>
+      <amq:transportConnector uri="tcp://localhost:${activemq.port}"/>
     </amq:transportConnectors>
   </amq:broker>
  
-  <sm:container id="jbi" flowName="jms?jmsURL=tcp://localhost:61616" embedded="true" useMBeanServer="false" createMBeanServer="false" depends-on="broker">
+  <sm:container id="jbi" flowName="jms?jmsURL=tcp://localhost:${activemq.port}" embedded="true" useMBeanServer="false" createMBeanServer="false" depends-on="broker">
     <sm:activationSpecs>
 
       <sm:activationSpec componentName="receiver" service="foo:receiver">
@@ -63,13 +63,13 @@
   </sm:container>
   
   <bean id="client" class="org.apache.servicemix.client.RemoteServiceMixClient" init-method="start" destroy-method="shutDown">
-    <constructor-arg value="tcp://localhost:61616" />
+    <constructor-arg value="tcp://localhost:${activemq.port}" />
   </bean>
 
   <!-- lets hardwire this client to talk to instances of a service by default -->
   <!-- START SNIPPET: clientroute -->
   <bean id="clientWithRouting" class="org.apache.servicemix.client.RemoteServiceMixClient" init-method="start" destroy-method="shutDown">
-    <constructor-arg value="tcp://localhost:61616" />
+    <constructor-arg value="tcp://localhost:${activemq.port}" />
     <constructor-arg>
       <sm:activationSpec destinationService="foo:receiver"/>
     </constructor-arg>
@@ -78,7 +78,7 @@
 
 
   <bean id="clientWithXStream" class="org.apache.servicemix.client.RemoteServiceMixClient" init-method="start" destroy-method="shutDown">
-    <constructor-arg value="tcp://localhost:61616" />
+    <constructor-arg value="tcp://localhost:${activemq.port}" />
     <constructor-arg>
       <!-- lets hardwire this client to talk to instances of a service by default -->
       <sm:activationSpec>

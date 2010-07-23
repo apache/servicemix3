@@ -35,24 +35,11 @@ public class RemoteServiceMixClientTest extends ServiceMixClientTest {
     }
     
     protected ServiceMixClient getClient() throws Exception {
-        /*
-        RemoteServiceMixClient client = new RemoteServiceMixClient("tcp://localhost:61616");
-        client.start();
-        return client;
-        */
         return super.getClient();
     }
 
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/client/remote.xml");
     }
-
-    /*
-    public void testSendUsingMapAndPOJOsUsingContainerRouting() throws Exception {
-    }
-
-    public void testRequestUsingPOJOWithXStreamMarshaling() throws Exception {
-    }
-    */
 
 }
