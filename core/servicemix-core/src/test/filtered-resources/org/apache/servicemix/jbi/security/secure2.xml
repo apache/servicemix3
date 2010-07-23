@@ -36,7 +36,7 @@
 	      </sm:authorizationMap>
         </sm:authorizationMap>
         <sm:flows>
-          <sm:jmsFlow jmsURL="tcp://localhost:61216" />
+          <sm:jmsFlow jmsURL="tcp://localhost:${activemq.port}" />
         </sm:flows>
       </sm:securedBroker>
     </sm:broker>
@@ -73,7 +73,7 @@
 	      </sm:authorizationMap>
         </sm:authorizationMap>
         <sm:flows>
-          <sm:jmsFlow jmsURL="tcp://localhost:61216" />
+          <sm:jmsFlow jmsURL="tcp://localhost:${activemq.port}" />
         </sm:flows>
       </sm:securedBroker>
     </sm:broker>

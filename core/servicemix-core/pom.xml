@@ -299,6 +299,10 @@
           <include>**/*.zip</include>
         </includes>
       </testResource>
+      <testResource>
+        <directory>src/test/filtered-resources</directory>
+        <filtering>true</filtering>
+      </testResource>
     </testResources>
     <plugins>
       <plugin>
@@ -325,6 +329,25 @@
             <goals>
               <goal>mapping</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <id>reserve-network-port</id>
+            <goals>
+              <goal>reserve-network-port</goal>
+            </goals>
+            <phase>process-resources</phase>
+            <configuration>
+              <portNames>
+                <portName>activemq.port</portName>
+              </portNames>
+            </configuration>
           </execution>
         </executions>
       </plugin>
