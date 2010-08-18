@@ -18,9 +18,14 @@
 
 -->
 <!-- START SNIPPET: servicemix -->
-<beans xmlns:my="http://servicemix.apache.org/demo/"
-	xmlns:sm="http://servicemix.apache.org/config/1.0"
-    xmlns:quartz="http://servicemix.apache.org/quartz/1.0">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:sm="http://servicemix.apache.org/config/1.0"
+	   xmlns:my="http://servicemix.apache.org/demo/"
+       xmlns:quartz="http://servicemix.apache.org/quartz/1.0"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://servicemix.apache.org/config/1.0 http://servicemix.apache.org/schema/servicemix-core-${project.version}.xsd"  >
 
   <classpath inverse="true">
       <component>servicemix-quartz</component>

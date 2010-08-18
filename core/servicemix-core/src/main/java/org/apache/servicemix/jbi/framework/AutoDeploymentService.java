@@ -289,7 +289,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 checkPendingSAs();
             } else {
                 entry.pending = true;
-                LOG.warn("Shared libraries " + missings + " are not installed yet: the component" + componentName
+                LOG.warn("Shared libraries " + missings + " are not installed yet: the component " + componentName
                                 + " installation is suspended and will be resumed once the listed shared libraries are installed");
                 pendingComponents.put(tmpDir, entry);
             }

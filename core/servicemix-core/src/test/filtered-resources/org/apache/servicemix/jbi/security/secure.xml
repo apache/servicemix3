@@ -17,11 +17,35 @@
     limitations under the License.
 
 -->
-<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:sm="http://servicemix.apache.org/config/1.0"
        xmlns:ex1="http://servicemix.org/example/1"
-       xmlns:ex2="http://servicemix.org/example/2">
+       xmlns:ex2="http://servicemix.org/example/2"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://servicemix.apache.org/config/1.0 http://servicemix.apache.org/schema/servicemix-core-${project.version}.xsd" >
 
   <sm:container id="jbi" embedded="true" useMBeanServer="false">
+      <sm:activationSpecs>
+        <sm:activationSpec id="receiver1" service="ex1:receiver1">
+          <sm:component>
+            <bean class="org.apache.servicemix.tck.ReceiverComponent" />
+          </sm:component>
+        </sm:activationSpec>
+        <sm:activationSpec id="receiver2" service="ex1:receiver2">
+          <sm:component>
+            <bean class="org.apache.servicemix.tck.ReceiverComponent" />
+          </sm:component>
+        </sm:activationSpec>
+        <sm:activationSpec id="receiver3" service="ex2:receiver1">
+          <sm:component>
+            <bean class="org.apache.servicemix.tck.ReceiverComponent" />
+          </sm:component>
+        </sm:activationSpec>
+      </sm:activationSpecs>
+      
+
     <sm:broker>
       <sm:securedBroker>
         <sm:authorizationMap>
@@ -35,24 +59,6 @@
         </sm:authorizationMap>
       </sm:securedBroker>
     </sm:broker>
-      
-    <sm:activationSpecs>
-      <sm:activationSpec id="receiver1" service="ex1:receiver1">
-        <sm:component>
-          <bean class="org.apache.servicemix.tck.ReceiverComponent" />
-        </sm:component>
-      </sm:activationSpec>
-      <sm:activationSpec id="receiver2" service="ex1:receiver2">
-        <sm:component>
-          <bean class="org.apache.servicemix.tck.ReceiverComponent" />
-        </sm:component>
-      </sm:activationSpec>
-      <sm:activationSpec id="receiver3" service="ex2:receiver1">
-        <sm:component>
-          <bean class="org.apache.servicemix.tck.ReceiverComponent" />
-        </sm:component>
-      </sm:activationSpec>
-    </sm:activationSpecs>
   </sm:container>
 
 </beans>

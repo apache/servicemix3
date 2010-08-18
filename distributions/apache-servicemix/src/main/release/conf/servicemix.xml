@@ -17,8 +17,15 @@
     limitations under the License.
 
 -->
-<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
-       xmlns:audit="http://servicemix.apache.org/audit/1.0">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:audit="http://servicemix.apache.org/audit/1.0"
+       xmlns:sm="http://servicemix.apache.org/config/1.0"
+       xmlns:http="http://servicemix.apache.org/http/1.0"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+         http://servicemix.apache.org/config/1.0 http://servicemix.apache.org/schema/servicemix-core.xsd
+         http://servicemix.apache.org/audit/1.0 http://servicemix.apache.org/schema/servicemix-audit.xsd">
 
   <!-- System properties -->
   <sm:systemProperties>
@@ -45,18 +52,19 @@
   <import resource="classpath:jndi.xml" />
 
   <!-- the JBI container -->
-  <sm:container id="jbi" 
-                rootDir="./data/smx" 
+  <sm:container id="jbi"
+                rootDir="./data/smx"
                 MBeanServer="#jmxServer"
                 installationDirPath="./hotdeploy"
 				monitorDeploymentDirectory="false"
                 monitorInterval="1"
                 transactionManager="#transactionManager"
-                createJmxConnector="false"
-                depends-on="jndi">
+                createJmxConnector="false">
+
+    <sm:activationSpecs/>
 
     <!-- Use a secured broker (see security.xml)
-         and define the 3 standard flows --> 
+         and define the 3 standard flows -->
     <sm:broker>
       <sm:securedBroker authorizationMap="#authorizationMap">
         <sm:flows>
@@ -67,10 +75,6 @@
         </sm:flows>
       </sm:securedBroker>
     </sm:broker>
-
-    <sm:services>
-      <sm:statistics statsInterval="10" dumpStats="true" />
-    </sm:services>
 
     <sm:executorFactory>
       <bean class="org.apache.servicemix.executors.impl.ExecutorFactoryImpl">
@@ -84,18 +88,19 @@
       </bean>
     </sm:executorFactory>
 
-    <sm:activationSpecs>
+    <sm:services>
+      <sm:statistics statsInterval="10" dumpStats="true" />
+    </sm:services>
 
-    </sm:activationSpecs>
   </sm:container>
 
   <audit:jdbcAuditor container="#jbi" autoStart="false">
-    <audit:dataSource> 
+    <audit:dataSource>
       <bean class="org.apache.derby.jdbc.EmbeddedDataSource">
         <property name="databaseName" value="servicemixDB"/>
         <property name="createDatabase" value="create"/>
       </bean>
-    </audit:dataSource> 
+    </audit:dataSource>
   </audit:jdbcAuditor>
 
   <sm:dotViewService container="#jbi" autoStart="true" />

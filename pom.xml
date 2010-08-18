@@ -60,34 +60,34 @@
     <properties>
         <servicemix-utils-version>1.2.0</servicemix-utils-version>
         <servicemix-specs-version>1.4.0</servicemix-specs-version>
-        <servicemix-common-version>2010.01</servicemix-common-version>
-        <servicemix-shared-version>2010.01</servicemix-shared-version>
-        <servicemix-quartz-version>2010.01</servicemix-quartz-version>
-        <servicemix-jms-version>2010.01</servicemix-jms-version>
-        <servicemix-jsr181-version>2010.01</servicemix-jsr181-version>
-        <servicemix-http-version>2010.01</servicemix-http-version>
-        <servicemix-mail-version>2010.01</servicemix-mail-version>
-        <servicemix-osworkflow-version>2010.01</servicemix-osworkflow-version>
-        <servicemix-wsn2005-version>2010.01</servicemix-wsn2005-version>
+        <servicemix-common-version>2010.02-SNAPSHOT</servicemix-common-version>
+        <servicemix-shared-version>2010.02-SNAPSHOT</servicemix-shared-version>
+        <servicemix-quartz-version>2010.02-SNAPSHOT</servicemix-quartz-version>
+        <servicemix-jms-version>2010.02-SNAPSHOT</servicemix-jms-version>
+        <servicemix-jsr181-version>2010.02-SNAPSHOT</servicemix-jsr181-version>
+        <servicemix-http-version>2010.02-SNAPSHOT</servicemix-http-version>
+        <servicemix-mail-version>2010.02-SNAPSHOT</servicemix-mail-version>
+        <servicemix-osworkflow-version>2010.02-SNAPSHOT</servicemix-osworkflow-version>
+        <servicemix-wsn2005-version>2010.02-SNAPSHOT</servicemix-wsn2005-version>
         <servicemix-lwcontainer-version>3.3.2</servicemix-lwcontainer-version>
-        <servicemix-bean-version>2010.01</servicemix-bean-version>
-        <servicemix-eip-version>2010.01</servicemix-eip-version>
-        <servicemix-script-version>2010.01</servicemix-script-version>
-        <servicemix-scripting-version>2010.01</servicemix-scripting-version>
-        <servicemix-validation-version>2010.01</servicemix-validation-version>
-        <servicemix-ftp-version>2010.01</servicemix-ftp-version>
-        <servicemix-xmpp-version>2010.01</servicemix-xmpp-version>
-        <servicemix-saxon-version>2010.01</servicemix-saxon-version>
-        <servicemix-truezip-version>2010.01</servicemix-truezip-version>
-        <servicemix-camel-version>2010.01</servicemix-camel-version>
-        <servicemix-cxf-bc-version>2010.01</servicemix-cxf-bc-version>
-        <servicemix-cxf-se-version>2010.01</servicemix-cxf-se-version>
-        <servicemix-drools-version>2010.01</servicemix-drools-version>
-        <servicemix-file-version>2010.01</servicemix-file-version>
-        <servicemix-snmp-version>2010.01</servicemix-snmp-version>
-        <servicemix-smpp-version>2010.01</servicemix-smpp-version>
-        <servicemix-exec-version>2010.01</servicemix-exec-version>
-        <servicemix-vfs-version>2010.01</servicemix-vfs-version>
+        <servicemix-bean-version>2010.02-SNAPSHOT</servicemix-bean-version>
+        <servicemix-eip-version>2010.02-SNAPSHOT</servicemix-eip-version>
+        <servicemix-script-version>2010.02-SNAPSHOT</servicemix-script-version>
+        <servicemix-scripting-version>2010.02-SNAPSHOT</servicemix-scripting-version>
+        <servicemix-validation-version>2010.02-SNAPSHOT</servicemix-validation-version>
+        <servicemix-ftp-version>2010.02-SNAPSHOT</servicemix-ftp-version>
+        <servicemix-xmpp-version>2010.02-SNAPSHOT</servicemix-xmpp-version>
+        <servicemix-saxon-version>2010.02-SNAPSHOT</servicemix-saxon-version>
+        <servicemix-truezip-version>2010.02-SNAPSHOT</servicemix-truezip-version>
+        <servicemix-camel-version>2010.02-SNAPSHOT</servicemix-camel-version>
+        <servicemix-cxf-bc-version>2010.02-SNAPSHOT</servicemix-cxf-bc-version>
+        <servicemix-cxf-se-version>2010.02-SNAPSHOT</servicemix-cxf-se-version>
+        <servicemix-drools-version>2010.02-SNAPSHOT</servicemix-drools-version>
+        <servicemix-file-version>2010.02-SNAPSHOT</servicemix-file-version>
+        <servicemix-snmp-version>2010.02-SNAPSHOT</servicemix-snmp-version>
+        <servicemix-smpp-version>2010.02-SNAPSHOT</servicemix-smpp-version>
+        <servicemix-exec-version>2010.02-SNAPSHOT</servicemix-exec-version>
+        <servicemix-vfs-version>2010.02-SNAPSHOT</servicemix-vfs-version>
 
         <jbi-plugin-version>4.3</jbi-plugin-version>
         <res-maven-plugin-version>4.1</res-maven-plugin-version>
@@ -96,8 +96,8 @@
         <xfire-jsr181-api-version>1.0-M1</xfire-jsr181-api-version>
         <xfire-version>1.2.5</xfire-version>
         <mavenAssemblyPluginVersion>2.1</mavenAssemblyPluginVersion>
-        <xbean-version>3.4.3</xbean-version>
-        <spring-version>2.5.6</spring-version>
+        <xbean-version>3.7</xbean-version>
+        <spring-version>3.0.3.RELEASE</spring-version>
         <activemq-version>5.4-SNAPSHOT</activemq-version>
         <activeio-version>3.1.2</activeio-version>
         <camel-version>2.4.0</camel-version>
@@ -1408,14 +1408,14 @@
             <!-- Spring Framework -->
             <dependency>
                 <groupId>org.springframework</groupId>
-                <artifactId>spring</artifactId>
-                <version>${spring-version}</version>
-            </dependency>                        
-            <dependency>
-                <groupId>org.springframework</groupId>
                 <artifactId>spring-aop</artifactId>
                 <version>${spring-version}</version>
-            </dependency>            
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-asm</artifactId>
+                <version>${spring-version}</version>
+            </dependency>                        
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
@@ -1430,7 +1430,12 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
                 <version>${spring-version}</version>
-            </dependency>            
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-expression</artifactId>
+                <version>${spring-version}</version>
+            </dependency>                        
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-jms</artifactId>

@@ -17,8 +17,13 @@
     limitations under the License.
 
 -->
-<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
-	   xmlns:foo="http://servicemix.org/cheese">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:sm="http://servicemix.apache.org/config/1.0"
+	   xmlns:foo="http://servicemix.org/cheese"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://servicemix.apache.org/config/1.0 http://servicemix.apache.org/schema/servicemix-core-${project.version}.xsd">
 
   <!-- the JBI container -->
   <sm:container id="jbi" embedded="true">
@@ -34,7 +39,7 @@
       <sm:activationSpec componentName="myService" service="foo:myService">
       	<sm:component>
             <bean class="org.apache.servicemix.components.util.MockServiceComponent">
-  			  <property xmlns="" name="responseProperties">
+  			  <property name="responseProperties">
 			    <map>
 				  <entry key="foo" value="hello"/>
 				  <entry key="someList">
@@ -46,7 +51,7 @@
 				  </entry>
 			    </map>
 			  </property>
-		      <property xmlns="" name="responseXml">
+		      <property name="responseXml">
 			    <value><![CDATA[ <hello/> ]]></value>
 			  </property>
             </bean>

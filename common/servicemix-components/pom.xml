@@ -71,6 +71,12 @@
       <groupId>org.codehaus.xfire</groupId>
       <artifactId>xfire-spring</artifactId>
       <optional>true</optional>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>       
     <dependency>
       <groupId>org.codehaus.xfire</groupId>
@@ -268,6 +274,12 @@
   </repositories>
 
   <build>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

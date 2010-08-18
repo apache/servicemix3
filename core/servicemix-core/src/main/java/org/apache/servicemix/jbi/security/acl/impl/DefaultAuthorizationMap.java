@@ -54,7 +54,7 @@ public class DefaultAuthorizationMap implements AuthorizationMap {
 
     /**
      * @param authorizationEntries the authorizationEntries to set
-     * @org.apache.xbean.ElementType class="org.apache.servicemix.jbi.security.AuthorizationEntry"
+     * @org.apache.xbean.Property nestedType=""
      */
     public void setAuthorizationEntries(List<AuthorizationEntry> authorizationEntries) {
         this.authorizationEntries = authorizationEntries;

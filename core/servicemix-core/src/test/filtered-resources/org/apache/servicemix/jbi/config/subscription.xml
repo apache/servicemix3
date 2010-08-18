@@ -17,28 +17,26 @@
     limitations under the License.
 
 -->
-<!-- START SNIPPET: example -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:sm="http://servicemix.apache.org/config/1.0"
 	   xmlns:foo="http://servicemix.org/cheese/"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-         http://servicemix.apache.org/config/1.0 http://servicemix.apache.org/schema/servicemix-core-${project.version}.xsd"  >
+         http://servicemix.apache.org/config/1.0 http://servicemix.apache.org/schema/servicemix-core-${project.version}.xsd">
 
+  <!-- the JBI container -->
   <sm:container id="jbi" embedded="true">
     <sm:activationSpecs>
 
-      <sm:activationSpec componentName="sender" service="foo:sender" destinationService="foo:receiver">
-      	<sm:component><bean class="org.apache.servicemix.components.pojo.MySender" /></sm:component>
+      <sm:activationSpec componentName="receiver" service="foo:receiver">
+        <sm:component><bean class="org.apache.servicemix.tck.ReceiverComponent"/></sm:component>
+        <sm:subscriptions>
+          <sm:subscriptionSpec service="foo:producer"/>
+        </sm:subscriptions>
       </sm:activationSpec>
-
-      <sm:activationSpec id="receiver" service="foo:receiver">
-      	<sm:component><bean class="org.apache.servicemix.components.pojo.MyReceiver"/></sm:component>
-      </sm:activationSpec>
-
     </sm:activationSpecs>
   </sm:container>
 
+
 </beans>
-<!-- END SNIPPET: example -->

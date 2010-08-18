@@ -334,6 +334,33 @@
         </executions>
       </plugin>
       <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <configuration>
+              <tasks>
+                <mkdir dir="${project.build.directory}/fix_schema"/>
+                <move file="${project.build.directory}/xbean/servicemix.xsd" todir="${project.build.directory}/fix_schema"/>
+                <xslt in="${project.build.directory}/fix_schema/servicemix.xsd"
+                      out="${project.build.directory}/xbean/servicemix.xsd"
+                      style="src/main/xsl/fix_schema.xsl"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-trax</artifactId>
+            <version>1.7.0</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
         <version>1.4</version>

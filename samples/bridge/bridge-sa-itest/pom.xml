@@ -132,8 +132,14 @@
   </dependencies>
 
   <build>
-    <plugins>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
 
+    <plugins>
       <!--
        || lets enable the jbi-maven-plugin so that we auto-generate
        || the META-INF/maven/dependencies.properties file

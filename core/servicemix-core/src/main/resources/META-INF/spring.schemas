@@ -3,3 +3,4 @@ http\://incubator.apache.org/servicemix/schema/core/servicemix-core.xsd = servic
 
 # TODO remove the old value which is pointless
 http\://servicemix.apache.org/config/1.0=servicemix.xsd
+http\://servicemix.apache.org/schema/servicemix-core.xsd=servicemix.xsd

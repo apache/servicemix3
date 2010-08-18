@@ -21,7 +21,7 @@
 
   <!-- Authentication service -->
   <sm:authenticationService id="authenticationService" />
-  
+
   <!-- KeyStore manager -->
   <sm:keystoreManager id="keystoreManager">
     <sm:keystores>

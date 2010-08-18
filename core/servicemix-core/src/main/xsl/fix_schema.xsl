@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
 <!--
 
     Licensed to the Apache Software Foundation (ASF) under one or more
@@ -15,23 +18,17 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+-->    
 
--->
-<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
-	   xmlns:foo="http://servicemix.org/cheese/">
+    <!-- override the schema-defined type to xs:string to allow using wildcards (like *:*) with validation enabled -->
+    <xsl:template match="/xs:schema/xs:element[@name='authorizationEntry']/xs:complexType/xs:attribute[@name='service']">
+        <xs:attribute name='service' type='xs:string'/>
+    </xsl:template>
 
-  <!-- the JBI container -->
-  <sm:container id="jbi" embedded="true">
-    <sm:activationSpecs>
+    <xsl:template match="@*|node()">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
+    </xsl:template>
 
-      <sm:activationSpec componentName="receiver" service="foo:receiver">
-        <sm:component><bean class="org.apache.servicemix.tck.ReceiverComponent"/></sm:component>
-        <sm:subscriptions>
-          <sm:subscriptionSpec service="foo:producer"/>
-        </sm:subscriptions>
-      </sm:activationSpec>
-    </sm:activationSpecs>
-  </sm:container>
-
-
-</beans>
+</xsl:stylesheet>

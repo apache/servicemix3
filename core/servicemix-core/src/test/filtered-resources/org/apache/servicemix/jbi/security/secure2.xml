@@ -17,30 +17,18 @@
     limitations under the License.
 
 -->
-<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:sm="http://servicemix.apache.org/config/1.0"
        xmlns:container1="http://servicemix.org/example/1"
        xmlns:container1a="http://servicemix.org/example/1a"
        xmlns:container2="http://servicemix.org/example/2"
-       xmlns:container2a="http://servicemix.org/example/2a">
+       xmlns:container2a="http://servicemix.org/example/2a"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://servicemix.apache.org/config/1.0 http://servicemix.apache.org/schema/servicemix-core-${project.version}.xsd" >       
 
   <sm:container id="jbi1" embedded="true" useMBeanServer="false" name="ServiceMix1">
-    <sm:broker>
-      <sm:securedBroker>
-        <sm:authorizationMap>
-	      <sm:authorizationMap>
-	        <sm:authorizationEntries>
-	          <sm:authorizationEntry service="*:*" roles="programmers" />
-	          <sm:authorizationEntry service="container1:*" roles="accounting" />
-	          <sm:authorizationEntry service="container1:receiver1" roles="testers" />
-	        </sm:authorizationEntries>
-	      </sm:authorizationMap>
-        </sm:authorizationMap>
-        <sm:flows>
-          <sm:jmsFlow jmsURL="tcp://localhost:${activemq.port}" />
-        </sm:flows>
-      </sm:securedBroker>
-    </sm:broker>
-      
     <sm:activationSpecs>
       <sm:activationSpec id="receiver11" service="container1:receiver1">
         <sm:component>
@@ -58,17 +46,15 @@
         </sm:component>
       </sm:activationSpec>
     </sm:activationSpecs>
-  </sm:container>
 
-  <sm:container id="jbi2" embedded="true" useMBeanServer="false" name="ServiceMix2">
     <sm:broker>
       <sm:securedBroker>
         <sm:authorizationMap>
 	      <sm:authorizationMap>
 	        <sm:authorizationEntries>
 	          <sm:authorizationEntry service="*:*" roles="programmers" />
-	          <sm:authorizationEntry service="container2:*" roles="accounting" />
-	          <sm:authorizationEntry service="container2:receiver1" roles="testers" />
+	          <sm:authorizationEntry service="container1:*" roles="accounting" />
+	          <sm:authorizationEntry service="container1:receiver1" roles="testers" />
 	        </sm:authorizationEntries>
 	      </sm:authorizationMap>
         </sm:authorizationMap>
@@ -77,7 +63,9 @@
         </sm:flows>
       </sm:securedBroker>
     </sm:broker>
+  </sm:container>
 
+  <sm:container id="jbi2" embedded="true" useMBeanServer="false" name="ServiceMix2">
     <sm:activationSpecs>
       <sm:activationSpec id="receiver21" service="container2:receiver1">
         <sm:component>
@@ -95,6 +83,23 @@
         </sm:component>
       </sm:activationSpec>
     </sm:activationSpecs>
+
+    <sm:broker>
+      <sm:securedBroker>
+        <sm:authorizationMap>
+	      <sm:authorizationMap>
+	        <sm:authorizationEntries>
+	          <sm:authorizationEntry service="*:*" roles="programmers" />
+	          <sm:authorizationEntry service="container2:*" roles="accounting" />
+	          <sm:authorizationEntry service="container2:receiver1" roles="testers" />
+	        </sm:authorizationEntries>
+	      </sm:authorizationMap>
+        </sm:authorizationMap>
+        <sm:flows>
+          <sm:jmsFlow jmsURL="tcp://localhost:${activemq.port}" />
+        </sm:flows>
+      </sm:securedBroker>
+    </sm:broker>
   </sm:container>
 
 </beans>

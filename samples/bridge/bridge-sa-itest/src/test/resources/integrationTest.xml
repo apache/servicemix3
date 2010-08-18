@@ -22,8 +22,8 @@
        xmlns:sm="http://servicemix.apache.org/config/1.0"
        xsi:schemaLocation="
          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-         http://servicemix.apache.org/config/1.0 http://repo1.maven.org/maven2/org/apache/servicemix/servicemix-core/3.1.2/servicemix-core-3.1.2.xsd
-         http://activemq.apache.org/schema/core http://activemq.apache.org/schema/activemq-core.xsd
+         http://servicemix.apache.org/config/1.0 http://servicemix.apache.org/schema/servicemix-core-${project.version}.xsd
+         http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd
          http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
   <!-- Run a local ActiveMQ broker for testing -->

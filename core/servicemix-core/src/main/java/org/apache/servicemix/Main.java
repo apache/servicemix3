@@ -25,7 +25,7 @@ import org.apache.servicemix.xbean.ClassLoaderXmlPreprocessor;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.apache.xbean.spring.context.FileSystemXmlApplicationContext;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
  * A simple stand alone application which runs ServiceMix from the command line.
@@ -47,10 +47,10 @@ public final class Main {
             System.out.println("Starting Apache ServiceMix ESB" + version);
             System.out.println();
 
-            final ApplicationContext context;
+            final AbstractXmlApplicationContext context;
             if (args.length <= 0) {
                 System.out.println("Loading Apache ServiceMix from servicemix.xml on the CLASSPATH");
-                context = new ClassPathXmlApplicationContext("servicemix.xml");
+                context = new ClassPathXmlApplicationContext(new String[] {"servicemix.xml"}, false);
             } else {
                 String file = args[0];
 
@@ -63,8 +63,11 @@ public final class Main {
                 List processors = new ArrayList();
                 processors.add(new ClassLoaderXmlPreprocessor(new File(".")));
                 System.out.println("Loading Apache ServiceMix from file: " + file);
-                context = new FileSystemXmlApplicationContext(file, processors);
+                context = new FileSystemXmlApplicationContext(new String[] {file}, false, processors);
             }
+            context.setValidating(false);
+            context.refresh();
+            
             SpringJBIContainer container = (SpringJBIContainer) context.getBean("jbi");            
             container.onShutDown(new Runnable() {
                 public void run() {

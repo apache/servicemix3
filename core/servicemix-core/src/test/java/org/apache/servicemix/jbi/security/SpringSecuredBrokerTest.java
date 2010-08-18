@@ -91,7 +91,7 @@ public class SpringSecuredBrokerTest extends SpringTestSupport {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/jbi/security/secure.xml");
     }
-    
+
     protected Subject login(final String username, final String password) throws Exception {
         LoginContext context = new LoginContext("servicemix-domain", new CallbackHandler() {
             public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {

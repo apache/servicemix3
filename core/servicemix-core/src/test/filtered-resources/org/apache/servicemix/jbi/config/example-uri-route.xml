@@ -17,26 +17,31 @@
     limitations under the License.
 
 -->
-<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
-	   xmlns:foo="http://servicemix.org/cheese/">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:sm="http://servicemix.apache.org/config/1.0"
+	   xmlns:foo="http://servicemix.org/cheese/"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://servicemix.apache.org/config/1.0 http://servicemix.apache.org/schema/servicemix-core-${project.version}.xsd">
 
 	<!-- the JBI container -->
-	<container id="jbi" embedded="true" xmlns="http://servicemix.apache.org/config/1.0">
-		<activationSpecs>
+	<sm:container id="jbi" embedded="true" >
+		<sm:activationSpecs>
 
-			<activationSpec componentName="sender" 
+			<sm:activationSpec componentName="sender"
 							destinationUri="service:http://servicemix.org/cheese//transformer">
-				<component>
-					<SenderComponent xmlns="java://org.apache.servicemix.tck"/>
-				</component>
-			</activationSpec>
+				<sm:component>
+					<bean class="org.apache.servicemix.tck.SenderComponent"/>
+				</sm:component>
+			</sm:activationSpec>
 
-			<activationSpec componentName="transformer" 
+			<sm:activationSpec componentName="transformer"
 							service="foo:transformer"
 							destinationUri="endpoint:http://servicemix.org/cheese//receiver/receiver">
-				<component>
-					<MockServiceComponent xmlns="java://org.apache.servicemix.components.util">
-						<property xmlns="" name="responseProperties">
+				<sm:component>
+					<bean class="org.apache.servicemix.components.util.MockServiceComponent">
+						<property name="responseProperties">
 							<map>
 								<entry key="foo" value="hello"/>
 								<entry key="someList">
@@ -48,20 +53,20 @@
 								</entry>
 							</map>
 						</property>
-						<property xmlns="" name="responseXml">
+						<property name="responseXml">
 							<value><![CDATA[ <hello/> ]]></value>
 						</property>
-					</MockServiceComponent>
-				</component>
-			</activationSpec>
+					</bean>
+				</sm:component>
+			</sm:activationSpec>
 
-			<activationSpec componentName="receiver" service="foo:receiver" endpoint="receiver">
-				<component>
-					<bean xmlns="" class="org.apache.servicemix.tck.ReceiverComponent" />
-				</component>
-			</activationSpec>
+			<sm:activationSpec componentName="receiver" service="foo:receiver" endpoint="receiver">
+				<sm:component>
+					<bean class="org.apache.servicemix.tck.ReceiverComponent" />
+				</sm:component>
+			</sm:activationSpec>
 
-		</activationSpecs>
-	</container>
+		</sm:activationSpecs>
+	</sm:container>
 
 </beans>
