@@ -4,3 +4,4 @@
 rootDir
 target
 *.i??
+*.orig

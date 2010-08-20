@@ -105,6 +105,7 @@
         <jetty-version>6.1.22</jetty-version>
         <jetty-servlet-api-version>6.1.14</jetty-servlet-api-version>
         <geronimo-version>2.0.2</geronimo-version>
+        <geronimo-annotation-version>1.1.1</geronimo-annotation-version>
         <geronimo-connector-version>2.1.4</geronimo-connector-version>
         <geronimo-transaction-version>2.1.4</geronimo-transaction-version>
         <slf4j-version>1.4.3</slf4j-version>
@@ -1008,6 +1009,11 @@
                 <artifactId>geronimo-activation</artifactId>
                 <version>${geronimo-version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-annotation_1.0_spec</artifactId>
+                <version>${geronimo-annotation-version}</version>
+            </dependency>            
             <dependency>
                 <groupId>org.apache.geronimo.modules</groupId>
                 <artifactId>geronimo-common</artifactId>

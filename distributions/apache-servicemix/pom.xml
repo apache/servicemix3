@@ -235,6 +235,10 @@
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-annotation_1.0_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-ejb_2.1_spec</artifactId>
     </dependency>
     <dependency>
