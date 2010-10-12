@@ -820,7 +820,9 @@ public class JBIContainer extends BaseLifeCycle implements Container {
      */
     public synchronized void setMBeanServer(MBeanServer mbs) {
         this.mbeanServer = mbs;
-        if (this.mbeanServer != null && this.executorFactory != null && this.executorFactory instanceof org.apache.servicemix.executors.impl.ExecutorFactoryImpl) {
+        if (this.mbeanServer != null
+                && this.executorFactory != null
+                && this.executorFactory instanceof org.apache.servicemix.executors.impl.ExecutorFactoryImpl) {
             ((org.apache.servicemix.executors.impl.ExecutorFactoryImpl) this.executorFactory).setMbeanServer(this.mbeanServer);
         }
     }
