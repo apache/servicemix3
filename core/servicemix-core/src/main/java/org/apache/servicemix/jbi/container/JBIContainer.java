@@ -26,7 +26,6 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
-
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
 import javax.jbi.component.ComponentLifeCycle;
@@ -46,8 +45,6 @@ import javax.swing.event.EventListenerList;
 import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
 
-import org.w3c.dom.DocumentFragment;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.JbiConstants;
@@ -57,7 +54,6 @@ import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.components.util.PojoLifecycleAdaptor;
 import org.apache.servicemix.components.util.PojoSupport;
 import org.apache.servicemix.executors.ExecutorFactory;
-import org.apache.servicemix.executors.impl.ExecutorFactoryImpl;
 import org.apache.servicemix.id.IdGenerator;
 import org.apache.servicemix.jbi.api.Container;
 import org.apache.servicemix.jbi.event.ComponentListener;
@@ -85,6 +81,7 @@ import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.nmr.Broker;
 import org.apache.servicemix.jbi.nmr.DefaultBroker;
 import org.apache.servicemix.jbi.nmr.flow.Flow;
+import org.w3c.dom.DocumentFragment;
 
 /**
  * The main container
@@ -206,6 +203,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
 
     /**
      * Set the subscription flow name
+     *
      * @param subscriptionFlowName
      */
     public void setSubscriptionFlowName(String subscriptionFlowName) {
@@ -218,7 +216,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
      * @param flow
      */
     public void setFlow(Flow flow) {
-        getDefaultBroker().setFlows(new Flow[] {flow });
+        getDefaultBroker().setFlows(new Flow[]{flow});
     }
 
     /**
@@ -269,7 +267,8 @@ public class JBIContainer extends BaseLifeCycle implements Container {
     }
 
     /**
-     * Sets whether the new transaction model should be used.  
+     * Sets whether the new transaction model should be used.
+     *
      * @param useNewTransactionModel
      */
     public void setUseNewTransactionModel(boolean useNewTransactionModel) {
@@ -484,9 +483,10 @@ public class JBIContainer extends BaseLifeCycle implements Container {
     }
 
     /**
-     * load an archive from an external location. 
+     * load an archive from an external location.
      * The archive can be a Component, Service Assembly or Shared Library.
-     * @param location - can either be a url or filename (if relative - must be relative to the container)
+     *
+     * @param location  - can either be a url or filename (if relative - must be relative to the container)
      * @param autoStart - if true will start the component/service assembly
      * @throws DeploymentException
      */
@@ -497,6 +497,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
     /**
      * load an archive from an external location and starts it
      * The archive can be a Component, Service Assembly or Shared Library.
+     *
      * @param location - can either be a url or filename (if relative - must be relative to the container)
      * @throws DeploymentException
      */
@@ -526,7 +527,6 @@ public class JBIContainer extends BaseLifeCycle implements Container {
     }
 
     /**
-     *
      * @return the AdminCommandsService
      */
     public AdminCommandsService getAdminCommandsService() {
@@ -547,7 +547,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
      * letting each test case create its own empty servicemix install
      *
      * @param generatedRootDirPrefix the prefix used to auto-create the
-     * rootDir
+     *                               rootDir
      * @see #setRootDir(String)
      * @see #setGeneratedRootDirPrefix(String)
      */
@@ -558,15 +558,15 @@ public class JBIContainer extends BaseLifeCycle implements Container {
     public boolean isGenerateRootDir() {
         return generateRootDir;
     }
-    
+
     public long getForceShutdown() {
         return forceShutdown;
     }
-    
+
     /**
      * Set the timeout (in ms) before a shutdown is forced by cancelling all pending exchanges.
      * The default value is 0 -- no forced shutdown
-     * 
+     *
      * @param forceShutdown the timeout in ms
      */
     public void setForceShutdown(long forceShutdown) {
@@ -579,8 +579,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
      * installation of ServiceMix
      *
      * @param generateRootDir if true this will enable the auto-generation of the rootDir
-     * if the rootDir property is not configured
-     *
+     *                        if the rootDir property is not configured
      * @see #setRootDir(String)
      * @see #setGeneratedRootDirPrefix(String)
      */
@@ -632,7 +631,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
             // register self with the ManagementContext
             try {
                 managementContext.registerMBean(ManagementContext.getContainerObjectName(managementContext.getJmxDomainName(), getName()),
-                                this, LifeCycleMBean.class);
+                        this, LifeCycleMBean.class);
             } catch (JMException e) {
                 throw new JBIException(e);
             }
@@ -715,7 +714,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
             autoDeployService.shutDown();
             deploymentService.shutDown();
             installationService.shutDown();
-            shutdownRegistry();           
+            shutdownRegistry();
             broker.shutDown();
             shutdownServices();
             clientFactory.shutDown();
@@ -741,7 +740,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
             public Boolean call() throws Exception {
                 registry.shutDown();
                 return true;
-            };
+            }
         });
 
         //use daemon thread to run this shutdown task
@@ -749,7 +748,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
         Thread daemonShutDownThread = new Thread(shutdown);
         daemonShutDownThread.setDaemon(true);
         daemonShutDownThread.start();
-        
+
         try {
             if (forceShutdown > 0) {
                 LOG.info("Waiting another " + forceShutdown + " ms for complete shutdown of the components and service assemblies");
@@ -766,7 +765,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
 
     /**
      * Force a container shutdown by canceling all pending exchanges
-     * 
+     *
      * @param e the exception that caused the forced container shutdown
      */
     protected void forceShutdown(Exception e) {
@@ -821,6 +820,9 @@ public class JBIContainer extends BaseLifeCycle implements Container {
      */
     public synchronized void setMBeanServer(MBeanServer mbs) {
         this.mbeanServer = mbs;
+        if (this.mbeanServer != null && this.executorFactory != null && this.executorFactory instanceof org.apache.servicemix.executors.impl.ExecutorFactoryImpl) {
+            ((org.apache.servicemix.executors.impl.ExecutorFactoryImpl) this.executorFactory).setMbeanServer(this.mbeanServer);
+        }
     }
 
     /**
@@ -909,7 +911,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
     }
 
     /**
-     * @param context
+     * @param cns
      * @param externalEndpoint
      * @throws JBIException
      */
@@ -918,7 +920,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
     }
 
     /**
-     * @param context
+     * @param cns
      * @param externalEndpoint
      * @throws JBIException
      */
@@ -1099,7 +1101,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
             return adaptor;
         } else {
             throw new IllegalArgumentException("Component name: " + id
-                            + " is bound to an object which is not a JBI component, it is of type: " + bean.getClass().getName());
+                    + " is bound to an object which is not a JBI component, it is of type: " + bean.getClass().getName());
         }
     }
 
@@ -1144,7 +1146,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
      * @throws JBIException
      */
     public ObjectName activateComponent(File installDir, Component component, String description, ComponentContextImpl context,
-                    boolean binding, boolean service, String[] sharedLibraries) throws JBIException {
+                                        boolean binding, boolean service, String[] sharedLibraries) throws JBIException {
         ComponentNameSpace cns = context.getComponentNameSpace();
         ActivationSpec activationSpec = new ActivationSpec();
         activationSpec.setComponent(component);
@@ -1163,7 +1165,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
      * @throws JBIException
      */
     public ObjectName activateComponent(Component component, String description, ActivationSpec activationSpec, boolean pojo,
-                    boolean binding, boolean service, String[] sharedLibraries) throws JBIException {
+                                        boolean binding, boolean service, String[] sharedLibraries) throws JBIException {
         ComponentNameSpace cns = new ComponentNameSpace(getName(), activationSpec.getComponentName());
         if (registry.getComponent(cns) != null) {
             throw new JBIException("A component is already registered for " + cns);
@@ -1184,10 +1186,10 @@ public class JBIContainer extends BaseLifeCycle implements Container {
      * @return the ObjectName of the Component's MBean
      * @throws JBIException
      */
-    public ObjectName activateComponent(File installationDir, Component component, 
-                                       String description, ComponentContextImpl context,
-                                       ActivationSpec activationSpec, boolean pojo, 
-                                       boolean binding, boolean service, String[] sharedLibraries) throws JBIException {
+    public ObjectName activateComponent(File installationDir, Component component,
+                                        String description, ComponentContextImpl context,
+                                        ActivationSpec activationSpec, boolean pojo,
+                                        boolean binding, boolean service, String[] sharedLibraries) throws JBIException {
         ObjectName result = null;
         ComponentNameSpace cns = new ComponentNameSpace(getName(), activationSpec.getComponentName());
         if (LOG.isDebugEnabled()) {
@@ -1238,7 +1240,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
     }
 
     protected ExecutorFactory createExecutorFactory() throws JBIException {
-        return new ExecutorFactoryImpl();
+        return getExecutorFactory() != null ? getExecutorFactory() : new org.apache.servicemix.executors.impl.ExecutorFactoryImpl();
     }
 
     /**
@@ -1252,7 +1254,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
         ComponentAdaptor answer = null;
         if (lifeCycle instanceof MessageExchangeListener) {
             answer = new ComponentAdaptorMEListener(lifeCycle, activationSpec.getService(), activationSpec.getEndpoint(),
-                            (MessageExchangeListener) lifeCycle);
+                    (MessageExchangeListener) lifeCycle);
         } else {
             answer = new ComponentAdaptor(lifeCycle, activationSpec.getService(), activationSpec.getEndpoint());
         }
@@ -1282,7 +1284,8 @@ public class JBIContainer extends BaseLifeCycle implements Container {
 
     /**
      * Retrieve the value for automatic transaction enlistment.
-     * @return 
+     *
+     * @return
      */
     public boolean isAutoEnlistInTransaction() {
         return autoEnlistInTransaction;
@@ -1293,7 +1296,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
      * When this parameter is set to <code>true</code> and a transaction
      * is running when sending / receiving an exchange, this operation will
      * automatically be done in the current transaction.
-     * 
+     *
      * @param autoEnlistInTransaction
      */
     public void setAutoEnlistInTransaction(boolean autoEnlistInTransaction) {
@@ -1308,7 +1311,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
      * Set the new default value for exchange persistence.
      * This value will be the default if none is configured on
      * the activation spec of the component or on the message.
-     * 
+     *
      * @param persistent
      */
     public void setPersistent(boolean persistent) {
@@ -1437,6 +1440,9 @@ public class JBIContainer extends BaseLifeCycle implements Container {
      */
     public void setExecutorFactory(ExecutorFactory executorFactory) {
         this.executorFactory = executorFactory;
+        if (this.executorFactory != null && this.executorFactory instanceof org.apache.servicemix.executors.impl.ExecutorFactoryImpl) {
+            ((org.apache.servicemix.executors.impl.ExecutorFactoryImpl) this.executorFactory).setMbeanServer(getMBeanServer());
+        }
     }
 
 
