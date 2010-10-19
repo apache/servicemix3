@@ -39,7 +39,7 @@
     </description>
     
     <prerequisites>
-        <maven>2.0.6</maven>
+        <maven>2.2.1</maven>
     </prerequisites>
 
     <scm>
@@ -100,9 +100,9 @@
         <spring-version>3.0.3.RELEASE</spring-version>
         <activemq-version>5.4.1</activemq-version>
         <activeio-version>3.1.2</activeio-version>
-        <camel-version>2.4.0</camel-version>
+        <camel-version>2.5-SNAPSHOT</camel-version>
         <jencks-version>2.2</jencks-version>
-        <jetty-version>6.1.22</jetty-version>
+        <jetty-version>6.1.25</jetty-version>
         <jetty-servlet-api-version>6.1.14</jetty-servlet-api-version>
         <geronimo-version>2.0.2</geronimo-version>
         <geronimo-annotation-version>1.1.1</geronimo-annotation-version>
@@ -118,7 +118,7 @@
         <oro-version>2.0.8</oro-version>
         <sitemesh-version>2.2.1</sitemesh-version>
         <woden-version>1.0.0M6</woden-version>
-        <cxf-version>2.2.10</cxf-version>
+        <cxf-version>2.2.11</cxf-version>
         <jaxb.version>2.1</jaxb.version>
         <jaxb.impl.version>2.1.12</jaxb.impl.version>
         <jaxb.xjc.version>2.1.12</jaxb.xjc.version>
