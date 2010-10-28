@@ -102,7 +102,7 @@
         <activeio-version>3.1.2</activeio-version>
         <camel-version>2.5-SNAPSHOT</camel-version>
         <jencks-version>2.2</jencks-version>
-        <jetty-version>6.1.25</jetty-version>
+        <jetty-version>6.1.22</jetty-version>
         <jetty-servlet-api-version>6.1.14</jetty-servlet-api-version>
         <geronimo-version>2.0.2</geronimo-version>
         <geronimo-annotation-version>1.1.1</geronimo-annotation-version>
