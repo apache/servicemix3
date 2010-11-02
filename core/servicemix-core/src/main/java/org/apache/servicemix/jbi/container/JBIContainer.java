@@ -129,6 +129,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
     private AtomicBoolean containerInitialized = new AtomicBoolean(false);
     private IdGenerator idGenerator = new IdGenerator();
     private long forceShutdown;
+    private boolean optimizedDelivery = true;
 
     /**
      * Default Constructor
@@ -1461,5 +1462,13 @@ public class JBIContainer extends BaseLifeCycle implements Container {
                 return file.getAbsolutePath();
             }
         }
+    }
+
+    public boolean isOptimizedDelivery() {
+        return optimizedDelivery;
+    }
+
+    public void setOptimizedDelivery(boolean optimizedDelivery) {
+        this.optimizedDelivery = optimizedDelivery;
     }
 }

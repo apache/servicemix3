@@ -24,7 +24,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
 import javax.jbi.component.ComponentLifeCycle;
@@ -607,7 +606,7 @@ public class DeliveryChannelImpl implements DeliveryChannel {
         // the delivery can be made synchronously, so we don't need
         // to bother with transactions
         MessageExchangeListener listener = getExchangeListener();
-        if (listener != null) {
+        if (listener != null && this.container.isOptimizedDelivery()) {
             me.handleAccept();
             if (LOG.isTraceEnabled()) {
                 LOG.trace("Received: " + me);
