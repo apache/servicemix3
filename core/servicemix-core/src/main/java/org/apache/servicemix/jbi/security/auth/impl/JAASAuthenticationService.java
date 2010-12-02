@@ -58,6 +58,8 @@ public class JAASAuthenticationService implements AuthenticationService {
                         ((PasswordCallback) callbacks[i]).setPassword(((String) credentials).toCharArray());
                     } else if (callbacks[i] instanceof CertificateCallback && credentials instanceof X509Certificate) {
                         ((CertificateCallback) callbacks[i]).setCertificate((X509Certificate) credentials);
+                    } else if (callbacks[i] instanceof CertificateCallback && credentials instanceof X509Certificate[]) {
+                        ((CertificateCallback) callbacks[i]).setCertificate(((X509Certificate[]) credentials)[0]);
                     } else {
                         throw new UnsupportedCallbackException(callbacks[i]);
                     }
