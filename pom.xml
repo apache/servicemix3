@@ -59,7 +59,7 @@
 
     <properties>
         <servicemix-utils-version>1.3.0</servicemix-utils-version>
-        <servicemix-specs-version>1.6-SNAPSHOT</servicemix-specs-version>
+        <servicemix-specs-version>1.6.0</servicemix-specs-version>
         <servicemix-common-version>2010.02-SNAPSHOT</servicemix-common-version>
         <servicemix-shared-version>2010.02-SNAPSHOT</servicemix-shared-version>
         <servicemix-quartz-version>2010.02-SNAPSHOT</servicemix-quartz-version>
@@ -89,7 +89,7 @@
         <servicemix-exec-version>2010.02-SNAPSHOT</servicemix-exec-version>
         <servicemix-vfs-version>2010.02-SNAPSHOT</servicemix-vfs-version>
 
-        <jbi-plugin-version>4.4-SNAPSHOT</jbi-plugin-version>
+        <jbi-plugin-version>4.4</jbi-plugin-version>
         <res-maven-plugin-version>4.1</res-maven-plugin-version>
         <servicemix-build-version>1.0</servicemix-build-version>
         
@@ -97,12 +97,12 @@
         <xfire-version>1.2.5</xfire-version>
         <mavenAssemblyPluginVersion>2.1</mavenAssemblyPluginVersion>
         <xbean-version>3.7</xbean-version>
-        <spring-version>3.0.3.RELEASE</spring-version>
-        <activemq-version>5.4.1</activemq-version>
+        <spring-version>3.0.4.RELEASE</spring-version>
+        <activemq-version>5.4.2</activemq-version>
         <activeio-version>3.1.2</activeio-version>
         <camel-version>2.5.0</camel-version>
         <jencks-version>2.2</jencks-version>
-        <jetty-version>6.1.22</jetty-version>
+        <jetty-version>6.1.25</jetty-version>
         <jetty-servlet-api-version>6.1.14</jetty-servlet-api-version>
         <geronimo-version>2.0.2</geronimo-version>
         <geronimo-annotation-version>1.1.1</geronimo-annotation-version>
