@@ -50,7 +50,7 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-compiler</artifactId>
-            <version>4.0.7</version>
+            <version>5.1.1</version>
             <scope>test</scope>
             <exclusions>
               <exclusion>
