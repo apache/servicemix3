@@ -54,6 +54,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+        <groupId>commons-httpclient</groupId>
+        <artifactId>commons-httpclient</artifactId>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-jsr181</artifactId>
       <scope>test</scope>
@@ -80,7 +85,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
-      <artifactId>geronimo-servlet_2.4_spec</artifactId>
+      <artifactId>geronimo-servlet_3.0_spec</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

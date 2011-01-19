@@ -72,34 +72,34 @@
     <properties>
         <servicemix-utils-version>1.3.0</servicemix-utils-version>
         <servicemix-specs-version>1.6.0</servicemix-specs-version>
-        <servicemix-common-version>2010.02</servicemix-common-version>
-        <servicemix-shared-version>2010.02</servicemix-shared-version>
-        <servicemix-quartz-version>2010.02</servicemix-quartz-version>
-        <servicemix-jms-version>2010.02</servicemix-jms-version>
-        <servicemix-jsr181-version>2010.02</servicemix-jsr181-version>
-        <servicemix-http-version>2010.02</servicemix-http-version>
-        <servicemix-mail-version>2010.02</servicemix-mail-version>
-        <servicemix-osworkflow-version>2010.02</servicemix-osworkflow-version>
-        <servicemix-wsn2005-version>2010.02</servicemix-wsn2005-version>
+        <servicemix-common-version>2011.01-SNAPSHOT</servicemix-common-version>
+        <servicemix-shared-version>2011.01-SNAPSHOT</servicemix-shared-version>
+        <servicemix-quartz-version>2011.01-SNAPSHOT</servicemix-quartz-version>
+        <servicemix-jms-version>2011.01-SNAPSHOT</servicemix-jms-version>
+        <servicemix-jsr181-version>2011.01-SNAPSHOT</servicemix-jsr181-version>
+        <servicemix-http-version>2011.01-SNAPSHOT</servicemix-http-version>
+        <servicemix-mail-version>2011.01-SNAPSHOT</servicemix-mail-version>
+        <servicemix-osworkflow-version>2011.01-SNAPSHOT</servicemix-osworkflow-version>
+        <servicemix-wsn2005-version>2011.01-SNAPSHOT</servicemix-wsn2005-version>
         <servicemix-lwcontainer-version>3.3.2</servicemix-lwcontainer-version>
-        <servicemix-bean-version>2010.02</servicemix-bean-version>
-        <servicemix-eip-version>2010.02</servicemix-eip-version>
-        <servicemix-script-version>2010.02</servicemix-script-version>
-        <servicemix-scripting-version>2010.02</servicemix-scripting-version>
-        <servicemix-validation-version>2010.02</servicemix-validation-version>
-        <servicemix-ftp-version>2010.02</servicemix-ftp-version>
-        <servicemix-xmpp-version>2010.02</servicemix-xmpp-version>
-        <servicemix-saxon-version>2010.02</servicemix-saxon-version>
-        <servicemix-truezip-version>2010.02</servicemix-truezip-version>
-        <servicemix-camel-version>2010.02</servicemix-camel-version>
-        <servicemix-cxf-bc-version>2010.02</servicemix-cxf-bc-version>
-        <servicemix-cxf-se-version>2010.02</servicemix-cxf-se-version>
-        <servicemix-drools-version>2010.02</servicemix-drools-version>
-        <servicemix-file-version>2010.02</servicemix-file-version>
-        <servicemix-snmp-version>2010.02</servicemix-snmp-version>
-        <servicemix-smpp-version>2010.02</servicemix-smpp-version>
-        <servicemix-exec-version>2010.02</servicemix-exec-version>
-        <servicemix-vfs-version>2010.02</servicemix-vfs-version>
+        <servicemix-bean-version>2011.01-SNAPSHOT</servicemix-bean-version>
+        <servicemix-eip-version>2011.01-SNAPSHOT</servicemix-eip-version>
+        <servicemix-script-version>2011.01-SNAPSHOT</servicemix-script-version>
+        <servicemix-scripting-version>2011.01-SNAPSHOT</servicemix-scripting-version>
+        <servicemix-validation-version>2011.01-SNAPSHOT</servicemix-validation-version>
+        <servicemix-ftp-version>2011.01-SNAPSHOT</servicemix-ftp-version>
+        <servicemix-xmpp-version>2011.01-SNAPSHOT</servicemix-xmpp-version>
+        <servicemix-saxon-version>2011.01-SNAPSHOT</servicemix-saxon-version>
+        <servicemix-truezip-version>2011.01-SNAPSHOT</servicemix-truezip-version>
+        <servicemix-camel-version>2011.01-SNAPSHOT</servicemix-camel-version>
+        <servicemix-cxf-bc-version>2011.01-SNAPSHOT</servicemix-cxf-bc-version>
+        <servicemix-cxf-se-version>2011.01-SNAPSHOT</servicemix-cxf-se-version>
+        <servicemix-drools-version>2011.01-SNAPSHOT</servicemix-drools-version>
+        <servicemix-file-version>2011.01-SNAPSHOT</servicemix-file-version>
+        <servicemix-snmp-version>2011.01-SNAPSHOT</servicemix-snmp-version>
+        <servicemix-smpp-version>2011.01-SNAPSHOT</servicemix-smpp-version>
+        <servicemix-exec-version>2011.01-SNAPSHOT</servicemix-exec-version>
+        <servicemix-vfs-version>2011.01-SNAPSHOT</servicemix-vfs-version>
 
         <jbi-plugin-version>4.4</jbi-plugin-version>
         <res-maven-plugin-version>4.1</res-maven-plugin-version>
@@ -112,7 +112,7 @@
         <spring-version>3.0.5.RELEASE</spring-version>
         <activemq-version>5.4.2</activemq-version>
         <activeio-version>3.1.2</activeio-version>
-        <camel-version>2.5.0</camel-version>
+        <camel-version>2.6-SNAPSHOT</camel-version>
         <jencks-version>2.2</jencks-version>
         <jetty-version>6.1.25</jetty-version>
         <jetty-servlet-api-version>6.1.14</jetty-servlet-api-version>
@@ -130,7 +130,7 @@
         <oro-version>2.0.8</oro-version>
         <sitemesh-version>2.2.1</sitemesh-version>
         <woden-version>1.0.0M6</woden-version>
-        <cxf-version>2.2.11</cxf-version>
+        <cxf-version>2.3.2-SNAPSHOT</cxf-version>
         <jaxb.version>2.1</jaxb.version>
         <jaxb.impl.version>2.1.13</jaxb.impl.version>
         <jaxb.xjc.version>2.1.13</jaxb.xjc.version>
@@ -1123,8 +1123,8 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-servlet_2.4_spec</artifactId>
-                <version>1.1</version>
+                <artifactId>geronimo-servlet_3.0_spec</artifactId>
+                <version>1.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
