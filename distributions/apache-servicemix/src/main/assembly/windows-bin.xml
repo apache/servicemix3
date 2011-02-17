@@ -157,6 +157,7 @@
 
                 <include>javax.activation:activation</include>
                 <include>javax.mail:mail</include>
+                <include>javax.xml.bind:jaxb-api</include>
 
                 <include>com.thoughtworks.xstream:xstream</include>
                 <include>xerces:xercesImpl</include>
