@@ -309,7 +309,7 @@ run() {
                 #     -Dcygwin.user.home="$CYGHOME" \
                 #     -Djava.endorsed.dirs="$SERVICEMIX_HOME/lib/endorsed" \
                 #     org.codehaus.classworlds.Launcher \
-                #     "$@"        
+                #     "$@"
                 exec "$JAVA" \
                     $JAVA_OPTS \
                     $SERVICEMIX_OPTS \
@@ -320,7 +320,8 @@ run() {
                     -Djava.endorsed.dirs="$SERVICEMIX_HOME/lib/endorsed" \
                     org.codehaus.classworlds.Launcher \
                     "$@" &
-                    
+
+                test -d $SERVICEMIX_HOME/data || mkdir $SERVICEMIX_HOME/data
                 echo $! > $SERVICEMIX_HOME/data/servicemix.pid
                 exit 0               
                 ;;
