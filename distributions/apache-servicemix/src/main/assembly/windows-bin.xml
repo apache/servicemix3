@@ -146,6 +146,7 @@
                 <include>org.apache.geronimo.specs:geronimo-j2ee-connector_1.5_spec</include>
                 <include>org.apache.geronimo.specs:geronimo-ejb_2.1_spec</include>
                 <include>org.apache.geronimo.specs:geronimo-servlet_3.0_spec</include>
+                <include>org.apache.geronimo.specs:geronimo-ws-metadata_2.0_spec</include>
 
                 <include>org.jencks:jencks</include>
                 <include>org.objectweb.howl:howl</include>
@@ -158,6 +159,7 @@
                 <include>javax.activation:activation</include>
                 <include>javax.mail:mail</include>
                 <include>javax.xml.bind:jaxb-api</include>
+                <include>javax.xml.ws:jaxws-api</include>
 
                 <include>com.thoughtworks.xstream:xstream</include>
                 <include>xerces:xercesImpl</include>
