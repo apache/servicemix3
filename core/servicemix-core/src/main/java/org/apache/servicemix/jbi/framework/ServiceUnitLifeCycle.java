@@ -19,6 +19,7 @@ package org.apache.servicemix.jbi.framework;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.util.concurrent.Callable;
 
 import javax.jbi.component.ServiceUnitManager;
 import javax.jbi.management.DeploymentException;
@@ -39,6 +40,16 @@ import org.apache.servicemix.jbi.management.MBeanInfoProvider;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
 
 public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider {
+
+    /**
+     * Default timeout for deployment operation.
+     */
+    private static final long DEFAULT_DEPLOYMENT_OPERATION_TIMEOUT = 2 * 60 * 1000;
+
+    /**
+     * Name of the system property that contains deployment operation timeout.
+     */
+    private static final String DEPLOYMENT_OPERATION_TIMEOUT_PROPERTY = "org.apache.servicemix.deployment.timeout";
 
     private static final Log LOG = LogFactory.getLog(ServiceUnitLifeCycle.class);
 
@@ -71,76 +82,159 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
     }
 
     /**
+     * Deployment operation executor that supports timeout.
+     */
+    private class TimedOutExecutor {
+
+        private final ClassLoader classLoader;
+        private final String name;
+        private final Callable<?> task;
+        private Exception fault;
+
+        /**
+         * Constructor.
+         *
+         * @param classLoader the class loader to use for task execution.
+         * @param name Name of this executor. Used for error reporting purposes.
+         * @param task Task to execute. Return value of task is not used.
+         */
+        public TimedOutExecutor(ClassLoader classLoader, String name, Callable<?> task) {
+            this.classLoader = classLoader;
+            this.name = name;
+            this.task = task;
+        }
+
+        private class Worker implements Runnable {
+
+            public void run() {
+                try {
+                    task.call();
+                } catch (Exception e) {
+                    fault = e;
+                }
+            }
+        }
+
+        /**
+         * Executes task respecting timeout.
+         *
+         * @param timeout Timeout for task execution in milliseconds.
+         * @throws DeploymentException If task throws an exception, current thread is interrupted or timeout expires.
+         */
+        public void execute(long timeout) throws DeploymentException {
+            Thread worker = new Thread(new Worker(), "AsyncDeployer for " + name);
+            worker.setContextClassLoader(classLoader);
+            worker.start();
+            try {
+                worker.join(timeout);
+                if (worker.isAlive()) {
+                    worker.interrupt();
+                    throw new DeploymentException("Timeout expired while waiting for async operation " + name);
+                } else {
+                    if (fault != null) {
+                        throw new DeploymentException("Error while executing async operation " + name, fault);
+                    }
+                }
+            } catch (InterruptedException interruptedException) {
+                Thread.currentThread().interrupt();
+                throw new DeploymentException("Interrupted while waiting for async operation " + name, interruptedException);
+            }
+        }
+    }
+
+    /**
+     * Returns effective deployment operation timeout.
+     *
+     * @return Timeout in milliseconds.
+     */
+    private long getDeploymentTimeout() {
+        String propertyValue = System.getProperty(DEPLOYMENT_OPERATION_TIMEOUT_PROPERTY);
+        if (propertyValue == null) {
+            return DEFAULT_DEPLOYMENT_OPERATION_TIMEOUT;
+        }
+        try {
+            return Long.parseLong(propertyValue);
+        } catch (NumberFormatException numberFormatException) {
+            LOG.warn("Wrong value for system property" + DEPLOYMENT_OPERATION_TIMEOUT_PROPERTY, numberFormatException);
+            return DEFAULT_DEPLOYMENT_OPERATION_TIMEOUT;
+        }
+    }
+
+    /**
      * Initialize the service unit.
+     *
      * @throws DeploymentException 
      */
     public void init() throws DeploymentException {
         LOG.info("Initializing service unit: " + getName());
         checkComponentStarted("init");
-        ServiceUnitManager sum = getServiceUnitManager();
-        File path = getServiceUnitRootPath();
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        try {
-            Thread.currentThread().setContextClassLoader(getComponentClassLoader());
-            sum.init(getName(), path.getAbsolutePath());
-        } finally {
-            Thread.currentThread().setContextClassLoader(cl);
-        }
+        final ServiceUnitManager sum = getServiceUnitManager();
+        final File path = getServiceUnitRootPath();
+        new TimedOutExecutor(getComponentClassLoader(), "init " + getName(),
+                new Callable<Object>() {
+                    public Object call() throws Exception {
+                        sum.init(getName(), path.getAbsolutePath());
+                        return null;
+                    }
+                }).execute(getDeploymentTimeout());
         currentState = STOPPED;
     }
     
     /**
      * Start the service unit.
+     *
      * @throws DeploymentException 
      */
     public void start() throws DeploymentException {
         LOG.info("Starting service unit: " + getName());
         checkComponentStarted("start");
-        ServiceUnitManager sum = getServiceUnitManager();
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        try {
-            Thread.currentThread().setContextClassLoader(getComponentClassLoader());
-            sum.start(getName());
-        } finally {
-            Thread.currentThread().setContextClassLoader(cl);
-        }
+        final ServiceUnitManager sum = getServiceUnitManager();
+        new TimedOutExecutor(getComponentClassLoader(), "start " + getName(),
+                new Callable<Object>() {
+                    public Object call() throws Exception {
+                        sum.start(getName());
+                        return null;
+                    }
+                }).execute(getDeploymentTimeout());
         currentState = STARTED;
     }
 
     /**
      * Stop the service unit. This suspends current messaging activities.
+     *
      * @throws DeploymentException 
      */
     public void stop() throws DeploymentException {
         LOG.info("Stopping service unit: " + getName());
         checkComponentStarted("stop");
-        ServiceUnitManager sum = getServiceUnitManager();
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        try {
-            Thread.currentThread().setContextClassLoader(getComponentClassLoader());
-            sum.stop(getName());
-        } finally {
-            Thread.currentThread().setContextClassLoader(cl);
-        }
+        final ServiceUnitManager sum = getServiceUnitManager();
+        new TimedOutExecutor(getComponentClassLoader(), "stop " + getName(),
+                new Callable<Object>() {
+                    public Object call() throws Exception {
+                        sum.stop(getName());
+                        return null;
+                    }
+                }).execute(getDeploymentTimeout());
         currentState = STOPPED;
     }
 
     /**
      * Shut down the service unit. 
      * This releases resources, preparatory to uninstallation.
+     *
      * @throws DeploymentException 
      */
     public void shutDown() throws DeploymentException {
         LOG.info("Shutting down service unit: " + getName());
         checkComponentStartedOrStopped("shutDown");
-        ServiceUnitManager sum = getServiceUnitManager();
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        try {
-            Thread.currentThread().setContextClassLoader(getComponentClassLoader());
-            sum.shutDown(getName());
-        } finally {
-            Thread.currentThread().setContextClassLoader(cl);
-        }
+        final ServiceUnitManager sum = getServiceUnitManager();
+        new TimedOutExecutor(getComponentClassLoader(), "shutdown " + getName(),
+                new Callable<Object>() {
+                    public Object call() throws Exception {
+                        sum.shutDown(getName());
+                        return null;
+                    }
+                }).execute(getDeploymentTimeout());
         currentState = SHUTDOWN;
     }
 

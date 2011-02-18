@@ -35,11 +35,11 @@ import org.apache.commons.logging.LogFactory;
  * @version $Revision$
  */
 public class ComponentRegistry {
-    
+
+    private final Log log = LogFactory.getLog(ComponentRegistry.class);
     private final Map<ComponentNameSpace, ComponentMBeanImpl> idMap = new LinkedHashMap<ComponentNameSpace, ComponentMBeanImpl>();
     private boolean runningStateInitialized;
     private Registry registry;
-    private final Log log = LogFactory.getLog(ComponentRegistry.class);
 
     protected ComponentRegistry(Registry reg) {
         this.registry = reg;
