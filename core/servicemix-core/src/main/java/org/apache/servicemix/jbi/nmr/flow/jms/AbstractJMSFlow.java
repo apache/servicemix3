@@ -476,7 +476,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
             boolean useConnectionFromPool = (connectionFactory instanceof PooledConnectionFactory)
                 && ((PooledConnectionFactory)connectionFactory).getMaxConnections() > 1;
             if (useConnectionFromPool) {
-                connectionFactory.createConnection();
+                cnx = connectionFactory.createConnection();
                 cnx.start();
             }
             
@@ -493,11 +493,6 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
                 queueProducer.send(msg);
             } finally {
                 inboundSession.close();
-                if (useConnectionFromPool) {
-                    // return connection to the pool
-                    cnx.stop();
-                    cnx.close();
-                }
             }
         } catch (JMSException e) {
             log.error("Failed to send exchange: " + me + " internal JMS Network", e);
