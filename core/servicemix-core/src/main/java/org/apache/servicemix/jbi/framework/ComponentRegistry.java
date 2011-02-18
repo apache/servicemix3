@@ -19,13 +19,15 @@ package org.apache.servicemix.jbi.framework;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Registry for Components
@@ -34,21 +36,23 @@ import javax.jbi.component.Component;
  */
 public class ComponentRegistry {
     
-    private Map<ComponentNameSpace, ComponentMBeanImpl> idMap = new LinkedHashMap<ComponentNameSpace, ComponentMBeanImpl>();
+    private final Map<ComponentNameSpace, ComponentMBeanImpl> idMap = new LinkedHashMap<ComponentNameSpace, ComponentMBeanImpl>();
     private boolean runningStateInitialized;
     private Registry registry;
-    
-    
+    private final Log log = LogFactory.getLog(ComponentRegistry.class);
+
     protected ComponentRegistry(Registry reg) {
         this.registry = reg;
     }
+
     /**
      * Register a Component
+     *
      * @param name
      * @param description
      * @param component
-     * @param dc
      * @param binding
+     * @param sharedLibraries
      * @param service
      * @return an associated ComponentConnector or null if it already exists
      */
@@ -68,42 +72,51 @@ public class ComponentRegistry {
     }
     
     /**
-     * start components
+     * Start components
+     *
      * @throws JBIException
      */
     public synchronized void start() throws JBIException {
         if (!setInitialRunningStateFromStart()) {
-            for (Iterator<ComponentMBeanImpl> i = getComponents().iterator(); i.hasNext();) {
-                ComponentMBeanImpl lcc = i.next();
-                lcc.doStart();
+            for (ComponentMBeanImpl lcc : getComponents()) {
+                try {
+                    lcc.start();
+                } catch (Exception e) {
+                    log.error("Error during component startup.", e);
+                }
             }
         }
     }
 
     /**
-     * stop components
-     * @throws JBIException 
-     * 
+     * Stop components
+     *
      * @throws JBIException
      */
     public synchronized void stop() throws JBIException  {
-        for (Iterator<ComponentMBeanImpl> i = getReverseComponents().iterator(); i.hasNext();) {
-            ComponentMBeanImpl lcc = i.next();
-            lcc.doStop();
+        for (ComponentMBeanImpl lcc : getReverseComponents()) {
+            try {
+                lcc.doStop();
+            } catch (Exception e) {
+                log.error("Error during component stop.", e);
+            }
         }
         runningStateInitialized = false;
     }
     
     /**
-     * shutdown all Components
+     * Shutdown all Components
      * 
      * @throws JBIException
      */
     public synchronized void shutDown() throws JBIException {
-        for (Iterator<ComponentMBeanImpl> i = getReverseComponents().iterator(); i.hasNext();) {
-            ComponentMBeanImpl lcc = i.next();
+        for (ComponentMBeanImpl lcc : getReverseComponents()) {
             lcc.persistRunningState();
-            lcc.doShutDown();
+            try {
+                lcc.doShutDown();
+            } catch (Exception e) {
+                log.error("Error during component shutdown.", e);
+            }
         }
     }
     
@@ -118,8 +131,8 @@ public class ComponentRegistry {
     
     /**
      * Deregister a Component
+     *
      * @param component
-     * @return the deregistered component
      */
     public synchronized void deregisterComponent(ComponentMBeanImpl component) {
         idMap.remove(component.getComponentNameSpace());
@@ -127,6 +140,7 @@ public class ComponentRegistry {
     
     /**
      * Get a registered ComponentConnector from it's id
+     *
      * @param id
      * @return the ComponentConnector or null
      */
@@ -150,15 +164,19 @@ public class ComponentRegistry {
         boolean result = !runningStateInitialized;
         if (!runningStateInitialized) {
             runningStateInitialized = true;
-            for (Iterator<ComponentMBeanImpl> i = getComponents().iterator(); i.hasNext();) {
-                ComponentMBeanImpl lcc = i.next();
-                if (!lcc.isPojo() && !registry.isContainerEmbedded()) {
-                    lcc.setInitialRunningState();
-                } else {
-                    lcc.doStart();
+            for (ComponentMBeanImpl lcc : getComponents()) {
+                try {
+                    if (!lcc.isPojo() && !registry.isContainerEmbedded()) {
+                        lcc.setInitialRunningState();
+                    } else {
+                        lcc.doStart();
+                    }
+                } catch (Exception e) {
+                    log.error("Error during set initial running state from start.", e);
                 }
             }
         }
         return result;
     }
+
 }
