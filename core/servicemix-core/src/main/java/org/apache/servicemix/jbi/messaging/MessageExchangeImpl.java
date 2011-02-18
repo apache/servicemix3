@@ -32,12 +32,16 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.transaction.Transaction;
 import javax.xml.namespace.QName;
+import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 
 import org.w3c.dom.Node;
 
+import org.apache.commons.lang.ObjectUtils;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
@@ -59,7 +63,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
 
     public static final String FAULT = "fault";
 
-    public static final int MAX_MSG_DISPLAY_SIZE = 1500;
+    public static final int MAX_MSG_DISPLAY_SIZE = Integer.MAX_VALUE;
 
     public static final boolean PRESERVE_CONTENT = Boolean.getBoolean("org.apache.servicemix.preserveContent");
 
@@ -717,6 +721,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
         this.txLock = txLock;
     }
 
+    @Override
     public String toString() {
         try {
             StringBuffer sb = new StringBuffer();
@@ -727,6 +732,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             sb.append("  id: ").append(getExchangeId()).append('\n');
             sb.append("  status: ").append(getStatus()).append('\n');
             sb.append("  role: ").append(getRole() == Role.CONSUMER ? "consumer" : "provider").append('\n');
+            sb.append("  mep: ").append(getPattern()).append('\n');
             if (getInterfaceName() != null) {
                 sb.append("  interface: ").append(getInterfaceName()).append('\n');
             }
@@ -738,6 +744,15 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             }
             if (getOperation() != null) {
                 sb.append("  operation: ").append(getOperation()).append('\n');
+            }
+            if (getPropertyNames().size() > 0) {
+                sb.append("  properties: [").append('\n');
+                for (Object propName : getPropertyNames()) {
+                    sb.append("    ").append(propName).append(" = ");
+                    sb.append(getProperty((String)propName));
+                    sb.append('\n');
+                }
+                sb.append("  ]").append('\n');
             }
             SourceTransformer st = new SourceTransformer();
             display("in", sb, st);
@@ -757,15 +772,32 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
     }
 
     private void display(String msg, StringBuffer sb, SourceTransformer st) {
-        if (getMessage(msg) != null) {
+        NormalizedMessage message = getMessage(msg);
+        if (message != null) {
             sb.append("  ").append(msg).append(": ");
             try {
-                if (getMessage(msg).getContent() != null) {
+                Set<?> propertyNames = message.getPropertyNames();
+                if (propertyNames.size() > 0) {
+                    sb.append("\n  ").append(msg).append(" properties: [").append('\n');
+                    for (Object propertyName : propertyNames) {
+                        sb.append("    ").append(propertyName).append(" = ");
+                        Object propertyValue = message.getProperty((String) propertyName);
+                        if (propertyValue != null && propertyValue.getClass().getName().startsWith("java.lang")) {
+                            sb.append(propertyValue);
+                        } else {
+                            sb.append(ObjectUtils.identityToString(propertyValue));
+                        }
+                        sb.append('\n');
+                    }
+                    sb.append("  ]").append('\n');
+                }
+                Source content = message.getContent();
+                if (content != null) {
                     if (PRESERVE_CONTENT) {
-                        sb.append(getMessage(msg).getContent().getClass());
+                        sb.append(content.getClass());
                     } else {
-                        Node node = st.toDOMNode(getMessage(msg).getContent());
-                        getMessage(msg).setContent(new DOMSource(node));
+                        Node node = st.toDOMNode(content);
+                        message.setContent(new DOMSource(node));
                         String str = st.toString(node);
                         if (str.length() > MAX_MSG_DISPLAY_SIZE) {
                             sb.append(str.substring(0, MAX_MSG_DISPLAY_SIZE)).append("...");
