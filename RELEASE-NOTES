@@ -16,7 +16,7 @@
  */
 
 
-                      Apache ServiceMix 3.3.2
+                      Apache ServiceMix 3.3.3
                       ========================
 
 See the README file for more general informations about ServiceMix.
@@ -33,7 +33,51 @@ Bug Tracking:  http://issues.apache.org/activemq/browse/SM
 
 Changes:
 --------
-ServiceMix 3.3.2
+ServiceMix 3.3.3
+** Bug
+    * [SM-1521] - Released version of archetype-catalog is corrupt
+    * [SM-1823] - JaasAuthenticationService not properly authenticating certificate chains.
+    * [SM-1958] - ServiceMix 3 doesn't start correctly due to NoClassDefFoundError on ActiveMQ bean
+    * [SM-1972] - Missing javax.annotation causes exceptions on AIX
+    * [SM-2025] - ServiceMix fails to start if SU hangs during startup
+    * [SM-2026] - ServiceMix does not start some components if some component failed during start
+    * [SM-2030] - SMX3 doesn't build
+    * [SM-2037] - Cant use servicemix start just after installation
+    * [SM-2056] - Upgrade to JAXB 2.2 and include JAXB API in the container lib
+    * [SM-2057] - Add JAX-WS in the distribution kit
+** Improvement
+    * [SM-1945] - Upgrade to ActiveMQ 5.3.1
+    * [SM-1950] - Upgrade to ActiveMQ 5.3.2
+    * [SM-1962] - Upgrade ServiceMix 3.3 to use Spring 3
+    * [SM-1964] - JMS Flow only uses one connection even with a PooledConnectionFactory
+    * [SM-1965] - Prepare the upgrade to ActiveMQ 5.4.0
+    * [SM-1966] - Upgrade to Camel 2.4.0
+    * [SM-1971] - Upgrade to Spring 3.0.3.RELEASE
+    * [SM-1973] - Upgrade to ActiveMQ 5.4.0
+    * [SM-1996] - Upgrade to ActiveMQ 5.4.1
+    * [SM-1997] - Upgrade to CXF 2.2.10
+    * [SM-1998] - Upgrade to Camel 2.5.0
+    * [SM-2001] - Make the executors/threadpool viewable as JMX mbeans
+    * [SM-2007] - Components should use separate thread pools for consumer and provider endpoints
+    * [SM-2019] - Upgrade to ActiveMQ 5.4.2
+    * [SM-2024] - Improve message flow logging
+    * [SM-2031] - Upgrade to SMX components 2010.02
+    * [SM-2032] - Upgrade to slf4j 1.5.8
+    * [SM-2035] - Upgrade to Spring 3.0.5.RELEASE
+    * [SM-2039] - Upgrade to CXF 2.3.2
+    * [SM-2040] - Upgrade to Camel 2.6.0
+    * [SM-2041] - Upgrade to ServiceMix Components 2011.01
+    * [SM-2043] - SimpleEndpoint fail method error is not logged
+** New Feature
+    * [SM-1977] - Support exploded JBI artifacts
+** Task
+    * [SM-1951] - upgrade to cxf 2.2.8
+    * [SM-1954] - upgrade to cxf 2.2.9
+    * [SM-2055] - Release ServiceMix 3.3.3
+** Test
+    * [SM-1968] - Use dynamic port for tests
+
+ ServiceMix 3.3.2
 ** Bug
     * [SM-1875] - Use new snapshot repository location in archetypes
     * [SM-1887] - should ship only one bcprov version in the kit
@@ -337,7 +381,7 @@ ServiceMix 3.1
     * [SM-763] - XPathPredicate should not copy the in message before processing it
     * [SM-764] - Jsr181 does not respect the transaction semantic (sync + tx)
     * [SM-765] - JCA provider should close the session after use
-    * [SM-766] - Error whit chracters latin1 when send message in JbiChannel. For example "á"
+    * [SM-766] - Error whit chracters latin1 when send message in JbiChannel. For example "ï¿½"
     * [SM-771] - An IllegalStateException is generated when using an http provider endpoint when it is deployed using the Servicemix Web war (managed mode).
     * [SM-775] - Positive preliminary response from server when using FTPSender to send multiple files
     * [SM-778] - JCAFlow stopped working after updating to 3.1 snapshot
