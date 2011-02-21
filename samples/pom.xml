@@ -27,7 +27,6 @@
     <version>3.3.3-SNAPSHOT</version>
   </parent>
   
-  <groupId>org.apache.servicemix</groupId>
   <artifactId>samples</artifactId>
   <name>ServiceMix :: Samples</name>
   <packaging>pom</packaging>

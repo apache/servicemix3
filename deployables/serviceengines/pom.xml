@@ -28,9 +28,7 @@
     <relativePath>../../parent/pom.xml</relativePath>
   </parent>
 
-  <groupId>org.apache.servicemix</groupId>
   <artifactId>serviceengines</artifactId>
-  <version>3.3.3-SNAPSHOT</version>
   <name>ServiceMix :: Service Engines</name>
   <packaging>pom</packaging>
 

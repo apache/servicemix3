@@ -31,6 +31,7 @@
   <artifactId>servicemix-console</artifactId>
   <packaging>war</packaging>
   <name>ServiceMix :: Console</name>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.servicemix.specs</groupId>

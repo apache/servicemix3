@@ -27,9 +27,7 @@
         <version>3.3.3-SNAPSHOT</version>
     </parent>
     
-    <groupId>org.apache.servicemix</groupId>
     <artifactId>web</artifactId>
-    <version>3.3.3-SNAPSHOT</version>
     <name>ServiceMix :: Web Apps</name>
     <packaging>pom</packaging>
   

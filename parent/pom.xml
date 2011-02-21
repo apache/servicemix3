@@ -27,9 +27,7 @@
     <version>3.3.3-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.apache.servicemix</groupId>
   <artifactId>parent</artifactId>
-  <version>3.3.3-SNAPSHOT</version>
   <name>ServiceMix :: Parent</name>
   <packaging>pom</packaging>
 
