@@ -112,7 +112,6 @@
         <dependencySet>
             <outputDirectory>extras</outputDirectory>
             <includes>
-                <include>org.apache.servicemix:servicemix-components</include>
                 <include>org.apache.servicemix:servicemix-beanflow</include>
             </includes>
         </dependencySet>
@@ -190,30 +189,5 @@
                 <include>commons-collections:commons-collections</include>
             </includes>
         </dependencySet>
-        <!--
-    <dependencySet>
-      <outputDirectory>lib/optional</outputDirectory>
-      <includes>
-        <include>quartz:quartz</include>
-        <include>org.apache.servicemix:servicemix-components</include>
-        <include>commons-pool:commons-pool</include>
-        <include>commons-collections:commons-collections</include>
-        <include>commons-discovery:commons-discovery</include>
-        <include>xmlbeans:xmlpublic</include>
-        <include>lingo:lingo</include>
-        <include>jaxen:jaxen</include>
-        <include>org.mortbay.jetty:jetty</include>
-        <include>org.mortbay.jetty:jetty-util</include>
-        <include>drools:drools-all-jdk1.4</include>
-        <include>stax-utils:stax-utils</include>
-        <include>junit:junit</include>
-        <include>commons-vfs:commons-vfs</include>
-        <include>rome:rome</include>
-        <include>axis:axis</include>
-        <include>axis:axis-jaxrpc</include>
-        <include>axis:axis-saaj</include>
-      </includes>
-    </dependencySet>
-        -->
     </dependencySets>
 </assembly>

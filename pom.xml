@@ -464,11 +464,6 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.servicemix</groupId>
-                <artifactId>servicemix-components</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.servicemix.geronimo</groupId>
                 <artifactId>deployer-service</artifactId>
                 <version>${project.version}</version>
