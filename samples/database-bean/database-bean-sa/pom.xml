@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.apache.servicemix.samples</groupId>
         <artifactId>database-bean</artifactId>
-        <version>3.3.2-SNAPSHOT</version>
+        <version>3.4-SNAPSHOT</version>
     </parent>         
     
     <groupId>org.apache.servicemix.samples.database-bean</groupId>
@@ -38,7 +38,7 @@
         <dependency>
             <groupId>org.apache.servicemix.samples.database-bean</groupId>
             <artifactId>database-bean-su</artifactId>
-            <version>3.3.2-SNAPSHOT</version>
+            <version>3.4-SNAPSHOT</version>
         </dependency>
     </dependencies>
     

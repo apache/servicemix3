@@ -16,8 +16,8 @@
  */
 
 
-                      Apache ServiceMix 3.3.3
-                      ========================
+                      Apache ServiceMix 3.4
+                      ======================
 
 See the README file for more general informations about ServiceMix.
 
@@ -33,21 +33,32 @@ Bug Tracking:  http://issues.apache.org/activemq/browse/SM
 
 Changes:
 --------
-ServiceMix 3.3.3
+ServiceMix 3.4
 ** Bug
+    * [SM-1438] - Exceptions while shutting down ServiceMix
+    * [SM-1456] - Statistics Service throws NPE on startup.
     * [SM-1521] - Released version of archetype-catalog is corrupt
     * [SM-1823] - JaasAuthenticationService not properly authenticating certificate chains.
+    * [SM-1863] - Exceptions for SOAP calls after retrieving WSDL
+    * [SM-1887] - should ship only one bcprov version in the kit
+    * [SM-1949] - Upgrade stax-api version
     * [SM-1958] - ServiceMix 3 doesn't start correctly due to NoClassDefFoundError on ActiveMQ bean
     * [SM-1972] - Missing javax.annotation causes exceptions on AIX
     * [SM-2025] - ServiceMix fails to start if SU hangs during startup
     * [SM-2026] - ServiceMix does not start some components if some component failed during start
     * [SM-2030] - SMX3 doesn't build
     * [SM-2037] - Cant use servicemix start just after installation
+    * [SM-2051] - Not possible to retrieve list of installed shared libraries with list-shared-libraries Ant task
     * [SM-2056] - Upgrade to JAXB 2.2 and include JAXB API in the container lib
     * [SM-2057] - Add JAX-WS in the distribution kit
 ** Improvement
+    * [SM-1573] - Use of useJBIWrapper flag in smx-cxf-bc consumer and smx-http soap-consumer endpoints is inconsistent
+    * [SM-1659] - should filter the version for kit_camel_example_pom.xml which is used in kit
+    * [SM-1660] - add createDaemonExecutor api for ExecutorFactory
+    * [SM-1828] - WS-Notification component servicemix-wsn2005 - Content Message filter does not support namespaces in the payload
     * [SM-1945] - Upgrade to ActiveMQ 5.3.1
     * [SM-1950] - Upgrade to ActiveMQ 5.3.2
+    * [SM-1960] - Upgrade to log4j 1.2.16
     * [SM-1962] - Upgrade ServiceMix 3.3 to use Spring 3
     * [SM-1964] - JMS Flow only uses one connection even with a PooledConnectionFactory
     * [SM-1965] - Prepare the upgrade to ActiveMQ 5.4.0
@@ -71,10 +82,12 @@ ServiceMix 3.3.3
 ** New Feature
     * [SM-1977] - Support exploded JBI artifacts
 ** Task
+    * [SM-1877] - update wss4j to 1.5.8
     * [SM-1951] - upgrade to cxf 2.2.8
     * [SM-1954] - upgrade to cxf 2.2.9
-    * [SM-2055] - Release ServiceMix 3.3.3
+    * [SM-2055] - Release ServiceMix 3.4
 ** Test
+    * [SM-1306] - Improve success ratio of timing sensitive tests
     * [SM-1968] - Use dynamic port for tests
 
  ServiceMix 3.3.2

@@ -38,7 +38,7 @@
       <groupId>org.apache.servicemix.samples</groupId>
       <artifactId>camel-sa</artifactId>
       <type>zip</type>
-      <version>3.3.3-SNAPSHOT</version>
+      <version>3.4-SNAPSHOT</version>
     </dependency>
 
     <!-- for testing -->
