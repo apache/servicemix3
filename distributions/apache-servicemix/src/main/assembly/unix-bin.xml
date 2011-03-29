@@ -18,7 +18,7 @@
 
 -->
 <assembly>
-    <id></id>
+    <id>unix-bin</id>
     <formats>
         <format>tar.gz</format>
     </formats>
