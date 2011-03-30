@@ -29,7 +29,7 @@
 
     <groupId>org.apache.servicemix</groupId>
     <artifactId>servicemix</artifactId>
-    <version>3.4-SNAPSHOT</version>
+    <version>3.4</version>
     <packaging>pom</packaging>
 
     <name>ServiceMix</name>
@@ -43,9 +43,9 @@
     </prerequisites>
 
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/servicemix/smx3/trunk/</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/servicemix/smx3/trunk/</developerConnection>
-        <url>http://svn.apache.org/viewcvs.cgi/servicemix/smx3/trunk/</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/servicemix/smx3/tags/servicemix-3.4</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/servicemix/smx3/tags/servicemix-3.4</developerConnection>
+        <url>http://svn.apache.org/viewcvs.cgi/servicemix/smx3/tags/servicemix-3.4</url>
     </scm>
 
     <repositories>

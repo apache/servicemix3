@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.servicemix</groupId>
     <artifactId>serviceengines</artifactId>
-    <version>3.4-SNAPSHOT</version>
+    <version>3.4</version>
   </parent>
 
   <artifactId>servicemix-lwcontainer</artifactId>

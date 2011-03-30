@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.servicemix</groupId>
     <artifactId>core</artifactId>
-    <version>3.4-SNAPSHOT</version>
+    <version>3.4</version>
   </parent>
 
   <artifactId>servicemix-core</artifactId>
@@ -340,11 +340,9 @@
             <phase>generate-sources</phase>
             <configuration>
               <tasks>
-                <mkdir dir="${project.build.directory}/fix_schema"/>
-                <move file="${project.build.directory}/xbean/servicemix.xsd" todir="${project.build.directory}/fix_schema"/>
-                <xslt in="${project.build.directory}/fix_schema/servicemix.xsd"
-                      out="${project.build.directory}/xbean/servicemix.xsd"
-                      style="src/main/xsl/fix_schema.xsl"/>
+                <mkdir dir="${project.build.directory}/fix_schema" />
+                <move file="${project.build.directory}/xbean/servicemix.xsd" todir="${project.build.directory}/fix_schema" />
+                <xslt in="${project.build.directory}/fix_schema/servicemix.xsd" out="${project.build.directory}/xbean/servicemix.xsd" style="src/main/xsl/fix_schema.xsl" />
               </tasks>
             </configuration>
             <goals>
