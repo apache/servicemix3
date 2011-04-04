@@ -112,6 +112,7 @@
         <dependencySet>
             <outputDirectory>extras</outputDirectory>
             <includes>
+                <include>org.apache.servicemix:servicemix-components</include>
                 <include>org.apache.servicemix:servicemix-beanflow</include>
             </includes>
         </dependencySet>

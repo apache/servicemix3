@@ -81,7 +81,7 @@
         <servicemix-mail-version>2011.01</servicemix-mail-version>
         <servicemix-osworkflow-version>2011.01</servicemix-osworkflow-version>
         <servicemix-wsn2005-version>2011.01</servicemix-wsn2005-version>
-        <servicemix-lwcontainer-version>3.4-SNAPSHOT</servicemix-lwcontainer-version>
+        <servicemix-lwcontainer-version>${project.version}</servicemix-lwcontainer-version>
         <servicemix-bean-version>2011.01</servicemix-bean-version>
         <servicemix-eip-version>2011.01</servicemix-eip-version>
         <servicemix-script-version>2011.01</servicemix-script-version>
@@ -150,6 +150,7 @@
             <modules>
                 <module>parent</module>
                 <module>core</module>
+                <module>common</module>
                 <module>deployables</module>
                 <module>servicemix-itests</module>
                 <module>samples</module>
@@ -193,6 +194,7 @@
             <id>deploy</id>
             <modules>
                 <module>core</module>
+                <module>common</module>
                 <module>servicemix-itests</module>
                 <module>samples</module>
                 <module>web</module>
@@ -239,6 +241,7 @@
             <modules>
                 <module>parent</module>
                 <module>core</module>
+                <module>common</module>
                 <module>servicemix-itests</module>
                 <module>samples</module>
                 <module>web</module>
@@ -461,6 +464,11 @@
             <dependency>
                 <groupId>org.apache.servicemix</groupId>
                 <artifactId>servicemix-audit</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.servicemix</groupId>
+                <artifactId>servicemix-components</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -988,6 +996,11 @@
                 <version>${derby-version}</version>
             </dependency>
             <dependency>
+                <groupId>drools</groupId>
+                <artifactId>drools-all-jdk1.4</artifactId>
+                <version>2.1</version>
+            </dependency>
+            <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-core</artifactId>
                 <version>5.1.1</version>
@@ -1134,6 +1147,11 @@
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
                 <version>1.1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-servlet_2.4_spec</artifactId>
+                <version>1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
@@ -1362,6 +1380,11 @@
                 <groupId>portlet-api</groupId>
                 <artifactId>portlet-api</artifactId>
                 <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>quartz</groupId>
+                <artifactId>quartz</artifactId>
+                <version>1.5.2</version>
             </dependency>
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>

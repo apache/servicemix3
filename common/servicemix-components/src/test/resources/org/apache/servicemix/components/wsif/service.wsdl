@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<definitions name='ServiceAvailability'
+  targetNamespace='http://xml.apache.org/axis/wsif/samples/jms/ServiceAvailability'
+  xmlns:tns='http://xml.apache.org/axis/wsif/samples/jms/ServiceAvailability'
+  xmlns:format="http://schemas.xmlsoap.org/wsdl/formatbinding/"
+  xmlns:jms='http://schemas.xmlsoap.org/wsdl/jms/'
+  xmlns:xsd='http://www.w3.org/2001/XMLSchema'
+  xmlns='http://schemas.xmlsoap.org/wsdl/'>
+
+  <!-- START SNIPPET: wsdl -->
+  <message name='checkAvailabilityRequest'>
+    <part name='zipCode' type='xsd:string'/>
+  </message>
+
+  <message name='checkAvailabilityResponse'>
+    <part name='result' type='xsd:string'/>
+  </message>
+
+  <portType name='CheckAvailabilityPortType'>
+    <operation name='checkAvailability'>
+      <input message='tns:checkAvailabilityRequest'/>
+      <output message='tns:checkAvailabilityResponse'/>
+    </operation>
+  </portType>
+
+  <binding name='CheckAvailabilityJMSBinding' type='tns:CheckAvailabilityPortType'>
+    <jms:binding type="TextMessage"/>
+    <format:typeMapping encoding="XML" style="Java">
+      <format:typeMap typeName="xsd:string" formatType="java.lang.String"/>
+    </format:typeMapping>
+    <operation name='checkAvailability'>
+      <input>
+        <jms:input parts="zipCode"/>
+        <jms:property message="Request" part="myInt"/>
+        <jms:propertyValue name="myLiteralString" type="xsd:string" value="Hello World"/>
+      </input>
+      <output>
+        <jms:output parts="result"/>
+      </output>
+    </operation>
+  </binding>
+  <!-- END SNIPPET: wsdl -->
+
+  <!-- START SNIPPET: wsif -->
+  <service name='CheckServiceAvailability'>
+    <port name='CheckAvailabilityPort'  binding='tns:CheckAvailabilityJMSBinding'>
+
+      <!-- ActiveMQ configuration -->
+      <jms:address destinationStyle="queue"
+        jndiDestinationName="dynamicQueues/test.org.apache.servicemix.example.wsif"
+        jndiConnectionFactoryName="ConnectionFactory"
+        initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory"
+        jndiProviderURL="tcp://localhost:61626"/>
+    </port>
+  </service>
+  <!-- END SNIPPET: wsif -->
+</definitions>
+
