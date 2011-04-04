@@ -35,6 +35,7 @@ Changes:
 --------
 ServiceMix 3.4
 ** Bug
+    * [SM-2066] - Reinclude lightweight component into build
     * [SM-1438] - Exceptions while shutting down ServiceMix
     * [SM-1456] - Statistics Service throws NPE on startup.
     * [SM-1521] - Released version of archetype-catalog is corrupt
