@@ -19,12 +19,9 @@ package org.apache.servicemix.components.jabber;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.OutBinding;
-import org.jivesoftware.smack.AccountManager;
-import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.Presence;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.jbi.JBIException;
@@ -39,10 +36,11 @@ public abstract class JabberComponentSupport extends OutBinding implements Initi
     private static final transient Log log = LogFactory.getLog(JabberComponentSupport.class);
 
     private JabberMarshaler marshaler = new JabberMarshaler();
-    private XMPPConnection connection;
+    protected XMPPConnection connection;
+    private ConnectionConfiguration connectionConfig;
     private String host;
     private int port;
-    private String user;
+    protected String user;
     private String password;
     private String resource = "ServiceMix";
     private boolean login = true;
@@ -57,50 +55,49 @@ public abstract class JabberComponentSupport extends OutBinding implements Initi
 
     public void start() throws JBIException {
         try {
-            if (connection == null) {
-                if (port > 0) {
-                    connection = new XMPPConnection(host, port);
-                }
-                else {
-                    connection = new XMPPConnection(host);
-                }
-            }
-            if (login && !connection.isAuthenticated()) {
-                if (user != null) {
-                    AccountManager accountManager = new AccountManager(connection);
-                    try {
-                        log.info("Logging in to Jabber as user: " + user + " on connection: " + connection);
-                        connection.login(user, password, resource);
-                    } catch (XMPPException e) {
-                        final XMPPError error = e.getXMPPError();
-                        // 401 == Not Authorized
-                        if (error != null && error.getCode() == 401) {
-                            // is ist possible to create Accounts?
-                            if (accountManager.supportsAccountCreation()) {
-                                //try to create the Account (maybe it wasn't there)
-                                accountManager.createAccount(user, password);
-                                log.info("Logging in to Jabber as user: " + user + " on connection: " + connection);
-                                // try to login again (if this fails we are screwed and fail ultimatively)
-                                connection.login(user, password, resource);
-                            }
+            this.connectionConfig = new ConnectionConfiguration(this.host, this.port);
+            this.connectionConfig.setCompressionEnabled(true);
+            this.connectionConfig.setReconnectionAllowed(true);
+            this.connectionConfig.setSASLAuthenticationEnabled(true);
+
+            if (this.connection == null) {
+                this.connection = new XMPPConnection(this.connectionConfig);
+                this.log.debug("Connecting to server " + this.host);
+                this.connection.connect();
+
+                if (this.login && !this.connection.isAuthenticated()) {
+                    if (this.user != null) {
+                        this.log.debug("Logging into Jabber as user: " + this.user + " on connection: " + this.connection);
+                        if (this.password == null) {
+                            this.log.warn("No password configured for user: " + this.user);
                         }
+
+                        AccountManager accountManager = new AccountManager(this.connection);
+                        accountManager.createAccount(this.user, this.password);
+
+                        if (this.resource != null) {
+                            this.connection.login(this.user, this.password, this.resource);
+                        } else {
+                            this.connection.login(this.user, this.password);
+                        }
+                    } else {
+                        this.log.debug("Logging in anonymously to Jabber on connection: " + this.connection);
+                        this.connection.loginAnonymously();
                     }
-                }
-                else {
-                    log.info("Logging in anonymously to Jabber on connection: " + connection);
-                    connection.loginAnonymously();
+                    // now lets send a presence we are available
+                    this.connection.sendPacket(new Presence(Presence.Type.available));
                 }
             }
-        }
-        catch (XMPPException e) {
+        } catch (XMPPException e) {
             throw new JBIException("Failed to login to Jabber. Reason: " + e, e);
         }
     }
 
     public void stop() throws JBIException {
-        if (connection != null) {
-            connection.close();
-            connection = null;
+        if (this.connection != null && this.connection.isConnected()) {
+            this.logger.debug("Disconnecting from server " + this.host);
+            this.connection.disconnect();
+            this.connection = null;
         }
     }
 

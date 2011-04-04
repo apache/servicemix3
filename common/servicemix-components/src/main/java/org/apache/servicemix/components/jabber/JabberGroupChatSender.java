@@ -16,22 +16,22 @@
  */
 package org.apache.servicemix.components.jabber;
 
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smackx.muc.MultiUserChat;
+
 import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 
-import org.jivesoftware.smack.GroupChat;
-import org.jivesoftware.smack.packet.Message;
-
 /**
- * Sends one way messages to a Jabber {@link GroupChat} and receives inbound messages
+ * Sends one way messages to a Jabber {@link MultiUserChat} and receives inbound messages
  * from the chat
  *
  * @version $Revision: 426415 $
  */
 public class JabberGroupChatSender extends JabberComponentSupport {
 
-    private GroupChat chat;
+    private MultiUserChat chat;
     private String room;
 
     public void afterPropertiesSet() throws Exception {
@@ -45,8 +45,13 @@ public class JabberGroupChatSender extends JabberComponentSupport {
 
     public void start() throws JBIException {
         super.start();
-        if (chat == null) {
-            chat = getConnection().createGroupChat(room);
+        try {
+            if (chat == null) {
+                this.chat = new MultiUserChat(this.connection, this.room);
+                this.chat.join(this.user);
+            }
+        } catch (Exception ex) {
+            logger.error("Unable to log into chatroom " + room, ex);
         }
     }
 
@@ -60,11 +65,11 @@ public class JabberGroupChatSender extends JabberComponentSupport {
 
     // Properties
     //-------------------------------------------------------------------------
-    public GroupChat getChat() {
+    public MultiUserChat getChat() {
         return chat;
     }
 
-    public void setChat(GroupChat chat) {
+    public void setChat(MultiUserChat chat) {
         this.chat = chat;
     }
 
@@ -80,7 +85,8 @@ public class JabberGroupChatSender extends JabberComponentSupport {
     // Implementation methods
     //-------------------------------------------------------------------------
     protected void process(MessageExchange messageExchange, NormalizedMessage normalizedMessage) throws Exception {
-        Message message = chat.createMessage();
+        Message message = this.chat.createMessage();
+        message.setTo(this.room);
         getMarshaler().fromNMS(message, normalizedMessage);
         chat.sendMessage(message);
         done(messageExchange);

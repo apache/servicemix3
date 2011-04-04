@@ -128,7 +128,7 @@ public class JabberMarshaler {
     }
 
     protected void addNmsProperties(NormalizedMessage normalizedMessage, Packet message) {
-        Iterator iter = message.getPropertyNames();
+        Iterator iter = message.getPropertyNames().iterator();
         while (iter.hasNext()) {
             String name = (String) iter.next();
             Object value = message.getProperty(name);

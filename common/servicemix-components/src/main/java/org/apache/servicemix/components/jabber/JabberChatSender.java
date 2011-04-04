@@ -44,8 +44,12 @@ public class JabberChatSender extends JabberComponentSupport {
 
     public void start() throws JBIException {
         super.start();
-        if (chat == null) {
-            chat = getConnection().createChat(participant);
+        // now register listener for new packets
+        if (this.connection != null && this.connection.isConnected()) {
+            // if the user specified a chat room to join we do this here
+            if (this.chat != null) {
+                this.chat = this.connection.getChatManager().createChat(this.participant, null);
+            }
         }
     }
 
@@ -75,7 +79,7 @@ public class JabberChatSender extends JabberComponentSupport {
     // Implementation methods
     //-------------------------------------------------------------------------
     protected void process(MessageExchange messageExchange, NormalizedMessage normalizedMessage) throws Exception {
-        Message message = chat.createMessage();
+        Message message = message = new Message(this.participant, Message.Type.normal);
         getMarshaler().fromNMS(message, normalizedMessage);
         chat.sendMessage(message);
         done(messageExchange);
