@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.apache.servicemix</groupId>
         <artifactId>samples</artifactId>
-        <version>3.5-SNAPSHOT</version>
+        <version>3.4-SNAPSHOT</version>
     </parent>
 
     <groupId>org.apache.servicemix.samples</groupId>
@@ -65,7 +65,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2.1</version>
+                <version>2.1</version>
                 <inherited>false</inherited>
                 <executions>
                     <execution>
