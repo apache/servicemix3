@@ -1,329 +1,336 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-<!--
+    <!--
 
-    Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
-    this work for additional information regarding copyright ownership.
-    The ASF licenses this file to You under the Apache License, Version 2.0
-    (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
+        Licensed to the Apache Software Foundation (ASF) under one or more
+        contributor license agreements.  See the NOTICE file distributed with
+        this work for additional information regarding copyright ownership.
+        The ASF licenses this file to You under the Apache License, Version 2.0
+        (the "License"); you may not use this file except in compliance with
+        the License.  You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+           http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
--->
-
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>org.apache.servicemix</groupId>
-    <artifactId>common</artifactId>
-    <version>3.4-SNAPSHOT</version>
-  </parent>
-
-  <artifactId>servicemix-components</artifactId>
-  <packaging>jar</packaging>
-  <name>ServiceMix :: Components</name>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.servicemix</groupId>
-      <artifactId>servicemix-core</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>commons-httpclient</groupId>
-      <artifactId>commons-httpclient</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>commons-vfs</groupId>
-      <artifactId>commons-vfs</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>commons-net</groupId>
-      <artifactId>commons-net</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>commons-pool</groupId>
-      <artifactId>commons-pool</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>      
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.xfire</groupId>
-      <artifactId>xfire-aegis</artifactId>
-      <optional>true</optional>      
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.xfire</groupId>
-      <artifactId>xfire-spring</artifactId>
-      <optional>true</optional>
-    </dependency>       
-    <dependency>
-      <groupId>org.codehaus.xfire</groupId>
-      <artifactId>xfire-core</artifactId>
-      <optional>true</optional>
-      <exclusions>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.ws</groupId>
-      <artifactId>wsif</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.ws</groupId>
-      <artifactId>wsif-j2c</artifactId>
-      <optional>true</optional>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.geronimo.specs</groupId>
-      <artifactId>geronimo-servlet_2.4_spec</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.geronimo.specs</groupId>
-      <artifactId>geronimo-javamail_1.3.1_spec</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.geronimo.specs</groupId>
-      <artifactId>geronimo-saaj_1.1_spec</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.geronimo.specs</groupId>
-      <artifactId>geronimo-jaxrpc_1.1_spec</artifactId>
-      <optional>true</optional>
-    </dependency>
-
-    <!-- Drools dependencies -->
-    <dependency>
-      <groupId>drools</groupId>
-      <artifactId>drools-all-jdk1.4</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>janino</groupId>
-      <artifactId>janino</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>antlr</groupId>
-      <artifactId>antlr</artifactId>
-      <optional>true</optional>
-    </dependency>
-
-    <dependency>
-      <groupId>groovy</groupId>
-      <artifactId>groovy-all-1.0-jsr</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>quartz</groupId>
-      <artifactId>quartz</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>rome</groupId>
-      <artifactId>rome</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>jivesoftware</groupId>
-      <artifactId>smack</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>jivesoftware</groupId>
-      <artifactId>smackx</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>activesoap</groupId>
-      <artifactId>activesoap</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>groovy</groupId>
-      <artifactId>groovy-all-1.0-jsr</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.livetribe</groupId>
-      <artifactId>livetribe-jsr223</artifactId>
-      <version>2.0.5</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.script</groupId>
-      <artifactId>groovy-engine</artifactId>
-      <version>20080611</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>jdom</groupId>
-      <artifactId>jdom</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty</artifactId>
-      <optional>true</optional>
-    </dependency>
-
-
-    <dependency>
-      <groupId>axis</groupId>
-      <artifactId>axis-jaxrpc</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>axis</groupId>
-      <artifactId>axis</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!--  
-    <dependency>
-      <groupId>net.java.dev.saaj</groupId>
-      <artifactId>saaj-impl</artifactId>
-      <scope>test</scope>
-    </dependency>
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
     -->
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>activemq-ra</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring</artifactId>
-        </exclusion>
-      </exclusions>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-aop</artifactId>
-      <version>${spring-version}</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context-support</artifactId>
-      <version>${spring-version}</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-web</artifactId>
-      <version>${spring-version}</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-jms</artifactId>
-      <version>${spring-version}</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-  
-  <repositories>
-    <repository>
-      <id>codehaus-snapshots</id>
-      <url>http://repository.codehaus.org</url>
-    </repository>
-  </repositories>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <workingDirectory>${basedir}</workingDirectory>
-          <includes>
-            <include>**/*Test.*</include>
-          </includes>
-          <excludes>
-            <!--  exclude abstract tests -->
-            <exclude>**/Abstract*.*</exclude>
-            <exclude>**/*$*</exclude>
+    <modelVersion>4.0.0</modelVersion>
 
-            <!--  Need external resources -->
-            <exclude>**/Jabber*.*</exclude>
-            <exclude>**/FTP*.*</exclude>
+    <parent>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>common</artifactId>
+        <version>3.4-SNAPSHOT</version>
+    </parent>
 
-            <!--  These ones can not work, need rewrite -->
-            <exclude>**/JmsOverJcaWithFullXATest.*</exclude>
+    <artifactId>servicemix-components</artifactId>
+    <packaging>jar</packaging>
+    <name>ServiceMix :: Components</name>
 
-            <!--  exclude until amq4 stable -->
-            <exclude>**/JmsOverJca*.*</exclude>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.servicemix</groupId>
+            <artifactId>servicemix-core</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>commons-vfs</groupId>
+            <artifactId>commons-vfs</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>commons-pool</groupId>
+            <artifactId>commons-pool</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.xfire</groupId>
+            <artifactId>xfire-aegis</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.xfire</groupId>
+            <artifactId>xfire-spring</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.xfire</groupId>
+            <artifactId>xfire-core</artifactId>
+            <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws</groupId>
+            <artifactId>wsif</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws</groupId>
+            <artifactId>wsif-j2c</artifactId>
+            <optional>true</optional>
+        </dependency>
 
-            <!-- enable when GERONIMO-1419 is solved -->
-            <exclude>**/HttpSoapAttachmentsTest.*</exclude>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-servlet_2.4_spec</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-javamail_1.3.1_spec</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-saaj_1.1_spec</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jaxrpc_1.1_spec</artifactId>
+            <optional>true</optional>
+        </dependency>
 
-            <!-- The following tests fails with m2 -->
-            <exclude>**/HttpTest.*</exclude>
-            <exclude>**/ValidationTest.*</exclude>
-            <exclude>**/HttpSoapTest.*</exclude>
-            <exclude>**/SaajMarshalerTest.*</exclude>
-            <exclude>**/SaajTest.*</exclude>
-            <exclude>**/XsltPublisherTest.*</exclude>
-            <exclude>**/BinaryFileTest.*</exclude>
-            <exclude>**/FileTest.*</exclude>
-            <exclude>**/CounterMonitorComponentTest.*</exclude>
-            <exclude>**/OptionalAxisQueriesTest.*</exclude>
-            <exclude>**/JmsBindingTest.*</exclude>
-            <exclude>**/WsifTest.*</exclude>
-            <exclude>**/HttpSoapAndSaajTest.*</exclude>
-            <exclude>**/JmsBindingClusterTest.*</exclude>
-            <exclude>**/JmsBindingUsingEndpointSubscriptionTest.*</exclude>
-            <exclude>**/GroovyTransformTest.*</exclude>
-            <exclude>**/TransformComponentTest.*</exclude>
+        <!-- Drools dependencies -->
+        <dependency>
+            <groupId>drools</groupId>
+            <artifactId>drools-all-jdk1.4</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>janino</groupId>
+            <artifactId>janino</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>antlr</groupId>
+            <artifactId>antlr</artifactId>
+            <optional>true</optional>
+        </dependency>
 
-            <!-- Hangs -->
-            <exclude>**/SaajSoapActionTest.*</exclude>
-	        
-            <!-- https://issues.apache.org/activemq/browse/SM-529 -->
-            <exclude>**/MPSSettingTest.*</exclude>
-          
-          </excludes>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+        <dependency>
+            <groupId>groovy</groupId>
+            <artifactId>groovy-all-1.0-jsr</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>quartz</groupId>
+            <artifactId>quartz</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>rome</groupId>
+            <artifactId>rome</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>jivesoftware</groupId>
+            <artifactId>smack</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>jivesoftware</groupId>
+            <artifactId>smackx</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>activesoap</groupId>
+            <artifactId>activesoap</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>groovy</groupId>
+            <artifactId>groovy-all-1.0-jsr</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.livetribe</groupId>
+            <artifactId>livetribe-jsr223</artifactId>
+            <version>2.0.5</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.script</groupId>
+            <artifactId>groovy-engine</artifactId>
+            <version>20080611</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-jaxrpc</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!--
+        <dependency>
+          <groupId>net.java.dev.saaj</groupId>
+          <artifactId>saaj-impl</artifactId>
+          <scope>test</scope>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-ra</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${spring-version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring-version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring-version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jms</artifactId>
+            <version>${spring-version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>codehaus-snapshots</id>
+            <url>http://repository.codehaus.org</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <workingDirectory>${basedir}</workingDirectory>
+                    <includes>
+                        <include>**/*Test.*</include>
+                    </includes>
+                    <excludes>
+                        <!--  exclude abstract tests -->
+                        <exclude>**/Abstract*.*</exclude>
+                        <exclude>**/*$*</exclude>
+
+                        <!--  Need external resources -->
+                        <exclude>**/Jabber*.*</exclude>
+                        <exclude>**/FTP*.*</exclude>
+
+                        <!--  These ones can not work, need rewrite -->
+                        <exclude>**/JmsOverJcaWithFullXATest.*</exclude>
+
+                        <!--  exclude until amq4 stable -->
+                        <exclude>**/JmsOverJca*.*</exclude>
+
+                        <!-- enable when GERONIMO-1419 is solved -->
+                        <exclude>**/HttpSoapAttachmentsTest.*</exclude>
+
+                        <!-- The following tests fails with m2 -->
+                        <exclude>**/HttpTest.*</exclude>
+                        <exclude>**/ValidationTest.*</exclude>
+                        <exclude>**/HttpSoapTest.*</exclude>
+                        <exclude>**/SaajMarshalerTest.*</exclude>
+                        <exclude>**/SaajTest.*</exclude>
+                        <exclude>**/XsltPublisherTest.*</exclude>
+                        <exclude>**/BinaryFileTest.*</exclude>
+                        <exclude>**/FileTest.*</exclude>
+                        <exclude>**/CounterMonitorComponentTest.*</exclude>
+                        <exclude>**/OptionalAxisQueriesTest.*</exclude>
+                        <exclude>**/JmsBindingTest.*</exclude>
+                        <exclude>**/WsifTest.*</exclude>
+                        <exclude>**/HttpSoapAndSaajTest.*</exclude>
+                        <exclude>**/JmsBindingClusterTest.*</exclude>
+                        <exclude>**/JmsBindingUsingEndpointSubscriptionTest.*</exclude>
+                        <exclude>**/GroovyTransformTest.*</exclude>
+                        <exclude>**/TransformComponentTest.*</exclude>
+
+                        <!-- Hangs -->
+                        <exclude>**/SaajSoapActionTest.*</exclude>
+
+                        <!-- https://issues.apache.org/activemq/browse/SM-529 -->
+                        <exclude>**/MPSSettingTest.*</exclude>
+
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

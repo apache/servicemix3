@@ -17,37 +17,50 @@
     limitations under the License.
 
 -->
-<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
-       xmlns:foo="http://servicemix.org/cheese/">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:sm="http://servicemix.apache.org/config/1.0"
+       xmlns:foo="http://servicemix.org/cheese/"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://servicemix.apache.org/config/1.0 http://servicemix.apache.org/schema/servicemix-core-${project.version}.xsd">
 
-  <!-- the JBI container -->
-  <sm:container id="jbi" embedded="true">
-    <sm:activationSpecs>
+    <!-- the JBI container -->
+    <sm:container id="jbi" embedded="true">
+        <sm:activationSpecs>
 
-      <!-- START SNIPPET: example -->
-      <sm:activationSpec componentName="myDefaultErrorHandlerService" service="foo:myDefaultErrorHandlerService" endpoint="myDefaultErrorHandlerService" destinationService="foo:myServiceImpl">
-        <sm:component><bean class="org.apache.servicemix.components.validation.ValidateComponent">
-          <property name="schemaResource" value="classpath:org/apache/servicemix/components/validation/schema.xsd"/>
-        </bean></sm:component>
-      </sm:activationSpec>
+            <!-- START SNIPPET: example -->
+            <sm:activationSpec componentName="myDefaultErrorHandlerService" service="foo:myDefaultErrorHandlerService"
+                               endpoint="myDefaultErrorHandlerService" destinationService="foo:myServiceImpl">
+                <sm:component>
+                    <bean class="org.apache.servicemix.components.validation.ValidateComponent">
+                        <property name="schemaResource"
+                                  value="classpath:org/apache/servicemix/components/validation/schema.xsd"/>
+                    </bean>
+                </sm:component>
+            </sm:activationSpec>
 
-      <sm:activationSpec componentName="myMessageAwareErrorHandlerService" service="foo:myMessageAwareErrorHandlerService" endpoint="myMessageAwareErrorHandlerService" destinationService="foo:myServiceImpl">
-        <sm:component>
-            <bean class="org.apache.servicemix.components.validation.ValidateComponent">
-                <property name="schemaResource" value="classpath:org/apache/servicemix/components/validation/schema.xsd"/>
-                <property name="errorHandlerFactory" ref="messageAggregatingErrorHandlerFactory"/>
-            </bean>
-        </sm:component>
-      </sm:activationSpec>
+            <sm:activationSpec componentName="myMessageAwareErrorHandlerService"
+                               service="foo:myMessageAwareErrorHandlerService"
+                               endpoint="myMessageAwareErrorHandlerService" destinationService="foo:myServiceImpl">
+                <sm:component>
+                    <bean class="org.apache.servicemix.components.validation.ValidateComponent">
+                        <property name="schemaResource"
+                                  value="classpath:org/apache/servicemix/components/validation/schema.xsd"/>
+                        <property name="errorHandlerFactory" ref="messageAggregatingErrorHandlerFactory"/>
+                    </bean>
+                </sm:component>
+            </sm:activationSpec>
 
-      <!-- END SNIPPET: example -->
+            <!-- END SNIPPET: example -->
 
-      <!-- START SNIPPET: groovy -->
-      <sm:activationSpec componentName="myServiceImpl" service="foo:myServiceImpl" endpoint="myService">
-        <sm:component><bean class="org.apache.servicemix.components.groovy.GroovyComponent">
-          <property name="scriptText">
-            <value>
-              <![CDATA[
+            <!-- START SNIPPET: groovy -->
+            <sm:activationSpec componentName="myServiceImpl" service="foo:myServiceImpl" endpoint="myService">
+                <sm:component>
+                    <bean class="org.apache.servicemix.components.groovy.GroovyComponent">
+                        <property name="scriptText">
+                            <value>
+                                <![CDATA[
 if (bindings.counter == null) {
     bindings.counter = 1
 }
@@ -59,34 +72,36 @@ def date = new Date()
 
 outMessage.bodyText = "<response counter='$bindings.counter' date='$date'></response>"
               ]]>
-            </value>
-          </property>
-        </bean></sm:component>
-      </sm:activationSpec>
-      <!-- END SNIPPET: groovy -->
+                            </value>
+                        </property>
+                    </bean>
+                </sm:component>
+            </sm:activationSpec>
+            <!-- END SNIPPET: groovy -->
 
-    </sm:activationSpecs>
-  </sm:container>
+        </sm:activationSpecs>
+    </sm:container>
 
-  <bean id="messageAggregatingErrorHandlerFactory" class="org.apache.servicemix.components.validation.MessageAggregatingErrorHandlerFactory">
-    <property name="rootPath" value="Fault/payload/messages"/>
-    <property name="namespace" value="http://www.servicemix.org/fault"/>
-  </bean>
+    <bean id="messageAggregatingErrorHandlerFactory"
+          class="org.apache.servicemix.components.validation.MessageAggregatingErrorHandlerFactory">
+        <property name="rootPath" value="Fault/payload/messages"/>
+        <property name="namespace" value="http://www.servicemix.org/fault"/>
+    </bean>
 
-  <bean id="defaultErrorHandlerClient" class="org.apache.servicemix.client.DefaultServiceMixClient">
-    <constructor-arg ref="jbi"/>
-    <constructor-arg>
-      <!-- lets hardwire this client to talk to instances of a service by default -->
-      <sm:activationSpec destinationService="foo:myDefaultErrorHandlerService"/>
-    </constructor-arg>
-  </bean>
+    <bean id="defaultErrorHandlerClient" class="org.apache.servicemix.client.DefaultServiceMixClient">
+        <constructor-arg ref="jbi"/>
+        <constructor-arg>
+            <!-- lets hardwire this client to talk to instances of a service by default -->
+            <sm:activationSpec destinationService="foo:myDefaultErrorHandlerService"/>
+        </constructor-arg>
+    </bean>
 
-  <bean id="messageAwareErrorHandlerClient" class="org.apache.servicemix.client.DefaultServiceMixClient">
-    <constructor-arg ref="jbi"/>
-    <constructor-arg>
-      <!-- lets hardwire this client to talk to instances of a service by default -->
-      <sm:activationSpec destinationService="foo:myMessageAwareErrorHandlerService"/>
-    </constructor-arg>
-  </bean>
+    <bean id="messageAwareErrorHandlerClient" class="org.apache.servicemix.client.DefaultServiceMixClient">
+        <constructor-arg ref="jbi"/>
+        <constructor-arg>
+            <!-- lets hardwire this client to talk to instances of a service by default -->
+            <sm:activationSpec destinationService="foo:myMessageAwareErrorHandlerService"/>
+        </constructor-arg>
+    </bean>
 
 </beans>

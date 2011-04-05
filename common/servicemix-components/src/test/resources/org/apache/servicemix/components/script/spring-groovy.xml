@@ -17,42 +17,51 @@
     limitations under the License.
 
 -->
-<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
-	   xmlns:foo="http://servicemix.org/cheese/">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:sm="http://servicemix.apache.org/config/1.0"
+       xmlns:foo="http://servicemix.org/cheese/"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://servicemix.apache.org/config/1.0 http://servicemix.apache.org/schema/servicemix-core-${project.version}.xsd">
 
-  <sm:container id="jbi" flowName="st" embedded="true">
-    <sm:activationSpecs>
+    <sm:container id="jbi" flowName="st" embedded="true">
+        <sm:activationSpecs>
 
-      <sm:activationSpec componentName="sender" service="foo:sender" endpoint="sender" 
-      					 destinationService="foo:receiver" destinationEndpoint="receiver">
-        <sm:component><bean class="org.apache.servicemix.tck.SenderComponent"/></sm:component>
-      </sm:activationSpec>
-        
+            <sm:activationSpec componentName="sender" service="foo:sender" endpoint="sender"
+                               destinationService="foo:receiver" destinationEndpoint="receiver">
+                <sm:component>
+                    <bean class="org.apache.servicemix.tck.SenderComponent"/>
+                </sm:component>
+            </sm:activationSpec>
 
-      <sm:activationSpec componentName="receiver" service="foo:receiver" endpoint="receiver">
-        <sm:component><bean class="org.apache.servicemix.components.script.ScriptComponent">
-          <property name="scriptEngineName" value="groovy"/>
-          <property name="disableOutput" value="true"/>
-          <property name="scriptText">
-            <value>
-import org.apache.servicemix.components.script.ScriptTest
 
-System.out.println """
-Groovy script evaluated with the following variables
-context: $context
-deliveryChannel: $deliveryChannel
-exchange: $exchange
-inMessage: inMessage
-"""
+            <sm:activationSpec componentName="receiver" service="foo:receiver" endpoint="receiver">
+                <sm:component>
+                    <bean class="org.apache.servicemix.components.script.ScriptComponent">
+                        <property name="scriptEngineName" value="groovy"/>
+                        <property name="disableOutput" value="true"/>
+                        <property name="scriptText">
+                            <value>
+                                import org.apache.servicemix.components.script.ScriptTest
 
-// lets output some values
-def result = [1, 2, 3]
-ScriptTest.setResult(result)
-            </value>
-          </property>
-        </bean></sm:component>
-      </sm:activationSpec>
-    </sm:activationSpecs>
-  </sm:container>
+                                System.out.println """
+                                Groovy script evaluated with the following variables
+                                context: $context
+                                deliveryChannel: $deliveryChannel
+                                exchange: $exchange
+                                inMessage: inMessage
+                                """
+
+                                // lets output some values
+                                def result = [1, 2, 3]
+                                ScriptTest.setResult(result)
+                            </value>
+                        </property>
+                    </bean>
+                </sm:component>
+            </sm:activationSpec>
+        </sm:activationSpecs>
+    </sm:container>
 
 </beans>

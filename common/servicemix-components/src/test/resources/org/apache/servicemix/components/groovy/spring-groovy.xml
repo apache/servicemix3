@@ -17,37 +17,39 @@
     limitations under the License.
 
 -->
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
-<beans>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-  <!-- the JBI container -->
-  <bean id="jbi" class="org.apache.servicemix.jbi.container.SpringJBIContainer">
-    <property name="componentNames">
-      <list>
-        <value>sender</value>
-        <value>receiver</value>
-      </list>
-    </property>
-    <property name="embedded" value="true" />
-  </bean>
+    <!-- the JBI container -->
+    <bean id="jbi" class="org.apache.servicemix.jbi.container.SpringJBIContainer">
+        <property name="componentNames">
+            <list>
+                <value>sender</value>
+                <value>receiver</value>
+            </list>
+        </property>
+        <property name="embedded" value="true"/>
+    </bean>
 
-  <!-- components within the JBI container -->
+    <!-- components within the JBI container -->
 
-  <!-- these are more lightweight POJOs which don't implement the full JBI Component interface -->
-  <bean id="sender" class="org.apache.servicemix.tck.SenderPojo"/>
+    <!-- these are more lightweight POJOs which don't implement the full JBI Component interface -->
+    <bean id="sender" class="org.apache.servicemix.tck.SenderPojo"/>
 
-  <bean id="receiver" class="org.apache.servicemix.components.groovy.GroovyComponent">
-    <property name="scriptText">
-      <value>
-System.out.println """
-Groovy script evaluated with the following variables
-message: $message
-message exchange: $messageExchange
-componentContext: $componentContext
-deliveryChannel: $deliveryChannel
-"""
-      </value>
-    </property>
-  </bean>
+    <bean id="receiver" class="org.apache.servicemix.components.groovy.GroovyComponent">
+        <property name="scriptText">
+            <value>
+                System.out.println """
+                Groovy script evaluated with the following variables
+                message: $message
+                message exchange: $messageExchange
+                componentContext: $componentContext
+                deliveryChannel: $deliveryChannel
+                """
+            </value>
+        </property>
+    </bean>
 
 </beans>

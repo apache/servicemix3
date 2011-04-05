@@ -17,8 +17,13 @@
     limitations under the License.
 
 -->
-<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
-    xmlns:foo="http://servicemix.org/cheese/">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:sm="http://servicemix.apache.org/config/1.0"
+       xmlns:foo="http://servicemix.org/cheese/"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://servicemix.apache.org/config/1.0 http://servicemix.apache.org/schema/servicemix-core-${project.version}.xsd">
 
     <sm:container id="jbi" embedded="true">
         <sm:activationSpecs>
@@ -26,7 +31,8 @@
             <sm:activationSpec componentName="transformer" service="foo:transformer">
                 <sm:component>
                     <bean class="org.apache.servicemix.components.xslt.XsltComponent">
-                        <property name="xsltResource" value="classpath:org/apache/servicemix/components/xslt/optional-axis.xsl"/>
+                        <property name="xsltResource"
+                                  value="classpath:org/apache/servicemix/components/xslt/optional-axis.xsl"/>
 
                         <!-- lets disable automatic output of the result of the transform; only if we perform
                             an invoke in the XSLT will we invoke another endpoint -->
@@ -35,7 +41,6 @@
                 </sm:component>
             </sm:activationSpec>
 
-
             <sm:activationSpec componentName="service1" service="foo:service1">
                 <sm:component>
                     <bean class="org.apache.servicemix.tck.ReceiverComponent"/>
@@ -43,23 +48,33 @@
             </sm:activationSpec>
 
             <sm:activationSpec componentName="service2" service="foo:service2">
-               <sm:component><bean class="org.apache.servicemix.tck.ReceiverComponent"/></sm:component>
+                <sm:component>
+                    <bean class="org.apache.servicemix.tck.ReceiverComponent"/>
+                </sm:component>
             </sm:activationSpec>
 
             <sm:activationSpec componentName="service3" service="foo:service3">
-               <sm:component><bean class="org.apache.servicemix.tck.ReceiverComponent"/></sm:component>
+                <sm:component>
+                    <bean class="org.apache.servicemix.tck.ReceiverComponent"/>
+                </sm:component>
             </sm:activationSpec>
 
             <sm:activationSpec componentName="service4" service="foo:service4">
-               <sm:component><bean class="org.apache.servicemix.tck.ReceiverComponent"/></sm:component>
+                <sm:component>
+                    <bean class="org.apache.servicemix.tck.ReceiverComponent"/>
+                </sm:component>
             </sm:activationSpec>
 
             <sm:activationSpec componentName="service5" service="foo:service5">
-               <sm:component><bean class="org.apache.servicemix.tck.ReceiverComponent"/></sm:component>
+                <sm:component>
+                    <bean class="org.apache.servicemix.tck.ReceiverComponent"/>
+                </sm:component>
             </sm:activationSpec>
 
             <sm:activationSpec componentName="service6" service="foo:service6">
-               <sm:component><bean class="org.apache.servicemix.tck.ReceiverComponent"/></sm:component>
+                <sm:component>
+                    <bean class="org.apache.servicemix.tck.ReceiverComponent"/>
+                </sm:component>
             </sm:activationSpec>
 
             <sm:activationSpec componentName="receiver" service="foo:receiver">

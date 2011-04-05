@@ -17,60 +17,66 @@
     limitations under the License.
 
 -->
-<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
-	   xmlns:foo="http://servicemix.apache.org/cheese/">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:sm="http://servicemix.apache.org/config/1.0"
+       xmlns:foo="http://servicemix.apache.org/cheese/"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://servicemix.apache.org/config/1.0 http://servicemix.apache.org/schema/servicemix-core-${project.version}.xsd">
 
-  <!-- the JBI container -->
-  <sm:container id="jbi" embedded="true" useMBeanServer="true" createMBeanServer="true">
-    <sm:activationSpecs>
-    
-      <sm:activationSpec componentName="trace"
-            			 endpoint="trace" 
-            			 service="foo:trace">
-        <sm:component>
-        	<bean class="org.apache.servicemix.components.util.TraceComponent"/>
-        </sm:component>
-      </sm:activationSpec>
+    <!-- the JBI container -->
+    <sm:container id="jbi" embedded="true" useMBeanServer="true" createMBeanServer="true">
+        <sm:activationSpecs>
 
-      <sm:activationSpec componentName="jmxMonitor"
-                 		 service="foo:jmxMonitor" 
-                 		 endpoint="jmxMonitor"
-                 		 destinationService="foo:receiver">
-        <sm:component>
-         	<bean class="org.apache.servicemix.components.jmx.CounterMonitorComponent">
-          		<property name="observedObjectName" value="org.apache.servicemix:ContainerName=ServiceMix,Type=Component,Name=trace,SubType=Statistics"/>
-          		<property name="attributeName" value="inboundExchangeCount" />
-          		<property name="threshold">
-          		  <bean class="java.lang.Long">
-    				<constructor-arg value="1"/>
-          		  </bean>
-          		</property>
-          		<property name="offset">
-          		  <bean class="java.lang.Long">
-    				<constructor-arg value="1"/>
-          		  </bean>
-          		</property>
-          		<property name="granularityPeriod" value="10" />
-	        </bean>
-	    </sm:component>
-      </sm:activationSpec>
+            <sm:activationSpec componentName="trace"
+                               endpoint="trace"
+                               service="foo:trace">
+                <sm:component>
+                    <bean class="org.apache.servicemix.components.util.TraceComponent"/>
+                </sm:component>
+            </sm:activationSpec>
 
-      <sm:activationSpec componentName="receiver"
-            			 endpoint="receiver" 
-            			 service="foo:receiver">
-        <sm:component>
-        	<bean class="org.apache.servicemix.tck.ReceiverComponent"/>
-        </sm:component>
-      </sm:activationSpec>
+            <sm:activationSpec componentName="jmxMonitor"
+                               service="foo:jmxMonitor"
+                               endpoint="jmxMonitor"
+                               destinationService="foo:receiver">
+                <sm:component>
+                    <bean class="org.apache.servicemix.components.jmx.CounterMonitorComponent">
+                        <property name="observedObjectName"
+                                  value="org.apache.servicemix:ContainerName=ServiceMix,Type=Component,Name=trace,SubType=Statistics"/>
+                        <property name="attributeName" value="inboundExchangeCount"/>
+                        <property name="threshold">
+                            <bean class="java.lang.Long">
+                                <constructor-arg value="1"/>
+                            </bean>
+                        </property>
+                        <property name="offset">
+                            <bean class="java.lang.Long">
+                                <constructor-arg value="1"/>
+                            </bean>
+                        </property>
+                        <property name="granularityPeriod" value="10"/>
+                    </bean>
+                </sm:component>
+            </sm:activationSpec>
 
-    </sm:activationSpecs>
-  </sm:container>
+            <sm:activationSpec componentName="receiver"
+                               endpoint="receiver"
+                               service="foo:receiver">
+                <sm:component>
+                    <bean class="org.apache.servicemix.tck.ReceiverComponent"/>
+                </sm:component>
+            </sm:activationSpec>
 
-  <bean id="client" class="org.apache.servicemix.client.DefaultServiceMixClient">
-    <constructor-arg ref="jbi"/>
-    <constructor-arg>
-      <sm:activationSpec destinationService="foo:trace" />
-    </constructor-arg>
-  </bean>
+        </sm:activationSpecs>
+    </sm:container>
+
+    <bean id="client" class="org.apache.servicemix.client.DefaultServiceMixClient">
+        <constructor-arg ref="jbi"/>
+        <constructor-arg>
+            <sm:activationSpec destinationService="foo:trace"/>
+        </constructor-arg>
+    </bean>
 
 </beans>
