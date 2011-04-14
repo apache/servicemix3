@@ -171,6 +171,11 @@
       <artifactId>cxf-rt-bindings-jbi</artifactId>
       <version>${cxf-version}</version>
     </dependency>
+    <dependency>
+      <groupId>javaee</groupId>
+      <artifactId>javaee-api</artifactId>
+      <version>5</version>
+    </dependency>
   </dependencies>
 
   <build>

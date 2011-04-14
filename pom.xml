@@ -70,41 +70,42 @@
     </repositories>
 
     <properties>
-        <servicemix-utils-version>1.4.0</servicemix-utils-version>
+        <servicemix-components-version>2011.02-SNAPSHOT</servicemix-components-version>
+        <servicemix-utils-version>1.5.0-SNAPSHOT</servicemix-utils-version>
         <servicemix-specs-version>1.7.0</servicemix-specs-version>
-        <servicemix-common-version>2011.01</servicemix-common-version>
-        <servicemix-shared-version>2011.01</servicemix-shared-version>
-        <servicemix-quartz-version>2011.01</servicemix-quartz-version>
-        <servicemix-jms-version>2011.01</servicemix-jms-version>
-        <servicemix-jsr181-version>2011.01</servicemix-jsr181-version>
-        <servicemix-http-version>2011.01</servicemix-http-version>
-        <servicemix-mail-version>2011.01</servicemix-mail-version>
-        <servicemix-osworkflow-version>2011.01</servicemix-osworkflow-version>
-        <servicemix-wsn2005-version>2011.01</servicemix-wsn2005-version>
+        <servicemix-common-version>${servicemix-components-version}</servicemix-common-version>
+        <servicemix-shared-version>${servicemix-components-version}</servicemix-shared-version>
+        <servicemix-quartz-version>${servicemix-components-version}</servicemix-quartz-version>
+        <servicemix-jms-version>${servicemix-components-version}</servicemix-jms-version>
+        <servicemix-jsr181-version>${servicemix-components-version}</servicemix-jsr181-version>
+        <servicemix-http-version>${servicemix-components-version}</servicemix-http-version>
+        <servicemix-mail-version>${servicemix-components-version}</servicemix-mail-version>
+        <servicemix-osworkflow-version>${servicemix-components-version}</servicemix-osworkflow-version>
+        <servicemix-wsn2005-version>${servicemix-components-version}</servicemix-wsn2005-version>
         <servicemix-lwcontainer-version>${project.version}</servicemix-lwcontainer-version>
-        <servicemix-bean-version>2011.01</servicemix-bean-version>
-        <servicemix-eip-version>2011.01</servicemix-eip-version>
-        <servicemix-script-version>2011.01</servicemix-script-version>
-        <servicemix-scripting-version>2011.01</servicemix-scripting-version>
-        <servicemix-validation-version>2011.01</servicemix-validation-version>
-        <servicemix-ftp-version>2011.01</servicemix-ftp-version>
-        <servicemix-xmpp-version>2011.01</servicemix-xmpp-version>
-        <servicemix-saxon-version>2011.01</servicemix-saxon-version>
-        <servicemix-truezip-version>2011.01</servicemix-truezip-version>
-        <servicemix-camel-version>2011.01</servicemix-camel-version>
-        <servicemix-cxf-bc-version>2011.01</servicemix-cxf-bc-version>
-        <servicemix-cxf-se-version>2011.01</servicemix-cxf-se-version>
-        <servicemix-drools-version>2011.01</servicemix-drools-version>
-        <servicemix-file-version>2011.01</servicemix-file-version>
-        <servicemix-snmp-version>2011.01</servicemix-snmp-version>
-        <servicemix-smpp-version>2011.01</servicemix-smpp-version>
-        <servicemix-exec-version>2011.01</servicemix-exec-version>
-        <servicemix-vfs-version>2011.01</servicemix-vfs-version>
+        <servicemix-bean-version>${servicemix-components-version}</servicemix-bean-version>
+        <servicemix-eip-version>${servicemix-components-version}</servicemix-eip-version>
+        <servicemix-script-version>${servicemix-components-version}</servicemix-script-version>
+        <servicemix-scripting-version>${servicemix-components-version}</servicemix-scripting-version>
+        <servicemix-validation-version>${servicemix-components-version}</servicemix-validation-version>
+        <servicemix-ftp-version>${servicemix-components-version}</servicemix-ftp-version>
+        <servicemix-xmpp-version>${servicemix-components-version}</servicemix-xmpp-version>
+        <servicemix-saxon-version>${servicemix-components-version}</servicemix-saxon-version>
+        <servicemix-truezip-version>${servicemix-components-version}</servicemix-truezip-version>
+        <servicemix-camel-version>${servicemix-components-version}</servicemix-camel-version>
+        <servicemix-cxf-bc-version>${servicemix-components-version}</servicemix-cxf-bc-version>
+        <servicemix-cxf-se-version>${servicemix-components-version}</servicemix-cxf-se-version>
+        <servicemix-drools-version>${servicemix-components-version}</servicemix-drools-version>
+        <servicemix-file-version>${servicemix-components-version}</servicemix-file-version>
+        <servicemix-snmp-version>${servicemix-components-version}</servicemix-snmp-version>
+        <servicemix-smpp-version>${servicemix-components-version}</servicemix-smpp-version>
+        <servicemix-exec-version>${servicemix-components-version}</servicemix-exec-version>
+        <servicemix-vfs-version>${servicemix-components-version}</servicemix-vfs-version>
 
         <jbi-plugin-version>4.4</jbi-plugin-version>
         <res-maven-plugin-version>4.1</res-maven-plugin-version>
         <servicemix-build-version>1.0</servicemix-build-version>
-        
+
         <xfire-jsr181-api-version>1.0-M1</xfire-jsr181-api-version>
         <xfire-version>1.2.5</xfire-version>
         <mavenAssemblyPluginVersion>2.1</mavenAssemblyPluginVersion>
@@ -120,7 +121,7 @@
         <geronimo-annotation-version>1.1.1</geronimo-annotation-version>
         <geronimo-connector-version>2.1.4</geronimo-connector-version>
         <geronimo-transaction-version>2.1.4</geronimo-transaction-version>
-        <slf4j-version>1.5.8</slf4j-version>
+        <slf4j-version>1.6.1</slf4j-version>
         <wsdl4j-version>1.6.2</wsdl4j-version>
         <commons-beanutils-version>1.7.0</commons-beanutils-version>
         <commons-fileupload-version>1.1.1</commons-fileupload-version>
@@ -1696,6 +1697,11 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
+                <version>${slf4j-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
                 <version>${slf4j-version}</version>
             </dependency>
             <dependency>

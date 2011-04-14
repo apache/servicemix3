@@ -34,7 +34,7 @@
   <util:map id="jndiEntries">
     <!-- PXE DB datasource -->
     <!--
-    <entry key="java:comp/env/jdbc/pxe__pm">
+    <entry key="org/apache/servicemix/jdbc/pxe__pm">
       <bean class="org.hsqldb.jdbc.jdbcDataSource">
         <property name="database" value="jdbc:hsqldb:mem:pxe"/>
         <property name="user" value = "sa"/>
@@ -44,25 +44,25 @@
     -->
     
     <!-- wsn2005 jms connection factory -->
-    <entry key="java:comp/env/jms/wsnotificationCF">
+    <entry key="org/apache/servicemix/jms/wsnotificationCF">
       <amq:connectionFactory brokerURL="${activemq.url}" />
     </entry>
 
     <!-- transaction manager -->
     <entry key="javax.transaction.TransactionManager" value-ref="transactionManager" />
-    <entry key="java:comp/env/smx/TransactionManager" value-ref="transactionManager" />
+    <entry key="org/apache/servicemix/TransactionManager" value-ref="transactionManager" />
     
     <!-- bootstrap context -->
-    <entry key="java:comp/env/smx/BootstrapContext" value-ref="bootstrapContext" />
+    <entry key="org/apache/servicemix/BootstrapContext" value-ref="bootstrapContext" />
     
     <!-- connection context -->
-    <entry key="java:comp/env/smx/ConnectionManager" value-ref="connectionManager" />
+    <entry key="org/apache/servicemix/ConnectionManager" value-ref="connectionManager" />
     
     <!-- Authentication service -->
-    <entry key="java:comp/env/smx/AuthenticationService" value-ref="authenticationService" />
+    <entry key="org/apache/servicemix/AuthenticationService" value-ref="authenticationService" />
     
     <!-- Keystore manager -->
-    <entry key="java:comp/env/smx/KeystoreManager" value-ref="keystoreManager" />
+    <entry key="org/apache/servicemix/KeystoreManager" value-ref="keystoreManager" />
   </util:map>
 
   <!-- A managed JDBC DataSource for derby -->

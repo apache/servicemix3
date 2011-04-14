@@ -41,7 +41,7 @@
   </bean>
 
   <util:map id="jndiEntries">
-    <entry key="java:comp/env/jms/wsnotificationCF">
+    <entry key="org/apache/servicemix/jms/wsnotificationCF">
       <amq:connectionFactory brokerURL="tcp://localhost:61616" />
     </entry>
   </util:map>
