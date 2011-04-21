@@ -245,6 +245,8 @@ public class HttpConsumerEndpoint extends ConsumerEndpoint implements HttpProces
                 }
                 // Put the new exchange
                 exchanges.put(exchange.getExchangeId(), exchange);
+                // In case of the SEDA flow isn't used, the exchange could be a different instance, so it should be updated.
+                cont.setObject(exchange);
                 // Resume continuation
                 cont.resume();
                 if (!cont.isResumed()) {
