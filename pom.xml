@@ -102,7 +102,7 @@
         <servicemix-exec-version>${servicemix-components-version}</servicemix-exec-version>
         <servicemix-vfs-version>${servicemix-components-version}</servicemix-vfs-version>
 
-        <jbi-plugin-version>4.4</jbi-plugin-version>
+        <jbi-plugin-version>4.5-SNAPSHOT</jbi-plugin-version>
         <res-maven-plugin-version>4.1</res-maven-plugin-version>
         <servicemix-build-version>1.0</servicemix-build-version>
 
