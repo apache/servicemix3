@@ -221,7 +221,6 @@
             name="jmsFactory"
             transactionManager="#transactionManager"
             maxConnections="10"
-            brokerURL="tcp://localhost:61616"
-            depends-on="broker"/>
+            brokerURL="tcp://localhost:61616" />
 
 </beans>
