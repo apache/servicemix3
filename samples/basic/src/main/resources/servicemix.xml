@@ -216,11 +216,12 @@
         </amq:transportConnectors>
     </amq:broker>
 
-    <!-- JMS Xa-enabled pooled factory -->
-    <amqpool:jcaPooledConnectionFactory
-            name="jmsFactory"
-            transactionManager="#transactionManager"
-            maxConnections="10"
-            brokerURL="tcp://localhost:61616" />
+    <!-- JMS Xa-enabled/JCA pooled factory -->
+    <bean id="jmsFactory" class="org.jencks.amqpool.JcaPooledConnectionFactory" depends-on="broker">
+        <constructor-arg value="tcp://localhost:61616"/>
+        <property name="maxConnections" value="10"/>
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="name" value="jmsFactory"/>
+    </bean>
 
 </beans>
