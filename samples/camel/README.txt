@@ -20,16 +20,21 @@ Welcome to the ServiceMix Camel Example
 
 This example shows how to use Apache Camel to deploy EIP routes
 
-You can run this example using an embedded ServiceMix install via
-  cd camel-sa
-  mvn jbi:servicemix
-
-Or if you prefer you can start a ServiceMix server (if not already started) by running
+First start a ServiceMix server (if not already started) by running
   bin/servicemix
 in the root dir of this ditribution.
 
-To start this sample, run:
-  mvn install jbi:projectDeploy
+To compile this sample, run:
+  mvn install
+
+It provides the Camel Service Assembly:
+  camel-sa/target/camel-sa-*.zip
+
+To install and start this sample simply copy the camel-sa/target/camel-sa-*.zip
+into ServiceMix hotdeploy folder.
+
+To stop and uninstall this sample, remove the camel-sa-*.zip from the ServiceMix
+hotdeploy folder.
   
 For more information on running this example please see:
   http://servicemix.apache.org/camel-example.html

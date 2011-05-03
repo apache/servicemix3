@@ -27,17 +27,26 @@ First start a ServiceMix server (if not already started) by running
   bin/servicemix
 in the root dir of this ditribution.
 
-This example depends on Apache Ode JBI Service Engine which has not been
+This example depends on Apache ODE JBI Service Engine which has not been
 released yet.  You will need to build it yourself (more informations at
 http://incubator.apache.org/ode/getting-ode.html).  You will need to copy
 the Service Engine installer to the install directory of this distribution
 prior to the following instructions.
 
-To run this sample, launch the following commands:
-  mvn install jbi:projectDeploy
+To compile this sample, run:
+  mvn install
+
+It provides the Loan Broker Service Assembly:
+  loan-broker-sa/target/loan-broker-sa-*.zip
+
+To install and start this sample simply copy the loan-broker-sa/target/loan-broker-sa-*.zip
+into ServiceMix hotdeploy folder.
 
 To test this sample, launch the following commands:
   ant run
+
+To stop and uninstall this sample, remove the loan-broker-sa-*.zip from the ServiceMix
+hotdeploy folder.
 
 For more information on this example please see
   http://servicemix.apache.org/loan-broker-bpel.html

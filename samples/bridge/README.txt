@@ -25,12 +25,21 @@ First start a ServiceMix server (if not already started) by running
   bin/servicemix
 in the root dir of this ditribution.
 
-To start this sample, run:
-  mvn install jbi:projectDeploy -Dmaven.test.skip=true
-  
+To compile this sample, run:
+  mvn install
+
+It provides the Bridge Service Assembly:
+  bridge-sa/target/bridge-sa-*.zip
+
+To install and start this sample simply copy the bridge-sa/target/bridge-sa-*.zip
+into ServiceMix hotdeploy folder.
+
 You can then launch the client.html in your favorite browser
 and send an HTTP request which will be transformed in a JMS
 message.
+
+To stop and uninstall this sample, remove the bridge-sa-*.zip from the ServiceMix
+hotdeploy folder.
 
 For more information on running this example please see:
   http://servicemix.apache.org/bridge.html
