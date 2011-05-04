@@ -154,7 +154,7 @@
                 <include>org.apache.geronimo.components:geronimo-connector</include>
                 <include>org.apache.geronimo.components:geronimo-transaction</include>
                 <include>org.slf4j:slf4j-api</include>
-                <include>org.slf4j:slf4j-simple</include>
+                <include>org.slf4j:slf4j-log4j12</include>
 
                 <include>javax.activation:activation</include>
                 <include>javax.mail:mail</include>
