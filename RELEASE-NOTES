@@ -33,9 +33,9 @@ Bug Tracking:  http://issues.apache.org/activemq/browse/SM
 
 Changes:
 --------
-ServiceMix 3.4
+ ServiceMix 3.4
 ** Bug
-    * [SM-2066] - Reinclude lightweight component into build
+    * [SM-1206] - ClientFactory JNDI bind fails in non-standalone ServiceMix installs
     * [SM-1438] - Exceptions while shutting down ServiceMix
     * [SM-1456] - Statistics Service throws NPE on startup.
     * [SM-1521] - Released version of archetype-catalog is corrupt
@@ -49,14 +49,16 @@ ServiceMix 3.4
     * [SM-2026] - ServiceMix does not start some components if some component failed during start
     * [SM-2030] - SMX3 doesn't build
     * [SM-2037] - Cant use servicemix start just after installation
-    * [SM-2051] - Not possible to retrieve list of installed shared libraries with list-shared-libraries Ant task
     * [SM-2056] - Upgrade to JAXB 2.2 and include JAXB API in the container lib
     * [SM-2057] - Add JAX-WS in the distribution kit
+    * [SM-2066] - Reinclude lightweight component into build
+    * [SM-2071] - lots of tests failure in common/servicemix-components
+    * [SM-2075] - Basic examples doesn't work
+    * [SM-2077] - ServiceMix wsn2005 doesn't start correctly on SMX3
 ** Improvement
     * [SM-1573] - Use of useJBIWrapper flag in smx-cxf-bc consumer and smx-http soap-consumer endpoints is inconsistent
     * [SM-1659] - should filter the version for kit_camel_example_pom.xml which is used in kit
     * [SM-1660] - add createDaemonExecutor api for ExecutorFactory
-    * [SM-1828] - WS-Notification component servicemix-wsn2005 - Content Message filter does not support namespaces in the payload
     * [SM-1945] - Upgrade to ActiveMQ 5.3.1
     * [SM-1950] - Upgrade to ActiveMQ 5.3.2
     * [SM-1960] - Upgrade to log4j 1.2.16
@@ -80,13 +82,15 @@ ServiceMix 3.4
     * [SM-2040] - Upgrade to Camel 2.6.0
     * [SM-2041] - Upgrade to ServiceMix Components 2011.01
     * [SM-2043] - SimpleEndpoint fail method error is not logged
+    * [SM-2070] - update woodstox stax2-api to 3.0.2
+    * [SM-2072] - upgrade to jetty 6.1.26 for smx3
+    * [SM-2076] - Avoid usage of jbi:projectDeploy in examples
 ** New Feature
     * [SM-1977] - Support exploded JBI artifacts
 ** Task
     * [SM-1877] - update wss4j to 1.5.8
     * [SM-1951] - upgrade to cxf 2.2.8
     * [SM-1954] - upgrade to cxf 2.2.9
-    * [SM-2055] - Release ServiceMix 3.4
 ** Test
     * [SM-1306] - Improve success ratio of timing sensitive tests
     * [SM-1968] - Use dynamic port for tests
