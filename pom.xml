@@ -111,9 +111,9 @@
         <mavenAssemblyPluginVersion>2.1</mavenAssemblyPluginVersion>
         <xbean-version>3.7</xbean-version>
         <spring-version>3.0.5.RELEASE</spring-version>
-        <activemq-version>5.4.2</activemq-version>
+        <activemq-version>5.5.0</activemq-version>
         <activeio-version>3.1.2</activeio-version>
-        <camel-version>2.6.0</camel-version>
+        <camel-version>2.7.0</camel-version>
         <jencks-version>2.2</jencks-version>
         <jetty-version>6.1.26</jetty-version>
         <jetty-servlet-api-version>6.1.14</jetty-servlet-api-version>
@@ -132,6 +132,7 @@
         <oro-version>2.0.8</oro-version>
         <sitemesh-version>2.2.1</sitemesh-version>
         <woden-version>1.0.0M6</woden-version>
+        <!-- It should be updated to 2.4.0 -->
         <cxf-version>2.3.2</cxf-version>
         <jaxb.version>2.2</jaxb.version>
         <jaxb.impl.version>2.2.1.1</jaxb.impl.version>
