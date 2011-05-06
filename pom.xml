@@ -70,8 +70,8 @@
     </repositories>
 
     <properties>
-        <servicemix-components-version>2011.01</servicemix-components-version>
-        <servicemix-utils-version>1.4.0</servicemix-utils-version>
+        <servicemix-components-version>2011.02-SNAPSHOT</servicemix-components-version>
+        <servicemix-utils-version>1.5.0-SNAPSHOT</servicemix-utils-version>
         <servicemix-specs-version>1.7.0</servicemix-specs-version>
         <servicemix-common-version>${servicemix-components-version}</servicemix-common-version>
         <servicemix-shared-version>${servicemix-components-version}</servicemix-shared-version>
@@ -119,9 +119,10 @@
         <jetty-servlet-api-version>6.1.14</jetty-servlet-api-version>
         <geronimo-version>2.0.2</geronimo-version>
         <geronimo-annotation-version>1.1.1</geronimo-annotation-version>
+        <geronimo-jaxws-version>1.0</geronimo-jaxws-version>
         <geronimo-connector-version>2.1.4</geronimo-connector-version>
         <geronimo-transaction-version>2.1.4</geronimo-transaction-version>
-        <slf4j-version>1.5.11</slf4j-version>
+        <slf4j-version>1.6.1</slf4j-version>
         <wsdl4j-version>1.6.2</wsdl4j-version>
         <commons-beanutils-version>1.7.0</commons-beanutils-version>
         <commons-fileupload-version>1.1.1</commons-fileupload-version>
@@ -1010,7 +1011,12 @@
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-annotation_1.0_spec</artifactId>
                 <version>${geronimo-annotation-version}</version>
-            </dependency>            
+            </dependency>
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-jaxws-2.2_spec</artifactId>
+                <version>${geronimo-jaxws-version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.apache.geronimo.modules</groupId>
                 <artifactId>geronimo-common</artifactId>
@@ -1794,7 +1800,7 @@
     <distributionManagement>
         <site>
             <id>servicemix</id>
-            <url>scpexe://people.apache.org/www/servicemix.apache.org/dist/servicemix-${version}/site</url>
+            <url>scpexe://people.apache.org/www/servicemix.apache.org/dist/servicemix-${project.version}/site</url>
         </site>
     </distributionManagement>
 
