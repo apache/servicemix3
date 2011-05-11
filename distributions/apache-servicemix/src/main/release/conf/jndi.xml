@@ -54,7 +54,7 @@
     -->
 
     <!-- transaction manager -->
-    <entry key="java:javax.transaction.TransactionManager" value-ref="transactionManager" />
+    <entry key="javax.transaction.TransactionManager" value-ref="transactionManager" />
     <entry key="java:org/apache/servicemix/TransactionManager" value-ref="transactionManager" />
     
     <!-- bootstrap context -->
