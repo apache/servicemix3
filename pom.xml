@@ -133,7 +133,7 @@
         <sitemesh-version>2.2.1</sitemesh-version>
         <woden-version>1.0.0M6</woden-version>
         <!-- It should be updated to 2.4.0 -->
-        <cxf-version>2.3.2</cxf-version>
+        <cxf-version>2.3.3</cxf-version>
         <jaxb.version>2.2</jaxb.version>
         <jaxb.impl.version>2.2.1.1</jaxb.impl.version>
         <jaxb.xjc.version>2.2.1.1</jaxb.xjc.version>
