@@ -16,16 +16,16 @@
  */
 package org.apache.servicemix.web.model;
 
-import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import org.apache.servicemix.web.jmx.EnhancedMBeanProxyFactoryBean;
+import org.springframework.jmx.access.MBeanProxyFactoryBean;
 
 import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
-
-import org.springframework.jmx.access.MBeanProxyFactoryBean;
+import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ProxyManager {
 
@@ -41,7 +41,7 @@ public class ProxyManager {
         Reference r = proxies.get(name);
         T proxy = (r != null) ? (T) r.get() : null;
         if (proxy == null) {
-            MBeanProxyFactoryBean factory = new MBeanProxyFactoryBean();
+            MBeanProxyFactoryBean factory = new EnhancedMBeanProxyFactoryBean();
             factory.setServer(server);
             try {
                 factory.setObjectName(name);

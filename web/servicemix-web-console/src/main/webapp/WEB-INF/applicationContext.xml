@@ -23,7 +23,7 @@
   <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
   </bean>
   
-  <bean id="jmxProxy" abstract="true" class="org.springframework.jmx.access.MBeanProxyFactoryBean">
+  <bean id="jmxProxy" abstract="true" class="org.apache.servicemix.web.jmx.EnhancedMBeanProxyFactoryBean">
     <property name="server" ref="server"/>
     <property name="useStrictCasing" value="false" />
     <property name="connectOnStartup" value="false" />
