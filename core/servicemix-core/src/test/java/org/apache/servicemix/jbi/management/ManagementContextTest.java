@@ -16,10 +16,12 @@
  */
 package org.apache.servicemix.jbi.management;
 
+import javax.jbi.management.AdminServiceMBean;
 import javax.jbi.management.LifeCycleMBean;
 import javax.management.MBeanServerConnection;
 import javax.management.MBeanServerDelegateMBean;
 import javax.management.MBeanServerInvocationHandler;
+import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
@@ -108,6 +110,11 @@ public class ManagementContextTest extends TestCase {
         assertEquals(LifeCycleMBean.STARTED, echo.getCurrentState());
         context.stopComponent("echo");
         assertEquals(LifeCycleMBean.STOPPED, echo.getCurrentState());
+    }
+
+    public void testGetSystemObjectNameQuery() throws MalformedObjectNameException {
+        assertEquals(new ObjectName("org.apache.servicemix:ContainerName=ServiceMix,Type=SystemService,Name=AdminService,*"),
+                     ManagementContext.getSystemObjectNameQuery("org.apache.servicemix", "ServiceMix", AdminServiceMBean.class));
     }
 
 }

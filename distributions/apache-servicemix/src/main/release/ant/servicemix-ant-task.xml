@@ -53,6 +53,12 @@
     
     <!-- default port. -->
     <property name="sm.port" value="1099" />
+
+    <!-- JMX connection url - when this value is provided, sm.host and sm.port will be ignored -->
+    <property name="sm.url" value="" />
+
+    <!-- JMX connection environment settings -->
+    <property name="sm.environment" value="" />
     
     
     <!-- Command Line Argumants can override the following values. -->
@@ -81,6 +87,8 @@
              password="${sm.password}"
              host="${sm.host}"
          	 port="${sm.port}"
+             serviceUrl="${sm.url}"
+             environment="${sm.environment}"
              file="${sm.install.file}"/>  
       </target>
      
@@ -96,6 +104,8 @@
              password="${sm.password}"
              host="${sm.host}"
          	 port="${sm.port}"
+             serviceUrl="${sm.url}"
+             environment="${sm.environment}"
              name="${sm.component.name}"
          />
          
@@ -114,6 +124,8 @@
             password="${sm.password}"
             host="${sm.host}"
         	port="${sm.port}"
+            serviceUrl="${sm.url}"
+            environment="${sm.environment}"
             file="${sm.install.file}"
         />
      </target>
@@ -131,6 +143,8 @@
             password="${sm.password}"
             host="${sm.host}"
          	port="${sm.port}"
+            serviceUrl="${sm.url}"
+            environment="${sm.environment}"
             name="${sm.shared.library.name}"    
         />
          
@@ -149,6 +163,8 @@
             password="${sm.password}"
             host="${sm.host}"
          	port="${sm.port}"
+            serviceUrl="${sm.url}"
+            environment="${sm.environment}"
             name="${sm.component.name}"        
         />
      
@@ -167,6 +183,8 @@
             password="${sm.password}"
             host="${sm.host}"
          	port="${sm.port}"
+            serviceUrl="${sm.url}"
+            environment="${sm.environment}"
             name="${sm.component.name}"            
          />
           
@@ -185,6 +203,8 @@
              password="${sm.password}"
              host="${sm.host}"
          	 port="${sm.port}"
+             serviceUrl="${sm.url}"
+             environment="${sm.environment}"
              name="${sm.component.name}"                
          />
      </target>
@@ -202,6 +222,8 @@
              password="${sm.password}"
              host="${sm.host}"
          	 port="${sm.port}"
+             serviceUrl="${sm.url}"
+             environment="${sm.environment}"
              file="${sm.deploy.file}"                    
          />
      </target>
@@ -219,6 +241,8 @@
              password="${sm.password}"
              host="${sm.host}"
          	 port="${sm.port}"
+             serviceUrl="${sm.url}"
+             environment="${sm.environment}"
              name="${sm.service.assembly.name}"                        
          />
      
@@ -237,6 +261,8 @@
              password="${sm.password}"
              host="${sm.host}"
          	 port="${sm.port}"
+             serviceUrl="${sm.url}"
+             environment="${sm.environment}"
              name="${sm.service.assembly.name}"                            
          />
          
@@ -255,6 +281,8 @@
              password="${sm.password}"
              host="${sm.host}"
          	 port="${sm.port}"
+             serviceUrl="${sm.url}"
+             environment="${sm.environment}"
              name="${sm.service.assembly.name}"                                
          />     
      </target>
@@ -272,6 +300,8 @@
              password="${sm.password}"
              host="${sm.host}"
          	 port="${sm.port}"
+             serviceUrl="${sm.url}"
+             environment="${sm.environment}"
              name="${sm.service.assembly.name}"                                    
          />
      
@@ -292,6 +322,8 @@
              password="${sm.password}"
              host="${sm.host}"
          	 port="${sm.port}"
+             serviceUrl="${sm.url}"
+             environment="${sm.environment}"
              state="${sm.state}"
              serviceAssemblyName="${sm.service.assembly.name}"
              sharedLibraryName="${sm.shared.library.name}"
@@ -314,6 +346,8 @@
              password="${sm.password}"
              host="${sm.host}"
          	 port="${sm.port}"
+             serviceUrl="${sm.url}"
+             environment="${sm.environment}"
              state="${sm.state}"
              sharedLibraryName="${sm.shared.library.name}"
              serviceAssemblyName="${sm.service.assembly.name}"
@@ -335,6 +369,8 @@
              password="${sm.password}"
              host="${sm.host}"
          	 port="${sm.port}"
+             serviceUrl="${sm.url}"
+             environment="${sm.environment}"
              componentName="${sm.component.name}"
              sharedLibraryName="${sm.shared.library.name}"
       />
@@ -355,6 +391,8 @@
              password="${sm.password}"
              host="${sm.host}"
          	 port="${sm.port}"
+             serviceUrl="${sm.url}"
+             environment="${sm.environment}"
              state="${sm.state}"
              componentName="${sm.component.name}"
              serviceAssemblyName="${sm.service.assembly.name}"

@@ -18,10 +18,10 @@ package org.apache.servicemix.jbi.management.task;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import javax.management.MBeanServerInvocationHandler;
+import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
@@ -57,6 +57,10 @@ public abstract class JbiTask extends Task {
 
     private String password;
 
+    private String environment;
+
+    private String serviceUrl;
+
     private boolean failOnError = true;
 
     private JMXConnector jmxConnector;
@@ -67,9 +71,13 @@ public abstract class JbiTask extends Task {
      * @return the url
      */
     public JMXServiceURL getServiceURL() throws MalformedURLException {
-        JMXServiceURL url = null;
-        url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://" + host + ":" + port + jndiPath);
-        return url;
+        if (serviceUrl == null || serviceUrl.trim().length() < 1) {
+            JMXServiceURL url = null;
+            url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://" + host + ":" + port + jndiPath);
+            return url;
+        } else {
+            return new JMXServiceURL(serviceUrl);
+        }
     }
 
     /**
@@ -80,10 +88,26 @@ public abstract class JbiTask extends Task {
      * @throws IOException
      */
     public JMXConnector getJMXConnector(JMXServiceURL url) throws IOException {
+        log("Establishing connection to " + url, Project.MSG_DEBUG);
+        return JMXConnectorFactory.connect(url, getEnvironmentMap());
+    }
+
+    protected Map<String, Object> getEnvironmentMap() {
         String[] credentials = new String[] {getUsername(), getPassword() };
-        Map<String, Object> environment = new HashMap<String, Object>();
-        environment.put(JMXConnector.CREDENTIALS, credentials);
-        return JMXConnectorFactory.connect(url, environment);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(JMXConnector.CREDENTIALS, credentials);
+
+        if (environment != null && environment.trim().length() > 0) {
+            for (String entry : environment.split(",")) {
+                final String[] info = entry.trim().split("=");
+                final String value = info[1].trim();
+                final String key = info[0].trim();
+                log(String.format("Setting environment variable %s: %s", key, value), Project.MSG_DEBUG);
+                map.put(key, value);
+            }
+        }
+
+        return map;
     }
 
     /**
@@ -110,14 +134,21 @@ public abstract class JbiTask extends Task {
     }
 
     /**
-     * Get a servicemix internal system management instance, from it's class
-     * name
+     * Get a servicemix internal system management instance, from it's class name.
      * 
      * @param systemClass
      * @return the object name
      */
-    protected ObjectName getObjectName(Class systemClass) {
-        return ManagementContext.getSystemObjectName(jmxDomainName, containerName, systemClass);
+    protected ObjectName getObjectName(Class systemClass) throws IOException, MalformedObjectNameException {
+        ObjectName query = ManagementContext.getSystemObjectNameQuery(jmxDomainName, containerName, systemClass);
+
+        Set<ObjectName> names = jmxConnector.getMBeanServerConnection().queryNames(query, null);
+
+        if (names.size() == 1) {
+            return names.iterator().next();
+        } else {
+            throw new BuildException(String.format("Expected one instance, but found %s instances of %s", names.size(), systemClass));
+        }
     }
 
     /**
@@ -126,7 +157,7 @@ public abstract class JbiTask extends Task {
      * @return the main administration service MBean
      * @throws IOException
      */
-    public AdminCommandsServiceMBean getAdminCommandsService() throws IOException {
+    public AdminCommandsServiceMBean getAdminCommandsService() throws IOException, MalformedObjectNameException {
         ObjectName objectName = getObjectName(AdminCommandsServiceMBean.class);
 
         return (AdminCommandsServiceMBean) MBeanServerInvocationHandler.newProxyInstance(jmxConnector.getMBeanServerConnection(),
@@ -253,6 +284,19 @@ public abstract class JbiTask extends Task {
         this.username = username;
     }
 
+    public String getServiceUrl() {
+        return serviceUrl;
+    }
+
+    /**
+     * Configure the JMX service URL - if this property is set, the host/port/path properties are ignored.
+     *
+     * @param serviceUrl
+     */
+    public void setServiceUrl(String serviceUrl) {
+        this.serviceUrl = serviceUrl;
+    }
+
     /**
      * @return Returns the failOnError.
      */
@@ -266,6 +310,14 @@ public abstract class JbiTask extends Task {
      */
     public void setFailOnError(boolean failOnError) {
         this.failOnError = failOnError;
+    }
+
+    public String getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(String environment) {
+        this.environment = environment;
     }
 
     /**
@@ -301,5 +353,4 @@ public abstract class JbiTask extends Task {
     }
 
     protected abstract void doExecute(AdminCommandsServiceMBean acs) throws Exception;
-
 }

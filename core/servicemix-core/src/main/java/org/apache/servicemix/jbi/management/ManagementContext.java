@@ -561,6 +561,24 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         return result;
     }
 
+    /**
+     * Retrieve an ObjectName instance that can be used for querying system service mbean instances
+     *
+     * @param domainName
+     * @param containerName
+     * @param interfaceType
+     * @return
+     */
+    public static ObjectName getSystemObjectNameQuery(String domainName, String containerName, Class interfaceType) {
+        ObjectName result = null;
+        try {
+            result = new ObjectName(String.format("%s,*", getSystemObjectName(domainName, containerName, interfaceType)));
+        } catch (MalformedObjectNameException e) {
+            LOG.error("Failed to build object name query: " + e.getMessage(), e);
+        }
+        return result;
+    }
+
     public static String getSystemServiceName(Class interfaceType) {
         String name = interfaceType.getName();
         name = name.substring(name.lastIndexOf('.') + 1);
