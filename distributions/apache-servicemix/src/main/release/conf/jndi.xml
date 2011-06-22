@@ -47,9 +47,6 @@
     <entry key="org.apache.servicemix.jms.wsnotificationCF">
       <amq:connectionFactory brokerURL="${activemq.url}" />
     </entry>
-    <entry key="java:comp/env/jms/wsnotificationCF">
-      <amq:connectionFactory brokerURL="${activemq.url}" />
-    </entry>
 
     <!-- transaction manager -->
     <entry key="javax.transaction.TransactionManager" value-ref="transactionManager" />
