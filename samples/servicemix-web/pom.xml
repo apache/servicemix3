@@ -56,13 +56,6 @@
 
   <dependencies>
     <dependency>
-        <groupId>org.apache.servicemix</groupId>
-        <artifactId>apache-servicemix-web</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-core</artifactId>
     </dependency>
@@ -118,6 +111,18 @@
       <artifactId>commons-pool</artifactId>
     </dependency>
   </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>apache-servicemix-web</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   
   <build>
     <plugins>

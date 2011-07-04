@@ -71,35 +71,35 @@
             <outputDirectory>schemas</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>target/samples/servicemix-web-${pom.version}</directory>
+            <directory>target/samples/servicemix-web-${project.version}</directory>
             <outputDirectory>examples/servicemix-web</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>target/samples/wsdl-first-${pom.version}</directory>
+            <directory>target/samples/wsdl-first-${project.version}</directory>
             <outputDirectory>examples/wsdl-first</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>target/samples/cxf-wsdl-first-${pom.version}</directory>
+            <directory>target/samples/cxf-wsdl-first-${project.version}</directory>
             <outputDirectory>examples/cxf-wsdl-first</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>target/samples/loan-broker-${pom.version}</directory>
+            <directory>target/samples/loan-broker-${project.version}</directory>
             <outputDirectory>examples/loan-broker-bpel</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>target/samples/bridge-${pom.version}</directory>
+            <directory>target/samples/bridge-${project.version}</directory>
             <outputDirectory>examples/bridge</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>target/samples/bridge-camel-${pom.version}</directory>
+            <directory>target/samples/bridge-camel-${project.version}</directory>
             <outputDirectory>examples/bridge-camel</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>target/samples/basic-${pom.version}</directory>
+            <directory>target/samples/basic-${project.version}</directory>
             <outputDirectory>examples/basic</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>target/samples/camel-${pom.version}</directory>
+            <directory>target/samples/camel-${project.version}</directory>
             <outputDirectory>examples/camel</outputDirectory>
         </fileSet>
         <fileSet>

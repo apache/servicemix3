@@ -175,11 +175,6 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>groovy</groupId>
-            <artifactId>groovy-all-1.0-jsr</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>org.livetribe</groupId>
             <artifactId>livetribe-jsr223</artifactId>
             <version>2.0.5</version>
@@ -196,12 +191,6 @@
             <artifactId>jdom</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>jetty</artifactId>
-            <optional>true</optional>
-        </dependency>
-
 
         <dependency>
             <groupId>axis</groupId>

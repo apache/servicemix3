@@ -740,12 +740,12 @@
                             <goal>copy</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>target/samples/bridge-${pom.version}</outputDirectory>
+                            <outputDirectory>target/samples/bridge-${project.version}</outputDirectory>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.apache.servicemix.samples.bridge</groupId>
                                     <artifactId>bridge-sa</artifactId>
-                                    <version>${pom.version}</version>
+                                    <version>${project.version}</version>
                                     <type>zip</type>
                                 </artifactItem>
                             </artifactItems>
@@ -759,12 +759,12 @@
                             <goal>copy</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>target/samples/bridge-camel-${pom.version}</outputDirectory>
+                            <outputDirectory>target/samples/bridge-camel-${project.version}</outputDirectory>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.apache.servicemix.samples.bridge-camel</groupId>
                                     <artifactId>bridge-camel-sa</artifactId>
-                                    <version>${pom.version}</version>
+                                    <version>${project.version}</version>
                                     <type>zip</type>
                                 </artifactItem>
                             </artifactItems>
@@ -777,12 +777,12 @@
                             <goal>copy</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>target/samples/loan-broker-${pom.version}</outputDirectory>
+                            <outputDirectory>target/samples/loan-broker-${project.version}</outputDirectory>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.apache.servicemix.samples.loan-broker</groupId>
                                     <artifactId>loan-broker-sa</artifactId>
-                                    <version>${pom.version}</version>
+                                    <version>${project.version}</version>
                                     <type>zip</type>
                                 </artifactItem>
                             </artifactItems>
@@ -796,12 +796,12 @@
                         </goals>
                         <configuration>
                             <id>wsdl-first</id>
-                            <outputDirectory>target/samples/wsdl-first-${pom.version}</outputDirectory>
+                            <outputDirectory>target/samples/wsdl-first-${project.version}</outputDirectory>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.apache.servicemix.samples.wsdl-first</groupId>
                                     <artifactId>wsdl-first-sa</artifactId>
-                                    <version>${pom.version}</version>
+                                    <version>${project.version}</version>
                                     <type>zip</type>
                                 </artifactItem>
                             </artifactItems>
@@ -815,12 +815,12 @@
                         </goals>
                         <configuration>
                             <id>cxf-wsdl-first</id>
-                            <outputDirectory>target/samples/cxf-wsdl-first-${pom.version}</outputDirectory>
+                            <outputDirectory>target/samples/cxf-wsdl-first-${project.version}</outputDirectory>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.apache.servicemix.samples.cxf-wsdl-first</groupId>
                                     <artifactId>wsdl-first-cxf-sa</artifactId>
-                                    <version>${pom.version}</version>
+                                    <version>${project.version}</version>
                                     <type>zip</type>
                                 </artifactItem>
                             </artifactItems>
@@ -834,12 +834,12 @@
                         </goals>
                         <configuration>
                             <id>camel</id>
-                            <outputDirectory>target/samples/camel-${pom.version}</outputDirectory>
+                            <outputDirectory>target/samples/camel-${project.version}</outputDirectory>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.apache.servicemix.samples</groupId>
                                     <artifactId>camel-sa</artifactId>
-                                    <version>${pom.version}</version>
+                                    <version>${project.version}</version>
                                     <type>zip</type>
                                 </artifactItem>
                             </artifactItems>
@@ -857,56 +857,56 @@
                                 <artifactItem>
                                     <groupId>org.apache.servicemix.samples</groupId>
                                     <artifactId>servicemix-web</artifactId>
-                                    <version>${pom.version}</version>
+                                    <version>${project.version}</version>
                                     <classifier>src</classifier>
                                     <type>zip</type>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.servicemix.samples</groupId>
                                     <artifactId>wsdl-first</artifactId>
-                                    <version>${pom.version}</version>
+                                    <version>${project.version}</version>
                                     <classifier>src</classifier>
                                     <type>zip</type>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.servicemix.samples</groupId>
                                     <artifactId>cxf-wsdl-first</artifactId>
-                                    <version>${pom.version}</version>
+                                    <version>${project.version}</version>
                                     <classifier>src</classifier>
                                     <type>zip</type>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.servicemix.samples</groupId>
                                     <artifactId>loan-broker</artifactId>
-                                    <version>${pom.version}</version>
+                                    <version>${project.version}</version>
                                     <classifier>src</classifier>
                                     <type>zip</type>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.servicemix.samples</groupId>
                                     <artifactId>bridge</artifactId>
-                                    <version>${pom.version}</version>
+                                    <version>${project.version}</version>
                                     <classifier>src</classifier>
                                     <type>zip</type>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.servicemix.samples</groupId>
                                     <artifactId>bridge-camel</artifactId>
-                                    <version>${pom.version}</version>
+                                    <version>${project.version}</version>
                                     <classifier>src</classifier>
                                     <type>zip</type>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.servicemix.samples</groupId>
                                     <artifactId>basic</artifactId>
-                                    <version>${pom.version}</version>
+                                    <version>${project.version}</version>
                                     <classifier>src</classifier>
                                     <type>zip</type>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.servicemix.samples</groupId>
                                     <artifactId>camel</artifactId>
-                                    <version>${pom.version}</version>
+                                    <version>${project.version}</version>
                                     <classifier>src</classifier>
                                     <type>zip</type>
                                 </artifactItem>
@@ -924,7 +924,7 @@
                     <inputDirectory>${basedir}/src/main/release</inputDirectory>
                     <outputDirectory>${basedir}/target/filtered</outputDirectory>
                     <filters>
-                        <servicemix-version>${pom.version}</servicemix-version>
+                        <servicemix-version>${project.version}</servicemix-version>
                         <servicemix-common-version>${servicemix-common-version}</servicemix-common-version>
                         <servicemix-wsn2005-version>${servicemix-common-version}</servicemix-wsn2005-version>
                         <releases-repo-url>${releases-repo-url}</releases-repo-url>

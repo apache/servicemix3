@@ -34,14 +34,14 @@
         <dependency>
             <groupId>org.apache.servicemix.geronimo</groupId>
             <artifactId>servicemix-service</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
             <type>jar</type>
         </dependency>
 
         <dependency>
             <groupId>org.apache.servicemix</groupId>
 			<artifactId>servicemix-core</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
             <type>jar</type>
         </dependency>
 
