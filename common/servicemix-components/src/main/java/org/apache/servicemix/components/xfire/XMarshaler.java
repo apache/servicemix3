@@ -31,7 +31,6 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.jaxp.StAXSourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.codehaus.xfire.exchange.OutMessage;
 
@@ -40,11 +39,11 @@ import org.codehaus.xfire.exchange.OutMessage;
  */
 public class XMarshaler {
 
-    private StAXSourceTransformer transformer;
+    private SourceTransformer transformer;
     
     public XMarshaler()
     {
-        transformer = new StAXSourceTransformer();
+        transformer = new SourceTransformer();
     }
 
     public void setContent(NormalizedMessage message, String xml) throws MessagingException {
