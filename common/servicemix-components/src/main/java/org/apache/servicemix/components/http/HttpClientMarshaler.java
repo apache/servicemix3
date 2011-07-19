@@ -33,9 +33,9 @@ import javax.xml.transform.stream.StreamSource;
 import java.util.Iterator;
 
 /**
- * A class which marshalls a client HTTP request to a NMS message
+ * A class which marshall a client HTTP request to a NMS message
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class HttpClientMarshaler {
 

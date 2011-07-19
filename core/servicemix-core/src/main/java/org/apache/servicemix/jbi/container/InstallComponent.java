@@ -18,8 +18,8 @@ package org.apache.servicemix.jbi.container;
 
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Installs a component using either a File URL or the maven groupId, artifactId and optional versions.
@@ -27,10 +27,11 @@ import org.apache.commons.logging.LogFactory;
  * @org.apache.xbean.XBean element="installComponent"
  * description="Installs a shared library"
  *
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class InstallComponent extends DeploySupport {
-    private static final transient Log LOG = LogFactory.getLog(InstallSharedLibrary.class);
+
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(InstallSharedLibrary.class);
 
     private Properties properties = new Properties();
     private String componentName;
@@ -62,9 +63,10 @@ public class InstallComponent extends DeploySupport {
 
         String file = getFile();
 
-        LOG.info("Deploying component: " + file);
+        LOGGER.info("Deploying component: {}", file);
         getCommandsService().installComponent(file, getProperties(), isDeferException());
 
         getCommandsService().startComponent(name);
     }
+
 }

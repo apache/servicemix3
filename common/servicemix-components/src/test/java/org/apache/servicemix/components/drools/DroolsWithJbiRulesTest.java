@@ -20,11 +20,12 @@ import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class DroolsWithJbiRulesTest extends DroolsTest {
 
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/drools/jbi-example.xml");
     }
+
 }

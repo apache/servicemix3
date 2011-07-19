@@ -33,11 +33,12 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.EnvironmentContext;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Management Context applied to a ServiceMix container
@@ -45,8 +46,9 @@ import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
  * @version $Revision$
  */
 public class ManagementContext extends BaseSystemService implements ManagementContextMBean {
+
     /**
-     * Default servicemix domain
+     * Default ServiceMix domain
      */
     public static final String DEFAULT_DOMAIN = "org.apache.servicemix";
 
@@ -54,7 +56,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
 
     public static final int DEFAULT_CONNECTOR_PORT = 1099;
 
-    private static final Log LOG = LogFactory.getLog(ManagementContext.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ManagementContext.class);
 
     protected Map<String, ObjectName> systemServices = new ConcurrentHashMap<String, ObjectName>();
 
@@ -160,7 +162,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         try {
             mbeanServerContext.start();
         } catch (IOException e) {
-            LOG.error("Failed to start mbeanServerContext", e);
+            LOGGER.error("Failed to start mbeanServerContext", e);
         }
         this.executors = Executors.newCachedThreadPool();
         super.init(container);
@@ -205,13 +207,13 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
             try {
                 unregisterMBean(beans[i]);
             } catch (Exception e) {
-                LOG.debug("Could not unregister mbean", e);
+                LOGGER.debug("Could not unregister mbean", e);
             }
         }
         try {
             mbeanServerContext.stop();
         } catch (IOException e) {
-            LOG.debug("Failed to shutdown mbeanServerContext cleanly", e);
+            LOGGER.debug("Failed to shutdown mbeanServerContext cleanly", e);
         }
         executors.shutdown();
     }
@@ -413,7 +415,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         } catch (MalformedObjectNameException e) {
             // shouldn't happen
             String error = "Could not create ObjectName for " + name;
-            LOG.error(error, e);
+            LOGGER.error(error, e);
             throw new RuntimeException(error);
         }
         return result;
@@ -443,7 +445,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         } catch (MalformedObjectNameException e) {
             // shouldn't happen
             String error = "Could not create ObjectName for " + props;
-            LOG.error(error, e);
+            LOGGER.error(error, e);
             throw new RuntimeException(error);
         }
         return result;
@@ -554,9 +556,9 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         try {
             result = new ObjectName(tmp);
         } catch (MalformedObjectNameException e) {
-            LOG.error("Failed to build ObjectName:", e);
+            LOGGER.error("Failed to build ObjectName:", e);
         } catch (NullPointerException e) {
-            LOG.error("Failed to build ObjectName:", e);
+            LOGGER.error("Failed to build ObjectName:", e);
         }
         return result;
     }
@@ -574,7 +576,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         try {
             result = new ObjectName(String.format("%s,*", getSystemObjectName(domainName, containerName, interfaceType)));
         } catch (MalformedObjectNameException e) {
-            LOG.error("Failed to build object name query: " + e.getMessage(), e);
+            LOGGER.error("Failed to build object name query: {}", e.getMessage(), e);
         }
         return result;
     }
@@ -594,9 +596,9 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
         try {
             result = new ObjectName(tmp);
         } catch (MalformedObjectNameException e) {
-            LOG.debug("Unable to build ObjectName", e);
+            LOGGER.debug("Unable to build ObjectName", e);
         } catch (NullPointerException e) {
-            LOG.debug("Unable to build ObjectName", e);
+            LOGGER.debug("Unable to build ObjectName", e);
         }
         return result;
     }
@@ -616,9 +618,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
                 throw new JBIException("A system service for the name " + name + " is already registered");
             }
             ObjectName objName = createObjectName(service);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Registering system service: " + objName);
-            }
+            LOGGER.debug("Registering system service: {}", objName);
             registerMBean(objName, service, interfaceType, service.getDescription());
             systemServices.put(name, objName);
         } catch (MalformedObjectNameException e) {
@@ -640,9 +640,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
             throw new JBIException("A system service for the name " + name + " is not registered");
         }
         ObjectName objName = systemServices.remove(name);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Unregistering system service: " + objName);
-        }
+        LOGGER.debug("Unregistering system service: {}", objName);
         unregisterMBean(objName);
     }
 
@@ -657,7 +655,7 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
             mbeanServerContext.unregisterMBean(name);
             beanMap.remove(name);
         } catch (JMException e) {
-            LOG.error("Failed to unregister mbean: " + name, e);
+            LOGGER.error("Failed to unregister mbean: {}", name, e);
             throw new JBIException(e);
         }
     }

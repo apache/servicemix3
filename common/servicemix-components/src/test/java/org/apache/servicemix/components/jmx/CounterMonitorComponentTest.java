@@ -22,7 +22,7 @@ import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
- * @version $Revision: 359186 $
+ * @version $Revision$
  */
 public class CounterMonitorComponentTest extends TestSupport {
 
@@ -40,6 +40,5 @@ public class CounterMonitorComponentTest extends TestSupport {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/jmx/example.xml");
     }
-    
-    
+
 }

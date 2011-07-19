@@ -23,9 +23,10 @@ import javax.xml.rpc.Call;
 import org.apache.servicemix.components.util.OutBinding;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class JaxRpcInBinding extends OutBinding {
+
     private JaxRpcMarshaler marshaler = new JaxRpcMarshaler();
 
 
@@ -36,4 +37,5 @@ public class JaxRpcInBinding extends OutBinding {
         call.invokeOneWay(params);
         done(messageExchange);
     }
+
 }

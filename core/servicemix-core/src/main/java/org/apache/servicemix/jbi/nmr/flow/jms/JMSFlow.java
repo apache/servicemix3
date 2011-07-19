@@ -85,7 +85,7 @@ public class JMSFlow extends AbstractJMSFlow {
             try {
                 factory.stop();
             } catch (Exception e) {
-                log.warn("Unable to stop JMS connection pool: " + e.getMessage(), e);
+                LOGGER.warn("Unable to stop JMS connection pool: " + e.getMessage(), e);
             }
         }
     }

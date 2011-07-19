@@ -16,8 +16,6 @@
  */
 package org.apache.servicemix.components.vfs;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSelector;
@@ -25,6 +23,8 @@ import org.apache.commons.vfs.FileSystemManager;
 import org.apache.servicemix.components.util.DefaultFileMarshaler;
 import org.apache.servicemix.components.util.FileMarshaler;
 import org.apache.servicemix.components.util.PollingComponentSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -41,10 +41,11 @@ import java.util.Set;
  * <a href="http://jakarta.apache.org/commons/vfs.html">Jakarta Commons VFS</a> library
  * for handling various file systems like files, Samba, WebDAV, FTP, SFTP and temporary files.
  *
- * @version $Revision: 666120 $
+ * @version $Revision$
  */
 public class FilePoller extends PollingComponentSupport {
-    private static final Log log = LogFactory.getLog(FilePoller.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(FilePoller.class);
 
     private FileMarshaler marshaler = new DefaultFileMarshaler();
     private FileObjectEditor editor = new FileObjectEditor();
@@ -67,7 +68,6 @@ public class FilePoller extends PollingComponentSupport {
             pollFile(files[i]);
         }
     }
-
 
     // Properties
     //-------------------------------------------------------------------------
@@ -142,8 +142,8 @@ public class FilePoller extends PollingComponentSupport {
 
     protected void pollFile(final FileObject aFile) {
         if (workingSet.add(aFile)) {
-            if (log.isDebugEnabled()) {
-                log.debug("Scheduling file " + aFile + " for processing");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Scheduling file " + aFile + " for processing");
             }
             getExecutor().execute(new Runnable() {
                 public void run() {
@@ -167,7 +167,7 @@ public class FilePoller extends PollingComponentSupport {
             }
         }
         catch (Exception e) {
-            log.error("Failed to process file: " + file + ". Reason: " + e, e);
+            logger.error("Failed to process file: " + file + ". Reason: " + e, e);
         }
     }
 
@@ -192,4 +192,5 @@ public class FilePoller extends PollingComponentSupport {
             throw exchange.getError();
         }
     }
+
 }

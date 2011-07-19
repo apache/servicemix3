@@ -22,8 +22,6 @@ import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanOperationInfo;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.event.ExchangeEvent;
 import org.apache.servicemix.jbi.event.ExchangeListener;
@@ -31,17 +29,18 @@ import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
 import org.apache.servicemix.jbi.management.ParameterHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for ServiceMix auditors implementations.
- * 
- * @author Guillaume Nodet (gnt)
+ *
  * @since 2.1
  * @version $Revision$
  */
 public abstract class AbstractAuditor extends BaseSystemService implements AuditorMBean, ExchangeListener {
 
-    protected final Log log = LogFactory.getLog(getClass());
+    protected static final transient Logger LOGGER = LoggerFactory.getLogger(AbstractAuditor.class);
     
     private boolean asContainerListener = true;
 
@@ -78,9 +77,11 @@ public abstract class AbstractAuditor extends BaseSystemService implements Audit
     }
     
     protected void doStart() throws JBIException {
+
     }
 
     protected void doStop() throws JBIException {
+
     }
 
     /* (non-Javadoc)
@@ -236,6 +237,7 @@ public abstract class AbstractAuditor extends BaseSystemService implements Audit
     }
 
     public void exchangeAccepted(ExchangeEvent event) {
+
     }
 
 }

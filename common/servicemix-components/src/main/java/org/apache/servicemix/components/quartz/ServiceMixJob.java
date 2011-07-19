@@ -23,9 +23,10 @@ import org.quartz.JobExecutionException;
 /**
  * A Quartz Job which dispatches a message to a component.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class ServiceMixJob implements Job {
+
     public void execute(JobExecutionContext context) throws JobExecutionException {
         QuartzComponent component = (QuartzComponent) context.getJobDetail().getJobDataMap().get(QuartzComponent.COMPONENT_KEY);
         if (component == null) {
@@ -33,4 +34,5 @@ public class ServiceMixJob implements Job {
         }
         component.onJobExecute(context);
     }
+
 }

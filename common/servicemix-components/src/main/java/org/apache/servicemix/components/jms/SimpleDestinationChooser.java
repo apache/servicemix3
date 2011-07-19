@@ -23,9 +23,10 @@ import javax.jms.Destination;
  * A simple destination chooser which will use the value of the {@link #OUT_DESTINATION_KEY}
  * property on the message exchange, or fall back to a default destination
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class SimpleDestinationChooser implements DestinationChooser {
+
     public static final String OUT_DESTINATION_KEY = "org.apache.servicemix.binding.jms.out.destination";
 
     private Destination defaultDestination;

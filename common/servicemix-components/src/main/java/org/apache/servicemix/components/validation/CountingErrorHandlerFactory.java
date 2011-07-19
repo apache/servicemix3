@@ -16,12 +16,7 @@
  */
 package org.apache.servicemix.components.validation;
 
-/**
- * @author gmcdonald
- *
- */
-public class CountingErrorHandlerFactory implements
-        MessageAwareErrorHandlerFactory {
+public class CountingErrorHandlerFactory implements MessageAwareErrorHandlerFactory {
 
     /* (non-Javadoc)
      * @see org.apache.servicemix.components.validation.MessageAwareErrorHandlerFactory#createMessageAwareErrorHandler()

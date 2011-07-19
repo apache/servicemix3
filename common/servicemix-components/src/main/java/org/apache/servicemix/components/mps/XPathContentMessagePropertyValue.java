@@ -27,8 +27,6 @@ import org.apache.xpath.objects.XObject;
 
 /**
  * Get the Value of a property from the message given the XPath Statement.
- * @author rbuckland
- *
  */
 public class XPathContentMessagePropertyValue implements PropertyValue {
 	
@@ -61,7 +59,6 @@ public class XPathContentMessagePropertyValue implements PropertyValue {
 			}
 		} 
 		return resultValue;
-
 	}
 	
 }

@@ -26,21 +26,21 @@ import javax.xml.soap.SOAPConnectionFactory;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.components.util.TransformComponentSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Converts an inbound JBI message into a <a href="http://java.sun.com/xml/saaj/">SAAJ</a> (Soap With Attachments for Java)
  * request-response and outputs the response back into JBI Bindings. This provides
  * a message centric way of invoking SOAP services inside providers such as <a href="http://ws.apache.org/axis/">Apache Axis</a>
  *
- * @version $Revision: 429277 $
+ * @version $Revision$
  */
 public class SaajBinding extends TransformComponentSupport implements MessageExchangeListener {
 
-    private static final transient Log log = LogFactory.getLog(SaajBinding.class);
+    private static final transient Logger logger = LoggerFactory.getLogger(SaajBinding.class);
 
     private SaajMarshaler marshaler = new SaajMarshaler();
     private SOAPConnectionFactory connectionFactory;
@@ -109,10 +109,10 @@ public class SaajBinding extends TransformComponentSupport implements MessageExc
                 inMessage.saveChanges();
             }
 
-            if (log.isDebugEnabled()) {
+            if (logger.isDebugEnabled()) {
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
                 inMessage.writeTo(buffer);
-                log.debug(new String(buffer.toByteArray()));
+                logger.debug(new String(buffer.toByteArray()));
             }
             
             SOAPMessage response = connection.call(inMessage, soapEndpoint);
@@ -128,7 +128,7 @@ public class SaajBinding extends TransformComponentSupport implements MessageExc
                 connection.close();
             }
             catch (SOAPException e) {
-                log.warn("Failed to close connection: " + e, e);
+                logger.warn("Failed to close connection", e);
             }
         }
     }
@@ -156,4 +156,5 @@ public class SaajBinding extends TransformComponentSupport implements MessageExc
 	public void setSoapAction(String soapAction) {
 		this.soapAction = soapAction;
 	}
+
 }

@@ -23,7 +23,7 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.messaging.MessagingException;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public interface QuartzMarshaler {
 
@@ -36,4 +36,5 @@ public interface QuartzMarshaler {
      * @throws MessagingException
      */
     void populateNormalizedMessage(NormalizedMessage message, JobExecutionContext context) throws JobExecutionException, MessagingException;
+
 }

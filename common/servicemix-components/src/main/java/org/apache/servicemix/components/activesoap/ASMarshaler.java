@@ -30,7 +30,7 @@ import org.codehaus.activesoap.MessageExchange;
 import org.codehaus.activesoap.util.XMLStreamFactory;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class ASMarshaler {
 
@@ -44,7 +44,6 @@ public class ASMarshaler {
         Source content = message.getContent();
         return streamFactory.getInputFactory().createXMLStreamReader(content);
     }
-
 
     public XMLStreamWriter createStreamWriter(Writer writer) throws XMLStreamException {
         return streamFactory.getOutputFactory().createXMLStreamWriter(writer);
@@ -62,7 +61,6 @@ public class ASMarshaler {
     public void toNMS(NormalizedMessage normalizedMessage, MessageExchange asExchange) {
     }
 
-
     // Properties
     //-------------------------------------------------------------------------
     public XMLStreamFactory getStreamFactory() {
@@ -72,4 +70,5 @@ public class ASMarshaler {
     public void setStreamFactory(XMLStreamFactory streamFactory) {
         this.streamFactory = streamFactory;
     }
+
 }

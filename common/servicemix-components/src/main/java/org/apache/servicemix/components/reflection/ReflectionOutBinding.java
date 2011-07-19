@@ -26,7 +26,7 @@ import org.apache.servicemix.components.util.OutBinding;
 /**
  * Consumes normalized method invocation from the JBI container.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class ReflectionOutBinding extends OutBinding {
 
@@ -48,4 +48,5 @@ public class ReflectionOutBinding extends OutBinding {
         method.invoke(target, args);
         done(messageExchange);
     }
+
 }

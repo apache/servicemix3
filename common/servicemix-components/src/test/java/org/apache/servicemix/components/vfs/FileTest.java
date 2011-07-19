@@ -26,7 +26,7 @@ import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import javax.xml.namespace.QName;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class FileTest extends TestSupport {
 
@@ -68,4 +68,5 @@ public class FileTest extends TestSupport {
         }
         return isWindows;
     }
+
 }

@@ -26,6 +26,7 @@ import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 public class XFireOutBindingTest extends TestSupport {
+
     private OneWayService receiverService;
 
     protected void setUp() throws Exception {
@@ -55,4 +56,5 @@ public class XFireOutBindingTest extends TestSupport {
                 "/org/codehaus/xfire/spring/xfire.xml"
         });
     }
+
 }

@@ -19,17 +19,17 @@ package org.apache.servicemix.jbi.management.task;
 import java.io.File;
 import java.net.URL;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.tools.ant.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * 
  * InstallComponentTaskTest
  */
 public class DeployAndListServiceAssemblyTasksTest extends JbiTaskSupport {
-    private static transient Log log = LogFactory.getLog(DeployAndListServiceAssemblyTasksTest.class);
+
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(DeployAndListServiceAssemblyTasksTest.class);
 
     private static final String XML_OUTPUT_PROPERTY = "test.xml.output";
 
@@ -73,7 +73,7 @@ public class DeployAndListServiceAssemblyTasksTest extends JbiTaskSupport {
         listServiceAssembliesTask.setXmlOutput(XML_OUTPUT_PROPERTY);
         listServiceAssembliesTask.execute();
 
-        log.info(project.getProperty(XML_OUTPUT_PROPERTY));
+        LOGGER.info(project.getProperty(XML_OUTPUT_PROPERTY));
 
         if (url != null) {
             String file = url.getFile();
@@ -88,9 +88,9 @@ public class DeployAndListServiceAssemblyTasksTest extends JbiTaskSupport {
         listServiceAssembliesTask.setXmlOutput(XML_OUTPUT_PROPERTY);
         listServiceAssembliesTask.execute();
 
-        log.info(project.getProperty(XML_OUTPUT_PROPERTY));
+        LOGGER.info(project.getProperty(XML_OUTPUT_PROPERTY));
 
         FileUtil.deleteFile(rootDir);
-
     }
+
 }

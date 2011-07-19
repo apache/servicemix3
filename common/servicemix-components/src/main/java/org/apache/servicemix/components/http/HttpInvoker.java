@@ -33,7 +33,7 @@ import javax.jbi.messaging.NormalizedMessage;
 /**
  * Performs HTTP client invocations on a remote HTTP site.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class HttpInvoker extends TransformComponentSupport implements MessageExchangeListener {
 
@@ -113,4 +113,5 @@ public class HttpInvoker extends TransformComponentSupport implements MessageExc
     public void setMarshaler(HttpClientMarshaler marshaler) {
         this.marshaler = marshaler;
     }
+
 }

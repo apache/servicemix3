@@ -38,9 +38,10 @@ import org.apache.servicemix.expression.PropertyExpression;
 /**
  * A useful base class for mail marshalers.
  *
- * @version $Revision: 472747 $
+ * @version $Revision$
  */
 public abstract class MailMarshalerSupport extends MarshalerSupport {
+
     private DateFormat dateFormat = DateFormat.getInstance();
 
     private Expression to = new PropertyExpression("org.apache.servicemix.email.to");
@@ -244,4 +245,5 @@ public abstract class MailMarshalerSupport extends MarshalerSupport {
         }
         return null;
     }
+
 }

@@ -54,7 +54,7 @@ import org.springframework.core.io.ClassPathResource;
 /**
  * Performs HTTP client invocations on a remote HTTP site.
  *
- * @version $Revision: 373823 $
+ * @version $Revision$
  */
 public class HttpsInvoker extends TransformComponentSupport implements MessageExchangeListener {
 

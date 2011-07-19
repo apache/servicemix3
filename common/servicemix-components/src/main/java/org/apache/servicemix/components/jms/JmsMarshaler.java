@@ -33,9 +33,10 @@ import java.util.Iterator;
 /**
  * Marshalls JMS messages into and out of NMS messages
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class JmsMarshaler {
+
     private SourceMarshaler sourceMarshaler;
     
     private boolean needJavaIdentifiers;
@@ -148,5 +149,6 @@ public class JmsMarshaler {
      */
     public void setNeedJavaIdentifiers(boolean needJavaIdentifiers) {
         this.needJavaIdentifiers = needJavaIdentifiers;
-    }    
+    }
+
 }

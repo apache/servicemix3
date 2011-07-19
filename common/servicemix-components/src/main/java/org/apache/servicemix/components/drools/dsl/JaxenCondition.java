@@ -35,9 +35,10 @@ import org.drools.spi.Tuple;
 /**
  * Represents a Jaxen based condition using the W3C DOM.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class JaxenCondition implements Condition {
+
     private Rule rule;
     private JaxenXPathExpression expression;
 
@@ -84,4 +85,5 @@ public class JaxenCondition implements Condition {
         }
         return answer;
     }
+
 }

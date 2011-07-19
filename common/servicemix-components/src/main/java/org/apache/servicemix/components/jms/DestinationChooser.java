@@ -22,7 +22,7 @@ import javax.jms.Destination;
 /**
  * A pluggable strategy used to decide which JMS Destination to use for an outbound JMS message
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public interface DestinationChooser {
 
@@ -30,4 +30,5 @@ public interface DestinationChooser {
      * Chooses which JMS destintation to use for the outbound message
      */
     Destination chooseDestination(MessageExchange messageExchange);
+
 }

@@ -27,7 +27,7 @@ import org.codehaus.activesoap.RestService;
  * Converts an inbound JBI message into an <a href="http://activesoap.codehaus.org/">ActiveSOAP</a>
  * one way invocation.
  *
- * @version $Revision: 429277 $
+ * @version $Revision$
  */
 public class ASOutBinding extends OutBinding {
 
@@ -77,4 +77,5 @@ public class ASOutBinding extends OutBinding {
 
         done(messageExchange);
     }
+
 }

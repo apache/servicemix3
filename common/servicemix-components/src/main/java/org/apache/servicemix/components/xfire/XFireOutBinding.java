@@ -30,14 +30,13 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.stream.XMLStreamReader;
 
 public class XFireOutBinding extends OutBinding {
+
     private XMarshaler marshaler;
 
     private XFire xfire;
 
-    public XFireOutBinding()
-    {
+    public XFireOutBinding() {
         super();
-
         this.marshaler = new XMarshaler();
     }
     
@@ -67,4 +66,5 @@ public class XFireOutBinding extends OutBinding {
     public void setXfire(XFire xfire) {
         this.xfire = xfire;
     }
+
 }

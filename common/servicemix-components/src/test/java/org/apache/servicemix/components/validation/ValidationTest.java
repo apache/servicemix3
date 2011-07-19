@@ -20,20 +20,21 @@ import javax.jbi.messaging.Fault;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.NormalizedMessage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.apache.servicemix.tck.Receiver;
 import org.apache.servicemix.tck.SpringTestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
- * @version $Revision: 556864 $
+ * @version $Revision$
  */
 public class ValidationTest extends SpringTestSupport {
-    private static transient Log log = LogFactory.getLog(ValidationTest.class);
+
+    private static transient Logger logger = LoggerFactory.getLogger(ValidationTest.class);
 
     protected ServiceMixClient client;
     protected Receiver receiver;
@@ -75,10 +76,10 @@ public class ValidationTest extends SpringTestSupport {
         assertEquals("out", null, out);
         assertNotNull("Should have a fault", fault);
 
-        log.info("error is: " + error);
+        logger.info("error is: {}", error);
 
-        log.info("Fault is...");
-        log.info(transformer.toString(fault.getContent()));
+        logger.info("Fault is...");
+        logger.info(transformer.toString(fault.getContent()));
 
         // TODO?
         //assertEquals("error", null, error);
@@ -98,10 +99,10 @@ public class ValidationTest extends SpringTestSupport {
         assertEquals("out", null, out);
         assertNotNull("Should have a fault", fault);
 
-        log.info("error is: " + error);
+        logger.info("error is: {}", error);
 
-        log.info("Fault is...");
-        log.info(transformer.toString(fault.getContent()));
+        logger.info("Fault is...");
+        logger.info(transformer.toString(fault.getContent()));
 
         // TODO?
         //assertEquals("error", null, error);
@@ -110,4 +111,5 @@ public class ValidationTest extends SpringTestSupport {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/validation/example.xml");
     }
+
 }

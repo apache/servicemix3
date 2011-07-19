@@ -30,9 +30,10 @@ import java.util.Iterator;
 /**
  * Marshals Jabber messages into and out of NMS messages
  *
- * @version $Revision: 429277 $
+ * @version $Revision$
  */
 public class JabberMarshaler {
+
     private SourceMarshaler sourceMarshaler;
 
     public JabberMarshaler() {

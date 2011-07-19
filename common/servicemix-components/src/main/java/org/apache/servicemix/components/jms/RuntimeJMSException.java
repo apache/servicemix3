@@ -23,11 +23,12 @@ import javax.jms.JMSException;
  * in a method which cannot throw a checked exception such
  * as inside a JMS {@link javax.jms.MessageListener#onMessage(javax.jms.Message)} method.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class RuntimeJMSException extends RuntimeException {
 
     public RuntimeJMSException(JMSException cause) {
         super(cause);
     }
+
 }

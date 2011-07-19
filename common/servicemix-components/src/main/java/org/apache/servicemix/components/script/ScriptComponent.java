@@ -43,7 +43,7 @@ import org.springframework.core.io.Resource;
  * A component which is capable of invoking a compiledScript using
  * <a href="http://servicemix.org/JSR+223">JSR 223</a> to allow any scripting language to be integrated.
  *
- * @version $Revision: 556864 $
+ * @version $Revision$
  */
 public class ScriptComponent extends TransformComponentSupport {
 
@@ -178,7 +178,7 @@ public class ScriptComponent extends TransformComponentSupport {
     }
 
     /**
-     * Sets the resource bundle to use when creating a logger, if one is not
+     * Sets the resource bundle to use when creating a LOGGER, if one is not
      * explicitly configured.
      *
      * @param logResourceBundle
@@ -195,7 +195,7 @@ public class ScriptComponent extends TransformComponentSupport {
     }
 
     /**
-     * Sets the logger to use if the script decides to log
+     * Sets the LOGGER to use if the script decides to LOGGER
      *
      * @param scriptLogger
      */
@@ -296,4 +296,5 @@ public class ScriptComponent extends TransformComponentSupport {
             throw new JBIException("If no 'compiledScript' is specified you must specify the 'scriptText' or 'script'");
         }
     }
+
 }

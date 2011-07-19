@@ -25,20 +25,20 @@ import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.NormalizedMessage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.RuntimeJBIException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A Proxy factory which sends the method invocations into the JBI container
  * for processing.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class ProxyInOutBinding extends ComponentSupport implements InvocationHandler {
     
-    private static final Log log = LogFactory.getLog(ProxyInOutBinding.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProxyInOutBinding.class);
 
     private ClassLoader cl;
     private final Class[] interfaces;
@@ -57,9 +57,7 @@ public class ProxyInOutBinding extends ComponentSupport implements InvocationHan
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (log.isTraceEnabled()) {
-            log.trace("Invoked: " + proxy);
-        }
+        logger.trace("Invoked: {}", proxy);
         try {
             InOut messageExchange = getDeliveryChannel().createExchangeFactory().createInOutExchange();
             NormalizedMessage inMessage = messageExchange.createMessage();
@@ -80,4 +78,5 @@ public class ProxyInOutBinding extends ComponentSupport implements InvocationHan
             throw new RuntimeJBIException(e);
         }
     }
+
 }

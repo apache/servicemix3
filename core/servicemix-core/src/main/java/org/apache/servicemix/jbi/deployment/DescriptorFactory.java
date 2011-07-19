@@ -42,13 +42,14 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.servicemix.jbi.util.FileUtil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * @version $Revision: 359151 $
+ * @version $Revision$
  */
 public final class DescriptorFactory {
 
@@ -59,7 +60,7 @@ public final class DescriptorFactory {
      */
     private static final String XSD_SCHEMA_LANGUAGE = "http://www.w3.org/2001/XMLSchema";
 
-    private static final Log LOG = LogFactory.getLog(DescriptorFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DescriptorFactory.class);
 
     private DescriptorFactory() {
     }
@@ -103,10 +104,10 @@ public final class DescriptorFactory {
             Validator validator = schema.newValidator();
             validator.setErrorHandler(new ErrorHandler() {
                 public void warning(SAXParseException exception) throws SAXException {
-                    LOG.debug("Validation warning on " + url + ": " + exception);
+                    LOGGER.debug("Validation warning on {}", url, exception);
                 }
                 public void error(SAXParseException exception) throws SAXException {
-                    LOG.info("Validation error on " + url + ": " + exception);
+                    LOGGER.info("Validation error on {}", url, exception);
                 }
                 public void fatalError(SAXParseException exception) throws SAXException {
                     throw exception;
@@ -462,7 +463,7 @@ public final class DescriptorFactory {
                 FileUtil.copyInputStream(is, os);
                 return os.toString();
             } catch (Exception e) {
-                LOG.debug("Error reading jbi descritor: " + descriptorFile, e);
+                LOGGER.debug("Error reading jbi descritor: {}", descriptorFile, e);
             }
         }
         return null;

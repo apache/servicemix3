@@ -34,8 +34,6 @@ import javax.security.auth.login.LoginContext;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.container.JBIContainer;
@@ -44,10 +42,12 @@ import org.apache.servicemix.jbi.security.acl.AuthorizationMap;
 import org.apache.servicemix.jbi.security.acl.impl.AuthorizationEntry;
 import org.apache.servicemix.jbi.security.acl.impl.DefaultAuthorizationMap;
 import org.apache.servicemix.tck.ReceiverComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SecuredBrokerTest extends TestCase {
 
-    private static final Log LOG = LogFactory.getLog(SecuredBrokerTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecuredBrokerTest.class);
 
     static {
         String path = System.getProperty("java.security.auth.login.config");
@@ -58,7 +58,7 @@ public class SecuredBrokerTest extends TestCase {
                 System.setProperty("java.security.auth.login.config", path);
             }
         }
-        LOG.info("Path to login config: " + path);
+        LOGGER.info("Path to login config: {}", path);
         //
         // This test depends on the "policy.allowSystemProperty" security
         // property being set to true.  If we don't ensure it is set here,
@@ -68,7 +68,7 @@ public class SecuredBrokerTest extends TestCase {
         try {
             if (!"true".equals(Security.getProperty("policy.allowSystemProperty"))) {
                 Security.setProperty("policy.allowSystemProperty", "true");
-                LOG.info("Reset security property 'policy.allowSystemProperty' to 'true'");
+                LOGGER.info("Reset security property 'policy.allowSystemProperty' to 'true'");
             }
         } catch (SecurityException e) {
             // Ignore.

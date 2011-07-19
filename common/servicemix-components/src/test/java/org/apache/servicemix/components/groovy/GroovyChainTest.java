@@ -25,20 +25,21 @@ import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.tck.Receiver;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
- * @version $Revision: 556864 $
+ * @version $Revision$
  */
 public class GroovyChainTest extends TestCase {
-    private static transient Log log = LogFactory.getLog(GroovyChainTest.class);
+
+    private static transient Logger logger = LoggerFactory.getLogger(GroovyChainTest.class);
 
     protected AbstractXmlApplicationContext context;
     protected ServiceMixClient client;
@@ -60,7 +61,7 @@ public class GroovyChainTest extends TestCase {
         exchange.setService(service);
         client.sendSync(exchange);
         
-        log.info(transformer.toString(exchange.getMessage("out").getContent()));
+        logger.info(transformer.toString(exchange.getMessage("out").getContent()));
     }
 
 
@@ -93,6 +94,6 @@ public class GroovyChainTest extends TestCase {
 
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/groovy/groovy-chain.xml");
-
     }
+
 }

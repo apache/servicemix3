@@ -16,8 +16,8 @@
  */
 package org.apache.servicemix.jbi.container;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Installs a shared library using either a File URL or the maven groupId, artifactId and optional versions.
@@ -25,15 +25,17 @@ import org.apache.commons.logging.LogFactory;
  * @org.apache.xbean.XBean element="installSharedLibrary"
  * description="Installs a shared library"
  *
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class InstallSharedLibrary extends DeploySupport {
-    private static final transient Log LOG = LogFactory.getLog(InstallSharedLibrary.class);
+
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(InstallSharedLibrary.class);
 
     protected void doDeploy() throws Exception {
         String file = getFile();
 
-        LOG.info("Deploying shared library: " + file);
+        LOGGER.info("Deploying shared library: {}", file);
         getCommandsService().installSharedLibrary(file, isDeferException());
     }
+
 }

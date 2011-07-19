@@ -32,7 +32,7 @@ import java.io.IOException;
  * A HTTP Binding Component which performs an {@link InOut} exchange with JBI and returns the response
  * by default but is configurable to be an {@link InOnly} exchange.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class HttpInOutBinding extends HttpBindingSupport {
 
@@ -122,6 +122,5 @@ public class HttpInOutBinding extends HttpBindingSupport {
     protected boolean isInOutRequest(HttpServletRequest request, HttpServletResponse response) {
         return isDefaultInOut();
     }
-
 
 }

@@ -20,7 +20,7 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.rpc.Call;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class JaxRpcMarshaler {
 
@@ -31,4 +31,5 @@ public class JaxRpcMarshaler {
     public Object[] getCallParams(NormalizedMessage normalizedMessage) {
         return new Object[0]; /** TODO */
     }
+
 }

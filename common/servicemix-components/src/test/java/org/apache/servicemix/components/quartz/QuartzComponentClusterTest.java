@@ -21,7 +21,7 @@ import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
- * @version $Revision: 359186 $
+ * @version $Revision$
  */
 public class QuartzComponentClusterTest extends TestSupport {
 
@@ -32,4 +32,5 @@ public class QuartzComponentClusterTest extends TestSupport {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/quartz/example-cluster.xml");
     }
+
 }

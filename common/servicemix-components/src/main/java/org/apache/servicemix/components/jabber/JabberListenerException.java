@@ -21,9 +21,10 @@ import org.jivesoftware.smack.packet.Packet;
 /**
  * A runtime exception thrown when processing inbound Jabber packets.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class JabberListenerException extends RuntimeException {
+
     private Packet packet;
 
     public JabberListenerException(Exception cause, Packet packet) {
@@ -34,4 +35,5 @@ public class JabberListenerException extends RuntimeException {
     public Packet getPacket() {
         return packet;
     }
+
 }

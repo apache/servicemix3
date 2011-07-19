@@ -56,8 +56,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class HttpSoapInOutBinding extends ComponentSupport implements
-        HttpBinding {
+public class HttpSoapInOutBinding extends ComponentSupport implements HttpBinding {
 
     protected XFire xfire;
     protected XFireServletController controller;
@@ -67,6 +66,7 @@ public class HttpSoapInOutBinding extends ComponentSupport implements
     protected SourceTransformer transformer;
 
     public HttpSoapInOutBinding() {
+
     }
     
     public void init(ComponentContext context) throws JBIException {

@@ -25,9 +25,10 @@ import org.xml.sax.SAXException;
 /**
  * A simple implementation of {@link ErrorHandler} which just counts the number of warnings, errors and fatal errors.
  *
- * @version $Revision: 430194 $
+ * @version $Revision$
  */
 public class CountingErrorHandler implements MessageAwareErrorHandler {
+
     private int warningCount;
     private int errorCount;
     private int fatalErrorCount;

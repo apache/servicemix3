@@ -26,19 +26,20 @@ import java.net.URLConnection;
 
 import javax.xml.namespace.QName;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.tck.TestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
- * @version $Revision: 556864 $
+ * @version $Revision$
  */
 public class HttpTest extends TestSupport {
-    private static transient Log log = LogFactory.getLog(HttpTest.class);
+
+    private static transient Logger logger = LoggerFactory.getLogger(HttpTest.class);
 
     protected String quote = "SUNW";
     
@@ -67,14 +68,13 @@ public class HttpTest extends TestSupport {
         Object answer = requestServiceWithFileRequest(serviceName, file);
         assertTrue("Shoud return a DOM Node: " + answer, answer instanceof Node);
         Node node = (Node) answer;
-        log.info(transformer.toString(node));
+        logger.info(transformer.toString(node));
 
         String text = textValueOfXPath(node, "//Result").trim();
 
-        log.info("Found price: " + text);
+        logger.info("Found price: {}", text);
 
         assertTrue("price text should not be empty", text.length() > 0);
-
     }
     
     public void testWithURLConnection() throws Exception {
@@ -97,7 +97,7 @@ public class HttpTest extends TestSupport {
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String inputLine;
         while ((inputLine = in.readLine()) != null) {
-            log.info(inputLine);
+            logger.info(inputLine);
         }
         in.close();
     }
@@ -105,4 +105,5 @@ public class HttpTest extends TestSupport {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/http/example.xml");
     }
+
 }

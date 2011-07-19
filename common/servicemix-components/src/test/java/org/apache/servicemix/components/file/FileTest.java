@@ -26,7 +26,7 @@ import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class FileTest extends TestSupport {
 
@@ -44,4 +44,5 @@ public class FileTest extends TestSupport {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/file/example.xml");
     }
+
 }

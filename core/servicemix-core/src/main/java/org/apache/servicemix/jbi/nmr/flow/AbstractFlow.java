@@ -29,8 +29,6 @@ import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.ObjectName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.executors.ExecutorFactory;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
@@ -43,6 +41,9 @@ import org.apache.servicemix.jbi.nmr.Broker;
 import org.apache.servicemix.jbi.security.SecuredBroker;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A simple Straight through flow
  * 
@@ -50,7 +51,8 @@ import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
  */
 public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
 
-    protected final Log log = LogFactory.getLog(getClass());
+    protected final static transient Logger LOGGER = LoggerFactory.getLogger(AbstractFlow.class);
+
     protected Broker broker;
     protected ExecutorFactory executorFactory;
     private ReadWriteLock lock = new ReentrantReadWriteLock();
@@ -88,9 +90,7 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      * @throws JBIException
      */
     public void stop() throws JBIException {
-        if (log.isDebugEnabled()) {
-            log.debug("Called Flow stop");
-        }
+        LOGGER.debug("Called Flow stop");
         if (suspendThread != null) {
             suspendThread.interrupt();
         }
@@ -102,22 +102,18 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      * @throws JBIException
      */
     public void shutDown() throws JBIException {
-        if (log.isDebugEnabled()) {
-            log.debug("Called Flow shutdown");
-        }
+        LOGGER.debug("Called Flow shutdown");
         broker.getContainer().getManagementContext().unregisterMBean(this);
         super.shutDown();
     }
 
     /**
      * Distribute an ExchangePacket
-     * @param packet
+     * @param me
      * @throws JBIException
      */
     public void send(MessageExchange me) throws JBIException {
-        if (log.isDebugEnabled()) {
-            log.debug("Called Flow send");
-        }
+        LOGGER.debug("Called Flow send");
         // do send
         try {
             lock.readLock().lock();
@@ -131,9 +127,7 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      * suspend the flow to prevent any message exchanges
      */
     public synchronized void suspend() {
-        if (log.isDebugEnabled()) {
-            log.debug("Called Flow suspend");
-        }
+        LOGGER.debug("Called Flow suspend");
         lock.writeLock().lock();
         suspendThread = Thread.currentThread();
     }
@@ -142,16 +136,14 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
      * resume message exchange processing
      */
     public synchronized void resume() {
-        if (log.isDebugEnabled()) {
-            log.debug("Called Flow resume");
-        }
+        LOGGER.debug("Called Flow resume");
         lock.writeLock().unlock();
         suspendThread = null;
     }
 
     /**
      * Do the Flow specific routing
-     * @param packet
+     * @param me
      * @throws JBIException
      */
     protected abstract void doSend(MessageExchangeImpl me) throws JBIException;
@@ -159,7 +151,7 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
     /**
      * Distribute an ExchangePacket
      * 
-     * @param packet
+     * @param me
      * @throws MessagingException
      */
     protected void doRouting(MessageExchangeImpl me) throws MessagingException {
@@ -208,7 +200,7 @@ public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
 
     /**
      * Check if the given packet should be persisted or not.
-     * @param packet
+     * @param me
      * @return
      */
     protected boolean isPersistent(MessageExchange me) {

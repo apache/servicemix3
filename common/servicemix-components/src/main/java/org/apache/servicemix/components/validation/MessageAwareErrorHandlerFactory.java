@@ -18,9 +18,6 @@ package org.apache.servicemix.components.validation;
 
 /**
  * Simple factory interface to a MessageAwareErrorHandler implementation
- * 
- * @author gmcdonald
- *
  */
 public interface MessageAwareErrorHandlerFactory {
     
@@ -30,4 +27,5 @@ public interface MessageAwareErrorHandlerFactory {
      * @return
      */
     public MessageAwareErrorHandler createMessageAwareErrorHandler();
+
 }

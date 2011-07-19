@@ -27,7 +27,7 @@ import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
- * @version $Revision: 359213 $
+ * @version $Revision$
  */
 public class BinaryFileTest extends TestSupport {
 
@@ -66,4 +66,5 @@ public class BinaryFileTest extends TestSupport {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/file/binary-example.xml");
     }
+
 }

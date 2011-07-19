@@ -36,19 +36,19 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.easymock.EasyMock.*;
 
 public class DeliveryChannelImplTest extends TestCase {
 
-    private static final Log LOG = LogFactory.getLog(DeliveryChannelImplTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeliveryChannelImplTest.class);
 
     protected JBIContainer container;
 
@@ -111,7 +111,7 @@ public class DeliveryChannelImplTest extends TestCase {
                     success.set(true);
                     done.set(true);
                 } catch (MessagingException e) {
-                    LOG.error(e.getMessage(), e);
+                    LOGGER.error(e.getMessage(), e);
                     success.set(false);
                     done.set(true);
                 }
@@ -236,7 +236,7 @@ public class DeliveryChannelImplTest extends TestCase {
                     channel.sendSync(me);
 
                 } catch (MessagingException e) {
-                    LOG.error(e.getMessage(), e);
+                    LOGGER.error(e.getMessage(), e);
 
                 }
             }

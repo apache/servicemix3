@@ -26,21 +26,18 @@ import javax.xml.transform.dom.DOMSource;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.messaging.NormalizedMessageImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 /**
  * Test cases for the PropertyValueResolver class
- * 
- * @author rbuckland
- * 
  */
 public class PropertyValueResolverTest extends TestCase {
 
-	private final transient Log logger = LogFactory.getLog(getClass());
+	private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
 	private final static String TEST_STRING = "PROP_TEST_STRING";
 
@@ -107,7 +104,7 @@ public class PropertyValueResolverTest extends TestCase {
 			PropertyValueResolver pvr = new PropertyValueResolver(
 					"newproperty", doc.getDocumentElement());
 			pvr.setProperty(in, out);
-			logger.debug("prop = " + out.getProperty("newproperty"));
+			logger.debug("prop = {}", out.getProperty("newproperty"));
 			assertTrue(out.getProperty("newproperty").toString().equals(
 					"a value in the raw"));
 
@@ -136,9 +133,7 @@ public class PropertyValueResolverTest extends TestCase {
 			PropertyValueResolver pvr = new PropertyValueResolver(
 					"newproperty", doc.getDocumentElement());
 			pvr.setProperty(in, out);
-			logger
-					.debug("xpath:@newproperty = "
-							+ out.getProperty("newproperty"));
+			logger.debug("xpath:@newproperty = {}", out.getProperty("newproperty"));
 			assertTrue(out.getProperty("newproperty") != null);
 			assertTrue(out.getProperty("newproperty").toString().equals("me"));
 
@@ -168,7 +163,7 @@ public class PropertyValueResolverTest extends TestCase {
 			PropertyValueResolver pvr = new PropertyValueResolver("prop.xyz",
 					doc.getDocumentElement());
 			pvr.setProperty(in, out);
-			logger.debug("prop = " + out.getProperty("prop.xyz"));
+			logger.debug("prop = {}", out.getProperty("prop.xyz"));
 			assertTrue(out.getProperty("prop.xyz") != null);
 			assertTrue(out.getProperty("prop.xyz").toString().equals("ahahaha"));
 

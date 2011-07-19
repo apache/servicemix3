@@ -29,8 +29,6 @@ import javax.management.JMException;
 import javax.management.MBeanOperationInfo;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.api.EndpointResolver;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
@@ -55,15 +53,17 @@ import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
 import org.apache.servicemix.jbi.servicedesc.ExternalEndpoint;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 import org.apache.servicemix.jbi.servicedesc.LinkedEndpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * The Broker handles Nomalised Message Routing within ServiceMix
+ * The Broker handles Normelized Message Routing within ServiceMix
  * 
- * @version $Revision: 384328 $
+ * @version $Revision$
  */
 public class DefaultBroker extends BaseSystemService implements Broker {
 
-    private static final Log LOG = LogFactory.getLog(DefaultBroker.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(DefaultBroker.class);
 
     private Registry registry;
     private String flowNames = "seda";
@@ -78,6 +78,7 @@ public class DefaultBroker extends BaseSystemService implements Broker {
      * Constructor
      */
     public DefaultBroker() {
+
     }
 
     /**
@@ -203,7 +204,7 @@ public class DefaultBroker extends BaseSystemService implements Broker {
     }
 
     /**
-     * @param flowName
+     * @param flowNames
      *            The flow to set.
      */
     public void setFlowNames(String flowNames) {
@@ -229,7 +230,7 @@ public class DefaultBroker extends BaseSystemService implements Broker {
     /**
      * Set the flow
      * 
-     * @param flow
+     * @param flows
      */
     public void setFlows(Flow[] flows) {
         this.flows = flows;
@@ -263,7 +264,7 @@ public class DefaultBroker extends BaseSystemService implements Broker {
     /**
      * Route an ExchangePacket to a destination
      * 
-     * @param exchange
+     * @param me
      * @throws JBIException
      */
     public void sendExchangePacket(MessageExchange me) throws JBIException {
@@ -341,7 +342,7 @@ public class DefaultBroker extends BaseSystemService implements Broker {
                 endpoints = getMatchingEndpoints(endpoints, exchange);
                 theEndpoint = getServiceChooser(exchange).chooseEndpoint(endpoints, context, exchange);
                 if (theEndpoint == null) {
-                    LOG.warn("ServiceName (" + serviceName + ") specified for routing, but can't find it registered");
+                    LOGGER.warn("ServiceName ({}) specified for routing, but can't find it registered", serviceName);
                 }
             }
             if (theEndpoint == null && interfaceName != null) {
@@ -349,7 +350,7 @@ public class DefaultBroker extends BaseSystemService implements Broker {
                 endpoints = getMatchingEndpoints(endpoints, exchange);
                 theEndpoint = (InternalEndpoint) getInterfaceChooser(exchange).chooseEndpoint(endpoints, context, exchange);
                 if (theEndpoint == null) {
-                    LOG.warn("InterfaceName (" + interfaceName + ") specified for routing, but can't find any matching components");
+                    LOGGER.warn("InterfaceName ({}) specified for routing, but can't find any matching components", interfaceName);
                 }
             }
             if (theEndpoint == null) {
@@ -372,9 +373,7 @@ public class DefaultBroker extends BaseSystemService implements Broker {
         if (theEndpoint != null) {
             exchange.setEndpoint(theEndpoint);
         }
-        if (LOG.isTraceEnabled()) {
-            LOG.trace("Routing exchange " + exchange + " to: " + theEndpoint);
-        }
+        LOGGER.trace("Routing exchange {} to {}", exchange, theEndpoint);
     }
 
     /**

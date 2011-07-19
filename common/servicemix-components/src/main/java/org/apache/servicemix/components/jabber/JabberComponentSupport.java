@@ -16,12 +16,12 @@
  */
 package org.apache.servicemix.components.jabber;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.OutBinding;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.jbi.JBIException;
@@ -30,10 +30,11 @@ import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 
 /**
- * @version $Revision: 517251 $
+ * @version $Revision$
  */
 public abstract class JabberComponentSupport extends OutBinding implements InitializingBean, PacketListener {
-    private static final transient Log log = LogFactory.getLog(JabberComponentSupport.class);
+
+    protected static final transient Logger logger = LoggerFactory.getLogger(JabberComponentSupport.class);
 
     private JabberMarshaler marshaler = new JabberMarshaler();
     protected XMPPConnection connection;
@@ -62,14 +63,14 @@ public abstract class JabberComponentSupport extends OutBinding implements Initi
 
             if (this.connection == null) {
                 this.connection = new XMPPConnection(this.connectionConfig);
-                this.log.debug("Connecting to server " + this.host);
+                this.logger.debug("Connecting to server {}", this.host);
                 this.connection.connect();
 
                 if (this.login && !this.connection.isAuthenticated()) {
                     if (this.user != null) {
-                        this.log.debug("Logging into Jabber as user: " + this.user + " on connection: " + this.connection);
+                        this.logger.debug("Logging into Jabber as user: {}", this.user);
                         if (this.password == null) {
-                            this.log.warn("No password configured for user: " + this.user);
+                            this.logger.warn("No password configured for user: {}", this.user);
                         }
 
                         AccountManager accountManager = new AccountManager(this.connection);
@@ -81,7 +82,7 @@ public abstract class JabberComponentSupport extends OutBinding implements Initi
                             this.connection.login(this.user, this.password);
                         }
                     } else {
-                        this.log.debug("Logging in anonymously to Jabber on connection: " + this.connection);
+                        this.logger.debug("Logging in anonymously to Jabber on connection: {}", this.connection);
                         this.connection.loginAnonymously();
                     }
                     // now lets send a presence we are available
@@ -95,7 +96,7 @@ public abstract class JabberComponentSupport extends OutBinding implements Initi
 
     public void stop() throws JBIException {
         if (this.connection != null && this.connection.isConnected()) {
-            this.logger.debug("Disconnecting from server " + this.host);
+            this.logger.debug("Disconnecting from server {}", this.host);
             this.connection.disconnect();
             this.connection = null;
         }
@@ -179,4 +180,5 @@ public abstract class JabberComponentSupport extends OutBinding implements Initi
     public void setLogin(boolean login) {
         this.login = login;
     }
+
 }

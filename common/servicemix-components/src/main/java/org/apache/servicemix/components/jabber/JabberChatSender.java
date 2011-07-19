@@ -26,7 +26,7 @@ import javax.jbi.messaging.NormalizedMessage;
 /**
  * Sends one way messages to a private Jabber {@link Chat}
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class JabberChatSender extends JabberComponentSupport {
 
@@ -84,4 +84,5 @@ public class JabberChatSender extends JabberComponentSupport {
         chat.sendMessage(message);
         done(messageExchange);
     }
+
 }

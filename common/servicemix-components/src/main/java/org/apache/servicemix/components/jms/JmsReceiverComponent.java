@@ -31,9 +31,10 @@ import org.springframework.jms.core.JmsTemplate;
  * A component which uses a {@link JmsTemplate} to consume messages from a
  * destination.
  *
- * @version $Revision: 466982 $
+ * @version $Revision$
  */
 public class JmsReceiverComponent extends JmsInBinding implements InitializingBean {
+
     private JmsTemplate template;
     private String selector;
     private MessageConsumer consumer;

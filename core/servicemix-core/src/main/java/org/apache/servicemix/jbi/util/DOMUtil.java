@@ -31,15 +31,14 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * A collection of W3C DOM helper methods
@@ -48,7 +47,8 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class DOMUtil {
     
-    private static final Log LOG = LogFactory.getLog(DOMUtil.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(DOMUtil.class);
+
     private static DocumentBuilderFactory dbf;
     private static Queue builders = new ConcurrentLinkedQueue();
 
@@ -161,8 +161,8 @@ public final class DOMUtil {
         try {
             answer = element.getAttribute(attributeName);
         } catch (Exception e) {
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("Caught exception looking up attribute: " + attributeName + " on element: " + element + ". Cause: " + e, e);
+            if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace("Caught exception looking up attribute: " + attributeName + " on element: " + element + ". Cause: " + e, e);
             }
         }
         if (answer == null || answer.length() == 0) {

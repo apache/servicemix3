@@ -21,18 +21,18 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.container.SubscriptionSpec;
 import org.apache.servicemix.jbi.resolver.SubscriptionFilter;
 import org.apache.servicemix.tck.ReceiverComponent;
 import org.apache.servicemix.tck.SenderComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PubSubTest extends TestCase {
 
-    private static final Log LOG = LogFactory.getLog(PubSubTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PubSubTest.class);
 
     private SenderComponent sender;
 
@@ -92,9 +92,10 @@ public class PubSubTest extends TestCase {
     public static class Filter implements SubscriptionFilter {
 
         public boolean matches(MessageExchange arg0) {
-            LOG.info("Matches");
+            LOGGER.info("Matches");
             return true;
         }
 
     }
+
 }

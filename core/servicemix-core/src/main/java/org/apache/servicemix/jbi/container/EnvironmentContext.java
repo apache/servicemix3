@@ -24,12 +24,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.jbi.JBIException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.servicemix.jbi.util.FileVersionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Holder for environment information
@@ -49,7 +49,7 @@ import org.apache.servicemix.jbi.util.FileVersionUtil;
  */
 public class EnvironmentContext extends BaseSystemService implements EnvironmentContextMBean {
     
-    private static final Log LOG = LogFactory.getLog(EnvironmentContext.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EnvironmentContext.class);
 
     private File jbiRootDir;
     private File componentsDir;
@@ -370,7 +370,6 @@ public class EnvironmentContext extends BaseSystemService implements Environment
      * deregister the ComponentConnector
      * 
      * @param connector
-     * @param doDelete true if component is to be deleted
      */
     public void unreregister(ComponentMBeanImpl connector) {
         this.envMap.remove(connector);
@@ -385,9 +384,9 @@ public class EnvironmentContext extends BaseSystemService implements Environment
         File file = getComponentRootDir(componentName);
         if (file != null) {
             if (!FileUtil.deleteFile(file)) {
-                LOG.warn("Failed to remove directory structure for component [version]: " + componentName + " [" + file.getName() + ']');
+                LOGGER.warn("Failed to remove directory structure for component [version]: {} [{}]", componentName, file.getName());
             } else {
-                LOG.info("Removed directory structure for component [version]: " + componentName + " [" + file.getName() + ']');
+                LOGGER.info("Removed directory structure for component [version]: {} [{}]", componentName, file.getName());
             }
         }
     }

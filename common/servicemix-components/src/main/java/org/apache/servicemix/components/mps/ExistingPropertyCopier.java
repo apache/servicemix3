@@ -19,10 +19,8 @@ package org.apache.servicemix.components.mps;
 import javax.jbi.JBIException;
 import javax.jbi.messaging.NormalizedMessage;
 
-
 /**
  * Copy a property value from an existing property (somewhere)
- * @author rbuckland
  *
  */
 public class ExistingPropertyCopier implements PropertyValue {

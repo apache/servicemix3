@@ -34,9 +34,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * The default implementation of the Quartz marshaler
+ * The default implementation of the Quartz marshaller
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class DefaultQuartzMarshaler extends MarshalerSupport implements QuartzMarshaler {
 

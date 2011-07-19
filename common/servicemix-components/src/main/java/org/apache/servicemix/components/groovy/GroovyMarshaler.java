@@ -29,7 +29,7 @@ import groovy.lang.GString;
  * A {@link PojoMarshaler} capable of handling <a href="http://groovy.codehaus.org/">Groovy</a>
  * specific types.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class GroovyMarshaler extends DefaultMarshaler {
 
@@ -41,4 +41,5 @@ public class GroovyMarshaler extends DefaultMarshaler {
         // TODO handle Node
         super.marshal(exchange, message, body);
     }
+
 }

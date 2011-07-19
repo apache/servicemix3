@@ -28,7 +28,7 @@ import java.io.IOException;
  * A pool of FTP clients for
  * the <a href="http://jakarta.apache.org/commons/net.html">Jakarta Commons Net</a> library
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class FTPClientPool extends SocketClientPoolSupport {
 
@@ -144,4 +144,5 @@ public class FTPClientPool extends SocketClientPoolSupport {
     protected SocketClient createSocketClient() {
         return new FTPClient();
     }
+
 }

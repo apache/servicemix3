@@ -24,8 +24,6 @@ import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.RuntimeJBIException;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
@@ -34,6 +32,8 @@ import org.apache.servicemix.tck.AsyncReceiverPojo;
 import org.apache.servicemix.tck.Receiver;
 import org.apache.servicemix.tck.ReceiverComponent;
 import org.apache.servicemix.tck.SenderComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 
@@ -41,7 +41,8 @@ import org.springframework.transaction.support.TransactionCallback;
  * @version $Revision$
  */
 public abstract class AbstractPersistenceTest extends AbstractTransactionTest {
-    private static transient Log log = LogFactory.getLog(AbstractPersistenceTest.class);
+
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(AbstractPersistenceTest.class);
 
     protected JBIContainer createJbiContainer(String name) throws Exception {
         JBIContainer container = new JBIContainer();
@@ -67,11 +68,11 @@ public abstract class AbstractPersistenceTest extends AbstractTransactionTest {
                 public void onMessageExchange(MessageExchange exchange) throws MessagingException {
                     try {
                         if (delivered.get(exchange.getExchangeId()) == null) {
-                            log.info("Message delivery rolled back: " + exchange.getExchangeId());
+                            AbstractPersistenceTest.LOGGER.info("Message delivery rolled back: {}", exchange.getExchangeId());
                             delivered.put(exchange.getExchangeId(), Boolean.TRUE);
                             tm.setRollbackOnly();
                         } else {
-                            log.info("Message delivery accepted: " + exchange.getExchangeId());
+                            AbstractPersistenceTest.LOGGER.info("Message delivery accepted: {}", exchange.getExchangeId());
                             super.onMessageExchange(exchange);
                         }
                     } catch (Exception e) {
@@ -84,13 +85,13 @@ public abstract class AbstractPersistenceTest extends AbstractTransactionTest {
                 public void onMessageExchange(MessageExchange exchange) throws MessagingException {
                     try {
                         if (delivered.get(exchange.getExchangeId()) == null) {
-                            log.info("Message delivery rolled back: " + exchange.getExchangeId());
+                            LOGGER.info("Message delivery rolled back: {}", exchange.getExchangeId());
                             delivered.put(exchange.getExchangeId(), Boolean.TRUE);
                             tm.setRollbackOnly();
                             exchange.setStatus(ExchangeStatus.DONE);
                             getContext().getDeliveryChannel().send(exchange);
                         } else {
-                            log.info("Message delivery accepted: " + exchange.getExchangeId());
+                            LOGGER.info("Message delivery accepted: {}", exchange.getExchangeId());
                             super.onMessageExchange(exchange);
                         }
                     } catch (Exception e) {

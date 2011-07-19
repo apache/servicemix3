@@ -21,43 +21,41 @@ import java.net.URL;
 import java.util.List;
 
 import junit.framework.TestCase;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Unit tests for the <code>ClassLoaderXmlPreprocessor</code>, mainly focus
  * on the classloader URL resources management.
- * @author jbonofre
  */
 public class ClassLoaderXmlPreprocessorTest extends TestCase {
 
-    private static final transient Log LOG = LogFactory.getLog(ClassLoaderXmlPreprocessorTest.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ClassLoaderXmlPreprocessorTest.class);
     
     public void testUrlResources() throws Exception {
-        LOG.debug("Define a sample System properties");
+        LOGGER.debug("Define a sample System properties");
         System.setProperty("servicemix.home", "/tmp");
-        LOG.debug("Create a ClassLoaderXmlPreprocessor with . as root");
+        LOGGER.debug("Create a ClassLoaderXmlPreprocessor with . as root");
         ClassLoaderXmlPreprocessor classloader = new ClassLoaderXmlPreprocessor(new File("."));
-        LOG.debug("Get the /tmp resource URL");
+        LOGGER.debug("Get the /tmp resource URL");
         List<URL> dirResourceList = classloader.getResources("src/test/resources");
         assertEquals("The directory resource list has not a correct size", 1, dirResourceList.size());
-        LOG.info("Directory relative resource: " + dirResourceList.get(0).toString());
+        LOGGER.info("Directory relative resource: {}", dirResourceList.get(0).toString());
         List<URL> dirPropertyResourceList = classloader.getResources("${servicemix.home}");
         assertEquals("The directory system property resource list has not a correct size", 1, dirPropertyResourceList.size());
-        LOG.info("Directory system property resource : " + dirPropertyResourceList.get(0).toString());
+        LOGGER.info("Directory system property resource : {}", dirPropertyResourceList.get(0).toString());
         List<URL> fileResourceList = classloader.getResources("file:./src/test/resources");
         assertEquals("The file resource list has not a correct size", 1, fileResourceList.size());
-        LOG.info("File resource : "  + fileResourceList.get(0).toString());
+        LOGGER.info("File resource : {}", fileResourceList.get(0).toString());
         // Comment these tests, the test.ear must be present in src/test/resources directory
         // this test.ear should contains a test file
         /*
         List<URL> jarResourceList = classloader.getResources("jar:file:./src/test/resources/test.ear!/test");
         assertEquals("The jar resource list has not a correct size", 1, jarResourceList.size());
-        LOG.info("Inside jar file resource : " + jarResourceList.get(0).toString());
+        LOGGER.info("Inside jar file resource : " + jarResourceList.get(0).toString());
         List<URL> jarRegexpResourceList = classloader.getResources("jar:file:./src/test/resources/test.ear!/te(.*)");
         assertEquals("The jar resource regexp list has not a correct size", 1, jarRegexpResourceList.size());
-        LOG.info("Inside jar regexp file resource : " + jarRegexpResourceList.get(0).toString());
+        LOGGER.info("Inside jar regexp file resource : " + jarRegexpResourceList.get(0).toString());
         assertEquals(new URL("jar:file:./src/test/resources/test.ear!/test"), (URL)jarRegexpResourceList.get(0));
         */
     }

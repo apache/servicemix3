@@ -16,12 +16,7 @@
  */
 package org.apache.servicemix.components.validation;
 
-/**
- * @author gmcdonald
- *
- */
-public class MessageAggregatingErrorHandlerFactory implements
-        MessageAwareErrorHandlerFactory {
+public class MessageAggregatingErrorHandlerFactory implements MessageAwareErrorHandlerFactory {
 
     /**
      * The root element name for the fault xml message

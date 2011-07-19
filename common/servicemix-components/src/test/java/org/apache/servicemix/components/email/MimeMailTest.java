@@ -30,20 +30,20 @@ import javax.mail.internet.MimeMultipart;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver;
 import org.apache.servicemix.jbi.util.ByteArrayDataSource;
 import org.apache.servicemix.tck.TestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
- * @version $Revision: 556864 $
+ * @version $Revision$
  */
 public class MimeMailTest extends TestSupport {
 
-    private static transient Log log = LogFactory.getLog(MimeMailTest.class);
+    private static transient Logger logger = LoggerFactory.getLogger(MimeMailTest.class);
 
     public void testSendUsingMessageProperties() throws Exception {
 
@@ -67,7 +67,7 @@ public class MimeMailTest extends TestSupport {
 
         MimeMessage mail = (MimeMessage) messages.get(0);
 
-        log.info("Created message: " + message);
+        logger.info("Created message: {}", message);
 
         assertEquals("subject", "Hello from JUnit!", mail.getSubject());
     }
@@ -96,7 +96,7 @@ public class MimeMailTest extends TestSupport {
 
         MimeMessage mail = (MimeMessage) messages.get(0);
 
-        log.info("Created message: " + message);
+        logger.info("Created message: {}", message);
 
         assertEquals("subject", "Hello from JUnit!", mail.getSubject());
     }
@@ -123,7 +123,7 @@ public class MimeMailTest extends TestSupport {
 
         MimeMessage message = (MimeMessage) messages.get(0);
 
-        log.info("Created message: " + message);
+        logger.info("Created message: {}", message);
 
         assertEquals("subject", "Drink a beer James", message.getSubject());
     }
@@ -153,7 +153,7 @@ public class MimeMailTest extends TestSupport {
 
         MimeMessage message = (MimeMessage) messages.get(0);
 
-        log.info("Created message: " + message);
+        logger.info("Created message: {}", message);
         Object content = message.getContent();
         assertTrue(content instanceof MimeMultipart);
         MimeMultipart contentMP = (MimeMultipart) content;
@@ -179,4 +179,5 @@ public class MimeMailTest extends TestSupport {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/email/mimeMail.xml");
     }
+
 }

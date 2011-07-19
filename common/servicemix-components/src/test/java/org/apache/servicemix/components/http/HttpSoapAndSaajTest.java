@@ -27,6 +27,8 @@ import javax.xml.messaging.URLEndpoint;
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -36,8 +38,6 @@ import junit.framework.TestCase;
 
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.xbean.BrokerFactoryBean;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.saaj.SaajBinding;
 import org.apache.servicemix.components.util.MockServiceComponent;
 import org.apache.servicemix.jbi.container.ActivationSpec;
@@ -58,7 +58,7 @@ public class HttpSoapAndSaajTest extends TestCase {
     private static final int PORT_WS_1 = 7014;
     private static final int PORT_WS_2 = 7014;
 
-    private static transient Log log = LogFactory.getLog(HttpSoapAndSaajTest.class);
+    private static transient Logger logger = LoggerFactory.getLogger(HttpSoapAndSaajTest.class);
 
     protected JBIContainer container;
 	protected BrokerService broker;
@@ -140,7 +140,7 @@ public class HttpSoapAndSaajTest extends TestCase {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         XMLSerializer serializer = new XMLSerializer(output, format);
         serializer.serialize((Document) node);
-        log.info(output.toString());
+        logger.info(output.toString());
         
         CachedXPathAPI cachedXPathAPI = new CachedXPathAPI();
         NodeIterator iterator = cachedXPathAPI.selectNodeIterator(node, "//*[local-name() = 'userId']");
@@ -167,4 +167,5 @@ public class HttpSoapAndSaajTest extends TestCase {
             return root.getNodeValue();
         }
     }
+
 }

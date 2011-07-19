@@ -19,9 +19,10 @@ package org.apache.servicemix.components.http;
 import javax.jbi.messaging.MessagingException;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class InvalidStatusResponseException extends MessagingException {
+
     private int statusCode;
 
     public InvalidStatusResponseException(int statusCode) {
@@ -32,4 +33,5 @@ public class InvalidStatusResponseException extends MessagingException {
     public int getStatusCode() {
         return statusCode;
     }
+
 }

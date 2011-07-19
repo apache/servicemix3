@@ -35,7 +35,7 @@ import org.w3c.dom.traversal.NodeIterator;
 /**
  * A class which marshalls a client HTTP request to a NMS message
  * 
- * @version $Revision: 431309 $
+ * @version $Revision$
  */
 public class HttpSoapClientMarshaler extends HttpClientMarshaler {
 

@@ -30,9 +30,10 @@ import javax.mail.internet.MimeMessage;
  * An outbound component capable of sending MIME email via
  * <a href="http://java.sun.com/products/javamail/">JavaMail</a>
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class MimeMailSender extends OutBinding {
+
     private JavaMailSender sender;
     private MimeMailMarshaler marshaler = new MimeMailMarshaler();
 
@@ -54,7 +55,6 @@ public class MimeMailSender extends OutBinding {
         this.marshaler = marshaler;
     }
 
-
     // Implementation methods
     //-------------------------------------------------------------------------
     protected void init() throws JBIException {
@@ -73,4 +73,5 @@ public class MimeMailSender extends OutBinding {
         sender.send(preparator);
         done(exchange);
     }
+
 }

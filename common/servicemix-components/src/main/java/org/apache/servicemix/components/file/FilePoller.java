@@ -16,12 +16,12 @@
  */
 package org.apache.servicemix.components.file;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.DefaultFileMarshaler;
 import org.apache.servicemix.components.util.FileMarshaler;
 import org.apache.servicemix.components.util.PollingComponentSupport;
 import org.apache.servicemix.jbi.util.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -42,10 +42,11 @@ import java.util.Set;
  * and sends the files into the JBI bus as messages, deleting the files
  * by default when they are processed.
  *
- * @version $Revision: 666120 $
+ * @version $Revision$
  */
 public class FilePoller extends PollingComponentSupport {
-    private static final Log log = LogFactory.getLog(FilePoller.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(FilePoller.class);
 
     private File archive;
     private File file;
@@ -174,20 +175,20 @@ public class FilePoller extends PollingComponentSupport {
         if (!fileOrDirectory.isDirectory()) {
             pollFile(fileOrDirectory); // process the file
         } else if (processDir) {
-            log.debug("Polling directory " + fileOrDirectory);
+            logger.debug("Polling directory " + fileOrDirectory);
             File[] files = fileOrDirectory.listFiles(getFilter());
             for (int i = 0; i < files.length; i++) {
                 pollFileOrDirectory(files[i], isRecursive()); // self-recursion
             }
         } else {
-            log.debug("Skipping directory " + fileOrDirectory);
+            logger.debug("Skipping directory " + fileOrDirectory);
         } 
     }
 
     protected void pollFile(final File aFile) {
         if (workingSet.add(aFile)) {
-            if (log.isDebugEnabled()) {
-                log.debug("Scheduling file " + aFile + " for processing");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Scheduling file " + aFile + " for processing");
             }
             getExecutor().execute(new Runnable() {
                 public void run() {
@@ -203,8 +204,8 @@ public class FilePoller extends PollingComponentSupport {
 
     protected void processFileAndDelete(File aFile) {
         try {
-            if (log.isDebugEnabled()) {
-                log.debug("Processing file " + aFile);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Processing file " + aFile);
             }
             if (aFile.exists()) {
                 processFile(aFile);
@@ -220,7 +221,7 @@ public class FilePoller extends PollingComponentSupport {
             }
         }
         catch (Exception e) {
-            log.error("Failed to process file: " + aFile + ". Reason: " + e, e);
+            logger.error("Failed to process file: " + aFile + ". Reason: " + e, e);
         }
     }
 
@@ -240,4 +241,5 @@ public class FilePoller extends PollingComponentSupport {
             }
         }
     }
+
 }

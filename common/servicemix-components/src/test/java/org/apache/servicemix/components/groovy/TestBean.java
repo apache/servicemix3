@@ -22,9 +22,10 @@ import java.util.List;
 /**
  * A sample test bean used to test out XStream marshalling
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class TestBean {
+
     private String name;
     private int length;
     private List  addresses = new ArrayList();
@@ -52,4 +53,5 @@ public class TestBean {
     public void setName(String name) {
         this.name = name;
     }
+
 }

@@ -35,14 +35,13 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.codehaus.xfire.exchange.OutMessage;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class XMarshaler {
 
     private SourceTransformer transformer;
     
-    public XMarshaler()
-    {
+    public XMarshaler() {
         transformer = new SourceTransformer();
     }
 

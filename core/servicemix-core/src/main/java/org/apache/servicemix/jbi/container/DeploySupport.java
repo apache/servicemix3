@@ -22,16 +22,17 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.framework.AdminCommandsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public abstract class DeploySupport implements InitializingBean {
-    private static final transient Log LOG = LogFactory.getLog(DeploySupport.class);
+
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(DeploySupport.class);
 
     private JBIContainer jbiContainer;
     private AdminCommandsService commandsService;
@@ -57,7 +58,6 @@ public abstract class DeploySupport implements InitializingBean {
         }
         doDeploy();
     }
-
 
     // Properties
     //-------------------------------------------------------------------------
@@ -199,7 +199,7 @@ public abstract class DeploySupport implements InitializingBean {
             while (iter.hasMoreElements()) {
                 URL url = (URL) iter.nextElement();
 
-                LOG.debug("looking into properties file: " + url + " with key: " + key);
+                LOGGER.debug("looking into properties file: {} with key {}", url, key);
                 Properties properties = new Properties();
                 InputStream in = url.openStream();
                 properties.load(in);
@@ -207,12 +207,12 @@ public abstract class DeploySupport implements InitializingBean {
                 String answer = properties.getProperty(key);
                 if (answer != null) {
                     answer = answer.trim();
-                    LOG.debug("Found version: " + answer);
+                    LOGGER.debug("Found version: {}", answer);
                     return answer;
                 }
             }
         } catch (IOException e) {
-            LOG.error("Failed: " + e, e);
+            LOGGER.error("Failed", e);
         }
         return null;
     }
@@ -230,4 +230,5 @@ public abstract class DeploySupport implements InitializingBean {
     protected boolean isFileUrlFormat() {
         return true;
     }
+
 }

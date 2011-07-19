@@ -30,13 +30,13 @@ import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.api.EndpointResolver;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.tck.Receiver;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
@@ -44,7 +44,7 @@ import org.springframework.context.support.AbstractXmlApplicationContext;
  */
 public class ServiceMixClientTest extends TestCase {
     
-    private static final transient Log LOG = LogFactory.getLog(ServiceMixClientTest.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ServiceMixClientTest.class);
 
     protected AbstractXmlApplicationContext context;
     protected ServiceMixClient client;
@@ -95,8 +95,6 @@ public class ServiceMixClientTest extends TestCase {
     }
 
     public void testSendUsingMapAndPOJOsUsingContainerRoutingWithNoConfiguration() throws Exception {
-
-
         try {
             Map properties = new HashMap();
             properties.put("name", "James");
@@ -104,11 +102,10 @@ public class ServiceMixClientTest extends TestCase {
             client.send(null, null, properties, "<hello>world</hello>");
             fail("Should have thrown an exception as we have not wired in any container routing information to this client");
         } catch (JBIException e) {
-            LOG.info("Caught expected exception as we have specified no endpoint resolver: " + e);
+            LOGGER.info("Caught expected exception as we have specified no endpoint resolver", e);
             assertNotNull(e);
         }
     }
-
 
     // Request methods
     //-------------------------------------------------------------------------
@@ -140,10 +137,8 @@ public class ServiceMixClientTest extends TestCase {
 
         assertNotNull("Should have returned a non-null response!", response);
 
-        LOG.info("Received result: " + response);
+        LOGGER.info("Received result: {}", response);
     }
-
-
 
     // Implementation methods
     //-------------------------------------------------------------------------
@@ -162,8 +157,8 @@ public class ServiceMixClientTest extends TestCase {
         assertNotNull("outMessage is null!", outMessage);
 
         assertEquals("foo header", "hello", outMessage.getProperty("foo"));
-        LOG.info("Received result: " + outMessage.getContent());
-        LOG.info("XML is: " + transformer.toString(outMessage.getContent()));
+        LOGGER.info("Received result: {}", outMessage.getContent());
+        LOGGER.info("XML is: {}", transformer.toString(outMessage.getContent()));
     }
 
     protected void assertRequestUsingMapAndPOJOByServiceName(QName service) throws Exception {
@@ -175,7 +170,7 @@ public class ServiceMixClientTest extends TestCase {
 
         assertNotNull("Should have returned a non-null response!", response);
         
-        LOG.info("Received result: " + response);
+        LOGGER.info("Received result: {}", response);
     }
 
     protected void setUp() throws Exception {
@@ -213,4 +208,5 @@ public class ServiceMixClientTest extends TestCase {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/client/example.xml");
     }
+
 }

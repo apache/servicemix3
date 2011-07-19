@@ -23,8 +23,10 @@ import javax.jbi.component.ComponentContext;
  * A simple predicate which evaluates to true or false given the current
  * context and message exchange.
  * 
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public interface Predicate {
+
     boolean evaluate(ComponentContext context, MessageExchange exchange);
+
 }

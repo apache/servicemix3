@@ -26,23 +26,23 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.management.ObjectName;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.tck.MessageList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 
 // START SNIPPET: receive 
 public class MyReceiver implements ComponentLifeCycle, MessageExchangeListener {
-	private static final Log log = LogFactory.getLog(MyReceiver.class);
+
+	private static final Logger logger = LoggerFactory.getLogger(MyReceiver.class);
 	
     private ComponentContext context;
     private ObjectName extensionMBeanName;
     private MessageList messageList = new MessageList();
-
 
     // ComponentLifeCycle interface
     //-------------------------------------------------------------------------
@@ -69,7 +69,7 @@ public class MyReceiver implements ComponentLifeCycle, MessageExchangeListener {
     // MessageExchangeListener interface
     //-------------------------------------------------------------------------
     public void onMessageExchange(MessageExchange exchange) throws MessagingException {
-        log.info("Received message " + exchange);
+        logger.info("Received message {}", exchange);
         NormalizedMessage message = exchange.getMessage("in");
         getMessageList().addMessage(message);
         exchange.setStatus(ExchangeStatus.DONE);
@@ -89,5 +89,6 @@ public class MyReceiver implements ComponentLifeCycle, MessageExchangeListener {
     public void setMessageList(MessageList messageList) {
         this.messageList = messageList;
     }
+
 }
 // END SNIPPET: receive

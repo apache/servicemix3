@@ -22,7 +22,7 @@ import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class GroovyTest extends SpringTestSupport {
 
@@ -34,4 +34,5 @@ public class GroovyTest extends SpringTestSupport {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/groovy/spring-groovy.xml");
     }
+
 }

@@ -22,11 +22,11 @@ import java.util.Map;
 
 import javax.jbi.JBIException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.finder.FactoryFinder;
 import org.apache.servicemix.jbi.util.IntrospectionSupport;
 import org.apache.servicemix.jbi.util.URISupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Find a Flow by Name
@@ -35,7 +35,7 @@ import org.apache.servicemix.jbi.util.URISupport;
  */
 public final class FlowProvider {
 
-    private static final Log LOG = LogFactory.getLog(FlowProvider.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(FlowProvider.class);
 
     private static final FactoryFinder FINDER = new FactoryFinder("META-INF/services/org/apache/servicemix/jbi/nmr/flow/");
 
@@ -66,19 +66,19 @@ public final class FlowProvider {
             }
             throw new JBIException("No implementation found for: " + flow);
         } catch (IllegalAccessException e) {
-            LOG.error("getFlow(" + flow + " failed: " + e, e);
+            LOGGER.error("getFlow(" + flow + " failed: " + e, e);
             throw new JBIException(e);
         } catch (InstantiationException e) {
-            LOG.error("getFlow(" + flow + " failed: " + e, e);
+            LOGGER.error("getFlow(" + flow + " failed: " + e, e);
             throw new JBIException(e);
         } catch (IOException e) {
-            LOG.error("getFlow(" + flow + " failed: " + e, e);
+            LOGGER.error("getFlow(" + flow + " failed: " + e, e);
             throw new JBIException(e);
         } catch (ClassNotFoundException e) {
-            LOG.error("getFlow(" + flow + " failed: " + e, e);
+            LOGGER.error("getFlow(" + flow + " failed: " + e, e);
             throw new JBIException(e);
         } catch (URISyntaxException e) {
-            LOG.error("getFlow(" + flow + " failed: " + e, e);
+            LOGGER.error("getFlow(" + flow + " failed: " + e, e);
             throw new JBIException(e);
         }
     }
@@ -100,4 +100,5 @@ public final class FlowProvider {
         }
         return result;
     }
+
 }

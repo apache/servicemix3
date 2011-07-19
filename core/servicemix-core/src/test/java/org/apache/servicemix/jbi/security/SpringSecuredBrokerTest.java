@@ -31,19 +31,19 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginContext;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.tck.Receiver;
 import org.apache.servicemix.tck.SpringTestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
 public class SpringSecuredBrokerTest extends SpringTestSupport {
 
-    private static final Log LOG = LogFactory.getLog(SpringSecuredBrokerTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpringSecuredBrokerTest.class);
 
     static {
         String path = System.getProperty("java.security.auth.login.config");
@@ -54,7 +54,7 @@ public class SpringSecuredBrokerTest extends SpringTestSupport {
                 System.setProperty("java.security.auth.login.config", path);
             }
         }
-        LOG.info("Path to login config: " + path);
+        LOGGER.info("Path to login config: {}", path);
         //
         // This test depends on the "policy.allowSystemProperty" security
         // property being set to true.  If we don't ensure it is set here,
@@ -64,7 +64,7 @@ public class SpringSecuredBrokerTest extends SpringTestSupport {
         try {
             if (!"true".equals(Security.getProperty("policy.allowSystemProperty"))) {
                 Security.setProperty("policy.allowSystemProperty", "true");
-                LOG.info("Reset security property 'policy.allowSystemProperty' to 'true'");
+                LOGGER.info("Reset security property 'policy.allowSystemProperty' to 'true'");
             }
         } catch (Exception e) {
             // Ignore.

@@ -34,7 +34,7 @@ import org.apache.wsif.WSIFService;
 /**
  * Maintains a Map of the available operations for the binding.
  * 
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class WSIFOperationMap {
 

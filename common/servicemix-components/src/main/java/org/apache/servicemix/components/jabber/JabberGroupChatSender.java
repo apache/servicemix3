@@ -27,7 +27,7 @@ import javax.jbi.messaging.NormalizedMessage;
  * Sends one way messages to a Jabber {@link MultiUserChat} and receives inbound messages
  * from the chat
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class JabberGroupChatSender extends JabberComponentSupport {
 
@@ -51,7 +51,7 @@ public class JabberGroupChatSender extends JabberComponentSupport {
                 this.chat.join(this.user);
             }
         } catch (Exception ex) {
-            logger.error("Unable to log into chatroom " + room, ex);
+            logger.error("Unable to LOGGER into chatroom " + room, ex);
         }
     }
 

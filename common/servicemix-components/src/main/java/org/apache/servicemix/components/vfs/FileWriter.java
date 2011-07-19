@@ -16,14 +16,14 @@
  */
 package org.apache.servicemix.components.vfs;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.servicemix.components.util.DefaultFileMarshaler;
 import org.apache.servicemix.components.util.FileMarshaler;
 import org.apache.servicemix.components.util.OutBinding;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
@@ -37,10 +37,11 @@ import java.io.OutputStream;
  * <a href="http://jakarta.apache.org/commons/vfs.html">Jakarta Commons VFS</a> library
  * for handling various file systems like files, Samba, WebDAV, FTP, SFTP and temporary files.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class FileWriter extends OutBinding {
-    private static final Log log = LogFactory.getLog(FileWriter.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(FileWriter.class);
 
     private FileObject directory;
     private FileObjectEditor editor = new FileObjectEditor();
@@ -131,10 +132,11 @@ public class FileWriter extends OutBinding {
                     out.close();
                 }
                 catch (IOException e) {
-                    log.error("Caught exception while closing stream on error: " + e, e);
+                    logger.error("Caught exception while closing stream on error", e);
                 }
             }
         }
     }
+
 }
 

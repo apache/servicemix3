@@ -30,8 +30,6 @@ import javax.wsdl.Binding;
 import javax.wsdl.Definition;
 import javax.wsdl.WSDLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.TransformComponentSupport;
 import org.apache.wsif.WSIFException;
 import org.apache.wsif.WSIFMessage;
@@ -39,17 +37,19 @@ import org.apache.wsif.WSIFOperation;
 import org.apache.wsif.WSIFService;
 import org.apache.wsif.WSIFServiceFactory;
 import org.apache.wsif.util.WSIFUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 
 /**
  * Consumers JBI messages and sends them as a synchronous request/response into WSIF
  * then forwards the response
  *
- * @version $Revision: 556864 $
+ * @version $Revision$
  */
 public class WSIFBinding extends TransformComponentSupport {
 
-    private static transient Log log = LogFactory.getLog(WSIFBinding.class);
+    private static transient Logger logger = LoggerFactory.getLogger(WSIFBinding.class);
 
     private WSIFMarshaler marshaler = new WSIFMarshaler();
     private WSIFService serviceHelper;
@@ -73,9 +73,9 @@ public class WSIFBinding extends TransformComponentSupport {
                 serviceHelper = factory.getService(definition);
             }
 
-            if (log.isDebugEnabled()) {
+            if (logger.isDebugEnabled()) {
                 for (Iterator iter = serviceHelper.getAvailablePortNames(); iter.hasNext();) {
-                    log.debug("Available port name: " + iter.next());
+                    logger.debug("Available port name: " + iter.next());
                 }
             }
 

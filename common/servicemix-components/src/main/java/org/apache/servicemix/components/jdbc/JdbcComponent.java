@@ -32,23 +32,24 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.sql.DataSource;
 import javax.xml.transform.Source;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.components.util.TransformComponentSupport;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.xpath.CachedXPathAPI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
 public class JdbcComponent extends TransformComponentSupport implements MessageExchangeListener {
-    private static final Log log = LogFactory.getLog(JdbcComponent.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(JdbcComponent.class);
 
     private DataSource dataSource;
     private boolean responseRequired = false;
 
     public boolean transform(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws MessagingException {
-        log.debug("Received a JDBC request. Datasource=" + dataSource + ", ResponseRequired=" + responseRequired);
+        logger.debug("Received a JDBC request. Datasource=" + dataSource + ", ResponseRequired=" + responseRequired);
         Connection conn   = null;
         Statement stmt    = null;
         ResultSet rs      = null;
@@ -60,13 +61,13 @@ public class JdbcComponent extends TransformComponentSupport implements MessageE
 
             // Return the exception message
 //            if (isExceptionXml(domNode)) {
-//                log.debug("Found an exception message: " + domNode);
+//                LOGGER.debug("Found an exception message: " + domNode);
 //                out.setContent(in.getContent());
 //                return true;
 //            }
 
             String query = getQuery(domNode);
-            log.debug("Retrieved query: " + query);
+            logger.debug("Retrieved query: " + query);
 
             conn = dataSource.getConnection();
 
@@ -78,16 +79,16 @@ public class JdbcComponent extends TransformComponentSupport implements MessageE
                     // Result is a ResultSet object
                     rs = stmt.getResultSet();
 
-                    log.debug("Formatting ResultSet: " + rs);
+                    logger.debug("Formatting ResultSet: " + rs);
                     outMsg = toXmlSource(rs);
                 } else {
                     int updateCount = stmt.getUpdateCount();
                     if (updateCount > -1) {
-                        log.debug("Formatting UpdateCount: " + updateCount);
+                        logger.debug("Formatting UpdateCount: " + updateCount);
                         // Result is an update count
                         outMsg = toXmlSource(updateCount);
                     } else {
-                        log.debug("Formatting NoResult.");
+                        logger.debug("Formatting NoResult.");
                         // Result is neither a result set nor an update count
                         outMsg = null;
                     }
@@ -96,23 +97,23 @@ public class JdbcComponent extends TransformComponentSupport implements MessageE
 
             if (outMsg != null) {
                 // There is a valid response
-                log.debug("Response: " + domTransform.toString(outMsg));
+                logger.debug("Response: " + domTransform.toString(outMsg));
                 out.setContent(outMsg);
                 return true;
 
             } else if (responseRequired) {
                 // Create an empty <sqlResult> element
-                log.debug("Response: Empty Response");
+                logger.debug("Response: Empty Response");
                 out.setContent(toXmlSource());
                 return true;
 
             } else {
-                log.debug("Response: No Response");
+                logger.debug("Response: No Response");
                 // There is no valid response
                 return false;
             }
         } catch (Exception e) {
-            log.error("JDBC Component Exception: ", e);
+            logger.error("JDBC Component Exception: ", e);
 //            out.setContent(createExceptionXml(e));
 //            return true;
             throw new MessagingException(e);
@@ -252,14 +253,4 @@ public class JdbcComponent extends TransformComponentSupport implements MessageE
         return new StringSource("<sqlResult></sqlResult>");
     }
 
-
-    // Custom method to create and handle exception
-    /*
-    public boolean isExceptionXml(Node document) {
-        return document.getFirstChild().getNodeName().equalsIgnoreCase("exception");
-    }
-
-    public Source createExceptionXml(Throwable e) {
-        return new StringSource("<exception class='" + e.getClass() + "'>'" + e.getMessage() + "'</exception>");
-    } */
 }

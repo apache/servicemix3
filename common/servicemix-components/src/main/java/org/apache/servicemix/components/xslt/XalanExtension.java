@@ -46,13 +46,9 @@ import javax.xml.transform.dom.DOMSource;
  * An extension to allow <a href="http://xml.apache.org/xalan/">Xalan</a> to perform XPath based routing using
  * ServiceMix.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class XalanExtension extends MarshalerSupport {
-
-    // Extension elements
-    //-------------------------------------------------------------------------
-
 
     /**
      * Forwards the inbound message to the destination copying the content and properties
@@ -252,4 +248,5 @@ public class XalanExtension extends MarshalerSupport {
         }
         return answer;
     }
+
 }

@@ -30,9 +30,10 @@ import javax.script.ScriptException;
  * <a href="http://servicemix.org/JSR+223">JSR 223</a> to allow any scripting language to be used as an expression
  * language.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class ScriptExpression implements Expression {
+
     private CompiledScript compiledScript;
 
     public Object evaluate(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
@@ -45,4 +46,5 @@ public class ScriptExpression implements Expression {
             throw new MessagingException(e);
         }
     }
+
 }

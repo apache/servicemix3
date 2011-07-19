@@ -23,7 +23,6 @@ import org.apache.servicemix.tck.MessageList;
 
 import javax.xml.namespace.QName;
 
-
 public class OptionalAxisQueriesTest extends TestSupport {
 
     public void testOptionalAxisQuery() throws Exception {

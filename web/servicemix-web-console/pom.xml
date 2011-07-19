@@ -158,10 +158,6 @@
         <artifactId>spring-aop</artifactId>
         <version>${spring-version}</version>
     </dependency>
-    <dependency>
-        <groupId>commons-logging</groupId>
-        <artifactId>commons-logging</artifactId>
-    </dependency>
     
     <dependency>
       <groupId>org.mortbay.jetty</groupId>

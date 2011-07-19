@@ -35,14 +35,14 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.audit.AbstractAuditor;
 import org.apache.servicemix.jbi.audit.AuditorException;
 import org.apache.servicemix.jbi.event.ExchangeEvent;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.servicemix.jbi.util.MessageUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
@@ -55,7 +55,8 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public class FileAuditor extends AbstractAuditor implements InitializingBean {
 
-    private static final Log LOG = LogFactory.getLog(FileAuditor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileAuditor.class);
+
     private File directory;
     private FileAuditorStrategy strategy = new FileAuditorStrategyImpl();
     private boolean autostart = true;
@@ -68,7 +69,7 @@ public class FileAuditor extends AbstractAuditor implements InitializingBean {
      */
     public void setDirectory(File directory) {
         if (!directory.exists()) {
-            LOG.info("Creating directory " + directory);
+            LOGGER.info("Creating directory " + directory);
             directory.mkdirs();
         }
         this.directory = directory;
@@ -95,11 +96,11 @@ public class FileAuditor extends AbstractAuditor implements InitializingBean {
                 }
             }
         } catch (IOException e) {
-            LOG.error(String.format("Error occurred while storing message %s", event.getExchange().getExchangeId()), e);
+            LOGGER.error("Error occured while storing message {}", event.getExchange().getExchangeId(), e);
         } catch (TransformerException e) {
-            LOG.error(String.format("Error occurred while storing message %s", event.getExchange().getExchangeId()), e);
+            LOGGER.error("Error occurred while storing message {}", event.getExchange().getExchangeId(), e);
         } catch (MessagingException e) {
-            LOG.error(String.format("Error occurred while storing message %s", event.getExchange().getExchangeId()), e);
+            LOGGER.error("Error occurred while storing message {}", event.getExchange().getExchangeId(), e);
         }
     }
 
@@ -201,4 +202,5 @@ public class FileAuditor extends AbstractAuditor implements InitializingBean {
             return dateformat.format(new Date()) + File.separatorChar + exchange.getExchangeId().replaceAll("[:\\.]", "_");
         }
     }
+
 }

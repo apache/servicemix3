@@ -32,12 +32,12 @@ import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.executors.Executor;
 import org.apache.servicemix.executors.ExecutorFactory;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
@@ -48,10 +48,12 @@ import org.springframework.jms.core.MessageCreator;
  * container for processing, and send back the result to the JMS requestor - used for the TopipcRequestor and
  * QueueRequestor pattern
  * 
- * @version $Revision: 466982 $
+ * @version $Revision$
  */
 public class JmsServiceComponent extends ComponentSupport implements MessageListener, InitializingBean {
-    private static final Log log = LogFactory.getLog(JmsServiceComponent.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(JmsServiceComponent.class);
+
     private DestinationChooser destinationChooser;
     private JmsMarshaler marshaler = new JmsMarshaler();
     private JmsTemplate template;
@@ -247,10 +249,8 @@ public class JmsServiceComponent extends ComponentSupport implements MessageList
                                 try {
                                     Message message = marshaler.createMessage(messageExchange.getOutMessage(), session);
                                     message.setJMSCorrelationID(jmsMessage.getJMSCorrelationID());
-                                    if (log.isTraceEnabled()) {
-                                        log.trace("Sending message to: " + template.getDefaultDestinationName()
-                                                + " message: " + message);
-                                    }
+                                    logger.trace("Sending message to: {}", template.getDefaultDestinationName());
+                                    logger.trace("Message: {}", message);
                                     return message;
                                 }
                                 catch (TransformerException e) {
@@ -268,13 +268,13 @@ public class JmsServiceComponent extends ComponentSupport implements MessageList
                 }
             }
             catch (JMSException e) {
-                log.error("Couldn't process " + jmsMessage, e);
+                logger.error("Couldn't process {}", jmsMessage, e);
                 messageExchange.setError(e);
                 messageExchange.setStatus(ExchangeStatus.ERROR);
             }
         }
         catch (MessagingException e) {
-            log.error("Failed to process inbound JMS Message: " + jmsMessage, e);
+            logger.error("Failed to process inbound JMS Message: {}", jmsMessage, e);
         }
     }
 
@@ -304,9 +304,10 @@ public class JmsServiceComponent extends ComponentSupport implements MessageList
             result = inboundMessage.getJMSReplyTo();
         }
         if (result == null) {
-            log.error("Could not find an outbound destination for " + inboundMessage);
+            logger.error("Could not find an outbound destination for {}", inboundMessage);
             throw new JMSException("No outbound JMS Destination can be found");
         }
         return result;
     }
+
 }

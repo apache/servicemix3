@@ -24,10 +24,11 @@ import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 // START SNIPPET: send
 public class PojoSender {
+
     private ServiceMixClient client;
 
     public void sendMessages(int count) throws MessagingException {
@@ -49,5 +50,6 @@ public class PojoSender {
     public void setClient(ServiceMixClient client) {
         this.client = client;
     }
+
 }
 // END SNIPPET: send

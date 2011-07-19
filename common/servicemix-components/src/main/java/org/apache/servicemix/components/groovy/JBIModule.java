@@ -19,7 +19,8 @@ package org.apache.servicemix.components.groovy;
 /**
  * A Groovy module of helper methods to make JBI more groovy.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class JBIModule {
+
 }

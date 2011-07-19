@@ -50,7 +50,7 @@ import java.util.List;
 /**
  * This component generates an RSS/Atom Feed from the JBI messages it receives.
  * 
- * @version $Revision: 579627 $
+ * @version $Revision$
  */
 public class FeedWriter extends OutBinding {
 

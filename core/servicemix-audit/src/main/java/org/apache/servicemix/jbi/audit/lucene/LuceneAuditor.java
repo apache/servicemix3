@@ -142,7 +142,7 @@ public class LuceneAuditor extends AbstractAuditor implements AuditorQueryMBean 
                 ((ExchangeListener) delegatedAuditor).exchangeSent(event);
             }
         } catch (Exception e) {
-            log.error("Error while adding to lucene", e);
+            LOGGER.error("Error while adding to lucene", e);
         }
     }
 

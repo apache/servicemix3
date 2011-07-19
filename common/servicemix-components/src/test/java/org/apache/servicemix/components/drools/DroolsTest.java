@@ -23,7 +23,7 @@ import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class DroolsTest extends TestSupport {
 
@@ -37,4 +37,5 @@ public class DroolsTest extends TestSupport {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/drools/example.xml");
     }
+
 }

@@ -24,14 +24,14 @@ import javax.jbi.JBIException;
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.NormalizedMessage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.net.SocketClient;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.servicemix.components.util.DefaultFileMarshaler;
 import org.apache.servicemix.components.util.FileMarshaler;
 import org.apache.servicemix.components.util.PollingComponentSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -41,10 +41,11 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * and then sends them into the normalized message service, using a plugable transformer
  * and removes them.
  *
- * @version $Revision: 666120 $
+ * @version $Revision$
  */
 public class FTPPoller extends PollingComponentSupport {
-    private static final Log log = LogFactory.getLog(FTPPoller.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(FTPPoller.class);
 
     private FTPClientPool clientPool;
     private String path;
@@ -67,7 +68,6 @@ public class FTPPoller extends PollingComponentSupport {
             returnClient(ftp);
         }
     }
-
 
     // Properties
     //-------------------------------------------------------------------------
@@ -114,8 +114,8 @@ public class FTPPoller extends PollingComponentSupport {
 
     protected void pollFile(final FTPFile aFile) {
         if (workingSet.add(aFile)) {
-            if (log.isDebugEnabled()) {
-                log.debug("Scheduling file " + aFile + " for processing");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Scheduling file " + aFile + " for processing");
             }
             getExecutor().execute(new Runnable() {
                 public void run() {
@@ -142,7 +142,7 @@ public class FTPPoller extends PollingComponentSupport {
             }
         }
         catch (Exception e) {
-            log.error("Failed to process file: " + file + ". Reason: " + e, e);
+            logger.error("Failed to process file: " + file + ". Reason: " + e, e);
         }
         finally {
             if (client != null) {
@@ -179,8 +179,9 @@ public class FTPPoller extends PollingComponentSupport {
                 getClientPool().returnClient(client);
             }
             catch (Exception e) {
-                log.error("Failed to return client to pool: " + e, e);
+                logger.error("Failed to return client to pool: " + e, e);
             }
         }
     }
+
 }

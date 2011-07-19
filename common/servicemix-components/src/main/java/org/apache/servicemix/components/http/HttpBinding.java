@@ -23,7 +23,7 @@ import javax.jbi.JBIException;
 import java.io.IOException;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public interface HttpBinding {
 
@@ -36,6 +36,6 @@ public interface HttpBinding {
      * @throws IOException
      * @throws JBIException
      */
-    void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException,
-            JBIException;
+    void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, JBIException;
+
 }

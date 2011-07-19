@@ -24,7 +24,7 @@ import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
- * @version $Revision: 681324 $
+ * @version $Revision$
  */
 public class ReflectionBindingTest extends TestCase {
 
@@ -63,6 +63,5 @@ public class ReflectionBindingTest extends TestCase {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/reflection/example.xml");
     }
-    
-    
+
 }

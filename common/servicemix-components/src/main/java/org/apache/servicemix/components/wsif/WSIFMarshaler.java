@@ -41,9 +41,10 @@ import java.util.Map;
 /**
  * A class which marshalls a WSIF messages into and out of NMS
  *
- * @version $Revision: 431309 $
+ * @version $Revision$
  */
 public class WSIFMarshaler {
+
     public static final String WSDL_WRAPPER_NAMESPACE = "http://java.sun.com/xml/ns/jbi/wsdl-11-wrapper";
 
     private SourceTransformer transformer = new SourceTransformer();
@@ -199,6 +200,5 @@ public class WSIFMarshaler {
             element.appendChild(element.getOwnerDocument().createTextNode(text));
         }
     }
-
 
 }

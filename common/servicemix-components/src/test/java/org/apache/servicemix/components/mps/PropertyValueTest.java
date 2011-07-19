@@ -31,14 +31,13 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 /**
- * Test cases for the PeoprtyValue type Objects
- * @author rbuckland
- *
+ * Test cases for the Property Value type Objects
  */
 public class PropertyValueTest extends TestCase {
 
 	private final static String TEST_STRING = "PROP_TEST_STRING";
 	private final static String PROPNAME = "property1";
+
 	/**
 	 * helper method to return a new JBI NormalizedMessage
 	 * when we need one

@@ -21,10 +21,12 @@ import org.drools.FactException;
 import javax.jbi.messaging.MessagingException;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class FactMessagingException extends MessagingException {
+
     public FactMessagingException(FactException e) {
         super(e.getMessage(), e);
     }
+
 }

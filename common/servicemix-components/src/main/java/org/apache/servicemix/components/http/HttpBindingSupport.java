@@ -28,9 +28,10 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 
 /**
- * @version $Revision: 449651 $
+ * @version $Revision$
  */
 public abstract class HttpBindingSupport extends ComponentSupport implements HttpBinding {
+
     protected static final int BAD_REQUEST_STATUS_CODE = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
     private HttpMarshaler marshaler;
 
@@ -70,4 +71,5 @@ public abstract class HttpBindingSupport extends ComponentSupport implements Htt
         writer.println("Request failed with error: " + e);
         e.printStackTrace(writer);
     }
+
 }

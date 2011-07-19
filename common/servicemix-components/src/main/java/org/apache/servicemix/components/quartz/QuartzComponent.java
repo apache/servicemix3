@@ -16,8 +16,6 @@
  */
 package org.apache.servicemix.components.quartz;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.quartz.JobDetail;
@@ -28,6 +26,8 @@ import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jbi.JBIException;
 import javax.jbi.messaging.InOnly;
@@ -41,10 +41,11 @@ import java.util.Map;
 /**
  * A <a href="http://www.opensymphony.com/quartz/">Quartz</a> component for triggering components when timer events fire.
  *
- * @version $Revision: 433012 $
+ * @version $Revision$
  */
 public class QuartzComponent extends ComponentSupport implements MessageExchangeListener {
-    private static final transient Log log = LogFactory.getLog(QuartzComponent.class);
+
+    private static final transient Logger logger = LoggerFactory.getLogger(QuartzComponent.class);
 
     public static final String COMPONENT_KEY = "org.apache.servicemix.component";
 
@@ -114,9 +115,7 @@ public class QuartzComponent extends ComponentSupport implements MessageExchange
      * @param context the Quartz Job context
      */
     public void onJobExecute(JobExecutionContext context) throws JobExecutionException {
-        if (log.isDebugEnabled()) {
-            log.debug("Firing Quartz Job with context: " + context);
-        }
+        logger.debug("Firing Quartz Job with context: {}", context);
         try {
             InOnly exchange = getExchangeFactory().createInOnlyExchange();
             NormalizedMessage message = exchange.createMessage();
@@ -128,7 +127,6 @@ public class QuartzComponent extends ComponentSupport implements MessageExchange
             throw new JobExecutionException(e);
         }
     }
-
 
     // Properties
     //-------------------------------------------------------------------------

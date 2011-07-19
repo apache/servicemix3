@@ -30,20 +30,21 @@ import javax.management.ObjectName;
 import javax.management.monitor.CounterMonitor;
 import javax.xml.transform.Source;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A JMX Counter Monitor as a Component to enable firing notifications
  * 
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class CounterMonitorComponent extends ComponentSupport implements NotificationListener, MessageExchangeListener {
     
-    private static final Log log = LogFactory.getLog(ComponentSupport.class);
+    private static final Logger logger = LoggerFactory.getLogger(ComponentSupport.class);
+
     private String name;
     private ObjectName ourName;
     private String observedObjectName;
@@ -142,7 +143,7 @@ public class CounterMonitorComponent extends ComponentSupport implements Notific
             send(exchange);
         }
         catch (Exception e) {
-            log.error("Failed to send Notification message to the NMR");
+            logger.error("Failed to send Notification message to the NMR");
         }
         
     }
@@ -278,4 +279,5 @@ public class CounterMonitorComponent extends ComponentSupport implements Notific
     public void onMessageExchange(MessageExchange exchange) throws MessagingException {
         // We can only receive acks, so do nothing
     }
+
 }

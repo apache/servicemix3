@@ -75,7 +75,7 @@ public abstract class OutBinding extends ComponentSupport implements Runnable, M
                 }
             }
         } catch (MessagingException e) {
-            // Only log exception if the component really fails
+            // Only LOGGER exception if the component really fails
             // i.e. the exception has not been thrown to interrupt
             // this thread
             if (!stop.get()) {

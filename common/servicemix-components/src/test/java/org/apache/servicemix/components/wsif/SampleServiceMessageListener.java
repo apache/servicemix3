@@ -23,8 +23,8 @@ import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
@@ -37,10 +37,11 @@ import org.springframework.jms.core.MessageCreator;
  * Internally the bean just returns true for zip codes < 50000 and
  * false otherwise.
  *
- * @version $Revision: 556864 $
+ * @version $Revision$
  */
 public class SampleServiceMessageListener implements MessageListener, InitializingBean {
-    private static transient Log log = LogFactory.getLog(SampleServiceMessageListener.class);
+
+    private static transient Logger logger = LoggerFactory.getLogger(SampleServiceMessageListener.class);
 
     private JmsTemplate template;
 
@@ -63,7 +64,7 @@ public class SampleServiceMessageListener implements MessageListener, Initializi
             TextMessage message = (TextMessage) msg;
             // assume we have an integer
             String text = message.getText();
-            log.info("Text: " + text);
+            logger.info("Text: {}", text);
             int zipCode = new Integer(text).intValue();
             // return true if zip code < 50000, false otherwise
             if (zipCode < 50000) {
@@ -75,7 +76,7 @@ public class SampleServiceMessageListener implements MessageListener, Initializi
         }
         catch (Exception e) {
             // aargh - this should not happen usually
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -91,5 +92,6 @@ public class SampleServiceMessageListener implements MessageListener, Initializi
             }
         });
     }
+
 }	
 

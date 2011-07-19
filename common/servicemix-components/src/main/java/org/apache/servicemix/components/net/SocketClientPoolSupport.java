@@ -32,9 +32,10 @@ import java.net.InetAddress;
  * <a href="http://jakarta.apache.org/commons/net.html">Jakarta Commons Net</a> library to handle
  * internet networking connections.
  *
- * @version $Revision: 469500 $
+ * @version $Revision$
  */
 public abstract class SocketClientPoolSupport implements InitializingBean, DisposableBean, PoolableObjectFactory {
+
     private ObjectPool pool;
     private InetAddress address;
     private String host;
@@ -87,7 +88,6 @@ public abstract class SocketClientPoolSupport implements InitializingBean, Dispo
 
     public void passivateObject(Object object) throws Exception {
     }
-
 
     // Properties
     //-------------------------------------------------------------------------

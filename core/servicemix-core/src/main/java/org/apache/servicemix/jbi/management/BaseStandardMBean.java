@@ -56,8 +56,8 @@ import javax.management.modelmbean.ModelMBeanNotificationInfo;
 
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.beanutils.PropertyUtilsBean;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An MBean wrapper for an Existing Object
@@ -65,9 +65,9 @@ import org.apache.commons.logging.LogFactory;
  * @version $Revision$
  */
 public class BaseStandardMBean extends StandardMBean implements ModelMBeanNotificationBroadcaster, MBeanRegistration,
-                PropertyChangeListener {
+        PropertyChangeListener {
 
-    private static final Log LOG = LogFactory.getLog(BaseStandardMBean.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseStandardMBean.class);
 
     private static final Map<String, Class<?>> PRIMITIVE_CLASSES = new Hashtable<String, Class<?>>(8);
     {
@@ -107,7 +107,7 @@ public class BaseStandardMBean extends StandardMBean implements ModelMBeanNotifi
      * @param description
      * @param attrs
      * @param ops
-     * @param executorService2
+     * @param executorService
      * @throws ReflectionException
      * @throws NotCompliantMBeanException
      */
@@ -226,9 +226,9 @@ public class BaseStandardMBean extends StandardMBean implements ModelMBeanNotifi
             try {
                 sendAttributeChangeNotification(old, ca.getAttribute());
             } catch (RuntimeOperationsException e) {
-                LOG.error("Failed to update attribute: " + name + " to new value: " + value, e);
+                LOGGER.error("Failed to update attribute: " + name + " to new value: " + value, e);
             } catch (MBeanException e) {
-                LOG.error("Failed to update attribute: " + name + " to new value: " + value, e);
+                LOGGER.error("Failed to update attribute: " + name + " to new value: " + value, e);
             }
         }
     }
@@ -266,7 +266,7 @@ public class BaseStandardMBean extends StandardMBean implements ModelMBeanNotifi
                 }
             }
         } catch (MBeanException e) {
-            LOG.error("Caught excdeption building attributes", e);
+            LOGGER.error("Caught exception building attributes", e);
         }
         return result;
     }
@@ -285,13 +285,13 @@ public class BaseStandardMBean extends StandardMBean implements ModelMBeanNotifi
                 try {
                     setAttribute(attribute);
                 } catch (AttributeNotFoundException e) {
-                    LOG.warn("Failed to setAttribute(" + attribute + ")", e);
+                    LOGGER.warn("Failed to setAttribute({})", attribute, e);
                 } catch (InvalidAttributeValueException e) {
-                    LOG.warn("Failed to setAttribute(" + attribute + ")", e);
+                    LOGGER.warn("Failed to setAttribute({})", attribute, e);
                 } catch (MBeanException e) {
-                    LOG.warn("Failed to setAttribute(" + attribute + ")", e);
+                    LOGGER.warn("Failed to setAttribute({})", attribute, e);
                 } catch (ReflectionException e) {
-                    LOG.warn("Failed to setAttribute(" + attribute + ")", e);
+                    LOGGER.warn("Failed to setAttribute({})", attribute, e);
                 }
                 result.add(attribute);
             }
@@ -464,12 +464,12 @@ public class BaseStandardMBean extends StandardMBean implements ModelMBeanNotifi
     public final MBeanNotificationInfo[] getNotificationInfo() {
         MBeanNotificationInfo[] result = new MBeanNotificationInfo[2];
         Descriptor genericDescriptor = new DescriptorSupport(new String[] {
-            "name=GENERIC", "descriptorType=notification", "log=T",
+            "name=GENERIC", "descriptorType=notification", "LOGGER=T",
             "severity=5", "displayName=jmx.modelmbean.generic" });
         result[0] = new ModelMBeanNotificationInfo(new String[] {"jmx.modelmbean.generic" }, "GENERIC",
             "A text notification has been issued by the managed resource", genericDescriptor);
         Descriptor attributeDescriptor = new DescriptorSupport(new String[] {"name=ATTRIBUTE_CHANGE", "descriptorType=notification",
-            "log=T", "severity=5", "displayName=jmx.attribute.change" });
+            "LOGGER=T", "severity=5", "displayName=jmx.attribute.change" });
         result[1] = new ModelMBeanNotificationInfo(new String[] {"jmx.attribute.change" }, "ATTRIBUTE_CHANGE",
             "Signifies that an observed MBean attribute value has changed", attributeDescriptor);
         return result;
@@ -539,4 +539,5 @@ public class BaseStandardMBean extends StandardMBean implements ModelMBeanNotifi
             }
         }
     }
+
 }

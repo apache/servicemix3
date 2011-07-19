@@ -16,18 +16,19 @@
  */
 package org.apache.servicemix.jbi.container;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Deploys a service assembly using either a File URL or the maven groupId, artifactId and optional versions.
  *
- * @version $Revision: 1.1 $
- * @org.apache.xbean.XBean element="deployServiceAssembly"
- * description="Deploys a service assembly"
+ * @version $Revision$
+ * @org.apache.xbean.XBean element="deployServiceAssembly" description="Deploys a service assembly"
  */
 public class DeployServiceAssembly extends DeploySupport {
-    private static final transient Log LOG = LogFactory.getLog(InstallSharedLibrary.class);
+
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(InstallSharedLibrary.class);
+
     private String serviceAssemblyName;
 
     public DeployServiceAssembly() {
@@ -53,8 +54,9 @@ public class DeployServiceAssembly extends DeploySupport {
 
         String file = getFile();
 
-        LOG.info("Deploying shared library: " + file);
+        LOGGER.info("Deploying shared library: {}", file);
         getCommandsService().deployServiceAssembly(file, isDeferException());
         getCommandsService().startServiceAssembly(name);
     }
+
 }

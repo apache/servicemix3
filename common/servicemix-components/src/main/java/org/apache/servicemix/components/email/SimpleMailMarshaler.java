@@ -30,7 +30,7 @@ import org.springframework.mail.SimpleMailMessage;
  * The default marshaler from the {@link NormalizedMessage} to a {@link SimpleMailMessage} using
  * expressions for each field required on the email.
  *
- * @version $Revision: 429277 $
+ * @version $Revision$
  */
 public class SimpleMailMarshaler extends MailMarshalerSupport{
 
@@ -122,6 +122,5 @@ public class SimpleMailMarshaler extends MailMarshalerSupport{
     protected Object getBcc(MessageExchange exchange, NormalizedMessage normalizedMessage) throws MessagingException, AddressException {
         return asStringOrStringArray(getBcc().evaluate(exchange, normalizedMessage));
     }
-
 
 }

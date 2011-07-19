@@ -35,7 +35,7 @@ import org.xml.sax.SAXException;
  * An implementation of {@link ErrorHandler} which aggregates all warnings and
  * error messages into a StringBuffer.
  *
- * @version $Revision: 359186 $
+ * @version $Revision$
  */
 public class MessageAggregatingErrorHandler implements MessageAwareErrorHandler {
     
@@ -87,17 +87,7 @@ public class MessageAggregatingErrorHandler implements MessageAwareErrorHandler 
     private StringBuffer messages = new StringBuffer();
     
     private SourceTransformer sourceTransformer = new SourceTransformer();
-    
-    /**
-     * Constructor.
-     * 
-     * @param rootElement
-     *      The root element name of the fault xml message 
-     * @param namespace
-     *      The namespace for the fault xml message
-     * @param includeStackTraces
-     *      Include stracktraces in the final output
-     */
+
     public MessageAggregatingErrorHandler(String rootPath, String namespace, boolean includeStackTraces) throws IllegalArgumentException {
         if (rootPath == null || rootPath.trim().length() == 0) {
             throw new IllegalArgumentException("rootPath must not be null or an empty string");

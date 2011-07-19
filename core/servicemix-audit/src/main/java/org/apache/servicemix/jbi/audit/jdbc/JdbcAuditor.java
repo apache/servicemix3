@@ -134,7 +134,7 @@ public class JdbcAuditor extends AbstractAuditor implements InitializingBean {
                 close(connection, restoreAutoCommit);
             }
         } catch (Exception e) {
-            log.error("Could not persist exchange", e);
+            LOGGER.error("Could not persist exchange", e);
         }
     }
     

@@ -28,7 +28,7 @@ import javax.jbi.messaging.NormalizedMessage;
 /**
  * Receives inbound messages or packets and dispatches them into the NMR
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class JabberReceiver extends JabberComponentSupport {
 
@@ -62,4 +62,5 @@ public class JabberReceiver extends JabberComponentSupport {
     protected void process(MessageExchange exchange, NormalizedMessage message) throws Exception {
         throw new MessagingException("This component is not meant to receive inbound messages but received: " + message);
     }
+
 }

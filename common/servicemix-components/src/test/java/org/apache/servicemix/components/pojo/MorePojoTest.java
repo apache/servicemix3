@@ -22,7 +22,7 @@ import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class MorePojoTest extends SpringTestSupport {
 
@@ -35,8 +35,8 @@ public class MorePojoTest extends SpringTestSupport {
         assertMessagesReceived(receiver.getMessageList(), messageCount);
     }
 
-
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/pojo/example-more-pojo.xml");
     }
+
 }

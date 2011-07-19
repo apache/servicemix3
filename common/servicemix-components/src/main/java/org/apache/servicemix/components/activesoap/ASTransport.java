@@ -32,12 +32,11 @@ import java.io.Reader;
 /**
  * An <a href="http://activesoap.codehaus.org/">ActiveSOAP</a> transport which uses JBI.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class ASTransport implements TransportClient {
 
     private ASMarshaler marshaler = new ASMarshaler();
-
 
     private DeliveryChannel channel;
     private XMLStreamFactory streamFactory;
@@ -92,4 +91,5 @@ public class ASTransport implements TransportClient {
             return marshaler.createStreamReader(fault);
         }
     }
+
 }

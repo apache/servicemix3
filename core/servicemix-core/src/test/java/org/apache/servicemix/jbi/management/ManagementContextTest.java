@@ -29,17 +29,17 @@ import javax.management.remote.JMXServiceURL;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.EchoComponent;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ManagementContextTest
  */
 public class ManagementContextTest extends TestCase {
 
-    private Log log = LogFactory.getLog(getClass());
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ManagementContextTest.class);
 
     // The host, port and path where the rmiregistry runs.
     private String namingHost = "localhost";
@@ -86,17 +86,17 @@ public class ManagementContextTest extends TestCase {
         // The magic of JDK 1.3 dynamic proxy and JSR 160:
         // delegate.getImplementationVendor() is actually a remote JMX call,
         // but it looks like a local, old-style, java call.
-        log.info(delegate.getImplementationVendor() + " is cool !");
+        LOGGER.info("{} is cool !", delegate.getImplementationVendor());
 
         ObjectName objName = context.createObjectName(context);
 
         proxy = MBeanServerInvocationHandler.newProxyInstance(connection, objName, LifeCycleMBean.class, true);
         LifeCycleMBean mc = (LifeCycleMBean) proxy;
-        log.info("STATE = " + mc.getCurrentState());
+        LOGGER.info("STATE = {}", mc.getCurrentState());
         mc.start();
-        log.info("STATE = " + mc.getCurrentState());
+        LOGGER.info("STATE = {}", mc.getCurrentState());
         mc.stop();
-        log.info("STATE = " + mc.getCurrentState());
+        LOGGER.info("STATE = {}", mc.getCurrentState());
     }
 
     public void testComponent() throws Exception {

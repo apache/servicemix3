@@ -26,7 +26,7 @@ import org.apache.wsif.WSIFOperation;
 /**
  * Consumers JBI messages and sends them as a oneway into WSIF
  *
- * @version $Revision: 429277 $
+ * @version $Revision$
  */
 public class WSIFOutBinding extends OutBinding {
 
@@ -79,4 +79,5 @@ public class WSIFOutBinding extends OutBinding {
         operation.executeInputOnlyOperation(message);
         done(exchange);
     }
+
 }

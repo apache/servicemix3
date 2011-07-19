@@ -20,12 +20,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Represnts an LRUCache of a fixed maximum size which by default will
+ * Represents an LRUCache of a fixed maximum size which by default will
  * remove items based on access order but can be used to use insertion order
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class LRUCache extends LinkedHashMap {
+
     private static final long serialVersionUID = -5754338187296859149L;
 
     protected static final int DEFAULT_INITIAL_CAPACITY = 1000;
@@ -49,4 +50,5 @@ public class LRUCache extends LinkedHashMap {
     protected boolean removeEldestEntry(Map.Entry eldest) {
         return size() > maxSize;
     }
+
 }

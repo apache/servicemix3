@@ -27,20 +27,20 @@ import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.PollingComponentSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A polling component which looks for emails in a mail server and sends them
  * into the JBI bus as messages, deleting the messages by default when they
  * are processed.
  * 
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class MimeMailPoller extends PollingComponentSupport {
 	
-	private static Log log = LogFactory.getLog(MimeMailPoller.class);
+	private static Logger logger = LoggerFactory.getLogger(MimeMailPoller.class);
 	
 	private Session session;
 	private String hostName;
@@ -54,11 +54,11 @@ public class MimeMailPoller extends PollingComponentSupport {
 	protected void init() throws JBIException {
 		super.init();
 		if (session == null)  {
-			log.debug("No Session informed. Using default instance");
+			logger.debug("No Session informed. Using default instance");
 			this.session = Session.getDefaultInstance(System.getProperties());
 		}
 		if (mailBox == null) {
-			log.debug("No mailbox informed. Using INBOX");
+			logger.debug("No mailbox informed. Using INBOX");
 			mailBox = "INBOX";
 		}
 		if (hostName == null) {
@@ -73,7 +73,6 @@ public class MimeMailPoller extends PollingComponentSupport {
 		if (maxFetchSize < 1) {
 			throw new JBIException("Fetch Size must be at least 1");
 		}
-
 	}
 	
 	/**

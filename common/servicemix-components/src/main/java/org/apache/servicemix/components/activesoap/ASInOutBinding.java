@@ -30,7 +30,7 @@ import org.codehaus.activesoap.RestService;
  * Converts an inbound JBI message into an <a href="http://activesoap.codehaus.org/">ActiveSOAP</a>
  * request-response and outputs the response back into JBI
  *
- * @version $Revision: 429277 $
+ * @version $Revision$
  */
 public class ASInOutBinding extends OutBinding {
 
@@ -89,4 +89,5 @@ public class ASInOutBinding extends OutBinding {
 
         answer(messageExchange, outMessage);
     }
+
 }

@@ -33,7 +33,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * A component which is capable of invoking a <a href="http://groovy.codehaus.org/">Groovy</a> script to process
  * or transform a message.
  *
- * @version $Revision: 495362 $
+ * @version $Revision$
  */
 public class GroovyComponent extends ScriptComponent {
 

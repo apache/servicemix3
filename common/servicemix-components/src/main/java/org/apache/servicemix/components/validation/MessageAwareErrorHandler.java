@@ -63,14 +63,7 @@ public interface MessageAwareErrorHandler extends ErrorHandler {
 	 * @return
 	 */
 	public Object getMessagesAs(Class format) throws MessagingException;
-	
-	/**
-	 * Does the message support a given format?
-	 * 
-	 * @param clazz
-	 * 		The Class of the format for which support is required.
-	 * @return
-	 */
+
 	public boolean supportsMessageFormat(Class format);
 	
 }

@@ -39,7 +39,7 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 /**
  * A class which marshalls a HTTP request to a NMS message
  * 
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class HttpMarshaler extends MarshalerSupport {
 

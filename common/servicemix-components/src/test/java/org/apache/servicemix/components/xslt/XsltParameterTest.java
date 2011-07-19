@@ -28,7 +28,6 @@ import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.w3c.dom.Node;
 
 /**
- * @author rbuckland
  * @version $Revision$
  */
 public class XsltParameterTest extends TestSupport {
@@ -59,4 +58,5 @@ public class XsltParameterTest extends TestSupport {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/xslt/servicemix-parameter-test.xml");
     }
+
 }

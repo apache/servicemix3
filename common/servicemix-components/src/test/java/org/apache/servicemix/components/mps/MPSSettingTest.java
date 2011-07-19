@@ -26,12 +26,10 @@ import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
- * @author Rmaon Buckland
- * @version $Revision: $
+ * @version $Revision$
  */
 public class MPSSettingTest extends TestSupport {
 
-	
 	/**
 	 * load the property set from the spring injects string (fixed set)
 	 * @throws Exception
@@ -56,10 +54,8 @@ public class MPSSettingTest extends TestSupport {
         // this property is configured, but there is no "value to resolve it to"
         assertTrue(outMessage.getProperty("new.prop.name") == null);
         assertTrue(outMessage.getProperty("property.3").equals("thatOtherValue"));
-        
     }
-    
-    
+
     /**
      * Load the property set using an xpath applied to the in message
      * @throws Exception
@@ -77,7 +73,6 @@ public class MPSSettingTest extends TestSupport {
         NormalizedMessage outMessage = exchange.getOutMessage();
 
         assertTrue(outMessage.getProperty("my-superdooper.property").equals("wishAusMadeItTotheFinals"));
-        
     }
     
 	/**
@@ -98,13 +93,12 @@ public class MPSSettingTest extends TestSupport {
         NormalizedMessage outMessage = exchange.getOutMessage();
 
         assertTrue(outMessage.getProperty("my-superdooper.property").equals("wishAusMadeItTotheFinals"));
-        
     }
-    
-    
+
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/mps/servicemix-mps-test.xml");
     }
+
 }
 
 

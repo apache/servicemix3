@@ -32,16 +32,12 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-
-/**
- *
- */
 public class PropertiesLoginModuleTest extends TestCase {
-    private static transient Log log = LogFactory.getLog(PropertiesLoginModuleTest.class);
+
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(PropertiesLoginModuleTest.class);
     
     static {
         String path = System.getProperty("java.security.auth.login.config");
@@ -52,7 +48,7 @@ public class PropertiesLoginModuleTest extends TestCase {
                 System.setProperty("java.security.auth.login.config", path);
             }
         }
-        log.info("Path to login config: " + path);
+        LOGGER.info("Path to login config: {}", path);
         //
         // This test depends on the "policy.allowSystemProperty" security
         // property being set to true.  If we don't ensure it is set here,
@@ -62,7 +58,7 @@ public class PropertiesLoginModuleTest extends TestCase {
         try {
             if (!"true".equals(Security.getProperty("policy.allowSystemProperty"))) {
                 Security.setProperty("policy.allowSystemProperty", "true");
-                log.info("Reset security property 'policy.allowSystemProperty' to 'true'");
+                LOGGER.info("Reset security property 'policy.allowSystemProperty' to 'true'");
             }
         } catch (SecurityException e) {
              // Ignore.
@@ -139,4 +135,5 @@ public class PropertiesLoginModuleTest extends TestCase {
             // Expected
         }
     }
+
 }

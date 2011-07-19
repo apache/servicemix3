@@ -19,8 +19,6 @@ package org.apache.servicemix.components.drools.dsl;
 import javax.jbi.messaging.MessagingException;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.drools.JbiHelper;
 import org.drools.rule.Rule;
 import org.drools.smf.Configuration;
@@ -29,12 +27,15 @@ import org.drools.smf.FactoryException;
 import org.drools.spi.Consequence;
 import org.drools.spi.RuleBaseContext;
 import org.drools.spi.Tuple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * @version $Revision: 556864 $
+ * @version $Revision$
  */
 public class ForwardConsequenceFactory implements ConsequenceFactory {
-    private static transient Log log = LogFactory.getLog(ForwardConsequenceFactory.class);
+
+    private static transient Logger logger = LoggerFactory.getLogger(ForwardConsequenceFactory.class);
 
     public Consequence newConsequence(Rule rule, RuleBaseContext ruleBaseContext, final Configuration configuration) throws FactoryException {
     	final String[] services = configuration.getAttribute("service").split(",");
@@ -79,7 +80,10 @@ public class ForwardConsequenceFactory implements ConsequenceFactory {
                 }
             }
         }
-        log.debug("Creating QName with uri: " + uri + " name: " + localPart);
+        logger.debug("Creating QName with");
+        logger.debug("uri: {}", uri);
+        logger.debug("name: {}", localPart);
         return new QName(uri, localPart);
     }
+
 }

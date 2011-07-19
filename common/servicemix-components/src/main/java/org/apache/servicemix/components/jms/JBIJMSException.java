@@ -23,10 +23,12 @@ import javax.jms.JMSException;
  * Thrown when a JMS message is thrown from inside a JMS binding
  * component for the JBI container
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class JBIJMSException extends JBIException {
+
     public JBIJMSException(JMSException cause) {
         super(cause);
     }
+
 }

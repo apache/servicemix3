@@ -28,4 +28,5 @@ public class Echo {
     protected int getCount() {
         return count;
     }
+
 }

@@ -27,9 +27,10 @@ import org.drools.WorkingMemory;
 /**
  * A helper class for use inside a rule to forward a message to an endpoint
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class JbiHelper {
+
     private DroolsComponent component;
     private MessageExchange exchange;
     private NormalizedMessage in;
@@ -83,4 +84,5 @@ public class JbiHelper {
     public NormalizedMessage getIn() {
         return in;
     }
+
 }

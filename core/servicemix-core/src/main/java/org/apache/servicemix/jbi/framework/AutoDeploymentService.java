@@ -633,9 +633,9 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
 
     private void monitorDirectory(final File root, final Map<String, ArchiveEntry> fileMap) {
         /*
-         * if (log.isTraceEnabled()) { if (root != null) log.trace("Monitoring
+         * if (LOGGER.isTraceEnabled()) { if (root != null) LOGGER.trace("Monitoring
          * directory " + root.getAbsolutePath() + " for new or modified
-         * archives"); else log.trace("No directory to monitor for new or
+         * archives"); else LOGGER.trace("No directory to monitor for new or
          * modified archives for " + ((fileMap==installFileMap) ? "Installation" :
          * "Deployment") + "."); }
          */

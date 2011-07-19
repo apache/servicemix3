@@ -24,9 +24,10 @@ import javax.xml.stream.XMLStreamReader;
 /**
  * An <a href="http://activesoap.codehaus.org/">ActiveSOAP</a> {@link Invocation} which uses JBI.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class ASInvocation extends Invocation {
+
     private ASTransport asTransport;
 
     public ASInvocation(ASTransport transport, XMLStreamFactory streamFactory) {
@@ -43,4 +44,5 @@ public class ASInvocation extends Invocation {
         String xml = getRequestText();
         return asTransport.invokeRequest(this, xml);
     }
+
 }

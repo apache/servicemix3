@@ -23,9 +23,9 @@ import javax.jms.Message;
 import javax.jms.Session;
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.OutBinding;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 
@@ -33,11 +33,11 @@ import org.springframework.jms.core.MessageCreator;
  * Consumers JBI messages and sends them to a JMS destination using the Spring
  * {@link JmsTemplate}
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class JmsSenderComponent extends OutBinding {
 
-    private static final Log log = LogFactory.getLog(JmsSenderComponent.class);
+    private static final Logger logger = LoggerFactory.getLogger(JmsSenderComponent.class);
 
     private JmsTemplate template;
     private JmsMarshaler marshaler = new JmsMarshaler();
@@ -82,9 +82,8 @@ public class JmsSenderComponent extends OutBinding {
             public Message createMessage(Session session) throws JMSException {
                 try {
                     Message message = marshaler.createMessage(inMessage, session);
-                    if (log.isTraceEnabled()) {
-                        log.trace("Sending message to: " + template.getDefaultDestinationName() + " message: " + message);
-                    }
+                    logger.trace("Sending message to: {}", template.getDefaultDestinationName());
+                    logger.trace("Message: {}", message);
                     return message;
                 }
                 catch (TransformerException e) {
@@ -96,4 +95,5 @@ public class JmsSenderComponent extends OutBinding {
         });
         done(exchange);
     }
+
 }

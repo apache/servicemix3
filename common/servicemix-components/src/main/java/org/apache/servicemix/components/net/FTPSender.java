@@ -23,28 +23,28 @@ import javax.jbi.JBIException;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.net.SocketClient;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.servicemix.components.util.DefaultFileMarshaler;
 import org.apache.servicemix.components.util.FileMarshaler;
 import org.apache.servicemix.components.util.OutBinding;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A component which sends a message to a file using FTP via the
  * <a href="http://jakarta.apache.org/commons/net.html">Jakarta Commons Net</a> library
  * 
- * @version $Revision: 486715 $
+ * @version $Revision$
  */
 public class FTPSender extends OutBinding {
-    private static final Log log = LogFactory.getLog(FTPSender.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(FTPSender.class);
 
     private FTPClientPool clientPool;
     private FileMarshaler marshaler = new DefaultFileMarshaler();
     private String uniqueFileName = "ServiceMix";
     private boolean overwrite = false;
-
 
     // Properties
     //-------------------------------------------------------------------------
@@ -131,7 +131,7 @@ public class FTPSender extends OutBinding {
                     out.close();
                 }
                 catch (IOException e) {
-                    log.error("Caught exception while closing stream on error: " + e, e);
+                    logger.error("Caught exception while closing stream on error: ", e);
                 }
             }
             client.completePendingCommand();
@@ -145,7 +145,7 @@ public class FTPSender extends OutBinding {
                 getClientPool().returnClient(client);
             }
             catch (Exception e) {
-                log.error("Failed to return client to pool: " + e, e);
+                logger.error("Failed to return client to pool: ", e);
             }
         }
     }

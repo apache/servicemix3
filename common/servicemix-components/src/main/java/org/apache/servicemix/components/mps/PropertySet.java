@@ -27,7 +27,6 @@ import org.w3c.dom.NodeList;
 
 public class PropertySet {
 
-	
 	public final static String XML_ELEMENT_NAME = "property-set";
 	
 	public final static String XML_ATTR_NAME_NAME = "name";
@@ -74,4 +73,5 @@ public class PropertySet {
 	public String getName() {
 		return propertySetName;
 	}
+
 }

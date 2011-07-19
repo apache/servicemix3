@@ -31,16 +31,16 @@ import javax.management.remote.JMXServiceURL;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ManagementContextTest
  */
 public class ManagementAttributesTest extends TestCase {
 
-    private Log log = LogFactory.getLog(getClass());
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ManagementAttributesTest.class);
 
     private JBIContainer container;
 
@@ -72,28 +72,26 @@ public class ManagementAttributesTest extends TestCase {
         // connector server is bound to
         MBeanServerConnection connection = connector.getMBeanServerConnection();
 
-        log.info(connection.getMBeanCount());
+        LOGGER.info(connection.getMBeanCount().toString());
 
         Set set = connection.queryNames(new ObjectName(connection.getDefaultDomain() + ":*"), null);
         for (Iterator iter = set.iterator(); iter.hasNext();) {
             ObjectName name = (ObjectName) iter.next();
-            log.info(name.toString());
+            LOGGER.info(name.toString());
             MBeanInfo info = connection.getMBeanInfo(name);
             MBeanAttributeInfo[] mia = info.getAttributes();
             String[] attrNames = new String[mia.length];
             for (int i = 0; i < mia.length; i++) {
                 attrNames[i] = mia[i].getName();
-                log.info("attr " + mia[i].getName() + " " + mia[i].getType() + " " + connection.getAttribute(name, mia[i].getName()));
+                LOGGER.info("attr " + mia[i].getName() + " " + mia[i].getType() + " " + connection.getAttribute(name, mia[i].getName()));
             }
 
             AttributeList attributeList = (AttributeList) connection.getAttributes(name, attrNames);
             for (int i = 0; i < attributeList.size(); i++) {
                 Attribute attribute = (Attribute) attributeList.get(i);
-                log.info("bulk " + attribute.getName() + " " + attribute.getValue() + " " + attribute.toString());
+                LOGGER.info("bulk " + attribute.getName() + " " + attribute.getValue() + " " + attribute.toString());
             }
-
         }
-
     }
 
 }

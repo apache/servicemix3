@@ -24,20 +24,20 @@ import javax.jbi.JBIException;
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.NormalizedMessage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.RuntimeJBIException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A Proxy factory which sends the method invocations into the JBI container
  * for processing.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class ProxyInOnlyBinding extends ComponentSupport implements InvocationHandler {
     
-    private static final Log log = LogFactory.getLog(ProxyInOnlyBinding.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProxyInOnlyBinding.class);
 
     private ClassLoader cl;
     private Class[] interfaces;
@@ -56,9 +56,7 @@ public class ProxyInOnlyBinding extends ComponentSupport implements InvocationHa
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (log.isTraceEnabled()) {
-            log.trace("Invoked: " + method);
-        }
+        logger.trace("Invoked: {}", method);
         try {
             InOnly messageExchange = getDeliveryChannel().createExchangeFactory().createInOnlyExchange();
             NormalizedMessage inMessage = messageExchange.createMessage();
@@ -76,4 +74,5 @@ public class ProxyInOnlyBinding extends ComponentSupport implements InvocationHa
             throw new RuntimeJBIException(e);
         }
     }
+
 }

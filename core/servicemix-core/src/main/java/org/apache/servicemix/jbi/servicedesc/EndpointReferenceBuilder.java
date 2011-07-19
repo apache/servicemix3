@@ -22,16 +22,17 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.util.DOMUtil;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class EndpointReferenceBuilder {
     
     public static final String JBI_NAMESPACE = "http://java.sun.com/jbi/end-point-reference";
     public static final String XMLNS_NAMESPACE = "http://www.w3.org/2000/xmlns/";
     
-    private static final Log LOG = LogFactory.getLog(EndpointReferenceBuilder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EndpointReferenceBuilder.class);
 
     private EndpointReferenceBuilder() {
     }
@@ -47,7 +48,7 @@ public final class EndpointReferenceBuilder {
             fragment.appendChild(epr);
             return fragment;
         } catch (Exception e) {
-            LOG.warn("Unable to create reference for ServiceEndpoint " + endpoint, e);
+            LOGGER.warn("Unable to create reference for ServiceEndpoint {}", endpoint, e);
             return null;
         }
     }

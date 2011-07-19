@@ -27,9 +27,10 @@ import org.springframework.mail.SimpleMailMessage;
 /**
  * An outbound component capable of sending simple email using Spring
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class SimpleMailSender extends OutBinding {
+
     private MailSender sender;
     private SimpleMailMarshaler marshaler = new SimpleMailMarshaler();
 
@@ -66,4 +67,5 @@ public class SimpleMailSender extends OutBinding {
         sender.send(email);
         done(exchange);
     }
+
 }

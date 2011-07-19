@@ -21,4 +21,5 @@ public class HttpSoapInOnlyBinding extends HttpSoapInOutBinding {
     public HttpSoapInOnlyBinding() {
         defaultInOut = false;
     }
+
 }

@@ -19,30 +19,16 @@ package org.apache.servicemix.components.mps;
 import javax.jbi.JBIException;
 import javax.jbi.messaging.NormalizedMessage;
 
-
 public class StaticStringPropertyValue implements PropertyValue {
 
-	/**
-	 * Our element name 
-	 */
 	public final static String XML_ELEMENT_NAME = "static-value";
 
-	/**
-	 * This is the static value we represent
-	 */
 	private String staticValue;
 
-	/** 
-	 * Ctor  
-	 * @param staticValue
-	 */
 	public StaticStringPropertyValue(String staticValue) {
 		this.staticValue = staticValue;	
 	}
-	
-	/**
-	 * 
-	 */
+
 	public String getPropertyValue(NormalizedMessage msg) throws JBIException {
 		return staticValue;
 	}

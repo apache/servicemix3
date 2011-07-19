@@ -43,18 +43,19 @@ import javax.mail.internet.MimeMultipart;
 import javax.xml.transform.TransformerException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The default marshaler from the {@link NormalizedMessage} to a Mime email using
  * expressions for each field required on the email.
  *
- * @version $Revision: 472747 $
+ * @version $Revision$
  */
 public class MimeMailMarshaler extends MailMarshalerSupport {
-    private static Log log = LogFactory.getLog(MimeMailPoller.class);
+
+    private static Logger logger = LoggerFactory.getLogger(MimeMailPoller.class);
 
     /**
      * Populates the MessageExchange with values extracted from the mail message using expressions.
@@ -115,12 +116,12 @@ public class MimeMailMarshaler extends MailMarshalerSupport {
                                     normalizedMessage.setProperty("org.apache.servicemix.email.alternativeContent" + j, subMBP.getContent());
                                 }
                             }
-                        } else // strange mail...log a warning
-                            log.warn("Some mail contents can not be traited and is not include into message");
+                        } else // strange mail...LOGGER a warning
+                            logger.warn("Some mail contents can not be traited and is not include into message");
                     }
                 }
-            } else { // strange mail...log a warning
-                log.warn("Some mail contents can not be traited and is not include into message");
+            } else { // strange mail...LOGGER a warning
+                logger.warn("Some mail contents can not be traited and is not include into message");
             }
 		} catch (MessagingException e) {
 			throw new javax.mail.MessagingException("Error while setting content on normalized message",e);
@@ -238,7 +239,6 @@ public class MimeMailMarshaler extends MailMarshalerSupport {
         }
     }
 
-
     // Implementation methods
     //-------------------------------------------------------------------------
     protected Address getFrom(MessageExchange exchange, NormalizedMessage normalizedMessage) throws MessagingException, AddressException {
@@ -279,7 +279,7 @@ public class MimeMailMarshaler extends MailMarshalerSupport {
                 }
             }
         } catch (MessagingException e) {
-            log.warn("file not found for attachment : " + e.getMessage() + " : " + filePath);
+            logger.warn("file {} not found for attachment: ", filePath, e);
         }
         // get attachment from Normalize Message
         Set attNames = normalizedMessage.getAttachmentNames();

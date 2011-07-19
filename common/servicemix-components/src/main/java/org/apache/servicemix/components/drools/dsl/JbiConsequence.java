@@ -24,7 +24,7 @@ import org.drools.spi.Tuple;
 import javax.jbi.messaging.MessagingException;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public abstract class JbiConsequence implements Consequence {
 
@@ -42,4 +42,5 @@ public abstract class JbiConsequence implements Consequence {
     }
     
     protected abstract void invokeJbiOperation(JbiHelper helper, Tuple tuple) throws MessagingException;
+
 }

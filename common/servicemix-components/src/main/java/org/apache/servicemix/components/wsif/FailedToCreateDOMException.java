@@ -19,10 +19,12 @@ package org.apache.servicemix.components.wsif;
 /**
  * Thrown if the lazily created DOM node could not be created for the WSIF response.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class FailedToCreateDOMException extends RuntimeException {
+
     public FailedToCreateDOMException(Throwable cause) {
         super(cause);
     }
+
 }

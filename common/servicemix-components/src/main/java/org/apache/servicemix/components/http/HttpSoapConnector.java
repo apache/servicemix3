@@ -29,6 +29,7 @@ import org.mortbay.jetty.servlet.ServletMapping;
 import org.mortbay.thread.BoundedThreadPool;
 
 public class HttpSoapConnector extends HttpSoapInOutBinding {
+
     private Connector listener = new SocketConnector();
 	
 	/**
@@ -169,4 +170,5 @@ public class HttpSoapConnector extends HttpSoapInOutBinding {
 	public void setMaxThreads(int maxThreads) {
 		this.maxThreads = maxThreads;
 	}
+
 }

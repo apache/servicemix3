@@ -39,14 +39,14 @@ import org.w3c.dom.Node;
 
 import org.apache.commons.lang.ObjectUtils;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
 import org.apache.servicemix.jbi.framework.ComponentNameSpace;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple message exchange declaration. This is partial, just giving us enough
@@ -122,7 +122,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
 
     private static final long serialVersionUID = -3639175136897005605L;
 
-    private static final Log LOG = LogFactory.getLog(MessageExchangeImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageExchangeImpl.class);
 
     protected ComponentContextImpl sourceContext;
 
@@ -766,7 +766,7 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             sb.append("]");
             return sb.toString();
         } catch (Exception e) {
-            LOG.trace("Error caught in toString", e);
+            LOGGER.trace("Error caught in toString", e);
             return super.toString();
         }
     }
@@ -848,4 +848,5 @@ public abstract class MessageExchangeImpl implements MessageExchange, Externaliz
             }
         }
     }
+
 }

@@ -29,7 +29,7 @@ import org.jaxen.SimpleNamespaceContext;
 /**
  * A condition which uses Jaxen based XPath expressions
  *
- * @version $Revision: 449611 $
+ * @version $Revision$
  */
 public class JaxenConditionFactory implements ConditionFactory {
 
@@ -68,4 +68,5 @@ public class JaxenConditionFactory implements ConditionFactory {
         }
         return answer;
     }
+
 }

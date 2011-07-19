@@ -29,13 +29,13 @@ import javax.management.ObjectName;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 // START SNIPPET: send
 public class MySender implements ComponentLifeCycle {
+
     private ComponentContext context;
     private ObjectName extensionMBeanName;
-
 
     /**
      * Sends a number of messages
@@ -75,12 +75,11 @@ public class MySender implements ComponentLifeCycle {
     public void stop() throws JBIException {
     }
 
-
     // Properties
     //-------------------------------------------------------------------------
     public void setExtensionMBeanName(ObjectName extensionMBeanName) {
         this.extensionMBeanName = extensionMBeanName;
     }
-}
 
+}
 // END SNIPPET: send

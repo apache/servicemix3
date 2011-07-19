@@ -28,7 +28,7 @@ import org.springframework.beans.factory.BeanNameAware;
 /**
  * Uses the JCA Container for better inbound subscription.
  *
- * @version $Revision: 487499 $
+ * @version $Revision$
  */
 public class JmsInUsingJCABinding extends JmsInBinding implements BeanNameAware {
 
@@ -113,4 +113,5 @@ public class JmsInUsingJCABinding extends JmsInBinding implements BeanNameAware 
     public void setBeanName(String name) {
         this.name = name;
     }
+
 }

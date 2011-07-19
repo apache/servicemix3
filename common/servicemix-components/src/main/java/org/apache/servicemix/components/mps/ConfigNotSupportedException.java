@@ -21,6 +21,7 @@ public class ConfigNotSupportedException extends Exception {
 	public ConfigNotSupportedException() {
 		super();
 	}
+
 	public ConfigNotSupportedException(String message) {
 		super(message);
 	}

@@ -26,6 +26,7 @@ import org.apache.servicemix.tck.ReceiverComponent;
 import org.apache.servicemix.tck.SenderComponent;
 
 public class SplitterComponentTest extends TestCase {
+
 	private JBIContainer jbiContainer;
 
 	protected SenderComponent sender;
@@ -88,4 +89,5 @@ public class SplitterComponentTest extends TestCase {
 		if (jbiContainer != null)
 			jbiContainer.shutDown();
 	}
+
 }

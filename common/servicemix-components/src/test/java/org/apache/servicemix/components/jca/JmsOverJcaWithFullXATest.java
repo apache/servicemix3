@@ -23,7 +23,7 @@ import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import javax.xml.namespace.QName;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class JmsOverJcaWithFullXATest extends TestSupport {
 
@@ -37,4 +37,5 @@ public class JmsOverJcaWithFullXATest extends TestSupport {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/jca/xa-on-jca-flow.xml");
     }
+
 }

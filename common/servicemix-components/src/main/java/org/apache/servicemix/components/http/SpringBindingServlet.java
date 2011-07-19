@@ -28,7 +28,7 @@ import javax.servlet.ServletException;
  * lookup the JBI container and the HttpBinding to use from the Spring
  * {@link ApplicationContext}
  * 
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class SpringBindingServlet extends BindingServlet {
 
@@ -60,6 +60,5 @@ public class SpringBindingServlet extends BindingServlet {
             throw new ServletException("The endpoint is not a HttpBinding: " + value);
         }
     }
-    
 
 }

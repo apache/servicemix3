@@ -18,23 +18,24 @@ package org.apache.servicemix.components.xfire;
 
 import javax.xml.namespace.QName;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.tck.TestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
 public class XFireBindingTest extends TestSupport {
-    private static transient Log log = LogFactory.getLog(XFireBindingTest.class);
+
+    private static transient Logger logger = LoggerFactory.getLogger(XFireBindingTest.class);
 
     public void testSendingAndReceivingMessagesUsingSpring() throws Exception {
         Object answer = requestServiceWithFileRequest(new QName("http://xfire.components.servicemix.org", "Echo"),
                 "/org/apache/servicemix/components/xfire/echo.xml");
         assertTrue("Shoud return a DOM Node: " + answer, answer instanceof Node);
         Node node = (Node) answer;
-        log.info(transformer.toString(node));
+        logger.info(transformer.toString(node));
         
         Echo echo = (Echo) context.getBean("xfireReceiverService");
         assertEquals(1, echo.getCount());
@@ -46,4 +47,5 @@ public class XFireBindingTest extends TestSupport {
                 "/org/codehaus/xfire/spring/xfire.xml"
         });
     }
+
 }

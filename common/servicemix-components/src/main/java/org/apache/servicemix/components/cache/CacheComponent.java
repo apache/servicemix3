@@ -34,7 +34,7 @@ import org.apache.servicemix.jbi.NoOutMessageAvailableException;
  * Implements a caching layer on top of a service invocation to avoid calling an expensive remote service too often.
  * The cache can be a simple Map based cache or a full <a href="http://www.jcp.org/en/jsr/detail?id=107">JCache</a> instance.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class CacheComponent extends TransformComponentSupport {
 

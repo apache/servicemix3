@@ -23,7 +23,7 @@ import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import javax.xml.namespace.QName;
 
 /**
- * @version $Revision: 359186 $
+ * @version $Revision$
  */
 public class JmsBindingClusterTest extends TestSupport {
 
@@ -39,4 +39,5 @@ public class JmsBindingClusterTest extends TestSupport {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/jms/example-cluster.xml");
     }
+
 }

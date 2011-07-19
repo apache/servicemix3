@@ -23,9 +23,10 @@ import org.apache.wsif.WSIFPort;
 /**
  * The information about an operation.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class WSIFOperationInfo {
+
     private WSIFPort port;
     private String name;
 
@@ -37,4 +38,5 @@ public class WSIFOperationInfo {
     public WSIFOperation createWsifOperation() throws WSIFException {
         return this.port.createOperation(name);
     }
+
 }

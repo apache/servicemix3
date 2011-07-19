@@ -31,9 +31,10 @@ import org.mortbay.thread.BoundedThreadPool;
 /**
  * An embedded Servlet engine to implement a HTTP connector
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class HttpConnector extends HttpInOutBinding {
+
     private Connector listener = new SocketConnector();
     
 	/**
@@ -174,4 +175,5 @@ public class HttpConnector extends HttpInOutBinding {
 	public void setMaxThreads(int maxThreads) {
 		this.maxThreads = maxThreads;
 	}
+
 }

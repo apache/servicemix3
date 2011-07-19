@@ -26,20 +26,21 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.RuntimeJBIException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A JMS {@link MessageListener} which sends the inbound JMS message into the JBI container
  * for processing
  *
- * @version $Revision: 487499 $
+ * @version $Revision$
  */
 public class JmsInBinding extends ComponentSupport implements MessageListener, MessageExchangeListener {
-    private static final Log log = LogFactory.getLog(JmsInBinding.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(JmsInBinding.class);
 
     private JmsMarshaler marshaler = new JmsMarshaler();
     private boolean synchronous = false;
@@ -67,8 +68,8 @@ public class JmsInBinding extends ComponentSupport implements MessageListener, M
     }
 
     public void onMessage(Message jmsMessage) {
-        if (log.isTraceEnabled()) {
-            log.trace("Received: " + jmsMessage);
+        if (logger.isTraceEnabled()) {
+            logger.trace("Received: " + jmsMessage);
         }
 
         try {
@@ -99,4 +100,5 @@ public class JmsInBinding extends ComponentSupport implements MessageListener, M
         // Do nothing as we only send in-only
         // but this ensure that messages are not queued in the DeliveryChannel
     }
+
 }

@@ -30,7 +30,7 @@ import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class GroovyTransformTest extends org.apache.servicemix.tck.SpringTestSupport {
 
@@ -77,4 +77,5 @@ public class GroovyTransformTest extends org.apache.servicemix.tck.SpringTestSup
         ComponentMBeanImpl lcc = jbi.getComponent(name);
         return lcc != null ? lcc.getComponent() : null;
     }
+
 }

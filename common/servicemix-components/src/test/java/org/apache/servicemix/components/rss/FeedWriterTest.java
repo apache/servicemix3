@@ -23,7 +23,7 @@ import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import javax.xml.namespace.QName;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class FeedWriterTest extends TestSupport {
 
@@ -33,10 +33,10 @@ public class FeedWriterTest extends TestSupport {
         sendMessages(service, 5);
         
         // now lets assert that the RSS feed has data in it.
-        
     }
 
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/rss/example.xml");
     }
+
 }

@@ -27,18 +27,18 @@ import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.OutBinding;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @version $Revision$
  */
 public class SimpleClientTest extends TestCase {
 
-    private static final Log LOG = LogFactory.getLog(SimpleClientTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleClientTest.class);
 
     protected JBIContainer container;
     protected OutBinding out;
@@ -51,7 +51,7 @@ public class SimpleClientTest extends TestCase {
         container.start();
         out = new OutBinding() {
             protected void process(MessageExchange exchange, NormalizedMessage message) throws MessagingException {
-                LOG.info("Received: " + message);
+                LOGGER.info("Received: {}", message);
                 done(exchange);
             }
         };
@@ -79,4 +79,5 @@ public class SimpleClientTest extends TestCase {
         exchange.setService(service);
         client.sendSync(exchange);
     }
+
 }

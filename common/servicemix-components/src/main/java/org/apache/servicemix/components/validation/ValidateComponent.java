@@ -45,9 +45,10 @@ import java.io.IOException;
  * and returning a fault if the document does not conform to the schema
  * otherwise the message is passed on its way.
  *
- * @version $Revision: 631926 $
+ * @version $Revision$
  */
 public class ValidateComponent extends TransformComponentSupport {
+
     private Schema schema;
     private String schemaLanguage = "http://www.w3.org/2001/XMLSchema";
     private Source schemaSource;
@@ -231,5 +232,6 @@ public class ValidateComponent extends TransformComponentSupport {
 	public void setHandlingErrorMethod(String handlingErrorMethod) {
 		this.handlingErrorMethod = handlingErrorMethod;
 	}
+
 }
 

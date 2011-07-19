@@ -32,19 +32,17 @@ import org.codehaus.xfire.transport.Transport;
 import org.codehaus.xfire.transport.local.LocalTransport;
 
 public class XFireBinding extends OutBinding {
+
     private XMarshaler marshaler;
 
     private XFire xfire;
 
-    public XFireBinding()
-    {
+    public XFireBinding() {
         super();
-
         this.marshaler = new XMarshaler();
     }
     
     protected void process(MessageExchange messageExchange, NormalizedMessage nm) throws Exception {
-        
         XMLStreamReader reader = marshaler.createStreamReader(nm);
         if (reader == null) {
             throw new JBIException("Could not get source as XMLStreamReader.");
@@ -77,4 +75,5 @@ public class XFireBinding extends OutBinding {
     public void setXfire(XFire xfire) {
         this.xfire = xfire;
     }
+
 }

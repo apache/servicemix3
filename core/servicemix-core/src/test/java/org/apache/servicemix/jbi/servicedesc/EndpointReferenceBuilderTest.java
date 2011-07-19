@@ -23,14 +23,15 @@ import org.w3c.dom.Element;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.util.DOMUtil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class EndpointReferenceBuilderTest extends TestCase {
 
-    private static final Log LOG = LogFactory.getLog(EndpointReferenceBuilderTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EndpointReferenceBuilderTest.class);
 
     /*
      * Test method for
@@ -40,7 +41,7 @@ public class EndpointReferenceBuilderTest extends TestCase {
         InternalEndpoint endpoint = new InternalEndpoint(null, "myEndpoint", new QName("http://foo.bar.com", "myService"));
         DocumentFragment df = EndpointReferenceBuilder.getReference(endpoint);
         assertNotNull(df);
-        LOG.info(new SourceTransformer().toString(df));
+        LOGGER.info(new SourceTransformer().toString(df));
         Element e = (Element) df.getFirstChild();
         assertEquals("http://java.sun.com/jbi/end-point-reference", e.getNamespaceURI());
         assertEquals("end-point-reference", e.getLocalName());

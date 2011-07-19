@@ -21,7 +21,7 @@ import javax.jbi.messaging.InOnly;
 /**
  * A HTTP Binding Component which performs an {@link InOnly} exchange with JBI and returns the response.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class HttpInOnlyBinding extends HttpInOutBinding {
 
@@ -30,4 +30,5 @@ public class HttpInOnlyBinding extends HttpInOutBinding {
     public boolean isDefaultInOut() {
         return false;
     }
+
 }

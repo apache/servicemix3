@@ -20,19 +20,20 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.api.EndpointResolver;
 import org.apache.servicemix.tck.TestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.w3c.dom.Node;
 
 /**
- * @version $Revision: 690396 $
+ * @version $Revision$
  */
 public class CacheTest extends TestSupport {
-    private static transient Log log = LogFactory.getLog(CacheTest.class);
+
+    private static transient Logger logger = LoggerFactory.getLogger(CacheTest.class);
 
     public void testCache() throws Exception {
         EndpointResolver cachedService = client.createResolverForService(new QName("http://servicemix.org/cheese/", "myService"));
@@ -44,7 +45,7 @@ public class CacheTest extends TestSupport {
         }
         String text = transformer.toString((Source) object);
 
-        log.info("Cache: Received response: " + text);
+        logger.info("Cache: Received response: {}", text);
 
         object = client.request(cachedService, null, null, "<foo id='123'/>");
         if (object instanceof Node) {
@@ -52,7 +53,7 @@ public class CacheTest extends TestSupport {
         }
         String text2 = transformer.toString((Source) object);
 
-        log.info("Cache: Received response: " + text2);
+        logger.info("Cache: Received response: {}", text2);
 
         assertEquals("Responses should be equal", text, text2);
 
@@ -64,7 +65,7 @@ public class CacheTest extends TestSupport {
         }
         text = transformer.toString((Source) object);
 
-        log.info("ServiceImpl: Received response: " + text);
+        logger.info("ServiceImpl: Received response: {}", text);
 
         object = client.request(service, null, null, "<foo id='123'/>");
         if (object instanceof Node) {
@@ -72,7 +73,7 @@ public class CacheTest extends TestSupport {
         }
         text2 = transformer.toString((Source) object);
 
-        log.info("ServiceImpl: Received response: " + text2);
+        logger.info("ServiceImpl: Received response: {}", text2);
 
         assertTrue("Responses should be different but were both: " + text, !text.equals(text2));
 
@@ -81,4 +82,5 @@ public class CacheTest extends TestSupport {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/cache/example.xml");
     }
+
 }

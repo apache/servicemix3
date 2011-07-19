@@ -59,11 +59,6 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>org.codehaus.xfire</groupId>
             <artifactId>xfire-aegis</artifactId>
             <optional>true</optional>

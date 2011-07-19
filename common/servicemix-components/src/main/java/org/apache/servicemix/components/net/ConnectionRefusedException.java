@@ -21,9 +21,10 @@ import javax.jbi.messaging.MessagingException;
 /**
  * Exception thrown if the connection could not be established.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class ConnectionRefusedException extends MessagingException {
+
     private int code;
 
     public ConnectionRefusedException(int code) {
@@ -37,5 +38,6 @@ public class ConnectionRefusedException extends MessagingException {
     public int getCode() {
         return code;
     }
+
 }
 

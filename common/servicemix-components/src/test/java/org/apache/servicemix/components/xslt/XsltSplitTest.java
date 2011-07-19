@@ -25,7 +25,7 @@ import javax.xml.namespace.QName;
 import java.util.Date;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class XsltSplitTest extends TestSupport {
 
@@ -62,4 +62,5 @@ public class XsltSplitTest extends TestSupport {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/xslt/split.xml");
     }
+
 }

@@ -32,14 +32,14 @@ import javax.xml.stream.XMLStreamWriter;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.util.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractManagementTest extends TestCase {
 
-    protected Log logger = LogFactory.getLog(getClass());
+    protected static final transient Logger LOGGER = LoggerFactory.getLogger(AbstractManagementTest.class);
 
     protected JBIContainer container;
 
@@ -58,7 +58,7 @@ public abstract class AbstractManagementTest extends TestCase {
         try {
             shutdownContainer();
         } catch (Exception e) {
-            logger.info("Error shutting down container", e);
+            LOGGER.info("Error shutting down container", e);
         }
     }
 

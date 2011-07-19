@@ -24,17 +24,19 @@ import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
  * @version $Revision$
  */
 public class RemoteServiceMixClientTest extends TestCase {
-    private static transient Log log = LogFactory.getLog(RemoteServiceMixClientTest.class);
+
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(RemoteServiceMixClientTest.class);
+
     protected AbstractXmlApplicationContext context;
     protected ServiceMixClient client;
 
@@ -46,7 +48,7 @@ public class RemoteServiceMixClientTest extends TestCase {
         message.setProperty("name", "lufc");
         message.setContent(new StreamSource(new StringReader("<hello>world</hello>")));
         assertTrue(client.sendSync(exchange));
-        log.info("OUT = " + exchange.getOutMessage());
+        LOGGER.info("OUT = {}", exchange.getOutMessage());
         //assertEquals(exchange.getInMessage().getContent(),exchange.getOutMessage().getContent());
     }
 
@@ -65,4 +67,5 @@ public class RemoteServiceMixClientTest extends TestCase {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/remoting/example.xml");
     }
+
 }

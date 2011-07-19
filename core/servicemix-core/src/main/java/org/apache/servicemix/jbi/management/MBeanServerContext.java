@@ -28,24 +28,25 @@ import javax.management.MBeanServerFactory;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jmx.ConnectorServerFactoryBean;
 import org.apache.servicemix.jbi.jmx.RmiRegistryFactoryBean;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Wrapper around ActiveMQ ManagementContext. Re-use to build/find mbean server
  * 
- * @version $Revision: 372580 $
+ * @version $Revision$
  */
 class MBeanServerContext {
 
     /**
-     * Default activemq domain
+     * Default ActiveMQ domain
      */
     public static final String DEFAULT_DOMAIN = "org.apache.activemq";
 
-    private static final Log LOG = LogFactory.getLog(ManagementContext.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ManagementContext.class);
 
     private MBeanServer beanServer;
 
@@ -89,10 +90,8 @@ class MBeanServerContext {
                     rmiRegistryFactoryBean.setPort(connectorPort);
                     rmiRegistryFactoryBean.afterPropertiesSet();
                 } catch (Exception e) {
-                    LOG.warn("Failed to start rmi registry: " + e.getMessage());
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Failed to start rmi registry", e);
-                    }
+                    LOGGER.warn("Failed to start rmi registry: {}", e.getMessage());
+                    LOGGER.debug("Failed to start rmi registry", e);
                 }
                 try {
                     connectorServerFactoryBean = new ConnectorServerFactoryBean();
@@ -104,10 +103,8 @@ class MBeanServerContext {
                     connectorServerFactoryBean.setServiceUrl(serviceUrl);
                     connectorServerFactoryBean.afterPropertiesSet();
                 } catch (Exception e) {
-                    LOG.warn("Failed to start jmx connector: " + e.getMessage());
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Failed to create jmx connector", e);
-                    }
+                    LOGGER.warn("Failed to start jmx connector: {}", e.getMessage());
+                    LOGGER.debug("Failed to create jmx connector", e);
                 }
             }
         }
@@ -119,10 +116,8 @@ class MBeanServerContext {
                 try {
                     connectorServerFactoryBean.destroy();
                 } catch (Exception e) {
-                    LOG.warn("Failed to stop jmx connector: " + e.getMessage());
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Failed to stop jmx connector", e);
-                    }
+                    LOGGER.warn("Failed to stop jmx connector: {}", e.getMessage());
+                    LOGGER.debug("Failed to stop jmx connector", e);
                 } finally {
                     connectorServerFactoryBean = null;
                 }
@@ -131,10 +126,8 @@ class MBeanServerContext {
                 try {
                     rmiRegistryFactoryBean.destroy();
                 } catch (RemoteException e) {
-                    LOG.warn("Failed to stop rmi registry: " + e.getMessage());
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Failed to stop rmi registry", e);
-                    }
+                    LOGGER.warn("Failed to stop rmi registry: {}", e.getMessage());
+                    LOGGER.debug("Failed to stop rmi registry", e);
                 } finally {
                     rmiRegistryFactoryBean = null;
                 }
@@ -240,7 +233,7 @@ class MBeanServerContext {
         try {
             result = new ObjectName(tmp);
         } catch (MalformedObjectNameException e) {
-            LOG.error("Couldn't create ObjectName from: " + type + " , " + name);
+            LOGGER.error("Couldn't create ObjectName from: {} , {}", type, name);
         }
         return result;
     }
@@ -318,10 +311,10 @@ class MBeanServerContext {
                 result = createMBeanServer();
             }
         } catch (NoClassDefFoundError e) {
-            LOG.error("Could not load MBeanServer", e);
+            LOGGER.error("Could not load MBeanServer", e);
         } catch (Throwable e) {
             // probably don't have access to system properties
-            LOG.error("Failed to initialize MBeanServer", e);
+            LOGGER.error("Failed to initialize MBeanServer", e);
         }
         return result;
     }
@@ -337,16 +330,16 @@ class MBeanServerContext {
                     if (answer instanceof MBeanServer) {
                         return (MBeanServer) answer;
                     } else {
-                        LOG.warn("Could not cast: " + answer + " into an MBeanServer. There must be some classloader strangeness in town");
+                        LOGGER.warn("Could not cast: {} into an MBeanServer. There must be some classloader strangeness in town", answer);
                     }
                 } else {
-                    LOG.warn("Method getPlatformMBeanServer() does not appear visible on type: " + type.getName());
+                    LOGGER.warn("Method getPlatformMBeanServer() does not appear visible on type: {}", type.getName());
                 }
             } catch (Exception e) {
-                LOG.warn("Failed to call getPlatformMBeanServer() due to: " + e, e);
+                LOGGER.warn("Failed to call getPlatformMBeanServer() due to: {}", e, e);
             }
         } else {
-            LOG.trace("Class not found: " + name + " so probably running on Java 1.4");
+            LOGGER.trace("Class not found: {} so probably running on Java 1.4", name);
         }
         return null;
     }
@@ -398,4 +391,5 @@ class MBeanServerContext {
     public void setCreateConnector(boolean createConnector) {
         this.createConnector = createConnector;
     }
+
 }

@@ -26,8 +26,6 @@ import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.PollingComponentSupport;
 
 import com.sun.syndication.feed.synd.SyndEntry;
@@ -36,21 +34,23 @@ import com.sun.syndication.feed.synd.SyndFeedImpl;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.SyndFeedOutput;
 import com.sun.syndication.io.XmlReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The RssPollingComponent polls for updates to RSS feeds
  * 
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class RssPollingComponent extends PollingComponentSupport {
-    private static final Log log = LogFactory.getLog(RssPollingComponent.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(RssPollingComponent.class);
+
     private List urlStrings = new ArrayList();
     private List urls = new ArrayList();
     private Date lastPolledDate = new Date();
     private String outputType = "rss_2.0";
-    
 
-    
     /**
      * @return Returns the urlStrings.
      */
@@ -103,12 +103,11 @@ public class RssPollingComponent extends PollingComponentSupport {
                     urls.add(new URL(urlStrings.get(i).toString()));
                 }
                 catch (MalformedURLException e) {
-                    log.warn("URL: " + urlStrings.get(i) + " is badly formed", e);
+                    logger.warn("URL: {} is badly formed", urlStrings.get(i), e);
                 }
             }
         }
         super.init();
-       
     }
 
     /**
@@ -135,7 +134,7 @@ public class RssPollingComponent extends PollingComponentSupport {
                 send(exchange);
             }
             catch (Exception e) {
-                log.error("Failed to send RSS message to the NMR");
+                logger.error("Failed to send RSS message to the NMR");
             }
             finally {
                 lastPolledDate = new Date();
@@ -160,9 +159,10 @@ public class RssPollingComponent extends PollingComponentSupport {
                 }
             }
             catch (Exception e) {
-                log.warn("Failed to process feed from: " + inputUrl, e);
+                logger.warn("Failed to process feed from: {}", inputUrl, e);
             }
         }
         return result;
     }
+
 }

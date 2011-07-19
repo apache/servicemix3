@@ -436,16 +436,16 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
     }
 
     /**
-     * Get a logger instance from JBI. Loggers supplied by JBI are guaranteed to have unique names such that they avoid
+     * Get a LOGGER instance from JBI. Loggers supplied by JBI are guaranteed to have unique names such that they avoid
      * name collisions with loggers from other components created using this method. The suffix parameter allows for the
      * creation of subloggers as needed. The JBI specification says nothing about the exact names to be used, only that
      * they must be unique across components and the JBI implementation itself.
      * 
-     * @param suffix for creating subloggers; use an empty string for the base component logger; must be non-null.
+     * @param suffix for creating subloggers; use an empty string for the base component LOGGER; must be non-null.
      * @param resourceBundleName name of <code>ResourceBundle</code> to be used for localizing messages for the
-     * logger. May be <code>null</code> if none of the messages require localization. The resource, if non-null, must
+     * LOGGER. May be <code>null</code> if none of the messages require localization. The resource, if non-null, must
      * be loadable using the component's class loader as the initiating loader.
-     * @return a standard logger, named uniquely for this component (plus the given suffix, if applicable); must be
+     * @return a standard LOGGER, named uniquely for this component (plus the given suffix, if applicable); must be
      * non-null.
      * @exception MissingResourceException if the ResourceBundleName is non-null and no corresponding resource can be
      * found.

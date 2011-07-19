@@ -42,7 +42,7 @@ import org.springframework.core.io.Resource;
  * A component which implements a rules based routing using <a href="http://drools.org/">Drools</a> to decide
  * where to route the message.
  *
- * @version $Revision: 478818 $
+ * @version $Revision$
  */
 public class DroolsComponent extends OutBinding {
 
@@ -87,7 +87,6 @@ public class DroolsComponent extends OutBinding {
         }
         forwardToExchange(exchange, outExchange, in);
     }
-
 
     public void forwardToInterface(QName name, MessageExchange exchange, NormalizedMessage in) throws MessagingException {
         DeliveryChannel channel = getDeliveryChannel();
@@ -137,7 +136,6 @@ public class DroolsComponent extends OutBinding {
         
     }
 
-
     // Implementation methods
     //-------------------------------------------------------------------------
     protected void init() throws JBIException {
@@ -182,4 +180,5 @@ public class DroolsComponent extends OutBinding {
         memory.assertObject(in);
         memory.assertObject(exchange);
     }
+
 }

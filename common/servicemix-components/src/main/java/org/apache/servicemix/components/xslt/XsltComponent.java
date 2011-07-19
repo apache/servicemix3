@@ -52,7 +52,7 @@ import org.w3c.dom.Node;
  * href="http://java.sun.com/xml/jaxp/">JAXP</a> to perform the XSLT
  * transformation.
  * 
- * @version $Revision: 464270 $
+ * @version $Revision$
  */
 public class XsltComponent extends TransformComponentSupport implements MessageExchangeListener {
 

@@ -27,26 +27,25 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.components.util.ComponentSupport;
 import org.apache.servicemix.jbi.framework.Registry;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles publish/subscribe style messaging in the NMR.
- * 
- * 
+ *
  * @version $Revision$
  */
 public class SubscriptionManager extends ComponentSupport implements MessageExchangeListener {
 
     public static final String COMPONENT_NAME = "#SubscriptionManager#";
 
-    private static final Log LOG = LogFactory.getLog(SubscriptionManager.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(SubscriptionManager.class);
 
     // SM-229: Avoid StackOverflowException
     private static final String FROM_SUBSCRIPTION_MANAGER = "org.apache.servicemix.jbi.nmr.from_subman";
@@ -98,8 +97,8 @@ public class SubscriptionManager extends ComponentSupport implements MessageExch
      * @throws JBIException
      */
     protected void dispatchToSubscriber(MessageExchangeImpl exchange, InternalEndpoint endpoint) throws JBIException {
-        if (LOG.isDebugEnabled() && endpoint != null) {
-            LOG.debug("Subscription Endpoint: " + endpoint.getEndpointName());
+        if (LOGGER.isDebugEnabled() && endpoint != null) {
+            LOGGER.debug("Subscription Endpoint: {}", endpoint.getEndpointName());
         }
         // SM-229: Avoid StackOverflowException
         Boolean source = (Boolean) exchange.getProperty(FROM_SUBSCRIPTION_MANAGER);

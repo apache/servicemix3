@@ -26,16 +26,16 @@ import javax.management.remote.JMXServiceURL;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ManagementContextTest
  */
 public class AdminServiceTest extends TestCase {
 
-    private Log log = LogFactory.getLog(getClass());
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(AdminServiceTest.class);
 
     private JBIContainer container;
 
@@ -70,11 +70,12 @@ public class AdminServiceTest extends TestCase {
         Object proxy = MBeanServerInvocationHandler.newProxyInstance(connection, asmName, AdminServiceMBean.class, true);
         AdminServiceMBean asm = (AdminServiceMBean) proxy;
 
-        log.info(asm.getBindingComponents());
-        log.info(asm.getComponentByName("toto"));
+        LOGGER.info(asm.getBindingComponents().toString());
+        LOGGER.info(asm.getComponentByName("toto").toString());
     }
 
     protected ObjectName getObjectName(Class systemClass) {
         return ManagementContext.getSystemObjectName(ManagementContext.DEFAULT_DOMAIN, JBIContainer.DEFAULT_NAME, systemClass);
     }
+
 }

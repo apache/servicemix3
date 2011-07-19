@@ -29,9 +29,10 @@ import javax.jbi.servicedesc.ServiceEndpoint;
  * A simple routing rule which if the predicate is matched then the message is forwarded to
  * the given endpoint.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class RoutingRule {
+
     private Predicate predicate;
     private EndpointResolver resolver;
     private EndpointFilter filter = NullEndpointFilter.getInstance();
@@ -68,6 +69,5 @@ public class RoutingRule {
             exchange.setEndpoint(endpoint);
         }
     }
-
 
 }

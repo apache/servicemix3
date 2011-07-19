@@ -28,17 +28,12 @@ import java.io.IOException;
 /**
  * A Servlet which dispatches requests into the JBI container and returns the result.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class BindingServlet extends HttpServlet {
 
     private HttpBinding binding;
 
-    /**
-     * get da binding
-     *
-     * @return the binding
-     */
     public HttpBinding getBinding() {
         return binding;
     }
@@ -46,7 +41,6 @@ public class BindingServlet extends HttpServlet {
     public void setBinding(HttpBinding binding) {
         this.binding = binding;
     }
-
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -61,7 +55,6 @@ public class BindingServlet extends HttpServlet {
         }
     }
 
-    
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             getBinding().process(request, response);

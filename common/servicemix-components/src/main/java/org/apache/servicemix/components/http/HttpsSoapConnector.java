@@ -22,8 +22,6 @@ import java.security.Security;
 
 import javax.jbi.JBIException;
 import javax.jbi.component.ComponentContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.security.SslSocketConnector;
@@ -32,9 +30,14 @@ import org.mortbay.jetty.servlet.ServletHandler;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.servlet.ServletMapping;
 import org.mortbay.thread.BoundedThreadPool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
 public class HttpsSoapConnector extends HttpSoapInOutBinding {
+
+    private static final Logger logger = LoggerFactory.getLogger(HttpsConnector.class);
+
     private SslSocketConnector listener = new SslSocketConnector();
 	
 	/**
@@ -43,7 +46,6 @@ public class HttpsSoapConnector extends HttpSoapInOutBinding {
 	 */
 	private int maxThreads = 256;
 	private Server server;
-	private static final Log log = LogFactory.getLog(HttpsConnector.class);
 	private String host;
 	private int port;
     private String keyPassword;
@@ -166,7 +168,7 @@ public class HttpsSoapConnector extends HttpSoapInOutBinding {
             server.start();
         }
         catch (Exception e) {
-        	log.warn(e.toString());
+        	logger.warn(e.toString());
             throw new JBIException("Start failed: " + e, e);
         }
 	}
@@ -350,4 +352,5 @@ public class HttpsSoapConnector extends HttpSoapInOutBinding {
     public void setWantClientAuth(boolean wantClientAuth) {
         this.wantClientAuth = wantClientAuth;
     }
+
 }

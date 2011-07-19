@@ -25,7 +25,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Logger;
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
 import javax.jbi.component.ComponentLifeCycle;
@@ -47,8 +46,6 @@ import javax.xml.namespace.QName;
 
 import org.w3c.dom.DocumentFragment;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.components.util.ComponentAdaptor;
 import org.apache.servicemix.components.util.ComponentAdaptorMEListener;
@@ -84,18 +81,22 @@ import org.apache.servicemix.jbi.nmr.Broker;
 import org.apache.servicemix.jbi.nmr.DefaultBroker;
 import org.apache.servicemix.jbi.nmr.flow.Flow;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The main container
  *
  * @version $Revision$
  */
 public class JBIContainer extends BaseLifeCycle implements Container {
+
     /**
      * Default Container name - must be unique if used in a cluster
      */
     public static final String DEFAULT_NAME = "ServiceMix";
 
-    private static final Log LOG = LogFactory.getLog(JBIContainer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JBIContainer.class);
 
     protected Broker broker = new DefaultBroker();
     protected ServiceUnitManager serviceManager;
@@ -596,8 +597,8 @@ public class JBIContainer extends BaseLifeCycle implements Container {
      */
     public void init() throws JBIException {
         if (containerInitialized.compareAndSet(false, true)) {
-            LOG.info("ServiceMix " + EnvironmentContext.getVersion() + " JBI Container (" + getName() + ") is starting");
-            LOG.info("For help or more information please see: http://servicemix.apache.org/");
+            LOGGER.info("ServiceMix {} JBI Container ({}) is starting", EnvironmentContext.getVersion(), getName());
+            LOGGER.info("For help or more information please see: http://servicemix.apache.org/");
             addShutdownHook();
             if (this.executorFactory == null) {
                 this.executorFactory = createExecutorFactory();
@@ -607,10 +608,10 @@ public class JBIContainer extends BaseLifeCycle implements Container {
                     this.namingContext = new InitialContext();
                 } catch (NamingException e) {
                     // Log a warning, with exception only in debug
-                    if (LOG.isDebugEnabled()) {
-                        LOG.warn("Failed to set InitialContext", e);
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.warn("Failed to set InitialContext", e);
                     } else {
-                        LOG.warn("Failed to set InitialContext");
+                        LOGGER.warn("Failed to set InitialContext");
                     }
                 }
             }
@@ -672,7 +673,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
             autoDeployService.start();
             adminCommandsService.start();
             super.start();
-            LOG.info("ServiceMix JBI Container (" + getName() + ") started");
+            LOGGER.info("ServiceMix JBI Container ({})", getName());
         }
     }
 
@@ -684,7 +685,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
     public void stop() throws JBIException {
         checkInitialized();
         if (started.compareAndSet(true, false)) {
-            LOG.info("ServiceMix JBI Container (" + getName() + ") stopping");
+            LOGGER.info("ServiceMix JBI Container ({})", getName());
             adminCommandsService.stop();
             autoDeployService.stop();
             deploymentService.stop();
@@ -710,7 +711,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
      */
     public void shutDown() throws JBIException {
         if (containerInitialized.compareAndSet(true, false)) {
-            LOG.info("Shutting down ServiceMix JBI Container (" + getName() + ") stopped");
+            LOGGER.info("Shutting down ServiceMix JBI Container ({})", getName());
             removeShutdownHook();
             adminCommandsService.shutDown();
             autoDeployService.shutDown();
@@ -725,7 +726,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
             super.shutDown();
             managementContext.unregisterMBean(this);
             managementContext.shutDown();
-            LOG.info("ServiceMix JBI Container (" + getName() + ") stopped");
+            LOGGER.info("ServiceMix JBI Container ({})", getName());
         }
     }
 
@@ -753,13 +754,13 @@ public class JBIContainer extends BaseLifeCycle implements Container {
 
         try {
             if (forceShutdown > 0) {
-                LOG.info("Waiting another " + forceShutdown + " ms for complete shutdown of the components and service assemblies");
+                LOGGER.info("Waiting another {} ms for complete shutdown of the components and service assemblies", forceShutdown);
                 shutdown.get(forceShutdown, TimeUnit.MILLISECONDS);
             } else {
-                LOG.info("Waiting for complete shutdown of the components and service assemblies");
+                LOGGER.info("Waiting for complete shutdown of the components and service assemblies");
                 shutdown.get();
             }
-            LOG.info("Components and service assemblies have been shut down");
+            LOGGER.info("Components and service assemblies have been shut down");
         } catch (Exception e) {
             forceShutdown(e);
         }
@@ -771,8 +772,8 @@ public class JBIContainer extends BaseLifeCycle implements Container {
      * @param e the exception that caused the forced container shutdown
      */
     protected void forceShutdown(Exception e) {
-        LOG.warn("Unable to shutdown components and service assemblies normally: " + e, e);
-        LOG.warn("Forcing shutdown by cancelling all pending exchanges");
+        LOGGER.warn("Unable to shutdown components and service assemblies normally: {}", e, e);
+        LOGGER.warn("Forcing shutdown by cancelling all pending exchanges");
         registry.cancelPendingExchanges();
     }
 
@@ -792,7 +793,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
             try {
                 Runtime.getRuntime().removeShutdownHook(shutdownHook);
             } catch (Exception e) {
-                LOG.debug("Caught exception, must be shutting down: " + e);
+                LOGGER.debug("Caught exception, must be shutting down: {}", e, e);
             }
         }
     }
@@ -853,11 +854,11 @@ public class JBIContainer extends BaseLifeCycle implements Container {
             try {
                 transactionManager = (TransactionManager) namingContext.lookup("java:appserver/TransactionManager");
             } catch (NamingException e) {
-                LOG.debug("No transaction manager found from naming context: " + e.getMessage());
+                LOGGER.debug("No transaction manager found from naming context: {}", e.getMessage());
                 try {
                     transactionManager = (TransactionManager) namingContext.lookup("javax.transaction.TransactionManager");
                 } catch (NamingException e1) {
-                    LOG.debug("No transaction manager found from naming context: " + e1.getMessage());
+                    LOGGER.debug("No transaction manager found from naming context: {}", e1.getMessage());
                 }
             }
         }
@@ -883,7 +884,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
             } else {
                 rootDir = "." + File.separator + "rootDir";
             }
-            LOG.debug("Defaulting to rootDir: " + rootDir);
+            LOGGER.debug("Defaulting to rootDir: {}", rootDir);
         }
         return this.rootDir;
     }
@@ -994,11 +995,11 @@ public class JBIContainer extends BaseLifeCycle implements Container {
      * @throws MissingResourceException
      * @throws JBIException
      */
-    public Logger getLogger(String suffix, String resourceBundleName) throws MissingResourceException, JBIException {
+    public java.util.logging.Logger getLogger(String suffix, String resourceBundleName) throws MissingResourceException, JBIException {
         try {
-            return Logger.getLogger(suffix, resourceBundleName);
+            return java.util.logging.Logger.getLogger(suffix, resourceBundleName);
         } catch (IllegalArgumentException e) {
-            throw new JBIException("A logger can not be created using resource bundle " + resourceBundleName);
+            throw new JBIException("A LOGGER can not be created using resource bundle " + resourceBundleName);
         }
     }
 
@@ -1016,7 +1017,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
             registry.deregisterComponent(component);
             environmentContext.unreregister(component);
             component.dispose();
-            LOG.info("Deactivating component " + componentName);
+            LOGGER.info("Deactivating component {}", componentName);
         } else {
             throw new JBIException("Could not find component " + componentName);
         }
@@ -1196,9 +1197,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
                                         boolean binding, boolean service, String[] sharedLibraries) throws JBIException {
         ObjectName result = null;
         ComponentNameSpace cns = new ComponentNameSpace(getName(), activationSpec.getComponentName());
-        if (LOG.isDebugEnabled()) {
-            LOG.info("Activating component for: " + cns + " with service: " + activationSpec.getService() + " component: " + component);
-        }
+        LOGGER.info("Activating component {}", cns);
         ComponentMBeanImpl lcc = registry.registerComponent(cns, description, component, binding, service, sharedLibraries);
         if (lcc != null) {
             lcc.setPojo(pojo);
@@ -1323,7 +1322,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
     }
 
     public void addListener(EventListener listener) {
-        LOG.debug("Adding listener: " + listener.getClass());
+        LOGGER.debug("Adding listener: {}", listener.getClass());
         if (listener instanceof ContainerAware) {
             ContainerAware containerAware = (ContainerAware) listener;
             containerAware.setContainer(this);
@@ -1349,7 +1348,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
     }
 
     public void removeListener(EventListener listener) {
-        LOG.debug("Removing listener: " + listener.getClass());
+        LOGGER.debug("Removing listener: {}", listener.getClass());
         if (listener instanceof ExchangeListener) {
             listeners.remove(ExchangeListener.class, (ExchangeListener) listener);
         }
@@ -1395,7 +1394,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
             try {
                 l[i].exchangeSent(event);
             } catch (Exception e) {
-                LOG.warn("Error calling listener: " + e.getMessage(), e);
+                LOGGER.warn("Error calling listener: {}", e.getMessage(), e);
             }
         }
         me.handleSend(false);
@@ -1471,4 +1470,5 @@ public class JBIContainer extends BaseLifeCycle implements Container {
     public void setOptimizedDelivery(boolean optimizedDelivery) {
         this.optimizedDelivery = optimizedDelivery;
     }
+
 }

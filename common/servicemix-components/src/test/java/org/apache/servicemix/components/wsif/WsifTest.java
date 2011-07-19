@@ -20,19 +20,20 @@ import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.tck.TestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
- * @version $Revision: 556864 $
+ * @version $Revision$
  */
 public class WsifTest extends TestSupport {
-    private static transient Log log = LogFactory.getLog(WsifTest.class);
+
+    private static transient Logger logger = LoggerFactory.getLogger(WsifTest.class);
 
     QName serviceName = new QName("http://servicemix.org/cheese/", "checkAvailability");
 
@@ -45,11 +46,11 @@ public class WsifTest extends TestSupport {
             Object answer = requestServiceWithFileRequest(serviceName, file);
             assertTrue("Shoud return a DOM Node: " + answer, answer instanceof Node);
             Node node = (Node) answer;
-            log.info(transformer.toString(node));
+            logger.info(transformer.toString(node));
     
             String text = textValueOfXPath(node, "/*/*[local-name()='part']").trim();
     
-            log.info("Found value: " + text);
+            logger.info("Found value: {}", text);
     
             assertTrue("price text should not be empty", text.length() > 0);
         }
@@ -66,7 +67,7 @@ public class WsifTest extends TestSupport {
             NormalizedMessage out = exchange.getOutMessage();
             String result = (String) out.getProperty("result");
     
-            log.info("Found value: " + result);
+            logger.info("Found value: {}", result);
             // END SNIPPET: wsif
     
             assertEquals("should have no fault", null, exchange.getFault());
@@ -101,7 +102,7 @@ public class WsifTest extends TestSupport {
     
             String result = (String) out.getProperty("result");
     
-            log.info("Found value: " + result);
+            logger.info("Found value: {}", result);
     
             assertTrue("price text should not be empty", result.length() > 0);
         }
@@ -110,4 +111,5 @@ public class WsifTest extends TestSupport {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/wsif/example.xml");
     }
+
 }

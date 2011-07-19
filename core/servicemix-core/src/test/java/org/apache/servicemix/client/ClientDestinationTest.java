@@ -26,14 +26,14 @@ import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.api.Destination;
 import org.apache.servicemix.jbi.api.Message;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.apache.servicemix.tck.MessageList;
 import org.apache.servicemix.tck.Receiver;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
@@ -41,7 +41,7 @@ import org.springframework.context.support.AbstractXmlApplicationContext;
  */
 public class ClientDestinationTest extends TestCase {
     
-    private static final transient Log LOG = LogFactory.getLog(ClientDestinationTest.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ClientDestinationTest.class);
 
     protected AbstractXmlApplicationContext context;
     protected ServiceMixClient client;
@@ -90,7 +90,7 @@ public class ClientDestinationTest extends TestCase {
         
         assertNotNull("Should have returned a non-null response!", response);
 
-        LOG.info("Received result: " + response);
+        LOGGER.info("Received result: {}", response);
     }
 
 
@@ -146,4 +146,5 @@ public class ClientDestinationTest extends TestCase {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/client/example.xml");
     }
+
 }

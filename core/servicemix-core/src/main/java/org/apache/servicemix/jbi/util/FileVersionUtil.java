@@ -16,11 +16,11 @@
  */
 package org.apache.servicemix.jbi.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Supports a simple versioning scheme using the file system
@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class FileVersionUtil {
     
-    private static final Log LOG = LogFactory.getLog(FileVersionUtil.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(FileVersionUtil.class);
 
     private static final String VERSION_PREFIX = "version_";
 
@@ -133,7 +133,7 @@ public final class FileVersionUtil {
             File[] files = rootDirectory.listFiles();
             for (int i = 0; i < files.length; i++) {
                 if (!isReserved(files[i].getName())) {
-                    LOG.info(rootDirectory.getPath() + ": moving non-versioned file " + files[i].getName() + " to " + newRoot.getName());
+                    LOGGER.info(rootDirectory.getPath() + ": moving non-versioned file " + files[i].getName() + " to " + newRoot.getName());
                     File moveTo = FileUtil.getDirectoryPath(newRoot, files[i].getName());
                     FileUtil.moveFile(files[i], moveTo);
                 }
@@ -179,4 +179,5 @@ public final class FileVersionUtil {
         }
         return result;
     }
+
 }

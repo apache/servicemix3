@@ -30,20 +30,18 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.TransformComponentSupport;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.xpath.CachedXPathAPI;
 import org.apache.xpath.objects.XObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
-
-
 
 /**
  * Sets properties on the message, loaded from an XML MPS file 
@@ -121,16 +119,10 @@ import org.xml.sax.SAXException;
  * </mps>
  * -->
  *
- * 
- * @author rbuckland
- * 
  */
 public class MessagePropertySetterXML extends TransformComponentSupport  {
-	
-	/**
-	 * Apache commons logger
-	 */
-	private final transient Log logger = LogFactory.getLog(getClass());
+
+	private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
 	/**
 	 * The name of our JBI property we may have to interrogate to 

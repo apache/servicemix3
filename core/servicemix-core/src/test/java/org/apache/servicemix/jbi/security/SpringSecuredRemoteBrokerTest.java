@@ -34,20 +34,19 @@ import javax.xml.namespace.QName;
 import junit.framework.TestCase;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.xbean.BrokerFactoryBean;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
-
 public class SpringSecuredRemoteBrokerTest extends TestCase {
 
-    private static final Log LOG = LogFactory.getLog(SpringSecuredRemoteBrokerTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpringSecuredRemoteBrokerTest.class);
 
     static {
         String path = System.getProperty("java.security.auth.login.config");
@@ -58,7 +57,7 @@ public class SpringSecuredRemoteBrokerTest extends TestCase {
                 System.setProperty("java.security.auth.login.config", path);
             }
         }
-        LOG.info("Path to login config: " + path);
+        LOGGER.info("Path to login config: {}", path);
         //
         // This test depends on the "policy.allowSystemProperty" security
         // property being set to true.  If we don't ensure it is set here,
@@ -68,7 +67,7 @@ public class SpringSecuredRemoteBrokerTest extends TestCase {
         try {
             if (!"true".equals(Security.getProperty("policy.allowSystemProperty"))) {
                 Security.setProperty("policy.allowSystemProperty", "true");
-                LOG.info("Reset security property 'policy.allowSystemProperty' to 'true'");
+                LOGGER.info("Reset security property 'policy.allowSystemProperty' to 'true'");
             }
         } catch (SecurityException e) {
             // Ignore.
@@ -99,7 +98,7 @@ public class SpringSecuredRemoteBrokerTest extends TestCase {
 
     protected void tearDown() throws Exception {
         if (context != null) {
-            LOG.info("Closing down the spring context");
+            LOGGER.info("Closing down the spring context");
             context.destroy();
         }
         broker.stop();

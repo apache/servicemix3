@@ -21,7 +21,7 @@ import javax.xml.namespace.QName;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class DroolsWithJbiRulesForwardTest extends DroolsTest {
 
@@ -35,4 +35,5 @@ public class DroolsWithJbiRulesForwardTest extends DroolsTest {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new org.apache.xbean.spring.context.ClassPathXmlApplicationContext("org/apache/servicemix/components/drools/jbi-example-forward.xml");
     }
+
 }

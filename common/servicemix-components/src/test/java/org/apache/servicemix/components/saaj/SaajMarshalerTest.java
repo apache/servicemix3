@@ -28,20 +28,20 @@ import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.NormalizedMessageImpl;
 import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.xpath.CachedXPathAPI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
 
 public class SaajMarshalerTest extends TestCase {
 
-	private static final transient Log log = LogFactory.getLog(SaajMarshalerTest.class); 
+	private static final transient Logger logger = LoggerFactory.getLogger(SaajMarshalerTest.class);
 	
 	public void testAxisToNMS() throws Exception {
 		MessageFactory messageFactory = new org.apache.axis.soap.MessageFactoryImpl();
@@ -83,7 +83,7 @@ public class SaajMarshalerTest extends TestCase {
 		new SaajMarshaler().toNMS(nm, sm);
 
         Node node = new SourceTransformer().toDOMNode(new SourceTransformer().toStreamSource(nm.getContent()));
-        log.info(new SourceTransformer().toString(node));
+        logger.info(new SourceTransformer().toString(node));
 		
         CachedXPathAPI cachedXPathAPI = new CachedXPathAPI();
         NodeIterator iterator = cachedXPathAPI.selectNodeIterator(node, "//*[local-name() = 'userId']");
@@ -98,7 +98,7 @@ public class SaajMarshalerTest extends TestCase {
         headers.addHeader("Content-Type", "text/xml;"); 
          
         InputStream is = getClass().getClassLoader().getResourceAsStream("org/apache/servicemix/components/saaj/xml-request.xml");         
-        log.info("Raw XML: " + new SourceTransformer().toString(new StreamSource(is))); 
+        logger.info("Raw XML: {}", new SourceTransformer().toString(new StreamSource(is)));
          
         is = getClass().getClassLoader().getResourceAsStream("org/apache/servicemix/components/saaj/xml-request.xml");         
         NormalizedMessage nm = new NormalizedMessageImpl(); 
@@ -111,7 +111,7 @@ public class SaajMarshalerTest extends TestCase {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         msg.writeTo(baos);
         String soapEnv = new String(baos.toByteArray());
-        log.info("Prepared SOAP: " + soapEnv); 
+        logger.info("Prepared SOAP: {}", soapEnv);
         Node node2 = new SourceTransformer().toDOMNode(new StringSource(soapEnv)); 
           
         CachedXPathAPI cachedXPathAPI = new CachedXPathAPI(); 

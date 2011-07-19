@@ -37,31 +37,31 @@ import javax.xml.soap.SOAPPart;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.SAXException;
 
 /**
- * @version $Revision: 431309 $
+ * @version $Revision$
  */
 public class SaajMarshaler {
 
-    private static final transient Log log = LogFactory.getLog(SaajMarshaler.class);
+    private static final transient Logger logger = LoggerFactory.getLogger(SaajMarshaler.class);
 
     protected SourceTransformer transformer = new SourceTransformer();
     private MessageFactory messageFactory;
 
     public void toNMS(NormalizedMessage normalizedMessage, SOAPMessage soapMessage) throws MessagingException, SOAPException {
 
-        if (log.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
         	try {
 	            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 	            soapMessage.writeTo(buffer);
-	            log.debug(new String(buffer.toByteArray()));
+	            logger.debug(new String(buffer.toByteArray()));
         	} catch (Exception e) { }
         }
         
@@ -105,9 +105,9 @@ public class SaajMarshaler {
         	}
 		}
         
-        if (log.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
         	try {
-        		log.debug(transformer.toString(elem));
+        		logger.debug(transformer.toString(elem));
         	} catch (Exception e) { }
         }
         
@@ -217,4 +217,5 @@ public class SaajMarshaler {
     protected MessageFactory createMessageFactory() throws SOAPException {
         return MessageFactory.newInstance();
     }
+
 }

@@ -25,8 +25,8 @@ import javax.mail.internet.MimeMessage;
 
 import junit.framework.Assert;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -35,11 +35,11 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 /**
  * A stub {@link JavaMailSender} useful for testing.
  *
- * @version $Revision: 556864 $
+ * @version $Revision$
  */
 public class StubJavaMailSender extends Assert implements JavaMailSender {
 
-    private static transient Log log = LogFactory.getLog(StubJavaMailSender.class);
+    private static transient Logger logger = LoggerFactory.getLogger(StubJavaMailSender.class);
 
     private List messages = new ArrayList();
     private Object semaphore = new Object();
@@ -92,7 +92,6 @@ public class StubJavaMailSender extends Assert implements JavaMailSender {
         }
     }
 
-
     /**
      * @return all the messages on the list so far, clearing the buffer
      */
@@ -125,7 +124,7 @@ public class StubJavaMailSender extends Assert implements JavaMailSender {
 
 
     public void waitForMessagesToArrive(int messageCount) {
-        log.info("Waiting for message to arrive");
+        logger.info("Waiting for message to arrive");
 
         long start = System.currentTimeMillis();
 
@@ -139,14 +138,13 @@ public class StubJavaMailSender extends Assert implements JavaMailSender {
                 }
             }
             catch (InterruptedException e) {
-                log.info("Caught: " + e);
+                logger.info("Caught: ", e);
             }
         }
         long end = System.currentTimeMillis() - start;
 
-        log.info("End of wait for " + end + " millis");
+        logger.info("End of wait for {} millis", end);
     }
-
 
     /**
      * Performs a testing assertion that the correct number of messages have been received
@@ -157,7 +155,7 @@ public class StubJavaMailSender extends Assert implements JavaMailSender {
         waitForMessagesToArrive(messageCount);
 
         assertEquals("expected number of messages", messageCount, getMessageCount());
-        log.info("Received messages:  " + getMessages());
+        logger.info("Received messages: {}", getMessages());
     }
 
     public boolean hasReceivedMessage() {
@@ -167,4 +165,5 @@ public class StubJavaMailSender extends Assert implements JavaMailSender {
     public boolean hasReceivedMessages(int messageCount) {
         return getMessageCount() >= messageCount;
     }
+
 }

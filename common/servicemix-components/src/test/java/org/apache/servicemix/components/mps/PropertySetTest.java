@@ -26,17 +26,12 @@ import javax.xml.transform.dom.DOMSource;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.components.mps.ConfigNotSupportedException;
-import org.apache.servicemix.components.mps.PropertySet;
 import org.apache.servicemix.jbi.messaging.NormalizedMessageImpl;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 public class PropertySetTest extends TestCase {
 
-	private final transient Log logger = LogFactory.getLog(getClass());
 	private final static String TEST_STRING = "PROP_TEST_STRING";
 	private final static String PROPNAME = "property1";
 	private final static String SAMPLE_MSG_XML = "<sample><get x='911'>me</get></sample>";

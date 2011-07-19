@@ -22,21 +22,18 @@ import java.util.List;
 import javax.jbi.JBIException;
 import javax.jbi.messaging.NormalizedMessage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.util.DOMUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * Class to hold the list of propertyValues
- * 
- * @author rbuckland
- * 
+ * Class to hold the list of Property Values
  */
 public class PropertyValueResolver {
 
-	private final transient Log logger = LogFactory.getLog(getClass());
+	private final transient Logger logger = LoggerFactory.getLogger(getClass());
 
 	public static final String XML_ELEMENT_NAME = "property";
 
@@ -59,12 +56,6 @@ public class PropertyValueResolver {
 
 	/**
 	 * Construct this PVR, the Element is the .. //property-set/property element
-	 * 
-	 * @param propertyName
-	 *            the name of the property that will be set
-	 * @param self
-	 *            Element
-	 * @throws JBIException
 	 */
 	public PropertyValueResolver(String propertyName, Element self)
 			throws ConfigNotSupportedException {
@@ -75,8 +66,6 @@ public class PropertyValueResolver {
 	/**
 	 * Set the property (this.name) on the out message based on any properties
 	 * on the message
-	 * 
-	 * @param msg
 	 */
 	public void setProperty(NormalizedMessage in, NormalizedMessage out)
 			throws JBIException {
@@ -96,10 +85,6 @@ public class PropertyValueResolver {
 
 	/**
 	 * Get the value out of the in, and put it in the out.
-	 * 
-	 * @param in
-	 * @param out
-	 * @return
 	 */
 	private String resolveValue(NormalizedMessage message) throws JBIException {
 		// go through the list
@@ -129,8 +114,6 @@ public class PropertyValueResolver {
 	 * <existing-property name="someproperty"/> <xpath-expression>
 	 * <![CDATA[/someexpath/statement]]> </xpath-expression> <static-value><![CDATA[a
 	 * value in the raw]]></static-value> </property>
-	 * 
-	 * @param propertyNode
 	 */
 	private void addPropertySetTypes(Element propertyElement)
 			throws ConfigNotSupportedException {
@@ -181,4 +164,5 @@ public class PropertyValueResolver {
 
 		}
 	}
+
 }

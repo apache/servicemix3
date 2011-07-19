@@ -24,10 +24,11 @@ import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.tck.MessageList;
 
 /**
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 // START SNIPPET: receive
 public class PojoReceiver implements MessageExchangeListener {
+
     private MessageList messageList = new MessageList();
 
     public void onMessageExchange(MessageExchange exchange) throws MessagingException {
@@ -38,5 +39,6 @@ public class PojoReceiver implements MessageExchangeListener {
     public MessageList getMessageList() {
         return messageList;
     }
+
 }
 // END SNIPPET: receive

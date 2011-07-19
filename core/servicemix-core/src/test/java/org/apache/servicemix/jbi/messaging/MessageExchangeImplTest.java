@@ -32,16 +32,16 @@ import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.BytesSource;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.util.StreamDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MessageExchangeImplTest extends TestCase {
 
-    private static final Log LOG = LogFactory.getLog(MessageExchangeImplTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageExchangeImplTest.class);
 
     protected void testSerializeDeserialize(Source src) throws Exception {
         MessageExchange me = new InOnlyImpl("exchangeId");
@@ -76,7 +76,7 @@ public class MessageExchangeImplTest extends TestCase {
         String outStr = new SourceTransformer().toString(outSrc);
         assertNotNull(outStr);
         assertNotNull(((NormalizedMessageImpl) msgOut).getBody());
-        LOG.info(outStr);
+        LOGGER.info(outStr);
         assertNotNull(msgOut.getAttachment("myAttachment"));
     }
 

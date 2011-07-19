@@ -171,7 +171,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
      * @throws JBIException
      */
     public void init(Broker broker) throws JBIException {
-        log.debug(broker.getContainer().getName() + ": Initializing jms flow");
+        LOGGER.debug(broker.getContainer().getName() + ": Initializing jms flow");
         super.init(broker);
         // Find executor
         executor = broker.getContainer().getExecutorFactory().createExecutor("flow.jms");
@@ -213,7 +213,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
             MessageConsumer inboundQueue = inboundSession.createConsumer(queue);
             inboundQueue.setMessageListener(this);
         } catch (JMSException e) {
-            log.error("Failed to initialize JMSFlow", e);
+            LOGGER.error("Failed to initialize JMSFlow", e);
             throw new JBIException(e);
         }
     }
@@ -240,7 +240,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
      */
     public void start() throws JBIException {
         if (started.compareAndSet(false, true)) {
-            log.debug(broker.getContainer().getName() + ": Starting jms flow");
+            LOGGER.debug(broker.getContainer().getName() + ": Starting jms flow");
             super.start();
             try {
                 Session broadcastSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -263,7 +263,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
                                 }
                             }
                         } catch (Exception e) {
-                            log.error("Error processing incoming broadcast message", e);
+                            LOGGER.error("Error processing incoming broadcast message", e);
                         }
                     }
                 });
@@ -298,7 +298,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
      */
     public void stop() throws JBIException {
         if (started.compareAndSet(true, false)) {
-            log.debug(broker.getContainer().getName() + ": Stopping jms flow");
+            LOGGER.debug(broker.getContainer().getName() + ": Stopping jms flow");
             super.stop();
             for (String id : subscriberSet) {
                 removeAllPackets(id);
@@ -308,7 +308,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
                 stopConsumerMonitor();
                 broadcastConsumer.close();
             } catch (JMSException e) {
-                log.debug("JMSException caught in stop", e);
+                LOGGER.debug("JMSException caught in stop", e);
             }
         }
     }
@@ -324,7 +324,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
             try {
                 this.connection.close();
             } catch (JMSException e) {
-                log.warn("Error closing JMS Connection", e);
+                LOGGER.warn("Error closing JMS Connection", e);
             }
         }
     }
@@ -351,7 +351,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
                 broadcast(event);
             }
         } catch (Exception e) {
-            log.error("Cannot create consumer for " + event.getEndpoint(), e);
+            LOGGER.error("Cannot create consumer for " + event.getEndpoint(), e);
         }
     }
 
@@ -366,13 +366,13 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
                 broadcast(event);
             }
         } catch (Exception e) {
-            log.error("Cannot destroy consumer for " + event, e);
+            LOGGER.error("Cannot destroy consumer for " + event, e);
         }
     }
     
     protected void broadcast(EndpointEvent event) throws Exception {
-        if (log.isDebugEnabled()) {
-            log.debug(broker.getContainer().getName() + ": broadcasting info for " + event);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(broker.getContainer().getName() + ": broadcasting info for " + event);
         }
         Session broadcastSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         try {
@@ -396,7 +396,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
                 consumerMap.put(key, new MessageConsumerSession(key, this));
             }
         } catch (Exception e) {
-            log.error("Cannot create consumer for component " + event.getComponent().getName(), e);
+            LOGGER.error("Cannot create consumer for component " + event.getComponent().getName(), e);
         }
     }
 
@@ -408,17 +408,17 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
                 consumer.close();
             }
         } catch (Exception e) {
-            log.error("Cannot destroy consumer for component " + event.getComponent().getName(), e);
+            LOGGER.error("Cannot destroy consumer for component " + event.getComponent().getName(), e);
         }
     }
 
     public void onRemoteEndpointRegistered(EndpointEvent event) {
-        log.debug(broker.getContainer().getName() + ": adding remote endpoint: " + event.getEndpoint());
+        LOGGER.debug(broker.getContainer().getName() + ": adding remote endpoint: " + event.getEndpoint());
         broker.getContainer().getRegistry().registerRemoteEndpoint(event.getEndpoint());
     }
 
     public void onRemoteEndpointUnregistered(EndpointEvent event) {
-        log.debug(broker.getContainer().getName() + ": removing remote endpoint: " + event.getEndpoint());
+        LOGGER.debug(broker.getContainer().getName() + ": removing remote endpoint: " + event.getEndpoint());
         broker.getContainer().getRegistry().unregisterRemoteEndpoint(event.getEndpoint());
     }
 
@@ -495,7 +495,7 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
                 inboundSession.close();
             }
         } catch (JMSException e) {
-            log.error("Failed to send exchange: " + me + " internal JMS Network", e);
+            LOGGER.error("Failed to send exchange: " + me + " internal JMS Network", e);
             throw new MessagingException(e);
         }
     }
@@ -527,13 +527,13 @@ public abstract class AbstractJMSFlow extends AbstractFlow implements MessageLis
                             }
                             AbstractJMSFlow.super.doRouting(me);
                         } catch (Throwable e) {
-                            log.error("Caught an exception routing ExchangePacket: ", e);
+                            LOGGER.error("Caught an exception routing ExchangePacket: ", e);
                         }
                     }
                 });
             }
         } catch (JMSException jmsEx) {
-            log.error("Caught an exception unpacking JMS Message: ", jmsEx);
+            LOGGER.error("Caught an exception unpacking JMS Message: ", jmsEx);
         }
     }
 

@@ -23,17 +23,18 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.tck.TestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
- * @version $Revision: 359186 $
+ * @version $Revision$
  */
 public class HttpSoapWsTest extends TestSupport {
-    private static transient Log log = LogFactory.getLog(HttpSoapWsTest.class);
+
+    private static transient Logger logger = LoggerFactory.getLogger(HttpSoapWsTest.class);
 
     protected String quote = "SUNW";
 
@@ -57,7 +58,7 @@ public class HttpSoapWsTest extends TestSupport {
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String inputLine;
         while ((inputLine = in.readLine()) != null) {
-            log.info(inputLine);
+            logger.info(inputLine);
         }
         in.close();
     }
@@ -65,4 +66,5 @@ public class HttpSoapWsTest extends TestSupport {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/http/ws-example.xml");
     }
+
 }

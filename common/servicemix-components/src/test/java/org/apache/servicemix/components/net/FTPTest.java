@@ -33,7 +33,7 @@ import javax.xml.namespace.QName;
  * For details of how to set this up on OS X see
  * <a href="http://www.ldml.com/services/support/macosx/ftpUserCreate.html">this tutorial</a>
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class FTPTest extends TestSupport {
 
@@ -78,4 +78,5 @@ public class FTPTest extends TestSupport {
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("org/apache/servicemix/components/net/ftp.xml");
     }
+
 }

@@ -24,16 +24,17 @@ import org.w3c.dom.DocumentFragment;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @version $Revision$
  */
 public class ComponentTest extends TestCase {
 
-    private static final Log LOG = LogFactory.getLog(ComponentTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComponentTest.class);
 
     protected SourceTransformer transformer = new SourceTransformer();
 
@@ -66,8 +67,8 @@ public class ComponentTest extends TestCase {
         DocumentFragment fragment = descriptorExtension.getDescriptorExtension();
         assertNotNull("fragment is null", fragment);
 
-        LOG.info("Created document fragment: " + fragment);
-        LOG.info("XML: " + transformer.toString(new DOMSource(fragment)));
+        LOGGER.info("Created document fragment: {}", fragment);
+        LOGGER.info("XML: {}", transformer.toString(new DOMSource(fragment)));
     }
 
     protected void assertArrayEquals(String text, Object[] expected, Object[] actual) {

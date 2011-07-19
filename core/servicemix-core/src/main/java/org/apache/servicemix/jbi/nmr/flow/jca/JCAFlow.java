@@ -240,7 +240,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
      * @throws JBIException
      */
     public void init(Broker broker) throws JBIException {
-        log.debug(broker.getContainer().getName() + ": Initializing jca flow");
+        LOGGER.debug(broker.getContainer().getName() + ": Initializing jca flow");
         super.init(broker);
         // Create and register endpoint listener
         endpointListener = new EndpointAdapter() {
@@ -282,7 +282,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
             // default jms url, so set it.
             //
             if (outboundRa.getInfo().getServerUrl() == null) {
-                log.info("ActiveMQResourceAdapter server url was null.  Setting it to: " + jmsURL);
+                LOGGER.info("ActiveMQResourceAdapter server url was null.  Setting it to: " + jmsURL);
                 outboundRa.getInfo().setServerUrl(jmsURL);
             }
             ActiveMQManagedConnectionFactory mcf = new ActiveMQManagedConnectionFactory();
@@ -293,7 +293,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
             broadcastTopic = new ActiveMQTopic(broadcastDestinationName);
             advisoryTopic = AdvisorySupport.getConsumerAdvisoryTopic((ActiveMQDestination) broadcastTopic);
         } catch (Exception e) {
-            log.error("Failed to initialize JCAFlow", e);
+            LOGGER.error("Failed to initialize JCAFlow", e);
             throw new JBIException(e);
         }
     }
@@ -324,7 +324,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
                                 }
                             }
                         } catch (Exception e) {
-                            log.error("Error processing incoming broadcast message", e);
+                            LOGGER.error("Error processing incoming broadcast message", e);
                         }
                     }
                 };
@@ -357,12 +357,12 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
             try {
                 broadcastConnector.stop();
             } catch (Exception e) {
-                log.debug("Error closing jca connector", e);
+                LOGGER.debug("Error closing jca connector", e);
             }
             try {
                 advisoryConnector.stop();
             } catch (Exception e) {
-                log.debug("Error closing jca connector", e);
+                LOGGER.debug("Error closing jca connector", e);
             }
         }
     }
@@ -380,13 +380,13 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
             try {
                 connector.stop();
             } catch (Exception e) {
-                log.debug("Error closing jca connector", e);
+                LOGGER.debug("Error closing jca connector", e);
             }
         }
         try {
             containerConnector.stop();
         } catch (Exception e) {
-            log.debug("Error closing jca connector", e);
+            LOGGER.debug("Error closing jca connector", e);
         }
     }
 
@@ -427,11 +427,11 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
             }
             // broadcast change to the network
             if (broadcast) {
-                log.debug(broker.getContainer().getName() + ": broadcasting info for " + event);
+                LOGGER.debug(broker.getContainer().getName() + ": broadcasting info for " + event);
                 sendJmsMessage(broadcastTopic, event, false, false);
             }
         } catch (Exception e) {
-            log.error("Cannot create consumer for " + event.getEndpoint(), e);
+            LOGGER.error("Cannot create consumer for " + event.getEndpoint(), e);
         }
     }
 
@@ -444,11 +444,11 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
             }
             // broadcast change to the network
             if (broadcast) {
-                log.debug(broker.getContainer().getName() + ": broadcasting info for " + event);
+                LOGGER.debug(broker.getContainer().getName() + ": broadcasting info for " + event);
                 sendJmsMessage(broadcastTopic, event, false, false);
             }
         } catch (Exception e) {
-            log.error("Cannot destroy consumer for " + event, e);
+            LOGGER.error("Cannot destroy consumer for " + event, e);
         }
     }
 
@@ -465,7 +465,7 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
                 connectorMap.put(key, connector);
             }
         } catch (Exception e) {
-            log.error("Cannot create consumer for component " + event.getComponent().getName(), e);
+            LOGGER.error("Cannot create consumer for component " + event.getComponent().getName(), e);
         }
     }
 
@@ -477,17 +477,17 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
                 connector.stop();
             }
         } catch (Exception e) {
-            log.error("Cannot destroy consumer for component " + event.getComponent().getName(), e);
+            LOGGER.error("Cannot destroy consumer for component " + event.getComponent().getName(), e);
         }
     }
 
     public void onRemoteEndpointRegistered(EndpointEvent event) {
-        log.debug(broker.getContainer().getName() + ": adding remote endpoint: " + event.getEndpoint());
+        LOGGER.debug(broker.getContainer().getName() + ": adding remote endpoint: " + event.getEndpoint());
         broker.getContainer().getRegistry().registerRemoteEndpoint(event.getEndpoint());
     }
 
     public void onRemoteEndpointUnregistered(EndpointEvent event) {
-        log.debug(broker.getContainer().getName() + ": removing remote endpoint: " + event.getEndpoint());
+        LOGGER.debug(broker.getContainer().getName() + ": removing remote endpoint: " + event.getEndpoint());
         broker.getContainer().getRegistry().unregisterRemoteEndpoint(event.getEndpoint());
     }
 
@@ -544,10 +544,10 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
             }
             sendJmsMessage(new ActiveMQQueue(destination), me, isPersistent(me), me.isTransacted());
         } catch (JMSException e) {
-            log.error("Failed to send exchange: " + me + " internal JMS Network", e);
+            LOGGER.error("Failed to send exchange: " + me + " internal JMS Network", e);
             throw new MessagingException(e);
         } catch (SystemException e) {
-            log.error("Failed to send exchange: " + me + " transaction problem", e);
+            LOGGER.error("Failed to send exchange: " + me + " transaction problem", e);
             throw new MessagingException(e);
         }
     }
@@ -582,11 +582,11 @@ public class JCAFlow extends AbstractFlow implements MessageListener {
                 super.doRouting(me);
             }
         } catch (JMSException jmsEx) {
-            log.error("Caught an exception unpacking JMS Message: ", jmsEx);
+            LOGGER.error("Caught an exception unpacking JMS Message: ", jmsEx);
         } catch (MessagingException e) {
-            log.error("Caught an exception routing ExchangePacket: ", e);
+            LOGGER.error("Caught an exception routing ExchangePacket: ", e);
         } catch (SystemException e) {
-            log.error("Caught an exception acessing transaction context: ", e);
+            LOGGER.error("Caught an exception acessing transaction context: ", e);
         }
     }
 

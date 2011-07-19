@@ -26,9 +26,10 @@ import javax.jbi.JBIException;
 /**
  * A bean editor to make it easier to create new file system objects using VFS
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class FileObjectEditor {
+
     private String path;
     private FileSystemManager fileSystemManager;
 
@@ -72,4 +73,5 @@ public class FileObjectEditor {
             throw new JBIException("Failed to initialize file system manager: " + e, e);
         }
     }
+
 }

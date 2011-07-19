@@ -24,13 +24,13 @@ import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.ObjectName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.executors.Executor;
 import org.apache.servicemix.jbi.framework.ComponentNameSpace;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseLifeCycle;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple Straight through flow
@@ -39,7 +39,7 @@ import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
  */
 public class SedaQueue extends BaseLifeCycle {
     
-    private static final Log LOG = LogFactory.getLog(SedaQueue.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(SedaQueue.class);
     
     protected SedaFlow flow;
     protected ComponentNameSpace name;
@@ -120,7 +120,7 @@ public class SedaQueue extends BaseLifeCycle {
     /**
      * Enqueue a Packet for processing
      * 
-     * @param packet
+     * @param me
      * @throws InterruptedException
      * @throws MessagingException 
      */
@@ -128,12 +128,10 @@ public class SedaQueue extends BaseLifeCycle {
         executor.execute(new Runnable() {
             public void run() {
                 try {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(this + " dequeued exchange: " + me);
-                    }
+                    LOGGER.debug("{} dequeued exchange: {}", this, me);
                     flow.doRouting(me);
                 } catch (Throwable e) {
-                    LOG.error(this + " got error processing " + me, e);
+                    LOGGER.error(this + " got error processing " + me, e);
                 }
             }
         });

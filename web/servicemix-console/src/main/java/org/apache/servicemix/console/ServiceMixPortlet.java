@@ -137,7 +137,7 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
             } finally {
                 closeConnector();
             }
-            //log.error("Error rendering portlet", e);
+            //LOGGER.error("Error rendering portlet", e);
             //throw new PortletException("Error rendering portlet", e);
         }
     }
