@@ -16,22 +16,20 @@
  */
 package org.apache.servicemix.jbi.framework.support;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.deployment.Provides;
 import org.apache.servicemix.jbi.deployment.Services;
 import org.apache.servicemix.jbi.framework.Registry;
 import org.apache.servicemix.jbi.framework.ServiceUnitLifeCycle;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Retrieve interface implemented by the given endpoint using the SU jbi descriptors.
- * 
- * @author gnodet
  */
 public class SUDescriptorProcessor implements EndpointProcessor {
 
-    private static final Log LOG = LogFactory.getLog(SUDescriptorProcessor.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(SUDescriptorProcessor.class);
     
     private Registry registry;
     
@@ -55,10 +53,8 @@ public class SUDescriptorProcessor implements EndpointProcessor {
                         if (provides[j].getInterfaceName() != null
                                 && serviceEndpoint.getServiceName().equals(provides[j].getServiceName())
                                 && serviceEndpoint.getEndpointName().equals(provides[j].getEndpointName())) {
-                            if (LOG.isDebugEnabled()) {
-                                LOG.debug("Endpoint " + serviceEndpoint + " is provided by SU " + sus[i].getName());
-                                LOG.debug("Endpoint " + serviceEndpoint + " implements interface " + provides[j].getInterfaceName());
-                            }
+                            LOGGER.debug("Endpoint {} is provided by SU {}", serviceEndpoint, sus[i].getName());
+                            LOGGER.debug("Endpoint {} implements interface {}", serviceEndpoint, provides[j].getInterfaceName());
                             serviceEndpoint.addInterface(provides[j].getInterfaceName());
                         }
                     }

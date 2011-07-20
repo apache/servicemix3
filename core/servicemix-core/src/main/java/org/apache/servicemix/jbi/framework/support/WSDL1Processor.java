@@ -28,21 +28,20 @@ import org.w3c.dom.Document;
 
 import com.ibm.wsdl.Constants;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.framework.Registry;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Retrieve interface implemented by the given endpoint using the WSDL 1 description.
- * 
- * @author gnodet
  */
 public class WSDL1Processor implements EndpointProcessor {
 
     public static final String WSDL1_NAMESPACE = "http://schemas.xmlsoap.org/wsdl/";
     
-    private static final Log LOG = LogFactory.getLog(WSDL1Processor.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(WSDL1Processor.class);
     
     private Registry registry;
     
@@ -59,15 +58,11 @@ public class WSDL1Processor implements EndpointProcessor {
         try {
             Document document = registry.getEndpointDescriptor(serviceEndpoint);
             if (document == null || document.getDocumentElement() == null) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Endpoint " + serviceEndpoint + " has no service description");
-                }
+                LOGGER.debug("Endpoint {} has no service description", serviceEndpoint);
                 return;
             }
             if (!WSDL1_NAMESPACE.equals(document.getDocumentElement().getNamespaceURI())) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Endpoint " + serviceEndpoint + " has a non WSDL1 service description");
-                }
+                LOGGER.debug("Endpoint {} has a non WSDL1 service description", serviceEndpoint);
                 return;
             }
             WSDLReader reader = WSDLFactory.newInstance().newWSDLReader();
@@ -80,42 +75,36 @@ public class WSDL1Processor implements EndpointProcessor {
                     && definition.getServices().keySet().size() == 0) {
                 PortType portType = (PortType) definition.getPortTypes().values().iterator().next();
                 QName interfaceName = portType.getQName();
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Endpoint " + serviceEndpoint + " implements interface " + interfaceName);
-                }
+                LOGGER.debug("Endpoint {} implements interface {}", serviceEndpoint, interfaceName);
                 serviceEndpoint.addInterface(interfaceName);
             } else {
                 Service service = definition.getService(serviceEndpoint.getServiceName());
                 if (service == null) {
-                    LOG.info("Endpoint " + serviceEndpoint + " has a service description, but no matching service found in "
-                                    + definition.getServices().keySet());
+                    LOGGER.info("Endpoint {} has a service description, but no matching service found in {}",
+                            serviceEndpoint, definition.getServices().keySet());
                     return;
                 }
                 Port port = service.getPort(serviceEndpoint.getEndpointName());
                 if (port == null) {
-                    LOG.info("Endpoint " + serviceEndpoint + " has a service description, but no matching endpoint found in "
-                                    + service.getPorts().keySet());
+                    LOGGER.info("Endpoint {} has a service description, but no matching endpoint found in {}",
+                            serviceEndpoint, service.getPorts().keySet());
                     return;
                 }
                 if (port.getBinding() == null) {
-                    LOG.info("Endpoint " + serviceEndpoint + " has a service description, but no binding found");
+                    LOGGER.info("Endpoint {} has a service description, but no binding found", serviceEndpoint);
                     return;
                 }
                 if (port.getBinding().getPortType() == null) {
-                    LOG.info("Endpoint " + serviceEndpoint + " has a service description, but no port type found");
+                    LOGGER.info("Endpoint {} has a service description, but no port type found", serviceEndpoint);
                     return;
                 }
                 QName interfaceName = port.getBinding().getPortType().getQName();
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Endpoint " + serviceEndpoint + " implements interface " + interfaceName);
-                }
+                LOGGER.debug("Endpoint {} implements interface {}", serviceEndpoint, interfaceName);
                 serviceEndpoint.addInterface(interfaceName);
             }
         } catch (Exception e) {
-            LOG.warn("Error retrieving interfaces from service description: " + e.getMessage());
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Error retrieving interfaces from service description", e);
-            }
+            LOGGER.warn("Error retrieving interfaces from service description: {}", e.getMessage());
+            LOGGER.debug("Error retrieving interfaces from service description", e);
         }
     }
 

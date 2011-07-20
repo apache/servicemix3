@@ -29,16 +29,17 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.util.DOMUtil;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ManagementMessageHelper is a class that ease the building of management messages. 
  */
 public final class ManagementSupport {
     
-    private static final Log LOG = LogFactory.getLog(ManagementSupport.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ManagementSupport.class);
     
     private ManagementSupport() {
     }
@@ -175,7 +176,7 @@ public final class ManagementSupport {
             }
             return DOMUtil.asIndentedXML(doc);
         } catch (Exception e) {
-            LOG.error("Error", e);
+            LOGGER.error("Error", e);
             return null;
         }
     }
@@ -239,9 +240,7 @@ public final class ManagementSupport {
             Element e = createComponentFailure(task, component, info, null);
             return new DeploymentException(DOMUtil.asXML(e));
         } catch (Exception e) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Error creating management message", e);
-            }
+            LOGGER.debug("Error creating management message", e);
             return new DeploymentException(info);
         }
     }

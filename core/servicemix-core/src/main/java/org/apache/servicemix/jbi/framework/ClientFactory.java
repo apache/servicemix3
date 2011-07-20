@@ -23,19 +23,16 @@ import javax.management.JMException;
 import javax.management.MBeanOperationInfo;
 import javax.naming.NamingException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * @author <a href="mailto:gnodet [at] apache.org">Guillaume Nodet</a>
- */
 public class ClientFactory extends BaseSystemService implements ClientFactoryMBean, Serializable {
 
-    private static final Log LOG = LogFactory.getLog(ClientFactory.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ClientFactory.class);
     
     private String jndiName = DEFAULT_JNDI_NAME;
 
@@ -86,10 +83,8 @@ public class ClientFactory extends BaseSystemService implements ClientFactoryMBe
             getContainer().getNamingContext().bind(jndiName, this);
             isFactoryJNDIregistered = true;
         } catch (NamingException e) {
-            LOG.warn("Cound not start ClientFactory: " + e);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Could not start ClientFactory", e);
-            }
+            LOGGER.warn("Could not start ClientFactory: {}", e.getMessage());
+            LOGGER.debug("Could not start ClientFactory.", e);
             isFactoryJNDIregistered = false;
         }
         super.start();
@@ -107,10 +102,8 @@ public class ClientFactory extends BaseSystemService implements ClientFactoryMBe
                 getContainer().getNamingContext().unbind(jndiName);
             }
         } catch (NamingException e) {
-            LOG.warn("Cound not stop ClientFactory: " + e);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Could not stop ClientFactory", e);
-            }
+            LOGGER.warn("Could not stop ClientFactory: {}", e.getMessage());
+            LOGGER.debug("Could not stop ClientFactory", e);
         }
     }
 

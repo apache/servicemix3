@@ -26,8 +26,8 @@ import java.util.Map;
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Registry for Components
@@ -36,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ComponentRegistry {
 
-    private final Log log = LogFactory.getLog(ComponentRegistry.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ComponentRegistry.class);
     private final Map<ComponentNameSpace, ComponentMBeanImpl> idMap = new LinkedHashMap<ComponentNameSpace, ComponentMBeanImpl>();
     private boolean runningStateInitialized;
     private Registry registry;
@@ -82,7 +82,7 @@ public class ComponentRegistry {
                 try {
                     lcc.start();
                 } catch (Exception e) {
-                    log.error("Error during component startup.", e);
+                    LOGGER.error("Error during component startup.", e);
                 }
             }
         }
@@ -98,7 +98,7 @@ public class ComponentRegistry {
             try {
                 lcc.doStop();
             } catch (Exception e) {
-                log.error("Error during component stop.", e);
+                LOGGER.error("Error during component stop.", e);
             }
         }
         runningStateInitialized = false;
@@ -115,7 +115,7 @@ public class ComponentRegistry {
             try {
                 lcc.doShutDown();
             } catch (Exception e) {
-                log.error("Error during component shutdown.", e);
+                LOGGER.error("Error during component shutdown.", e);
             }
         }
     }
@@ -172,7 +172,7 @@ public class ComponentRegistry {
                         lcc.doStart();
                     }
                 } catch (Exception e) {
-                    log.error("Error during set initial running state from start.", e);
+                    LOGGER.error("Error during set initial running state from start.", e);
                 }
             }
         }

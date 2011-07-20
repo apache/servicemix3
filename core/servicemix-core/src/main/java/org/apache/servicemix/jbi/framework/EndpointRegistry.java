@@ -34,8 +34,6 @@ import javax.management.JMException;
 import javax.management.ObjectName;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.event.EndpointEvent;
 import org.apache.servicemix.jbi.event.EndpointListener;
 import org.apache.servicemix.jbi.framework.support.EndpointProcessor;
@@ -43,6 +41,8 @@ import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
 import org.apache.servicemix.jbi.servicedesc.ExternalEndpoint;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 import org.apache.servicemix.jbi.servicedesc.LinkedEndpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Registry for Components
@@ -51,7 +51,7 @@ import org.apache.servicemix.jbi.servicedesc.LinkedEndpoint;
  */
 public class EndpointRegistry {
     
-    private static final Log LOG = LogFactory.getLog(EndpointRegistry.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(EndpointRegistry.class);
     
     private Registry registry;
     
@@ -84,7 +84,7 @@ public class EndpointRegistry {
         this.endpointProcessors = getEndpointProcessors();
         this.executor.execute(new Runnable() {
             public void run() {
-                LOG.debug("Initializing endpoint event dispatch thread");
+                LOGGER.debug("Initializing endpoint event dispatch thread");
             }
         });
     }
@@ -100,7 +100,7 @@ public class EndpointRegistry {
                 p.init(registry);
                 l.add(p);
             } catch (Throwable e) {
-                LOG.warn("Disabled endpoint processor '" + classes[i] + "': " + e);
+                LOGGER.warn("Disabled endpoint processor '{}", classes[i], e);
             }
         }
         return l;
@@ -169,7 +169,7 @@ public class EndpointRegistry {
             String key = getKey(conn.service, conn.endpoint);
             ServiceEndpoint ep = internalEndpoints.get(key);
             if (ep == null) {
-                LOG.warn("Connection for interface " + interfaceName + " could not find target for service "
+                LOGGER.warn("Connection for interface " + interfaceName + " could not find target for service "
                                 + conn.service + " and endpoint " + conn.endpoint);
                 return new ServiceEndpoint[0];
             } else {
@@ -304,7 +304,7 @@ public class EndpointRegistry {
      * a proxy for external service consumers to access an internal service of the same service name (but a different
      * endpoint name).
      * 
-     * @param provider
+     * @param cns
      * @param externalEndpoint the external endpoint to be registered, must be non-null.
      * @throws JBIException 
      */
@@ -324,7 +324,7 @@ public class EndpointRegistry {
      * can no longer be used as a proxy for external service consumers to access an internal service of the same service
      * name.
      * 
-     * @param provider
+     * @param cns
      * @param externalEndpoint the external endpoint to be deregistered; must be non-null.
      */
     public void unregisterExternalEndpoint(ComponentNameSpace cns, ServiceEndpoint externalEndpoint) {
@@ -496,7 +496,7 @@ public class EndpointRegistry {
             registry.getContainer().getManagementContext().registerMBean(objectName, endpoint, EndpointMBean.class);
             endpointMBeans.put(serviceEndpoint, endpoint);
         } catch (JMException e) {
-            LOG.error("Could not register MBean for endpoint", e);
+            LOGGER.error("Could not register MBean for endpoint", e);
         }
     }
     
@@ -505,7 +505,7 @@ public class EndpointRegistry {
         try {
             registry.getContainer().getManagementContext().unregisterMBean(ep);
         } catch (JBIException e) {
-            LOG.error("Could not unregister MBean for endpoint", e);
+            LOGGER.error("Could not unregister MBean for endpoint", e);
         }
     }
 
@@ -564,4 +564,5 @@ public class EndpointRegistry {
             }
         });
     }
+
 }

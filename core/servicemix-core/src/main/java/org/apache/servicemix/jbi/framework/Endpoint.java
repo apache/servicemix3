@@ -27,8 +27,6 @@ import javax.management.MBeanOperationInfo;
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.FaultException;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
@@ -42,10 +40,12 @@ import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 import org.apache.servicemix.jbi.servicedesc.LinkedEndpoint;
 import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.servicemix.jbi.util.QNameUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Endpoint implements EndpointMBean, MBeanInfoProvider {
 
-    private static final Log LOG = LogFactory.getLog(Endpoint.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(Endpoint.class);
     
     private AbstractServiceEndpoint endpoint;
     private Registry registry;
@@ -164,7 +164,7 @@ public class Endpoint implements EndpointMBean, MBeanInfoProvider {
             }
             return null;
         } catch (Exception e) {
-            LOG.debug("Error proces test exchange", e);
+            LOGGER.debug("Error proces test exchange", e);
             throw new RuntimeException(e);
         } finally {
             if (client != null) {

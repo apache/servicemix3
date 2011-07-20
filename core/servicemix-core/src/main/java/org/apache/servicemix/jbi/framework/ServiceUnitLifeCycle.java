@@ -27,8 +27,6 @@ import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanOperationInfo;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.deployment.Descriptor;
 import org.apache.servicemix.jbi.deployment.DescriptorFactory;
 import org.apache.servicemix.jbi.deployment.ServiceUnit;
@@ -38,6 +36,8 @@ import org.apache.servicemix.jbi.event.ServiceUnitListener;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.MBeanInfoProvider;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider {
 
@@ -51,7 +51,7 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
      */
     private static final String DEPLOYMENT_OPERATION_TIMEOUT_PROPERTY = "org.apache.servicemix.deployment.timeout";
 
-    private static final Log LOG = LogFactory.getLog(ServiceUnitLifeCycle.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ServiceUnitLifeCycle.class);
 
     private ServiceUnit serviceUnit;
 
@@ -155,7 +155,7 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
         try {
             return Long.parseLong(propertyValue);
         } catch (NumberFormatException numberFormatException) {
-            LOG.warn("Wrong value for system property" + DEPLOYMENT_OPERATION_TIMEOUT_PROPERTY, numberFormatException);
+            LOGGER.warn("Wrong value for system property {}", DEPLOYMENT_OPERATION_TIMEOUT_PROPERTY, numberFormatException);
             return DEFAULT_DEPLOYMENT_OPERATION_TIMEOUT;
         }
     }
@@ -166,7 +166,7 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
      * @throws DeploymentException 
      */
     public void init() throws DeploymentException {
-        LOG.info("Initializing service unit: " + getName());
+        LOGGER.info("Initializing service unit: {}", getName());
         checkComponentStarted("init");
         final ServiceUnitManager sum = getServiceUnitManager();
         final File path = getServiceUnitRootPath();
@@ -186,7 +186,7 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
      * @throws DeploymentException 
      */
     public void start() throws DeploymentException {
-        LOG.info("Starting service unit: " + getName());
+        LOGGER.info("Starting service unit: {}", getName());
         checkComponentStarted("start");
         final ServiceUnitManager sum = getServiceUnitManager();
         new TimedOutExecutor(getComponentClassLoader(), "start " + getName(),
@@ -205,7 +205,7 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
      * @throws DeploymentException 
      */
     public void stop() throws DeploymentException {
-        LOG.info("Stopping service unit: " + getName());
+        LOGGER.info("Stopping service unit: {}", getName());
         checkComponentStarted("stop");
         final ServiceUnitManager sum = getServiceUnitManager();
         new TimedOutExecutor(getComponentClassLoader(), "stop " + getName(),
@@ -225,7 +225,7 @@ public class ServiceUnitLifeCycle implements ServiceUnitMBean, MBeanInfoProvider
      * @throws DeploymentException 
      */
     public void shutDown() throws DeploymentException {
-        LOG.info("Shutting down service unit: " + getName());
+        LOGGER.info("Shutting down service unit: {}", getName());
         checkComponentStartedOrStopped("shutDown");
         final ServiceUnitManager sum = getServiceUnitManager();
         new TimedOutExecutor(getComponentClassLoader(), "shutdown " + getName(),

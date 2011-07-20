@@ -29,11 +29,11 @@ import javax.jbi.management.DeploymentException;
 import javax.management.JMException;
 import javax.management.ObjectName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.ServiceAssemblyEnvironment;
 import org.apache.servicemix.jbi.deployment.ServiceAssembly;
 import org.apache.servicemix.jbi.deployment.ServiceUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Registry for Components
@@ -42,7 +42,7 @@ import org.apache.servicemix.jbi.deployment.ServiceUnit;
  */
 public class ServiceAssemblyRegistry {
 
-    private static final Log LOG = LogFactory.getLog(ServiceAssemblyRegistry.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ServiceAssemblyRegistry.class);
 
     private Map<String, ServiceAssemblyLifeCycle> serviceAssemblies = new ConcurrentHashMap<String, ServiceAssemblyLifeCycle>();
 
@@ -89,7 +89,7 @@ public class ServiceAssemblyRegistry {
                 ObjectName objectName = registry.getContainer().getManagementContext().createObjectName(salc);
                 registry.getContainer().getManagementContext().registerMBean(objectName, salc, ServiceAssemblyMBean.class);
             } catch (JMException e) {
-                LOG.error("Could not register MBean for service assembly", e);
+                LOGGER.error("Could not register MBean for service assembly", e);
             }
             return salc;
         }
@@ -126,7 +126,7 @@ public class ServiceAssemblyRegistry {
                 }
                 registry.getContainer().getManagementContext().unregisterMBean(salc);
             } catch (JBIException e) {
-                LOG.error("Unable to unregister MBean for service assembly", e);
+                LOGGER.error("Unable to unregister MBean for service assembly", e);
             }
             return true;
         } else {
@@ -136,7 +136,7 @@ public class ServiceAssemblyRegistry {
 
     /**
      * Get a named ServiceAssembly
-     * @param name
+     * @param saName
      * @return the ServiceAssembly or null if it doesn't exist
      */
     public ServiceAssemblyLifeCycle getServiceAssembly(String saName) {

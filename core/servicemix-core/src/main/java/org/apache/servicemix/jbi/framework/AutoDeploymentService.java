@@ -40,8 +40,6 @@ import javax.jbi.management.DeploymentException;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.EnvironmentContext;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.deployment.Component;
@@ -54,6 +52,8 @@ import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseSystemService;
 import org.apache.servicemix.jbi.util.XmlPersistenceSupport;
 import org.apache.servicemix.util.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Monitors install and deploy directories to auto install/deploy archives
@@ -62,7 +62,7 @@ import org.apache.servicemix.util.FileUtil;
  */
 public class AutoDeploymentService extends BaseSystemService implements AutoDeploymentServiceMBean {
 
-    private static final Log LOG = LogFactory.getLog(AutoDeploymentService.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(AutoDeploymentService.class);
         
     private static String filePrefix = "file:///";
     private EnvironmentContext environmentContext;
@@ -269,9 +269,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             }
             // See if shared libraries are installed
             entry.dependencies = getSharedLibraryNames(comp);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Component dependencies: " + entry.dependencies);
-            }
+            LOGGER.debug("Component dependencies: {}", entry.dependencies);
             String missings = null;
             boolean canInstall = true;
             for (String libraryName : entry.dependencies) {
@@ -289,13 +287,13 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 checkPendingSAs();
             } else {
                 entry.pending = true;
-                LOG.warn("Shared libraries " + missings + " are not installed yet: the component " + componentName
+                LOGGER.warn("Shared libraries " + missings + " are not installed yet: the component " + componentName
                                 + " installation is suspended and will be resumed once the listed shared libraries are installed");
                 pendingComponents.put(tmpDir, entry);
             }
         } catch (Exception e) {
             String errStr = "Failed to update Component: " + componentName;
-            LOG.error(errStr, e);
+            LOGGER.error(errStr, e);
             throw new DeploymentException(errStr, e);
         }
     }
@@ -313,7 +311,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             checkPendingComponents();
         } catch (Exception e) {
             String errStr = "Failed to update SharedLibrary: " + libraryName;
-            LOG.error(errStr, e);
+            LOGGER.error(errStr, e);
             throw new DeploymentException(errStr, e);
         }
     }
@@ -330,9 +328,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             }
             // see if components are installed
             entry.dependencies = getComponentNames(sa);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("SA dependencies: " + entry.dependencies);
-            }
+            LOGGER.debug("SA dependencies: {}", entry.dependencies);
             String missings = null;
             boolean canDeploy = true;
             for (String componentName : entry.dependencies) {
@@ -354,13 +350,13 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 // TODO: check that the assembly is not already
                 // pending
                 entry.pending = true;
-                LOG.warn("Components " + missings + " are not installed yet: the service assembly " + name
+                LOGGER.warn("Components " + missings + " are not installed yet: the service assembly " + name
                                 + " deployment is suspended and will be resumed once the listed components are installed");
                 pendingSAs.put(tmpDir, entry);
             }
         } catch (Exception e) {
             String errStr = "Failed to update Service Assembly: " + name;
-            LOG.error(errStr, e);
+            LOGGER.error(errStr, e);
             throw new DeploymentException(errStr, e);
         }
     }
@@ -406,7 +402,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     /**
      * Remove an archive location
      * 
-     * @param location
+     * @param entry
      * @throws DeploymentException
      */
     public void removeArchive(ArchiveEntry entry) throws DeploymentException {
@@ -423,20 +419,20 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             throw failure("deploy", "Error when deploying: " + entry.location, e);
         }
         // Standard processing
-        LOG.info("Attempting to remove archive at: " + entry.location);
+        LOGGER.info("Attempting to remove archive at: {}", entry.location);
         if ("component".equals(entry.type)) {
-            LOG.info("Uninstalling component: " + entry.name);
+            LOGGER.info("Uninstalling component: {}", entry.name);
             // Ensure installer is loaded
             installationService.loadInstaller(entry.name);
             // Uninstall and delete component
             installationService.unloadInstaller(entry.name, true);
         }
         if ("library".equals(entry.type)) {
-            LOG.info("Removing shared library: " + entry.name);
+            LOGGER.info("Removing shared library: {}", entry.name);
             installationService.uninstallSharedLibrary(entry.name);
         }
         if ("assembly".equals(entry.type)) {
-            LOG.info("Undeploying service assembly " + entry.name);
+            LOGGER.info("Undeploying service assembly {}", entry.name);
             try {
                 if (deploymentService.isSaDeployed(entry.name)) {
                     deploymentService.shutDown(entry.name);
@@ -444,7 +440,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 }
             } catch (Exception e) {
                 String errStr = "Failed to update service assembly: " + entry.name;
-                LOG.error(errStr, e);
+                LOGGER.error(errStr, e);
                 throw new DeploymentException(errStr, e);
             }
         }
@@ -474,7 +470,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                     deploymentService.start(root.getServiceAssembly().getIdentification().getName());
                 } catch (Exception e) {
                     String errStr = "Failed to update Service Assembly: " + tmp.getName();
-                    LOG.error(errStr, e);
+                    LOGGER.error(errStr, e);
                 }
             }
         }
@@ -509,7 +505,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                     installationService.install(tmp, null, root, true);
                 } catch (Exception e) {
                     String errStr = "Failed to update Component: " + tmp.getName();
-                    LOG.error(errStr, e);
+                    LOGGER.error(errStr, e);
                 }
             }
         }
@@ -565,17 +561,13 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 file = new File(location);
             }
             if (file.isDirectory()) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Deploying an exploded jar/zip, we will create a temporary jar for it.");
-                }
+                LOGGER.debug("Deploying an exploded jar/zip, we will create a temporary jar for it.");
                 // If we have a directory then we should move it over
                 File newFile = new File(tmpRoot.getAbsolutePath() + "/exploded.jar");
                 newFile.delete();
                 FileUtil.zipDir(file.getAbsolutePath(), newFile.getAbsolutePath());
                 file = newFile;
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Deployment will now work from " + file.getAbsolutePath());
-                }
+                LOGGER.debug("Deployment will now work from {}", file.getAbsolutePath());
             }
             if (!file.exists()) {
                 // assume it's a URL
@@ -593,9 +585,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             if (FileUtil.archiveContainsEntry(file, DescriptorFactory.DESCRIPTOR_FILE)) {
                 tmpDir = FileUtil.createUniqueDirectory(tmpRoot, file.getName());
                 FileUtil.unpackArchive(file, tmpDir);
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Unpacked archive " + location + " to " + tmpDir);
-                }
+                LOGGER.debug("Unpacked archive {} to {}", location, tmpDir);
             }
         } catch (IOException e) {
             throw new DeploymentException(e);
@@ -654,11 +644,11 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                                 entry.location = file.getName();
                                 entry.lastModified = new Date(file.lastModified());
                                 fileMap.put(file.getName(), entry);
-                                LOG.info("Directory: " + root.getName() + ": Archive changed: processing " + file.getName() + " ...");
+                                LOGGER.info("Directory: {}: Archive changed: processing {}...", root.getName(), file.getName());
                                 updateArchive(file.getAbsolutePath(), entry, true);
-                                LOG.info("Directory: " + root.getName() + ": Finished installation of archive:  " + file.getName());
+                                LOGGER.info("Directory: {}: Finished installation of archive: {}", root.getName(), file.getName());
                             } catch (Exception e) {
-                                LOG.warn("Directory: " + root.getName() + ": Automatic install of " + file + " failed", e);
+                                LOGGER.warn("Directory: " + root.getName() + ": Automatic install of " + file + " failed", e);
                             } finally {
                                 persistState(root, fileMap);
                             }
@@ -672,10 +662,10 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 if (!tmpList.contains(location)) {
                     ArchiveEntry entry = fileMap.remove(location);
                     try {
-                        LOG.info("Location " + location + " no longer exists - removing ...");
+                        LOGGER.info("Location {} no longer exists - removing ...", location);
                         removeArchive(entry);
                     } catch (DeploymentException e) {
-                        LOG.error("Failed to removeArchive: " + location, e);
+                        LOGGER.error("Failed to removeArchive: {}", location, e);
                     }
                 }
             }
@@ -688,7 +678,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
     private boolean isAvailable(File file) {
         // First check to see if the file is still growing
         if (!FileUtil.isFileFullyAvailable(file)) {
-            LOG.warn("File is still being copied, deployment deferred to next cycle: " + file.getName());
+            LOGGER.warn("File is still being copied, deployment deferred to next cycle: {}", file.getName());
             return false;
         }
 
@@ -698,7 +688,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             zip.size();
             zip.close();
         } catch (IOException e) {
-            LOG.warn("Unable to open deployment file, deployment deferred to next cycle: " + file.getName());
+            LOGGER.warn("Unable to open deployment file, deployment deferred to next cycle: {}", file.getName());
             return false;
         }
 
@@ -720,7 +710,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             File file = new File(environmentContext.getJbiRootDir(), root.getName() + ".xml");
             XmlPersistenceSupport.write(file, map);
         } catch (IOException e) {
-            LOG.error("Failed to persist file state to: " + root, e);
+            LOGGER.error("Failed to persist file state to: {}", root, e);
         }
     }
 
@@ -732,10 +722,10 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             if (file.exists()) {
                 result = (Map<String, ArchiveEntry>) XmlPersistenceSupport.read(file);
             } else {
-                LOG.debug("State file doesn't exist: " + file.getPath());
+                LOGGER.debug("State file doesn't exist: {}", file.getPath());
             }
         } catch (Exception e) {
-            LOG.error("Failed to read file state from: " + root, e);
+            LOGGER.error("Failed to read file state from: {}", root, e);
         }
         return result;
     }
@@ -746,7 +736,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 installFileMap = readState(environmentContext.getInstallationDir());
                 removePendingEntries(installFileMap);
             } catch (Exception e) {
-                LOG.error("Failed to read installed state", e);
+                LOGGER.error("Failed to read installed state", e);
             }
         }
         if (isMonitorDeploymentDirectory() && !container.isEmbedded()) {
@@ -754,7 +744,7 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
                 deployFileMap = readState(environmentContext.getDeploymentDir());
                 removePendingEntries(deployFileMap);
             } catch (Exception e) {
-                LOG.error("Failed to read deployed state", e);
+                LOGGER.error("Failed to read deployed state", e);
             }
         }
     }
@@ -828,4 +818,5 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             this.dependencies = dependencies;
         }
     }
+
 }

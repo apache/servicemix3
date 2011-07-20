@@ -30,8 +30,6 @@ import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanOperationInfo;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.JbiConstants;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.event.ComponentAdapter;
@@ -51,15 +49,15 @@ import org.apache.servicemix.jbi.management.OperationInfoHelper;
 import org.apache.servicemix.jbi.messaging.MessageExchangeImpl;
 import org.apache.servicemix.jbi.servicedesc.AbstractServiceEndpoint;
 import org.apache.servicemix.jbi.servicedesc.EndpointSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * 
- * @author gnodet
  * @org.apache.xbean.XBean element="statistics"
  */
 public class StatisticsService extends BaseSystemService implements StatisticsServiceMBean {
 
-    private static final Log LOG = LogFactory.getLog(StatisticsService.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(StatisticsService.class);
     
     private ConcurrentHashMap<String, ComponentStats> componentStats = new ConcurrentHashMap<String, ComponentStats>();
     private ConcurrentHashMap<String, EndpointStats> endpointStats = new ConcurrentHashMap<String, EndpointStats>();
@@ -93,9 +91,6 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
         return dumpStats;
     }
 
-    /**
-     * @param dumpStats the dumpStats to set
-     */
     public void setDumpStats(boolean value) {
         if (dumpStats && !value) {
             if (timerTask != null) {
@@ -319,10 +314,8 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
                     stats, 
                     ComponentStatsMBean.class);
         } catch (Exception e) {
-            LOG.info("Unable to register component statistics MBean: " + e.getMessage());
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Unable to register component statistics MBean", e);
-            }
+            LOGGER.info("Unable to register component statistics MBean: {}", e.getMessage());
+            LOGGER.debug("Unable to register component statistics MBean", e);
         }
     }
 
@@ -340,10 +333,8 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
         try {
             context.unregisterMBean(context.createObjectName(context.createObjectNameProps(stats, true)));
         } catch (Exception e) {
-            LOG.info("Unable to unregister component statistics MBean: " + e);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Unable to unregister component statistics MBean", e);
-            }
+            LOGGER.info("Unable to unregister component statistics MBean: {}", e);
+            LOGGER.debug("Unable to unregister component statistics MBean", e);
         }
     }
     
@@ -362,10 +353,8 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
                                   stats, 
                                   EndpointStatsMBean.class);
         } catch (Exception e) {
-            LOG.info("Unable to register endpoint statistics MBean: " + e.getMessage());
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Unable to register endpoint statistics MBean", e);
-            }
+            LOGGER.info("Unable to register endpoint statistics MBean: {}", e.getMessage());
+            LOGGER.debug("Unable to register endpoint statistics MBean", e);
         }
     }
 
@@ -380,10 +369,8 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
         try {
             context.unregisterMBean(context.createObjectName(context.createObjectNameProps(stats, true)));
         } catch (Exception e) {
-            LOG.info("Unable to unregister endpoint statistics MBean: " + e.getMessage());
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Unable to unregister endpoint statistics MBean", e);
-            }
+            LOGGER.info("Unable to unregister endpoint statistics MBean: {}", e.getMessage());
+            LOGGER.debug("Unable to unregister endpoint statistics MBean", e);
         }
     }
     
@@ -404,4 +391,5 @@ public class StatisticsService extends BaseSystemService implements StatisticsSe
     protected ConcurrentHashMap<String, ComponentStats> getComponentStats() {
         return componentStats;
     }
+
 }

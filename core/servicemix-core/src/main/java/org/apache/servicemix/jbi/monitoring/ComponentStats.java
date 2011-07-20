@@ -25,12 +25,12 @@ import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanOperationInfo;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.management.AttributeInfoHelper;
 import org.apache.servicemix.jbi.management.BaseLifeCycle;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Defines basic statistics on the Component
@@ -39,7 +39,7 @@ public class ComponentStats extends BaseLifeCycle implements ComponentStatsMBean
 
     public static final String STATS_FILE = "stats.csv";
     
-    private static final Log LOG = LogFactory.getLog(ComponentStats.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ComponentStats.class);
     
     private ComponentMBeanImpl component;
     private MessagingStats stats;
@@ -49,7 +49,7 @@ public class ComponentStats extends BaseLifeCycle implements ComponentStatsMBean
     /**
      * Constructor
      * 
-     * @param lcc
+     * @param component
      */
     public ComponentStats(ComponentMBeanImpl component) {
         this.component = component;
@@ -81,7 +81,7 @@ public class ComponentStats extends BaseLifeCycle implements ComponentStatsMBean
                 double outboundRate = stats.getOutboundExchangeRate().getAveragePerSecond();
                 statsWriter.println(inbound + "," + inboundRate + "," + outbound + "," + outboundRate);
             } catch (IOException e) {
-                LOG.warn("Failed to dump stats", e);
+                LOGGER.warn("Failed to dump stats", e);
             }
         }
     }

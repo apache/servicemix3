@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractFlow extends BaseLifeCycle implements Flow {
 
-    protected final static transient Logger LOGGER = LoggerFactory.getLogger(AbstractFlow.class);
+    protected static final transient Logger LOGGER = LoggerFactory.getLogger(AbstractFlow.class);
 
     protected Broker broker;
     protected ExecutorFactory executorFactory;
