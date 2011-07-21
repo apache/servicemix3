@@ -23,20 +23,18 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocketFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.security.keystore.KeystoreInstance;
 import org.apache.servicemix.jbi.security.keystore.KeystoreIsLocked;
 import org.apache.servicemix.jbi.security.keystore.KeystoreManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * 
  * @org.apache.xbean.XBean element="keystoreManager"
- *
  */
 public class BaseKeystoreManager implements KeystoreManager {
 
-    protected final Log log = LogFactory.getLog(getClass());
+    protected static final transient Logger LOGGER = LoggerFactory.getLogger(BaseKeystoreManager.class);
     
     protected KeystoreInstance[] keystores;
 
@@ -75,22 +73,12 @@ public class BaseKeystoreManager implements KeystoreManager {
      *            The trust keystore name as provided by listKeystores. The
      *            KeystoreInstance for this keystore must have unlocked this
      *            key.
-     * @param loader
-     *            The class loader used to resolve factory classes.
      * 
      * @return A created SSLSocketFactory item created from the KeystoreManager.
      * @throws GeneralSecurityException 
      * @throws KeystoreIsLocked
      *             Occurs when the requested key keystore cannot be used because
      *             it has not been unlocked.
-     * @throws KeyIsLocked
-     *             Occurs when the requested private key in the key keystore
-     *             cannot be used because it has not been unlocked.
-     * @throws NoSuchAlgorithmException
-     * @throws UnrecoverableKeyException
-     * @throws KeyStoreException
-     * @throws KeyManagementException
-     * @throws NoSuchProviderException
      */
     public SSLSocketFactory createSSLFactory(String provider, String protocol, 
                                              String algorithm, String keyStore,
@@ -143,7 +131,7 @@ public class BaseKeystoreManager implements KeystoreManager {
                                          new SecureRandom());
             return context.getSocketFactory();
         } catch (Exception e) {
-            log.error("Unable to dynamically load", e);
+            LOGGER.error("Unable to dynamically load", e);
             return null;
         }
     }
@@ -169,15 +157,10 @@ public class BaseKeystoreManager implements KeystoreManager {
      *            The trust keystore name as provided by listKeystores. The
      *            KeystoreInstance for this keystore must have unlocked this
      *            key.
-     * @param loader
-     *            The class loader used to resolve factory classes.
      * 
      * @throws KeystoreIsLocked
      *             Occurs when the requested key keystore cannot be used because
      *             it has not been unlocked.
-     * @throws KeyIsLocked
-     *             Occurs when the requested private key in the key keystore
-     *             cannot be used because it has not been unlocked.
      */
     public SSLServerSocketFactory createSSLServerFactory(String provider, String protocol, 
                                                          String algorithm, String keyStore, 
@@ -226,7 +209,7 @@ public class BaseKeystoreManager implements KeystoreManager {
                                          new SecureRandom());
             return context.getServerSocketFactory();
         } catch (Exception e) {
-            log.error("Unable to dynamically load", e);
+            LOGGER.error("Unable to dynamically load", e);
             return null;
         }
     }

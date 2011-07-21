@@ -33,8 +33,6 @@ import javax.management.MBeanOperationInfo;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.ComponentEnvironment;
 import org.apache.servicemix.jbi.container.EnvironmentContext;
 import org.apache.servicemix.jbi.container.JBIContainer;
@@ -48,6 +46,8 @@ import org.apache.servicemix.jbi.management.OperationInfoHelper;
 import org.apache.servicemix.jbi.management.ParameterHelper;
 import org.apache.servicemix.jbi.util.FileUtil;
 import org.apache.servicemix.jbi.util.FileVersionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Installation Service - installs/uninstalls archives
@@ -56,7 +56,7 @@ import org.apache.servicemix.jbi.util.FileVersionUtil;
  */
 public class InstallationService extends BaseSystemService implements InstallationServiceMBean {
 
-    private static final Log LOG = LogFactory.getLog(InstallationService.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(InstallationService.class);
 
     private EnvironmentContext environmentContext;
 
@@ -88,9 +88,7 @@ public class InstallationService extends BaseSystemService implements Installati
     public synchronized ObjectName loadNewInstaller(String installJarURL) {
         try {
             ObjectName result = null;
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Loading new installer from " + installJarURL);
-            }
+            LOGGER.debug("Loading new installer from {}", installJarURL);
             File tmpDir = AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(), installJarURL);
             if (tmpDir != null) {
                 Descriptor root = DescriptorFactory.buildDescriptor(tmpDir);
@@ -113,7 +111,7 @@ public class InstallationService extends BaseSystemService implements Installati
             }
             return result;
         } catch (Throwable t) {
-            LOG.error("Deployment failed", t);
+            LOGGER.error("Deployment failed", t);
             if (t instanceof Error) {
                 throw (Error) t;
             }
@@ -192,7 +190,7 @@ public class InstallationService extends BaseSystemService implements Installati
             }
         } catch (JBIException e) {
             String errStr = "Problem shutting down Component: " + componentName;
-            LOG.error(errStr, e);
+            LOGGER.error(errStr, e);
         }
         return result;
     }
@@ -223,7 +221,7 @@ public class InstallationService extends BaseSystemService implements Installati
                 throw new DeploymentException("Could not find JBI descriptor");
             }
         } catch (DeploymentException e) {
-            LOG.error("Deployment failed", e);
+            LOGGER.error("Deployment failed", e);
         }
         return result;
     }
@@ -306,7 +304,7 @@ public class InstallationService extends BaseSystemService implements Installati
                     if (props != null && props.size() > 0) {
                         ObjectName on = installer.getInstallerConfigurationMBean();
                         if (on == null) {
-                            LOG.warn("Could not find installation configuration MBean. Installation properties will be ignored.");
+                            LOGGER.warn("Could not find installation configuration MBean. Installation properties will be ignored.");
                         } else {
                             MBeanServer mbs = managementContext.getMBeanServer();
                             for (Iterator it = props.keySet().iterator(); it.hasNext();) {
@@ -330,11 +328,11 @@ public class InstallationService extends BaseSystemService implements Installati
                         if (lcc != null) {
                             lcc.start();
                         } else {
-                            LOG.warn("No ComponentConnector found for Component " + componentName);
+                            LOGGER.warn("No ComponentConnector found for Component {}", componentName);
                         }
                     } catch (JBIException e) {
                         String errStr = "Failed to start Component: " + componentName;
-                        LOG.error(errStr, e);
+                        LOGGER.error(errStr, e);
                         throw new DeploymentException(e);
                     }
                 }
@@ -390,12 +388,10 @@ public class InstallationService extends BaseSystemService implements Installati
                 if (!tmpDirectory.renameTo(installationDir)) {
                     throw new DeploymentException("Unable to rename " + tmpDirectory + " to " + installationDir);
                 }
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Moved " + tmpDirectory + " to " + installationDir);
-                }
+                LOGGER.debug("Moved {} to {}", tmpDirectory, installationDir);
                 container.getRegistry().registerSharedLibrary(descriptor, installationDir);
             } catch (Exception e) {
-                LOG.error("Deployment of Shared Library failed", e);
+                LOGGER.error("Deployment of Shared Library failed", e);
                 // remove any files created for installation
                 FileUtil.deleteFile(installationDir);
                 throw new DeploymentException(e);
@@ -414,15 +410,13 @@ public class InstallationService extends BaseSystemService implements Installati
             File oldInstallationDir = environmentContext.getComponentInstallationDir(name);
             // try and delete the old version ? - maybe should leave around ??
             if (!FileUtil.deleteFile(oldInstallationDir)) {
-                LOG.warn("Failed to delete old installation directory: " + oldInstallationDir.getPath());
+                LOGGER.warn("Failed to delete old installation directory: {}", oldInstallationDir.getPath());
             }
             File componentRoot = environmentContext.createComponentRootDir(name);
             // this will get the new one
             File installationDir = environmentContext.getNewComponentInstallationDir(name);
             tmpDirectory.renameTo(installationDir);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Moved " + tmpDirectory + " to " + installationDir);
-            }
+            LOGGER.debug("Moved {} to {}", tmpDirectory, installationDir);
             result = initializeInstaller(installationDir, componentRoot, descriptor);
             return result;
         } catch (IOException e) {
@@ -447,7 +441,7 @@ public class InstallationService extends BaseSystemService implements Installati
             result.setObjectName(objectName);
             managementContext.registerMBean(objectName, result, InstallerMBean.class, "standard installation controls for a Component");
         } catch (Throwable e) {
-            LOG.error("Deployment of Component failed", e);
+            LOGGER.error("Deployment of Component failed", e);
             // remove any files created for installation
             environmentContext.removeComponentRootDirectory(descriptor.getIdentification().getName());
             throw new DeploymentException(e);
@@ -497,7 +491,7 @@ public class InstallationService extends BaseSystemService implements Installati
                     try {
                         container.getRegistry().registerSharedLibrary(sl, dir);
                     } catch (Exception e) {
-                        LOG.error("Failed to initialize sharted library", e);
+                        LOGGER.error("Failed to initialize sharted library", e);
                     }
                 }
             }
@@ -520,8 +514,8 @@ public class InstallationService extends BaseSystemService implements Installati
                     try {
                         buildComponent(directory);
                     } catch (DeploymentException e) {
-                        LOG.error("Could not build Component: " + directory.getName(), e);
-                        LOG.warn("Deleting Component directory: " + directory);
+                        LOGGER.error("Could not build Component: {}", directory.getName(), e);
+                        LOGGER.warn("Deleting Component directory: {}", directory);
                         FileUtil.deleteFile(directory);
                     }
                 }
@@ -544,7 +538,7 @@ public class InstallationService extends BaseSystemService implements Installati
                 nonLoadedInstallers.put(componentName, installer);
             }
         } catch (Throwable e) {
-            LOG.error("Failed to deploy component: " + componentDirectory.getName(), e);
+            LOGGER.error("Failed to deploy component: {}", componentDirectory.getName(), e);
             throw new DeploymentException(e);
         }
     }

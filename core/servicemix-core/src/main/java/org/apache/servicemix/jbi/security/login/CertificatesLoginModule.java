@@ -35,22 +35,21 @@ import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.security.GroupPrincipal;
 import org.apache.servicemix.jbi.security.UserPrincipal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * This login module authenticate users given an X509 certificate.
- * 
  */
 public class CertificatesLoginModule implements LoginModule {
 
     private static final String USER_FILE = "org.apache.servicemix.security.certificates.user";
     private static final String GROUP_FILE = "org.apache.servicemix.security.certificates.group";
 
-    private static final Log LOG = LogFactory.getLog(CertificatesLoginModule.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(CertificatesLoginModule.class);
 
     private Subject subject;
     private CallbackHandler callbackHandler;
@@ -78,7 +77,7 @@ public class CertificatesLoginModule implements LoginModule {
         groupsFile = (String) options.get(GROUP_FILE) + "";
 
         if (debug) {
-            LOG.debug("Initialized debug=" + debug + " usersFile=" + usersFile + " groupsFile=" + groupsFile
+            LOGGER.debug("Initialized debug=" + debug + " usersFile=" + usersFile + " groupsFile=" + groupsFile
                             + " basedir=" + baseDir);
         }
     }
@@ -119,7 +118,7 @@ public class CertificatesLoginModule implements LoginModule {
                 user = (String) entry.getKey();
                 principals.add(principal);
                 if (debug) {
-                    LOG.debug("login " + user);
+                    LOGGER.debug("login {}", user);
                 }
                 return true;
             }
@@ -146,7 +145,7 @@ public class CertificatesLoginModule implements LoginModule {
         clear();
 
         if (debug) {
-            LOG.debug("commit");
+            LOGGER.debug("commit");
         }
         return true;
     }
@@ -155,7 +154,7 @@ public class CertificatesLoginModule implements LoginModule {
         clear();
 
         if (debug) {
-            LOG.debug("abort");
+            LOGGER.debug("abort");
         }
         return true;
     }
@@ -165,7 +164,7 @@ public class CertificatesLoginModule implements LoginModule {
         principals.clear();
 
         if (debug) {
-            LOG.debug("logout");
+            LOGGER.debug("logout");
         }
         return true;
     }
@@ -174,4 +173,5 @@ public class CertificatesLoginModule implements LoginModule {
         groups.clear();
         user = null;
     }
+
 }

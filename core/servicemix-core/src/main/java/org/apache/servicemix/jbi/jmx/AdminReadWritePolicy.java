@@ -20,9 +20,9 @@ import java.lang.reflect.Method;
 import java.security.Principal;
 import javax.security.auth.Subject;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.security.GroupPrincipal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Policy implementation that grants read-write access to members of the 'admin' group
@@ -32,7 +32,8 @@ import org.apache.servicemix.jbi.security.GroupPrincipal;
  */
 public class AdminReadWritePolicy extends Policy {
 
-    private static final Log LOG = LogFactory.getLog(AdminReadWritePolicy.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(AdminReadWritePolicy.class);
+
     private static final String INVOKE = "invoke";
 
     /**
@@ -43,7 +44,7 @@ public class AdminReadWritePolicy extends Policy {
         if (isReadOnly(method) || isAdmin(subject) || isInvokeReadOnly(method, args)) {
             // allow the method invocation
         } else {
-            LOG.warn(String.format("Denied access to MBeanServer.%s(%s) to %s",
+            LOGGER.warn(String.format("Denied access to MBeanServer.%s(%s) to %s",
                                    method.getName(), explode(args), subject));
             throw new SecurityException("Not authorized to run MBeanServer." + method.getName()
                                         + "\n(" + explode(args) + ")");
@@ -92,4 +93,5 @@ public class AdminReadWritePolicy extends Policy {
     public String toString() {
         return "admin group read-write access";
     }
+
 }

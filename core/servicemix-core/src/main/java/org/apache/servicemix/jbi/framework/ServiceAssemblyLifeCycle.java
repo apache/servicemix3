@@ -43,8 +43,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.ServiceAssemblyEnvironment;
 import org.apache.servicemix.jbi.deployment.Connection;
 import org.apache.servicemix.jbi.deployment.Consumes;
@@ -58,6 +56,9 @@ import org.apache.servicemix.jbi.management.MBeanInfoProvider;
 import org.apache.servicemix.jbi.management.OperationInfoHelper;
 import org.apache.servicemix.jbi.util.XmlPersistenceSupport;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * ComponentConnector is used internally for message routing
  * 
@@ -65,7 +66,7 @@ import org.apache.servicemix.jbi.util.XmlPersistenceSupport;
  */
 public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfoProvider {
 
-    private static final Log LOG = LogFactory.getLog(ServiceAssemblyLifeCycle.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ServiceAssemblyLifeCycle.class);
 
     private ServiceAssembly serviceAssembly;
 
@@ -83,7 +84,8 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
      * Construct a LifeCycle
      * 
      * @param sa
-     * @param stateFile
+     * @param env
+     * @param registry
      */
     public ServiceAssemblyLifeCycle(ServiceAssembly sa, 
                                     ServiceAssemblyEnvironment env,
@@ -104,7 +106,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
      * @throws Exception
      */
     public synchronized String init() throws Exception {
-        LOG.info("Initializing service assembly: " + getName());
+        LOGGER.info("Initializing service assembly: {}", getName());
         // Init service units
         List<Element> componentFailures = new ArrayList<Element>();
         for (int i = 0; i < sus.length; i++) {
@@ -130,7 +132,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
     }
     
     public synchronized String start(boolean writeState) throws Exception {
-        LOG.info("Starting service assembly: " + getName());
+        LOGGER.info("Starting service assembly: {}", getName());
         // Start connections
         try {
             startConnections();
@@ -180,7 +182,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
     }
     
     public synchronized String stop(boolean writeState, boolean forceInit) throws Exception {
-        LOG.info("Stopping service assembly: " + getName());
+        LOGGER.info("Stopping service assembly: {}", getName());
         // Stop connections
         stopConnections();
         // Stop service units
@@ -226,7 +228,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
     }
     
     public synchronized String shutDown(boolean writeState) throws Exception {
-        LOG.info("Shutting down service assembly: " + getName());
+        LOGGER.info("Shutting down service assembly: {}", getName());
         if (currentState != STOPPED) {
             this.stop(writeState, false);
         }
@@ -326,7 +328,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
                 XmlPersistenceSupport.write(env.getStateFile(), props);
             }
         } catch (IOException e) {
-            LOG.error("Failed to write current running state for ServiceAssembly: " + getName(), e);
+            LOGGER.error("Failed to write current running state for ServiceAssembly: {}", getName(), e);
         }
     }
 
@@ -340,7 +342,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
                 return props.getProperty("state", SHUTDOWN);
             }
         } catch (Exception e) {
-            LOG.error("Failed to read current running state for ServiceAssembly: " + getName(), e);
+            LOGGER.error("Failed to read current running state for ServiceAssembly: {}", getName(), e);
         }
         return null;
     }
@@ -438,7 +440,7 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
             Document doc = parse(resultMsg);
             result = getElement(doc, "component-task-result");
         } catch (Exception e) {
-            LOG.warn("Could not parse result exception", e);
+            LOGGER.warn("Could not parse result exception", e);
         }
         if (result == null) {
             result = ManagementSupport.createComponentFailure(
@@ -535,7 +537,6 @@ public class ServiceAssemblyLifeCycle implements ServiceAssemblyMBean, MBeanInfo
                 break;
             }
         }
-        
     }
 
 }

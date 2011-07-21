@@ -34,10 +34,10 @@ import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.security.GroupPrincipal;
 import org.apache.servicemix.jbi.security.UserPrincipal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JAAS Login module for user / password, based on two properties files. 
@@ -47,7 +47,8 @@ public class PropertiesLoginModule implements LoginModule {
 
     private static final String USER_FILE = "org.apache.servicemix.security.properties.user";
     private static final String GROUP_FILE = "org.apache.servicemix.security.properties.group";
-    private static final Log LOG = LogFactory.getLog(PropertiesLoginModule.class);
+
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(PropertiesLoginModule.class);
 
     private Subject subject;
     private CallbackHandler callbackHandler;
@@ -75,7 +76,7 @@ public class PropertiesLoginModule implements LoginModule {
         groupsFile = (String) options.get(GROUP_FILE) + "";
 
         if (debug) {
-            LOG.debug("Initialized debug=" + debug + " usersFile=" + usersFile + " groupsFile=" + groupsFile + " basedir=" + baseDir);
+            LOGGER.debug("Initialized debug=" + debug + " usersFile=" + usersFile + " groupsFile=" + groupsFile + " basedir=" + baseDir);
         }
     }
 
@@ -122,7 +123,7 @@ public class PropertiesLoginModule implements LoginModule {
         users.clear();
 
         if (debug) {
-            LOG.debug("login " + user);
+            LOGGER.debug("login {}", user);
         }
         return true;
     }
@@ -146,7 +147,7 @@ public class PropertiesLoginModule implements LoginModule {
         clear();
 
         if (debug) {
-            LOG.debug("commit");
+            LOGGER.debug("commit");
         }
         return true;
     }
@@ -155,7 +156,7 @@ public class PropertiesLoginModule implements LoginModule {
         clear();
 
         if (debug) {
-            LOG.debug("abort");
+            LOGGER.debug("abort");
         }
         return true;
     }
@@ -165,7 +166,7 @@ public class PropertiesLoginModule implements LoginModule {
         principals.clear();
 
         if (debug) {
-            LOG.debug("logout");
+            LOGGER.debug("logout");
         }
         return true;
     }
@@ -174,4 +175,5 @@ public class PropertiesLoginModule implements LoginModule {
         groups.clear();
         user = null;
     }
+
 }

@@ -17,7 +17,6 @@
 package org.apache.servicemix.jbi.framework;
 
 import java.util.MissingResourceException;
-import java.util.logging.Logger;
 
 import javax.jbi.JBIException;
 import javax.jbi.component.Component;
@@ -33,13 +32,14 @@ import javax.xml.namespace.QName;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.ComponentEnvironment;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.container.SubscriptionSpec;
 import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This context provides access to data needed by all JBI components running in the JBI environment.
@@ -48,7 +48,7 @@ import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
  */
 public class ComponentContextImpl implements ComponentContext, MBeanNames {
     
-    private static final Log LOG = LogFactory.getLog(ComponentContextImpl.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ComponentContextImpl.class);
     
     private ComponentNameSpace componentName;
     private ComponentEnvironment environment;
@@ -73,10 +73,8 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      * Activate the ComponentContext
      * 
      * @param comp
-     * @param channel
      * @param env
      * @param spec
-     * @param installRoot
      */
     public void activate(Component comp, 
                          ComponentEnvironment env,
@@ -120,8 +118,8 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      */
     public ServiceEndpoint activateEndpoint(QName serviceName, String endpointName) throws JBIException {
         checkActivated();
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Component: " + componentName.getName() + " activated endpoint: " + serviceName + " : " + endpointName);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Component: " + componentName.getName() + " activated endpoint: " + serviceName + " : " + endpointName);
         }
         return container.getRegistry().activateEndpoint(this, serviceName, endpointName);
     }
@@ -190,7 +188,6 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
 
     /**
      * @return the Delivery Channel
-     * @throws MessagingException
      */
     public DeliveryChannel getDeliveryChannel() {
         return deliveryChannel;
@@ -452,7 +449,7 @@ public class ComponentContextImpl implements ComponentContext, MBeanNames {
      * @exception JBIException if the resourceBundleName has changed from a previous invocation by this component of
      * this method with the same suffix.
      */
-    public Logger getLogger(String suffix, String resourceBundleName) throws MissingResourceException, JBIException {
+    public java.util.logging.Logger getLogger(String suffix, String resourceBundleName) throws MissingResourceException, JBIException {
         String name = suffix != null ? suffix : "";
         name = componentName.getName() + name;
         return container.getLogger(name, resourceBundleName);

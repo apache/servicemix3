@@ -41,8 +41,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.EnvironmentContext;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.container.ServiceAssemblyEnvironment;
@@ -57,6 +55,9 @@ import org.apache.servicemix.jbi.management.ParameterHelper;
 import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.servicemix.jbi.util.FileUtil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The deployment service MBean allows administrative tools to manage service assembly deployments.
  * 
@@ -64,7 +65,7 @@ import org.apache.servicemix.jbi.util.FileUtil;
  */
 public class DeploymentService extends BaseSystemService implements DeploymentServiceMBean {
     
-    private static final Log LOG = LogFactory.getLog(DeploymentService.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(DeploymentService.class);
     
     private EnvironmentContext environmentContext;
     private Registry registry;
@@ -101,7 +102,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
                 ServiceAssemblyLifeCycle sa = registry.getServiceAssembly(sas[j]);
                 sa.init();
             } catch (Exception e) {
-                LOG.error("Unable to initialize state for service assembly " + sas[j], e);
+                LOGGER.error("Unable to initialize state for service assembly {}", sas[j], e);
             }
         }
         // This loop will restore SAs
@@ -110,7 +111,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
                 ServiceAssemblyLifeCycle sa = registry.getServiceAssembly(sas[i]);
                 sa.restore(false); // Do not force init SUs 
             } catch (Exception e) {
-                LOG.error("Unable to restore state for service assembly " + sas[i], e);
+                LOGGER.error("Unable to restore state for service assembly {}", sas[i], e);
             }
         }
         container.getBroker().resume();
@@ -217,7 +218,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
             }
             return deployServiceAssembly(tmpDir, sa);
         } catch (Exception e) {
-            LOG.error("Error deploying service assembly", e);
+            LOGGER.error("Error deploying service assembly", e);
             throw e;
         }
     }
@@ -263,7 +264,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
 
             return result;
         } catch (Exception e) {
-            LOG.info("Unable to undeploy assembly", e);
+            LOGGER.info("Unable to undeploy assembly", e);
             throw e;
         }
     }
@@ -283,7 +284,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
             }
             return names;
         } catch (Exception e) {
-            LOG.info("Unable to get deployed service unit list", e);
+            LOGGER.info("Unable to get deployed service unit list", e);
             throw e;
         }
     }
@@ -297,7 +298,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         try {
             return registry.getDeployedServiceAssemblies();
         } catch (Exception e) {
-            LOG.info("Unable to get deployed service assemblies", e);
+            LOGGER.info("Unable to get deployed service assemblies", e);
             throw e;
         }
     }
@@ -328,7 +329,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         try {
             return registry.getDeployedServiceAssembliesForComponent(componentName);
         } catch (Exception e) {
-            LOG.info("Error in getDeployedServiceAssembliesForComponent", e);
+            LOGGER.info("Error in getDeployedServiceAssembliesForComponent", e);
             throw e;
         }
     }
@@ -344,7 +345,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         try {
             return registry.getComponentsForDeployedServiceAssembly(saName);
         } catch (Exception e) {
-            LOG.info("Error in getComponentsForDeployedServiceAssembly", e);
+            LOGGER.info("Error in getComponentsForDeployedServiceAssembly", e);
             throw e;
         }
     }
@@ -361,7 +362,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         try {
             return registry.isSADeployedServiceUnit(componentName, suName);
         } catch (Exception e) {
-            LOG.info("Error in isSADeployedServiceUnit", e);
+            LOGGER.info("Error in isSADeployedServiceUnit", e);
             throw e;
         }
     }
@@ -389,7 +390,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
             ServiceAssemblyLifeCycle sa = registry.getServiceAssembly(serviceAssemblyName);
             return sa.start(true);
         } catch (Exception e) {
-            LOG.info("Error in start", e);
+            LOGGER.info("Error in start", e);
             throw e;
         }
     }
@@ -408,7 +409,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
             ServiceAssemblyLifeCycle sa = registry.getServiceAssembly(serviceAssemblyName);
             return sa.stop(true, false);
         } catch (Exception e) {
-            LOG.info("Error in stop", e);
+            LOGGER.info("Error in stop", e);
             throw e;
         }
     }
@@ -425,7 +426,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
             ServiceAssemblyLifeCycle sa = registry.getServiceAssembly(serviceAssemblyName);
             return sa.shutDown(true);
         } catch (Exception e) {
-            LOG.info("Error in shutDown", e);
+            LOGGER.info("Error in shutDown", e);
             throw e;
         }
     }
@@ -442,7 +443,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
             ServiceAssemblyLifeCycle sa = registry.getServiceAssembly(serviceAssemblyName);
             return sa.getCurrentState();
         } catch (Exception e) {
-            LOG.info("Error in getState", e);
+            LOGGER.info("Error in getState", e);
             throw e;
         }
     }
@@ -471,9 +472,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         File saDirectory = env.getInstallDir();
 
         // move the assembly to a well-named holding area
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Moving " + tmpDir.getAbsolutePath() + " to " + saDirectory.getAbsolutePath());
-        }
+        LOGGER.debug("Moving {} to {}", tmpDir.getAbsolutePath(), saDirectory.getAbsolutePath());
         saDirectory.getParentFile().mkdirs();
         if (!tmpDir.renameTo(saDirectory)) {
             throw ManagementSupport.failure("deploy", "Failed to rename " + tmpDir + " to " + saDirectory);
@@ -498,9 +497,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
                 try {
                     File artifactFile = new File(saDirectory, artifact);
                     targetDir = env.getServiceUnitDirectory(componentName, suName);
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Unpack service unit archive " + artifactFile + " to " + targetDir);
-                    }
+                    LOGGER.debug("Unpack service unit archive {} to {}", artifactFile, targetDir);
                     FileUtil.unpackArchive(artifactFile, targetDir);
                 } catch (IOException e) {
                     nbFailures++;
@@ -547,7 +544,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
                     ServiceUnitLifeCycle su = registry.getServiceUnit(suName);
                     undeployServiceUnit(su);
                 } catch (Exception e) {
-                    LOG.warn("Error undeploying SU", e);
+                    LOGGER.warn("Error undeploying SU", e);
                 }
             }
             // Delete SA deployment directory 
@@ -640,7 +637,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
                             "Unable to parse result string", e);
                 }
             } catch (Exception e2) {
-                LOG.error(e2);
+                LOGGER.error(e2.getMessage());
                 result = null;
             }
         }
@@ -692,14 +689,14 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         } else {
             FileUtil.deleteFile(targetDir);
         }
-        LOG.info("UnDeployed ServiceUnit " + name + " from Component: " + componentName);
+        LOGGER.info("UnDeployed ServiceUnit {} from Component: {}", name, componentName);
     }
 
     /**
      * Find runnning state and things deployed before shutdown
      */
     protected void buildState() {
-        LOG.info("Restoring service assemblies");
+        LOGGER.info("Restoring service assemblies");
         // walk through deployed SA's
         File top = environmentContext.getServiceAssembliesDir();
         if (top == null || !top.exists() || !top.isDirectory()) {
@@ -723,7 +720,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
                         }
                     }
                 } catch (Exception e) {
-                    LOG.error("Failed to initialized service assembly: " + assemblyName, e);
+                    LOGGER.error("Failed to initialized service assembly: {}", assemblyName, e);
                 }
             }
         }

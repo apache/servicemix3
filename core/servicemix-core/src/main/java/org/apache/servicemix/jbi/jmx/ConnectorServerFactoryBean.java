@@ -26,8 +26,8 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.security.auth.Subject;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -44,8 +44,7 @@ import org.springframework.jmx.support.JmxUtils;
  *
  * This xbean-enabled factory is a wrapper on top of the existing Spring
  * factory bean.  It also logs the serviceUrl when starting.
- * 
- * @author gnodet
+ *
  * @org.apache.xbean.XBean element="jmxConnector"
  */
 public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean, DisposableBean {
@@ -71,7 +70,8 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
 
     private static final Constants CONSTANTS = new Constants(ConnectorServerFactoryBean.class);
 
-    private Log log = LogFactory.getLog(ConnectorServerFactoryBean.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ConnectorServerFactoryBean.class);
+
     private org.springframework.jmx.support.ConnectorServerFactoryBean csfb = 
                     new org.springframework.jmx.support.ConnectorServerFactoryBean();
     private String serviceUrl = org.springframework.jmx.support.ConnectorServerFactoryBean.DEFAULT_SERVICE_URL;
@@ -109,7 +109,6 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
      * itself with the <code>MBeanServer</code>.
      * @param objectName
      * @throws MalformedObjectNameException if the <code>ObjectName</code> is malformed
-     * @see org.springframework.jmx.support.ConnectorServerFactoryBean#setObjectName(java.lang.String)
      */
     public void setObjectName(String objectName) throws MalformedObjectNameException {
         this.objectName = objectName;
@@ -205,7 +204,7 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
         
         MBeanServer mbs = server;
         if (policy != null) {
-            log.info("Configuring JMX authorization policy: " + policy); 
+            LOGGER.info("Configuring JMX authorization policy: {}", policy);
             if (mbs == null) {
                 mbs = createProxyForPolicy(JmxUtils.locateMBeanServer());
             } else {
@@ -215,7 +214,7 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
         csfb.setServer(mbs);
         
         csfb.afterPropertiesSet();
-        log.info("JMX connector available at: " + serviceUrl);
+        LOGGER.info("JMX connector available at: {}", serviceUrl);
     }
 
     private MBeanServer createProxyForPolicy(final MBeanServer mbs) {
@@ -264,4 +263,5 @@ public class ConnectorServerFactoryBean implements FactoryBean, InitializingBean
             }
         }
     }
+
 }

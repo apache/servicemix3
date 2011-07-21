@@ -31,11 +31,11 @@ import javax.management.InstanceNotFoundException;
 import javax.management.MBeanRegistrationException;
 import javax.management.ObjectName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.xbean.classloader.DestroyableClassLoader;
 import org.apache.xbean.classloader.JarFileClassLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * InstallerMBean defines standard installation and uninstallation controls for Binding Components and Service Engines.
@@ -45,7 +45,7 @@ import org.apache.xbean.classloader.JarFileClassLoader;
  */
 public class InstallerMBeanImpl implements InstallerMBean {
     
-    private static final Log LOG = LogFactory.getLog(InstallerMBeanImpl.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(InstallerMBeanImpl.class);
     
     private InstallationContextImpl context;
     private JBIContainer container;
@@ -91,7 +91,7 @@ public class InstallerMBeanImpl implements InstallerMBean {
                 initialized = true;
             }
         } catch (JBIException e) {
-            LOG.error("Could not initialize bootstrap", e);
+            LOGGER.error("Could not initialize bootstrap", e);
             throw new DeploymentException(e);
         } 
     }
@@ -100,7 +100,7 @@ public class InstallerMBeanImpl implements InstallerMBean {
         try {
             bootstrap.cleanUp();
         } catch (JBIException e) {
-            LOG.error("Could not initialize bootstrap", e);
+            LOGGER.error("Could not initialize bootstrap", e);
             throw new DeploymentException(e);
         } finally {
             initialized = false;
@@ -120,16 +120,16 @@ public class InstallerMBeanImpl implements InstallerMBean {
             Class bootstrapClass = cl.loadClass(descriptor.getBootstrapClassName());
             return (Bootstrap) bootstrapClass.newInstance();
         } catch (MalformedURLException e) {
-            LOG.error("Could not create class loader", e);
+            LOGGER.error("Could not create class loader", e);
             throw new DeploymentException(e);
         } catch (ClassNotFoundException e) {
-            LOG.error("Class not found: " + descriptor.getBootstrapClassName(), e);
+            LOGGER.error("Class not found: {}", descriptor.getBootstrapClassName(), e);
             throw new DeploymentException(e);
         } catch (InstantiationException e) {
-            LOG.error("Could not instantiate : " + descriptor.getBootstrapClassName(), e);
+            LOGGER.error("Could not instantiate: {}", descriptor.getBootstrapClassName(), e);
             throw new DeploymentException(e);
         } catch (IllegalAccessException e) {
-            LOG.error("Illegal access on: " + descriptor.getBootstrapClassName(), e);
+            LOGGER.error("Illegal access on: {}", descriptor.getBootstrapClassName(), e);
             throw new DeploymentException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
@@ -194,22 +194,22 @@ public class InstallerMBeanImpl implements InstallerMBean {
                                     context.isEngine(), 
                                     context.getSharedLibraries());
         } catch (MalformedURLException e) {
-            LOG.error("Could not create class loader", e);
+            LOGGER.error("Could not create class loader", e);
             throw new DeploymentException(e);
         } catch (NoClassDefFoundError e) {
-            LOG.error("Class not found: " + descriptor.getBootstrapClassName(), e);
+            LOGGER.error("Class not found: {}", descriptor.getBootstrapClassName(), e);
             throw new DeploymentException(e);
         } catch (ClassNotFoundException e) {
-            LOG.error("Class not found: " + descriptor.getBootstrapClassName(), e);
+            LOGGER.error("Class not found: {}", descriptor.getBootstrapClassName(), e);
             throw new DeploymentException(e);
         } catch (InstantiationException e) {
-            LOG.error("Could not instantiate : " + descriptor.getBootstrapClassName(), e);
+            LOGGER.error("Could not instantiate: {}", descriptor.getBootstrapClassName(), e);
             throw new DeploymentException(e);
         } catch (IllegalAccessException e) {
-            LOG.error("Illegal access on: " + descriptor.getBootstrapClassName(), e);
+            LOGGER.error("Illegal access on: {}", descriptor.getBootstrapClassName(), e);
             throw new DeploymentException(e);
         } catch (JBIException e) {
-            LOG.error("Could not initialize : " + descriptor.getBootstrapClassName(), e);
+            LOGGER.error("Could not initialize: {}", descriptor.getBootstrapClassName(), e);
             throw new DeploymentException(e);
         }  finally {
             Thread.currentThread().setContextClassLoader(oldCl);
@@ -319,9 +319,8 @@ public class InstallerMBeanImpl implements InstallerMBean {
         for (int i = 0; i < classPathNames.length; i++) {
             File file = new File(dir, classPathNames[i]);
             if (!file.exists()) {
-                LOG.warn("Unable to add File " + file
-                        + " to class path as it doesn't exist: "
-                        + file.getAbsolutePath());
+                LOGGER.warn("Unable to add File {} to class path as it doesn't exist: {}",
+                        file, file.getAbsolutePath());
             }
             urls.add(file.toURL());
         }
@@ -333,9 +332,7 @@ public class InstallerMBeanImpl implements InstallerMBean {
                         !parentFirst,
                         new String[0],
                         new String[] {"java.", "javax." }); 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Component class loader: " + cl);
-        }
+        LOGGER.debug("Component class loader: {}", cl);
         return cl;
     }
 

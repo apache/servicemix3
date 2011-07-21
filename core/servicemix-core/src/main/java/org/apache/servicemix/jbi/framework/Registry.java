@@ -40,8 +40,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.executors.Executor;
 import org.apache.servicemix.jbi.container.ActivationSpec;
 import org.apache.servicemix.jbi.container.EnvironmentContext;
@@ -61,6 +59,9 @@ import org.apache.servicemix.jbi.servicedesc.InternalEndpoint;
 import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.servicemix.jbi.util.WSAddressingConstants;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Registry - state infomation including running state, SA's deployed etc.
  * 
@@ -68,7 +69,7 @@ import org.apache.servicemix.jbi.util.WSAddressingConstants;
  */
 public class Registry extends BaseSystemService implements RegistryMBean {
     
-    private static final Log LOG = LogFactory.getLog(Registry.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(Registry.class);
     
     private ComponentRegistry componentRegistry;
     private EndpointRegistry endpointRegistry;
@@ -385,13 +386,13 @@ public class Registry extends BaseSystemService implements RegistryMBean {
                 }
             }
         } catch (Exception e) {
-            LOG.debug("Unable to resolve EPR: " + e);
+            LOGGER.debug("Unable to resolve EPR: " + e);
         }
         return null;
     }
 
     /**
-     * @param provider
+     * @param cns
      * @param externalEndpoint the external endpoint to be registered, must be non-null.
      * @throws JBIException 
      */
@@ -402,7 +403,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     }
 
     /**
-     * @param provider
+     * @param cns
      * @param externalEndpoint the external endpoint to be deregistered; must be non-null.
      */
     public void deregisterExternalEndpoint(ComponentNameSpace cns, ServiceEndpoint externalEndpoint) {
@@ -452,7 +453,6 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * @param name
      * @param description
      * @param component
-     * @param dc
      * @param binding
      * @param service
      * @return ComponentConnector
@@ -648,7 +648,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     
     /**
      * Get a named ServiceAssembly
-     * @param name
+     * @param saName
      * @return the ServiceAssembly or null if it doesn't exist
      */
     public ServiceAssemblyLifeCycle getServiceAssembly(String saName) {
@@ -740,7 +740,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
      * Register a ServiceUnit.
      * 
      * @param su the service unit to register
-     * @param serviceAssembly the service assembly the service unit belongs to 
+     * @param saName the service assembly the service unit belongs to
      * @return the service unit key
      */
     public String registerServiceUnit(ServiceUnit su, String saName, File suDir) {
@@ -754,7 +754,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
             ObjectName objectName = getContainer().getManagementContext().createObjectName(sulc);
             getContainer().getManagementContext().registerMBean(objectName, sulc, ServiceUnitMBean.class);
         } catch (JMException e) {
-            LOG.error("Could not register MBean for service unit", e);
+            LOGGER.error("Could not register MBean for service unit", e);
         }
         return sulc.getKey();
     }
@@ -770,7 +770,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
             try {
                 getContainer().getManagementContext().unregisterMBean(sulc);
             } catch (JBIException e) {
-                LOG.error("Could not unregister MBean for service unit", e);
+                LOGGER.error("Could not unregister MBean for service unit", e);
             }
         }
     }
@@ -783,7 +783,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
             ObjectName objectName = getContainer().getManagementContext().createObjectName(library);
             getContainer().getManagementContext().registerMBean(objectName, library, SharedLibraryMBean.class);
         } catch (JMException e) {
-            LOG.error("Could not register MBean for service unit", e);
+            LOGGER.error("Could not register MBean for service unit", e);
         }
         checkPendingComponents();
     }
@@ -797,7 +797,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
                 getContainer().getManagementContext().unregisterMBean(sl);
                 sl.dispose();
             } catch (JBIException e) {
-                LOG.error("Could not unregister MBean for shared library", e);
+                LOGGER.error("Could not unregister MBean for shared library", e);
             }
         }
     }
@@ -864,7 +864,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
                     sa.restore();
                     pendingAssemblies.remove(sa);
                 } catch (Exception e) {
-                    LOG.error("Error trying to restore service assembly state", e);
+                    LOGGER.error("Error trying to restore service assembly state", e);
                 }
             }
         }
@@ -957,4 +957,5 @@ public class Registry extends BaseSystemService implements RegistryMBean {
             }
         }      
     }
+
 }

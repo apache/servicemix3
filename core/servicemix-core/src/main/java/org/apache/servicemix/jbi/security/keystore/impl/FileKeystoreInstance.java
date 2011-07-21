@@ -40,19 +40,19 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.security.keystore.KeystoreInstance;
 import org.apache.servicemix.jbi.security.keystore.KeystoreIsLocked;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 
 /**
- * 
  * @org.apache.xbean.XBean element="keystore"
  */
 public class FileKeystoreInstance implements KeystoreInstance {
 
-    private static final Log LOG = LogFactory.getLog(FileKeystoreInstance.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(FileKeystoreInstance.class);
+
     private static final String JKS = "JKS";
     
     private Resource path;
@@ -124,7 +124,7 @@ public class FileKeystoreInstance implements KeystoreInstance {
         try {
             return keystore.getCertificate(alias);
         } catch (KeyStoreException e) {
-            LOG.error("Unable to read certificate from keystore", e);
+            LOGGER.error("Unable to read certificate from keystore", e);
         }
         return null;
     }
@@ -136,7 +136,7 @@ public class FileKeystoreInstance implements KeystoreInstance {
         try {
             return keystore.getCertificateAlias(cert);
         } catch (KeyStoreException e) {
-            LOG.error("Unable to read retrieve alias for given certificate from keystore", e);
+            LOGGER.error("Unable to read retrieve alias for given certificate from keystore", e);
         }
         return null;
     }
@@ -148,7 +148,7 @@ public class FileKeystoreInstance implements KeystoreInstance {
         try {
             return keystore.getCertificateChain(alias);
         } catch (KeyStoreException e) {
-            LOG.error("Unable to read certificate chain from keystore", e);
+            LOGGER.error("Unable to read certificate chain from keystore", e);
         }
         return null;
     }
@@ -179,11 +179,11 @@ public class FileKeystoreInstance implements KeystoreInstance {
                 return (PrivateKey) key;
             }
         } catch (KeyStoreException e) {
-            LOG.error("Unable to read private key from keystore", e);
+            LOGGER.error("Unable to read private key from keystore", e);
         } catch (NoSuchAlgorithmException e) {
-            LOG.error("Unable to read private key from keystore", e);
+            LOGGER.error("Unable to read private key from keystore", e);
         } catch (UnrecoverableKeyException e) {
-            LOG.error("Unable to read private key from keystore", e);
+            LOGGER.error("Unable to read private key from keystore", e);
         }
         return null;
     }
@@ -256,13 +256,13 @@ public class FileKeystoreInstance implements KeystoreInstance {
             }
             return true;
         } catch (KeyStoreException e) {
-            LOG.error("Unable to open keystore with provided password", e);
+            LOGGER.error("Unable to open keystore with provided password", e);
         } catch (IOException e) {
-            LOG.error("Unable to open keystore with provided password", e);
+            LOGGER.error("Unable to open keystore with provided password", e);
         } catch (NoSuchAlgorithmException e) {
-            LOG.error("Unable to open keystore with provided password", e);
+            LOGGER.error("Unable to open keystore with provided password", e);
         } catch (CertificateException e) {
-            LOG.error("Unable to open keystore with provided password", e);
+            LOGGER.error("Unable to open keystore with provided password", e);
         }
         return false;
     }

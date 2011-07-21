@@ -28,10 +28,10 @@ import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.security.auth.AuthenticationService;
 import org.apache.servicemix.jbi.security.login.CertificateCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the authentication service using JAAS. 
@@ -40,15 +40,13 @@ import org.apache.servicemix.jbi.security.login.CertificateCallback;
  */
 public class JAASAuthenticationService implements AuthenticationService {
 
-    private static final Log LOG = LogFactory.getLog(JAASAuthenticationService.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(JAASAuthenticationService.class);
     
     public void authenticate(Subject subject,
                              String domain,
                              final String user, 
                              final Object credentials) throws GeneralSecurityException {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Authenticating '" + user);
-        }
+        LOGGER.debug("Authenticating {}", user);
         LoginContext loginContext = new LoginContext(domain, subject, new CallbackHandler() {
             public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
                 for (int i = 0; i < callbacks.length; i++) {
@@ -68,13 +66,9 @@ public class JAASAuthenticationService implements AuthenticationService {
         });
         try {
             loginContext.login();
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Authenticating " + user + " successfully");
-            }
+            LOGGER.debug("Authenticating {} successfully", user);
         } catch (GeneralSecurityException e) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Error authenticating " + user, e);
-            }
+            LOGGER.debug("Error authenticating {}", user, e);
             throw e;
         }
     }
