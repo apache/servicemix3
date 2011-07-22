@@ -16,8 +16,8 @@
  */
 package org.apache.servicemix.web.jmx;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jmx.MBeanServerNotFoundException;
 import org.springframework.jmx.access.MBeanInfoRetrievalException;
 import org.springframework.jmx.access.MBeanProxyFactoryBean;
@@ -33,7 +33,8 @@ import java.io.IOException;
  */
 public class EnhancedMBeanProxyFactoryBean extends MBeanProxyFactoryBean {
 
-    private static final Log LOG = LogFactory.getLog(EnhancedMBeanProxyFactoryBean.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(EnhancedMBeanProxyFactoryBean.class);
+
     protected static final String WEBSPHERE = "WebSphere";
 	
 	private MBeanServerConnection connection;
@@ -46,9 +47,7 @@ public class EnhancedMBeanProxyFactoryBean extends MBeanProxyFactoryBean {
 				doWebSphereConfiguration();
 			}
 		} catch (IOException e) {
-			if (LOG.isDebugEnabled()) {
-                LOG.debug("Unable to determine default domain name - assuming it's not WebSphere", e);
-            }
+			LOGGER.debug("Unable to determine default domain name - assuming it's not WebSphere", e);
 		}
 		super.afterPropertiesSet();
 	}
@@ -58,7 +57,7 @@ public class EnhancedMBeanProxyFactoryBean extends MBeanProxyFactoryBean {
      * JMX MBean object name.
      */
 	private void doWebSphereConfiguration() {
-		LOG.info("Running on WebSphere - adding cell/node/process information to " + originalName);
+		LOGGER.info("Running on WebSphere - adding cell/node/process information to {}", originalName);
 
 		try {
             String cell = null;
@@ -74,9 +73,7 @@ public class EnhancedMBeanProxyFactoryBean extends MBeanProxyFactoryBean {
 
             String name = String.format("%s,cell=%s,node=%s,process=%s", originalName, cell, node, process);
             super.setObjectName(name);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Object name has been changed to " + name);
-            }
+            LOGGER.debug("Object name has been changed to {}", name);
 		} catch (MalformedObjectNameException e) {
             throw new MBeanInfoRetrievalException("Unable to determine cell/node/process information while running in WebSphere", e);
 		} catch (IOException e) {
@@ -97,4 +94,5 @@ public class EnhancedMBeanProxyFactoryBean extends MBeanProxyFactoryBean {
         this.originalName = name != null ? name.toString() : null;
         super.setObjectName(name);
     }
+
 }

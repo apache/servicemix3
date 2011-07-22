@@ -25,10 +25,10 @@ import javax.jbi.messaging.NormalizedMessage;
 
 import junit.framework.Assert;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.Message;
 import org.apache.servicemix.client.MessageListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple container for performing testing and rendezvous style code.
@@ -37,7 +37,7 @@ import org.apache.servicemix.client.MessageListener;
  */
 public class MessageList extends Assert implements MessageListener {
 
-    private static final Log LOG = LogFactory.getLog(MessageList.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(MessageList.class);
 
     private List messages = new ArrayList();
 
@@ -93,7 +93,7 @@ public class MessageList extends Assert implements MessageListener {
     }
 
     public void waitForMessagesToArrive(int messageCount, long baseTimeout) {
-        LOG.info("Waiting for message to arrive");
+        LOGGER.info("Waiting for message to arrive");
 
         long start = System.currentTimeMillis();
 
@@ -106,12 +106,12 @@ public class MessageList extends Assert implements MessageListener {
                     semaphore.wait(4000);
                 }
             } catch (InterruptedException e) {
-                LOG.info("Caught: " + e);
+                LOGGER.info("Caught: {}", e);
             }
         }
         long end = System.currentTimeMillis() - start;
 
-        LOG.info("End of wait for " + end + " millis");
+        LOGGER.info("End of wait for {} millis", end);
     }
 
     /**
@@ -139,4 +139,5 @@ public class MessageList extends Assert implements MessageListener {
     public void onMessage(MessageExchange exchange, Message message) throws Exception {
         addMessage(message);
     }
+
 }

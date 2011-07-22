@@ -38,19 +38,22 @@ import org.xml.sax.SAXException;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.SpringJBIContainer;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.util.DOMUtil;
 import org.apache.xpath.CachedXPathAPI;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.context.support.AbstractXmlApplicationContext;
 
 /**
  * @version $Revision$
  */
 public abstract class SpringTestSupport extends TestCase {
-    protected transient Log log = LogFactory.getLog(getClass());
+
+    protected static final transient Logger LOGGER = LoggerFactory.getLogger(SpringTestSupport.class);
 
     protected AbstractXmlApplicationContext context;
 
@@ -76,7 +79,7 @@ public abstract class SpringTestSupport extends TestCase {
 
     protected void tearDown() throws Exception {
         if (context != null) {
-            log.info("Closing down the spring context");
+            LOGGER.info("Closing down the spring context");
             context.destroy();
         }
     }
@@ -134,8 +137,8 @@ public abstract class SpringTestSupport extends TestCase {
         int counter = 0;
         for (Iterator iter = list.iterator(); iter.hasNext();) {
             NormalizedMessage message = (NormalizedMessage) iter.next();
-            log.info("Message " + (counter++) + " is: " + message);
-            log.info(transformer.contentToString(message));
+            LOGGER.info("Message {} is: {}", counter++, message);
+            LOGGER.info(transformer.contentToString(message));
         }
     }
 
@@ -150,4 +153,5 @@ public abstract class SpringTestSupport extends TestCase {
             fail("Received fault: " + new SourceTransformer().toString(me.getFault().getContent()));
         }
     }
+
 }

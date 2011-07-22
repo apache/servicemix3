@@ -29,10 +29,10 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.util.PojoSupport;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @version $Revision$
@@ -43,7 +43,7 @@ public class SenderPojo extends PojoSupport implements ComponentLifeCycle, Sende
 
     public static final String ENDPOINT = "sender";
 
-    private static final Log LOG = LogFactory.getLog(SenderPojo.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(SenderPojo.class);
 
     protected QName interfaceName;
     protected int numMessages = 10;
@@ -77,12 +77,12 @@ public class SenderPojo extends PojoSupport implements ComponentLifeCycle, Sende
     }
 
     public void sendMessages(int messageCount, boolean sync) throws MessagingException {
-        LOG.info("Looking for services for interface: " + interfaceName);
+        LOGGER.info("Looking for services for interface: {}", interfaceName);
 
         ServiceEndpoint[] endpoints = context.getEndpointsForService(interfaceName);
         if (endpoints.length > 0) {
             ServiceEndpoint endpoint = endpoints[0];
-            LOG.info("Sending to endpoint: " + endpoint);
+            LOGGER.info("Sending to endpoint: {}", endpoint);
 
             for (int i = 0; i < messageCount; i++) {
                 InOnly exchange = context.getDeliveryChannel().createExchangeFactory().createInOnlyExchange();
@@ -94,9 +94,9 @@ public class SenderPojo extends PojoSupport implements ComponentLifeCycle, Sende
                            + "  <s12:Body><foo>Hello!</foo> </s12:Body>"
                            + "</s12:Envelope>";
                 message.setContent(new StringSource(xml));
-                LOG.info("sending message: " + i);
+                LOGGER.info("sending message: {}", i);
                 DeliveryChannel deliveryChannel = context.getDeliveryChannel();
-                LOG.info("sync send on deliverychannel: " + deliveryChannel);
+                LOGGER.info("sync send on deliverychannel: {}", deliveryChannel);
                 if (sync) {
                     deliveryChannel.sendSync(exchange);
                 } else {
@@ -104,7 +104,7 @@ public class SenderPojo extends PojoSupport implements ComponentLifeCycle, Sende
                 }
             }
         } else {
-            LOG.warn("No endpoints available for interface: " + interfaceName);
+            LOGGER.warn("No endpoints available for interface: {}", interfaceName);
         }
     }
 
@@ -125,4 +125,5 @@ public class SenderPojo extends PojoSupport implements ComponentLifeCycle, Sende
     public void setNumMessages(int numMessages) {
         this.numMessages = numMessages;
     }
+
 }

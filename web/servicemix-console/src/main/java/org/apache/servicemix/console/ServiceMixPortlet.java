@@ -16,8 +16,6 @@
  */
 package org.apache.servicemix.console;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.audit.AuditorMBean;
 import org.apache.servicemix.jbi.audit.jdbc.JdbcAuditor;
 import org.apache.servicemix.jbi.container.JBIContainer;
@@ -25,6 +23,8 @@ import org.apache.servicemix.jbi.framework.DeploymentService;
 import org.apache.servicemix.jbi.framework.InstallationService;
 import org.apache.servicemix.jbi.management.ManagementContext;
 import org.apache.servicemix.jbi.management.ManagementContextMBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jbi.management.DeploymentServiceMBean;
 import javax.jbi.management.InstallationServiceMBean;
@@ -54,7 +54,7 @@ import java.util.Map;
 
 public abstract class ServiceMixPortlet extends GenericPortlet {
 
-    protected final Log log = LogFactory.getLog(getClass());
+    protected static final transient Logger LOGGER = LoggerFactory.getLogger(ServiceMixPortlet.class);
     
     protected PortletRequestDispatcher normalView;
     protected PortletRequestDispatcher helpView;
@@ -85,7 +85,7 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
                 url = new JMXServiceURL(jmxUrl);
             }
             catch (MalformedURLException e) {
-                log.error("error creating serviceURL: ", e);
+                LOGGER.error("error creating serviceURL: ", e);
             }
         }
         return url;
@@ -98,7 +98,7 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
      * @throws IOException
      */
     public JMXConnector getJMXConnector (JMXServiceURL url) throws IOException {
-        log.info("Connecting to JBI Container at: " + url);
+        LOGGER.info("Connecting to JBI Container at: {}", url);
         String[] credentials = new String[] { username, password };
         Map environment = new HashMap();
         environment.put(JMXConnector.CREDENTIALS, credentials);
@@ -106,12 +106,12 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
     }
     
     protected void doHelp(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
-        log.debug("doHelp");
+        LOGGER.debug("doHelp");
         helpView.include(renderRequest, renderResponse);
     }
 
     protected void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
-        log.debug("doView");
+        LOGGER.debug("doView");
         if (WindowState.MINIMIZED.equals(renderRequest.getWindowState())) {
             return;
         }
@@ -122,16 +122,16 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
             }
             renderView(renderRequest, renderResponse);
         } catch (PortletException e) {
-            log.error("Error rendering portlet", e);
+            LOGGER.error("Error rendering portlet", e);
             closeConnector();
             throw e;
         } catch (IOException e) {
-            log.error("Error rendering portlet", e);
+            LOGGER.error("Error rendering portlet", e);
             closeConnector();
             throw e;
         } catch (Exception e) {
             try {
-                log.debug("Error rendering portlet", e);
+                LOGGER.debug("Error rendering portlet", e);
                 renderRequest.setAttribute("exception", e);
                 errorView.include(renderRequest, renderResponse);
             } finally {
@@ -163,7 +163,7 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
     }
 
     public void init(PortletConfig portletConfig) throws PortletException {
-        log.debug("init");
+        LOGGER.debug("init");
         super.init(portletConfig);
         PortletContext pc = portletConfig.getPortletContext();
         normalView = pc.getRequestDispatcher("/WEB-INF/view/" + getPortletName() + "/view.jsp");
@@ -188,7 +188,7 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
     }
 
     public void processAction(ActionRequest actionRequest, ActionResponse actionResponse) throws PortletException, IOException {
-        log.debug("processAction: " + actionRequest);
+        LOGGER.debug("processAction: {}", actionRequest);
         try {
             // Retrieve the jmx connector
             if (this.jmxConnector == null) {
@@ -197,15 +197,15 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
             // Fill request
             doProcessAction(actionRequest, actionResponse);
         } catch (PortletException e) {
-            log.error("Error processing action", e);
+            LOGGER.error("Error processing action", e);
             closeConnector();
             throw e;
         } catch (IOException e) {
-            log.error("Error processing action", e);
+            LOGGER.error("Error processing action", e);
             closeConnector();
             throw e;
         } catch (Exception e) {
-            log.error("Error processing action", e);
+            LOGGER.error("Error processing action", e);
             closeConnector();
             throw new PortletException("Error processing action", e);
         }
@@ -224,7 +224,7 @@ public abstract class ServiceMixPortlet extends GenericPortlet {
             try {
                 jmxConnector.close();
             } catch (Exception e) {
-                log.warn("caught an error closing the jmxConnector", e);
+                LOGGER.warn("caught an error closing the jmxConnector", e);
             } finally {
                 jmxConnector = null;
             }

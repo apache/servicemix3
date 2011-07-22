@@ -22,10 +22,10 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.MessageExchangeListener;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple tracing component which can be placed inside a pipeline
@@ -35,16 +35,12 @@ import org.apache.servicemix.jbi.jaxp.SourceTransformer;
  */
 public class TraceComponent extends ComponentSupport implements MessageExchangeListener {
 
-    private Log log = LogFactory.getLog(TraceComponent.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(TraceComponent.class);
 
     private SourceTransformer sourceTransformer = new SourceTransformer();
 
-    public Log getLog() {
-        return log;
-    }
-
-    public void setLog(Log log) {
-        this.log = log;
+    public Logger getLog() {
+        return LOGGER;
     }
 
     public SourceTransformer getSourceTransformer() {
@@ -65,13 +61,13 @@ public class TraceComponent extends ComponentSupport implements MessageExchangeL
         // lets dump the incoming message  
         NormalizedMessage message = exchange.getMessage("in");
         if (message == null) {
-            log.warn("Received null message from exchange: " + exchange);
+            LOGGER.warn("Received null message from exchange: {}", exchange);
         } else {
-            log.info("Exchange: " + exchange + " received IN message: " + message);
+            LOGGER.info("Exchange: {} received IN message: {}", exchange, message);
             try {
-                log.info("Body is: " + sourceTransformer.toString(message.getContent()));
+                LOGGER.info("Body is: {}", sourceTransformer.toString(message.getContent()));
             } catch (TransformerException e) {
-                log.error("Failed to turn message body into text: " + e, e);
+                LOGGER.error("Failed to turn message body into text: {}", e.getMessage(), e);
             }
             outputProperties(message);
         }
@@ -103,10 +99,11 @@ public class TraceComponent extends ComponentSupport implements MessageExchangeL
                     contents = getSourceTransformer().toString((Source) contents);
                 }
 
-                log.info("Value for property '" + key + "' is: " + contents);
+                LOGGER.info("Value for property '{}' is: {}", key, contents);
             } catch (TransformerException e) {
-                log.error("Failed to turn property '" + key + "' value into text: " + e, e);
+                LOGGER.error("Failed to turn property '{}' value into text", key, e);
             }
         }
     }
+
 }

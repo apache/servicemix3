@@ -25,9 +25,9 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.MessageExchangeListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A base class for bindings which process inbound JBI messages
@@ -36,7 +36,7 @@ import org.apache.servicemix.MessageExchangeListener;
  */
 public abstract class OutBinding extends ComponentSupport implements Runnable, MessageExchangeListener {
 
-    private static final Log LOG = LogFactory.getLog(OutBinding.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(OutBinding.class);
 
     private AtomicBoolean stop = new AtomicBoolean(true);
     private Thread runnable;
@@ -50,9 +50,7 @@ public abstract class OutBinding extends ComponentSupport implements Runnable, M
                 NormalizedMessage message = getInMessage(exchange);
                 process(exchange, message);
             } catch (Exception e) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Exchange failed", e);
-                }
+                LOGGER.debug("Exchange failed", e);
                 fail(exchange, e);
             }
         }
@@ -70,7 +68,7 @@ public abstract class OutBinding extends ComponentSupport implements Runnable, M
                     try {
                         onMessageExchange(exchange);
                     } catch (MessagingException e) {
-                        LOG.error("MessageExchange processing failed", e);
+                        LOGGER.error("MessageExchange processing failed", e);
                     }
                 }
             }
@@ -79,7 +77,7 @@ public abstract class OutBinding extends ComponentSupport implements Runnable, M
             // i.e. the exception has not been thrown to interrupt
             // this thread
             if (!stop.get()) {
-                LOG.error("run failed", e);
+                LOGGER.error("run failed", e);
             }
         }
     }
@@ -104,7 +102,7 @@ public abstract class OutBinding extends ComponentSupport implements Runnable, M
             try {
                 runnable.join();
             } catch (InterruptedException e) {
-                LOG.warn("Unable to stop component polling thread", e);
+                LOGGER.warn("Unable to stop component polling thread", e);
             }
             runnable = null;
         }
@@ -132,4 +130,5 @@ public abstract class OutBinding extends ComponentSupport implements Runnable, M
      * @throws Exception if an error occurs
      */
     protected abstract void process(MessageExchange messageExchange, NormalizedMessage message) throws Exception;
+
 }

@@ -16,15 +16,15 @@
  */
 package org.apache.servicemix.geronimo;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.geronimo.gbean.GBeanInfo;
 import org.apache.geronimo.gbean.GBeanInfoBuilder;
 import org.apache.geronimo.gbean.GBeanLifecycle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SharedLibrary implements GBeanLifecycle {
 
-    private static final Log log = LogFactory.getLog(SharedLibrary.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(SharedLibrary.class);
     
     private String name;
     private String description;
@@ -41,15 +41,15 @@ public class SharedLibrary implements GBeanLifecycle {
     }
 
     public void doStart() throws Exception {
-        log.info("doStart called for JBI service assembly: " + name);
+        LOGGER.info("doStart called for JBI service assembly: {}", name);
     }
 
     public void doStop() throws Exception {
-        log.info("doStop called for JBI service assembly: " + name);
+        LOGGER.info("doStop called for JBI service assembly: {}", name);
     }
 
     public void doFail() {
-        log.info("doFail called for JBI service assembly: " + name);
+        LOGGER.info("doFail called for JBI service assembly: {}", name);
     }
     
     public static final GBeanInfo GBEAN_INFO;

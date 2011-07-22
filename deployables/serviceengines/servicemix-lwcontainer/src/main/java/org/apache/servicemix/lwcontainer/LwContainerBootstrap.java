@@ -22,19 +22,18 @@ import javax.jbi.component.InstallationContext;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for components bootstrap.
- * 
- * @author Guillaume Nodet
+ *
  * @version $Revision$
  * @since 3.0
  */
 public class LwContainerBootstrap implements Bootstrap {
 
-    protected final transient Log logger = LogFactory.getLog(getClass());
+    protected static final transient Logger LOGGER = LoggerFactory.getLogger(LwContainerBootstrap.class);
     
     protected InstallationContext context;
     protected ObjectName mbeanName;
@@ -59,14 +58,10 @@ public class LwContainerBootstrap implements Bootstrap {
      */
     public void init(InstallationContext installContext) throws JBIException {
         try {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Initializing bootstrap");
-            }
+            LOGGER.debug("Initializing bootstrap");
             this.context = installContext;
             doInit();
-            if (logger.isDebugEnabled()) {
-                logger.debug("Bootstrap initialized");
-            }
+            LOGGER.debug("Bootstrap initialized");
         } catch (JBIException e) {
             throw e;
         } catch (Exception e) {
@@ -94,13 +89,9 @@ public class LwContainerBootstrap implements Bootstrap {
      */
     public void cleanUp() throws JBIException {
         try {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Cleaning up bootstrap");
-            }
+            LOGGER.debug("Cleaning up bootstrap");
             doCleanUp();
-            if (logger.isDebugEnabled()) {
-                logger.debug("Bootstrap cleaned up");
-            }
+            LOGGER.debug("Bootstrap cleaned up");
         } catch (JBIException e) {
             throw e;
         } catch (Exception e) {
@@ -125,13 +116,9 @@ public class LwContainerBootstrap implements Bootstrap {
      */
     public void onInstall() throws JBIException {
         try {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Bootstrap onInstall");
-            }
+            LOGGER.debug("Bootstrap onInstall");
             doOnInstall();
-            if (logger.isDebugEnabled()) {
-                logger.debug("Bootstrap onInstall done");
-            }
+            LOGGER.debug("Bootstrap onInstall done");
         } catch (JBIException e) {
             throw e;
         } catch (Exception e) {
@@ -147,13 +134,9 @@ public class LwContainerBootstrap implements Bootstrap {
      */
     public void onUninstall() throws JBIException {
         try {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Bootstrap onUninstall");
-            }
+            LOGGER.debug("Bootstrap onUninstall");
             doOnUninstall();
-            if (logger.isDebugEnabled()) {
-                logger.debug("Bootstrap onUninstall done");
-            }
+            LOGGER.debug("Bootstrap onUninstall done");
         } catch (JBIException e) {
             throw e;
         } catch (Exception e) {

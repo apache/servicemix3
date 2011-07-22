@@ -25,20 +25,20 @@ import javax.jbi.messaging.MessagingException;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.container.InstallComponent;
 import org.apache.servicemix.jbi.container.InstallSharedLibrary;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * 
  * @version $Revision$
  */
 public class LwContainerComponentTest extends TestCase {
-    private static transient Log log = LogFactory.getLog(LwContainerComponentTest.class);
+
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(LwContainerComponentTest.class);
 
     protected JBIContainer container = new JBIContainer();
 
@@ -57,7 +57,7 @@ public class LwContainerComponentTest extends TestCase {
         if (!tempTemp.mkdirs()) {
             fail("Unable to create temporary working root directory [" + tempTemp.getAbsolutePath() + "]");
         }
-        log.info("Using temporary root directory [" + tempRootDir.getAbsolutePath() + "]");
+        LOGGER.info("Using temporary root directory [{}]", tempRootDir.getAbsolutePath());
 
         container.setRootDir(tempRootDir.getAbsolutePath());
         container.setMonitorInstallationDirectory(false);
@@ -151,7 +151,7 @@ public class LwContainerComponentTest extends TestCase {
     }
 
     public static boolean deleteDir(File dir) {
-        log.info("Deleting directory : " + dir.getAbsolutePath());
+        LOGGER.info("Deleting directory: {}", dir.getAbsolutePath());
         if (dir.isDirectory()) {
             String[] children = dir.list();
             for (int i = 0; i < children.length; i++) {
@@ -164,4 +164,5 @@ public class LwContainerComponentTest extends TestCase {
         // The directory is now empty so delete it
         return dir.delete();
     }
+
 }

@@ -24,8 +24,6 @@ import java.util.Properties;
 
 import javax.jbi.component.ServiceUnitManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.geronimo.gbean.AbstractName;
 import org.apache.geronimo.gbean.GBeanInfo;
 import org.apache.geronimo.gbean.GBeanInfoBuilder;
@@ -35,10 +33,12 @@ import org.apache.geronimo.kernel.Kernel;
 import org.apache.geronimo.kernel.repository.Artifact;
 import org.apache.servicemix.jbi.deployment.Descriptor;
 import org.apache.servicemix.jbi.deployment.DescriptorFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ServiceAssembly implements GBeanLifecycle {
 
-    private static final Log log = LogFactory.getLog(ServiceAssembly.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ServiceAssembly.class);
     
     private String name;
     private Container container;
@@ -61,21 +61,21 @@ public class ServiceAssembly implements GBeanLifecycle {
         } else {
             this.rootDir = URI.create(configurationBaseUrl.toString());
         }
-        log.info("Created JBI service assembly: " + name);
+        LOGGER.info("Created JBI service assembly: {}", name);
 	}
 	
     public void doStart() throws Exception {
-        log.info("doStart called for JBI service assembly: " + name);
+        LOGGER.info("doStart called for JBI service assembly: {}", name);
         container.register(this);
     }
 
     public void doStop() throws Exception {
-        log.info("doStop called for JBI service assembly: " + name);
+        LOGGER.info("doStop called for JBI service assembly: {}", name);
         container.unregister(this);
     }
 
     public void doFail() {
-        log.info("doFail called for JBI service assembly: " + name);
+        LOGGER.info("doFail called for JBI service assembly: {}", name);
     }
 	
     public URI getRootDir() {

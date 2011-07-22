@@ -198,8 +198,8 @@ public abstract class TestSupport extends SpringTestSupport {
         String value = textValueOfXPath(node, xpath);
         String xmlText = transformer.toString(node);
 
-        if (log.isTraceEnabled()) {
-            log.trace("Message: " + index + " received XML: " + xmlText);
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("Message: " + index + " received XML: " + xmlText);
         }
 
         assertEquals("message XML: " + index + " for xpath: " + xpath + " body was: " + xmlText, expectedValue, value);

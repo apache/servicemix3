@@ -34,8 +34,6 @@ import javax.jbi.component.Component;
 import javax.jbi.component.ServiceUnitManager;
 import javax.management.MalformedObjectNameException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.geronimo.common.DeploymentException;
 import org.apache.geronimo.deployment.ConfigurationBuilder;
 import org.apache.geronimo.deployment.DeploymentContext;
@@ -66,10 +64,12 @@ import org.apache.servicemix.jbi.deployment.DescriptorFactory;
 import org.apache.servicemix.jbi.deployment.ServiceUnit;
 import org.apache.servicemix.jbi.deployment.SharedLibraryList;
 import org.apache.xmlbeans.XmlObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ServiceMixConfigBuilder implements ConfigurationBuilder {
 
-    private static final Log log = LogFactory.getLog(ServiceMixConfigBuilder.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ServiceMixConfigBuilder.class);
 
     private final Environment defaultEnvironment;
 
@@ -118,7 +118,7 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
      */
     public Object getDeploymentPlan(File planFile, JarFile module, ModuleIDBuilder idBuilder)
                     throws DeploymentException {
-        log.debug("Checking for ServiceMix deployment.");
+        LOGGER.debug("Checking for ServiceMix deployment.");
         if (module == null) {
             return null;
         }
@@ -140,7 +140,7 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
 					object = XmlObject.Factory.parse(planFile);
 				}
 			} catch (Exception e) {
-				log.info("error " + e);
+				LOGGER.info("Error", e);
 			}
 			
 			if (object != null) {
@@ -159,7 +159,7 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
 						
             return new DeploymentPlanWrapper(descriptor, geronimoPlan);
         } catch (Exception e) {
-            log.debug("Not a ServiceMix deployment: no jbi.xml found.", e);
+            LOGGER.debug("Not a ServiceMix deployment: no jbi.xml found.", e);
             // no jbi.xml, not for us
             return null;
         }
@@ -203,7 +203,7 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
      * @param inPlaceDeployment
      * @param configId
      * @param plan
-     * @param earFile
+     * @param jarFile
      * @param configurationStores
      * @param artifactResolver
      * @param targetConfigurationStore
@@ -217,15 +217,15 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
                     JarFile jarFile, Collection configurationStores, ArtifactResolver artifactResolver,
                     ConfigurationStore targetConfigurationStore) throws IOException, DeploymentException {
         if (plan == null) {
-            log.warn("Expected a Descriptor but received null");
+            LOGGER.warn("Expected a Descriptor but received null");
             return null;
         }
         if (plan instanceof DeploymentPlanWrapper == false) {
-            log.warn("Expected a Descriptor but received a " + plan.getClass().getName());
+            LOGGER.warn("Expected a Descriptor but received a {}", plan.getClass().getName());
             return null;
         }
         if (((DeploymentPlanWrapper)plan).getServicemixDescriptor() == null) {
-            log.warn("Expected a SM Descriptor but received null");
+            LOGGER.warn("Expected a SM Descriptor but received null");
             return null;
         }
         File configurationDir;
@@ -245,11 +245,11 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
         	if (wrapper.getGeronimoPlan().getJbi() != null) {
         		EnvironmentType environmentType = wrapper.getGeronimoPlan().getJbi().getEnvironment();
         		if (environmentType != null) {
-        			log.debug("Environment found in Geronimo Plan for Servicemix " + environmentType);
+        			LOGGER.debug("Environment found in Geronimo Plan for ServiceMix {}", environmentType);
         			Environment geronimoPlanEnvironment = EnvironmentBuilder.buildEnvironment(environmentType);
         			EnvironmentBuilder.mergeEnvironments(environment, geronimoPlanEnvironment);
         		} else {
-        			log.debug("no additional environment entry found in deployment plan for JBI component");
+        			LOGGER.debug("no additional environment entry found in deployment plan for JBI component");
         		}
         	}
         }
@@ -360,7 +360,7 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
              File installDir = new File(context.getBaseDir(), installUri.toString());
              String deploy = serviceUnitManager.deploy(name, installDir.getAbsolutePath());  
              serviceUnitReferences.add(new ServiceUnitReference(sl, name, installDir.getAbsolutePath()));
-             log.debug(deploy);
+             LOGGER.debug(deploy);
         }
         // Create the JBI deployment managed object
         Properties props = new Properties();
@@ -431,7 +431,7 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
             String[] pathElements = descriptor.getSharedLibrary().getSharedLibraryClassPath().getPathElements();
             if (pathElements != null) {
                 for (int i = 0; i < pathElements.length; i++) {
-                    log.debug("Processing pathElements[" + i + "]: " + pathElements[i]);
+                    LOGGER.debug("Processing pathElements[{}]: {}", i, pathElements[i]);
                     // We can not add includes directly, so move the file and
                     // include it
                     File include = new File(targetDir, pathElements[i]);
@@ -445,10 +445,10 @@ public class ServiceMixConfigBuilder implements ConfigurationBuilder {
                     temp.delete();
                 }
             } else {
-                log.debug("SharedLibrary().getSharedLibraryClassPath().getPathElements() is null");
+                LOGGER.debug("SharedLibrary().getSharedLibraryClassPath().getPathElements() is null");
             }
         } else {
-            log.debug("SharedLibrary().getSharedLibraryClassPath() is null");
+            LOGGER.debug("SharedLibrary().getSharedLibraryClassPath() is null");
         }
         // Create the JBI deployment managed object
         Properties props = new Properties();

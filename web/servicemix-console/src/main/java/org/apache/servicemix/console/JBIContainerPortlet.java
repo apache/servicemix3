@@ -76,7 +76,7 @@ public class JBIContainerPortlet extends ServiceMixPortlet {
         try {
             return (String) getServerConnection().getAttribute(name, attribute);
         } catch (Exception e) {
-            log.error("Could not retrieve attribute '" + attribute + "' for mbean '" + name + "'");
+            LOGGER.error("Could not retrieve attribute '" + attribute + "' for mbean '" + name + "'");
             return null;
         }
     }

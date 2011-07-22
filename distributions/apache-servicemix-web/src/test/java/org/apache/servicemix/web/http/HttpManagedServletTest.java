@@ -25,8 +25,6 @@ import junit.framework.TestCase;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xbean.spring.context.XmlWebApplicationContext;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Handler;
@@ -38,10 +36,13 @@ import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.servlet.ServletHandler;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.servlet.ServletMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ContextLoaderListener;
 
 public class HttpManagedServletTest extends TestCase {
-    private static Log logger = LogFactory.getLog(HttpManagedServletTest.class);
+
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(HttpManagedServletTest.class);
 
     private Server server;
 
@@ -84,7 +85,7 @@ public class HttpManagedServletTest extends TestCase {
         server.setHandler(handlers);
         server.start();
 
-        logger.info("Started");
+        LOGGER.info("Started");
 
         PostMethod post = new PostMethod("http://localhost:8190/test/jbi/Service/");
         post.setRequestEntity(new StringRequestEntity(
@@ -92,6 +93,7 @@ public class HttpManagedServletTest extends TestCase {
                                         + "<soap:Body><hello>world</hello></soap:Body>" + "</soap:Envelope>"));
         new HttpClient().executeMethod(post);
         assertEquals(200, post.getStatusCode());
-        logger.info(post.getResponseBodyAsString());
+        LOGGER.info(post.getResponseBodyAsString());
     }
+
 }

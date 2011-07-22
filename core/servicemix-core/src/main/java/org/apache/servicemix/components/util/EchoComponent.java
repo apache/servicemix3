@@ -21,9 +21,9 @@ import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.MessageExchangeListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple, yet useful component for testing synchronous flows. Echos back Exchanges
@@ -32,7 +32,7 @@ import org.apache.servicemix.MessageExchangeListener;
  */
 public class EchoComponent extends TransformComponentSupport implements MessageExchangeListener {
     
-    private static final Log LOG = LogFactory.getLog(EchoComponent.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EchoComponent.class);
     
     public EchoComponent() {
     }
@@ -43,7 +43,8 @@ public class EchoComponent extends TransformComponentSupport implements MessageE
     
     protected boolean transform(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws MessagingException {
         getMessageTransformer().transform(exchange, in, out);
-        LOG.info("Echoed back message: " + out);
+        LOGGER.info("Echoed back message: {}", out);
         return true;
     }
+
 }

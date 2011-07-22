@@ -19,15 +19,15 @@ package org.apache.servicemix.geronimo;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.geronimo.gbean.GBeanInfo;
 import org.apache.geronimo.gbean.GBeanInfoBuilder;
 import org.apache.geronimo.gbean.GBeanLifecycle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Component implements GBeanLifecycle {
 
-    private static final Log log = LogFactory.getLog(Component.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(Component.class);
 
     private String name;
 
@@ -65,28 +65,28 @@ public class Component implements GBeanLifecycle {
         this.installDir = rootDir.resolve("install/");
         this.workDir = rootDir.resolve("workspace/");
         this.classLoader = classLoader;
-        log.debug("Created JBI component: " + name);
+        LOGGER.debug("Created JBI component: {}", name);
     }
 
     public void doStart() throws Exception {
-        log.debug("doStart called for JBI component: " + name);
+        LOGGER.debug("doStart called for JBI component: {}", name);
         try {
             component = (javax.jbi.component.Component) classLoader.loadClass(className).newInstance();
             container.register(this);
         } catch (ClassNotFoundException e) {
-            log.error(classLoader);
+            LOGGER.error(classLoader.toString());
         }
-        log.info("Started servicemix JBI component: " + name);
+        LOGGER.info("Started servicemix JBI component: {}", name);
     }
 
     public void doStop() throws Exception {
-        log.debug("doStop called for JBI component: " + name);
+        LOGGER.debug("doStop called for JBI component: {}", name);
         container.unregister(this);
         component = null;
     }
 
     public void doFail() {
-        log.debug("doFail called for JBI component: " + name);
+        LOGGER.debug("doFail called for JBI component: {}", name);
         component = null;
     }
 

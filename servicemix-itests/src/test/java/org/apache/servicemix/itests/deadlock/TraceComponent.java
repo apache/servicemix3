@@ -21,21 +21,22 @@ import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.transform.dom.DOMSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.tck.ReceiverComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
 /**
  * A simple tracing component which can be placed inside a pipeline
  * to trace the message exchange though the component.
  *
- * @version $Revision: 426415 $
+ * @version $Revision$
  */
 public class TraceComponent extends ReceiverComponent {
 
-    private Log log = LogFactory.getLog(TraceComponent.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(TraceComponent.class);
+
     private int msToSleep=0;
     
     private SourceTransformer sourceTransformer = new SourceTransformer();
@@ -48,12 +49,8 @@ public class TraceComponent extends ReceiverComponent {
 		this.msToSleep = msToSleep;
 	}
 
-	public Log getLog() {
-        return log;
-    }
-
-    public void setLog(Log log) {
-        this.log = log;
+	public Logger getLog() {
+        return LOGGER;
     }
 
     public SourceTransformer getSourceTransformer() {
@@ -68,16 +65,16 @@ public class TraceComponent extends ReceiverComponent {
         // lets dump the incoming message
         NormalizedMessage message = exchange.getMessage("in");
         if (message == null) {
-            log.warn("Received null message from exchange: " + exchange);
+            LOGGER.warn("Received null message from exchange: {}", exchange);
         }
         else {
             try {
                 Node node = sourceTransformer.toDOMNode(message.getContent());
                 String str = sourceTransformer.toString(new DOMSource(node));
-                log.info("Body is: " + str);
+                LOGGER.info("Body is: {}", str);
             }
             catch (Exception e) {
-                log.error("Failed to turn message body into text: " + e, e);
+                LOGGER.error("Failed to turn message body into text: {}", e.getMessage(), e);
             }
         }
         
@@ -93,10 +90,8 @@ public class TraceComponent extends ReceiverComponent {
 	        }
 		}
 		catch (InterruptedException ie){
-			log.warn("Thread was interrupted.");
+			LOGGER.warn("Thread was interrupted.");
 		}
 	}
-    
-    
-    
+
 }

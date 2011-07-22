@@ -26,10 +26,12 @@ import javax.management.ObjectName;
 
 import org.w3c.dom.DocumentFragment;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.NotInitialisedYetException;
 import org.apache.servicemix.jbi.container.ActivationSpec;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -41,7 +43,7 @@ import org.springframework.context.ApplicationContextAware;
  */
 public class SpringBootstrap implements Bootstrap, ApplicationContextAware {
 
-    private static final Log LOG = LogFactory.getLog(SpringBootstrap.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(SpringBootstrap.class);
 
     private InstallationContext installContext;
 
@@ -66,15 +68,15 @@ public class SpringBootstrap implements Bootstrap, ApplicationContextAware {
         }
         DocumentFragment fragment = installContext.getInstallationDescriptorExtension();
         if (fragment != null) {
-            LOG.debug("Installation Descriptor Extension Found");
+            LOGGER.debug("Installation Descriptor Extension Found");
         } else {
-            LOG.debug("Installation Descriptor Extension Not Found !");
+            LOGGER.debug("Installation Descriptor Extension Not Found !");
         }
         // lets load this from Spring...
         Map map = applicationContext.getBeansOfType(ActivationSpec.class, false, false);
         for (Iterator iter = map.values().iterator(); iter.hasNext();) {
             ActivationSpec spec = (ActivationSpec) iter.next();
-            LOG.debug("Registering " + spec.getComponentName());
+            LOGGER.debug("Registering {}", spec.getComponentName());
         }
     }
 
@@ -88,4 +90,5 @@ public class SpringBootstrap implements Bootstrap, ApplicationContextAware {
     public void setApplicationContext(ApplicationContext appCtx) throws BeansException {
         this.applicationContext = appCtx;
     }
+
 }

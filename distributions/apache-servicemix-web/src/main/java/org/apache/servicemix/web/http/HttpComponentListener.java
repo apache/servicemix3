@@ -20,23 +20,21 @@ import java.lang.reflect.Method;
 
 import javax.jbi.component.Component;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.event.ComponentEvent;
 import org.apache.servicemix.jbi.event.ComponentListener;
 import org.apache.servicemix.jbi.event.ContainerAware;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This ComponentListener is a hack to automatically configure
  * the servicemix-http component in managed mode while avoiding
  * to embed the component itself.
- * 
- * @author gnodet
  */
 public class HttpComponentListener implements ComponentListener, ContainerAware {
 
-    private static final Log log = LogFactory.getLog(HttpComponentListener.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(HttpComponentListener.class);
     
     private String name = "servicemix-http";
     private JBIContainer container;
@@ -87,9 +85,9 @@ public class HttpComponentListener implements ComponentListener, ContainerAware 
                     m = cfg.getClass().getMethod("setManaged", new Class[] { boolean.class });
                     m.invoke(cfg, new Object[] { Boolean.TRUE });
                 }
-                log.info("Component " + getName() + " configured.");
+                LOGGER.info("Component {} configured", getName());
             } catch (Exception e) {
-                log.error("Unable to update component configuration", e);
+                LOGGER.error("Unable to update component configuration", e);
             }
         }
     }

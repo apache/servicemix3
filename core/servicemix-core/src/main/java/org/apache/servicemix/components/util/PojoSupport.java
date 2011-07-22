@@ -33,8 +33,6 @@ import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.management.ObjectName;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.FaultException;
 import org.apache.servicemix.jbi.NotInitialisedYetException;
 import org.apache.servicemix.jbi.management.BaseLifeCycle;
@@ -46,8 +44,6 @@ import org.apache.servicemix.jbi.management.BaseLifeCycle;
  */
 public abstract class PojoSupport extends BaseLifeCycle implements ComponentLifeCycle {
 
-    protected Log logger = LogFactory.getLog(getClass());
-    
     private ComponentContext context;
     private ObjectName extensionMBeanName;
     private QName service;

@@ -23,8 +23,6 @@ import java.util.Set;
 import javax.jbi.JBIException;
 import javax.transaction.TransactionManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.geronimo.gbean.AbstractName;
 import org.apache.geronimo.gbean.AbstractNameQuery;
 import org.apache.geronimo.gbean.GBeanInfo;
@@ -41,10 +39,12 @@ import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.framework.ComponentNameSpace;
 import org.apache.servicemix.jbi.framework.ServiceAssemblyLifeCycle;
 import org.apache.servicemix.jbi.nmr.flow.Flow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ServiceMixGBean implements GBeanLifecycle, Container {
 
-    private Log log = LogFactory.getLog(getClass().getName());
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ServiceMixGBean.class);
     
     private JBIContainer container;
     private boolean persistent = false;
@@ -83,9 +83,7 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
         this.transactionManagerName = transactionManagerName;
         this.flows = flows;
         this.kernel = kernel;
-        if (log.isDebugEnabled()) {
-            log.debug("ServiceMixGBean created");
-        }
+        LOGGER.debug("ServiceMixGBean created");
     }
     
     /**
@@ -103,9 +101,7 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
      * @throws Exception if the target failed to start; this will cause a transition to the failed state
      */
     public void doStart() throws Exception {        
-        if (log.isDebugEnabled()) {
-            log.debug("ServiceMixGBean doStart");
-        }
+        LOGGER.debug("ServiceMixGBean doStart");
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(ServiceMixGBean.class.getClassLoader());
         try {
@@ -127,9 +123,7 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
      * @throws Exception if the target failed to stop; this will cause a transition to the failed state
      */
     public void doStop() throws Exception {
-        if (log.isDebugEnabled()) {
-            log.debug("ServiceMixGBean doStop");
-        }
+        LOGGER.debug("ServiceMixGBean doStop");
         try {
             if (container != null) {
                 container.shutDown();
@@ -143,16 +137,14 @@ public class ServiceMixGBean implements GBeanLifecycle, Container {
      * Fails the GBean.  This informs the GBean that it is about to transition to the failed state.
      */
     public void doFail() {
-        if (log.isDebugEnabled()) {
-            log.debug("ServiceMixGBean doFail");
-        }
+        LOGGER.debug("ServiceMixGBean doFail");
         try {
             if (container != null) {
                 try {
                     container.shutDown();
                 }
                 catch (JBIException e) {
-                    log.info("Caught while closing due to failure: " + e, e);
+                    LOGGER.info("Caught while closing due to failure: {}", e.getMessage(), e);
                 }
             }
         } finally {

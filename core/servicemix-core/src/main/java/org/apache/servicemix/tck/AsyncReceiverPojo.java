@@ -27,8 +27,8 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.management.ObjectName;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple POJO which just implements the {@link javax.jbi.component.ComponentLifeCycle}
@@ -41,7 +41,7 @@ public class AsyncReceiverPojo implements ComponentLifeCycle, Receiver, Runnable
     public static final QName SERVICE = ReceiverPojo.SERVICE;
     public static final String ENDPOINT = ReceiverPojo.ENDPOINT;
 
-    private static final Log LOG = LogFactory.getLog(AsyncReceiverPojo.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(AsyncReceiverPojo.class);
 
     private ComponentContext context;
     private MessageList messageList = new MessageList();
@@ -88,12 +88,12 @@ public class AsyncReceiverPojo implements ComponentLifeCycle, Receiver, Runnable
         while (running) {
             try {
                 DeliveryChannel deliveryChannel = context.getDeliveryChannel();
-                LOG.info("about to do an accept on deliveryChannel: " + deliveryChannel);
+                LOGGER.info("about to do an accept on deliveryChannel: {}", deliveryChannel);
                 MessageExchange messageExchange = deliveryChannel.accept();
-                LOG.info("received me: " + messageExchange);
+                LOGGER.info("received me: {}", messageExchange);
                 onMessageExchange(messageExchange);
             } catch (MessagingException e) {
-                LOG.error("Failed to process inbound messages: " + e, e);
+                LOGGER.error("Failed to process inbound messages: {}", e.getMessage(), e);
             }
         }
     }
@@ -108,4 +108,5 @@ public class AsyncReceiverPojo implements ComponentLifeCycle, Receiver, Runnable
     public ComponentContext getContext() {
         return context;
     }
+
 }

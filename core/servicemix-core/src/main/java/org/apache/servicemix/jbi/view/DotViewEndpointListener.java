@@ -22,13 +22,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.event.ContainerAware;
 import org.apache.servicemix.jbi.framework.ComponentMBeanImpl;
 import org.apache.servicemix.jbi.framework.Endpoint;
 import org.apache.servicemix.jbi.framework.Registry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates a <a href="http://www.graphviz.org/">DOT</a> file showing the various components
@@ -41,7 +41,7 @@ import org.apache.servicemix.jbi.framework.Registry;
  */
 public class DotViewEndpointListener extends EndpointViewRenderer implements ContainerAware {
 
-    private static final Log LOG = LogFactory.getLog(DotViewEndpointListener.class);
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(DotViewEndpointListener.class);
 
     private JBIContainer container;
     private String file = "ServiceMixComponents.dot";
@@ -67,9 +67,7 @@ public class DotViewEndpointListener extends EndpointViewRenderer implements Con
     // -------------------------------------------------------------------------
 
     protected void doRender() throws Exception {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Creating DOT file at: " + file);
-        }
+        LOGGER.debug("Creating DOT file at: {}", file);
         PrintWriter writer = new PrintWriter(new FileWriter(file));
         try {
             generateFile(writer);
@@ -188,6 +186,5 @@ public class DotViewEndpointListener extends EndpointViewRenderer implements Con
         }
         return buffer.toString();
     }
-
 
 }

@@ -21,14 +21,14 @@ import java.util.Date;
 import javax.jbi.JBIException;
 import javax.resource.spi.work.Work;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.components.varscheduler.ScheduleIterator;
 import org.apache.servicemix.components.varscheduler.Scheduler;
 import org.apache.servicemix.components.varscheduler.SchedulerTask;
 import org.apache.servicemix.executors.Executor;
 import org.apache.servicemix.executors.ExecutorFactory;
 import org.apache.servicemix.jbi.framework.ComponentContextImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An implementation inheritence class for a component which polls some resource
@@ -38,7 +38,7 @@ import org.apache.servicemix.jbi.framework.ComponentContextImpl;
  */
 public abstract class PollingComponentSupport extends ComponentSupport implements Work {
     
-    private static final Log LOG = LogFactory.getLog(PollingComponentSupport.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PollingComponentSupport.class);
 
     private Executor executor;
     private Scheduler scheduler;
@@ -64,7 +64,7 @@ public abstract class PollingComponentSupport extends ComponentSupport implement
         try {
             poll();
         } catch (Exception e) {
-            LOG.error("Caught exception while polling: " + e, e);
+            LOGGER.error("Caught exception while polling: {}", e.getMessage(), e);
         }
     }
 
@@ -165,7 +165,7 @@ public abstract class PollingComponentSupport extends ComponentSupport implement
                 // the threads are setup correctly when we actually do stuff
                 getExecutor().execute(PollingComponentSupport.this);
             } catch (Throwable e) {
-                LOG.error("Failed to schedule work: " + e, e);
+                LOGGER.error("Failed to schedule work: {}", e.getMessage(), e);
             }
         }
     }
@@ -185,4 +185,5 @@ public abstract class PollingComponentSupport extends ComponentSupport implement
             return started ? new Date(nextTime) : null;
         }
     }
+
 }
