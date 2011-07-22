@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-<!--
+    <!--
 
-    Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
-    this work for additional information regarding copyright ownership.
-    The ASF licenses this file to You under the Apache License, Version 2.0
-    (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
+        Licensed to the Apache Software Foundation (ASF) under one or more
+        contributor license agreements.  See the NOTICE file distributed with
+        this work for additional information regarding copyright ownership.
+        The ASF licenses this file to You under the Apache License, Version 2.0
+        (the "License"); you may not use this file except in compliance with
+        the License.  You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+           http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
--->
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+    -->
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -33,25 +34,25 @@
 
     <dependencies>
 
-      <!-- BEGIN OF HACK (feel free to come up with anything better)
-           adding these two up-front to avoid having to hit maven-repository.dev.java.net -->
-      <dependency>
-        <groupId>org.apache.myfaces.maven</groupId>
-        <artifactId>myfaces-master</artifactId>
-        <version>1.0.5</version>
-        <type>pom</type>
-        <scope>test</scope>
-        <optional>true</optional>
-      </dependency>
+        <!-- BEGIN OF HACK (feel free to come up with anything better)
+adding these two up-front to avoid having to hit maven-repository.dev.java.net -->
+        <dependency>
+            <groupId>org.apache.myfaces.maven</groupId>
+            <artifactId>myfaces-master</artifactId>
+            <version>1.0.5</version>
+            <type>pom</type>
+            <scope>test</scope>
+            <optional>true</optional>
+        </dependency>
 
-      <dependency>
-        <groupId>org.apache.myfaces.core</groupId>
-        <artifactId>myfaces-api</artifactId>
-        <version>1.2.0</version>
-        <scope>test</scope>
-        <optional>true</optional>
-      </dependency>
-      <!-- END OF HACK -->
+        <dependency>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-api</artifactId>
+            <version>1.2.0</version>
+            <scope>test</scope>
+            <optional>true</optional>
+        </dependency>
+        <!-- END OF HACK -->
 
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
@@ -175,11 +176,19 @@
             <version>${geronimo-version}</version>
             <type>car</type>
             <exclusions>
-              <exclusion>
-                <groupId>org.apache.geronimo.modules</groupId>
-                <artifactId>geronimo-webservices</artifactId>
-              </exclusion>
+                <exclusion>
+                    <groupId>org.apache.geronimo.modules</groupId>
+                    <artifactId>geronimo-webservices</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
         </dependency>
         <!-- Only needed to build the car -->
         <dependency>
@@ -203,10 +212,10 @@
             <type>car</type>
             <scope>provided</scope>
             <exclusions>
-              <exclusion>
-                <groupId>org.apache.geronimo.modules</groupId>
-                <artifactId>geronimo-webservices</artifactId>
-              </exclusion>
+                <exclusion>
+                    <groupId>org.apache.geronimo.modules</groupId>
+                    <artifactId>geronimo-webservices</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -234,5 +243,5 @@
                 </configuration>
             </plugin>
         </plugins>
-    </build>    
+    </build>
 </project>
