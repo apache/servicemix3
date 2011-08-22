@@ -47,7 +47,7 @@
             is not on a network, which may prevent the broker to start.
             In such a case, just remove the discoveryUri attribute.  
          -->
-       <amq:transportConnector uri="tcp://localhost:61616" discoveryUri="multicast://default"/>
+       <amq:transportConnector uri="${activemq.url}" discoveryUri="multicast://default"/>
     </amq:transportConnectors>
     
     <amq:networkConnectors>
