@@ -17,6 +17,7 @@
 package org.apache.servicemix.jbi.container;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.EventListener;
@@ -122,6 +123,7 @@ public class JBIContainer extends BaseLifeCycle implements Container {
     private String name = DEFAULT_NAME;
     private InitialContext namingContext;
     private MBeanServer mbeanServer;
+    private String completeStartMarkupFileName;
     private TransactionManager transactionManager;
     private String rootDir;
     private String generatedRootDirPrefix = "target/rootDirs/rootDir";
@@ -290,6 +292,24 @@ public class JBIContainer extends BaseLifeCycle implements Container {
      */
     public void setServices(BaseSystemService[] services) {
         this.services = services;
+    }
+
+    /**
+     * Gets name of file that is created when container finished starting.
+     *
+     * @return the name of the markup file in container root directory.
+     */
+    public String getCompleteStartMarkupFileName() {
+        return this.completeStartMarkupFileName;
+    }
+
+    /**
+     * Sets name of file that is created when container finishes starting.
+     *
+     * @param completeStartMarkupFileName name of the marker file in container root directory.
+     */
+    public void setCompleteStartMarkupFileName(String completeStartMarkupFileName) {
+        this.completeStartMarkupFileName = completeStartMarkupFileName;
     }
 
     /**
@@ -673,8 +693,27 @@ public class JBIContainer extends BaseLifeCycle implements Container {
             autoDeployService.start();
             adminCommandsService.start();
             super.start();
-            LOGGER.info("ServiceMix JBI Container ({})", getName());
+            this.notifyContainerStarted();
         }
+    }
+
+    private void notifyContainerStarted() throws JBIException {
+        if (completeStartMarkupFileName != null) {
+            File startMarkupFile = new File(rootDir, completeStartMarkupFileName);
+            try {
+                if (!startMarkupFile.exists()) {
+                    File parent = startMarkupFile.getParentFile();
+                    if (parent != null && !parent.exists()) {
+                        parent.mkdirs();
+                    }
+                    startMarkupFile.createNewFile();
+                }
+                startMarkupFile.setLastModified(System.currentTimeMillis());
+            } catch (IOException ioException) {
+                throw new JBIException("Cannot create startup markup file " + startMarkupFile.getAbsolutePath(), ioException);
+            }
+        }
+        LOGGER.info("ServiceMix JBI Container (" + this.getName() + ") started");
     }
 
     /**
