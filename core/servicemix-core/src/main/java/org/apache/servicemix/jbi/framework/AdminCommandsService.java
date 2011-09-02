@@ -82,6 +82,10 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
         if (!comp.isShutDown()) {
             throw ManagementSupport.failure("uninstallComponent", "Component '" + name + "' is not shut down.");
         }
+        // taken from org.apache.servicemix.jbi.framework.AutoDeploymentService#removeArchive
+        // ensure installer is loaded
+        container.getInstallationService().loadInstaller(name);
+        // uninstall and delete component
         boolean success = container.getInstallationService().unloadInstaller(name, true);
         if (success) {
             return ManagementSupport.createSuccessMessage("uninstallComponent", name);
@@ -276,9 +280,10 @@ public class AdminCommandsService extends BaseSystemService implements AdminComm
      * Prints information about all components (Service Engine or Binding
      * Component) installed
      * 
-     * @param serviceEngines
-     * @param bindingComponents
-     * @param state
+     * @param excludeSEs
+     * @param excludeBCs
+     * @param excludePojos
+     * @param requiredState
      * @param sharedLibraryName
      * @param serviceAssemblyName
      * @return list of components in an XML blob

@@ -90,24 +90,22 @@ public class InstallationService extends BaseSystemService implements Installati
             ObjectName result = null;
             LOGGER.debug("Loading new installer from {}", installJarURL);
             File tmpDir = AutoDeploymentService.unpackLocation(environmentContext.getTmpDir(), installJarURL);
-            if (tmpDir != null) {
-                Descriptor root = DescriptorFactory.buildDescriptor(tmpDir);
-                if (root != null && root.getComponent() != null) {
-                    String componentName = root.getComponent().getIdentification().getName();
-                    if (!installers.containsKey(componentName)) {
-                        InstallerMBeanImpl installer = doInstallArchive(tmpDir, root);
-                        if (installer != null) {
-                            result = installer.getObjectName();
-                            installers.put(componentName, installer);
-                        }
-                    } else {
-                        throw new RuntimeException("An installer already exists for " + componentName);
-                    }
-                } else {
-                    throw new RuntimeException("Could not find Component from: " + installJarURL);
-                }
-            } else {
-                throw new RuntimeException("location: " + installJarURL + " isn't valid");
+            if (tmpDir == null) {
+                throw new RuntimeException("loation " + installJarURL + " isn't valid");
+            }
+            Descriptor root = DescriptorFactory.buildDescriptor(tmpDir);
+            if (root == null || root.getComponent() == null) {
+                throw new RuntimeException("Could not find Component from " + installJarURL);
+            }
+            String componentName = root.getComponent().getIdentification().getName();
+            if (installers.containsKey(componentName)) {
+                throw new RuntimeException("An installer already exists for " + componentName);
+            }
+            InstallerMBeanImpl installer = doInstallArchive(tmpDir, root);
+            if (installer != null) {
+                result = installer.getObjectName();
+                LOGGER.debug("Registering installer as loaded for component {}", componentName);
+                installers.put(componentName, installer);
             }
             return result;
         } catch (Throwable t) {
@@ -132,10 +130,14 @@ public class InstallationService extends BaseSystemService implements Installati
      *         existing installation context.
      */
     public ObjectName loadInstaller(String aComponentName) {
+        LOGGER.debug("Going to load installer for component {}", aComponentName);
         InstallerMBeanImpl installer = installers.get(aComponentName);
+        LOGGER.debug("Found installer for component {}", aComponentName);
         if (installer == null) {
+            LOGGER.debug("Loaded installer for component {} was not found. Trying non-loaded installers", aComponentName);
             installer = nonLoadedInstallers.get(aComponentName);
             if (installer != null) {
+                LOGGER.debug("Found non-loaded installer for component {}", aComponentName);
                 try {
                     // create an MBean for the installer
                     ObjectName objectName = managementContext.createCustomComponentMBeanName("Installer", aComponentName);
@@ -146,6 +148,8 @@ public class InstallationService extends BaseSystemService implements Installati
                     throw new RuntimeException("Could not load installer", e);
                 }
                 return installer.getObjectName();
+            } else {
+                LOGGER.debug("Did not found any installer for component " + aComponentName);
             }
         }
         return null;
@@ -176,20 +180,26 @@ public class InstallationService extends BaseSystemService implements Installati
      * @return - true if the operation was successful, otherwise false.
      */
     public boolean unloadInstaller(String componentName, boolean isToBeDeleted) {
+        LOGGER.debug("Going to unload installer for component {}", componentName);
         boolean result = false;
         try {
             InstallerMBeanImpl installer = installers.remove(componentName);
             result = installer != null;
             if (result) {
+                LOGGER.debug("Found installer for component {}", componentName);
                 container.getManagementContext().unregisterMBean(installer);
                 if (isToBeDeleted) {
+                    LOGGER.debug("Uninstalling component {}", componentName);
                     installer.uninstall();
                 } else {
+                    LOGGER.debug("Registering installer as non-loaded for component {}", componentName);
                     nonLoadedInstallers.put(componentName, installer);
                 }
+            } else {
+                LOGGER.debug("Did not found installer for component {}", componentName);
             }
         } catch (JBIException e) {
-            String errStr = "Problem shutting down Component: " + componentName;
+            String errStr = "Problem unloading installer for component " + componentName;
             LOGGER.error(errStr, e);
         }
         return result;
@@ -293,6 +303,7 @@ public class InstallationService extends BaseSystemService implements Installati
      * @throws DeploymentException
      */
     protected void install(File tmpDir, Properties props, Descriptor root, boolean autoStart) throws DeploymentException {
+        LOGGER.debug("Going to install component from {}", tmpDir.getPath());
         if (root.getComponent() != null) {
             String componentName = root.getComponent().getIdentification().getName();
             if (installers.containsKey(componentName)) {
@@ -336,6 +347,7 @@ public class InstallationService extends BaseSystemService implements Installati
                         throw new DeploymentException(e);
                     }
                 }
+                LOGGER.debug("Registering installer as loaded for component {}", componentName);
                 installers.put(componentName, installer);
             }
         }
@@ -524,10 +536,13 @@ public class InstallationService extends BaseSystemService implements Installati
     }
 
     protected void buildComponent(File componentDirectory) throws DeploymentException {
+        LOGGER.debug("Building component from directory {}" + componentDirectory.getPath());
         try {
             String componentName = componentDirectory.getName();
             ComponentEnvironment env = container.getEnvironmentContext().getComponentEnvironment(componentName);
             if (!env.getStateFile().exists()) {
+                LOGGER.debug("Removing directory {} as component has not been installed (there is not state file)",
+                        componentDirectory.getPath());
                 // An installer has been created but the component has not been
                 // installed
                 // So remove it
@@ -536,6 +551,7 @@ public class InstallationService extends BaseSystemService implements Installati
                 InstallerMBeanImpl installer = createInstaller(componentName);
                 installer.activateComponent();
                 nonLoadedInstallers.put(componentName, installer);
+                LOGGER.debug("Registering installer as loaded for component {}", componentName);
             }
         } catch (Throwable e) {
             LOGGER.error("Failed to deploy component: {}", componentDirectory.getName(), e);
