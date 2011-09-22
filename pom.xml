@@ -55,12 +55,6 @@
           <name>ServiceMix Maven Repo</name>
           <url>http://svn.apache.org/repos/asf/servicemix/m2-repo/</url>
        </repository>
-        <!-- For javamail -->
-        <repository>
-            <id>java.net</id>
-            <name>Java.net Maven Repo</name>
-            <url>http://download.java.net/maven/2</url>
-        </repository>
         <!-- For Drools -->
         <repository>
             <id>jboss</id>
