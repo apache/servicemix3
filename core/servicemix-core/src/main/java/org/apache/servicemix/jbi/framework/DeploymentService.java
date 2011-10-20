@@ -92,7 +92,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
         return DeploymentServiceMBean.class;
     }
 
-    public void start() throws javax.jbi.JBIException {
+    public void start() throws JBIException {
         super.start();
         String[] sas = registry.getDeployedServiceAssemblies();
         // This loop will initialize all SAs
@@ -264,7 +264,7 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
 
             return result;
         } catch (Exception e) {
-            LOGGER.info("Unable to undeploy assembly", e);
+            LOGGER.error("Unable to undeploy assembly", e);
             throw e;
         }
     }
@@ -387,10 +387,19 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
      */
     public String start(String serviceAssemblyName) throws Exception {
         try {
-            ServiceAssemblyLifeCycle sa = registry.getServiceAssembly(serviceAssemblyName);
+            if (serviceAssemblyName == null) {
+                throw ManagementSupport.failure("start",
+                        "SA name must not be null");
+            }
+            ServiceAssemblyLifeCycle sa = registry.getServiceAssembly(
+                    serviceAssemblyName);
+            if (sa == null) {
+                throw ManagementSupport.failure("start", "SA has not been deployed: "
+                        + serviceAssemblyName);
+            }
             return sa.start(true);
         } catch (Exception e) {
-            LOGGER.info("Error in start", e);
+            LOGGER.error("Error in start", e);
             throw e;
         }
     }
@@ -406,10 +415,19 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
      */
     public String stop(String serviceAssemblyName) throws Exception {
         try {
+            if (serviceAssemblyName == null) {
+                throw ManagementSupport.failure("stop",
+                        "SA name must not be null");
+            }
             ServiceAssemblyLifeCycle sa = registry.getServiceAssembly(serviceAssemblyName);
+            if (sa == null) {
+                throw ManagementSupport.failure("stop", "SA has not been deployed: "
+                        + serviceAssemblyName);
+            }
+
             return sa.stop(true, false);
         } catch (Exception e) {
-            LOGGER.info("Error in stop", e);
+            LOGGER.error("Error in stop", e);
             throw e;
         }
     }
@@ -423,10 +441,18 @@ public class DeploymentService extends BaseSystemService implements DeploymentSe
      */
     public String shutDown(String serviceAssemblyName) throws Exception {
         try {
+            if (serviceAssemblyName == null) {
+                throw ManagementSupport.failure("shutdown",
+                        "SA name must not be null");
+            }
             ServiceAssemblyLifeCycle sa = registry.getServiceAssembly(serviceAssemblyName);
+            if (sa == null) {
+                throw ManagementSupport.failure("shutdown", "SA has not been deployed: "
+                        + serviceAssemblyName);
+            }
             return sa.shutDown(true);
         } catch (Exception e) {
-            LOGGER.info("Error in shutDown", e);
+            LOGGER.error("Error in shutDown", e);
             throw e;
         }
     }
