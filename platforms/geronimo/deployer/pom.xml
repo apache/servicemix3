@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.servicemix.geronimo</groupId>
         <artifactId>geronimo</artifactId>
-        <version>3.4-SNAPSHOT</version>
+        <version>3.4.0</version>
     </parent>
 
     <artifactId>deployer</artifactId>

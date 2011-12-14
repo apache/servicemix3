@@ -29,7 +29,7 @@
 
     <groupId>org.apache.servicemix</groupId>
     <artifactId>servicemix</artifactId>
-    <version>3.4-SNAPSHOT</version>
+    <version>3.4.0</version>
     <packaging>pom</packaging>
 
     <name>ServiceMix</name>
@@ -43,9 +43,9 @@
     </prerequisites>
 
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/servicemix/smx3/trunk/</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/servicemix/smx3/trunk/</developerConnection>
-        <url>http://svn.apache.org/viewcvs.cgi/servicemix/smx3/trunk/</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/servicemix/smx3/tags/servicemix-3.4.0</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/servicemix/smx3/tags/servicemix-3.4.0</developerConnection>
+        <url>http://svn.apache.org/viewcvs.cgi/servicemix/smx3/tags/servicemix-3.4.0</url>
     </scm>
 
     <repositories>
@@ -76,7 +76,7 @@
         <servicemix-mail-version>${servicemix-components-version}</servicemix-mail-version>
         <servicemix-osworkflow-version>${servicemix-components-version}</servicemix-osworkflow-version>
         <servicemix-wsn2005-version>${servicemix-components-version}</servicemix-wsn2005-version>
-        <servicemix-lwcontainer-version>3.4-SNAPSHOT</servicemix-lwcontainer-version>
+        <servicemix-lwcontainer-version>3.4.0</servicemix-lwcontainer-version>
         <servicemix-bean-version>${servicemix-components-version}</servicemix-bean-version>
         <servicemix-eip-version>${servicemix-components-version}</servicemix-eip-version>
         <servicemix-script-version>${servicemix-components-version}</servicemix-script-version>
