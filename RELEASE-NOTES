@@ -99,6 +99,7 @@ Changes:
     * [SM-2103] - Fix ServiceMix 3 build to get rid of warnings in Maven 3
     * [SM-2118] - Container is in inconsistent state just after start
     * [SM-2133] - Upgrade to Camel 2.8.3
+    * [SM-2139] - Upgrade to ActiveMQ 5.5.1
 ** New Feature
     * [SM-1756] - add CXFManagedServlet to apache-servicemix-web to enable servicemix-cxf-bc endpoint deploy into servlet container without starting jetty
     * [SM-1977] - Support exploded JBI artifacts
