@@ -34,6 +34,9 @@ Bug Tracking:  http://issues.apache.org/activemq/browse/SM
 Changes:
 --------
  ServiceMix 3.4
+** Sub-task
+    * [SM-2096] - MBean lookup failures in web console
+    * [SM-2097] - Ant tasks should allow interacting with ServiceMix running in WebSphere
 ** Bug
     * [SM-1206] - ClientFactory JNDI bind fails in non-standalone ServiceMix installs
     * [SM-1438] - Exceptions while shutting down ServiceMix
@@ -45,6 +48,7 @@ Changes:
     * [SM-1949] - Upgrade stax-api version
     * [SM-1958] - ServiceMix 3 doesn't start correctly due to NoClassDefFoundError on ActiveMQ bean
     * [SM-1972] - Missing javax.annotation causes exceptions on AIX
+    * [SM-1995] - Maven tries to download several resources from java.net repository that aren't there.
     * [SM-2025] - ServiceMix fails to start if SU hangs during startup
     * [SM-2026] - ServiceMix does not start some components if some component failed during start
     * [SM-2030] - SMX3 doesn't build
@@ -55,6 +59,12 @@ Changes:
     * [SM-2071] - lots of tests failure in common/servicemix-components
     * [SM-2075] - Basic examples doesn't work
     * [SM-2077] - ServiceMix wsn2005 doesn't start correctly on SMX3
+    * [SM-2094] - Duplicate entry for wsnotificationCF
+    * [SM-2111] - kit miss spring-jms jar
+    * [SM-2117] - Fail to uninstall components after container restart
+    * [SM-2119] - Hardcoded parameters are used instead of ones in property files in default configuration
+    * [SM-2129] - NullPointerException at org.apache.servicemix.jbi.framework.DeploymentService.start(DeploymentService.java:390)
+    * [SM-2137] - Each call to a servicemix-http endpoint, in apache-servicemix-web deployed on Apache Tomcat, opens a new session.
 ** Improvement
     * [SM-1573] - Use of useJBIWrapper flag in smx-cxf-bc consumer and smx-http soap-consumer endpoints is inconsistent
     * [SM-1659] - should filter the version for kit_camel_example_pom.xml which is used in kit
@@ -85,12 +95,30 @@ Changes:
     * [SM-2070] - update woodstox stax2-api to 3.0.2
     * [SM-2072] - upgrade to jetty 6.1.26 for smx3
     * [SM-2076] - Avoid usage of jbi:projectDeploy in examples
+    * [SM-2095] - Improve compatibility with WebSphere (WAR deployment)
+    * [SM-2103] - Fix ServiceMix 3 build to get rid of warnings in Maven 3
+    * [SM-2118] - Container is in inconsistent state just after start
+    * [SM-2133] - Upgrade to Camel 2.8.3
 ** New Feature
+    * [SM-1756] - add CXFManagedServlet to apache-servicemix-web to enable servicemix-cxf-bc endpoint deploy into servlet container without starting jetty
     * [SM-1977] - Support exploded JBI artifacts
 ** Task
     * [SM-1877] - update wss4j to 1.5.8
     * [SM-1951] - upgrade to cxf 2.2.8
     * [SM-1954] - upgrade to cxf 2.2.9
+    * [SM-2048] - Switch to use slf4j as logger (instead of commons-logging)
+    * [SM-2055] - Release ServiceMix 3.4
+    * [SM-2079] - Upgrade ServiceMix 3 to use JBI maven plugin 4.5
+    * [SM-2084] - Upgrade to Camel 2.7.1
+    * [SM-2085] - Upgrade to CXF 2.3.3
+    * [SM-2086] - Upgrade to ServiceMix Specs 1.8.0
+    * [SM-2090] - Upgrade to Camel 2.8.0
+    * [SM-2093] - upgrade to cxf 2.4.1
+    * [SM-2116] - upgrade to cxf 2.4.2
+    * [SM-2120] - Camel log level should be set
+    * [SM-2123] - Upgrade to Camel 2.8.1
+    * [SM-2128] - upgrade to spring 3.0.6
+    * [SM-2130] - upgrade to cxf 2.4.4
 ** Test
     * [SM-1306] - Improve success ratio of timing sensitive tests
     * [SM-1968] - Use dynamic port for tests
