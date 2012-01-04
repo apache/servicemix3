@@ -151,6 +151,7 @@ public class Registry extends BaseSystemService implements RegistryMBean {
     public void shutDown() throws JBIException {
         serviceAssemblyRegistry.shutDown();
         componentRegistry.shutDown();
+        endpointRegistry.shutDown();
         super.shutDown();
         container.getManagementContext().unregisterMBean(this);
         executor.shutdown();

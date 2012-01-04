@@ -166,6 +166,9 @@ public class AutoDeploymentService extends BaseSystemService implements AutoDepl
             if (timerTask != null) {
                 timerTask.cancel();
             }
+            if (statsTimer != null) {
+                statsTimer.cancel();
+            }
         }
     }
 

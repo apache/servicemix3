@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.jbi.JBIException;
@@ -67,7 +67,7 @@ public class EndpointRegistry {
     
     private List<EndpointProcessor> endpointProcessors;
     
-    private Executor executor = Executors.newSingleThreadExecutor();
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
     
     /**
      * Constructor
@@ -565,4 +565,7 @@ public class EndpointRegistry {
         });
     }
 
+    public void shutDown() {
+        executor.shutdown();
+    }
 }
