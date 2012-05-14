@@ -18,6 +18,7 @@ package org.apache.servicemix.jbi.security.login;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.Principal;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
@@ -84,16 +85,37 @@ public class CertificatesLoginModule implements LoginModule {
 
     public boolean login() throws LoginException {
         File f = new File(baseDir, usersFile);
+        InputStream fis = null;
         try {
-            users.load(new java.io.FileInputStream(f));
+            fis = new java.io.FileInputStream(f);
+            users.load(fis);
         } catch (IOException ioe) {
             throw new LoginException("Unable to load user properties file " + f);
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                    fis = null;
+                } catch (IOException e) {
+                    throw new LoginException("Unable to close user properties file " + f);
+                }
+            }
         }
         f = new File(baseDir, groupsFile);
         try {
-            groups.load(new java.io.FileInputStream(f));
+            fis = new java.io.FileInputStream(f);
+            groups.load(fis);
         } catch (IOException ioe) {
             throw new LoginException("Unable to load group properties file " + f);
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                    fis = null;
+                } catch (IOException e) {
+                    throw new LoginException("Unable to close group properties file " + f);
+                }
+            }
         }
 
         Callback[] callbacks = new Callback[1];
