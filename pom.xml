@@ -29,7 +29,7 @@
 
     <groupId>org.apache.servicemix</groupId>
     <artifactId>servicemix</artifactId>
-    <version>3.4.2-SNAPSHOT</version>
+    <version>3.4.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>ServiceMix</name>
