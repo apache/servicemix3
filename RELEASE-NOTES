@@ -16,8 +16,14 @@
  */
 
 
-                      Apache ServiceMix 3.4
-                      ======================
+                      Apache ServiceMix 3.4.1
+                      =======================
+
+**
+NB: Apache ServiceMix 3.4.1 is the latest release for the SMX3 branch.
+Apache ServiceMix 3 will go in End Of Life at the end of year 2012.
+We encourage all users to upgrade to ServiceMix 4.
+**
 
 See the README file for more general informations about ServiceMix.
 
@@ -33,6 +39,20 @@ Bug Tracking:  http://issues.apache.org/activemq/browse/SM
 
 Changes:
 --------
+ ServiceMix 3.4.1
+** Bug
+    * [SM-2115] - ensure cxf servlet transport and cxf bc can share same bus out of box when deploy smx-cxf-bc in web container
+    * [SM-2141] - Leak in servicemix-eip when handling late responses
+    * [SM-2142] - Memory leak when deploying ServiceMix as WAR in Tomcat
+    * [SM-2150] - Building of ServiceMix :: Samples :: Loan Broker :: fails
+    * [SM-2153] - PropertiesLoginModule always leave file handler open 
+    * [SM-2158] - "too many open files" exception causes undeployment of all components
+** Improvement
+    * [SM-2131] - Start script improvements: config file, better handling of file limits, permgen
+    * [SM-2156] - Upgrade to XBean 3.11.1
+** Task
+    * [SM-2159] - Upgrade to ServiceMix Components 2011.02.1
+
  ServiceMix 3.4
 ** Sub-task
     * [SM-2096] - MBean lookup failures in web console
