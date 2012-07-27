@@ -26,11 +26,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.jbi.JBIException;
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanOperationInfo;
+import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
+import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
 import org.apache.servicemix.jbi.container.EnvironmentContext;
@@ -89,6 +93,10 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      */
     public MBeanServer getMBeanServer() {
         return mbeanServerContext.getMBeanServer();
+    }
+
+    protected void setMBeanServer(MBeanServer server) {
+        mbeanServerContext.setMBeanServer(server);
     }
 
     /**
@@ -531,15 +539,31 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
      * @param description
      * @throws JMException
      */
-    public void registerMBean(ObjectName name, Object resource, Class interfaceMBean, String description) throws JMException {
+    public ObjectName registerMBean(ObjectName name, Object resource, Class interfaceMBean, String description) throws JMException {
         if (mbeanServerContext.getMBeanServer() != null) {
             Object mbean = MBeanBuilder.buildStandardMBean(resource, interfaceMBean, description, executors);
-            if (mbeanServerContext.getMBeanServer().isRegistered(name)) {
-                mbeanServerContext.getMBeanServer().unregisterMBean(name);
-            }
-            mbeanServerContext.getMBeanServer().registerMBean(mbean, name);
-            beanMap.put(name, resource);
+            return registerMBean(name, resource, mbean);
+        } else {
+            return name;
         }
+    }
+
+    /*
+     * Register an MBean for a given resource, specifying the object name and the actual MBean implementation
+     *
+     * @param name the MBean's ObjectName
+     * @param resource the original bean for which the MBean is a wrapper
+     * @param mbean the MBean implementation
+     */
+    protected ObjectName registerMBean(ObjectName name, Object resource, Object mbean)
+        throws InstanceNotFoundException, MBeanRegistrationException, InstanceAlreadyExistsException, NotCompliantMBeanException {
+
+        if (mbeanServerContext.getMBeanServer().isRegistered(name)) {
+            mbeanServerContext.getMBeanServer().unregisterMBean(name);
+        }
+        ObjectName objectName = mbeanServerContext.getMBeanServer().registerMBean(mbean, name).getObjectName();
+        beanMap.put(objectName, resource);
+        return objectName;
     }
 
     /**
@@ -619,8 +643,8 @@ public class ManagementContext extends BaseSystemService implements ManagementCo
             }
             ObjectName objName = createObjectName(service);
             LOGGER.debug("Registering system service: {}", objName);
-            registerMBean(objName, service, interfaceType, service.getDescription());
-            systemServices.put(name, objName);
+            ObjectName registeredName = registerMBean(objName, service, interfaceType, service.getDescription());
+            systemServices.put(name, registeredName);
         } catch (MalformedObjectNameException e) {
             throw new JBIException(e);
         } catch (JMException e) {
