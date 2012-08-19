@@ -122,10 +122,6 @@ body {
   background: transparent url( '../images/bg.png' ) top center repeat-x;
 }
 
-#header {
-  background: transparent url( '../images/banner_mountains.jpg' ) no-repeat center top;
-}
-
 #wrapper-header2 {
   background: transparent url( '../images/bg02-blue-left.png' ) top left no-repeat;
 }
