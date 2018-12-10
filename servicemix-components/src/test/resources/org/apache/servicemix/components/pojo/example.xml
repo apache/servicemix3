@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- START SNIPPET: example -->
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
+	   xmlns:foo="http://servicemix.org/cheese/">
+
+  <sm:container id="jbi" embedded="true">
+    <sm:activationSpecs>
+
+      <sm:activationSpec componentName="sender" service="foo:sender" destinationService="foo:receiver">
+      	<sm:component><bean class="org.apache.servicemix.components.pojo.MySender" /></sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec id="receiver" service="foo:receiver">
+      	<sm:component><bean class="org.apache.servicemix.components.pojo.MyReceiver"/></sm:component>
+      </sm:activationSpec>
+
+    </sm:activationSpecs>
+  </sm:container>
+
+</beans>
+<!-- END SNIPPET: example -->

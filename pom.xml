@@ -1,85 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005 The Apache Software Foundation
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!-- $Rev$ $Date$ -->
 <project
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0">
   
   <modelVersion>4.0.0</modelVersion>
-  <groupId>servicemix</groupId>
+  
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>1</version>
+  </parent>
+  
+  <groupId>org.apache.servicemix</groupId>
   <artifactId>servicemix</artifactId>
   <packaging>pom</packaging>
   <name>ServiceMix</name>
-  <version>2.1-SNAPSHOT</version>
+  <version>3.0-SNAPSHOT</version>
   <description>
     ServiceMix is an open source ESB based on the Java Business
-    Integration framework - JSR-208
+    Integration framework - JSR-208 
   </description>
-  <url>http://www.servicemix.org/</url>
+  <url>http://incubator.apache.org/servicemix</url>
   <prerequisites>
-    <maven>2.0-beta</maven>
+    <maven>2.0.4</maven>
   </prerequisites>
-  <issueManagement>
-    <system></system>
-    <url>http://jira.logicblaze.com/browse/SM</url>
-  </issueManagement>
   <inceptionYear>2005</inceptionYear>
+  
+  <issueManagement>
+    <system>jira</system>
+    <url>http://issues.apache.org/activemq/browse/SM</url>
+  </issueManagement>
+  
+  <ciManagement>
+    <system>continuum</system>
+    <notifiers>
+      <notifier>
+        <type>mail</type>
+        <configuration>
+          <address>servicemix-commits@geronimo.apache.org</address>
+        </configuration>
+        <sendOnSuccess>false</sendOnSuccess>
+      </notifier>
+      <!--notifier>
+        <type>irc</type>
+        <configuration>
+          <host>irc.codehaus.org</host>
+          <port>6667</port>
+          <channel>#servicemix</channel>        
+        </configuration>
+        <sendOnSuccess>false</sendOnSuccess>
+      </notifier-->
+    </notifiers>
+  </ciManagement>
+  
   <mailingLists>
     <mailingList>
       <name>ServiceMix Developer List</name>
-      <subscribe>dev-subscribe@servicemix.codehaus.org</subscribe>
-      <unsubscribe>
-        dev-unsubscribe@servicemix.codehaus.org
-      </unsubscribe>
-      <post></post>
-      <archive>
-        http://dir.gmane.org/gmane.comp.java.servicemix.devel
-      </archive>
-      <otherArchives></otherArchives>
+      <subscribe>servicemix-dev-subscribe@geronimo.apache.org</subscribe>
+      <unsubscribe>servicemix-dev-unsubscribe@geronimo.apache.org</unsubscribe>
+      <post>servicemix-dev@geronimo.apache.org</post>
+      <archive>http://www.nabble.com/ServiceMix---Dev-f12051.html</archive>
+      <otherArchives>
+        <archive>http://dir.gmane.org/gmane.comp.java.servicemix.devel</archive>
+        <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-dev/</archive>
+      </otherArchives>
     </mailingList>
     <mailingList>
       <name>ServiceMix User List</name>
-      <subscribe>
-        user-subscribe@servicemix.codehaus.org
-      </subscribe>
-      <unsubscribe>
-        user-unsubscribe@servicemix.codehaus.org
-      </unsubscribe>
-      <post></post>
-      <archive>
-        http://dir.gmane.org/gmane.comp.java.servicemix.user
-      </archive>
-      <otherArchives></otherArchives>
+      <subscribe>servicemix-users-subscribe@geronimo.apache.org</subscribe>
+      <unsubscribe>servicemix-users-unsubscribe@geronimo.apache.org</unsubscribe>
+      <post>servicemix-users@geronimo.apache.org</post>
+      <archive>http://www.nabble.com/ServiceMix---User-f12050.html</archive>
+      <otherArchives>
+        <archive>http://dir.gmane.org/gmane.comp.java.servicemix.user</archive>
+        <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-users/</archive>
+      </otherArchives>
     </mailingList>
     <mailingList>
       <name>ServiceMix SCM List</name>
-      <subscribe>scm-subscribe@servicemix.codehaus.org</subscribe>
-      <unsubscribe>
-        scm-unsubscribe@servicemix.codehaus.org
-      </unsubscribe>
-      <post></post>
-      <archive>
-        http://archive.servicemix.codehaus.org/scm/
-      </archive>
-      <otherArchives></otherArchives>
+      <subscribe>servicemix-commits-subscribe@geronimo.apache.org</subscribe>
+      <unsubscribe>servicemix-commits-unsubscribe@geronimo.apache.org</unsubscribe>
+      <post>servicemix-commits@geronimo.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-commits/</archive>
     </mailingList>
   </mailingLists>
+  
   <developers>
     <developer>
       <id>rajdavies</id>
       <name>Rob Davies</name>
       <email>rajdavies@gmail.com</email>
-      <organization>rajdavies</organization>
+      <organization>Exist Labs</organization>
     </developer>
     <developer>
       <id>jstrachan</id>
       <name>James Strachan</name>
       <email>jstrachan@logicblaze.com</email>
-      <organization>jstrachan</organization>
+      <organization>LogicBlaze</organization>
+      <organizationUrl>http://www.logicblaze.com/</organizationUrl>
     </developer>
     <developer>
       <id>chirino</id>
       <name>Hiram Chirino</name>
       <email>hiram@logicblaze.com</email>
-      <organization>chirino</organization>
+      <organization>LogicBlaze</organization>
+      <organizationUrl>http://www.logicblaze.com/</organizationUrl>
     </developer>
     <developer>
       <id>dandiep</id>
@@ -91,323 +134,326 @@
       <id>pdodds</id>
       <name>Philip Dodds</name>
       <email>pdodds@unity-systems.com</email>
-      <organization>pdodds</organization>
+      <organization>Unity Systems</organization>
     </developer>
     <developer>
       <id>jlim</id>
       <name>Jonas Lim</name>
       <email>jlim@exist.com</email>
-      <organization>jlim</organization>
+      <organization>Exist Labs</organization>
     </developer>
     <developer>
       <id>foconer</id>
-      <name>Fritz Oconer</name>
+      <name>Frederick Oconer</name>
       <email>foconer@exist.com</email>
-      <organization>foconer</organization>
-        </developer>
+      <organization>Exist Labs</organization>
+    </developer>
     <developer>
       <id>jgapuz</id>
       <name>Joseph Gapuz</name>
       <email>jgapuz@exist.com</email>
-      <organization>jgapuz</organization>
+      <organization>Exist Labs</organization>
     </developer>
     <developer>
       <id>pvillacorta</id>
       <name>Patrick Villacorta</name>
       <email>pvillacorta@exist.com</email>
-      <organization>pvillacorta</organization>
+      <organization>Exist Labs</organization>
     </developer>
     <developer>
       <id>dflores</id>
       <name>Darwin Flores</name>
       <email>dflores@exist.com</email>
-      <organization>dflores</organization>
+      <organization>Exist Labs</organization>
     </developer>
     <developer>
       <id>myap</id>
       <name>Merwin Yap</name>
       <email>myap@exist.com</email>
-      <organization>myap</organization>
+      <organization>Exist Labs</organization>
     </developer>
     <developer>
       <id>gnt</id>
       <name>Guillaume Nodet</name>
       <email>gnodet@logicblaze.com</email>
-      <organization>gnt</organization>
+      <organization>LogicBlaze</organization>
+      <organizationUrl>http://www.logicblaze.com/</organizationUrl>
+      <timezone>+1</timezone>
     </developer>
     <developer>
       <id>gastaldi</id>
       <name>George Gastaldi</name>
       <email>george@neogrid.com.br</email>
-      <organization>gastaldi</organization>
+      <organization>Datasul B2B</organization>
     </developer>
   </developers>
-  <licenses>
-      <license>
-        <name>The Apache Software License, Version 2.0</name>
-        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        <distribution>repo</distribution>
-      </license>
-  </licenses>
+  
   <scm>
-    <connection>
-      scm:svn:svn://svn.servicemix.org/servicemix/scm/trunk/
-    </connection>
-    <developerConnection>
-      scm:svn:svn+ssh://svn.servicemix.org/servicemix/scm/servicemix/trunk
-    </developerConnection>
-    <url>http://svn.servicemix.codehaus.org/trunk/</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/servicemix/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/servicemix/trunk</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/incubator/servicemix/trunk/</url>
   </scm>
-  <organization>
-    <name>LogicBlaze, Inc.</name>
-    <url>http://www.logicblaze.com</url>
-  </organization>
+  
   <modules>
     <module>servicemix-jbi</module>
+    <module>servicemix-services</module>
+    <module>servicemix-schemas</module>
     <module>servicemix-core</module>
     <module>servicemix-components</module>
     <module>servicemix-common</module>
+    <module>servicemix-soap</module>
     <module>servicemix-console</module>
-    <module>servicemix-gbean</module>
+    <module>servicemix-bpe</module>
     <module>servicemix-jms</module>
-    <!--module>servicemix-jsr181</module-->
+    <module>servicemix-jsr181</module>
+    <module>servicemix-http</module>
+    <module>servicemix-wsn2005</module>
+    <module>servicemix-lwcontainer</module>
+    <module>servicemix-sca</module>
+    <module>servicemix-web</module>
+    <module>servicemix-eip</module>
+    <module>servicemix-itests</module>
+    <module>servicemix-beanflow</module>
+    <module>tooling</module>
+    <module>servicemix-assembly</module>
   </modules>
+  
+  <properties>
+    <qdox.version>1.6-SNAPSHOT</qdox.version>
+    <jaxws.tools.version>2.0EA3</jaxws.tools.version>
+    <xfire.jsr181.api.version>1.0-M1</xfire.jsr181.api.version>
+    <xfire.version>1.1</xfire.version>
+    <mavenAssemblyPluginVersion>2.1</mavenAssemblyPluginVersion>
+  </properties>
+  
+  <profiles>
+      <profile>
+        <id>jdk1.5</id>
+        <activation>
+          <jdk>1.5</jdk>
+        </activation>
+        <modules>
+          <module>servicemix-sca</module>
+          <module>servicemix-wsn2005</module>
+        </modules>
+      </profile>
+  </profiles>
+  
+  <pluginRepositories>
+    <pluginRepository>
+      <id>servicemix-m2-repo</id>
+      <name>Servicemix Maven2 Repository</name>
+      <url>http://servicemix.org/m2-repo</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>apache.snapshots</id>
+      <name>Maven Central Plugins Development Repository</name>
+      <url>http://cvs.apache.org/maven-snapshot-repository</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </pluginRepository>
+  </pluginRepositories>
+  
   <repositories>
     <repository>
-      <id>codehaus</id>
-      <name>Codehaus Repository</name>
-      <url>http://dist.codehaus.org</url>
-      <layout>legacy</layout>
-    </repository>
-    <!--repository>
-      <id>ibiblio</id>
-      <name>Ibiblio Repository</name>
-      <url>http://www.ibiblio.org/maven</url>
-      <layout>legacy</layout>
-    </repository-->
-    <repository>
-      <id>central</id>
-      <name>Maven Repository Switchboard</name>
-      <url>http://repo1.maven.org/maven2</url>
-      <!--layout>legacy</layout-->
+      <id>servicemix-m2-repo</id>
+      <name>Servicemix Maven2 Repository</name>
+      <url>http://servicemix.org/m2-repo</url>
     </repository>
     <repository>
-      <id>apache</id>
-      <name>Apache Repository</name>
-      <url>http://cvs.apache.org/repository</url>
-      <layout>legacy</layout>
+      <id>activemq-tmp-repo</id>
+      <name>ActiveMQ Maven2 Temp Repository</name>
+      <url>http://people.apache.org/~chirino/incubator-activemq-4.0/maven2</url>
     </repository>
   </repositories>
+  
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>servicemix</artifactId>
-        <version>2.1-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-jbi</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
+        <artifactId>servicemix-services</artifactId>
+        <version>3.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>${pom.groupId}</groupId>
+        <artifactId>servicemix-schemas</artifactId>
+        <version>3.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-core</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-components</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-common</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-console</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-gbean</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-jms</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
         <artifactId>servicemix-jsr181</artifactId>
-        <version>2.1-SNAPSHOT</version>
-      </dependency>
-      
-      <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>servicemix-wspojo</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>servicemix-wsnotification</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <groupId>${pom.groupId}</groupId>
+        <artifactId>servicemix-http</artifactId>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>servicemix-wsrm</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <groupId>${pom.groupId}</groupId>
+        <artifactId>servicemix-sca</artifactId>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>DdlUtils</artifactId>
-        <version>1.0-dev</version>
+        <groupId>${pom.groupId}</groupId>
+        <artifactId>servicemix-soap</artifactId>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>jaxp</artifactId>
-        <version>1.3</version>
+        <groupId>${pom.groupId}</groupId>
+        <artifactId>servicemix-wsn2005</artifactId>
+        <version>3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>${pom.groupId}</groupId>
+        <artifactId>servicemix-lwcontainer</artifactId>
+        <version>3.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>${pom.groupId}</groupId>
+        <artifactId>servicemix-eip</artifactId>
+        <version>3.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>${pom.groupId}</groupId>
+        <artifactId>servicemix-web</artifactId>
+        <version>3.0-SNAPSHOT</version>
+        <type>war</type>
+      </dependency>
+ 
+      <dependency>
+        <groupId>org.apache.servicemix.dependencies</groupId>
         <artifactId>jsr-223</artifactId>
         <version>1.0-pr</version>
       </dependency>
-      <!--dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>ojdbc14</artifactId>
-        <version></version>
-      </dependency-->
       <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>oraclexsql</artifactId>
-        <version>20051201</version>
-      </dependency>
-      <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>saaj-api</artifactId>
-        <!--version>20050915</version-->
-        <version>20051127</version>
-      </dependency>
-      <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>saaj-impl</artifactId>
-        <!--version>20050915</version-->
-        <version>20051127</version>
-      </dependency>
-      <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>org.apache.servicemix.dependencies</groupId>
         <artifactId>wsif</artifactId>
         <version>2.0.1_IB3</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>org.apache.servicemix.dependencies</groupId>
         <artifactId>wsif-j2c</artifactId>
         <version>2.0.1_IB3</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>xmlparserv2</artifactId>
-        <version>20051201</version>
-      </dependency>
-      <!--dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>xsu12</artifactId>
-        <version></version>
-      </dependency-->
-      <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>http</artifactId>
-        <version>20051127</version>
+          <groupId>com.sun.xml</groupId>
+          <artifactId>jaxb-impl</artifactId>
+          <version>2.0EA3</version>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>jaxb-api</artifactId>
-        <version>20051127</version>
-      </dependency>
-      <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>jaxb-impl</artifactId>
-        <version>20051127</version>
-      </dependency>
-      <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>jaxb-xjc</artifactId>
-        <version>20051127</version>
-      </dependency>
-      <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>jaxws-api</artifactId>
-        <version>20051127</version>
-      </dependency>
-      <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>com.sun.xml</groupId>
         <artifactId>jaxws-rt</artifactId>
-        <version>20051127</version>
+        <version>2.0EA3</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.jws</groupId>
+            <artifactId>jsr181-api</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
+        <groupId>com.sun.xml</groupId>
         <artifactId>jaxws-tools</artifactId>
-        <version>20051127</version>
+        <version>2.0EA3</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.jws</groupId>
+            <artifactId>jsr181-api</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>jsr181-api</artifactId>
-        <version>20051127</version>
-      </dependency>
-      <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>jsr250-api</artifactId>
-        <version>20051127</version>
-      </dependency>
-      <dependency>
-        <groupId>servicemix</groupId>
-        <artifactId>sjsxp</artifactId>
-        <version>20051127</version>
+        <groupId>xfire</groupId>
+        <artifactId>xfire-jsr181-api</artifactId>
+        <version>${xfire.jsr181.api.version}</version>
       </dependency>
       
       <dependency>
-        <groupId>activecluster</groupId>
-        <artifactId>activecluster</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <groupId>incubator-activemq</groupId>
+        <artifactId>activeio-core</artifactId>
+        <version>3.0-beta3</version>
       </dependency>
       <dependency>
-        <groupId>activeio</groupId>
-        <artifactId>activeio</artifactId>
-        <version>2.1</version>
+        <groupId>incubator-activemq</groupId>
+        <artifactId>activemq-core</artifactId>
+        <version>4.0</version>
       </dependency>
       <dependency>
-        <groupId>activemq</groupId>
-        <artifactId>activemq</artifactId>
-        <version>4.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>activemq</groupId>
+        <groupId>incubator-activemq</groupId>
         <artifactId>activemq-ra</artifactId>
-        <version>4.0-SNAPSHOT</version>
+        <version>4.0</version>
       </dependency>
       <dependency>
-        <groupId>activemq</groupId>
+        <groupId>incubator-activemq</groupId>
+        <artifactId>activemq-web</artifactId>
+        <version>4.0</version>
+      </dependency>
+      <dependency>
+      <groupId>jivesoftware</groupId>
         <artifactId>smack</artifactId>
         <version>1.5.0</version>
       </dependency>
       <dependency>
-        <groupId>activemq</groupId>
+      <groupId>jivesoftware</groupId>
         <artifactId>smackx</artifactId>
         <version>1.5.0</version>
       </dependency>
       <dependency>
-        <groupId>activemq</groupId>
-        <artifactId>activemq-web</artifactId>
-        <version>3.2</version>
-      </dependency>
-      <dependency>
         <groupId>activesoap</groupId>
         <artifactId>activesoap</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0-20050615.083700</version>
       </dependency>
       <dependency>
         <groupId>annogen</groupId>
@@ -417,17 +463,12 @@
       <dependency>
         <groupId>ant</groupId>
         <artifactId>ant</artifactId>
-        <version>1.6</version>
+        <version>1.6.5</version>
       </dependency>
       <dependency>
         <groupId>antlr</groupId>
         <artifactId>antlr</artifactId>
         <version>2.7.5</version>
-      </dependency>
-      <dependency>
-        <groupId>axion</groupId>
-        <artifactId>axion</artifactId>
-        <version>1.0-M3-dev</version>
       </dependency>
       <dependency>
         <groupId>axis</groupId>
@@ -440,6 +481,11 @@
         <version>1.3</version>
       </dependency>
       <dependency>
+        <groupId>axis</groupId>
+        <artifactId>axis-saaj</artifactId>
+        <version>1.3</version>
+      </dependency>
+      <dependency>
         <groupId>backport175</groupId>
         <artifactId>backport175</artifactId>
         <version>1.0.RC1</version>
@@ -447,7 +493,7 @@
       <dependency>
         <groupId>backport-util-concurrent</groupId>
         <artifactId>backport-util-concurrent</artifactId>
-        <version>2.0_01_pd</version>
+        <version>2.1</version>
       </dependency>
       <dependency>
         <groupId>beehive</groupId>
@@ -502,6 +548,11 @@
       </dependency>
       <dependency>
         <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils-core</artifactId>
+        <version>1.7.0</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils</artifactId>
         <version>1.7.0</version>
       </dependency>
@@ -509,6 +560,20 @@
         <groupId>commons-betwixt</groupId>
         <artifactId>commons-betwixt</artifactId>
         <version>0.7</version>
+        <exclusions>
+          <exclusion>
+            <groupId>xerces</groupId>
+            <artifactId>xerces</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xerces</groupId>
+            <artifactId>xerces</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
@@ -528,7 +593,13 @@
       <dependency>
         <groupId>commons-digester</groupId>
         <artifactId>commons-digester</artifactId>
-        <version>1.7</version>
+        <version>1.6</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>commons-discovery</groupId>
@@ -543,7 +614,13 @@
       <dependency>
         <groupId>commons-httpclient</groupId>
         <artifactId>commons-httpclient</artifactId>
-        <version>3.0-rc2</version>
+        <version>3.0</version>
+        <exclusions>
+          <exclusion>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -551,14 +628,9 @@
         <version>1.0</version>
       </dependency>
       <dependency>
-        <groupId>commons-jelly</groupId>
-        <artifactId>commons-jelly-tags-velocity</artifactId>
-        <version>SNAPSHOT</version>
-      </dependency>
-      <dependency>
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>
-        <version>2.0</version>
+        <version>2.1</version>
       </dependency>
       <dependency>
         <groupId>commons-logging</groupId>
@@ -568,12 +640,24 @@
       <dependency>
         <groupId>commons-net</groupId>
         <artifactId>commons-net</artifactId>
-        <version>1.4.0</version>
+        <version>1.4.1</version>
+        <exclusions>
+          <exclusion>
+            <groupId>oro</groupId>
+            <artifactId>oro</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>commons-pool</groupId>
         <artifactId>commons-pool</artifactId>
         <version>1.2</version>
+        <exclusions>
+          <exclusion>
+            <groupId>xerces</groupId>
+            <artifactId>xerces</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>commons-primitives</groupId>
@@ -617,128 +701,241 @@
       </dependency>
       <dependency>
         <groupId>geronimo</groupId>
+        <artifactId>geronimo-activation</artifactId>
+        <version>1.0</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-jelly</groupId>
+            <artifactId>commons-jelly-tags-velocity</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>velocity</groupId>
+            <artifactId>velocity</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>geronimo</groupId>
         <artifactId>geronimo-common</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
       </dependency>
       <dependency>
         <groupId>geronimo</groupId>
         <artifactId>geronimo-connector</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
+        <exclusions>
+          <exclusion>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>regexp</groupId>
+            <artifactId>regexp</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-deployment</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-common</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-naming</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-security</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-jelly</groupId>
+            <artifactId>commons-jelly-tags-velocity</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-management</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-j2ee</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>velocity</groupId>
+            <artifactId>velocity</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-transaction</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-kernel</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>tranql</groupId>
+            <artifactId>tranql</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>geronimo</groupId>
         <artifactId>geronimo-core</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
       </dependency>
       <dependency>
         <groupId>geronimo</groupId>
         <artifactId>geronimo-deployment</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
       </dependency>
       <dependency>
         <groupId>geronimo</groupId>
         <artifactId>geronimo-j2ee</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
       </dependency>
       <dependency>
         <groupId>geronimo</groupId>
         <artifactId>geronimo-kernel</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
       </dependency>
       <dependency>
         <groupId>geronimo</groupId>
         <artifactId>geronimo-network</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
       </dependency>
       <dependency>
         <groupId>geronimo</groupId>
         <artifactId>geronimo-remoting</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
       </dependency>
       <dependency>
         <groupId>geronimo</groupId>
         <artifactId>geronimo-security</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
       </dependency>
       <dependency>
         <groupId>geronimo</groupId>
         <artifactId>geronimo-system</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
       </dependency>
       <dependency>
         <groupId>geronimo</groupId>
         <artifactId>geronimo-transaction</artifactId>
+        <version>1.0</version>
+        <exclusions>
+          <exclusion>
+            <groupId>howl</groupId>
+            <artifactId>howl-logger</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-jelly</groupId>
+            <artifactId>commons-jelly-tags-velocity</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-kernel</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>velocity</groupId>
+            <artifactId>velocity</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-system</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>geronimo</groupId>
+            <artifactId>geronimo-j2ee</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-ejb_2.1_spec</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-activation_1.0.2_spec</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-ejb_2.1_spec</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-j2ee-jacc_1.0_spec</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-jaxrpc_1.1_spec</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-j2ee-management_1.0_spec</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-j2ee_1.4_spec</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-jms_1.1_spec</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-jsp_2.0_spec</artifactId>
+        <version>1.0</version>
+      </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-saaj_1.1_spec</artifactId>
+        <version>1.0</version>
+    </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-servlet_2.4_spec</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-qname_1.1_spec</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-javamail_1.3.1_spec</artifactId>
+        <version>1.1-20060323</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-commonj_1.1_spec</artifactId>
         <version>1.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>geronimo-spec</groupId>
-        <artifactId>geronimo-spec-activation</artifactId>
-        <version>1.0.2-rc4</version>
-      </dependency>
-      <dependency>
-        <groupId>geronimo-spec</groupId>
-        <artifactId>geronimo-spec-ejb</artifactId>
-        <version>2.1-rc4</version>
-      </dependency>
-      <dependency>
-        <groupId>geronimo-spec</groupId>
-        <artifactId>geronimo-spec-j2ee-connector</artifactId>
-        <version>1.5-rc4</version>
-      </dependency>
-      <dependency>
-        <groupId>geronimo-spec</groupId>
-        <artifactId>geronimo-spec-j2ee-jacc</artifactId>
-        <version>1.0-rc4</version>
-      </dependency>
-      <dependency>
-        <groupId>geronimo-spec</groupId>
-        <artifactId>geronimo-spec-jaxrpc</artifactId>
-        <version>1.1-rc4</version>
-      </dependency>
-      <dependency>
-        <groupId>geronimo-spec</groupId>
-        <artifactId>geronimo-spec-j2ee-management</artifactId>
-        <version>1.0-rc4</version>
-      </dependency>
-      <dependency>
-        <groupId>geronimo-spec</groupId>
-        <artifactId>geronimo-spec-j2ee</artifactId>
-        <version>1.4-rc4</version>
-      </dependency>
-      <dependency>
-        <groupId>geronimo-spec</groupId>
-        <artifactId>geronimo-spec-javamail</artifactId>
-        <version>1.3.1-rc5</version>
-      </dependency>
-      <dependency>
-        <groupId>geronimo-spec</groupId>
-        <artifactId>geronimo-spec-jms</artifactId>
-        <version>1.1-rc4</version>
-      </dependency>
-      <dependency>
-        <groupId>geronimo-spec</groupId>
-        <artifactId>geronimo-spec-jsp</artifactId>
-        <version>2.0-rc4</version>
-      </dependency>
-      <dependency>
-        <groupId>geronimo-spec</groupId>
-        <artifactId>geronimo-spec-jta</artifactId>
-        <version>1.0.1B-rc4</version>
-      </dependency>
-      <dependency>
-        <groupId>geronimo-spec</groupId>
-        <artifactId>geronimo-spec-servlet</artifactId>
-        <version>2.4-rc4</version>
-      </dependency>
-      <dependency>
         <groupId>groovy</groupId>
-        <artifactId>groovy-1.0-jsr</artifactId>
-        <version>03</version>
-      </dependency>
-      <dependency>
-        <groupId>groovy</groupId>
-        <artifactId>groovy-all</artifactId>
-        <version>1.0-jsr-03</version>
+        <artifactId>groovy-all-1.0-jsr</artifactId>
+        <version>04</version>
       </dependency>
       <dependency>
         <groupId>howl</groupId>
@@ -754,6 +951,36 @@
         <groupId>httpunit</groupId>
         <artifactId>httpunit</artifactId>
         <version>1.6</version>
+        <exclusions>
+          <exclusion>
+            <groupId>jtidy</groupId>
+            <artifactId>jtidy</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>rhino</groupId>
+            <artifactId>js</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>nekohtml</groupId>
+            <artifactId>nekohtml</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xerces</groupId>
+            <artifactId>xmlParserAPIs</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>janino</groupId>
@@ -769,6 +996,39 @@
         <groupId>jaxen</groupId>
         <artifactId>jaxen</artifactId>
         <version>1.1-beta-8</version>
+        <exclusions>
+          <exclusion>
+            <groupId>jaxme</groupId>
+            <artifactId>jaxme-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xom</groupId>
+            <artifactId>xom</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>jdom</groupId>
+            <artifactId>jdom</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xerces</groupId>
+            <artifactId>xmlParserAPIs</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>dom4j</groupId>
+        <artifactId>dom4j</artifactId>
+        <version>1.6.1</version>
+        <exclusions>
+          <exclusion>
+            <groupId>jaxme</groupId>
+            <artifactId>jaxme-api</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>jdbm</groupId>
@@ -781,19 +1041,14 @@
         <version>1.0</version>
       </dependency>
       <dependency>
-        <groupId>jencks</groupId>
+        <groupId>org.apache.servicemix.dependencies</groupId>
         <artifactId>jencks</artifactId>
-        <version>1.1</version>
+        <version>1.1.2</version>
       </dependency>
       <dependency>
-        <groupId>jencks</groupId>
-        <artifactId>jencks-all</artifactId>
-        <version>1.1</version>
-      </dependency>
-      <dependency>
-        <groupId>jetty</groupId>
-        <artifactId>org.mortbay.jetty</artifactId>
-        <version>4.2.20RC0</version>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty</artifactId>
+        <version>6.0.0beta15</version>
       </dependency>
       <dependency>
         <groupId>jgroups</groupId>
@@ -816,7 +1071,7 @@
         <version>1.1</version>
       </dependency>
       <dependency>
-        <groupId>jstl</groupId>
+        <groupId>javax.servlet</groupId>
         <artifactId>jstl</artifactId>
         <version>1.1.1</version>
       </dependency>
@@ -834,6 +1089,52 @@
         <groupId>lingo</groupId>
         <artifactId>lingo</artifactId>
         <version>1.0</version>
+        <exclusions>
+          <exclusion>
+            <groupId>backport175</groupId>
+            <artifactId>backport175</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-full</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xmlpull</groupId>
+            <artifactId>xmlpull</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>jencks</groupId>
+            <artifactId>jencks-all</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>geronimo-spec</groupId>
+            <artifactId>geronimo-spec-jta</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>geronimo-spec</groupId>
+            <artifactId>geronimo-spec-jms</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>geronimo-spec</groupId>
+            <artifactId>geronimo-spec-j2ee-connector</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>geronimo-spec</groupId>
+            <artifactId>geronimo-spec-j2ee-management</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>activemq</groupId>
+            <artifactId>activemq</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>activemq</groupId>
+            <artifactId>activemq-ra</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>log4j</groupId>
@@ -848,22 +1149,17 @@
       <dependency>
         <groupId>mx4j</groupId>
         <artifactId>mx4j</artifactId>
-        <version>2.1.1</version>
-      </dependency>
-      <dependency>
-        <groupId>mx4j</groupId>
-        <artifactId>mx4j-jmx</artifactId>
-        <version>2.1.1</version>
+        <version>3.0.1</version>
       </dependency>
       <dependency>
         <groupId>mx4j</groupId>
         <artifactId>mx4j-remote</artifactId>
-        <version>2.1.1</version>
+        <version>3.0.1</version>
       </dependency>
       <dependency>
         <groupId>mx4j</groupId>
         <artifactId>mx4j-tools</artifactId>
-        <version>2.1.1</version>
+        <version>3.0.1</version>
       </dependency>
       <dependency>
         <groupId>openejb</groupId>
@@ -903,12 +1199,12 @@
       <dependency>
         <groupId>qdox</groupId>
         <artifactId>qdox</artifactId>
-        <version>1.5</version>
+        <version>${qdox.version}</version>
       </dependency>
       <dependency>
         <groupId>quartz</groupId>
         <artifactId>quartz</artifactId>
-        <version>1.4.5</version>
+        <version>1.5.1</version>
       </dependency>
       <dependency>
         <groupId>regexp</groupId>
@@ -926,19 +1222,109 @@
         <version>0.11.1</version>
       </dependency>
       <dependency>
-        <groupId>springframework</groupId>
+        <groupId>org.springframework</groupId>
         <artifactId>spring</artifactId>
+        <version>1.2.6</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.resource</groupId>
+            <artifactId>connector</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.transaction</groupId>
+            <artifactId>jta</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-support</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-hibernate</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-remoting</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-beans</artifactId>
         <version>1.2.5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>1.2.5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>1.2.5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-remoting</artifactId>
+        <version>1.2.5</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.transaction</groupId>
+            <artifactId>jta</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-support</artifactId>
+        <version>1.2.5</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.resource</groupId>
+            <artifactId>connector</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-dao</artifactId>
+        <version>1.2.5</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.transaction</groupId>
+            <artifactId>jta</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>stax</groupId>
         <artifactId>stax-api</artifactId>
-        <version>1.0</version>
+        <version>1.0.1</version>
       </dependency>
       <dependency>
         <groupId>stax-utils</groupId>
         <artifactId>stax-utils</artifactId>
-        <version>snapshot-20040917</version>
+        <version>snapshot-20060502</version>
       </dependency>
       <dependency>
         <groupId>taglibs</groupId>
@@ -968,32 +1354,36 @@
       <dependency>
         <groupId>woodstox</groupId>
         <artifactId>wstx-asl</artifactId>
-        <version>2.0.3</version>
+        <version>2.9.3</version>
       </dependency>
       <dependency>
         <groupId>wsdl4j</groupId>
         <artifactId>wsdl4j</artifactId>
-        <version>1.5.1</version>
+        <version>1.5.2</version>
       </dependency>
       <dependency>
         <groupId>xalan</groupId>
         <artifactId>xalan</artifactId>
         <version>2.7.0</version>
+        <exclusions>
+        </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.xbean</groupId>
+        <groupId>org.apache.xbean</groupId>
         <artifactId>xbean-kernel</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>2.3</version>
       </dependency>
       <dependency>
-        <groupId>org.xbean</groupId>
+        <groupId>org.apache.xbean</groupId>
         <artifactId>xbean-server</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>2.3</version>
       </dependency>
       <dependency>
-        <groupId>org.xbean</groupId>
+        <groupId>org.apache.xbean</groupId>
         <artifactId>xbean-spring</artifactId>
-        <version>2.1-SNAPSHOT</version>
+        <version>2.3</version>
+        <exclusions>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>xerces</groupId>
@@ -1001,19 +1391,105 @@
         <version>2.7.1</version>
       </dependency>
       <dependency>
-        <groupId>xfire</groupId>
-        <artifactId>jaxb-api</artifactId>
-        <version>20051114</version>
-      </dependency>
-      <dependency>
-        <groupId>xfire</groupId>
+        <groupId>org.codehaus.xfire</groupId>
         <artifactId>xfire-all</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${xfire.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>jetty</groupId>
+            <artifactId>org.mortbay.jetty</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xfire</groupId>
+            <artifactId>jaxb-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>jaxb</groupId>
+            <artifactId>jaxb-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xfire</groupId>
+            <artifactId>jaxb-impl</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>jaxb</groupId>
+            <artifactId>jaxb-impl</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xfire</groupId>
+            <artifactId>sun-saaj-impl</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xfire</groupId>
+            <artifactId>sun-saaj-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xfire</groupId>
+            <artifactId>sun-jaxws-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xfire</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
-        <groupId>xfire</groupId>
-        <artifactId>xfire-jaxws</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <groupId>org.codehaus.xfire</groupId>
+        <artifactId>xfire-jaxb2</artifactId>
+        <version>${xfire.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>httpunit</groupId>
+            <artifactId>httpunit</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>jetty</groupId>
+            <artifactId>org.mortbay.jetty</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>ant</groupId>
+            <artifactId>ant</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>qdox</groupId>
+            <artifactId>qdox</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.xfire</groupId>
+        <artifactId>xfire-xmlbeans</artifactId>
+        <version>${xfire.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.xfire</groupId>
+        <artifactId>xfire-castor</artifactId>
+        <version>${xfire.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.xfire</groupId>
+        <artifactId>xfire-jibx</artifactId>
+        <version>${xfire.version}</version>
       </dependency>
       <dependency>
         <groupId>xml-apis</groupId>
@@ -1028,17 +1504,17 @@
       <dependency>
         <groupId>xmlbeans</groupId>
         <artifactId>xbean</artifactId>
-        <version>2.0.0</version>
+        <version>2.1.0</version>
       </dependency>
       <dependency>
         <groupId>xmlbeans</groupId>
         <artifactId>xbean_xpath</artifactId>
-        <version>2.0.0</version>
+        <version>2.1.0</version>
       </dependency>
       <dependency>
         <groupId>xmlbeans</groupId>
         <artifactId>xmlpublic</artifactId>
-        <version>2.0.0</version>
+        <version>2.1.0</version>
       </dependency>
       <dependency>
         <groupId>xmlpull</groupId>
@@ -1055,6 +1531,147 @@
         <artifactId>yom</artifactId>
         <version>1.0-alpha-2</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.ws.commons</groupId>
+        <artifactId>XmlSchema</artifactId>
+        <version>1.0</version>
+      </dependency>
+        <dependency>
+            <groupId>lucene</groupId>
+            <artifactId>lucene</artifactId>
+            <version>1.4.3</version>
+        </dependency>
+    <dependency>
+      <groupId>net.java.dev.saaj</groupId>
+      <artifactId>saaj-impl</artifactId>
+      <version>ea3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.ode</groupId>
+      <artifactId>bpe</artifactId>
+      <version>1.0-20060316</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jcl</artifactId>
+      <version>1.0.1</version>
+    </dependency>
     </dependencies>
   </dependencyManagement>
+  
+  <distributionManagement>
+    <site>
+      <id>goopen.org</id>
+      <url>scp://goopen.org/home/projects/servicemix/public_html/maven/</url>
+    </site>
+  </distributionManagement>
+  
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>target/generated</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+    </resources>
+    <pluginManagement>
+      <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <useFile>true</useFile>
+                    <forkMode>once</forkMode>
+                    <childDelegation>false</childDelegation>
+                    <workingDir>${basedir}</workingDir>
+
+                    <systemProperties>
+                        <property>
+                            <name>log4j.configuration</name>
+                            <value>${basedir}/target/test-classes/log4j-tests.properties</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+        <plugin>
+          <groupId>org.apache.servicemix.tooling</groupId>
+          <artifactId>jbi-maven-plugin</artifactId>
+          <version>1.0-SNAPSHOT</version>
+          <extensions>true</extensions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <configuration>
+            <warSourceDirectory>src/webapp/</warSourceDirectory>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.xbean</groupId>
+          <artifactId>maven-xbean-plugin</artifactId>
+          <version>2.3</version>
+          <dependencies>
+            <dependency>
+              <groupId>qdox</groupId>
+              <artifactId>qdox</artifactId>
+              <version>${qdox.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <artifactId>maven-one-plugin</artifactId>
+        <version>1.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>install-maven-one-repository</goal>
+              <goal>deploy-maven-one-repository</goal>
+            </goals>
+            <configuration>
+              <remoteRepositoryId>apache.m1.releases</remoteRepositoryId>
+              <remoteRepositoryUrl>scp://minotaur.apache.org/www/cvs.apache.org/repository</remoteRepositoryUrl>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jxr-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>surefire-report-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>

@@ -24,6 +24,9 @@
                     <fragment name="p2" type="portlet">
                         <property name="portlet" value="1.2"/>
                     </fragment>
+                    <fragment name="p3" type="portlet">
+                        <property name="portlet" value="1.3"/>
+                    </fragment>
                 </fragment>
             </fragment>
         </fragment>

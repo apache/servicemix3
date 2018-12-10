@@ -1,61 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
+ 
+<!--
+
+    Copyright 2005 The Apache Software Foundation
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
 
 <project>
+
   <pomVersion>3</pomVersion>
+  
+  <!-- ============== -->
+  <!-- Identification -->
+  <!-- ============== -->
+
   <name>ServiceMix</name>
   <id>servicemix</id>
-  <groupId>servicemix</groupId>
-  <currentVersion>2.1-SNAPSHOT</currentVersion>
+  <groupId>incubator-servicemix</groupId>
+  <currentVersion>3.0-SNAPSHOT</currentVersion>
 
   <organization>
-    <name>LogicBlaze, Inc.</name>
-    <url>http://logicblaze.com</url>
-    <logo>http://logicblaze.com/images/logo.jpg</logo>
+      <name>Apache Software Foundation</name>
+      <url>http://geronimo.apache.org.apache.servicemix</url>
+      <logo>http://geronimo.apache.org/images/geronimo-logo.png</logo>
   </organization>
 
-  <inceptionYear>2005</inceptionYear>
+  <inceptionYear>2006</inceptionYear>
 
-  <package>org.servicemix</package>
+  <package>org.apache.servicemix</package>
   <packageGroups>
     <packageGroup>
       <title>ServiceMix Core APIs</title>
-      <packages>org.servicemix</packages>
+      <packages>org.apache.servicemix</packages>
     </packageGroup>
     <packageGroup>
       <title>JBI Client API</title>
-      <packages>org.servicemix.client</packages>
+      <packages>org.apache.servicemix.client</packages>
     </packageGroup>
     <packageGroup>
       <title>JBI Components</title>
-      <packages>org.servicemix.components.*</packages>
+      <packages>org.apache.servicemix.components.*</packages>
     </packageGroup>
     <packageGroup>
       <title>JBI Container</title>
-      <packages>org.servicemix.jbi.container</packages>
+      <packages>org.apache.servicemix.jbi.container</packages>
     </packageGroup>
     <packageGroup>
       <title>Normalized Message Router</title>
-      <packages>org.servicemix.jbi.nmr</packages>
+      <packages>org.apache.servicemix.jbi.nmr</packages>
     </packageGroup>
     <packageGroup>
       <title>Message Router Dispatching</title>
-      <packages>org.servicemix.jbi.nmr.flow.*</packages>
+      <packages>org.apache.servicemix.jbi.nmr.flow.*</packages>
     </packageGroup>
     <packageGroup>
       <title>Normalized Message Service implemenation</title>
-      <packages>org.servicemix.jbi.messaging</packages>
+      <packages>org.apache.servicemix.jbi.messaging</packages>
     </packageGroup>
     <packageGroup>
       <title>Endpoint resolving and choosing strategies</title>
-      <packages>org.servicemix.jbi.resolver</packages>
+      <packages>org.apache.servicemix.jbi.resolver</packages>
     </packageGroup>
     <packageGroup>
       <title>JAXP utilities</title>
-      <packages>org.servicemix.jbi.jaxp</packages>
+      <packages>org.apache.servicemix.jbi.jaxp</packages>
     </packageGroup>
     <packageGroup>
       <title>JBI Container implementation</title>
-      <packages>org.servicemix.jbi:org.servicemix.jbi.*</packages>
+      <packages>org.apache.servicemix.jbi:org.servicemix.jbi.*</packages>
     </packageGroup>
   </packageGroups>
 
@@ -71,40 +95,42 @@
   <url>http://www.servicemix.org/</url>
   <issueTrackingUrl>http://jira.logicblaze.com/browse/SM</issueTrackingUrl>
 
-  <siteAddress>beaver.codehaus.org</siteAddress>
-  <siteDirectory>/home/projects/servicemix/public_html/maven/${pom.artifactId}</siteDirectory>
-  <distributionDirectory>/home/projects/servicemix/dist</distributionDirectory>
+  <!-- Used for artifact deployment -->
+  <siteAddress>geronimo.apache.org</siteAddress>
+  <siteDirectory>/www/geronimo.apache.org.apache.servicemix</siteDirectory>
+  <distributionSite>geronimo.apache.org</distributionSite>
+  <distributionDirectory>/www/geronimo.apache.org/builds</distributionDirectory>
 
   <repository>
-    <connection>scm:svn:svn://svn.servicemix.org/servicemix/scm/servicemix/trunk</connection>
-    <developerConnection>scm:svn:svn+ssh://svn.servicemix.org/servicemix/scm/servicemix/trunk</developerConnection>
-    <url>http://svn.servicemix.codehaus.org/trunk/</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/servicemix/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/servicemix/trunk</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/incubator/servicemix/trunk/</url>
   </repository>
 
   <mailingLists>
     <mailingList>
       <name>ServiceMix Developer List</name>
-      <subscribe>dev-subscribe@servicemix.codehaus.org</subscribe>
-      <unsubscribe>dev-unsubscribe@servicemix.codehaus.org</unsubscribe>
+      <subscribe>servicemix-dev-subscribe@geronimo.apache.org</subscribe>
+      <unsubscribe>servicemix-dev-unsubscribe@geronimo.apache.org</unsubscribe>
       <!--
       <archive>http://archive.servicemix.codehaus.org/dev/</archive>
       -->
-      <archive>http://dir.gmane.org/gmane.comp.java.servicemix.devel</archive>
+      <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-dev/</archive>
     </mailingList>
     <mailingList>
       <name>ServiceMix User List</name>
-      <subscribe>user-subscribe@servicemix.codehaus.org</subscribe>
-      <unsubscribe>user-unsubscribe@servicemix.codehaus.org</unsubscribe>
+      <subscribe>servicemix-users-subscribe@geronimo.apache.org</subscribe>
+      <unsubscribe>servicemix-users-unsubscribe@geronimo.apache.org</unsubscribe>
       <!--
       <archive>http://archive.servicemix.codehaus.org/user/</archive>
       -->
-      <archive>http://dir.gmane.org/gmane.comp.java.servicemix.user</archive>
+      <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-users/</archive>
     </mailingList>
     <mailingList>
       <name>ServiceMix SCM List</name>
-      <subscribe>scm-subscribe@servicemix.codehaus.org</subscribe>
-      <unsubscribe>scm-unsubscribe@servicemix.codehaus.org</unsubscribe>
-      <archive>http://archive.servicemix.codehaus.org/scm/</archive>
+      <subscribe>servicemix-commits-subscribe@geronimo.apache.org</subscribe>
+      <unsubscribe>servicemix-commits-unsubscribe@geronimo.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/geronimo-servicemix-commits/</archive>
     </mailingList>
   </mailingLists>
 
@@ -144,6 +170,11 @@
       <id>2.0.1</id>
       <name>2.0.1</name>
       <tag>SERVICEMIX_2_0_1</tag>
+    </version>
+    <version>
+      <id>3.0-M1</id>
+      <name>3.0-M1</name>
+      <tag>SERVICEMIX_3_0_M1</tag>
     </version>
   </versions>
   <branches>
@@ -227,7 +258,7 @@
   </dependencies>
 
   <build>
-    <nagEmailAddress>scm@servicemix.codehaus.org</nagEmailAddress>
+    <nagEmailAddress>servicemix-dev-subscribe@geronimo.apache.org</nagEmailAddress>
     <sourceDirectory>src/main/java</sourceDirectory>
     <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
 
@@ -278,7 +309,10 @@
     <report>maven-javadoc-plugin</report>
     <report>maven-jxr-plugin</report>
     <report>maven-junit-report-plugin</report>
+    <!-- When enabled, a java.lang.IncompatibleClassChangeError is thrown due
+        to changes in qdox
     <report>maven-tasklist-plugin</report>
+    -->
     <report>maven-pmd-plugin</report>
 
   </reports>

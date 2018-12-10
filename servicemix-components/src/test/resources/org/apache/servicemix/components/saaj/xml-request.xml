@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wn1:getCustomerInfo 
+	xmlns:d="http://www.w3.org/2001/XMLSchema"
+	xmlns:i="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:wn0="http://systinet.com/xsd/SchemaTypes/"
+	xmlns:wn1="http://systinet.com/wsdl/com/cexp/coe/bob/ws/customer/"
+	xmlns:wn2="http://systinet.com/soap-jta/"
+	xmlns:wn3="http://systinet.com/wsdl/com/cexp/coe/bob/services/order/pojo/">
+	
+	<wn1:userId i:type="d:string">akayali</wn1:userId>
+	
+</wn1:getCustomerInfo>

@@ -1,178 +1,131 @@
-<project 
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xmlns="http://maven.apache.org/POM/4.0.0">
-    
-    <parent>
-        <groupId>servicemix</groupId>
-        <artifactId>servicemix</artifactId>
-        <version>2.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
-    
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>servicemix</groupId>
-    <artifactId>servicemix-jsr181</artifactId>
-    <packaging>jar</packaging>
-    <name>ServiceMix :: JSR-181 Service Engine</name>
-    <description>JSR-181 service engine</description>
-    <dependencies>
-    
-        <!-- Check this dependency -->
-        <!-- dependency>
-            <groupId>servicemix</groupId>
-            <artifactId>maven-jbi-plugin</artifactId>
-            <version>${pom.currentVersion}</version>
-            <type>plugin</type>
-            <classifier></classifier>
-            <scope></scope>
-            <systemPath></systemPath>
-            <exclusions>
-                <exclusion></exclusion>
-            </exclusions>
-            <optional></optional>
-        </dependency -->
-        
-        <!-- found in codehaus.org and should be in parent pom.xml -->
-             
-        <dependency>
-            <groupId>servicemix</groupId>
-            <artifactId>servicemix-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>backport-util-concurrent</groupId>
-            <artifactId>backport-util-concurrent</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>wsdl4j</groupId>
-            <artifactId>wsdl4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xfire</groupId>
-            <artifactId>xfire-all</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xfire</groupId>
-            <artifactId>xfire-jaxws</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>stax</groupId>
-            <artifactId>stax-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jdom</groupId>
-            <artifactId>jdom</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.xbean</groupId>
-            <artifactId>xbean-spring</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.xbean</groupId>
-            <artifactId>xbean-server</artifactId>
-            <version>2.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.xbean</groupId>
-            <artifactId>xbean-kernel</artifactId>
-            <version>2.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>springframework</groupId>
-            <artifactId>spring</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>woodstox</groupId>
-            <artifactId>wstx-asl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xmlbeans</groupId>
-            <artifactId>xbean</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-attributes</groupId>
-            <artifactId>commons-attributes-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-attributes</groupId>
-            <artifactId>commons-attributes-plugin</artifactId>
-            <!--type>plugin</type-->
-        </dependency>
-        <dependency>
-            <groupId>backport175</groupId>
-            <artifactId>backport175</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xfire</groupId>
-            <artifactId>jaxb-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>geronimo-spec</groupId>
-            <artifactId>geronimo-spec-j2ee-connector</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>geronimo-spec</groupId>
-            <artifactId>geronimo-spec-jta</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>servicemix</groupId>
-            <artifactId>servicemix-jbi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>mx4j</groupId>
-            <artifactId>mx4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>mx4j</groupId>
-            <artifactId>mx4j-remote</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>servicemix</groupId>
-            <artifactId>servicemix-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>servicemix</groupId>
-            <artifactId>servicemix-components</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>springframework</groupId>
-            <artifactId>spring</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>activemq</groupId>
-            <artifactId>activemq</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jencks</groupId>
-            <artifactId>jencks-all</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>concurrent</groupId>
-            <artifactId>concurrent</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>annogen</groupId>
-            <artifactId>annogen</artifactId>
-        </dependency>
-        <dependency>
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005 The Apache Software Foundation
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!-- $Rev$ $Date$ -->
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.servicemix</groupId>
+    <artifactId>servicemix</artifactId>
+    <version>3.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>servicemix-jsr181</artifactId>
+  <packaging>jbi-component</packaging>
+  <name>ServiceMix :: JSR-181 Service Engine</name>
+  <description>JSR-181 service engine</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.xfire</groupId>
+      <artifactId>xfire-jaxb2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.xfire</groupId>
+      <artifactId>xfire-xmlbeans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jdom</groupId>
+      <artifactId>jdom</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>stax</groupId>
+      <artifactId>stax-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xmlParserAPIs</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>wsdl4j</groupId>
+      <artifactId>wsdl4j</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <configuration>
+              <tasks>
+                <taskdef classname="org.apache.xbean.spring.generator.MappingGeneratorTask"
+                  name="mapping">
+                  <classpath>
+                    <pathelement path="${basedir}/target/classes" />
+                    <path refid="maven.test.classpath" />
+                  </classpath>
+                </taskdef>
+                <mapping destFile="${basedir}/target/servicemix-jsr181-${version}.xsd"
+                  namespace="http://servicemix.apache.org/jsr181/1.0"
+                  srcdir="${basedir}/src/main/java" metaInfDir="${basedir}/target/generated/" />
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
             <groupId>qdox</groupId>
             <artifactId>qdox</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>beehive</groupId>
-            <artifactId>wsm</artifactId>
-        </dependency>
-    </dependencies>
+            <version>${qdox.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.servicemix.tooling</groupId>
+        <artifactId>jbi-maven-plugin</artifactId>
+        <configuration>
+          <type>service-engine</type>
+          <bootstrap>org.apache.servicemix.jsr181.Jsr181Bootstrap</bootstrap>
+          <component>org.apache.servicemix.jsr181.Jsr181Component</component>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

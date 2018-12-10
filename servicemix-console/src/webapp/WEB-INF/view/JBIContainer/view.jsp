@@ -42,7 +42,7 @@
             <a href="<portlet:actionURL><portlet:param name="action" value="shutdown"/><portlet:param name="name" value="${service.name}"/></portlet:actionURL>">shutdown</a>&nbsp;
             <a href="<portlet:actionURL><portlet:param name="action" value="start"/><portlet:param name="name" value="${service.name}"/></portlet:actionURL>">start</a>
           </c:when>
-          <c:when test="${service.state == 'Running'}">
+          <c:when test="${service.state == 'Started'}">
             <a href="<portlet:actionURL><portlet:param name="action" value="stop"/><portlet:param name="name" value="${service.name}"/></portlet:actionURL>">stop</a>
           </c:when>
         </c:choose>

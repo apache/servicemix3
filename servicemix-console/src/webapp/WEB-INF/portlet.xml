@@ -10,7 +10,7 @@
         <portlet-name>JBIContainer</portlet-name>
         <display-name>JBI Container Portlet</display-name>
 
-        <portlet-class>org.servicemix.console.JBIContainerPortlet</portlet-class>
+        <portlet-class>org.apache.servicemix.console.JBIContainerPortlet</portlet-class>
 
         <expiration-cache>-1</expiration-cache>
 
@@ -33,7 +33,7 @@
         <portlet-name>JBIAudit</portlet-name>
         <display-name>JBI Audit Portlet</display-name>
 
-        <portlet-class>org.servicemix.console.JBIAuditPortlet</portlet-class>
+        <portlet-class>org.apache.servicemix.console.JBIAuditPortlet</portlet-class>
 
         <expiration-cache>-1</expiration-cache>
 
@@ -49,6 +49,29 @@
             <title>JBI Audit</title>
             <short-title>JBI Audit</short-title>
             <keywords>JBI, Audit</keywords>
+        </portlet-info>
+    </portlet>
+    <portlet>
+        <description>ServiceMix components management.</description>
+        <portlet-name>JBIComponents</portlet-name>
+        <display-name>JBI Components Portlet</display-name>
+
+        <portlet-class>org.apache.servicemix.console.JBIComponentsPortlet</portlet-class>
+
+        <expiration-cache>-1</expiration-cache>
+
+        <supports>
+            <mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>HELP</portlet-mode>
+        </supports>
+
+        <supported-locale>en</supported-locale>
+
+        <portlet-info>
+            <title>JBI Components</title>
+            <short-title>JBI Components</short-title>
+            <keywords>JBI, Components</keywords>
         </portlet-info>
     </portlet>
  </portlet-app>

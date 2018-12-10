@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- START SNIPPET: pipeline -->
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
+	   xmlns:foo="http://servicemix.org/demo/pipeline/">
+
+  <!-- the JBI container and its components -->
+  <sm:container id="jbi" embedded="true">
+    <sm:activationSpecs>
+
+      <sm:activationSpec componentName="myJmsReceiver" service="foo:myJmsReceiver" destinationService="foo:transformer">
+        <sm:component><bean class="org.apache.servicemix.components.jms.JmsReceiverComponent">
+          <property name="template">
+            <bean class="org.springframework.jms.core.JmsTemplate">
+              <property name="connectionFactory">
+                <ref local="jmsFactory"/>
+              </property>
+              <property name="defaultDestinationName" value="demo.cheese.source"/>
+              <property name="pubSubDomain" value="true"/>
+            </bean>
+          </property>
+        </bean></sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec componentName="transformer" service="foo:transformer" destinationService="foo:transformedSender">
+        <sm:component><bean class="org.apache.servicemix.components.xslt.XsltComponent">
+          <property name="xsltResource" value="classpath:org/apache/servicemix/components/xslt/transform.xsl"/>
+        </bean></sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec componentName="transformedSender" service="foo:transformedSender">
+        <sm:component><bean class="org.apache.servicemix.components.jms.JmsSenderComponent">
+          <property name="template">
+            <bean class="org.springframework.jms.core.JmsTemplate">
+              <property name="connectionFactory">
+                <ref local="jmsFactory"/>
+              </property>
+              <property name="defaultDestinationName" value="demo.cheese.result"/>
+              <property name="pubSubDomain" value="true"/>
+            </bean>
+          </property>
+        </bean></sm:component>
+      </sm:activationSpec>
+
+    </sm:activationSpecs>
+  </sm:container>
+
+  <bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+    <property name="connectionFactory">
+      <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="vm://localhost?broker.persistent=false"/>
+      </bean>
+    </property>
+  </bean>
+
+</beans>
+
+<!-- END SNIPPET: pipeline -->

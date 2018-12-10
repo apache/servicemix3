@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jbi xmlns="http://java.sun.com/xml/ns/jbi" version="1.0">
+  <component type="service-engine">
+    <identification>
+      <name>servicemix-jsr181</name>
+      <description>ServiceMix :: JSR-181 Service Engine</description>
+    </identification>
+    <component-class-name>org.apache.servicemix.jsr181.Jsr181Component</component-class-name>
+    <component-class-path>
+      <path-element>lib/servicemix-jsr181-3.0-SNAPSHOT.jar</path-element>
+      <path-element>lib/commons-codec-1.3.jar</path-element>
+      <path-element>lib/xfire-aegis-1.1.jar</path-element>
+      <path-element>lib/commons-attributes-api-2.1.jar</path-element>
+      <path-element>lib/stax-utils-20040917.jar</path-element>
+      <path-element>lib/xfire-jaxb2-1.1.jar</path-element>
+      <path-element>lib/servicemix-common-3.0-SNAPSHOT.jar</path-element>
+      <path-element>lib/xfire-xmlbeans-1.1.jar</path-element>
+      <path-element>lib/xfire-jsr181-api-1.0-M1.jar</path-element>
+      <path-element>lib/jaxen-1.1-beta-8.jar</path-element>
+      <path-element>lib/jaxb-impl-2.0EA3.jar</path-element>
+      <path-element>lib/XmlSchema-1.0.3.jar</path-element>
+      <path-element>lib/xbean-2.1.0.jar</path-element>
+      <path-element>lib/jdom-1.0.jar</path-element>
+      <path-element>lib/xfire-java5-1.1.jar</path-element>
+      <path-element>lib/xfire-annotations-1.1.jar</path-element>
+      <path-element>lib/jaxb-api-2.0EA3.jar</path-element>
+      <path-element>lib/jaxb-xjc-2.0EA3.jar</path-element>
+      <path-element>lib/xfire-core-1.1.jar</path-element>
+      <path-element>lib/wstx-asl-2.9.3.jar</path-element>
+    </component-class-path>
+    <bootstrap-class-name>org.apache.servicemix.jsr181.Jsr181Bootstrap</bootstrap-class-name>
+    <bootstrap-class-path>
+      <path-element>lib/servicemix-jsr181-3.0-SNAPSHOT.jar</path-element>
+      <path-element>lib/commons-codec-1.3.jar</path-element>
+      <path-element>lib/xfire-aegis-1.1.jar</path-element>
+      <path-element>lib/commons-attributes-api-2.1.jar</path-element>
+      <path-element>lib/stax-utils-20040917.jar</path-element>
+      <path-element>lib/xfire-jaxb2-1.1.jar</path-element>
+      <path-element>lib/servicemix-common-3.0-SNAPSHOT.jar</path-element>
+      <path-element>lib/xfire-xmlbeans-1.1.jar</path-element>
+      <path-element>lib/xfire-jsr181-api-1.0-M1.jar</path-element>
+      <path-element>lib/jaxen-1.1-beta-8.jar</path-element>
+      <path-element>lib/jaxb-impl-2.0EA3.jar</path-element>
+      <path-element>lib/XmlSchema-1.0.3.jar</path-element>
+      <path-element>lib/xbean-2.1.0.jar</path-element>
+      <path-element>lib/jdom-1.0.jar</path-element>
+      <path-element>lib/xfire-java5-1.1.jar</path-element>
+      <path-element>lib/xfire-annotations-1.1.jar</path-element>
+      <path-element>lib/jaxb-api-2.0EA3.jar</path-element>
+      <path-element>lib/jaxb-xjc-2.0EA3.jar</path-element>
+      <path-element>lib/xfire-core-1.1.jar</path-element>
+      <path-element>lib/wstx-asl-2.9.3.jar</path-element>
+    </bootstrap-class-path>
+  </component>
+</jbi>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jbi xmlns="http://java.sun.com/xml/ns/jbi" version="1.0">
+     
+  <service-assembly>
+    <identification>
+      <name>wsn-http-binding</name>
+      <description>WS-Notification HTTP Binding</description>
+    </identification>
+    <service-unit>
+      <identification>
+        <name>wsn-http-binding-su</name>
+        <description>Contains the HTTP binding</description>
+      </identification>
+      <target>
+        <artifacts-zip>wsn-http-binding-su.zip</artifacts-zip>
+        <component-name>servicemix-http</component-name>
+      </target>
+    </service-unit>
+  </service-assembly>
+    
+</jbi>

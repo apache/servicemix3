@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
+	   xmlns:lb="urn:logicblaze:soa:loanbroker"
+	   xmlns:ca="urn:logicblaze:soa:creditagency">
+
+  <classpath>
+    <location>.</location>
+  </classpath>
+                         
+	<sm:serviceunit id="jbi">
+    <sm:activationSpecs>
+    
+		  <sm:activationSpec destinationService="lb:LoanBrokerService"
+                         destinationOperation="lb:getLoanQuote">
+		    <sm:component>
+		      <bean class="org.apache.servicemix.components.jms.JmsServiceComponent">
+		        <property name="template">
+		          <bean class="org.springframework.jms.core.JmsTemplate">
+		            <property name="connectionFactory" ref="jmsFactory" />
+		            <property name="defaultDestinationName" value="demo.org.servicemix.source" />
+		            <property name="pubSubDomain" value="false" />
+		          </bean>
+		        </property>
+		      </bean>
+		    </sm:component>
+		  </sm:activationSpec>
+		
+      <sm:activationSpec interfaceName="ca:CreditAgency">
+        <sm:component>
+          <bean class="loanbroker.CreditAgency" />
+        </sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec>
+        <sm:component>
+          <bean class="loanbroker.Bank">
+            <constructor-arg value="1" />
+          </bean>
+        </sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec>
+        <sm:component>
+          <bean class="loanbroker.Bank">
+            <constructor-arg value="2" />
+          </bean>
+        </sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec>
+        <sm:component>
+          <bean class="loanbroker.Bank">
+            <constructor-arg value="3" />
+          </bean>
+        </sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec>
+        <sm:component>
+          <bean class="loanbroker.Bank">
+            <constructor-arg value="4" />
+          </bean>
+        </sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec>
+        <sm:component>
+          <bean class="loanbroker.Bank">
+            <constructor-arg value="5" />
+          </bean>
+        </sm:component>
+      </sm:activationSpec>
+
+    </sm:activationSpecs>
+  </sm:serviceunit>
+
+	<bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+		<property name="connectionFactory">
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
+				<property name="brokerURL" value="tcp://localhost:61616" />
+			</bean>
+		</property>
+	</bean>
+
+</beans>

@@ -3,6 +3,6 @@
 		   SpringComponent container to build -->
 
 	<!-- <bean id="myLoggerExample"
-		class="org.servicemix.demo.LoggerInterface">		
+		class="org.apache.servicemix.demo.LoggerInterface">		
 	</bean> -->
 </beans>

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<beans xmlns:http="http://servicemix.apache.org/http/1.0"
+       xmlns:demo="urn:servicemix:soap-binding">
+
+	<http:endpoint service="demo:simple-service"
+				         endpoint="simple-service"
+	               role="consumer" 
+	               locationURI="http://localhost:8192/Service/"
+	               defaultMep="http://www.w3.org/2004/08/wsdl/in-out" 
+                 soap="true" />
+	               
+</beans>

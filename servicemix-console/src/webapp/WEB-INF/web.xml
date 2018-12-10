@@ -13,13 +13,13 @@
     </servlet>
 
   <servlet>
-    <description>Auto Generated Portlet Invoker Servlet</description>
+    <description>Portlet Invoker Servlet</description>
     <display-name>JBIContainer Portlet</display-name>
     <servlet-name>JBIContainer</servlet-name>
     <servlet-class>org.apache.pluto.core.PortletServlet</servlet-class>
     <init-param>
       <param-name>portlet-class</param-name>
-      <param-value>org.servicemix.console.JBIContainerPortlet</param-value>
+      <param-value>org.apache.servicemix.console.JBIContainerPortlet</param-value>
     </init-param>
     <init-param>
       <param-name>portlet-guid</param-name>
@@ -27,17 +27,31 @@
     </init-param>
   </servlet>
   <servlet>
-    <description>Auto Generated Portlet Invoker Servlet</description>
+    <description>Portlet Invoker Servlet</description>
     <display-name>JBIAudit Portlet</display-name>
     <servlet-name>JBIAudit</servlet-name>
     <servlet-class>org.apache.pluto.core.PortletServlet</servlet-class>
     <init-param>
       <param-name>portlet-class</param-name>
-      <param-value>org.servicemix.console.JBIAuditPortlet</param-value>
+      <param-value>org.apache.servicemix.console.JBIAuditPortlet</param-value>
     </init-param>
     <init-param>
       <param-name>portlet-guid</param-name>
       <param-value>servicemix-console.JBIAudit</param-value>
+    </init-param>
+  </servlet>
+  <servlet>
+    <description>Portlet Invoker Servlet</description>
+    <display-name>JBIComponents Portlet</display-name>
+    <servlet-name>JBIComponents</servlet-name>
+    <servlet-class>org.apache.pluto.core.PortletServlet</servlet-class>
+    <init-param>
+      <param-name>portlet-class</param-name>
+      <param-value>org.apache.servicemix.console.JBIComponentsPortlet</param-value>
+    </init-param>
+    <init-param>
+      <param-name>portlet-guid</param-name>
+      <param-value>servicemix-console.JBIComponents</param-value>
     </init-param>
   </servlet>
 
@@ -53,6 +67,10 @@
   <servlet-mapping>
     <servlet-name>JBIAudit</servlet-name>
     <url-pattern>/JBIAudit/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>JBIComponents</servlet-name>
+    <url-pattern>/JBIComponents/*</url-pattern>
   </servlet-mapping>
     
     <jsp-config>

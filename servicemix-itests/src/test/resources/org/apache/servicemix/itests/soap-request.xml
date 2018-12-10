@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+			  xmlns:tns="http://servicemix.org/test/">
+	<env:Body>
+		<tns:echo>
+		    <tns:msg>world</tns:msg>
+		</tns:echo>
+	</env:Body>
+</env:Envelope>

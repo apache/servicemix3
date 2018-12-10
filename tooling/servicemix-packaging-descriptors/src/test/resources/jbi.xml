@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jbi xmlns="http://java.sun.com/xml/ns/jbi"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/jbi ../jbi.xsd"
+	version="1.0">
+	<component type="service-engine">
+		<identification>
+			<name>servicemix-lwcontainer</name>
+			<description>LightWeight Container</description>
+		</identification>
+		<component-class-name description="Component Implementation">
+			org.apache.servicemix.lwcontainer.LwContainerComponent
+		</component-class-name>
+		<component-class-path>
+			<path-element>
+				lib/servicemix-lwcontainer-3.0-SNAPSHOT.jar
+			</path-element>
+			<path-element>
+				lib/servicemix-common-3.0-SNAPSHOT.jar
+			</path-element>
+			<path-element>lib/commons-logging-1.0.4.jar</path-element>
+			<path-element>
+				lib/backport-util-concurrent-2.0_01_pd.jar
+			</path-element>
+			<path-element>lib/xbean-spring-2.1.jar</path-element>
+			<path-element>lib/xbean-server-2.1.jar</path-element>
+			<path-element>lib/xbean-kernel-2.1.jar</path-element>
+			<path-element>lib/spring-1.2.5.jar</path-element>
+			<path-element>
+				lib/servicemix-components-3.0-SNAPSHOT.jar
+			</path-element>
+		</component-class-path>
+		<bootstrap-class-name>
+			org.apache.servicemix.lwcontainer.LwContainerBootstrap
+		</bootstrap-class-name>
+		<bootstrap-class-path>
+			<path-element>
+				lib/servicemix-lwcontainer-3.0-SNAPSHOT.jar
+			</path-element>
+			<path-element>
+				lib/servicemix-common-3.0-SNAPSHOT.jar
+			</path-element>
+			<path-element>lib/commons-logging-1.0.4.jar</path-element>
+		</bootstrap-class-path>
+		<componentPackaging:assets
+			xmlns:componentPackaging="http://servicemix.apache.org/component/packaging">
+			<componentPackaging:connection name="defaultDestination"
+				description="Default destination" type="consumes" />
+			<componentPackaging:connection name="serviceName"
+				description="Service name" type="provides" />
+			<componentPackaging:artifact name="servicemix.xml"
+				description="ServiceMix Definition" extension="xml" />
+			<componentPackaging:engine>
+				<packaging:ServiceAssemblyPackagingEngine
+					xmlns:packaging="java://org.apache.servicemix.packaging.engine">
+					<injectors>
+						<packaging:ManifestInjector />
+						<packaging:ServiceAssemblyDescriptorInjector />
+						<packaging:ServiceUnitZipInjector>
+							<serviceUnitInjectors>
+								<packaging:ManifestInjector />
+								<packaging:ArtifactInjector />
+							</serviceUnitInjectors>
+						</packaging:ServiceUnitZipInjector>
+					</injectors>
+				</packaging:ServiceAssemblyPackagingEngine>
+			</componentPackaging:engine>
+		</componentPackaging:assets>
+	</component>
+</jbi>

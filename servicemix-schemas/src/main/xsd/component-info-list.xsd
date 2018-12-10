@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://java.sun.com/xml/ns/jbi/component-info-list" xmlns:this="http://java.sun.com/xml/ns/jbi/component-info-list">
+  <xs:element name="component-info-list">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="this:component-info"/>
+      </xs:sequence>
+      <xs:attribute name="version" use="required" type="xs:decimal"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="component-info">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="this:description"/>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:any namespace="##other" processContents="skip"/>
+          <xs:any namespace="##local" processContents="skip"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="service-engine"/>
+            <xs:enumeration value="binding-component"/>
+            <xs:enumeration value="shared-library"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="name" use="required"/>
+      <xs:attribute name="state" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="Shutdown"/>
+            <xs:enumeration value="Started"/>
+            <xs:enumeration value="Stopped"/>
+            <xs:enumeration value="Unknown"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="description" type="xs:string"/>
+</xs:schema>

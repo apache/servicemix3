@@ -1,0 +1,18 @@
+<componentPackaging:components
+	xmlns:componentPackaging="http://servicemix.apache.org/component/packaging">
+	<component name="servicemix-lwcontainer"
+		description="ServiceMix Lightweight Container"
+		type="service-engine">
+		<componentPackaging:assets>
+			<componentPackaging:connection name="defaultDestination"
+				description="Default destination" />
+			<componentPackaging:artifact name="servicemix.xml"
+				description="ServiceMix Definition" extension="xml" />
+			<componentPackaging:engine>
+				<packaging:ServiceAssemblyPackagingEngine
+					xmlns:packaging="java://org.apache.servicemix.packaging.engine">
+				</packaging:ServiceAssemblyPackagingEngine>
+			</componentPackaging:engine>
+		</componentPackaging:assets>
+	</component>
+</componentPackaging:components>

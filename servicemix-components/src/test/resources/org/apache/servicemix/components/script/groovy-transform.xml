@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+  <!-- the JBI container -->
+  <bean id="jbi" class="org.apache.servicemix.jbi.container.SpringJBIContainer">
+    <property name="componentNames">
+      <list>
+        <value>sender</value>
+        <value>pipeline</value>
+        <value>transformer</value>
+        <value>receiver</value>
+      </list>
+    </property>
+    <property name="embedded" value="true"/>
+  </bean>
+
+  <!-- components within the JBI container -->
+
+  <!-- these are more lightweight POJOs which don't implement the full JBI Component interface -->
+  <bean id="sender" class="org.apache.servicemix.tck.SenderComponent">
+    <property name="resolver">
+      <bean class="org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver">
+        <property name="serviceName" ref="pipelineServiceName"/>
+      </bean>
+    </property>
+ </bean>
+
+  <!-- pipelines the transformation script to the receiver -->
+  <bean id="pipeline" class="org.apache.servicemix.components.util.PipelineComponent">
+    <constructor-arg ref="pipelineServiceName"/>
+    <constructor-arg value="pipeline"/>
+
+    <property name="requestResponseServiceName" ref="transformerServiceName"/>
+    <property name="outputEndpointServiceName" ref="receiverServiceName"/>
+ </bean>
+
+
+  <!-- the groovy transformation -->
+  <bean id="transformer" class="org.apache.servicemix.components.script.ScriptComponent">
+    <constructor-arg ref="transformerServiceName"/>
+    <constructor-arg value="transformer"/>
+
+    <property name="scriptEngineName" value="groovy"/>
+    <property name="scriptText">
+      <value>
+outMessage.setProperty("foo", "hello")
+
+println "Received message $inMessage in Groovy script"
+        
+      </value>
+    </property>
+  </bean>
+
+  <bean id="receiver" class="org.apache.servicemix.tck.ReceiverPojo">
+    <constructor-arg ref="receiverServiceName"/>
+    <constructor-arg value="receiver"/>
+ </bean>
+
+
+  <!-- QNames - would be nice to have an easier way of doing this -->
+  <bean id="pipelineServiceName" class="javax.xml.namespace.QName">
+    <constructor-arg value="http://www.example.com/pipeline"/>
+    <constructor-arg value="pipeline"/>
+  </bean>
+
+  <bean id="transformerServiceName" class="javax.xml.namespace.QName">
+    <constructor-arg value="http://www.example.com/transformer"/>
+    <constructor-arg value="transformer"/>
+  </bean>
+
+  <bean id="receiverServiceName" class="javax.xml.namespace.QName">
+    <constructor-arg value="http://www.example.com/receiver"/>
+    <constructor-arg value="receiver"/>
+  </bean>
+</beans>

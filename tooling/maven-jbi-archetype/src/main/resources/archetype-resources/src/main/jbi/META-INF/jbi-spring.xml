@@ -1,0 +1,8 @@
+<beans>
+	<!--  This is going to be where we declare the beans that we want the
+		   SpringComponent container to build -->
+
+	<!-- <bean id="myLoggerExample"
+		class="org.servicemix.demo.LoggerInterface">		
+	</bean> -->
+</beans>

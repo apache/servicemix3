@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns2:Notify xmlns:ns2="http://docs.oasis-open.org/wsn/b-2"
+    xmlns="http://www.w3.org/2005/08/addressing" xmlns:ns3="http://docs.oasis-open.org/wsrf/bf-2"
+    xmlns:ns4="http://docs.oasis-open.org/wsn/t-1">
+
+    <ns2:NotificationMessage>
+        <ns2:Topic>myTopic</ns2:Topic>
+        <ns2:Message>
+            <timer xmlns="" xmlns:ns5="http://www.w3.org/2005/08/addressing">
+                <name>My Example Job</name>
+                <group>ServiceMix</group>
+                <fullname>ServiceMix.My Example Job</fullname>
+                <description/>
+                <fireTime>Thu Apr 13 15:45:34 MDT 2006</fireTime>
+            </timer>
+        </ns2:Message>
+    </ns2:NotificationMessage>
+</ns2:Notify>

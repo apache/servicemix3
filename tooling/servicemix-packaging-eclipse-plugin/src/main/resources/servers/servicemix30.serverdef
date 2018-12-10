@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:ServerRuntime
+	xmlns:tns="http://eclipse.org/jst/server/generic/ServerTypeDefinition"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://eclipse.org/jst/server/generic/ServerTypeDefinition"
+	name="Apache ServiceMix 3.0" version="3.0">
+
+	<property id="serverRootDirectory"
+		label="ServiceMix Installation Path" type="directory"
+		context="runtime" default="C:/servicemix-3.0-SNAPSHOT" />	
+		
+	<property id="serverRootDirectory"
+		label="ServiceMix Installation Path" type="directory"
+		context="server" default="C:/servicemix-3.0-SNAPSHOT" />	
+		
+	<module>
+		<type>jst.jbi.component</type>
+		<publishDir>${serverRootDirectory}/install</publishDir>
+		<publisherReference>org.eclipse.jst.server.generic.antpublisher</publisherReference>
+	</module>
+
+	<project>
+		<classpathReference>servicemix.project</classpathReference>
+	</project>
+
+	<start>
+		<mainClass>org.codehaus.classworlds.Launcher</mainClass>
+		<workingDirectory>${serverRootDirectory}</workingDirectory>
+		<programArguments></programArguments>
+		<vmParameters>-Xms128m -Dclassworlds.conf=${serverRootDirectory}\conf\servicemix.conf -Xmx512m -Djava.endorsed.dirs=${serverRootDirectory}\lib\endorsed -Dservicemix.home=${serverRootDirectory}</vmParameters>
+		<classpathReference>servicemix</classpathReference>
+	</start>
+
+	<!--  <stop>
+		<mainClass>org.jboss.Shutdown</mainClass>
+		<workingDirectory>${serverRootDirectory}/bin</workingDirectory>		
+		<vmParameters></vmParameters>
+		<classpathReference>jboss.shutdown</classpathReference>
+	</stop> -->
+
+	<publisher id="org.eclipse.jst.server.generic.antpublisher">
+		<publisherdata>
+			<dataname>build.file</dataname>
+			<datavalue>/buildfiles/servicemix30.xml</datavalue>
+		</publisherdata>
+		<publisherdata>
+			<dataname>target.publish.jbi</dataname>
+			<datavalue>deploy.jbi.component</datavalue>
+		</publisherdata>
+		<publisherdata>
+			<dataname>target.unpublish.jbi</dataname>
+			<datavalue>undeploy.jbi.component</datavalue>
+		</publisherdata>
+	</publisher>
+
+	<classpath id="servicemix">		
+		<archive
+			path="${serverRootDirectory}/conf" />
+		<archive path="${serverRootDirectory}/lib/classworlds-1.0.1.jar" />
+	</classpath>
+
+	<classpath id="servicemix.project">
+		<archive path="${serverRootDirectory}/servicemix-3.0-SNAPSHOT.jar" />	
+	</classpath>
+</tns:ServerRuntime>

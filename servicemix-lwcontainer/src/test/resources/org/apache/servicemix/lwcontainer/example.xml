@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- START SNIPPET: config -->
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
+	   xmlns:foo="http://servicemix.org/cheese/">
+
+  <sm:container id="jbi">
+    <sm:activationSpecs>
+
+      <!-- START SNIPPET: servicemix-component -->
+      <sm:activationSpec componentName="servicemix-component">
+        <sm:component><bean class="org.servicemix.components.servicemix.ServiceMixComponent"/></sm:component>
+      </sm:activationSpec>
+      <!-- END SNIPPET: servicemix-component -->
+
+    </sm:activationSpecs>
+  </sm:container>
+
+  <bean id="client" class="org.servicemix.client.DefaultServiceMixClient">
+    <constructor-arg ref="jbi"/>
+  </bean>
+  
+</beans>
+<!-- END SNIPPET: config -->

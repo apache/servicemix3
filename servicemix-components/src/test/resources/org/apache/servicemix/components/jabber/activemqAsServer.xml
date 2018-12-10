@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
+	   xmlns:foo="http://servicemix.org/cheese/">
+
+  <!-- lets run an embedded broker -->
+  <bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean">
+    <property name="config" value="classpath:org/apache/servicemix/components/jabber/broker.xml"/>
+  </bean>
+
+  <!-- the JBI container -->
+  <sm:container id="jbi" depends-on="broker" embedded="true">
+    <sm:activationSpecs>
+      <sm:activationSpec componentName="myJabberSender" service="foo:myJabberSender">
+        <sm:component><bean class="org.apache.servicemix.components.jabber.JabberChatSender">
+          <property name="host" value="localhost"/>
+          <property name="port" value="6222"/>
+          <property name="login" value="false"/>
+          <property name="participant" value="test2@servicemix.org"/>
+        </bean></sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec componentName="myJabberReceiver" service="foo:myJabberReceiver" destinationService="foo:receiver">
+        <sm:component><bean class="org.apache.servicemix.components.jabber.JabberReceiver">
+          <property name="host" value="localhost"/>
+          <property name="port" value="61626"/>
+          <property name="user" value="test2@servicemix.org"/>
+          <property name="password" value="rocks"/>
+        </bean></sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec componentName="receiver" service="foo:receiver">
+        <sm:component><bean class="org.apache.servicemix.tck.ReceiverComponent"/></sm:component>
+      </sm:activationSpec>
+    </sm:activationSpecs>
+  </sm:container>
+
+  <bean id="client" class="org.apache.servicemix.client.DefaultServiceMixClient">
+    <constructor-arg ref="jbi"/>
+  </bean>
+
+</beans>

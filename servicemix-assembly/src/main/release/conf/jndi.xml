@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!-- START SNIPPET: jndi -->
+<beans>
+
+  <import resource="tx.xml" />
+
+  <bean id="jndi" 
+        class="org.apache.xbean.spring.jndi.SpringInitialContextFactory" 
+        factory-method="makeInitialContext"
+        singleton="true">
+    <property name="entries">
+      <map>
+      
+        <!-- PXE DB datasource -->
+        <!--
+        <entry key="java:comp/env/jdbc/pxe__pm">
+          <bean class="org.hsqldb.jdbc.jdbcDataSource">
+            <property name="database" value="jdbc:hsqldb:mem:pxe"/>
+            <property name="user" value = "sa"/>
+            <property name="password" value = ""/>
+          </bean>
+        </entry>
+        -->
+        
+        <!-- wsn2005 jms connection factory -->
+        <entry key="java:comp/env/jms/wsnotificationCF">
+          <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+            <property name="brokerURL" value="tcp://localhost:61616" />
+          </bean>
+        </entry>
+
+        <!-- transaction manager -->
+        <entry key="javax.transaction.TransactionManager" value-ref="transactionManager" />
+      </map>
+    </property>
+  </bean>
+
+</beans>
+<!-- END SNIPPET: jndi -->

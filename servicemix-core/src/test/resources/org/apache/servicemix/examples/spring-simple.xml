@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+  <!-- the JBI container -->
+  <bean id="jbi" class="org.apache.servicemix.jbi.container.SpringJBIContainer">
+    <property name="componentNames">
+      <list>
+        <value>sender</value>
+        <value>receiver</value>
+      </list>
+    </property>
+  </bean>
+
+  <!-- components within the JBI container -->
+  <bean id="sender" class="org.apache.servicemix.tck.SenderComponent">
+    <property name="resolver">
+      <bean class="org.apache.servicemix.jbi.resolver.ServiceNameEndpointResolver">
+        <property name="serviceName" ref="receiverServiceName"/>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="receiver" class="org.apache.servicemix.tck.ReceiverComponent"/>
+
+
+  <bean id="receiverServiceName" class="javax.xml.namespace.QName">
+    <constructor-arg value="http://servicemix.org/example/"/>
+    <constructor-arg value="receiver"/>
+  </bean>
+
+</beans>

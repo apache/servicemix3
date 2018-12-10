@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
+	   xmlns:bpe="http://servicemix.apache.org/bpe/1.0"
+	   xmlns:ca="urn:logicblaze:soa:creditagency">
+
+  <!-- the JBI container -->
+  <sm:container id="jbi" embedded="true">
+    <sm:activationSpecs>
+
+      <!-- output using a POJO -->
+      <sm:activationSpec>
+      	<sm:component>
+            <bpe:component bpelResource="classpath:loanbroker/loanbroker.bpel" />
+        </sm:component>
+      </sm:activationSpec>
+      
+      <sm:activationSpec interfaceName="ca:CreditAgency">
+        <sm:component>
+          <bean class="loanbroker.CreditAgency" />
+        </sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec>
+        <sm:component>
+          <bean class="loanbroker.Bank">
+            <constructor-arg value="1" />
+          </bean>
+        </sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec>
+        <sm:component>
+          <bean class="loanbroker.Bank">
+            <constructor-arg value="2" />
+          </bean>
+        </sm:component>
+      </sm:activationSpec>
+
+    </sm:activationSpecs>
+  </sm:container>
+
+</beans>

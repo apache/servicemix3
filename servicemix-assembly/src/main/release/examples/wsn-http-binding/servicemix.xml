@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0">
+
+  <import resource="classpath:tx.xml" />
+  <import resource="classpath:jndi.xml" />
+  <import resource="classpath:jmx.xml" />
+  <import resource="classpath:activemq.xml" />
+
+  <!-- the JBI container -->
+  <sm:container id="jbi" 
+                rootDir="./wdir" 
+                MBeanServer="#mbeanServer"
+                installationDirPath="./install"
+                deploymentDirPath="./deploy"
+                dumpStats="true"
+                statsInterval="10" 
+                flowName="seda"
+                transactionManager="#transactionManager">
+
+    <sm:activationSpecs>
+		
+    </sm:activationSpecs>
+  </sm:container>
+
+</beans>

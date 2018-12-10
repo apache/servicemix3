@@ -1,0 +1,42 @@
+<configuration
+    xmlns="http://geronimo.apache.org/xml/ns/deployment-1.0"
+    configId="servicemix/${pom.currentVersion}/car"
+    domain="geronimo.maven"
+    server="geronimo">
+
+    <gbean name="WorkManager" class="org.apache.geronimo.connector.work.GeronimoWorkManagerGBean">
+        <attribute name="syncMaximumPoolSize">30</attribute>
+        <attribute name="startMaximumPoolSize">30</attribute>
+        <attribute name="scheduledMaximumPoolSize">30</attribute>
+        <reference name="TransactionContextManager">
+          <domain>geronimo.server</domain>
+          <module>geronimo/j2ee-server/${geronimo_version}/car</module>
+          <type>TransactionContextManager</type>
+          <name>TransactionContextManager</name>
+        </reference>
+    </gbean>
+
+    <gbean name="ServiceMixJBIContainer" class="org.apache.servicemix.gbean.ServiceMixGBean">
+        <attribute name="name">defaultJBI</attribute>
+        <attribute name="directory">var/servicemix</attribute>
+        <reference name="transactionContextManager">
+          <domain>geronimo.server</domain>
+          <module>geronimo/j2ee-server/${geronimo_version}/car</module>
+          <type>TransactionContextManager</type>
+          <name>TransactionContextManager</name>
+        </reference>
+        <reference name="workManager">
+          <type>JCAWorkManager</type>
+          <name>WorkManager</name>
+        </reference>
+    </gbean>
+
+    <gbean name="ServiceMixConfigBuilder" class="org.apache.servicemix.gbean.ServiceMixConfigBuilder">
+        <attribute name="defaultParentId">servicemix/${pom.currentVersion}/car</attribute>
+        <reference name="servicemix">
+          <type>JBIContainer</type>
+          <name>ServiceMixJBIContainer</name>
+        </reference>
+    </gbean>
+
+</configuration>

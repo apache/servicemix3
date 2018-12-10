@@ -1,0 +1,17 @@
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0">
+  
+  <parent>
+    <artifactId>maven-archetypes</artifactId>
+    <groupId>org.apache.maven.archetypes</groupId>
+    <version>1.0-alpha-3</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.servicemix.archetypes</groupId>
+  <artifactId>maven-jbi-archetype</artifactId>
+  <version>1.0</version>
+  <name>Maven2 JBI Archetype</name>
+  <description>Servicemix JBI Archetype for Maven2</description>
+</project>

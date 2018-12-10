@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
+	   xmlns:foo="http://servicemix.org/cheese/">
+
+  <!--
+  || ActiveMQ Broker
+  -->
+  <bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean" singleton="true">
+    <property name="config" value="classpath:broker.xml"/>
+  </bean>
+
+  <!-- START SNIPPET: jca -->
+  <bean id="jencks" class="org.jencks.JCAContainer">
+
+    <!-- lets use the default configuration of work manager and transaction manager-->
+    <property name="bootstrapContext">
+      <bean class="org.jencks.factory.BootstrapContextFactoryBean">
+        <property name="threadPoolSize" value="25"/>
+      </bean>
+    </property>
+
+
+    <!-- the JCA Resource Adapter -->
+    <property name="resourceAdapter">
+      <bean id="activeMQResourceAdapter" class="org.apache.activemq.ra.ActiveMQResourceAdapter">
+        <property name="serverUrl" value="tcp://localhost:61626"/>
+      </bean>
+    </property>
+  </bean>
+  <!-- END SNIPPET: jca -->
+
+  <!-- START SNIPPET: tm -->
+  <bean id="transactionManager" class="org.jencks.factory.TransactionManagerFactoryBean"/>
+  <!-- END SNIPPET: tm -->
+
+  <!-- the JBI container -->
+  <sm:container id="jbi" depends-on="broker" embedded="true">
+    <sm:activationSpecs>
+
+      <sm:activationSpec componentName="myJmsSender" service="foo:myJmsSender">
+        <sm:component><bean class="org.apache.servicemix.components.jms.JmsSenderComponent">
+          <property name="template">
+            <bean class="org.springframework.jms.core.JmsTemplate">
+              <property name="connectionFactory" ref="jmsFactory"/>
+              <property name="defaultDestinationName" value="test.org.apache.servicemix.example.jca"/>
+              <property name="pubSubDomain" value="true"/>
+            </bean>
+          </property>
+        </bean></sm:component>
+      </sm:activationSpec>
+
+      <!-- START SNIPPET: receive -->
+      <sm:activationSpec componentName="myJmsReceiver" service="foo:myJmsReceiver" destinationService="foo:receiver">
+        <sm:component><bean class="org.apache.servicemix.components.jms.JmsInUsingJCABinding">
+
+          <property name="jcaContainer" ref="jencks"/>
+
+          <property name="activationSpec">
+            <bean class="org.apache.activemq.ra.ActiveMQActivationSpec">
+              <property name="destination" value="test.org.apache.servicemix.example.jca"/>
+              <property name="destinationType" value="javax.jms.Topic"/>
+            </bean>
+          </property>
+
+          <!-- use XA transactions -->
+          <property name="transactionManager" ref="transactionManager"/>
+        </bean></sm:component>
+      </sm:activationSpec>
+      <!-- END SNIPPET: receive -->
+
+      <sm:activationSpec componentName="receiver" service="foo:receiver">
+        <sm:component><bean class="org.apache.servicemix.tck.ReceiverComponent"/></sm:component>
+      </sm:activationSpec>
+
+
+      <!-- just to test that we are sending messages, lets trace the messages we receive -->
+      <sm:activationSpec componentName="jmsTrace" service="foo:jmsTrace" destinationService="foo:trace">
+        <sm:component><bean class="org.apache.servicemix.components.jms.JmsInUsingJCABinding">
+
+          <property name="jcaContainer" ref="jencks"/>
+
+          <property name="activationSpec">
+            <bean class="org.apache.activemq.ra.ActiveMQActivationSpec">
+              <property name="destination" value="test.org.apache.servicemix.example.jca"/>
+              <property name="destinationType" value="javax.jms.Topic"/>
+            </bean>
+          </property>
+        </bean></sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec componentName="trace" service="foo:trace">
+        <sm:component><bean class="org.apache.servicemix.components.groovy.GroovyComponent">
+          <property name="disableOutput" value="true"/>
+          <property name="scriptText">
+            <value>
+              <![CDATA[
+log.info "Received message $inMessage with content $inMessage.bodyText"
+              ]]>
+            </value>
+          </property>
+        </bean></sm:component>
+      </sm:activationSpec>
+      
+    </sm:activationSpecs>
+  </sm:container>
+
+
+  <bean id="client" class="org.apache.servicemix.client.DefaultServiceMixClient">
+    <constructor-arg ref="jbi"/>
+  </bean>
+
+  <bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+    <property name="connectionFactory">
+      <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://localhost:61626"/>
+      </bean>
+    </property>
+  </bean>
+
+</beans>

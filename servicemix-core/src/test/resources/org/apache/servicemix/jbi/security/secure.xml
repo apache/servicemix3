@@ -1,0 +1,39 @@
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+       xmlns:ex1="http://servicemix.org/example/1"
+       xmlns:ex2="http://servicemix.org/example/2">
+
+  <sm:container id="jbi" embedded="true" useMBeanServer="false">
+    <sm:broker>
+      <sm:securedBroker>
+        <sm:authorizationMap>
+	      <sm:authorizationMap>
+	        <sm:authorizationEntries>
+	          <sm:authorizationEntry service="*:*" roles="programmers" />
+	          <sm:authorizationEntry service="ex1:*" roles="accounting" />
+	          <sm:authorizationEntry service="ex1:receiver1" roles="testers" />
+	        </sm:authorizationEntries>
+	      </sm:authorizationMap>
+        </sm:authorizationMap>
+      </sm:securedBroker>
+    </sm:broker>
+      
+    <sm:activationSpecs>
+      <sm:activationSpec id="receiver1" service="ex1:receiver1">
+        <sm:component>
+          <bean class="org.apache.servicemix.tck.ReceiverComponent" />
+        </sm:component>
+      </sm:activationSpec>
+      <sm:activationSpec id="receiver2" service="ex1:receiver2">
+        <sm:component>
+          <bean class="org.apache.servicemix.tck.ReceiverComponent" />
+        </sm:component>
+      </sm:activationSpec>
+      <sm:activationSpec id="receiver3" service="ex2:receiver1">
+        <sm:component>
+          <bean class="org.apache.servicemix.tck.ReceiverComponent" />
+        </sm:component>
+      </sm:activationSpec>
+    </sm:activationSpecs>
+  </sm:container>
+
+</beans>

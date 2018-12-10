@@ -1,0 +1,48 @@
+<definitions targetNamespace="urn:logicblaze:soa:bank"
+	xmlns:tns="urn:logicblaze:soa:bank"
+	xmlns:typens="urn:logicblaze:soa:bank:types"
+	xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/">
+
+	<types>
+		<xsd:schema
+			targetNamespace="urn:logicblaze:soa:bank:types"
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+			<xsd:complexType name="getLoanQuoteRequest">
+				<xsd:sequence>
+					<xsd:element name="ssn" type="xsd:string" />
+					<xsd:element name="amount" type="xsd:double" />
+					<xsd:element name="duration" type="xsd:int" />
+					<xsd:element name="score" type="xsd:int" />
+					<xsd:element name="length" type="xsd:int" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="getLoanQuoteResponse">
+				<xsd:sequence>
+					<xsd:element name="rate" type="xsd:double" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+		</xsd:schema>
+	</types>
+
+	<message name="getLoanQuoteRequest">
+		<part name="payload" type="typens:getLoanQuoteRequest" />
+	</message>
+
+	<message name="getLoanQuoteResponse">
+		<part name="payload" type="typens:getLoanQuoteResponse" />
+	</message>
+
+	<portType name="Bank">
+		<operation name="getLoanQuote">
+			<input message="tns:getLoanQuoteRequest" />
+			<output message="tns:getLoanQuoteResponse" />
+		</operation>
+	</portType>
+
+</definitions>

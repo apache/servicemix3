@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-
-<project default="default"
-    xmlns:ant="jelly:ant"
-    xmlns:deploy="geronimo:deploy">
-
-</project>

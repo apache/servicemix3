@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2005 The Apache Software Foundation
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!-- $Rev: 356052 $ $Date: 2005-12-11 14:41:20 -0800 (dim., 11 déc. 2005) $ -->
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.servicemix</groupId>
+    <artifactId>servicemix</artifactId>
+    <version>3.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>servicemix-wsn2005</artifactId>
+  <packaging>jbi-component</packaging>
+  <name>ServiceMix :: WS-Notification Service Engine</name>
+  <description>WS-Notification Service Engine</description>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>servicemix-components</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>quartz</groupId>
+      <artifactId>quartz</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>incubator-activemq</groupId>
+      <artifactId>activemq-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml</groupId>
+      <artifactId>jaxws-tools</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.jws</groupId>
+          <artifactId>jsr181-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.xml</groupId>
+          <artifactId>jaxb-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.xml</groupId>
+          <artifactId>jaxb-impl</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>xfire</groupId>
+      <artifactId>xfire-jsr181-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>2.0</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.servicemix.tooling</groupId>
+        <artifactId>jbi-maven-plugin</artifactId>
+        <configuration>
+          <type>service-engine</type>
+          <bootstrap>org.apache.servicemix.wsn.component.WSNBootstrap</bootstrap>
+          <component>org.apache.servicemix.wsn.component.WSNComponent</component>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.xbean</groupId>
+        <artifactId>maven-xbean-plugin</artifactId>
+        <executions>
+          <execution>
+            <configuration>
+              <namespace>http://servicemix.apache.org/wsn/1.0</namespace>
+              <srcDir>${basedir}/src/main/java/org/apache/servicemix/wsn/spring</srcDir>
+            </configuration>
+            <goals>
+              <goal>mapping</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!--
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jaxws-maven-plugin</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>wsimport</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <wsdlDirectory>${basedir}/src/main/resources/org/apache/servicemix/wsn</wsdlDirectory>
+          <wsdlFiles>wsn.wsdl</wsdlFiles>
+        </configuration>
+      </plugin>
+      -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <configuration>
+              <tasks>
+                <taskdef classname="org.codehaus.xfire.gen.WsGenTask" name="wsgen">
+                  <classpath>
+                    <pathelement path="${basedir}/target/classes" />
+                    <path refid="maven.test.classpath" />
+                  </classpath>
+                </taskdef>
+                <wsgen 
+                  wsdl="${basedir}/src/main/resources/org/apache/servicemix/wsn/wsn.wsdl"
+                  outputDirectory="${basedir}/target/jaxws" 
+                  profile="org.codehaus.xfire.jaxws.gen.JAXWSProfile"
+                  explicitAnnotation="true" />
+                <delete file="${basedir}/target/jaxws/org/oasis_open/docs/wsn/t_1/TopicType.java" />
+              </tasks>
+              <sourceRoot>${basedir}/target/jaxws</sourceRoot>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.xfire</groupId>
+            <artifactId>xfire-generator</artifactId>
+            <version>1.1</version>
+          </dependency>
+          <dependency>
+            <groupId>org.codehaus.xfire</groupId>
+            <artifactId>xfire-jaxws</artifactId>
+            <version>1.1</version>
+          </dependency>
+          <dependency>
+            <groupId>javax.xml</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+            <version>2.0</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

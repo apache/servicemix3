@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
+	   xmlns:http="http://servicemix.apache.org/http/1.0"
+	   xmlns:test="http://test">
+
+  <!-- the JBI container -->
+  <sm:container id="jbi" embedded="true">
+    <sm:activationSpecs>
+
+      <!-- START SNIPPET: lightweight -->
+      <sm:activationSpec>
+        <sm:component>
+          <http:component>
+            <http:endpoints>
+              <http:endpoint service="test:dummy"
+                             endpoint="dummy"
+                             role="consumer" 
+                             soap="true"
+                             locationURI="http://localhost:8192/Service/"
+                             defaultMep="http://www.w3.org/2004/08/wsdl/in-out" />
+
+              <http:endpoint service="test:MyProviderService"
+                             endpoint="myProvider"
+                             role="provider" 
+                             locationURI="http://localhost:8192/Service/" />
+            </http:endpoints>
+          </http:component>
+        </sm:component>
+      </sm:activationSpec>
+      <!-- END SNIPPET: lightweight -->
+      
+      <sm:activationSpec service="test:MyConsumerService" endpoint="myConsumer">
+        <sm:component>
+          <bean class="org.apache.servicemix.components.util.EchoComponent">
+            <property name="copyProperties" value="false" />
+          </bean>
+        </sm:component>
+      </sm:activationSpec>
+
+    </sm:activationSpecs>
+  </sm:container>
+
+</beans>

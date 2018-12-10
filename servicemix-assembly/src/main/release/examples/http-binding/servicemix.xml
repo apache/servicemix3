@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
+       xmlns:foo="http://servicemix.org/demo/">
+    
+  <!-- the JBI container -->
+  <sm:container id="jbi"
+  		useMBeanServer="true"
+  		createMBeanServer="true"
+  		dumpStats="true"
+  		statsInterval="10">
+  		
+  	<sm:activationSpecs>
+  	
+		<!-- Create a http server binding on port 8912  and have it forward to the foo:stockQuote -->	
+  		<sm:activationSpec componentName="httpReceiver" 	
+  						   service="foo:httpBinding"
+  						   endpoint="httpReceiver"
+  						   destinationService="foo:stockQuote">
+  		  <sm:component>
+  		    <bean class="org.apache.servicemix.components.http.HttpConnector">
+			      <property name="host" value="localhost"/>
+			      <property name="port" value="8912"/>
+  		    </bean>
+  		  </sm:component>
+  		</sm:activationSpec>
+  	
+		<!-- This just invokes another service -->
+  		<sm:activationSpec componentName="stockQuote" 	
+  						   service="foo:stockQuote"
+  						   endpoint="stockQuote">
+  		  <sm:component>
+  		    <bean class="org.apache.servicemix.components.saaj.SaajBinding">
+			      <property name="soapEndpoint">
+				      <bean class="javax.xml.messaging.URLEndpoint">
+					      <constructor-arg value="http://64.124.140.30:9090/soap"/>
+				      </bean>
+			      </property>
+  		    </bean>
+  		  </sm:component>
+  		</sm:activationSpec>
+  		
+  	</sm:activationSpecs>
+  </sm:container>
+  
+</beans>
