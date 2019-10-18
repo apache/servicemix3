@@ -119,7 +119,7 @@
         <slf4j-version>1.6.1</slf4j-version>
         <wsdl4j-version>1.6.2</wsdl4j-version>
         <commons-beanutils-version>1.7.0</commons-beanutils-version>
-        <commons-fileupload-version>1.1.1</commons-fileupload-version>
+        <commons-fileupload-version>1.3.3</commons-fileupload-version>
         <woodstox-version>4.0.8</woodstox-version>
         <woodstox.stax2api.version>3.0.2</woodstox.stax2api.version>        
         <msv-version>20050913</msv-version>
