@@ -47,7 +47,7 @@ adding these two up-front to avoid having to hit maven-repository.dev.java.net -
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-api</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.9</version>
             <scope>test</scope>
             <optional>true</optional>
         </dependency>
