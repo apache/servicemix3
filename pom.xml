@@ -105,7 +105,7 @@
         <mavenAssemblyPluginVersion>2.1</mavenAssemblyPluginVersion>
         <xbean-version>3.11.1</xbean-version>
         <spring-version>3.0.6.RELEASE</spring-version>
-        <activemq-version>5.5.1</activemq-version>
+        <activemq-version>5.7.0</activemq-version>
         <activeio-version>3.1.2</activeio-version>
         <camel-version>2.8.5</camel-version>
         <jencks-version>2.2</jencks-version>
